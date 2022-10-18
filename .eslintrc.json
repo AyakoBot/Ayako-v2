@@ -1,0 +1,69 @@
+{
+  "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts"]
+    },
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "plugins": ["@typescript-eslint", "prettier"],
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:prettier/recommended",
+    "airbnb",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaVersion": "latest",
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "rules": {
+    "linebreak-style": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "no-use-before-define": "off",
+    "no-bitwise": "off",
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "no-confusing-arrow": "off",
+    "implicit-arrow-linebreak": "off",
+    "indent": "off",
+    "function-paren-newline": "off",
+    "operator-linebreak": "off",
+    "nonblock-statement-body-position": "off",
+    "padded-blocks": "off",
+    "quotes": "off",
+    "object-curly-newline": "off",
+    "lines-between-class-members": "off",
+    "no-shadow": [
+      "error",
+      { "builtinGlobals": false, "hoist": "functions", "allow": [], "ignoreOnInitialization": false }
+    ],
+    "no-new": "off",
+    "prettier/prettier": [
+      "warn",
+      {
+        "singleQuote": true,
+        "semi": true
+      }
+    ]
+  }
+}
