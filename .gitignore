@@ -1,5 +1,5 @@
 node_modules
 .vscode
 .idea
-src/BaseClient/auth.json
 /dist
+src/auth.json
