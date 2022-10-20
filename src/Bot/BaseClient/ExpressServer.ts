@@ -1,4 +1,5 @@
 import Express from 'express';
+import bodyParser from 'body-parser';
 import type * as DDeno from 'discordeno';
 import client from './DDenoClient.js';
 import * as config from '../../configs.js';
@@ -10,7 +11,7 @@ app.use(
     extended: true,
   }),
 );
-
+app.use(bodyParser.json({ limit: '25mb' }));
 app.use(Express.json());
 
 app.post('/', async (req, res) => {

@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "@types/body-parser": "^1.19.2",
     "discord.js": "^14.6.0",
     "discordeno": "^17.0.0",
     "express": "^4.18.2",
