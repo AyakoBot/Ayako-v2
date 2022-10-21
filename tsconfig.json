@@ -33,5 +33,6 @@
     "forceConsistentCasingInFileNames": true,
     "importsNotUsedAsValues": "error",
     "skipLibCheck": true
-  }
+  },
+  "exclude": ["node_modules", "dist"]
 }

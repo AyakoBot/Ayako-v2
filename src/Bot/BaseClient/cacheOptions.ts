@@ -1,17 +1,8 @@
-import type { CreateProxyCacheOptions } from 'cache-proxy';
 import type * as DDeno from 'discordeno';
+import type { CreateProxyCacheOptions } from './Other/cache-proxy/index.js';
 // eslint-disable-next-line import/no-cycle
 import client from './DDenoClient.js';
 import type CT from '../Typings/CustomTypings';
-import DataBase from './DataBase.js';
-import IndexInit, { expectedTypes } from './Other/InitializeCacheIndex.js';
-
-IndexInit();
-
-const desiredProps: { [key: string]: string[] } = {};
-Object.keys(expectedTypes).forEach((d) => {
-  desiredProps[d] = Object.keys(expectedTypes[d as keyof typeof expectedTypes]);
-});
 
 const cacheOptions: CreateProxyCacheOptions = {
   shouldCache: {
@@ -49,16 +40,52 @@ const cacheOptions: CreateProxyCacheOptions = {
       return true;
     },
   },
-  desiredProps,
-  cacheInMemory: {
-    guilds: false,
-    users: false,
-    channels: false,
-    members: false,
-    roles: false,
-    messages: false,
+  desiredProps: {
+    guilds: [
+      'name',
+      'premiumSubscriptionCount',
+      'vanityUrlCode',
+      'joinedAt',
+      'id',
+      'memberCount',
+      'shardId',
+    ],
+    channels: ['name', 'topic', 'nsfw', 'parentId', 'id', 'guildId', 'type'],
+    users: ['avatar', 'discriminator', 'id', 'username'],
+    members: [
+      'avatar',
+      'permissions',
+      'nick',
+      'premiumSince',
+      'communicationDisabledUntil',
+      'id',
+      'guildId',
+      'roles',
+      'joinedAt',
+    ],
+    roles: ['id', 'guildId', 'name', 'permissions', 'color'],
+    messages: [
+      'guildId',
+      'components',
+      'editedTimestamp',
+      'reactions',
+      'stickerItems',
+      'webhookId',
+      'messageReference',
+      'id',
+      'type',
+      'channelId',
+      'timestamp',
+      'content',
+      'embeds',
+      'attachments',
+      'authorId',
+      'mentionedChannelIds',
+      'mentionedRoleIds',
+      'mentionedUserIds',
+    ],
   },
-  cacheOutsideMemory: {
+  cacheInMemory: {
     guilds: true,
     users: true,
     channels: true,
@@ -66,71 +93,13 @@ const cacheOptions: CreateProxyCacheOptions = {
     roles: true,
     messages: true,
   },
-  getItem: <T>(
-    table: 'guild' | 'channel' | 'role' | 'member' | 'message' | 'user',
-    id: bigint,
-  ): Promise<T> => DataBase.redis.json.get(`bot-${table}:${String(id)}`) as Promise<T>,
-  addItem: (
-    table: 'guild' | 'channel' | 'role' | 'member' | 'message' | 'user',
-    item: { id: string; guildId: string },
-  ): Promise<unknown> => {
-    if (table === 'member') {
-      return DataBase.redis.json.set(
-        `bot-${table}:${String(item.id)}:${String(item.guildId)}`,
-        '$',
-        item,
-      );
-    }
-    return DataBase.redis.json.set(`bot-${table}:${String(item.id)}`, '$', item);
-  },
-  removeItem: (
-    table: 'guild' | 'channel' | 'role' | 'member' | 'message' | 'user',
-    id: bigint,
-  ): Promise<unknown> => DataBase.redis.json.del(`bot-${table}:${String(id)}`),
-  bulk: {
-    removeGuild: async (id: bigint): Promise<void> => {
-      const channels = await DataBase.redis.ft.search(`index:bot-channel`, `(@guildId:${id})`);
-      const roles = await DataBase.redis.ft.search(`index:bot-role`, `(@guildId:${id})`);
-      const members = await DataBase.redis.ft.search(`index:bot-member`, `(@guildId:${id})`);
-      const messages = await DataBase.redis.ft.search(`index:bot-message`, `(@guildId:${id})`);
-
-      [
-        ...channels.documents,
-        ...roles.documents,
-        ...members.documents,
-        ...messages.documents,
-      ].forEach((d) => {
-        DataBase.redis.json.del(d.id);
-      });
-    },
-    removeChannel: async (id: bigint): Promise<void> => {
-      const messages = await DataBase.redis.ft.search(`index:bot-message`, `(@channelId:${id})`);
-
-      messages.documents.forEach((d) => {
-        DataBase.redis.json.del(d.id);
-      });
-    },
-    removeRole: async (id: bigint): Promise<void> => {
-      const members = await DataBase.redis.ft.search(`index:bot-members`, `(@roles:{${id}})`);
-
-      members.documents.forEach((m) => {
-        const newMember = m.value;
-        const roleIndex = (newMember.roles as unknown as bigint[])?.indexOf(id);
-        (newMember.roles as unknown as bigint[]).splice(roleIndex, 1);
-
-        cacheOptions.addItem?.('member', newMember);
-      });
-    },
-    removeMessages: async (ids: bigint[]): Promise<void> => {
-      const messages = await DataBase.redis.ft.search(
-        `index:bot-message`,
-        `(@id:(${ids.join('|')}))`,
-      );
-
-      messages.documents.forEach((d) => {
-        DataBase.redis.json.del(d.id);
-      });
-    },
+  cacheOutsideMemory: {
+    guilds: false,
+    users: false,
+    channels: false,
+    members: false,
+    roles: false,
+    messages: false,
   },
 };
 
