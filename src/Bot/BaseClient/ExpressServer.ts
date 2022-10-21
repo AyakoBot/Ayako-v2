@@ -49,11 +49,9 @@ const handleRequest = async (req: Express.Request, res: Express.Response) => {
       shardId: number;
     };
 
-    // EMITS RAW EVENT
     client.events.raw(client, json.message, json.shardId);
 
     if (json.message.t && json.message.t !== 'RESUMED') {
-      // When a guild or something isnt in cache this will fetch it before doing anything else
       if (!['READY', 'GUILD_LOADED_DD'].includes(json.message.t)) {
         await client.events.dispatchRequirements(client, json.message, json.shardId);
       }

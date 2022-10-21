@@ -7,7 +7,7 @@ import { Worker } from 'worker_threads';
 import * as config from '../configs.js';
 import type * as WorkerThreads from './worker.js';
 
-async function main() {
+const main = async () => {
   const log = createLogger({ name: '[MANAGER]' });
 
   const bot = createBot({
@@ -22,47 +22,7 @@ async function main() {
 
   const gatewayBot = await bot.helpers.getGatewayBot();
 
-  const gateway = createGatewayManager({
-    gatewayBot,
-    gatewayConfig: {
-      token: config.DISCORD_TOKEN,
-      intents: config.INTENTS,
-    },
-    totalShards: config.TOTAL_SHARDS,
-    shardsPerWorker: config.SHARDS_PER_WORKER,
-    totalWorkers: config.TOTAL_WORKERS,
-
-    handleDiscordPayload: () => {
-      // empty
-    },
-
-    tellWorkerToIdentify: async (_gateway, workerId, shardId, _bucketId) => {
-      log.info('TELL TO IDENTIFY', { workerId, shardId, _bucketId });
-
-      let worker = workers.get(workerId);
-      if (!worker) {
-        worker = createWorker(workerId);
-        workers.set(workerId, worker);
-      }
-
-      const identify: WorkerThreads.WorkerMessage = {
-        type: 'IDENTIFY_SHARD',
-        shardId,
-      };
-
-      worker.postMessage(identify);
-    },
-  });
-
-  const workers = new Collection<number, Worker>();
-  // eslint-disable-next-line no-spaced-func
-  const nonces = new Collection<
-    // eslint-disable-next-line func-call-spacing
-    string,
-    (data: PromiseLike<WorkerThreads.WorkerShardInfo[]> | WorkerThreads.WorkerShardInfo[]) => void
-  >();
-
-  function createWorker(workerId: number) {
+  const createWorker = (workerId: number) => {
     // eslint-disable-next-line no-console
     console.log(config.TOTAL_SHARDS, gateway.manager.totalShards, 'SHARDS');
 
@@ -107,7 +67,47 @@ async function main() {
     });
 
     return worker;
-  }
+  };
+
+  const gateway = createGatewayManager({
+    gatewayBot,
+    gatewayConfig: {
+      token: config.DISCORD_TOKEN,
+      intents: config.INTENTS,
+    },
+    totalShards: config.TOTAL_SHARDS,
+    shardsPerWorker: config.SHARDS_PER_WORKER,
+    totalWorkers: config.TOTAL_WORKERS,
+
+    handleDiscordPayload: () => {
+      // empty
+    },
+
+    tellWorkerToIdentify: async (_gateway, workerId, shardId, _bucketId) => {
+      log.info('TELL TO IDENTIFY', { workerId, shardId, _bucketId });
+
+      let worker = workers.get(workerId);
+      if (!worker) {
+        worker = createWorker(workerId);
+        workers.set(workerId, worker);
+      }
+
+      const identify: WorkerThreads.WorkerMessage = {
+        type: 'IDENTIFY_SHARD',
+        shardId,
+      };
+
+      worker.postMessage(identify);
+    },
+  });
+
+  const workers = new Collection<number, Worker>();
+  // eslint-disable-next-line no-spaced-func
+  const nonces = new Collection<
+    // eslint-disable-next-line func-call-spacing
+    string,
+    (data: PromiseLike<WorkerThreads.WorkerShardInfo[]> | WorkerThreads.WorkerShardInfo[]) => void
+  >();
 
   gateway.spawnShards();
 
@@ -184,7 +184,7 @@ async function main() {
     log.error(['[FASTIFY ERROR', error].join('\n'));
     process.exit(1);
   });
-}
+};
 
 main();
 

@@ -83,14 +83,12 @@ const manager = DDeno.createShardManager({
     }),
 });
 
-function buildShardInfo(shard: DDeno.Shard): WorkerShardInfo {
-  return {
-    workerId: script.workerId,
-    shardId: shard.id,
-    rtt: shard.heart.rtt || -1,
-    state: shard.state,
-  };
-}
+const buildShardInfo = (shard: DDeno.Shard): WorkerShardInfo => ({
+  workerId: script.workerId,
+  shardId: shard.id,
+  rtt: shard.heart.rtt || -1,
+  state: shard.state,
+});
 
 parentPort.on('message', async (data: WorkerMessage) => {
   switch (data.type) {

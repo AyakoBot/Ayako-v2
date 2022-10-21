@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import * as DDeno from 'discordeno';
 import express, { Request, Response } from 'express';
 import auth from '../auth.json' assert { type: 'json' };
@@ -22,7 +23,7 @@ app.use(
     extended: true,
   }),
 );
-
+app.use(bodyParser.json({ limit: '25mb' }));
 app.use(express.json());
 
 app.post('/*', async (req, res) => {
