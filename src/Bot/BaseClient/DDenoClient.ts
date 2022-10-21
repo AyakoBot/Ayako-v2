@@ -1,6 +1,7 @@
 import * as DDeno from 'discordeno';
 // eslint-disable-next-line import/no-unresolved
 import enableHelpersPlugin from 'discordeno/helpers-plugin';
+import * as CacheProxy from 'cache-proxy';
 import type CT from '../Typings/CustomTypings';
 import NekoClient from './NekoClient.js';
 import * as config from '../../configs.js';
@@ -10,13 +11,14 @@ import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
 import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
 import eventHandler from '../Events/baseEventHandler.js';
 import DataBase from './DataBase.js';
+import cacheOptions from './cacheOptions.js';
 
 const events: { [key: string]: typeof eventHandler } = {};
 Constants.allEvents.forEach((e) => {
   events[e] = eventHandler;
 });
 
-const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B): CT.CustomClient => {
+const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   const customized = client as unknown as CT.CustomClient;
 
   customized.mutes = new Map();
@@ -47,13 +49,17 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B): CT.CustomClie
   return customized;
 };
 
-const client = enableHelpersPlugin(
+const client = CacheProxy.createProxyCache(
   customizeBot(
-    DDeno.createBot({
-      intents: 112383,
-      token: config.DISCORD_TOKEN,
-    }),
+    enableHelpersPlugin(
+      DDeno.createBot({
+        events,
+        intents: 112383,
+        token: config.DISCORD_TOKEN,
+      }),
+    ),
   ),
+  cacheOptions,
 );
 
 client.rest = DDeno.createRestManager({
@@ -62,4 +68,4 @@ client.rest = DDeno.createRestManager({
   customUrl: config.REST_URL,
 });
 
-export default client as CT.CustomClient;
+export default client;

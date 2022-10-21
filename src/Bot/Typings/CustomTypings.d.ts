@@ -37,3 +37,23 @@ export interface CustomClient extends DDeno.Bot {
 }
 
 export type Language = typeof import('../Languages/en.json');
+
+export type GuildUpdate = (client: DDeno.Bot, guild: DDeno.Guild, oldGuild: DDeno.Guild) => void;
+export type UserUpdate = (client: DDeno.Bot, user: DDeno.User, oldUser: DDeno.User) => void;
+export type ChannelUpdate = (
+  client: DDeno.Bot,
+  user: DDeno.Channel,
+  oldUser: DDeno.Channel,
+) => void;
+export type MemberUpdate = (
+  client: DDeno.Bot,
+  member: DDeno.Member,
+  user: DDeno.User,
+  oldMember: DDeno.Member,
+) => void;
+export type RoleUpdate = (client: DDeno.Bot, role: DDeno.Role, oldRole: DDeno.Role) => void;
+export type MessageUpdate = (
+  client: DDeno.Bot,
+  message: DDeno.Message,
+  oldMessage: DDeno.Message,
+) => void;
