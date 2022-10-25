@@ -4,43 +4,41 @@ import ClientEmitter from '../BaseClient/Other/ClientEmitter.js';
 const getEvents = () => {
   const paths: string[] = [];
 
-  const eventsDir = fs.readdirSync(`${process.cwd()}/dist/Events`);
+  const eventsDir = fs.readdirSync(`${process.cwd()}/Events`);
 
   eventsDir.forEach((folder) => {
     if (isDisallowed(folder)) return;
 
     if (folder.includes('.')) {
-      const path = `${process.cwd()}/dist/Events/${folder}`;
+      const path = `${process.cwd()}/Events/${folder}`;
       paths.push(path);
 
       return;
     }
 
     const key = folder.replace(/events/gi, '');
-    const eventFiles = fs.readdirSync(`${process.cwd()}/dist/Events/${folder}`);
+    const eventFiles = fs.readdirSync(`${process.cwd()}/Events/${folder}`);
 
     eventFiles.forEach((file) => {
       if (isDisallowed(file)) return;
 
       if (file.includes('.') && file.startsWith(key)) {
-        const path = `${process.cwd()}/dist/Events/${folder}/${file}`;
+        const path = `${process.cwd()}/Events/${folder}/${file}`;
         paths.push(path);
 
         return;
       }
 
       if (file.startsWith(key) && !file.includes('.')) {
-        fs.readdirSync(`${process.cwd()}/dist/Events/${folder}/${file}`).forEach(
-          (eventFolderFile) => {
-            if (isDisallowed(eventFolderFile)) return;
+        fs.readdirSync(`${process.cwd()}/Events/${folder}/${file}`).forEach((eventFolderFile) => {
+          if (isDisallowed(eventFolderFile)) return;
 
-            if (String(eventFolderFile).includes('.') && String(eventFolderFile).startsWith(key)) {
-              const path = `${process.cwd()}/dist/Events/${folder}/${file}/${eventFolderFile}`;
+          if (String(eventFolderFile).includes('.') && String(eventFolderFile).startsWith(key)) {
+            const path = `${process.cwd()}/Events/${folder}/${file}/${eventFolderFile}`;
 
-              paths.push(path);
-            }
-          },
-        );
+            paths.push(path);
+          }
+        });
       }
     });
   });
@@ -77,6 +75,5 @@ export default async (...args: unknown[]) => {
   if (!path) return;
 
   const eventToRun = (await import(path)).default;
-  console.log(eventToRun);
   eventToRun(args);
 };

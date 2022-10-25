@@ -3,7 +3,7 @@ import * as DDeno from 'discordeno';
 // eslint-disable-next-line import/no-unresolved
 import { createLogger } from 'discordeno/logger';
 import { parentPort, workerData } from 'worker_threads';
-import type { ManagerMessage } from './index.js';
+import type { ManagerMessage } from './gateway.js';
 
 if (!parentPort) {
   throw new Error('Parent port is null');

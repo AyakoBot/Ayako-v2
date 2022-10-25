@@ -11,6 +11,7 @@
     "nekos-best.js": "^5.3.1",
     "node-fetch": "^3.2.10",
     "node-schedule": "^2.1.0",
+    "os": "^0.1.2",
     "pg-x-redis": "^1.0.6",
     "redis": "^4.3.1"
   },

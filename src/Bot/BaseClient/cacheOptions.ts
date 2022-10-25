@@ -5,24 +5,37 @@ import client from './DDenoClient.js';
 import type CT from '../Typings/CustomTypings';
 
 const cacheOptions: CreateProxyCacheOptions = {
+  fetchIfMissing: {
+    guilds: true,
+    roles: true,
+  },
   shouldCache: {
     guild: async (data: DDeno.Guild) => {
+      return false;
       const oldData = (await cacheOptions.getItem?.('guild', data.id)) as DDeno.Guild;
+
       if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData);
       return true;
     },
     user: async (data: DDeno.User) => {
       const oldData = (await cacheOptions.getItem?.('user', data.id)) as DDeno.User;
+
       if (oldData) (client.events.botUpdate as CT.UserUpdate)(client, data, oldData);
       return true;
     },
     channel: async (data: DDeno.Channel) => {
       const oldData = (await cacheOptions.getItem?.('channel', data.id)) as DDeno.Channel;
+
       if (oldData) (client.events.channelUpdate as CT.ChannelUpdate)(client, data, oldData);
       return true;
     },
     member: async (data: DDeno.Member) => {
-      const oldData = (await cacheOptions.getItem?.('member', data.id)) as DDeno.Member;
+      const oldData = (await cacheOptions.getItem?.(
+        'member',
+        data.id,
+        data.guildId,
+      )) as DDeno.Member;
+
       const user = (await cacheOptions.getItem?.('user', data.id)) as DDeno.User;
       if (oldData) {
         (client.events.guildMemberUpdate as CT.MemberUpdate)(client, data, user, oldData);
@@ -49,9 +62,10 @@ const cacheOptions: CreateProxyCacheOptions = {
       'id',
       'memberCount',
       'shardId',
+      'toggles',
     ],
     channels: ['name', 'topic', 'nsfw', 'parentId', 'id', 'guildId', 'type'],
-    users: ['avatar', 'discriminator', 'id', 'username'],
+    users: ['avatar', 'discriminator', 'id', 'username', 'toggles'],
     members: [
       'avatar',
       'permissions',
@@ -62,8 +76,9 @@ const cacheOptions: CreateProxyCacheOptions = {
       'guildId',
       'roles',
       'joinedAt',
+      'toggles',
     ],
-    roles: ['id', 'guildId', 'name', 'permissions', 'color'],
+    roles: ['id', 'guildId', 'name', 'permissions', 'color', 'toggles'],
     messages: [
       'guildId',
       'components',
