@@ -69,44 +69,43 @@ const client = CacheProxy.createProxyCache(
     },
     shouldCache: {
       guild: async (data: DDeno.Guild) => {
-        return false;
-        const oldData = (await cacheOptions.getItem?.('guild', data.id)) as DDeno.Guild;
+        const oldData = (await client.cache.guilds.get(data.id)) as DDeno.Guild;
 
         if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData);
         return true;
       },
       user: async (data: DDeno.User) => {
-        const oldData = (await cacheOptions.getItem?.('user', data.id)) as DDeno.User;
+        const oldData = (await client.cache.users.get(data.id)) as DDeno.User;
 
         if (oldData) (client.events.botUpdate as CT.UserUpdate)(client, data, oldData);
         return true;
       },
       channel: async (data: DDeno.Channel) => {
-        const oldData = (await cacheOptions.getItem?.('channel', data.id)) as DDeno.Channel;
+        const oldData = (await client.cache.channels.get(data.id, data.guildId)) as DDeno.Channel;
 
         if (oldData) (client.events.channelUpdate as CT.ChannelUpdate)(client, data, oldData);
         return true;
       },
       member: async (data: DDeno.Member) => {
-        const oldData = (await cacheOptions.getItem?.(
-          'member',
-          data.id,
-          data.guildId,
-        )) as DDeno.Member;
+        const oldData = (await client.cache.members.get(data.id, data.guildId)) as DDeno.Member;
 
-        const user = (await cacheOptions.getItem?.('user', data.id)) as DDeno.User;
+        const user = (await client.cache.users.get(data.id)) as DDeno.User;
         if (oldData) {
           (client.events.guildMemberUpdate as CT.MemberUpdate)(client, data, user, oldData);
         }
         return true;
       },
       role: async (data: DDeno.Role) => {
-        const oldData = (await cacheOptions.getItem?.('role', data.id)) as DDeno.Role;
+        const oldData = (await client.cache.roles.get(data.id, data.guildId)) as DDeno.Role;
         if (oldData) (client.events.roleUpdate as CT.RoleUpdate)(client, data, oldData);
         return true;
       },
       message: async (data: DDeno.Message) => {
-        const oldData = (await cacheOptions.getItem?.('message', data.id)) as DDeno.Message;
+        const oldData = (await client.cache.messages.get(
+          data.id,
+          data.channelId,
+          data.guildId,
+        )) as DDeno.Message;
         if (oldData) (client.events.messageUpdate as CT.MessageUpdate)(client, data, oldData);
         return true;
       },
