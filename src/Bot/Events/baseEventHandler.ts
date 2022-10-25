@@ -75,5 +75,5 @@ export default async (...args: unknown[]) => {
   if (!path) return;
 
   const eventToRun = (await import(path)).default;
-  eventToRun(args);
+  eventToRun(...args);
 };
