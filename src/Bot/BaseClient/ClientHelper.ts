@@ -2,7 +2,7 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable prettier/prettier */
 
-// export const send                       = (await import(`./ClientHelperModules/send.js`)).default;
+export const send                       = (await import(`./ClientHelperModules/send.js`)).default;
 export const replyMsg                   = (await import(`./ClientHelperModules/replyMsg.js`)).default;
 export const replyCmd                   = (await import(`./ClientHelperModules/replyCmd.js`)).default;
 export const query                      = (await import(`./ClientHelperModules/query.js`)).default;

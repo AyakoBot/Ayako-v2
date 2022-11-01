@@ -29,7 +29,7 @@ export interface CustomClient extends DDeno.Bot {
 
   mainID: bigint;
 
-  channelQueue: Map<bigint, DDeno.CreateMessage[]>;
+  channelQueue: Map<bigint, CreateMessage[]>;
   channelTimeout: Map<bigint, Jobs.Job>;
   channelCharLimit: Map<bigint, number>;
 
@@ -69,4 +69,8 @@ export interface Command {
 
 export interface InteractionResponse extends DDeno.InteractionResponse {
   ephemeral?: boolean;
+}
+
+export interface CreateMessage extends Omit<DDeno.CreateMessage, 'file'> {
+  files?: DDeno.FileContent[];
 }
