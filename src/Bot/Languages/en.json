@@ -1801,6 +1801,10 @@
   "languages": {
     "en": "English | Finished"
   },
+  "deleteReasons": {
+    "deleteCommand": "Delete Commands",
+    "deleteReply": "Delete Reply"
+  },
   "welcome": "Welcome {{member.user.username}}#{{member.user.discriminator}} to {{member.guild.name}} <:AMayakowave:924071188957913108>",
   "result": "Result",
   "stagePrivacyLevels": ["Public", "Server Only"],

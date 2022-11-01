@@ -3,7 +3,8 @@
 /* eslint-disable prettier/prettier */
 
 // export const send                       = (await import(`./ClientHelperModules/send.js`)).default;
-// export const reply                      = (await import(`./ClientHelperModules/reply.js`)).default;
+export const replyMsg                   = (await import(`./ClientHelperModules/replyMsg.js`)).default;
+export const replyCmd                   = (await import(`./ClientHelperModules/replyCmd.js`)).default;
 export const query                      = (await import(`./ClientHelperModules/query.js`)).default;
 export const stp                        = (await import(`./ClientHelperModules/stp.js`)).default;
 export const regexes                    = (await import(`./ClientHelperModules/regexes.js`)).default;

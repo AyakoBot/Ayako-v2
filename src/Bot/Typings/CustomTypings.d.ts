@@ -8,7 +8,6 @@ import type StringEmotes from '../BaseClient/Other/StringEmotes.json';
 import type ReactionEmotes from '../BaseClient/Other/ReactionEmotes.json';
 import type * as ch from '../BaseClient/ClientHelper.js';
 import * as CacheProxy from '../BaseClient/Other/cache-proxy/index.js';
-import type { type } from 'os';
 
 export interface CustomClient extends DDeno.Bot {
   mutes: Map<string, Jobs.Job>;
@@ -61,3 +60,13 @@ export type MessageUpdate = (
 ) => void;
 
 export type Client = CacheProxy.BotWithProxyCache<CacheProxy.ProxyCacheTypes<true>, CustomClient>;
+
+export interface Command {
+  cooldown: number;
+  name: string;
+  language: Language;
+}
+
+export interface InteractionResponse extends DDeno.InteractionResponse {
+  ephemeral?: boolean;
+}
