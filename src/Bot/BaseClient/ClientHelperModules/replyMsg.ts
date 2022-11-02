@@ -1,6 +1,6 @@
 import type DDeno from 'discordeno';
 import jobs, { scheduleJob } from 'node-schedule';
-import query from './query';
+import query from './query.js';
 import type CT from '../../Typings/CustomTypings';
 import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };

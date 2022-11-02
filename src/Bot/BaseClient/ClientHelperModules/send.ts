@@ -33,8 +33,6 @@ async function send(
     return sentMessages;
   }
 
-  if (!('createMessage' in channel)) return null;
-
   if (timeout) {
     combineMessages(channel, payload, timeout, language);
     return null;

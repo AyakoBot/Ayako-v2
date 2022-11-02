@@ -3,3 +3,4 @@ node_modules
 .idea
 /dist
 src/auth.json
+src/Bot/BaseClient/Other/cache-proxy
