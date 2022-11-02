@@ -41,3 +41,4 @@ export const isManageable               = (await import(`./ClientHelperModules/i
 export const getAudit                   = (await import(`./ClientHelperModules/getAudit.js`)).default;
 export const database                   = (await import(`./DataBase.js`)).default;
 export const getEmbed                   = (await import(`./ClientHelperModules/getEmbed.js`)).default;
+export const getAvatarURL               = (await import(`./ClientHelperModules/getAvatarURL.js`)).default;
