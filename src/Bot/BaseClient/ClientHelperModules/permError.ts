@@ -1,4 +1,5 @@
-import DDeno from 'discordeno';
+import type DDeno from 'discordeno';
+import Discord from 'discord.js';
 import bitUniques from './bitUniques';
 import reply from './replyMsg.js';
 import * as util from './util';
@@ -17,7 +18,7 @@ export default async (
   const clientMember = await client.cache.members.get(client.id, msg.guildId);
   if (!clientMember) return;
 
-  const neededPerms = DDeno.calculatePermissions(
+  const neededPerms = new Discord.PermissionsBitField(
     bitUniques(
       bits,
       me ? BigInt(clientMember.permissions || 0) : BigInt(msg.member?.permissions || 0),
