@@ -4,7 +4,7 @@ import type CT from '../../../Typings/CustomTypings';
 export default async (client: CT.Client, msg: DDeno.Message) => {
   if (!msg) return;
 
-  // (await import('./ashes')).default(client, msg);
+  (await import('./ashes')).default(msg);
 
   if (!(await client.cache.users.get(msg.authorId))) return;
   if ((await client.cache.users.get(msg.authorId))?.discriminator === '0000') return;
