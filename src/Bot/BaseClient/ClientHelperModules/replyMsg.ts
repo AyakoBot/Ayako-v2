@@ -6,11 +6,7 @@ import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
 import client from '../DDenoClient.js';
 
-export default async (
-  msg: DDeno.Message | void,
-  payload: DDeno.CreateMessage,
-  command?: CT.Command,
-) => {
+export default async (msg: DDeno.Message, payload: DDeno.CreateMessage, command?: CT.Command) => {
   if (!msg) return null;
 
   payload.messageReference = {
