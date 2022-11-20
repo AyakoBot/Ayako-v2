@@ -1,6 +1,6 @@
 import type DDeno from 'discordeno';
 import constants from '../Other/Constants.json' assert { type: 'json' };
-import reply from './replyCmd';
+import reply from './replyCmd.js';
 
 export default (
   interaction: DDeno.Interaction,

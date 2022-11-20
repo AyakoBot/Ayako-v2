@@ -1,8 +1,8 @@
 import type DDeno from 'discordeno';
 import Discord from 'discord.js';
-import bitUniques from './bitUniques';
+import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
-import * as util from './util';
+import * as util from './util.js';
 import client from '../DDenoClient.js';
 
 export default async (
@@ -37,7 +37,7 @@ export default async (
       {
         name: util.makeBold(language.permissions.error.needed),
         value: `\u200b${
-          neededPerms.includes('ADMINISTRATOR')
+          neededPerms.has(8n)
             ? `${util.makeInlineCode(language.permissions.perms.administrator)}`
             : Object.entries(neededPerms).map(
                 ([name]) =>
