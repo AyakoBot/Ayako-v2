@@ -1,11 +1,9 @@
-
-import { Bot, ChannelTypes, PermissionStrings } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes, PermissionStrings } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotGuildPermissions } from "../permissions";
 
-export function createChannel<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function createChannel<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const createChannel = bot.helpers.createChannel;
 
   bot.helpers.createChannel = async function (guildId, options) {
@@ -31,7 +29,8 @@ export function createChannel<B extends Bot>(
       }
 
       if (
-        options?.topic && !bot.utils.validateLength(options.topic, {
+        options?.topic &&
+        !bot.utils.validateLength(options.topic, {
           min: 1,
           max: options.type === ChannelTypes.GuildForum ? 4096 : 1024,
         })

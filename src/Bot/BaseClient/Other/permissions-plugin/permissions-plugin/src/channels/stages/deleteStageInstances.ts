@@ -1,11 +1,9 @@
-
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { requireBotChannelPermissions } from "../../permissions";
 
-export function deleteStageInstance<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function deleteStageInstance<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const deleteStageInstance = bot.helpers.deleteStageInstance;
 
   bot.helpers.deleteStageInstance = async function (channelId) {

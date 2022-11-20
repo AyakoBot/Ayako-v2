@@ -1,10 +1,9 @@
-import { Bot, ChannelTypes, PermissionStrings } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes, PermissionStrings } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotChannelPermissions } from "../permissions";
 
-export function deleteChannelPermissionOverride<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function deleteChannelPermissionOverride<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const deleteChannelPermissionOverride = bot.helpers.deleteChannelPermissionOverride;
 
   bot.helpers.deleteChannelPermissionOverride = async function (channelId, overwriteId) {

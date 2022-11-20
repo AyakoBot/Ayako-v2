@@ -1,6 +1,6 @@
 import { requireBotChannelPermissions } from "../../permissions";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 export function deleteReactionsAll<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

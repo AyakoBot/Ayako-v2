@@ -1,5 +1,5 @@
-import { Bot } from "discordeno";
-import {
+import type { Bot } from "discordeno";
+import type {
   DiscordChannel,
   DiscordGuild,
   DiscordGuildMemberAdd,
@@ -13,7 +13,7 @@ import {
   DiscordMessageReactionRemoveAll,
   DiscordUser,
 } from "discordeno/types";
-import { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
+import type { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
 
 export const unavailablesGuilds = new Set<bigint>();
 

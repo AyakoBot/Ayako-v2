@@ -1,5 +1,5 @@
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { createAutomodRule } from "./createAutomodRule";
 import { deleteAutomodRule } from "./deleteAutomodRule";
 import { editAutomodRule } from "./editAutomodRule";

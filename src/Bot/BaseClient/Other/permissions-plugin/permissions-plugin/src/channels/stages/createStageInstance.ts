@@ -1,11 +1,9 @@
-
-import { Bot, ChannelTypes, PermissionStrings } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes, PermissionStrings } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { requireBotChannelPermissions } from "../../permissions";
 
-export function createStageInstance<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function createStageInstance<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const createStageInstance = bot.helpers.createStageInstance;
 
   bot.helpers.createStageInstance = async function (options) {

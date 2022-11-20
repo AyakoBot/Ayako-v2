@@ -1,8 +1,8 @@
-import {
+import type {
     Bot,
     DiscordUnavailableGuild,
   } from "discordeno";
-  import { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
+  import type { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
   import { unavailablesGuilds } from './setupCacheEdits.js'
   
   export function setupCacheCreations<B extends Bot>(

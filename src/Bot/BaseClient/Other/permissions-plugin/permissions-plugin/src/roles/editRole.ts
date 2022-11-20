@@ -1,17 +1,10 @@
-
 import { higherRolePosition, highestRole, requireBotGuildPermissions } from "../permissions";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-export function editRole<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+export function editRole<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const editRole = bot.helpers.editRole;
 
-  bot.helpers.editRole = async function (
-    guildId,
-    id,
-    options,
-  ) {
+  bot.helpers.editRole = async function (guildId, id, options) {
     const guild = bot.cache.guilds.memory.get(bot.transformers.snowflake(guildId));
     if (guild) {
       const role = guild.roles.get(bot.transformers.snowflake(id));
@@ -20,7 +13,7 @@ export function editRole<B extends Bot>(
 
         if (!higherRolePosition(bot, guild, botRole.id, role.id)) {
           throw new Error(
-            `The bot can not add this role to the member because it does not have a role higher than the role ID: ${role.id}.`,
+            `The bot can not add this role to the member because it does not have a role higher than the role ID: ${role.id}.`
           );
         }
       }

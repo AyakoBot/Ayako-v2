@@ -1,6 +1,6 @@
-import { requireBotChannelPermissions } from "../permissions";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-import { Bot } from "discordeno";
+import { requireBotChannelPermissions } from "../permissions.js";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../index.js";
+import type { Bot } from "discordeno";
 export function deleteWebhook<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const deleteWebhook = bot.helpers.deleteWebhook;
 

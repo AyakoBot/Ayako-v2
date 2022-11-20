@@ -1,6 +1,6 @@
-import { requireBotChannelPermissions } from "../permissions";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-import { Bot } from "discordeno";
+import { requireBotChannelPermissions } from "../permissions.js";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../index.js";
+import type { Bot } from "discordeno";
 export function editWebhook<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const editWebhook = bot.helpers.editWebhook;
 
@@ -11,7 +11,8 @@ export function editWebhook<B extends Bot>(bot: BotWithProxyCache<ProxyCacheType
         "VIEW_CHANNEL",
       ]);
     }
-    if (options.channelId) requireBotChannelPermissions(bot, BigInt(options.channelId), ["MANAGE_WEBHOOKS", "VIEW_CHANNEL"]);
+    if (options.channelId)
+      requireBotChannelPermissions(bot, BigInt(options.channelId), ["MANAGE_WEBHOOKS", "VIEW_CHANNEL"]);
 
     return await editWebhook(webhookId, options);
   };

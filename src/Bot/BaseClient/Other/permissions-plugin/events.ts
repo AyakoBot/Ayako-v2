@@ -1,20 +1,12 @@
-import {
-  Bot,
-  Channel,
-  EventHandlers,
-  Guild,
-  Member,
-  Message,
-  Role,
-  User,
-} from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "./events.js";
+import type { Bot, Channel, EventHandlers, Guild, Member, Message, Role, User } from "discordeno";
+import type { BotWithProxyCache } from "./index.js";
+import type { ProxyCacheTypes } from "./index.js";
 
 export type Events = {
-  [K in keyof EventHandlers]: EventHandlers[K] extends
-    (bot: infer T, ...rest: infer R) => infer U
-    ? Bot extends T ? (bot: Bot, ...rest: R) => U
-    : (...rest: Parameters<EventHandlers[K]>) => U
+  [K in keyof EventHandlers]: EventHandlers[K] extends (bot: infer T, ...rest: infer R) => infer U
+    ? Bot extends T
+      ? (bot: Bot, ...rest: R) => U
+      : (...rest: Parameters<EventHandlers[K]>) => U
     : never;
 };
 
@@ -22,31 +14,19 @@ export interface BotWithProxyEvents extends Events {
   channelUpdateWithOldChannel(
     bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
     oldChannel: Channel,
-    newChannel: Channel,
+    newChannel: Channel
   ): unknown;
   messageUpdateWithOldMessage(
     bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
     oldChannel: Message,
-    newChannel: Message,
+    newChannel: Message
   ): unknown;
-  guildUpdateWithOldGuild(
-    bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
-    oldChannel: Guild,
-    newChannel: Guild,
-  ): unknown;
-  guildRoleUpdateWithOldRole(
-    bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
-    oldRole: Role,
-    newRole: Role,
-  ): unknown;
+  guildUpdateWithOldGuild(bot: BotWithProxyCache<ProxyCacheTypes, Bot>, oldChannel: Guild, newChannel: Guild): unknown;
+  guildRoleUpdateWithOldRole(bot: BotWithProxyCache<ProxyCacheTypes, Bot>, oldRole: Role, newRole: Role): unknown;
   guildMemberUpdateWithOldMember(
     bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
     oldMember: Member,
-    newMember: Member,
+    newMember: Member
   ): unknown;
-  userUpdateWithOldUser(
-    bot: BotWithProxyCache<ProxyCacheTypes, Bot>,
-    oldUser: User,
-    newUser: User,
-  ): unknown;
+  userUpdateWithOldUser(bot: BotWithProxyCache<ProxyCacheTypes, Bot>, oldUser: User, newUser: User): unknown;
 }

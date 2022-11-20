@@ -1,11 +1,9 @@
-
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { requireBotChannelPermissions } from "../../permissions";
 
-export function editStageInstance<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function editStageInstance<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const editStageInstance = bot.helpers.editStageInstance;
 
   bot.helpers.editStageInstance = async function (channelId, data) {

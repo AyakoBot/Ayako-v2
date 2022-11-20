@@ -1,10 +1,9 @@
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotChannelPermissions } from "../permissions";
 
-export function followAnnouncementChannel<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function followAnnouncementChannel<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const followAnnouncementChannel = bot.helpers.followAnnouncementChannel;
 
   bot.helpers.followAnnouncementChannel = async function (sourceChannelId, targetChannelId) {

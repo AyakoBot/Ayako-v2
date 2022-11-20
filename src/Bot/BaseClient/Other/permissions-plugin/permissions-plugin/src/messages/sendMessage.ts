@@ -1,10 +1,8 @@
-
 import { requireBotChannelPermissions } from "../permissions";
-import { Bot, ChannelTypes, PermissionStrings } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-export function sendMessage<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+import type { Bot } from "discordeno";
+import { ChannelTypes, PermissionStrings } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+export function sendMessage<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const sendMessage = bot.helpers.sendMessage;
 
   bot.helpers.sendMessage = async function (channelId, content) {

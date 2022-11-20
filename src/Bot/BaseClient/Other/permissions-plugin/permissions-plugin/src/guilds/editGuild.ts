@@ -1,10 +1,8 @@
-
 import { requireBotGuildPermissions } from "../permissions";
-import { Bot, GuildFeatures } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-export function editGuild<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+import type { Bot } from "discordeno";
+import { GuildFeatures } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+export function editGuild<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const editGuild = bot.helpers.editGuild;
 
   bot.helpers.editGuild = async function (guildId, options, shardId) {

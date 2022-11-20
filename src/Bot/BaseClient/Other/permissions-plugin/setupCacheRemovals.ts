@@ -1,4 +1,4 @@
-import {
+import type {
   Bot,
   DiscordChannel,
   DiscordGuildBanAddRemove,
@@ -8,20 +8,12 @@ import {
   DiscordMessageDeleteBulk,
   DiscordUnavailableGuild,
 } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
-import { unavailablesGuilds } from './setupCacheEdits.js'
+import type { BotWithProxyCache, ProxyCacheTypes } from "./index.js";
+import { unavailablesGuilds } from "./setupCacheEdits.js";
 
-export function setupCacheRemovals<B extends Bot>(
-  bot: BotWithProxyCache<ProxyCacheTypes, B>
-) {
-  const {
-    CHANNEL_DELETE,
-    GUILD_BAN_ADD,
-    GUILD_DELETE,
-    GUILD_MEMBER_REMOVE,
-    GUILD_ROLE_DELETE,
-    MESSAGE_DELETE_BULK,
-  } = bot.handlers;
+export function setupCacheRemovals<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
+  const { CHANNEL_DELETE, GUILD_BAN_ADD, GUILD_DELETE, GUILD_MEMBER_REMOVE, GUILD_ROLE_DELETE, MESSAGE_DELETE_BULK } =
+    bot.handlers;
 
   bot.handlers.GUILD_DELETE = function (_, data, shardId) {
     const payload = data.d as DiscordUnavailableGuild;
@@ -82,15 +74,13 @@ export function setupCacheRemovals<B extends Bot>(
 
     // Use .then() strategy to keep this function sync but also no point deleting if its not in cache :bigbrain:
     bot.cache.messages.get(id).then((message) => {
-        // DON'T RUN INTERNAL HANDLER since internal does not pass `message`
+      // DON'T RUN INTERNAL HANDLER since internal does not pass `message`
       bot.events.messageDelete(
         bot,
         {
           id,
           channelId: bot.transformers.snowflake(payload.channel_id),
-          guildId: payload.guild_id
-            ? bot.transformers.snowflake(payload.guild_id)
-            : undefined,
+          guildId: payload.guild_id ? bot.transformers.snowflake(payload.guild_id) : undefined,
         },
         message
       );
@@ -103,7 +93,7 @@ export function setupCacheRemovals<B extends Bot>(
     const payload = data.d as DiscordMessageDeleteBulk;
 
     // i have headaches, i need a break
-    bot.cache.options.bulk?.removeMessages?.(payload.ids.map(id => bot.transformers.snowflake(id)));
+    bot.cache.options.bulk?.removeMessages?.(payload.ids.map((id) => bot.transformers.snowflake(id)));
 
     MESSAGE_DELETE_BULK(bot, data, shardId);
   };

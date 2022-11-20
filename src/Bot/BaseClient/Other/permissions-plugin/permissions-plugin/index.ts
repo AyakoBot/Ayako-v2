@@ -1,6 +1,6 @@
 
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "..";
 import { channels } from "./src/channels";
 import { emojis } from "./src/emojis";
 import { guilds } from "./src/guilds";

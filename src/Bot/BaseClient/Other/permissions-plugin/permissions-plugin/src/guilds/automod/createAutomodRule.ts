@@ -1,7 +1,7 @@
 
 import { requireBotGuildPermissions } from "../../permissions";
 import { AutoModerationActionType, Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 export function createAutomodRule<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

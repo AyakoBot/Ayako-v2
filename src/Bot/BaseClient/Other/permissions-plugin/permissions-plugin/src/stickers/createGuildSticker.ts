@@ -1,7 +1,7 @@
 
 import { requireBotGuildPermissions } from "../permissions";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type{ Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 export async function createGuildSticker<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

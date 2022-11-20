@@ -1,6 +1,6 @@
 import { requireBotChannelPermissions, requireBotGuildPermissions } from "../permissions";
-import { Bot, PermissionStrings } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot, PermissionStrings } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 export function editMember<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

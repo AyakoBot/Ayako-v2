@@ -1,18 +1,17 @@
-
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { requireBotChannelPermissions } from "../../permissions";
 
-export function getPrivateArchivedThreads<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function getPrivateArchivedThreads<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const getPrivateArchivedThreads = bot.helpers.getPrivateArchivedThreads;
   bot.helpers.getPrivateArchivedThreads = async function (channelId, options) {
     const channel = bot.cache.channels.memory.get(bot.transformers.snowflake(channelId));
 
     if (channel) {
-      const isThreadParent = [ChannelTypes.GuildText, ChannelTypes.GuildAnnouncement, ChannelTypes.GuildForum]
-        .includes(channel.type);
+      const isThreadParent = [ChannelTypes.GuildText, ChannelTypes.GuildAnnouncement, ChannelTypes.GuildForum].includes(
+        channel.type
+      );
       if (!isThreadParent) {
         throw new Error("Channel must be a text channel, a forum channel, or an announcement channel");
       }

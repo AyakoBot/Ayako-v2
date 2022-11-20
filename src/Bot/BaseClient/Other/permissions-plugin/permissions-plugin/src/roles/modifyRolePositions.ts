@@ -1,10 +1,7 @@
-
 import { requireBotGuildPermissions } from "../permissions";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-export function modifyRolePositions<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+export function modifyRolePositions<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const modifyRolePositions = bot.helpers.modifyRolePositions;
 
   bot.helpers.modifyRolePositions = async function (guildId, categoryId) {

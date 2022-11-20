@@ -1,6 +1,6 @@
 
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { createStageInstance } from "./createStageInstance";
 import { deleteStageInstance } from "./deleteStageInstances";
 import { editStageInstance } from "./editStageInstance";

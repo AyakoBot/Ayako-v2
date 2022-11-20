@@ -1,11 +1,9 @@
-
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 import { requireBotChannelPermissions } from "../../permissions";
 
-export function createForumThread<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function createForumThread<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const createForumThread = bot.helpers.createForumThread;
 
   bot.helpers.createForumThread = async function (channelId, options) {

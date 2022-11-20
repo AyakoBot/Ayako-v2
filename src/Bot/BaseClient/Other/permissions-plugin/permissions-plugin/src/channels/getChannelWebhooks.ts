@@ -1,10 +1,9 @@
-import { Bot, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotChannelPermissions } from "../permissions";
 
-export function getChannelWebhooks<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function getChannelWebhooks<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const getChannelWebhooks = bot.helpers.getChannelWebhooks;
 
   bot.helpers.getChannelWebhooks = async function (channelId) {

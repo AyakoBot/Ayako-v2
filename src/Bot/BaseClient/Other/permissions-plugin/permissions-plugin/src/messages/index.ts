@@ -7,8 +7,8 @@ import { pinMessage } from "./pinMessage";
 import { reactions } from "./reactions";
 import { sendMessage } from "./sendMessage";
 import { unpinMessage } from "./unpinMessage";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 export function messages<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

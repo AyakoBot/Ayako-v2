@@ -4,8 +4,8 @@ import { addReactions } from "./addReactions";
 import { deleteReactionsAll } from "./deleteReactionsAll";
 import { deleteReactionsEmoji } from "./deleteReactionsEmoji";
 import { deleteUserReaction } from "./deleteUserReaction.ts";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../..";
 export function reactions<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

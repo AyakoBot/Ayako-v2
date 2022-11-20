@@ -4,9 +4,6 @@ import type CT from '../../../Typings/CustomTypings';
 export default async (client: CT.Client, msg: DDeno.Message) => {
   if (!msg) return;
 
-  console.log((await client.cache.channels.get(msg.channelId))?.permissions);
-  console.log((await client.cache.channels.get(msg.channelId))?.permissionOverwrites);
-
   (await import('./ashes')).default(msg);
 
   if (!(await client.cache.users.get(msg.authorId))) return;

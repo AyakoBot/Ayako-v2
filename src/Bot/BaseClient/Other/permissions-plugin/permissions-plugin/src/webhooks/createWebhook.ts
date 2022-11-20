@@ -1,6 +1,6 @@
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
-import { requireBotChannelPermissions } from "../permissions";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../../index.js";
+import { requireBotChannelPermissions } from "../permissions.js";
 
 export function createWebhook<B extends Bot>(
   bot: BotWithProxyCache<ProxyCacheTypes, B>

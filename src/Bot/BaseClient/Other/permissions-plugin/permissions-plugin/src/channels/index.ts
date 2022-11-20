@@ -10,8 +10,8 @@ import { getChannelWebhooks } from "./getChannelWebhooks";
 import { stages } from "./stages";
 import { swapChannels } from "./swapChannels";
 import { threads } from "./threads";
-import { Bot } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 export function channels<B extends Bot>(
     bot: BotWithProxyCache<ProxyCacheTypes, B>
   ) {

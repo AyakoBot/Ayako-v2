@@ -1,10 +1,9 @@
-import { Bot, PermissionStrings, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { PermissionStrings, ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotChannelPermissions } from "../permissions";
 
-export function deleteChannel<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function deleteChannel<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const deleteChannel = bot.helpers.deleteChannel;
 
   bot.helpers.deleteChannel = async function (channelId, reason) {
@@ -19,8 +18,11 @@ export function deleteChannel<B extends Bot>(
       if (guild.publicUpdatesChannelId === channelId) throw new Error("UPDATES_CHANNEL_CANNOT_BE_DELETED");
 
       const perms: PermissionStrings[] = ["VIEW_CHANNEL"];
-      const isThread = [ChannelTypes.AnnouncementThread, ChannelTypes.PublicThread, ChannelTypes.PrivateThread]
-        .includes(channel.type);
+      const isThread = [
+        ChannelTypes.AnnouncementThread,
+        ChannelTypes.PublicThread,
+        ChannelTypes.PrivateThread,
+      ].includes(channel.type);
       const isVoice = [ChannelTypes.GuildVoice, ChannelTypes.GuildStageVoice].includes(channel.type);
 
       if (isThread) perms.push("MANAGE_THREADS");

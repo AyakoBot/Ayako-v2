@@ -1,11 +1,9 @@
-
-import { Bot, PermissionStrings, ChannelTypes } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from "../../..";
+import type { Bot } from "discordeno";
+import { PermissionStrings, ChannelTypes } from "discordeno";
+import type { BotWithProxyCache, ProxyCacheTypes } from "../../..";
 import { requireBotChannelPermissions } from "../permissions";
 
-export function editChannel<B extends Bot>(
-    bot: BotWithProxyCache<ProxyCacheTypes, B>
-  ) {
+export function editChannel<B extends Bot>(bot: BotWithProxyCache<ProxyCacheTypes, B>) {
   const editChannel = bot.helpers.editChannel;
 
   bot.helpers.editChannel = async function (channelId, options) {
@@ -25,8 +23,11 @@ export function editChannel<B extends Bot>(
       }
 
       const perms: PermissionStrings[] = ["VIEW_CHANNEL"];
-      const isThread = [ChannelTypes.AnnouncementThread, ChannelTypes.PublicThread, ChannelTypes.PrivateThread]
-        .includes(channel.type);
+      const isThread = [
+        ChannelTypes.AnnouncementThread,
+        ChannelTypes.PublicThread,
+        ChannelTypes.PrivateThread,
+      ].includes(channel.type);
       const isVoice = [ChannelTypes.GuildVoice, ChannelTypes.GuildStageVoice].includes(channel.type);
 
       if (isVoice) perms.push("CONNECT");
