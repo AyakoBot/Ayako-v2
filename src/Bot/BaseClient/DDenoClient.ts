@@ -1,7 +1,7 @@
 import * as DDeno from 'discordeno';
 // eslint-disable-next-line import/no-unresolved
 import enableHelpersPlugin from 'discordeno/helpers-plugin';
-import * as CacheProxy from './Other/cache-proxy/index.js';
+import * as CacheProxy from './Other/permissions-plugin/index.js';
 import type CT from '../Typings/CustomTypings';
 import NekoClient from './NekoClient.js';
 import * as config from '../../configs.js';
@@ -53,7 +53,7 @@ const client = CacheProxy.createProxyCache(
     enableHelpersPlugin(
       DDeno.createBot({
         events,
-        intents: 112383,
+        intents: 112383 as DDeno.GatewayIntents,
         token: config.DISCORD_TOKEN,
       }),
     ),

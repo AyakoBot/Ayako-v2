@@ -31,27 +31,23 @@ const banHandler = async (msg: DDeno.Message) => {
     if (!msg.guildId) return;
 
     if (isUnban) {
-      (await import('../../modBaseEvent.js')).default(
-        {
-          target: user,
-          executor: executor || client,
-          reason,
-          msg,
-          guild: await client.cache.guilds.get(msg.guildId),
-        },
-        'banRemove',
-      );
+      (await import('../../modBaseEvent.js')).default({
+        target: user,
+        executor: executor || (await client.cache.users.get(client.id)),
+        reason,
+        msg,
+        guild: await client.cache.guilds.get(msg.guildId),
+        type: 'banRemove',
+      });
     } else {
-      (await import('../../modBaseEvent.js')).default(
-        {
-          target: user,
-          executor: executor || client,
-          reason,
-          msg,
-          guild: await client.cache.guilds.get(msg.guildId),
-        },
-        'banAdd',
-      );
+      (await import('../../modBaseEvent.js')).default({
+        target: user,
+        executor: executor || (await client.cache.users.get(client.id)),
+        reason,
+        msg,
+        guild: await client.cache.guilds.get(msg.guildId),
+        type: 'banAdd',
+      });
     }
   });
 };

@@ -74,3 +74,33 @@ export interface InteractionResponse extends DDeno.InteractionResponse {
 export interface CreateMessage extends Omit<DDeno.CreateMessage, 'file'> {
   files?: DDeno.FileContent[];
 }
+
+export interface ModBaseEventOptions {
+  executor: DDeno.User | undefined;
+  target: DDeno.User;
+  reason: string;
+  msg?: DDeno.Message;
+  cmd?: DDeno.Interaction;
+  guild: DDeno.Guild | undefined;
+  type:
+    | 'banAdd'
+    | 'softbanAdd'
+    | 'tempbanAdd'
+    | 'tempchannelbanAdd'
+    | 'channelbanAdd'
+    | 'channelbanRemove'
+    | 'banRemove'
+    | 'kickAdd'
+    | 'roleAdd'
+    | 'roleRemove'
+    | 'muteRemove'
+    | 'tempmuteAdd'
+    | 'warnAdd';
+  duration?: number;
+  m?: DDeno.Message;
+  doDBonly?: boolean;
+  source?: string;
+  forceFinish?: boolean;
+  channel?: DDeno.Channel;
+  role?: Eris.Role;
+}
