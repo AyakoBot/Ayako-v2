@@ -1,8 +1,8 @@
 import { BigString, Bot, Channel, Collection, Guild, GuildToggles, Member, Message, Role, User } from "discordeno";
-import { setupCacheCreations } from "./setupCacheCreations";
-import { setupCacheEdits, unavailablesGuilds } from "./setupCacheEdits";
-import { BotWithProxyEvents } from "./events";
-import { setupCacheRemovals } from "./setupCacheRemovals";
+import { setupCacheCreations } from "./setupCacheCreations.js";
+import { setupCacheEdits, unavailablesGuilds } from "./setupCacheEdits.js";
+import { BotWithProxyEvents } from "./events.js";
+import { setupCacheRemovals } from "./setupCacheRemovals.js";
 
 export interface ProxyCacheProps<T extends ProxyCacheTypes> {
   events: BotWithProxyEvents;

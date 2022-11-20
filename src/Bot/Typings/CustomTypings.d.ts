@@ -7,7 +7,7 @@ import type ObjectEmotes from '../BaseClient/Other/ObjectEmotes.json';
 import type StringEmotes from '../BaseClient/Other/StringEmotes.json';
 import type ReactionEmotes from '../BaseClient/Other/ReactionEmotes.json';
 import type * as ch from '../BaseClient/ClientHelper.js';
-import * as CacheProxy from '../BaseClient/Other/cache-proxy/index.js';
+import * as CacheProxy from '../BaseClient/Other/permissions-plugin/index.js';
 
 export interface CustomClient extends DDeno.Bot {
   mutes: Map<string, Jobs.Job>;

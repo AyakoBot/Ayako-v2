@@ -8,7 +8,7 @@ import {
   Role,
   User,
 } from "discordeno";
-import { BotWithProxyCache, ProxyCacheTypes } from ".";
+import { BotWithProxyCache, ProxyCacheTypes } from "./events.js";
 
 export type Events = {
   [K in keyof EventHandlers]: EventHandlers[K] extends
