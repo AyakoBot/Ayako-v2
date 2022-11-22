@@ -104,3 +104,14 @@ export interface ModBaseEventOptions {
   channel?: DDeno.Channel;
   role?: Eris.Role;
 }
+
+export interface MessageGuild extends DDeno.Message {
+  author: DDeno.User;
+  guild: DDeno.Guild;
+  channel: DDeno.Channel;
+  language: Language;
+}
+
+export type MessageDM = Omits<Message, 'guild'>;
+
+export type Message = MessageGuild | MessageDM;

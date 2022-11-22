@@ -1,46 +1,63 @@
 import type DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
+import type DBT from '../../../Typings/DataBaseTypings';
 
-export default async (client: CT.Client, msg: DDeno.Message) => {
-  if (!msg) return;
+export default async (client: CT.Client, m: DDeno.Message) => {
+  if (!m) return;
 
-  (await import('./ashes')).default(msg);
+  const msg = (await convertMsg(client, m)) as CT.Message;
 
-  if (!(await client.cache.users.get(msg.authorId))) return;
-  if ((await client.cache.users.get(msg.authorId))?.discriminator === '0000') return;
+  const files: { default: (t: CT.Message) => void }[] = await Promise.all(
+    (await getPaths(client, msg)).map((p) => import(p)),
+  );
+  files.forEach((f) => f.default(msg));
+};
 
-  // (await import('./commandHandler')).default(msg);
-  // (await import('./afk')).default(msg);
-  // (await import('./disboard')).default(msg);
-  // (await import('./leveling')).default(msg);
-  // (await import('./blacklist')).default(msg);
-  // (await import('./willis')).default(msg);
-  // (await import('./DMlog')).default(msg);
-  // (await import('./other')).default(msg);
-  // (await import('./antivirus')).default(msg);
+const getPaths = async (client: CT.Client, msg: CT.Message) => {
+  if ((await client.cache.users.get(msg.authorId))?.discriminator === '0000') return ['./ashes.js'];
 
-  if (!msg.editedTimestamp) {
-    // if (client.uptime > 10000) {
-    //   const row = await client.ch
-    //     .query('SELECT * FROM stats;')
-    //     .then((r: DBT.stats[] | null) => (r ? r[0] : null));
-    //
-    //   if (row?.antispam === true) (await import('./antispam')).default(msg);
-    // }
-  }
+  const paths = [
+    //  './commandHandler.js',
+    //  './other.js',
+    //  './antivirus.js',
+  ];
 
-  const e = () => {
-    // if (
-    //   ['534783899331461123', '228182903140515841', '513413045251342336'].
-    // includes(msg.author.id) &&
-    //   msg.mentions.find((u) => u.id === '318453143476371456')
-    // ) {
-    //   client.ch.reply(msg, {
-    //     content: `<@${msg.author.id}>`,
-    //     allowedMentions: { users: [msg.author.id] },
-    //   });
-    // }
-  };
+  if (msg.guildId) {
+    paths.push(
+      //  './disboard.js',
+      //  './leveling.js',
+      './afk.js',
+      //  './blacklist.js',
+      //  './willis.js',
+      './revengePing.js',
+    );
 
-  e();
+    if (!msg.editedTimestamp) {
+      const row = await client.ch
+        .query('SELECT * FROM stats;')
+        .then((r: DBT.stats[] | null) => (r ? r[0] : null));
+
+      if (row?.antispam === true) paths.push('./antispam.js');
+    }
+  } else paths.push('./DMlog.js');
+
+  return paths;
+};
+
+const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Message> => {
+  const msg = m as CT.Message;
+  const fetchArray: (
+    | Promise<DDeno.User | undefined>
+    | Promise<DDeno.Channel | undefined>
+    | Promise<DDeno.Guild | undefined>
+  )[] = [client.cache.channels.get(m.channelId, m.guildId), client.cache.users.get(m.authorId)];
+
+  if (msg.guildId) fetchArray.push(client.cache.guilds.get(msg.guildId));
+
+  const [channel, author, guild] = await Promise.all(fetchArray);
+  msg.channel = channel;
+  msg.author = author;
+  msg.guild = guild;
+
+  return msg;
 };
