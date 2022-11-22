@@ -7,8 +7,6 @@ import client from '../BaseClient/DDenoClient.js';
 import type CT from '../Typings/CustomTypings';
 import type DBT from '../Typings/DataBaseTypings';
 
-// TODO: channelban remove Line 945
-
 export default async (args: CT.ModBaseEventOptions) => {
   const { executor, target, reason, msg, guild, type, source } = args;
   if (!guild) return;
@@ -579,74 +577,34 @@ const checkActionTaken = async (
     case 'channelbanAdd':
     case 'tempchannelbanAdd': {
       if (!args.channel) return false;
+      const permission = client.ch.getPermission(args.target.id, args.channel);
+      if (permission) {
+        const deny = new Discord.PermissionsBitField(permission.deny);
 
-      punished =
-        client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['SEND_MESSAGES'],
-        ) &&
-        client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['SEND_MESSAGES_IN_THREADS'],
-        ) &&
-        client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['VIEW_CHANNEL'],
-        ) &&
-        client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['ADD_REACTIONS'],
-        ) &&
-        client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['CONNECT'],
-        );
+        punished =
+          deny.has(2048n) &&
+          deny.has(274877906944n) &&
+          deny.has(1024n) &&
+          deny.has(64n) &&
+          deny.has(1048576n);
+      }
+
       break;
     }
     case 'channelbanRemove': {
       if (!args.channel) return false;
 
-      punished =
-        !client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['SEND_MESSAGES'],
-        ) ||
-        !client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['SEND_MESSAGES_IN_THREADS'],
-        ) ||
-        !client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['VIEW_CHANNEL'],
-        ) ||
-        !client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['ADD_REACTIONS'],
-        ) ||
-        !client.ch.permissionCalculators.hasChannelPermissions(
-          client,
-          args.channel,
-          args.target.id,
-          ['CONNECT'],
-        );
+      const permission = client.ch.getPermission(args.target.id, args.channel);
+      if (permission) {
+        const deny = new Discord.PermissionsBitField(permission.deny);
+
+        punished =
+          !deny.has(2048n) &&
+          !deny.has(274877906944n) &&
+          !deny.has(1024n) &&
+          !deny.has(64n) &&
+          !deny.has(1048576n);
+      }
       break;
     }
     case 'banRemove': {
@@ -865,13 +823,10 @@ const takeAction = async (
     case 'channelbanAdd': {
       if (!args.channel) return { action: false, error: true };
 
-      const allowPerms = new Discord.PermissionsBitField(
-        client.ch.permissionCalculators.calculateChannelOverwrites(
-          client,
-          args.channel,
-          args.target.id,
-        ),
-      );
+      const permission = client.ch.getPermission(args.target.id, args.channel);
+      const allowPerms = permission?.allow
+        ? new Discord.PermissionsBitField(permission.allow)
+        : new Discord.PermissionsBitField(0n);
 
       if (allowPerms) {
         allowPerms.remove(2048n);
@@ -924,14 +879,12 @@ const takeAction = async (
       break;
     }
     case 'channelbanRemove': {
-      throw new Error('Channel Ban Remove not implemented.');
-      /*
+      if (!args.channel) return { action: false, error: true };
 
-      const denyPerms = client.ch.permissionCalculators.getMissingChannelPermissions(
-        client,
-        args.channel,
-        args.target.id,
-      );
+      const permission = client.ch.getPermission(args.target.id, args.channel);
+      const denyPerms = permission?.deny
+        ? new Discord.PermissionsBitField(permission.deny)
+        : new Discord.PermissionsBitField(0n);
 
       if (denyPerms) {
         denyPerms.remove(2048n);
@@ -946,7 +899,13 @@ const takeAction = async (
             .editChannelPermissionOverrides(args.channel.id, {
               id: args.target.id,
               type: 1,
-              allow: args.channel?.permissionOverwrites.find((v) => v.id === args.target.id),
+              allow: permission?.allow
+                ? (new Discord.PermissionsBitField(permission?.allow)
+                    .toArray()
+                    .map((s) =>
+                      s.replace(/[A-Z]/g, (l) => `_${l}`).toUpperCase(),
+                    ) as DDeno.PermissionStrings[])
+                : [],
               deny: DDeno.calculatePermissions(denyPerms.bitfield),
               reason: `${args.executor?.username}#${args.executor?.discriminator} ${
                 args.reason ? `| ${args.reason}` : ''
@@ -957,11 +916,12 @@ const takeAction = async (
             })
         : false;
 
-      if (punished && punished.deny === 0n && punished.allow === 0n) {
-        punished = await args.channel
-          ?.deletePermission(
+      if (permission && permission.deny === 0n && permission.allow === 0n) {
+        punished = await client.helpers
+          .deleteChannelPermissionOverride(
+            args.channel.id,
             args.target.id,
-            `${args.executor.username}#${args.executor.discriminator} ${
+            `${args.executor?.username}#${args.executor?.discriminator} ${
               args.reason ? `| ${args.reason}` : ''
             }`,
           )
@@ -970,7 +930,6 @@ const takeAction = async (
           });
       }
       break;
-      */
     }
     case 'banRemove': {
       if (!args.guild) return { action: false, error: true };
@@ -1244,34 +1203,40 @@ const deleter = (args: CT.ModBaseEventOptions) => {
 
 const isModeratable = async (m: DDeno.Member | undefined | null) =>
   !m ||
-  (client.ch.permissionCalculators.hasGuildPermissions(client, m.guildId, m, ['ADMINISTRATOR']) &&
+  (client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
+    'ADMINISTRATOR',
+  ]) &&
     (await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-    client.ch.permissionCalculators.hasGuildPermissions(client, m.guildId, m.id, [
+    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m.id, [
       'MODERATE_MEMBERS',
     ]));
 
 const isBannable = async (m: DDeno.Member | undefined | null) =>
   !m ||
   ((await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-    client.ch.permissionCalculators.hasGuildPermissions(client, m.guildId, m, ['BAN_MEMBERS']));
+    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
+      'BAN_MEMBERS',
+    ]));
 
 const isManageable = async (c: DDeno.Channel) => {
   const me = await client.cache.members.get(client.id, c.guildId);
   if (!me) return false;
 
   if (
-    client.ch.permissionCalculators.hasGuildPermissions(client, c.guildId, me, ['ADMINISTRATOR'])
+    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.guildId, me, [
+      'ADMINISTRATOR',
+    ])
   ) {
     return true;
   }
   if (Number(me.communicationDisabledUntil) > Date.now()) return false;
 
   return (
-    client.ch.permissionCalculators.hasChannelPermissions(client, c.id, me, [
+    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.id, me, [
       'VIEW_CHANNEL',
       'CONNECT',
     ]) ||
-    client.ch.permissionCalculators.hasChannelPermissions(client, c.id, me, [
+    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.id, me, [
       'VIEW_CHANNEL',
       'SEND_MESSAGES',
     ])
@@ -1281,4 +1246,6 @@ const isManageable = async (c: DDeno.Channel) => {
 const isKickable = async (m: DDeno.Member | null | undefined) =>
   m &&
   (await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-  client.ch.permissionCalculators.hasGuildPermissions(client, m.guildId, m, ['KICK_MEMBERS']);
+  client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
+    'KICK_MEMBERS',
+  ]);
