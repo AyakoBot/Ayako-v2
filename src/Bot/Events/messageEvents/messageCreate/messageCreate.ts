@@ -58,6 +58,7 @@ const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Messa
   msg.channel = channel;
   msg.author = author;
   msg.guild = guild;
+  msg.language = await client.ch.languageSelector(msg.guildId);
 
   return msg;
 };
