@@ -42,4 +42,5 @@ export const getAudit                   = (await import(`./ClientHelperModules/g
 export const database                   = (await import(`./DataBase.js`)).default;
 export const getEmbed                   = (await import(`./ClientHelperModules/getEmbed.js`)).default;
 export const getAvatarURL               = (await import(`./ClientHelperModules/getAvatarURL.js`)).default;
-export const permissionCalculators      = (await import(`./Other/permissions-plugin/permissions-plugin/src/permissions.js`));
+export const permissionCalculators      = (await import(`./ClientHelperModules/permissionCalculators.js`)).default;
+export const getPermission             = (await import(`./ClientHelperModules/getPermission.js`)).default;
