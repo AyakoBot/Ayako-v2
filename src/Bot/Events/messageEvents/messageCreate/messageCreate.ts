@@ -24,7 +24,7 @@ const getPaths = (msg: CT.Message) => {
 
   if ('guildId' in msg && msg.guildId) {
     paths.push(
-      //  './disboard.js',
+      './disboard.js',
       './leveling.js',
       //  './afk.js',
       './blacklist.js',
