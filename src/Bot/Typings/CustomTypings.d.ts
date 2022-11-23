@@ -98,7 +98,7 @@ export interface ModBaseEventOptions {
     | 'tempmuteAdd'
     | 'warnAdd';
   duration?: number;
-  m?: DDeno.Message;
+  m?: DDeno.Message | null;
   doDBonly?: boolean;
   source?: string;
   forceFinish?: boolean;

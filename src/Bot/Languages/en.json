@@ -1806,7 +1806,8 @@
     "deleteReply": "Delete Reply",
     "deleteBlacklist": "Ayako Blacklists",
     "leveling": "Ayako Leveling",
-    "disboard": "Ayako DISBOARD Reminder"
+    "disboard": "Ayako DISBOARD Reminder",
+    "antivirus": "Ayako Anti-Virus"
   },
   "welcome": "Welcome {{member.user.username}}#{{member.user.discriminator}} to {{member.guild.name}} <:AMayakowave:924071188957913108>",
   "result": "Result",

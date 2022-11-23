@@ -1,11 +1,12 @@
 import Jobs from 'node-schedule';
 import type * as DDeno from 'discordeno';
 import type DBT from '../Typings/DataBaseTypings';
+import type CT from '../Typings/CustomTypings';
 import client from '../BaseClient/DDenoClient.js';
 
 export default async (
-  m: DDeno.Message | null,
   source: string,
+  m?: CT.MessageGuild | null,
   settings?: DBT.antivirus,
   embed?: DDeno.Embed,
 ) => {

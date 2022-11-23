@@ -19,7 +19,7 @@ const getPaths = (msg: CT.Message) => {
   const paths = [
     //  './commandHandler.js',
     //  './other.js',
-    //  './antivirus.js',
+    './antivirus.js',
   ];
 
   if ('guildId' in msg && msg.guildId) {
