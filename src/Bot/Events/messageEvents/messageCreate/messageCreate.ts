@@ -27,7 +27,7 @@ const getPaths = (msg: CT.Message) => {
       //  './disboard.js',
       //  './leveling.js',
       //  './afk.js',
-      //  './blacklist.js',
+      './blacklist.js',
       './willis.js',
       './revengePing.js',
     );
