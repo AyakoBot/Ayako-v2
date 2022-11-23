@@ -22,7 +22,7 @@ const getPaths = (msg: CT.Message) => {
     //  './antivirus.js',
   ];
 
-  if (msg.guildId) {
+  if ('guildId' in msg && msg.guildId) {
     paths.push(
       //  './disboard.js',
       //  './leveling.js',
@@ -50,22 +50,29 @@ const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Messa
     | Promise<DDeno.User | undefined>
     | Promise<DDeno.Channel | undefined>
     | Promise<DDeno.Guild | undefined>
+    | Promise<DDeno.Member | undefined>
     | Promise<CT.Language>
   )[] = [
     client.cache.channels.get(m.channelId, m.guildId),
     client.cache.users.get(m.authorId),
-    client.ch.languageSelector(msg.guildId),
+    client.ch.languageSelector('guildId' in msg ? msg.guildId : undefined),
   ];
 
-  if (msg.guildId) fetchArray.push(client.cache.guilds.get(msg.guildId));
+  if ('guildId' in msg && msg.guildId) {
+    fetchArray.push(client.cache.guilds.get(msg.guildId));
+    fetchArray.push(client.cache.members.get(m.authorId, msg.guildId));
+  }
 
-  const [channel, author, language, guild] = await Promise.all(fetchArray);
+  const [channel, author, language, guild, member] = await Promise.all(fetchArray);
   msg.channel = channel as DDeno.Channel;
   msg.author = author as DDeno.User;
+  msg.language = language as CT.Language;
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   msg.guild = guild as DDeno.Guild;
-  msg.language = language as CT.Language;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  msg.member = member as DDeno.Member;
 
   return msg;
 };
