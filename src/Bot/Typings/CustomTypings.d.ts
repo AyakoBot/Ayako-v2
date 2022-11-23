@@ -106,7 +106,7 @@ export interface ModBaseEventOptions {
   role?: Eris.Role;
 }
 
-export interface MessageDM extends Omit<DDeno.Message, 'guildId', 'member'> {
+export interface MessageDM extends Omit<Omit<DDeno.Message, 'member'>, 'guildId'> {
   author: DDeno.User;
   channel: DDeno.Channel;
   language: Language;
