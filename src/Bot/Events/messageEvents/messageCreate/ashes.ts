@@ -1,14 +1,14 @@
-import type DDeno from 'discordeno';
+import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/DDenoClient';
 
-export default async (msg: DDeno.Message) => {
+export default async (msg: CT.MessageGuild) => {
   rolePing(msg);
   banHandler(msg);
 };
 
-const banHandler = async (msg: DDeno.Message) => {
+const banHandler = async (msg: CT.MessageGuild) => {
   if (msg.authorId !== 868115102681956404n) return;
-  if (msg.channelId !== 75787958643982344n) return;
+  if (msg.channelId !== 757879586439823440n) return;
   if (!msg.content.includes('@Known-Scammers ping:')) return;
 
   const isUnban = msg.content.includes('REMOVAL FROM LIST');
@@ -52,7 +52,7 @@ const banHandler = async (msg: DDeno.Message) => {
   });
 };
 
-const rolePing = (msg: DDeno.Message) => {
+const rolePing = (msg: CT.MessageGuild) => {
   if (msg.channelId !== 757879586439823440n) return;
   if (msg.authorId !== 646937666251915264n) return;
 
