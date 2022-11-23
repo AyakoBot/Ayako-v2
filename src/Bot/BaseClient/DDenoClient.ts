@@ -45,6 +45,7 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   customized.channelCharLimit = new Map();
 
   customized.database = DataBase;
+
   return customized;
 };
 
@@ -204,5 +205,7 @@ client.rest = DDeno.createRestManager({
   secretKey: config.REST_AUTHORIZATION,
   customUrl: config.REST_URL,
 });
+
+client.me = (await client.cache.users.get(client.id)) as DDeno.User;
 
 export default client;

@@ -35,6 +35,7 @@ export interface CustomClient extends DDeno.Bot {
 
   ch: typeof ch;
   database: RedisXpSQL;
+  me: DDeno.User;
 }
 
 export type Language = typeof import('../Languages/en.json');
