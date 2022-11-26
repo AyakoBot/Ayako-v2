@@ -18,13 +18,13 @@ const getPaths = (msg: CT.Message) => {
 
   const paths = [
     //  './commandHandler.js',
-    //  './other.js',
     './antivirus.js',
   ];
 
   if ('guildId' in msg && msg.guildId) {
     paths.push(
       './disboard.js',
+      './other.js',
       './leveling.js',
       //  './afk.js',
       './blacklist.js',
