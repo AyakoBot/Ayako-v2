@@ -59,12 +59,8 @@ const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Messa
   msg.channel = channel as DDeno.Channel;
   msg.author = author as DDeno.User;
   msg.language = language as CT.Language;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  msg.guild = guild as DDeno.Guild;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  msg.member = member as DDeno.Member;
+  (msg as CT.MessageGuild).guild = guild as DDeno.Guild;
+  (msg as CT.MessageGuild).member = member as DDeno.Member;
 
   return msg;
 };
