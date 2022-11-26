@@ -1,6 +1,5 @@
 import type DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
-// import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async (client: CT.Client, m: DDeno.Message) => {
   if (!m) return;
@@ -30,15 +29,8 @@ const getPaths = (msg: CT.Message) => {
       './blacklist.js',
       './willis.js',
       './revengePing.js',
+      './antispam.js',
     );
-
-    //  if (!msg.editedTimestamp) {
-    //       const row = await client.ch
-    //   .query('SELECT * FROM stats;')
-    //      .then((r: DBT.stats[] | null) => (r ? r[0] : null));
-    //
-    // if (row?.antispam === true) paths.push('./antispam.js');
-    // }
   } else paths.push('./DMlog.js');
 
   return paths;
