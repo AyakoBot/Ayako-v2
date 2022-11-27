@@ -15,10 +15,7 @@ export default async (client: CT.Client, m: DDeno.Message) => {
 const getPaths = (msg: CT.Message) => {
   if (msg.author.discriminator === '0000') return ['./ashes.js'];
 
-  const paths = [
-    //  './commandHandler.js',
-    './antivirus.js',
-  ];
+  const paths = ['./commandHandler.js', './antivirus.js'];
 
   if ('guildId' in msg && msg.guildId) {
     paths.push(

@@ -3,7 +3,7 @@ import type CT from '../../Typings/CustomTypings';
 import client from '../DDenoClient.js';
 
 export default async (
-  cmd: DDeno.Interaction,
+  cmd: DDeno.Interaction | CT.ButtonInteraction,
   payload: CT.InteractionResponse,
   command?: CT.Command,
 ) => {

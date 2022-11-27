@@ -66,6 +66,25 @@ export interface Command {
   cooldown: number;
   name: string;
   language: Language;
+  takesFirstArg: boolean;
+  aliases?: string[];
+  thisGuildOnly: bigint[];
+  perm?: 0 | bigint;
+  dmOnly: boolean;
+  dmAllowed: boolean;
+  type: 'mod' | 'other' | 'owner';
+  execute: <T extends keyof Language['commands']>(
+    msg: Eris.Message,
+    {
+      language,
+      lan,
+    }: {
+      language: Language;
+      lan: Language.commands[T];
+    },
+    command: Command,
+    object?: { [key: string]: unknown },
+  ) => void | Promise<void>;
 }
 
 export interface InteractionResponse extends DDeno.InteractionResponse {
@@ -122,3 +141,7 @@ export interface MessageGuild extends DDeno.Message {
 }
 
 export type Message = MessageGuild | MessageDM;
+
+export interface ButtonInteraction extends Omit<DDeno.Interaction, 'data'> {
+  data: DDeno.DiscordInteractionData;
+}

@@ -1,9 +1,10 @@
 import type DDeno from 'discordeno';
+import type CT from '../../Typings/CustomTypings';
 import constants from '../Other/Constants.json' assert { type: 'json' };
 import reply from './replyCmd.js';
 
 export default (
-  interaction: DDeno.Interaction,
+  interaction: CT.ButtonInteraction,
   language: typeof import('../../Languages/en.json'),
 ) => {
   const embed: DDeno.Embed = {

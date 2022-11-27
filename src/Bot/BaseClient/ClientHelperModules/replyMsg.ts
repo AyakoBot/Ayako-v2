@@ -29,7 +29,7 @@ export default async (msg: DDeno.Message, payload: DDeno.CreateMessage, command?
 };
 
 export const cooldownHandler = async (
-  msg: DDeno.Message | DDeno.Interaction,
+  msg: DDeno.Message | DDeno.Interaction | CT.ButtonInteraction,
   sentMessage: DDeno.Message,
   command?: CT.Command,
 ) => {
@@ -85,7 +85,7 @@ export const cooldownHandler = async (
 };
 
 export const deleteCommandHandler = async (
-  msg: DDeno.Message | DDeno.Interaction,
+  msg: DDeno.Message | DDeno.Interaction | CT.ButtonInteraction,
   sentMessage: DDeno.Message,
   command?: CT.Command,
 ) => {
@@ -132,13 +132,19 @@ export const deleteCommandHandler = async (
   });
 };
 
-const getDeleteSettings = async (msg: DDeno.Message | DDeno.Interaction, commandName: string) =>
+const getDeleteSettings = async (
+  msg: DDeno.Message | DDeno.Interaction | CT.ButtonInteraction,
+  commandName: string,
+) =>
   query(`SELECT * FROM deletecommands WHERE active = true AND guildid = $1 AND command = $2;`, [
     String(msg.guildId),
     commandName,
   ]).then((r: DBT.deletecommands[] | null) => r);
 
-const getCooldownRow = (msg: DDeno.Message | DDeno.Interaction, command: CT.Command) =>
+const getCooldownRow = (
+  msg: DDeno.Message | DDeno.Interaction | CT.ButtonInteraction,
+  command: CT.Command,
+) =>
   query(
     `SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2 and cooldown = $3;`,
     [String(msg.guildId), command.name, command.cooldown],

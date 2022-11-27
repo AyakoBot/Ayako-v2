@@ -1808,7 +1808,9 @@
     "leveling": "Ayako Leveling",
     "disboard": "Ayako DISBOARD Reminder",
     "antivirus": "Ayako Anti-Virus",
-    "antispam": "Ayako Anti-Spam"
+    "antispam": "Ayako Anti-Spam",
+    "cooldown": "Ayako Cooldowns",
+    "abortedMod": "Aborted Mod Command"
   },
   "welcome": "Welcome {{member.user.username}}#{{member.user.discriminator}} to {{member.guild.name}} <:AMayakowave:924071188957913108>",
   "result": "Result",
