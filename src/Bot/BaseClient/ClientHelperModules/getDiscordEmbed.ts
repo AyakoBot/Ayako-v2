@@ -2,7 +2,6 @@ import type * as DDeno from 'discordeno';
 import type DBT from '../../Typings/DataBaseTypings';
 
 export default (DBembed: DBT.customembeds): DDeno.Embed => ({
-  type: 'rich',
   color: Number(DBembed.color),
   title: DBembed.title,
   url: DBembed.url,

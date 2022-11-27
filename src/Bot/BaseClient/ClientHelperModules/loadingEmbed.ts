@@ -16,7 +16,6 @@ export default async (
   const member = await client.helpers.getMember(guild.id, client.id);
 
   const embed: DDeno.Embed = {
-    type: 'rich',
     author: {
       name: lan.author,
       iconUrl: client.objectEmotes.loading.link,

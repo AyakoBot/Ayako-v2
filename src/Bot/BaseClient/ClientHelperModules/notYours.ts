@@ -8,7 +8,6 @@ export default (
   language: typeof import('../../Languages/en.json'),
 ) => {
   const embed: DDeno.Embed = {
-    type: 'rich',
     author: {
       name: language.error,
       iconUrl: constants.standard.error,

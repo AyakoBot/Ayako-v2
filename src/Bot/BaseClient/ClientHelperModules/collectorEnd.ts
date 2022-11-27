@@ -5,7 +5,6 @@ import type CT from '../../Typings/CustomTypings';
 
 export default (msg: DDeno.Message, language: CT.Language) => {
   const embed: DDeno.Embed = {
-    type: 'rich',
     description: language.errors.time,
     color: constants.colors.warning,
   };
