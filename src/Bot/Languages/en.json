@@ -1810,7 +1810,8 @@
     "antivirus": "Ayako Anti-Virus",
     "antispam": "Ayako Anti-Spam",
     "cooldown": "Ayako Cooldowns",
-    "abortedMod": "Aborted Mod Command"
+    "abortedMod": "Aborted Mod Command",
+    "afk": "Ayako AFK"
   },
   "welcome": "Welcome {{member.user.username}}#{{member.user.discriminator}} to {{member.guild.name}} <:AMayakowave:924071188957913108>",
   "result": "Result",
