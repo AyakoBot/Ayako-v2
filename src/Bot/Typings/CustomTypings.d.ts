@@ -129,6 +129,7 @@ export interface MessageDM extends Omit<Omit<DDeno.Message, 'member'>, 'guildId'
   author: DDeno.User;
   channel: DDeno.Channel;
   language: Language;
+  jumpLink: string;
 }
 
 export interface MessageGuild extends DDeno.Message {
@@ -138,6 +139,7 @@ export interface MessageGuild extends DDeno.Message {
   author: DDeno.User;
   channel: DDeno.Channel;
   language: Language;
+  jumpLink: string;
 }
 
 export type Message = MessageGuild | MessageDM;

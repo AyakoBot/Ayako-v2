@@ -361,9 +361,7 @@ const blacklisted = async (
     client.ch.send(
       channel,
       {
-        content: `https://discord.com/channels/${'guildId' in msg ? msg.guildId : '@me'}/${
-          msg.channelId
-        }/${msg.id}`,
+        content: msg.jumpLink,
       },
       msg.language,
     );
@@ -420,9 +418,7 @@ const severeLink = async (
   client.ch.send(
     channel,
     {
-      content: `https://discord.com/channels/${'guildId' in msg ? msg.guildId : '@me'}/${
-        msg.channelId
-      }/${msg.id}`,
+      content: msg.jumpLink,
     },
     msg.language,
   );
@@ -469,9 +465,7 @@ const ccscam = async (
   client.ch.send(
     channel,
     {
-      content: `https://discord.com/channels/${'guildId' in msg ? msg.guildId : '@me'}/${
-        msg.channelId
-      }/${msg.id}`,
+      content: msg.jumpLink,
     },
     msg.language,
   );
@@ -519,9 +513,7 @@ const newUrl = async (
   client.ch.send(
     channel,
     {
-      content: `https://discord.com/channels/${'guildId' in msg ? msg.guildId : '@me'}/${
-        msg.channelId
-      }/${msg.id}`,
+      content: msg.jumpLink,
     },
     msg.language,
   );
@@ -625,9 +617,7 @@ const cloudFlare = async (
   client.ch.send(
     channel,
     {
-      content: `${`https://discord.com/channels/${'guildId' in msg ? msg.guildId : '@me'}/${
-        msg.channelId
-      }/${msg.id}`}\nis CloudFlare Protected\n${linkObject.href}`,
+      content: `${msg.jumpLink}\nis CloudFlare Protected\n${linkObject.href}`,
     },
     msg.language,
   );
