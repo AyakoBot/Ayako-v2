@@ -92,10 +92,7 @@ export default async (msg: CT.MessageGuild) => {
     return attachments;
   };
 
-  const files: {
-    name: string;
-    blob: Blob;
-  }[] = [];
+  const files: DDeno.FileContent[] = [];
   const secondMessageFiles = await getBuffers();
 
   let embedCodes = null;
