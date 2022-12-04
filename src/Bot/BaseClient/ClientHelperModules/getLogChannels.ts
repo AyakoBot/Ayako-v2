@@ -24,14 +24,11 @@ export default async (
 ) => {
   if (!msg.guildId) return null;
 
-  const channelPromises = (
+  const channelIds = (
     await client.ch
       .query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1;`, [String(msg.guildId)])
       .then((r: DBT.logchannels[] | null) => (r ? r[0].messageevents : null))
-  )?.map((id: string) => client.cache.channels.get(BigInt(id), msg.guildId));
+  )?.map((id) => BigInt(id));
 
-  if (!channelPromises) return null;
-  const channels = (await Promise.all(channelPromises)).filter((c): c is DDeno.Channel => !!c);
-
-  return channels;
+  return channelIds;
 };

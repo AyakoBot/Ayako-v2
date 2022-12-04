@@ -11,7 +11,7 @@ async function send(
   timeout?: number,
 ): Promise<DDeno.Message | null | void>;
 async function send(
-  c: bigint,
+  c: { id: bigint; guildId: bigint },
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
@@ -25,14 +25,18 @@ async function send(
   timeout?: number,
 ): Promise<(DDeno.Message | null | void)[] | null | void>;
 async function send(
-  c: bigint[],
+  c: { id: bigint[]; guildId: bigint },
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
   timeout?: number,
 ): Promise<(DDeno.Message | null | void)[] | null | void>;
 async function send(
-  c: DDeno.Channel | DDeno.Channel[] | bigint | bigint[],
+  c:
+    | DDeno.Channel
+    | DDeno.Channel[]
+    | { id: bigint[]; guildId: bigint }
+    | { id: bigint; guildId: bigint },
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
@@ -42,12 +46,19 @@ async function send(
 
   if (Array.isArray(c)) {
     const sentMessages = await Promise.all(
-      c.map((ch) => send(ch as DDeno.Channel, payload, language, command, timeout)),
+      c.map((ch) => send(ch, payload, language, command, timeout)),
     );
     return sentMessages;
   }
 
-  const channel = typeof c === 'bigint' ? await client.cache.channels.get(c) : c;
+  if (Array.isArray(c.id)) {
+    const sentMessages = await Promise.all(
+      c.id.map((id) => send(id as unknown as DDeno.Channel, payload, language, command, timeout)),
+    );
+    return sentMessages;
+  }
+
+  const channel = !('name' in c) ? await client.cache.channels.get(c.id, c.guildId) : c;
   if (!channel) return null;
 
   if (timeout) {
