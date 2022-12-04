@@ -27,11 +27,8 @@ export default async (msg: CT.MessageDM) => {
     embed.fields.push({ name: '\u200b', value: text });
   }
 
-  const channel = await client.cache.channels.get(825297763822469140n, 669893888856817665n);
-  if (!channel) return;
-
   client.ch.send(
-    channel,
+    { id: 825297763822469140n, guildId: 669893888856817665n },
     {
       embeds: [embed],
     },

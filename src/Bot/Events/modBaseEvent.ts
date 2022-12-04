@@ -5,7 +5,6 @@ import DDeno from 'discordeno';
 import Discord from 'discord.js';
 import client from '../BaseClient/DDenoClient.js';
 import type CT from '../Typings/CustomTypings';
-import type DBT from '../Typings/DataBaseTypings';
 
 export default async (args: CT.ModBaseEventOptions) => {
   const { executor, target, reason, msg, guild, type, source } = args;
@@ -196,21 +195,6 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
   const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
 
-  const getLogchannels = async () => {
-    const logchannelsRow = await client.ch
-      .query(`SELECT modlogs FROM logchannels WHERE guildid = $1 AND modlogs IS NOT NULL;`, [
-        args.guild ? String(args.guild.id) : null,
-      ])
-      .then((r: DBT.logchannels[] | null) => (r ? r[0].modlogs : null));
-
-    if (logchannelsRow) {
-      return logchannelsRow
-        .map((cid) => args.guild?.channels.get(BigInt(cid)))
-        .filter((c): c is DDeno.Channel => !!c);
-    }
-    return null;
-  };
-
   const embed: DDeno.Embed = {
     color: con.color,
     author: {
@@ -246,9 +230,21 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
     });
   }
 
-  const logchannels = await getLogchannels();
+  const logchannels = await client.ch.getLogChannels('modlogs', {
+    guildId: (args.guild?.id ?? args.msg?.guildId ?? args.m?.guildId) as bigint,
+  });
+
   if (logchannels && logchannels.length) {
-    await client.ch.send(logchannels, { embeds: [embed] }, language, undefined, 10000);
+    await client.ch.send(
+      {
+        id: logchannels,
+        guildId: (args.guild?.id ?? args.msg?.guildId ?? args.m?.guildId) as bigint,
+      },
+      { embeds: [embed] },
+      language,
+      undefined,
+      10000,
+    );
   }
 };
 

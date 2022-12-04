@@ -141,10 +141,11 @@ const prepare = async (
           break;
         }
         case 'send': {
-          const channel = await client.cache.channels.get(data.channelid, 669893888856817665n);
-          if (!channel) return;
-
-          client.ch.send(channel, { content: data.content }, msg.language);
+          client.ch.send(
+            { id: data.channelid, guildId: 669893888856817665n },
+            { content: data.content },
+            msg.language,
+          );
           break;
         }
         case 'VTfail': {
@@ -355,11 +356,9 @@ const blacklisted = async (
     if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
     const m = await client.ch.replyMsg(msg, { embeds: [embed] });
-    const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
-    if (!channel) return;
 
     client.ch.send(
-      channel,
+      { id: 726252103302905907n, guildId: 669893888856817665n },
       {
         content: client.ch.getJumpLink(msg),
       },
@@ -412,11 +411,9 @@ const severeLink = async (
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
-  const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
-  if (!channel) return;
 
   client.ch.send(
-    channel,
+    { id: 726252103302905907n, guildId: 669893888856817665n },
     {
       content: client.ch.getJumpLink(msg),
     },
@@ -459,11 +456,9 @@ const ccscam = async (
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
-  const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
-  if (!channel) return;
 
   client.ch.send(
-    channel,
+    { id: 726252103302905907n, guildId: 669893888856817665n },
     {
       content: client.ch.getJumpLink(msg),
     },
@@ -507,11 +502,9 @@ const newUrl = async (
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
-  const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
-  if (!channel) return;
 
   client.ch.send(
-    channel,
+    { id: 726252103302905907n, guildId: 669893888856817665n },
     {
       content: client.ch.getJumpLink(msg),
     },
@@ -611,11 +604,9 @@ const cloudFlare = async (
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
   client.ch.replyMsg(msg, { embeds: [embed] });
-  const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
-  if (!channel) return;
 
   client.ch.send(
-    channel,
+    { id: 726252103302905907n, guildId: 669893888856817665n },
     {
       content: `${client.ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
     },
@@ -719,10 +710,9 @@ const linkLog = async (
 
   if (!('guildId' in msg) || !msg.guildId) return;
 
-  const channels = await Promise.all(
-    row.linklogchannels
-      .map((c: string) => client.cache.channels.get(BigInt(c), msg.guildId))
-      .filter((c): c is Promise<DDeno.Channel> => !!c),
+  client.ch.send(
+    { id: row.linklogchannels.map(BigInt), guildId: msg.guildId },
+    { embeds: [embed] },
+    msg.language,
   );
-  client.ch.send(channels, { embeds: [embed] }, msg.language);
 };

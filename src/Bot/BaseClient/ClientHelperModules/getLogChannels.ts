@@ -28,7 +28,7 @@ export default async (
     await client.ch
       .query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1;`, [String(msg.guildId)])
       .then((r: DBT.logchannels[] | null) => (r ? r[0].messageevents : null))
-  )?.map((id) => BigInt(id));
+  )?.map(BigInt);
 
   return channelIds;
 };

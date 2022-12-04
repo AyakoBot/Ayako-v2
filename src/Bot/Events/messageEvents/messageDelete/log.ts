@@ -106,7 +106,7 @@ export default async (msg: CT.MessageGuild) => {
   }
 
   const m = await client.ch.send(
-    channels,
+    { id: channels, guildId: msg.guildId },
     { embeds: [embed], files: files?.filter((f) => !!f) },
     msg.language,
     undefined,
