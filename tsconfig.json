@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ESNEXT",
     "module": "ESNEXT",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "WebWorker"],
     "allowJs": false,
     "declaration": true,
     "declarationMap": true,
