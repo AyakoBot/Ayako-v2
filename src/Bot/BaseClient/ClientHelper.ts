@@ -43,4 +43,5 @@ export const database                   = (await import(`./DataBase.js`)).defaul
 export const getEmbed                   = (await import(`./ClientHelperModules/getEmbed.js`)).default;
 export const getAvatarURL               = (await import(`./ClientHelperModules/getAvatarURL.js`)).default;
 export const permissionCalculators      = (await import(`./ClientHelperModules/permissionCalculators.js`)).default;
-export const getPermission             = (await import(`./ClientHelperModules/getPermission.js`)).default;
+export const getPermission              = (await import(`./ClientHelperModules/getPermission.js`)).default;
+export const getJumpLink                = (await import(`./ClientHelperModules/getJumpLink.js`)).default;

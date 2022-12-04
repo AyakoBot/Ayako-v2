@@ -9,7 +9,7 @@ export default async (msg: CT.MessageDM) => {
     fields: [
       {
         name: '\u200b',
-        value: msg.jumpLink,
+        value: client.ch.getJumpLink(msg),
       },
     ],
   };

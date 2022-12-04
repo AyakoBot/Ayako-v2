@@ -58,9 +58,6 @@ const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Messa
   msg.language = language as CT.Language;
   (msg as CT.MessageGuild).guild = guild as DDeno.Guild;
   (msg as CT.MessageGuild).member = member as DDeno.Member;
-  msg.jumpLink = `https://discord.com/channels/${
-    'guildId' in msg && msg.guildId ? msg.guildId : '@me'
-  }/${msg.channelId}/${msg.id}`;
 
   return msg;
 };

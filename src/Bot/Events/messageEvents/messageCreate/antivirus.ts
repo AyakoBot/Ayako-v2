@@ -361,7 +361,7 @@ const blacklisted = async (
     client.ch.send(
       channel,
       {
-        content: msg.jumpLink,
+        content: client.ch.getJumpLink(msg),
       },
       msg.language,
     );
@@ -418,7 +418,7 @@ const severeLink = async (
   client.ch.send(
     channel,
     {
-      content: msg.jumpLink,
+      content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
@@ -465,7 +465,7 @@ const ccscam = async (
   client.ch.send(
     channel,
     {
-      content: msg.jumpLink,
+      content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
@@ -513,7 +513,7 @@ const newUrl = async (
   client.ch.send(
     channel,
     {
-      content: msg.jumpLink,
+      content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
@@ -617,7 +617,7 @@ const cloudFlare = async (
   client.ch.send(
     channel,
     {
-      content: `${msg.jumpLink}\nis CloudFlare Protected\n${linkObject.href}`,
+      content: `${client.ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
     },
     msg.language,
   );
