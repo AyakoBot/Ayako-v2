@@ -4,34 +4,51 @@ import type CT from '../../Typings/CustomTypings';
 import client from '../DDenoClient.js';
 
 async function send(
-  channel: DDeno.Channel,
+  c: DDeno.Channel,
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
   timeout?: number,
 ): Promise<DDeno.Message | null | void>;
 async function send(
-  channel: DDeno.Channel[],
+  c: bigint,
+  payload: CT.CreateMessage,
+  language: typeof import('../../Languages/en.json'),
+  command?: CT.Command,
+  timeout?: number,
+): Promise<DDeno.Message | null | void>;
+async function send(
+  c: DDeno.Channel[],
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
   timeout?: number,
 ): Promise<(DDeno.Message | null | void)[] | null | void>;
 async function send(
-  channel: DDeno.Channel | DDeno.Channel[],
+  c: bigint[],
+  payload: CT.CreateMessage,
+  language: typeof import('../../Languages/en.json'),
+  command?: CT.Command,
+  timeout?: number,
+): Promise<(DDeno.Message | null | void)[] | null | void>;
+async function send(
+  c: DDeno.Channel | DDeno.Channel[] | bigint | bigint[],
   payload: CT.CreateMessage,
   language: typeof import('../../Languages/en.json'),
   command?: CT.Command,
   timeout?: number,
 ): Promise<DDeno.Message | (DDeno.Message | null | void)[] | null | void> {
-  if (!channel) return null;
+  if (!c) return null;
 
-  if (Array.isArray(channel)) {
+  if (Array.isArray(c)) {
     const sentMessages = await Promise.all(
-      channel.map((c) => send(c, payload, language, command, timeout)),
+      c.map((ch) => send(ch as DDeno.Channel, payload, language, command, timeout)),
     );
     return sentMessages;
   }
+
+  const channel = typeof c === 'bigint' ? await client.cache.channels.get(c) : c;
+  if (!channel) return null;
 
   if (timeout) {
     combineMessages(channel, payload, timeout, language);
