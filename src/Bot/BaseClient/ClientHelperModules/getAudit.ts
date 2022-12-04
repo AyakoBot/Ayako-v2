@@ -5,7 +5,7 @@ import client from '../DDenoClient.js';
 export default async (
   guild: DDeno.Guild,
   actionType: number,
-  target?: { id: bigint },
+  targetId?: bigint,
   otherFilterArguments?: (entry: DDeno.AuditLogEntry) => boolean,
 ) => {
   const me = await client.helpers.getMember(guild.id, client.id);
@@ -16,7 +16,7 @@ export default async (
   if (!audits || !audits.auditLogEntries) return null;
 
   return audits.auditLogEntries
-    .filter((entry) => (target ? entry.targetId === target.id : true))
+    .filter((entry) => (targetId ? entry.targetId === targetId : true))
     .filter(otherFilterArguments || (() => true))
     .sort((a, b) => client.ch.getUnix(b.id) - client.ch.getUnix(a.id))[0];
 };
