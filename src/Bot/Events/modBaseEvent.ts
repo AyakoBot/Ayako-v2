@@ -100,7 +100,12 @@ export default async (args: CT.ModBaseEventOptions) => {
   doDataBaseAction(args);
 
   if (args.m && source) {
-    (await import('./modSourceHandler.js')).default(args.m, source, undefined, embed || undefined);
+    (await import('./modSourceHandler.js')).default(
+      source,
+      args.m as CT.MessageGuild,
+      undefined,
+      embed || undefined,
+    );
   }
 };
 
