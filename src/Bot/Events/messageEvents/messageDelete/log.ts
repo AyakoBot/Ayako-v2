@@ -1,17 +1,10 @@
 import type DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 import type CT from '../../../Typings/CustomTypings';
-import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async (msg: CT.MessageGuild) => {
-  const channelPromises = (
-    await client.ch
-      .query('SELECT messageevents FROM logchannels WHERE guildid = $1;', [String(msg.guildId)])
-      .then((r: DBT.logchannels[] | null) => (r ? r[0].messageevents : null))
-  )?.map((id: string) => client.cache.channels.get(BigInt(id), msg.guildId));
-
-  if (!channelPromises) return;
-  const channels = (await Promise.all(channelPromises)).filter((c): c is DDeno.Channel => !!c);
+  const channels = await client.ch.getLogChannels('messageevents', msg);
+  if (!channels) return;
 
   const lan = msg.language.events.messageDelete;
   const con = client.customConstants.events.messageDelete;
@@ -19,7 +12,7 @@ export default async (msg: CT.MessageGuild) => {
   const audit = await client.ch.getAudit(
     msg.guild,
     72,
-    msg.author,
+    msg.authorId,
     (a) => a.options?.channelId === msg.channelId,
   );
   const getEmbedWithEntry = async () => {

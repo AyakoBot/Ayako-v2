@@ -45,3 +45,4 @@ export const getAvatarURL               = (await import(`./ClientHelperModules/g
 export const permissionCalculators      = (await import(`./ClientHelperModules/permissionCalculators.js`)).default;
 export const getPermission              = (await import(`./ClientHelperModules/getPermission.js`)).default;
 export const getJumpLink                = (await import(`./ClientHelperModules/getJumpLink.js`)).default;
+export const getLogChannels             = (await import(`./ClientHelperModules/getLogChannels.js`)).default;
