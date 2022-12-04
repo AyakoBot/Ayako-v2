@@ -270,6 +270,7 @@ export type logchannels = {
   threadevents?: string[];
   guildmemberevents?: string[];
   stageevents?: string[];
+  reactionevents?: string[];
 };
 
 export type expiry = {

@@ -19,7 +19,8 @@ export default async (
     | 'stickerevents'
     | 'threadevents'
     | 'guildmemberevents'
-    | 'stageevents',
+    | 'stageevents'
+    | 'reactionevents',
   msg: DDeno.Message | CT.MessageGuild | { guildId: bigint },
 ) => {
   if (!msg.guildId) return null;
