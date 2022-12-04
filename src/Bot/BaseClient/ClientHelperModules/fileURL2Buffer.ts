@@ -21,7 +21,7 @@ export default async (urls: (string | null)[]) =>
 
       if (buffer) {
         return {
-          file: Buffer.from(new Uint8Array(buffer)),
+          blob: new Blob([buffer]),
           name: fileName,
         };
       }
