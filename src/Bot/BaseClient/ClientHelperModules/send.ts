@@ -6,28 +6,28 @@ import client from '../DDenoClient.js';
 async function send(
   c: DDeno.Channel,
   payload: CT.CreateMessage,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   command?: CT.Command,
   timeout?: number,
 ): Promise<DDeno.Message | null | void>;
 async function send(
   c: { id: bigint; guildId: bigint },
   payload: CT.CreateMessage,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   command?: CT.Command,
   timeout?: number,
 ): Promise<DDeno.Message | null | void>;
 async function send(
   c: DDeno.Channel[],
   payload: CT.CreateMessage,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   command?: CT.Command,
   timeout?: number,
 ): Promise<(DDeno.Message | null | void)[] | null | void>;
 async function send(
   c: { id: bigint[]; guildId: bigint },
   payload: CT.CreateMessage,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   command?: CT.Command,
   timeout?: number,
 ): Promise<(DDeno.Message | null | void)[] | null | void>;
@@ -38,7 +38,7 @@ async function send(
     | { id: bigint[]; guildId: bigint }
     | { id: bigint; guildId: bigint },
   payload: CT.CreateMessage,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   command?: CT.Command,
   timeout?: number,
 ): Promise<DDeno.Message | (DDeno.Message | null | void)[] | null | void> {
@@ -85,7 +85,7 @@ const combineMessages = async (
   channel: DDeno.Channel,
   payload: CT.CreateMessage,
   timeout: number,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
 ) => {
   if (![0, 1, 2, 3, 5, 10, 11, 12].includes(channel.type)) return;
 
@@ -158,11 +158,7 @@ const getEmbedCharLens = (embeds: DDeno.Embed[]) => {
   return total > 6000 ? 1000 : total;
 };
 
-const queueSend = async (
-  channel: DDeno.Channel,
-  timeout: number,
-  language: typeof import('../../Languages/en.json'),
-) => {
+const queueSend = async (channel: DDeno.Channel, timeout: number, language: CT.Language) => {
   if (![0, 1, 2, 3, 5, 10, 11, 12].includes(channel.type)) return;
 
   client.channelTimeout.set(

@@ -38,7 +38,7 @@ export interface CustomClient extends DDeno.Bot {
   me: DDeno.User;
 }
 
-export type Language = typeof import('../Languages/en.json');
+export type Language = typeof import('../Languages/en.js').default;
 
 export type GuildUpdate = (client: DDeno.Bot, guild: DDeno.Guild, oldGuild: DDeno.Guild) => void;
 export type UserUpdate = (client: DDeno.Bot, user: DDeno.User, oldUser: DDeno.User) => void;
@@ -144,4 +144,14 @@ export type Message = MessageGuild | MessageDM;
 
 export interface ButtonInteraction extends Omit<DDeno.Interaction, 'data'> {
   data: DDeno.DiscordInteractionData;
+}
+
+export interface Reaction {
+  userId: bigint;
+  channelId: bigint;
+  messageId: bigint;
+  guildId?: bigint;
+  member?: DDeno.Member;
+  user?: DDeno.User;
+  emoji: DDeno.Emoji;
 }

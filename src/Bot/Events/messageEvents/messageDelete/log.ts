@@ -24,11 +24,7 @@ export default async (msg: CT.MessageGuild) => {
         name: lan.title,
         iconUrl: con.image,
       },
-      description: client.ch.stp(lan.descDetails, {
-        user: executor,
-        target: msg.author,
-        channel: msg.channel,
-      }),
+      description: lan.descDetails(msg.channel, msg.author, executor),
       color: con.color,
       fields: [],
     };
@@ -46,10 +42,7 @@ export default async (msg: CT.MessageGuild) => {
         name: lan.title,
         iconUrl: con.image,
       },
-      description: client.ch.stp(lan.desc, {
-        user: msg.author,
-        channel: msg.channel,
-      }),
+      description: lan.desc(msg.author, msg.channel),
       color: con.color,
       fields: [],
     };
@@ -121,9 +114,7 @@ export default async (msg: CT.MessageGuild) => {
 
     const noticeEmbed: DDeno.Embed = {
       type: 'rich',
-      description: client.ch.stp(lan.attachmentsLog, {
-        jumpLink: client.ch.getJumpLink(message),
-      }),
+      description: lan.attachmentsLog(message),
       color: client.customConstants.colors.ephemeral,
     };
 
@@ -143,7 +134,7 @@ export default async (msg: CT.MessageGuild) => {
 
     const noticeEmbed2: DDeno.Embed = {
       type: 'rich',
-      description: client.ch.stp(lan.deleteLog, { jumpLink: client.ch.getJumpLink(msg) }),
+      description: lan.deleteLog(msg),
       color: client.customConstants.colors.ephemeral,
     };
 

@@ -60,14 +60,11 @@ const doMentionAFKcheck = (msg: CT.MessageGuild) => {
   });
 };
 
-const getIsAFKEmbed = async (msg: CT.MessageGuild, mention: bigint, afkRow: DBT.afk) => {
+const getIsAFKEmbed = async (msg: CT.MessageGuild, id: bigint, afkRow: DBT.afk) => {
   const embed: DDeno.Embed = {
     color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
     footer: {
-      text: client.ch.stp(msg.language.commands.afk.footer, {
-        user: `<@${mention}>`,
-        time: getTime(afkRow, msg.language),
-      }),
+      text: msg.language.commands.afk.footer(id, getTime(afkRow, msg.language)),
     },
   };
 
@@ -84,7 +81,7 @@ const getAfkRow = (msg: CT.MessageGuild, mention?: bigint) =>
     ])
     .then((r: DBT.afk[] | null) => (r ? r[0] : null));
 
-const getTime = (afkRow: DBT.afk, language: typeof import('../../../Languages/en.json')) =>
+const getTime = (afkRow: DBT.afk, language: CT.Language) =>
   moment
     .duration(Number(afkRow.since) - Date.now())
     .format(
@@ -125,9 +122,7 @@ const deleteM = (m: DDeno.Message | null, msg: CT.MessageGuild) => {
 const getAFKdeletedEmbed = async (msg: CT.MessageGuild, afkRow: DBT.afk): Promise<DDeno.Embed> => ({
   color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
   footer: {
-    text: client.ch.stp(msg.language.commands.afkHandler.footer, {
-      time: getTime(afkRow, msg.language),
-    }),
+    text: msg.language.commands.afkHandler.footer(getTime(afkRow, msg.language)),
   },
 });
 

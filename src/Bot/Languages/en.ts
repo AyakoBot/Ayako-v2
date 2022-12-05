@@ -437,8 +437,16 @@ export default {
       title: `Message Deleted`,
       desc: (user: DDeno.User, channel: DDeno.Channel) =>
         `A Message of\nUser <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nin\nChannel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\nwas deleted`,
-      descDetails: (user: DDeno.User, channel: DDeno.Channel, target: DDeno.User) =>
-        `Executor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas deleted a Message of\nUser <@${target.id}> / \`${target.username}#${target.discriminator}\` / \`${target.id}\`\nin\nChannel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\``,
+      descDetails: (channel: DDeno.Channel, target: DDeno.User, user?: DDeno.User) =>
+        `${
+          user
+            ? `Executor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``
+            : 'unknown Executor'
+        }\nhas deleted a Message of\nUser <@${target.id}> / \`${target.username}#${
+          target.discriminator
+        }\` / \`${target.id}\`\nin\nChannel <#${channel.id}> / \`${channel.name}\` / \`${
+          channel.id
+        }\``,
       deleteLog: (msg: DDeno.Message) =>
         `This Message had Attachments\nClick [here](${client.ch.getJumpLink(
           msg,
@@ -450,11 +458,11 @@ export default {
     },
     messageReactionAdd: {
       title: `Message Reaction Added`,
-      description: (user: DDeno.User, msg: CT.Message, reaction: DDeno.Emoji) =>
+      description: (user: DDeno.User, msg: CT.Message, reaction: CT.Reaction) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
-        }\`\nhas Reacted with\nEmoji \`${reaction.name}\` / \`${
-          reaction.id
+        }\`\nhas Reacted with\nEmoji \`${reaction.emoji.name}\` / \`${
+          reaction.emoji.id
         }\` \nto\n[this Message](${client.ch.getJumpLink(
           msg,
         )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.authorId}> / \`${
@@ -495,26 +503,40 @@ export default {
     },
     messageDeleteBulk: {
       title: `Message Bulk Deleted`,
-      desc: (amount: Strumber, channel: DDeno.Channel) =>
-        `${amount} Message(s) in\nChannel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\nwere bulk deleted`,
-      descDetails: (amount: Strumber, channel: DDeno.Channel, user: DDeno.User) =>
-        `${amount} Message(s) in\nChannel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\nwere bulk deleted by\nUser <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
+      desc: (amount: Strumber, channel?: DDeno.Channel) =>
+        `${amount} Message(s) in\n${
+          channel
+            ? `Channel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\``
+            : 'unknown Channel'
+        }\nwere bulk deleted`,
+      descDetails: (amount: Strumber, channel?: DDeno.Channel, user?: DDeno.User) =>
+        `${amount} Message(s) in\n${
+          channel
+            ? `Channel <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\``
+            : 'unknown Channel'
+        }\nwere bulk deleted by\n${
+          user
+            ? `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``
+            : 'unkown User'
+        }`,
       log: (
-        author: DDeno.User,
-        msg: CT.Message,
-        createdTime: Strumber,
+        msg: DDeno.Message,
         content: string,
         embedLength: Strumber,
         attachmentsLength: Strumber,
+        createdTime: Strumber,
+        author?: DDeno.User,
       ) =>
-        `${author.id} - ${author.username}#${author.discriminator} | ${client.ch.getJumpLink(
+        `${msg.authorId} - ${
+          author ? `${author.username}#${author.discriminator}` : 'unknown Author'
+        } | ${client.ch.getJumpLink(
           msg,
         )} | ${createdTime}\n${content}\nEmbeds: ${embedLength} | Attachments: ${attachmentsLength}`,
-      deleteLog: (msg: CT.Message) =>
+      deleteLog: (msg: DDeno.Message) =>
         `This Message had Attachments\nClick [here](${client.ch.getJumpLink(
           msg,
         )}) to Jump to the Attachments Log`,
-      attachmentsLog: (msg: CT.Message) =>
+      attachmentsLog: (msg: DDeno.Message) =>
         `This is the Attachments Log to a Delete Message\nClick [here](${client.ch.getJumpLink(
           msg,
         )}) to Jump to the Delete Log`,
@@ -706,7 +728,7 @@ export default {
       category: `Chat`,
       description: `Display a AFK text whenever someone pings you.\nAutomatically deleted if you send a Message 1 Minute after creating your AFK`,
       usage: [`afk (text)`],
-      footer: (user: DDeno.User, time: Strumber) => `${user.username} is AFK since ${time}`,
+      footer: (userId: bigint, time: Strumber) => `<@${userId}> is AFK since ${time}`,
       updatedTo: (user: DDeno.User, text: string) => `**<@${user.id}>'s AFK updated to:**\n${text}`,
       updated: (user: DDeno.User) => `**<@${user.id}>'s AFK updated**`,
       noLinks: `**You may not set Links as AFK.**`,
@@ -724,7 +746,7 @@ export default {
       },
     },
     afkHandler: {
-      deletedAfk: 'I`ve deleted your AFK',
+      deletedAfk: "I've deleted your AFK",
       footer: (time: Strumber) => `Welcome back! You have been AFK for ${time}`,
       setAfk: `User went AFK`,
       delAfk: `User returned from being AFK`,
@@ -740,7 +762,7 @@ export default {
         `Command \`${name}\` was disabled by the Server Administration`,
       creatorOnly: `Only my Creator can use this Command (\`Lars_und_so#0666\`)`,
       ownerOnly: `Only the Owner of this Server can use this Command`,
-      missingPermissions: 'You don`t have enough Permissions to use this Command',
+      missingPermissions: "You don't have enough Permissions to use this Command",
       verifyMessage: `You just issued a **moderation command** by **editing your Message**. \nDo you want to **proceed or abort**.`,
       DMonly: `This Command is not made for Servers, please try again in DMs`,
       modRoleError: `One of your Roles does not allow you to use this Command`,
@@ -862,7 +884,7 @@ export default {
         'anti-virus': `Stopping Members and hacked Accounts from sending phishing and in other ways malicious Links in the Server`,
         'auto-punish': `Consistenly punish Members for misbehaving using a custom punishment Setup and a new Command`,
         blacklist:
-          'Stopping Members from saying Words or Phrases you`d rather not have them say on your Server',
+          "Stopping Members from saying Words or Phrases you'd rather not have them say on your Server",
         expiry: `Let Punishments expire after a certain Amount of Time`,
         'auto-roles': `Automatically assign Roles to newly joining Members or Bots, or Members and Bots`,
         cooldowns: `Define custom Cooldowns on Ayakos Commands`,
@@ -1276,8 +1298,12 @@ export default {
         },
         blacklist: {
           authorName: `Blacklisted Word said`,
-          description: (words: string) =>
-            `Please refrain from using any of the following Words\nThis __includes__ not blacklisted Variations of following Words\n*Server Staff may punish more strictly for bypassing the Blacklist*\n${words}`,
+          description: (words?: string) =>
+            `Please refrain from using ${
+              words
+                ? `any of the following Words\nThis __includes__ not blacklisted Variations of following Words\n*Server Staff may punish more strictly for bypassing the Blacklist*\n${words}`
+                : 'blacklisted Words'
+            }`,
           field: `You used following Words`,
           bpchannelid: {
             name: `Whitelisted Channels`,
@@ -1471,7 +1497,7 @@ export default {
           oneTimeRunner: {
             name: `Apply ALL Separators to EVERY Member of your Server`,
             description: `Can only be run if the previous Process is finished.`,
-            cant: 'You don`t have any Separators set, so you can`t uset his function',
+            cant: "You don't have any Separators set, so you can't uset his function",
             timeout: `The Operation timed out, please contact Support\nhttps://support.ayakobot.com`,
             recommended: `Are you sure you want to run this Function?\nThis can only be run if the previous Process is finished`,
             stats: (roles: Strumber, members: Strumber, finishTime: Strumber) =>
@@ -1530,7 +1556,7 @@ export default {
       noneFound: `No Giveaways found`,
       create: {
         description: `Create a Giveaway`,
-        missingPermissions: 'I can`t send or view Messages in this Channel',
+        missingPermissions: "I can't send or view Messages in this Channel",
         invalidTime: `The provided Time was invalid`,
         author: `Ayako Giveaways`,
         participants: `Participants`,
@@ -1562,7 +1588,7 @@ export default {
         timeRanOut: `You can no longer claim your Prize since you took too long to claim it\nI will now re-roll the Giveaway`,
       },
       participate: {
-        cantEnter: 'You don`t meet the Requirements to participate in this Giveaway',
+        cantEnter: "You don't meet the Requirements to participate in this Giveaway",
         entered: `You are now participating in this Giveaway`,
         left: `You are no longer participating in this Giveaway`,
         participants: `Participants`,
@@ -1606,287 +1632,423 @@ export default {
       abort: `Abort`,
     },
     tempmuteAdd: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Temp-Muted`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Temp-Muted by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Temp-Muted by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       activeMute: `Joined with an active Mute`,
       activeMuteError:
-        'This User joined with an active Mute.\nHowever I wasn`t able to Mute them.\nMissing Permissions',
+        "This User joined with an active Mute.\nHowever I wasn't able to Mute them.\nMissing Permissions",
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Temp-Muted on \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Temp-Muted on \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      alreadyApplied: `This Member is already Temp-Mute`,
-      exeNoPerms: 'You can`t Temp-Mute this Member',
-      meNoPerms: 'I can`t Temp-Mute this Member `Missing Permissions`',
-      success: (target: DDeno.User) => `Member <@${target.id}> was Temp-Muted`,
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `Member <@${args.target.id}> is already Temp-Muted`,
+      exeNoPerms: "You can't Temp-Mute this Member",
+      meNoPerms: "I can't Temp-Mute this Member `Missing Permissions`",
+      success: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> was Temp-Muted`,
       loading: `Temp-Muting User...`,
-      error: 'I wasn`t able to Temp-Mute this User!',
+      error: "I wasn't able to Temp-Mute this User!",
       noMember: `This User is not a Member of this Server`,
-      selfPunish: 'You can`t Temp-Mute yourself',
-      mePunish: 'I won`t Temp-Mute myself',
-      permissionError: 'I don`t have enough Permissions to Temp-Mute this User',
+      selfPunish: "You can't Temp-Mute yourself",
+      mePunish: "I won't Temp-Mute myself",
+      permissionError: "I don't have enough Permissions to Temp-Mute this User",
     },
     muteRemove: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Un-Muted`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Un-Muted by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Un-Muted by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Un-Muted on \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Un-Muted on \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Un-Mute this Member',
-      alreadyApplied: 'This Member isn`t muted',
-      success: (target: DDeno.User) => `Member <@${target.id}> was Un-Mute`,
+      exeNoPerms: "You can't Un-Mute this Member",
+      alreadyApplied: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> isn't muted`,
+      success: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> was Un-Mute`,
       loading: `Un-Muting User...`,
-      error: 'I wasn`t able to Un-Mute this User!',
+      error: "I wasn't able to Un-Mute this User!",
       noMember: `This User is not a Member of this Server`,
-      mePunish: 'I can`t Un-Mute myself',
-      selfPunish: 'You can`t Un-Mute yourself',
-      permissionError: 'I don`t have enough Permissions to Un-Mute this User',
+      mePunish: "I can't Un-Mute myself",
+      selfPunish: "You can't Un-Mute yourself",
+      permissionError: "I don't have enough Permissions to Un-Mute this User",
     },
     banAdd: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Banned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Banned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Banned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Banned from \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Ban this User',
-      permissionError: 'I don`t have enough Permissions to Ban this User',
-      error: 'I wasn`t able to Ban this User!',
-      alreadyApplied: (target: DDeno.User) => `User <@${target.id}> is already Banned`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Banned`,
+      exeNoPerms: "You can't Ban this User",
+      permissionError: "I don't have enough Permissions to Ban this User",
+      error: "I wasn't able to Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is already Banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Banned`,
       loading: `Banning User...`,
-      selfPunish: 'You can`t Ban yourself',
-      mePunish: 'I won`t Ban myself',
+      selfPunish: "You can't Ban yourself",
+      mePunish: "I won't Ban myself",
     },
     roleAdd: {
-      author: (args: { target: DDeno.User; role: DDeno.Role }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} has been added to ${args.role.name}`,
-      description: (args: { target: DDeno.User; role: DDeno.Role }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nhas been added to\nRole ${args.role} / \`${args.role.name}\` / \`${args.role.id}\`\nby\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nhas been added to\nRole ${args.role} / \`${args.role.name}\` / \`${
+          args.role.id
+        }\`\nby\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (args: { role: DDeno.Role }, guild: DDeno.Guild) =>
-          `You have been added to \`${args.role.name}\` on \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been added to \`${args.role.name}\` on \`${
+            args.guild?.name ?? 'unknwon Guild'
+          }\``,
       },
-      exeNoPerms: 'You can`t add this User to Roles',
-      permissionError: 'I don`t have enough Permissions to add this User to Roles',
-      error: 'I wasn`t able to add this User to Roles!',
-      alreadyApplied: (target: DDeno.User, args: { role: DDeno.Role }) =>
-        `User <@${target.id}> already has Role ${args.role} added`,
-      success: (target: DDeno.User, args: { role: DDeno.Role }) =>
-        `<@${target.id}> added to Role ${args.role}`,
+      exeNoPerms: "You can't add this User to Roles",
+      permissionError: "I don't have enough Permissions to add this User to Roles",
+      error: "I wasn't able to add this User to Roles!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> already has Role ${args.role} added`,
+      success: (args: CT.ModBaseEventOptions) => `<@${args.target.id}> added to Role ${args.role}`,
       loading: `Adding User to Role...`,
-      selfPunish: 'You can`t add yourself to Roles',
-      mePunish: 'I won`t add myself to Roles',
+      selfPunish: "You can't add yourself to Roles",
+      mePunish: "I won't add myself to Roles",
     },
     roleRemove: {
-      author: (args: { target: DDeno.User; role: DDeno.Role }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} has been removed from ${args.role.name}`,
-      description: (args: { target: DDeno.User; role: DDeno.Role }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nhas been removed from\nRole ${args.role} / \`${args.role.name}\` / \`${args.role.id}\`\nby\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nhas been removed from\nRole ${args.role} / \`${args.role.name}\` / \`${
+          args.role.id
+        }\`\nby\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (args: { role: DDeno.Role }, guild: DDeno.Guild) =>
-          `You have been removed from \`${args.role.name}\` on \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been removed from \`${args.role.name}\` on \`${
+            args.guild?.name ?? 'unknown Guild'
+          }\``,
       },
-      exeNoPerms: 'You can`t remove this User from Roles',
-      permissionError: 'I don`t have enough Permissions to remove this User from Roles',
-      error: 'I wasn`t able to remove this User from Roles!',
-      alreadyApplied: (target: DDeno.User, args: { role: DDeno.Role }) =>
-        `User <@${target.id}> doesn't have Role ${args.role} added`,
-      success: (target: DDeno.User, args: { role: DDeno.Role }) =>
-        `<@${target.id}> removed from Role ${args.role}`,
+      exeNoPerms: "You can't remove this User from Roles",
+      permissionError: "I don't have enough Permissions to remove this User from Roles",
+      error: "I wasn't able to remove this User from Roles!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> doesn't have Role ${args.role} added`,
+      success: (args: CT.ModBaseEventOptions) =>
+        `<@${args.target.id}> removed from Role ${args.role}`,
       loading: `Removing User from Role...`,
-      selfPunish: 'You can`t remove yourself from Roles',
-      mePunish: 'I won`t remove myself from Roles',
+      selfPunish: "You can't remove yourself from Roles",
+      mePunish: "I won't remove myself from Roles",
     },
     softbanAdd: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Soft-Banned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Soft-Banned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Soft-Banned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Soft-Banned from \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Soft-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Soft-Ban this User',
-      permissionError: 'I don`t have enough Permissions to Soft-Ban this User',
-      error: 'I wasn`t able to Soft-Ban this User!',
-      alreadyApplied: (target: DDeno.User) => `User <@${target.id}> is already banned`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Soft-Banned`,
+      exeNoPerms: "You can't Soft-Ban this User",
+      permissionError: "I don't have enough Permissions to Soft-Ban this User",
+      error: "I wasn't able to Soft-Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is already banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Soft-Banned`,
       loading: `Soft-Banning User...`,
-      selfPunish: 'You can`t Soft-Ban yourself',
-      mePunish: 'I won`t Soft-Ban myself',
+      selfPunish: "You can't Soft-Ban yourself",
+      mePunish: "I won't Soft-Ban myself",
       unbanReason: `Soft-Ban`,
     },
     tempbanAdd: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Temp-Banned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Temp-Banned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Temp-Banned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Temp-Banned from \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Temp-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Temp-Ban this User',
-      permissionError: 'I don`t have enough Permissions to Temp-Ban this User',
-      error: 'I wasn`t able to Temp-Ban this User!',
-      alreadyApplied: (target: DDeno.User) => `User <@${target.id}> is already Temp-Banned`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Temp-Banned`,
+      exeNoPerms: "You can't Temp-Ban this User",
+      permissionError: "I don't have enough Permissions to Temp-Ban this User",
+      error: "I wasn't able to Temp-Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is already Temp-Banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Temp-Banned`,
       loading: `Temp-Banning User...`,
-      selfPunish: 'You can`t Temp-Ban yourself',
-      mePunish: 'I won`t Temp-Ban myself',
+      selfPunish: "You can't Temp-Ban yourself",
+      mePunish: "I won't Temp-Ban myself",
     },
     channelbanAdd: {
-      author: (args: { channel: DDeno.Channel; target: DDeno.User }) =>
-        `${args.target.username}#${args.target.discriminator} was Channel-Banned from ${args.channel.name}`,
-      description: (args: { target: DDeno.User; channel: DDeno.Channel }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas was Channel-Banned from\nChannel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\`\nby\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      author: (args: CT.ModBaseEventOptions) =>
+        `${args.target.username}#${args.target.discriminator} was Channel-Banned from ${
+          args.channel?.name ?? 'an unknown Channel'
+        }`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas was Channel-Banned from\n${
+          args.channel
+            ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
+            : 'unkown Channel'
+        }\nby\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Channel-Banned in \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Channel-Banned in \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Channel-Ban this User',
-      permissionError: 'I don`t have enough Permissions to Channel-Ban this User',
-      error: 'I wasn`t able to Channel-Ban this User!',
-      alreadyApplied: (target: DDeno.User) => `User <@${target.id}> is already Channel-Banned`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Channel-Banned`,
+      exeNoPerms: "You can't Channel-Ban this User",
+      permissionError: "I don't have enough Permissions to Channel-Ban this User",
+      error: "I wasn't able to Channel-Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is already Channel-Banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Channel-Banned`,
       loading: `Channel-Banning User...`,
-      selfPunish: 'You can`t Channel-Ban yourself',
-      mePunish: 'I won`t Channel-Ban myself',
+      selfPunish: "You can't Channel-Ban yourself",
+      mePunish: "I won't Channel-Ban myself",
     },
     tempchannelbanAdd: {
-      author: (args: { target: DDeno.User; channel: DDeno.Channel }) =>
-        `${args.target.username}#${args.target.discriminator} was Temp-Channel-Banned from ${args.channel.name}`,
-      description: (args: { target: DDeno.User; channel: DDeno.Channel }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas was Temp-Channel-Banned from\nChannel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\`\nby\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      author: (args: CT.ModBaseEventOptions) =>
+        `${args.target.username}#${args.target.discriminator} was Temp-Channel-Banned from ${
+          args.channel?.name ?? 'unkown Channel'
+        }`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas was Temp-Channel-Banned from\n${
+          args.channel
+            ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
+            : 'unkown Channel'
+        }\nby\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Temp-Channel-Banned in \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Temp-Channel-Banned in \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Temp-Channel-Ban this User',
-      permissionError: 'I don`t have enough Permissions to Temp-Channel-Ban this User',
-      error: 'I wasn`t able to Temp-Channel-Ban this User!',
-      alreadyApplied: (target: DDeno.User) => `User <@${target.id}> is already Channel-Banned`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Temp-Channel-Banned`,
+      exeNoPerms: "You can't Temp-Channel-Ban this User",
+      permissionError: "I don't have enough Permissions to Temp-Channel-Ban this User",
+      error: "I wasn't able to Temp-Channel-Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is already Channel-Banned`,
+      success: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> was Temp-Channel-Banned`,
       loading: `Temp-Channel-Banning User...`,
-      selfPunish: 'You can`t Temp-Channel-Ban yourself',
-      mePunish: 'I won`t Temp-Channel-Ban myself',
+      selfPunish: "You can't Temp-Channel-Ban yourself",
+      mePunish: "I won't Temp-Channel-Ban myself",
     },
     channelbanRemove: {
-      author: (args: { target: DDeno.User; channel: DDeno.Channel }) =>
-        `${args.target.username}#${args.target.discriminator} was Channel-Unbanned from ${args.channel.name}`,
-      description: (args: { target: DDeno.User; channel: DDeno.Channel }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Channel-Unbanned from\nChannel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\`\nby\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (user: DDeno.User, args: { target: DDeno.User }) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      author: (args: CT.ModBaseEventOptions) =>
+        `${args.target.username}#${args.target.discriminator} was Channel-Unbanned from ${
+          args.channel?.name ?? 'unkown Channel'
+        }`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Channel-Unbanned from\n${
+          args.channel
+            ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
+            : 'unkown Channel'
+        }\nby\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Channel-Unbanned in \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Channel-Unbanned in \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Channel-Unbanned this User',
-      permissionError: 'I don`t have enough Permissions to Channel-Unbanned this User',
-      error: 'I wasn`t able to Channel-Unbanned this User!',
-      alreadyApplied: 'This User isn`t Channel-Banned',
-      success: (target: DDeno.User) => `User <@${target.id}> was Channel-Unbanned`,
+      exeNoPerms: "You can't Channel-Unbanned this User",
+      permissionError: "I don't have enough Permissions to Channel-Unbanned this User",
+      error: "I wasn't able to Channel-Unbanned this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> isn't Channel-Banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Channel-Unbanned`,
       loading: `Channel-Unbanning User...`,
-      selfPunish: 'You can`t Channel-Unban yourself',
-      mePunish: 'I won`t Channel-Unban myself',
+      selfPunish: "You can't Channel-Unban yourself",
+      mePunish: "I won't Channel-Unban myself",
     },
     banRemove: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Un-Banned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Un-Banned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Un-Banned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Un-Banned from \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Un-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Un-Ban this User',
-      permissionError: 'I don`t have enough Permissions to Un-Ban this User',
-      error: 'I wasn`t able to Un-Ban this User!',
-      alreadyApplied: 'This User isn`t banned',
-      success: (target: DDeno.User) => `User <@${target.id}> was Un-Banned`,
+      exeNoPerms: "You can't Un-Ban this User",
+      permissionError: "I don't have enough Permissions to Un-Ban this User",
+      error: "I wasn't able to Un-Ban this User!",
+      alreadyApplied: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> isn't banned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Un-Banned`,
       loading: `Un-Banning User...`,
-      selfPunish: 'You can`t Un-Ban yourself',
-      mePunish: 'I won`t Un-Ban myself',
+      selfPunish: "You can't Un-Ban yourself",
+      mePunish: "I won't Un-Ban myself",
     },
     kickAdd: {
-      author: (args: { target: DDeno.User }) =>
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Kicked`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Kicked by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      footer: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Kicked by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Kicked from \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Kicked from \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      exeNoPerms: 'You can`t Kick this Member',
-      alreadyApplied: `This User is not a Member of this Server`,
-      permissionError: 'I don`t have enough Permissions to Kick this Member',
-      error: 'I wasn`t able to Kick this Member!',
-      success: (target: DDeno.User) => `User <@${target.id}> was Kicked`,
+      exeNoPerms: "You can't Kick this Member",
+      alreadyApplied: (args: CT.ModBaseEventOptions) =>
+        `User <@${args.target.id}> is not a Member of this Server`,
+      permissionError: "I don't have enough Permissions to Kick this Member",
+      error: "I wasn't able to Kick this Member!",
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Kicked`,
       loading: `Kicking User...`,
-      selfPunish: 'You can`t Kick yourself',
-      mePunish: 'I won`t Kick myself',
+      selfPunish: "You can't Kick yourself",
+      mePunish: "I won't Kick myself",
     },
     warnAdd: {
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Warned on the Server \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Warned on the Server \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      footer: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
-      author: (args: { target: DDeno.User }) =>
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Warned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Warned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      exeNoPerms: 'You can`t Warn this Member',
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Warned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      exeNoPerms: "You can't Warn this Member",
       antispam: `**Please stop Spamming**`,
       antivirus: `**Please do not post Malicious Links**`,
       blacklist: `**Please do not send Blacklisted Words**\nCheck your DMs for a List of them`,
-      success: (target: DDeno.User) => `User <@${target.id}> was Warned`,
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Warned`,
       loading: `Warning User...`,
-      selfPunish: 'You can`t Warn yourself',
-      mePunish: 'I won`t Warn myself',
+      selfPunish: "You can't Warn yourself",
+      mePunish: "I won't Warn myself",
     },
     softwarnAdd: {
       dm: {
-        author: (guild: DDeno.Guild) => `You have been Soft-Warned on the Server \`${guild.name}\``,
+        author: (args: CT.ModBaseEventOptions) =>
+          `You have been Soft-Warned on the Server \`${args.guild?.name ?? 'unknown Guild'}\``,
       },
-      footer: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Executor ID ${user.id}\nTarget ID ${args.target.id}`,
-      author: (args: { target: DDeno.User }) =>
+      footer: (args: CT.ModBaseEventOptions) =>
+        `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
+      author: (args: CT.ModBaseEventOptions) =>
         `${args.target.username}#${args.target.discriminator} was Soft-Warned`,
-      description: (args: { target: DDeno.User }, user: DDeno.User) =>
-        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${args.target.id}\`\nwas Soft-Warned by\nExecutor <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
-      exeNoPerms: 'You can`t Soft-Warn this Member',
-      success: (target: DDeno.User) => `User <@${target.id}> was Soft-Warned`,
+      description: (args: CT.ModBaseEventOptions) =>
+        `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
+          args.target.id
+        }\`\nwas Soft-Warned by\n${
+          args.executor
+            ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
+            : 'unknown Executor'
+        }`,
+      exeNoPerms: "You can't Soft-Warn this Member",
+      success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Soft-Warned`,
       loading: `Soft-Warning User...`,
-      selfPunish: 'You can`t Soft-Warn yourself',
-      mePunish: 'I won`t Soft-Warn myself',
+      selfPunish: "You can't Soft-Warn yourself",
+      mePunish: "I won't Soft-Warn myself",
     },
   },
   leveling: {
-    author: (user: DDeno.User, guild: DDeno.Guild) =>
-      `Welcome ${user.username}#${user.discriminator} to ${guild.name}`,
-    description: (reactions: string) =>
-      `On this Server, Level-Ups are indicated by Reactions on your Message\nThe current Reactions are: ${reactions}`,
+    author: (msg: CT.MessageGuild) =>
+      `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild.name}`,
+    description: (reactions?: string) =>
+      `${
+        reactions ? 'On' : 'Normally, on'
+      } this Server, Level-Ups are indicated by Reactions on your Message\n${
+        reactions
+          ? `The current Reactions are: ${reactions}`
+          : "However, I currently don't have access to the Emotes or there are none set"
+      }`,
     reason: `Ayako Leveling`,
   },
   antivirus: {
@@ -1899,9 +2061,9 @@ export default {
     ccscam: (cross: string) =>
       `${cross} This Link __is__ Malicious\nIt try to gain access to your Credit Card Information`,
     cfProtected:
-      'The Intent of this Website couldn`t be determined\nas it is CloudFlare protected\n**Proceed with Caution**',
+      "The Intent of this Website couldn't be determined\nas it is CloudFlare protected\n**Proceed with Caution**",
     timedOut:
-      'The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn`t be determined\n**Proceed with Caution**',
+      "The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn't be determined\n**Proceed with Caution**",
     log: {
       value: (msg: CT.Message) =>
         `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${msg.author.id}\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
@@ -1922,9 +2084,9 @@ export default {
     notAvailableAPI: `This Command is not yet available due to Discord API limitations`,
     sendMessage: `I cannot send Messages in this Channel`,
     lackingAccess: (emotes: string) => `I'm lacking access to these emotes: ${emotes}`,
-    channelNotManageable: 'I`m lacking Permissions to edit that Channel',
+    channelNotManageable: "I'm lacking Permissions to edit that Channel",
     roleNotFound: `Role not Found`,
-    notYours: 'You can`t interact with someone elses Messages',
+    notYours: "You can't interact with someone elses Messages",
     time: `Time ran out`,
   },
   channelRules: {
@@ -2054,9 +2216,9 @@ export default {
       ADVANCED: `Advanced Permissions`,
     },
     error: {
-      msg: 'I`m missing Permissions to execute this Command',
+      msg: "I'm missing Permissions to execute this Command",
       needed: `Needed Permissions:`,
-      role: 'I can`t manage this Role',
+      role: "I can't manage this Role",
       you: `You are missing Permissions to execute this Command`,
     },
     perms: {

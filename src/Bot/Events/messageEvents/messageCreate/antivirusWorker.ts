@@ -9,6 +9,7 @@ import stp from '../../../BaseClient/ClientHelperModules/stp';
 import * as util from '../../../BaseClient/ClientHelperModules/util';
 import constants from '../../../BaseClient/Other/Constants.json' assert { type: 'json' };
 import auth from '../../../../auth.json' assert { type: 'json' };
+import type CT from '../../../Typings/CustomTypings';
 
 interface LinkObject {
   href: string;
@@ -97,7 +98,7 @@ const run = async ({
     guildid: string;
   };
   linkObject: LinkObject;
-  lan: typeof import('../../../Languages/en.json')['antivirus'];
+  lan: CT.Language['antivirus'];
   includedBadLink: boolean;
   check: boolean;
   blacklist: string[];

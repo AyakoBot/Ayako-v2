@@ -27,21 +27,18 @@ export default async (msgs: DDeno.Message[]) => {
   };
 
   if (audit) {
-    embed.description = client.ch.stp(lan.descDetails, {
-      user: audit.userId ? await client.cache.users.get(audit.userId) : language.unknown,
-      channel: await client.cache.channels.get(identMsg.channelId),
-      amount: msgs.length,
-    });
+    embed.description = lan.descDetails(
+      msgs.length,
+      await client.cache.channels.get(identMsg.channelId),
+      audit.userId ? await client.cache.users.get(audit.userId) : undefined,
+    );
 
     if (audit.reason) embed.fields?.push({ name: language.reason, value: audit.reason });
   } else {
-    embed.description = client.ch.stp(lan.desc, {
-      channel: guild.channels.get(identMsg.channelId),
-      amount: msgs.length,
-    });
+    embed.description = lan.desc(msgs.length, await client.cache.channels.get(identMsg.channelId));
   }
 
-  const getFirstFiles = () => {
+  const getFirstFiles = async () => {
     const attachments: DDeno.FileContent[] = [];
 
     const embedCodes = `${language.Embeds}:${msgs
@@ -62,32 +59,18 @@ export default async (msgs: DDeno.Message[]) => {
       });
     }
 
+    const authors = await Promise.all(msgs.map((m) => client.cache.users.get(m.authorId)));
     const contents = msgs
       .map(
-        (msg) =>
-          `${client.ch.stp(lan.log, {
+        (msg, i) =>
+          `${lan.log(
             msg,
-            jumpLink: client.ch.stp(client.customConstants.standard.discordUrlDB, {
-              guildid: msg.guildId,
-              channelid: msg.channelId,
-              msgid: msg.id,
-            }),
-            createdTime: new Date(client.ch.getUnix(msg.id)).toDateString(),
-            author: {
-              id: 'author' in msg ? msg.authorId : language.unknown,
-              tag:
-                'author' in msg &&
-                'discriminator' in (msg.author as DDeno.User) &&
-                'username' in (msg.author as DDeno.User)
-                  ? `${(msg.author as DDeno.User).username}#${
-                      (msg.author as DDeno.User).discriminator
-                    }`
-                  : language.unknown,
-            },
-            embedLength: 'embeds' in msg ? String(msg.embeds.length) : '0',
-            attachmentsLength: 'attachments' in msg ? String(msg.attachments.length) : '0',
-            content: 'content' in msg && msg.content ? msg.content : lan.noContent,
-          })}`,
+            new Date(client.ch.getUnix(msg.id)).toDateString(),
+            'content' in msg && msg.content ? msg.content : lan.noContent,
+            'embeds' in msg ? String(msg.embeds.length) : '0',
+            'attachments' in msg ? String(msg.attachments.length) : '0',
+            authors[i],
+          )}`,
       )
       .join('\n\n');
 
@@ -110,7 +93,7 @@ export default async (msgs: DDeno.Message[]) => {
   };
 
   const secondMsgFiles = await getSecondFiles();
-  const firstMsgFiles = getFirstFiles();
+  const firstMsgFiles = await getFirstFiles();
 
   const m = await client.ch.send(
     { id: channels, guildId: identMsg.guildId },
@@ -129,7 +112,7 @@ export default async (msgs: DDeno.Message[]) => {
     if (!message) return;
 
     const noticeEmbed: DDeno.Embed = {
-      description: client.ch.stp(lan.attachmentsLog, { jumpLink: client.ch.getJumpLink(message) }),
+      description: lan.attachmentsLog(message),
       color: client.customConstants.colors.ephemeral,
     };
 
@@ -159,7 +142,7 @@ export default async (msgs: DDeno.Message[]) => {
 
       noticeEmbed2 = {
         type: 'rich',
-        description: client.ch.stp(lan.deleteLog, { jumpLink: client.ch.getJumpLink(m2) }),
+        description: lan.deleteLog(m2),
         color: client.customConstants.colors.ephemeral,
       };
     });

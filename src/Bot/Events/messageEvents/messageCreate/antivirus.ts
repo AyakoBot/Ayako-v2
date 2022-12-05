@@ -10,7 +10,6 @@ import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 
-type Language = typeof import('../../../Languages/en.json');
 interface LinkObject {
   href: string;
   url: string;
@@ -40,7 +39,7 @@ export default async (msg: CT.Message) => {
 
 const prepare = async (
   msg: CT.Message,
-  { lan }: { lan: Language['antivirus']; language: Language },
+  { lan }: { lan: CT.Language['antivirus']; language: CT.Language },
   check: boolean,
   res?: DBT.antivirus,
 ) => {
@@ -289,13 +288,11 @@ const doesntExist = async (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.notexistent, {
-      url: linkObject.baseURLhostname,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
     color: client.customConstants.colors.success,
   };
 
@@ -309,9 +306,7 @@ const doesntExist = async (
     lan,
     client.customConstants.colors.success,
     linkObject,
-    client.ch.stp(lan.notexistent, {
-      url: linkObject.baseURLhostname,
-    }),
+    lan.notexistent(linkObject.baseURLhostname),
     res,
   );
 };
@@ -325,7 +320,7 @@ const blacklisted = async (
     note,
   }: {
     msg: CT.Message;
-    lan: Language['antivirus'];
+    lan: CT.Language['antivirus'];
     linkObject: LinkObject;
     check: boolean;
     note: string | boolean;
@@ -334,9 +329,7 @@ const blacklisted = async (
 ) => {
   if (note && typeof note === 'string') {
     const embed: DDeno.Embed = {
-      description: `**${msg.language.result}**\n${client.ch.stp(lan.malicious, {
-        cross: client.stringEmotes.cross,
-      })}`,
+      description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
       fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
     };
@@ -346,9 +339,7 @@ const blacklisted = async (
     await client.ch.replyMsg(msg, { embeds: [embed] });
   } else {
     const embed: DDeno.Embed = {
-      description: `**${msg.language.result}**\n${client.ch.stp(lan.malicious, {
-        cross: client.stringEmotes.cross,
-      })}`,
+      description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
     };
 
@@ -375,9 +366,7 @@ const blacklisted = async (
     lan,
     client.customConstants.colors.warning,
     linkObject,
-    client.ch.stp(lan.malicious, {
-      cross: client.stringEmotes.cross,
-    }),
+    lan.malicious(client.stringEmotes.cross),
     res,
   );
 };
@@ -391,7 +380,7 @@ const severeLink = async (
     hrefLogging,
   }: {
     msg: CT.Message;
-    lan: Language['antivirus'];
+    lan: CT.Language['antivirus'];
     linkObject: LinkObject;
     check: boolean;
     hrefLogging: boolean;
@@ -401,9 +390,7 @@ const severeLink = async (
   saveToBadLink(linkObject, msg, hrefLogging);
 
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.malicious, {
-      cross: client.stringEmotes.cross,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
   embed.fields = [];
@@ -428,9 +415,7 @@ const severeLink = async (
     lan,
     client.customConstants.colors.warning,
     linkObject,
-    client.ch.stp(lan.malicious, {
-      cross: client.stringEmotes.cross,
-    }),
+    lan.malicious(client.stringEmotes.cross),
     res,
   );
 };
@@ -441,14 +426,12 @@ const ccscam = async (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject, msg);
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.ccscam, {
-      cross: client.stringEmotes.cross,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
 
@@ -473,9 +456,7 @@ const ccscam = async (
     lan,
     client.customConstants.colors.warning,
     linkObject,
-    client.ch.stp(lan.ccscam, {
-      cross: client.stringEmotes.cross,
-    }),
+    lan.malicious(client.stringEmotes.cross),
     res,
   );
 };
@@ -486,15 +467,13 @@ const newUrl = async (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject, msg);
 
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.newLink, {
-      cross: client.stringEmotes.cross,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.newLink(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
 
@@ -520,9 +499,7 @@ const newUrl = async (
     lan,
     client.customConstants.colors.warning,
     linkObject,
-    client.ch.stp(lan.newLink, {
-      cross: client.stringEmotes.cross,
-    }),
+    lan.newLink(client.stringEmotes.cross),
     res,
   );
 };
@@ -555,13 +532,11 @@ const whitelisted = async (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.whitelisted, {
-      tick: client.stringEmotes.tick,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.whitelisted(client.stringEmotes.tick)}`,
     color: client.customConstants.colors.success,
   };
 
@@ -576,9 +551,7 @@ const whitelisted = async (
     lan,
     client.customConstants.colors.success,
     linkObject,
-    client.ch.stp(lan.whitelisted, {
-      tick: client.stringEmotes.tick,
-    }),
+    lan.whitelisted(client.stringEmotes.tick),
     res,
   );
   return true;
@@ -590,7 +563,7 @@ const cloudFlare = async (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
@@ -631,13 +604,11 @@ const VTfail = (
     lan,
     linkObject,
     check,
-  }: { msg: CT.Message; lan: Language['antivirus']; linkObject: LinkObject; check: boolean },
+  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.VTfail, {
-      cross: client.stringEmotes.cross,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.VTfail(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.loading,
   };
 
@@ -651,16 +622,14 @@ const VTfail = (
     lan,
     client.customConstants.colors.loading,
     linkObject,
-    client.ch.stp(lan.VTfail, {
-      cross: client.stringEmotes.cross,
-    }),
+    lan.VTfail(client.stringEmotes.cross),
     res,
   );
 };
 
 const linkLog = async (
   msg: CT.Message,
-  lan: Language['antivirus'],
+  lan: CT.Language['antivirus'],
   color: number,
   linkObject: LinkObject,
   text: string,
@@ -669,10 +638,7 @@ const linkLog = async (
   if (!row || !row.linklogging || !row.linklogchannels?.length) return;
 
   const embed: DDeno.Embed = {
-    description: client.ch.stp(lan.log.value, {
-      author: msg.author,
-      channel: msg.channel,
-    }),
+    description: lan.log.value(msg),
     author: {
       name: lan.log.author,
       url: client.customConstants.standard.invite,

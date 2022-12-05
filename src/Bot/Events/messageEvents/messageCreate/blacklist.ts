@@ -111,9 +111,9 @@ const softWarn = async (msg: CT.MessageGuild, words: string[], settings: DBT.bla
       url: client.customConstants.standard.invite,
       name: msg.language.slashCommands.settings.settings.blacklist.authorName,
     },
-    description: client.ch.stp(msg.language.slashCommands.settings.settings.blacklist.description, {
-      words: settings.words?.map((w) => `\`${w}\``).join(' | '),
-    }),
+    description: msg.language.slashCommands.settings.settings.blacklist.description(
+      settings.words?.map((w) => `\`${w}\``).join(' | '),
+    ),
     fields: [
       {
         name: msg.language.slashCommands.settings.settings.blacklist.field,

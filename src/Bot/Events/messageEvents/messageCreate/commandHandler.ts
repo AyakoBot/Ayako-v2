@@ -200,17 +200,15 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
 
     client.ch
       .replyMsg(msg, {
-        content: client.ch.stp(msg.language.commands.commandHandler.pleaseWait, {
-          time: emote,
-        }),
+        content: msg.language.commands.commandHandler.pleaseWait(emote),
       })
       .then((m) => {
         if (!usedEmote && m) {
           jobs.scheduleJob(new Date(Date.now() + (timeLeft - 60000)), () => {
             client.helpers.editMessage(m.channelId, m.id, {
-              content: client.ch.stp(msg.language.commands.commandHandler.pleaseWait, {
-                time: client.stringEmotes.timers[60],
-              }),
+              content: msg.language.commands.commandHandler.pleaseWait(
+                client.stringEmotes.timers[60],
+              ),
             });
           });
         }

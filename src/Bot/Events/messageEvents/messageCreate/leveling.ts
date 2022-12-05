@@ -356,7 +356,7 @@ const doEmbed = async (
 ) => {
   const getDefaultEmbed = async (): Promise<DDeno.Embed> => ({
     author: {
-      name: msg.language.leveling.author,
+      name: msg.language.leveling.author(msg),
     },
     color: await client.ch.colorSelector(msg.member),
   });
@@ -618,9 +618,7 @@ const getChannelMultiplier = async (msg: CT.MessageGuild) => {
 const infoEmbed = async (msg: CT.MessageGuild, reactions: DDeno.Emoji[] | null) => {
   const embed: DDeno.Embed = {
     color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
-    description: client.ch.stp(msg.language.leveling.description, {
-      reactions: reactions?.join(''),
-    }),
+    description: msg.language.leveling.description(reactions?.join('')),
   };
 
   client.ch.replyMsg(msg, { embeds: [embed] }).then((m) => {

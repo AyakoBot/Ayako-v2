@@ -4,11 +4,12 @@ import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
 import client from '../DDenoClient.js';
+import type CT from '../../Typings/CustomTypings';
 
 export default async (
   msg: DDeno.Message,
   bits: bigint | number,
-  language: typeof import('../../Languages/en.json'),
+  language: CT.Language,
   me?: boolean,
 ) => {
   if (!msg) return;

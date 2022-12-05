@@ -122,22 +122,13 @@ const declareSuccess = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.tick} ${client.ch.stp(lan.success, {
-        target: args.target,
-        args,
-      })}`,
+      value: `${client.stringEmotes.tick} ${lan.success(args)}`,
     });
   } else if (mExistedPreviously) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.tick} ${client.ch.stp(lan.success, {
-      target: args.target,
-      args,
-    })}`;
+    embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
   } else {
-    embed.description = `${client.stringEmotes.tick} ${client.ch.stp(lan.success, {
-      target: args.target,
-      args,
-    })}`;
+    embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
   }
 
   if (args.m) {
@@ -198,19 +189,13 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
   const embed: DDeno.Embed = {
     color: con.color,
     author: {
-      name: client.ch.stp(lan.author, { args }),
+      name: lan.author(args),
       iconUrl: client.ch.getAvatarURL(args.target),
       url: client.customConstants.standard.invite,
     },
-    description: client.ch.stp(lan.description, {
-      user: args.executor,
-      args,
-    }),
+    description: lan.description(args),
     footer: {
-      text: client.ch.stp(lan.footer, {
-        user: args.executor,
-        args,
-      }),
+      text: lan.footer(args),
     },
     fields: [],
   };
@@ -535,7 +520,7 @@ const doDM = async (
   const DMembed: DDeno.Embed = {
     color: con.color,
     author: {
-      name: client.ch.stp(lan.dm.author, { guild: args.guild, args }),
+      name: lan.dm.author(args),
       url: `https://discord.com/users/${args.target.id}`,
     },
   };
@@ -645,26 +630,17 @@ const checkActionTaken = async (
       embed.fields?.pop();
       embed.fields?.push({
         name: '\u200b',
-        value: `${client.stringEmotes.cross} ${client.ch.stp(lan.alreadyApplied, {
-          target: args.target,
-          args,
-        })}`,
+        value: `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`,
       });
 
       deleter(args);
     } else if (mExistedPreviously) {
       embed.fields?.pop();
-      embed.description = `${client.stringEmotes.cross} ${client.ch.stp(lan.alreadyApplied, {
-        target: args.target,
-        args,
-      })}`;
+      embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
       deleter(args);
     } else {
-      embed.description = `${client.stringEmotes.cross} ${client.ch.stp(lan.alreadyApplied, {
-        target: args.target,
-        args,
-      })}`;
+      embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
       deleter(args);
     }

@@ -3,10 +3,7 @@ import type CT from '../../Typings/CustomTypings';
 import constants from '../Other/Constants.json' assert { type: 'json' };
 import reply from './replyCmd.js';
 
-export default (
-  interaction: CT.ButtonInteraction,
-  language: typeof import('../../Languages/en.json'),
-) => {
+export default (interaction: CT.ButtonInteraction, language: CT.Language) => {
   const embed: DDeno.Embed = {
     author: {
       name: language.error,

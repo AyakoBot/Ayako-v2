@@ -3,13 +3,9 @@ import reply from './replyMsg.js';
 import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
 import constants from '../Other/Constants.json' assert { type: 'json' };
 import client from '../DDenoClient.js';
+import type CT from '../../Typings/CustomTypings';
 
-export default (
-  msg: DDeno.Message,
-  content: string,
-  language: typeof import('../../Languages/en.json'),
-  m?: DDeno.Message,
-) => {
+export default (msg: DDeno.Message, content: string, language: CT.Language, m?: DDeno.Message) => {
   const embed: DDeno.Embed = {
     author: {
       name: language.error,
