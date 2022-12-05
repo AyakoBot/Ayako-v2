@@ -1,10 +1,11 @@
 import type DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
+import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (client: CT.Client, m: DDeno.Message) => {
+export default async (m: DDeno.Message) => {
   if (!m) return;
 
-  const msg = (await convertMsg(client, m)) as CT.Message;
+  const msg = (await convertMsg(m)) as CT.Message;
   const files: { default: (t: CT.Message) => void }[] = await Promise.all(
     getPaths(msg).map((p) => import(p)),
   );
@@ -33,7 +34,7 @@ const getPaths = (msg: CT.Message) => {
   return paths;
 };
 
-const convertMsg = async (client: CT.Client, m: DDeno.Message): Promise<CT.Message> => {
+export const convertMsg = async (m: DDeno.Message): Promise<CT.Message> => {
   const msg = m as CT.Message;
   const fetchArray: (
     | Promise<DDeno.User | undefined>
