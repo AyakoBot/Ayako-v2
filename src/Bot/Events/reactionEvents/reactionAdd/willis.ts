@@ -8,7 +8,7 @@ const hostIcon =
   'https://cdn.discordapp.com/attachments/764376037751521290/987061511769964634/unknown.png';
 const giveawayLink = 'https://clik.cc/A3KLb/';
 
-export default async (reaction: CT.Reaction) => {
+export default async (reaction: CT.ReactionAdd) => {
   if (reaction.userId === client.id) return;
   if (!reaction.guildId) return;
   if (reaction.channelId !== 979811225212956722n) return;

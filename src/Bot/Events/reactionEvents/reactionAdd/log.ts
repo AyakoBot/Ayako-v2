@@ -2,7 +2,7 @@ import type * as DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (reaction: CT.Reaction) => {
+export default async (reaction: CT.ReactionAdd) => {
   if (!reaction.guildId) return;
 
   const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guildId });

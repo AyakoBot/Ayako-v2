@@ -458,7 +458,7 @@ export default {
     },
     messageReactionAdd: {
       title: `Message Reaction Added`,
-      description: (user: DDeno.User, msg: CT.Message, reaction: CT.Reaction) =>
+      description: (user: DDeno.User, msg: CT.Message, reaction: CT.ReactionAdd) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nhas Reacted with\nEmoji \`${reaction.emoji.name}\` / \`${

@@ -3,7 +3,7 @@ import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (reaction: CT.Reaction) => {
+export default async (reaction: CT.ReactionAdd) => {
   if (reaction.userId === client.id) return;
   if (!reaction.guildId) return;
 
@@ -35,7 +35,7 @@ export default async (reaction: CT.Reaction) => {
   });
 };
 
-const getBaseRow = (reaction: CT.Reaction) =>
+const getBaseRow = (reaction: CT.ReactionAdd) =>
   client.ch
     .query(
       `SELECT * FROM rrsettings WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,
@@ -43,7 +43,7 @@ const getBaseRow = (reaction: CT.Reaction) =>
     )
     .then((r: DBT.rrsettings[] | null) => (r ? r[0] : null));
 
-const getReactionRows = (reaction: CT.Reaction, emoteIdentifier: string | bigint) =>
+const getReactionRows = (reaction: CT.ReactionAdd, emoteIdentifier: string | bigint) =>
   client.ch
     .query(
       'SELECT * FROM rrreactions WHERE emoteid = $1 AND msgid = $2 AND guildid = $3 AND channelid = $4 AND active = true;',
@@ -56,7 +56,7 @@ const getReactionRows = (reaction: CT.Reaction, emoteIdentifier: string | bigint
     )
     .then((r: DBT.rrreactions[] | null) => r || null);
 
-const getRelatedReactions = async (reaction: CT.Reaction, reactionRows: DBT.rrreactions[]) => {
+const getRelatedReactions = async (reaction: CT.ReactionAdd, reactionRows: DBT.rrreactions[]) => {
   const buttonRows = await client.ch
     .query(
       `SELECT * FROM rrbuttons WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,

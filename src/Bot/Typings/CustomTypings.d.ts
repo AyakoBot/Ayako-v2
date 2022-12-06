@@ -146,12 +146,20 @@ export interface ButtonInteraction extends Omit<DDeno.Interaction, 'data'> {
   data: DDeno.DiscordInteractionData;
 }
 
-export interface Reaction {
+export interface ReactionAdd {
   userId: bigint;
   channelId: bigint;
   messageId: bigint;
   guildId?: bigint;
   member?: DDeno.Member;
   user?: DDeno.User;
+  emoji: DDeno.Emoji;
+}
+
+export interface ReactionRemove {
+  userId: bigint;
+  channelId: bigint;
+  messageId: bigint;
+  guildId?: bigint;
   emoji: DDeno.Emoji;
 }
