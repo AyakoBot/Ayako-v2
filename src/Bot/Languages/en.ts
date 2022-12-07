@@ -490,9 +490,17 @@ export default {
     },
     messageReactionRemoveEmoji: {
       title: `Reaction Emoji Removed`,
-      description: (reaction: DDeno.Emoji, msg: CT.Message) =>
-        `All Users had their Reaction of\nEmoji \`${reaction.name}\` / \`${
-          reaction.id
+      description: (
+        reaction: {
+          channelId: bigint;
+          messageId: bigint;
+          guildId?: bigint;
+          emoji: DDeno.Emoji;
+        },
+        msg: CT.Message,
+      ) =>
+        `All Users had their Reaction of\nEmoji \`${reaction.emoji.name}\` / \`${
+          reaction.emoji.id
         }\`\nremoved from\n[this Message](${client.ch.getJumpLink(
           msg,
         )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
