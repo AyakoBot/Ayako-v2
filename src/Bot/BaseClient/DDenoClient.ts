@@ -72,13 +72,13 @@ const client = CacheProxy.createProxyCache(
       guild: async (data: DDeno.Guild) => {
         const oldData = (await client.cache.guilds.get(data.id, false)) as DDeno.Guild;
 
-        if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData);
+        if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData, true);
         return true;
       },
       user: async (data: DDeno.User) => {
         const oldData = (await client.cache.users.get(data.id, false)) as DDeno.User;
 
-        if (oldData) (client.events.botUpdate as CT.UserUpdate)(client, data, oldData);
+        if (oldData) (client.events.botUpdate as CT.UserUpdate)(client, data, oldData, true);
         return true;
       },
       channel: async (data: DDeno.Channel) => {
@@ -88,7 +88,7 @@ const client = CacheProxy.createProxyCache(
           false,
         )) as DDeno.Channel;
 
-        if (oldData) (client.events.channelUpdate as CT.ChannelUpdate)(client, data, oldData);
+        if (oldData) (client.events.channelUpdate as CT.ChannelUpdate)(client, data, oldData, true);
         return true;
       },
       member: async (data: DDeno.Member) => {
@@ -100,13 +100,13 @@ const client = CacheProxy.createProxyCache(
 
         const user = (await client.cache.users.get(data.id, false)) as DDeno.User;
         if (oldData) {
-          (client.events.guildMemberUpdate as CT.MemberUpdate)(client, data, user, oldData);
+          (client.events.guildMemberUpdate as CT.MemberUpdate)(client, data, user, oldData, true);
         }
         return true;
       },
       role: async (data: DDeno.Role) => {
         const oldData = (await client.cache.roles.get(data.id, data.guildId, false)) as DDeno.Role;
-        if (oldData) (client.events.roleUpdate as CT.RoleUpdate)(client, data, oldData);
+        if (oldData) (client.events.roleUpdate as CT.RoleUpdate)(client, data, oldData, true);
         return true;
       },
       message: async (data: DDeno.Message) => {
@@ -116,7 +116,7 @@ const client = CacheProxy.createProxyCache(
           data.guildId,
           false,
         )) as DDeno.Message;
-        if (oldData) (client.events.messageUpdate as CT.MessageUpdate)(client, data, oldData);
+        if (oldData) (client.events.messageUpdate as CT.MessageUpdate)(client, data, oldData, true);
         return true;
       },
     },
