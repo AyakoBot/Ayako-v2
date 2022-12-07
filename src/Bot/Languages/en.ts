@@ -584,11 +584,11 @@ export default {
           }> / \`${msg.channel.name}\` / \`${msg.channel.id}\`\nwas updated`,
         oldContent: `Old Content`,
         newContent: `New Content`,
-        attachmentsLog: (msg: CT.Message) =>
+        attachmentsLog: (msg: DDeno.Message) =>
           `This is the Attachments Log to an Updated Message\nClick [here](${client.ch.getJumpLink(
             msg,
           )}) to Jump to the Update Log`,
-        updateLog: (msg: CT.Message) =>
+        updateLog: (msg: DDeno.Message) =>
           `This Message had Attachments\nClick [here](${client.ch.getJumpLink(
             msg,
           )}) to Jump to the Attachments Log`,

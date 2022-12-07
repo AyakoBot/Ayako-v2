@@ -40,24 +40,42 @@ export interface CustomClient extends DDeno.Bot {
 
 export type Language = typeof import('../Languages/en.js').default;
 
-export type GuildUpdate = (client: DDeno.Bot, guild: DDeno.Guild, oldGuild: DDeno.Guild) => void;
-export type UserUpdate = (client: DDeno.Bot, user: DDeno.User, oldUser: DDeno.User) => void;
+export type GuildUpdate = (
+  client: DDeno.Bot,
+  guild: DDeno.Guild,
+  oldGuild: DDeno.Guild,
+  fromCache?: true,
+) => void;
+export type UserUpdate = (
+  client: DDeno.Bot,
+  user: DDeno.User,
+  oldUser: DDeno.User,
+  fromCache?: true,
+) => void;
 export type ChannelUpdate = (
   client: DDeno.Bot,
   user: DDeno.Channel,
   oldUser: DDeno.Channel,
+  fromCache?: true,
 ) => void;
 export type MemberUpdate = (
   client: DDeno.Bot,
   member: DDeno.Member,
   user: DDeno.User,
   oldMember: DDeno.Member,
+  fromCache?: true,
 ) => void;
-export type RoleUpdate = (client: DDeno.Bot, role: DDeno.Role, oldRole: DDeno.Role) => void;
+export type RoleUpdate = (
+  client: DDeno.Bot,
+  role: DDeno.Role,
+  oldRole: DDeno.Role,
+  fromCache?: true,
+) => void;
 export type MessageUpdate = (
   client: DDeno.Bot,
   message: DDeno.Message,
   oldMessage: DDeno.Message,
+  fromCache?: true,
 ) => void;
 
 export type Client = CacheProxy.BotWithProxyCache<CacheProxy.ProxyCacheTypes<true>, CustomClient>;
