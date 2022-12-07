@@ -45,11 +45,9 @@ export default async (msgs: DDeno.Message[]) => {
       .map(
         (m) =>
           'embeds' in m &&
-          `${client.ch.stp(client.customConstants.standard.discordUrlDB, {
-            guildid: m.guildId,
-            channelid: m.channelId,
-            msgid: m.id,
-          })}\n${m.embeds?.map((e) => `${JSON.stringify(e, null, 2)}`).join('\n')}`,
+          `${client.ch.getJumpLink(m)}\n${m.embeds
+            ?.map((e) => `${JSON.stringify(e, null, 2)}`)
+            .join('\n')}`,
       )
       .join('\n\n')}`;
     if (msgs.map((m) => ('embeds' in m ? m.embeds : [])).flat(1).length) {

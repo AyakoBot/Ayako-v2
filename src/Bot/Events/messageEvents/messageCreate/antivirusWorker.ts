@@ -5,9 +5,8 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 import jobs from 'node-schedule';
 
-import stp from '../../../BaseClient/ClientHelperModules/stp';
+import getJumpLink from '../../../BaseClient/ClientHelperModules/getJumpLink';
 import * as util from '../../../BaseClient/ClientHelperModules/util';
-import constants from '../../../BaseClient/Other/Constants.json' assert { type: 'json' };
 import auth from '../../../../auth.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
 
@@ -93,9 +92,9 @@ const run = async ({
   badLinks,
 }: {
   msgData: {
-    channelid: string;
-    msgid: string;
-    guildid: string;
+    channelid: bigint;
+    msgid: bigint;
+    guildid: bigint;
   };
   linkObject: LinkObject;
   lan: CT.Language['antivirus'];
@@ -240,14 +239,11 @@ const run = async ({
 
     parentPort?.postMessage({
       type: 'send',
-      content: `${util.makeCodeBlock(linkObject.baseURLhostname)}\n${stp(
-        constants.standard.discordUrlDB,
-        {
-          guildid: msgData.guildid ? msgData.guildid : '@me',
-          channelid: msgData.channelid,
-          msgid: msgData.msgid,
-        },
-      )}`,
+      content: `${util.makeCodeBlock(linkObject.baseURLhostname)}\n${getJumpLink({
+        guildId: msgData.guildid,
+        channelId: msgData.channelid,
+        id: msgData.msgid,
+      })}`,
       channelid: '726252103302905907',
     });
 
@@ -267,10 +263,10 @@ const run = async ({
 
     parentPort?.postMessage({
       type: 'send',
-      content: `${util.makeCodeBlock(linkObject.hostname)}\n${stp(constants.standard.discordUrlDB, {
-        guildid: msgData.guildid ? msgData.guildid : '@me',
-        channelid: msgData.channelid,
-        msgid: msgData.msgid,
+      content: `${util.makeCodeBlock(linkObject.hostname)}\n${getJumpLink({
+        guildId: msgData.guildid,
+        channelId: msgData.channelid,
+        id: msgData.msgid,
       })}`,
       channelid: '726252103302905907',
     });

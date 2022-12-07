@@ -567,9 +567,7 @@ const cloudFlare = async (
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${client.ch.stp(lan.cfProtected, {
-      cross: client.stringEmotes.cross,
-    })}`,
+    description: `**${msg.language.result}**\n${lan.cfProtected}`,
     color: 16776960,
   };
 
@@ -586,16 +584,7 @@ const cloudFlare = async (
     msg.language,
   );
 
-  linkLog(
-    msg,
-    lan,
-    client.customConstants.colors.loading,
-    linkObject,
-    client.ch.stp(lan.cfProtected, {
-      cross: client.stringEmotes.cross,
-    }),
-    res,
-  );
+  linkLog(msg, lan, client.customConstants.colors.loading, linkObject, lan.cfProtected, res);
 };
 
 const VTfail = (
