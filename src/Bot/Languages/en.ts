@@ -474,12 +474,12 @@ export default {
     },
     messageReactionRemove: {
       title: `Message Reaction Removed`,
-      description: (user: DDeno.User, reaction: DDeno.Emoji, msg: CT.Message) =>
+      description: (user: DDeno.User, reaction: CT.ReactionRemove, msg: CT.Message) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nhas removed their Reaction or had their Reaction removed of\nEmoji \`${
-          reaction.name
-        }\` / \`${reaction.id}\` \nfrom\n[this Message](${client.ch.getJumpLink(
+          reaction.emoji.name
+        }\` / \`${reaction.emoji.id}\` \nfrom\n[this Message](${client.ch.getJumpLink(
           msg,
         )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
           msg.author.username

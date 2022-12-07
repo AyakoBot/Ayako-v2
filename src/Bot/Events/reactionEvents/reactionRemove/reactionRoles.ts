@@ -3,7 +3,7 @@ import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (reaction: CT.ReactionAdd) => {
+export default async (reaction: CT.ReactionRemove) => {
   if (reaction.userId === client.id) return;
   if (!reaction.guildId) return;
 
@@ -25,12 +25,7 @@ export default async (reaction: CT.ReactionAdd) => {
   const hasAnyOfRelated = getHasAnyOfRelated(relatedReactions, member);
 
   reactionRows.forEach((reactionRow) => {
-    if (
-      (!hasAnyOfRelated && baseRow.onlyone && reactionRow.roles) ||
-      (!baseRow.onlyone && reactionRow.roles)
-    ) {
-      giveRoles(reactionRow, baseRow, hasAnyOfRelated, member);
-    }
+    removeRoles(reactionRow, baseRow, hasAnyOfRelated, member);
   });
 };
 
@@ -84,26 +79,30 @@ const getHasAnyOfRelated = (
   return hasAnyOfRelated;
 };
 
-const giveRoles = async (
+const removeRoles = async (
   reactionRow: DBT.rrreactions,
   baseRow: DBT.rrsettings,
   hasAnyOfRelated: boolean,
   member: DDeno.Member,
 ) => {
-  const rolesToAdd: bigint[] = [];
+  const rolesToRemove: bigint[] = [];
 
   reactionRow.roles?.map(BigInt).forEach((rID) => {
-    if (!member.roles.includes(rID)) rolesToAdd.push(rID);
+    if (!member.roles.includes(rID)) rolesToRemove.push(rID);
   });
 
   if (hasAnyOfRelated && baseRow.anyroles && baseRow.anyroles.length) {
     baseRow.anyroles.map(BigInt).forEach((rID) => {
-      if (!member.roles.includes(rID)) rolesToAdd.push(rID);
+      if (!member.roles.includes(rID)) rolesToRemove.push(rID);
     });
   }
 
-  if (rolesToAdd.length) {
+  if (rolesToRemove.length) {
     const language = await client.ch.languageSelector(member.guildId);
-    client.ch.roleManager.add(member, rolesToAdd, language.events.messageReactionAdd.rrReason);
+    client.ch.roleManager.remove(
+      member,
+      rolesToRemove,
+      language.events.messageReactionRemove.rrReason,
+    );
   }
 };
