@@ -1,7 +1,7 @@
 import type DDeno from 'discordeno';
 import reply from './replyMsg.js';
 import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
-import constants from '../Other/Constants.json' assert { type: 'json' };
+import constants from '../Other/Constants.js';
 import client from '../DDenoClient.js';
 import type CT from '../../Typings/CustomTypings';
 

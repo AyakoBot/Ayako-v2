@@ -2,7 +2,7 @@ import type DDeno from 'discordeno';
 import type Jobs from 'node-schedule';
 import RedisXpSQL from 'pg-x-redis';
 import type NekoClient from '../BaseClient/NekoClient.js';
-import type Constants from '../BaseClient/Other/Constants.json';
+import type Constants from '../BaseClient/Other/Constants.js';
 import type ObjectEmotes from '../BaseClient/Other/ObjectEmotes.json';
 import type StringEmotes from '../BaseClient/Other/StringEmotes.json';
 import type ReactionEmotes from '../BaseClient/Other/ReactionEmotes.json';

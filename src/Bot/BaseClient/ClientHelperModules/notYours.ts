@@ -1,6 +1,6 @@
 import type DDeno from 'discordeno';
 import type CT from '../../Typings/CustomTypings';
-import constants from '../Other/Constants.json' assert { type: 'json' };
+import constants from '../Other/Constants.js';
 import reply from './replyCmd.js';
 
 export default (interaction: CT.ButtonInteraction, language: CT.Language) => {

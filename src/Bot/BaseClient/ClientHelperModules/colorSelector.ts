@@ -1,5 +1,5 @@
 import type DDeno from 'discordeno';
-import constants from '../Other/Constants.json' assert { type: 'json' };
+import constants from '../Other/Constants.js';
 import client from '../DDenoClient.js';
 
 export default async (member: DDeno.Member | undefined | null) => {
