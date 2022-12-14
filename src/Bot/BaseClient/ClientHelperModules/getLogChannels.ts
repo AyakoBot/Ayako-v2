@@ -20,6 +20,7 @@ export default async (
     | 'threadevents'
     | 'guildmemberevents'
     | 'stageevents'
+    | 'automodevents'
     | 'reactionevents',
   msg: DDeno.Message | CT.MessageGuild | { guildId: bigint },
 ) => {

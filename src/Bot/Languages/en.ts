@@ -4,8 +4,56 @@ import client from '../BaseClient/DDenoClient.js';
 
 type Strumber = string | number;
 
+export const getUser = (user: DDeno.User) =>
+  `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\n`;
+
+export const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
+  `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
+
+export const getMessage = (msg: CT.Message | DDeno.Message) =>
+  `[Message](${client.ch.getJumpLink(msg)})\n`;
+
+export const getChannel = (channel: DDeno.Channel) =>
+  `Channel <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
+
 export default {
   events: {
+    logs: {
+      automodActionExecution: {
+        name: 'Auto-Moderation Rule enforced',
+        descMessage: (rule: DDeno.AutoModerationRule, msg: DDeno.Message, user: DDeno.User) =>
+          `${getAutoModerationRule(rule)}was enforced on\nthis ${getMessage(msg)}from\n${getUser(
+            user,
+          )}`,
+        desc: (rule: DDeno.AutoModerationRule, user: DDeno.User) =>
+          `${getAutoModerationRule(rule)}was enforced on\n${getUser(user)}`,
+        matchedKeyword: 'Matched Keyword',
+        matchedContent: 'Matched Content',
+        content: 'Content',
+        ruleTriggerType: {
+          0: 'Rule Trigger Type',
+          1: 'Keyword Filter',
+          2: 'Harmful Link Filter',
+          3: 'Spam Filter',
+          4: 'Keyword Preset Filter',
+          5: 'Mention Spam Filter',
+        },
+        actionType: {
+          0: 'Action Type',
+          1: 'Block Message',
+          2: 'Send Alert Message',
+          3: 'Timeout',
+        },
+        alert: 'Alert sent',
+        timeout: 'User timed-out',
+        alertChannel: 'Alert Channel',
+      },
+      automodRuleCreate: {
+        desc: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
+          `${getUser(user)}created\n${getAutoModerationRule(rule)}`,
+        name: 'Auto-Moderation Rule created',
+      },
+    },
     ready: {
       channelunban: `Automatically Channel-Unbanned`,
       unban: `Automatically Un-Banned`,
@@ -67,6 +115,15 @@ export default {
         channel: DDeno.Channel,
       ) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas deleted\nWebhook \`${webhook.name}\` / \`${webhook.id}\`\nfrom\n${channelType} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\``,
+    },
+    automodRuleCreate: {
+      desc: (
+        user: DDeno.User,
+        rule: DDeno.AutoModerationRule,
+        channelType: string,
+        channel: DDeno.Channel,
+      ) =>
+        `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas created\nAuto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\nfrom\n${channelType} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\``,
     },
     voiceStateUpdate: {
       desc: (user: DDeno.User) =>
@@ -2342,4 +2399,6 @@ export default {
   noAliases: `No Aliases`,
   Default: `Default`,
   Level: `Level`,
+  End: 'End',
+  Message: 'Message',
 };

@@ -42,7 +42,8 @@
     "DiscordCertifiedModerator": {
       "name": "DiscordModerator",
       "id": "945409713661677608",
-      "animated": false
+      "animated": false,
+      "link": "https://cdn.discordapp.com/emojis/945409713661677608.png"
     },
     "Bot": { "name": "Bot", "id": "945605032190029825", "animated": false },
     "Nitro": { "name": "Nitro", "id": "945409713691066388", "animated": false },
