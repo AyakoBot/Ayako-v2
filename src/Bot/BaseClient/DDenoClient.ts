@@ -5,7 +5,7 @@ import * as CacheProxy from './Other/permissions-plugin/index.js';
 import type CT from '../Typings/CustomTypings';
 import NekoClient from './NekoClient.js';
 import * as config from '../../configs.js';
-import Constants from './Other/Constants.json' assert { type: 'json' };
+import Constants from './Other/Constants.js';
 import ObjectEmotes from './Other/ObjectEmotes.json' assert { type: 'json' };
 import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
 import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
