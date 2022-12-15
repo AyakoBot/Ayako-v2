@@ -20,6 +20,7 @@ export interface CustomClient extends DDeno.Bot {
   verificationCodes: Map<string, string>;
   webhooks: Map<string, DDeno.Webhook[]>;
   giveawayClaimTimeout: Map<string, Jobs.Job>;
+  automodRules: Map<bigint, DDeno.AutoModerationRule>;
 
   neko: typeof NekoClient;
   customConstants: typeof Constants;
