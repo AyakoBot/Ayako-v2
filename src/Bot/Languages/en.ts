@@ -19,6 +19,10 @@ export const getChannel = (channel: DDeno.Channel) =>
 export default {
   events: {
     logs: {
+      addedRemoved: (added: string, removed: string) =>
+        `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
+      beforeAfter: (before: string, after: string) =>
+        `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
       automodActionExecution: {
         name: 'Auto-Moderation Rule enforced',
         descMessage: (rule: DDeno.AutoModerationRule, msg: DDeno.Message, user: DDeno.User) =>
@@ -2438,4 +2442,7 @@ export default {
   Level: `Level`,
   End: 'End',
   Message: 'Message',
+  Added: 'Added',
+  Removed: 'Removed',
+  Changed: 'Changed',
 };
