@@ -48,48 +48,14 @@ export default {
         timeout: 'User timed-out',
         alertChannel: 'Alert Channel',
       },
-      automodRuleCreate: {
-        desc: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
+      automodRule: {
+        descCreate: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
           `${getUser(user)}created\n${getAutoModerationRule(rule)}`,
-        name: 'Auto-Moderation Rule created',
-        keywordFilter: 'Triggering Keywords',
-        presets: {
-          0: 'Used Preset',
-          1: 'Profanity',
-          2: 'Sexual Content',
-          3: 'Slurs',
-        },
-        allowList: 'Allowed Words',
-        mentionTotalLimit: 'Mention Limit',
-        enabled: 'Enabled',
-        eventType: {
-          0: 'Event Type',
-          1: 'Message Send',
-        },
-        triggerType: {
-          0: 'Trigger Type',
-          1: 'Keyword',
-          2: 'Harmful Link',
-          3: 'Spam',
-          4: 'Keyword Preset',
-          5: 'Spam',
-        },
-        exemptRoles: 'Exempt Roles',
-        exemptChannels: 'Exempt Channels',
-        actionsType: {
-          0: 'Actions Type',
-          1: 'Block Message',
-          2: 'Send Alert Message',
-          3: 'Timeout',
-        },
-        alertChannel: 'Alert Channel',
-        timeoutDuration: 'Timeout Duration',
-        actions: 'Actions',
-      },
-      automodRuleDelete: {
-        desc: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
+        descDelete: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
           `${getUser(user)}deleted\n${getAutoModerationRule(rule)}`,
-        name: 'Auto-Moderation Rule deleted',
+        descUpdate: (user: DDeno.User, rule: DDeno.AutoModerationRule) =>
+          `${getUser(user)}updated\n${getAutoModerationRule(rule)}`,
+        name: 'Auto-Moderation Rule created',
         keywordFilter: 'Triggering Keywords',
         presets: {
           0: 'Used Preset',

@@ -10,7 +10,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
   if (!channels) return;
 
   const language = await client.ch.languageSelector(rule.guildId);
-  const lan = language.events.logs.automodRuleDelete;
+  const lan = language.events.logs.automodRule;
   const con = client.customConstants.events.logs.automodRule;
   const user = await client.cache.users.get(rule.creatorId);
   if (!user) return;
@@ -20,7 +20,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
       iconUrl: con.delete,
       name: lan.name,
     },
-    description: lan.desc(user, rule),
+    description: lan.descDelete(user, rule),
     fields: [],
   };
 
