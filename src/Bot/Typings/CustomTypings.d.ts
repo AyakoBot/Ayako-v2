@@ -182,3 +182,5 @@ export interface ReactionRemove {
   guildId?: bigint;
   emoji: DDeno.Emoji;
 }
+
+export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference';
