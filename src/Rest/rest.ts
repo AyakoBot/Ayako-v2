@@ -8,7 +8,7 @@ const rest = DDeno.createRestManager({
   secretKey: auth.secret,
   customUrl: `http://localhost:${8005}`,
   // eslint-disable-next-line no-console
-  debug: console.log,
+  // debug: console.log,
 });
 
 rest.convertRestError = (errorStack, data) => {
