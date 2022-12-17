@@ -1,3 +1,5 @@
+import type * as DDeno from 'discordeno';
+
 export default {
   events: {
     logs: {
@@ -139,7 +141,7 @@ export default {
       guildName: 'Guild Name',
       guildId: 'Guild ID',
       memberCount: 'Membercount',
-      currentGuildCount: 'Ayako is now in {{client.guilds.length}} guilds',
+      currentGuildCount: (length: number) => `Ayako is now in ${length} guilds`,
       joinedAGuild: '<@&669894051851403294> left a Guild',
       guildOwner: 'Guild Owner',
     },
@@ -226,21 +228,23 @@ export default {
       'https://discord.com/api/oauth2/authorize?client_id=650691698409734151&permissions=1642787630327&scope=bot%20applications.commands',
     image: 'https://ayakobot.com/DefaultEmbedImage',
     support: 'https://discord.gg/euTdctganf',
-    discordUrl: 'https://discord.com/channels/{{msg.guild.id}}/{{msg.channel.id}}/{{msg.id}}',
-    discordUrlDB: 'https://discord.com/channels/{{guildid}}/{{channelid}}/{{msgid}}',
-    permissionsViewer: 'https://discordapi.com/permissions.html#{{permission}}',
+    permissionsViewer: (permission: bigint) =>
+      `https://discordapi.com/permissions.html#${permission}`,
     suggestionsDataChannel: '968628817688133662',
     ownerID: '318453143476371456',
     patreon: 'https://www.patreon.com/Lars_und_so',
     error: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
-    guildAvatarURL:
-      'https://cdn.discordapp.com/guilds/{{guild.id}}/users/{{member.user.id}}/avatars/{{member.avatar}}.{{fileEnd}}?size=2048',
-    guildIconURL:
-      'https://cdn.discordapp.com/icons/{{guild.id}}/{{guild.avatar}}.{{fileEnd}}?size=2048',
-    emojiURL: 'https://cdn.discordapp.com/emojis/{{emoji.id}}.{{fileEnd}}?size=2048',
-    roleIconURL: 'https://cdn.discordapp.com/role-icons/{{guild.id}}/{{role.icon}}.png?size=2048',
-    userAvatarURL:
-      'https://cdn.discordapp.com/avatars/{{user.id}}/{{user.avatar}}.{{fileEnd}}?size=4096',
+    guildAvatarURL: (guild: DDeno.Guild, member: DDeno.Member, fileEnd: string) =>
+      `https://cdn.discordapp.com/guilds/${guild.id}/users/${member.id}/avatars/${member.avatar}.${fileEnd}?size=2048`,
+    guildIconURL: (guild: DDeno.Guild, fileEnd: string) =>
+      `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${fileEnd}?size=2048`,
+    emojiURL: (emoji: DDeno.Emoji, fileEnd: string) =>
+      `https://cdn.discordapp.com/emojis/${emoji.id}.${fileEnd}?size=2048`,
+    roleIconURL: (guild: DDeno.Guild, role: DDeno.Role) =>
+      `https://cdn.discordapp.com/role-icons/${guild.id}/${role.icon}.png?size=2048`,
+    userAvatarURL: (user: DDeno.User, fileEnd: string) =>
+      `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
+    appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
   },
   mod: {
     strike: {
