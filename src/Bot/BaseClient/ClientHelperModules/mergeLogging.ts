@@ -28,6 +28,14 @@ export default (
       );
       break;
     }
+    case 'icon': {
+      embed.thumbnail = {
+        url: `attachment://${after}.${
+          String(before).split(/\./g)[String(before).split(/\./g).length - 1]
+        }`,
+      };
+      break;
+    }
     default: {
       throw new Error(`Unsupported Type "${type}"`);
     }
