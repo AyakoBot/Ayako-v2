@@ -50,6 +50,8 @@ const isDisallowed = (file: string) =>
   ['.d.ts', '.d.ts.map', '.js.map'].some((end) => file.endsWith(end));
 
 export default async (...args: unknown[]) => {
+  args.shift();
+
   const { stack } = new Error();
   if (!stack) return;
 
