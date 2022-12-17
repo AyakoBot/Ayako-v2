@@ -35,4 +35,4 @@ export const TOTAL_WORKERS = 4;
 export const GATEWAY_AUTHORIZATION = auth.secret;
 export const GATEWAY_HOST = 'localhost';
 export const GATEWAY_PORT = 8007;
-export const GATEWAY_URL = `${GATEWAY_HOST}:${GATEWAY_PORT}`;
+export const GATEWAY_URL = `https://${GATEWAY_HOST}:${GATEWAY_PORT}`;
