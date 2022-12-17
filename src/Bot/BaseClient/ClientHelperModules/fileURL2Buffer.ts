@@ -21,7 +21,7 @@ export default async (urls: (string | null)[]) =>
 
       if (buffer) {
         return {
-          blob: new Blob([buffer]),
+          blob: new Blob([buffer], { type: 'application/octet-stream' }),
           name: fileName,
         };
       }
