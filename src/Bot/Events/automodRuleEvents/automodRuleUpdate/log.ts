@@ -23,6 +23,7 @@ export default async (rule: DDeno.AutoModerationRule, oldRule: DDeno.AutoModerat
     },
     description: lan.descUpdate(user, rule),
     fields: [],
+    color: client.customConstants.colors.loading,
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

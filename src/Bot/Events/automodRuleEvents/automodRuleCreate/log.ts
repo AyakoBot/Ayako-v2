@@ -22,6 +22,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
     },
     description: lan.descCreate(user, rule),
     fields: [],
+    color: client.customConstants.colors.warning,
   };
 
   if (rule.triggerMetadata) {

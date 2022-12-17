@@ -22,6 +22,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
     },
     description: lan.descDelete(user, rule),
     fields: [],
+    color: client.customConstants.colors.success,
   };
 
   if (rule.triggerMetadata) {
