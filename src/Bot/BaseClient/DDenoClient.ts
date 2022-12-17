@@ -74,6 +74,9 @@ const client = CacheProxy.createProxyCache(
         const oldData = (await client.cache.guilds.get(data.id, false)) as DDeno.Guild;
 
         if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData, true);
+        // eslint-disable-next-line import/no-cycle
+        else (await import('../Events/guildEvents/guildCacheAdd/guildCacheAdd.js')).default(data);
+
         return true;
       },
       user: async (data: DDeno.User) => {
