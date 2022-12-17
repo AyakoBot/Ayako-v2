@@ -6,7 +6,7 @@ import 'moment-duration-format';
 export default async (rule: DDeno.AutoModerationRule) => {
   if (!rule.guildId) return;
 
-  const channels = await client.ch.getLogChannels('reactionevents', rule);
+  const channels = await client.ch.getLogChannels('automodevents', rule);
   if (!channels) return;
 
   const language = await client.ch.languageSelector(rule.guildId);
