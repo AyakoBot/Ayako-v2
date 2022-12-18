@@ -47,3 +47,4 @@ export const getPermission              = (await import(`./ClientHelperModules/g
 export const getJumpLink                = (await import(`./ClientHelperModules/getJumpLink.js`)).default;
 export const getLogChannels             = (await import(`./ClientHelperModules/getLogChannels.js`)).default;
 export const mergeLogging               = (await import(`./ClientHelperModules/mergeLogging.js`)).default;
+export const getTrueChannelType         = (await import(`./ClientHelperModules/getTrueChannelType.js`)).default;
