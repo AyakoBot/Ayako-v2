@@ -5,7 +5,7 @@ import client from '../../BaseClient/DDenoClient.js';
 
 export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild[]) => {
   guilds.forEach(async (g) => {
-    const channels = await client.ch.getLogChannels('reactionevents', { guildId: g.id });
+    const channels = await client.ch.getLogChannels('userevents', { guildId: g.id });
     if (!channels) return;
 
     const language = await client.ch.languageSelector(g.id);
