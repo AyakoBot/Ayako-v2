@@ -183,4 +183,4 @@ export interface ReactionRemove {
   emoji: DDeno.Emoji;
 }
 
-export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference';
+export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
