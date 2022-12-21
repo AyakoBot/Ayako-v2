@@ -55,8 +55,8 @@ export type UserUpdate = (
 ) => void;
 export type ChannelUpdate = (
   client: DDeno.Bot,
-  user: DDeno.Channel,
-  oldUser: DDeno.Channel,
+  channel: DDeno.Channel,
+  oldChannel: DDeno.Channel,
   fromCache?: true,
 ) => void;
 export type MemberUpdate = (
