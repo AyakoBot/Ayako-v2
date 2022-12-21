@@ -13,8 +13,8 @@ export const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
 export const getMessage = (msg: CT.Message | DDeno.Message) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
 
-export const getChannel = (channel: DDeno.Channel) =>
-  `Channel <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
+export const getChannel = (channel: DDeno.Channel, type?: string) =>
+  `${type ?? 'Channel'} <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
 
 export default {
   events: {
@@ -23,6 +23,44 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      channel: {
+        descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
+          `${getUser(user)}created\n${getChannel(channel, type)}`,
+        descCreate: (channel: DDeno.Channel, type: string) =>
+          `${getChannel(channel, type)}was created`,
+        descDeleteAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
+          `${getUser(user)}deleted\n${getChannel(channel, type)}`,
+        descDelete: (channel: DDeno.Channel, type: string) =>
+          `${getChannel(channel, type)}was deleted`,
+        nameCreate: 'Channel created',
+        nameDelete: 'Channel deleted',
+        topic: 'Description',
+        flagsName: 'Flags',
+        flags: {
+          Pinned: 'Pinned to Top of Forum',
+          RequireTag: 'Requires a Tag',
+        },
+        bitrate: 'Bitrate',
+        nsfw: 'NSFW',
+        permissions: 'Permissions',
+        archived: 'Archived',
+        locked: 'Locked',
+        invitable: 'Invitable',
+        userLimit: 'User Limit',
+        rateLimitPerUser: 'Rate Limit per User',
+        rtcRegion: 'RTC Region',
+        videoQualityMode: {
+          0: 'Video Quality Mode',
+          1: 'Auto',
+          2: '720p',
+        },
+        autoArchiveDuration: 'Auto-Archive Duration',
+        type: 'Channel Type',
+        permissionOverwrites: 'Permission Overwrites',
+        parentChannel: 'Parent Category',
+        parentId: (channel: DDeno.Channel) => `${getChannel(channel, 'Category')}`,
+        newlyCreated: 'Newly Created',
+      },
       userUpdate: {
         name: 'User updated',
         desc: (user: DDeno.User) => `${getUser(user)}has updated`,
@@ -2430,6 +2468,21 @@ export default {
     cooldown: `Ayako Cooldowns`,
     abortedMod: `Aborted Mod Command`,
     afk: `Ayako AFK`,
+  },
+  regions: {
+    brazil: 'Brazil',
+    hongkong: 'Hong Kong',
+    india: 'India',
+    japan: 'Japan',
+    rotterdam: 'Rotterdam',
+    russia: 'Russia',
+    singapore: 'Singapore',
+    southafrica: 'South Africa',
+    sydney: 'Sydney',
+    'us-central': 'US Central',
+    'us-east': 'US East',
+    'us-south': 'US South',
+    'us-west': 'US West',
   },
   welcome: (user: DDeno.User, guild: DDeno.Guild) =>
     `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`,
