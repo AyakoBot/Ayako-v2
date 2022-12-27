@@ -1,6 +1,6 @@
+import moment from 'moment';
 import * as Discord from 'discord.js';
 import type * as DDeno from 'discordeno';
-import moment from 'moment';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 import 'moment-duration-format';

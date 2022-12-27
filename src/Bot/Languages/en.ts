@@ -32,8 +32,13 @@ export default {
           `${getUser(user)}deleted\n${getChannel(channel, type)}`,
         descDelete: (channel: DDeno.Channel, type: string) =>
           `${getChannel(channel, type)}was deleted`,
+        descUpdateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
+          `${getUser(user)}updated\n${getChannel(channel, type)}`,
+        descUpdate: (channel: DDeno.Channel, type: string) =>
+          `${getChannel(channel, type)}was updated`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
+        nameUpdate: 'Channel update',
         topic: 'Description',
         flagsName: 'Flags',
         flags: {
