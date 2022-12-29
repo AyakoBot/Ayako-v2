@@ -1,9 +1,7 @@
-import moment from 'moment';
 import * as Discord from 'discord.js';
 import type * as DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/DDenoClient.js';
-import 'moment-duration-format';
 
 export default async (channel: DDeno.Channel) => {
   if (!channel.guildId) return;
@@ -66,12 +64,7 @@ export default async (channel: DDeno.Channel) => {
   if (channel.rateLimitPerUser) {
     embed.fields?.push({
       name: lan.rateLimitPerUser,
-      value: moment
-        .duration(channel.rateLimitPerUser)
-        .format(
-          `y [${language.time.years}], M [${language.time.months}], d [${language.time.days}], h [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-          { trim: 'all' },
-        ),
+      value: client.ch.moment(channel.rateLimitPerUser, language),
       inline: true,
     });
   }
@@ -115,12 +108,7 @@ export default async (channel: DDeno.Channel) => {
   if (channel.autoArchiveDuration) {
     embed.fields?.push({
       name: lan.autoArchiveDuration,
-      value: moment
-        .duration(channel.autoArchiveDuration)
-        .format(
-          `y [${language.time.years}], M [${language.time.months}], d [${language.time.days}], h [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-          { trim: 'all' },
-        ),
+      value: client.ch.moment(channel.autoArchiveDuration, language),
       inline: true,
     });
   }

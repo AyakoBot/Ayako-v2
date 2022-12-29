@@ -1,6 +1,4 @@
 import type * as DDeno from 'discordeno';
-import moment from 'moment';
-import 'moment-duration-format';
 import * as jobs from 'node-schedule';
 import client from '../../../BaseClient/DDenoClient.js';
 import type DBT from '../../../Typings/DataBaseTypings';
@@ -82,13 +80,7 @@ const getAfkRow = (msg: CT.MessageGuild, mention?: bigint) =>
     .then((r: DBT.afk[] | null) => (r ? r[0] : null));
 
 const getTime = (afkRow: DBT.afk, language: CT.Language) =>
-  moment
-    .duration(Number(afkRow.since) - Date.now())
-    .format(
-      ` D [${language.time.days}], H [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-      { trim: 'all' },
-    )
-    .replace(/-/g, '');
+  client.ch.moment(Math.abs(Number(afkRow.since) - Date.now()), language);
 
 const deleteNickname = async (msg: CT.MessageGuild) => {
   const displayname = msg.member.nick ?? msg.author.username;

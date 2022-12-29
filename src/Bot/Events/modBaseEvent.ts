@@ -1,6 +1,4 @@
 import jobs from 'node-schedule';
-import moment from 'moment';
-import 'moment-duration-format';
 import DDeno from 'discordeno';
 import Discord from 'discord.js';
 import client from '../BaseClient/DDenoClient.js';
@@ -205,12 +203,7 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
   if (args.duration) {
     embed.fields?.push({
       name: language.duration,
-      value: moment
-        .duration(args.duration)
-        .format(
-          `y [${language.time.years}], M [${language.time.months}], d [${language.time.days}], h [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-          { trim: 'all' },
-        ),
+      value: client.ch.moment(args.duration, language),
       inline: false,
     });
   }

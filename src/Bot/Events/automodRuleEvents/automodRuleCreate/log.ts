@@ -1,7 +1,5 @@
-import moment from 'moment';
 import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
-import 'moment-duration-format';
 
 export default async (rule: DDeno.AutoModerationRule) => {
   if (!rule.guildId) return;
@@ -101,12 +99,10 @@ export default async (rule: DDeno.AutoModerationRule) => {
             ? `- ${
                 a.type === 2
                   ? `${lan.alertChannel} <#${a.metadata?.channelId}>  / \`${actionChannels[i]?.name}\` / \`${a.metadata?.channelId}\``
-                  : `${lan.timeoutDuration} ${moment
-                      .duration(a.metadata?.durationSeconds)
-                      .format(
-                        `y [${language.time.years}], M [${language.time.months}], d [${language.time.days}], h [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-                        { trim: 'all' },
-                      )}`
+                  : `${lan.timeoutDuration} ${client.ch.moment(
+                      a.metadata?.durationSeconds || 0,
+                      language,
+                    )}`
               }`
             : ''
         }`,

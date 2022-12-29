@@ -1,13 +1,11 @@
 import type * as DDeno from 'discordeno';
 import fs from 'fs';
 import * as jobs from 'node-schedule';
-import moment from 'moment';
 import type * as CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../../auth.json' assert { type: 'json' };
 import client from '../../../BaseClient/DDenoClient.js';
 import InteractionCollector from '../../../BaseClient/Other/InteractionCollector';
-import 'moment-duration-format';
 
 const execute = async (msg: CT.Message) => {
   const prefix = await getPrefix(msg);
@@ -182,9 +180,7 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
 
   const onCooldown = (cl: clEntry) => {
     const getEmote = (secondsLeft: number) => {
-      let returned = `**${moment
-        .duration(secondsLeft * 1000)
-        .format(`s [${msg.language.time.seconds}]`, { trim: 'all' })}**`;
+      let returned = `**${client.ch.moment(secondsLeft * 1000, msg.language)}**`;
       let usedEmote = false;
 
       if (secondsLeft <= 60) {

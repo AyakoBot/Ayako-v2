@@ -1,7 +1,5 @@
-import moment from 'moment';
 import type * as DDeno from 'discordeno';
 import client from '../../BaseClient/DDenoClient.js';
-import 'moment-duration-format';
 
 export default async (execution: DDeno.AutoModerationActionExecution) => {
   const channels = await client.ch.getLogChannels('automodevents', execution);
@@ -55,12 +53,10 @@ export default async (execution: DDeno.AutoModerationActionExecution) => {
               channelId: execution.action.metadata.channelId ?? 0n,
               id: execution.alertSystemMessageId ?? 0n,
             })})`
-          : `${language.duration} \`${moment
-              .duration(execution.action.metadata.durationSeconds)
-              .format(
-                `y [${language.time.years}], M [${language.time.months}], d [${language.time.days}], h [${language.time.hours}], m [${language.time.minutes}], s [${language.time.seconds}]`,
-                { trim: 'all' },
-              )}\` / ${language.End} <t:${String(
+          : `${language.duration} \`${client.ch.moment(
+              execution.action.metadata.durationSeconds || 0,
+              language,
+            )}\` / ${language.End} <t:${String(
               Number(execution.action.metadata.durationSeconds) + Date.now(),
             ).slice(0, -3)}> <t:${String(
               Number(execution.action.metadata.durationSeconds) + Date.now(),
