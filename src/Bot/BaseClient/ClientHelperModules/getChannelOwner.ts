@@ -1,5 +1,5 @@
 import type * as DDeno from 'discordeno';
-import client from '../DDenoClient';
+import client from '../DDenoClient.js';
 
 export default (channel: DDeno.Channel, audit: DDeno.AuditLogEntry | null) => {
   if (audit && audit.userId) return client.cache.users.get(audit.userId);
