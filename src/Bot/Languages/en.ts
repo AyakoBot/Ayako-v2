@@ -4,19 +4,25 @@ import client from '../BaseClient/DDenoClient.js';
 
 type Strumber = string | number;
 
-export const getUser = (user: DDeno.User) =>
+const getUser = (user: DDeno.User) =>
   `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\n`;
 
-export const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
+const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
 
-export const getMessage = (msg: CT.Message | DDeno.Message) =>
+const getMessage = (msg: CT.Message | DDeno.Message) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
 
-export const getChannel = (channel: DDeno.Channel, type?: string) =>
+const getChannel = (channel: DDeno.Channel, type?: string) =>
   `${type ?? 'Channel'} <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
 
 export default {
+  languageFunction: {
+    getChannel,
+    getUser,
+    getAutoModerationRule,
+    getMessage,
+  },
   events: {
     logs: {
       addedRemoved: (added: string, removed: string) =>
@@ -63,8 +69,18 @@ export default {
         type: 'Channel Type',
         permissionOverwrites: 'Permission Overwrites',
         parentChannel: 'Parent Category',
-        parentId: (channel: DDeno.Channel) => `${getChannel(channel, 'Category')}`,
         newlyCreated: 'Newly Created',
+        archiveTimestamp: 'Archive Time',
+        deniedPermissions: 'Denied Permissions',
+        grantedPermissions: 'Granted Permissions',
+        removedPermissions: 'Removed Permissions',
+        updatedPermissions: 'Updated Permissions',
+        deniedPermissionsFor: 'Denied Permission for',
+        grantedPermissionFor: 'Granted Permission for',
+        removedPermissionsFor: 'Removed Permissions for',
+        updatedPermissionFor: 'Updated Permission for',
+        unknownPermission: 'Unknown Permission Updates have been made',
+        unknownPermissionFix: 'Grant `View Audit` or `Administrator` to fix this issue',
       },
       userUpdate: {
         name: 'User updated',
@@ -2399,51 +2415,51 @@ export default {
       you: `You are missing Permissions to execute this Command`,
     },
     perms: {
-      createInstantInvite: `Create Instant Invite`,
-      kickMembers: `Kick Members`,
-      banMembers: `Ban Members`,
-      administrator: `Administrator`,
-      manageChannel: `Manage Channel`,
-      manageChannels: `Manage Channels`,
-      manageGuild: `Manage Guild/Server`,
-      addReactions: `Add Reactions`,
-      viewAuditLog: `View Audit Log`,
-      voicePrioritySpeaker: `Priority Speaker`,
-      voiceStream: `Stream`,
-      readMessages: `Read Messages`,
-      viewChannel: `View Channel`,
-      viewChannels: `View Channels`,
-      sendMessages: `Send Messages`,
-      sendTTSMessages: `Send TTS Messages`,
-      manageMessages: `Manage Messages`,
-      embedLinks: `Embed Links`,
-      attachFiles: `Attach Files`,
-      readMessageHistory: `Read Message History`,
-      mentionEveryone: `Mention Everyone`,
-      useExternalEmojis: `Use External Emojis`,
-      viewGuildInsights: `View Guild/Server Insights`,
-      voiceConnect: `Connect`,
-      voiceSpeak: `Speak`,
-      voiceMuteMembers: `Mute Members`,
-      voiceDeafenMembers: `Deafen Members`,
-      voiceMoveMembers: `Move Members`,
-      voiceUseVAD: `Use Voice Activity Detection`,
-      changeNickname: `Change Nickname`,
-      manageNicknames: `Manage Nicknames`,
-      manageRoles: `Manage Roles`,
-      manageWebhooks: `Manage Webhooks`,
-      manageEmojisAndStickers: `Manage Emojis and Stickers`,
-      useApplicationCommands: `Use Application Commands`,
-      voiceRequestToSpeak: `Request to Speak`,
-      manageThreads: `Manage Threads`,
-      createPublicThreads: `Create Public Threads`,
-      createPrivateThreads: `Create Private Threads`,
-      useExternalStickers: `Use External Stickers`,
-      sendMessagesInThreads: `Send Messages in Threads`,
-      startEmbeddedActivities: `Start Embedded Activities`,
-      moderateMembers: `Moderate Members`,
-      manageEvents: `Manage Events`,
-      managePermissions: `Manage Permissions`,
+      CreateInstantInvite: `Create Instant Invite`,
+      KickMembers: `Kick Members`,
+      BanMembers: `Ban Members`,
+      Administrator: `Administrator`,
+      ManageChannel: `Manage Channel`,
+      ManageChannels: `Manage Channels`,
+      ManageGuild: `Manage Guild/Server`,
+      AddReactions: `Add Reactions`,
+      ViewAuditLog: `View Audit Log`,
+      PrioritySpeaker: `Priority Speaker`,
+      Stream: `Stream`,
+      ReadMessages: `Read Messages`,
+      ViewChannel: `View Channel`,
+      ViewChannels: `View Channels`,
+      SendMessages: `Send Messages`,
+      SendTTSMessages: `Send TTS Messages`,
+      ManageMessages: `Manage Messages`,
+      EmbedLinks: `Embed Links`,
+      AttachFiles: `Attach Files`,
+      ReadMessageHistory: `Read Message History`,
+      MentionEveryone: `Mention Everyone`,
+      UseExternalEmojis: `Use External Emojis`,
+      ViewGuildInsights: `View Guild/Server Insights`,
+      Connect: `Connect`,
+      Speak: `Speak`,
+      MuteMembers: `Mute Members`,
+      DeafenMembers: `Deafen Members`,
+      MoveMembers: `Move Members`,
+      UseVAD: `Use Voice Activity Detection`,
+      ChangeNickname: `Change Nickname`,
+      ManageNicknames: `Manage Nicknames`,
+      ManageRoles: `Manage Roles`,
+      ManageWebhooks: `Manage Webhooks`,
+      ManageEmojisAndStickers: `Manage Emojis and Stickers`,
+      UseApplicationCommands: `Use Application Commands`,
+      RequestToSpeak: `Request to Speak`,
+      ManageThreads: `Manage Threads`,
+      CreatePublicThreads: `Create Public Threads`,
+      CreatePrivateThreads: `Create Private Threads`,
+      UseExternalStickers: `Use External Stickers`,
+      SendMessagesInThreads: `Send Messages in Threads`,
+      UseEmbeddedActivities: `Start Embedded Activities`,
+      ModerateMembers: `Moderate Members`,
+      ManageEvents: `Manage Events`,
+      ManagePermissions: `Manage Permissions`,
     },
   },
   punishments: {
@@ -2531,4 +2547,6 @@ export default {
   Added: 'Added',
   Removed: 'Removed',
   Changed: 'Changed',
+  Member: 'Member',
+  Role: 'Role',
 };

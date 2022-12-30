@@ -184,3 +184,5 @@ export interface ReactionRemove {
 }
 
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
+
+export type ChannelFlags = 'Pinned' | 'RequireTag';
