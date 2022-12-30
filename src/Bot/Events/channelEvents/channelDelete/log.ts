@@ -15,7 +15,7 @@ export default async (channel: DDeno.Channel) => {
   const language = await client.ch.languageSelector(channel.guildId);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(guild, 10, channel.id);
+  const audit = await client.ch.getAudit(guild, 12, channel.id);
   const channelType = `${client.ch.getTrueChannelType(channel, guild)}Delete`;
   const auditUser = await client.ch.getChannelOwner(channel, audit);
 
