@@ -7,4 +7,7 @@ export default async (guild: DDeno.Guild) => {
 
   const autorules = await client.helpers.getAutomodRules(guild.id);
   autorules.forEach((r) => client.automodRules.set(r.id, r));
+
+  const emojis = await client.helpers.getEmojis(guild.id);
+  emojis.forEach((e) => (e.id ? client.emojis.set(e.id, e) : null));
 };

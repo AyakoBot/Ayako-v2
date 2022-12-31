@@ -31,6 +31,7 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   customized.webhooks = new Map();
   customized.giveawayClaimTimeout = new Map();
   customized.automodRules = new Map();
+  customized.emojis = new Map();
 
   customized.neko = NekoClient;
   customized.customConstants = Constants;
