@@ -2,7 +2,7 @@ import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
 export default async (user: DDeno.User, guild: DDeno.Guild) => {
-  const channels = await client.ch.getLogChannels('channelevents', { guildId: guild.id });
+  const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
   if (!channels) return;
 
   const language = await client.ch.languageSelector(guild.id);
