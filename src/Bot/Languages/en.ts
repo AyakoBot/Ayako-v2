@@ -31,9 +31,13 @@ export default {
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
       guild: {
         ban: 'User banned',
+        unban: 'User un-banned',
         descBan: (user: DDeno.User) => `${getUser(user)}was banned`,
         descBanAudit: (user: DDeno.User, executor: DDeno.User) =>
           `${getUser(executor)}has banned\n${getUser(user)}`,
+        descUnban: (user: DDeno.User) => `${getUser(user)} was un-banned`,
+        descUnbanAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has un-banned\n${getUser(user)}`,
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
