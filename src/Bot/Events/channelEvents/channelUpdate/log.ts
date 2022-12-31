@@ -170,7 +170,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
     }
     case JSON.stringify(oldChannel.permissionOverwrites) !==
       JSON.stringify(channel.permissionOverwrites): {
-      const permEmbed = {
+      const permEmbed: DDeno.Embed = {
         color: client.customConstants.colors.loading,
         fields: [],
       };
@@ -233,7 +233,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
         if (perm.type === 1) text = `${language.Member} <@${perm.id}>`;
         else if (perm.type === 0) text = `${language.Role} <@&${perm.id}>`;
         else text = `${language.unknown} ${JSON.stringify(perm)}`;
-        embed.fields?.push({
+        permEmbed.fields?.push({
           name: create ? lan.grantedPermissionFor : lan.removedPermissionsFor,
           value: text,
         });
@@ -302,7 +302,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
           });
 
           if (neutral.includes('`')) {
-            embed.fields?.push({
+            permEmbed.fields?.push({
               name: `${lan.removedPermissionsFor} ${
                 oldPerm.type === 1 ? language.Member : language.Role
               }`,
@@ -312,7 +312,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
           }
 
           if (disable.includes('`')) {
-            embed.fields?.push({
+            permEmbed.fields?.push({
               name: `${lan.deniedPermissionsFor} ${
                 newPerm.type === 1 ? language.Member : language.Role
               }`,
@@ -322,7 +322,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
           }
 
           if (enable.includes('`')) {
-            embed.fields?.push({
+            permEmbed.fields?.push({
               name: `${lan.grantedPermissionFor} ${
                 newPerm.type === 1 ? language.Member : language.Role
               }`,
