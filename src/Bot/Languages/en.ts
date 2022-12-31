@@ -29,6 +29,12 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      guild: {
+        ban: 'User banned',
+        descBan: (user: DDeno.User) => `${getUser(user)}was banned`,
+        descBanAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has banned\n${getUser(user)}`,
+      },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
           `${getUser(user)}created\n${getChannel(channel, type)}`,
