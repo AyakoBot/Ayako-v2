@@ -245,6 +245,10 @@ export default {
     userAvatarURL: (user: DDeno.User, fileEnd: string) =>
       `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
     appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
+    emoteMention: (emoji: DDeno.Emoji) =>
+      emoji.toggles.requireColons
+        ? `<${emoji.toggles.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>`
+        : `${emoji.name}`,
   },
   mod: {
     strike: {

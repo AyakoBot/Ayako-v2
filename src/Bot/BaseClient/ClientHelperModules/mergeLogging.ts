@@ -8,7 +8,7 @@ export default (
   type: CT.AcceptedMergingTypes,
   embed: DDeno.Embed,
   language: CT.Language,
-  name: string,
+  name?: string,
 ) => {
   let value = '';
 
@@ -41,7 +41,7 @@ export default (
     }
   }
 
-  embed.fields?.push({ name, value, inline: true });
+  if (name) embed.fields?.push({ name, value, inline: true });
 };
 
 const boolify = (b: unknown, l: CT.Language) =>

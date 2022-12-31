@@ -16,12 +16,18 @@ const getMessage = (msg: CT.Message | DDeno.Message) =>
 const getChannel = (channel: DDeno.Channel, type?: string) =>
   `${type ?? 'Channel'} <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
 
+const getEmote = (emoji: DDeno.Emoji) =>
+  `${client.customConstants.standard.emoteMention(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
+    emoji.id ?? 'None'
+  }\`\n`;
+
 export default {
   languageFunction: {
     getChannel,
     getUser,
     getAutoModerationRule,
     getMessage,
+    getEmote,
   },
   events: {
     logs: {
@@ -30,14 +36,27 @@ export default {
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
       guild: {
-        ban: 'User banned',
-        unban: 'User un-banned',
         descBan: (user: DDeno.User) => `${getUser(user)}was banned`,
         descBanAudit: (user: DDeno.User, executor: DDeno.User) =>
           `${getUser(executor)}has banned\n${getUser(user)}`,
         descUnban: (user: DDeno.User) => `${getUser(user)} was un-banned`,
         descUnbanAudit: (user: DDeno.User, executor: DDeno.User) =>
           `${getUser(executor)}has un-banned\n${getUser(user)}`,
+        descEmojiCreateAudit: (user: DDeno.User, emoji: DDeno.Emoji) =>
+          `${getUser(user)}has created\n${getEmote(emoji)}`,
+        descEmojiCreate: (emoji: DDeno.Emoji) => `${getEmote(emoji)}was created`,
+        descEmojiDeleteAudit: (user: DDeno.User, emoji: DDeno.Emoji) =>
+          `${getUser(user)}has deleted\n${getEmote(emoji)}`,
+        descEmojiDelete: (emoji: DDeno.Emoji) => `${getEmote(emoji)}was deleted`,
+        descEmojiUpdateAudit: (user: DDeno.User, emoji: DDeno.Emoji) =>
+          `${getUser(user)}has updated\n${getEmote(emoji)}`,
+        descEmojiUpdate: (emoji: DDeno.Emoji) => `${getEmote(emoji)}was updated`,
+        ban: 'User banned',
+        unban: 'User un-banned',
+        emojiCreate: 'Emoji created',
+        emojiDelete: 'Emoji deleted',
+        emojiUpdate: 'Emoji updated',
+        roles: 'Roles',
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
