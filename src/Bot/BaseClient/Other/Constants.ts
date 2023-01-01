@@ -249,6 +249,8 @@ export default {
       emoji.toggles.requireColons
         ? `<${emoji.toggles.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>`
         : `${emoji.name}`,
+    getTime: (time: number) =>
+      `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
   },
   mod: {
     strike: {

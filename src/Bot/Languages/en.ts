@@ -21,6 +21,11 @@ const getEmote = (emoji: DDeno.Emoji) =>
     emoji.id ?? 'None'
   }\`\n`;
 
+const getInvite = (invite: DDeno.InviteMetadata, user?: DDeno.User) =>
+  `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
+    invite.uses
+  }\nCreated: ${client.customConstants.standard.getTime(invite.createdAt)}`;
+
 export default {
   languageFunction: {
     getChannel,
@@ -28,6 +33,7 @@ export default {
     getAutoModerationRule,
     getMessage,
     getEmote,
+    getInvite,
   },
   events: {
     logs: {
@@ -51,12 +57,19 @@ export default {
         descEmojiUpdateAudit: (user: DDeno.User, emoji: DDeno.Emoji) =>
           `${getUser(user)}has updated\n${getEmote(emoji)}`,
         descEmojiUpdate: (emoji: DDeno.Emoji) => `${getEmote(emoji)}was updated`,
+        descJoinAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has added\n${getUser(user)}`,
+        descMemberJoin: (user: DDeno.User) => `${getUser(user)}has joined`,
+        descBotJoin: (user: DDeno.User) => `${getUser(user)}was added`,
+        memberJoin: 'Member joined',
+        botJoin: 'Bot joined',
         ban: 'User banned',
         unban: 'User un-banned',
         emojiCreate: 'Emoji created',
         emojiDelete: 'Emoji deleted',
         emojiUpdate: 'Emoji updated',
         roles: 'Roles',
+        invite: 'Invite',
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>

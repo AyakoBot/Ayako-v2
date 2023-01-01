@@ -16,7 +16,7 @@ export interface CustomClient extends DDeno.Bot {
   reminders: Map<string, Jobs.Job>;
   disboardBumpReminders: Map<string, Jobs.Job>;
   giveaways: Map<string, Jobs.Job>;
-  invites: Map<string, DDeno.Invite[]>;
+  invites: Map<bigint, Map<string, DDeno.InviteMetadata>>;
   verificationCodes: Map<string, string>;
   webhooks: Map<string, DDeno.Webhook[]>;
   giveawayClaimTimeout: Map<string, Jobs.Job>;
