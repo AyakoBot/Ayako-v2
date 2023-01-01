@@ -45,7 +45,7 @@ export default async (
         oldEmote.roles?.map((r) => `<@&${r}>`) ?? language.none,
         emote.roles?.map((r) => `<@&${r}>`) ?? language.none,
         'string',
-        lan.roles,
+        language.roles,
       );
       break;
     }

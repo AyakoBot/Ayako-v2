@@ -5,7 +5,9 @@ import client from '../BaseClient/DDenoClient.js';
 type Strumber = string | number;
 
 const getUser = (user: DDeno.User) =>
-  `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\n`;
+  `${user.toggles.bot ? 'Bot' : 'User'} <@${user.id}> / \`${user.username}#${
+    user.discriminator
+  }\` / \`${user.id}\`\n`;
 
 const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
@@ -61,6 +63,12 @@ export default {
           `${getUser(executor)}has added\n${getUser(user)}`,
         descMemberJoin: (user: DDeno.User) => `${getUser(user)}has joined`,
         descBotJoin: (user: DDeno.User) => `${getUser(user)}was added`,
+        descBotLeave: (user: DDeno.User) => `${getUser(user)}has left`,
+        descBotLeaveAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has kicked\n${getUser(user)}`,
+        descMemberLeave: (user: DDeno.User) => `${getUser(user)}has left`,
+        descMemberLeaveAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has kicked\n${getUser(user)}`,
         memberJoin: 'Member joined',
         botJoin: 'Bot joined',
         ban: 'User banned',
@@ -70,6 +78,8 @@ export default {
         emojiUpdate: 'Emoji updated',
         roles: 'Roles',
         invite: 'Invite',
+        botKick: 'Bot kicked',
+        memberKick: 'Member kicked',
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
