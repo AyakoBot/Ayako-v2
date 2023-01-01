@@ -11,6 +11,7 @@ export default async (emoji: DDeno.DiscordEmoji, guild: DDeno.Guild) => {
   const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.emoji;
+  const files: DDeno.FileContent[] = [];
 
   const embed: DDeno.Embed = {
     author: {
@@ -25,7 +26,15 @@ export default async (emoji: DDeno.DiscordEmoji, guild: DDeno.Guild) => {
   };
 
   const url = client.helpers.getEmojiURL(emoji.id, emote.toggles.animated);
+  const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
   client.ch.mergeLogging(url, emote.name, 'icon', embed, language);
+
+  if (blob) {
+    files.push({
+      name: String(emote.name),
+      blob,
+    });
+  }
 
   client.ch.send(
     { id: channels, guildId: guild.id },
