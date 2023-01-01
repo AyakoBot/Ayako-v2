@@ -1,7 +1,7 @@
 import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (user: DDeno.User, guild: DDeno.Guild) => {
+export default async (user: DDeno.User, member: DDeno.Member | undefined, guild: DDeno.Guild) => {
   const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
   if (!channels) return;
 
@@ -31,6 +31,19 @@ export default async (user: DDeno.User, guild: DDeno.Guild) => {
     fields: [],
     color: client.customConstants.colors.warning,
   };
+
+  if (member) {
+    embed.fields?.push(
+      {
+        name: language.roles,
+        value: member.roles.map((r) => `<@&${r}>`).join(', '),
+      },
+      {
+        name: language.joinedAt,
+        value: client.customConstants.standard.getTime(member.joinedAt),
+      },
+    );
+  }
 
   client.ch.send(
     { id: channels, guildId: guild.id },
