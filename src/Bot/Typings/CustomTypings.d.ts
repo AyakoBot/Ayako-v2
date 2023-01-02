@@ -10,18 +10,18 @@ import type * as ch from '../BaseClient/ClientHelper.js';
 import * as CacheProxy from '../BaseClient/Other/permissions-plugin/index.js';
 
 export interface CustomClient extends DDeno.Bot {
-  giveawayClaimTimeout: Map<string, Map<bigint, Jobs.Job>>;
+  giveawayClaimTimeout: Map<bigint, Map<bigint, Jobs.Job>>;
 
   mutes: Map<bigint, Map<bigint, Jobs.Job>>;
   bans: Map<bigint, Map<bigint, Jobs.Job>>;
   channelBans: Map<bigint, Map<bigint, Jobs.Job>>;
   reminders: Map<bigint, Map<bigint, Jobs.Job>>;
 
-  disboardBumpReminders: Map<string, Jobs.Job>;
+  disboardBumpReminders: Map<bigint, Jobs.Job>;
   giveaways: Map<bigint, Map<bigint, Jobs.Job>>;
   invites: Map<bigint, Map<string, DDeno.InviteMetadata>>;
   verificationCodes: Map<bigint, Map<bigint, string>>;
-  webhooks: Map<string, Map<bigint, DDeno.Webhook>>;
+  webhooks: Map<bigint, Map<bigint, DDeno.Webhook>>;
   automodRules: Map<bigint, Map<bigint, DDeno.AutoModerationRule>>;
   emojis: Map<bigint, Map<bigint, DDeno.Emoji>>;
 
