@@ -69,6 +69,12 @@ export default {
         descMemberLeave: (user: DDeno.User) => `${getUser(user)}has left`,
         descMemberLeaveAudit: (user: DDeno.User, executor: DDeno.User) =>
           `${getUser(executor)}has kicked\n${getUser(user)}`,
+        descBotUpdate: (user: DDeno.User) => `${getUser(user)}was updated`,
+        descBotUpdateAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has updated\n${getUser(user)}`,
+        descMemberUpdate: (user: DDeno.User) => `${getUser(user)}was updated`,
+        descMemberUpdateAudit: (user: DDeno.User, executor: DDeno.User) =>
+          `${getUser(executor)}has updated\n${getUser(user)}`,
         memberJoin: 'Member joined',
         botJoin: 'Bot joined',
         ban: 'User banned',
@@ -76,10 +82,16 @@ export default {
         emojiCreate: 'Emoji created',
         emojiDelete: 'Emoji deleted',
         emojiUpdate: 'Emoji updated',
-        roles: 'Roles',
         invite: 'Invite',
         botKick: 'Bot kicked',
         memberKick: 'Member kicked',
+        memberUpdate: 'Member updated',
+        botUpdate: 'Bot updated',
+        avatar: 'Avatar',
+        premiumSince: 'Boosting since',
+        communicationDisabledUntil: 'Timed out',
+        deaf: 'Server Deafened',
+        mute: 'Server Muted',
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>

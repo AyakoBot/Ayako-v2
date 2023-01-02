@@ -10,18 +10,20 @@ import type * as ch from '../BaseClient/ClientHelper.js';
 import * as CacheProxy from '../BaseClient/Other/permissions-plugin/index.js';
 
 export interface CustomClient extends DDeno.Bot {
-  mutes: Map<string, Jobs.Job>;
-  bans: Map<string, Jobs.Job>;
-  channelBans: Map<string, Jobs.Job>;
-  reminders: Map<string, Jobs.Job>;
+  giveawayClaimTimeout: Map<string, Map<bigint, Jobs.Job>>;
+
+  mutes: Map<bigint, Map<bigint, Jobs.Job>>;
+  bans: Map<bigint, Map<bigint, Jobs.Job>>;
+  channelBans: Map<bigint, Map<bigint, Jobs.Job>>;
+  reminders: Map<bigint, Map<bigint, Jobs.Job>>;
+
   disboardBumpReminders: Map<string, Jobs.Job>;
-  giveaways: Map<string, Jobs.Job>;
+  giveaways: Map<bigint, Map<bigint, Jobs.Job>>;
   invites: Map<bigint, Map<string, DDeno.InviteMetadata>>;
-  verificationCodes: Map<string, string>;
-  webhooks: Map<string, DDeno.Webhook[]>;
-  giveawayClaimTimeout: Map<string, Jobs.Job>;
-  automodRules: Map<bigint, DDeno.AutoModerationRule>;
-  emojis: Map<bigint, DDeno.Emoji>;
+  verificationCodes: Map<bigint, Map<bigint, string>>;
+  webhooks: Map<string, Map<bigint, DDeno.Webhook>>;
+  automodRules: Map<bigint, Map<bigint, DDeno.AutoModerationRule>>;
+  emojis: Map<bigint, Map<bigint, DDeno.Emoji>>;
 
   neko: typeof NekoClient;
   customConstants: typeof Constants;
@@ -31,9 +33,9 @@ export interface CustomClient extends DDeno.Bot {
 
   mainID: bigint;
 
-  channelQueue: Map<bigint, CreateMessage[]>;
-  channelTimeout: Map<bigint, Jobs.Job>;
-  channelCharLimit: Map<bigint, number>;
+  channelQueue: Map<bigint, Map<bigint, CreateMessage[]>>;
+  channelTimeout: Map<bigint, Map<bigint, Jobs.Job>>;
+  channelCharLimit: Map<bigint, Map<bigint, number>>;
 
   ch: typeof ch;
   database: RedisXpSQL;

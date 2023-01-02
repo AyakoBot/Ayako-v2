@@ -7,7 +7,7 @@ export default async (msg: CT.MessageGuild) => {
   if (!channels) return;
 
   const lan = msg.language.events.messageDelete;
-  const con = client.customConstants.events.messageDelete;
+  const con = client.customConstants.events.logs.message;
 
   const audit = await client.ch.getAudit(
     msg.guild,
@@ -22,10 +22,10 @@ export default async (msg: CT.MessageGuild) => {
     const embed: DDeno.Embed = {
       author: {
         name: lan.title,
-        iconUrl: con.image,
+        iconUrl: con.delete,
       },
       description: lan.descDetails(msg.channel, msg.author, executor),
-      color: con.color,
+      color: client.customConstants.colors.warning,
       fields: [],
     };
 
@@ -40,10 +40,10 @@ export default async (msg: CT.MessageGuild) => {
     const embed: DDeno.Embed = {
       author: {
         name: lan.title,
-        iconUrl: con.image,
+        iconUrl: con.delete,
       },
       description: lan.desc(msg.author, msg.channel),
-      color: con.color,
+      color: client.customConstants.colors.warning,
       fields: [],
     };
 

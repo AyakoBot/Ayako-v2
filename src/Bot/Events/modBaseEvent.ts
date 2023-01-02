@@ -684,28 +684,42 @@ const takeAction = async (
               })
           : false;
 
-      client.mutes.set(
-        `${args.guild?.id}-${args.target.id}`,
-        jobs.scheduleJob(
-          `${args.guild?.id}-${args.target.id}`,
-          new Date(Date.now() + args.duration),
-          async () => {
-            const options: CT.ModBaseEventOptions = {
-              target: args.target,
-              reason: language.events.ready.unmute,
-              executor: await client.cache.users.get(client.id),
-              msg: args.msg,
-              guild: args.guild,
-              forceFinish: true,
-              doDBonly: true,
-              type: 'muteRemove',
-            };
+      if (args.guild?.id && !client.mutes.get(args.guild?.id)) {
+        client.mutes.set(args.guild.id, new Map());
+      }
 
-            // eslint-disable-next-line import/no-self-import
-            (await import('./modBaseEvent.js')).default(options);
-          },
-        ),
-      );
+      if (args.guild?.id) {
+        client.mutes.get(args.guild?.id)?.set(
+          args.target.id,
+          jobs.scheduleJob(
+            `${args.guild?.id}-${args.target.id}`,
+            new Date(Date.now() + args.duration),
+            async () => {
+              const options: CT.ModBaseEventOptions = {
+                target: args.target,
+                reason: language.events.ready.unmute,
+                executor: await client.cache.users.get(client.id),
+                msg: args.msg,
+                guild: args.guild,
+                forceFinish: true,
+                doDBonly: true,
+                type: 'muteRemove',
+              };
+
+              if (args.guild) {
+                client.mutes.get(args.guild?.id)?.get(args.target.id)?.cancel();
+                const banCache = client.mutes.get(args.guild?.id);
+
+                if (banCache?.size === 1) client.mutes.delete(args.guild.id);
+                else banCache?.delete(args.target.id);
+              }
+
+              // eslint-disable-next-line import/no-self-import
+              (await import('./modBaseEvent.js')).default(options);
+            },
+          ),
+        );
+      }
       break;
     }
     case 'banAdd': {
@@ -766,27 +780,41 @@ const takeAction = async (
               })
           : false;
 
-      client.bans.set(
-        `${args.guild?.id}-${args.target.id}`,
-        jobs.scheduleJob(
-          `${args.guild?.id}-${args.target.id}`,
-          new Date(Date.now() + Number(args.duration)),
-          async () => {
-            const options: CT.ModBaseEventOptions = {
-              target: args.target,
-              reason: language.events.ready.unban,
-              executor: await client.cache.users.get(client.id),
-              msg: args.msg,
-              guild: args.guild,
-              forceFinish: true,
-              type: 'banRemove',
-            };
+      if (args.guild?.id && !client.bans.get(args.guild?.id)) {
+        client.bans.set(args.guild.id, new Map());
+      }
 
-            // eslint-disable-next-line import/no-self-import
-            (await import('./modBaseEvent.js')).default(options);
-          },
-        ),
-      );
+      if (args.guild?.id) {
+        client.bans.get(args.guild?.id)?.set(
+          args.target.id,
+          jobs.scheduleJob(
+            `${args.guild?.id}-${args.target.id}`,
+            new Date(Date.now() + Number(args.duration)),
+            async () => {
+              const options: CT.ModBaseEventOptions = {
+                target: args.target,
+                reason: language.events.ready.unban,
+                executor: await client.cache.users.get(client.id),
+                msg: args.msg,
+                guild: args.guild,
+                forceFinish: true,
+                type: 'banRemove',
+              };
+
+              if (args.guild) {
+                client.bans.get(args.guild?.id)?.get(args.target.id)?.cancel();
+                const banCache = client.bans.get(args.guild?.id);
+
+                if (banCache?.size === 1) client.bans.delete(args.guild.id);
+                else banCache?.delete(args.target.id);
+              }
+
+              // eslint-disable-next-line import/no-self-import
+              (await import('./modBaseEvent.js')).default(options);
+            },
+          ),
+        );
+      }
       break;
     }
     case 'tempchannelbanAdd':
@@ -823,28 +851,42 @@ const takeAction = async (
       }
 
       if (args.type === 'tempchannelbanAdd') {
-        client.channelBans.set(
-          `${args.channel?.id}-${args.target.id}`,
-          jobs.scheduleJob(
-            `${args.channel?.id}-${args.target.id}`,
-            new Date(Date.now() + Number(args.duration)),
-            async () => {
-              const options: CT.ModBaseEventOptions = {
-                target: args.target,
-                reason: language.events.ready.channelunban,
-                executor: await client.cache.users.get(client.id),
-                msg: args.msg,
-                guild: args.guild,
-                channel: args.channel,
-                forceFinish: true,
-                type: 'channelbanRemove',
-              };
+        if (args.guild?.id && !client.channelBans.get(args.guild?.id)) {
+          client.channelBans.set(args.guild.id, new Map());
+        }
 
-              // eslint-disable-next-line import/no-self-import
-              (await import('./modBaseEvent.js')).default(options);
-            },
-          ),
-        );
+        if (args.guild?.id) {
+          client.channelBans.get(args.guild?.id)?.set(
+            args.target.id,
+            jobs.scheduleJob(
+              `${args.channel?.id}-${args.target.id}`,
+              new Date(Date.now() + Number(args.duration)),
+              async () => {
+                const options: CT.ModBaseEventOptions = {
+                  target: args.target,
+                  reason: language.events.ready.channelunban,
+                  executor: await client.cache.users.get(client.id),
+                  msg: args.msg,
+                  guild: args.guild,
+                  channel: args.channel,
+                  forceFinish: true,
+                  type: 'channelbanRemove',
+                };
+
+                if (args.guild) {
+                  client.channelBans.get(args.guild?.id)?.get(args.target.id)?.cancel();
+                  const banCache = client.channelBans.get(args.guild?.id);
+
+                  if (banCache?.size === 1) client.channelBans.delete(args.guild.id);
+                  else banCache?.delete(args.target.id);
+                }
+
+                // eslint-disable-next-line import/no-self-import
+                (await import('./modBaseEvent.js')).default(options);
+              },
+            ),
+          );
+        }
       }
       break;
     }

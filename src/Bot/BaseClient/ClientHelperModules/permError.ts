@@ -39,7 +39,7 @@ export default async (
         name: util.makeBold(language.permissions.error.needed),
         value: `\u200b${
           neededPerms.has(8n)
-            ? `${util.makeInlineCode(language.permissions.perms.administrator)}`
+            ? `${util.makeInlineCode(language.permissions.perms.Administrator)}`
             : Object.entries(neededPerms).map(
                 ([name]) =>
                   `${util.makeInlineCode(

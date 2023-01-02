@@ -99,7 +99,7 @@ export default async (channel: DDeno.Channel) => {
     if (parent) {
       embed.fields?.push({
         name: lan.parentChannel,
-        value: lan.parentId(parent),
+        value: language.languageFunction.getChannel(parent, language.channelTypes[4]),
         inline: true,
       });
     }

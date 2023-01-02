@@ -13,16 +13,16 @@ export default async (msgs: DDeno.Message[]) => {
 
   const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.messageDeleteBulk;
-  const con = client.customConstants.events.messageDeleteBulk;
+  const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 73, identMsg.channelId);
 
   const embed: DDeno.Embed = {
     type: 'rich',
     author: {
       name: lan.title,
-      iconUrl: con.image,
+      iconUrl: con.delete,
     },
-    color: con.color,
+    color: client.customConstants.colors.warning,
     fields: [],
   };
 

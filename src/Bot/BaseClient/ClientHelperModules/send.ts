@@ -87,6 +87,18 @@ const combineMessages = async (
   timeout: number,
   language: CT.Language,
 ) => {
+  if (!client.channelQueue.get(channel.guildId)) {
+    client.channelQueue.set(channel.guildId, new Map());
+  }
+
+  if (!client.channelCharLimit.get(channel.guildId)) {
+    client.channelCharLimit.set(channel.guildId, new Map());
+  }
+
+  if (!client.channelTimeout.get(channel.guildId)) {
+    client.channelTimeout.set(channel.guildId, new Map());
+  }
+
   if (![0, 1, 2, 3, 5, 10, 11, 12].includes(channel.type)) return;
 
   if (!payload.embeds?.length || (!payload.embeds?.length && !payload.files?.length)) {
@@ -95,24 +107,24 @@ const combineMessages = async (
   }
 
   if (!client.channelQueue.has(channel.id)) {
-    client.channelQueue.set(channel.id, [payload]);
-    client.channelCharLimit.set(channel.id, getEmbedCharLens(payload.embeds));
-    client.channelTimeout.get(channel.id)?.cancel();
+    client.channelQueue.get(channel.guildId)?.set(channel.id, [payload]);
+    client.channelCharLimit.get(channel.guildId)?.set(channel.id, getEmbedCharLens(payload.embeds));
+    client.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
 
     queueSend(channel, timeout, language);
     return;
   }
 
-  const updatedQueue = client.channelQueue.get(channel.id);
+  const updatedQueue = client.channelQueue.get(channel.guildId)?.get(channel.id);
   const charsToPush = getEmbedCharLens(payload.embeds);
-  const charLimit = client.channelCharLimit.get(channel.id);
+  const charLimit = client.channelCharLimit.get(channel.guildId)?.get(channel.id);
 
   if (updatedQueue && updatedQueue.length < 10 && charLimit && charLimit + charsToPush <= 5000) {
     updatedQueue.push(payload);
-    client.channelCharLimit.set(channel.id, charLimit + charsToPush);
-    client.channelQueue.set(channel.id, updatedQueue);
+    client.channelCharLimit.get(channel.guildId)?.set(channel.id, charLimit + charsToPush);
+    client.channelQueue.get(channel.guildId)?.set(channel.id, updatedQueue);
 
-    client.channelTimeout.get(channel.id)?.cancel();
+    client.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
 
     queueSend(channel, timeout, language);
     return;
@@ -129,9 +141,9 @@ const combineMessages = async (
         .filter((e): e is DDeno.Embed => !!e) || [];
     send(channel, { embeds }, language);
 
-    client.channelQueue.set(channel.id, [payload]);
-    client.channelTimeout.get(channel.id)?.cancel();
-    client.channelCharLimit.set(channel.id, getEmbedCharLens(payload.embeds));
+    client.channelQueue.get(channel.guildId)?.set(channel.id, [payload]);
+    client.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
+    client.channelCharLimit.get(channel.guildId)?.set(channel.id, getEmbedCharLens(payload.embeds));
 
     queueSend(channel, timeout, language);
   }
@@ -161,19 +173,22 @@ const getEmbedCharLens = (embeds: DDeno.Embed[]) => {
 const queueSend = async (channel: DDeno.Channel, timeout: number, language: CT.Language) => {
   if (![0, 1, 2, 3, 5, 10, 11, 12].includes(channel.type)) return;
 
-  client.channelTimeout.set(
+  const guildMap = client.channelTimeout.get(channel.guildId) ?? new Map();
+  guildMap.set(
     channel.id,
     jobs.scheduleJob(new Date(Date.now() + timeout), () => {
       send(
         channel,
         {
           embeds: client.channelQueue
-            .get(channel.id)
+            .get(channel.guildId)
+            ?.get(channel.id)
             ?.map((p) => (p.embeds && p.embeds.length ? p.embeds : []))
             ?.flat(1)
             .filter((e) => !!e),
           files: client.channelQueue
-            .get(channel.id)
+            .get(channel.guildId)
+            ?.get(channel.id)
             ?.map((p) => (p.files && p.files.length ? p.files : []))
             ?.flat(1)
             .filter((f) => !!f),
@@ -181,9 +196,25 @@ const queueSend = async (channel: DDeno.Channel, timeout: number, language: CT.L
         language,
       );
 
-      client.channelQueue.delete(channel.id);
-      client.channelTimeout.delete(channel.id);
-      client.channelCharLimit.delete(channel.id);
+      if (client.channelQueue.get(channel.guildId)?.size === 1) {
+        client.channelQueue.delete(channel.guildId);
+      } else {
+        client.channelQueue.get(channel.guildId)?.delete(channel.id);
+      }
+
+      if (client.channelTimeout.get(channel.guildId)?.size === 1) {
+        client.channelTimeout.delete(channel.guildId);
+      } else {
+        client.channelTimeout.get(channel.guildId)?.delete(channel.id);
+      }
+
+      if (client.channelCharLimit.get(channel.guildId)?.size === 1) {
+        client.channelCharLimit.delete(channel.guildId);
+      } else {
+        client.channelCharLimit.get(channel.guildId)?.delete(channel.id);
+      }
     }),
   );
+
+  client.channelTimeout.set(channel.guildId, guildMap);
 };

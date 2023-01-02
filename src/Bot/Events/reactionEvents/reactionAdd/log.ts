@@ -10,7 +10,7 @@ export default async (reaction: CT.ReactionAdd) => {
 
   const language = await client.ch.languageSelector(reaction.guildId);
   const lan = language.events.messageReactionAdd;
-  const con = client.customConstants.events.messageReactionAdd;
+  const con = client.customConstants.events.logs.reaction;
   const user = await client.cache.users.get(reaction.userId);
   if (!user) return;
 
@@ -28,11 +28,11 @@ export default async (reaction: CT.ReactionAdd) => {
     const embed: DDeno.Embed = {
       author: {
         name: lan.title,
-        iconUrl: con.image,
+        iconUrl: con.create,
         url: client.ch.getJumpLink(msg),
       },
       description: lan.description(user, msg, reaction),
-      color: con.color,
+      color: client.customConstants.colors.success,
       fields: [],
     };
 

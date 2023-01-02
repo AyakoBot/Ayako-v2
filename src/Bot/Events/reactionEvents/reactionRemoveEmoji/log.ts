@@ -14,7 +14,7 @@ export default async (reaction: {
 
   const language = await client.ch.languageSelector(reaction.guildId);
   const lan = language.events.messageReactionRemoveEmoji;
-  const con = client.customConstants.events.messageReactionRemoveEmoji;
+  const con = client.customConstants.events.logs.reaction;
   const message = await client.cache.messages.get(reaction.channelId, reaction.messageId);
   if (!message) return;
 
@@ -27,11 +27,11 @@ export default async (reaction: {
       type: 'rich',
       author: {
         name: lan.title,
-        iconUrl: con.image,
+        iconUrl: con.remove,
         url: client.ch.getJumpLink(msg),
       },
       description: lan.description(reaction, msg),
-      color: con.color,
+      color: client.customConstants.colors.warning,
       fields: [],
     };
 

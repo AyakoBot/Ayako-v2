@@ -9,7 +9,7 @@ export default async (payload: { channelId: bigint; messageId: bigint; guildId?:
 
   const language = await client.ch.languageSelector(payload.guildId);
   const lan = language.events.messageReactionRemoveAll;
-  const con = client.customConstants.events.messageReactionRemoveAll;
+  const con = client.customConstants.events.logs.reaction;
   const message = await client.cache.messages.get(payload.channelId, payload.messageId);
   if (!message) return;
 
@@ -21,11 +21,11 @@ export default async (payload: { channelId: bigint; messageId: bigint; guildId?:
     const embed: DDeno.Embed = {
       author: {
         name: lan.title,
-        iconUrl: con.image,
+        iconUrl: con.remove,
         url: client.ch.getJumpLink(msg),
       },
       description: lan.description(msg),
-      color: con.color,
+      color: client.customConstants.colors.warning,
       fields: [],
     };
 
