@@ -70,9 +70,9 @@ export default {
         DirectoryUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/DirectoryUpdate.png',
         ForumUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/ForumUpdate.png',
         NSFWForumUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/NSFWForumUpdate.png',
-        pin: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinCreate.png',
-        unpin: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinDelete.png',
-        pinupdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinUpdate.png',
+        Pin: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinCreate.png',
+        Unpin: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinDelete.png',
+        PinUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/PinUpdate.png',
       },
       emoji: {
         create: 'https://ayakobot.com/cdn/Ayako_Assets/Events/EmojiCreate.png',
@@ -85,11 +85,11 @@ export default {
         update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/StickerUpdate.png',
       },
       guild: {
-        banCreate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/BanCreate.png',
-        banRemove: 'https://ayakobot.com/cdn/Ayako_Assets/Events/BanRemove.png',
-        guildCreate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildCreate.png',
-        guildUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildUpdate.png',
-        guildDelete: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildDelete.png',
+        BanCreate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/BanCreate.png',
+        BanRemove: 'https://ayakobot.com/cdn/Ayako_Assets/Events/BanRemove.png',
+        GuildCreate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildCreate.png',
+        GuildUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildUpdate.png',
+        GuildDelete: 'https://ayakobot.com/cdn/Ayako_Assets/Events/GuildDelete.png',
         WebhookUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/WebhookUpdate.png',
         BotUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/BotUpdate.png',
         ChannelFollowUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/ChannelFollowUpdate.png',
@@ -245,7 +245,7 @@ export default {
     userAvatarURL: (user: DDeno.User, fileEnd: string) =>
       `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
     appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
-    emoteMention: (emoji: DDeno.Emoji) =>
+    getEmote: (emoji: DDeno.Emoji) =>
       emoji.toggles.requireColons
         ? `<${emoji.toggles.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>`
         : `${emoji.name}`,

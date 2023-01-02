@@ -19,7 +19,7 @@ const getChannel = (channel: DDeno.Channel, type?: string) =>
   `${type ?? 'Channel'} <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
 
 const getEmote = (emoji: DDeno.Emoji) =>
-  `${client.customConstants.standard.emoteMention(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
+  `${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
     emoji.id ?? 'None'
   }\`\n`;
 
@@ -75,6 +75,9 @@ export default {
         descMemberUpdate: (user: DDeno.User) => `${getUser(user)}was updated`,
         descMemberUpdateAudit: (user: DDeno.User, executor: DDeno.User) =>
           `${getUser(executor)}has updated\n${getUser(user)}`,
+        descGuildUpdate: () => `The Server was updated`,
+        descGuildUpdateAudit: (executor: DDeno.User) =>
+          `${getUser(executor)}has updated the Server`,
         memberJoin: 'Member joined',
         botJoin: 'Bot joined',
         ban: 'User banned',
@@ -92,6 +95,95 @@ export default {
         communicationDisabledUntil: 'Timed out',
         deaf: 'Server Deafened',
         mute: 'Server Muted',
+        guildUpdate: 'Guild updated',
+        banner: 'Banner',
+        bannerRemoved: 'Banner Removed',
+        icon: 'Icon',
+        iconRemoved: 'Icon Removed',
+        splash: 'Splash Image',
+        splashRemoved: 'Splash Image Removed',
+        maxMembers: 'Maximum Members',
+        vanityUrlCode: 'Vanity URL',
+        discoverySplash: 'Discovery Splash Image',
+        discoverySplashRemoved: 'Discovery Splash Image Removed',
+        afkChannelId: 'AFK Channel',
+        widgetChannelId: 'Widget Channel',
+        systemChannelId: 'System Channel',
+        rulesChannelId: 'Rules Channel',
+        publicUpdatesChannelId: 'Public Updates Channel',
+        ownerId: 'Owner',
+        premiumProgressBarEnabled: 'Boost Progress Bar Enabled',
+        afkTimeout: 'AFK Timeout',
+        defaultMessageNotifications: {
+          0: 'All Messages',
+          1: 'Only Mentions',
+        },
+        defaultMessageNotificationsName: 'Default Message Notifications',
+        explicitContentFilter: {
+          0: 'Disabled',
+          1: 'Members without Roles',
+          2: 'All Members',
+        },
+        explicitContentFilterName: 'Excplicit Content Filter',
+        mfaLevel: {
+          0: 'None',
+          1: 'Elevated',
+        },
+        mfaLevelName: 'MFA Level',
+        nsfwLevel: {
+          0: 'Default',
+          1: 'Explicit',
+          2: 'Safe',
+          3: 'Age Restricted',
+        },
+        nsfwLevelName: 'NSFW Level',
+        preferredLocale: 'Preferred Locale',
+        premiumTier: 'Premium Tier',
+        welcomeScreenDescription: 'Welcome Screen Description',
+        welcomeChannelAdded: 'Welcome Channel added',
+        welcomeChannelRemoved: 'Welcome Channel removed',
+        welcomeChannelChanged: 'Welcome Channel changed',
+        welcomeChannelEmoji: (channel: DDeno.Channel) =>
+          `Welcome Channel Emoji of \`${channel.name}\` / \`${channel.id}\``,
+        togglesNameRemoved: 'Server Features Removed',
+        togglesNameAdded: 'Server Features Added',
+        toggles: {
+          verified: 'Server Verified by Discord',
+          banner: 'Can set a Banner',
+          owner: "Ayako is this Server's owner?",
+          unavailable: 'Server is Unavailable',
+          large: 'Server is considered Large by Discord',
+          inviteSplash: 'Can set Invite Splash Image',
+          vipRegions: 'Access to 384kbps Voice Channels',
+          vanityUrl: 'Can set a Vanity URL',
+          partnered: 'Server is Partnered',
+          community: 'Server is a Community Server',
+          news: 'Server can create News/Announcement Channels',
+          discoverable: 'Server can become discoverable',
+          featurable: 'Server can become featured',
+          animatedIcon: 'Server can set an animated Icon',
+          welcomeScreenEnabled: 'Server has a welcome Screen enabled',
+          memberVerificationGateEnabled: 'Server has the Member verification Gate enabled',
+          previewEnabled: 'Server can be previewed before joining',
+          ticketedEventsEnabled: 'Server has enabled Ticketed Events',
+          monetizationEnabled: 'Server has enabled Monetization',
+          moreStickers: 'Server has increased Custom Sticker Slots',
+          privateThreads: 'Server Members can create Private Threads',
+          roleIcons: 'Server Roles can have Role Icons',
+          autoModeration: 'Server has set-up Auto-Moderation Rules',
+          invitesDisabled: 'Server has its Invites disabled',
+          animatedBanner: 'Server has access to setting an Animated Banner',
+          widgetEnabled: 'Server has its Widget enabled',
+          premiumProgressBarEnabled: 'Server has its Premium Progress Bar enabled',
+        },
+        systemChannelFlagsNameRemoved: 'Disabled System Channel Features',
+        systemChannelFlagsNameAdded: 'Enabled System Channel Features',
+        systemChannelFlags: {
+          SuppressJoinNotifications: 'Supress Join Notifications',
+          SuppressPremiumSubscriptions: 'Supress Boost Notifications',
+          SuppressGuildReminderNotifications: 'Supress Server Reminder Notifications',
+          SuppressJoinNotificationReplies: 'Supress Join Notification Sticker Reactions',
+        },
       },
       channel: {
         descCreateAudit: (user: DDeno.User, channel: DDeno.Channel, type: string) =>
@@ -2613,4 +2705,7 @@ export default {
   Changed: 'Changed',
   Member: 'Member',
   Role: 'Role',
+  Tier: 'Tier',
+  Channel: 'Channel',
+  Emoji: 'Emoji',
 };
