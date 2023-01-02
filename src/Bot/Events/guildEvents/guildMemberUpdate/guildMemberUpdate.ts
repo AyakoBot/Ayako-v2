@@ -1,5 +1,5 @@
-import client from 'Bot/BaseClient/DDenoClient.js';
 import type * as DDeno from 'discordeno';
+import client from '../../../BaseClient/DDenoClient.js';
 
 export default async (member: DDeno.Member, user: DDeno.User, oldMember: DDeno.Member) => {
   const files: {
