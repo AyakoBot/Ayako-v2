@@ -263,8 +263,8 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
     case JSON.stringify(guild.welcomeScreen?.welcomeChannels) !==
       JSON.stringify(oldGuild.welcomeScreen?.welcomeChannels): {
       const addedChannel = client.ch.getDifference(
-        oldGuild.welcomeScreen?.welcomeChannels ?? [],
         guild.welcomeScreen?.welcomeChannels ?? [],
+        oldGuild.welcomeScreen?.welcomeChannels ?? [],
       ) as {
         channelId: bigint;
         description: string;
@@ -273,8 +273,8 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       }[];
 
       const removedChannel = client.ch.getDifference(
-        guild.welcomeScreen?.welcomeChannels ?? [],
         oldGuild.welcomeScreen?.welcomeChannels ?? [],
+        guild.welcomeScreen?.welcomeChannels ?? [],
       ) as {
         channelId: bigint;
         description: string;

@@ -162,41 +162,32 @@ export default async (rule: DDeno.AutoModerationRule, oldRule: DDeno.AutoModerat
     }
     default: {
       if (JSON.stringify(rule.actions) === JSON.stringify(oldRule.actions)) return;
+      const addedActions = client.ch.getDifference(
+        rule.actions,
+        oldRule.actions,
+      ) as DDeno.AutoModerationRule['actions'];
+      const removedActions = client.ch.getDifference(
+        oldRule.actions,
+        rule.actions,
+      ) as DDeno.AutoModerationRule['actions'];
+      const changedActions = client.ch.getChanged(
+        rule.actions,
+        oldRule.actions,
+        'id',
+      ) as DDeno.AutoModerationRule['actions'];
 
-      const oldJsonActions = oldRule.actions.map((a) => JSON.stringify(a));
-      const newJsonActions = rule.actions.map((a) => JSON.stringify(a));
-      const uniqueActions = [
-        ...client.ch.getDifference(newJsonActions, oldJsonActions),
-        ...client.ch.getDifference(oldJsonActions, newJsonActions),
-      ];
-      const addedActions = [...client.ch.getDifference(newJsonActions, oldJsonActions)].filter(
-        (a) => !uniqueActions.includes(a),
-      );
-      const removedActions = [...client.ch.getDifference(oldJsonActions, newJsonActions)].filter(
-        (a) => !uniqueActions.includes(a),
-      );
-      const changedActions = [...addedActions].filter((a) => removedActions.includes(a));
-      const added = addedActions.map(
-        (a) => JSON.parse(a as string) as DDeno.AutoModerationRule['actions'][0],
-      );
-      const removed = removedActions.map(
-        (a) => JSON.parse(a as string) as DDeno.AutoModerationRule['actions'][0],
-      );
-      const changed = changedActions.map(
-        (a) => JSON.parse(a as string) as DDeno.AutoModerationRule['actions'][0],
-      );
       const addedChannels = await Promise.all(
-        added.map((a) =>
+        addedActions.map((a) =>
           a.metadata?.channelId ? client.cache.channels.get(a.metadata?.channelId) : undefined,
         ),
       );
       const removedChannels = await Promise.all(
-        removed.map((a) =>
+        removedActions.map((a) =>
           a.metadata?.channelId ? client.cache.channels.get(a.metadata?.channelId) : undefined,
         ),
       );
       const changedChannels = await Promise.all(
-        changed.map((a) =>
+        changedActions.map((a) =>
           a.metadata?.channelId ? client.cache.channels.get(a.metadata?.channelId) : undefined,
         ),
       );
@@ -223,9 +214,9 @@ export default async (rule: DDeno.AutoModerationRule, oldRule: DDeno.AutoModerat
           )
           .join('\n');
 
-      const addedContent = getActionContent(added, addedChannels);
-      const removedContent = getActionContent(removed, removedChannels);
-      const changedContent = getActionContent(changed, changedChannels);
+      const addedContent = getActionContent(addedActions, addedChannels);
+      const removedContent = getActionContent(removedActions, removedChannels);
+      const changedContent = getActionContent(changedActions, changedChannels);
 
       if (addedContent) {
         embed.fields?.push({ name: language.Added, value: addedContent, inline: false });
