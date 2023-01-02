@@ -708,10 +708,10 @@ const takeAction = async (
 
               if (args.guild) {
                 client.mutes.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                const banCache = client.mutes.get(args.guild?.id);
+                const cache = client.mutes.get(args.guild?.id);
 
-                if (banCache?.size === 1) client.mutes.delete(args.guild.id);
-                else banCache?.delete(args.target.id);
+                if (cache?.size === 1) client.mutes.delete(args.guild.id);
+                else cache?.delete(args.target.id);
               }
 
               // eslint-disable-next-line import/no-self-import
@@ -803,10 +803,10 @@ const takeAction = async (
 
               if (args.guild) {
                 client.bans.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                const banCache = client.bans.get(args.guild?.id);
+                const cache = client.bans.get(args.guild?.id);
 
-                if (banCache?.size === 1) client.bans.delete(args.guild.id);
-                else banCache?.delete(args.target.id);
+                if (cache?.size === 1) client.bans.delete(args.guild.id);
+                else cache?.delete(args.target.id);
               }
 
               // eslint-disable-next-line import/no-self-import
@@ -875,10 +875,10 @@ const takeAction = async (
 
                 if (args.guild) {
                   client.channelBans.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                  const banCache = client.channelBans.get(args.guild?.id);
+                  const cache = client.channelBans.get(args.guild?.id);
 
-                  if (banCache?.size === 1) client.channelBans.delete(args.guild.id);
-                  else banCache?.delete(args.target.id);
+                  if (cache?.size === 1) client.channelBans.delete(args.guild.id);
+                  else cache?.delete(args.target.id);
                 }
 
                 // eslint-disable-next-line import/no-self-import
