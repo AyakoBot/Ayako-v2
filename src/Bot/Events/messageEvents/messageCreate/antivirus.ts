@@ -292,7 +292,7 @@ const doesntExist = async (
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
+    description: `**${msg.language.Result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
     color: client.customConstants.colors.success,
   };
 
@@ -329,7 +329,7 @@ const blacklisted = async (
 ) => {
   if (note && typeof note === 'string') {
     const embed: DDeno.Embed = {
-      description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
+      description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
       fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
     };
@@ -339,7 +339,7 @@ const blacklisted = async (
     await client.ch.replyMsg(msg, { embeds: [embed] });
   } else {
     const embed: DDeno.Embed = {
-      description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
+      description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
     };
 
@@ -390,7 +390,7 @@ const severeLink = async (
   saveToBadLink(linkObject, msg, hrefLogging);
 
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
+    description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
   embed.fields = [];
@@ -431,7 +431,7 @@ const ccscam = async (
 ) => {
   saveToBadLink(linkObject, msg);
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.malicious(client.stringEmotes.cross)}`,
+    description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
 
@@ -473,7 +473,7 @@ const newUrl = async (
   saveToBadLink(linkObject, msg);
 
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.newLink(client.stringEmotes.cross)}`,
+    description: `**${msg.language.Result}**\n${lan.newLink(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
 
@@ -536,7 +536,7 @@ const whitelisted = async (
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.whitelisted(client.stringEmotes.tick)}`,
+    description: `**${msg.language.Result}**\n${lan.whitelisted(client.stringEmotes.tick)}`,
     color: client.customConstants.colors.success,
   };
 
@@ -567,7 +567,7 @@ const cloudFlare = async (
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.cfProtected}`,
+    description: `**${msg.language.Result}**\n${lan.cfProtected}`,
     color: 16776960,
   };
 
@@ -597,7 +597,7 @@ const VTfail = (
   res?: DBT.antivirus,
 ) => {
   const embed: DDeno.Embed = {
-    description: `**${msg.language.result}**\n${lan.VTfail(client.stringEmotes.cross)}`,
+    description: `**${msg.language.Result}**\n${lan.VTfail(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.loading,
   };
 

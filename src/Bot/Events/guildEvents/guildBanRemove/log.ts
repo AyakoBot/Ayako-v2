@@ -14,7 +14,7 @@ export default async (user: DDeno.User, guild: DDeno.Guild) => {
 
   const embed: DDeno.Embed = {
     author: {
-      iconUrl: con.banRemove,
+      iconUrl: con.BanRemove,
       name: lan.unban,
     },
     description: auditUser ? lan.descUnbanAudit(user, auditUser) : lan.descUnban(user),
