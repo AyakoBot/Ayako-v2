@@ -23,10 +23,13 @@ const getEmote = (emoji: DDeno.Emoji) =>
     emoji.id ?? 'None'
   }\`\n`;
 
-const getInvite = (invite: DDeno.InviteMetadata, user?: DDeno.User) =>
+const getInviteDetails = (invite: DDeno.InviteMetadata, user?: DDeno.User) =>
   `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
     invite.uses
   }\nCreated: ${client.customConstants.standard.getTime(invite.createdAt)}`;
+
+const getInvite = (invite: DDeno.InviteMetadata) =>
+  `Invite discord.gg/${invite.code} / \`${invite.code}\``;
 
 const getIntegration = (integration: DDeno.Integration) =>
   `Integration \`${integration.name}\` / \`${integration.id}\``;
@@ -40,6 +43,9 @@ const getApplication = (application: DDeno.Application | bigint) =>
       : `\`${application.name}\` / \`${application.id}\``
   }`;
 
+const getScheduledEvent = (event: DDeno.ScheduledEvent) =>
+  `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`;
+
 export default {
   languageFunction: {
     getChannel,
@@ -48,9 +54,11 @@ export default {
     getMessage,
     getEmote,
     getInvite,
+    getInviteDetails,
     getIntegration,
     getRole,
     getApplication,
+    getScheduledEvent,
   },
   events: {
     logs: {
@@ -58,6 +66,28 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      invite: {
+        descCreateAudit: (user: DDeno.User, invite: DDeno.Invite) =>
+          `${getUser(user)}has created\n${getInvite(invite)}`,
+        descCreate: (invite: DDeno.Invite) => `${getInvite(invite)}was created`,
+        descDeleteAudit: (user: DDeno.User, invite: DDeno.InviteMetadata) =>
+          `${getUser(user)}has deleted\n${getInvite(invite)}`,
+        descDelete: (invite: DDeno.InviteMetadata) => `${getInvite(invite)}was deleted`,
+        nameCreate: 'Invite created',
+        nameDelete: 'Invite deleted',
+        inviter: 'Inviter',
+        targetUser: 'Target User',
+        flagsName: 'Flags',
+        temporary: 'Temporary',
+        targetTypeName: 'Target Type',
+        targetType: {
+          1: 'Stream',
+          2: 'Embedded Application',
+        },
+        maxAge: 'Max. Age',
+        maxUses: 'Max. Uses',
+        expiresAt: 'Expires at',
+      },
       integration: {
         descCreateAudit: (integration: DDeno.Integration, user: DDeno.User) =>
           `${getUser(user)}has created\n${getIntegration(integration)}`,
@@ -2788,4 +2818,6 @@ export default {
   User: 'User',
   Application: 'Application',
   Bot: 'Bot',
+  Flags: 'Flags',
+  ScheduledEvent: 'Scheduled Event',
 };
