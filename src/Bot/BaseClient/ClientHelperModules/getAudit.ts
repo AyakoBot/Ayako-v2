@@ -1,5 +1,4 @@
 import type * as DDeno from 'discordeno';
-import Discord from 'discord.js';
 import client from '../DDenoClient.js';
 
 export default async (
@@ -8,12 +7,8 @@ export default async (
   targetId?: bigint,
   otherFilterArguments?: (entry: DDeno.AuditLogEntry) => boolean,
 ) => {
-  const me = await client.helpers.getMember(guild.id, client.id);
-  const mePerms = new Discord.PermissionsBitField(me.permissions);
-  if (!mePerms.has(128n)) return null;
-
   const audits = await client.helpers.getAuditLog(guild.id, { limit: 10, actionType });
-  if (!audits || !audits.auditLogEntries) return null;
+  if (!audits || !audits.auditLogEntries) return undefined;
 
   return audits.auditLogEntries
     .filter((entry) => (targetId ? entry.targetId === targetId : true))

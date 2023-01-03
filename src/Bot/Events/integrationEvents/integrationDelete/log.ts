@@ -39,19 +39,23 @@ export default async (
   };
 
   if (integration) {
-    embed.fields?.push({
-      name: lan.flagsName,
-      value: [
-        integration.enabled ? language.Enabled : null,
-        integration.syncing ? lan.syncing : null,
-        integration.enableEmoticons ? lan.enableEmoticons : null,
-        integration.revoked ? lan.revoked : null,
-      ]
-        .filter((f): f is string => !!f)
-        .map((f) => `\`${f}\``)
-        .join(', '),
-      inline: true,
-    });
+    const flagsText = [
+      integration.enabled ? language.Enabled : null,
+      integration.syncing ? lan.syncing : null,
+      integration.enableEmoticons ? lan.enableEmoticons : null,
+      integration.revoked ? lan.revoked : null,
+    ]
+      .filter((f): f is string => !!f)
+      .map((f) => `\`${f}\``)
+      .join(', ');
+
+    if (flagsText) {
+      embed.fields?.push({
+        name: lan.flagsName,
+        value: flagsText,
+        inline: true,
+      });
+    }
 
     if (integration.user) {
       embed.fields?.push({

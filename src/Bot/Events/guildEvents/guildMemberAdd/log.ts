@@ -32,7 +32,7 @@ export default async (_: DDeno.Member, user: DDeno.User, guild: DDeno.Guild) => 
   if (usedInvite) {
     embed.fields?.push({
       name: lan.invite,
-      value: language.languageFunction.getInvite(usedInvite, usedInvite.inviter),
+      value: language.languageFunction.getInviteDetails(usedInvite, usedInvite.inviter),
     });
   }
 

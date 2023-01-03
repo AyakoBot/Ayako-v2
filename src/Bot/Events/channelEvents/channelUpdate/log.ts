@@ -46,7 +46,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
         added.map((r) => lan.flags[r]).join(', '),
         removed.map((r) => lan.flags[r]).join(', '),
         'difference',
-        lan.flagsName,
+        language.Flags,
       );
       break;
     }

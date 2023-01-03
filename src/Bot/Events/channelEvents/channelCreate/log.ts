@@ -33,21 +33,25 @@ export default async (channel: DDeno.Channel) => {
 
   const flags = new Discord.ChannelFlagsBitField(channel.flags || 0).toArray();
 
-  embed.fields?.push({
-    name: lan.flagsName,
-    value: [
-      ...flags.map((f) => lan.flags[f]),
-      channel.nsfw ? lan.nsfw : null,
-      channel.archived ? lan.archived : null,
-      channel.locked ? lan.locked : null,
-      channel.invitable ? lan.invitable : null,
-      channel.newlyCreated ? lan.newlyCreated : null,
-    ]
-      .filter((f): f is string => !!f)
-      .map((f) => `\`${f}\``)
-      .join(', '),
-    inline: true,
-  });
+  const flagsText = [
+    ...flags.map((f) => lan.flags[f]),
+    channel.nsfw ? lan.nsfw : null,
+    channel.archived ? lan.archived : null,
+    channel.locked ? lan.locked : null,
+    channel.invitable ? lan.invitable : null,
+    channel.newlyCreated ? lan.newlyCreated : null,
+  ]
+    .filter((f): f is string => !!f)
+    .map((f) => `\`${f}\``)
+    .join(', ');
+
+  if (flagsText) {
+    embed.fields?.push({
+      name: language.Flags,
+      value: flagsText,
+      inline: true,
+    });
+  }
 
   if (channel.topic) {
     embed.fields?.push({ name: lan.topic, value: channel.topic, inline: true });
