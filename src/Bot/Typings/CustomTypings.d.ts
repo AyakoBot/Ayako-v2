@@ -24,6 +24,7 @@ export interface CustomClient extends DDeno.Bot {
   webhooks: Map<bigint, Map<bigint, DDeno.Webhook>>;
   automodRules: Map<bigint, Map<bigint, DDeno.AutoModerationRule>>;
   emojis: Map<bigint, Map<bigint, DDeno.Emoji>>;
+  integrations: Map<bigint, Map<bigint, DDeno.Integration>>;
 
   neko: typeof NekoClient;
   customConstants: typeof Constants;

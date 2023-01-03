@@ -28,6 +28,18 @@ const getInvite = (invite: DDeno.InviteMetadata, user?: DDeno.User) =>
     invite.uses
   }\nCreated: ${client.customConstants.standard.getTime(invite.createdAt)}`;
 
+const getIntegration = (integration: DDeno.Integration) =>
+  `Integration \`${integration.name}\` / \`${integration.id}\``;
+
+const getRole = (role: DDeno.Role) => `Role <@&${role}> / \`${role.name}\` / \`${role.id}\``;
+
+const getApplication = (application: DDeno.Application | bigint) =>
+  `Application ${
+    typeof application === 'bigint'
+      ? `\`${application}\``
+      : `\`${application.name}\` / \`${application.id}\``
+  }`;
+
 export default {
   languageFunction: {
     getChannel,
@@ -36,6 +48,9 @@ export default {
     getMessage,
     getEmote,
     getInvite,
+    getIntegration,
+    getRole,
+    getApplication,
   },
   events: {
     logs: {
@@ -43,6 +58,40 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      integration: {
+        descCreateAudit: (integration: DDeno.Integration, user: DDeno.User) =>
+          `${getUser(user)}has created\n${getIntegration(integration)}`,
+        descCreate: (integration: DDeno.Integration) => `${getIntegration(integration)}was created`,
+        descDeleteIntegrationAudit: (user: DDeno.User, integration: DDeno.Integration) =>
+          `${getUser(user)}has deleted\n${getIntegration(integration)}`,
+        descDeleteAudit: (user: DDeno.User, applicationId: bigint) =>
+          `${getUser(user)}has deleted an Integration from\n${getApplication(applicationId)}`,
+        descDeleteIntegration: (integration: DDeno.Integration) =>
+          `${getIntegration(integration)}was deleted`,
+        descDelete: (applicationId: bigint, id: bigint) =>
+          `An Integration with ID \`${id}\`\n of Application with ID ${applicationId}\nwas deleted`,
+        descUpdateAudit: (user: DDeno.User, integration: DDeno.Integration) =>
+          `${getUser(user)}has updated\n${getIntegration(integration)}`,
+        descUpdate: (integration: DDeno.Integration) => `${getIntegration(integration)}was updated`,
+        nameCreate: 'Integration created',
+        nameDelete: 'Integration deleted',
+        nameUpdate: 'Integration updated',
+        flagsName: 'Flags',
+        syncing: 'Syncing',
+        enableEmoticons: 'Enables Emotes',
+        revoked: 'Revoked',
+        expireBehaviorName: 'Expire Behaviour',
+        expireBehavior: {
+          0: 'Remove Role from Member',
+          1: 'Kick Member',
+        },
+        expireGracePeriod: 'Expire Grace Period',
+        syncedAt: 'Synced At',
+        subscriberCount: 'Subscribers Count',
+        account: 'Account',
+        getAccount: (account: { id: bigint; name: string }) =>
+          `Account \`${account.name}\` / \`${account.id}\``,
+      },
       guild: {
         descBan: (user: DDeno.User) => `${getUser(user)}was banned`,
         descBanAudit: (user: DDeno.User, executor: DDeno.User) =>
@@ -2663,7 +2712,35 @@ export default {
   },
   welcome: (user: DDeno.User, guild: DDeno.Guild) =>
     `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`,
-  result: `Result`,
+  scopes: {
+    bot: 'Bot',
+    connections: 'View Connections',
+    'dm_channels.read': 'Read DM Channels',
+    email: 'See E-Mail',
+    idenfify: 'See all User Info another Discord User would',
+    guilds: 'See Guilds',
+    'guilds.join': 'Join Servers',
+    'guild.members.read': 'See all Member Info another Server Member would',
+    'gdm.join': 'Join Group DMs',
+    'messages.read': 'Read Messages',
+    'role_connections.write': 'give/remove Roles to/from Members',
+    rpc: 'Update Activity',
+    'rpc.notifications.read': 'Read Discord Notifications',
+    'webhook.incoming': 'Create a Webhook for Token Code grants',
+    voice: 'Join Voice Channels',
+    'application.builds.upload': 'Update/Upload Builds',
+    'applications.builds.read': 'See Builds',
+    'application.store.update': 'See Store listings, SKUs, Achievements and more',
+    'applications.entitlements': 'See Entitlements',
+    'relationshipts.read': 'See Friends',
+    'activities.read': 'See Activities',
+    'activities.write': 'Create Activities',
+    'application.commands': 'Use Slash Commands',
+    'applicaiton.commands.update': 'Update Slash Commands',
+    'application.commands.permissions.update': 'Update Slash Command Permissions',
+  },
+  Scopes: 'Scopes',
+  Result: `Result`,
   stagePrivacyLevels: [`Public`, `Server Only`],
   none: `None`,
   defaultValuesLog: (oldValue: string, newValue: string) =>
@@ -2708,4 +2785,7 @@ export default {
   Tier: 'Tier',
   Channel: 'Channel',
   Emoji: 'Emoji',
+  User: 'User',
+  Application: 'Application',
+  Bot: 'Bot',
 };
