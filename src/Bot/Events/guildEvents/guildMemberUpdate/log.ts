@@ -117,7 +117,7 @@ export default async (
 
   client.ch.send(
     { id: channels, guildId: guild.id },
-    { embeds: [embed] },
+    { embeds: [embed], files },
     language,
     undefined,
     10000,

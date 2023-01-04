@@ -86,7 +86,7 @@ export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild
 
     client.ch.send(
       { id: channels, guildId: g.id },
-      { embeds: [embed] },
+      { embeds: [embed], files },
       language,
       undefined,
       10000,

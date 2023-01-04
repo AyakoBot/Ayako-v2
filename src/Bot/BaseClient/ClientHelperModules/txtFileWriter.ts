@@ -1,7 +1,8 @@
-export default (array: string[], source?: string) => {
+import type * as DDeno from 'discordeno';
+
+export default (array: string[], source?: string, name = String(Date.now())) => {
   if (!array.length) return null;
 
-  const now = Date.now();
   let content = '';
   const split = '\n';
 
@@ -23,8 +24,8 @@ export default (array: string[], source?: string) => {
     });
   }
 
-  const buffer = Buffer.from(content, 'utf-8');
-  const attachment = { file: buffer, name: `${now}.txt` };
+  const blob = new Blob([content], { type: 'text/plain' });
+  const attachment: DDeno.FileContent = { blob, name: `${name}.txt` };
 
   return attachment;
 };

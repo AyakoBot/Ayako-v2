@@ -24,22 +24,16 @@ export default async (reaction: CT.ReactionRemove) => {
     await import('../../messageEvents/messageCreate/messageCreate.js')
   ).convertMsg(message);
 
-  const getEmbed = () => {
-    const embed: DDeno.Embed = {
-      author: {
-        name: lan.title,
-        iconUrl: con.remove,
-        url: client.ch.getJumpLink(msg),
-      },
-      description: lan.description(user, reaction, msg),
-      color: client.customConstants.colors.warning,
-      fields: [],
-    };
-
-    return embed;
+  const embed: DDeno.Embed = {
+    author: {
+      name: lan.title,
+      iconUrl: con.remove,
+      url: client.ch.getJumpLink(msg),
+    },
+    description: lan.description(user, reaction, msg),
+    color: client.customConstants.colors.warning,
+    fields: [],
   };
-
-  const embed = getEmbed();
 
   const getBuffers = async () => {
     let emoji = await client.ch.fileURL2Buffer([

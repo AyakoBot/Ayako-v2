@@ -38,7 +38,7 @@ export default async (emoji: DDeno.Emoji, guild: DDeno.Guild) => {
 
   client.ch.send(
     { id: channels, guildId: guild.id },
-    { embeds: [embed] },
+    { embeds: [embed], files },
     language,
     undefined,
     10000,
