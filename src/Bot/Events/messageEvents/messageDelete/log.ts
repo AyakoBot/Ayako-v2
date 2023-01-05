@@ -1,3 +1,4 @@
+import Discord from 'discord.js';
 import type DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 import type CT from '../../../Typings/CustomTypings';
@@ -6,140 +7,167 @@ export default async (msg: CT.MessageGuild) => {
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
-  const lan = msg.language.events.messageDelete;
+  const guild = await client.cache.guilds.get(msg.guildId);
+  if (!guild) return;
+
+  const language = await client.ch.languageSelector(msg.guildId);
+  const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
-
-  const audit = await client.ch.getAudit(
-    msg.guild,
-    72,
-    msg.authorId,
-    (a) => a.options?.channelId === msg.channelId,
-  );
-  const getEmbedWithEntry = async () => {
-    if (!audit?.userId) return null;
-    const executor = await client.cache.users.get(audit.userId);
-
-    const embed: DDeno.Embed = {
-      author: {
-        name: lan.title,
-        iconUrl: con.delete,
-      },
-      description: lan.descDetails(msg.channel, msg.author, executor),
-      color: client.customConstants.colors.warning,
-      fields: [],
-    };
-
-    if (audit?.reason) {
-      embed.fields?.push({ name: msg.language.reason, value: audit.reason });
-    }
-
-    return embed;
-  };
-
-  const getEmbedWithoutEntry = () => {
-    const embed: DDeno.Embed = {
-      author: {
-        name: lan.title,
-        iconUrl: con.delete,
-      },
-      description: lan.desc(msg.author, msg.channel),
-      color: client.customConstants.colors.warning,
-      fields: [],
-    };
-
-    return embed;
-  };
-
-  const maxFieldSize = 1024;
-  const embed = audit ? await getEmbedWithEntry() : getEmbedWithoutEntry();
-  if (!embed) return;
-
-  const getContentFields = () => {
-    if (!msg.content?.length) return;
-    if (msg.content.length <= maxFieldSize) {
-      embed.fields?.push({ name: msg.language.content, value: msg.content });
-      return;
-    }
-
-    const chunks: string[] = [];
-
-    let content = String(msg.content);
-    while (content.length > maxFieldSize) {
-      const chunk = content.slice(0, maxFieldSize);
-      chunks.push(chunk);
-      content = content.slice(maxFieldSize);
-    }
-    const chunk = content.slice(0, maxFieldSize);
-    chunks.push(chunk);
-
-    chunks.forEach((c) => {
-      embed.fields?.push({ name: '\u200b', value: c });
-    });
-  };
-
-  getContentFields();
-
-  const getBuffers = async () => {
-    if (!msg.attachments?.length) return [];
-    const attachments = await client.ch.fileURL2Buffer(msg.attachments.map((a) => a.url));
-    return attachments;
-  };
-
+  const audit = await client.ch.getAudit(guild, 72, msg.id);
+  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
   const files: DDeno.FileContent[] = [];
-  const secondMessageFiles = await getBuffers();
+  const embeds: DDeno.Embed[] = [];
 
-  let embedCodes = null;
+  const embed: DDeno.Embed = {
+    author: {
+      iconUrl: con.delete,
+      name: lan.nameDelete,
+    },
+    description: auditUser ? lan.descCreateAudit(auditUser, msg) : lan.descCreate(msg),
+    fields: [],
+    color: client.customConstants.colors.warning,
+  };
 
-  if (msg.embeds?.length) {
-    embedCodes = `${msg.language.Embeds}:\n\n${msg.embeds
-      ?.map((e) => JSON.stringify(e, null, 2))
-      .join('\n\n')}`;
+  embeds.push(embed);
 
-    files.push({ name: 'Embeds.txt', blob: new Blob([embedCodes], { type: 'text/plain' }) });
+  const flagsText = [
+    ...new Discord.MessageFlagsBitField(msg.flags).toArray().map((f) => lan.flags[f]),
+    new Discord.PermissionsBitField(msg.bitfield).has(1n) ? lan.tts : null,
+    new Discord.PermissionsBitField(msg.bitfield).has(2n) ? lan.mentionEveryone : null,
+    new Discord.PermissionsBitField(msg.bitfield).has(4n) ? lan.pinned : null,
+    msg.editedTimestamp ? lan.edited : null,
+    msg.activity ? `${lan.activityName} ${lan.activity[msg.activity.type]}` : null,
+    msg.interaction ? `${lan.interactionName} ${lan.interaction[msg.interaction.type]}` : null,
+    msg.type ? lan.type[msg.type] : null,
+    msg.isFromBot ? lan.isFromBot : null,
+  ]
+    .filter((f): f is string => !!f)
+    .map((f) => `\`${f}\``)
+    .join(', ');
+
+  if (flagsText) {
+    embed.fields?.push({
+      name: language.Flags,
+      value: flagsText,
+      inline: true,
+    });
   }
 
-  const m = await client.ch.send(
-    { id: channels, guildId: msg.guildId },
-    { embeds: [embed], files: files?.filter((f) => !!f) },
-    msg.language,
-    undefined,
-    !secondMessageFiles?.length ? 5000 : undefined,
-  );
-
-  if (!secondMessageFiles?.length) return;
-  if (!m?.[0]) return;
-
-  m.forEach(async (message) => {
-    if (!message) return;
-
-    const noticeEmbed: DDeno.Embed = {
-      type: 'rich',
-      description: lan.attachmentsLog(message),
-      color: client.customConstants.colors.ephemeral,
-    };
-
-    const channel = await client.cache.channels.get(message.channelId);
-    if (!channel) return;
-
-    const m2 = await client.ch.send(
-      channel,
-      {
-        embeds: [noticeEmbed],
-        files: secondMessageFiles.filter((f) => !!f) as never,
-      },
-      msg.language,
+  if (msg.components?.length) {
+    const components = client.ch.txtFileWriter(
+      msg.components.map((c) => JSON.stringify(c, null, 2)),
+      undefined,
+      lan.components,
     );
 
-    if (!m2) return;
+    if (components) files.push(components);
+  }
 
-    const noticeEmbed2: DDeno.Embed = {
-      type: 'rich',
-      description: lan.deleteLog(msg),
+  if (msg.reactions?.length) {
+    embed.fields?.push({
+      name: lan.reactions,
+      value: msg.reactions
+        .map((r) => `${language.languageFunction.getEmote(r.emoji)} ${r.count}`)
+        .join('\n'),
+    });
+  }
+
+  if (msg.thread) {
+    embed.fields?.push({
+      name: language.channelTypes[msg.thread.type],
+      value: language.languageFunction.getChannel(
+        msg.thread as DDeno.Channel,
+        language.channelTypes[msg.thread.type],
+      ),
+    });
+  }
+
+  if (msg.stickerItems?.length) {
+    embed.fields?.push({
+      name: lan.stickers,
+      value: msg.stickerItems.map((s) => `\`${s.name}\` / \`${s.id}\``).join('\n'),
+    });
+  }
+
+  if (msg.webhookId) {
+    const webhook =
+      client.webhooks.get(msg.guildId)?.get(msg.webhookId) ??
+      (await client.helpers.getWebhook(msg.webhookId));
+
+    embed.fields?.push({
+      name: language.Webhook,
+      value: language.languageFunction.getWebhook(webhook),
+    });
+  }
+
+  if (msg.messageReference) {
+    embed.fields?.push({
+      name: lan.referenceMessage,
+      value: language.languageFunction.getMessage(msg.messageReference as CT.MessageGuild),
+    });
+  }
+
+  if (msg.embeds) {
+    const msgEmbeds = client.ch.txtFileWriter(
+      msg.embeds.map((c) => JSON.stringify(c, null, 2)),
+      undefined,
+      lan.embeds,
+    );
+
+    if (msgEmbeds) files.push(msgEmbeds);
+  }
+
+  if (msg.mentionedUserIds?.length) {
+    embed.fields?.push({
+      name: lan.mentionedUsers,
+      value: msg.mentionedUserIds.map((m) => `<@${m}>`).join(', '),
+    });
+  }
+
+  if (msg.mentionedRoleIds?.length) {
+    embed.fields?.push({
+      name: lan.mentionedRoles,
+      value: msg.mentionedRoleIds.map((m) => `<@&${m}>`).join(', '),
+    });
+  }
+
+  if (msg.mentionedChannelIds?.length) {
+    embed.fields?.push({
+      name: lan.mentionedChannels,
+      value: msg.mentionedChannelIds.map((m) => `<#${m}>`).join(', '),
+    });
+  }
+
+  if (msg.content) {
+    const contentEmbed: DDeno.Embed = {
+      description: msg.content,
       color: client.customConstants.colors.ephemeral,
+      author: {
+        name: language.content,
+      },
     };
 
-    client.helpers
-      .editMessage(message.channelId, message.id, { embeds: [embed, noticeEmbed2] })
-      .catch(() => null);
-  });
+    embeds.push(contentEmbed);
+  }
+
+  if (msg.attachments?.length) {
+    const attachments = (await client.ch.fileURL2Blob(msg.attachments.map((a) => a.url))).filter(
+      (
+        e,
+      ): e is {
+        blob: Blob;
+        name: string;
+      } => !!e,
+    );
+
+    if (attachments?.length) files.push(...attachments);
+  }
+
+  client.ch.send(
+    { id: channels, guildId: msg.guildId },
+    { embeds: [embed], files },
+    language,
+    undefined,
+    files.length ? undefined : 10000,
+  );
 };

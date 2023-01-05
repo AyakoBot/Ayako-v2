@@ -16,7 +16,7 @@ const getMessage = (msg: CT.Message | DDeno.Message) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
 
 const getChannel = (channel: DDeno.Channel, type?: string) =>
-  `${type ?? 'Channel'} <@${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
+  `${type ?? 'Channel'} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
 
 const getEmote = (emoji: DDeno.Emoji) =>
   `${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
@@ -46,6 +46,8 @@ const getApplication = (application: DDeno.Application | bigint) =>
 const getScheduledEvent = (event: DDeno.ScheduledEvent) =>
   `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`;
 
+const getWebhook = (webhook: DDeno.Webhook) => `Webhook \`${webhook.name}\` / \`${webhook.id}\``;
+
 export default {
   languageFunction: {
     getChannel,
@@ -59,6 +61,7 @@ export default {
     getRole,
     getApplication,
     getScheduledEvent,
+    getWebhook,
   },
   events: {
     logs: {
@@ -66,6 +69,78 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      message: {
+        nameDelete: 'Message Deleted',
+        descCreateAudit: (user: DDeno.User, msg: CT.MessageGuild) =>
+          `${getUser(user)}has deleted\n${getMessage(msg)}from\n${getUser(msg.author)}`,
+        descCreate: (msg: CT.MessageGuild) =>
+          `${getMessage(msg)}from\n${getUser(msg.author)}was deleted`,
+        flags: {
+          Crossposted: 'Published',
+          IsCrosspost: 'Received from a News Channel',
+          Loading: 'Loading',
+          SuppressEmbeds: 'Suppressed Embeds',
+          SourceMessageDeleted: 'Source Message Deleted',
+          Urgent: 'Message from Discord System',
+          HasThread: 'Message has Thread',
+          Ephemeral: 'Ephemeral Message',
+          FailedToMentionSomeRolesInThread: 'Failed to mention some Roles in Thread',
+        },
+        reactions: 'Reactions',
+        components: 'Components',
+        edited: 'Edited',
+        activityName: 'Activity',
+        activity: {
+          1: 'Play Invite',
+          2: 'Spectate Invite',
+          3: 'Listen Invite',
+          4: 'Join Request',
+        },
+        interactionName: 'Interaction',
+        interaction: {
+          1: 'Ping',
+          2: 'Applicaiton Command',
+          3: 'Message Component',
+          4: 'Application Command Autocomplete',
+          5: 'Modal Submit',
+        },
+        stickers: 'Stickers',
+        referenceMessage: 'Replied Message',
+        type: {
+          0: 'Default',
+          1: 'Recipient Add',
+          2: 'Recipient Remove',
+          3: 'Call',
+          4: 'Channel Name Change',
+          5: 'Channel Iconm Change',
+          6: 'Pinned Message',
+          7: 'User Join',
+          8: 'Boost',
+          9: 'Boost Tier 1',
+          10: 'Boost Tier 2',
+          11: 'Boost Tier 3',
+          12: 'Channel Follow Add',
+          14: 'Guild Discovery Disqualified',
+          15: 'Guild Discovery Requalified',
+          16: 'Guild Discovery Grace Period Inicial Warning',
+          17: 'Guild Discovery Grace Period Final Warning',
+          18: 'Thread Created',
+          19: 'Reply',
+          20: 'Chat Input Command',
+          21: 'Thread Starter Message',
+          22: 'Guild Invite Reminder',
+          23: 'Context Menu Command',
+          24: 'Auto Moderation Action',
+        },
+        embeds: 'Embeds',
+        isFromBot: 'From Bot',
+        tts: 'Text to Speech',
+        mentionEveryone: 'Mentions Everyone',
+        pinned: 'Pinned',
+        mentionedUsers: 'Mentioned Users',
+        mentionedRoles: 'Mentioned Roles',
+        mentionedChannels: 'Mentioned Channels',
+      },
       invite: {
         descCreateAudit: (user: DDeno.User, invite: DDeno.Invite) =>
           `${getUser(user)}has created\n${getInvite(invite)}`,
@@ -2820,4 +2895,5 @@ export default {
   Bot: 'Bot',
   Flags: 'Flags',
   ScheduledEvent: 'Scheduled Event',
+  Webhook: 'Webhook',
 };
