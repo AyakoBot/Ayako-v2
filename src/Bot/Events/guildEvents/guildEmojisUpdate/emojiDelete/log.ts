@@ -26,7 +26,7 @@ export default async (emoji: DDeno.Emoji, guild: DDeno.Guild) => {
   };
 
   const url = client.helpers.getEmojiURL(emoji.id, emote.toggles.animated);
-  const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+  const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
   client.ch.mergeLogging(url, emote.name, 'icon', embed, language);
 
   if (blob) {

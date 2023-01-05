@@ -36,12 +36,12 @@ export default async (reaction: CT.ReactionRemove) => {
   };
 
   const getBuffers = async () => {
-    let emoji = await client.ch.fileURL2Buffer([
+    let emoji = await client.ch.fileURL2Blob([
       `https://cdn.discordapp.com/emojis/${reaction.emoji.id}.gif?size=240`,
     ]);
 
     if (!emoji[0]?.blob.size) {
-      emoji = await client.ch.fileURL2Buffer([
+      emoji = await client.ch.fileURL2Blob([
         `https://cdn.discordapp.com/emojis/${reaction.emoji.id}.png?size=240`,
       ]);
     }

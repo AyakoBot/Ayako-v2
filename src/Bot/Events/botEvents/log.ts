@@ -29,7 +29,7 @@ export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild
     switch (true) {
       case user.avatar !== oldUser.avatar: {
         const url = client.ch.getAvatarURL(user);
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
         merge(url, user.avatar, 'icon', lan.avatar);
 

@@ -37,7 +37,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       const url = client.helpers.getGuildBannerURL(guild.id, { size: 4096, format: 'png' });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
         merge(url, guild.banner, 'icon', lan.banner);
 
@@ -58,7 +58,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
         merge(url, guild.icon, 'icon', lan.icon);
 
@@ -79,7 +79,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
         merge(url, guild.splash, 'icon', lan.splash);
 
@@ -108,7 +108,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
         merge(url, guild.discoverySplash, 'icon', lan.discoverySplash);
 

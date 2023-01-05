@@ -41,7 +41,7 @@ export default async (reaction: {
   const embed = getEmbed();
 
   const getBuffers = async () => {
-    const emoji = await client.ch.fileURL2Buffer([
+    const emoji = await client.ch.fileURL2Blob([
       `https://cdn.discordapp.com/emojis/${reaction.emoji.id}.${
         reaction.emoji.toggles.animated ? 'gif' : 'png'
       }?size=240`,

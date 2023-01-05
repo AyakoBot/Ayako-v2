@@ -42,7 +42,7 @@ export default async (
   switch (true) {
     case member.avatar !== oldMember.avatar: {
       const url = client.ch.getAvatarURL(user, member);
-      const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+      const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
       merge(url, user.avatar, 'icon', lan.avatar);
 

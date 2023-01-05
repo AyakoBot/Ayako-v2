@@ -162,7 +162,7 @@ const getAllAttachments = async (
 
     msgs.map(async (m, i) => {
       if ('attachments' in m) {
-        const attachment = (await client.ch.fileURL2Buffer(m.attachments.map((a) => a.url))).filter(
+        const attachment = (await client.ch.fileURL2Blob(m.attachments.map((a) => a.url))).filter(
           (a) => !!a,
         );
         if (attachment !== null) returnable.push(attachment as DDeno.FileContent[]);
