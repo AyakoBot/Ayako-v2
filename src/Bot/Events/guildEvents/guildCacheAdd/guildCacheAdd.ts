@@ -3,7 +3,7 @@ import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
 export default async (guild: DDeno.Guild) => {
-  client.helpers.getMembers(guild.id, {});
+  client.helpers.fetchMembers(guild.id);
 
   const autorules = await client.helpers.getAutomodRules(guild.id);
   autorules.forEach((r) => {
