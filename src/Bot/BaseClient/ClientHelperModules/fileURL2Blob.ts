@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-shadow
 import fetch from 'node-fetch';
 
-export default async (urls: (string | null)[]) =>
+export default async (urls: (string | null)[], names?: string[]) =>
   (
     await Promise.all(
       urls.map((url) =>
@@ -17,7 +17,9 @@ export default async (urls: (string | null)[]) =>
       const url = urls[i];
       if (!url) return null;
       const URLObject = new URL(url);
-      const fileName = URLObject.pathname.split(/\/+/).pop() || 'unknown';
+      const fileName = names?.length
+        ? names[i]
+        : URLObject.pathname.split(/\/+/).pop() || 'unknown';
 
       if (buffer) {
         return {
