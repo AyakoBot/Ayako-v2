@@ -3,7 +3,7 @@ import type DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (msg: CT.MessageGuild) => {
+export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
@@ -14,7 +14,8 @@ export default async (msg: CT.MessageGuild) => {
   const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 72, msg.id);
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    user ?? (audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined);
   const files: DDeno.FileContent[] = [];
   const embeds: DDeno.Embed[] = [];
 
@@ -23,7 +24,7 @@ export default async (msg: CT.MessageGuild) => {
       iconUrl: con.delete,
       name: lan.nameDelete,
     },
-    description: auditUser ? lan.descCreateAudit(auditUser, msg) : lan.descCreate(msg),
+    description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
     fields: [],
     color: client.customConstants.colors.warning,
   };

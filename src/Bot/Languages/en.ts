@@ -71,10 +71,14 @@ export default {
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
       message: {
         nameDelete: 'Message Deleted',
-        descCreateAudit: (user: DDeno.User, msg: CT.MessageGuild) =>
+        descDeleteAudit: (user: DDeno.User, msg: CT.MessageGuild) =>
           `${getUser(user)}has deleted\n${getMessage(msg)}from\n${getUser(msg.author)}`,
-        descCreate: (msg: CT.MessageGuild) =>
+        descDelete: (msg: CT.MessageGuild) =>
           `${getMessage(msg)}from\n${getUser(msg.author)}was deleted`,
+        descDeleteBulkAudit: (user: DDeno.User, msgs: DDeno.Message[], channel: DDeno.Channel) =>
+          `${getUser(user)}has bulk deleted\n${msgs.length} Messages in\n${getChannel(channel)}`,
+        descDeleteBulk: (msgs: DDeno.Message[], channel: DDeno.Channel) =>
+          `${msgs.length} Messages were deleted in\n${getChannel(channel)}`,
         flags: {
           Crossposted: 'Published',
           IsCrosspost: 'Received from a News Channel',
