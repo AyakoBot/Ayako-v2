@@ -79,6 +79,11 @@ export default {
           `${getUser(user)}has bulk deleted\n${msgs.length} Messages in\n${getChannel(channel)}`,
         descDeleteBulk: (msgs: DDeno.Message[], channel: DDeno.Channel) =>
           `${msgs.length} Messages were deleted in\n${getChannel(channel)}`,
+        descUpdateMaybe: (msg: DDeno.Message, user: DDeno.User) =>
+          `${getMessage(msg)}may have been updated by\n${getUser(user)}or by a Moderator`,
+        descUpdate: (msg: DDeno.Message) => `${getMessage(msg)}was updated`,
+        descUpdateAuthor: (msg: DDeno.Message, user: DDeno.User) =>
+          `${getMessage(msg)} was updated by\n${getUser(user)}`,
         flags: {
           Crossposted: 'Published',
           IsCrosspost: 'Received from a News Channel',
@@ -144,6 +149,9 @@ export default {
         mentionedUsers: 'Mentioned Users',
         mentionedRoles: 'Mentioned Roles',
         mentionedChannels: 'Mentioned Channels',
+        editedTimestamp: 'Last edited',
+        beforeContent: 'Content before:',
+        afterContent: 'Content after:',
       },
       invite: {
         descCreateAudit: (user: DDeno.User, invite: DDeno.Invite) =>
