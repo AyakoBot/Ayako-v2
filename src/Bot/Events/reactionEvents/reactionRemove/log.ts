@@ -8,71 +8,72 @@ export default async (reaction: CT.ReactionRemove) => {
   const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guildId });
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(reaction.guildId);
-  const lan = language.events.messageReactionRemove;
-  const con = client.customConstants.events.logs.reaction;
+  const guild = await client.cache.guilds.get(reaction.guildId);
+  if (!guild) return;
+
   const user = await client.cache.users.get(reaction.userId);
   if (!user) return;
 
-  const message = await client.cache.messages.get(
-    reaction.messageId,
-    reaction.channelId,
-    reaction.guildId,
-  );
-  if (!message) return;
-  const msg = await (
-    await import('../../messageEvents/messageCreate/messageCreate.js')
-  ).convertMsg(message);
+  const msg = await client.cache.messages.get(reaction.messageId);
+  if (!msg) return;
+
+  const language = await client.ch.languageSelector(reaction.guildId);
+  const lan = language.events.logs.reaction;
+  const con = client.customConstants.events.logs.reaction;
+  const files: DDeno.FileContent[] = [];
 
   const embed: DDeno.Embed = {
     author: {
-      name: lan.title,
       iconUrl: con.remove,
-      url: client.ch.getJumpLink(msg),
+      name: lan.nameRemove,
     },
-    description: lan.description(user, reaction, msg),
-    color: client.customConstants.colors.warning,
+    description: lan.descRemoved(reaction.emoji, user, msg),
     fields: [],
+    color: client.customConstants.colors.success,
   };
 
-  const getBuffers = async () => {
-    let emoji = await client.ch.fileURL2Blob([
-      `https://cdn.discordapp.com/emojis/${reaction.emoji.id}.gif?size=240`,
-    ]);
+  if (msg.reactions?.length) {
+    embed.fields?.push({
+      name: lan.reactions,
+      value: msg.reactions
+        ?.map(
+          (r) =>
+            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
+              reaction.emoji.id === r.emoji.id ||
+              (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
+                ? ` ${client.stringEmotes.plusBG}`
+                : ` ${client.stringEmotes.invis}`
+            } ${language.languageFunction.getEmote(r.emoji)}`,
+        )
+        .join('\n'),
+    });
+  }
 
-    if (!emoji[0]?.blob.size) {
-      emoji = await client.ch.fileURL2Blob([
-        `https://cdn.discordapp.com/emojis/${reaction.emoji.id}.png?size=240`,
-      ]);
-    }
-    return emoji;
-  };
+  if (reaction.emoji.toggles.requireColons && reaction.emoji.id) {
+    embed.thumbnail = {
+      url: `attachment://${reaction.emoji.name ?? reaction.emoji.id}`,
+    };
 
-  const payload: { embeds: DDeno.Embed[]; files: DDeno.FileContent[] } = {
-    embeds: [embed],
-    files: [],
-  };
-
-  if (reaction.emoji.id) {
-    const buffers = await getBuffers();
-    payload.files = buffers.filter(
+    const attachment = (
+      await client.ch.fileURL2Blob([
+        client.helpers.getEmojiURL(reaction.emoji.id, reaction.emoji.toggles.animated),
+      ])
+    ).filter(
       (
-        b,
-      ): b is {
+        e,
+      ): e is {
         blob: Blob;
         name: string;
-      } => !!b,
+      } => !!e,
     );
 
-    embed.thumbnail = {
-      url: `attachment://${buffers[0]?.name ?? Date.now()}`,
-    };
+    if (attachment) files.push(...attachment);
   }
 
   await client.ch.send(
     { id: channels, guildId: reaction.guildId },
-    payload,
-    msg.language,
+    { embeds: [embed] },
+    language,
     undefined,
     10000,
   );
