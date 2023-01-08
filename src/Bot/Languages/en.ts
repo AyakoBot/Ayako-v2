@@ -69,6 +69,12 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      reaction: {
+        descAdded: (emoji: DDeno.Emoji, user: DDeno.User, msg: DDeno.Message) =>
+          `${getUser(user)}has reacted with\n${getEmote(emoji)}to ${getMessage(msg)}`,
+        nameAdd: 'Reaction added',
+        reactions: 'Reactions',
+      },
       message: {
         nameDelete: 'Message Deleted',
         descDeleteAudit: (user: DDeno.User, msg: CT.MessageGuild) =>
