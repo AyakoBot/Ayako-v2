@@ -17,19 +17,24 @@ export interface CustomClient extends DDeno.Bot {
   channelBans: Map<bigint, Map<bigint, Jobs.Job>>;
   reminders: Map<bigint, Map<bigint, Jobs.Job>>;
 
-  disboardBumpReminders: Map<bigint, Jobs.Job>;
-  giveaways: Map<bigint, Map<bigint, Jobs.Job>>;
-  invites: Map<bigint, Map<string, DDeno.InviteMetadata>>;
+  disboardBumpReminders: Map<bigint, Map<bigint, Jobs.Job>>;
+  giveaways: Map<bigint, Map<bigint, Map<bigint, Jobs.Job>>>;
+  invites: Map<bigint, Map<bigint, Map<string, DDeno.InviteMetadata>>>;
   verificationCodes: Map<bigint, Map<bigint, string>>;
-  webhooks: Map<bigint, Map<bigint, DDeno.Webhook>>;
+  webhooks: Map<bigint, Map<bigint, Map<bigint, DDeno.Webhook>>>;
   automodRules: Map<bigint, Map<bigint, DDeno.AutoModerationRule>>;
   emojis: Map<bigint, Map<bigint, DDeno.Emoji>>;
   integrations: Map<bigint, Map<bigint, DDeno.Integration>>;
+  roles: Map<bigint, Map<bigint, DDeno.Role>>;
+  channels: Map<bigint, Map<bigint, DDeno.Channel>>;
+  guilds: Map<bigint, DDeno.Guild>;
+  users: Map<bigint, DDeno.User>;
+  members: Map<bigint, Map<bigint, DenDDeno.Member>>;
   reactions: Map<
     bigint,
     Map<
       bigint,
-      Map<bigint, Map<biging | string, { count: number; users: bigint[]; emoji: DDeno.Emoji }>>
+      Map<bigint, Map<bigint | string, { count: number; users: bigint[]; emoji: DDeno.Emoji }>>
     >
   >;
 

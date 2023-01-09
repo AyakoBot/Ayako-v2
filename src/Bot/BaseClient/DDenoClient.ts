@@ -1,7 +1,6 @@
 import * as DDeno from 'discordeno';
 // eslint-disable-next-line import/no-unresolved
 import enableHelpersPlugin from 'discordeno/helpers-plugin';
-import * as CacheProxy from './Other/permissions-plugin/index.js';
 import type CT from '../Typings/CustomTypings';
 import NekoClient from './NekoClient.js';
 import * as config from '../../configs.js';
@@ -34,6 +33,9 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   customized.emojis = new Map();
   customized.integrations = new Map();
   customized.reactions = new Map();
+  customized.roles = new Map();
+  customized.channels = new Map();
+  customized.guilds = new Map();
 
   customized.neko = NekoClient;
   customized.customConstants = Constants;
@@ -53,158 +55,14 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   return customized;
 };
 
-const client = CacheProxy.createProxyCache(
-  customizeBot(
-    enableHelpersPlugin(
-      DDeno.createBot({
-        events,
-        intents: 112383 as DDeno.GatewayIntents,
-        token: config.DISCORD_TOKEN,
-      }),
-    ),
+const client = customizeBot(
+  enableHelpersPlugin(
+    DDeno.createBot({
+      events,
+      intents: 112383 as DDeno.GatewayIntents,
+      token: config.DISCORD_TOKEN,
+    }),
   ),
-  {
-    fetchIfMissing: {
-      guilds: true,
-      roles: true,
-      messages: true,
-      channels: true,
-      users: true,
-      members: true,
-    },
-    shouldCache: {
-      guild: async (data: DDeno.Guild) => {
-        const oldData = (await client.cache.guilds.get(data.id, false)) as DDeno.Guild;
-
-        if (oldData) (client.events.guildUpdate as CT.GuildUpdate)(client, data, oldData, true);
-        // eslint-disable-next-line import/no-cycle
-        else (await import('../Events/guildEvents/guildCacheAdd/guildCacheAdd.js')).default(data);
-
-        return true;
-      },
-      user: async (data: DDeno.User) => {
-        const oldData = (await client.cache.users.get(data.id, false)) as DDeno.User;
-
-        if (oldData) (client.events.botUpdate as CT.UserUpdate)(client, data, oldData, true);
-        return true;
-      },
-      channel: async (data: DDeno.Channel) => {
-        const oldData = (await client.cache.channels.get(
-          data.id,
-          data.guildId,
-          false,
-        )) as DDeno.Channel;
-
-        if (oldData) (client.events.channelUpdate as CT.ChannelUpdate)(client, data, oldData, true);
-        return true;
-      },
-      member: async (data: DDeno.Member) => {
-        const oldData = (await client.cache.members.get(
-          data.id,
-          data.guildId,
-          false,
-        )) as DDeno.Member;
-
-        const user = (await client.cache.users.get(data.id, false)) as DDeno.User;
-        if (oldData) {
-          (client.events.guildMemberUpdate as CT.MemberUpdate)(client, data, user, oldData, true);
-        }
-        return true;
-      },
-      role: async (data: DDeno.Role) => {
-        const oldData = (await client.cache.roles.get(data.id, data.guildId, false)) as DDeno.Role;
-        if (oldData) (client.events.roleUpdate as CT.RoleUpdate)(client, data, oldData, true);
-        return true;
-      },
-      message: async (data: DDeno.Message) => {
-        const oldData = (await client.cache.messages.get(
-          data.id,
-          data.channelId,
-          data.guildId,
-          false,
-        )) as DDeno.Message;
-        if (oldData) (client.events.messageUpdate as CT.MessageUpdate)(client, data, oldData, true);
-        return true;
-      },
-    },
-    desiredProps: {
-      guilds: [
-        'name',
-        'premiumSubscriptionCount',
-        'vanityUrlCode',
-        'joinedAt',
-        'id',
-        'memberCount',
-        'shardId',
-        'toggles',
-        'permissions',
-      ],
-      channels: [
-        'name',
-        'topic',
-        'nsfw',
-        'parentId',
-        'id',
-        'guildId',
-        'type',
-        'permissionOverwrites',
-        'permissions',
-      ],
-      users: ['avatar', 'discriminator', 'id', 'username', 'toggles'],
-      members: [
-        'avatar',
-        'permissions',
-        'nick',
-        'premiumSince',
-        'communicationDisabledUntil',
-        'id',
-        'guildId',
-        'roles',
-        'joinedAt',
-        'toggles',
-        'permissions',
-      ],
-      roles: ['id', 'guildId', 'name', 'permissions', 'color', 'toggles', 'permissions'],
-      messages: [
-        'guildId',
-        'components',
-        'editedTimestamp',
-        'reactions',
-        'stickerItems',
-        'webhookId',
-        'messageReference',
-        'id',
-        'type',
-        'channelId',
-        'timestamp',
-        'content',
-        'embeds',
-        'attachments',
-        'authorId',
-        'mentionedChannelIds',
-        'mentionedRoleIds',
-        'mentionedUserIds',
-      ],
-    },
-    cacheInMemory: {
-      guilds: true,
-      users: true,
-      channels: true,
-      members: true,
-      roles: true,
-      messages: true,
-      default: true,
-    },
-    cacheOutsideMemory: {
-      guilds: false,
-      users: false,
-      channels: false,
-      members: false,
-      roles: false,
-      messages: false,
-      default: false,
-    },
-  },
 );
 
 client.rest = DDeno.createRestManager({
@@ -213,6 +71,6 @@ client.rest = DDeno.createRestManager({
   customUrl: config.REST_URL,
 });
 
-client.me = (await client.cache.users.get(client.id)) as DDeno.User;
+client.me = await client.helpers.getUser(client.id);
 
 export default client;
