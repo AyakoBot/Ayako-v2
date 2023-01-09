@@ -72,7 +72,7 @@ export default async (reaction: CT.ReactionRemove) => {
 
   await client.ch.send(
     { id: channels, guildId: reaction.guildId },
-    { embeds: [embed] },
+    { embeds: [embed], files },
     language,
     undefined,
     10000,

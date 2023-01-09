@@ -33,6 +33,7 @@ const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   customized.automodRules = new Map();
   customized.emojis = new Map();
   customized.integrations = new Map();
+  customized.reactions = new Map();
 
   customized.neko = NekoClient;
   customized.customConstants = Constants;

@@ -76,9 +76,15 @@ export default {
           `Reaction on\n${getMessage(msg)}with ${getEmote(emoji)}by ${getUser(
             user,
           )}was removed,\neither by the reactor themself or by a Moderator`,
+        descRemovedAll: (msg: DDeno.Message) => `All Reactions on\n${getMessage(msg)}were removed`,
+        descRemoveEmoji: (msg: DDeno.Message, emoji: DDeno.Emoji) =>
+          `Reaction with\n${getEmote(emoji)}was removed from\n${getMessage(msg)}`,
+        nameRemoveAll: 'Reaction remove All',
         nameAdd: 'Reaction added',
         nameRemove: 'Reaction removed',
+        nameRemoveEmoji: 'Emoji Reaction removed',
         reactions: 'Reactions',
+        count: 'Reaction count',
       },
       message: {
         nameDelete: 'Message Deleted',

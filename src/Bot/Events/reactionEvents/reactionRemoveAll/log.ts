@@ -1,43 +1,74 @@
 import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (payload: { channelId: bigint; messageId: bigint; guildId?: bigint }) => {
+export default async (
+  payload: { channelId: bigint; messageId: bigint; guildId?: bigint },
+  cache: Map<
+    bigint | string,
+    {
+      count: number;
+      users: bigint[];
+      emoji: DDeno.Emoji;
+    }
+  >,
+) => {
   if (!payload.guildId) return;
 
   const channels = await client.ch.getLogChannels('reactionevents', { guildId: payload.guildId });
   if (!channels) return;
 
   const language = await client.ch.languageSelector(payload.guildId);
-  const lan = language.events.messageReactionRemoveAll;
+  const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
-  const message = await client.cache.messages.get(payload.channelId, payload.messageId);
-  if (!message) return;
+  const files: DDeno.FileContent[] = [];
 
-  const msg = await (
-    await import('../../messageEvents/messageCreate/messageCreate')
-  ).convertMsg(message);
-
-  const getEmbed = () => {
-    const embed: DDeno.Embed = {
-      author: {
-        name: lan.title,
-        iconUrl: con.remove,
-        url: client.ch.getJumpLink(msg),
-      },
-      description: lan.description(msg),
-      color: client.customConstants.colors.warning,
-      fields: [],
-    };
-
-    return embed;
+  const embed: DDeno.Embed = {
+    author: {
+      name: lan.nameRemoveAll,
+      iconUrl: con.remove,
+      url: client.ch.getJumpLink({
+        id: payload.messageId,
+        channelId: payload.channelId,
+        guildId: payload.guildId,
+      }),
+    },
+    description: lan.descRemovedAll({
+      id: payload.messageId,
+      channelId: payload.channelId,
+      guildId: payload.guildId,
+    } as DDeno.Message),
+    color: client.customConstants.colors.warning,
+    fields: [],
   };
 
-  const embed = getEmbed();
+  if (cache) {
+    const reactions = Array.from(cache, ([, e]) => e);
+
+    embed.fields?.push({
+      name: lan.reactions,
+      value: reactions
+        ?.map(
+          (r) =>
+            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(
+              r.emoji,
+            )}`,
+        )
+        .join('\n'),
+    });
+
+    const users = client.ch.txtFileWriter(
+      reactions.map((r) => r.users.map(String).join(', ')).join('\n'),
+      undefined,
+      lan.reactions,
+    );
+
+    if (users) files.push(users);
+  }
 
   client.ch.send(
     { id: channels, guildId: payload.guildId },
-    { embeds: [embed] },
-    msg.language,
+    { embeds: [embed], files },
+    language,
     undefined,
     10000,
   );
