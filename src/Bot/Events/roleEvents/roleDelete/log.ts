@@ -2,21 +2,21 @@ import * as Discord from 'discord.js';
 import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (role: DDeno.Role) => {
-  const channels = await client.ch.getLogChannels('roleevents', role);
+export default async (payload: { guildId: bigint; roleId: bigint }, role?: DDeno.Role) => {
+  const channels = await client.ch.getLogChannels('roleevents', payload);
   if (!channels) return;
 
-  const guild = await client.guilds.get(role.guildId);
+  const guild = client.guilds.get(payload.guildId);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(role.guildId);
+  const language = await client.ch.languageSelector(payload.guildId);
   const lan = language.events.logs.role;
   const con = client.customConstants.events.logs.role;
-  const audit = role.botId ? undefined : await client.ch.getAudit(guild, 30, role.id);
-  let auditUser = role.botId ? client.users.get(role.botId) : undefined;
+  const audit = role?.botId ? undefined : await client.ch.getAudit(guild, 10, payload.roleId);
+  let auditUser = role?.botId ? client.users.get(role.botId) : undefined;
   const files: DDeno.FileContent[] = [];
 
-  if (!auditUser && audit && audit.userId) auditUser = await client.users.get(audit.userId);
+  if (!auditUser && audit && audit.userId) auditUser = await client.cache.users.get(audit.userId);
 
   const embed: DDeno.Embed = {
     author: {

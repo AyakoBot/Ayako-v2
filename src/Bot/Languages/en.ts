@@ -69,6 +69,18 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      role: {
+        descCreateAudit: (user: DDeno.User, role: DDeno.Role) =>
+          `${getUser(user)}has created\n${getRole(role)}`,
+        descCreate: (role: DDeno.Role) => `${getRole(role)}was created`,
+        nameCreate: 'Role created',
+        nameDelete: 'Role deleted',
+        managed: 'Managed by a Bot/Integration',
+        hoisted: 'Hoisted',
+        mentionable: 'Mentionable',
+        boosterRole: 'Booster Role',
+        unicodeEmoji: 'Unicode Emoji',
+      },
       reaction: {
         descAdded: (emoji: DDeno.Emoji, user: DDeno.User, msg: DDeno.Message) =>
           `${getUser(user)}has reacted with\n${getEmote(emoji)}to ${getMessage(msg)}`,
@@ -2925,4 +2937,5 @@ export default {
   Flags: 'Flags',
   ScheduledEvent: 'Scheduled Event',
   Webhook: 'Webhook',
+  color: 'Color',
 };

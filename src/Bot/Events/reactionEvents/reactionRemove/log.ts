@@ -29,7 +29,7 @@ export default async (reaction: CT.ReactionRemove) => {
     },
     description: lan.descRemoved(reaction.emoji, user, msg),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.warning,
   };
 
   if (msg.reactions?.length) {
