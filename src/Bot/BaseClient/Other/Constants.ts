@@ -1,4 +1,4 @@
-import type * as DDeno from 'discordeno';
+import * as DDeno from 'discordeno';
 
 export default {
   events: {
@@ -235,13 +235,17 @@ export default {
     patreon: 'https://www.patreon.com/Lars_und_so',
     error: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
     guildAvatarURL: (guild: DDeno.Guild, member: DDeno.Member, fileEnd: string) =>
-      `https://cdn.discordapp.com/guilds/${guild.id}/users/${member.id}/avatars/${member.avatar}.${fileEnd}?size=2048`,
+      `https://cdn.discordapp.com/guilds/${guild.id}/users/${member.id}/avatars/${member.avatar}.${fileEnd}?size=4096`,
     guildIconURL: (guild: DDeno.Guild, fileEnd: string) =>
-      `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.${fileEnd}?size=2048`,
+      `https://cdn.discordapp.com/icons/${guild.id}/${DDeno.iconBigintToHash(
+        guild.icon as bigint,
+      )}.${fileEnd}?size=4096`,
     emojiURL: (emoji: DDeno.Emoji, fileEnd: string) =>
-      `https://cdn.discordapp.com/emojis/${emoji.id}.${fileEnd}?size=2048`,
-    roleIconURL: (guild: DDeno.Guild, role: DDeno.Role) =>
-      `https://cdn.discordapp.com/role-icons/${guild.id}/${role.icon}.png?size=2048`,
+      `https://cdn.discordapp.com/emojis/${emoji.id}.${fileEnd}?size=4096`,
+    roleIconURL: (role: DDeno.Role) =>
+      `https://cdn.discordapp.com/role-icons/${role.id}/${DDeno.iconBigintToHash(
+        role.icon as bigint,
+      )}.png?size=4096`,
     userAvatarURL: (user: DDeno.User, fileEnd: string) =>
       `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
     appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
@@ -309,7 +313,7 @@ export default {
         'field-names': 256,
         'field-values': 1024,
         'field-length': 25,
-        'footer-text': 2048,
+        'footer-text': 4096,
       },
       total: 6000,
       totalOf: [
