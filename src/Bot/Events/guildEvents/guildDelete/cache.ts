@@ -34,6 +34,7 @@ export default (id: bigint) => {
 
   client.disboardBumpReminders.get(id)?.cancel();
   client.disboardBumpReminders.delete(id);
+  client.reactions.delete(id);
 };
 
 const clearJob = (type: ClearJobTypes, id: bigint) => {
