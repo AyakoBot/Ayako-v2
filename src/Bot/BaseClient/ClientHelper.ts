@@ -52,3 +52,4 @@ export const getChannelOwner            = (await import(`./ClientHelperModules/g
 export const moment                     = (await import(`./ClientHelperModules/moment.js`)).default;
 export const getChanged                 = (await import(`./ClientHelperModules/getChanged.js`)).default;
 export const spaces                     = (await import(`./ClientHelperModules/spaces.js`)).default;
+export const cache                      = (await import(`./ClientHelperModules/cache.js`)).default;

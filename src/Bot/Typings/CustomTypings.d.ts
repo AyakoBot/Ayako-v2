@@ -1,43 +1,14 @@
 import type DDeno from 'discordeno';
 import type Jobs from 'node-schedule';
-import RedisXpSQL from 'pg-x-redis';
+import RedisxPSQL from 'pg-x-redis';
 import type NekoClient from '../BaseClient/NekoClient.js';
 import type Constants from '../BaseClient/Other/Constants.js';
 import type ObjectEmotes from '../BaseClient/Other/ObjectEmotes.json';
 import type StringEmotes from '../BaseClient/Other/StringEmotes.json';
 import type ReactionEmotes from '../BaseClient/Other/ReactionEmotes.json';
 import type * as ch from '../BaseClient/ClientHelper.js';
-import * as CacheProxy from '../BaseClient/Other/permissions-plugin/index.js';
 
 export interface CustomClient extends DDeno.Bot {
-  giveawayClaimTimeout: Map<bigint, Map<bigint, Jobs.Job>>;
-
-  mutes: Map<bigint, Map<bigint, Jobs.Job>>;
-  bans: Map<bigint, Map<bigint, Jobs.Job>>;
-  channelBans: Map<bigint, Map<bigint, Jobs.Job>>;
-  reminders: Map<bigint, Map<bigint, Jobs.Job>>;
-
-  disboardBumpReminders: Map<bigint, Map<bigint, Jobs.Job>>;
-  giveaways: Map<bigint, Map<bigint, Map<bigint, Jobs.Job>>>;
-  invites: Map<bigint, Map<bigint, Map<string, DDeno.InviteMetadata>>>;
-  verificationCodes: Map<bigint, Map<bigint, string>>;
-  webhooks: Map<bigint, Map<bigint, Map<bigint, DDeno.Webhook>>>;
-  automodRules: Map<bigint, Map<bigint, DDeno.AutoModerationRule>>;
-  emojis: Map<bigint, Map<bigint, DDeno.Emoji>>;
-  integrations: Map<bigint, Map<bigint, DDeno.Integration>>;
-  roles: Map<bigint, Map<bigint, DDeno.Role>>;
-  channels: Map<bigint, Map<bigint, DDeno.Channel>>;
-  guilds: Map<bigint, DDeno.Guild>;
-  users: Map<bigint, DDeno.User>;
-  members: Map<bigint, Map<bigint, DenDDeno.Member>>;
-  reactions: Map<
-    bigint,
-    Map<
-      bigint,
-      Map<bigint, Map<bigint | string, { count: number; users: bigint[]; emoji: DDeno.Emoji }>>
-    >
-  >;
-
   neko: typeof NekoClient;
   customConstants: typeof Constants;
   objectEmotes: typeof ObjectEmotes;
@@ -51,7 +22,7 @@ export interface CustomClient extends DDeno.Bot {
   channelCharLimit: Map<bigint, Map<bigint, number>>;
 
   ch: typeof ch;
-  database: RedisXpSQL;
+  database: RedisxPSQL;
   me: DDeno.User;
 }
 
@@ -95,7 +66,7 @@ export type MessageUpdate = (
   fromCache?: true,
 ) => void;
 
-export type Client = CacheProxy.BotWithProxyCache<CacheProxy.ProxyCacheTypes<true>, CustomClient>;
+export type Client = CustomClient;
 
 export interface Command {
   cooldown: number;

@@ -19,24 +19,6 @@ Constants.allEvents.forEach((e) => {
 const customizeBot = <B extends DDeno.Bot = DDeno.Bot>(client: B) => {
   const customized = client as unknown as CT.CustomClient;
 
-  customized.mutes = new Map();
-  customized.bans = new Map();
-  customized.channelBans = new Map();
-  customized.reminders = new Map();
-  customized.disboardBumpReminders = new Map();
-  customized.giveaways = new Map();
-  customized.invites = new Map();
-  customized.verificationCodes = new Map();
-  customized.webhooks = new Map();
-  customized.giveawayClaimTimeout = new Map();
-  customized.automodRules = new Map();
-  customized.emojis = new Map();
-  customized.integrations = new Map();
-  customized.reactions = new Map();
-  customized.roles = new Map();
-  customized.channels = new Map();
-  customized.guilds = new Map();
-
   customized.neko = NekoClient;
   customized.customConstants = Constants;
 
