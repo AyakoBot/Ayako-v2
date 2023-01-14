@@ -3,7 +3,7 @@ import * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
 import client from '../../BaseClient/DDenoClient.js';
 
-export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild[]) => {
+export default async (user: DDeno.User, oldUser: DDeno.User | undefined, guilds: DDeno.Guild[]) => {
   guilds.forEach(async (g) => {
     const channels = await client.ch.getLogChannels('userevents', { guildId: g.id });
     if (!channels) return;
@@ -27,7 +27,7 @@ export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild
     const files: DDeno.FileContent[] = [];
 
     switch (true) {
-      case user.avatar !== oldUser.avatar: {
+      case user.avatar !== oldUser?.avatar: {
         const url = client.ch.getAvatarURL(user);
         const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
 
@@ -41,10 +41,10 @@ export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild
         }
         break;
       }
-      case user.flags !== oldUser.flags:
-      case user.publicFlags !== oldUser.publicFlags: {
-        const before = user.flags !== oldUser.flags ? oldUser.flags : oldUser.publicFlags;
-        const after = user.flags !== oldUser.flags ? user.flags : user.publicFlags;
+      case user.flags !== oldUser?.flags:
+      case user.publicFlags !== oldUser?.publicFlags: {
+        const before = user.flags !== oldUser?.flags ? oldUser?.flags : oldUser?.publicFlags;
+        const after = user.flags !== oldUser?.flags ? user.flags : user.publicFlags;
         const flagsBefore = new Discord.UserFlagsBitField(before).toArray();
         const flagsAfter = new Discord.UserFlagsBitField(after).toArray();
         const removed = client.ch.getDifference(flagsBefore, flagsAfter) as string[];
@@ -52,31 +52,47 @@ export default async (user: DDeno.User, oldUser: DDeno.User, guilds: DDeno.Guild
 
         merge(
           added
-            .map((r) => `\`${language.userFlags[r as keyof typeof language.userFlags]}\``)
+            .map((r) =>
+              before
+                ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+                : language.unknown,
+            )
             .join(', '),
           removed
-            .map((r) => `\`${language.userFlags[r as keyof typeof language.userFlags]}\``)
+            .map((r) =>
+              after
+                ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+                : language.unknown,
+            )
             .join(', '),
           'difference',
           lan.flags,
         );
         break;
       }
-      case user.premiumType !== oldUser.premiumType: {
+      case user.premiumType !== oldUser?.premiumType: {
+        let premiumType = oldUser?.premiumType ? lan.PremiumTypes[oldUser.premiumType] : undefined;
+        if (!premiumType) premiumType = oldUser ? language.none : language.unknown;
+
         merge(
-          oldUser.premiumType ? lan.PremiumTypes[oldUser.premiumType] : language.none,
+          premiumType,
           user.premiumType ? lan.PremiumTypes[user.premiumType] : language.none,
           'string',
           lan.PremiumTypes.name,
         );
         break;
       }
-      case user.discriminator !== oldUser.discriminator: {
-        merge(oldUser.discriminator, user.discriminator, 'string', lan.discriminator);
+      case user.discriminator !== oldUser?.discriminator: {
+        merge(
+          oldUser?.discriminator ?? language.unknown,
+          user.discriminator,
+          'string',
+          lan.discriminator,
+        );
         break;
       }
-      case user.username !== oldUser.username: {
-        merge(oldUser.username, user.username, 'string', lan.username);
+      case user.username !== oldUser?.username: {
+        merge(oldUser?.username ?? language.unknown, user.username, 'string', lan.username);
         break;
       }
       default: {
