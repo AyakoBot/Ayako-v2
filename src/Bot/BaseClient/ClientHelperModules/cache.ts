@@ -135,6 +135,13 @@ const cache: {
     delete: (threadId: bigint) => void;
     cache: Map<bigint, Map<bigint, Map<bigint, CT.Thread>>>;
   };
+  voiceStates: {
+    get: (userId: bigint, guildId: bigint) => Promise<DDeno.VoiceState | undefined>;
+    set: (voiceState: DDeno.VoiceState) => void;
+    find: (userId: bigint) => DDeno.VoiceState | undefined;
+    delete: (userId: bigint, guildId: bigint) => void;
+    cache: Map<bigint, Map<bigint, DDeno.VoiceState>>;
+  };
 
   // Ayako Cache
   giveawayClaimTimeout: {
@@ -786,6 +793,34 @@ const cache: {
         cache.threads.cache.get(cached.guildId)?.delete(cached.parentId);
       } else {
         cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.delete(cached.id);
+      }
+    },
+    cache: new Map(),
+  },
+  voiceStates: {
+    get: async (userId, guildId) => {
+      const cached = cache.voiceStates.cache.get(guildId)?.get(userId);
+      return cached;
+    },
+    set: (voiceState) => {
+      if (!cache.voiceStates.cache.get(voiceState.guildId)) {
+        cache.voiceStates.cache.set(voiceState.guildId, new Map());
+      }
+      cache.voiceStates.cache.get(voiceState.guildId)?.set(voiceState.userId, voiceState);
+    },
+    find: (id) =>
+      Array.from(cache.voiceStates.cache, ([, g]) => g)
+        .map((c) => Array.from(c, ([, i]) => i))
+        .flat()
+        .find((r) => r.userId === id),
+    delete: (id) => {
+      const cached = cache.voiceStates.find(id);
+      if (!cached || !cached.guildId) return;
+
+      if (cache.voiceStates.cache.get(cached.guildId)?.size === 1) {
+        cache.voiceStates.cache.delete(cached.guildId);
+      } else {
+        cache.voiceStates.cache.get(cached.guildId)?.delete(id);
       }
     },
     cache: new Map(),
