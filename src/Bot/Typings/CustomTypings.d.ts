@@ -170,6 +170,14 @@ export interface ReactionRemove {
   emoji: DDeno.Emoji;
 }
 
+export interface ScheduledEvent extends DDeno.ScheduledEvent {
+  users?: bigint[];
+}
+
+export interface Thread extends DDeno.Channel {
+  members?: bigint[];
+}
+
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
 
 export type ChannelFlags = 'Pinned' | 'RequireTag';

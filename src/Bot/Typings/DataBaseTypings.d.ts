@@ -609,9 +609,10 @@ export type votetokens = {
 
 export interface giveawaycollecttime {
   userid: string;
-  giveaway: string;
+  prize: string;
   msgid: string;
   endtime: number;
+  guildid: string;
 }
 
 interface BasicPunishmentsTable {

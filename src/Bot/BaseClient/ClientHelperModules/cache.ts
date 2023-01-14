@@ -129,15 +129,11 @@ const cache: {
     cache: Map<bigint, Map<bigint, DDeno.StageInstance>>;
   };
   threads: {
-    get: (
-      threadId: bigint,
-      channelId: bigint,
-      guildId: bigint,
-    ) => Promise<DDeno.Channel | undefined>;
+    get: (threadId: bigint, channelId: bigint, guildId: bigint) => Promise<CT.Thread | undefined>;
     set: (thread: DDeno.Channel) => void;
-    find: (threadId: bigint) => DDeno.Channel | undefined;
+    find: (threadId: bigint) => CT.Thread | undefined;
     delete: (threadId: bigint) => void;
-    cache: Map<bigint, Map<bigint, Map<bigint, DDeno.Channel>>>;
+    cache: Map<bigint, Map<bigint, Map<bigint, CT.Thread>>>;
   };
 
   // Ayako Cache
@@ -678,7 +674,7 @@ const cache: {
 
       const fetched = await client.helpers.getScheduledEvents(guildId, { withUserCount: true });
       fetched.forEach(async (f) => {
-        (f as CT.ScheduledEvent).users = await client.ch.getScheduledEventUsers(guildId, f);
+        (f as CT.ScheduledEvent).users = await client.ch.getScheduledEventUsers(f.guildId, f);
         cache.scheduledEvents.set(f);
       });
 
@@ -690,6 +686,7 @@ const cache: {
       if (!cache.scheduledEvents.cache.get(scheduledEvent.guildId)) {
         cache.scheduledEvents.cache.set(scheduledEvent.guildId, new Map());
       }
+
       cache.scheduledEvents.cache
         .get(scheduledEvent.guildId)
         ?.set(scheduledEvent.id, scheduledEvent);
@@ -752,6 +749,12 @@ const cache: {
       if (cached) return cached;
 
       const fetched = await client.helpers.getChannel(id);
+
+      const members = await client.helpers.getThreadMembers(id);
+      (fetched as CT.Thread).members = members
+        .map((m) => m.id ?? m.userId)
+        .filter((id): id is bigint => !!id);
+
       cache.threads.set(fetched);
 
       return fetched;
