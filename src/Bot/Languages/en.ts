@@ -79,6 +79,13 @@ export default {
         LockedVoiceJoin: 'Locked Voice Channel joined',
         VoiceJoin: 'Voice Channel joined',
         StageJoin: 'Stage Channel joined',
+        requestToSpeak: 'Requests to speak',
+        deaf: 'Server Deafened',
+        mute: 'Server Muted',
+        selfDeaf: 'Locally Deafened',
+        selfMute: 'Locally Muted',
+        selfStream: 'Streaming enabled',
+        selfVideo: 'Camera enabled',
       },
       webhook: {
         descCreateAudit: (

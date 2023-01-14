@@ -19,7 +19,7 @@ export default {
         LockedVoiceSwitch:
           'https://ayakobot.com/cdn/Ayako_Assets/Events/Events/LockedVoiceUpdate.png',
         VoiceSwitch: 'https://ayakobot.com/cdn/Ayako_Assets/Events/VoiceUpdate.png',
-        Stagev: 'https://ayakobot.com/cdn/Ayako_Assets/Events/StageUpdate.png',
+        Stage: 'https://ayakobot.com/cdn/Ayako_Assets/Events/StageUpdate.png',
       },
       threadMembers: {
         update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/MemberUpdate.png',
