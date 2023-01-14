@@ -53,3 +53,6 @@ export const moment                     = (await import(`./ClientHelperModules/m
 export const getChanged                 = (await import(`./ClientHelperModules/getChanged.js`)).default;
 export const spaces                     = (await import(`./ClientHelperModules/spaces.js`)).default;
 export const cache                      = (await import(`./ClientHelperModules/cache.js`)).default;
+export const getReactions               = (await import(`./ClientHelperModules/getReactions.js`)).default;
+export const getMembers                 = (await import(`./ClientHelperModules/getMembers.js`)).default;
+export const getScheduledEventUsers     = (await import(`./ClientHelperModules/getScheduledEventUsers.js`)).default;
