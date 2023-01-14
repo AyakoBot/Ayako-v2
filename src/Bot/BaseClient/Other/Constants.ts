@@ -246,7 +246,7 @@ export default {
       `https://cdn.discordapp.com/role-icons/${role.id}/${DDeno.iconBigintToHash(
         role.icon as bigint,
       )}.png?size=4096`,
-    userAvatarURL: (user: DDeno.User, fileEnd: string) =>
+    userAvatarURL: (user: DDeno.User | DDeno.Webhook, fileEnd: string) =>
       `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
     appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
     getEmote: (emoji: DDeno.Emoji) =>

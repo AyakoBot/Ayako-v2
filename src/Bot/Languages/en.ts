@@ -46,10 +46,14 @@ const getApplication = (application: DDeno.Application | bigint) =>
 const getScheduledEvent = (event: DDeno.ScheduledEvent) =>
   `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`;
 
-const getWebhook = (webhook: DDeno.Webhook) => `Webhook \`${webhook.name}\` / \`${webhook.id}\``;
+const getWebhook = (webhook: DDeno.Webhook, type?: string) =>
+  `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\``;
+
+const getGuild = (guild: DDeno.Guild) => `Server \`${guild.name}\` / \`${guild.id}\``;
 
 export default {
   languageFunction: {
+    getGuild,
     getChannel,
     getUser,
     getAutoModerationRule,
@@ -69,6 +73,79 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      voiceState: {
+        descCreate: (user: DDeno.User, channel: DDeno.Channel, channelType: string) =>
+          `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
+        LockedVoiceJoin: 'Locked Voice Channel joined',
+        VoiceJoin: 'Voice Channel joined',
+        StageJoin: 'Stage Channel joined',
+      },
+      webhook: {
+        descCreateAudit: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has created\n${getWebhook(webhook, webhookType)}in\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descCreate: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getWebhook(webhook, webhookType)}was created in\n${getChannel(channel, channelType)}`,
+        descDeleteAudit: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has deleted\n${getWebhook(webhook, webhookType)}in\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descDelete: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getWebhook(webhook, webhookType)}in\n${getChannel(channel, channelType)}was deleted`,
+        descUpdateAudit: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has updated\n${getWebhook(webhook, webhookType)}in\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descUpdate: (
+          webhook: DDeno.Webhook,
+          webhookType: string,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) => `${getWebhook(webhook, webhookType)} in\n${getChannel(channel, channelType)}updated`,
+        nameCreate: 'Webhook created',
+        nameUpdate: 'Webhook updated',
+        nameDelete: 'Webhook deleted',
+        sourceGuild: 'Source Server',
+        sourceChannel: 'Source Channel',
+        avatar: 'Avatar',
+        webhookTypes: {
+          1: 'Incoming',
+          2: 'Channel Follow',
+          3: 'Application',
+        },
+      },
       role: {
         descCreateAudit: (user: DDeno.User, role: DDeno.Role) =>
           `${getUser(user)}has created\n${getRole(role)}`,
