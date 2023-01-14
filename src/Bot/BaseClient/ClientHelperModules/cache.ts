@@ -1,6 +1,7 @@
 import * as DDeno from 'discordeno';
 import type Jobs from 'node-schedule';
 import client from '../DDenoClient.js';
+import type CT from '../../Typings/CustomTypings';
 
 const cache: {
   // Discord Cache
@@ -73,7 +74,7 @@ const cache: {
       channelId: bigint,
       guildId: bigint,
     ) => void;
-    delete: (emojiId: bigint, msgId: bigint, channelId: bigint, guildId: bigint) => void;
+    delete: (emojiId: bigint | string, msgId: bigint, channelId: bigint, guildId: bigint) => void;
     cache: Map<
       bigint,
       Map<bigint, Map<bigint, Map<bigint | string, { users: bigint[]; emoji: DDeno.Emoji }>>>
@@ -112,6 +113,31 @@ const cache: {
     find: (stickerId: bigint) => DDeno.Sticker | undefined;
     delete: (stickerId: bigint) => void;
     cache: Map<bigint, Map<bigint, DDeno.Sticker>>;
+  };
+  scheduledEvents: {
+    get: (id: bigint, guildId: bigint) => Promise<CT.ScheduledEvent | undefined>;
+    set: (scheduledEvent: DDeno.ScheduledEvent | CT.ScheduledEvent) => void;
+    find: (scheduledEventId: bigint) => CT.ScheduledEvent | undefined;
+    delete: (scheduledEventId: bigint) => void;
+    cache: Map<bigint, Map<bigint, CT.ScheduledEvent>>;
+  };
+  stageInstances: {
+    get: (id: bigint, guildId: bigint) => Promise<DDeno.StageInstance | undefined>;
+    set: (stageInstance: DDeno.StageInstance) => void;
+    find: (stageInstanceId: bigint) => DDeno.StageInstance | undefined;
+    delete: (stageInstanceId: bigint) => void;
+    cache: Map<bigint, Map<bigint, DDeno.StageInstance>>;
+  };
+  threads: {
+    get: (
+      threadId: bigint,
+      channelId: bigint,
+      guildId: bigint,
+    ) => Promise<DDeno.Channel | undefined>;
+    set: (thread: DDeno.Channel) => void;
+    find: (threadId: bigint) => DDeno.Channel | undefined;
+    delete: (threadId: bigint) => void;
+    cache: Map<bigint, Map<bigint, Map<bigint, DDeno.Channel>>>;
   };
 
   // Ayako Cache
@@ -174,29 +200,7 @@ const cache: {
       const cached = cache.members.cache.get(guildId)?.get(memberId);
       if (cached) return cached;
 
-      const getMembers = async () => {
-        const fetch = (lastId?: bigint) =>
-          client.helpers.getMembers(guildId, {
-            limit: 1000,
-            after: String(lastId),
-          });
-
-        const guild = await cache.guilds.get(guildId);
-        if (!guild) return undefined;
-
-        const members: DDeno.Member[] = [];
-
-        for (let i = 0; i < Number(guild?.approximateMemberCount) / 1000 ?? 0; i += 1) {
-          // eslint-disable-next-line no-await-in-loop
-          members.push(...(await fetch()).map((o) => o));
-        }
-
-        members.forEach((r) => (r.user ? cache.users.set(r.user) : null));
-
-        return members;
-      };
-
-      const fetched = await getMembers();
+      const fetched = await client.ch.getMembers(guildId);
       if (!fetched) return undefined;
 
       fetched.forEach((f) => cache.members.set(f));
@@ -453,32 +457,7 @@ const cache: {
       const message = await cache.messages.get(msgId, channelId, guildId);
       if (!message) return undefined;
 
-      const getReactions = async () => {
-        const fetch = (lastId?: bigint) =>
-          client.helpers.getReactions(channelId, msgId, String(id), {
-            limit: 100,
-            after: String(lastId),
-          });
-
-        const reactions = [...(await fetch()).map((o) => o)];
-
-        for (
-          let i = 1;
-          i <
-            Number(message.reactions?.find((r) => (r.emoji.id ?? r.emoji.name) === id)?.count) /
-              100 ?? 0;
-          i += 1
-        ) {
-          // eslint-disable-next-line no-await-in-loop
-          reactions.push(...(await fetch()).map((o) => o));
-        }
-
-        reactions.forEach((r) => cache.users.set(r));
-
-        return reactions;
-      };
-
-      const fetched = await getReactions();
+      const fetched = await client.ch.getReactions(message, channelId, id);
       if (!cache.reactions.cache.get(guildId)) cache.reactions.cache.set(guildId, new Map());
       if (!cache.reactions.cache.get(guildId)?.get(channelId)) {
         cache.reactions.cache.get(guildId)?.set(channelId, new Map());
@@ -519,9 +498,6 @@ const cache: {
       cache.reactions.cache.get(guildId)?.get(channelId)?.get(msgId)?.set(id, reaction);
     },
     delete: (id, msgId, channelId, guildId) => {
-      const cached = cache.integrations.find(id);
-      if (!cached) return;
-
       if (cache.reactions.cache.get(guildId)?.size === 1) {
         if (cache.reactions.cache.get(guildId)?.get(channelId)?.size === 1) {
           if (cache.reactions.cache.get(guildId)?.get(channelId)?.get(msgId)?.size === 1) {
@@ -695,6 +671,123 @@ const cache: {
     },
     cache: new Map(),
   },
+  scheduledEvents: {
+    get: async (id, guildId) => {
+      const cached = cache.scheduledEvents.cache.get(guildId)?.get(id);
+      if (cached) return cached;
+
+      const fetched = await client.helpers.getScheduledEvents(guildId, { withUserCount: true });
+      fetched.forEach(async (f) => {
+        (f as CT.ScheduledEvent).users = await client.ch.getScheduledEventUsers(guildId, f);
+        cache.scheduledEvents.set(f);
+      });
+
+      return fetched.find((f) => f.id === id);
+    },
+    set: (scheduledEvent) => {
+      if (!scheduledEvent.guildId) return;
+
+      if (!cache.scheduledEvents.cache.get(scheduledEvent.guildId)) {
+        cache.scheduledEvents.cache.set(scheduledEvent.guildId, new Map());
+      }
+      cache.scheduledEvents.cache
+        .get(scheduledEvent.guildId)
+        ?.set(scheduledEvent.id, scheduledEvent);
+    },
+    find: (id) =>
+      Array.from(cache.scheduledEvents.cache, ([, g]) => g)
+        .map((c) => Array.from(c, ([, i]) => i))
+        .flat()
+        .find((r) => r.id === id),
+    delete: (id) => {
+      const cached = cache.scheduledEvents.find(id);
+      if (!cached || !cached.guildId) return;
+
+      if (cache.scheduledEvents.cache.get(cached.guildId)?.size === 1) {
+        cache.scheduledEvents.cache.delete(cached.guildId);
+      } else {
+        cache.scheduledEvents.cache.get(cached.guildId)?.delete(id);
+      }
+    },
+    cache: new Map(),
+  },
+  stageInstances: {
+    get: async (id, guildId) => {
+      const cached = cache.stageInstances.cache.get(guildId)?.get(id);
+      if (cached) return cached;
+
+      const fetched = await client.helpers.getStageInstance(guildId);
+      cache.stageInstances.set(fetched);
+
+      return fetched;
+    },
+    set: (stageInstance) => {
+      if (!stageInstance.guildId) return;
+
+      if (!cache.stageInstances.cache.get(stageInstance.guildId)) {
+        cache.stageInstances.cache.set(stageInstance.guildId, new Map());
+      }
+      cache.stageInstances.cache.get(stageInstance.guildId)?.set(stageInstance.id, stageInstance);
+    },
+    find: (id) =>
+      Array.from(cache.stageInstances.cache, ([, g]) => g)
+        .map((c) => Array.from(c, ([, i]) => i))
+        .flat()
+        .find((r) => r.id === id),
+    delete: (id) => {
+      const cached = cache.stageInstances.find(id);
+      if (!cached || !cached.guildId) return;
+
+      if (cache.stageInstances.cache.get(cached.guildId)?.size === 1) {
+        cache.stageInstances.cache.delete(cached.guildId);
+      } else {
+        cache.stageInstances.cache.get(cached.guildId)?.delete(id);
+      }
+    },
+    cache: new Map(),
+  },
+  threads: {
+    get: async (id, channelId, guildId) => {
+      const cached = cache.threads.cache.get(guildId)?.get(channelId)?.get(id);
+      if (cached) return cached;
+
+      const fetched = await client.helpers.getChannel(id);
+      cache.threads.set(fetched);
+
+      return fetched;
+    },
+    set: (thread) => {
+      if (!thread.guildId || !thread.parentId) return;
+      if (!cache.threads.cache.get(thread.guildId))
+        cache.threads.cache.set(thread.guildId, new Map());
+      if (!cache.threads.cache.get(thread.guildId)?.get(thread.parentId)) {
+        cache.threads.cache.get(thread.guildId)?.set(thread.parentId, new Map());
+      }
+      cache.threads.cache.get(thread.guildId)?.get(thread.parentId)?.set(thread.id, thread);
+    },
+    find: (id) =>
+      Array.from(cache.threads.cache, ([, g]) => g)
+        .map((c) => Array.from(c, ([, i]) => i))
+        .flat()
+        .find((c) => c.get(id))
+        ?.get(id),
+    delete: (id) => {
+      const cached = cache.threads.find(id);
+      if (!cached || !cached.guildId || !cached.parentId) return;
+
+      if (cache.threads.cache.get(cached.guildId)?.size === 1) {
+        if (cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.size === 1) {
+          cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.clear();
+        } else cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.delete(cached.id);
+      } else if (cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.size === 1) {
+        cache.threads.cache.get(cached.guildId)?.delete(cached.parentId);
+      } else {
+        cache.threads.cache.get(cached.guildId)?.get(cached.parentId)?.delete(cached.id);
+      }
+    },
+    cache: new Map(),
+  },
+
   giveawayClaimTimeout: {
     set: (job, guildId, userId) => {
       const cached = cache.giveawayClaimTimeout.cache.get(guildId)?.get(userId);
