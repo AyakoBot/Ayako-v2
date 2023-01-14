@@ -4,10 +4,24 @@ import client from '../../../BaseClient/DDenoClient.js';
 export default async (payload: { channelId: bigint; messageId: bigint; guildId?: bigint }) => {
   if (!payload.guildId) return;
 
-  const cache = client.reactions
+  const cache = client.ch.cache.reactions.cache
     .get(payload.guildId)
     ?.get(payload.channelId)
     ?.get(payload.messageId);
+
+  if (cache) {
+    Array.from(cache, ([, e]) => e).forEach((e) => {
+      const ident = e.emoji.id ?? e.emoji.name;
+      if (!ident) return;
+
+      client.ch.cache.reactions.delete(
+        ident,
+        payload.messageId,
+        payload.channelId,
+        payload.guildId as bigint,
+      );
+    });
+  }
 
   const files: {
     default: (
@@ -15,7 +29,6 @@ export default async (payload: { channelId: bigint; messageId: bigint; guildId?:
       c?: Map<
         bigint | string,
         {
-          count: number;
           users: bigint[];
           emoji: DDeno.Emoji;
         }

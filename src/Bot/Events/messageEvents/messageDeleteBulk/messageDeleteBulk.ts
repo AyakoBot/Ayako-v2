@@ -7,8 +7,15 @@ export default async (msgs: DDeno.Message[]) => {
   const firstMsg = msgs[0];
   if (!firstMsg.guildId) return;
 
-  const guild = await client.cache.guilds.get(firstMsg.guildId);
+  const guild = await client.ch.cache.guilds.get(firstMsg.guildId);
   if (!guild) return;
+
+  msgs.forEach((m) => {
+    if (!m.guildId) return;
+    const cached = client.ch.cache.messages.cache.get(m.guildId)?.get(m.channelId)?.get(m.id);
+    if (cached) m = cached;
+    client.ch.cache.messages.delete(m.id);
+  });
 
   const files: { default: (t: DDeno.Message[], g: DDeno.Guild) => void }[] = await Promise.all(
     ['./log.js'].map((p) => import(p)),

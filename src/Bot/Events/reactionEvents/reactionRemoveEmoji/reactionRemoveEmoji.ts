@@ -9,11 +9,16 @@ export default async (payload: {
 }) => {
   if (!payload.guildId) return;
 
-  const cache = client.reactions
+  const ident = payload.emoji.id ?? payload.emoji.name;
+  if (!ident) return;
+
+  const cache = client.ch.cache.reactions.cache
     .get(payload.guildId)
     ?.get(payload.channelId)
     ?.get(payload.messageId)
-    ?.get(payload.emoji.id ?? payload.emoji.name);
+    ?.get(ident);
+
+  client.ch.cache.reactions.delete(ident, payload.messageId, payload.channelId, payload.guildId);
 
   const files: {
     default: (
@@ -24,7 +29,6 @@ export default async (payload: {
         emoji: DDeno.Emoji;
       },
       c?: {
-        count: number;
         users: bigint[];
         emoji: DDeno.Emoji;
       },

@@ -1,21 +1,22 @@
 import type * as DDeno from 'discordeno';
 import client from '../../BaseClient/DDenoClient.js';
 
-export default async (user: DDeno.User, oldUser: DDeno.User) => {
-  if (!oldUser) return;
+export default async (user: DDeno.User) => {
+  const members = client.ch.cache.members.find(user.id);
+  if (!members?.length) return;
+
+  const guilds = (
+    await Promise.all(members.map((m) => client.ch.cache.guilds.get(m.guildId)))
+  ).filter((g): g is DDeno.Guild => !!g);
+
+  const cached = client.ch.cache.users.cache.get(user.id);
+  client.ch.cache.users.set(user);
 
   const files: {
-    default: (t: DDeno.User, r: DDeno.User, g: DDeno.Guild[]) => void;
+    default: (t: DDeno.User, r: DDeno.User | undefined, g: DDeno.Guild[]) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
-
-  const guilds = client.cache.guilds.memory
-    .filter(
-      (g) =>
-        !!(g as unknown as { members: Map<bigint, DDeno.Member> }).members.get(user.id) || false,
-    )
-    .map((o) => o);
 
   if (!guilds.length) return;
 
-  files.forEach((f) => f.default(user, oldUser, guilds));
+  files.forEach((f) => f.default(user, cached, guilds));
 };

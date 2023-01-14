@@ -5,6 +5,8 @@ import client from '../../../BaseClient/DDenoClient.js';
 export default async (m: DDeno.Message) => {
   if (!m) return;
 
+  client.ch.cache.messages.set(m);
+
   const msg = (await convertMsg(m)) as CT.Message;
   const files: { default: (t: CT.Message) => void }[] = await Promise.all(
     getPaths(msg).map((p) => import(p)),
@@ -43,14 +45,16 @@ export const convertMsg = async (m: DDeno.Message): Promise<CT.Message> => {
     | Promise<DDeno.Member | undefined>
     | Promise<CT.Language>
   )[] = [
-    client.cache.channels.get(m.channelId, m.guildId),
-    client.cache.users.get(m.authorId),
+    m.guildId
+      ? client.ch.cache.channels.get(m.channelId, m.guildId)
+      : client.helpers.getDmChannel(m.authorId),
+    client.ch.cache.users.get(m.authorId),
     client.ch.languageSelector('guildId' in msg ? msg.guildId : undefined),
   ];
 
   if ('guildId' in msg && msg.guildId) {
-    fetchArray.push(client.cache.guilds.get(msg.guildId));
-    fetchArray.push(client.cache.members.get(m.authorId, msg.guildId));
+    fetchArray.push(client.ch.cache.guilds.get(msg.guildId));
+    fetchArray.push(client.ch.cache.members.get(m.authorId, msg.guildId));
   }
 
   const [channel, author, language, guild, member] = await Promise.all(fetchArray);
