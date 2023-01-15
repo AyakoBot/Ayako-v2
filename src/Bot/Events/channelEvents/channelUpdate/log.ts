@@ -18,7 +18,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const channelType = `${client.ch.getTrueChannelType(channel, guild)}Update`;
-  let typeID = 11;
+  let typeID = [10, 11, 12].includes(channel.type) ? 111 : 11;
 
   const embed: DDeno.Embed = {
     author: {
