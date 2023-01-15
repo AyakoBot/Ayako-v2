@@ -15,8 +15,10 @@ const getAutoModerationRule = (rule: DDeno.AutoModerationRule) =>
 const getMessage = (msg: CT.Message | DDeno.Message) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
 
-const getChannel = (channel: DDeno.Channel, type?: string) =>
-  `${type ?? 'Channel'} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`;
+const getChannel = (channel: DDeno.Channel | undefined, type?: string) =>
+  channel
+    ? `${type ?? 'Channel'} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`
+    : `Unknown Channel\n`;
 
 const getEmote = (emoji: DDeno.Emoji) =>
   `${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
@@ -76,9 +78,28 @@ export default {
       voiceState: {
         descCreate: (user: DDeno.User, channel: DDeno.Channel, channelType: string) =>
           `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
+        descUpdate: (
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+          oldChannel: DDeno.Channel | undefined,
+          oldChannelType: string | undefined,
+        ) =>
+          `${getUser(user)}has switched from\n${getChannel(
+            oldChannel,
+            oldChannelType,
+          )}into\n${getChannel(channel, channelType)}`,
+        descDelete: (user: DDeno.User, channel: DDeno.Channel, channelType: string) =>
+          `${getUser(user)}has left\n${getChannel(channel, channelType)}`,
+        descUpdateServer: (endpoint: string) =>
+          `The Voice End-point of this Server has been updated to ${endpoint}`,
+        nameUpdateServer: 'Voice Server updated',
         LockedVoiceJoin: 'Locked Voice Channel joined',
         VoiceJoin: 'Voice Channel joined',
         StageJoin: 'Stage Channel joined',
+        LockedVoiceSwitch: 'Locked Voice Channel switched',
+        VoiceSwitch: 'Voice Channel switched',
+        StageSwitch: 'Stage Channel switched',
         requestToSpeak: 'Requests to speak',
         deaf: 'Server Deafened',
         mute: 'Server Muted',

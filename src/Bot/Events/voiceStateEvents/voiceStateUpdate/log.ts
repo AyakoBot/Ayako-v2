@@ -9,6 +9,10 @@ export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceSt
   const channels = await client.ch.getLogChannels('voiceevents', { guildId: voiceState.guildId });
   if (!channels) return;
 
+  const oldChannel = oldVoiceState.channelId
+    ? await client.ch.cache.channels.get(oldVoiceState.channelId, oldVoiceState.guildId)
+    : undefined;
+
   const channel = await client.ch.cache.channels.get(voiceState.channelId, voiceState.guildId);
   if (!channel) return;
 
@@ -30,7 +34,13 @@ export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceSt
       iconUrl: con[`${channelType}Leave` as keyof typeof con],
     },
     color: client.customConstants.colors.warning,
-    description: lan.descCreate(user, channel, language.channelTypes[channel.type]),
+    description: lan.descUpdate(
+      user,
+      channel,
+      language.channelTypes[channel.type],
+      oldChannel,
+      oldChannel ? language.channelTypes[oldChannel.type] : undefined,
+    ),
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

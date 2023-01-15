@@ -25,11 +25,11 @@ export default async (voiceState: DDeno.VoiceState) => {
 
   const embed: DDeno.Embed = {
     author: {
-      name: lan[`${channelType}Leave` as keyof typeof lan] as string,
-      iconUrl: con[`${channelType}Leave` as keyof typeof con],
+      name: lan[`${channelType}Switch` as keyof typeof lan] as string,
+      iconUrl: con[`${channelType}Switch` as keyof typeof con],
     },
     color: client.customConstants.colors.warning,
-    description: lan.descCreate(user, channel, language.channelTypes[channel.type]),
+    description: lan.descDelete(user, channel, language.channelTypes[channel.type]),
   };
 
   const flagsText = [
