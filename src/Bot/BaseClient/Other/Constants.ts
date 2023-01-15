@@ -106,6 +106,12 @@ export default {
         MemberDelete: 'https://ayakobot.com/cdn/Ayako_Assets/Events/MemberDelete.png',
         MemberUpdate: 'https://ayakobot.com/cdn/Ayako_Assets/Events/MemberUpdate.png',
         Prune: 'https://ayakobot.com/cdn/Ayako_Assets/Events/Prune.png',
+        ScheduledEventCreate:
+          'https://ayakobot.com/cdn/Ayako_Assets/Events/ScheduledEventCreate.png',
+        ScheduledEventDelete:
+          'https://ayakobot.com/cdn/Ayako_Assets/Events/ScheduledEventDelete.png',
+        ScheduledEventUpdate:
+          'https://ayakobot.com/cdn/Ayako_Assets/Events/ScheduledEventUpdate.png',
       },
       invite: {
         create: 'https://ayakobot.com/cdn/Ayako_Assets/Events/InviteCreate.png',
@@ -255,6 +261,10 @@ export default {
         : `${emoji.name}`,
     getTime: (time: number) =>
       `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
+    getScheduledEventIcon: (event: DDeno.ScheduledEvent) =>
+      `https://cdn.discordapp.com/guild-events/${event.guildId}/${DDeno.iconBigintToHash(
+        event.image as bigint,
+      )}?size=4096`,
   },
   mod: {
     strike: {

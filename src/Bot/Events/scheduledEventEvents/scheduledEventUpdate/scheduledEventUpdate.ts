@@ -1,13 +1,14 @@
 import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
-export default async (scheduledEvent: DDeno.ScheduledEvent) => {
-  const cached = client.ch.cache.scheduledEvents.cache
-    .get(scheduledEvent.guildId)
-    ?.get(scheduledEvent.id);
-  if (cached) scheduledEvent = cached;
+export default async (event: DDeno.ScheduledEvent) => {
+  const cached = client.ch.cache.scheduledEvents.cache.get(event.guildId)?.get(event.id);
+  client.ch.cache.scheduledEvents.set(event);
+  if (!cached) return;
 
-  client.ch.cache.scheduledEvents.set(scheduledEvent);
+  const files: {
+    default: (p: DDeno.ScheduledEvent, d: DDeno.ScheduledEvent) => void;
+  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  // TODO
+  files.forEach((f) => f.default(cached, event));
 };

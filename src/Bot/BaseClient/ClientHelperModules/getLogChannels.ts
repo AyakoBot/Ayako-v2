@@ -21,7 +21,8 @@ export default async (
     | 'guildmemberevents'
     | 'stageevents'
     | 'automodevents'
-    | 'reactionevents',
+    | 'reactionevents'
+    | 'scheduledevents',
   msg: DDeno.Message | CT.MessageGuild | { guildId: bigint },
 ) => {
   if (!msg.guildId) return null;

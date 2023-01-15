@@ -75,6 +75,116 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      scheduledEvent: {
+        descUserRemoveChannel: (
+          user: DDeno.User,
+          event: DDeno.ScheduledEvent,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has left\n${getScheduledEvent(event)}planned in\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descUserRemove: (user: DDeno.User, event: DDeno.ScheduledEvent) =>
+          `${getUser(user)}has left\n${getScheduledEvent(event)}`,
+        descUserAddChannel: (
+          user: DDeno.User,
+          event: DDeno.ScheduledEvent,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has joined\n${getScheduledEvent(event)}planned in\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descUserAdd: (user: DDeno.User, event: DDeno.ScheduledEvent) =>
+          `${getUser(user)}has joined\n${getScheduledEvent(event)}`,
+        descDeleteChannelAudit: (
+          event: DDeno.ScheduledEvent,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has deleted\n${getScheduledEvent(event)}from\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descDeleteAudit: (event: DDeno.ScheduledEvent, user: DDeno.User) =>
+          `${getUser(user)}has deleted\n${getScheduledEvent(event)}`,
+        descDeleteChannel: (
+          event: DDeno.ScheduledEvent,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) => `${getScheduledEvent(event)}has deleted from\n${getChannel(channel, channelType)}`,
+        descDelete: (event: DDeno.ScheduledEvent) => `${getScheduledEvent(event)}was deleted`,
+        descCreateChannelAudit: (
+          event: DDeno.ScheduledEvent,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has created\n${getScheduledEvent(event)}from\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descCreateAudit: (event: DDeno.ScheduledEvent, user: DDeno.User) =>
+          `${getUser(user)}has created\n${getScheduledEvent(event)}`,
+        descCreateChannel: (
+          event: DDeno.ScheduledEvent,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) => `${getScheduledEvent(event)}has created from\n${getChannel(channel, channelType)}`,
+        descCreate: (event: DDeno.ScheduledEvent) => `${getScheduledEvent(event)}was created`,
+        descUpdateChannelAudit: (
+          event: DDeno.ScheduledEvent,
+          user: DDeno.User,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) =>
+          `${getUser(user)}has updated\n${getScheduledEvent(event)}from\n${getChannel(
+            channel,
+            channelType,
+          )}`,
+        descUpdateAudit: (event: DDeno.ScheduledEvent, user: DDeno.User) =>
+          `${getUser(user)}has updated\n${getScheduledEvent(event)}`,
+        descUpdateChannel: (
+          event: DDeno.ScheduledEvent,
+          channel: DDeno.Channel,
+          channelType: string,
+        ) => `${getScheduledEvent(event)}has updated from\n${getChannel(channel, channelType)}`,
+        descUpdate: (event: DDeno.ScheduledEvent) => `${getScheduledEvent(event)}was updated`,
+        nameUserRemove: 'Scheduled Event Member removed',
+        nameUserAdd: 'Scheduled Event Member added',
+        nameDelete: 'Scheduled Event deleted',
+        nameCreate: 'Scheduled Event created',
+        nameUpdate: 'Scheduled Event updated',
+        location: 'Location',
+        scheduledStartTime: 'Scheduled Start Time',
+        scheduledEndTime: 'Scheduled End Time',
+        creator: 'Creator',
+        statusName: 'Status',
+        status: {
+          1: 'Scheduled',
+          2: 'ACtive',
+          3: 'Completed',
+          4: 'Canceled',
+        },
+        privacyLevelName: 'Privacy Level',
+        privacyLevel: {
+          1: 'Public',
+          2: 'Guild Only',
+        },
+        entityTypeName: 'Entity Type',
+        entityType: {
+          1: 'Stage Instance',
+          2: 'Voice Channel',
+          3: 'External',
+        },
+        participants: 'Participants',
+        image: 'Image',
+        imageRemoved: 'Image removed',
+      },
       voiceState: {
         descCreate: (user: DDeno.User, channel: DDeno.Channel, channelType: string) =>
           `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
@@ -178,8 +288,12 @@ export default {
         descCreateAudit: (user: DDeno.User, role: DDeno.Role) =>
           `${getUser(user)}has created\n${getRole(role)}`,
         descCreate: (role: DDeno.Role) => `${getRole(role)}was created`,
+        descUpdateAudit: (role: DDeno.Role, user: DDeno.User) =>
+          `${getUser(user)}has updated\n${getRole(role)}`,
+        descUpdate: (role: DDeno.Role) => `${getRole(role)}was updated`,
         nameCreate: 'Role created',
         nameDelete: 'Role deleted',
+        nameUpdate: 'Role updated',
         managed: 'Managed by a Bot/Integration',
         hoisted: 'Hoisted',
         mentionable: 'Mentionable',
