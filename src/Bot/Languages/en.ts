@@ -299,6 +299,8 @@ export default {
         mentionable: 'Mentionable',
         boosterRole: 'Booster Role',
         unicodeEmoji: 'Unicode Emoji',
+        icon: 'Icon',
+        iconRemoved: 'Icon Removed',
       },
       reaction: {
         descAdded: (emoji: DDeno.Emoji, user: DDeno.User, msg: DDeno.Message) =>
