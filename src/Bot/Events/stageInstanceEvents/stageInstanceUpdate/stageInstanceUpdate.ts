@@ -1,3 +1,4 @@
+import type * as DDeno from 'discordeno';
 import client from '../../../BaseClient/DDenoClient.js';
 
 export default async (data: { id: bigint; guildId: bigint; channelId: bigint; topic: string }) => {
@@ -9,5 +10,9 @@ export default async (data: { id: bigint; guildId: bigint; channelId: bigint; to
   const fetched = await client.ch.cache.stageInstances.get(data.id, data.guildId);
   if (!fetched) return;
 
-  // TODO
+  const files: {
+    default: (p: DDeno.StageInstance, t: DDeno.StageInstance) => void;
+  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
+
+  files.forEach((f) => f.default(cache, fetched));
 };

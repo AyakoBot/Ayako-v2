@@ -502,9 +502,24 @@ export default {
           `Users have joined\n${getChannel(thread, channelType)}`,
         descLeaveMember: (thread: CT.Thread, channelType: string) =>
           `Users have left\n${getChannel(thread, channelType)}`,
+        descUpdateStageAudit: (channel: DDeno.Channel, channelType: string, user: DDeno.User) =>
+          `${getUser(user)}has changed\n${getChannel(channel, channelType)}`,
+        descUpdateStage: (channel: DDeno.Channel, channelType: string) =>
+          `${getChannel(channel, channelType)}was changed`,
+        descCreateStageAudit: (channel: DDeno.Channel, channelType: string, user: DDeno.User) =>
+          `${getUser(user)}has started\n${getChannel(channel, channelType)}`,
+        descCreateStage: (channel: DDeno.Channel, channelType: string) =>
+          `${getChannel(channel, channelType)}was started`,
+        descDeleteStageAudit: (channel: DDeno.Channel, channelType: string, user: DDeno.User) =>
+          `${getUser(user)}has ended\n${getChannel(channel, channelType)}`,
+        descDeleteStage: (channel: DDeno.Channel, channelType: string) =>
+          `${getChannel(channel, channelType)}was ended`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
         nameUpdate: 'Channel updated',
+        nameStageUpdate: 'Stage updated',
+        nameStageCreate: 'Stage created',
+        nameStageDelete: 'Stage deleted',
         nameJoin: 'Channel joined',
         topic: 'Description',
         flagsName: 'Flags',
