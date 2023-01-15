@@ -4,5 +4,5 @@ import client from '../../../BaseClient/DDenoClient.js';
 export default async (thread: DDeno.Channel) => {
   client.ch.cache.channels.set(thread);
 
-  // TODO
+  (await import('../../channelEvents/channelCreate/log.js')).default(thread);
 };

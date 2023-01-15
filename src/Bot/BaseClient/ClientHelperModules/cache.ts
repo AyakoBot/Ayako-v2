@@ -760,7 +760,7 @@ const cache: {
       const members = await client.helpers.getThreadMembers(id);
       (fetched as CT.Thread).members = members
         .map((m) => m.id ?? m.userId)
-        .filter((id): id is bigint => !!id);
+        .filter((d): d is bigint => !!d);
 
       cache.threads.set(fetched);
 
@@ -768,8 +768,9 @@ const cache: {
     },
     set: (thread) => {
       if (!thread.guildId || !thread.parentId) return;
-      if (!cache.threads.cache.get(thread.guildId))
+      if (!cache.threads.cache.get(thread.guildId)) {
         cache.threads.cache.set(thread.guildId, new Map());
+      }
       if (!cache.threads.cache.get(thread.guildId)?.get(thread.parentId)) {
         cache.threads.cache.get(thread.guildId)?.set(thread.parentId, new Map());
       }

@@ -498,9 +498,14 @@ export default {
           `${getUser(user)}updated\n${getChannel(channel, type)}`,
         descUpdate: (channel: DDeno.Channel, type: string) =>
           `${getChannel(channel, type)}was updated`,
+        descJoinMember: (thread: CT.Thread, channelType: string) =>
+          `Users have joined\n${getChannel(thread, channelType)}`,
+        descLeaveMember: (thread: CT.Thread, channelType: string) =>
+          `Users have left\n${getChannel(thread, channelType)}`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
-        nameUpdate: 'Channel update',
+        nameUpdate: 'Channel updated',
+        nameJoin: 'Channel joined',
         topic: 'Description',
         flagsName: 'Flags',
         flags: {

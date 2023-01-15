@@ -267,7 +267,6 @@ export type logchannels = {
   settingslog?: string[];
   channelevents?: string[];
   stickerevents?: string[];
-  threadevents?: string[];
   guildmemberevents?: string[];
   stageevents?: string[];
   reactionevents?: string[];

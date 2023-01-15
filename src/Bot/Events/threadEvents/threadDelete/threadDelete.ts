@@ -6,5 +6,5 @@ export default async (thread: DDeno.Channel) => {
   if (cached) thread = cached;
   client.ch.cache.channels.delete(thread.id);
 
-  // TODO
+  (await import('../../channelEvents/channelDelete/log.js')).default(thread);
 };

@@ -10,5 +10,7 @@ export default async (thread: DDeno.Channel) => {
     ?.get(thread.id);
   client.ch.cache.threads.set(thread);
 
-  // TODO
+  if (!cached) return;
+
+  (await import('../../channelEvents/channelUpdate/log.js')).default(thread, cached);
 };
