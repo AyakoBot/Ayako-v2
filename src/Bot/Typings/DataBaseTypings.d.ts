@@ -271,6 +271,7 @@ export type logchannels = {
   stageevents?: string[];
   reactionevents?: string[];
   scheluedevents?: string[];
+  automodevents?: string[];
 };
 
 export type expiry = {
