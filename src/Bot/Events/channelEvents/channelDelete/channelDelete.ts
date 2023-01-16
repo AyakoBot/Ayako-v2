@@ -10,5 +10,11 @@ export default async (channel: DDeno.Channel) => {
   if (cached) channel = cached;
   client.ch.cache.channels.delete(channel.id);
 
+  const channelBans = client.ch.cache.channelBans.cache.get(channel.guildId)?.get(channel.id);
+  if (channelBans) {
+    const array = Array.from(channelBans, ([, g]) => g);
+    array.forEach((a) => a.reschedule(Date.now() + 10000));
+  }
+
   files.forEach((f) => f.default(channel));
 };

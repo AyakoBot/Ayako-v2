@@ -16,7 +16,7 @@ export default async (
   const con = client.customConstants.events.logs.guild;
   const audit = user.toggles.bot ? await client.ch.getAudit(guild, 20, user.id) : undefined;
   const auditUser =
-    audit && audit?.userId ? await client.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
   let description = '';
 
   if (user.toggles.bot) {

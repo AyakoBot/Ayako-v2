@@ -509,7 +509,7 @@ const saveToBadLink = async (linkObject: LinkObject, msg: CT.Message, hrefLoggin
     encoding: 'utf8',
   });
   const res = file ? file.split(/\n+/).map((entry) => entry.replace(/\r/g, '')) : [];
-  const channel = await client.cache.channels.get(726252103302905907n, 669893888856817665n);
+  const channel = await client.ch.cache.channels.get(726252103302905907n, 669893888856817665n);
   if (!channel) return;
 
   if (!res.includes(linkObject.baseURL)) {

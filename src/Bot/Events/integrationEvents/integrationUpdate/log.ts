@@ -6,14 +6,15 @@ export default async (oldIntegration: DDeno.Integration, integration: DDeno.Inte
   const channels = await client.ch.getLogChannels('guildevents', integration);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(integration.guildId);
+  const guild = await client.ch.cache.guilds.get(integration.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(integration.guildId);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 81, integration.id);
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {
@@ -42,10 +43,10 @@ export default async (oldIntegration: DDeno.Integration, integration: DDeno.Inte
     case oldIntegration.roleId !== integration.roleId: {
       const oldRole = !oldIntegration.roleId
         ? language.none
-        : await client.cache.roles.get(oldIntegration.roleId, integration.guildId);
+        : await client.ch.cache.roles.get(oldIntegration.roleId, integration.guildId);
       const newRole = !integration.roleId
         ? language.none
-        : await client.cache.roles.get(integration.roleId, integration.guildId);
+        : await client.ch.cache.roles.get(integration.roleId, integration.guildId);
 
       const oldRoleText = oldRole ?? `\`${oldIntegration.roleId}\``;
       const newRoleText = newRole ?? `\`${integration.roleId}\``;

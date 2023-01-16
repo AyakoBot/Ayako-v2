@@ -14,7 +14,8 @@ export default async (invite: DDeno.BaseInvite, guild: DDeno.Guild, inv: DDeno.I
     undefined,
     (i: DDeno.AuditLogEntry) => i.changes?.find((c) => c.key === 'code')?.new === invite.code,
   );
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {
@@ -67,7 +68,7 @@ export default async (invite: DDeno.BaseInvite, guild: DDeno.Guild, inv: DDeno.I
     });
   }
 
-  const channel = await client.cache.channels.get(inv.channelId);
+  const channel = await client.ch.cache.channels.get(inv.channelId, guild.id);
 
   if (channel) {
     embed.fields?.push({

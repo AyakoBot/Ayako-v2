@@ -7,7 +7,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(msg.guildId);
+  const guild = await client.ch.cache.guilds.get(msg.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(msg.guildId);
@@ -15,7 +15,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 72, msg.id);
   const auditUser =
-    user ?? (audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined);
+    user ?? (audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined);
   const files: DDeno.FileContent[] = [];
   const embeds: DDeno.Embed[] = [];
 
@@ -92,7 +92,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
 
   if (msg.webhookId) {
     const webhook =
-      client.webhooks.get(msg.guildId)?.get(msg.webhookId) ??
+      (await client.ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guildId)) ??
       (await client.helpers.getWebhook(msg.webhookId));
 
     embed.fields?.push({

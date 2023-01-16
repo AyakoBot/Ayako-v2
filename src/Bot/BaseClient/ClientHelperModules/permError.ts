@@ -16,7 +16,7 @@ export default async (
   if (!msg.guildId) return;
   if (typeof bits === 'number') bits = BigInt(bits);
 
-  const clientMember = await client.cache.members.get(client.id, msg.guildId);
+  const clientMember = await client.ch.cache.members.get(client.id, msg.guildId);
   if (!clientMember) return;
 
   const neededPerms = new Discord.PermissionsBitField(

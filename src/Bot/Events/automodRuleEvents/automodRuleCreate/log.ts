@@ -10,7 +10,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
   const language = await client.ch.languageSelector(rule.guildId);
   const lan = language.events.logs.automodRule;
   const con = client.customConstants.events.logs.automodRule;
-  const user = await client.cache.users.get(rule.creatorId);
+  const user = await client.ch.cache.users.get(rule.creatorId);
   if (!user) return;
 
   const embed: DDeno.Embed = {
@@ -87,7 +87,9 @@ export default async (rule: DDeno.AutoModerationRule) => {
 
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
-      r.metadata?.channelId ? client.cache.channels.get(r.metadata?.channelId) : undefined,
+      r.metadata?.channelId
+        ? client.ch.cache.channels.get(r.metadata?.channelId, rule.guildId)
+        : undefined,
     ),
   );
 

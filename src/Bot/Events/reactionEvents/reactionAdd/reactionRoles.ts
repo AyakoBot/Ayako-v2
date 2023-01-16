@@ -18,7 +18,7 @@ export default async (reaction: CT.ReactionAdd) => {
   const reactionRows = await getReactionRows(reaction, emoteIdentifier);
   if (!reactionRows) return;
 
-  const member = await client.cache.members.get(reaction.userId, reaction.guildId);
+  const member = await client.ch.cache.members.get(reaction.userId, reaction.guildId);
   if (!member) return;
 
   const relatedReactions = await getRelatedReactions(reaction, reactionRows);

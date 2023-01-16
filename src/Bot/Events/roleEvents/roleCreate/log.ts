@@ -6,18 +6,19 @@ export default async (role: DDeno.Role) => {
   const channels = await client.ch.getLogChannels('roleevents', role);
   if (!channels) return;
 
-  const guild = await client.guilds.get(role.guildId);
+  const guild = await client.ch.cache.guilds.get(role.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(role.guildId);
   const lan = language.events.logs.role;
   const con = client.customConstants.events.logs.role;
   const audit = role.botId ? undefined : await client.ch.getAudit(guild, 30, role.id);
-  let auditUser = role.botId ? client.users.get(role.botId) : undefined;
+  let auditUser = role.botId ? await client.ch.cache.users.get(role.botId) : undefined;
   const files: DDeno.FileContent[] = [];
 
-  if (!auditUser && audit && audit.userId) auditUser = await client.users.get(audit.userId);
-
+  if (!auditUser && audit && audit.userId) {
+    auditUser = await client.ch.cache.users.get(audit.userId);
+  }
   const embed: DDeno.Embed = {
     author: {
       iconUrl: con.create,

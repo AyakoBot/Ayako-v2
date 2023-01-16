@@ -5,14 +5,18 @@ export default async (msgs: DDeno.Message[], guild: DDeno.Guild) => {
   const channels = await client.ch.getLogChannels('messageevents', { guildId: guild.id });
   if (!channels) return;
 
-  const channel = await client.cache.channels.get(msgs[0].channelId);
+  const identMsg = msgs[0];
+  if (!identMsg.guildId) return;
+
+  const channel = await client.ch.cache.channels.get(identMsg.channelId, identMsg.guildId);
   if (!channel) return;
 
   const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 73, channel.id);
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {

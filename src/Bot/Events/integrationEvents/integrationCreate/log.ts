@@ -5,14 +5,15 @@ export default async (integration: DDeno.Integration) => {
   const channels = await client.ch.getLogChannels('guildevents', integration);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(integration.guildId);
+  const guild = await client.ch.cache.guilds.get(integration.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(integration.guildId);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 80, integration.id);
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {
@@ -52,7 +53,7 @@ export default async (integration: DDeno.Integration) => {
   }
 
   if (integration.roleId) {
-    const role = await client.cache.roles.get(integration.roleId, guild.id);
+    const role = await client.ch.cache.roles.get(integration.roleId, guild.id);
 
     embed.fields?.push({
       name: language.Role,

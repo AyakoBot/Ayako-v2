@@ -8,14 +8,15 @@ export default async (
   const channels = await client.ch.getLogChannels('guildevents', payload);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(payload.guildId);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 82, payload.id);
-  const auditUser = audit && audit.userId ? await client.cache.users.get(audit.userId) : undefined;
+  const auditUser =
+    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
   let description = '';
 
   if (auditUser && integration) {
@@ -65,7 +66,7 @@ export default async (
     }
 
     if (integration.roleId) {
-      const role = await client.cache.roles.get(integration.roleId, guild.id);
+      const role = await client.ch.cache.roles.get(integration.roleId, guild.id);
 
       embed.fields?.push({
         name: language.Role,

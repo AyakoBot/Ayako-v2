@@ -9,10 +9,10 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(msg.guildId);
+  const guild = await client.ch.cache.guilds.get(msg.guildId);
   if (!guild) return;
 
-  const user = await client.cache.users.get(msg.authorId);
+  const user = await client.ch.cache.users.get(msg.authorId);
   if (!user) return;
 
   const language = await client.ch.languageSelector(msg.guildId);

@@ -617,7 +617,7 @@ const getChannelMultiplier = async (msg: CT.MessageGuild) => {
 
 const infoEmbed = async (msg: CT.MessageGuild, reactions: DDeno.Emoji[] | null) => {
   const embed: DDeno.Embed = {
-    color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
+    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
     description: msg.language.leveling.description(reactions?.join('')),
   };
 

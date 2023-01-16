@@ -58,7 +58,7 @@ async function send(
     return sentMessages;
   }
 
-  const channel = !('name' in c) ? await client.cache.channels.get(c.id, c.guildId) : c;
+  const channel = !('name' in c) ? await client.ch.cache.channels.get(c.id, c.guildId) : c;
   if (!channel) return null;
 
   if (timeout) {

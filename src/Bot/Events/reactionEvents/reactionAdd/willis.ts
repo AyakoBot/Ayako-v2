@@ -13,7 +13,7 @@ export default async (reaction: CT.ReactionAdd) => {
   if (!reaction.guildId) return;
   if (reaction.channelId !== 979811225212956722n) return;
 
-  const member = await client.cache.members.get(reaction.userId, reaction.guildId);
+  const member = await client.ch.cache.members.get(reaction.userId, reaction.guildId);
   if (!member) return;
 
   if (
@@ -24,7 +24,7 @@ export default async (reaction: CT.ReactionAdd) => {
     return;
   }
 
-  const logchannel = await client.cache.channels.get(805860525300776980n, 108176345204264960n);
+  const logchannel = await client.ch.cache.channels.get(805860525300776980n, 108176345204264960n);
   if (!logchannel) return;
 
   const statsRow = await client.ch
@@ -35,19 +35,20 @@ export default async (reaction: CT.ReactionAdd) => {
   switch (reaction.emoji.name) {
     case '✅': {
       const tick = async () => {
+        if (!reaction.guildId) return;
         client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
 
-        const user = await client.cache.users.get(reaction.userId);
+        const user = await client.ch.cache.users.get(reaction.userId);
         if (!user) return;
 
-        const msg = await client.cache.messages.get(
+        const msg = await client.ch.cache.messages.get(
           reaction.messageId,
           reaction.channelId,
           reaction.guildId,
         );
         if (!msg) return;
 
-        const author = await client.cache.users.get(msg.authorId);
+        const author = await client.ch.cache.users.get(msg.authorId);
         if (!author) return;
 
         const embed: DDeno.Embed = {
@@ -109,19 +110,20 @@ export default async (reaction: CT.ReactionAdd) => {
     }
     case '❌': {
       const cross = async () => {
+        if (!reaction.guildId) return;
         client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
 
-        const user = await client.cache.users.get(reaction.userId);
+        const user = await client.ch.cache.users.get(reaction.userId);
         if (!user) return;
 
-        const msg = await client.cache.messages.get(
+        const msg = await client.ch.cache.messages.get(
           reaction.messageId,
           reaction.channelId,
           reaction.guildId,
         );
         if (!msg) return;
 
-        const author = await client.cache.users.get(msg.authorId);
+        const author = await client.ch.cache.users.get(msg.authorId);
         if (!author) return;
 
         const embed: DDeno.Embed = {

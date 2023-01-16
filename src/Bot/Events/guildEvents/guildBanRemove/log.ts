@@ -10,7 +10,7 @@ export default async (user: DDeno.User, guild: DDeno.Guild) => {
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 23, user.id);
   const auditUser =
-    audit && audit?.userId ? await client.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {

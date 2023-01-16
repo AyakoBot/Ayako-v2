@@ -8,13 +8,17 @@ export default async (reaction: CT.ReactionRemove) => {
   const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guildId });
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(reaction.guildId);
+  const guild = await client.ch.cache.guilds.get(reaction.guildId);
   if (!guild) return;
 
-  const user = await client.cache.users.get(reaction.userId);
+  const user = await client.ch.cache.users.get(reaction.userId);
   if (!user) return;
 
-  const msg = await client.cache.messages.get(reaction.messageId);
+  const msg = await client.ch.cache.messages.get(
+    reaction.messageId,
+    reaction.channelId,
+    reaction.guildId,
+  );
   if (!msg) return;
 
   const language = await client.ch.languageSelector(reaction.guildId);
@@ -32,13 +36,20 @@ export default async (reaction: CT.ReactionRemove) => {
     color: client.customConstants.colors.warning,
   };
 
-  if (msg.reactions?.length) {
+  const reactions = client.ch.cache.reactions.cache
+    .get(reaction.guildId)
+    ?.get(reaction.channelId)
+    ?.get(reaction.messageId);
+
+  if (reactions) {
+    const reactionArray = Array.from(reactions, ([, r]) => r);
+
     embed.fields?.push({
       name: lan.reactions,
-      value: msg.reactions
+      value: reactionArray
         ?.map(
           (r) =>
-            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
+            `\`${client.ch.spaces(`${r.users.length}`, 5)}\` ${
               reaction.emoji.id === r.emoji.id ||
               (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
                 ? ` ${client.stringEmotes.plusBG}`

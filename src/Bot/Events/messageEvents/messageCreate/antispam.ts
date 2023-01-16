@@ -36,7 +36,7 @@ export default async (msg: CT.MessageGuild) => {
     return;
   }
 
-  const me = await client.cache.members.get(client.id, msg.guildId);
+  const me = await client.ch.cache.members.get(client.id, msg.guildId);
   if (!me) return;
 
   messageCache.push({

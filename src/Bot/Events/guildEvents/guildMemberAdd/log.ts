@@ -11,7 +11,7 @@ export default async (_: DDeno.Member, user: DDeno.User, guild: DDeno.Guild) => 
 
   const audit = user.toggles.bot ? await client.ch.getAudit(guild, 28, user.id) : undefined;
   const auditUser =
-    audit && audit?.userId ? await client.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
   let description = auditUser ? lan.descJoinAudit(user, auditUser) : undefined;
 
   if (!description) {
@@ -48,17 +48,18 @@ export default async (_: DDeno.Member, user: DDeno.User, guild: DDeno.Guild) => 
 const getUsedInvite = async (guild: DDeno.Guild, user: DDeno.User) => {
   if (user.toggles.bot) return undefined;
 
-  const oldInvites = client.invites.get(guild.id);
+  const oldInvites = Array.from(client.ch.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
+    Array.from(i, ([, i2]) => i2),
+  ).flat();
   const newInvites = await client.helpers.getInvites(guild.id);
   if (!newInvites) return undefined;
 
-  client.invites.set(guild.id, new Map());
-  newInvites.forEach((i) => client.invites.get(guild.id)?.set(i.code, i));
+  newInvites.forEach((i) => client.ch.cache.invites.set(i));
   if (!oldInvites) {
     return undefined;
   }
 
-  return Array.from(oldInvites, ([, invite]) => invite)
+  return oldInvites
     .map((oldInvite) => {
       const newInvite = newInvites.find((invite) => invite.code === oldInvite.code);
       if (newInvite && oldInvite.uses === newInvite.uses - 1) return newInvite;

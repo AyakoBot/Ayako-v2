@@ -12,7 +12,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 1);
   const auditUser =
-    audit && audit?.userId ? await client.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
 
   const embed: DDeno.Embed = {
     author: {
@@ -296,19 +296,18 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
         | [];
 
       const emojis = await client.helpers.getEmojis(guild.id);
-      if (!client.emojis.get(guild.id)) client.emojis.set(guild.id, new Map());
-      emojis.forEach((e) => (e.id ? client.emojis.get(guild.id)?.set(e.id, e) : undefined));
+      emojis.forEach((e) => client.ch.cache.emojis.set(e, guild.id));
 
       if (addedChannel.length) {
         const addedChannels = await Promise.all(
-          addedChannel.map((c) => client.cache.channels.get(c.channelId)),
+          addedChannel.map((c) => client.ch.cache.channels.get(c.channelId, guild.id)),
         );
 
         addedChannel.forEach((c, i) => {
           const channel = addedChannels[i];
           if (!channel) return;
 
-          const emoji = c.emojiId ? client.emojis.get(guild.id)?.get(c.emojiId) : c.emojiName;
+          const emoji = c.emojiId ? client.ch.cache.emojis.find(c.emojiId) : c.emojiName;
 
           embed.fields?.push({
             name: lan.welcomeChannelAdded,
@@ -326,14 +325,14 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
 
       if (removedChannel.length) {
         const removedChannels = await Promise.all(
-          removedChannel.map((c) => client.cache.channels.get(c.channelId)),
+          removedChannel.map((c) => client.ch.cache.channels.find(c.channelId)),
         );
 
         removedChannel.forEach((c, i) => {
           const channel = removedChannels[i];
           if (!channel) return;
 
-          const emoji = c.emojiId ? client.emojis.get(guild.id)?.get(c.emojiId) : c.emojiName;
+          const emoji = c.emojiId ? client.ch.cache.emojis.find(c.emojiId) : c.emojiName;
 
           embed.fields?.push({
             name: lan.welcomeChannelRemoved,
@@ -351,7 +350,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
 
       if (changedChannel.length) {
         const changedChannels = await Promise.all(
-          changedChannel.map((c) => client.cache.channels.get(c.channelId)),
+          changedChannel.map((c) => client.ch.cache.channels.find(c.channelId)),
         );
 
         changedChannel.forEach((_, i) => {
@@ -378,10 +377,10 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
             case `${oldChannel?.emojiId}-${oldChannel?.emojiName}` !==
               `${newChannel?.emojiId}-${newChannel?.emojiName}`: {
               const oldEmoji = oldChannel?.emojiId
-                ? client.emojis.get(guild.id)?.get(oldChannel?.emojiId)
+                ? client.ch.cache.emojis.find(oldChannel.emojiId)
                 : oldChannel?.emojiName;
               const newEmoji = newChannel?.emojiId
-                ? client.emojis.get(guild.id)?.get(newChannel?.emojiId)
+                ? client.ch.cache.emojis.find(newChannel.emojiId)
                 : newChannel?.emojiName;
 
               merge(
@@ -456,14 +455,18 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       if (addedFlags.length) {
         embed.fields?.push({
           name: lan.systemChannelFlagsNameRemoved,
-          value: addedFlags.map((t) => lan.systemChannelFlags[t]).join(', '),
+          value: addedFlags
+            .map((t) => lan.systemChannelFlags[t as keyof typeof lan.systemChannelFlags])
+            .join(', '),
         });
       }
 
       if (removedFlags.length) {
         embed.fields?.push({
           name: lan.systemChannelFlagsNameAdded,
-          value: removedFlags.map((t) => lan.systemChannelFlags[t]).join(', '),
+          value: removedFlags
+            .map((t) => lan.systemChannelFlags[t as keyof typeof lan.systemChannelFlags])
+            .join(', '),
         });
       }
 

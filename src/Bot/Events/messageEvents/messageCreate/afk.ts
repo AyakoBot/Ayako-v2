@@ -60,7 +60,7 @@ const doMentionAFKcheck = (msg: CT.MessageGuild) => {
 
 const getIsAFKEmbed = async (msg: CT.MessageGuild, id: bigint, afkRow: DBT.afk) => {
   const embed: DDeno.Embed = {
-    color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
+    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
     footer: {
       text: msg.language.commands.afk.footer(id, getTime(afkRow, msg.language)),
     },
@@ -88,7 +88,7 @@ const deleteNickname = async (msg: CT.MessageGuild) => {
   if (!msg.member.nick || !msg.member.nick.endsWith(' [AFK]')) return;
   const newNickname = displayname.slice(0, displayname.length - 6);
 
-  if (!client.ch.isManageable(msg.member, await client.cache.members.get(client.id, msg.guildId))) {
+  if (!client.ch.isManageable(msg.member, await client.ch.cache.members.get(client.id, msg.guildId))) {
     return;
   }
 
@@ -112,7 +112,7 @@ const deleteM = (m: DDeno.Message | null, msg: CT.MessageGuild) => {
 };
 
 const getAFKdeletedEmbed = async (msg: CT.MessageGuild, afkRow: DBT.afk): Promise<DDeno.Embed> => ({
-  color: await client.ch.colorSelector(await client.cache.members.get(client.id, msg.guildId)),
+  color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
   footer: {
     text: msg.language.commands.afkHandler.footer(getTime(afkRow, msg.language)),
   },

@@ -9,7 +9,7 @@ export default async (channel: DDeno.Channel) => {
   const channels = await client.ch.getLogChannels('channelevents', channel);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(channel.guildId);
+  const guild = await client.ch.cache.guilds.get(channel.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(channel.guildId);
@@ -102,7 +102,7 @@ export default async (channel: DDeno.Channel) => {
   }
 
   if (channel.parentId) {
-    const parent = await client.cache.channels.get(channel.parentId);
+    const parent = await client.ch.cache.channels.get(channel.parentId, channel.guildId);
 
     if (parent) {
       embed.fields?.push({

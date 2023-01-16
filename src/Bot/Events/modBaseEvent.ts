@@ -31,8 +31,8 @@ export default async (args: CT.ModBaseEventOptions) => {
       if (reply) args.m = reply;
     }
 
-    const targetMember = await client.cache.members.get(target.id, guild.id);
-    const executingMember = await client.cache.members.get(executor.id, guild.id);
+    const targetMember = await client.ch.cache.members.get(target.id, guild.id);
+    const executingMember = await client.ch.cache.members.get(executor.id, guild.id);
     if (!executingMember) return;
 
     const roleCheckAllowed = await roleCheck(
@@ -442,7 +442,7 @@ const checkPunishable = async (
         args.guild &&
         (await client.ch.isManageable(
           targetMember,
-          await client.cache.members.get(client.id, args.guild.id),
+          await client.ch.cache.members.get(client.id, args.guild.id),
         ))
       ) {
         return true;
@@ -454,7 +454,7 @@ const checkPunishable = async (
         args.guild &&
         (await client.ch.isManageable(
           targetMember,
-          await client.cache.members.get(client.id, args.guild.id),
+          await client.ch.cache.members.get(client.id, args.guild.id),
         ))
       ) {
         return true;
@@ -594,7 +594,7 @@ const checkActionTaken = async (
     }
     case 'kickAdd': {
       punished = args.guild
-        ? !(await client.cache.members.get(args.target.id, args.guild.id))
+        ? !(await client.ch.cache.members.get(args.target.id, args.guild.id))
         : false;
       break;
     }
@@ -684,13 +684,8 @@ const takeAction = async (
               })
           : false;
 
-      if (args.guild?.id && !client.mutes.get(args.guild?.id)) {
-        client.mutes.set(args.guild.id, new Map());
-      }
-
       if (args.guild?.id) {
-        client.mutes.get(args.guild?.id)?.set(
-          args.target.id,
+        client.ch.cache.mutes.set(
           jobs.scheduleJob(
             `${args.guild?.id}-${args.target.id}`,
             new Date(Date.now() + args.duration),
@@ -698,7 +693,7 @@ const takeAction = async (
               const options: CT.ModBaseEventOptions = {
                 target: args.target,
                 reason: language.events.ready.unmute,
-                executor: await client.cache.users.get(client.id),
+                executor: await client.ch.cache.users.get(client.id),
                 msg: args.msg,
                 guild: args.guild,
                 forceFinish: true,
@@ -707,17 +702,15 @@ const takeAction = async (
               };
 
               if (args.guild) {
-                client.mutes.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                const cache = client.mutes.get(args.guild?.id);
-
-                if (cache?.size === 1) client.mutes.delete(args.guild.id);
-                else cache?.delete(args.target.id);
+                client.ch.cache.mutes.delete(args.guild?.id, args.target.id);
               }
 
               // eslint-disable-next-line import/no-self-import
               (await import('./modBaseEvent.js')).default(options);
             },
           ),
+          args.guild.id,
+          args.target.id,
         );
       }
       break;
@@ -780,13 +773,8 @@ const takeAction = async (
               })
           : false;
 
-      if (args.guild?.id && !client.bans.get(args.guild?.id)) {
-        client.bans.set(args.guild.id, new Map());
-      }
-
       if (args.guild?.id) {
-        client.bans.get(args.guild?.id)?.set(
-          args.target.id,
+        client.ch.cache.bans.set(
           jobs.scheduleJob(
             `${args.guild?.id}-${args.target.id}`,
             new Date(Date.now() + Number(args.duration)),
@@ -794,7 +782,7 @@ const takeAction = async (
               const options: CT.ModBaseEventOptions = {
                 target: args.target,
                 reason: language.events.ready.unban,
-                executor: await client.cache.users.get(client.id),
+                executor: await client.ch.cache.users.get(client.id),
                 msg: args.msg,
                 guild: args.guild,
                 forceFinish: true,
@@ -802,17 +790,15 @@ const takeAction = async (
               };
 
               if (args.guild) {
-                client.bans.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                const cache = client.bans.get(args.guild?.id);
-
-                if (cache?.size === 1) client.bans.delete(args.guild.id);
-                else cache?.delete(args.target.id);
+                client.ch.cache.bans.delete(args.guild.id, args.target.id);
               }
 
               // eslint-disable-next-line import/no-self-import
               (await import('./modBaseEvent.js')).default(options);
             },
           ),
+          args.guild.id,
+          args.target.id,
         );
       }
       break;
@@ -851,13 +837,8 @@ const takeAction = async (
       }
 
       if (args.type === 'tempchannelbanAdd') {
-        if (args.guild?.id && !client.channelBans.get(args.guild?.id)) {
-          client.channelBans.set(args.guild.id, new Map());
-        }
-
         if (args.guild?.id) {
-          client.channelBans.get(args.guild?.id)?.set(
-            args.target.id,
+          client.ch.cache.channelBans.set(
             jobs.scheduleJob(
               `${args.channel?.id}-${args.target.id}`,
               new Date(Date.now() + Number(args.duration)),
@@ -865,7 +846,7 @@ const takeAction = async (
                 const options: CT.ModBaseEventOptions = {
                   target: args.target,
                   reason: language.events.ready.channelunban,
-                  executor: await client.cache.users.get(client.id),
+                  executor: await client.ch.cache.users.get(client.id),
                   msg: args.msg,
                   guild: args.guild,
                   channel: args.channel,
@@ -873,18 +854,30 @@ const takeAction = async (
                   type: 'channelbanRemove',
                 };
 
-                if (args.guild) {
-                  client.channelBans.get(args.guild?.id)?.get(args.target.id)?.cancel();
-                  const cache = client.channelBans.get(args.guild?.id);
+                if (args.guild && args.channel) {
+                  client.ch.cache.channelBans.cache
+                    .get(args.guild?.id)
+                    ?.get(args.channel?.id)
+                    ?.get(args.target.id)
+                    ?.cancel();
+                  const cache = client.ch.cache.channelBans.cache.get(args.guild?.id);
 
-                  if (cache?.size === 1) client.channelBans.delete(args.guild.id);
-                  else cache?.delete(args.target.id);
+                  if (cache?.size === 1) {
+                    client.ch.cache.channelBans.delete(
+                      args.guild.id,
+                      args.channel?.id,
+                      args.target.id,
+                    );
+                  } else cache?.delete(args.target.id);
                 }
 
                 // eslint-disable-next-line import/no-self-import
                 (await import('./modBaseEvent.js')).default(options);
               },
             ),
+            args.guild.id,
+            args.channel.id,
+            args.target.id,
           );
         }
       }
@@ -1111,7 +1104,9 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
           args.reason,
           Date.now(),
           args.msg?.channelId,
-          args.msg ? await client.cache.channels.get(args.msg?.channelId) : '-',
+          args.msg && args.guild
+            ? await client.ch.cache.channels.get(args.msg?.channelId, args.guild?.id)
+            : '-',
           args.executor?.id,
           `${args.executor?.username}#${args.executor?.discriminator}`,
           args.msg?.id,
@@ -1123,7 +1118,9 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
           args.reason,
           Date.now(),
           args.msg?.channelId,
-          args.msg ? await client.cache.channels.get(args.msg?.channelId) : '-',
+          args.msg && args.guild
+            ? await client.ch.cache.channels.get(args.msg?.channelId, args.guild?.id)
+            : '-',
           args.executor?.id,
           `${args.executor?.username}#${args.executor?.discriminator}`,
           args.msg?.id,
@@ -1215,49 +1212,27 @@ const deleter = (args: CT.ModBaseEventOptions) => {
 
 const isModeratable = async (m: DDeno.Member | undefined | null) =>
   !m ||
-  (client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
-    'ADMINISTRATOR',
-  ]) &&
-    (await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m.id, [
-      'MODERATE_MEMBERS',
-    ]));
+  ((await client.ch.hasGuildPermissions(m.guildId, m.id, ['Administrator'])) &&
+    (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
+    client.ch.hasGuildPermissions(m.guildId, m.id, ['ModerateMembers']));
 
 const isBannable = async (m: DDeno.Member | undefined | null) =>
   !m ||
-  ((await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
-      'BAN_MEMBERS',
-    ]));
+  ((await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
+    client.ch.hasGuildPermissions(m.guildId, m.id, ['BanMembers']));
 
 const isManageable = async (c: DDeno.Channel) => {
-  const me = await client.cache.members.get(client.id, c.guildId);
-  if (!me) return false;
-
-  if (
-    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.guildId, me, [
-      'ADMINISTRATOR',
-    ])
-  ) {
+  if (await client.ch.hasGuildPermissions(c.guildId, client.me.id, ['Administrator'])) {
     return true;
   }
-  if (Number(me.communicationDisabledUntil) > Date.now()) return false;
 
   return (
-    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.id, me, [
-      'VIEW_CHANNEL',
-      'CONNECT',
-    ]) ||
-    client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, c.id, me, [
-      'VIEW_CHANNEL',
-      'SEND_MESSAGES',
-    ])
+    client.ch.hasGuildPermissions(c.id, client.me.id, ['ViewChannel', 'Connect']) ||
+    client.ch.hasGuildPermissions(c.id, client.me.id, ['ViewChannel', 'SendMessages'])
   );
 };
 
 const isKickable = async (m: DDeno.Member | null | undefined) =>
   m &&
-  (await client.ch.isManageable(m, await client.cache.members.get(m.guildId, m.id))) &&
-  client.ch.permissionCalculators.permissionCache.hasGuildPermissions(client, m.guildId, m, [
-    'KICK_MEMBERS',
-  ]);
+  (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
+  client.ch.hasGuildPermissions(m.guildId, m.id, ['KickMembers']);

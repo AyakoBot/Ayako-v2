@@ -18,8 +18,7 @@ export default async (msg: CT.MessageGuild) => {
     : msg.channel;
   if (!channel) return;
 
-  client.disboardBumpReminders.get(msg.guildId)?.cancel();
-  client.disboardBumpReminders.delete(msg.guildId);
+  client.ch.cache.disboardBumpReminders.delete(msg.guildId);
 
   await client.helpers
     .addReaction(msg.channelId, msg.id, client.stringEmotes.tick)
@@ -59,14 +58,14 @@ const setReminder = async (msg: CT.MessageGuild, isBump: boolean, settings: DBT.
     String(msg.guildId),
   ]);
 
-  client.disboardBumpReminders.set(
-    msg.guildId,
+  client.ch.cache.disboardBumpReminders.set(
     jobs.scheduleJob(
       new Date(Date.now() + (isBump ? 7200000 : Number(settings.repeatreminder) * 60 * 1000)),
       () => {
         endReminder(msg);
       },
     ),
+    msg.guildId,
   );
 };
 
@@ -76,9 +75,15 @@ export const endReminder = async (msg: CT.MessageGuild) => {
 
   let channel: DDeno.Channel | undefined;
   if (settings.channelid) {
-    channel = await client.cache.channels.get(BigInt(settings.channelid));
+    channel = await client.ch.cache.channels.get(
+      BigInt(settings.channelid),
+      BigInt(settings.guildid),
+    );
   } else if (settings.tempchannelid) {
-    channel = await client.cache.channels.get(BigInt(settings.tempchannelid));
+    channel = await client.ch.cache.channels.get(
+      BigInt(settings.tempchannelid),
+      BigInt(settings.guildid),
+    );
   } else return;
   if (!channel) return;
 
@@ -119,12 +124,16 @@ const doDelete = async (msg: CT.MessageGuild, settings: DBT.disboard) => {
   if (!settings.tempchannelid) return;
 
   const channel = settings.channelid
-    ? await client.cache.channels.get(BigInt(settings.channelid))
-    : await client.cache.channels.get(BigInt(settings.tempchannelid));
+    ? await client.ch.cache.channels.get(BigInt(settings.channelid), BigInt(settings.guildid))
+    : await client.ch.cache.channels.get(BigInt(settings.tempchannelid), BigInt(settings.guildid));
 
   if (!channel) return;
 
-  const message = await client.cache.messages.get(BigInt(settings.msgid), channel.id, msg.guildId);
+  const message = await client.ch.cache.messages.get(
+    BigInt(settings.msgid),
+    channel.id,
+    msg.guildId,
+  );
   if (!message) return;
 
   client.helpers

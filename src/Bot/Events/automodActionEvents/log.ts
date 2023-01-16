@@ -4,10 +4,17 @@ import client from '../../BaseClient/DDenoClient.js';
 export default async (execution: DDeno.AutoModerationActionExecution) => {
   const channels = await client.ch.getLogChannels('automodevents', execution);
   if (!channels) return;
-  const user = await client.cache.users.get(execution.userId);
+  const user = await client.ch.cache.users.get(execution.userId);
   if (!user) return;
 
-  const msg = execution.messageId ? await client.cache.messages.get(execution.messageId) : null;
+  const msg =
+    execution.messageId && execution.channelId
+      ? await client.ch.cache.messages.get(
+          execution.messageId,
+          execution.channelId,
+          execution.guildId,
+        )
+      : null;
   const rule = await client.helpers.getAutomodRule(execution.guildId, execution.ruleId);
   const language = await client.ch.languageSelector(execution.guildId);
   const lan = language.events.logs.automodActionExecution;
@@ -39,7 +46,7 @@ export default async (execution: DDeno.AutoModerationActionExecution) => {
 
   if ([2, 3].includes(execution.action.type)) {
     const channel = execution.action.metadata.channelId
-      ? await client.cache.channels.get(execution.action.metadata.channelId, execution.guildId)
+      ? await client.ch.cache.channels.get(execution.action.metadata.channelId, execution.guildId)
       : undefined;
 
     embed.fields?.push({

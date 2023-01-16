@@ -23,7 +23,11 @@ export default async (
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
   const files: DDeno.FileContent[] = [];
-  const msg = await client.cache.messages.get(reaction.channelId, reaction.messageId);
+  const msg = await client.ch.cache.messages.get(
+    reaction.messageId,
+    reaction.channelId,
+    reaction.guildId,
+  );
   if (!msg) return;
 
   const embed: DDeno.Embed = {

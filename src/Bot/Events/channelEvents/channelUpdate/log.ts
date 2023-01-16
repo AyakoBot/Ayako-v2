@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import type * as DDeno from 'discordeno';
+import * as DDeno from 'discordeno';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/DDenoClient.js';
 
@@ -11,7 +11,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
   const channels = await client.ch.getLogChannels('channelevents', channel);
   if (!channels) return;
 
-  const guild = await client.cache.guilds.get(channel.guildId);
+  const guild = await client.ch.cache.guilds.get(channel.guildId);
   if (!guild) return;
 
   const language = await client.ch.languageSelector(channel.guildId);
@@ -119,10 +119,10 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
     }
     case oldChannel.parentId !== channel.parentId: {
       const oldParent = oldChannel.parentId
-        ? await client.cache.channels.get(oldChannel.parentId)
+        ? await client.ch.cache.channels.get(oldChannel.parentId, oldChannel.guildId)
         : undefined;
       const parent = channel.parentId
-        ? await client.cache.channels.get(channel.parentId)
+        ? await client.ch.cache.channels.get(channel.parentId, channel.parentId)
         : undefined;
 
       merge(
@@ -176,12 +176,8 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
       };
       embeds.push(permEmbed);
 
-      const beforePerms = oldChannel.permissionOverwrites.map((p) =>
-        client.ch.permissionCalculators.separateOverwrites(p),
-      );
-      const afterPerms = channel.permissionOverwrites.map((p) =>
-        client.ch.permissionCalculators.separateOverwrites(p),
-      );
+      const beforePerms = oldChannel.permissionOverwrites.map((p) => DDeno.separateOverwrites(p));
+      const afterPerms = channel.permissionOverwrites.map((p) => DDeno.separateOverwrites(p));
 
       const tempOP: PermissionsBitField[] = [];
       const tempNP: PermissionsBitField[] = [];

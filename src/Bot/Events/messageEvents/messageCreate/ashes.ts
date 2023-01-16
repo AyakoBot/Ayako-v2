@@ -12,13 +12,13 @@ const banHandler = async (msg: CT.MessageGuild) => {
   if (!msg.content.includes('@Known-Scammers ping:')) return;
 
   const isUnban = msg.content.includes('REMOVAL FROM LIST');
-  const executor = await client.cache.users.get(646937666251915264n);
+  const executor = await client.ch.cache.users.get(646937666251915264n);
 
   const ids = msg.content.match(/\d{17,19}/gm);
   if (!ids || !ids.length) return;
 
   ids.forEach(async (id) => {
-    const user = await client.cache.users.get(BigInt(id));
+    const user = await client.ch.cache.users.get(BigInt(id));
     if (!user) {
       const language = await client.ch.languageSelector(msg.guildId);
       client.ch.errorMsg(msg, language.errors.userNotFound, language);
@@ -33,19 +33,19 @@ const banHandler = async (msg: CT.MessageGuild) => {
     if (isUnban) {
       (await import('../../modBaseEvent.js')).default({
         target: user,
-        executor: executor || (await client.cache.users.get(client.id)),
+        executor: executor || (await client.ch.cache.users.get(client.id)),
         reason,
         msg,
-        guild: await client.cache.guilds.get(msg.guildId),
+        guild: await client.ch.cache.guilds.get(msg.guildId),
         type: 'banRemove',
       });
     } else {
       (await import('../../modBaseEvent.js')).default({
         target: user,
-        executor: executor || (await client.cache.users.get(client.id)),
+        executor: executor || (await client.ch.cache.users.get(client.id)),
         reason,
         msg,
-        guild: await client.cache.guilds.get(msg.guildId),
+        guild: await client.ch.cache.guilds.get(msg.guildId),
         type: 'banAdd',
       });
     }
