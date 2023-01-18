@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import type DBT from '../../Typings/DataBaseTypings';
-import type CT from '../../Typings/CustomTypings';
 import client from '../Client.js';
 
 export default async (
@@ -22,7 +21,7 @@ export default async (
     | 'automodevents'
     | 'reactionevents'
     | 'scheduledevents',
-  msg: DDeno.Message | CT.MessageGuild | { guildId: bigint },
+  msg: Discord.Message | { guildId: bigint },
 ) => {
   if (!msg.guildId) return undefined;
 

@@ -26,8 +26,11 @@ export default (array: string[] | string, source?: string, name = String(Date.no
     }
   } else content = array;
 
-  const blob = new Blob([content], { type: 'text/plain' });
-  const attachment: DDeno.FileContent = { blob, name: `${name}.txt` };
+  const buffer = Buffer.from(content, 'utf-8');
+  const attachment: Discord.AttachmentPayload = {
+    attachment: buffer,
+    name: `${name}.txt`,
+  };
 
   return attachment;
 };

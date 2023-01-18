@@ -94,7 +94,7 @@ export type customembeds = {
   title?: string;
   url?: string;
   authorname?: string;
-  authoriconurl?: string;
+  authoricon_url?: string;
   authorurl?: string;
   description?: string;
   thumbnail?: string;
@@ -104,7 +104,7 @@ export type customembeds = {
   image?: string;
   timestamp?: string;
   footertext?: string;
-  footericonurl?: string;
+  footericon_url?: string;
   uniquetimestamp: string;
   guildid: string;
   name?: string;

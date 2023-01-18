@@ -3,8 +3,8 @@ import client from '../Client.js';
 import colorSelector from './colorSelector.js';
 import type CT from '../../Typings/CustomTypings';
 
-export default async (
-  guild: DDeno.Guild,
+export default (
+  guild: Discord.Guild,
   {
     lan,
     language,
@@ -12,17 +12,12 @@ export default async (
     language: CT.Language;
     lan: { author: string; loading?: string };
   },
-) => {
-  const member = await client.helpers.getMember(guild.id, client.id);
-
-  const embed: DDeno.Embed = {
-    author: {
-      name: lan.author,
-      iconUrl: client.objectEmotes.loading.link,
-      url: client.customConstants.standard.invite,
-    },
-    color: await colorSelector(member),
-    description: `${client.stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
-  };
-  return embed;
-};
+): Discord.APIEmbed => ({
+  author: {
+    name: lan.author,
+    icon_url: client.objectEmotes.loading.link,
+    url: client.customConstants.standard.invite,
+  },
+  color: colorSelector(guild.members.me ?? undefined),
+  description: `${client.stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
+});

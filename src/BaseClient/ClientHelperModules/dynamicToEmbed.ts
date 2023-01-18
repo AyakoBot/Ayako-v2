@@ -1,14 +1,14 @@
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import stp from './stp.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default (rawEmbed: DDeno.Embed, options: ((string | any)[] | (string | any)[])[]) => {
+export default (rawEmbed: Discord.APIEmbed, options: ((string | any)[] | (string | any)[])[]) => {
   const embeds = [rawEmbed];
 
   options.forEach((option) => {
     const embedToUse = embeds[embeds.length - 1];
 
-    const embed: DDeno.Embed = { type: 'rich' };
+    const embed: Discord.APIEmbed = { type: 'rich' };
 
     embed.color = embedToUse.color;
     embed.title = embedToUse.title ? stp(embedToUse.title, { [option[0]]: option[1] }) : undefined;
@@ -19,8 +19,8 @@ export default (rawEmbed: DDeno.Embed, options: ((string | any)[] | (string | an
         name: embedToUse.author.name
           ? stp(embedToUse.author.name, { [option[0]]: option[1] })
           : '\u200b',
-        iconUrl: embedToUse.author.iconUrl
-          ? stp(embedToUse.author.iconUrl, { [option[0]]: option[1] })
+        icon_url: embedToUse.author.icon_url
+          ? stp(embedToUse.author.icon_url, { [option[0]]: option[1] })
           : undefined,
         url: embedToUse.author.url
           ? stp(embedToUse.author.url, { [option[0]]: option[1] })
@@ -52,8 +52,8 @@ export default (rawEmbed: DDeno.Embed, options: ((string | any)[] | (string | an
         text: embedToUse.footer.text
           ? stp(embedToUse.footer.text, { [option[0]]: option[1] })
           : '\u200b',
-        iconUrl: embedToUse.footer.iconUrl
-          ? stp(embedToUse.footer.iconUrl, { [option[0]]: option[1] })
+        icon_url: embedToUse.footer.icon_url
+          ? stp(embedToUse.footer.icon_url, { [option[0]]: option[1] })
           : undefined,
       };
     }

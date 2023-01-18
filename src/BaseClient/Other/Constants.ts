@@ -1,4 +1,4 @@
-import * as Discord from 'discord.js';
+import type * as Discord from 'discord.js';
 
 export default {
   events: {
@@ -240,31 +240,11 @@ export default {
     ownerID: '318453143476371456',
     patreon: 'https://www.patreon.com/Lars_und_so',
     error: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
-    guildAvatarURL: (guild: DDeno.Guild, member: DDeno.Member, fileEnd: string) =>
-      `https://cdn.discordapp.com/guilds/${guild.id}/users/${member.id}/avatars/${member.avatar}.${fileEnd}?size=4096`,
-    guildIconURL: (guild: DDeno.Guild, fileEnd: string) =>
-      `https://cdn.discordapp.com/icons/${guild.id}/${DDeno.iconBigintToHash(
-        guild.icon as bigint,
-      )}.${fileEnd}?size=4096`,
-    emojiURL: (emoji: DDeno.Emoji, fileEnd: string) =>
-      `https://cdn.discordapp.com/emojis/${emoji.id}.${fileEnd}?size=4096`,
-    roleIconURL: (role: DDeno.Role) =>
-      `https://cdn.discordapp.com/role-icons/${role.id}/${DDeno.iconBigintToHash(
-        role.icon as bigint,
-      )}.png?size=4096`,
-    userAvatarURL: (user: DDeno.User | DDeno.Webhook, fileEnd: string) =>
-      `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${fileEnd}?size=4096`,
-    appURL: (user: DDeno.User) => `discord://-/users/${user.id}`,
-    getEmote: (emoji: DDeno.Emoji) =>
-      emoji.toggles.requireColons
-        ? `<${emoji.toggles.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>`
-        : `${emoji.name}`,
+    appURL: (user: Discord.User) => `discord://-/users/${user.id}`,
+    getEmote: (emoji: Discord.Emoji) =>
+      emoji.id ? `<${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
     getTime: (time: number) =>
       `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
-    getScheduledEventIcon: (event: DDeno.ScheduledEvent) =>
-      `https://cdn.discordapp.com/guild-events/${event.guildId}/${DDeno.iconBigintToHash(
-        event.image as bigint,
-      )}?size=4096`,
   },
   mod: {
     strike: {

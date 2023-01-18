@@ -5,4 +5,4 @@ import client from '../Client.js';
  * @param idPair guildID:stringID
  */
 export default (idPair: string) =>
-  client.helpers.getEmoji(idPair.split(':')[0], idPair.split(':')[1]);
+  client.emojis.cache.get(idPair.split(':')[1]);

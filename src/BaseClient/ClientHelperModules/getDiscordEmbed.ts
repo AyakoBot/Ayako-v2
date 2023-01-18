@@ -1,14 +1,14 @@
 import type * as Discord from 'discord.js';
 import type DBT from '../../Typings/DataBaseTypings';
 
-export default (DBembed: DBT.customembeds): DDeno.Embed => ({
+export default (DBembed: DBT.customembeds): Discord.APIEmbed => ({
   color: Number(DBembed.color),
   title: DBembed.title,
   url: DBembed.url,
   author: DBembed.authorname
     ? {
         name: DBembed.authorname,
-        iconUrl: DBembed.authoriconurl,
+        icon_url: DBembed.authoricon_url,
         url: DBembed.authorurl,
       }
     : undefined,
@@ -30,11 +30,11 @@ export default (DBembed: DBT.customembeds): DDeno.Embed => ({
         url: DBembed.image,
       }
     : undefined,
-  timestamp: Number(DBembed.timestamp) || undefined,
+  timestamp: DBembed.timestamp || undefined,
   footer: DBembed.footertext
     ? {
         text: DBembed.footertext,
-        iconUrl: DBembed.footericonurl,
+        icon_url: DBembed.footericon_url,
       }
     : undefined,
 });

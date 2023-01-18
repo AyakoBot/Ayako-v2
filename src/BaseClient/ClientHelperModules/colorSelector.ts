@@ -1,16 +1,11 @@
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import constants from '../Other/Constants.js';
-import client from '../Client.js';
 
-export default async (member: DDeno.Member | undefined | null) => {
+export default (member?: Discord.GuildMember) => {
   if (!member) return constants.standard.color;
+  if (!member.roles.highest) return constants.standard.color;
 
-  const guild = await client.helpers.getGuild(member.guildId);
-  const highestRole = member.roles
-    .map((id) => guild.roles.get(id))
-    .sort((a, b) => Number(b?.position) - Number(a?.position))
-    .pop();
-
-  if (!highestRole) return constants.standard.color;
-  return member && highestRole.color !== 0 ? highestRole.color : constants.standard.color;
+  return member && member.roles.highest.color !== 0
+    ? member.roles.highest.color
+    : constants.standard.color;
 };

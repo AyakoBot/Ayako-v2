@@ -6,7 +6,7 @@ export default (
   before: unknown,
   after: unknown,
   type: CT.AcceptedMergingTypes,
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   language: CT.Language,
   name?: string,
 ) => {

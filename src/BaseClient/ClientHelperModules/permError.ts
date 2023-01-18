@@ -1,5 +1,4 @@
-import type DDeno from 'discordeno';
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
@@ -7,7 +6,7 @@ import client from '../Client.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default async (
-  msg: DDeno.Message,
+  msg: Discord.Message,
   bits: bigint | number,
   language: CT.Language,
   me?: boolean,
@@ -16,20 +15,21 @@ export default async (
   if (!msg.guildId) return;
   if (typeof bits === 'number') bits = BigInt(bits);
 
-  const clientMember = await client.ch.cache.members.get(client.id, msg.guildId);
-  if (!clientMember) return;
+  const clientMember = msg.guild?.members.me;
 
   const neededPerms = new Discord.PermissionsBitField(
     bitUniques(
       bits,
-      me ? BigInt(clientMember.permissions || 0) : BigInt(msg.member?.permissions || 0),
+      me
+        ? BigInt(clientMember?.permissions.bitfield || 0)
+        : BigInt(msg.member?.permissions.bitfield || 0),
     )[0],
   );
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: language.error,
-      iconUrl: client.customConstants.standard.error,
+      icon_url: client.customConstants.standard.error,
       url: client.customConstants.standard.invite,
     },
     color: client.customConstants.colors.warning,

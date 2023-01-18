@@ -1,14 +1,14 @@
 import { EventEmitter } from 'events';
 import type * as Discord from 'discord.js';
-import ClientEmitter from './ClientEmitter.js';
+import client from '../Client.js';
 
 class SlashCommandCollector extends EventEmitter {
   ended: boolean;
   time: number;
-  channel: DDeno.Channel;
+  channel: Discord.Channel;
   recieved: number;
 
-  constructor(channel: DDeno.Channel, time?: number) {
+  constructor(channel: Discord.Channel, time?: number) {
     super();
     this.channel = channel;
     this.time = time || 60000;
@@ -22,43 +22,51 @@ class SlashCommandCollector extends EventEmitter {
 
     setTimeout(() => this.stop('time'), this.time);
 
-    ClientEmitter.incrementMaxListeners();
-    ClientEmitter.on('interactionCreate', this.handleSlashCommand);
-    ClientEmitter.on('channelDelete', this.handleChannelDeletion);
-    ClientEmitter.on('threadDelete', this.handleThreadDeletion);
-    ClientEmitter.on('guildDelete', this.handleGuildDeletion);
+    const incrementListeners = this.getMaxListeners();
+    if (incrementListeners !== 0) {
+      this.setMaxListeners(incrementListeners + 1);
+    }
+
+    client.on('interactionCreate', this.handleSlashCommand);
+    client.on('channelDelete', this.handleChannelDeletion);
+    client.on('threadDelete', this.handleThreadDeletion);
+    client.on('guildDelete', this.handleGuildDeletion);
 
     this.once('end', () => {
-      ClientEmitter.removeListener('interactionCreate', this.handleSlashCommand);
-      ClientEmitter.removeListener('channelDelete', this.handleChannelDeletion);
-      ClientEmitter.removeListener('threadDelete', this.handleThreadDeletion);
-      ClientEmitter.removeListener('guildDelete', this.handleGuildDeletion);
-      ClientEmitter.decrementMaxListeners();
+      client.removeListener('interactionCreate', this.handleSlashCommand);
+      client.removeListener('channelDelete', this.handleChannelDeletion);
+      client.removeListener('threadDelete', this.handleThreadDeletion);
+      client.removeListener('guildDelete', this.handleGuildDeletion);
+
+      const decrementListeners = this.getMaxListeners();
+      if (decrementListeners !== 0) {
+        this.setMaxListeners(decrementListeners - 1);
+      }
     });
   }
 
-  handleChannelDeletion(channel: DDeno.Channel) {
+  handleChannelDeletion(channel: Discord.Channel) {
     if (
       channel.id === this.channel.id ||
-      ('parentID' in this.channel && channel.id === this.channel.parentId)
+      ('parentID' in this.channel && channel.id === this.channel.parentID)
     ) {
       this.stop('channelDelete');
     }
   }
 
-  handleThreadDeletion(thread: DDeno.Channel) {
+  handleThreadDeletion(thread: Discord.Channel) {
     if (thread.id === this.channel.id) {
       this.stop('threadDelete');
     }
   }
 
-  handleGuildDeletion(guild: DDeno.Guild) {
+  handleGuildDeletion(guild: Discord.Guild) {
     if ('guild' in this.channel && guild.id === this.channel.guildId) {
       this.stop('guildDelete');
     }
   }
 
-  handleSlashCommand(interaction: DDeno.Interaction) {
+  handleSlashCommand(interaction: Discord.Interaction) {
     if (interaction.type !== 2) return;
     if (interaction.channelId === this.channel.id) {
       this.emit('collect', interaction);

@@ -1,10 +1,10 @@
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 
 export default async (
   msg: DDeno.Message,
   answer: DDeno.Component,
   options: { [key: string]: string },
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   page: number,
 ) =>
   (await import(`${process.cwd()}/dist/Commands/TextCommands/embedbuilder`)).builder(

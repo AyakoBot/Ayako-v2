@@ -1,35 +1,30 @@
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
-import client from '../Client.js';
 
-export default async (
-  cmd: DDeno.Interaction | CT.ButtonInteraction,
-  payload: CT.InteractionResponse,
-  command?: CT.Command,
-) => {
-  if (!cmd) return null;
-  if (!payload.data) return null;
-
-  const ephemeral = Boolean(payload.ephemeral);
-  if (payload.ephemeral) {
-    delete payload.ephemeral;
-    payload.data.flags = payload.data.flags ? payload.data.flags + 64 : 64;
+const sendMessage = (cmd: Discord.Interaction, payload: Discord.InteractionReplyOptions) => {
+  if ('respond' in cmd) {
+    return undefined;
   }
 
-  await client.helpers.sendInteractionResponse(cmd.id, cmd.token, payload).catch((err) => {
-    // eslint-disable-next-line no-console
-    console.log('cmd reply err', err);
-  });
-
-  const sentMessage = await client.helpers
-    .getOriginalInteractionResponse(cmd.token)
-    .catch((err) => {
+  if ('reply' in cmd && cmd.isRepliable()) {
+    return cmd.reply(payload).catch((err) => {
       // eslint-disable-next-line no-console
-      console.log('cmd reply fetch err', err);
+      console.log('cmd reply err', err);
     });
+  }
 
+  throw new Error('Unrepliable Interaction');
+};
+
+export default async (
+  cmd: Discord.Interaction,
+  payload: Discord.InteractionReplyOptions,
+  command?: CT.Command,
+) => {
+  if (!cmd) return undefined;
+
+  const sentMessage = await sendMessage(cmd, payload);
   if (!sentMessage) return null;
-  if (ephemeral) return sentMessage;
 
   const replyMsg = await import('./replyMsg');
   replyMsg.cooldownHandler(cmd, sentMessage, command);

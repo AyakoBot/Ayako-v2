@@ -1,7 +1,12 @@
 // eslint-disable-next-line no-shadow
 import fetch from 'node-fetch';
+import type * as Discord from 'discord.js';
+import arrayBufferToBuffer from './arrayBufferToBuffer.js';
 
-export default async (urls: (string | null)[], names?: string[]) =>
+export default async (
+  urls: (string | null)[],
+  names?: string[],
+): Promise<(Discord.AttachmentPayload | null)[]> =>
   (
     await Promise.all(
       urls.map((url) =>
@@ -13,20 +18,22 @@ export default async (urls: (string | null)[], names?: string[]) =>
       ),
     )
   )
-    .map((buffer, i) => {
+    .map((arrayBuffer, i) => {
       const url = urls[i];
       if (!url) return null;
+
+      if (!arrayBuffer) return null;
+      const buffer = arrayBufferToBuffer(arrayBuffer);
+
       const URLObject = new URL(url);
       const fileName = names?.length
         ? names[i]
         : URLObject.pathname.split(/\/+/).pop() || 'unknown';
 
-      if (buffer) {
-        return {
-          blob: new Blob([buffer], { type: 'application/octet-stream' }),
-          name: fileName,
-        };
-      }
+      return {
+        attachment: buffer,
+        name: fileName,
+      };
       return null;
     })
     .filter((r) => !!r);

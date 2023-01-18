@@ -23,11 +23,11 @@ class CustomClient extends Discord.Client {
   stringEmotes: typeof StringEmotes;
   reactionEmotes: typeof ReactionEmotes;
 
-  mainID: bigint;
+  mainID: string;
 
-  channelQueue: Map<bigint, Map<bigint, Discord.MessagePayload[]>>;
-  channelTimeout: Map<bigint, Map<bigint, Jobs.Job>>;
-  channelCharLimit: Map<bigint, Map<bigint, number>>;
+  channelQueue: Map<string, Map<string, Discord.MessageCreateOptions[]>>;
+  channelTimeout: Map<string, Map<string, Jobs.Job>>;
+  channelCharLimit: Map<string, Map<string, number>>;
 
   ch: typeof ch;
   database: RedisxPSQL;
@@ -41,7 +41,7 @@ class CustomClient extends Discord.Client {
     this.stringEmotes = StringEmotes;
     this.reactionEmotes = ReactionEmotes;
 
-    this.mainID = BigInt(config.BOT_ID);
+    this.mainID = config.BOT_ID;
 
     this.channelQueue = new Map();
     this.channelTimeout = new Map();

@@ -1,8 +1,8 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 
-export default (channel: DDeno.Channel, guild: DDeno.Guild) => {
+export default (channel: Discord.Channel, guild: Discord.Guild) => {
   switch (channel.type) {
-    case 0: {
+    case Discord.ChannelType.GuildText: {
       switch (true) {
         case guild.rulesChannelId === channel.id: {
           return 'Rules';
@@ -18,10 +18,10 @@ export default (channel: DDeno.Channel, guild: DDeno.Guild) => {
         }
       }
     }
-    case 1: {
+    case Discord.ChannelType.DM: {
       return 'DM';
     }
-    case 2: {
+    case Discord.ChannelType.GuildVoice: {
       switch (true) {
         case !!channel.permissionOverwrites: {
           return 'LockedVoice';
@@ -31,27 +31,29 @@ export default (channel: DDeno.Channel, guild: DDeno.Guild) => {
         }
       }
     }
-    case 3: {
+    case Discord.ChannelType.GroupDM: {
       return 'GroupDm';
     }
-    case 4: {
+    case Discord.ChannelType.GuildCategory: {
       return 'Category';
     }
-    case 5: {
+    case Discord.ChannelType.GuildAnnouncement: {
       return 'NewsChannel';
     }
-    case 10:
-    case 11:
-    case 12: {
+    case Discord.ChannelType.AnnouncementThread:
+    case Discord.ChannelType.PublicThread:
+    case Discord.ChannelType.PrivateThread: {
       return 'Thread';
     }
-    case 13: {
+    case Discord.ChannelType.GuildStageVoice: {
       return 'Stage';
     }
-    case 14: {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    case Discord.ChannelType.GuildDirectory: {
       return 'Directory';
     }
-    case 15: {
+    case Discord.ChannelType.GuildForum: {
       switch (true) {
         case channel.nsfw: {
           return 'NSFWForum';

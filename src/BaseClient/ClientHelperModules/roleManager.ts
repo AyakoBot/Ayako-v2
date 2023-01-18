@@ -1,47 +1,50 @@
 import * as Jobs from 'node-schedule';
-import type * as Discord from 'discord.js';
-import Discord from 'discord.js';
-import isManageable from './isManageable.js';
+import * as Discord from 'discord.js';
 import client from '../Client.js';
 
 const MemberCache: {
-  member: DDeno.Member;
-  addRoles?: bigint[];
-  removeRoles?: bigint[];
+  member: Discord.GuildMember;
+  addRoles?: string[];
+  removeRoles?: string[];
   prio: number;
   reason: string;
   added: number;
 }[] = [];
 
-const GuildCache: Map<bigint, { job: Jobs.Job; members: typeof MemberCache; guild: DDeno.Guild }> =
-  new Map();
+const GuildCache: Map<
+  string,
+  { job: Jobs.Job; members: typeof MemberCache; guild: Discord.Guild }
+> = new Map();
 
 const roleManager = {
-  add: async (member: DDeno.Member, roles: bigint[], reason: string, prio = 2) => {
+  add: async (member: Discord.GuildMember, roles: string[], reason: string, prio = 2) => {
     handleRoleUpdate(member, roles, reason, prio, 'addRoles');
   },
-  remove: async (member: DDeno.Member, roles: bigint[], reason: string, prio = 2) => {
+  remove: async (member: Discord.GuildMember, roles: string[], reason: string, prio = 2) => {
     handleRoleUpdate(member, roles, reason, prio, 'removeRoles');
   },
 };
 
 const handleRoleUpdate = async (
-  member: DDeno.Member,
-  roles: bigint[],
+  member: Discord.GuildMember,
+  roles: string[],
   reason: string,
   prio: number,
   type: 'addRoles' | 'removeRoles',
 ) => {
-  const guild = await client.helpers.getGuild(member.guildId);
-  const me = await client.helpers.getMember(member.guildId, client.id);
+  const guild = client.guilds.cache.get(member.guild.id);
+  if (!guild) return;
 
-  if (!isManageable(member, me)) return;
+  const { me } = guild.members;
+  if (!me) return;
+
+  if (!member.manageable) return;
   if (!new Discord.PermissionsBitField(me.permissions).has(268435456n)) return;
 
-  const roleGuild = GuildCache.get(member.guildId);
+  const roleGuild = GuildCache.get(guild.id);
   if (!roleGuild) {
-    GuildCache.set(member.guildId, {
-      job: Jobs.scheduleJob('*/1 * * * * *', () => runJob(member.guildId)),
+    GuildCache.set(guild.id, {
+      job: Jobs.scheduleJob('*/1 * * * * *', () => runJob(guild.id)),
       members: [{ member, [type]: roles, reason, prio, added: Date.now() }],
       guild,
     });
@@ -51,7 +54,7 @@ const handleRoleUpdate = async (
   const existingEntry = MemberCache[MemberCache.findIndex((c) => c.member.id === member.id)];
   if (existingEntry) {
     existingEntry[type] = existingEntry[type]?.length
-      ? [...new Set([...(existingEntry[type] as bigint[]), ...roles])]
+      ? [...new Set([...(existingEntry[type] as string[]), ...roles])]
       : roles;
 
     return;
@@ -62,7 +65,10 @@ const handleRoleUpdate = async (
 
 export default roleManager;
 
-const runJob = async (guildID: bigint) => {
+const runJob = async (guildID: string) => {
+  const guild = client.guilds.cache.get(guildID);
+  if (!guild) return;
+
   const memberCache = GuildCache.get(guildID);
   if (!memberCache) return;
 
@@ -74,33 +80,27 @@ const runJob = async (guildID: bigint) => {
   const dateFilter = prioFilter.sort((a, b) => b.added - a.added);
   const memberData = dateFilter[0];
   const roles = memberData.addRoles?.length
-    ? [...memberData.member.roles, ...memberData.addRoles]
-    : memberData.member.roles;
-  const me = await client.helpers.getMember(memberCache.guild.id, client.id);
-  const clientHighestRole = me?.roles
-    .sort(
-      (a, b) =>
-        Number(memberCache.guild.roles.get(b)?.position) -
-        Number(memberCache.guild.roles.get(a)?.position),
-    )
+    ? [...memberData.member.roles.cache.map((r) => r), ...memberData.addRoles]
+    : memberData.member.roles.cache.map((r) => r);
+  const { me } = guild.members;
+  const clientHighestRole = me?.roles.cache
+    .sort((a, b) => b.position - a.position)
+    .map((r) => r)
     .shift();
   if (!clientHighestRole) return;
 
   const editedRoles = roles.filter((r) => {
-    const role = memberCache.guild.roles.get(r);
+    const role = typeof r === 'string' ? memberCache.guild.roles.cache.get(r) : r;
 
     if (!role) return false;
-    if (memberData.removeRoles?.includes(r)) return false;
-
-    if (Number(memberCache.guild.roles.get(clientHighestRole)?.position) < role.position) {
-      return false;
-    }
+    if (memberData.removeRoles?.includes(typeof r === 'string' ? r : r.id)) return false;
+    if (clientHighestRole.position < role.position) return false;
 
     return true;
   });
 
-  const roleAdd = await client.helpers
-    .editMember(memberData.member.guildId, memberData.member.id, {
+  const roleAdd = await memberData.member
+    .edit({
       roles: editedRoles,
     })
     .catch(() => null);
