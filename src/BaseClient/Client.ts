@@ -53,6 +53,29 @@ class CustomClient extends Discord.Client {
 }
 
 const client = new CustomClient({
+  shards: 'auto',
+  allowedMentions: {
+    parse: ['users'],
+    repliedUser: false,
+  },
+  partials: [
+    Discord.Partials.User,
+    Discord.Partials.Channel,
+    Discord.Partials.GuildMember,
+    Discord.Partials.Message,
+    Discord.Partials.Reaction,
+    Discord.Partials.Reaction,
+    Discord.Partials.GuildScheduledEvent,
+    Discord.Partials.ThreadMember,
+  ],
+  failIfNotExists: false,
+  presence: {
+    status: 'dnd',
+    afk: false,
+    activities: [
+      { name: 'Starting up!', type: Discord.ActivityType.Playing, url: Constants.standard.ytURL },
+    ],
+  },
   intents: [
     Discord.IntentsBitField.Flags.Guilds,
     Discord.IntentsBitField.Flags.GuildMembers,
@@ -71,6 +94,12 @@ const client = new CustomClient({
     Discord.IntentsBitField.Flags.AutoModerationConfiguration,
     Discord.IntentsBitField.Flags.AutoModerationExecution,
   ],
+  sweepers: {
+    messages: {
+      interval: 60,
+      lifetime: 1_209_600, // 14 days
+    },
+  },
 });
 
 await client.login(config.DISCORD_TOKEN);
