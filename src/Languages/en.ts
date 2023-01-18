@@ -12,8 +12,7 @@ const getUser = (user: Discord.User) =>
 const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
 
-const getMessage = (msg: CT.Message | Discord.Message) =>
-  `[Message](${client.ch.getJumpLink(msg)})\n`;
+const getMessage = (msg: Discord.Message) => `[Message](${client.ch.getJumpLink(msg)})\n`;
 
 const getChannel = (
   channel: Discord.GuildChannel | Discord.AnyThreadChannel | undefined,
@@ -939,7 +938,7 @@ export default {
       title: (channelType: string) => `${channelType} was deleted`,
     },
     channelPin: {
-      descDetails: (user: Discord.User, msg: Discord.GuildMessage) =>
+      descDetails: (user: Discord.User, msg: Discord.Message<true>) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\npinned [this Message](${client.ch.getJumpLink(
@@ -949,7 +948,7 @@ export default {
         }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
           msg.channel.id
         }\``,
-      desc: (msg: Discord.GuildMessage) =>
+      desc: (msg: Discord.Message<true>) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
@@ -960,7 +959,7 @@ export default {
       title: `Message was pinned`,
     },
     channelUnPin: {
-      descDetails: (user: Discord.User, msg: Discord.GuildMessage) =>
+      descDetails: (user: Discord.User, msg: Discord.Message<true>) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nunpinned [this Message](${client.ch.getJumpLink(
@@ -970,7 +969,7 @@ export default {
         }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
           msg.channel.id
         }\``,
-      desc: (msg: Discord.GuildMessage) =>
+      desc: (msg: Discord.Message<true>) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
@@ -1248,7 +1247,11 @@ export default {
     },
     messageReactionAdd: {
       title: `Message Reaction Added`,
-      description: (user: Discord.User, msg: CT.Message, reaction: CT.ReactionAdd) =>
+      description: (
+        user: Discord.User,
+        msg: Discord.Message<true>,
+        reaction: Discord.MessageReaction | Discord.PartialMessageReaction,
+      ) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nhas Reacted with\nEmoji \`${reaction.emoji.name}\` / \`${
@@ -1264,7 +1267,11 @@ export default {
     },
     messageReactionRemove: {
       title: `Message Reaction Removed`,
-      description: (user: Discord.User, reaction: CT.ReactionRemove, msg: CT.Message) =>
+      description: (
+        user: Discord.User,
+        reaction: Discord.MessageReaction | Discord.PartialMessageReaction,
+        msg: Discord.Message<true>,
+      ) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nhas removed their Reaction or had their Reaction removed of\nEmoji \`${
@@ -1287,7 +1294,7 @@ export default {
           guildId?: bigint;
           emoji: Discord.Emoji;
         },
-        msg: CT.Message,
+        msg: Discord.Message<true>,
       ) =>
         `All Users had their Reaction of\nEmoji \`${reaction.emoji.name}\` / \`${
           reaction.emoji.id
@@ -1342,7 +1349,7 @@ export default {
     },
     messageReactionRemoveAll: {
       title: `All Reactions Removed`,
-      description: (msg: CT.Message) =>
+      description: (msg: Discord.Message<true>) =>
         `All Reactions on\n[this Message](${client.ch.getJumpLink(
           msg,
         )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -1356,7 +1363,7 @@ export default {
     messageUpdate: {
       update: {
         title: `Message Update`,
-        contentUpdate: (msg: CT.Message) =>
+        contentUpdate: (msg: Discord.Message<true>) =>
           `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
             msg.author.id
           }\`\nhas updated their\n[Message](${client.ch.getJumpLink(
@@ -1364,7 +1371,7 @@ export default {
           )} "Click to jump to the Message")\nin\nChannel <#${msg.channel.id}> / \`${
             msg.channel.name
           }\` / \`${msg.channel.id}\``,
-        otherUpdates: (msg: CT.Message) =>
+        otherUpdates: (msg: Discord.Message<true>) =>
           `[This Message](${client.ch.getJumpLink(
             msg,
           )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -1385,7 +1392,7 @@ export default {
       },
       LogPublish: {
         title: `Message Published`,
-        description: (msg: CT.Message) =>
+        description: (msg: Discord.Message<true>) =>
           `[This Message](${client.ch.getJumpLink(
             msg,
           )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -2838,7 +2845,7 @@ export default {
     },
   },
   leveling: {
-    author: (msg: Discord.Message) =>
+    author: (msg: Discord.Message<true>) =>
       `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild.name}`,
     description: (reactions?: string) =>
       `${
@@ -2864,7 +2871,7 @@ export default {
     timedOut:
       "The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn't be determined\n**Proceed with Caution**",
     log: {
-      value: (msg: Discord.GuildMessage) =>
+      value: (msg: Discord.Message<true>) =>
         `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${msg.author.id}\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
       href: `Hyperlink Reference`,
       url: `URL`,
