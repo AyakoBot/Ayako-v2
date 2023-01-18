@@ -14,7 +14,7 @@ export default async (args: CT.ModBaseEventOptions) => {
   const language = await client.ch.languageSelector(guild.id);
 
   let action;
-  let embed: DDeno.Embed | undefined | null;
+  let embed: Discord.APIEmbed | undefined | null;
   let error;
   let dm;
 
@@ -107,7 +107,7 @@ export default async (args: CT.ModBaseEventOptions) => {
 };
 
 const declareSuccess = async (
-  embed: DDeno.Embed | undefined | null,
+  embed: Discord.APIEmbed | undefined | null,
   mExistedPreviously: boolean,
   language: CT.Language,
   args: CT.ModBaseEventOptions,
@@ -137,7 +137,7 @@ const declareSuccess = async (
 };
 
 const errorEmbed = async (
-  embed: DDeno.Embed | undefined | null,
+  embed: Discord.APIEmbed | undefined | null,
   language: CT.Language,
   mExistedPreviously: boolean,
   dm: void | DDeno.Message | null,
@@ -184,11 +184,11 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
   const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     color: con.color,
     author: {
       name: lan.author(args),
-      iconUrl: client.ch.getAvatarURL(args.target),
+      icon_url: client.ch.getAvatarURL(args.target),
       url: client.customConstants.standard.invite,
     },
     description: lan.description(args),
@@ -209,14 +209,14 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
   }
 
   const logchannels = await client.ch.getLogChannels('modlogs', {
-    guildId: (args.guild?.id ?? args.msg?.guildId ?? args.m?.guildId) as bigint,
+    guildId: (args.guild?.id ?? args.msg?.guild.id ?? args.m?.guild.id) as bigint,
   });
 
   if (logchannels && logchannels.length) {
     await client.ch.send(
       {
         id: logchannels,
-        guildId: (args.guild?.id ?? args.msg?.guildId ?? args.m?.guildId) as bigint,
+        guildId: (args.guild?.id ?? args.msg?.guild.id ?? args.m?.guild.id) as bigint,
       },
       { embeds: [embed] },
       language,
@@ -267,7 +267,7 @@ const loadingEmbed = (
 };
 
 const roleCheck = async (
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   mExistedPreviously: boolean,
   language: CT.Language,
   targetMember: DDeno.Member | null | undefined,
@@ -314,7 +314,7 @@ const roleCheck = async (
 };
 
 const checkSelfPunish = async (
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   mExistedPreviously: boolean,
   language: CT.Language,
   targetMember: DDeno.Member | null | undefined,
@@ -356,7 +356,7 @@ const checkSelfPunish = async (
 };
 
 const checkMePunish = async (
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   mExistedPreviously: boolean,
   language: CT.Language,
   targetMember: DDeno.Member | null | undefined,
@@ -397,7 +397,7 @@ const checkMePunish = async (
 };
 
 const checkPunishable = async (
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   mExistedPreviously: boolean,
   language: CT.Language,
   targetMember: DDeno.Member | null | undefined,
@@ -510,7 +510,7 @@ const doDM = async (
   const dmChannel = targetMember
     ? await client.helpers.getDmChannel(targetMember.id).catch(() => null)
     : null;
-  const DMembed: DDeno.Embed = {
+  const DMembed: Discord.APIEmbed = {
     color: con.color,
     author: {
       name: lan.dm.author(args),
@@ -527,7 +527,7 @@ const doDM = async (
 };
 
 const checkActionTaken = async (
-  embed: DDeno.Embed,
+  embed: Discord.APIEmbed,
   mExistedPreviously: boolean,
   language: CT.Language,
   targetMember: DDeno.Member | null | undefined,
@@ -693,7 +693,7 @@ const takeAction = async (
               const options: CT.ModBaseEventOptions = {
                 target: args.target,
                 reason: language.events.ready.unmute,
-                executor: await client.ch.cache.users.get(client.id),
+                executor: await client.users.fetch(client.id),
                 msg: args.msg,
                 guild: args.guild,
                 forceFinish: true,
@@ -782,7 +782,7 @@ const takeAction = async (
               const options: CT.ModBaseEventOptions = {
                 target: args.target,
                 reason: language.events.ready.unban,
-                executor: await client.ch.cache.users.get(client.id),
+                executor: await client.users.fetch(client.id),
                 msg: args.msg,
                 guild: args.guild,
                 forceFinish: true,
@@ -846,7 +846,7 @@ const takeAction = async (
                 const options: CT.ModBaseEventOptions = {
                   target: args.target,
                   reason: language.events.ready.channelunban,
-                  executor: await client.ch.cache.users.get(client.id),
+                  executor: await client.users.fetch(client.id),
                   msg: args.msg,
                   guild: args.guild,
                   channel: args.channel,
@@ -1043,7 +1043,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
 
       const insertArgs = extraInsertArgs
         ? [
-            row.guildid,
+            row.guild.id,
             row.userid,
             row.reason,
             row.uniquetimestamp,
@@ -1055,7 +1055,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
             ...extraInsertArgs,
           ]
         : [
-            row.guildid,
+            row.guild.id,
             row.userid,
             row.reason,
             row.uniquetimestamp,
@@ -1212,17 +1212,17 @@ const deleter = (args: CT.ModBaseEventOptions) => {
 
 const isModeratable = async (m: DDeno.Member | undefined | null) =>
   !m ||
-  ((await client.ch.hasGuildPermissions(m.guildId, m.id, ['Administrator'])) &&
-    (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
-    client.ch.hasGuildPermissions(m.guildId, m.id, ['ModerateMembers']));
+  ((await client.ch.hasGuildPermissions(m.guild.id, m.id, ['Administrator'])) &&
+    (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
+    client.ch.hasGuildPermissions(m.guild.id, m.id, ['ModerateMembers']));
 
 const isBannable = async (m: DDeno.Member | undefined | null) =>
   !m ||
-  ((await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
-    client.ch.hasGuildPermissions(m.guildId, m.id, ['BanMembers']));
+  ((await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
+    client.ch.hasGuildPermissions(m.guild.id, m.id, ['BanMembers']));
 
 const isManageable = async (c: DDeno.Channel) => {
-  if (await client.ch.hasGuildPermissions(c.guildId, client.me.id, ['Administrator'])) {
+  if (await client.ch.hasGuildPermissions(c.guild.id, client.me.id, ['Administrator'])) {
     return true;
   }
 
@@ -1234,5 +1234,5 @@ const isManageable = async (c: DDeno.Channel) => {
 
 const isKickable = async (m: DDeno.Member | null | undefined) =>
   m &&
-  (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guildId, m.id))) &&
-  client.ch.hasGuildPermissions(m.guildId, m.id, ['KickMembers']);
+  (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
+  client.ch.hasGuildPermissions(m.guild.id, m.id, ['KickMembers']);

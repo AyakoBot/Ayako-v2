@@ -9,21 +9,21 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
   const guild = await client.ch.cache.guilds.get(newStage.id);
   if (!guild) return;
 
-  const channel = await client.ch.cache.channels.get(oldStage.channelId, newStage.guildId);
+  const channel = await client.ch.cache.channels.get(oldStage.channelId, newStage.guild.id);
   if (!channel) return;
 
-  const language = await client.ch.languageSelector(newStage.guildId);
+  const language = await client.ch.languageSelector(newStage.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const audit = await client.ch.getAudit(guild, 84, newStage.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameStageUpdate,
-      iconUrl: con.StageUpdate,
+      icon_url: con.StageUpdate,
     },
     color: client.customConstants.colors.loading,
     description: auditUser
@@ -39,14 +39,14 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
       const oldScheduledEvent = oldStage.guildScheduledEventId
         ? await client.ch.cache.scheduledEvents.get(
             oldStage.guildScheduledEventId,
-            oldStage.guildId,
+            oldStage.guild.id,
           )
         : undefined;
 
       const newScheduledEvent = newStage.guildScheduledEventId
         ? await client.ch.cache.scheduledEvents.get(
             newStage.guildScheduledEventId,
-            newStage.guildId,
+            newStage.guild.id,
           )
         : undefined;
 
@@ -67,8 +67,8 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
       break;
     }
     case oldStage.channelId !== newStage.channelId: {
-      const oldChannel = await client.ch.cache.channels.get(oldStage.channelId, oldStage.guildId);
-      const newChannel = await client.ch.cache.channels.get(newStage.channelId, newStage.guildId);
+      const oldChannel = await client.ch.cache.channels.get(oldStage.channelId, oldStage.guild.id);
+      const newChannel = await client.ch.cache.channels.get(newStage.channelId, newStage.guild.id);
 
       merge(
         oldChannel
@@ -88,7 +88,7 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
   }
 
   client.ch.send(
-    { id: channels, guildId: oldStage.guildId },
+    { id: channels, guildId: oldStage.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

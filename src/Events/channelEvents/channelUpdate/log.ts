@@ -6,23 +6,23 @@ import client from '../../../BaseClient/Client.js';
 type PermissionsBitField = { id: bigint; type: number; allow: bigint; deny: bigint };
 
 export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
-  if (!channel.guildId) return;
+  if (!channel.guild.id) return;
 
   const channels = await client.ch.getLogChannels('channelevents', channel);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(channel.guildId);
+  const guild = await client.ch.cache.guilds.get(channel.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(channel.guildId);
+  const language = await client.ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const channelType = `${client.ch.getTrueChannelType(channel, guild)}Update`;
   let typeID = [10, 11, 12].includes(channel.type) ? 111 : 11;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con[channelType as keyof typeof con],
+      icon_url: con[channelType as keyof typeof con],
       name: lan.nameUpdate,
     },
     fields: [],
@@ -119,7 +119,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
     }
     case oldChannel.parentId !== channel.parentId: {
       const oldParent = oldChannel.parentId
-        ? await client.ch.cache.channels.get(oldChannel.parentId, oldChannel.guildId)
+        ? await client.ch.cache.channels.get(oldChannel.parentId, oldChannel.guild.id)
         : undefined;
       const parent = channel.parentId
         ? await client.ch.cache.channels.get(channel.parentId, channel.parentId)
@@ -170,7 +170,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
     }
     case JSON.stringify(oldChannel.permissionOverwrites) !==
       JSON.stringify(channel.permissionOverwrites): {
-      const permEmbed: DDeno.Embed = {
+      const permEmbed: Discord.APIEmbed = {
         color: client.customConstants.colors.loading,
         fields: [],
       };
@@ -343,7 +343,7 @@ export default async (channel: DDeno.Channel, oldChannel: DDeno.Channel) => {
     : lan.descUpdate(channel, language.channelTypes[channel.type]);
 
   client.ch.send(
-    { id: channels, guildId: channel.guildId },
+    { id: channels, guildId: channel.guild.id },
     { embeds: [embed] },
     language,
     undefined,

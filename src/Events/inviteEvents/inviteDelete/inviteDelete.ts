@@ -2,9 +2,9 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (payload: { channelId: bigint; guildId?: bigint; code: string }) => {
-  if (!payload.guildId) return;
+  if (!payload.guild.id) return;
 
-  const guild = await client.ch.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guild.id);
   if (!guild) return;
 
   const invite = client.ch.cache.invites.cache

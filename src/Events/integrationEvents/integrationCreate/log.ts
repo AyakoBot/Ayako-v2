@@ -5,19 +5,19 @@ export default async (integration: DDeno.Integration) => {
   const channels = await client.ch.getLogChannels('guildevents', integration);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(integration.guildId);
+  const guild = await client.ch.cache.guilds.get(integration.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(integration.guildId);
+  const language = await client.ch.languageSelector(integration.guild.id);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 80, integration.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.BotCreate,
+      icon_url: con.BotCreate,
       name: lan.nameCreate,
     },
     description: auditUser
@@ -131,7 +131,7 @@ export default async (integration: DDeno.Integration) => {
   );
 
   client.ch.send(
-    { id: channels, guildId: integration.guildId },
+    { id: channels, guildId: integration.guild.id },
     { embeds: [embed] },
     language,
     undefined,

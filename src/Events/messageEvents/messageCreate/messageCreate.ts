@@ -1,4 +1,4 @@
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
@@ -20,7 +20,7 @@ const getPaths = (msg: CT.Message) => {
 
   const paths = ['./commandHandler.js', './antivirus.js'];
 
-  if ('guildId' in msg && msg.guildId) {
+  if ('guildId' in msg && msg.guild.id) {
     paths.push(
       './disboard.js',
       './other.js',
@@ -45,16 +45,16 @@ export const convertMsg = async (m: DDeno.Message): Promise<CT.Message> => {
     | Promise<DDeno.Member | undefined>
     | Promise<CT.Language>
   )[] = [
-    m.guildId
-      ? client.ch.cache.channels.get(m.channelId, m.guildId)
+    m.guild.id
+      ? client.ch.cache.channels.get(m.channelId, m.guild.id)
       : client.helpers.getDmChannel(m.authorId),
-    client.ch.cache.users.get(m.authorId),
-    client.ch.languageSelector('guildId' in msg ? msg.guildId : undefined),
+    client.users.cache.get(m.authorId),
+    client.ch.languageSelector('guildId' in msg ? msg.guild.id : undefined),
   ];
 
-  if ('guildId' in msg && msg.guildId) {
-    fetchArray.push(client.ch.cache.guilds.get(msg.guildId));
-    fetchArray.push(client.ch.cache.members.get(m.authorId, msg.guildId));
+  if ('guildId' in msg && msg.guild.id) {
+    fetchArray.push(client.ch.cache.guilds.get(msg.guild.id));
+    fetchArray.push(client.ch.cache.members.get(m.authorId, msg.guild.id));
   }
 
   const [channel, author, language, guild, member] = await Promise.all(fetchArray);

@@ -13,9 +13,9 @@ export default async (emoji: DDeno.DiscordEmoji, guild: DDeno.Guild) => {
   const con = client.customConstants.events.logs.emoji;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.create,
+      icon_url: con.create,
       name: lan.emojiCreate,
     },
     description: emote.user

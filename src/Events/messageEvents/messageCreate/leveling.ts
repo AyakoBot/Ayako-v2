@@ -1,6 +1,6 @@
 import jobs from 'node-schedule';
 import StringSimilarity from 'string-similarity';
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import ChannelRules, { ActivityFlags } from '../../../BaseClient/Other/ChannelRules';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
@@ -115,7 +115,7 @@ const guildLeveling = async (msg: CT.MessageGuild) => {
     .query(`SELECT * FROM level WHERE type = $1 AND userid = $2 AND guildid = $3;`, [
       'guild',
       String(msg.authorId),
-      String(msg.guildId),
+      String(msg.guild.id),
     ])
     .then((r: DBT.level[] | null) => (r ? r[0] : null));
 
@@ -151,7 +151,7 @@ const insertLevels = (
       String(msg.authorId),
       Math.floor(Math.random() * baseXP + 10) * xpMultiplier,
       0,
-      type === 'guild' ? String(msg.guildId) : 1,
+      type === 'guild' ? String(msg.guild.id) : 1,
     ],
   );
 
@@ -194,7 +194,7 @@ const updateLevels = async (
   if (type === 'guild') {
     client.ch.query(
       `UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4 AND guildid = $5;`,
-      [newLevel, xp, type, String(msg.authorId), String(msg.guildId)],
+      [newLevel, xp, type, String(msg.authorId), String(msg.guild.id)],
     );
   } else {
     client.ch.query(`UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4;`, [
@@ -208,7 +208,7 @@ const updateLevels = async (
 
 const checkEnabled = async (msg: CT.MessageGuild) =>
   client.ch
-    .query(`SELECT * FROM leveling WHERE guildid = $1 AND active = true;`, [String(msg.guildId)])
+    .query(`SELECT * FROM leveling WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
 
 const levelUp = async (
@@ -242,7 +242,7 @@ const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: num
   if (!msg.member) return;
 
   const levelingrolesRow = await client.ch
-    .query(`SELECT * FROM levelingroles WHERE guildid = $1;`, [String(msg.guildId)])
+    .query(`SELECT * FROM levelingroles WHERE guildid = $1;`, [String(msg.guild.id)])
     .then((r: DBT.levelingroles[] | null) => r || null);
 
   if (!levelingrolesRow) return;
@@ -354,7 +354,7 @@ const doEmbed = async (
     oldLevel: number;
   },
 ) => {
-  const getDefaultEmbed = async (): Promise<DDeno.Embed> => ({
+  const getDefaultEmbed = async (): Promise<Discord.APIEmbed> => ({
     author: {
       name: msg.language.leveling.author(msg),
     },
@@ -378,7 +378,7 @@ const doEmbed = async (
     const customembedRow = await client.ch
       .query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1 AND guildid = $2;`, [
         settinsgrow.embed,
-        String(msg.guildId),
+        String(msg.guild.id),
       ])
       .then((r: DBT.customembeds[] | null) => (r ? r[0] : null));
 
@@ -426,7 +426,7 @@ const send = async (msg: CT.MessageGuild, payload: DDeno.CreateMessage, row: DBT
 
 const getRulesRes = async (msg: CT.MessageGuild) => {
   const levelingruleschannelsRows = await client.ch
-    .query(`SELECT * FROM levelingruleschannels WHERE guildid = $1;`, [String(msg.guildId)])
+    .query(`SELECT * FROM levelingruleschannels WHERE guildid = $1;`, [String(msg.guild.id)])
     .then((r: DBT.levelingruleschannels[] | null) => r || null);
 
   if (!levelingruleschannelsRows) return null;
@@ -583,7 +583,7 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
 const getRoleMultiplier = async (msg: CT.MessageGuild) => {
   const levelingmultiplierrolesRows = await client.ch
     .query(`SELECT * FROM levelingmultiplierroles WHERE guildid = $1 ORDER BY multiplier DESC;`, [
-      String(msg.guildId),
+      String(msg.guild.id),
     ])
     .then((r: DBT.levelingmultiplierroles[] | null) => r || null);
 
@@ -602,7 +602,7 @@ const getChannelMultiplier = async (msg: CT.MessageGuild) => {
   const allRows = await client.ch
     .query(
       `SELECT * FROM levelingmultiplierchannels WHERE guildid = $1 ORDER BY multiplier DESC;`,
-      [String(msg.guildId)],
+      [String(msg.guild.id)],
     )
     .then((r: DBT.levelingmultiplierchannels[] | null) => r || null);
 
@@ -616,8 +616,8 @@ const getChannelMultiplier = async (msg: CT.MessageGuild) => {
 };
 
 const infoEmbed = async (msg: CT.MessageGuild, reactions: DDeno.Emoji[] | null) => {
-  const embed: DDeno.Embed = {
-    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
+  const embed: Discord.APIEmbed = {
+    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
     description: msg.language.leveling.description(reactions?.join('')),
   };
 

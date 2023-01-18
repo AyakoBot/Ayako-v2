@@ -2,7 +2,7 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (reaction: CT.ReactionRemove) => {
-  if (!reaction.guildId) return;
+  if (!reaction.guild.id) return;
 
   const files: { default: (t: CT.ReactionRemove) => void }[] = await Promise.all(
     ['./reactionRoles.js', './log.js'].map((p) => import(p)),
@@ -11,7 +11,7 @@ export default async (reaction: CT.ReactionRemove) => {
   const message = await client.ch.cache.messages.get(
     reaction.messageId,
     reaction.channelId,
-    reaction.guildId,
+    reaction.guild.id,
   );
   if (!message) return;
 
@@ -19,13 +19,13 @@ export default async (reaction: CT.ReactionRemove) => {
   if (!ident) return;
 
   const reactions = await client.ch.getReactions(message, reaction.channelId, ident);
-  reactions.forEach((r) => client.ch.cache.users.set(r));
+  reactions.forEach((r) => client.users.cache.set(r));
 
   client.ch.cache.reactions.set(
     { users: reactions.map((u) => u.id), emoji: reaction.emoji },
     reaction.messageId,
     reaction.channelId,
-    reaction.guildId,
+    reaction.guild.id,
   );
 
   files.forEach((f) => f.default(reaction));

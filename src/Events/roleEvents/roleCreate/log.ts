@@ -6,22 +6,22 @@ export default async (role: DDeno.Role) => {
   const channels = await client.ch.getLogChannels('roleevents', role);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(role.guildId);
+  const guild = await client.ch.cache.guilds.get(role.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(role.guildId);
+  const language = await client.ch.languageSelector(role.guild.id);
   const lan = language.events.logs.role;
   const con = client.customConstants.events.logs.role;
   const audit = role.botId ? undefined : await client.ch.getAudit(guild, 30, role.id);
-  let auditUser = role.botId ? await client.ch.cache.users.get(role.botId) : undefined;
+  let auditUser = role.botId ? await client.users.fetch(role.botId) : undefined;
   const files: DDeno.FileContent[] = [];
 
   if (!auditUser && audit && audit.userId) {
-    auditUser = await client.ch.cache.users.get(audit.userId);
+    auditUser = await client.users.fetch(audit.userId);
   }
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.create,
+      icon_url: con.create,
       name: lan.nameCreate,
     },
     description: auditUser ? lan.descCreateAudit(auditUser, role) : lan.descCreate(role),
@@ -30,7 +30,7 @@ export default async (role: DDeno.Role) => {
   };
 
   if (role.icon) {
-    const url = client.customConstants.standard.roleIconURL(role);
+    const url = client.customConstants.standard.roleicon_url(role);
     const attachments = (await client.ch.fileURL2Blob([url])).filter(
       (
         e,
@@ -82,7 +82,7 @@ export default async (role: DDeno.Role) => {
     });
   }
 
-  const permEmbed: DDeno.Embed = {
+  const permEmbed: Discord.APIEmbed = {
     color: client.customConstants.colors.ephemeral,
     description: Object.entries(new Discord.PermissionsBitField(role.permissions).serialize(false))
       .map(
@@ -95,7 +95,7 @@ export default async (role: DDeno.Role) => {
   };
 
   client.ch.send(
-    { id: channels, guildId: role.guildId },
+    { id: channels, guildId: role.guild.id },
     { embeds: [embed, permEmbed], files },
     language,
     undefined,

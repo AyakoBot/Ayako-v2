@@ -6,11 +6,11 @@ export default async (user: DDeno.User) => {
   if (!members?.length) return;
 
   const guilds = (
-    await Promise.all(members.map((m) => client.ch.cache.guilds.get(m.guildId)))
+    await Promise.all(members.map((m) => client.ch.cache.guilds.get(m.guild.id)))
   ).filter((g): g is DDeno.Guild => !!g);
 
-  const cached = client.ch.cache.users.cache.get(user.id);
-  client.ch.cache.users.set(user);
+  const cached = client.users.cache.cache.get(user.id);
+  client.users.cache.set(user);
 
   const files: {
     default: (t: DDeno.User, r: DDeno.User | undefined, g: DDeno.Guild[]) => void;

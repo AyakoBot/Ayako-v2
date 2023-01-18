@@ -8,15 +8,15 @@ export default async (
   const channels = await client.ch.getLogChannels('guildevents', payload);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(payload.guildId);
+  const language = await client.ch.languageSelector(payload.guild.id);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 82, payload.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
   let description = '';
 
   if (auditUser && integration) {
@@ -29,9 +29,9 @@ export default async (
     description = lan.descDelete(payload.applicationId, payload.id);
   }
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.BotDelete,
+      icon_url: con.BotDelete,
       name: lan.nameDelete,
     },
     description,
@@ -145,7 +145,7 @@ export default async (
   }
 
   client.ch.send(
-    { id: channels, guildId: payload.guildId },
+    { id: channels, guildId: payload.guild.id },
     { embeds: [embed] },
     language,
     undefined,

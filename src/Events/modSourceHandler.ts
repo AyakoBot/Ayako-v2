@@ -8,7 +8,7 @@ export default async (
   source: string,
   m?: CT.MessageGuild | null,
   settings?: DBT.antivirus,
-  embed?: DDeno.Embed,
+  embed?: Discord.APIEmbed,
 ) => {
   let minimizeTimeout = 0;
   let deleteTimeout = 0;

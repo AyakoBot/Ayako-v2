@@ -138,12 +138,12 @@ const cache: {
       return fetched?.find((f) => f.id === id);
     },
     set: (webhook) => {
-      if (!cache.webhooks.cache.get(webhook.guildId)?.get(webhook.channelId)) {
-        cache.webhooks.cache.get(webhook.guildId)?.set(webhook.channelId, new Map());
+      if (!cache.webhooks.cache.get(webhook.guild.id)?.get(webhook.channelId)) {
+        cache.webhooks.cache.get(webhook.guild.id)?.set(webhook.channelId, new Map());
       }
 
       if (webhook.channelId) {
-        cache.webhooks.cache.get(webhook.guildId)?.get(webhook.channelId)?.set(webhook.id, webhook);
+        cache.webhooks.cache.get(webhook.guild.id)?.get(webhook.channelId)?.set(webhook.id, webhook);
       }
     },
     find: (id) =>
@@ -154,18 +154,18 @@ const cache: {
         ?.get(id),
     delete: (id) => {
       const cached = cache.webhooks.find(id);
-      if (!cached || !cached.guildId || !cached.channelId) return;
+      if (!cached || !cached.guild.id || !cached.channelId) return;
 
-      if (cache.webhooks.cache.get(cached.guildId)?.size === 1) {
-        if (cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
-          cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.clear();
+      if (cache.webhooks.cache.get(cached.guild.id)?.size === 1) {
+        if (cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.size === 1) {
+          cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.clear();
         } else {
-          cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
+          cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.delete(id);
         }
-      } else if (cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
-        cache.webhooks.cache.get(cached.guildId)?.delete(cached.channelId);
+      } else if (cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.size === 1) {
+        cache.webhooks.cache.get(cached.guild.id)?.delete(cached.channelId);
       } else {
-        cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
+        cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.delete(id);
       }
     },
     cache: new Map(),

@@ -81,12 +81,12 @@ export const getPrefix = async (msg: CT.Message) => {
 };
 
 const getCustomPrefix = async (msg: CT.Message) => {
-  if (!('guildId' in msg) || !msg.guildId) return undefined;
+  if (!('guildId' in msg) || !msg.guild.id) return undefined;
 
   return client.ch
     .query(
       'SELECT prefix FROM guildsettings WHERE guildid = $1;',
-      [String(msg.guildId)],
+      [String(msg.guild.id)],
       msg.authorId === 564052925828038658n,
     )
     .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
@@ -124,8 +124,8 @@ export const getCommand = async (args: string[]) => {
 };
 
 const getGuildAllowed = (msg: CT.MessageGuild, command: CT.Command) => {
-  if (!msg.guildId) return true;
-  if (command.thisGuildOnly && !command.thisGuildOnly?.includes(msg.guildId)) return false;
+  if (!msg.guild.id) return true;
+  if (command.thisGuildOnly && !command.thisGuildOnly?.includes(msg.guild.id)) return false;
   return true;
 };
 
@@ -133,7 +133,7 @@ const getCommandIsDisabled = async (msg: CT.MessageGuild, command: CT.Command) =
   const getDisabledRows = async () =>
     client.ch
       .query('SELECT * FROM disabledcommands WHERE guildid = $1 AND active = true;', [
-        String(msg.guildId),
+        String(msg.guild.id),
       ])
       .then((r: DBT.disabledcommands[] | null) => r || null);
 
@@ -176,7 +176,7 @@ type clEntry = { job: jobs.Job; channel: DDeno.Channel; expire: number; command:
 const cooldowns: clEntry[] = [];
 
 const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
-  if (!msg.guildId) return false;
+  if (!msg.guild.id) return false;
 
   const onCooldown = (cl: clEntry) => {
     const getEmote = (secondsLeft: number) => {
@@ -226,7 +226,7 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
   const getCooldownRows = async () =>
     client.ch
       .query(`SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2;`, [
-        String(msg.guildId),
+        String(msg.guild.id),
         command.name,
       ])
       .then((r: DBT.cooldowns[] | null) => r || null);

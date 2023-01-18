@@ -17,7 +17,7 @@ export default (error: Error) => {
 
   if (!error) return;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: ['```js', error.stack, '```'].join(`\n`),
     timestamp: Date.now(),
     footer: {

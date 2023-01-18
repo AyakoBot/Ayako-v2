@@ -5,7 +5,7 @@ export default async (thread: DDeno.Channel) => {
   if (!thread.parentId) return;
 
   const cached = client.ch.cache.threads.cache
-    .get(thread.guildId)
+    .get(thread.guild.id)
     ?.get(thread.parentId)
     ?.get(thread.id);
   client.ch.cache.threads.set(thread);

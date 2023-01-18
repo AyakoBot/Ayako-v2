@@ -3,32 +3,32 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (reaction: CT.ReactionAdd) => {
-  if (!reaction.guildId) return;
+  if (!reaction.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guildId });
+  const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guild.id });
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(reaction.guildId);
+  const guild = await client.ch.cache.guilds.get(reaction.guild.id);
   if (!guild) return;
 
-  const user = await client.ch.cache.users.get(reaction.userId);
+  const user = await client.users.fetch(reaction.userId);
   if (!user) return;
 
   const msg = await client.ch.cache.messages.get(
     reaction.messageId,
     reaction.channelId,
-    reaction.guildId,
+    reaction.guild.id,
   );
   if (!msg) return;
 
-  const language = await client.ch.languageSelector(reaction.guildId);
+  const language = await client.ch.languageSelector(reaction.guild.id);
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.create,
+      icon_url: con.create,
       name: lan.nameAdd,
     },
     description: lan.descAdded(reaction.emoji, user, msg),
@@ -37,7 +37,7 @@ export default async (reaction: CT.ReactionAdd) => {
   };
 
   const reactions = client.ch.cache.reactions.cache
-    .get(reaction.guildId)
+    .get(reaction.guild.id)
     ?.get(reaction.channelId)
     ?.get(reaction.messageId);
 
@@ -82,7 +82,7 @@ export default async (reaction: CT.ReactionAdd) => {
   }
 
   await client.ch.send(
-    { id: channels, guildId: reaction.guildId },
+    { id: channels, guildId: reaction.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

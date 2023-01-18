@@ -36,7 +36,7 @@ export default async (msg: CT.MessageGuild) => {
     return;
   }
 
-  const me = await client.ch.cache.members.get(client.id, msg.guildId);
+  const me = await client.ch.cache.members.get(client.id, msg.guild.id);
   if (!me) return;
 
   messageCache.push({
@@ -149,7 +149,7 @@ const getPunishment = async (msg: CT.MessageGuild, warns: number) =>
   client.ch
     .query(
       `SELECT * FROM antispampunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
-      [String(msg.guildId), warns],
+      [String(msg.guild.id), warns],
     )
     .then((r: DBT.BasicPunishmentsTable[] | null) => (r ? r[0] : null));
 
@@ -193,6 +193,6 @@ const getSettings = async (msg: CT.MessageGuild) =>
   client.ch
     .query(
       'SELECT * FROM antispam WHERE guildid = $1 AND active = true AND forcedisabled = false;',
-      [String(msg.guildId)],
+      [String(msg.guild.id)],
     )
     .then((r: DBT.antispam[] | null) => (r ? r[0] : null));

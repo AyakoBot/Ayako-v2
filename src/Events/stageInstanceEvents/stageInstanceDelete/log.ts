@@ -8,21 +8,21 @@ export default async (stage: DDeno.StageInstance) => {
   const guild = await client.ch.cache.guilds.get(stage.id);
   if (!guild) return;
 
-  const channel = await client.ch.cache.channels.get(stage.channelId, stage.guildId);
+  const channel = await client.ch.cache.channels.get(stage.channelId, stage.guild.id);
   if (!channel) return;
 
-  const language = await client.ch.languageSelector(stage.guildId);
+  const language = await client.ch.languageSelector(stage.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const audit = await client.ch.getAudit(guild, 83, stage.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameStageDelete,
-      iconUrl: con.StageDelete,
+      icon_url: con.StageDelete,
     },
     color: client.customConstants.colors.loading,
     description: auditUser
@@ -33,7 +33,7 @@ export default async (stage: DDeno.StageInstance) => {
   if (stage.guildScheduledEventId) {
     const scheduledEvent = await client.ch.cache.scheduledEvents.get(
       stage.guildScheduledEventId,
-      stage.guildId,
+      stage.guild.id,
     );
 
     embed.fields?.push({
@@ -52,7 +52,7 @@ export default async (stage: DDeno.StageInstance) => {
   }
 
   if (stage.channelId) {
-    const ch = await client.ch.cache.channels.get(stage.channelId, stage.guildId);
+    const ch = await client.ch.cache.channels.get(stage.channelId, stage.guild.id);
 
     embed.fields?.push({
       name: lan.topic,
@@ -63,7 +63,7 @@ export default async (stage: DDeno.StageInstance) => {
   }
 
   client.ch.send(
-    { id: channels, guildId: stage.guildId },
+    { id: channels, guildId: stage.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

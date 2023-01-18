@@ -5,7 +5,7 @@ export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
   const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(invite.guildId);
+  const language = await client.ch.languageSelector(invite.guild.id);
   const lan = language.events.logs.invite;
   const con = client.customConstants.events.logs.invite;
   const audit = await client.ch.getAudit(
@@ -15,11 +15,11 @@ export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
     (i: DDeno.AuditLogEntry) => i.changes?.find((c) => c.key === 'code')?.new === invite.code,
   );
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.delete,
+      icon_url: con.delete,
       name: lan.nameDelete,
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, invite) : lan.descDelete(invite),
@@ -54,10 +54,10 @@ export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
     });
   }
 
-  if (invite.channelId && invite.guildId) {
+  if (invite.channelId && invite.guild.id) {
     const channel = await client.ch.cache.channels.get(
       BigInt(invite.channelId),
-      BigInt(invite.guildId),
+      BigInt(invite.guild.id),
     );
 
     if (channel) {

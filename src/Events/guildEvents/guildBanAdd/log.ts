@@ -11,11 +11,11 @@ export default async (user: DDeno.User, guild: DDeno.Guild) => {
   const audit = await client.ch.getAudit(guild, 22, user.id);
   const ban = await client.helpers.getBan(guild.id, user.id);
   const auditUser =
-    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.BanCreate,
+      icon_url: con.BanCreate,
       name: lan.ban,
     },
     description: auditUser ? lan.descBanAudit(user, auditUser) : lan.descBan(user),

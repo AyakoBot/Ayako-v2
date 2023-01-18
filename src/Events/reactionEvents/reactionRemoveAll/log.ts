@@ -12,30 +12,30 @@ export default async (
     }
   >,
 ) => {
-  if (!payload.guildId) return;
+  if (!payload.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('reactionevents', { guildId: payload.guildId });
+  const channels = await client.ch.getLogChannels('reactionevents', { guildId: payload.guild.id });
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(payload.guildId);
+  const language = await client.ch.languageSelector(payload.guild.id);
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameRemoveAll,
-      iconUrl: con.remove,
+      icon_url: con.remove,
       url: client.ch.getJumpLink({
         id: payload.messageId,
         channelId: payload.channelId,
-        guildId: payload.guildId,
+        guildId: payload.guild.id,
       }),
     },
     description: lan.descRemovedAll({
       id: payload.messageId,
       channelId: payload.channelId,
-      guildId: payload.guildId,
+      guildId: payload.guild.id,
     } as DDeno.Message),
     color: client.customConstants.colors.warning,
     fields: [],
@@ -66,7 +66,7 @@ export default async (
   }
 
   client.ch.send(
-    { id: channels, guildId: payload.guildId },
+    { id: channels, guildId: payload.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

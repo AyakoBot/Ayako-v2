@@ -61,7 +61,7 @@ class SlashCommandCollector extends EventEmitter {
   }
 
   handleGuildDeletion(guild: Discord.Guild) {
-    if ('guild' in this.channel && guild.id === this.channel.guildId) {
+    if ('guild' in this.channel && guild.id === this.channel.guild.id) {
       this.stop('guildDelete');
     }
   }

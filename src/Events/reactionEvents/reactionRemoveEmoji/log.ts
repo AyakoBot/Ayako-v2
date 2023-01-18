@@ -14,26 +14,26 @@ export default async (
     emoji: DDeno.Emoji;
   },
 ) => {
-  if (!reaction.guildId) return;
+  if (!reaction.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guildId });
+  const channels = await client.ch.getLogChannels('reactionevents', { guildId: reaction.guild.id });
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(reaction.guildId);
+  const language = await client.ch.languageSelector(reaction.guild.id);
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
   const files: DDeno.FileContent[] = [];
   const msg = await client.ch.cache.messages.get(
     reaction.messageId,
     reaction.channelId,
-    reaction.guildId,
+    reaction.guild.id,
   );
   if (!msg) return;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameRemoveEmoji,
-      iconUrl: con.remove,
+      icon_url: con.remove,
       url: client.ch.getJumpLink(msg),
     },
     description: lan.descRemoveEmoji(msg, reaction.emoji),
@@ -78,7 +78,7 @@ export default async (
   }
 
   await client.ch.send(
-    { id: channels, guildId: reaction.guildId },
+    { id: channels, guildId: reaction.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

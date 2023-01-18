@@ -2,13 +2,13 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (payload: { guildId: bigint }) => {
-  const guild = await client.ch.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guild.id);
   if (!guild) return;
 
-  const newIntegrations = await client.helpers.getIntegrations(payload.guildId);
+  const newIntegrations = await client.helpers.getIntegrations(payload.guild.id);
   if (!newIntegrations) return;
 
-  const oldIntegrations = client.ch.cache.integrations.cache.get(payload.guildId);
+  const oldIntegrations = client.ch.cache.integrations.cache.get(payload.guild.id);
   if (!oldIntegrations) return;
 
   const changedInteraction = client.ch.getChanged(

@@ -2,10 +2,10 @@ import type * as Discord from 'discord.js';
 import client from '../../BaseClient/Client.js';
 
 export default async (payload: { channelId: bigint; guildId: bigint }) => {
-  const oldWebhooks = client.ch.cache.webhooks.cache.get(payload.guildId)?.get(payload.channelId);
+  const oldWebhooks = client.ch.cache.webhooks.cache.get(payload.guild.id)?.get(payload.channelId);
   const newWebhooks = await client.helpers.getChannelWebhooks(payload.channelId);
 
-  client.ch.cache.webhooks.cache.get(payload.guildId)?.delete(payload.channelId);
+  client.ch.cache.webhooks.cache.get(payload.guild.id)?.delete(payload.channelId);
   newWebhooks.forEach((w) => {
     client.ch.cache.webhooks.set(w);
   });

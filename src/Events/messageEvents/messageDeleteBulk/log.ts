@@ -6,9 +6,9 @@ export default async (msgs: DDeno.Message[], guild: DDeno.Guild) => {
   if (!channels) return;
 
   const identMsg = msgs[0];
-  if (!identMsg.guildId) return;
+  if (!identMsg.guild.id) return;
 
-  const channel = await client.ch.cache.channels.get(identMsg.channelId, identMsg.guildId);
+  const channel = await client.ch.cache.channels.get(identMsg.channelId, identMsg.guild.id);
   if (!channel) return;
 
   const language = await client.ch.languageSelector(guild.id);
@@ -16,11 +16,11 @@ export default async (msgs: DDeno.Message[], guild: DDeno.Guild) => {
   const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 73, channel.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.delete,
+      icon_url: con.delete,
       name: lan.nameDelete,
     },
     description: auditUser
@@ -40,6 +40,6 @@ export default async (msgs: DDeno.Message[], guild: DDeno.Guild) => {
         me?: DDeno.Message,
         u?: DDeno.User,
       ) => void
-    )(client, { id: m.id, channelId: m.channelId, guildId: m.guildId }, m, auditUser),
+    )(client, { id: m.id, channelId: m.channelId, guildId: m.guild.id }, m, auditUser),
   );
 };

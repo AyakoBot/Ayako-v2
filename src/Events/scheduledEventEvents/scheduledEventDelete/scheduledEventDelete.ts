@@ -3,7 +3,7 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (event: DDeno.ScheduledEvent) => {
-  const cache = client.ch.cache.scheduledEvents.cache.get(event.guildId)?.get(event.id);
+  const cache = client.ch.cache.scheduledEvents.cache.get(event.guild.id)?.get(event.id);
   if (cache) event = cache;
 
   client.ch.cache.scheduledEvents.delete(event.id);

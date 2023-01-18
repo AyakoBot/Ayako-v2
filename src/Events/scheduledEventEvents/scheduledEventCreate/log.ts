@@ -6,18 +6,18 @@ export default async (event: CT.ScheduledEvent) => {
   const channels = await client.ch.getLogChannels('scheduledevents', event);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(event.guildId);
+  const guild = await client.ch.cache.guilds.get(event.guild.id);
   if (!guild) return;
 
   const channel = event.channelId
-    ? await client.ch.cache.channels.get(event.channelId, event.guildId)
+    ? await client.ch.cache.channels.get(event.channelId, event.guild.id)
     : undefined;
-  const language = await client.ch.languageSelector(event.guildId);
+  const language = await client.ch.languageSelector(event.guild.id);
   const lan = language.events.logs.scheduledEvent;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 102, event.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
   const files: DDeno.FileContent[] = [];
   let description = '';
 
@@ -36,10 +36,10 @@ export default async (event: CT.ScheduledEvent) => {
     description = lan.descCreate(event);
   }
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameCreate,
-      iconUrl: con.ScheduledEventCreate,
+      icon_url: con.ScheduledEventCreate,
     },
     color: client.customConstants.colors.warning,
     description,
@@ -93,7 +93,7 @@ export default async (event: CT.ScheduledEvent) => {
   }
 
   if (event.creator) {
-    const creator = event.creator ?? (await client.ch.cache.users.get(event.creatorId));
+    const creator = event.creator ?? (await client.users.fetch(event.creatorId));
 
     embed.fields?.push({
       name: lan.creator,
@@ -122,7 +122,7 @@ export default async (event: CT.ScheduledEvent) => {
   }
 
   client.ch.send(
-    { id: channels, guildId: event.guildId },
+    { id: channels, guildId: event.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

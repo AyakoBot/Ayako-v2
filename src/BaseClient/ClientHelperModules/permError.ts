@@ -12,7 +12,7 @@ export default async (
   me?: boolean,
 ) => {
   if (!msg) return;
-  if (!msg.guildId) return;
+  if (!msg.guild.id) return;
   if (typeof bits === 'number') bits = BigInt(bits);
 
   const clientMember = msg.guild?.members.me;

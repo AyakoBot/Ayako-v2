@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (rule: DDeno.AutoModerationRule) => {
-  if (!rule.guildId) return;
+  if (!rule.guild.id) return;
 
   const cached = client.ch.cache.automodRules.find(rule.id);
   client.ch.cache.automodRules.set(rule);

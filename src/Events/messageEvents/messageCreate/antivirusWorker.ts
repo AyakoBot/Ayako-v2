@@ -240,7 +240,7 @@ const run = async ({
     parentPort?.postMessage({
       type: 'send',
       content: `${util.makeCodeBlock(linkObject.baseURLhostname)}\n${getJumpLink({
-        guildId: msgData.guildid,
+        guildId: msgData.guild.id,
         channelId: msgData.channelid,
         id: msgData.msgid,
       })}`,
@@ -264,7 +264,7 @@ const run = async ({
     parentPort?.postMessage({
       type: 'send',
       content: `${util.makeCodeBlock(linkObject.hostname)}\n${getJumpLink({
-        guildId: msgData.guildid,
+        guildId: msgData.guild.id,
         channelId: msgData.channelid,
         id: msgData.msgid,
       })}`,

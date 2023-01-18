@@ -1,7 +1,7 @@
 import client from '../../BaseClient/Client.js';
 
 export default async (payload: { token: string; endpoint?: string; guildId: bigint }) => {
-  const guild = await client.ch.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guild.id);
   if (!guild) return;
 
   const files: {

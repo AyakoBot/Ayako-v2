@@ -11,7 +11,7 @@ export default async (user: DDeno.User, oldUser: DDeno.User | undefined, guilds:
     const language = await client.ch.languageSelector(g.id);
     const lan = language.events.logs.userUpdate;
 
-    const embed: DDeno.Embed = {
+    const embed: Discord.APIEmbed = {
       author: {
         name: lan.name,
         url: client.customConstants.standard.appURL(user),
@@ -71,14 +71,14 @@ export default async (user: DDeno.User, oldUser: DDeno.User | undefined, guilds:
         break;
       }
       case user.premiumType !== oldUser?.premiumType: {
-        let premiumType = oldUser?.premiumType ? lan.PremiumTypes[oldUser.premiumType] : undefined;
+        let premiumType = oldUser?.premiumType ? lan.premiumTypes[oldUser.premiumType] : undefined;
         if (!premiumType) premiumType = oldUser ? language.none : language.unknown;
 
         merge(
           premiumType,
-          user.premiumType ? lan.PremiumTypes[user.premiumType] : language.none,
+          user.premiumType ? lan.premiumTypes[user.premiumType] : language.none,
           'string',
-          lan.PremiumTypes.name,
+          lan.premiumTypesName,
         );
         break;
       }

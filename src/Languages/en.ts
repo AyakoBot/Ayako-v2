@@ -706,8 +706,8 @@ export default {
         flags: 'Badges',
         discriminator: 'Tag',
         username: 'Username',
-        PremiumTypes: {
-          name: 'Premium Type',
+        premiumTypesName: 'Premium Type',
+        premiumTypes: {
           0: 'None',
           1: 'Nitro Classic',
           2: 'Nitro',
@@ -725,16 +725,16 @@ export default {
         matchedKeyword: 'Matched Keyword',
         matchedContent: 'Matched Content',
         content: 'Content',
+        ruleTriggerTypeName: 'Rule Trigger Type',
         ruleTriggerType: {
-          0: 'Rule Trigger Type',
           1: 'Keyword Filter',
           2: 'Harmful Link Filter',
           3: 'Spam Filter',
           4: 'Keyword Preset Filter',
           5: 'Mention Spam Filter',
         },
+        actionTypeName: 'Action Type',
         actionType: {
-          0: 'Action Type',
           1: 'Block Message',
           2: 'Send Alert Message',
           3: 'Timeout',
@@ -752,8 +752,8 @@ export default {
           `${getUser(user)}updated\n${getAutoModerationRule(rule)}`,
         name: 'Auto-Moderation Rule created',
         keywordFilter: 'Triggering Keywords',
+        presetsName: 'Used Preset',
         presets: {
-          0: 'Used Preset',
           1: 'Profanity',
           2: 'Sexual Content',
           3: 'Slurs',
@@ -761,12 +761,12 @@ export default {
         allowList: 'Allowed Words',
         mentionTotalLimit: 'Mention Limit',
         enabled: 'Enabled',
+        eventTypeName: 'Event Type',
         eventType: {
-          0: 'Event Type',
           1: 'Message Send',
         },
+        triggerTypeName: 'Trigger Type',
         triggerType: {
-          0: 'Trigger Type',
           1: 'Keyword',
           2: 'Harmful Link',
           3: 'Spam',
@@ -775,8 +775,8 @@ export default {
         },
         exemptRoles: 'Exempt Roles',
         exemptChannels: 'Exempt Channels',
+        actionsTypeName: 'Actions Type',
         actionsType: {
-          0: 'Actions Type',
           1: 'Block Message',
           2: 'Send Alert Message',
           3: 'Timeout',

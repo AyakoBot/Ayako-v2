@@ -4,15 +4,15 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (channel: DDeno.Channel) => {
-  if (!channel.guildId) return;
+  if (!channel.guild.id) return;
 
   const channels = await client.ch.getLogChannels('channelevents', channel);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(channel.guildId);
+  const guild = await client.ch.cache.guilds.get(channel.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(channel.guildId);
+  const language = await client.ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const audit = await client.ch.getAudit(
@@ -23,9 +23,9 @@ export default async (channel: DDeno.Channel) => {
   const channelType = `${client.ch.getTrueChannelType(channel, guild)}Create`;
   const auditUser = await client.ch.getChannelOwner(channel, audit);
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con[channelType as keyof typeof con],
+      icon_url: con[channelType as keyof typeof con],
       name: lan.nameCreate,
     },
     description: auditUser
@@ -102,7 +102,7 @@ export default async (channel: DDeno.Channel) => {
   }
 
   if (channel.parentId) {
-    const parent = await client.ch.cache.channels.get(channel.parentId, channel.guildId);
+    const parent = await client.ch.cache.channels.get(channel.parentId, channel.guild.id);
 
     if (parent) {
       embed.fields?.push({
@@ -127,7 +127,7 @@ export default async (channel: DDeno.Channel) => {
   (client.events.channelUpdate as CT.ChannelUpdate)(client, channel, oldChannel);
 
   client.ch.send(
-    { id: channels, guildId: channel.guildId },
+    { id: channels, guildId: channel.guild.id },
     { embeds: [embed] },
     language,
     undefined,

@@ -59,8 +59,8 @@ const doMentionAFKcheck = (msg: CT.MessageGuild) => {
 };
 
 const getIsAFKEmbed = async (msg: CT.MessageGuild, id: bigint, afkRow: DBT.afk) => {
-  const embed: DDeno.Embed = {
-    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
+  const embed: Discord.APIEmbed = {
+    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
     footer: {
       text: msg.language.commands.afk.footer(id, getTime(afkRow, msg.language)),
     },
@@ -75,7 +75,7 @@ const getAfkRow = (msg: CT.MessageGuild, mention?: bigint) =>
   client.ch
     .query('SELECT * FROM afk WHERE userid = $1 AND guildid = $2;', [
       String(mention || msg.authorId),
-      String(msg.guildId),
+      String(msg.guild.id),
     ])
     .then((r: DBT.afk[] | null) => (r ? r[0] : null));
 
@@ -88,17 +88,17 @@ const deleteNickname = async (msg: CT.MessageGuild) => {
   if (!msg.member.nick || !msg.member.nick.endsWith(' [AFK]')) return;
   const newNickname = displayname.slice(0, displayname.length - 6);
 
-  if (!client.ch.isManageable(msg.member, await client.ch.cache.members.get(client.id, msg.guildId))) {
+  if (!client.ch.isManageable(msg.member, await client.ch.cache.members.get(client.id, msg.guild.id))) {
     return;
   }
 
-  client.helpers.editMember(msg.guildId, msg.authorId, { nick: newNickname }).catch(() => null);
+  client.helpers.editMember(msg.guild.id, msg.authorId, { nick: newNickname }).catch(() => null);
 };
 
 const deleteAfk = (msg: CT.MessageGuild) =>
   client.ch.query('DELETE FROM afk WHERE userid = $1 AND guildid = $2;', [
     String(msg.authorId),
-    String(msg.guildId),
+    String(msg.guild.id),
   ]);
 
 const deleteM = (m: DDeno.Message | null, msg: CT.MessageGuild) => {
@@ -111,8 +111,8 @@ const deleteM = (m: DDeno.Message | null, msg: CT.MessageGuild) => {
   }
 };
 
-const getAFKdeletedEmbed = async (msg: CT.MessageGuild, afkRow: DBT.afk): Promise<DDeno.Embed> => ({
-  color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guildId)),
+const getAFKdeletedEmbed = async (msg: CT.MessageGuild, afkRow: DBT.afk): Promise<Discord.APIEmbed> => ({
+  color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
   footer: {
     text: msg.language.commands.afkHandler.footer(getTime(afkRow, msg.language)),
   },

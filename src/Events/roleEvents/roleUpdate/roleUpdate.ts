@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (role: DDeno.Role) => {
-  const cached = client.ch.cache.roles.cache.get(role.guildId)?.get(role.id);
+  const cached = client.ch.cache.roles.cache.get(role.guild.id)?.get(role.id);
   client.ch.cache.roles.set(role);
   if (!cached) return;
 

@@ -2,12 +2,12 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (data: { id: bigint; guildId: bigint; channelId: bigint; topic: string }) => {
-  const channel = await client.ch.cache.channels.get(data.channelId, data.guildId);
+  const channel = await client.ch.cache.channels.get(data.channelId, data.guild.id);
   if (!channel) return;
 
-  const cache = client.ch.cache.stageInstances.cache.get(data.guildId)?.get(data.id);
+  const cache = client.ch.cache.stageInstances.cache.get(data.guild.id)?.get(data.id);
   if (!cache) return;
-  const fetched = await client.ch.cache.stageInstances.get(data.id, data.guildId);
+  const fetched = await client.ch.cache.stageInstances.get(data.id, data.guild.id);
   if (!fetched) return;
 
   const files: {

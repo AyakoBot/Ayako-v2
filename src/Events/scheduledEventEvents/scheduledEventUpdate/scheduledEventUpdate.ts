@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (event: DDeno.ScheduledEvent) => {
-  const cached = client.ch.cache.scheduledEvents.cache.get(event.guildId)?.get(event.id);
+  const cached = client.ch.cache.scheduledEvents.cache.get(event.guild.id)?.get(event.id);
   client.ch.cache.scheduledEvents.set(event);
   if (!cached) return;
 

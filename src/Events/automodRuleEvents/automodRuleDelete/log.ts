@@ -2,20 +2,20 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (rule: DDeno.AutoModerationRule) => {
-  if (!rule.guildId) return;
+  if (!rule.guild.id) return;
 
   const channels = await client.ch.getLogChannels('automodevents', rule);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(rule.guildId);
+  const language = await client.ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
   const con = client.customConstants.events.logs.automodRule;
-  const user = await client.ch.cache.users.get(rule.creatorId);
+  const user = await client.users.fetch(rule.creatorId);
   if (!user) return;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.delete,
+      icon_url: con.delete,
       name: lan.name,
     },
     description: lan.descDelete(user, rule),
@@ -88,7 +88,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
       r.metadata?.channelId
-        ? client.ch.cache.channels.get(r.metadata?.channelId, rule.guildId)
+        ? client.ch.cache.channels.get(r.metadata?.channelId, rule.guild.id)
         : undefined,
     ),
   );
@@ -126,7 +126,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
   });
 
   client.ch.send(
-    { id: channels, guildId: rule.guildId },
+    { id: channels, guildId: rule.guild.id },
     { embeds: [embed] },
     language,
     undefined,

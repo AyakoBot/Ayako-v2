@@ -5,22 +5,22 @@ export default async (payload: { token: string; endpoint?: string; guildId: bigi
   const channels = await client.ch.getLogChannels('voiceevents', payload);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(payload.guildId);
+  const language = await client.ch.languageSelector(payload.guild.id);
   const lan = language.events.logs.voiceState;
   const con = client.customConstants.events.logs.voiceState;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameUpdateServer,
-      iconUrl: con.update,
+      icon_url: con.update,
     },
     color: client.customConstants.colors.success,
     description: lan.descUpdateServer(payload.endpoint ?? language.unknown),
   };
 
   client.ch.send(
-    { id: channels, guildId: payload.guildId },
+    { id: channels, guildId: payload.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

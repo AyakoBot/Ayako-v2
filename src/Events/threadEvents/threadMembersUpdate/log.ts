@@ -14,15 +14,15 @@ export default async (
   const channels = await client.ch.getLogChannels('channelevents', payload);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(thread.guildId);
+  const language = await client.ch.languageSelector(thread.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.threadMembers;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameJoin,
-      iconUrl: con.update,
+      icon_url: con.update,
     },
     color: client.customConstants.colors.loading,
   };
@@ -42,7 +42,7 @@ export default async (
   }
 
   client.ch.send(
-    { id: channels, guildId: payload.guildId },
+    { id: channels, guildId: payload.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

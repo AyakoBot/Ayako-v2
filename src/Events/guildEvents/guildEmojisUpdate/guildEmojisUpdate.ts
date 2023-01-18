@@ -8,7 +8,7 @@ export default async (payload: {
   const addedEmote = payload.emojis.find((e) =>
     e.id ? !client.ch.cache.emojis.cache.get(BigInt(e.id)) : false,
   );
-  const emoteCache = client.ch.cache.emojis.cache.get(payload.guildId);
+  const emoteCache = client.ch.cache.emojis.cache.get(payload.guild.id);
   const removedEmote = emoteCache
     ? Array.from(emoteCache, ([, emoji]) => emoji).find((e) =>
         e.id ? !payload.emojis.get(BigInt(e.id)) : false,
@@ -17,13 +17,13 @@ export default async (payload: {
   const changedEmote = payload.emojis.find((e) =>
     e.id
       ? JSON.stringify(e) !==
-        JSON.stringify(client.ch.cache.emojis.cache.get(payload.guildId)?.get(BigInt(e.id)))
+        JSON.stringify(client.ch.cache.emojis.cache.get(payload.guild.id)?.get(BigInt(e.id)))
       : false,
   );
 
   if (!addedEmote && !removedEmote && !changedEmote) return;
 
-  const guild = await client.ch.cache.guilds.get(payload.guildId);
+  const guild = await client.ch.cache.guilds.get(payload.guild.id);
   if (!guild) return;
 
   if (addedEmote) (await import('./emojiCreate/emojiCreate.js')).default(addedEmote, guild);

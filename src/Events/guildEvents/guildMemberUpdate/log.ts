@@ -16,7 +16,7 @@ export default async (
   const con = client.customConstants.events.logs.guild;
   const audit = user.toggles.bot ? await client.ch.getAudit(guild, 20, user.id) : undefined;
   const auditUser =
-    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
   let description = '';
 
   if (user.toggles.bot) {
@@ -25,9 +25,9 @@ export default async (
   } else if (audit && auditUser) description = lan.descMemberUpdateAudit(user, auditUser);
   else description = lan.descMemberUpdate(user);
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: user.toggles.bot ? con.BotUpdate : con.MemberUpdate,
+      icon_url: user.toggles.bot ? con.BotUpdate : con.MemberUpdate,
       name: user.toggles.bot ? lan.botUpdate : lan.memberUpdate,
     },
     description,

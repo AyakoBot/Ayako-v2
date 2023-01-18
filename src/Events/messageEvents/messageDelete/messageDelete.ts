@@ -11,10 +11,10 @@ export default async (
   executor?: DDeno.User,
 ) => {
   if (!payload) return;
-  if (!('guildId' in payload) || !payload.guildId) return;
+  if (!('guildId' in payload) || !payload.guild.id) return;
 
   const cached = client.ch.cache.messages.cache
-    .get(payload.guildId)
+    .get(payload.guild.id)
     ?.get(payload.channelId)
     ?.get(payload.id);
   if (cached) message = cached;

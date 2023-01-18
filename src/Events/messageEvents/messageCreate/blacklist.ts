@@ -104,10 +104,10 @@ export const resetData = () => {
 };
 
 const softWarn = async (msg: CT.MessageGuild, words: string[], settings: DBT.blacklist) => {
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     color: client.customConstants.colors.warning,
     author: {
-      iconUrl: client.customConstants.standard.error,
+      icon_url: client.customConstants.standard.error,
       url: client.customConstants.standard.invite,
       name: msg.language.slashCommands.settings.settings.blacklist.authorName,
     },
@@ -143,13 +143,13 @@ const softWarn = async (msg: CT.MessageGuild, words: string[], settings: DBT.bla
 
 const getSettings = async (msg: CT.MessageGuild) =>
   client.ch
-    .query(`SELECT * FROM blacklist WHERE guildid = $1 AND active = true;`, [String(msg.guildId)])
+    .query(`SELECT * FROM blacklist WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
 
 const getPunishment = async (msg: CT.MessageGuild, warns: number) =>
   client.ch
     .query(
       `SELECT * FROM blacklistpunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
-      [String(msg.guildId), warns],
+      [String(msg.guild.id), warns],
     )
     .then((r: DBT.BasicPunishmentsTable[] | null) => (r ? r[0] : null));

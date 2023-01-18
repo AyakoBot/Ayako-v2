@@ -7,18 +7,18 @@ export default async (payload: {
   guildId?: bigint;
   emoji: DDeno.Emoji;
 }) => {
-  if (!payload.guildId) return;
+  if (!payload.guild.id) return;
 
   const ident = payload.emoji.id ?? payload.emoji.name;
   if (!ident) return;
 
   const cache = client.ch.cache.reactions.cache
-    .get(payload.guildId)
+    .get(payload.guild.id)
     ?.get(payload.channelId)
     ?.get(payload.messageId)
     ?.get(ident);
 
-  client.ch.cache.reactions.delete(ident, payload.messageId, payload.channelId, payload.guildId);
+  client.ch.cache.reactions.delete(ident, payload.messageId, payload.channelId, payload.guild.id);
 
   const files: {
     default: (

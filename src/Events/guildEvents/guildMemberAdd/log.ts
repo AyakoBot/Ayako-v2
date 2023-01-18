@@ -11,16 +11,16 @@ export default async (_: DDeno.Member, user: DDeno.User, guild: DDeno.Guild) => 
 
   const audit = user.toggles.bot ? await client.ch.getAudit(guild, 28, user.id) : undefined;
   const auditUser =
-    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
   let description = auditUser ? lan.descJoinAudit(user, auditUser) : undefined;
 
   if (!description) {
     description = user.toggles.bot ? lan.descBotJoin(user) : lan.descMemberJoin(user);
   }
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: user.toggles.bot ? con.BotCreate : con.MemberCreate,
+      icon_url: user.toggles.bot ? con.BotCreate : con.MemberCreate,
       name: user.toggles.bot ? lan.botJoin : lan.memberJoin,
     },
     description,

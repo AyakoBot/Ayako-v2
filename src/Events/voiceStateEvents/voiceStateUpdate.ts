@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import client from '../../BaseClient/Client.js';
 
 export default async (voiceState: DDeno.VoiceState) => {
-  const cached = await client.ch.cache.voiceStates.get(voiceState.userId, voiceState.guildId);
+  const cached = await client.ch.cache.voiceStates.get(voiceState.userId, voiceState.guild.id);
   client.ch.cache.voiceStates.set(voiceState);
 
   if (!cached) {

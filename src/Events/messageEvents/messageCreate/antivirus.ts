@@ -3,7 +3,7 @@ import request from 'request';
 import fs from 'fs';
 import jobs from 'node-schedule';
 import { Worker as WorkerThread } from 'worker_threads';
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 
 import blocklists from '../../../BaseClient/Other/Blocklist.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
@@ -24,13 +24,13 @@ export default async (msg: CT.Message) => {
     return;
   }
 
-  if (!('guildId' in msg) || !msg.guildId) {
+  if (!('guildId' in msg) || !msg.guild.id) {
     await prepare(msg, { lan: msg.language.antivirus, language: msg.language }, true);
     return;
   }
 
   const antivirusRow = await client.ch
-    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guildId)])
+    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
   if (!antivirusRow) return;
@@ -164,7 +164,7 @@ const prepare = async (
       msgData: {
         channelid: msg.channelId,
         msgid: msg.id,
-        guildid: 'guildId' in msg ? msg.guildId : '@me',
+        guildid: 'guildId' in msg ? msg.guild.id : '@me',
       },
       linkObject,
       lan,
@@ -291,7 +291,7 @@ const doesntExist = async (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
     color: client.customConstants.colors.success,
   };
@@ -328,7 +328,7 @@ const blacklisted = async (
   res?: DBT.antivirus,
 ) => {
   if (note && typeof note === 'string') {
-    const embed: DDeno.Embed = {
+    const embed: Discord.APIEmbed = {
       description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
       fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
@@ -338,7 +338,7 @@ const blacklisted = async (
 
     await client.ch.replyMsg(msg, { embeds: [embed] });
   } else {
-    const embed: DDeno.Embed = {
+    const embed: Discord.APIEmbed = {
       description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
       color: client.customConstants.colors.warning,
     };
@@ -356,7 +356,7 @@ const blacklisted = async (
       msg.language,
     );
 
-    if ('guildId' in msg && msg.guildId) {
+    if ('guildId' in msg && msg.guild.id) {
       (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
     }
   }
@@ -389,7 +389,7 @@ const severeLink = async (
 ) => {
   saveToBadLink(linkObject, msg, hrefLogging);
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
@@ -406,7 +406,7 @@ const severeLink = async (
     },
     msg.language,
   );
-  if ('guildId' in msg && msg.guildId) {
+  if ('guildId' in msg && msg.guild.id) {
     (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
   }
 
@@ -430,7 +430,7 @@ const ccscam = async (
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject, msg);
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
@@ -447,7 +447,7 @@ const ccscam = async (
     },
     msg.language,
   );
-  if ('guildId' in msg && msg.guildId) {
+  if ('guildId' in msg && msg.guild.id) {
     (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
   }
 
@@ -472,7 +472,7 @@ const newUrl = async (
 ) => {
   saveToBadLink(linkObject, msg);
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.newLink(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.warning,
   };
@@ -490,7 +490,7 @@ const newUrl = async (
     msg.language,
   );
 
-  if ('guildId' in msg && msg.guildId) {
+  if ('guildId' in msg && msg.guild.id) {
     (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
   }
 
@@ -535,7 +535,7 @@ const whitelisted = async (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.whitelisted(client.stringEmotes.tick)}`,
     color: client.customConstants.colors.success,
   };
@@ -566,7 +566,7 @@ const cloudFlare = async (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.cfProtected}`,
     color: 16776960,
   };
@@ -596,7 +596,7 @@ const VTfail = (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.VTfail(client.stringEmotes.cross)}`,
     color: client.customConstants.colors.loading,
   };
@@ -626,7 +626,7 @@ const linkLog = async (
 ) => {
   if (!row || !row.linklogging || !row.linklogchannels?.length) return;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     description: lan.log.value(msg),
     author: {
       name: lan.log.author,
@@ -663,10 +663,10 @@ const linkLog = async (
     ],
   };
 
-  if (!('guildId' in msg) || !msg.guildId) return;
+  if (!('guildId' in msg) || !msg.guild.id) return;
 
   client.ch.send(
-    { id: row.linklogchannels.map(BigInt), guildId: msg.guildId },
+    { id: row.linklogchannels.map(BigInt), guildId: msg.guild.id },
     { embeds: [embed] },
     msg.language,
   );

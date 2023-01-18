@@ -6,19 +6,19 @@ export default async (oldIntegration: DDeno.Integration, integration: DDeno.Inte
   const channels = await client.ch.getLogChannels('guildevents', integration);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(integration.guildId);
+  const guild = await client.ch.cache.guilds.get(integration.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(integration.guildId);
+  const language = await client.ch.languageSelector(integration.guild.id);
   const lan = language.events.logs.integration;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 81, integration.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.BotDelete,
+      icon_url: con.BotDelete,
       name: lan.nameDelete,
     },
     description: auditUser
@@ -43,10 +43,10 @@ export default async (oldIntegration: DDeno.Integration, integration: DDeno.Inte
     case oldIntegration.roleId !== integration.roleId: {
       const oldRole = !oldIntegration.roleId
         ? language.none
-        : await client.ch.cache.roles.get(oldIntegration.roleId, integration.guildId);
+        : await client.ch.cache.roles.get(oldIntegration.roleId, integration.guild.id);
       const newRole = !integration.roleId
         ? language.none
-        : await client.ch.cache.roles.get(integration.roleId, integration.guildId);
+        : await client.ch.cache.roles.get(integration.roleId, integration.guild.id);
 
       const oldRoleText = oldRole ?? `\`${oldIntegration.roleId}\``;
       const newRoleText = newRole ?? `\`${integration.roleId}\``;
@@ -136,7 +136,7 @@ export default async (oldIntegration: DDeno.Integration, integration: DDeno.Inte
   }
 
   client.ch.send(
-    { id: channels, guildId: integration.guildId },
+    { id: channels, guildId: integration.guild.id },
     { embeds: [embed] },
     language,
     undefined,

@@ -25,7 +25,7 @@ export default async (message: DDeno.Message, oldMsg: DDeno.Message) => {
 
   if (msg.channel.type !== 1) {
     prefixCustom = await client.ch
-      .query('SELECT * FROM guildsettings WHERE guildid = $1;', [String(msg.guildId)])
+      .query('SELECT * FROM guildsettings WHERE guildid = $1;', [String(msg.guild.id)])
       .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
   }
 

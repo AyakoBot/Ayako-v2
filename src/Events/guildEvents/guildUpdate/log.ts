@@ -12,11 +12,11 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 1);
   const auditUser =
-    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.GuildUpdate,
+      icon_url: con.GuildUpdate,
       name: lan.guildUpdate,
     },
     description: auditUser ? lan.descGuildUpdateAudit(auditUser) : lan.descGuildUpdate(),
@@ -52,7 +52,7 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       break;
     }
     case guild.icon !== oldGuild.icon: {
-      const url = client.helpers.getGuildIconURL(guild.id, guild.icon, {
+      const url = client.helpers.getGuildicon_url(guild.id, guild.icon, {
         size: 4096,
         format: 'png',
       });

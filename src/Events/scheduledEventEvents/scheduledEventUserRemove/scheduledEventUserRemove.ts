@@ -8,7 +8,7 @@ export default async (payload: {
 }) => {
   const cache = await client.ch.cache.scheduledEvents.get(
     payload.guildScheduledEventId,
-    payload.guildId,
+    payload.guild.id,
   );
 
   if (!cache) return;

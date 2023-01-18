@@ -10,7 +10,7 @@ export default async (user: DDeno.User, member: DDeno.Member | undefined, guild:
   const con = client.customConstants.events.logs.guild;
   const audit = user.toggles.bot ? await client.ch.getAudit(guild, 20, user.id) : undefined;
   const auditUser =
-    audit && audit?.userId ? await client.ch.cache.users.get(audit?.userId) : undefined;
+    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
   let description = '';
 
   if (user.toggles.bot) {
@@ -22,9 +22,9 @@ export default async (user: DDeno.User, member: DDeno.Member | undefined, guild:
   let name = user.toggles.bot ? lan.botJoin : lan.memberJoin;
   if (audit) name = user.toggles.bot ? lan.botKick : lan.memberKick;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: user.toggles.bot ? con.BotDelete : con.MemberDelete,
+      icon_url: user.toggles.bot ? con.BotDelete : con.MemberDelete,
       name,
     },
     description,

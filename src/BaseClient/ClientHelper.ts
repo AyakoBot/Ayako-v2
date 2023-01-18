@@ -46,3 +46,4 @@ export const moment                     = (await import(`./ClientHelperModules/m
 export const getChanged                 = (await import(`./ClientHelperModules/getChanged.js`)).default;
 export const spaces                     = (await import(`./ClientHelperModules/spaces.js`)).default;
 export const arrayBufferToBuffer        = (await import(`./ClientHelperModules/arrayBufferToBuffer.js`)).default;
+export const getGuildTextChannel        = (await import(`./ClientHelperModules/getGuildTextChannel.js`)).default;

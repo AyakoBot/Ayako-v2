@@ -18,7 +18,7 @@ export default async (msg: CT.MessageGuild) => {
     : msg.channel;
   if (!channel) return;
 
-  client.ch.cache.disboardBumpReminders.delete(msg.guildId);
+  client.ch.cache.disboardBumpReminders.delete(msg.guild.id);
 
   await client.helpers
     .addReaction(msg.channelId, msg.id, client.stringEmotes.tick)
@@ -26,7 +26,7 @@ export default async (msg: CT.MessageGuild) => {
 
   await client.ch.query(
     `UPDATE disboard SET nextbump = $1, tempchannelid = $2 WHERE guildid = $3;`,
-    [msg.timestamp + 7200000, String(channel.id), String(msg.guildId)],
+    [msg.timestamp + 7200000, String(channel.id), String(msg.guild.id)],
   );
 
   if (settings.deletereply) {
@@ -46,7 +46,7 @@ const getSettings = async (guild: DDeno.Guild) =>
 const setReminder = async (msg: CT.MessageGuild, isBump: boolean, settings: DBT.disboard) => {
   if (!isBump && !Number(settings.repeatreminder)) {
     client.ch.query(`UPDATE disboard SET nextbump = NULL WHERE guildid = $1;`, [
-      String(msg.guildId),
+      String(msg.guild.id),
     ]);
     return;
   }
@@ -55,7 +55,7 @@ const setReminder = async (msg: CT.MessageGuild, isBump: boolean, settings: DBT.
 
   client.ch.query(`UPDATE disboard SET nextbump = $1 WHERE guildid = $2;`, [
     Date.now() + (isBump ? 7200000 : Number(settings.repeatreminder) * 60 * 1000),
-    String(msg.guildId),
+    String(msg.guild.id),
   ]);
 
   client.ch.cache.disboardBumpReminders.set(
@@ -65,7 +65,7 @@ const setReminder = async (msg: CT.MessageGuild, isBump: boolean, settings: DBT.
         endReminder(msg);
       },
     ),
-    msg.guildId,
+    msg.guild.id,
   );
 };
 
@@ -77,27 +77,27 @@ export const endReminder = async (msg: CT.MessageGuild) => {
   if (settings.channelid) {
     channel = await client.ch.cache.channels.get(
       BigInt(settings.channelid),
-      BigInt(settings.guildid),
+      BigInt(settings.guild.id),
     );
   } else if (settings.tempchannelid) {
     channel = await client.ch.cache.channels.get(
       BigInt(settings.tempchannelid),
-      BigInt(settings.guildid),
+      BigInt(settings.guild.id),
     );
   } else return;
   if (!channel) return;
 
   const lan = msg.language.events.ready.disboard;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.title,
-      iconUrl:
+      icon_url:
         'https://cdn.discordapp.com/avatars/302050872383242240/67342a774a9f2d20d62bfc8553bb98e0.png?size=4096',
       url: client.customConstants.standard.invite,
     },
     description: lan.desc,
-    color: await client.ch.colorSelector(await client.helpers.getMember(msg.guildId, client.id)),
+    color: await client.ch.colorSelector(await client.helpers.getMember(msg.guild.id, client.id)),
   };
 
   const users = settings.users?.map((u) => `<@${u}>`).join(', ') || '';
@@ -112,7 +112,7 @@ export const endReminder = async (msg: CT.MessageGuild) => {
 
   await client.ch.query(`UPDATE disboard SET msgid = $1 WHERE guildid = $2;`, [
     String(m.id),
-    String(msg.guildId),
+    String(msg.guild.id),
   ]);
 
   setReminder(msg, false, settings);
@@ -124,15 +124,15 @@ const doDelete = async (msg: CT.MessageGuild, settings: DBT.disboard) => {
   if (!settings.tempchannelid) return;
 
   const channel = settings.channelid
-    ? await client.ch.cache.channels.get(BigInt(settings.channelid), BigInt(settings.guildid))
-    : await client.ch.cache.channels.get(BigInt(settings.tempchannelid), BigInt(settings.guildid));
+    ? await client.ch.cache.channels.get(BigInt(settings.channelid), BigInt(settings.guild.id))
+    : await client.ch.cache.channels.get(BigInt(settings.tempchannelid), BigInt(settings.guild.id));
 
   if (!channel) return;
 
   const message = await client.ch.cache.messages.get(
     BigInt(settings.msgid),
     channel.id,
-    msg.guildId,
+    msg.guild.id,
   );
   if (!message) return;
 

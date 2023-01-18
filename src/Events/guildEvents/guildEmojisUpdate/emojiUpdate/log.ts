@@ -18,11 +18,11 @@ export default async (
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.emoji;
   const audit = await client.ch.getAudit(guild, 61, BigInt(afterEmoji.id));
-  const auditUser = audit?.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+  const auditUser = audit?.userId ? await client.users.fetch(audit.userId) : undefined;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.update,
+      icon_url: con.update,
       name: lan.emojiUpdate,
     },
     description: auditUser

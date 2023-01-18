@@ -2,9 +2,9 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (invite: DDeno.Invite) => {
-  if (!invite.guildId) return;
+  if (!invite.guild.id) return;
 
-  const guild = await client.ch.cache.guilds.get(invite.guildId);
+  const guild = await client.ch.cache.guilds.get(invite.guild.id);
   if (!guild) return;
 
   const inviteMetadata = await client.helpers.getInvite(invite.code);

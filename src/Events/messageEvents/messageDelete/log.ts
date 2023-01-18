@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import type DDeno from 'discordeno';
+import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
@@ -7,21 +7,21 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(msg.guildId);
+  const guild = await client.ch.cache.guilds.get(msg.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(msg.guildId);
+  const language = await client.ch.languageSelector(msg.guild.id);
   const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
   const audit = await client.ch.getAudit(guild, 72, msg.id);
   const auditUser =
-    user ?? (audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined);
+    user ?? (audit && audit.userId ? await client.users.fetch(audit.userId) : undefined);
   const files: DDeno.FileContent[] = [];
-  const embeds: DDeno.Embed[] = [];
+  const embeds: Discord.APIEmbed[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.delete,
+      icon_url: con.delete,
       name: lan.nameDelete,
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
@@ -92,7 +92,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
 
   if (msg.webhookId) {
     const webhook =
-      (await client.ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guildId)) ??
+      (await client.ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id)) ??
       (await client.helpers.getWebhook(msg.webhookId));
 
     embed.fields?.push({
@@ -140,7 +140,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   }
 
   if (msg.content) {
-    const contentEmbed: DDeno.Embed = {
+    const contentEmbed: Discord.APIEmbed = {
       description: msg.content,
       color: client.customConstants.colors.ephemeral,
       author: {
@@ -165,7 +165,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   }
 
   client.ch.send(
-    { id: channels, guildId: msg.guildId },
+    { id: channels, guildId: msg.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

@@ -120,12 +120,12 @@ export const deleteCommandHandler = async (
 
 const getDeleteSettings = async (msg: Discord.Message | Discord.Interaction, commandName: string) =>
   query(`SELECT * FROM deletecommands WHERE active = true AND guildid = $1 AND command = $2;`, [
-    String(msg.guildId),
+    String(msg.guild.id),
     commandName,
   ]).then((r: DBT.deletecommands[] | null) => r);
 
 const getCooldownRow = (msg: Discord.Message | Discord.Interaction, command: CT.Command) =>
   query(
     `SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2 and cooldown = $3;`,
-    [String(msg.guildId), command.name, command.cooldown],
+    [String(msg.guild.id), command.name, command.cooldown],
   ).then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));

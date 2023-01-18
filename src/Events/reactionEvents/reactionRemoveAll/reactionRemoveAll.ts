@@ -2,10 +2,10 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (payload: { channelId: bigint; messageId: bigint; guildId?: bigint }) => {
-  if (!payload.guildId) return;
+  if (!payload.guild.id) return;
 
   const cache = client.ch.cache.reactions.cache
-    .get(payload.guildId)
+    .get(payload.guild.id)
     ?.get(payload.channelId)
     ?.get(payload.messageId);
 
@@ -18,7 +18,7 @@ export default async (payload: { channelId: bigint; messageId: bigint; guildId?:
         ident,
         payload.messageId,
         payload.channelId,
-        payload.guildId as bigint,
+        payload.guild.id as bigint,
       );
     });
   }

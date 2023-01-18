@@ -20,7 +20,7 @@ export default async (msg: CT.MessageGuild) => {
 
 const gvMessageCheck = (msg: CT.MessageGuild) => {
   if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
-  if (msg.guildId !== 366219406776336385n) return;
+  if (msg.guild.id !== 366219406776336385n) return;
   if (msg.channelId === 801804774759727134n) return;
 
   const inviteCheck = () => {

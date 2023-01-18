@@ -10,10 +10,10 @@ const giveawayLink = 'https://clik.cc/A3KLb/';
 
 export default async (reaction: CT.ReactionAdd) => {
   if (reaction.userId === client.id) return;
-  if (!reaction.guildId) return;
+  if (!reaction.guild.id) return;
   if (reaction.channelId !== 979811225212956722n) return;
 
-  const member = await client.ch.cache.members.get(reaction.userId, reaction.guildId);
+  const member = await client.ch.cache.members.get(reaction.userId, reaction.guild.id);
   if (!member) return;
 
   if (
@@ -35,37 +35,37 @@ export default async (reaction: CT.ReactionAdd) => {
   switch (reaction.emoji.name) {
     case '✅': {
       const tick = async () => {
-        if (!reaction.guildId) return;
+        if (!reaction.guild.id) return;
         client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
 
-        const user = await client.ch.cache.users.get(reaction.userId);
+        const user = await client.users.fetch(reaction.userId);
         if (!user) return;
 
         const msg = await client.ch.cache.messages.get(
           reaction.messageId,
           reaction.channelId,
-          reaction.guildId,
+          reaction.guild.id,
         );
         if (!msg) return;
 
-        const author = await client.ch.cache.users.get(msg.authorId);
+        const author = await client.users.fetch(msg.authorId);
         if (!author) return;
 
-        const embed: DDeno.Embed = {
+        const embed: Discord.APIEmbed = {
           color: client.customConstants.standard.color,
           thumbnail: { url: client.ch.getAvatarURL(user) },
           description: `<@${user.id}> accepted the submission of <@${author.id}>`,
-          author: { name: author.username, iconUrl: client.ch.getAvatarURL(author) },
+          author: { name: author.username, icon_url: client.ch.getAvatarURL(author) },
         };
 
-        const language = await client.ch.languageSelector(reaction.guildId);
+        const language = await client.ch.languageSelector(reaction.guild.id);
         await client.ch.send(logchannel, { embeds: [embed] }, language);
 
         if (statsRow.willis?.map(BigInt).includes(author.id)) {
-          const DM: DDeno.Embed = {
+          const DM: Discord.APIEmbed = {
             author: {
               name: giveawayTitle,
-              iconUrl: hostIcon,
+              icon_url: hostIcon,
               url: client.customConstants.standard.invite,
             },
             description: '**You already entered the Giveaway!**',
@@ -89,10 +89,10 @@ export default async (reaction: CT.ReactionAdd) => {
           arr.push(...statsRow.willis, String(author.id));
         }
 
-        const DM: DDeno.Embed = {
+        const DM: Discord.APIEmbed = {
           author: {
             name: giveawayTitle,
-            iconUrl: hostIcon,
+            icon_url: hostIcon,
             url: client.customConstants.standard.invite,
           },
           description: '**Your submission was accepted!**\nGood Luck!',
@@ -110,36 +110,36 @@ export default async (reaction: CT.ReactionAdd) => {
     }
     case '❌': {
       const cross = async () => {
-        if (!reaction.guildId) return;
+        if (!reaction.guild.id) return;
         client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
 
-        const user = await client.ch.cache.users.get(reaction.userId);
+        const user = await client.users.fetch(reaction.userId);
         if (!user) return;
 
         const msg = await client.ch.cache.messages.get(
           reaction.messageId,
           reaction.channelId,
-          reaction.guildId,
+          reaction.guild.id,
         );
         if (!msg) return;
 
-        const author = await client.ch.cache.users.get(msg.authorId);
+        const author = await client.users.fetch(msg.authorId);
         if (!author) return;
 
-        const embed: DDeno.Embed = {
+        const embed: Discord.APIEmbed = {
           color: 16711680,
           thumbnail: { url: client.ch.getAvatarURL(user) },
           description: `<@${user.id}> rejected the submission of <@${author.id}>`,
-          author: { name: author.username, iconUrl: client.ch.getAvatarURL(author) },
+          author: { name: author.username, icon_url: client.ch.getAvatarURL(author) },
         };
 
-        const language = await client.ch.languageSelector(reaction.guildId);
+        const language = await client.ch.languageSelector(reaction.guild.id);
         await client.ch.send(logchannel, { embeds: [embed] }, language);
 
-        const DM: DDeno.Embed = {
+        const DM: Discord.APIEmbed = {
           author: {
             name: giveawayTitle,
-            iconUrl: hostIcon,
+            icon_url: hostIcon,
             url: client.customConstants.standard.invite,
           },
           description: '**Your submission was rejected!**',

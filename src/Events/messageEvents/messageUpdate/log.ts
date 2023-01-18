@@ -4,26 +4,26 @@ import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
-  if (!msg.guildId) return;
+  if (!msg.guild.id) return;
 
   const channels = await client.ch.getLogChannels('messageevents', msg);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(msg.guildId);
+  const guild = await client.ch.cache.guilds.get(msg.guild.id);
   if (!guild) return;
 
-  const user = await client.ch.cache.users.get(msg.authorId);
+  const user = await client.users.fetch(msg.authorId);
   if (!user) return;
 
-  const language = await client.ch.languageSelector(msg.guildId);
+  const language = await client.ch.languageSelector(msg.guild.id);
   const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
   const files: DDeno.FileContent[] = [];
   let byAuthor: boolean | null = true;
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
-      iconUrl: con.delete,
+      icon_url: con.delete,
       name: lan.nameDelete,
     },
     fields: [],
@@ -244,7 +244,7 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
   } else embed.description = lan.descUpdateAuthor(msg, user);
 
   client.ch.send(
-    { id: channels, guildId: msg.guildId },
+    { id: channels, guildId: msg.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

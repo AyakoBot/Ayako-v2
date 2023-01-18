@@ -27,7 +27,7 @@ export const resetData = () => {
 
 const getSettings = async (msg: CT.MessageGuild) =>
   client.ch
-    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guildId)])
+    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
 const runPunishment = async (msg: CT.MessageGuild, m?: CT.MessageGuild | null) => {
@@ -90,6 +90,6 @@ const getPunishment = async (msg: CT.MessageGuild, warns: number) =>
   client.ch
     .query(
       `SELECT * FROM antiviruspunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
-      [String(msg.guildId), warns],
+      [String(msg.guild.id), warns],
     )
     .then((r: DBT.BasicPunishmentsTable[] | null) => (r ? r[0] : null));

@@ -2,31 +2,31 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (voiceState: DDeno.VoiceState) => {
-  if (!voiceState.guildId) return;
+  if (!voiceState.guild.id) return;
   if (!voiceState.channelId) return;
 
-  const channels = await client.ch.getLogChannels('voiceevents', { guildId: voiceState.guildId });
+  const channels = await client.ch.getLogChannels('voiceevents', { guildId: voiceState.guild.id });
   if (!channels) return;
 
-  const channel = await client.ch.cache.channels.get(voiceState.channelId, voiceState.guildId);
+  const channel = await client.ch.cache.channels.get(voiceState.channelId, voiceState.guild.id);
   if (!channel) return;
 
-  const guild = await client.ch.cache.guilds.get(voiceState.guildId);
+  const guild = await client.ch.cache.guilds.get(voiceState.guild.id);
   if (!guild) return;
 
-  const user = await client.ch.cache.users.get(voiceState.userId);
+  const user = await client.users.fetch(voiceState.userId);
   if (!user) return;
 
-  const language = await client.ch.languageSelector(voiceState.guildId);
+  const language = await client.ch.languageSelector(voiceState.guild.id);
   const lan = language.events.logs.voiceState;
   const con = client.customConstants.events.logs.voiceState;
   const channelType = client.ch.getTrueChannelType(channel, guild);
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan[`${channelType}Switch` as keyof typeof lan] as string,
-      iconUrl: con[`${channelType}Switch` as keyof typeof con],
+      icon_url: con[`${channelType}Switch` as keyof typeof con],
     },
     color: client.customConstants.colors.warning,
     description: lan.descDelete(user, channel, language.channelTypes[channel.type]),
@@ -54,7 +54,7 @@ export default async (voiceState: DDeno.VoiceState) => {
   }
 
   client.ch.send(
-    { id: channels, guildId: voiceState.guildId },
+    { id: channels, guildId: voiceState.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

@@ -13,24 +13,24 @@ export default async (
   const channels = await client.ch.getLogChannels('scheduledevents', event);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(event.guildId);
+  const guild = await client.ch.cache.guilds.get(event.guild.id);
   if (!guild) return;
 
-  const user = await client.ch.cache.users.get(payload.userId);
+  const user = await client.users.fetch(payload.userId);
   if (!user) return;
 
   const channel = event.channelId
-    ? await client.ch.cache.channels.get(event.channelId, event.guildId)
+    ? await client.ch.cache.channels.get(event.channelId, event.guild.id)
     : undefined;
-  const language = await client.ch.languageSelector(event.guildId);
+  const language = await client.ch.languageSelector(event.guild.id);
   const lan = language.events.logs.scheduledEvent;
   const con = client.customConstants.events.logs.guild;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameUserAdd,
-      iconUrl: con.MemberDelete,
+      icon_url: con.MemberDelete,
     },
     color: client.customConstants.colors.success,
     description: channel
@@ -39,7 +39,7 @@ export default async (
   };
 
   client.ch.send(
-    { id: channels, guildId: event.guildId },
+    { id: channels, guildId: event.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

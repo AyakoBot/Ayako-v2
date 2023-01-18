@@ -68,18 +68,18 @@ export default async (guild: DDeno.Guild) => {
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
         modBaseEvent({
           executor: m.executorid
-            ? await client.ch.cache.users.get(BigInt(m.executorid))
+            ? await client.users.fetch(BigInt(m.executorid))
             : undefined,
           target: m.userid
-            ? (await client.ch.cache.users.get(BigInt(m.userid))) ?? client.me
+            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
             : client.me,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
+            m.msgid && m.channelid && m.guild.id
               ? await client.ch.cache.messages.get(
                   BigInt(m.msgid),
                   BigInt(m.channelid),
-                  BigInt(m.guildid),
+                  BigInt(m.guild.id),
                 )
               : undefined,
           guild,
@@ -101,18 +101,18 @@ export default async (guild: DDeno.Guild) => {
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
         modBaseEvent({
           executor: m.executorid
-            ? await client.ch.cache.users.get(BigInt(m.executorid))
+            ? await client.users.fetch(BigInt(m.executorid))
             : undefined,
           target: m.userid
-            ? (await client.ch.cache.users.get(BigInt(m.userid))) ?? client.me
+            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
             : client.me,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
+            m.msgid && m.channelid && m.guild.id
               ? await client.ch.cache.messages.get(
                   BigInt(m.msgid),
                   BigInt(m.channelid),
-                  BigInt(m.guildid),
+                  BigInt(m.guild.id),
                 )
               : undefined,
           guild,
@@ -134,18 +134,18 @@ export default async (guild: DDeno.Guild) => {
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
         modBaseEvent({
           executor: m.executorid
-            ? await client.ch.cache.users.get(BigInt(m.executorid))
+            ? await client.users.fetch(BigInt(m.executorid))
             : undefined,
           target: m.userid
-            ? (await client.ch.cache.users.get(BigInt(m.userid))) ?? client.me
+            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
             : client.me,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
+            m.msgid && m.channelid && m.guild.id
               ? await client.ch.cache.messages.get(
                   BigInt(m.msgid),
                   BigInt(m.channelid),
-                  BigInt(m.guildid),
+                  BigInt(m.guild.id),
                 )
               : undefined,
           guild,

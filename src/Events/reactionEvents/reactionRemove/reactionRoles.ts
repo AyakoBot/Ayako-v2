@@ -5,7 +5,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (reaction: CT.ReactionRemove) => {
   if (reaction.userId === client.id) return;
-  if (!reaction.guildId) return;
+  if (!reaction.guild.id) return;
 
   const emoteIdentifier = reaction.emoji.toggles.requireColons
     ? reaction.emoji.id
@@ -18,7 +18,7 @@ export default async (reaction: CT.ReactionRemove) => {
   const reactionRows = await getReactionRows(reaction, emoteIdentifier);
   if (!reactionRows) return;
 
-  const member = await client.ch.cache.members.get(reaction.userId, reaction.guildId);
+  const member = await client.ch.cache.members.get(reaction.userId, reaction.guild.id);
   if (!member) return;
 
   const relatedReactions = await getRelatedReactions(reaction, reactionRows);
@@ -33,7 +33,7 @@ const getBaseRow = (reaction: CT.ReactionAdd) =>
   client.ch
     .query(
       `SELECT * FROM rrsettings WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,
-      [String(reaction.messageId), String(reaction.guildId), String(reaction.channelId)],
+      [String(reaction.messageId), String(reaction.guild.id), String(reaction.channelId)],
     )
     .then((r: DBT.rrsettings[] | null) => (r ? r[0] : null));
 
@@ -44,7 +44,7 @@ const getReactionRows = (reaction: CT.ReactionAdd, emoteIdentifier: string | big
       [
         String(emoteIdentifier),
         String(reaction.messageId),
-        String(reaction.guildId),
+        String(reaction.guild.id),
         String(reaction.channelId),
       ],
     )
@@ -54,7 +54,7 @@ const getRelatedReactions = async (reaction: CT.ReactionAdd, reactionRows: DBT.r
   const buttonRows = await client.ch
     .query(
       `SELECT * FROM rrbuttons WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,
-      [String(reaction.messageId), String(reaction.guildId), String(reaction.channelId)],
+      [String(reaction.messageId), String(reaction.guild.id), String(reaction.channelId)],
     )
     .then((r: DBT.rrbuttons[] | null) => r || []);
 
@@ -98,7 +98,7 @@ const removeRoles = async (
   }
 
   if (rolesToRemove.length) {
-    const language = await client.ch.languageSelector(member.guildId);
+    const language = await client.ch.languageSelector(member.guild.id);
     client.ch.roleManager.remove(
       member,
       rolesToRemove,

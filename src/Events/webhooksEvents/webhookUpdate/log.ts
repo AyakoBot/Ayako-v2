@@ -3,30 +3,30 @@ import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldWebhook: DDeno.Webhook | undefined, webhook: DDeno.Webhook) => {
-  if (!webhook.guildId) return;
+  if (!webhook.guild.id) return;
   if (!webhook.channelId) return;
 
-  const channels = await client.ch.getLogChannels('webhookevents', { guildId: webhook.guildId });
+  const channels = await client.ch.getLogChannels('webhookevents', { guildId: webhook.guild.id });
   if (!channels) return;
 
-  const channel = await client.ch.cache.channels.get(webhook.channelId, webhook.guildId);
+  const channel = await client.ch.cache.channels.get(webhook.channelId, webhook.guild.id);
   if (!channel) return;
 
-  const guild = await client.ch.cache.guilds.get(webhook.guildId);
+  const guild = await client.ch.cache.guilds.get(webhook.guild.id);
   if (!guild) return;
 
-  const language = await client.ch.languageSelector(webhook.guildId);
+  const language = await client.ch.languageSelector(webhook.guild.id);
   const lan = language.events.logs.webhook;
   const con = client.customConstants.events.logs.webhook;
   const audit = await client.ch.getAudit(guild, 51, webhook.id);
   const auditUser =
-    audit && audit.userId ? await client.ch.cache.users.get(audit.userId) : undefined;
+    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
   const files: DDeno.FileContent[] = [];
 
-  const embed: DDeno.Embed = {
+  const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameUpdate,
-      iconUrl: con.update,
+      icon_url: con.update,
     },
     color: client.customConstants.colors.loading,
     description: auditUser
@@ -75,7 +75,7 @@ export default async (oldWebhook: DDeno.Webhook | undefined, webhook: DDeno.Webh
   }
 
   client.ch.send(
-    { id: channels, guildId: webhook.guildId },
+    { id: channels, guildId: webhook.guild.id },
     { embeds: [embed], files },
     language,
     undefined,
