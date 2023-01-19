@@ -87,7 +87,7 @@ export default async (rule: Discord.AutoModerationRule) => {
 
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
-      r.metadata?.channelId ? client.ch.getGuildTextChannel(r.metadata.channelId) : undefined,
+      r.metadata?.channelId ? client.ch.getChannel.guildTextChannel(r.metadata.channelId) : undefined,
     ),
   );
 

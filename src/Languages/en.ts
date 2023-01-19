@@ -14,12 +14,11 @@ const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
 
 const getMessage = (msg: Discord.Message) => `[Message](${client.ch.getJumpLink(msg)})\n`;
 
-const getChannel = (
-  channel: Discord.GuildChannel | Discord.AnyThreadChannel | undefined,
-  type?: string,
-) =>
+const getChannel = (channel: Discord.Channel | Discord.GuildChannel | undefined, type?: string) =>
   channel
-    ? `${type ?? 'Channel'} <#${channel.id}> / \`${channel.name}\` / \`${channel.id}\`\n`
+    ? `${type ?? 'Channel'} <#${channel.id}> / ${
+        'name' in channel ? `\`${channel.name}\`` : `<@${channel.recipientId}>`
+      } / \`${channel.id}\`\n`
     : `Unknown Channel\n`;
 
 const getEmote = (emoji: Discord.Emoji) =>
@@ -44,7 +43,9 @@ const getIntegration = (integration: Discord.Integration) =>
 
 const getRole = (role: Discord.Role) => `Role <@&${role}> / \`${role.name}\` / \`${role.id}\``;
 
-const getApplication = (application: Discord.Application | bigint) =>
+const getApplication = (
+  application: Discord.Application | Discord.IntegrationApplication | bigint,
+) =>
   `Application ${
     typeof application === 'bigint'
       ? `\`${application}\``
@@ -85,7 +86,12 @@ export default {
         descUserRemoveChannel: (
           user: Discord.User,
           event: Discord.GuildScheduledEvent,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) =>
           `${getUser(user)}has left\n${getScheduledEvent(event)}planned in\n${getChannel(
@@ -97,7 +103,12 @@ export default {
         descUserAddChannel: (
           user: Discord.User,
           event: Discord.GuildScheduledEvent,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) =>
           `${getUser(user)}has joined\n${getScheduledEvent(event)}planned in\n${getChannel(
@@ -109,7 +120,12 @@ export default {
         descDeleteChannelAudit: (
           event: Discord.GuildScheduledEvent,
           user: Discord.User,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) =>
           `${getUser(user)}has deleted\n${getScheduledEvent(event)}from\n${getChannel(
@@ -120,7 +136,12 @@ export default {
           `${getUser(user)}has deleted\n${getScheduledEvent(event)}`,
         descDeleteChannel: (
           event: Discord.GuildScheduledEvent,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) => `${getScheduledEvent(event)}has deleted from\n${getChannel(channel, channelType)}`,
         descDelete: (event: Discord.GuildScheduledEvent) =>
@@ -128,7 +149,12 @@ export default {
         descCreateChannelAudit: (
           event: Discord.GuildScheduledEvent,
           user: Discord.User,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) =>
           `${getUser(user)}has created\n${getScheduledEvent(event)}from\n${getChannel(
@@ -139,7 +165,12 @@ export default {
           `${getUser(user)}has created\n${getScheduledEvent(event)}`,
         descCreateChannel: (
           event: Discord.GuildScheduledEvent,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) => `${getScheduledEvent(event)}has created from\n${getChannel(channel, channelType)}`,
         descCreate: (event: Discord.GuildScheduledEvent) =>
@@ -147,7 +178,12 @@ export default {
         descUpdateChannelAudit: (
           event: Discord.GuildScheduledEvent,
           user: Discord.User,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) =>
           `${getUser(user)}has updated\n${getScheduledEvent(event)}from\n${getChannel(
@@ -158,7 +194,12 @@ export default {
           `${getUser(user)}has updated\n${getScheduledEvent(event)}`,
         descUpdateChannel: (
           event: Discord.GuildScheduledEvent,
-          channel: Discord.GuildChannel,
+          channel:
+            | Discord.NewsChannel
+            | Discord.TextChannel
+            | Discord.PrivateThreadChannel
+            | Discord.PublicThreadChannel<boolean>
+            | Discord.VoiceBasedChannel,
           channelType: string,
         ) => `${getScheduledEvent(event)}has updated from\n${getChannel(channel, channelType)}`,
         descUpdate: (event: Discord.GuildScheduledEvent) =>
@@ -443,14 +484,18 @@ export default {
           `${getUser(user)}has created\n${getIntegration(integration)}`,
         descCreate: (integration: Discord.Integration) =>
           `${getIntegration(integration)}was created`,
-        descDeleteIntegrationAudit: (user: Discord.User, integration: Discord.Integration) =>
+        descDeleteIntegrationAudit: (
+          user: Discord.User,
+          integration: Discord.Integration,
+          application: Discord.Application,
+        ) =>
+          `${getUser(user)}has deleted\n${getIntegration(integration)}from${getApplication(
+            application,
+          )}`,
+        descDeleteAudit: (user: Discord.User, integration: Discord.Integration) =>
           `${getUser(user)}has deleted\n${getIntegration(integration)}`,
-        descDeleteAudit: (user: Discord.User, applicationId: bigint) =>
-          `${getUser(user)}has deleted an Integration from\n${getApplication(applicationId)}`,
         descDeleteIntegration: (integration: Discord.Integration) =>
           `${getIntegration(integration)}was deleted`,
-        descDelete: (applicationId: bigint, id: bigint) =>
-          `An Integration with ID \`${id}\`\n of Application with ID ${applicationId}\nwas deleted`,
         descUpdateAudit: (user: Discord.User, integration: Discord.Integration) =>
           `${getUser(user)}has updated\n${getIntegration(integration)}`,
         descUpdate: (integration: Discord.Integration) =>
@@ -471,7 +516,7 @@ export default {
         syncedAt: 'Synced At',
         subscriberCount: 'Subscribers Count',
         account: 'Account',
-        getAccount: (account: { id: bigint; name: string }) =>
+        getAccount: (account: Discord.IntegrationAccount) =>
           `Account \`${account.name}\` / \`${account.id}\``,
       },
       guild: {
@@ -618,42 +663,51 @@ export default {
         },
       },
       channel: {
-        descCreateAudit: (user: Discord.User, channel: Discord.GuildChannel, type: string) =>
-          `${getUser(user)}created\n${getChannel(channel, type)}`,
-        descCreate: (channel: Discord.GuildChannel, type: string) =>
+        descCreateAudit: (
+          user: Discord.User,
+          channel: Discord.GuildChannel | Discord.AnyThreadChannel,
+          type: string,
+        ) => `${getUser(user)}has created\n${getChannel(channel, type)}`,
+        descCreate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was created`,
-        descDeleteAudit: (user: Discord.User, channel: Discord.GuildChannel, type: string) =>
-          `${getUser(user)}deleted\n${getChannel(channel, type)}`,
-        descDelete: (channel: Discord.GuildChannel, type: string) =>
+        descDeleteAudit: (
+          user: Discord.User,
+          channel: Discord.GuildChannel | Discord.AnyThreadChannel,
+          type: string,
+        ) => `${getUser(user)}has deleted\n${getChannel(channel, type)}`,
+        descDelete: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was deleted`,
-        descUpdateAudit: (user: Discord.User, channel: Discord.GuildChannel, type: string) =>
-          `${getUser(user)}updated\n${getChannel(channel, type)}`,
-        descUpdate: (channel: Discord.GuildChannel, type: string) =>
+        descUpdateAudit: (
+          user: Discord.User,
+          channel: Discord.GuildChannel | Discord.AnyThreadChannel,
+          type: string,
+        ) => `${getUser(user)}has updated\n${getChannel(channel, type)}`,
+        descUpdate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was updated`,
         descJoinMember: (thread: Discord.AnyThreadChannel, channelType: string) =>
           `Users have joined\n${getChannel(thread, channelType)}`,
         descLeaveMember: (thread: Discord.AnyThreadChannel, channelType: string) =>
           `Users have left\n${getChannel(thread, channelType)}`,
         descUpdateStageAudit: (
-          channel: Discord.GuildChannel,
+          channel: Discord.StageChannel,
           channelType: string,
           user: Discord.User,
         ) => `${getUser(user)}has changed\n${getChannel(channel, channelType)}`,
-        descUpdateStage: (channel: Discord.GuildChannel, channelType: string) =>
+        descUpdateStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was changed`,
         descCreateStageAudit: (
-          channel: Discord.GuildChannel,
+          channel: Discord.StageChannel,
           channelType: string,
           user: Discord.User,
         ) => `${getUser(user)}has started\n${getChannel(channel, channelType)}`,
-        descCreateStage: (channel: Discord.GuildChannel, channelType: string) =>
+        descCreateStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was started`,
         descDeleteStageAudit: (
-          channel: Discord.GuildChannel,
+          channel: Discord.StageChannel,
           channelType: string,
           user: Discord.User,
         ) => `${getUser(user)}has ended\n${getChannel(channel, channelType)}`,
-        descDeleteStage: (channel: Discord.GuildChannel, channelType: string) =>
+        descDeleteStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was ended`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
@@ -677,8 +731,8 @@ export default {
         userLimit: 'User Limit',
         rateLimitPerUser: 'Rate Limit per User',
         rtcRegion: 'RTC Region',
+        videoQualityModeName: 'Video Quality Mode',
         videoQualityMode: {
-          0: 'Video Quality Mode',
           1: 'Auto',
           2: '720p',
         },
@@ -3117,19 +3171,35 @@ export default {
     afk: `Ayako AFK`,
   },
   regions: {
-    brazil: 'Brazil',
-    hongkong: 'Hong Kong',
-    india: 'India',
-    japan: 'Japan',
-    rotterdam: 'Rotterdam',
-    russia: 'Russia',
-    singapore: 'Singapore',
-    southafrica: 'South Africa',
-    sydney: 'Sydney',
-    'us-central': 'US Central',
-    'us-east': 'US East',
-    'us-south': 'US South',
-    'us-west': 'US West',
+    id: 'Indonesia',
+    'en-US': 'English US',
+    'en-GB': 'Engish GB',
+    bg: 'Bulgaria',
+    'zh-CN': 'China CN',
+    'zh-TW': 'China TW',
+    hr: 'Croatia',
+    da: 'Denmark',
+    nl: 'Netherlands',
+    fi: 'Finnish',
+    de: 'Germany',
+    el: 'Greek',
+    hi: 'Hindi',
+    hu: 'Hungaria',
+    it: 'Italia',
+    ja: 'Japan',
+    ko: 'Korea',
+    lt: 'Lithuania',
+    no: 'Norwegia',
+    pl: 'Polan',
+    'pt-BR': 'Portugal BR',
+    ro: 'Romaina',
+    ru: 'Russia',
+    'en-ES': 'Spain ES',
+    'sv-SE': 'Sweden',
+    th: 'Thailand',
+    tr: 'Turkey',
+    uk: 'Ukraine',
+    vi: 'Vietnam',
   },
   welcome: (user: Discord.User, guild: Discord.Guild) =>
     `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`,

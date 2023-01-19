@@ -1,12 +1,34 @@
-import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import * as Discord from 'discord.js';
 
-export default async (channel: DDeno.Channel) => {
+export default async (oldChannel: Discord.Channel | undefined, channel: Discord.Channel) => {
+  if (channel.type === Discord.ChannelType.DM) return;
+  if (oldChannel?.type === Discord.ChannelType.DM) return;
+  if (channel.type === Discord.ChannelType.GroupDM) return;
+  if (oldChannel?.type === Discord.ChannelType.GroupDM) return;
+
   const files: {
-    default: (t: DDeno.Channel, o: DDeno.Channel | undefined) => void;
+    default: (
+      t:
+        | Discord.CategoryChannel
+        | Discord.NewsChannel
+        | Discord.StageChannel
+        | Discord.TextChannel
+        | Discord.PrivateThreadChannel
+        | Discord.PublicThreadChannel
+        | Discord.VoiceChannel
+        | Discord.ForumChannel
+        | undefined,
+      o:
+        | Discord.CategoryChannel
+        | Discord.NewsChannel
+        | Discord.StageChannel
+        | Discord.TextChannel
+        | Discord.PrivateThreadChannel
+        | Discord.PublicThreadChannel
+        | Discord.VoiceChannel
+        | Discord.ForumChannel,
+    ) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  const cached = client.ch.cache.channels.cache.get(channel.guild.id)?.get(channel.id);
-
-  files.forEach((f) => f.default(channel, cached));
+  files.forEach((f) => f.default(oldChannel, channel));
 };

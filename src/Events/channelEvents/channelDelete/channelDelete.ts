@@ -1,14 +1,23 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (channel: DDeno.Channel) => {
-  const files: {
-    default: (t: DDeno.Channel) => void;
-  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
+export default async (channel: Discord.Channel) => {
+  if (channel.type === Discord.ChannelType.DM) return;
+  if (channel.type === Discord.ChannelType.GroupDM) return;
 
-  const cached = client.ch.cache.channels.cache.get(channel.guild.id)?.get(channel.id);
-  if (cached) channel = cached;
-  client.ch.cache.channels.delete(channel.id);
+  const files: {
+    default: (
+      t:
+        | Discord.CategoryChannel
+        | Discord.NewsChannel
+        | Discord.StageChannel
+        | Discord.TextChannel
+        | Discord.PrivateThreadChannel
+        | Discord.PublicThreadChannel
+        | Discord.VoiceChannel
+        | Discord.ForumChannel,
+    ) => void;
+  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
   const channelBans = client.ch.cache.channelBans.cache.get(channel.guild.id)?.get(channel.id);
   if (channelBans) {

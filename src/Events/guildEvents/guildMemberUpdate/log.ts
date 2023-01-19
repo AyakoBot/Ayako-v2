@@ -2,70 +2,67 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (
-  member: DDeno.Member,
-  user: DDeno.User,
-  guild: DDeno.Guild,
-  oldMember: DDeno.Member,
-) => {
-  const channels = await client.ch.getLogChannels('guildmemberevents', { guildId: guild.id });
+export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
+  const channels = await client.ch.getLogChannels('guildmemberevents', member.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await client.ch.languageSelector(member.guild.id);
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.guild;
-  const audit = user.toggles.bot ? await client.ch.getAudit(guild, 20, user.id) : undefined;
-  const auditUser =
-    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
+  const audit = member.user.bot
+    ? await client.ch.getAudit(member.guild, 20, member.user.id)
+    : undefined;
+  const auditUser = audit?.executor ?? undefined;
   let description = '';
 
-  if (user.toggles.bot) {
-    if (audit && auditUser) description = lan.descBotUpdateAudit(user, auditUser);
-    else description = lan.descBotUpdate(user);
-  } else if (audit && auditUser) description = lan.descMemberUpdateAudit(user, auditUser);
-  else description = lan.descMemberUpdate(user);
+  if (member.user.bot) {
+    if (audit && auditUser) description = lan.descBotUpdateAudit(member.user, auditUser);
+    else description = lan.descBotUpdate(member.user);
+  } else if (audit && auditUser) description = lan.descMemberUpdateAudit(member.user, auditUser);
+  else description = lan.descMemberUpdate(member.user);
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: user.toggles.bot ? con.BotUpdate : con.MemberUpdate,
-      name: user.toggles.bot ? lan.botUpdate : lan.memberUpdate,
+      icon_url: member.user.bot ? con.BotUpdate : con.MemberUpdate,
+      name: member.user.bot ? lan.botUpdate : lan.memberUpdate,
     },
     description,
     fields: [],
     color: client.customConstants.colors.loading,
   };
 
-  const files: DDeno.FileContent[] = [];
+  const files: Discord.AttachmentPayload[] = [];
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
   switch (true) {
     case member.avatar !== oldMember.avatar: {
-      const url = client.ch.getAvatarURL(user, member);
-      const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+      const attachment = (
+        await client.ch.fileURL2Buffer([member.displayAvatarURL({ size: 4096 })])
+      )?.[0]?.attachment;
 
-      merge(url, user.avatar, 'icon', lan.avatar);
+      merge(member.displayAvatarURL({ size: 4096 }), member.user.avatar, 'icon', lan.avatar);
 
-      if (blob) {
+      if (attachment) {
         files.push({
-          name: String(user.avatar),
-          blob,
+          name: String(member.user.avatar),
+          attachment,
         });
       }
 
       break;
     }
-    case member.nick !== oldMember.nick: {
-      merge(member.nick, oldMember.nick, 'string', language.name);
+    case member.nickname !== oldMember.nickname: {
+      merge(member.nickname, oldMember.nickname, 'string', language.name);
       break;
     }
     case member.premiumSince !== oldMember.premiumSince: {
       merge(
         member.premiumSince
-          ? client.customConstants.standard.getTime(member.premiumSince)
+          ? client.customConstants.standard.getTime(member.premiumSince.getTime())
           : language.none,
         oldMember.premiumSince
-          ? client.customConstants.standard.getTime(oldMember.premiumSince)
+          ? client.customConstants.standard.getTime(oldMember.premiumSince.getTime())
           : language.none,
         'string',
         lan.premiumSince,
@@ -75,10 +72,10 @@ export default async (
     case member.communicationDisabledUntil !== oldMember.communicationDisabledUntil: {
       merge(
         member.communicationDisabledUntil
-          ? client.customConstants.standard.getTime(member.communicationDisabledUntil)
+          ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
           : language.none,
         oldMember.communicationDisabledUntil
-          ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil)
+          ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
           : language.none,
         'string',
         lan.communicationDisabledUntil,
@@ -86,8 +83,14 @@ export default async (
       break;
     }
     case JSON.stringify(member.roles) !== JSON.stringify(oldMember.roles): {
-      const addedRoles = client.ch.getDifference(member.roles, oldMember.roles);
-      const removedRoles = client.ch.getDifference(oldMember.roles, member.roles);
+      const addedRoles = client.ch.getDifference(
+        member.roles.cache.map((r) => r),
+        oldMember.roles.cache.map((r) => r),
+      );
+      const removedRoles = client.ch.getDifference(
+        oldMember.roles.cache.map((r) => r),
+        member.roles.cache.map((r) => r),
+      );
 
       merge(
         addedRoles.map((r) => `<@&${r}>`).join(', '),
@@ -98,16 +101,8 @@ export default async (
 
       break;
     }
-    case member.toggles.has('deaf') !== oldMember.toggles.has('deaf'): {
-      merge(member.toggles.has('deaf'), oldMember.toggles.has('deaf'), 'boolean', lan.deaf);
-      break;
-    }
-    case member.toggles.has('mute') !== oldMember.toggles.has('mute'): {
-      merge(member.toggles.has('mute'), oldMember.toggles.has('mute'), 'boolean', lan.deaf);
-      break;
-    }
-    case member.toggles.has('pending') !== oldMember.toggles.has('pending'): {
-      merge(member.toggles.has('pending'), oldMember.toggles.has('pending'), 'boolean', lan.deaf);
+    case member.pending !== oldMember.pending: {
+      merge(member.pending, oldMember.pending, 'boolean', lan.deaf);
       break;
     }
     default: {
@@ -116,7 +111,7 @@ export default async (
   }
 
   client.ch.send(
-    { id: channels, guildId: guild.id },
+    { id: channels, guildId: member.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

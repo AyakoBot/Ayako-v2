@@ -1,27 +1,39 @@
 import * as Discord from 'discord.js';
-import type * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default async (channel: DDeno.Channel) => {
+export default async (
+  channel:
+    | Discord.CategoryChannel
+    | Discord.NewsChannel
+    | Discord.StageChannel
+    | Discord.TextChannel
+    | Discord.PrivateThreadChannel
+    | Discord.PublicThreadChannel
+    | Discord.VoiceChannel
+    | Discord.ForumChannel,
+) => {
   if (!channel.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('channelevents', channel);
+  const channels = await client.ch.getLogChannels('channelevents', channel.guild);
   if (!channels) return;
-
-  const guild = await client.ch.cache.guilds.get(channel.guild.id);
-  if (!guild) return;
 
   const language = await client.ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
   const audit = await client.ch.getAudit(
-    guild,
+    channel.guild,
     [10, 11, 12].includes(channel.type) ? 110 : 10,
     channel.id,
   );
-  const channelType = `${client.ch.getTrueChannelType(channel, guild)}Create`;
-  const auditUser = await client.ch.getChannelOwner(channel, audit);
+  const channelType = `${client.ch.getTrueChannelType(channel, channel.guild)}Create`;
+  const getChannelOwner = () => {
+    if (audit?.executor) return audit.executor;
+    if ('ownerId' in channel && channel.ownerId) {
+      return client.users.fetch(channel.ownerId).catch(() => undefined);
+    }
+    return undefined;
+  };
+  const auditUser = await getChannelOwner();
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -35,15 +47,17 @@ export default async (channel: DDeno.Channel) => {
     color: client.customConstants.colors.success,
   };
 
+  const embeds = [embed];
+
   const flags = new Discord.ChannelFlagsBitField(channel.flags || 0).toArray();
 
   const flagsText = [
     ...flags.map((f) => lan.flags[f]),
-    channel.nsfw ? lan.nsfw : null,
-    channel.archived ? lan.archived : null,
-    channel.locked ? lan.locked : null,
-    channel.invitable ? lan.invitable : null,
-    channel.newlyCreated ? lan.newlyCreated : null,
+    'nsfw' in channel && channel.nsfw ? lan.nsfw : null,
+    'archived' in channel && channel.archived ? lan.archived : null,
+    'locked' in channel && channel.locked ? lan.locked : null,
+    'invitable' in channel && channel.invitable ? lan.invitable : null,
+    'newlyCreated' in channel && channel.newlyCreated ? lan.newlyCreated : null,
   ]
     .filter((f): f is string => !!f)
     .map((f) => `\`${f}\``)
@@ -57,19 +71,19 @@ export default async (channel: DDeno.Channel) => {
     });
   }
 
-  if (channel.topic) {
+  if ('topic' in channel && channel.topic) {
     embed.fields?.push({ name: lan.topic, value: channel.topic, inline: true });
   }
 
-  if (channel.bitrate) {
+  if ('bitrate' in channel && channel.bitrate) {
     embed.fields?.push({ name: lan.bitrate, value: `${channel.bitrate}kbps`, inline: true });
   }
 
-  if (channel.userLimit) {
+  if ('userLimit' in channel && channel.userLimit) {
     embed.fields?.push({ name: lan.userLimit, value: String(channel.userLimit), inline: true });
   }
 
-  if (channel.rateLimitPerUser) {
+  if ('rateLimitPerUser' in channel && channel.rateLimitPerUser) {
     embed.fields?.push({
       name: lan.rateLimitPerUser,
       value: client.ch.moment(channel.rateLimitPerUser, language),
@@ -77,7 +91,7 @@ export default async (channel: DDeno.Channel) => {
     });
   }
 
-  if (channel.rtcRegion) {
+  if ('rtcRegion' in channel && channel.rtcRegion) {
     embed.fields?.push({
       name: lan.rtcRegion,
       value: language.regions[channel.rtcRegion as keyof typeof language.regions],
@@ -85,24 +99,18 @@ export default async (channel: DDeno.Channel) => {
     });
   }
 
-  if (channel.videoQualityMode) {
+  if ('videoQualityMode' in channel && channel.videoQualityMode) {
     embed.fields?.push({
-      name: lan.videoQualityMode[0],
-      value: lan.videoQualityMode[channel.videoQualityMode],
-      inline: true,
-    });
-  }
-
-  if (channel.videoQualityMode) {
-    embed.fields?.push({
-      name: lan.videoQualityMode[0],
+      name: lan.videoQualityModeName,
       value: lan.videoQualityMode[channel.videoQualityMode],
       inline: true,
     });
   }
 
   if (channel.parentId) {
-    const parent = await client.ch.cache.channels.get(channel.parentId, channel.guild.id);
+    const parent = channel.parentId
+      ? await client.ch.getChannel.parentChannel(channel.parentId)
+      : undefined;
 
     if (parent) {
       embed.fields?.push({
@@ -113,7 +121,7 @@ export default async (channel: DDeno.Channel) => {
     }
   }
 
-  if (channel.autoArchiveDuration) {
+  if ('autoArchiveDuration' in channel && channel.autoArchiveDuration) {
     embed.fields?.push({
       name: lan.autoArchiveDuration,
       value: client.ch.moment(channel.autoArchiveDuration, language),
@@ -121,14 +129,47 @@ export default async (channel: DDeno.Channel) => {
     });
   }
 
-  const oldChannel = { ...channel };
-  oldChannel.permissionOverwrites = [];
+  if ('permissionOverwrites' in channel) {
+    const permEmbed: Discord.APIEmbed = {
+      color: client.customConstants.colors.ephemeral,
+      description: channel.permissionOverwrites.cache
+        .map(
+          (perm) =>
+            `${
+              perm.type === Discord.OverwriteType.Member ? `<@${perm.id}>` : `<@&${perm.id}>`
+            }\n${Object.entries(new Discord.PermissionsBitField(perm.allow.bitfield).serialize())
+              .filter(([, a]) => !!a)
+              .map(
+                (permissionString) =>
+                  `${client.stringEmotes.enabled} \`${
+                    language.permissions.perms[
+                      permissionString[0] as keyof typeof language.permissions.perms
+                    ]
+                  }\``,
+              )
+              .join('\n')}\n${Object.entries(
+              new Discord.PermissionsBitField(perm.deny.bitfield).serialize(),
+            )
+              .filter(([, a]) => !!a)
+              .map(
+                (permissionString) =>
+                  `${client.stringEmotes.disabled} \`${
+                    language.permissions.perms[
+                      permissionString[0] as keyof typeof language.permissions.perms
+                    ]
+                  }\``,
+              )
+              .join('\n')}`,
+        )
+        .join('\n\n'),
+    };
 
-  (client.events.channelUpdate as CT.ChannelUpdate)(client, channel, oldChannel);
+    embeds.push(permEmbed);
+  }
 
   client.ch.send(
     { id: channels, guildId: channel.guild.id },
-    { embeds: [embed] },
+    { embeds },
     language,
     undefined,
     10000,

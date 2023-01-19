@@ -1,10 +1,10 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (rule: DDeno.AutoModerationRule) => {
+export default async (rule: Discord.AutoModerationRule) => {
   if (!rule.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('automodevents', rule);
+  const channels = await client.ch.getLogChannels('automodevents', rule.guild);
   if (!channels) return;
 
   const language = await client.ch.languageSelector(rule.guild.id);
@@ -50,7 +50,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
 
     if (rule.triggerMetadata.presets) {
       embed.fields?.push({
-        name: lan.presets[0],
+        name: lan.presetsName,
         value: rule.triggerMetadata.presets.map((p) => lan.presets[p]).join(', '),
         inline: true,
       });
@@ -58,18 +58,18 @@ export default async (rule: DDeno.AutoModerationRule) => {
   }
 
   embed.fields?.push({
-    name: lan.eventType[0],
+    name: lan.eventTypeName,
     value: lan.eventType[rule.eventType],
     inline: true,
   });
 
   embed.fields?.push({
-    name: lan.triggerType[0],
+    name: lan.triggerTypeName,
     value: lan.triggerType[rule.triggerType],
     inline: true,
   });
 
-  if (rule.exemptRoles?.length) {
+  if (rule.exemptRoles?.size) {
     embed.fields?.push({
       name: lan.exemptRoles,
       value: rule.exemptRoles.map((r) => `<@&${r}`).join(', '),
@@ -77,7 +77,7 @@ export default async (rule: DDeno.AutoModerationRule) => {
     });
   }
 
-  if (rule.exemptChannels?.length) {
+  if (rule.exemptChannels?.size) {
     embed.fields?.push({
       name: lan.exemptChannels,
       value: rule.exemptChannels.map((r) => `<#${r}`).join(', '),
@@ -87,16 +87,14 @@ export default async (rule: DDeno.AutoModerationRule) => {
 
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
-      r.metadata?.channelId
-        ? client.ch.cache.channels.get(r.metadata?.channelId, rule.guild.id)
-        : undefined,
+      r.metadata?.channelId ? client.ch.getChannel.guildTextChannel(r.metadata?.channelId) : undefined,
     ),
   );
 
   const content = rule.actions
     .map(
       (a, i) =>
-        `${lan.actionsType[0]}: \`${lan.actionsType[a.type]}\`${
+        `${lan.actionsTypeName}: \`${lan.actionsType[a.type]}\`${
           a.type !== 1
             ? `- ${
                 a.type === 2

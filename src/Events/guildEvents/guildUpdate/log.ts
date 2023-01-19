@@ -1,18 +1,16 @@
-import Discord from 'discord.js';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
-  const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
+export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
+  const channels = await client.ch.getLogChannels('guildevents', guild);
   if (!channels) return;
 
   const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.guild;
   const audit = await client.ch.getAudit(guild, 1);
-  const auditUser =
-    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
+  const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -24,7 +22,11 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
     color: client.customConstants.colors.loading,
   };
 
-  const files: DDeno.FileContent[] = [];
+  const oldWelcomeScreen = await client.ch.cache.welcomeScreens.get(guild.id);
+  const newWelcomeScreen = await guild.fetchWelcomeScreen();
+  if (newWelcomeScreen) client.ch.cache.welcomeScreens.set(newWelcomeScreen);
+
+  const files: Discord.AttachmentPayload[] = [];
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
@@ -34,17 +36,17 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       break;
     }
     case guild.banner !== oldGuild.banner: {
-      const url = client.helpers.getGuildBannerURL(guild.id, { size: 4096, format: 'png' });
+      const url = guild.bannerURL({ size: 4096 });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
         merge(url, guild.banner, 'icon', lan.banner);
 
-        if (blob) {
+        if (attachment) {
           files.push({
             name: String(guild.banner),
-            blob,
+            attachment,
           });
         }
       } else embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
@@ -52,20 +54,17 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       break;
     }
     case guild.icon !== oldGuild.icon: {
-      const url = client.helpers.getGuildicon_url(guild.id, guild.icon, {
-        size: 4096,
-        format: 'png',
-      });
+      const url = guild.iconURL({ size: 4096 });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
         merge(url, guild.icon, 'icon', lan.icon);
 
-        if (blob) {
+        if (attachment) {
           files.push({
             name: String(guild.icon),
-            blob,
+            attachment,
           });
         }
       } else embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
@@ -73,49 +72,43 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       break;
     }
     case guild.splash !== oldGuild.splash: {
-      const url = client.helpers.getGuildSplashURL(guild.id, guild.splash, {
-        size: 4096,
-        format: 'png',
-      });
+      const url = guild.splashURL({ size: 4096 });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
         merge(url, guild.splash, 'icon', lan.splash);
 
-        if (blob) {
+        if (attachment) {
           files.push({
             name: String(guild.splash),
-            blob,
+            attachment,
           });
         }
       } else embed.fields?.push({ name: lan.splash, value: lan.splashRemoved });
 
       break;
     }
-    case guild.maxMembers !== oldGuild.maxMembers: {
-      merge(oldGuild.maxMembers, guild.maxMembers, 'string', lan.maxMembers);
+    case guild.maximumMembers !== oldGuild.maximumMembers: {
+      merge(oldGuild.maximumMembers, guild.maximumMembers, 'string', lan.maxMembers);
       break;
     }
-    case guild.vanityUrlCode !== oldGuild.vanityUrlCode: {
-      merge(oldGuild.vanityUrlCode, guild.vanityUrlCode, 'string', lan.vanityUrlCode);
+    case guild.vanityURLCode !== oldGuild.vanityURLCode: {
+      merge(oldGuild.vanityURLCode, guild.vanityURLCode, 'string', lan.vanityUrlCode);
       break;
     }
     case guild.discoverySplash !== oldGuild.discoverySplash: {
-      const url = client.helpers.getGuildSplashURL(guild.id, guild.discoverySplash, {
-        size: 4096,
-        format: 'png',
-      });
+      const url = guild.discoverySplashURL({ size: 4096 });
 
       if (url) {
-        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
         merge(url, guild.discoverySplash, 'icon', lan.discoverySplash);
 
-        if (blob) {
+        if (attachment) {
           files.push({
             name: String(guild.discoverySplash),
-            blob,
+            attachment,
           });
         }
       } else embed.fields?.push({ name: lan.discoverySplash, value: lan.discoverySplashRemoved });
@@ -251,20 +244,20 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       );
       break;
     }
-    case guild.welcomeScreen?.description !== oldGuild.welcomeScreen?.description: {
+    case newWelcomeScreen?.description !== oldWelcomeScreen?.description: {
       merge(
-        oldGuild.welcomeScreen?.description ?? language.none,
-        guild.welcomeScreen?.description ?? language.none,
+        oldWelcomeScreen?.description ?? language.none,
+        newWelcomeScreen?.description ?? language.none,
         'string',
         lan.welcomeScreenDescription,
       );
       break;
     }
-    case JSON.stringify(guild.welcomeScreen?.welcomeChannels) !==
-      JSON.stringify(oldGuild.welcomeScreen?.welcomeChannels): {
+    case JSON.stringify(newWelcomeScreen?.welcomeChannels) !==
+      JSON.stringify(oldWelcomeScreen?.welcomeChannels): {
       const addedChannel = client.ch.getDifference(
-        guild.welcomeScreen?.welcomeChannels ?? [],
-        oldGuild.welcomeScreen?.welcomeChannels ?? [],
+        newWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
+        oldWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
       ) as {
         channelId: bigint;
         description: string;
@@ -273,8 +266,8 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       }[];
 
       const removedChannel = client.ch.getDifference(
-        oldGuild.welcomeScreen?.welcomeChannels ?? [],
-        guild.welcomeScreen?.welcomeChannels ?? [],
+        oldWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
+        newWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
       ) as {
         channelId: bigint;
         description: string;
@@ -283,8 +276,12 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
       }[];
 
       const changedChannel = client.ch.getChanged(
-        oldGuild.welcomeScreen?.welcomeChannels,
-        guild.welcomeScreen?.welcomeChannels,
+        (oldWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
+          [key: string]: unknown;
+        },
+        (newWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
+          [key: string]: unknown;
+        },
         'channelId',
       ) as
         | {
@@ -357,10 +354,10 @@ export default async (guild: DDeno.Guild, oldGuild: DDeno.Guild) => {
           const channel = changedChannels[i];
           if (!channel) return;
 
-          const oldChannel = oldGuild.welcomeScreen?.welcomeChannels.find(
+          const oldChannel = oldWelcomeScreen?.welcomeChannels.find(
             (o) => o.channelId === channel.id,
           );
-          const newChannel = guild.welcomeScreen?.welcomeChannels.find(
+          const newChannel = newWelcomeScreen?.welcomeChannels.find(
             (o) => o.channelId === channel.id,
           );
 

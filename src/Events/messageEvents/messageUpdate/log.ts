@@ -178,7 +178,7 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
         msg.attachments ?? [],
       );
 
-      const attachments = (await client.ch.fileURL2Blob(oldAttachments.map((a) => a.url))).filter(
+      const attachments = (await client.ch.fileURL2Buffer(oldAttachments.map((a) => a.url))).filter(
         (
           e,
         ): e is {

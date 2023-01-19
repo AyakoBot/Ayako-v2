@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
 
-export default (channel: Discord.Channel, guild: Discord.Guild) => {
+export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.Guild) => {
   switch (channel.type) {
     case Discord.ChannelType.GuildText: {
       switch (true) {
         case guild.rulesChannelId === channel.id: {
           return 'Rules';
         }
-        case channel.nsfw: {
+        case 'nsfw' in channel && channel.nsfw: {
           return 'NSFWChannel';
         }
         case !!channel.permissionOverwrites: {
@@ -55,7 +55,7 @@ export default (channel: Discord.Channel, guild: Discord.Guild) => {
     }
     case Discord.ChannelType.GuildForum: {
       switch (true) {
-        case channel.nsfw: {
+        case 'nsfw' in channel && channel.nsfw: {
           return 'NSFWForum';
         }
         default: {

@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (guild: DDeno.Guild) => {
+export default async (guild: Discord.Guild) => {
   client.ch.send(
-    { id: 718181439354437693n, guildId: 669893888856817665n },
+    { id: '718181439354437693', guildId: '669893888856817665' },
     {
       embeds: [
         {

@@ -32,7 +32,7 @@ export default async (payload: { guildId: bigint; roleId: bigint }, role: DDeno.
 
   if (role.icon) {
     const url = client.customConstants.standard.roleicon_url(role);
-    const attachments = (await client.ch.fileURL2Blob([url])).filter(
+    const attachments = (await client.ch.fileURL2Buffer([url])).filter(
       (
         e,
       ): e is {

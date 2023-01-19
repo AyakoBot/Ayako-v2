@@ -1,13 +1,9 @@
-import client from 'BaseClient/Client.js';
 import type * as Discord from 'discord.js';
 
-export default async (user: DDeno.User, guildId: bigint) => {
+export default async (ban: Discord.GuildBan) => {
   const files: {
-    default: (t: DDeno.User, guild: DDeno.Guild) => void;
+    default: (b: Discord.GuildBan) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  const guild = await client.ch.cache.guilds.get(guildId);
-  if (!guild) return;
-
-  files.forEach((f) => f.default(user, guild));
+  files.forEach((f) => f.default(ban));
 };

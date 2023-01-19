@@ -1,52 +1,52 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (user: DDeno.User, member: DDeno.Member | undefined, guild: DDeno.Guild) => {
-  const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
+export default async (member: Discord.GuildMember) => {
+  const channels = await client.ch.getLogChannels('guildevents', member.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await client.ch.languageSelector(member.guild.id);
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.guild;
-  const audit = user.toggles.bot ? await client.ch.getAudit(guild, 20, user.id) : undefined;
-  const auditUser =
-    audit && audit?.userId ? await client.users.fetch(audit?.userId) : undefined;
+  const audit = member.user.bot
+    ? await client.ch.getAudit(member.guild, 20, member.user.id)
+    : undefined;
+  const auditUser = audit?.executor ?? undefined;
   let description = '';
 
-  if (user.toggles.bot) {
-    if (audit && auditUser) description = lan.descBotLeaveAudit(user, auditUser);
-    else description = lan.descBotLeave(user);
-  } else if (audit && auditUser) description = lan.descMemberLeaveAudit(user, auditUser);
-  else description = lan.descMemberLeave(user);
+  if (member.user.bot) {
+    if (audit && auditUser) description = lan.descBotLeaveAudit(member.user, auditUser);
+    else description = lan.descBotLeave(member.user);
+  } else if (audit && auditUser) description = lan.descMemberLeaveAudit(member.user, auditUser);
+  else description = lan.descMemberLeave(member.user);
 
-  let name = user.toggles.bot ? lan.botJoin : lan.memberJoin;
-  if (audit) name = user.toggles.bot ? lan.botKick : lan.memberKick;
+  let name = member.user.bot ? lan.botJoin : lan.memberJoin;
+  if (audit) name = member.user.bot ? lan.botKick : lan.memberKick;
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: user.toggles.bot ? con.BotDelete : con.MemberDelete,
+      icon_url: member.user.bot ? con.BotDelete : con.MemberDelete,
       name,
     },
     description,
-    fields: [],
+    fields: [
+      {
+        name: language.roles,
+        value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
+      },
+    ],
     color: client.customConstants.colors.warning,
   };
 
-  if (member) {
-    embed.fields?.push(
-      {
-        name: language.roles,
-        value: member.roles.map((r) => `<@&${r}>`).join(', '),
-      },
-      {
-        name: language.joinedAt,
-        value: client.customConstants.standard.getTime(member.joinedAt),
-      },
-    );
+  if (member.joinedAt) {
+    embed.fields?.push({
+      name: language.joinedAt,
+      value: client.customConstants.standard.getTime(member.joinedAt.getTime()),
+    });
   }
 
   client.ch.send(
-    { id: channels, guildId: guild.id },
+    { id: channels, guildId: member.guild.id },
     { embeds: [embed] },
     language,
     undefined,

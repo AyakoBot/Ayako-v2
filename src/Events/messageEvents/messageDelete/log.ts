@@ -152,7 +152,7 @@ export default async (msg: CT.MessageGuild, user?: DDeno.User) => {
   }
 
   if (msg.attachments?.length) {
-    const attachments = (await client.ch.fileURL2Blob(msg.attachments.map((a) => a.url))).filter(
+    const attachments = (await client.ch.fileURL2Buffer(msg.attachments.map((a) => a.url))).filter(
       (
         e,
       ): e is {

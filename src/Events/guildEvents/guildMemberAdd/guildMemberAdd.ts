@@ -1,15 +1,9 @@
-import client from 'BaseClient/Client.js';
 import type * as Discord from 'discord.js';
 
-export default async (member: DDeno.Member, user: DDeno.User) => {
+export default async (member: Discord.GuildMember) => {
   const files: {
-    default: (m: DDeno.Member, t: DDeno.User, g: DDeno.Guild) => void;
+    default: (m: Discord.GuildMember) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  const guild = await client.ch.cache.guilds.get(member.guild.id);
-  if (!guild) return;
-
-  client.ch.cache.members.set(member);
-
-  files.forEach((f) => f.default(member, user, guild));
+  files.forEach((f) => f.default(member));
 };

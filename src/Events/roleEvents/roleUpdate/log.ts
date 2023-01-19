@@ -37,7 +37,7 @@ export default async (oldRole: DDeno.Role, role: DDeno.Role) => {
       const url = client.customConstants.standard.roleicon_url(role);
 
       if (url) {
-        const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
 
         merge(url, role.icon, 'icon', lan.icon);
 

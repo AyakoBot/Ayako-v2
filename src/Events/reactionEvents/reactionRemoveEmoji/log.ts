@@ -47,7 +47,7 @@ export default async (
     };
 
     const attachment = (
-      await client.ch.fileURL2Blob([
+      await client.ch.fileURL2Buffer([
         client.helpers.getEmojiURL(reaction.emoji.id, reaction.emoji.toggles.animated),
       ])
     ).filter(

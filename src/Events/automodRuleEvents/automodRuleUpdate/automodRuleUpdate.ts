@@ -1,15 +1,12 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
 
-export default async (rule: DDeno.AutoModerationRule) => {
-  if (!rule.guild.id) return;
-
-  const cached = client.ch.cache.automodRules.find(rule.id);
-  client.ch.cache.automodRules.set(rule);
-
+export default async (
+  oldRule: Discord.AutoModerationRule | undefined,
+  rule: Discord.AutoModerationRule,
+) => {
   const files: {
-    default: (t: DDeno.AutoModerationRule, r: DDeno.AutoModerationRule | undefined) => void;
+    default: (o: Discord.AutoModerationRule | undefined, r: Discord.AutoModerationRule) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  files.forEach((f) => f.default(rule, cached));
+  files.forEach((f) => f.default(oldRule, rule));
 };

@@ -1,52 +1,36 @@
 import type * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import type DBT from '../../../Typings/DataBaseTypings';
-import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default async (guild: DDeno.Guild) => {
+export default async (guild: Discord.Guild) => {
+  guild.members.fetch();
   const language = await client.ch.languageSelector(guild.id);
 
-  client.ch.cache.guilds.set(guild);
-  client.ch.cache.members.get(guild.ownerId, guild.id);
+  const invites = await guild.invites.fetch();
+  invites.forEach((i) => client.ch.cache.invites.set(i, guild.id));
 
-  const webhooks = await client.helpers.getGuildWebhooks(guild.id);
-  webhooks.forEach((w) => client.ch.cache.webhooks.set(w));
-
-  const automodRules = await client.helpers.getAutomodRules(guild.id);
-  automodRules.forEach((r) => client.ch.cache.automodRules.set(r));
-
-  const emojis = await client.helpers.getEmojis(guild.id);
-  emojis.forEach((e) => client.ch.cache.emojis.set(e, guild.id));
-
-  const integrations = await client.helpers.getIntegrations(guild.id);
-  integrations.forEach((i) => client.ch.cache.integrations.set(i));
-
-  const roles = await client.helpers.getRoles(guild.id);
-  roles.forEach((r) => client.ch.cache.roles.set(r));
-
-  const stickers = await client.helpers.getGuildStickers(guild.id);
-  stickers.forEach((s) => client.ch.cache.stickers.set(s));
-
-  const scheduledEvents = await client.helpers.getScheduledEvents(guild.id);
-  scheduledEvents.forEach(async (e) => {
-    const users = await client.ch.getScheduledEventUsers(guild.id, e);
-    (e as CT.ScheduledEvent).users = users;
-    client.ch.cache.scheduledEvents.set(e);
+  guild.channels.cache.forEach(async (channel) => {
+    const webhooks = await guild.channels.fetchWebhooks(channel);
+    webhooks.forEach((w) => {
+      client.ch.cache.webhooks.set(w);
+    });
   });
 
-  const activeThreads = await client.helpers.getActiveThreads(guild.id);
-  activeThreads.threads.forEach((t) => {
-    const users = activeThreads.members.filter((m) => m.id === t.id);
-    (t as CT.Thread).members = users.map((u) => u.userId).filter((u): u is bigint => !!u);
-    client.ch.cache.threads.set(t);
+  const welcomeScreen = await guild.fetchWelcomeScreen();
+  client.ch.cache.welcomeScreens.set(welcomeScreen);
+
+  const intergrations = await guild.fetchIntegrations();
+  intergrations.forEach((i) => {
+    client.ch.cache.integrations.set(i, guild.id);
   });
 
-  guild.channels.forEach(async (c) => {
-    client.ch.cache.channels.set(c);
-
-    const invites = await client.helpers.getInvites(guild.id);
-    invites.forEach((i) => client.ch.cache.invites.set(i));
+  const scheduledEvents = await guild.scheduledEvents.fetch();
+  scheduledEvents.forEach(async (event) => {
+    const users = await event.fetchSubscribers();
+    users.forEach((u) => {
+      client.ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
+    });
   });
 
   const claimTimeouts = await client.ch
@@ -66,21 +50,16 @@ export default async (guild: DDeno.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     client.ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        if (!target) return;
+
         modBaseEvent({
-          executor: m.executorid
-            ? await client.users.fetch(BigInt(m.executorid))
-            : undefined,
-          target: m.userid
-            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
-            : client.me,
+          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guild.id
-              ? await client.ch.cache.messages.get(
-                  BigInt(m.msgid),
-                  BigInt(m.channelid),
-                  BigInt(m.guild.id),
-                )
+            m.msgid && m.channelid && m.guildid
+              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'muteRemove',
@@ -88,7 +67,7 @@ export default async (guild: DDeno.Guild) => {
         });
       }),
       guild.id,
-      BigInt(m.userid),
+      m.userid,
     );
   });
 
@@ -99,21 +78,16 @@ export default async (guild: DDeno.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     client.ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        if (!target) return;
+
         modBaseEvent({
-          executor: m.executorid
-            ? await client.users.fetch(BigInt(m.executorid))
-            : undefined,
-          target: m.userid
-            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
-            : client.me,
+          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guild.id
-              ? await client.ch.cache.messages.get(
-                  BigInt(m.msgid),
-                  BigInt(m.channelid),
-                  BigInt(m.guild.id),
-                )
+            m.msgid && m.channelid && m.guildid
+              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'banRemove',
@@ -121,7 +95,7 @@ export default async (guild: DDeno.Guild) => {
         });
       }),
       guild.id,
-      BigInt(m.userid),
+      m.userid,
     );
   });
 
@@ -132,21 +106,16 @@ export default async (guild: DDeno.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     client.ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        if (!target) return;
+
         modBaseEvent({
-          executor: m.executorid
-            ? await client.users.fetch(BigInt(m.executorid))
-            : undefined,
-          target: m.userid
-            ? (await client.users.fetch(BigInt(m.userid))) ?? client.me
-            : client.me,
+          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guild.id
-              ? await client.ch.cache.messages.get(
-                  BigInt(m.msgid),
-                  BigInt(m.channelid),
-                  BigInt(m.guild.id),
-                )
+            m.msgid && m.channelid && m.guildid
+              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'channelbanRemove',
@@ -154,7 +123,7 @@ export default async (guild: DDeno.Guild) => {
         });
       }),
       guild.id,
-      BigInt(m.userid),
+      m.userid,
     );
   });
 

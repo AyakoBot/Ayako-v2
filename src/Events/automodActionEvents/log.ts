@@ -12,7 +12,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   if (!rule) return;
 
   const channel = execution.channelId
-    ? await client.ch.getGuildTextChannel(execution.channelId)
+    ? await client.ch.getChannel.guildTextChannel(execution.channelId)
     : undefined;
   const msg =
     execution.messageId && channel ? await channel.messages.fetch(execution.messageId) : undefined;

@@ -46,7 +46,7 @@ export default async (webhook: DDeno.Webhook) => {
 
   if (webhook.avatar) {
     const url = client.customConstants.standard.userAvatarURL(webhook, 'png');
-    const blob = (await client.ch.fileURL2Blob([url]))?.[0]?.blob;
+    const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
 
     if (blob) {
       files.push({
