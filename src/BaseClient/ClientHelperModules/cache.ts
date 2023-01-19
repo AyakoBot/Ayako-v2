@@ -29,6 +29,17 @@ const cache: {
     delete: (integrationId: string, guildId: string) => void;
     cache: Map<string, Map<string, Discord.Integration>>;
   };
+  scheduledEventUsers: {
+    add: (user: Discord.User, guildId: string, scheduledEventId: string) => void;
+    remove: (user: Discord.User, guildId: string, scheduledEventId: string) => void;
+    cache: Map<string, Map<string, Map<string, Discord.User>>>;
+  };
+  welcomeScreens: {
+    get: (guildId: string) => Promise<Discord.WelcomeScreen | undefined>;
+    set: (welcomeScreen: Discord.WelcomeScreen) => void;
+    delete: (guildId: string) => void;
+    cache: Map<string, Discord.WelcomeScreen>;
+  };
 
   // Ayako Cache
   giveawayClaimTimeout: {
@@ -138,12 +149,12 @@ const cache: {
       return fetched?.find((f) => f.id === id);
     },
     set: (webhook) => {
-      if (!cache.webhooks.cache.get(webhook.guild.id)?.get(webhook.channelId)) {
-        cache.webhooks.cache.get(webhook.guild.id)?.set(webhook.channelId, new Map());
+      if (!cache.webhooks.cache.get(webhook.guildId)?.get(webhook.channelId)) {
+        cache.webhooks.cache.get(webhook.guildId)?.set(webhook.channelId, new Map());
       }
 
       if (webhook.channelId) {
-        cache.webhooks.cache.get(webhook.guild.id)?.get(webhook.channelId)?.set(webhook.id, webhook);
+        cache.webhooks.cache.get(webhook.guildId)?.get(webhook.channelId)?.set(webhook.id, webhook);
       }
     },
     find: (id) =>
@@ -154,18 +165,18 @@ const cache: {
         ?.get(id),
     delete: (id) => {
       const cached = cache.webhooks.find(id);
-      if (!cached || !cached.guild.id || !cached.channelId) return;
+      if (!cached || !cached.guildId || !cached.channelId) return;
 
-      if (cache.webhooks.cache.get(cached.guild.id)?.size === 1) {
-        if (cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.size === 1) {
-          cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.clear();
+      if (cache.webhooks.cache.get(cached.guildId)?.size === 1) {
+        if (cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
+          cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.clear();
         } else {
-          cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.delete(id);
+          cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
         }
-      } else if (cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.size === 1) {
-        cache.webhooks.cache.get(cached.guild.id)?.delete(cached.channelId);
+      } else if (cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
+        cache.webhooks.cache.get(cached.guildId)?.delete(cached.channelId);
       } else {
-        cache.webhooks.cache.get(cached.guild.id)?.get(cached.channelId)?.delete(id);
+        cache.webhooks.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
       }
     },
     cache: new Map(),
@@ -200,6 +211,57 @@ const cache: {
       } else {
         cache.integrations.cache.get(guildId)?.delete(id);
       }
+    },
+    cache: new Map(),
+  },
+  scheduledEventUsers: {
+    add: (user: Discord.User, guildId: string, eventId: string) => {
+      if (!cache.scheduledEventUsers.cache.get(guildId)) {
+        cache.scheduledEventUsers.cache.set(guildId, new Map());
+      }
+
+      if (!cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)) {
+        cache.scheduledEventUsers.cache.get(guildId)?.set(eventId, new Map());
+      }
+
+      cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)?.set(user.id, user);
+    },
+    remove: (user: Discord.User, guildId: string, eventId: string) => {
+      const cached = cache.scheduledEventUsers.cache.get(guildId);
+      if (!cached) return;
+
+      if (cache.scheduledEventUsers.cache.size < 2) {
+        if (cache.scheduledEventUsers.cache.get(guildId)?.size === 1) {
+          if (cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)?.size === 1) {
+            cache.scheduledEventUsers.cache.clear();
+          } else {
+            cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)?.delete(user.id);
+          }
+        } else {
+          cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)?.delete(user.id);
+        }
+      } else {
+        cache.scheduledEventUsers.cache.get(guildId)?.get(eventId)?.delete(user.id);
+      }
+    },
+    cache: new Map(),
+  },
+  welcomeScreens: {
+    get: async (guildId) => {
+      const cached = cache.welcomeScreens.cache.get(guildId);
+      if (cached) return cached;
+
+      const fetched = await client.guilds.cache.get(guildId)?.fetchWelcomeScreen();
+      if (!fetched) return undefined;
+
+      cache.welcomeScreens.set(fetched);
+      return fetched;
+    },
+    set: (screen: Discord.WelcomeScreen) => {
+      cache.welcomeScreens.cache.set(screen.guild.id, screen);
+    },
+    delete: (guildId) => {
+      cache.welcomeScreens.cache.delete(guildId);
     },
     cache: new Map(),
   },
