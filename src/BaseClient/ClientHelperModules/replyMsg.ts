@@ -7,7 +7,7 @@ import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
 import client from '../Client.js';
 
 export default async (
-  msg: Discord.Message,
+  msg: Discord.Message | CT.GuildMessage | CT.Message,
   payload: Discord.MessageCreateOptions,
   command?: CT.Command,
 ) => {
@@ -20,25 +20,24 @@ export default async (
 
   if (!sentMessage) return null;
 
-  cooldownHandler(msg, sentMessage, command);
-  deleteCommandHandler(msg, sentMessage);
+  if (msg.guild && command) {
+    cooldownHandler(msg as CT.GuildMessage, sentMessage, command);
+    deleteCommandHandler(msg as CT.GuildMessage, sentMessage, command);
+  }
 
   return sentMessage;
 };
 
 export const cooldownHandler = async (
-  msg: Discord.Message | Discord.Interaction,
+  msg: CT.GuildMessage | CT.GuildInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
-  command?: CT.Command,
+  command: CT.Command,
 ) => {
-  if (!msg) return;
-  if (!sentMessage) return;
-  if (!command) return;
   if (!command.cooldown) return;
 
   const authorId = 'author' in msg ? msg.author.id : msg.user.id;
 
-  const r = await getCooldownRow(msg, command);
+  const r = await getCooldownRow(msg.guild, command);
   if (!r) return;
   if (!authorId) return;
   if (r.bpuserid?.includes(String(authorId))) return;
@@ -87,15 +86,11 @@ export const cooldownHandler = async (
 };
 
 export const deleteCommandHandler = async (
-  msg: Discord.Message | Discord.Interaction,
+  msg: CT.GuildMessage | CT.GuildInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
-  command?: CT.Command,
+  command: CT.Command,
 ) => {
-  if (!msg) return;
-  if (!sentMessage) return;
-  if (!command) return;
-
-  const settings = await getDeleteSettings(msg, command.name);
+  const settings = await getDeleteSettings(msg.guild, command.name);
   if (!settings) return;
 
   const applyingSettings = settings
@@ -118,14 +113,14 @@ export const deleteCommandHandler = async (
   });
 };
 
-const getDeleteSettings = async (msg: Discord.Message | Discord.Interaction, commandName: string) =>
+const getDeleteSettings = async (guild: Discord.Guild, commandName: string) =>
   query(`SELECT * FROM deletecommands WHERE active = true AND guildid = $1 AND command = $2;`, [
-    String(msg.guild.id),
+    String(guild.id),
     commandName,
   ]).then((r: DBT.deletecommands[] | null) => r);
 
-const getCooldownRow = (msg: Discord.Message | Discord.Interaction, command: CT.Command) =>
+const getCooldownRow = (guild: Discord.Guild, command: CT.Command) =>
   query(
     `SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2 and cooldown = $3;`,
-    [String(msg.guild.id), command.name, command.cooldown],
+    [String(guild.id), command.name, command.cooldown],
   ).then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));

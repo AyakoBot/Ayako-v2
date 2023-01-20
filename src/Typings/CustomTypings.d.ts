@@ -63,4 +63,12 @@ export interface Message extends Discord.Message {
   language: Language;
 }
 
+export interface GuildMessage extends Omit<Message, 'guild'> {
+  guild: Discord.Guild;
+}
+
+export interface GuildInteraction extends Omit<Discord.Interaction, 'guild'> {
+  guild: Discord.Guild;
+}
+
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
