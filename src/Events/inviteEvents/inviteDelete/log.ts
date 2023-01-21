@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (invite: Discord.Invite, guild: Discord.Guild) => {
-  const channels = await client.ch.getLogChannels('guildevents', guild);
+  const channels = await client.ch.getLogChannels('inviteevents', guild);
   if (!channels) return;
 
   const language = await client.ch.languageSelector(guild.id);

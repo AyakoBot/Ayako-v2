@@ -5,7 +5,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
   const guild = event.guild ?? (event.guildId ? client.guilds.cache.get(event.guildId) : undefined);
   if (!guild) return;
 
-  const channels = await client.ch.getLogChannels('scheduledevents', guild);
+  const channels = await client.ch.getLogChannels('scheduledeventevents', guild);
   if (!channels) return;
 
   const channel =

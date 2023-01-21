@@ -255,23 +255,25 @@ export type levelingruleschannels = {
 
 export type logchannels = {
   guildid: string;
-  emojievents?: string[];
-  guildevents?: string[];
-  inviteevents?: string[];
-  messageevents?: string[];
-  modlogs?: string[];
-  roleevents?: string[];
-  userevents?: string[];
-  voiceevents?: string[];
-  webhookevents?: string[];
-  settingslog?: string[];
-  channelevents?: string[];
-  stickerevents?: string[];
-  guildmemberevents?: string[];
-  stageevents?: string[];
-  reactionevents?: string[];
-  scheduledevents?: string[];
-  automodevents?: string[];
+  applicationevents: string[];
+  automodevents: string[];
+  channelevents: string[];
+  emojievents: string[];
+  guildevents: string[];
+  scheduledeventevents: string[];
+  inviteevents: string[];
+  messageevents: string[];
+  roleevents: string[];
+  stageevents: string[];
+  stickerevents: string[];
+  typingevents: string[];
+  userevents: string[];
+  voiceevents: string[];
+  webhookevents: string[];
+  settingslog: string[];
+  modlog: string[];
+  reactionevents: string[];
+  memberevents: string[];
 };
 
 export type expiry = {

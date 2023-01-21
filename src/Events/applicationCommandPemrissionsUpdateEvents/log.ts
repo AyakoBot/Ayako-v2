@@ -5,7 +5,7 @@ export default async (
   data: Discord.ApplicationCommandPermissionsUpdateData,
   guild: Discord.Guild,
 ) => {
-  const channels = await client.ch.getLogChannels('guildevents', guild);
+  const channels = await client.ch.getLogChannels('applicationevents', guild);
   if (!channels) return;
 
   const application = await client.users.fetch(data.applicationId);

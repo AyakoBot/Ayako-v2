@@ -8,7 +8,7 @@ export default async (
   const guild = event.guild ?? client.guilds.cache.get(event.guildId);
   if (!guild) return;
 
-  const channels = await client.ch.getLogChannels('scheduledevents', guild);
+  const channels = await client.ch.getLogChannels('scheduledeventevents', guild);
   if (!channels) return;
 
   const channel =

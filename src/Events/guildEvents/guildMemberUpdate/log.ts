@@ -3,7 +3,7 @@ import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
-  const channels = await client.ch.getLogChannels('guildmemberevents', member.guild);
+  const channels = await client.ch.getLogChannels('memberevents', member.guild);
   if (!channels) return;
 
   const language = await client.ch.languageSelector(member.guild.id);

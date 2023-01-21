@@ -4,23 +4,25 @@ import client from '../Client.js';
 
 export default async (
   columnName:
+    | 'applicationevents'
+    | 'automodevents'
+    | 'channelevents'
     | 'emojievents'
     | 'guildevents'
+    | 'scheduledeventevents'
     | 'inviteevents'
     | 'messageevents'
-    | 'modlogs'
     | 'roleevents'
+    | 'stageevents'
+    | 'stickerevents'
+    | 'typingevents'
     | 'userevents'
     | 'voiceevents'
     | 'webhookevents'
     | 'settingslog'
-    | 'channelevents'
-    | 'stickerevents'
-    | 'guildmemberevents'
-    | 'stageevents'
-    | 'automodevents'
+    | 'modlog'
     | 'reactionevents'
-    | 'scheduledevents',
+    | 'memberevents',
   guild: Discord.Guild,
 ) =>
   client.ch

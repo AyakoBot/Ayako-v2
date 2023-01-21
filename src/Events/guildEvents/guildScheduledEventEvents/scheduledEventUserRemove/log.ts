@@ -4,7 +4,7 @@ import client from '../../../../BaseClient/Client.js';
 export default async (event: Discord.GuildScheduledEvent, user: Discord.User) => {
   if (!event.guild) return;
 
-  const channels = await client.ch.getLogChannels('scheduledevents', event.guild);
+  const channels = await client.ch.getLogChannels('scheduledeventevents', event.guild);
   if (!channels) return;
 
   const channel =
