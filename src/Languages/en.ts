@@ -75,6 +75,8 @@ const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
 const getCommand = (command: Discord.ApplicationCommand) =>
   `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`;
 
+const getSticker = (sticker: Discord.Sticker) => `Sticker \`${sticker.name}\` / \`${sticker.id}\``;
+
 export default {
   languageFunction: {
     getGuild,
@@ -90,6 +92,7 @@ export default {
     getApplication,
     getScheduledEvent,
     getWebhook,
+    getCommand,
   },
   events: {
     logs: {
@@ -97,6 +100,29 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      sticker: {
+        descCreateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+          `${getUser(user)}has created\n${getSticker(sticker)}`,
+        descCreate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was created`,
+        descDeleteAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+          `${getUser(user)}has deleted\n${getSticker(sticker)}`,
+        descDelete: (sticker: Discord.Sticker) => `${getSticker(sticker)}was deleted`,
+        descUpdateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+          `${getUser(user)}has updated\n${getSticker(sticker)}`,
+        descUpdate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was updated`,
+        nameCreate: 'Sticker created',
+        nameDelete: 'Sticker deleted',
+        nameUpdate: 'Sticker updated',
+        description: 'Description',
+        formatName: 'Format',
+        format: {
+          1: 'Image',
+          2: 'Animated Image',
+          3: 'Lottie File',
+          4: 'GIF',
+        },
+        tags: 'Suggestions / Autocompletion for the Sticker',
+      },
       application: {
         name: 'Application Command Permissions updated',
         descUpdateAudit: (
