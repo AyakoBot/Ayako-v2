@@ -19,6 +19,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
       icon_url: con.update,
     },
     color: client.customConstants.colors.loading,
+    fields: [],
     description: auditUser ? lan.descUpdateAudit(role, auditUser) : lan.descUpdate(role),
   };
 
