@@ -768,8 +768,14 @@ export default {
           )}`,
         descPinRemove: (msg: Discord.Message, channelType: string) =>
           `${getMessage(msg)}was un-pinned in\n${getChannel(msg.channel, channelType)}`,
+        descTyping: (
+          user: Discord.User,
+          channel: Discord.GuildTextBasedChannel,
+          channelType: string,
+        ) => `${getUser(user)}has started typing in\n${getChannel(channel, channelType)}`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
+        nameTyping: 'User started typing',
         nameUpdate: 'Channel updated',
         nameStageUpdate: 'Stage updated',
         nameStageCreate: 'Stage created',
