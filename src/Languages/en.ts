@@ -10,7 +10,7 @@ const getUser = (user: Discord.User) =>
   }\`\n`;
 
 const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
-  `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
+  `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
 
 const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
@@ -47,30 +47,33 @@ const getInviteDetails = (invite: Discord.Invite, user?: Discord.User) =>
   }`;
 
 const getInvite = (invite: Discord.Invite) =>
-  `Invite discord.gg/${invite.code} / \`${invite.code}\``;
+  `Invite discord.gg/${invite.code} / \`${invite.code}\`\n`;
 
 const getIntegration = (integration: Discord.Integration) =>
-  `Integration \`${integration.name}\` / \`${integration.id}\``;
+  `Integration \`${integration.name}\` / \`${integration.id}\`\n`;
 
-const getRole = (role: Discord.Role) => `Role <@&${role}> / \`${role.name}\` / \`${role.id}\``;
+const getRole = (role: Discord.Role) => `Role <@&${role}> / \`${role.name}\` / \`${role.id}\`\n`;
 
 const getApplication = (
   application: Discord.Application | Discord.IntegrationApplication | bigint,
 ) =>
   `Application ${
     typeof application === 'bigint'
-      ? `\`${application}\``
-      : `\`${application.name}\` / \`${application.id}\``
+      ? `<@${application}> / \`${application}\``
+      : `<@${application.id}> / \`${application.name}\` / \`${application.id}\`\n`
   }`;
 
 const getScheduledEvent = (event: Discord.GuildScheduledEvent) =>
   `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`;
 
 const getWebhook = (webhook: Discord.Webhook, type?: string) =>
-  `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\``;
+  `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\`\n`;
 
 const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
-  `Server \`${guild.name}\` / \`${guild.id}\``;
+  `Server \`${guild.name}\` / \`${guild.id}\`\n`;
+
+const getCommand = (command: Discord.ApplicationCommand) =>
+  `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`;
 
 export default {
   languageFunction: {
@@ -94,6 +97,23 @@ export default {
         `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
+      application: {
+        name: 'Application Command Permissions updated',
+        descUpdateAudit: (
+          application: Discord.User,
+          user: Discord.User,
+          command: Discord.ApplicationCommand,
+        ) =>
+          `${getUser(user)}has updated Permissions of\n${getCommand(command)}from\n${getApplication(
+            application as unknown as Discord.Application,
+          )}`,
+        descUpdate: (application: Discord.User, command: Discord.ApplicationCommand) =>
+          `The Permissions\n${getCommand(command)}from\n${getApplication(
+            application as unknown as Discord.Application,
+          )}were updated`,
+        permissionTypeName: 'Permission Type',
+        allChannels: 'All Channels',
+      },
       scheduledEvent: {
         descUserRemoveChannel: (
           user: Discord.User,
