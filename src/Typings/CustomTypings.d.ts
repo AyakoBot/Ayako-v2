@@ -31,7 +31,7 @@ export interface ModBaseEventOptions {
   executor: Discord.User | undefined;
   target: Discord.User;
   reason: string;
-  msg?: Discord.GuildMessage;
+  msg?: GuildMessage | Discord.Message;
   cmd?: Discord.GuildInteraction;
   guild: Discord.Guild | undefined;
   type:
@@ -49,12 +49,12 @@ export interface ModBaseEventOptions {
     | 'tempmuteAdd'
     | 'warnAdd';
   duration?: number;
-  m?: Discord.GuildMessage | null;
+  m?: Discord.Message;
   doDBonly?: boolean;
   source?: string;
   forceFinish?: boolean;
   channel?: Discord.GuildChannel;
-  role?: Eris.Role;
+  role?: Discord.Role;
 }
 
 export interface Message extends Discord.Message {

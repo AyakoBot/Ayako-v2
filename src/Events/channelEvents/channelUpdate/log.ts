@@ -12,6 +12,7 @@ export default async (
     | Discord.PublicThreadChannel
     | Discord.VoiceChannel
     | Discord.ForumChannel
+    | Discord.AnyThreadChannel
     | undefined,
   channel:
     | Discord.CategoryChannel
@@ -21,7 +22,8 @@ export default async (
     | Discord.PrivateThreadChannel
     | Discord.PublicThreadChannel
     | Discord.VoiceChannel
-    | Discord.ForumChannel,
+    | Discord.ForumChannel
+    | Discord.AnyThreadChannel,
 ) => {
   const channels = await client.ch.getLogChannels('channelevents', channel.guild);
   if (!channels) return;
@@ -59,7 +61,8 @@ export default async (
           | Discord.PrivateThreadChannel
           | Discord.PublicThreadChannel
           | Discord.VoiceChannel
-          | Discord.ForumChannel => !!c,
+          | Discord.ForumChannel
+          | Discord.AnyThreadChannel => !!c,
       )
       .map((c) => new Discord.ChannelFlagsBitField(c.flags).toArray());
     const removed = client.ch.getDifference(oldFlags, newFlags) as ('Pinned' | 'RequireTag')[];

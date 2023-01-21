@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
 
-export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceState) => {
+export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
   const files: {
-    default: (v: DDeno.VoiceState, v2: DDeno.VoiceState) => void;
+    default: (v: Discord.VoiceState, v2: Discord.VoiceState) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  files.forEach((f) => f.default(oldVoiceState, voiceState));
+  files.forEach((f) => f.default(oldState, state));
 };

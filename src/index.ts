@@ -1,8 +1,6 @@
 import readline from 'readline';
 import client from './BaseClient/Client.js';
 import * as ClientHelper from './BaseClient/ClientHelper.js';
-import ClientEmitter from './BaseClient/Other/ClientEmitter.js';
-import './BaseClient/ExpressServer.js';
 
 client.ch = ClientHelper;
 
@@ -25,15 +23,9 @@ rl.on('line', async (msg: string) => {
 });
 
 process.setMaxListeners(4);
-process.on('unhandledRejection', async (error: string) =>
-  ClientEmitter.emit('unhandledRejection', error),
-);
-process.on('uncaughtException', async (error: string) =>
-  ClientEmitter.emit('uncaughtException', error),
-);
+process.on('unhandledRejection', async (error: string) => client.emit('unhandledRejection', error));
+process.on('uncaughtException', async (error: string) => client.emit('uncaughtException', error));
 process.on('promiseRejectionHandledWarning', (error: string) =>
-  ClientEmitter.emit('uncaughtException', error),
+  client.emit('uncaughtException', error),
 );
-process.on('experimentalWarning', (error: string) =>
-  ClientEmitter.emit('uncaughtException', error),
-);
+process.on('experimentalWarning', (error: string) => client.emit('uncaughtException', error));

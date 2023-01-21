@@ -1,83 +1,47 @@
-import jobs from 'node-schedule';
-import DDeno from 'discordeno';
-import Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
+import type * as Discord from 'discord.js';
 import client from '../BaseClient/Client.js';
 import type CT from '../Typings/CustomTypings';
+import type DBT from '../Typings/DataBaseTypings';
 
 export default async (args: CT.ModBaseEventOptions) => {
-  const { executor, target, reason, msg, guild, type, source } = args;
-  if (!guild) return;
-  if (!executor) return;
-  if (!target) return;
-
-  const mExistedPreviously = !!args.m;
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await client.ch.languageSelector(args.guild?.id);
+  args.guild =
+    args.guild ?? args.msg?.guild ?? args.m?.guild ?? args.channel?.guild ?? args.role?.guild;
 
   let action;
-  let embed: Discord.APIEmbed | undefined | null;
+  let embed: Discord.APIEmbed = {};
   let error;
   let dm;
 
-  if (!args.doDBonly) {
-    embed = loadingEmbed(mExistedPreviously, language, args);
-    if (!embed) return;
+  if (!args.doDBonly && args.guild && language) {
+    embed = loadingEmbed(language, args);
 
-    if (msg && mExistedPreviously && args.m) {
-      await client.helpers
-        .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-        .catch(() => null);
-    } else if (msg) {
-      const reply = await client.ch.replyMsg(msg, { embeds: [embed] });
-      if (reply) args.m = reply;
-    }
+    if (args.msg && args.m && args.m.editable) {
+      await args.m.edit({ embeds: [embed] }).catch(() => null);
+    } else if (args.msg) args.m = await client.ch.replyMsg(args.msg, { embeds: [embed] });
 
-    const targetMember = await client.ch.cache.members.get(target.id, guild.id);
-    const executingMember = await client.ch.cache.members.get(executor.id, guild.id);
-    if (!executingMember) return;
+    const targetMember = await args.guild.members.fetch(args.target.id).catch(() => undefined);
+    const executingMember = args.executor
+      ? await args.guild.members.fetch(args.executor.id).catch(() => undefined)
+      : undefined;
 
-    const roleCheckAllowed = await roleCheck(
-      embed,
-      mExistedPreviously,
-      language,
-      targetMember,
-      executingMember,
-      args,
-    );
+    const roleCheckAllowed = await roleCheck(embed, language, targetMember, executingMember, args);
     if (!roleCheckAllowed) return;
 
-    const selfPunish = await checkSelfPunish(
-      embed,
-      mExistedPreviously,
-      language,
-      targetMember,
-      executingMember,
-      args,
-    );
+    const selfPunish = await checkSelfPunish(embed, language, targetMember, executingMember, args);
     if (selfPunish) return;
 
-    const mePunish = await checkMePunish(embed, mExistedPreviously, language, targetMember, args);
+    const mePunish = await checkMePunish(embed, language, targetMember, args);
     if (mePunish) return;
 
-    const punishable = await checkPunishable(
-      embed,
-      mExistedPreviously,
-      language,
-      targetMember,
-      type,
-      args,
-    );
+    const punishable = await checkPunishable(embed, language, targetMember, args);
     if (!punishable) return;
 
-    const actionTaken = await checkActionTaken(
-      embed,
-      mExistedPreviously,
-      language,
-      targetMember,
-      args,
-    );
+    const actionTaken = await checkActionTaken(embed, language, targetMember, args);
     if (actionTaken) return;
 
-    dm = await doDM(language, targetMember, reason, args);
+    dm = await doDM(language, targetMember, args);
 
     const actionReply = await takeAction(targetMember, args, language);
 
@@ -85,120 +49,112 @@ export default async (args: CT.ModBaseEventOptions) => {
   }
 
   if (action || args.doDBonly) {
-    logEmbed(language, reason, args);
+    logEmbed(language, args);
     if (!args.doDBonly) {
-      await declareSuccess(embed, mExistedPreviously, language, args);
+      await declareSuccess(embed, language, args);
     }
   } else if (error) {
-    await errorEmbed(embed, language, mExistedPreviously, dm, error, args);
+    await errorEmbed(embed, language, dm, error, args);
     return;
   }
 
   doDataBaseAction(args);
 
-  if (args.m && source) {
-    (await import('./modSourceHandler.js')).default(
-      source,
-      args.m as CT.GuildMessage,
-      undefined,
-      embed || undefined,
-    );
-  }
+  if (args.source) client.emit('modSourceHandler', args.source, args.m, undefined, embed);
 };
 
 const declareSuccess = async (
-  embed: Discord.APIEmbed | undefined | null,
-  mExistedPreviously: boolean,
+  embed: Discord.APIEmbed,
   language: CT.Language,
   args: CT.ModBaseEventOptions,
 ) => {
-  const lan = language.mod[args.type];
   if (!args.msg) return;
-  if (!embed) return;
 
-  if (mExistedPreviously && args.source) {
+  const lan = language.mod[args.type];
+
+  if (args.source) {
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
       value: `${client.stringEmotes.tick} ${lan.success(args)}`,
     });
-  } else if (mExistedPreviously) {
+  } else if (args.m) {
     embed.fields?.pop();
     embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
   } else {
     embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
   }
 
-  if (args.m) {
-    await client.helpers
-      .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-      .catch(() => null);
-  }
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
 };
 
 const errorEmbed = async (
-  embed: Discord.APIEmbed | undefined | null,
+  embed: Discord.APIEmbed,
   language: CT.Language,
-  mExistedPreviously: boolean,
-  dm: void | DDeno.Message | null,
-  err: boolean | undefined,
+  dm: void | Discord.Message | null,
+  err: string | true,
   args: CT.ModBaseEventOptions,
 ) => {
   if (!args.msg) return;
-  if (dm) await client.helpers.deleteMessage(dm.channelId, dm.id).catch(() => null);
-  if (!embed) return;
+  if (dm) dm.delete().catch(() => null);
 
-  if (mExistedPreviously && args.source) {
+  const lan = language.mod[args.type];
+  if (!('error' in lan)) {
+    throw new Error(`Punishment of type ${args.type} has missing language values`);
+  }
+
+  if (args.m && args.source) {
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${language.error} ${client.ch.util.makeCodeBlock(
+      value: `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
         String(err),
       )}`,
     });
-
-    deleter(args);
-  } else if (mExistedPreviously) {
+  } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${
-      language.error
-    } ${client.ch.util.makeCodeBlock(String(err))}`;
-
-    deleter(args);
+    embed.description = `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
+      String(err),
+    )}`;
   } else {
-    embed.description = `${client.stringEmotes.cross} ${
-      language.error
-    } ${client.ch.util.makeCodeBlock(String(err))}`;
-
-    deleter(args);
+    embed.description = `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
+      String(err),
+    )}`;
   }
 
-  if (args.m) {
-    await client.helpers
-      .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-      .catch(() => null);
-  }
+  deleter(args);
+
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
 };
 
-const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseEventOptions) => {
+const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => {
+  const getLogchannels = async () => {
+    const res = await client.ch
+      .query(`SELECT modlogs FROM logchannels WHERE guildid = $1 AND modlogs IS NOT NULL;`, [
+        args.guild?.id,
+      ])
+      .then((r: DBT.logchannels[] | null) => r?.[0] || null);
+
+    return res?.modlogs;
+  };
+
   const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
-
   const embed: Discord.APIEmbed = {
     color: con.color,
     author: {
       name: lan.author(args),
-      icon_url: client.ch.getAvatarURL(args.target),
-      url: client.customConstants.standard.invite,
+      icon_url: args.target?.displayAvatarURL({ size: 4096 }),
     },
     description: lan.description(args),
+    timestamp: String(Date.now()),
     footer: {
       text: lan.footer(args),
     },
     fields: [],
   };
 
-  if (reason) embed.fields?.push({ name: language.reason, value: `${reason}` });
+  if (args.reason) embed.fields?.push({ name: language.reason, value: `${args.reason}` });
 
   if (args.duration) {
     embed.fields?.push({
@@ -208,87 +164,54 @@ const logEmbed = async (language: CT.Language, reason: string, args: CT.ModBaseE
     });
   }
 
-  const logchannels = await client.ch.getLogChannels('modlogs', {
-    guildId: (args.guild?.id ?? args.msg?.guild.id ?? args.m?.guild.id) as bigint,
-  });
-
-  if (logchannels && logchannels.length) {
+  const logchannels = await getLogchannels();
+  if (logchannels && logchannels.length && args.guild) {
     await client.ch.send(
-      {
-        id: logchannels,
-        guildId: (args.guild?.id ?? args.msg?.guild.id ?? args.m?.guild.id) as bigint,
-      },
+      { id: logchannels, guildId: args.guild.id },
       { embeds: [embed] },
       language,
-      undefined,
-      10000,
     );
   }
 };
 
-const loadingEmbed = (
-  mExistedPreviously: boolean,
-  language: CT.Language,
-  args: CT.ModBaseEventOptions,
-) => {
+const loadingEmbed = (language: CT.Language, args: CT.ModBaseEventOptions) => {
+  if (!args.msg) return {};
+
   const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
+  const embed = args.m?.embeds[0].data as Discord.APIEmbed;
 
-  if (!args.msg) return null;
+  if (!embed.fields?.length) embed.fields = [];
+  if (args.m || args.source) embed.fields?.pop();
 
-  if (mExistedPreviously && args.source) {
-    const embed = args.m?.embeds[0];
-    if (!embed) return null;
+  embed.color = con.color;
+  embed.fields?.push({ name: '\u200b', value: `${client.stringEmotes.loading} ${lan.loading}` });
 
-    embed.fields?.pop();
-    embed.color = con.color;
-    embed.fields?.push({
-      name: '\u200b',
-      value: `${client.stringEmotes.loading} ${lan.loading}`,
-    });
-
-    return embed;
-  }
-  if (mExistedPreviously) {
-    const embed = args.m?.embeds[0];
-    if (!embed) return null;
-
-    embed.fields?.pop();
-    embed.color = con.color;
-    embed.description = `${client.stringEmotes.loading} ${lan.loading}`;
-
-    return embed;
-  }
-
-  return {
-    color: con.color,
-    description: `${client.stringEmotes.loading} ${lan.loading}`,
-  };
+  return embed;
 };
 
 const roleCheck = async (
   embed: Discord.APIEmbed,
-  mExistedPreviously: boolean,
   language: CT.Language,
-  targetMember: DDeno.Member | null | undefined,
-  executingMember: DDeno.Member,
+  targetMember: Discord.GuildMember | undefined,
+  executingMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
-  const lan = language.mod[args.type];
+  const lan = language?.mod[args.type];
 
   if (args.forceFinish) return true;
   if (
     !executingMember ||
     !targetMember ||
-    (await client.ch.isManageable(targetMember, executingMember))
+    executingMember.roles?.highest.position > targetMember?.roles?.highest.position ||
+    args.executor?.id === args.guild?.ownerId
   ) {
     return true;
   }
 
-  if (!args.msg) return false;
-  if (!args.m) return false;
+  if (!args.msg && !args.msg) return false;
 
-  if (mExistedPreviously && args.source) {
+  if (args.source) {
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
@@ -296,7 +219,7 @@ const roleCheck = async (
     });
 
     deleter(args);
-  } else if (mExistedPreviously) {
+  } else if (args.m) {
     embed.fields?.pop();
     embed.description = `${client.stringEmotes.cross} ${lan.exeNoPerms}`;
 
@@ -307,28 +230,24 @@ const roleCheck = async (
     deleter(args);
   }
 
-  await client.helpers
-    .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-    .catch(() => null);
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
   return false;
 };
 
 const checkSelfPunish = async (
   embed: Discord.APIEmbed,
-  mExistedPreviously: boolean,
   language: CT.Language,
-  targetMember: DDeno.Member | null | undefined,
-  executingMember: DDeno.Member,
+  targetMember: Discord.GuildMember | undefined,
+  executingMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
   const lan = language.mod[args.type];
 
   if (args.forceFinish) return false;
-  if (executingMember.id !== targetMember?.id) return false;
-  if (!args.msg) return true;
-  if (!args.m) return true;
+  if (executingMember?.id !== targetMember?.id) return false;
+  if (!args.msg && !args.msg) return true;
 
-  if (mExistedPreviously && args.source) {
+  if (args.source && args.m) {
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
@@ -336,7 +255,7 @@ const checkSelfPunish = async (
     });
 
     deleter(args);
-  } else if (mExistedPreviously) {
+  } else if (args.m) {
     embed.fields?.pop();
     embed.description = `${client.stringEmotes.cross} ${lan.selfPunish}`;
 
@@ -347,29 +266,23 @@ const checkSelfPunish = async (
     deleter(args);
   }
 
-  if (mExistedPreviously && args.m) {
-    await client.helpers
-      .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-      .catch(() => null);
-  }
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
   return true;
 };
 
 const checkMePunish = async (
   embed: Discord.APIEmbed,
-  mExistedPreviously: boolean,
   language: CT.Language,
-  targetMember: DDeno.Member | null | undefined,
+  targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
   const lan = language.mod[args.type];
 
   if (args.forceFinish) return false;
-  if (targetMember?.id !== client.id) return false;
+  if (targetMember?.id !== client.user?.id) return false;
   if (!args.msg) return true;
-  if (!args.m) return true;
 
-  if (mExistedPreviously && args.source) {
+  if (args.m && args.source) {
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
@@ -377,7 +290,7 @@ const checkMePunish = async (
     });
 
     deleter(args);
-  } else if (mExistedPreviously) {
+  } else if (args.m) {
     embed.fields?.pop();
     embed.description = `${client.stringEmotes.cross} ${lan.mePunish}`;
 
@@ -388,28 +301,22 @@ const checkMePunish = async (
     deleter(args);
   }
 
-  if (args.m) {
-    await client.helpers
-      .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-      .catch(() => null);
-  }
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
   return true;
 };
 
 const checkPunishable = async (
   embed: Discord.APIEmbed,
-  mExistedPreviously: boolean,
   language: CT.Language,
-  targetMember: DDeno.Member | null | undefined,
-  punishmentType: CT.ModBaseEventOptions['type'],
+  targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
   const lan = language.mod[args.type];
 
-  switch (punishmentType) {
+  switch (args.type) {
     case 'muteRemove':
     case 'tempmuteAdd': {
-      if (await isModeratable(targetMember)) {
+      if (targetMember?.moderatable) {
         return true;
       }
       break;
@@ -417,7 +324,10 @@ const checkPunishable = async (
     case 'banAdd':
     case 'softbanAdd':
     case 'tempbanAdd': {
-      if (await isBannable(targetMember)) {
+      if (
+        targetMember?.bannable ||
+        (!targetMember && args.guild?.members.me?.permissions.has(4n))
+      ) {
         return true;
       }
       break;
@@ -425,25 +335,27 @@ const checkPunishable = async (
     case 'channelbanAdd':
     case 'tempchannelbanAdd':
     case 'channelbanRemove': {
-      if (!args.channel) throw new Error('Channel Missing');
-      if ((await isManageable(args.channel)) && targetMember) return true;
+      if (args.channel?.manageable && targetMember) return true;
       break;
     }
     case 'banRemove': {
-      if (await isBannable(targetMember)) return true;
+      if (args.guild?.members.me?.permissions.has(4n)) return true;
       break;
     }
     case 'kickAdd': {
-      if (await isKickable(targetMember)) return true;
+      if (
+        targetMember?.kickable ||
+        (!targetMember && args.guild?.members.me?.permissions.has(2n))
+      ) {
+        return true;
+      }
       break;
     }
     case 'roleAdd': {
       if (
-        args.guild &&
-        (await client.ch.isManageable(
-          targetMember,
-          await client.ch.cache.members.get(client.id, args.guild.id),
-        ))
+        Number(args.role?.rawPosition) <
+          Number(args.guild?.members.me?.roles?.highest.rawPosition) &&
+        targetMember?.manageable
       ) {
         return true;
       }
@@ -451,11 +363,9 @@ const checkPunishable = async (
     }
     case 'roleRemove': {
       if (
-        args.guild &&
-        (await client.ch.isManageable(
-          targetMember,
-          await client.ch.cache.members.get(client.id, args.guild.id),
-        ))
+        Number(args.role?.rawPosition) <
+          Number(args.guild?.members.me?.roles?.highest.rawPosition) &&
+        targetMember?.manageable
       ) {
         return true;
       }
@@ -468,69 +378,58 @@ const checkPunishable = async (
 
   if (args.forceFinish) return true;
   if (!args.msg) return false;
-
-  if ('permissionError' in lan) {
-    if (mExistedPreviously && args.source) {
-      embed.fields?.pop();
-      embed.fields?.push({
-        name: '\u200b',
-        value: `${client.stringEmotes.cross} ${lan.permissionError}`,
-      });
-
-      deleter(args);
-    } else if (mExistedPreviously) {
-      embed.fields?.pop();
-      embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
-
-      deleter(args);
-    } else {
-      embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
-
-      deleter(args);
-    }
+  if (!('permissionError' in lan)) {
+    throw new Error(`Punishment of type ${args.type} has missing language values`);
   }
 
-  if (args.m) {
-    await client.helpers
-      .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-      .catch(() => null);
+  if (args.m && args.source) {
+    embed.fields?.pop();
+    embed.fields?.push({
+      name: '\u200b',
+      value: `${client.stringEmotes.cross} ${lan.permissionError}`,
+    });
+
+    deleter(args);
+  } else if (args.m) {
+    embed.fields?.pop();
+    embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
+
+    deleter(args);
+  } else {
+    embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
+
+    deleter(args);
   }
+
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
   return false;
 };
 
 const doDM = async (
   language: CT.Language,
-  targetMember: DDeno.Member | undefined | null,
-  reason: string,
+  targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
-  const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
-
-  const dmChannel = targetMember
-    ? await client.helpers.getDmChannel(targetMember.id).catch(() => null)
-    : null;
+  const lan = language.mod[args.type];
+  const dmChannel = await targetMember?.createDM().catch(() => undefined);
   const DMembed: Discord.APIEmbed = {
     color: con.color,
+    timestamp: String(Date.now()),
     author: {
       name: lan.dm.author(args),
-      url: `https://discord.com/users/${args.target.id}`,
     },
   };
 
-  if (reason) DMembed.description = `**${language.reason}:** \n${reason}`;
+  if (args.reason) DMembed.description = `**${language.reason}:** \n${args.reason}`;
 
-  if (!dmChannel) return null;
-  const m = await client.ch.send(dmChannel, { embeds: [DMembed] }, language);
-
-  return m;
+  return dmChannel ? client.ch.send(dmChannel, { embeds: [DMembed] }, language) : undefined;
 };
 
 const checkActionTaken = async (
   embed: Discord.APIEmbed,
-  mExistedPreviously: boolean,
   language: CT.Language,
-  targetMember: DDeno.Member | null | undefined,
+  targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
   const lan = language.mod[args.type];
@@ -538,74 +437,54 @@ const checkActionTaken = async (
 
   switch (args.type) {
     case 'muteRemove': {
-      punished = !(Number(targetMember?.communicationDisabledUntil) > Date.now());
+      punished = !targetMember?.isCommunicationDisabled();
       break;
     }
     case 'tempmuteAdd': {
-      punished = Number(targetMember?.communicationDisabledUntil) > Date.now();
+      punished = !!targetMember?.isCommunicationDisabled();
       break;
     }
     case 'banAdd':
     case 'softbanAdd':
     case 'tempbanAdd': {
-      punished = args.guild
-        ? !!(await client.helpers.getBan(args.guild.id, args.target.id).catch(() => null))
-        : false;
+      punished = !!(await args.guild?.bans.fetch(args.target.id).catch(() => null));
       break;
     }
     case 'channelbanAdd':
     case 'tempchannelbanAdd': {
-      if (!args.channel) return false;
-      const permission = client.ch.getPermission(args.target.id, args.channel);
-      if (permission) {
-        const deny = new Discord.PermissionsBitField(permission.deny);
-
-        punished =
-          deny.has(2048n) &&
-          deny.has(274877906944n) &&
-          deny.has(1024n) &&
-          deny.has(64n) &&
-          deny.has(1048576n);
-      }
-
+      punished = !!(
+        args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(2048n) &&
+        args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(274877906944n) &&
+        args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(1024n) &&
+        args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(64n) &&
+        args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(1048576n)
+      );
       break;
     }
     case 'channelbanRemove': {
-      if (!args.channel) return false;
-
-      const permission = client.ch.getPermission(args.target.id, args.channel);
-      if (permission) {
-        const deny = new Discord.PermissionsBitField(permission.deny);
-
-        punished =
-          !deny.has(2048n) &&
-          !deny.has(274877906944n) &&
-          !deny.has(1024n) &&
-          !deny.has(64n) &&
-          !deny.has(1048576n);
-      }
+      punished = !!(
+        !args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(2048n) ||
+        !args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(274877906944n) ||
+        !args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(1024n) ||
+        !args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(64n) ||
+        !args.channel?.permissionOverwrites.cache.get(args.target.id)?.deny.has(1048576n)
+      );
       break;
     }
     case 'banRemove': {
-      punished = args.guild
-        ? !(await client.helpers.getBan(args.guild.id, args.target.id).catch(() => null))
-        : true;
+      punished = !(await args.guild?.bans.fetch(args.target.id).catch(() => undefined));
       break;
     }
     case 'kickAdd': {
-      punished = args.guild
-        ? !(await client.ch.cache.members.get(args.target.id, args.guild.id))
-        : false;
+      punished = !args.guild?.members.cache.has(args.target.id);
       break;
     }
     case 'roleAdd': {
-      if (!args.role) throw new Error('No Role provided');
-      punished = !!targetMember?.roles.includes(args.role.id);
+      if (args.role) punished = !!targetMember?.roles.cache.has(args.role.id);
       break;
     }
     case 'roleRemove': {
-      if (!args.role) throw new Error('No Role provided');
-      punished = !targetMember?.roles.includes(args.role.id);
+      if (args.role) punished = !targetMember?.roles.cache.has(args.role.id);
       break;
     }
     default: {
@@ -615,42 +494,36 @@ const checkActionTaken = async (
   }
 
   if (args.forceFinish) return false;
+  if (!punished) return false;
+  if (!args.msg) return true;
+  if (!('alreadyApplied' in lan)) {
+    throw new Error(`Punishment of type ${args.type} has missing language values`);
+  }
+  if (args.m && args.source) {
+    embed.fields?.pop();
+    embed.fields?.push({
+      name: '\u200b',
+      value: `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`,
+    });
 
-  if (punished && 'alreadyApplied' in lan) {
-    if (!args.msg) return true;
+    deleter(args);
+  } else if (args.m) {
+    embed.fields?.pop();
+    embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
-    if (mExistedPreviously && args.source) {
-      embed.fields?.pop();
-      embed.fields?.push({
-        name: '\u200b',
-        value: `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`,
-      });
+    deleter(args);
+  } else {
+    embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
-      deleter(args);
-    } else if (mExistedPreviously) {
-      embed.fields?.pop();
-      embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
-
-      deleter(args);
-    } else {
-      embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
-
-      deleter(args);
-    }
-
-    if (args.m) {
-      await client.helpers
-        .editMessage(args.m.channelId, args.m.id, { embeds: [embed] })
-        .catch(() => null);
-    }
-    return true;
+    deleter(args);
   }
 
-  return false;
+  if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => undefined);
+  return true;
 };
 
 const takeAction = async (
-  targetMember: DDeno.Member | null | undefined,
+  targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
   language: CT.Language,
 ) => {
@@ -659,277 +532,204 @@ const takeAction = async (
 
   switch (args.type) {
     case 'muteRemove': {
-      punished =
-        args.guild && targetMember
-          ? await client.helpers
-              .editMember(args.guild.id, targetMember.id, { communicationDisabledUntil: 0 })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
-
+      punished = await targetMember
+        ?.timeout(null, `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`)
+        .catch((err) => {
+          error = err;
+        });
       break;
     }
     case 'tempmuteAdd': {
-      if (!args.duration) throw new Error('No Duration provided');
+      punished = await targetMember
+        ?.timeout(
+          Number(args.duration),
+          `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+        )
+        .catch((err) => {
+          error = err;
+        });
 
-      punished =
-        args.guild && targetMember
-          ? await client.helpers
-              .editMember(args.guild.id, targetMember.id, {
-                communicationDisabledUntil: args.duration,
-              })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
+      if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
 
-      if (args.guild?.id) {
-        client.ch.cache.mutes.set(
-          jobs.scheduleJob(
-            `${args.guild?.id}-${args.target.id}`,
-            new Date(Date.now() + args.duration),
-            async () => {
-              const options: CT.ModBaseEventOptions = {
-                target: args.target,
-                reason: language.events.ready.unmute,
-                executor: await client.users.fetch(client.id),
-                msg: args.msg,
-                guild: args.guild,
-                forceFinish: true,
-                doDBonly: true,
-                type: 'muteRemove',
-              };
+      client.ch.cache.mutes.set(
+        Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
+          client.emit('modBaseEvent', {
+            target: args.target,
+            reason: language.events.ready.unmute,
+            executor: client.user,
+            msg: args.msg,
+            guild: args.guild,
+            forceFinish: true,
+            doDBonly: true,
+            type: 'muteRemove',
+          });
+        }),
+        args.guild.id,
+        args.target.id,
+      );
 
-              if (args.guild) {
-                client.ch.cache.mutes.delete(args.guild?.id, args.target.id);
-              }
-
-              // eslint-disable-next-line import/no-self-import
-              (await import('./modBaseEvent.js')).default(options);
-            },
-          ),
-          args.guild.id,
-          args.target.id,
-        );
-      }
       break;
     }
     case 'banAdd': {
-      punished =
-        args.guild && targetMember
-          ? client.helpers
-              .banMember(args.guild.id, targetMember.id, {
-                deleteMessageSeconds: 604800,
-                reason: `${args.executor?.username}#${args.executor?.discriminator} ${
-                  args.reason ? `| ${args.reason}` : ''
-                }`,
-              })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
+      let deleteMessageDays = 7;
+      if (targetMember?.roles.cache.has('703694514035884162')) deleteMessageDays = 0;
 
+      punished = await args.guild?.bans
+        .create(args.target.id, {
+          deleteMessageDays,
+          reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+        })
+        .catch((err) => {
+          error = err;
+        });
       break;
     }
     case 'softbanAdd': {
-      punished =
-        args.guild && targetMember
-          ? client.helpers
-              .banMember(args.guild.id, targetMember.id, {
-                deleteMessageSeconds: 604800,
-                reason: `${args.executor?.username}#${args.executor?.discriminator} ${
-                  args.reason ? `| ${args.reason}` : ''
-                }`,
-              })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
+      punished = await args.guild?.bans
+        .create(args.target.id, {
+          deleteMessageDays: 7,
+          reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+        })
+        .catch((err) => {
+          error = err;
+        });
 
-      if (!error) {
-        punished =
-          args.guild && targetMember
-            ? client.helpers.unbanMember(args.guild.id, targetMember.id).catch((err) => {
-                error = err;
-              })
-            : false;
+      if (punished) {
+        punished = await args.guild?.bans
+          .remove(args.target.id, `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`)
+          .catch((err) => {
+            error = err;
+          });
       }
 
       break;
     }
     case 'tempbanAdd': {
-      punished =
-        args.guild && targetMember
-          ? client.helpers
-              .banMember(args.guild.id, targetMember.id, {
-                deleteMessageSeconds: 604800,
-                reason: `${args.executor?.username}#${args.executor?.discriminator} ${
-                  args.reason ? `| ${args.reason}` : ''
-                }`,
-              })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
+      let deleteMessageDays = 7;
+      if (targetMember?.roles.cache.has('703694514035884162')) deleteMessageDays = 0;
 
-      if (args.guild?.id) {
-        client.ch.cache.bans.set(
-          jobs.scheduleJob(
-            `${args.guild?.id}-${args.target.id}`,
+      punished = await args.guild?.bans
+        .create(args.target.id, {
+          deleteMessageDays,
+          reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+        })
+        .catch((err) => {
+          error = err;
+        });
+
+      if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
+
+      client.ch.cache.bans.set(
+        Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
+          client.emit('modBaseEvent', {
+            target: args.target,
+            reason: language.events.ready.unban,
+            executor: client.user,
+            msg: args.msg,
+            guild: args.guild,
+            forceFinish: true,
+            type: 'banRemove',
+          });
+        }),
+        args.guild.id,
+        args.target.id,
+      );
+
+      break;
+    }
+    case 'tempchannelbanAdd':
+    case 'channelbanAdd': {
+      if (!args.channel?.permissionOverwrites.cache.has(args.target.id)) {
+        punished = await args.channel?.permissionOverwrites
+          .create(
+            args.target.id,
+            {},
+            {
+              reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+              type: 1,
+            },
+          )
+          .catch((err) => {
+            error = err;
+          });
+      }
+
+      if (!error) {
+        punished = await args.channel?.permissionOverwrites
+          .edit(
+            args.target.id,
+            {
+              SendMessages: false,
+              Connect: false,
+              ViewChannel: false,
+              SendMessagesInThreads: false,
+              AddReactions: false,
+            },
+            {
+              reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+              type: 1,
+            },
+          )
+          .catch((err) => {
+            error = err;
+          });
+      }
+
+      if (args.type === 'tempchannelbanAdd') {
+        if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
+        if (!args.channel) return { action: punished, error: language.errors.noChannelFound };
+
+        client.ch.cache.channelBans.set(
+          Jobs.scheduleJob(
+            `${args.channel?.id}-${args.target.id}`,
             new Date(Date.now() + Number(args.duration)),
-            async () => {
-              const options: CT.ModBaseEventOptions = {
+            () => {
+              client.emit('modBaseEvent', {
                 target: args.target,
-                reason: language.events.ready.unban,
-                executor: await client.users.fetch(client.id),
+                reason: language.events.ready.channelunban,
+                executor: client.user,
                 msg: args.msg,
                 guild: args.guild,
+                channel: args.channel,
                 forceFinish: true,
-                type: 'banRemove',
-              };
-
-              if (args.guild) {
-                client.ch.cache.bans.delete(args.guild.id, args.target.id);
-              }
-
-              // eslint-disable-next-line import/no-self-import
-              (await import('./modBaseEvent.js')).default(options);
+                type: 'channelbanRemove',
+              });
             },
           ),
-          args.guild.id,
+          args.guild?.id,
+          args.channel?.id,
           args.target.id,
         );
       }
       break;
     }
-    case 'tempchannelbanAdd':
-    case 'channelbanAdd': {
-      if (!args.channel) return { action: false, error: true };
-
-      const permission = client.ch.getPermission(args.target.id, args.channel);
-      const allowPerms = permission?.allow
-        ? new Discord.PermissionsBitField(permission.allow)
-        : new Discord.PermissionsBitField(0n);
-
-      if (allowPerms) {
-        allowPerms.remove(2048n);
-        allowPerms.remove(274877906944n);
-        allowPerms.remove(1024n);
-        allowPerms.remove(64n);
-        allowPerms.remove(1048576n);
-
-        punished = args.channel
-          ? await client.helpers
-              .editChannelPermissionOverrides(args.channel.id, {
-                id: args.target.id,
-                type: 1,
-                allow: DDeno.calculatePermissions(allowPerms.bitfield),
-                deny: DDeno.calculatePermissions(274878958656n),
-                reason: `${args.executor?.username}#${args.executor?.discriminator} ${
-                  args.reason ? `| ${args.reason}` : ''
-                }`,
-              })
-              .catch((err) => {
-                error = err;
-              })
-          : false;
-      }
-
-      if (args.type === 'tempchannelbanAdd') {
-        if (args.guild?.id) {
-          client.ch.cache.channelBans.set(
-            jobs.scheduleJob(
-              `${args.channel?.id}-${args.target.id}`,
-              new Date(Date.now() + Number(args.duration)),
-              async () => {
-                const options: CT.ModBaseEventOptions = {
-                  target: args.target,
-                  reason: language.events.ready.channelunban,
-                  executor: await client.users.fetch(client.id),
-                  msg: args.msg,
-                  guild: args.guild,
-                  channel: args.channel,
-                  forceFinish: true,
-                  type: 'channelbanRemove',
-                };
-
-                if (args.guild && args.channel) {
-                  client.ch.cache.channelBans.cache
-                    .get(args.guild?.id)
-                    ?.get(args.channel?.id)
-                    ?.get(args.target.id)
-                    ?.cancel();
-                  const cache = client.ch.cache.channelBans.cache.get(args.guild?.id);
-
-                  if (cache?.size === 1) {
-                    client.ch.cache.channelBans.delete(
-                      args.guild.id,
-                      args.channel?.id,
-                      args.target.id,
-                    );
-                  } else cache?.delete(args.target.id);
-                }
-
-                // eslint-disable-next-line import/no-self-import
-                (await import('./modBaseEvent.js')).default(options);
-              },
-            ),
-            args.guild.id,
-            args.channel.id,
-            args.target.id,
-          );
-        }
-      }
-      break;
-    }
     case 'channelbanRemove': {
-      if (!args.channel) return { action: false, error: true };
+      punished = await args.channel?.permissionOverwrites
+        .edit(
+          args.target.id,
+          {
+            SendMessages: null,
+            Connect: null,
+            ViewChannel: null,
+            SendMessagesInThreads: null,
+            AddReactions: null,
+          },
+          {
+            reason: `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`,
+            type: 1,
+          },
+        )
+        .catch((err) => {
+          error = err;
+        });
 
-      const permission = client.ch.getPermission(args.target.id, args.channel);
-      const denyPerms = permission?.deny
-        ? new Discord.PermissionsBitField(permission.deny)
-        : new Discord.PermissionsBitField(0n);
-
-      if (denyPerms) {
-        denyPerms.remove(2048n);
-        denyPerms.remove(274877906944n);
-        denyPerms.remove(1024n);
-        denyPerms.remove(64n);
-        denyPerms.remove(1048576n);
-      }
-
-      punished = args.channel
-        ? await client.helpers
-            .editChannelPermissionOverrides(args.channel.id, {
-              id: args.target.id,
-              type: 1,
-              allow: permission?.allow
-                ? (new Discord.PermissionsBitField(permission?.allow)
-                    .toArray()
-                    .map((s) =>
-                      s.replace(/[A-Z]/g, (l) => `_${l}`).toUpperCase(),
-                    ) as DDeno.PermissionStrings[])
-                : [],
-              deny: DDeno.calculatePermissions(denyPerms.bitfield),
-              reason: `${args.executor?.username}#${args.executor?.discriminator} ${
-                args.reason ? `| ${args.reason}` : ''
-              }`,
-            })
-            .catch((err) => {
-              error = err;
-            })
-        : false;
-
-      if (permission && permission.deny === 0n && permission.allow === 0n) {
-        punished = await client.helpers
-          .deleteChannelPermissionOverride(
-            args.channel.id,
-            args.target.id,
-            `${args.executor?.username}#${args.executor?.discriminator} ${
-              args.reason ? `| ${args.reason}` : ''
-            }`,
-          )
+      if (
+        punished &&
+        punished.permissionOverwrites.cache.get(args.target.id)?.deny.bitfield === 0n &&
+        punished.permissionOverwrites.cache.get(args.target.id)?.allow.bitfield === 0n
+      ) {
+        punished = await args.channel?.permissionOverwrites
+          .delete(args.target.id, `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`)
           .catch((err) => {
             error = err;
           });
@@ -937,63 +737,35 @@ const takeAction = async (
       break;
     }
     case 'banRemove': {
-      if (!args.guild) return { action: false, error: true };
-
-      punished = await client.helpers.unbanMember(args.guild.id, args.target.id).catch((err) => {
-        error = err;
-      });
+      punished = await args.guild?.bans
+        .remove(args.target.id, `${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`)
+        .catch((err) => {
+          error = err;
+        });
       break;
     }
     case 'kickAdd': {
-      if (!args.guild) return { action: false, error: true };
-
-      if (targetMember) {
-        punished = await client.helpers
-          .kickMember(
-            args.guild.id,
-            targetMember.id,
-            `${args.executor?.username}#${args.executor?.discriminator} ${
-              args.reason ? `| ${args.reason}` : ''
-            }`,
-          )
-          .catch((err) => {
-            error = err;
-          });
-      }
+      punished = await targetMember
+        ?.kick(`${args.executor?.tag} ${args.reason ? `| ${args.reason}` : ''}`)
+        .catch((err) => {
+          error = err;
+        });
       break;
     }
     case 'roleAdd': {
-      if (!targetMember) throw new Error('No Member provided');
-      if (!args.role) throw new Error('No Role provided');
-
-      punished = client.ch.roleManager
-        .add(
-          targetMember,
-          [args.role.id],
-          `${args.executor?.username}#${args.executor?.discriminator} ${
-            args.reason ? `| ${args.reason}` : ''
-          }`,
-        )
-        .catch((err) => {
-          error = err;
-        });
+      punished = args.role
+        ? targetMember?.roles.add(args.role.id).catch((err) => {
+            error = err;
+          })
+        : (error = language.errors.noRoleFound);
       break;
     }
     case 'roleRemove': {
-      if (!targetMember) throw new Error('No Member provided');
-      if (!args.role) throw new Error('No Role provided');
-
-      punished = client.ch.roleManager
-        .remove(
-          targetMember,
-          [args.role.id],
-          `${args.executor?.username}#${args.executor?.discriminator} ${
-            args.reason ? `| ${args.reason}` : ''
-          }`,
-        )
-        .catch((err) => {
-          error = err;
-        });
+      punished = args.role
+        ? targetMember?.roles.remove(args.role.id, 'mod event').catch((err) => {
+            error = err;
+          })
+        : (error = language.errors.noRoleFound);
       break;
     }
     default: {
@@ -1009,41 +781,34 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
     table: string,
     insertTable: string,
     extraSelectArgs: string[] | null,
-    extraArgs: string[] | null,
-    extraInsertArgNames: string[],
-    extraInsertArgs?: string[],
+    extraArgs: unknown[] | null,
+    extraInsertArgNames: string[] | null,
+    extraInsertArgs?: unknown[] | null,
   ) => {
     const selectArray = extraArgs
       ? [args.target.id, args.guild?.id, ...extraArgs]
       : [args.target.id, args.guild?.id];
 
-    const rows = await client.ch.query(
+    const res = await client.ch.query(
       `SELECT * FROM ${table} WHERE userid = $1 AND guildid = $2 ${
         extraSelectArgs
           ? `${extraSelectArgs.map((arg, i) => `AND ${arg} = $${i + 3}`).join('')}`
           : ''
       };`,
-      selectArray as unknown as (
-        | string
-        | number
-        | boolean
-        | null
-        | undefined
-        | (string | number | boolean | null | undefined)[]
-      )[],
+      selectArray as unknown as (string | number | boolean | null | undefined)[] | undefined,
     );
 
-    if (rows?.length) {
+    if (res && res.length) {
       await client.ch.query(
         `DELETE FROM ${table} WHERE userid = $1 AND guildid = $2 AND uniquetimestamp = $3;`,
-        [args.target.id, args.guild?.id, rows[0].uniquetimestamp],
-      );
+        [args.target.id, args.guild?.id, res[0].uniquetimestamp],
+      ); // js
 
-      const [row] = rows;
+      const [row] = res;
 
       const insertArgs = extraInsertArgs
         ? [
-            row.guild.id,
+            row.guildid,
             row.userid,
             row.reason,
             row.uniquetimestamp,
@@ -1055,7 +820,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
             ...extraInsertArgs,
           ]
         : [
-            row.guild.id,
+            row.guildid,
             row.userid,
             row.reason,
             row.uniquetimestamp,
@@ -1070,16 +835,16 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
         !extraInsertArgs ||
         (extraInsertArgNames && extraInsertArgs.length < extraInsertArgNames.length)
       ) {
-        const cloneArr = extraInsertArgNames.slice();
-        cloneArr.splice(
+        const cloneArr = extraInsertArgNames?.slice();
+        cloneArr?.splice(
           0,
           Math.abs(
             (extraInsertArgs ? extraInsertArgs.length : 0) -
-              (extraInsertArgs ? extraInsertArgNames.length : 0),
+              Number(extraInsertArgs ? extraInsertArgNames?.length : 0),
           ),
         );
 
-        const mergeArr = cloneArr.map((arg) => row[arg]);
+        const mergeArr = cloneArr?.map((arg) => row[arg]) ?? [];
 
         insertArgs.push(...mergeArr);
       }
@@ -1088,27 +853,25 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
         `INSERT INTO ${insertTable} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
           extraInsertArgNames ? `, ${extraInsertArgNames.join(', ')}` : ''
         }) VALUES
-      (${insertArgs ? `${insertArgs.map((_arg, i) => `$${i + 1}`).join(', ')}` : ''});`,
+      (${insertArgs ? `${insertArgs.map((_, i) => `$${i + 1}`).join(', ')}` : ''});`,
         insertArgs,
-      ); // js
+      );
       return row;
     }
     return null;
   };
 
-  const insertRow = async (table: string, extraArgNames?: string[], extraArgs?: string[]) => {
+  const insertRow = (table: string, extraArgNames?: string[], extraArgs?: unknown[]) => {
     const insertArgs = extraArgs
       ? [
           args.guild?.id,
           args.target.id,
           args.reason,
           Date.now(),
-          args.msg?.channelId,
-          args.msg && args.guild
-            ? await client.ch.cache.channels.get(args.msg?.channelId, args.guild?.id)
-            : '-',
+          args.msg?.channel.id,
+          args.msg && 'name' in args.msg.channel ? args.msg?.channel.name : '',
           args.executor?.id,
-          `${args.executor?.username}#${args.executor?.discriminator}`,
+          args.executor?.tag,
           args.msg?.id,
           ...extraArgs,
         ]
@@ -1117,12 +880,10 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
           args.target.id,
           args.reason,
           Date.now(),
-          args.msg?.channelId,
-          args.msg && args.guild
-            ? await client.ch.cache.channels.get(args.msg?.channelId, args.guild?.id)
-            : '-',
+          args.msg?.channel.id,
+          args.msg && 'name' in args.msg.channel ? args.msg?.channel.name : '',
           args.executor?.id,
-          `${args.executor?.username}#${args.executor?.discriminator}`,
+          args.executor?.tag,
           args.msg?.id,
         ];
 
@@ -1130,14 +891,9 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
       `INSERT INTO ${table} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
         extraArgNames ? `, ${extraArgNames.join(', ')}` : '' // `
       }) VALUES (
-        ${insertArgs ? `${insertArgs.map((_arg, i) => `$${i + 1}`).join(', ')}` : ''});`,
-      insertArgs as (
-        | string
-        | number
-        | boolean
-        | (string | number | boolean | null | undefined)[]
-      )[],
-    ); // js
+        ${insertArgs ? `${insertArgs.map((_, i) => `$${i + 1}`).join(', ')}` : ''});`,
+      insertArgs as unknown as (string | number | boolean | null | undefined)[] | undefined,
+    );
   };
 
   switch (args.type) {
@@ -1146,7 +902,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
       break;
     }
     case 'tempmuteAdd': {
-      insertRow('punish_tempmutes', ['duration'], [String(args.duration)]);
+      insertRow('punish_tempmutes', ['duration'], [args.duration]);
       break;
     }
     case 'banAdd':
@@ -1155,18 +911,18 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
       break;
     }
     case 'tempbanAdd': {
-      insertRow('punish_tempbans', ['duration'], [String(args.duration)]);
+      insertRow('punish_tempbans', ['duration'], [args.duration]);
       break;
     }
     case 'channelbanAdd': {
-      insertRow('punish_channelbans', ['banchannelid'], [String(args.channel?.id)]);
+      insertRow('punish_channelbans', ['banchannelid'], [args.channel?.id]);
       break;
     }
     case 'tempchannelbanAdd': {
       insertRow(
         'punish_tempchannelbans',
         ['banchannelid', 'duration'],
-        [String(args.channel?.id), String(args.duration)],
+        [args.channel?.id, args.duration],
       );
       break;
     }
@@ -1175,9 +931,9 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
         'punish_tempchannelbans',
         'punish_channelbans',
         ['banchannelid'],
-        [String(args.channel?.id)],
+        [args.channel?.id],
         ['banchannelid', 'duration'],
-        [String(args.channel?.id)],
+        [args.channel?.id],
       );
       break;
     }
@@ -1200,39 +956,8 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
 };
 
 const deleter = (args: CT.ModBaseEventOptions) => {
-  jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-    if (args.m) {
-      client.helpers.deleteMessage(args.m.channelId, args.m.id).catch(() => null);
-    }
-    if (args.msg) {
-      client.helpers.deleteMessage(args.msg.channelId, args.msg.id).catch(() => null);
-    }
+  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+    if (args.m && args.m.deletable) args.m.delete().catch(() => null);
+    if (args.msg && args.msg.deletable) args.msg.delete().catch(() => null);
   });
 };
-
-const isModeratable = async (m: DDeno.Member | undefined | null) =>
-  !m ||
-  ((await client.ch.hasGuildPermissions(m.guild.id, m.id, ['Administrator'])) &&
-    (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
-    client.ch.hasGuildPermissions(m.guild.id, m.id, ['ModerateMembers']));
-
-const isBannable = async (m: DDeno.Member | undefined | null) =>
-  !m ||
-  ((await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
-    client.ch.hasGuildPermissions(m.guild.id, m.id, ['BanMembers']));
-
-const isManageable = async (c: DDeno.Channel) => {
-  if (await client.ch.hasGuildPermissions(c.guild.id, client.me.id, ['Administrator'])) {
-    return true;
-  }
-
-  return (
-    client.ch.hasGuildPermissions(c.id, client.me.id, ['ViewChannel', 'Connect']) ||
-    client.ch.hasGuildPermissions(c.id, client.me.id, ['ViewChannel', 'SendMessages'])
-  );
-};
-
-const isKickable = async (m: DDeno.Member | null | undefined) =>
-  m &&
-  (await client.ch.isManageable(m, await client.ch.cache.members.get(m.guild.id, m.id))) &&
-  client.ch.hasGuildPermissions(m.guild.id, m.id, ['KickMembers']);

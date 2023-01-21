@@ -58,8 +58,10 @@ export default async (guild: Discord.Guild) => {
           target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
-              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
+            m.msgid && m.channelid
+              ? await (
+                  await client.ch.getChannel.guildTextChannel(m.channelid)
+                )?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'muteRemove',
@@ -86,8 +88,10 @@ export default async (guild: Discord.Guild) => {
           target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
-              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
+            m.msgid && m.channelid
+              ? await (
+                  await client.ch.getChannel.guildTextChannel(m.channelid)
+                )?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'banRemove',
@@ -114,8 +118,10 @@ export default async (guild: Discord.Guild) => {
           target,
           reason: m.reason ?? language.none,
           msg:
-            m.msgid && m.channelid && m.guildid
-              ? (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
+            m.msgid && m.channelid
+              ? await (
+                  await client.ch.getChannel.guildTextChannel(m.channelid)
+                )?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'channelbanRemove',

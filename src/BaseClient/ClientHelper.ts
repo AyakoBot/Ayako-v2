@@ -48,3 +48,4 @@ export const spaces                     = (await import(`./ClientHelperModules/s
 export const arrayBufferToBuffer        = (await import(`./ClientHelperModules/arrayBufferToBuffer.js`)).default;
 export const getChannel                 =  await import(`./ClientHelperModules/getChannel.js`);
 export const makePermissionsStrings     = (await import(`./ClientHelperModules/makePermissionsStrings.js`)).default;
+export const isManageable               = (await import(`./ClientHelperModules/isManageable.js`)).default;

@@ -3,13 +3,13 @@ import type Jobs from 'node-schedule';
 import type RedisxPSQL from 'pg-x-redis';
 import * as ch from './ClientHelper.js';
 import NekoClient from './NekoClient.js';
-import * as config from '../configs.js';
 import Constants from './Other/Constants.js';
 import ObjectEmotes from './Other/ObjectEmotes.json' assert { type: 'json' };
 import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
 import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
 import eventHandler from '../Events/baseEventHandler.js';
 import DataBase from './DataBase.js';
+import auth from '../auth.json' assert { type: 'json' };
 
 const events: { [key: string]: typeof eventHandler } = {};
 Constants.allEvents.forEach((e) => {
@@ -41,7 +41,7 @@ class CustomClient extends Discord.Client {
     this.stringEmotes = StringEmotes;
     this.reactionEmotes = ReactionEmotes;
 
-    this.mainID = config.BOT_ID;
+    this.mainID = '650691698409734151';
 
     this.channelQueue = new Map();
     this.channelTimeout = new Map();
@@ -93,6 +93,7 @@ const client = new CustomClient({
     Discord.IntentsBitField.Flags.GuildScheduledEvents,
     Discord.IntentsBitField.Flags.AutoModerationConfiguration,
     Discord.IntentsBitField.Flags.AutoModerationExecution,
+    Discord.IntentsBitField.Flags.GuildMessageTyping,
   ],
   sweepers: {
     messages: {
@@ -102,6 +103,6 @@ const client = new CustomClient({
   },
 });
 
-await client.login(config.DISCORD_TOKEN);
+await client.login(auth.token);
 
 export default client;

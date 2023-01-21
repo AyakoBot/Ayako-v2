@@ -1,27 +1,22 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (webhook: DDeno.Webhook) => {
-  if (!webhook.guild.id) return;
-  if (!webhook.channelId) return;
-
-  const channels = await client.ch.getLogChannels('webhookevents', { guildId: webhook.guild.id });
+export default async (
+  webhook: Discord.Webhook,
+  channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
+) => {
+  const channels = await client.ch.getLogChannels('webhookevents', channel.guild);
   if (!channels) return;
 
-  const channel = await client.ch.cache.channels.get(webhook.channelId, webhook.guild.id);
-  if (!channel) return;
-
-  const guild = await client.ch.cache.guilds.get(webhook.guild.id);
-  if (!guild) return;
-
-  const language = await client.ch.languageSelector(webhook.guild.id);
+  const language = await client.ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.webhook;
   const con = client.customConstants.events.logs.webhook;
-  const audit = await client.ch.getAudit(guild, 50, webhook.id);
+  const audit = await client.ch.getAudit(channel.guild, 50, webhook.id);
   const auditUser =
-    webhook.user ??
-    (audit && audit.userId ? await client.users.fetch(audit.userId) : undefined);
-  const files: DDeno.FileContent[] = [];
+    (webhook.owner ? await client.users.fetch(webhook.owner.id) : undefined) ??
+    audit?.executor ??
+    undefined;
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -46,13 +41,13 @@ export default async (webhook: DDeno.Webhook) => {
   };
 
   if (webhook.avatar) {
-    const url = client.customConstants.standard.userAvatarURL(webhook, 'png');
-    const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+    const attachment = (await client.ch.fileURL2Buffer([webhook.avatarURL({ size: 4096 })]))?.[0]
+      ?.attachment;
 
-    if (blob) {
+    if (attachment) {
       files.push({
         name: String(webhook.avatar),
-        blob,
+        attachment,
       });
     }
   }
@@ -60,19 +55,19 @@ export default async (webhook: DDeno.Webhook) => {
   if (webhook.sourceGuild) {
     embed.fields?.push({
       name: lan.sourceGuild,
-      value: language.languageFunction.getGuild(webhook.sourceGuild as DDeno.Guild),
+      value: language.languageFunction.getGuild(webhook.sourceGuild),
     });
   }
 
   if (webhook.sourceChannel) {
     embed.fields?.push({
       name: lan.sourceChannel,
-      value: language.languageFunction.getChannel(webhook.sourceChannel as DDeno.Channel),
+      value: language.languageFunction.getChannel(webhook.sourceChannel),
     });
   }
 
   client.ch.send(
-    { id: channels, guildId: webhook.guild.id },
+    { id: channels, guildId: channel.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

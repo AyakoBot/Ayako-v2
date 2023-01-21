@@ -8,7 +8,6 @@ export default (
   msg: Discord.Interaction,
   content: string,
   language: CT.Language,
-  type: Discord.InteractionResponseType,
   m?: Discord.Message,
 ) => {
   const embed: Discord.APIEmbed = {
@@ -23,5 +22,5 @@ export default (
 
   if (m) return m.edit({ embeds: [embed] }).catch(() => null);
 
-  return reply(msg, { data: { embeds: [embed] }, type });
+  return reply(msg, { embeds: [embed] });
 };

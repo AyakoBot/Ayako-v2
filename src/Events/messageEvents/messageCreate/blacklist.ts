@@ -1,23 +1,22 @@
 import type * as Discord from 'discord.js';
-import Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
 
-let messageCache: bigint[] = [];
+let messageCache: string[] = [];
 
 export default async (msg: CT.GuildMessage) => {
   if (!msg.content?.length) return;
-  if (new Discord.PermissionsBitField(msg.member.permissions).has(8n)) return;
+  if (msg.member.permissions.has(8n)) return;
 
   const settings = await getSettings(msg);
   if (!settings) return;
   if (!settings.words?.length) return;
   if (settings.bpchannelid && settings.bpchannelid.includes(String(msg.channelId))) return;
-  if (settings.bpuserid && settings.bpuserid.includes(String(msg.authorId))) return;
+  if (settings.bpuserid && settings.bpuserid.includes(String(msg.author.id))) return;
   if (
     settings.bproleid &&
-    msg.member.roles.some((role) => settings.bproleid?.includes(String(role)))
+    msg.member.roles.cache.some((role) => settings.bproleid?.includes(role.id))
   ) {
     return;
   }
@@ -28,15 +27,11 @@ export default async (msg: CT.GuildMessage) => {
       return null;
     })
     .filter((w): w is string => !!w);
-
   if (!saidWords.length) return;
 
-  client.helpers
-    .deleteMessage(msg.channelId, msg.id, msg.language.deleteReasons.deleteBlacklist)
-    .catch(() => null);
-
+  msg.delete().catch(() => null);
   softWarn(msg, saidWords, settings);
-  messageCache.push(msg.authorId);
+  messageCache.push(msg.author.id);
 
   const amount = messageCache.filter((a) => a === msg.author.id).length;
   if (amount === 1) return;
@@ -48,9 +43,11 @@ const runPunishment = async (msg: CT.GuildMessage) => {
   const amountOfTimes = messageCache.filter((a) => a === msg.author.id).length;
   const punishment = await getPunishment(msg, amountOfTimes);
 
+  if (!client.user) return;
+
   const obj: CT.ModBaseEventOptions = {
     type: 'warnAdd',
-    executor: client.me,
+    executor: client.user,
     target: msg.author,
     msg,
     reason: msg.language.autotypes.blacklist,
@@ -123,18 +120,15 @@ const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.bla
     ],
   };
 
-  client.ch.send(
-    await client.helpers.getDmChannel(msg.authorId),
-    { embeds: [embed] },
-    msg.language,
-  );
+  const dmChannel = await msg.author.createDM();
+  if (dmChannel) client.ch.send(dmChannel, { embeds: [embed] }, msg.language);
 
   client.ch.send(
     msg.channel,
     {
-      content: `<@${msg.authorId}> ${msg.language.mod.warnAdd.blacklist}`,
+      content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.blacklist}`,
       allowedMentions: {
-        users: [msg.authorId],
+        users: [msg.author.id],
       },
     },
     msg.language,

@@ -1,5 +1,4 @@
 import fs from 'fs';
-import ClientEmitter from '../BaseClient/Other/ClientEmitter.js';
 
 const getEvents = () => {
   const paths: string[] = [];
@@ -70,9 +69,6 @@ export default async (...args: unknown[]) => {
     .join('');
   const finishedEventName =
     formattedEventName.charAt(0).toLowerCase() + formattedEventName.slice(1);
-
-  ClientEmitter.emit(finishedEventName, args);
-  console.log(finishedEventName);
 
   const path = getEvents().find((p) => p.endsWith(`${finishedEventName}.js`));
   if (!path) return;

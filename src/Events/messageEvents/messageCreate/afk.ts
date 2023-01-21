@@ -92,7 +92,7 @@ const deleteAfk = (msg: CT.GuildMessage) =>
     msg.guild.id,
   ]);
 
-const deleteM = (m: Discord.Message | null) => {
+const deleteM = (m?: Discord.Message) => {
   if (m && m.embeds.length > 1) {
     jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
       if (m) m.delete().catch(() => null);
@@ -112,7 +112,7 @@ const getAFKdeletedEmbed = async (
   },
 });
 
-const handleReactions = async (msg: CT.GuildMessage, m: Discord.Message | null) => {
+const handleReactions = async (msg: CT.GuildMessage, m?: Discord.Message) => {
   if (!m) return;
   const emote = `${client.objectEmotes.cross.name}:${client.objectEmotes.cross.id}`;
 

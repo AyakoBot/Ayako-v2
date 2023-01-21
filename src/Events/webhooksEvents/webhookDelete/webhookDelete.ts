@@ -1,9 +1,15 @@
 import type * as Discord from 'discord.js';
 
-export default async (webhook: DDeno.Webhook) => {
+export default async (
+  webhook: Discord.Webhook,
+  channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
+) => {
   const files: {
-    default: (w: DDeno.Webhook) => void;
+    default: (
+      w: Discord.Webhook,
+      c: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
+    ) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  files.forEach((f) => f.default(webhook));
+  files.forEach((f) => f.default(webhook, channel));
 };

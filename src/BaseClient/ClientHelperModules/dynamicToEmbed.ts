@@ -8,7 +8,9 @@ export default (rawEmbed: Discord.APIEmbed, options: ((string | any)[] | (string
   options.forEach((option) => {
     const embedToUse = embeds[embeds.length - 1];
 
-    const embed: Discord.APIEmbed = { type: 'rich' };
+    const embed: Discord.APIEmbed = {
+      fields: [],
+    };
 
     embed.color = embedToUse.color;
     embed.title = embedToUse.title ? stp(embedToUse.title, { [option[0]]: option[1] }) : undefined;
@@ -44,7 +46,7 @@ export default (rawEmbed: Discord.APIEmbed, options: ((string | any)[] | (string
     }
 
     embed.timestamp = embedToUse.timestamp
-      ? Number(stp(`${embedToUse.timestamp}`, { [option[0]]: option[1] }))
+      ? String(stp(`${embedToUse.timestamp}`, { [option[0]]: option[1] }))
       : undefined;
 
     if (embedToUse.footer) {

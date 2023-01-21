@@ -15,10 +15,20 @@ const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
 const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
   `[Message](${client.ch.getJumpLink(msg)})\n`;
 
-const getChannel = (channel: Discord.Channel | Discord.GuildChannel | undefined, type?: string) =>
+const getChannel = (
+  channel:
+    | Discord.Channel
+    | Discord.GuildChannel
+    | Discord.ThreadChannel
+    | Discord.APIPartialChannel
+    | undefined,
+  type?: string,
+) =>
   channel
     ? `${type ?? 'Channel'} <#${channel.id}> / ${
-        'name' in channel ? `\`${channel.name}\`` : `<@${channel.recipientId}>`
+        'name' in channel
+          ? `\`${channel.name}\``
+          : `<@${'recipientId' in channel ? channel.recipientId : null}>`
       } / \`${channel.id}\`\n`
     : `Unknown Channel\n`;
 
@@ -59,7 +69,8 @@ const getScheduledEvent = (event: Discord.GuildScheduledEvent) =>
 const getWebhook = (webhook: Discord.Webhook, type?: string) =>
   `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\``;
 
-const getGuild = (guild: Discord.Guild) => `Server \`${guild.name}\` / \`${guild.id}\``;
+const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
+  `Server \`${guild.name}\` / \`${guild.id}\``;
 
 export default {
   languageFunction: {
@@ -698,9 +709,9 @@ export default {
         ) => `${getUser(user)}has updated\n${getChannel(channel, type)}`,
         descUpdate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was updated`,
-        descJoinMember: (thread: Discord.AnyThreadChannel, channelType: string) =>
+        descJoinMember: (thread: Discord.ThreadChannel, channelType: string) =>
           `Users have joined\n${getChannel(thread, channelType)}`,
-        descLeaveMember: (thread: Discord.AnyThreadChannel, channelType: string) =>
+        descLeaveMember: (thread: Discord.ThreadChannel, channelType: string) =>
           `Users have left\n${getChannel(thread, channelType)}`,
         descUpdateStageAudit: (
           channel: Discord.StageChannel,
@@ -774,13 +785,6 @@ export default {
         flags: 'Badges',
         discriminator: 'Tag',
         username: 'Username',
-        premiumTypesName: 'Premium Type',
-        premiumTypes: {
-          0: 'None',
-          1: 'Nitro Classic',
-          2: 'Nitro',
-          3: 'Nitro Basic',
-        },
       },
       automodActionExecution: {
         name: 'Auto-Moderation Rule enforced',
@@ -1013,17 +1017,17 @@ export default {
           msg,
         )} "Click to jump to Message")\nfrom <@${msg.author.id}> / \`${msg.author.username}#${
           msg.author.discriminator
-        }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
-          msg.channel.id
-        }\``,
+        }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${
+          'name' in msg.channel ? msg.channel.name : 'Unknown'
+        }\` / \`${msg.channel.id}\``,
       desc: (msg: Discord.Message) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
           msg.author.id
-        }\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
-          msg.channel.id
-        }\`\nwas pinned`,
+        }\`\nin Channel <#${msg.channel.id}> / \`${
+          'name' in msg.channel ? msg.channel.name : 'Unknown'
+        }\` / \`${msg.channel.id}\`\nwas pinned`,
       title: `Message was pinned`,
     },
     channelUnPin: {
@@ -1034,17 +1038,17 @@ export default {
           msg,
         )} "Click to jump to Message")\nfrom <@${msg.author.id}> / \`${msg.author.username}#${
           msg.author.discriminator
-        }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
-          msg.channel.id
-        }\``,
+        }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${
+          'name' in msg.channel ? msg.channel.name : 'Unknown'
+        }\` / \`${msg.channel.id}\``,
       desc: (msg: Discord.Message) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
           msg.author.id
-        }\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
-          msg.channel.id
-        }\`\nwas unpinned`,
+        }\`\nin Channel <#${msg.channel.id}> / \`${
+          'name' in msg.channel ? msg.channel.name : 'Unknown'
+        }\` / \`${msg.channel.id}\`\nwas unpinned`,
       title: `Message was unpinned`,
     },
     channelUpdate: {
@@ -1330,7 +1334,7 @@ export default {
           msg.author.username
         }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
           msg.channel.id
-        }> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
+        }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${msg.channel.id}\``,
       rrReason: `Ayako Reaction Roles`,
     },
     messageReactionRemove: {
@@ -1350,7 +1354,7 @@ export default {
           msg.author.username
         }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
           msg.channel.id
-        }> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
+        }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${msg.channel.id}\``,
       rrReason: `Ayako Reaction Roles`,
     },
     messageReactionRemoveEmoji: {
@@ -1372,7 +1376,7 @@ export default {
           msg.author.username
         }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
           msg.channel.id
-        }> / \`${msg.channel.name}\` / \`${msg.channel.id}\` / \`${msg.channel.name}\``,
+        }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${msg.channel.id}\``,
     },
     messageDeleteBulk: {
       title: `Message Bulk Deleted`,
@@ -1424,8 +1428,8 @@ export default {
           msg.author.username
         }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
           msg.channel.id
-        }> / \`${msg.channel.name}\` / \`${msg.channel.id}\` / \`${
-          msg.channel.name
+        }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${
+          msg.channel.id
         }\`\nwere deleted`,
     },
     messageUpdate: {
@@ -1437,7 +1441,7 @@ export default {
           }\`\nhas updated their\n[Message](${client.ch.getJumpLink(
             msg,
           )} "Click to jump to the Message")\nin\nChannel <#${msg.channel.id}> / \`${
-            msg.channel.name
+            'name' in msg.channel ? msg.channel.name : 'Unknown'
           }\` / \`${msg.channel.id}\``,
         otherUpdates: (msg: Discord.Message) =>
           `[This Message](${client.ch.getJumpLink(
@@ -1446,7 +1450,9 @@ export default {
             msg.author.username
           }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
             msg.channel.id
-          }> / \`${msg.channel.name}\` / \`${msg.channel.id}\`\nwas updated`,
+          }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${
+            msg.channel.id
+          }\`\nwas updated`,
         oldContent: `Old Content`,
         newContent: `New Content`,
         attachmentsLog: (msg: Discord.Message) =>
@@ -1467,7 +1473,9 @@ export default {
             msg.author.username
           }#${msg.author.discriminator}\` / \`${msg.author.id}\`\nin\nChannel <#${
             msg.channel.id
-          }> / \`${msg.channel.name}\` / \`${msg.channel.id}\`\nwas published`,
+          }> / \`${'name' in msg.channel ? msg.channel.name : 'Unknown'}\` / \`${
+            msg.channel.id
+          }\`\nwas published`,
       },
     },
     roleCreate: {
@@ -2593,12 +2601,12 @@ export default {
     },
     roleAdd: {
       author: (args: CT.ModBaseEventOptions) =>
-        `${args.target.username}#${args.target.discriminator} has been added to ${args.role.name}`,
+        `${args.target.username}#${args.target.discriminator} has been added to ${args.role?.name}`,
       description: (args: CT.ModBaseEventOptions) =>
         `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
           args.target.id
-        }\`\nhas been added to\nRole ${args.role} / \`${args.role.name}\` / \`${
-          args.role.id
+        }\`\nhas been added to\nRole ${args.role} / \`${args.role?.name}\` / \`${
+          args.role?.id
         }\`\nby\n${
           args.executor
             ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
@@ -2608,12 +2616,12 @@ export default {
         `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
         author: (args: CT.ModBaseEventOptions) =>
-          `You have been added to \`${args.role.name}\` on \`${
+          `You have been added to \`${args.role?.name}\` on \`${
             args.guild?.name ?? 'unknwon Guild'
           }\``,
       },
       exeNoPerms: "You can't add this User to Roles",
-      permissionError: "I don't have enough Permissions to add this User to Roles",
+      permissionError: "I don't have enough Permissions to add Roles to this User",
       error: "I wasn't able to add this User to Roles!",
       alreadyApplied: (args: CT.ModBaseEventOptions) =>
         `User <@${args.target.id}> already has Role ${args.role} added`,
@@ -2624,12 +2632,12 @@ export default {
     },
     roleRemove: {
       author: (args: CT.ModBaseEventOptions) =>
-        `${args.target.username}#${args.target.discriminator} has been removed from ${args.role.name}`,
+        `${args.target.username}#${args.target.discriminator} has been removed from ${args.role?.name}`,
       description: (args: CT.ModBaseEventOptions) =>
         `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
           args.target.id
-        }\`\nhas been removed from\nRole ${args.role} / \`${args.role.name}\` / \`${
-          args.role.id
+        }\`\nhas been removed from\nRole ${args.role} / \`${args.role?.name}\` / \`${
+          args.role?.id
         }\`\nby\n${
           args.executor
             ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
@@ -2639,7 +2647,7 @@ export default {
         `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
       dm: {
         author: (args: CT.ModBaseEventOptions) =>
-          `You have been removed from \`${args.role.name}\` on \`${
+          `You have been removed from \`${args.role?.name}\` on \`${
             args.guild?.name ?? 'unknown Guild'
           }\``,
       },
@@ -2940,7 +2948,11 @@ export default {
       "The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn't be determined\n**Proceed with Caution**",
     log: {
       value: (msg: Discord.Message) =>
-        `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${msg.author.id}\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
+        `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
+          msg.author.id
+        }\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${
+          'name' in msg.channel ? msg.channel.name : 'Unknown'
+        }\` / \`${msg.channel.id}\``,
       href: `Hyperlink Reference`,
       url: `URL`,
       hostname: `URL Hostname`,
@@ -2962,6 +2974,9 @@ export default {
     roleNotFound: `Role not Found`,
     notYours: "You can't interact with someone elses Messages",
     time: `Time ran out`,
+    noGuildFound: 'No Server found, please report to the Support Server',
+    noChannelFound: 'No Channel found, please report to the Support Server',
+    noRoleFound: 'No Role found, please report to the Support Server',
   },
   channelRules: {
     HasLeastAttachments: `Has at least [externally defined] Attachments`,
@@ -3031,10 +3046,8 @@ export default {
     TeamUser: `User is a [Team](https://discord.com/developers/docs/topics/teams "Click to find out what a Team is")`,
     BughunterLevel2: `Bug Hunter Level 2`,
     VerifiedBot: `Verified Bot`,
-    EarlyVerifiedBotDeveloper: `Early Verified Bot Developer`,
     VerifiedDeveloper: 'Early Verified Bot Developer',
     CertifiedModerator: 'Certified Moderator',
-    DiscordCertifiedModerator: `Certified Moderator`,
     BotHTTPInteractions: `HTTP Interactions Bot`,
     ActiveDeveloper: 'Active Developer',
     Bot: `Unverified Bot`,
@@ -3048,6 +3061,8 @@ export default {
     Boost15: `Boosting since at least 15 Months`,
     Boost18: `Boosting since at least 18 Months`,
     Boost24: `Boosting since at least 24 Months`,
+    Spammer: 'Spammer',
+    Quarantined: 'Quarantined',
   },
   features: {
     ANIMATED_ICON: `\`Animated Icon\` \`(Server can set an animated Server Icon)\``,

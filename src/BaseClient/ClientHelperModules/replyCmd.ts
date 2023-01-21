@@ -22,13 +22,17 @@ export default async (
   command?: CT.Command,
 ) => {
   if (!cmd) return undefined;
+  if (!cmd.guild) return undefined;
 
   const sentMessage = await sendMessage(cmd, payload);
   if (!sentMessage) return null;
 
   const replyMsg = await import('./replyMsg');
-  replyMsg.cooldownHandler(cmd, sentMessage, command);
-  replyMsg.deleteCommandHandler(cmd, sentMessage, command);
+
+  if (command) {
+    replyMsg.cooldownHandler(cmd as CT.GuildInteraction, sentMessage, command);
+    replyMsg.deleteCommandHandler(cmd as CT.GuildInteraction, sentMessage, command);
+  }
 
   return sentMessage;
 };

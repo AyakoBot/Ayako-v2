@@ -11,14 +11,14 @@ export default async (
   payload: Discord.MessageCreateOptions,
   command?: CT.Command,
 ) => {
-  if (!msg) return null;
+  if (!msg) return undefined;
 
   const sentMessage = await msg.reply(payload).catch((err) => {
     // eslint-disable-next-line no-console
     console.log('msg reply err', err);
   });
 
-  if (!sentMessage) return null;
+  if (!sentMessage) return undefined;
 
   if (msg.guild && command) {
     cooldownHandler(msg as CT.GuildMessage, sentMessage, command);

@@ -69,14 +69,14 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
   if (bitField.has(131072n)) {
     flags.push(
       `${emotes ? stringEmotes.userFlags.EarlyVerifiedBotDeveloper : ''} ${
-        lan.userFlags.EarlyVerifiedBotDeveloper
+        lan.userFlags.VerifiedDeveloper
       }`,
     );
   }
   if (bitField.has(262144n)) {
     flags.push(
       `${emotes ? stringEmotes.userFlags.DiscordCertifiedModerator : ''} ${
-        lan.userFlags.DiscordCertifiedModerator
+        lan.userFlags.CertifiedModerator
       }`,
     );
   }

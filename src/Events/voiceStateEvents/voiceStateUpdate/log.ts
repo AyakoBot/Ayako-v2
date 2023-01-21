@@ -2,31 +2,19 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceState) => {
-  if (!voiceState.guild.id) return;
-  if (!voiceState.channelId) return;
+export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
+  if (!state.channel) return;
+  if (!oldState.channel) return;
+  if (!state.member) return;
 
-  const channels = await client.ch.getLogChannels('voiceevents', { guildId: voiceState.guild.id });
+  const channels = await client.ch.getLogChannels('voiceevents', state.guild);
   if (!channels) return;
 
-  const oldChannel = oldVoiceState.channelId
-    ? await client.ch.cache.channels.get(oldVoiceState.channelId, oldVoiceState.guild.id)
-    : undefined;
-
-  const channel = await client.ch.cache.channels.get(voiceState.channelId, voiceState.guild.id);
-  if (!channel) return;
-
-  const guild = await client.ch.cache.guilds.get(voiceState.guild.id);
-  if (!guild) return;
-
-  const user = await client.users.fetch(voiceState.userId);
-  if (!user) return;
-
-  const language = await client.ch.languageSelector(voiceState.guild.id);
+  const language = await client.ch.languageSelector(state.guild.id);
   const lan = language.events.logs.voiceState;
   const con = client.customConstants.events.logs.voiceState;
-  const channelType = client.ch.getTrueChannelType(channel, guild);
-  const files: DDeno.FileContent[] = [];
+  const channelType = client.ch.getTrueChannelType(state.channel, state.guild);
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -35,11 +23,11 @@ export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceSt
     },
     color: client.customConstants.colors.warning,
     description: lan.descUpdate(
-      user,
-      channel,
-      language.channelTypes[channel.type],
-      oldChannel,
-      oldChannel ? language.channelTypes[oldChannel.type] : undefined,
+      state.member.user,
+      state.channel,
+      language.channelTypes[state.channel.type],
+      oldState.channel,
+      oldState.channel ? language.channelTypes[oldState.channel.type] : undefined,
     ),
   };
 
@@ -47,47 +35,37 @@ export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceSt
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
   switch (true) {
-    case voiceState.requestToSpeakTimestamp !== oldVoiceState.requestToSpeakTimestamp: {
+    case state.requestToSpeakTimestamp !== oldState.requestToSpeakTimestamp: {
       merge(
-        oldVoiceState.requestToSpeakTimestamp,
-        voiceState.requestToSpeakTimestamp,
+        oldState.requestToSpeakTimestamp,
+        state.requestToSpeakTimestamp,
         'boolean',
         lan.requestToSpeak,
       );
       break;
     }
-    case voiceState.toggles.deaf !== oldVoiceState.toggles.deaf: {
-      merge(oldVoiceState.toggles.deaf, voiceState.toggles.deaf, 'boolean', lan.deaf);
+    case state.serverDeaf !== oldState.serverDeaf: {
+      merge(oldState.serverDeaf, state.serverDeaf, 'boolean', lan.deaf);
       break;
     }
-    case voiceState.toggles.mute !== oldVoiceState.toggles.mute: {
-      merge(oldVoiceState.toggles.mute, voiceState.toggles.mute, 'boolean', lan.mute);
+    case state.serverMute !== oldState.serverMute: {
+      merge(oldState.serverMute, state.serverMute, 'boolean', lan.mute);
       break;
     }
-    case voiceState.toggles.selfDeaf !== oldVoiceState.toggles.selfDeaf: {
-      merge(oldVoiceState.toggles.selfDeaf, voiceState.toggles.selfDeaf, 'boolean', lan.selfDeaf);
+    case state.selfDeaf !== oldState.selfDeaf: {
+      merge(oldState.selfDeaf, state.selfDeaf, 'boolean', lan.selfDeaf);
       break;
     }
-    case voiceState.toggles.selfMute !== oldVoiceState.toggles.selfMute: {
-      merge(oldVoiceState.toggles.selfMute, voiceState.toggles.selfMute, 'boolean', lan.selfMute);
+    case state.selfMute !== oldState.selfMute: {
+      merge(oldState.selfMute, state.selfMute, 'boolean', lan.selfMute);
       break;
     }
-    case voiceState.toggles.selfStream !== oldVoiceState.toggles.selfStream: {
-      merge(
-        oldVoiceState.toggles.selfStream,
-        voiceState.toggles.selfStream,
-        'boolean',
-        lan.selfStream,
-      );
+    case state.streaming !== oldState.streaming: {
+      merge(oldState.streaming, state.streaming, 'boolean', lan.selfStream);
       break;
     }
-    case voiceState.toggles.selfVideo !== oldVoiceState.toggles.selfVideo: {
-      merge(
-        oldVoiceState.toggles.selfVideo,
-        voiceState.toggles.selfVideo,
-        'boolean',
-        lan.selfVideo,
-      );
+    case state.selfVideo !== oldState.selfVideo: {
+      merge(oldState.selfVideo, state.selfVideo, 'boolean', lan.selfVideo);
       break;
     }
     default: {
@@ -96,7 +74,7 @@ export default async (oldVoiceState: DDeno.VoiceState, voiceState: DDeno.VoiceSt
   }
 
   client.ch.send(
-    { id: channels, guildId: voiceState.guild.id },
+    { id: channels, guildId: state.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

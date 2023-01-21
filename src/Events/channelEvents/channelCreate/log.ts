@@ -10,7 +10,8 @@ export default async (
     | Discord.PrivateThreadChannel
     | Discord.PublicThreadChannel
     | Discord.VoiceChannel
-    | Discord.ForumChannel,
+    | Discord.ForumChannel
+    | Discord.AnyThreadChannel,
 ) => {
   if (!channel.guild.id) return;
 

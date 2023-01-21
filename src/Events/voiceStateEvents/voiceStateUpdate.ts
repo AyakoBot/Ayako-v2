@@ -1,19 +1,15 @@
 import type * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
 
-export default async (voiceState: DDeno.VoiceState) => {
-  const cached = await client.ch.cache.voiceStates.get(voiceState.userId, voiceState.guild.id);
-  client.ch.cache.voiceStates.set(voiceState);
-
-  if (!cached) {
-    (await import(`./voiceStateCreate/voiceStateCreate.js`)).default(voiceState);
+export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
+  if (!oldState.channelId) {
+    (await import(`./voiceStateCreate/voiceStateCreate.js`)).default(state);
     return;
   }
 
-  if (!voiceState) {
-    (await import(`./voiceStateDelete/voiceStateDelete.js`)).default(cached);
+  if (!state.channelId) {
+    (await import(`./voiceStateDelete/voiceStateDelete.js`)).default(oldState);
     return;
   }
 
-  (await import(`./voiceStateUpdate/voiceStateUpdate.js`)).default(cached, voiceState);
+  (await import(`./voiceStateUpdate/voiceStateUpdate.js`)).default(oldState, state);
 };

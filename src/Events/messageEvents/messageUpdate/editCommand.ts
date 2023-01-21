@@ -33,5 +33,5 @@ export default async (oldMsg: Discord.Message, message: Discord.Message) => {
   const { file: command } = await getCommand(args);
   if (!command) return;
 
-  client.emit('messageCreate', msg);
+  client.emit('messageCreate', msg as unknown as Discord.Message);
 };
