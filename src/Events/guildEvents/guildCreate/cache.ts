@@ -17,6 +17,13 @@ export default async (guild: Discord.Guild) => {
     });
   });
 
+  guild.channels.cache.forEach(async (c) => {
+    if (!c.isTextBased()) return;
+
+    const pins = await c.messages.fetchPinned();
+    pins.forEach((pin) => client.ch.cache.pins.set(pin));
+  });
+
   const welcomeScreen = await guild.fetchWelcomeScreen();
   client.ch.cache.welcomeScreens.set(welcomeScreen);
 

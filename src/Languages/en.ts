@@ -754,12 +754,28 @@ export default {
         ) => `${getUser(user)}has ended\n${getChannel(channel, channelType)}`,
         descDeleteStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was ended`,
+        descPinCreateAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+          `${getUser(user)}has pinned\n${getMessage(msg)}in\n${getChannel(
+            msg.channel,
+            channelType,
+          )}`,
+        descPinCreate: (msg: Discord.Message, channelType: string) =>
+          `${getMessage(msg)}was pinned in\n${getChannel(msg.channel, channelType)}`,
+        descPinRemoveAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+          `${getUser(user)}has un-pinned\n${getMessage(msg)}in\n${getChannel(
+            msg.channel,
+            channelType,
+          )}`,
+        descPinRemove: (msg: Discord.Message, channelType: string) =>
+          `${getMessage(msg)}was un-pinned in\n${getChannel(msg.channel, channelType)}`,
         nameCreate: 'Channel created',
         nameDelete: 'Channel deleted',
         nameUpdate: 'Channel updated',
         nameStageUpdate: 'Stage updated',
         nameStageCreate: 'Stage created',
         nameStageDelete: 'Stage deleted',
+        namePin: 'Message pinned',
+        nameUnpin: 'Message un-pinned',
         nameJoin: 'Channel joined',
         topic: 'Description',
         flagsName: 'Flags',
