@@ -40,6 +40,17 @@ const cache: {
     delete: (guildId: string) => void;
     cache: Map<string, Discord.WelcomeScreen>;
   };
+  pins: {
+    get: (
+      msgId: string,
+      channelId: string,
+      guildId: string,
+    ) => Promise<Discord.Message | undefined>;
+    set: (msg: Discord.Message) => void;
+    find: (msgId: string) => Discord.Message | undefined;
+    delete: (msgId: string) => void;
+    cache: Map<string, Map<string, Map<string, Discord.Message>>>;
+  };
 
   // Ayako Cache
   giveawayClaimTimeout: {
@@ -262,6 +273,51 @@ const cache: {
     },
     delete: (guildId) => {
       cache.welcomeScreens.cache.delete(guildId);
+    },
+    cache: new Map(),
+  },
+  pins: {
+    get: async (id, channelId, guildId) => {
+      const cached = cache.pins.cache.get(guildId)?.get(channelId)?.get(id);
+      if (cached) return cached;
+
+      const fetched = await (
+        await client.ch.getChannel.guildTextChannel(channelId)
+      )?.messages.fetchPinned();
+      fetched?.forEach((f) => cache.pins.set(f));
+
+      return fetched?.find((f) => f.id === id);
+    },
+    set: (msg) => {
+      if (!msg.guildId) return;
+
+      if (!cache.pins.cache.get(msg.guildId)?.get(msg.channelId)) {
+        cache.pins.cache.get(msg.guildId)?.set(msg.channelId, new Map());
+      }
+
+      cache.pins.cache.get(msg.guildId)?.get(msg.channelId)?.set(msg.id, msg);
+    },
+    find: (id) =>
+      Array.from(cache.pins.cache, ([, g]) => g)
+        .map((c) => Array.from(c, ([, i]) => i))
+        .flat()
+        .find((c) => c.get(id))
+        ?.get(id),
+    delete: (id) => {
+      const cached = cache.pins.find(id);
+      if (!cached || !cached.guildId || !cached.channelId) return;
+
+      if (cache.pins.cache.get(cached.guildId)?.size === 1) {
+        if (cache.pins.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
+          cache.pins.cache.get(cached.guildId)?.get(cached.channelId)?.clear();
+        } else {
+          cache.pins.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
+        }
+      } else if (cache.pins.cache.get(cached.guildId)?.get(cached.channelId)?.size === 1) {
+        cache.pins.cache.get(cached.guildId)?.delete(cached.channelId);
+      } else {
+        cache.pins.cache.get(cached.guildId)?.get(cached.channelId)?.delete(id);
+      }
     },
     cache: new Map(),
   },
