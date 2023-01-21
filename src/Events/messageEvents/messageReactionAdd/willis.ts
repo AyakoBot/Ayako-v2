@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
 
@@ -8,23 +7,27 @@ const hostIcon =
   'https://cdn.discordapp.com/attachments/764376037751521290/987061511769964634/unknown.png';
 const giveawayLink = 'https://clik.cc/A3KLb/';
 
-export default async (reaction: CT.ReactionAdd) => {
-  if (reaction.userId === client.id) return;
-  if (!reaction.guild.id) return;
-  if (reaction.channelId !== 979811225212956722n) return;
+export default async (
+  reaction: Discord.MessageReaction,
+  user: Discord.User,
+  msg: Discord.Message,
+) => {
+  if (user.id === client.user?.id) return;
+  if (!msg.guild?.id) return;
+  if (msg.channel.id !== '979811225212956722') return;
 
-  const member = await client.ch.cache.members.get(reaction.userId, reaction.guild.id);
+  const member = await msg.guild.members.fetch(user.id);
   if (!member) return;
 
   if (
-    !member.roles.includes(278332463141355520n) &&
-    !member.roles.includes(293928278845030410n) &&
-    !member.roles.includes(768540224615612437n)
+    !member.roles.cache.has('278332463141355520') &&
+    !member.roles.cache.has('293928278845030410') &&
+    !member.roles.cache.has('768540224615612437')
   ) {
     return;
   }
 
-  const logchannel = await client.ch.cache.channels.get(805860525300776980n, 108176345204264960n);
+  const logchannel = await client.ch.getChannel.guildTextChannel('805860525300776980');
   if (!logchannel) return;
 
   const statsRow = await client.ch
@@ -35,33 +38,22 @@ export default async (reaction: CT.ReactionAdd) => {
   switch (reaction.emoji.name) {
     case '✅': {
       const tick = async () => {
-        if (!reaction.guild.id) return;
-        client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
-
-        const user = await client.users.fetch(reaction.userId);
-        if (!user) return;
-
-        const msg = await client.ch.cache.messages.get(
-          reaction.messageId,
-          reaction.channelId,
-          reaction.guild.id,
-        );
-        if (!msg) return;
-
-        const author = await client.users.fetch(msg.authorId);
-        if (!author) return;
+        msg.delete().catch(() => null);
 
         const embed: Discord.APIEmbed = {
           color: client.customConstants.standard.color,
-          thumbnail: { url: client.ch.getAvatarURL(user) },
-          description: `<@${user.id}> accepted the submission of <@${author.id}>`,
-          author: { name: author.username, icon_url: client.ch.getAvatarURL(author) },
+          thumbnail: { url: user.displayAvatarURL({ size: 4096 }) },
+          description: `<@${user.id}> accepted the submission of <@${msg.author.id}>`,
+          author: {
+            name: msg.author.username,
+            icon_url: msg.author.displayAvatarURL({ size: 4096 }),
+          },
         };
 
-        const language = await client.ch.languageSelector(reaction.guild.id);
+        const language = await client.ch.languageSelector(msg.guild?.id);
         await client.ch.send(logchannel, { embeds: [embed] }, language);
 
-        if (statsRow.willis?.map(BigInt).includes(author.id)) {
+        if (statsRow.willis?.includes(msg.author.id)) {
           const DM: Discord.APIEmbed = {
             author: {
               name: giveawayTitle,
@@ -79,14 +71,14 @@ export default async (reaction: CT.ReactionAdd) => {
             ],
           };
 
-          const dmChannel = await client.helpers.getDmChannel(author.id);
-          await client.ch.send(await dmChannel, { embeds: [DM] }, language);
+          const dmChannel = await msg.author.createDM();
+          await client.ch.send(dmChannel, { embeds: [DM] }, language);
           return;
         }
 
         const arr: string[] = [];
-        if (statsRow.willis?.length) {
-          arr.push(...statsRow.willis, String(author.id));
+        if (statsRow.willis?.length && msg.guild) {
+          arr.push(...statsRow.willis, msg.guild.id);
         }
 
         const DM: Discord.APIEmbed = {
@@ -99,7 +91,7 @@ export default async (reaction: CT.ReactionAdd) => {
           color: client.customConstants.standard.color,
         };
 
-        const dmChannel = await client.helpers.getDmChannel(author.id);
+        const dmChannel = await msg.author.createDM();
         await client.ch.send(dmChannel, { embeds: [DM] }, language);
 
         client.ch.query('UPDATE stats SET willis = $1, count = $2;', [arr, arr.length]);
@@ -110,30 +102,19 @@ export default async (reaction: CT.ReactionAdd) => {
     }
     case '❌': {
       const cross = async () => {
-        if (!reaction.guild.id) return;
-        client.helpers.deleteMessage(reaction.channelId, reaction.messageId).catch(() => null);
-
-        const user = await client.users.fetch(reaction.userId);
-        if (!user) return;
-
-        const msg = await client.ch.cache.messages.get(
-          reaction.messageId,
-          reaction.channelId,
-          reaction.guild.id,
-        );
-        if (!msg) return;
-
-        const author = await client.users.fetch(msg.authorId);
-        if (!author) return;
+        msg.delete().catch(() => null);
 
         const embed: Discord.APIEmbed = {
           color: 16711680,
-          thumbnail: { url: client.ch.getAvatarURL(user) },
-          description: `<@${user.id}> rejected the submission of <@${author.id}>`,
-          author: { name: author.username, icon_url: client.ch.getAvatarURL(author) },
+          thumbnail: { url: user.displayAvatarURL({ size: 4096 }) },
+          description: `<@${user.id}> rejected the submission of <@${msg.author.id}>`,
+          author: {
+            name: msg.author.username,
+            icon_url: msg.author.displayAvatarURL({ size: 4096 }),
+          },
         };
 
-        const language = await client.ch.languageSelector(reaction.guild.id);
+        const language = await client.ch.languageSelector(msg.guild?.id);
         await client.ch.send(logchannel, { embeds: [embed] }, language);
 
         const DM: Discord.APIEmbed = {
@@ -152,7 +133,7 @@ export default async (reaction: CT.ReactionAdd) => {
           ],
         };
 
-        const dmChannel = await client.helpers.getDmChannel(author.id);
+        const dmChannel = await msg.author.createDM();
         await client.ch.send(dmChannel, { embeds: [DM] }, language);
       };
 

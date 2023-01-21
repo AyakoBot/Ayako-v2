@@ -1,31 +1,22 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../../../Typings/CustomTypings';
 import client from '../../../../BaseClient/Client.js';
 
-export default async (
-  event: CT.ScheduledEvent,
-  payload: {
-    guildScheduledEventId: bigint;
-    guildId: bigint;
-    userId: bigint;
-  },
-) => {
-  const channels = await client.ch.getLogChannels('scheduledevents', event);
+export default async (event: Discord.GuildScheduledEvent, user: Discord.User) => {
+  if (!event.guild) return;
+
+  const channels = await client.ch.getLogChannels('scheduledevents', event.guild);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(event.guild.id);
-  if (!guild) return;
-
-  const user = await client.users.fetch(payload.userId);
-  if (!user) return;
-
-  const channel = event.channelId
-    ? await client.ch.cache.channels.get(event.channelId, event.guild.id)
-    : undefined;
+  const channel =
+    event.channel ??
+    (event.channelId
+      ? (await client.ch.getChannel.guildTextChannel(event.channelId)) ??
+        (await client.ch.getChannel.guildVoiceChannel(event.channelId))
+      : undefined);
   const language = await client.ch.languageSelector(event.guild.id);
   const lan = language.events.logs.scheduledEvent;
   const con = client.customConstants.events.logs.guild;
-  const files: DDeno.FileContent[] = [];
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {

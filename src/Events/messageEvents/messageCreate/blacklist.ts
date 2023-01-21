@@ -6,7 +6,7 @@ import client from '../../../BaseClient/Client.js';
 
 let messageCache: bigint[] = [];
 
-export default async (msg: CT.MessageGuild) => {
+export default async (msg: CT.GuildMessage) => {
   if (!msg.content?.length) return;
   if (new Discord.PermissionsBitField(msg.member.permissions).has(8n)) return;
 
@@ -44,7 +44,7 @@ export default async (msg: CT.MessageGuild) => {
   runPunishment(msg);
 };
 
-const runPunishment = async (msg: CT.MessageGuild) => {
+const runPunishment = async (msg: CT.GuildMessage) => {
   const amountOfTimes = messageCache.filter((a) => a === msg.author.id).length;
   const punishment = await getPunishment(msg, amountOfTimes);
 
@@ -103,7 +103,7 @@ export const resetData = () => {
   messageCache = [];
 };
 
-const softWarn = async (msg: CT.MessageGuild, words: string[], settings: DBT.blacklist) => {
+const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.blacklist) => {
   const embed: Discord.APIEmbed = {
     color: client.customConstants.colors.warning,
     author: {
@@ -141,12 +141,12 @@ const softWarn = async (msg: CT.MessageGuild, words: string[], settings: DBT.bla
   );
 };
 
-const getSettings = async (msg: CT.MessageGuild) =>
+const getSettings = async (msg: CT.GuildMessage) =>
   client.ch
     .query(`SELECT * FROM blacklist WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
 
-const getPunishment = async (msg: CT.MessageGuild, warns: number) =>
+const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
   client.ch
     .query(
       `SELECT * FROM blacklistpunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,

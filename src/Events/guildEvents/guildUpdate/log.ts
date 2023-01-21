@@ -278,10 +278,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       const changedChannel = client.ch.getChanged(
         (oldWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
           [key: string]: unknown;
-        },
+        }[],
         (newWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
           [key: string]: unknown;
-        },
+        }[],
         'channelId',
       ) as
         | {
@@ -292,19 +292,12 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
           }[]
         | [];
 
-      const emojis = await client.helpers.getEmojis(guild.id);
-      emojis.forEach((e) => client.ch.cache.emojis.set(e, guild.id));
-
       if (addedChannel.length) {
-        const addedChannels = await Promise.all(
-          addedChannel.map((c) => client.ch.cache.channels.get(c.channelId, guild.id)),
-        );
-
-        addedChannel.forEach((c, i) => {
-          const channel = addedChannels[i];
+        addedChannel.forEach((c) => {
+          const channel = client.channels.cache.get(String(c.channelId));
           if (!channel) return;
 
-          const emoji = c.emojiId ? client.ch.cache.emojis.find(c.emojiId) : c.emojiName;
+          const emoji = c.emojiId ? client.emojis.cache.get(String(c.emojiId)) : c.emojiName;
 
           embed.fields?.push({
             name: lan.welcomeChannelAdded,
@@ -321,15 +314,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       }
 
       if (removedChannel.length) {
-        const removedChannels = await Promise.all(
-          removedChannel.map((c) => client.ch.cache.channels.find(c.channelId)),
-        );
-
-        removedChannel.forEach((c, i) => {
-          const channel = removedChannels[i];
+        removedChannel.forEach((c) => {
+          const channel = client.channels.cache.get(String(c.channelId));
           if (!channel) return;
 
-          const emoji = c.emojiId ? client.ch.cache.emojis.find(c.emojiId) : c.emojiName;
+          const emoji = c.emojiId ? client.emojis.cache.get(String(c.emojiId)) : c.emojiName;
 
           embed.fields?.push({
             name: lan.welcomeChannelRemoved,
@@ -346,12 +335,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       }
 
       if (changedChannel.length) {
-        const changedChannels = await Promise.all(
-          changedChannel.map((c) => client.ch.cache.channels.find(c.channelId)),
-        );
-
-        changedChannel.forEach((_, i) => {
-          const channel = changedChannels[i];
+        changedChannel.forEach((c) => {
+          const channel = client.channels.cache.get(String(c.channelId));
           if (!channel) return;
 
           const oldChannel = oldWelcomeScreen?.welcomeChannels.find(
@@ -371,14 +356,14 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
               );
               break;
             }
-            case `${oldChannel?.emojiId}-${oldChannel?.emojiName}` !==
-              `${newChannel?.emojiId}-${newChannel?.emojiName}`: {
-              const oldEmoji = oldChannel?.emojiId
-                ? client.ch.cache.emojis.find(oldChannel.emojiId)
-                : oldChannel?.emojiName;
-              const newEmoji = newChannel?.emojiId
-                ? client.ch.cache.emojis.find(newChannel.emojiId)
-                : newChannel?.emojiName;
+            case `${oldChannel?.emoji.id}-${oldChannel?.emoji.name}` !==
+              `${newChannel?.emoji.id}-${newChannel?.emoji.name}`: {
+              const oldEmoji = oldChannel?.emoji.id
+                ? client.emojis.cache.get(oldChannel.emoji.id)
+                : oldChannel?.emoji.name;
+              const newEmoji = newChannel?.emoji.id
+                ? client.emojis.cache.get(newChannel.emoji.id)
+                : newChannel?.emoji.name;
 
               merge(
                 (oldEmoji && typeof oldEmoji === 'object'
@@ -388,7 +373,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
                   ? language.languageFunction.getEmote(newEmoji)
                   : newEmoji) ?? language.none,
                 'string',
-                lan.welcomeChannelEmoji(channel),
+                lan.welcomeChannelEmoji(channel as Discord.GuildChannel),
               );
               break;
             }
@@ -401,23 +386,15 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
       break;
     }
-    case guild.toggles !== oldGuild.toggles: {
+    case guild.features !== oldGuild.features: {
       const removedToggles = client.ch.getDifference(
-        Object.entries(guild.toggles.list())
-          .map((t) => (t[1] === true ? t[0] : undefined))
-          .filter((t) => !!t),
-        Object.entries(oldGuild.toggles.list())
-          .map((t) => (t[1] === true ? t[0] : undefined))
-          .filter((t) => !!t),
-      ) as DDeno.GuildToggleKeys[];
+        guild.features,
+        oldGuild.features,
+      ) as Discord.GuildFeature[];
       const addedToggles = client.ch.getDifference(
-        Object.entries(oldGuild.toggles.list())
-          .map((t) => (t[1] === true ? t[0] : undefined))
-          .filter((t) => !!t),
-        Object.entries(guild.toggles.list())
-          .map((t) => (t[1] === true ? t[0] : undefined))
-          .filter((t) => !!t),
-      ) as DDeno.GuildToggleKeys[];
+        oldGuild.features,
+        guild.features,
+      ) as Discord.GuildFeature[];
 
       if (removedToggles.length) {
         embed.fields?.push({

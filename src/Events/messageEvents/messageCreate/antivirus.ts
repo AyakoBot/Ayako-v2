@@ -20,11 +20,11 @@ interface LinkObject {
 }
 
 export default async (msg: CT.Message) => {
-  if (!msg.content || msg.authorId === client.id) {
+  if (!msg.content || msg.author.id === client.user?.id) {
     return;
   }
 
-  if (!('guildId' in msg) || !msg.guild.id) {
+  if (!msg.guild) {
     await prepare(msg, { lan: msg.language.antivirus, language: msg.language }, true);
     return;
   }
@@ -80,11 +80,7 @@ const prepare = async (
   let includedBadLink = false;
   let exited = false;
 
-  if (links.length && check) {
-    await client.helpers
-      .addReaction(msg.channelId, msg.id, client.stringEmotes.loading)
-      .catch(() => null);
-  }
+  if (links.length && check) await msg.react(client.stringEmotes.loading).catch(() => null);
 
   fullLinks.forEach((linkObject: LinkObject, i) => {
     const AVworker = new WorkerThread(
@@ -104,9 +100,12 @@ const prepare = async (
       }
 
       if (includedBadLink || i === fullLinks.length - 1) {
-        client.helpers
-          .deleteOwnReaction(msg.channelId, msg.id, client.stringEmotes.loading)
-          .catch(() => null);
+        if (client.user) {
+          msg.reactions.cache
+            .get(client.objectEmotes.loading.id)
+            ?.users.remove(client.user.id)
+            .catch(() => null);
+        }
         AVworker.terminate();
       }
 
@@ -141,7 +140,7 @@ const prepare = async (
         }
         case 'send': {
           client.ch.send(
-            { id: data.channelid, guildId: 669893888856817665n },
+            { id: data.channelid, guildId: '669893888856817665' },
             { content: data.content },
             msg.language,
           );
@@ -164,7 +163,7 @@ const prepare = async (
       msgData: {
         channelid: msg.channelId,
         msgid: msg.id,
-        guildid: 'guildId' in msg ? msg.guild.id : '@me',
+        guildid: msg.guild?.id ?? '@me',
       },
       linkObject,
       lan,
@@ -349,15 +348,15 @@ const blacklisted = async (
     const m = await client.ch.replyMsg(msg, { embeds: [embed] });
 
     client.ch.send(
-      { id: 726252103302905907n, guildId: 669893888856817665n },
+      { id: '726252103302905907', guildId: '669893888856817665' },
       {
         content: client.ch.getJumpLink(msg),
       },
       msg.language,
     );
 
-    if ('guildId' in msg && msg.guild.id) {
-      (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
+    if (msg.guild) {
+      (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
     }
   }
 
@@ -400,16 +399,15 @@ const severeLink = async (
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
 
   client.ch.send(
-    { id: 726252103302905907n, guildId: 669893888856817665n },
+    { id: '726252103302905907', guildId: '669893888856817665' },
     {
       content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
-  if ('guildId' in msg && msg.guild.id) {
-    (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
+  if (msg.guild) {
+    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
   }
-
   linkLog(
     msg,
     lan,
@@ -441,14 +439,14 @@ const ccscam = async (
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
 
   client.ch.send(
-    { id: 726252103302905907n, guildId: 669893888856817665n },
+    { id: '726252103302905907', guildId: '669893888856817665' },
     {
       content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
-  if ('guildId' in msg && msg.guild.id) {
-    (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
+  if (msg.guild) {
+    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
   }
 
   linkLog(
@@ -483,17 +481,16 @@ const newUrl = async (
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
 
   client.ch.send(
-    { id: 726252103302905907n, guildId: 669893888856817665n },
+    { id: '726252103302905907', guildId: '669893888856817665' },
     {
       content: client.ch.getJumpLink(msg),
     },
     msg.language,
   );
 
-  if ('guildId' in msg && msg.guild.id) {
-    (await import('../../antivirusHandler.js')).default(msg, m as CT.MessageGuild | null);
+  if (msg.guild) {
+    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
   }
-
   linkLog(
     msg,
     lan,
@@ -509,7 +506,7 @@ const saveToBadLink = async (linkObject: LinkObject, msg: CT.Message, hrefLoggin
     encoding: 'utf8',
   });
   const res = file ? file.split(/\n+/).map((entry) => entry.replace(/\r/g, '')) : [];
-  const channel = await client.ch.cache.channels.get(726252103302905907n, 669893888856817665n);
+  const channel = await client.ch.getChannel.guildTextChannel('726252103302905907');
   if (!channel) return;
 
   if (!res.includes(linkObject.baseURL)) {
@@ -577,7 +574,7 @@ const cloudFlare = async (
   client.ch.replyMsg(msg, { embeds: [embed] });
 
   client.ch.send(
-    { id: 726252103302905907n, guildId: 669893888856817665n },
+    { id: '726252103302905907', guildId: '669893888856817665' },
     {
       content: `${client.ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
     },
@@ -663,10 +660,10 @@ const linkLog = async (
     ],
   };
 
-  if (!('guildId' in msg) || !msg.guild.id) return;
+  if (!msg.guild?.id) return;
 
   client.ch.send(
-    { id: row.linklogchannels.map(BigInt), guildId: msg.guild.id },
+    { id: row.linklogchannels, guildId: msg.guild.id },
     { embeds: [embed] },
     msg.language,
   );

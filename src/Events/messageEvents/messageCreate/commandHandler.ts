@@ -1,11 +1,10 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import fs from 'fs';
 import * as jobs from 'node-schedule';
 import type * as CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };
 import client from '../../../BaseClient/Client.js';
-import InteractionCollector from '../../../BaseClient/Other/InteractionCollector';
 
 const execute = async (msg: CT.Message) => {
   const prefix = await getPrefix(msg);
@@ -26,8 +25,8 @@ const execute = async (msg: CT.Message) => {
     return;
   }
 
-  if (msg.authorId !== BigInt(auth.ownerID)) {
-    const proceed = runChecks(msg, command);
+  if (msg.author.id !== auth.ownerID && msg.guild) {
+    const proceed = runChecks(msg as CT.GuildMessage, command);
     if (!proceed) return;
   }
 
@@ -37,7 +36,7 @@ const execute = async (msg: CT.Message) => {
   commandExe(msg, command, triedCMD);
 };
 
-const runChecks = async (msg: CT.MessageGuild, command: CT.Command) => {
+const runChecks = async (msg: CT.GuildMessage, command: CT.Command) => {
   const guildAllowed = getGuildAllowed(msg, command);
   if (!guildAllowed) return false;
 
@@ -56,7 +55,7 @@ const runChecks = async (msg: CT.MessageGuild, command: CT.Command) => {
 export default execute;
 
 const runDMCommand = async (
-  { msg, command }: { msg: CT.MessageDM; command: CT.Command },
+  { msg, command }: { msg: CT.Message; command: CT.Command },
   triedCMD?: unknown,
 ) => {
   if (command.dmAllowed) {
@@ -66,9 +65,9 @@ const runDMCommand = async (
   client.ch.errorMsg(msg, msg.language.commands.commandHandler.GuildOnly, msg.language);
 };
 
-export const getPrefix = async (msg: CT.Message) => {
+export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
   const prefixStandard = client.customConstants.standard.prefix;
-  const prefixCustom = await getCustomPrefix(msg);
+  const prefixCustom = msg.guild ? await getCustomPrefix(msg as CT.GuildMessage) : undefined;
 
   let prefix;
 
@@ -80,17 +79,14 @@ export const getPrefix = async (msg: CT.Message) => {
   return prefix;
 };
 
-const getCustomPrefix = async (msg: CT.Message) => {
-  if (!('guildId' in msg) || !msg.guild.id) return undefined;
-
-  return client.ch
+const getCustomPrefix = async (msg: CT.GuildMessage) =>
+  client.ch
     .query(
       'SELECT prefix FROM guildsettings WHERE guildid = $1;',
-      [String(msg.guild.id)],
-      msg.authorId === 564052925828038658n,
+      [msg.guild.id],
+      msg.author.id === '564052925828038658',
     )
     .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
-};
 
 export const getCommand = async (args: string[]) => {
   const isDisallowed = (file: string) =>
@@ -123,18 +119,16 @@ export const getCommand = async (args: string[]) => {
   return { file: file || null, triedCMD };
 };
 
-const getGuildAllowed = (msg: CT.MessageGuild, command: CT.Command) => {
+const getGuildAllowed = (msg: CT.GuildMessage, command: CT.Command) => {
   if (!msg.guild.id) return true;
   if (command.thisGuildOnly && !command.thisGuildOnly?.includes(msg.guild.id)) return false;
   return true;
 };
 
-const getCommandIsDisabled = async (msg: CT.MessageGuild, command: CT.Command) => {
+const getCommandIsDisabled = async (msg: CT.GuildMessage, command: CT.Command) => {
   const getDisabledRows = async () =>
     client.ch
-      .query('SELECT * FROM disabledcommands WHERE guildid = $1 AND active = true;', [
-        String(msg.guild.id),
-      ])
+      .query('SELECT * FROM disabledcommands WHERE guildid = $1 AND active = true;', [msg.guild.id])
       .then((r: DBT.disabledcommands[] | null) => r || null);
 
   const checkDisabled = (rows: DBT.disabledcommands[]) => {
@@ -142,14 +136,14 @@ const getCommandIsDisabled = async (msg: CT.MessageGuild, command: CT.Command) =
       .filter(
         (r) =>
           r.commands?.includes(command.name) &&
-          (!r.channels?.length || r.channels?.includes(String(msg.channelId))) &&
-          (!r.blroleid || msg.member.roles.some((role) => r.blroleid?.includes(String(role)))) &&
-          (!r.bluserid || r.bluserid?.includes(String(msg.authorId))),
+          (!r.channels?.length || r.channels?.includes(msg.channelId)) &&
+          (!r.blroleid || msg.member.roles.cache.some((role) => r.blroleid?.includes(role.id))) &&
+          (!r.bluserid || r.bluserid?.includes(msg.author.id)),
       )
       .filter(
         (r) =>
-          !msg.member?.roles.some((role) => r.bproleid?.includes(String(role))) &&
-          !r.bpuserid?.includes(String(msg.authorId)),
+          !msg.member?.roles.cache.some((role) => r.bproleid?.includes(role.id)) &&
+          !r.bpuserid?.includes(msg.author.id),
       );
 
     if (includingRows.length) return true;
@@ -164,20 +158,23 @@ const getCommandIsDisabled = async (msg: CT.MessageGuild, command: CT.Command) =
   return false;
 };
 
-const getPermAllowed = async (msg: CT.Message, command: CT.Command) => {
-  if (command.perm === 0 && msg.authorId !== BigInt(auth.ownerID)) {
+const getPermAllowed = async (msg: CT.GuildMessage, command: CT.Command) => {
+  if (command.perm === 0 && msg.author.id !== auth.ownerID) {
     client.ch.errorMsg(msg, msg.language.commands.commandHandler.creatorOnly, msg.language);
     return false;
   }
   return true;
 };
 
-type clEntry = { job: jobs.Job; channel: DDeno.Channel; expire: number; command: CT.Command };
+type clEntry = {
+  job: jobs.Job;
+  channel: Discord.GuildTextBasedChannel;
+  expire: number;
+  command: CT.Command;
+};
 const cooldowns: clEntry[] = [];
 
-const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
-  if (!msg.guild.id) return false;
-
+const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
   const onCooldown = (cl: clEntry) => {
     const getEmote = (secondsLeft: number) => {
       let returned = `**${client.ch.moment(secondsLeft * 1000, msg.language)}**`;
@@ -201,7 +198,7 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
       .then((m) => {
         if (!usedEmote && m) {
           jobs.scheduleJob(new Date(Date.now() + (timeLeft - 60000)), () => {
-            client.helpers.editMessage(m.channelId, m.id, {
+            m.edit({
               content: msg.language.commands.commandHandler.pleaseWait(
                 client.stringEmotes.timers[60],
               ),
@@ -210,15 +207,9 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
         }
 
         jobs.scheduleJob(new Date(cl.expire), () => {
-          if (m) {
-            client.helpers
-              .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.cooldown)
-              .catch(() => null);
-          }
+          if (m) m.delete().catch(() => null);
 
-          client.helpers
-            .deleteMessage(msg.channelId, msg.id, msg.language.deleteReasons.cooldown)
-            .catch(() => null);
+          msg.delete().catch(() => null);
         });
       });
   };
@@ -226,7 +217,7 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
   const getCooldownRows = async () =>
     client.ch
       .query(`SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2;`, [
-        String(msg.guild.id),
+        msg.guild.id,
         command.name,
       ])
       .then((r: DBT.cooldowns[] | null) => r || null);
@@ -236,16 +227,16 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
 
   const applyingRows = rows.filter(
     (row) =>
-      (!row.activechannelid?.length || row.activechannelid?.includes(String(msg.channelId))) &&
-      !row.bpchannelid?.includes(String(msg.channelId)) &&
-      !row.bpuserid?.includes(String(msg.authorId)) &&
-      !row.bproleid?.some((r) => msg.member.roles.includes(BigInt(r))),
+      (!row.activechannelid?.length || row.activechannelid?.includes(msg.channelId)) &&
+      !row.bpchannelid?.includes(msg.channelId) &&
+      !row.bpuserid?.includes(msg.author.id) &&
+      !row.bproleid?.some((r) => msg.member.roles.cache.has(r)),
   );
 
   const applyingCooldown = Math.max(...applyingRows.map((r) => Number(r.cooldown) * 1000));
   command.cooldown = applyingCooldown;
 
-  if (msg.authorId !== BigInt(auth.ownerID)) {
+  if (msg.author.id !== auth.ownerID) {
     const cl = cooldowns.find(
       (c) => c.command.name === command.name && c.channel.id === msg.channel.id,
     );
@@ -263,7 +254,7 @@ const getCooldown = async (msg: CT.MessageGuild, command: CT.Command) => {
         1,
       );
     }),
-    channel: msg.channel,
+    channel: msg.channel as Discord.GuildTextBasedChannel,
     command,
     expire,
   });
@@ -288,38 +279,34 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
   if (command.type !== 'mod') return true;
 
   const editVerifier = async () => {
-    const buttons: DDeno.ButtonComponent[] = [
-      {
-        customId: 'proceed',
-        label: msg.language.mod.warning.proceed,
-        style: 4,
-        emoji: client.objectEmotes.warning,
-        type: 2,
-      },
-      {
-        customId: 'abort',
-        label: msg.language.mod.warning.abort,
-        style: 2,
-        emoji: {
-          id: BigInt(client.objectEmotes.cross.id),
-          name: client.objectEmotes.cross.name,
-          animated: client.objectEmotes.cross.animated,
-        },
-        type: 2,
-      },
+    const buttons: Discord.ButtonBuilder[] = [
+      new Discord.ButtonBuilder()
+        .setCustomId('proceed')
+        .setLabel(msg.language.mod.warning.proceed)
+        .setStyle(Discord.ButtonStyle.Danger)
+        .setEmoji(client.objectEmotes.warning),
+      new Discord.ButtonBuilder()
+        .setCustomId('abort')
+        .setLabel(msg.language.mod.warning.abort)
+        .setStyle(Discord.ButtonStyle.Secondary)
+        .setEmoji(client.objectEmotes.cross),
     ];
 
     const m = await client.ch.replyMsg(msg, {
       content: msg.language.commands.commandHandler.verifyMessage,
-      components: client.ch.buttonRower(buttons),
+      components: [new Discord.ActionRowBuilder<Discord.ButtonBuilder>().addComponents(...buttons)],
     });
 
     if (!m) return false;
 
-    const buttonsCollector = new InteractionCollector(m, msg.channel, 60000);
-
+    const buttonsCollector = new Discord.InteractionCollector(m.client, {
+      message: m,
+      time: 60000,
+    });
     return new Promise((resolve) => {
-      buttonsCollector.on('collect', (interaction: CT.ButtonInteraction) => {
+      buttonsCollector.on('collect', (interaction) => {
+        if (!interaction.isButton()) return;
+
         if (interaction.user.id !== msg.author.id) {
           client.ch.notYours(interaction, msg.language);
           resolve(false);
@@ -328,38 +315,26 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
 
         buttonsCollector.stop();
 
-        if (interaction.data.custom_id === 'abort') {
-          client.helpers
-            .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.abortedMod)
-            .catch(() => null);
-          client.helpers
-            .deleteMessage(msg.channelId, msg.id, msg.language.deleteReasons.abortedMod)
-            .catch(() => null);
+        if (interaction.customId === 'abort') {
+          m.delete().catch(() => null);
+          msg.delete().catch(() => null);
 
-          client.helpers
-            .sendInteractionResponse(interaction.id, interaction.token, { type: 5 })
-            .catch(() => null);
+          interaction.deferUpdate().catch(() => null);
           resolve(false);
           return;
         }
 
-        if (interaction.data.custom_id === 'proceed') {
-          client.helpers
-            .sendInteractionResponse(interaction.id, interaction.token, { type: 5 })
-            .catch(() => null);
+        if (interaction.customId === 'proceed') {
+          interaction.deferUpdate().catch(() => null);
           resolve(true);
         }
       });
 
-      buttonsCollector.on('end', (reason) => {
+      buttonsCollector.on('end', (_, reason) => {
         if (reason === 'time') {
-          client.helpers
-            .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.abortedMod)
-            .catch(() => null);
+          m.delete().catch(() => null);
+          msg.delete().catch(() => null);
 
-          client.helpers
-            .deleteMessage(msg.channelId, msg.id, msg.language.deleteReasons.abortedMod)
-            .catch(() => null);
           resolve(false);
         }
       });

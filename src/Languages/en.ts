@@ -12,7 +12,8 @@ const getUser = (user: Discord.User) =>
 const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\``;
 
-const getMessage = (msg: Discord.Message) => `[Message](${client.ch.getJumpLink(msg)})\n`;
+const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
+  `[Message](${client.ch.getJumpLink(msg)})\n`;
 
 const getChannel = (channel: Discord.Channel | Discord.GuildChannel | undefined, type?: string) =>
   channel
@@ -378,16 +379,16 @@ export default {
           `${getMessage(msg)}from\n${getUser(msg.author)}was deleted`,
         descDeleteBulkAudit: (
           user: Discord.User,
-          msgs: Discord.Message[],
-          channel: Discord.GuildChannel,
-        ) => `${getUser(user)}has bulk deleted\n${msgs.length} Messages in\n${getChannel(channel)}`,
-        descDeleteBulk: (msgs: Discord.Message[], channel: Discord.GuildChannel) =>
-          `${msgs.length} Messages were deleted in\n${getChannel(channel)}`,
-        descUpdateMaybe: (msg: Discord.Message, user: Discord.User) =>
-          `${getMessage(msg)}may have been updated by\n${getUser(user)}or by a Moderator`,
+          size: number,
+          channel: Discord.GuildTextBasedChannel,
+        ) => `${getUser(user)}has bulk deleted\n${size} Messages in\n${getChannel(channel)}`,
+        descDeleteBulk: (size: number, channel: Discord.GuildTextBasedChannel) =>
+          `${size} Messages were deleted in\n${getChannel(channel)}`,
+        descUpdateMaybe: (msg: Discord.Message) =>
+          `${getMessage(msg)}may have been updated by\n${getUser(msg.author)}or by a Moderator`,
         descUpdate: (msg: Discord.Message) => `${getMessage(msg)}was updated`,
-        descUpdateAuthor: (msg: Discord.Message, user: Discord.User) =>
-          `${getMessage(msg)} was updated by\n${getUser(user)}`,
+        descUpdateAuthor: (msg: Discord.Message) =>
+          `${getMessage(msg)} was updated by\n${getUser(msg.author)}`,
         flags: {
           Crossposted: 'Published',
           IsCrosspost: 'Received from a News Channel',
@@ -404,10 +405,10 @@ export default {
         edited: 'Edited',
         activityName: 'Activity',
         activity: {
-          1: 'Play Invite',
-          2: 'Spectate Invite',
-          3: 'Listen Invite',
-          4: 'Join Request',
+          1: 'Join',
+          2: 'Spectate',
+          3: 'Listen',
+          5: 'Join Request',
         },
         interactionName: 'Interaction',
         interaction: {
@@ -444,6 +445,14 @@ export default {
           22: 'Guild Invite Reminder',
           23: 'Context Menu Command',
           24: 'Auto Moderation Action',
+          25: 'Role Subscription Purchase',
+          26: 'Interactiopn Premium Upsell',
+          27: 'Stage Start',
+          28: 'Stage End',
+          29: 'Stage Speaker',
+          30: 'Stage Raise Hand',
+          31: 'Stage Topic',
+          32: 'Guild Application Premium Subscription',
         },
         embeds: 'Embeds',
         isFromBot: 'From Bot',
@@ -624,34 +633,39 @@ export default {
         togglesNameRemoved: 'Server Features Removed',
         togglesNameAdded: 'Server Features Added',
         toggles: {
-          verified: 'Server Verified by Discord',
-          banner: 'Can set a Banner',
-          owner: "Ayako is this Server's owner?",
-          unavailable: 'Server is Unavailable',
-          large: 'Server is considered Large by Discord',
-          inviteSplash: 'Can set Invite Splash Image',
-          vipRegions: 'Access to 384kbps Voice Channels',
-          vanityUrl: 'Can set a Vanity URL',
-          partnered: 'Server is Partnered',
-          community: 'Server is a Community Server',
-          news: 'Server can create News/Announcement Channels',
-          discoverable: 'Server can become discoverable',
-          featurable: 'Server can become featured',
-          animatedIcon: 'Server can set an animated Icon',
-          welcomeScreenEnabled: 'Server has a welcome Screen enabled',
-          memberVerificationGateEnabled: 'Server has the Member verification Gate enabled',
-          previewEnabled: 'Server can be previewed before joining',
-          ticketedEventsEnabled: 'Server has enabled Ticketed Events',
-          monetizationEnabled: 'Server has enabled Monetization',
-          moreStickers: 'Server has increased Custom Sticker Slots',
-          privateThreads: 'Server Members can create Private Threads',
-          roleIcons: 'Server Roles can have Role Icons',
-          autoModeration: 'Server has set-up Auto-Moderation Rules',
-          invitesDisabled: 'Server has its Invites disabled',
-          animatedBanner: 'Server has access to setting an Animated Banner',
-          widgetEnabled: 'Server has its Widget enabled',
-          premiumProgressBarEnabled: 'Server has its Premium Progress Bar enabled',
-          developerSupportServer: 'Developer Support Server',
+          ANIMATED_BANNER: 'Server can set an animated Banner',
+          ANIMATED_ICON: 'Server can set an animated Icon',
+          APPLICATION_COMMAND_PERMISSIONS_V2: 'Server uses Application Command Permissisons V2',
+          AUTO_MODERATION: 'Server has Auto-Moderation enabled',
+          BANNER: 'Server can set a Banner',
+          COMMUNITY: 'Server is a community Server',
+          CREATOR_MONETIZABLE_PROVISIONAL: 'Server has Monetization enabled',
+          CREATOR_STORE_PAGE: 'Server has enabled the Role Subscription Promo Page',
+          DEVELOPER_SUPPORT_SERVER: 'Server is a Developer Support Server',
+          DISCOVERABLE: 'Server is discoverable in Server Discovery',
+          FEATURABLE: 'Server is featurable in the Directory',
+          HAS_DIRECTORY_ENTRY: 'Server is listed in a Directory Channel',
+          HUB: 'Server is a Student Hub',
+          INVITE_SPLASH: 'Server has access to set an Invite Splash Background',
+          INVITES_DISABLED: 'Server has Invites disabled',
+          LINKED_TO_HUB: 'Server is a Student Hub',
+          MEMBER_VERIFICATION_GATE_ENABLED: 'Server has enabled Membership Screening',
+          MONETIZATION_ENABLED: 'Server has Monetization enabled',
+          MORE_STICKERS: 'Server has increased custom Sticker Slots',
+          NEWS: 'Server has access to create a News/Announcement Channel',
+          PARTNERED: 'Server is partnered',
+          PREVIEW_ENABLED: 'Server can be previewed',
+          PRIVATE_THREADS: 'Server has access to Private Threads',
+          RELAY_ENABLED: 'Relay Enabled',
+          ROLE_ICONS: 'Server can set Role Icons',
+          ROLE_SUBSCRIPTIONS_AVAILABLE_FOR_PURCHASE:
+            'Server has Role Subscriptions that can be purchased',
+          ROLE_SUBSCRIPTIONS_ENABLED: 'Server has enabled Role Subscriptions',
+          TICKETED_EVENTS_ENABLED: 'Server has enabled Ticketed Events',
+          VIP_REGIONS: 'Server has access to 384kpbs Voice Servers',
+          VANITY_URL: 'Server has access to Vanity URL',
+          VERIFIED: 'Server is verified',
+          WELCOME_SCREEN_ENABLED: 'Server has the welcome Screen enabled',
         },
         systemChannelFlagsNameRemoved: 'Disabled System Channel Features',
         systemChannelFlagsNameAdded: 'Enabled System Channel Features',
@@ -992,7 +1006,7 @@ export default {
       title: (channelType: string) => `${channelType} was deleted`,
     },
     channelPin: {
-      descDetails: (user: Discord.User, msg: Discord.Message<true>) =>
+      descDetails: (user: Discord.User, msg: Discord.Message) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\npinned [this Message](${client.ch.getJumpLink(
@@ -1002,7 +1016,7 @@ export default {
         }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
           msg.channel.id
         }\``,
-      desc: (msg: Discord.Message<true>) =>
+      desc: (msg: Discord.Message) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
@@ -1013,7 +1027,7 @@ export default {
       title: `Message was pinned`,
     },
     channelUnPin: {
-      descDetails: (user: Discord.User, msg: Discord.Message<true>) =>
+      descDetails: (user: Discord.User, msg: Discord.Message) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
         }\`\nunpinned [this Message](${client.ch.getJumpLink(
@@ -1023,7 +1037,7 @@ export default {
         }\` / \`${msg.author.id}\`\nin Channel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${
           msg.channel.id
         }\``,
-      desc: (msg: Discord.Message<true>) =>
+      desc: (msg: Discord.Message) =>
         `[This Message](${client.ch.getJumpLink(msg)} "Click to jump to Message")\nfrom <@${
           msg.author.id
         }> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
@@ -1303,7 +1317,7 @@ export default {
       title: `Message Reaction Added`,
       description: (
         user: Discord.User,
-        msg: Discord.Message<true>,
+        msg: Discord.Message,
         reaction: Discord.MessageReaction | Discord.PartialMessageReaction,
       ) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
@@ -1324,7 +1338,7 @@ export default {
       description: (
         user: Discord.User,
         reaction: Discord.MessageReaction | Discord.PartialMessageReaction,
-        msg: Discord.Message<true>,
+        msg: Discord.Message,
       ) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
           user.id
@@ -1348,7 +1362,7 @@ export default {
           guildId?: bigint;
           emoji: Discord.Emoji;
         },
-        msg: Discord.Message<true>,
+        msg: Discord.Message,
       ) =>
         `All Users had their Reaction of\nEmoji \`${reaction.emoji.name}\` / \`${
           reaction.emoji.id
@@ -1403,7 +1417,7 @@ export default {
     },
     messageReactionRemoveAll: {
       title: `All Reactions Removed`,
-      description: (msg: Discord.Message<true>) =>
+      description: (msg: Discord.Message) =>
         `All Reactions on\n[this Message](${client.ch.getJumpLink(
           msg,
         )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -1417,7 +1431,7 @@ export default {
     messageUpdate: {
       update: {
         title: `Message Update`,
-        contentUpdate: (msg: Discord.Message<true>) =>
+        contentUpdate: (msg: Discord.Message) =>
           `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
             msg.author.id
           }\`\nhas updated their\n[Message](${client.ch.getJumpLink(
@@ -1425,7 +1439,7 @@ export default {
           )} "Click to jump to the Message")\nin\nChannel <#${msg.channel.id}> / \`${
             msg.channel.name
           }\` / \`${msg.channel.id}\``,
-        otherUpdates: (msg: Discord.Message<true>) =>
+        otherUpdates: (msg: Discord.Message) =>
           `[This Message](${client.ch.getJumpLink(
             msg,
           )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -1446,7 +1460,7 @@ export default {
       },
       LogPublish: {
         title: `Message Published`,
-        description: (msg: Discord.Message<true>) =>
+        description: (msg: Discord.Message) =>
           `[This Message](${client.ch.getJumpLink(
             msg,
           )} "Click to jump to the Message")\nfrom\nAuthor <@${msg.author.id}> / \`${
@@ -1587,7 +1601,7 @@ export default {
       category: `Chat`,
       description: `Display a AFK text whenever someone pings you.\nAutomatically deleted if you send a Message 1 Minute after creating your AFK`,
       usage: [`afk (text)`],
-      footer: (userId: bigint, time: Strumber) => `<@${userId}> is AFK since ${time}`,
+      footer: (userId: string, time: Strumber) => `<@${userId}> is AFK since ${time}`,
       updatedTo: (user: Discord.User, text: string) =>
         `**<@${user.id}>'s AFK updated to:**\n${text}`,
       updated: (user: Discord.User) => `**<@${user.id}>'s AFK updated**`,
@@ -2899,7 +2913,7 @@ export default {
     },
   },
   leveling: {
-    author: (msg: Discord.Message<true>) =>
+    author: (msg: CT.GuildMessage) =>
       `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild.name}`,
     description: (reactions?: string) =>
       `${
@@ -2925,7 +2939,7 @@ export default {
     timedOut:
       "The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn't be determined\n**Proceed with Caution**",
     log: {
-      value: (msg: Discord.Message<true>) =>
+      value: (msg: Discord.Message) =>
         `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${msg.author.id}\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${msg.channel.name}\` / \`${msg.channel.id}\``,
       href: `Hyperlink Reference`,
       url: `URL`,

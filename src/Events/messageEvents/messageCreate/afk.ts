@@ -1,11 +1,10 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
-import ReactionCollector from '../../../BaseClient/Other/ReactionCollector.js';
 
-export default async (msg: CT.MessageGuild) => {
+export default async (msg: CT.GuildMessage) => {
   const prefix = await (await import('./commandHandler.js')).getPrefix(msg);
   if (prefix) {
     const usedCommand: { file: CT.Command | null; triedCMD: undefined } = await (
@@ -18,7 +17,7 @@ export default async (msg: CT.MessageGuild) => {
   doMentionAFKcheck(msg);
 };
 
-const doSelfAFKCheck = async (msg: CT.MessageGuild) => {
+const doSelfAFKCheck = async (msg: CT.GuildMessage) => {
   const afkRow = await getAfkRow(msg);
   if (!afkRow) return;
   const isOldEnoug = Number(afkRow.since) + 60000 < Date.now();
@@ -28,41 +27,35 @@ const doSelfAFKCheck = async (msg: CT.MessageGuild) => {
   const embed = await getAFKdeletedEmbed(msg, afkRow);
   const m = await client.ch.replyMsg(msg, { embeds: [embed] });
   jobs.scheduleJob(new Date(Date.now() + 30000), async () => {
-    if (m) {
-      client.helpers
-        .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.afk)
-        .catch(() => null);
-    }
+    if (m) m.delete().catch(() => null);
   });
 
   handleReactions(msg, m);
-  deleteM(m, msg);
+  deleteM(m);
   deleteAfk(msg);
   deleteNickname(msg);
 };
 
-const doMentionAFKcheck = (msg: CT.MessageGuild) => {
-  msg.mentionedUserIds.forEach(async (mention) => {
+const doMentionAFKcheck = (msg: CT.GuildMessage) => {
+  msg.mentions.users.forEach(async (mention) => {
     const afkRow = await getAfkRow(msg, mention);
     if (!afkRow) return;
 
     const embed = await getIsAFKEmbed(msg, mention, afkRow);
     const m = await client.ch.replyMsg(msg, { embeds: [embed] });
     jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
-      if (m) {
-        client.helpers
-          .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.afk)
-          .catch(() => null);
-      }
+      if (m) m.delete().catch(() => null);
     });
   });
 };
 
-const getIsAFKEmbed = async (msg: CT.MessageGuild, id: bigint, afkRow: DBT.afk) => {
+const getIsAFKEmbed = async (msg: CT.GuildMessage, mention: Discord.User, afkRow: DBT.afk) => {
   const embed: Discord.APIEmbed = {
-    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
+    color: client.ch.colorSelector(
+      client.user ? await msg.guild.members.fetch(client.user?.id) : undefined,
+    ),
     footer: {
-      text: msg.language.commands.afk.footer(id, getTime(afkRow, msg.language)),
+      text: msg.language.commands.afk.footer(mention.id, getTime(afkRow, msg.language)),
     },
   };
 
@@ -71,10 +64,10 @@ const getIsAFKEmbed = async (msg: CT.MessageGuild, id: bigint, afkRow: DBT.afk) 
   return embed;
 };
 
-const getAfkRow = (msg: CT.MessageGuild, mention?: bigint) =>
+const getAfkRow = (msg: CT.GuildMessage, mention?: Discord.User) =>
   client.ch
     .query('SELECT * FROM afk WHERE userid = $1 AND guildid = $2;', [
-      String(mention || msg.authorId),
+      String(mention || msg.author.id),
       String(msg.guild.id),
     ])
     .then((r: DBT.afk[] | null) => (r ? r[0] : null));
@@ -82,62 +75,65 @@ const getAfkRow = (msg: CT.MessageGuild, mention?: bigint) =>
 const getTime = (afkRow: DBT.afk, language: CT.Language) =>
   client.ch.moment(Math.abs(Number(afkRow.since) - Date.now()), language);
 
-const deleteNickname = async (msg: CT.MessageGuild) => {
-  const displayname = msg.member.nick ?? msg.author.username;
+const deleteNickname = async (msg: CT.GuildMessage) => {
+  const displayname = msg.member.nickname ?? msg.author.username;
 
-  if (!msg.member.nick || !msg.member.nick.endsWith(' [AFK]')) return;
+  if (!msg.member.nickname || !msg.member.nickname.endsWith(' [AFK]')) return;
   const newNickname = displayname.slice(0, displayname.length - 6);
 
-  if (!client.ch.isManageable(msg.member, await client.ch.cache.members.get(client.id, msg.guild.id))) {
-    return;
-  }
+  if (!msg.member.manageable) return;
 
-  client.helpers.editMember(msg.guild.id, msg.authorId, { nick: newNickname }).catch(() => null);
+  msg.member.setNickname(newNickname).catch(() => null);
 };
 
-const deleteAfk = (msg: CT.MessageGuild) =>
+const deleteAfk = (msg: CT.GuildMessage) =>
   client.ch.query('DELETE FROM afk WHERE userid = $1 AND guildid = $2;', [
-    String(msg.authorId),
-    String(msg.guild.id),
+    msg.author.id,
+    msg.guild.id,
   ]);
 
-const deleteM = (m: DDeno.Message | null, msg: CT.MessageGuild) => {
+const deleteM = (m: Discord.Message | null) => {
   if (m && m.embeds.length > 1) {
     jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
-      client.helpers
-        .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.afk)
-        .catch(() => null);
+      if (m) m.delete().catch(() => null);
     });
   }
 };
 
-const getAFKdeletedEmbed = async (msg: CT.MessageGuild, afkRow: DBT.afk): Promise<Discord.APIEmbed> => ({
-  color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
+const getAFKdeletedEmbed = async (
+  msg: CT.GuildMessage,
+  afkRow: DBT.afk,
+): Promise<Discord.APIEmbed> => ({
+  color: client.ch.colorSelector(
+    client.user ? await msg.guild.members.fetch(client.user.id) : undefined,
+  ),
   footer: {
     text: msg.language.commands.afkHandler.footer(getTime(afkRow, msg.language)),
   },
 });
 
-const handleReactions = async (msg: CT.Message, m: DDeno.Message | null) => {
+const handleReactions = async (msg: CT.GuildMessage, m: Discord.Message | null) => {
   if (!m) return;
   const emote = `${client.objectEmotes.cross.name}:${client.objectEmotes.cross.id}`;
 
-  const reaction = await client.helpers.addReaction(msg.channelId, m.id, emote).catch(() => null);
+  const reaction = await m.react(emote).catch(() => null);
   if (!reaction) return;
 
-  const reactionsCollector = new ReactionCollector(m, msg.channel, 20000);
+  const reactionsCollector = new Discord.ReactionCollector(m, { time: 20000 });
 
-  reactionsCollector.on('end', (reason) => {
-    if (reason === 'time') {
-      client.helpers.deleteReactionsEmoji(m.channelId, m.id, emote).catch(() => null);
+  reactionsCollector.on('end', (_, reason) => {
+    if (reason === 'time' && client.user) {
+      m.reactions.cache
+        .get(client.objectEmotes.cross.id)
+        ?.users.remove(client.user.id)
+        .catch(() => null);
     }
   });
 
-  reactionsCollector.on('collect', (_r, user) => {
+  reactionsCollector.on('collect', (r, user) => {
+    if (r.emoji.id !== client.objectEmotes.cross.id) return;
     if (user.id !== msg.author.id) return;
 
-    client.helpers
-      .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.afk)
-      .catch(() => null);
+    m.delete().catch(() => null);
   });
 };

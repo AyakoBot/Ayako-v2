@@ -1,16 +1,19 @@
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default (msg: CT.MessageGuild) => {
+export default (msg: CT.GuildMessage) => {
   if (
-    [534783899331461123n, 228182903140515841n, 513413045251342336n, 564052925828038658n].includes(
-      msg.authorId,
-    ) &&
-    msg.mentionedUserIds.includes(318453143476371456n)
+    [
+      '534783899331461123',
+      '228182903140515841',
+      '513413045251342336',
+      '564052925828038658',
+    ].includes(msg.author.id) &&
+    msg.mentions.users.has('318453143476371456')
   ) {
     client.ch.replyMsg(msg, {
-      content: `<@${msg.authorId}>`,
-      allowedMentions: { users: [msg.authorId] },
+      content: `<@${msg.author.id}>`,
+      allowedMentions: { users: [msg.author.id] },
     });
   }
 };

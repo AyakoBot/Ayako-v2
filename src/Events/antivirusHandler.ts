@@ -1,15 +1,12 @@
+import type * as Discord from 'discord.js';
 import client from '../BaseClient/Client.js';
 import type CT from '../Typings/CustomTypings';
 import type DBT from '../Typings/DataBaseTypings';
 
-let messageCache: bigint[] = [];
+let messageCache: string[] = [];
 
-export default async (msg: CT.MessageGuild, m?: CT.MessageGuild | null) => {
-  if (msg) {
-    client.helpers
-      .deleteMessage(msg.channelId, msg.id, msg.language.deleteReasons.antivirus)
-      .catch(() => null);
-  }
+export default async (msg: CT.GuildMessage, m?: Discord.Message) => {
+  if (msg) msg.delete().catch(() => null);
 
   const settingsRow = await getSettings(msg);
   if (!settingsRow) return;
@@ -25,18 +22,20 @@ export const resetData = () => {
   messageCache = [];
 };
 
-const getSettings = async (msg: CT.MessageGuild) =>
+const getSettings = async (msg: CT.GuildMessage) =>
   client.ch
     .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
-const runPunishment = async (msg: CT.MessageGuild, m?: CT.MessageGuild | null) => {
+const runPunishment = async (msg: CT.GuildMessage, m?: Discord.Message) => {
   const amountOfTimes = messageCache.filter((a) => a === msg.author.id).length;
   const punishment = await getPunishment(msg, amountOfTimes);
 
+  if (!client.user) return;
+
   const obj: CT.ModBaseEventOptions = {
     type: 'warnAdd',
-    executor: client.me,
+    executor: client.user,
     target: msg.author,
     msg,
     reason: msg.language.autotypes.antivirus,
@@ -86,7 +85,7 @@ const runPunishment = async (msg: CT.MessageGuild, m?: CT.MessageGuild | null) =
   (await import('./modBaseEvent.js')).default(obj);
 };
 
-const getPunishment = async (msg: CT.MessageGuild, warns: number) =>
+const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
   client.ch
     .query(
       `SELECT * FROM antiviruspunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,

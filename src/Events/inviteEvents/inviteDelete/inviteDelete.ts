@@ -1,20 +1,16 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (payload: { channelId: bigint; guildId?: bigint; code: string }) => {
-  if (!payload.guild.id) return;
+export default async (invite: Discord.Invite) => {
+  if (!invite.guild?.id) return;
 
-  const guild = await client.ch.cache.guilds.get(payload.guild.id);
+  const guild = client.guilds.cache.get(invite.guild.id);
   if (!guild) return;
 
-  const invite = client.ch.cache.invites.cache
-    .get(guild.id)
-    ?.get(payload.channelId)
-    ?.get(payload.code);
-  if (!invite) return;
+  client.ch.cache.invites.delete(invite.code, invite.guild.id);
 
   const files: {
-    default: (i: DDeno.InviteMetadata, g: DDeno.Guild) => void;
+    default: (i: Discord.Invite, g: Discord.Guild) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
   files.forEach((f) => f.default(invite, guild));

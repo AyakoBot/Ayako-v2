@@ -2,23 +2,19 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstance) => {
-  const channels = await client.ch.getLogChannels('stageevents', oldStage);
+export default async (oldStage: Discord.StageInstance, stage: Discord.StageInstance) => {
+  if (!stage.guild) return;
+  if (!stage.channel) return;
+
+  const channels = await client.ch.getLogChannels('stageevents', stage.guild);
   if (!channels) return;
 
-  const guild = await client.ch.cache.guilds.get(newStage.id);
-  if (!guild) return;
-
-  const channel = await client.ch.cache.channels.get(oldStage.channelId, newStage.guild.id);
-  if (!channel) return;
-
-  const language = await client.ch.languageSelector(newStage.guild.id);
+  const language = await client.ch.languageSelector(stage.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(guild, 84, newStage.id);
-  const auditUser =
-    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
-  const files: DDeno.FileContent[] = [];
+  const audit = await client.ch.getAudit(stage.guild, 84, stage.id);
+  const auditUser = audit?.executor ?? undefined;
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -27,55 +23,48 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
     },
     color: client.customConstants.colors.loading,
     description: auditUser
-      ? lan.descUpdateStageAudit(channel, language.channelTypes[channel.type], auditUser)
-      : lan.descUpdateStage(channel, language.channelTypes[channel.type]),
+      ? lan.descUpdateStageAudit(
+          stage.channel,
+          language.channelTypes[stage.channel.type],
+          auditUser,
+        )
+      : lan.descUpdateStage(stage.channel, language.channelTypes[stage.channel.type]),
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
   switch (true) {
-    case oldStage.guildScheduledEventId !== newStage.guildScheduledEventId: {
-      const oldScheduledEvent = oldStage.guildScheduledEventId
-        ? await client.ch.cache.scheduledEvents.get(
-            oldStage.guildScheduledEventId,
-            oldStage.guild.id,
-          )
-        : undefined;
-
-      const newScheduledEvent = newStage.guildScheduledEventId
-        ? await client.ch.cache.scheduledEvents.get(
-            newStage.guildScheduledEventId,
-            newStage.guild.id,
-          )
-        : undefined;
-
+    case oldStage.guildScheduledEventId !== stage.guildScheduledEventId: {
       merge(
-        oldScheduledEvent
-          ? language.languageFunction.getScheduledEvent(oldScheduledEvent)
+        oldStage.guildScheduledEvent
+          ? language.languageFunction.getScheduledEvent(oldStage.guildScheduledEvent)
           : language.none,
-        newScheduledEvent
-          ? language.languageFunction.getScheduledEvent(newScheduledEvent)
+        stage.guildScheduledEvent
+          ? language.languageFunction.getScheduledEvent(stage.guildScheduledEvent)
           : language.none,
         'string',
         language.ScheduledEvent,
       );
       break;
     }
-    case oldStage.topic !== newStage.topic: {
-      merge(oldStage.topic, newStage.topic, 'string', lan.topic);
+    case oldStage.topic !== stage.topic: {
+      merge(oldStage.topic, stage.topic, 'string', lan.topic);
       break;
     }
-    case oldStage.channelId !== newStage.channelId: {
-      const oldChannel = await client.ch.cache.channels.get(oldStage.channelId, oldStage.guild.id);
-      const newChannel = await client.ch.cache.channels.get(newStage.channelId, newStage.guild.id);
-
+    case oldStage.channelId !== stage.channelId: {
       merge(
-        oldChannel
-          ? language.languageFunction.getChannel(oldChannel, language.channelTypes[oldChannel.type])
+        oldStage.channel
+          ? language.languageFunction.getChannel(
+              oldStage.channel,
+              language.channelTypes[oldStage.channel.type],
+            )
           : language.unknown,
-        newChannel
-          ? language.languageFunction.getChannel(newChannel, language.channelTypes[newChannel.type])
+        stage.channel
+          ? language.languageFunction.getChannel(
+              stage.channel,
+              language.channelTypes[stage.channel.type],
+            )
           : language.unknown,
         'string',
         language.Channel,
@@ -88,7 +77,7 @@ export default async (oldStage: DDeno.StageInstance, newStage: DDeno.StageInstan
   }
 
   client.ch.send(
-    { id: channels, guildId: oldStage.guild.id },
+    { id: channels, guildId: stage.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

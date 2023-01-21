@@ -1,24 +1,17 @@
-import Discord from 'discord.js';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
-  if (!msg.guild.id) return;
+export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
+  if (!msg.guild) return;
 
-  const channels = await client.ch.getLogChannels('messageevents', msg);
+  const channels = await client.ch.getLogChannels('messageevents', msg.guild);
   if (!channels) return;
-
-  const guild = await client.ch.cache.guilds.get(msg.guild.id);
-  if (!guild) return;
-
-  const user = await client.users.fetch(msg.authorId);
-  if (!user) return;
 
   const language = await client.ch.languageSelector(msg.guild.id);
   const lan = language.events.logs.message;
   const con = client.customConstants.events.logs.message;
-  const files: DDeno.FileContent[] = [];
+  const files: Discord.AttachmentPayload[] = [];
   let byAuthor: boolean | null = true;
 
   const embed: Discord.APIEmbed = {
@@ -89,15 +82,12 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       merge(
         oldMsg.thread
           ? language.languageFunction.getChannel(
-              oldMsg.thread as DDeno.Channel,
+              oldMsg.thread,
               language.channelTypes[oldMsg.thread.type],
             )
           : language.none,
         msg.thread
-          ? language.languageFunction.getChannel(
-              msg.thread as DDeno.Channel,
-              language.channelTypes[msg.thread.type],
-            )
+          ? language.languageFunction.getChannel(msg.thread, language.channelTypes[msg.thread.type])
           : language.none,
         'string',
         language.channelTypes[(msg.thread ?? oldMsg.thread)?.type ?? 11],
@@ -106,14 +96,14 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       byAuthor = false;
       break;
     }
-    case JSON.stringify(oldMsg.stickerItems) !== JSON.stringify(msg.stickerItems): {
+    case JSON.stringify(oldMsg.stickers) !== JSON.stringify(msg.stickers): {
       const oldStickers = client.ch.getDifference(
-        oldMsg.stickerItems ?? [],
-        msg.stickerItems ?? [],
+        oldMsg.stickers.map((o) => o) ?? [],
+        msg.stickers.map((o) => o) ?? [],
       );
       const newStickers = client.ch.getDifference(
-        msg.stickerItems ?? [],
-        oldMsg.stickerItems ?? [],
+        msg.stickers.map((o) => o) ?? [],
+        oldMsg.stickers.map((o) => o) ?? [],
       );
 
       merge(oldStickers, newStickers, 'difference', lan.stickers);
@@ -147,7 +137,7 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       }
       break;
     }
-    case JSON.stringify(oldMsg.embeds) !== JSON.stringify(msg.embeds): {
+    case JSON.stringify(oldMsg.embeds.map((o) => o)) !== JSON.stringify(msg.embeds.map((o) => o)): {
       if (!msg.embeds.length) byAuthor = null;
 
       if (!oldMsg.embeds?.length) break;
@@ -160,39 +150,36 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       if (embedFile) files.push(embedFile);
       break;
     }
-    case new Discord.PermissionsBitField(msg.bitfield).has(2n) !==
-      new Discord.PermissionsBitField(oldMsg.bitfield).has(2n): {
-      merge(
-        new Discord.PermissionsBitField(oldMsg.bitfield).has(2n),
-        new Discord.PermissionsBitField(msg.bitfield).has(2n),
-        'boolean',
-        lan.mentionEveryone,
-      );
+    case msg.mentions.everyone !== oldMsg.mentions.everyone: {
+      merge(oldMsg.mentions.everyone, msg.mentions.everyone, 'boolean', lan.mentionEveryone);
       break;
     }
-    case JSON.stringify(oldMsg.attachments) !== JSON.stringify(msg.attachments): {
-      if (!msg.attachments.length) byAuthor = null;
+    case JSON.stringify(oldMsg.attachments.map((o) => o)) !==
+      JSON.stringify(msg.attachments.map((o) => o)): {
+      if (!msg.attachments.size) byAuthor = null;
 
       const oldAttachments = client.ch.getDifference(
-        oldMsg.attachments ?? [],
-        msg.attachments ?? [],
+        oldMsg.attachments.map((o) => o) ?? [],
+        msg.attachments.map((o) => o) ?? [],
       );
 
       const attachments = (await client.ch.fileURL2Buffer(oldAttachments.map((a) => a.url))).filter(
-        (
-          e,
-        ): e is {
-          blob: Blob;
-          name: string;
-        } => !!e,
+        (e): e is Discord.AttachmentPayload => !!e,
       );
 
       if (attachments?.length) files.push(...attachments);
       break;
     }
-    case JSON.stringify(oldMsg.mentionedUserIds) !== JSON.stringify(msg.mentionedUserIds): {
-      const oldMentions = client.ch.getDifference(oldMsg.mentionedUserIds, msg.mentionedUserIds);
-      const newMentions = client.ch.getDifference(msg.mentionedUserIds, oldMsg.mentionedUserIds);
+    case JSON.stringify(oldMsg.mentions.users.map((o) => o)) !==
+      JSON.stringify(msg.mentions.users.map((o) => o)): {
+      const oldMentions = client.ch.getDifference(
+        oldMsg.mentions.users.map((o) => o),
+        msg.mentions.users.map((o) => o),
+      );
+      const newMentions = client.ch.getDifference(
+        msg.mentions.users.map((o) => o),
+        oldMsg.mentions.users.map((o) => o),
+      );
 
       merge(
         oldMentions.map((i) => `<@${i}>`).join(', '),
@@ -202,9 +189,16 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       );
       break;
     }
-    case JSON.stringify(oldMsg.mentionedRoleIds) !== JSON.stringify(msg.mentionedRoleIds): {
-      const oldMentions = client.ch.getDifference(oldMsg.mentionedRoleIds, msg.mentionedRoleIds);
-      const newMentions = client.ch.getDifference(msg.mentionedRoleIds, oldMsg.mentionedRoleIds);
+    case JSON.stringify(oldMsg.mentions.roles.map((o) => o)) !==
+      JSON.stringify(msg.mentions.roles.map((o) => o)): {
+      const oldMentions = client.ch.getDifference(
+        oldMsg.mentions.roles.map((o) => o),
+        msg.mentions.roles.map((o) => o),
+      );
+      const newMentions = client.ch.getDifference(
+        msg.mentions.roles.map((o) => o),
+        oldMsg.mentions.roles.map((o) => o),
+      );
 
       merge(
         oldMentions.map((i) => `<@&${i}>`).join(', '),
@@ -214,14 +208,15 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
       );
       break;
     }
-    case JSON.stringify(oldMsg.mentionedChannelIds) !== JSON.stringify(msg.mentionedChannelIds): {
+    case JSON.stringify(oldMsg.mentions.channels.map((o) => o)) !==
+      JSON.stringify(msg.mentions.channels.map((o) => o)): {
       const oldMentions = client.ch.getDifference(
-        oldMsg.mentionedChannelIds,
-        msg.mentionedChannelIds,
+        oldMsg.mentions.channels.map((o) => o),
+        msg.mentions.channels.map((o) => o),
       );
       const newMentions = client.ch.getDifference(
-        msg.mentionedChannelIds,
-        oldMsg.mentionedChannelIds,
+        msg.mentions.channels.map((o) => o),
+        oldMsg.mentions.channels.map((o) => o),
       );
 
       merge(
@@ -238,10 +233,10 @@ export default async (msg: DDeno.Message, oldMsg: DDeno.Message) => {
   }
 
   if (byAuthor === null) {
-    embed.description = lan.descUpdateMaybe(msg, user);
+    embed.description = lan.descUpdateMaybe(msg);
   } else if (byAuthor === false) {
     embed.description = lan.descUpdate(msg);
-  } else embed.description = lan.descUpdateAuthor(msg, user);
+  } else embed.description = lan.descUpdateAuthor(msg);
 
   client.ch.send(
     { id: channels, guildId: msg.guild.id },

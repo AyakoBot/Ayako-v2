@@ -99,7 +99,7 @@ export default async (args: CT.ModBaseEventOptions) => {
   if (args.m && source) {
     (await import('./modSourceHandler.js')).default(
       source,
-      args.m as CT.MessageGuild,
+      args.m as CT.GuildMessage,
       undefined,
       embed || undefined,
     );

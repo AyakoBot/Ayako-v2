@@ -2,48 +2,31 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (
-  payload: { channelId: bigint; messageId: bigint; guildId?: bigint },
-  cache: Map<
-    bigint | string,
-    {
-      count: number;
-      users: bigint[];
-      emoji: DDeno.Emoji;
-    }
-  >,
+  msg: Discord.Message,
+  reactions: Discord.Collection<string | Discord.Snowflake, Discord.MessageReaction>,
 ) => {
-  if (!payload.guild.id) return;
+  if (!msg.guild) return;
 
-  const channels = await client.ch.getLogChannels('reactionevents', { guildId: payload.guild.id });
+  const channels = await client.ch.getLogChannels('reactionevents', msg.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(payload.guild.id);
+  const language = await client.ch.languageSelector(msg.guild.id);
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
-  const files: DDeno.FileContent[] = [];
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameRemoveAll,
       icon_url: con.remove,
-      url: client.ch.getJumpLink({
-        id: payload.messageId,
-        channelId: payload.channelId,
-        guildId: payload.guild.id,
-      }),
+      url: msg.url,
     },
-    description: lan.descRemovedAll({
-      id: payload.messageId,
-      channelId: payload.channelId,
-      guildId: payload.guild.id,
-    } as DDeno.Message),
+    description: lan.descRemovedAll(msg),
     color: client.customConstants.colors.warning,
     fields: [],
   };
 
-  if (cache) {
-    const reactions = Array.from(cache, ([, e]) => e);
-
+  if (reactions.size) {
     embed.fields?.push({
       name: lan.reactions,
       value: reactions
@@ -57,7 +40,7 @@ export default async (
     });
 
     const users = client.ch.txtFileWriter(
-      reactions.map((r) => r.users.map(String).join(', ')).join('\n'),
+      reactions.map((r) => r.users.cache.map(String).join(', ')).join('\n'),
       undefined,
       lan.reactions,
     );
@@ -66,7 +49,7 @@ export default async (
   }
 
   client.ch.send(
-    { id: channels, guildId: payload.guild.id },
+    { id: channels, guildId: msg.guild.id },
     { embeds: [embed], files },
     language,
     undefined,

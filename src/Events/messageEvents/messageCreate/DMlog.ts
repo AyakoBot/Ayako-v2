@@ -1,22 +1,23 @@
+import type * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default async (msg: CT.MessageDM) => {
-  if (msg.authorId === client.id) return;
-  const embed = {
+export default async (msg: CT.DMMessage) => {
+  if (msg.author.id === client.user?.id) return;
+  const embed: Discord.APIEmbed = {
     color: client.customConstants.standard.color,
     description: `${msg.author} / ${msg.author.id}\n${msg.content}`,
     fields: [
       {
         name: '\u200b',
-        value: client.ch.getJumpLink(msg),
+        value: msg.url,
       },
     ],
   };
 
-  for (let i = 0; i < msg.attachments.length; i += 1) {
-    embed.fields.push({ name: '\u200b', value: msg.attachments[i].url });
-  }
+  msg.attachments.forEach((attachment) =>
+    embed.fields?.push({ name: '\u200b', value: attachment.url }),
+  );
 
   for (let i = 0; i < msg.embeds.length; i += 1) {
     const thisEmbed = msg.embeds[i];
@@ -24,11 +25,11 @@ export default async (msg: CT.MessageDM) => {
     if (thisEmbed.title) text = thisEmbed.title;
     else if (thisEmbed.author) text = thisEmbed.author?.name;
 
-    embed.fields.push({ name: '\u200b', value: text });
+    embed.fields?.push({ name: '\u200b', value: text });
   }
 
   client.ch.send(
-    { id: 825297763822469140n, guildId: 669893888856817665n },
+    { id: '825297763822469140', guildId: '669893888856817665' },
     {
       embeds: [embed],
     },

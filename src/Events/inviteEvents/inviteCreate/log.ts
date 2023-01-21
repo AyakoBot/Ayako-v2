@@ -1,33 +1,27 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (invite: DDeno.BaseInvite, guild: DDeno.Guild, inv: DDeno.Invite) => {
-  const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
+export default async (invite: Discord.Invite, guild: Discord.Guild) => {
+  const channels = await client.ch.getLogChannels('guildevents', guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(invite.guild.id);
+  const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.logs.invite;
   const con = client.customConstants.events.logs.invite;
-  const audit = await client.ch.getAudit(
-    guild,
-    40,
-    undefined,
-    (i: DDeno.AuditLogEntry) => i.changes?.find((c) => c.key === 'code')?.new === invite.code,
-  );
-  const auditUser =
-    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
+  const audit = await client.ch.getAudit(guild, 40, invite.code);
+  const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
     author: {
       icon_url: con.create,
       name: lan.nameCreate,
     },
-    description: auditUser ? lan.descCreateAudit(auditUser, inv) : lan.descCreate(inv),
+    description: auditUser ? lan.descCreateAudit(auditUser, invite) : lan.descCreate(invite),
     fields: [],
     color: client.customConstants.colors.success,
   };
 
-  const flagsText = [inv.temporary ? lan.temporary : null]
+  const flagsText = [invite.temporary ? lan.temporary : null]
     .filter((f): f is string => !!f)
     .map((f) => `\`${f}\``)
     .join(', ');
@@ -54,21 +48,21 @@ export default async (invite: DDeno.BaseInvite, guild: DDeno.Guild, inv: DDeno.I
     });
   }
 
-  if (inv.targetApplication) {
+  if (invite.targetApplication) {
     embed.fields?.push({
       name: language.Application,
-      value: language.languageFunction.getApplication(inv.targetApplication),
+      value: language.languageFunction.getApplication(invite.targetApplication),
     });
   }
 
   if (invite.expiresAt) {
     embed.fields?.push({
       name: lan.expiresAt,
-      value: client.customConstants.standard.getTime(invite.expiresAt),
+      value: client.customConstants.standard.getTime(invite.expiresAt.getTime()),
     });
   }
 
-  const channel = await client.ch.cache.channels.get(inv.channelId, guild.id);
+  const channel = invite.channelId ? client.channels.cache.get(invite.channelId) : undefined;
 
   if (channel) {
     embed.fields?.push({
@@ -84,24 +78,31 @@ export default async (invite: DDeno.BaseInvite, guild: DDeno.Guild, inv: DDeno.I
     });
   }
 
-  embed.fields?.push(
-    {
-      name: language.createdAt,
-      value: client.customConstants.standard.getTime(inv.createdAt),
-    },
-    {
-      name: lan.targetTypeName,
-      value: lan.targetType[inv.targetType],
-    },
-    {
+  if (invite.maxAge) {
+    embed.fields?.push({
       name: lan.maxAge,
-      value: client.ch.moment(inv.maxAge, language),
-    },
-    {
-      name: lan.maxUses,
-      value: String(inv.maxUses) ?? '∞',
-    },
-  );
+      value: client.ch.moment(invite.maxAge, language),
+    });
+  }
+
+  if (invite.createdAt) {
+    embed.fields?.push({
+      name: language.createdAt,
+      value: client.customConstants.standard.getTime(invite.createdAt.getTime()),
+    });
+  }
+
+  if (invite.targetType) {
+    embed.fields?.push({
+      name: lan.targetTypeName,
+      value: lan.targetType[invite.targetType],
+    });
+  }
+
+  embed.fields?.push({
+    name: lan.maxUses,
+    value: String(invite.maxUses) ?? '∞',
+  });
 
   client.ch.send(
     { id: channels, guildId: guild.id },

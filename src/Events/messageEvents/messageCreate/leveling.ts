@@ -14,15 +14,15 @@ const lastMessageGlobal = new Map();
 
 const antiLevelSpam = new Map();
 
-export default async (msg: CT.MessageGuild) => {
-  if (msg.author.toggles.bot) return;
-  if (msg.channel.type === 1) return;
+export default async (msg: CT.GuildMessage) => {
+  if (msg.author.bot) return;
+  if (msg.channel.isDMBased()) return;
 
   globalLeveling(msg);
   guildLeveling(msg);
 };
 
-const globalLeveling = async (msg: CT.MessageGuild) => {
+const globalLeveling = async (msg: CT.GuildMessage) => {
   if (globalCooldown.has(msg.author.id)) return;
 
   const lastMessage = lastMessageGlobal.get(msg.author.id);
@@ -37,7 +37,7 @@ const globalLeveling = async (msg: CT.MessageGuild) => {
   });
 
   const levelRow = await client.ch
-    .query(`SELECT * FROM level WHERE type = $1 AND userid = $2;`, ['global', String(msg.authorId)])
+    .query(`SELECT * FROM level WHERE type = $1 AND userid = $2;`, ['global', msg.author.id])
     .then((r: DBT.level[] | null) => (r ? r[0] : null));
 
   if (levelRow) {
@@ -47,7 +47,7 @@ const globalLeveling = async (msg: CT.MessageGuild) => {
   }
 };
 
-const guildLeveling = async (msg: CT.MessageGuild) => {
+const guildLeveling = async (msg: CT.GuildMessage) => {
   const alsEntry = antiLevelSpam.get(msg.author.id);
   if (alsEntry && alsEntry === msg.content) return;
   antiLevelSpam.set(msg.author.id, msg.content);
@@ -68,14 +68,14 @@ const guildLeveling = async (msg: CT.MessageGuild) => {
       if (levelingRow.blusers && levelingRow.blusers?.includes(String(msg.author.id))) return;
       if (
         levelingRow.blroles &&
-        msg.member.roles.some((r) => levelingRow.blroles?.includes(String(r)))
+        msg.member.roles.cache.some((r) => levelingRow.blroles?.includes(r.id))
       ) {
         return;
       }
 
       if (
         !levelingRow.wlroles ||
-        !msg.member.roles.some((r) => levelingRow.wlroles?.includes(String(r)))
+        !msg.member.roles.cache.some((r) => levelingRow.wlroles?.includes(r.id))
       ) {
         if (levelingRow.blchannels && levelingRow.blchannels.includes(String(msg.channelId))) {
           return;
@@ -114,8 +114,8 @@ const guildLeveling = async (msg: CT.MessageGuild) => {
   const res = await client.ch
     .query(`SELECT * FROM level WHERE type = $1 AND userid = $2 AND guildid = $3;`, [
       'guild',
-      String(msg.authorId),
-      String(msg.guild.id),
+      msg.author.id,
+      msg.guild.id,
     ])
     .then((r: DBT.level[] | null) => (r ? r[0] : null));
 
@@ -139,7 +139,7 @@ const guildLeveling = async (msg: CT.MessageGuild) => {
 };
 
 const insertLevels = (
-  msg: CT.MessageGuild,
+  msg: CT.GuildMessage,
   type: 'guild' | 'global',
   baseXP: number,
   xpMultiplier: number,
@@ -148,7 +148,7 @@ const insertLevels = (
     `INSERT INTO level (type, userid, xp, level, guildid) VALUES ($1, $2, $3, $4, $5);`,
     [
       type,
-      String(msg.authorId),
+      msg.author.id,
       Math.floor(Math.random() * baseXP + 10) * xpMultiplier,
       0,
       type === 'guild' ? String(msg.guild.id) : 1,
@@ -156,7 +156,7 @@ const insertLevels = (
   );
 
 const updateLevels = async (
-  msg: CT.MessageGuild,
+  msg: CT.GuildMessage,
   row: DBT.leveling | null,
   lvlupObj: DBT.level,
   baseXP: number,
@@ -194,25 +194,25 @@ const updateLevels = async (
   if (type === 'guild') {
     client.ch.query(
       `UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4 AND guildid = $5;`,
-      [newLevel, xp, type, String(msg.authorId), String(msg.guild.id)],
+      [newLevel, xp, type, msg.author.id, msg.guild.id],
     );
   } else {
     client.ch.query(`UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4;`, [
       newLevel,
       xp,
       type,
-      String(msg.authorId),
+      msg.author.id,
     ]);
   }
 };
 
-const checkEnabled = async (msg: CT.MessageGuild) =>
+const checkEnabled = async (msg: CT.GuildMessage) =>
   client.ch
     .query(`SELECT * FROM leveling WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
 
 const levelUp = async (
-  msg: CT.MessageGuild,
+  msg: CT.GuildMessage,
   settingsrow: DBT.leveling,
   levelData: {
     oldXp: number;
@@ -238,7 +238,7 @@ const levelUp = async (
   roleAssign(msg, settingsrow.rolemode, levelData.newLevel);
 };
 
-const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: number) => {
+const roleAssign = async (msg: CT.GuildMessage, rolemode: boolean, newLevel: number) => {
   if (!msg.member) return;
 
   const levelingrolesRow = await client.ch
@@ -247,8 +247,8 @@ const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: num
 
   if (!levelingrolesRow) return;
 
-  let add: bigint[] = [];
-  let rem: bigint[] = [];
+  let add: string[] = [];
+  let rem: string[] = [];
 
   switch (Number(rolemode)) {
     case 0: {
@@ -257,13 +257,13 @@ const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: num
       thisLevelsRows.forEach((r) => {
         const roleMap = r.roles
           ?.map((roleid) => {
-            if (!msg.member?.roles.includes(BigInt(roleid))) return roleid;
+            if (!msg.member?.roles.cache.has(roleid)) return roleid;
             return null;
           })
           .filter((req) => !!req);
 
         if (roleMap?.length) {
-          add = [...new Set([...add, ...roleMap])].filter((s): s is bigint => s !== null);
+          add = [...new Set([...add, ...roleMap])].filter((s): s is string => !!s);
         }
       });
       break;
@@ -275,15 +275,15 @@ const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: num
       );
 
       thisLevelsAndBelowRows.forEach((r) => {
-        const remr: bigint[] = [];
-        const addr: bigint[] = [];
+        const remr: string[] = [];
+        const addr: string[] = [];
         r.roles?.forEach((roleid) => {
-          if (Number(r.level) < Number(newLevel) && msg.member?.roles.includes(BigInt(roleid))) {
-            if (msg.guild?.roles.get(BigInt(roleid))) remr.push(BigInt(roleid));
+          if (Number(r.level) < Number(newLevel) && msg.member?.roles.cache.has(roleid)) {
+            if (msg.guild?.roles.cache.get(roleid)) remr.push(roleid);
           }
 
-          if (Number(r.level) === Number(newLevel) && !msg.member?.roles.includes(BigInt(roleid))) {
-            if (msg.guild?.roles.get(BigInt(roleid))) addr.push(BigInt(roleid));
+          if (Number(r.level) === Number(newLevel) && !msg.member?.roles.cache.has(roleid)) {
+            if (msg.guild?.roles.cache.get(roleid)) addr.push(roleid);
           }
         });
 
@@ -302,7 +302,7 @@ const roleAssign = async (msg: CT.MessageGuild, rolemode: boolean, newLevel: num
 };
 
 const doReact = async (
-  msg: CT.MessageGuild,
+  msg: CT.GuildMessage,
   row: DBT.leveling,
   levelData: {
     oldXp: number;
@@ -312,12 +312,12 @@ const doReact = async (
   },
 ) => {
   const reactions: string[] = [];
-  let emotes: DDeno.Emoji[] | null = [];
+  let emotes: (Discord.Emoji | Discord.GuildEmoji)[] | null = [];
 
   if (row.lvlupemotes?.length) {
     emotes = (
-      await Promise.all(row.lvlupemotes.map((emoteID) => client.ch.getEmote(emoteID)))
-    ).filter((emote): emote is DDeno.Emoji => !!emote);
+      await Promise.all(row.lvlupemotes.map((emoteID) => client.ch.getEmote(emoteID) ?? emoteID))
+    ).filter((emote): emote is Discord.GuildEmoji => !!emote);
 
     emotes.forEach((emote) => {
       reactions.push(`${emote.name}:${emote.id}`);
@@ -330,22 +330,21 @@ const doReact = async (
     infoEmbed(msg, emotes);
   }
 
-  await Promise.all(
-    reactions.map((emote) =>
-      client.helpers.addReaction(msg.channelId, msg.id, emote).catch(() => null),
-    ),
-  );
+  await Promise.all(reactions.map((emote) => msg.react(emote).catch(() => null)));
 
   const date = new Date(Date.now() + 10000);
   jobs.scheduleJob(date, () => {
     reactions.map((emote) =>
-      client.helpers.deleteReactionsEmoji(msg.channelId, msg.id, emote).catch(() => null),
+      msg.reactions.cache
+        .get(emote)
+        ?.remove()
+        .catch(() => null),
     );
   });
 };
 
 const doEmbed = async (
-  msg: CT.MessageGuild,
+  msg: CT.GuildMessage,
   settinsgrow: DBT.leveling,
   levelData: {
     oldXp: number;
@@ -393,38 +392,35 @@ const doEmbed = async (
   if (embed) send(msg, { embeds: [embed] }, settinsgrow);
 };
 
-const send = async (msg: CT.MessageGuild, payload: DDeno.CreateMessage, row: DBT.leveling) => {
-  const channelIDs =
+const send = async (
+  msg: CT.GuildMessage,
+  payload: Discord.MessageCreateOptions,
+  row: DBT.leveling,
+) => {
+  const channels =
     row.lvlupchannels && row.lvlupchannels.length ? row.lvlupchannels : [msg.channel.id];
 
-  const channels = channelIDs.map((ch) => msg.guild?.channels.get(BigInt(ch)));
   const msgs = await Promise.all(
-    channels
-      .filter((c): c is DDeno.Channel => !!c)
-      .map((c) => client.ch.send(c, payload, msg.language).catch(() => null)),
+    channels.map((c) =>
+      client.ch.send({ id: c, guildId: msg.guild.id }, payload, msg.language).catch(() => null),
+    ),
   );
 
   if (row.lvlupdeltimeout) {
     const date = new Date(Date.now() + row.lvlupdeltimeout);
     jobs.scheduleJob(date, () => {
       Promise.all(
-        msgs
-          .map((m) => {
-            if (Array.isArray(m)) return null;
-            if (m) {
-              return client.helpers
-                .deleteMessage(m.channelId, m.id, msg.language.deleteReasons.leveling)
-                .catch(() => null);
-            }
-            return null;
-          })
-          .filter((p): p is Promise<void> => !!p),
+        msgs.map((m) => {
+          if (Array.isArray(m)) return null;
+          if (m) return m.delete().catch(() => null);
+          return null;
+        }),
       );
     });
   }
 };
 
-const getRulesRes = async (msg: CT.MessageGuild) => {
+const getRulesRes = async (msg: CT.GuildMessage) => {
   const levelingruleschannelsRows = await client.ch
     .query(`SELECT * FROM levelingruleschannels WHERE guildid = $1;`, [String(msg.guild.id)])
     .then((r: DBT.levelingruleschannels[] | null) => r || null);
@@ -439,7 +435,7 @@ type AppliedRules = {
   [key in keyof typeof ActivityFlags]?: number;
 };
 
-const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
+const checkPass = (msg: CT.GuildMessage, rows: DBT.levelingruleschannels[]) => {
   const passes = rows.map((row) => {
     if (!row.rules) return true;
     const rules = new ChannelRules(Number(row.rules)).toArray();
@@ -456,11 +452,11 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
     Object.entries(appliedRules).forEach(([key, num]) => {
       switch (key) {
         case 'hasleastattachments': {
-          if (msg.attachments.length < Number(num)) willLevel.push(false);
+          if (msg.attachments.size < Number(num)) willLevel.push(false);
           break;
         }
         case 'hasmostattachments': {
-          if (msg.attachments.length > Number(num)) willLevel.push(false);
+          if (msg.attachments.size > Number(num)) willLevel.push(false);
           break;
         }
         case 'hasleastcharacters': {
@@ -480,27 +476,27 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
           break;
         }
         case 'mentionsleastusers': {
-          if (msg.mentionedUserIds.length < Number(num)) willLevel.push(false);
+          if (msg.mentions.users.size < Number(num)) willLevel.push(false);
           break;
         }
         case 'mentionsmostusers': {
-          if (msg.mentionedUserIds.length > Number(num)) willLevel.push(false);
+          if (msg.mentions.users.size > Number(num)) willLevel.push(false);
           break;
         }
         case 'mentionsleastroles': {
-          if (msg.mentionedRoleIds.length < Number(num)) willLevel.push(false);
+          if (msg.mentions.roles.size < Number(num)) willLevel.push(false);
           break;
         }
         case 'mentionsmostroles': {
-          if (msg.mentionedRoleIds.length > Number(num)) willLevel.push(false);
+          if (msg.mentions.roles.size > Number(num)) willLevel.push(false);
           break;
         }
         case 'mentionsleastchannels': {
-          if (msg.mentionedChannelIds.length < Number(num)) willLevel.push(false);
+          if (msg.mentions.channels.size < Number(num)) willLevel.push(false);
           break;
         }
         case 'mentionsmostchannels': {
-          if (msg.mentionedChannelIds.length > Number(num)) willLevel.push(false);
+          if (msg.mentions.channels.size > Number(num)) willLevel.push(false);
           break;
         }
         case 'hasleastlinks': {
@@ -545,9 +541,7 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
         }
         case 'hasleastmentions': {
           if (
-            msg.mentionedUserIds.length +
-              msg.mentionedRoleIds.length +
-              msg.mentionedChannelIds.length <
+            msg.mentions.users.size + msg.mentions.roles.size + msg.mentions.channels.size <
             Number(num)
           ) {
             willLevel.push(false);
@@ -556,9 +550,7 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
         }
         case 'hasmostmentions': {
           if (
-            msg.mentionedUserIds.length +
-              msg.mentionedRoleIds.length +
-              msg.mentionedChannelIds.length >
+            msg.mentions.users.size + msg.mentions.roles.size + msg.mentions.channels.size >
             Number(num)
           ) {
             willLevel.push(false);
@@ -580,7 +572,7 @@ const checkPass = (msg: CT.MessageGuild, rows: DBT.levelingruleschannels[]) => {
   return true;
 };
 
-const getRoleMultiplier = async (msg: CT.MessageGuild) => {
+const getRoleMultiplier = async (msg: CT.GuildMessage) => {
   const levelingmultiplierrolesRows = await client.ch
     .query(`SELECT * FROM levelingmultiplierroles WHERE guildid = $1 ORDER BY multiplier DESC;`, [
       String(msg.guild.id),
@@ -589,7 +581,7 @@ const getRoleMultiplier = async (msg: CT.MessageGuild) => {
 
   if (levelingmultiplierrolesRows) {
     const rows = levelingmultiplierrolesRows.filter((row) =>
-      msg.member?.roles.some((r) => row.roles?.includes(String(r))),
+      msg.member?.roles.cache.some((r) => row.roles?.includes(r.id)),
     );
     if (!rows || !rows.length) return null;
     const [row] = rows;
@@ -598,7 +590,7 @@ const getRoleMultiplier = async (msg: CT.MessageGuild) => {
   return null;
 };
 
-const getChannelMultiplier = async (msg: CT.MessageGuild) => {
+const getChannelMultiplier = async (msg: CT.GuildMessage) => {
   const allRows = await client.ch
     .query(
       `SELECT * FROM levelingmultiplierchannels WHERE guildid = $1 ORDER BY multiplier DESC;`,
@@ -615,16 +607,21 @@ const getChannelMultiplier = async (msg: CT.MessageGuild) => {
   return null;
 };
 
-const infoEmbed = async (msg: CT.MessageGuild, reactions: DDeno.Emoji[] | null) => {
+const infoEmbed = async (
+  msg: CT.GuildMessage,
+  reactions: (Discord.Emoji | Discord.GuildEmoji)[] | null,
+) => {
   const embed: Discord.APIEmbed = {
-    color: await client.ch.colorSelector(await client.ch.cache.members.get(client.id, msg.guild.id)),
+    color: client.ch.colorSelector(
+      client.user ? await msg.guild.members.fetch(client.user.id) : undefined,
+    ),
     description: msg.language.leveling.description(reactions?.join('')),
   };
 
   client.ch.replyMsg(msg, { embeds: [embed] }).then((m) => {
     const date = new Date(Date.now() + 30000);
     jobs.scheduleJob(date, () => {
-      if (m) client.helpers.deleteMessage(m.channelId, m.id, msg.language.deleteReasons.leveling);
+      if (m) m.delete().catch(() => null);
     });
   });
 };

@@ -1,12 +1,10 @@
 import Jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
 import type DBT from '../Typings/DataBaseTypings';
-import type CT from '../Typings/CustomTypings';
-import client from '../BaseClient/Client.js';
 
 export default async (
   source: string,
-  m?: CT.MessageGuild | null,
+  m?: Discord.Message,
   settings?: DBT.antivirus,
   embed?: Discord.APIEmbed,
 ) => {
@@ -20,7 +18,7 @@ export default async (
 
       if (deleteTimeout <= minimizeTimeout) {
         Jobs.scheduleJob(new Date(Date.now() + deleteTimeout), () => {
-          if (m) client.helpers.deleteMessage(m.channelId, m.id).catch(() => null);
+          if (m) m.delete().catch(() => null);
         });
       } else {
         if (embed && embed.fields?.[0].value) {
@@ -28,14 +26,12 @@ export default async (
           embed.fields = [];
 
           Jobs.scheduleJob(new Date(Date.now() + minimizeTimeout), () => {
-            if (m) {
-              client.helpers.editMessage(m.channelId, m.id, { embeds: [embed] }).catch(() => null);
-            }
+            if (m) m.edit({ embeds: [embed] }).catch(() => null);
           });
         }
 
         Jobs.scheduleJob(new Date(Date.now() + deleteTimeout), () => {
-          if (m) client.helpers.deleteMessage(m.channelId, m.id).catch(() => null);
+          if (m) m.delete().catch(() => null);
         });
       }
 

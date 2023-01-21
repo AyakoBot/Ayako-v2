@@ -5,7 +5,7 @@ import constants from '../Other/Constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (
-  msg: Discord.Message,
+  msg: Discord.Message | CT.Message | CT.GuildMessage,
   content: string,
   language: CT.Language,
   m?: Discord.Message,

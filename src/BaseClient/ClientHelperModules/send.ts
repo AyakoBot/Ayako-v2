@@ -58,6 +58,9 @@ async function send(
     return sentMessages;
   }
 
+  if (payload.files?.length) timeout = undefined;
+  if (payload.components?.length) timeout = undefined;
+
   const channel = !('name' in c) ? client.channels.cache.get(c.id) : c;
   if (!channel) return null;
 

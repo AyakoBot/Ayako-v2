@@ -2,15 +2,13 @@ import type * as Discord from 'discord.js';
 
 export type Language = typeof import('../Languages/en.js').default;
 
-export type Client = CustomClient;
-
 export interface Command {
   cooldown: number;
   name: string;
   language: Language;
   takesFirstArg: boolean;
   aliases?: string[];
-  thisGuildOnly: bigint[];
+  thisGuildOnly: string[];
   perm?: 0 | bigint;
   dmOnly: boolean;
   dmAllowed: boolean;
@@ -63,9 +61,12 @@ export interface Message extends Discord.Message {
   language: Language;
 }
 
-export interface GuildMessage extends Omit<Message, 'guild'> {
+export interface GuildMessage extends Omit<Message, 'guild' | 'member'> {
   guild: Discord.Guild;
+  member: Discord.GuildMember;
 }
+
+export type DMMessage = Omit<Message, 'guild' | 'member'>;
 
 export interface GuildInteraction extends Omit<Discord.Interaction, 'guild'> {
   guild: Discord.Guild;

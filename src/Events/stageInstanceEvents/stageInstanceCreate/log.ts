@@ -1,23 +1,19 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (stage: DDeno.StageInstance) => {
-  const channels = await client.ch.getLogChannels('stageevents', stage);
+export default async (stage: Discord.StageInstance) => {
+  if (!stage.guild) return;
+  if (!stage.channel) return;
+
+  const channels = await client.ch.getLogChannels('stageevents', stage.guild);
   if (!channels) return;
-
-  const guild = await client.ch.cache.guilds.get(stage.id);
-  if (!guild) return;
-
-  const channel = await client.ch.cache.channels.get(stage.channelId, stage.guild.id);
-  if (!channel) return;
 
   const language = await client.ch.languageSelector(stage.guild.id);
   const lan = language.events.logs.channel;
   const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(guild, 83, stage.id);
-  const auditUser =
-    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
-  const files: DDeno.FileContent[] = [];
+  const audit = await client.ch.getAudit(stage.guild, 83, stage.id);
+  const auditUser = audit?.executor ?? undefined;
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -26,21 +22,18 @@ export default async (stage: DDeno.StageInstance) => {
     },
     color: client.customConstants.colors.loading,
     description: auditUser
-      ? lan.descCreateStageAudit(channel, language.channelTypes[channel.type], auditUser)
-      : lan.descCreateStage(channel, language.channelTypes[channel.type]),
+      ? lan.descCreateStageAudit(
+          stage.channel,
+          language.channelTypes[stage.channel.type],
+          auditUser,
+        )
+      : lan.descCreateStage(stage.channel, language.channelTypes[stage.channel.type]),
   };
 
-  if (stage.guildScheduledEventId) {
-    const scheduledEvent = await client.ch.cache.scheduledEvents.get(
-      stage.guildScheduledEventId,
-      stage.guild.id,
-    );
-
+  if (stage.guildScheduledEvent) {
     embed.fields?.push({
       name: language.ScheduledEvent,
-      value: scheduledEvent
-        ? language.languageFunction.getScheduledEvent(scheduledEvent)
-        : language.unknown,
+      value: language.languageFunction.getScheduledEvent(stage.guildScheduledEvent),
     });
   }
 
@@ -51,16 +44,13 @@ export default async (stage: DDeno.StageInstance) => {
     });
   }
 
-  if (stage.channelId) {
-    const ch = await client.ch.cache.channels.get(stage.channelId, stage.guild.id);
-
-    embed.fields?.push({
-      name: lan.topic,
-      value: ch
-        ? language.languageFunction.getChannel(ch, language.channelTypes[ch.type])
-        : language.unknown,
-    });
-  }
+  embed.fields?.push({
+    name: lan.topic,
+    value: language.languageFunction.getChannel(
+      stage.channel,
+      language.channelTypes[stage.channel.type],
+    ),
+  });
 
   client.ch.send(
     { id: channels, guildId: stage.guild.id },

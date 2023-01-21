@@ -1,21 +1,15 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
-  const channels = await client.ch.getLogChannels('guildevents', { guildId: guild.id });
+export default async (invite: Discord.Invite, guild: Discord.Guild) => {
+  const channels = await client.ch.getLogChannels('guildevents', guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(invite.guild.id);
+  const language = await client.ch.languageSelector(guild.id);
   const lan = language.events.logs.invite;
   const con = client.customConstants.events.logs.invite;
-  const audit = await client.ch.getAudit(
-    guild,
-    40,
-    undefined,
-    (i: DDeno.AuditLogEntry) => i.changes?.find((c) => c.key === 'code')?.new === invite.code,
-  );
-  const auditUser =
-    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
+  const audit = await client.ch.getAudit(guild, 40, invite.code);
+  const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -54,11 +48,8 @@ export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
     });
   }
 
-  if (invite.channelId && invite.guild.id) {
-    const channel = await client.ch.cache.channels.get(
-      BigInt(invite.channelId),
-      BigInt(invite.guild.id),
-    );
+  if (invite.channelId) {
+    const channel = client.channels.cache.get(invite.channelId);
 
     if (channel) {
       embed.fields?.push({
@@ -75,20 +66,24 @@ export default async (invite: DDeno.InviteMetadata, guild: DDeno.Guild) => {
     });
   }
 
-  embed.fields?.push(
-    {
+  if (invite.createdAt) {
+    embed.fields?.push({
       name: language.createdAt,
-      value: client.customConstants.standard.getTime(invite.createdAt),
-    },
-    {
+      value: client.customConstants.standard.getTime(invite.createdAt.getTime()),
+    });
+  }
+
+  if (invite.maxAge) {
+    embed.fields?.push({
       name: lan.maxAge,
       value: client.ch.moment(invite.maxAge, language),
-    },
-    {
-      name: lan.maxUses,
-      value: String(invite.maxUses) ?? '∞',
-    },
-  );
+    });
+  }
+
+  embed.fields?.push({
+    name: lan.maxUses,
+    value: String(invite.maxUses) ?? '∞',
+  });
 
   client.ch.send(
     { id: channels, guildId: guild.id },

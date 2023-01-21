@@ -3,29 +3,29 @@ import jobs from 'node-schedule';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default async (msg: CT.MessageGuild) => {
+export default async (msg: CT.GuildMessage) => {
   gvMessageCheck(msg);
   amMessageCheck(msg);
 
   if (
-    (msg.channelId === 554487212276842534n || msg.channelId === 791390835916537906n) &&
-    msg.attachments.length < 1 &&
-    !msg.member.roles.includes(366238244775657472n) &&
-    !msg.member.roles.includes(776248679363248168n) &&
-    msg.authorId !== client.id
+    (msg.channelId === '554487212276842534' || msg.channelId === '791390835916537906') &&
+    msg.attachments.size < 1 &&
+    !msg.member.roles.cache.has('366238244775657472') &&
+    !msg.member.roles.cache.has('776248679363248168') &&
+    msg.author.id !== client.user?.id
   ) {
-    client.helpers.deleteMessage(msg.channelId, msg.id).catch(() => null);
+    msg.delete().catch(() => null);
   }
 };
 
-const gvMessageCheck = (msg: CT.MessageGuild) => {
+const gvMessageCheck = (msg: CT.GuildMessage) => {
   if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
-  if (msg.guild.id !== 366219406776336385n) return;
-  if (msg.channelId === 801804774759727134n) return;
+  if (msg.guild.id !== '366219406776336385') return;
+  if (msg.channelId === '801804774759727134') return;
 
   const inviteCheck = () => {
     if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
-    client.helpers.deleteMessage(msg.channelId, msg.id).catch(() => null);
+    msg.delete().catch(() => null);
 
     client.ch
       .send(
@@ -36,7 +36,7 @@ const gvMessageCheck = (msg: CT.MessageGuild) => {
       .then((m) => {
         if (Array.isArray(m)) return;
         jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) client.helpers.deleteMessage(m.channelId, m.id).catch(() => null);
+          if (m) m.delete().catch(() => null);
         });
       });
   };
@@ -49,16 +49,17 @@ const gvMessageCheck = (msg: CT.MessageGuild) => {
       return;
     }
     if (
-      msg.member.roles.includes(369619820867747844n) ||
-      msg.member.roles.includes(367781331683508224n) ||
-      msg.member.roles.includes(585576789376630827n) ||
-      msg.channelId === 367403201646952450n ||
-      msg.channelId === 77766025920027037n
+      msg.member.roles.cache.has('369619820867747844') ||
+      msg.member.roles.cache.has('367781331683508224') ||
+      msg.member.roles.cache.has('585576789376630827') ||
+      msg.channelId === '367403201646952450' ||
+      msg.channelId === '77766025920027037'
     ) {
       return;
     }
 
-    client.helpers.deleteMessage(msg.channelId, msg.id).catch(() => null);
+    msg.delete().catch(() => null);
+
     client.ch
       .send(
         msg.channel,
@@ -70,7 +71,7 @@ const gvMessageCheck = (msg: CT.MessageGuild) => {
       .then((m) => {
         if (Array.isArray(m)) return;
         jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) client.helpers.deleteMessage(m.channelId, m.id).catch(() => null);
+          if (m) m.delete().catch(() => null);
         });
       });
   };
@@ -79,22 +80,22 @@ const gvMessageCheck = (msg: CT.MessageGuild) => {
   linkCheck();
 };
 
-const amMessageCheck = (msg: CT.MessageGuild) => {
+const amMessageCheck = (msg: CT.GuildMessage) => {
   if (!msg.content.includes(' is now level ') || !msg.content.includes(' leveled up!')) return;
   if (Number(msg.content?.split(/ +/)[4].replace(/!/g, '')) > 39) return;
 
   const levelUp = () => {
-    if (msg.authorId !== 159985870458322944n && msg.authorId !== 172002275412279296n) {
+    if (msg.author.id !== '159985870458322944' && msg.author.id !== '172002275412279296') {
       return;
     }
 
     jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-      client.helpers.deleteMessage(msg.channelId, msg.id).catch(() => null);
+      msg.delete().catch(() => null);
     });
   };
 
   const linkCheck = () => {
-    if (msg.channelId !== 298954459172700181n) return;
+    if (msg.channelId !== '298954459172700181') return;
     if (
       !msg.content.toLocaleLowerCase().includes('http://') &&
       !msg.content.toLocaleLowerCase().includes('https://')
@@ -102,8 +103,8 @@ const amMessageCheck = (msg: CT.MessageGuild) => {
       return;
     }
 
-    if (msg.member.roles.includes(334832484581769217n)) return;
-    if (msg.member.roles.includes(606164114691194900n)) return;
+    if (msg.member.roles.cache.has('334832484581769217')) return;
+    if (msg.member.roles.cache.has('606164114691194900')) return;
 
     client.ch
       .send(
@@ -116,7 +117,7 @@ const amMessageCheck = (msg: CT.MessageGuild) => {
       .then((m) => {
         if (Array.isArray(m)) return;
         jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) client.helpers.deleteMessage(m.channelId, m.id).catch(() => null);
+          if (m) m.delete().catch(() => null);
         });
       });
   };

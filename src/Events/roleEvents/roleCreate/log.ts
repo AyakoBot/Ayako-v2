@@ -1,24 +1,18 @@
 import * as Discord from 'discord.js';
-import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (role: DDeno.Role) => {
-  const channels = await client.ch.getLogChannels('roleevents', role);
+export default async (role: Discord.Role) => {
+  const channels = await client.ch.getLogChannels('roleevents', role.guild);
   if (!channels) return;
-
-  const guild = await client.ch.cache.guilds.get(role.guild.id);
-  if (!guild) return;
 
   const language = await client.ch.languageSelector(role.guild.id);
   const lan = language.events.logs.role;
   const con = client.customConstants.events.logs.role;
-  const audit = role.botId ? undefined : await client.ch.getAudit(guild, 30, role.id);
-  let auditUser = role.botId ? await client.users.fetch(role.botId) : undefined;
-  const files: DDeno.FileContent[] = [];
+  const audit = role.tags?.botId ? undefined : await client.ch.getAudit(role.guild, 30, role.id);
+  const auditUser =
+    (role.tags?.botId ? await client.users.fetch(role.tags.botId) : audit?.executor) ?? undefined;
+  const files: Discord.AttachmentPayload[] = [];
 
-  if (!auditUser && audit && audit.userId) {
-    auditUser = await client.users.fetch(audit.userId);
-  }
   const embed: Discord.APIEmbed = {
     author: {
       icon_url: con.create,
@@ -30,24 +24,18 @@ export default async (role: DDeno.Role) => {
   };
 
   if (role.icon) {
-    const url = client.customConstants.standard.roleicon_url(role);
-    const attachments = (await client.ch.fileURL2Buffer([url])).filter(
-      (
-        e,
-      ): e is {
-        blob: Blob;
-        name: string;
-      } => !!e,
+    const attachments = (await client.ch.fileURL2Buffer([role.iconURL({ size: 4096 })])).filter(
+      (e): e is Discord.AttachmentPayload => !!e,
     );
 
     if (attachments?.length) files.push(...attachments);
   }
 
   const flagsText = [
-    role.toggles.managed ? lan.managed : null,
-    role.toggles.hoist ? lan.hoisted : null,
-    role.toggles.mentionable ? lan.mentionable : null,
-    role.toggles.premiumSubscriber ? lan.boosterRole : null,
+    role.managed ? lan.managed : null,
+    role.hoist ? lan.hoisted : null,
+    role.mentionable ? lan.mentionable : null,
+    role.tags?.premiumSubscriberRole ? lan.boosterRole : null,
   ]
     .filter((f): f is string => !!f)
     .map((f) => `\`${f}\``)

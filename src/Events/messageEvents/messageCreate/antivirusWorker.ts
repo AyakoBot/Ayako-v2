@@ -92,9 +92,9 @@ const run = async ({
   badLinks,
 }: {
   msgData: {
-    channelid: bigint;
-    msgid: bigint;
-    guildid: bigint;
+    channelid: string;
+    msgid: string;
+    guildid: string;
   };
   linkObject: LinkObject;
   lan: CT.Language['antivirus'];
@@ -240,7 +240,7 @@ const run = async ({
     parentPort?.postMessage({
       type: 'send',
       content: `${util.makeCodeBlock(linkObject.baseURLhostname)}\n${getJumpLink({
-        guildId: msgData.guild.id,
+        guildId: msgData.guildid,
         channelId: msgData.channelid,
         id: msgData.msgid,
       })}`,
@@ -264,7 +264,7 @@ const run = async ({
     parentPort?.postMessage({
       type: 'send',
       content: `${util.makeCodeBlock(linkObject.hostname)}\n${getJumpLink({
-        guildId: msgData.guild.id,
+        guildId: msgData.guildid,
         channelId: msgData.channelid,
         id: msgData.msgid,
       })}`,

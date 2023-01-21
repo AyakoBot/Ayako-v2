@@ -1,22 +1,17 @@
-import Discord from 'discord.js';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
-export default async (oldRole: DDeno.Role, role: DDeno.Role) => {
-  const channels = await client.ch.getLogChannels('roleevents', role);
+export default async (oldRole: Discord.Role, role: Discord.Role) => {
+  const channels = await client.ch.getLogChannels('roleevents', role.guild);
   if (!channels) return;
-
-  const guild = await client.ch.cache.guilds.get(role.guild.id);
-  if (!guild) return;
 
   const language = await client.ch.languageSelector(role.guild.id);
   const lan = language.events.logs.role;
   const con = client.customConstants.events.logs.role;
-  const audit = await client.ch.getAudit(guild, 31, role.id);
-  const auditUser =
-    audit && audit.userId ? await client.users.fetch(audit.userId) : undefined;
-  const files: DDeno.FileContent[] = [];
+  const audit = await client.ch.getAudit(role.guild, 31, role.id);
+  const auditUser = audit?.executor ?? undefined;
+  const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -34,17 +29,16 @@ export default async (oldRole: DDeno.Role, role: DDeno.Role) => {
 
   switch (true) {
     case role.icon !== oldRole.icon: {
-      const url = client.customConstants.standard.roleicon_url(role);
+      if (role.icon) {
+        const attachment = (await client.ch.fileURL2Buffer([role.iconURL({ size: 4096 })]))?.[0]
+          ?.attachment;
 
-      if (url) {
-        const blob = (await client.ch.fileURL2Buffer([url]))?.[0]?.blob;
+        merge(role.iconURL({ size: 4096 }), role.icon, 'icon', lan.icon);
 
-        merge(url, role.icon, 'icon', lan.icon);
-
-        if (blob) {
+        if (attachment) {
           files.push({
             name: String(role.icon),
-            blob,
+            attachment,
           });
         }
       } else embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
@@ -62,12 +56,12 @@ export default async (oldRole: DDeno.Role, role: DDeno.Role) => {
       merge(oldRole.color.toString(), role.name.toString(), 'string', language.color);
       break;
     }
-    case role.toggles.hoist !== oldRole.toggles.hoist: {
-      merge(oldRole.toggles.hoist, role.toggles.hoist, 'boolean', lan.hoisted);
+    case role.hoist !== oldRole.hoist: {
+      merge(oldRole.hoist, role.hoist, 'boolean', lan.hoisted);
       break;
     }
-    case role.toggles.mentionable !== oldRole.toggles.mentionable: {
-      merge(oldRole.toggles.mentionable, role.toggles.mentionable, 'boolean', lan.mentionable);
+    case role.mentionable !== oldRole.mentionable: {
+      merge(oldRole.mentionable, role.mentionable, 'boolean', lan.mentionable);
       break;
     }
     case role.permissions !== oldRole.permissions: {

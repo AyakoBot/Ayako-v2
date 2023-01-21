@@ -1,23 +1,17 @@
 import type * as Discord from 'discord.js';
-import Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
 import { getCommand } from '../messageCreate/commandHandler';
 
-export default async (message: DDeno.Message, oldMsg: DDeno.Message) => {
+export default async (oldMsg: Discord.Message, message: Discord.Message) => {
   const msg = (await (
     await import('../messageCreate/messageCreate')
-  ).convertMsg(message)) as CT.MessageGuild;
+  ).convertMsg(message)) as CT.GuildMessage;
 
   if (!oldMsg || !msg || !oldMsg.content || !msg.content) return;
   if (oldMsg.content === msg.content) return;
-  if (
-    new Discord.MessageFlagsBitField(Number(oldMsg.bitfield)).has(4) !==
-    new Discord.MessageFlagsBitField(Number(msg.bitfield)).has(4)
-  ) {
-    return;
-  }
+  if (oldMsg.crosspostable !== msg.crosspostable) return;
 
   let prefix;
   const prefixStandard = client.customConstants.standard.prefix;
@@ -39,5 +33,5 @@ export default async (message: DDeno.Message, oldMsg: DDeno.Message) => {
   const { file: command } = await getCommand(args);
   if (!command) return;
 
-  client.events.messageCreate(client, msg);
+  client.emit('messageCreate', msg);
 };
