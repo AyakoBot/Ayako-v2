@@ -279,22 +279,29 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
   if (command.type !== 'mod') return true;
 
   const editVerifier = async () => {
-    const buttons: Discord.ButtonBuilder[] = [
-      new Discord.ButtonBuilder()
-        .setCustomId('proceed')
-        .setLabel(msg.language.mod.warning.proceed)
-        .setStyle(Discord.ButtonStyle.Danger)
-        .setEmoji(client.objectEmotes.warning),
-      new Discord.ButtonBuilder()
-        .setCustomId('abort')
-        .setLabel(msg.language.mod.warning.abort)
-        .setStyle(Discord.ButtonStyle.Secondary)
-        .setEmoji(client.objectEmotes.cross),
-    ];
-
     const m = await client.ch.replyMsg(msg, {
       content: msg.language.commands.commandHandler.verifyMessage,
-      components: [new Discord.ActionRowBuilder<Discord.ButtonBuilder>().addComponents(...buttons)],
+      components: [
+        {
+          type: Discord.ComponentType.ActionRow,
+          components: [
+            {
+              type: Discord.ComponentType.Button,
+              style: Discord.ButtonStyle.Danger,
+              label: msg.language.mod.warning.proceed,
+              custom_id: `proceed`,
+              emoji: client.objectEmotes.warning,
+            },
+            {
+              type: Discord.ComponentType.Button,
+              style: Discord.ButtonStyle.Secondary,
+              label: msg.language.mod.warning.abort,
+              custom_id: `abort`,
+              emoji: client.objectEmotes.cross,
+            },
+          ],
+        },
+      ],
     });
 
     if (!m) return false;
