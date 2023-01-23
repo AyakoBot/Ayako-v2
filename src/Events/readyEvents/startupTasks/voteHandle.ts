@@ -15,19 +15,21 @@ export default async () => {
     },
   });
 
-  socket.on('TOP_GG', async (voteData: CT.TopGGBotVote | CT.TopGGGuildVote) => {
-    const tokenRow = await client.ch
-      .query(`SELECT guildid FROM votetokens WHERE token = $1;`, [voteData.authorization])
-      .then((r: DBT.votetokens[] | null) => (r ? r[0] : null));
-    if (!tokenRow) return;
+  socket.on('TOP_GG', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
+    const row = await client.ch
+      .query(`SELECT guildid FROM votesettings WHERE token = $1;`, [vote.authorization])
+      .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
+    if (!row) return;
 
-    const guild = client.guilds.cache.get(tokenRow.guildid);
+    const guild = client.guilds.cache.get(row.guildid);
     if (!guild) return;
 
-    if (!('bot' in voteData)) voteData.guildID = String(voteData.guild);
-    voteData.guild = guild;
+    const user = await client.users.fetch(vote.user).catch(() => undefined);
+    if (!user) return;
 
-    // TODO
-    client.emit('voteCreate', voteData);
+    const member = await guild.members.fetch(vote.user).catch(() => undefined);
+
+    if ('bot' in vote) client.emit('voteBotCreate', vote, guild, user, member);
+    if ('guild' in vote) client.emit('voteGuildCreate', vote, guild, user, member);
   });
 };

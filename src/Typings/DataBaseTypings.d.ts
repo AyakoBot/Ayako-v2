@@ -176,8 +176,8 @@ export type guildsettings = {
 
 export type level = {
   userid: string;
-  guildid: string;
-  type: string;
+  guildid: string | '1';
+  type: 'guild' | 'global';
   xp: string;
   level?: string;
 };
@@ -577,17 +577,6 @@ export type verification = {
   active: boolean;
 };
 
-export type votereminder = {
-  userid: string;
-  removetime: string;
-};
-
-export type voterewards = {
-  userid: string;
-  roleid: string;
-  removetime: string;
-};
-
 export type welcome = {
   guildid: string;
   channelid?: string;
@@ -603,11 +592,6 @@ export type levelingmultiplierroles = {
   roles?: string[];
   multiplier?: number;
   uniquetimestamp: string;
-};
-
-export type votetokens = {
-  guildid: string;
-  token: string;
 };
 
 export interface giveawaycollecttime {
@@ -626,3 +610,30 @@ interface BasicPunishmentsTable {
   active: boolean;
   duration: string;
 }
+
+export interface votesettings {
+  guildid: string;
+  token: string;
+  reminders: boolean;
+  announcementchannel: string;
+}
+
+type rewardtype = 'role' | 'currency' | 'xp' | 'xpmultiplier';
+
+export interface voterewards {
+  guildid: string;
+  uniquetimestamp: string;
+  tier: number;
+  rewardtype;
+  reward: string;
+}
+
+export type voters = {
+  userid: string;
+  removetime: string;
+  voted: string;
+  votetype: 'guild' | 'bot';
+  tier: string;
+  rewardtype: rewardtype[];
+  reward: string[];
+};

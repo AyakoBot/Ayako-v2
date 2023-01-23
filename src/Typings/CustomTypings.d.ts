@@ -73,3 +73,20 @@ export interface GuildInteraction extends Omit<Discord.Interaction, 'guild'> {
 }
 
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
+
+export interface TopGGBotVote {
+  bot: string;
+  user: string;
+  type: 'upvote' | 'test';
+  isWeekend: boolean;
+  query?: string;
+  authorization: string;
+}
+
+export interface TopGGGuildVote {
+  guild: string;
+  user: string;
+  type: 'upvote' | 'test';
+  query?: string;
+  authorization: string;
+}

@@ -1,5 +1,6 @@
 import fs from 'fs';
 
+// TODO
 const getEvents = () => {
   const paths: string[] = [];
 
