@@ -128,15 +128,12 @@ const errorEmbed = async (
 };
 
 const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => {
-  const getLogchannels = async () => {
-    const res = await client.ch
+  const getLogchannels = async () =>
+    client.ch
       .query(`SELECT modlogs FROM logchannels WHERE guildid = $1 AND modlogs IS NOT NULL;`, [
         args.guild?.id,
       ])
-      .then((r: DBT.logchannels[] | null) => r?.[0] || null);
-
-    return res?.modlogs;
-  };
+      .then((r: DBT.logchannels[] | null) => r?.[0]?.modlog || null);
 
   const lan = language.mod[args.type];
   const con = client.customConstants.mod[args.type];
