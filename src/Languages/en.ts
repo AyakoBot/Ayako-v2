@@ -926,6 +926,20 @@ export default {
         actions: 'Actions',
       },
     },
+    messageReactionAdd: {
+      rrReason: 'Ayako Reaction Roles',
+    },
+    messageReactionRemove: {
+      rrReason: 'Ayako Reaction Roles',
+    },
+    guildMemberUpdate: {
+      boostingStart: `Member Started Boosting`,
+      boostingEnd: `Member Stopped Boosting`,
+      descriptionBoostingStart: (user: Discord.User) =>
+        `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas started Boosting the Server`,
+      descriptionBoostingEnd: (user: Discord.User) =>
+        `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas stopped Boosting the Server`,
+    },
     ready: {
       channelunban: `Automatically Channel-Unbanned`,
       unban: `Automatically Un-Banned`,

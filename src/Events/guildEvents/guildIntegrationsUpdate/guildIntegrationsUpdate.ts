@@ -2,9 +2,9 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (guild: Discord.Guild) => {
-  const cached = client.ch.cache.integrations.cache.get(guild.id);
+  const cached = client.cache.integrations.cache.get(guild.id);
   const fetched = await guild.fetchIntegrations();
-  fetched.forEach((f) => client.ch.cache.integrations.set(f, guild.id));
+  fetched.forEach((f) => client.cache.integrations.set(f, guild.id));
   if (!cached) return;
 
   const added = fetched.filter((f) => !cached.get(f.id)).map((o) => o);

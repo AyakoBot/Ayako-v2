@@ -14,7 +14,7 @@ export default async () => {
     if (new Date().getHours() === 0) {
       (await import('../messageEvents/messageCreate/antispam.js')).resetData();
       (await import('../messageEvents/messageCreate/blacklist.js')).resetData();
-      (await import('../antivirusEvents/antivirusHandler.js')).resetData();
+      //      (await import('../antivirusEvents/antivirusHandler.js')).resetData();
     }
   });
 
@@ -23,11 +23,11 @@ export default async () => {
     (await import('./verification.js')).default();
   });
 
-  Jobs.scheduleJob('*/2 * * * * *', async () => {
-    (await import('./timedFiles/timedManager.js')).default();
-  });
+  //  Jobs.scheduleJob('*/2 * * * * *', async () => {
+  //    (await import('./timedFiles/timedManager.js')).default();
+  //  });
 
   (await import('./startupTasks/cache.js')).default();
   (await import('./startupTasks/voteHandle.js')).default();
-  (await import('./startupTasks/separators.js')).default();
+  // (await import('./startupTasks/separators.js')).default();
 };

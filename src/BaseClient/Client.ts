@@ -10,6 +10,7 @@ import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' }
 import eventHandler from '../Events/baseEventHandler.js';
 import DataBase from './DataBase.js';
 import auth from '../auth.json' assert { type: 'json' };
+import type cache from './ClientHelperModules/cache.js';
 
 const events: { [key: string]: typeof eventHandler } = {};
 Constants.allEvents.forEach((e) => {
@@ -29,8 +30,12 @@ class CustomClient extends Discord.Client {
   channelTimeout: Map<string, Map<string, Jobs.Job>>;
   channelCharLimit: Map<string, Map<string, number>>;
 
-  ch: typeof ch;
   database: RedisxPSQL;
+  ch: typeof ch;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  cache: typeof cache;
 
   constructor(options: Discord.ClientOptions) {
     super(options);

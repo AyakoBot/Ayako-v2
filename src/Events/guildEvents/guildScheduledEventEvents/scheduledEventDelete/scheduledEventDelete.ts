@@ -2,10 +2,10 @@ import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Client.js';
 
 export default async (scheduledEvent: Discord.GuildScheduledEvent) => {
-  const cached = client.ch.cache.scheduledEventUsers.cache
+  const cached = client.cache.scheduledEventUsers.cache
     .get(scheduledEvent.guildId)
     ?.get(scheduledEvent.id);
-  client.ch.cache.scheduledEventUsers.cache.get(scheduledEvent.guildId)?.delete(scheduledEvent.id);
+  client.cache.scheduledEventUsers.cache.get(scheduledEvent.guildId)?.delete(scheduledEvent.id);
 
   const files: {
     default: (s: Discord.GuildScheduledEvent, c: Map<string, Discord.User> | undefined) => void;

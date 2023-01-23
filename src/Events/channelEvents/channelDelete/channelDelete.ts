@@ -19,7 +19,7 @@ export default async (channel: Discord.Channel) => {
     ) => void;
   }[] = await Promise.all(['./log.js'].map((p) => import(p)));
 
-  const channelBans = client.ch.cache.channelBans.cache.get(channel.guild.id)?.get(channel.id);
+  const channelBans = client.cache.channelBans.cache.get(channel.guild.id)?.get(channel.id);
   if (channelBans) {
     const array = Array.from(channelBans, ([, g]) => g);
     array.forEach((a) => a.reschedule(Date.now() + 10000));

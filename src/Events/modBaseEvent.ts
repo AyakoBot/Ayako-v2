@@ -548,7 +548,7 @@ const takeAction = async (
 
       if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
 
-      client.ch.cache.mutes.set(
+      client.cache.mutes.set(
         Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
           client.emit('modBaseEvent', {
             target: args.target,
@@ -616,7 +616,7 @@ const takeAction = async (
 
       if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
 
-      client.ch.cache.bans.set(
+      client.cache.bans.set(
         Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
           client.emit('modBaseEvent', {
             target: args.target,
@@ -676,7 +676,7 @@ const takeAction = async (
         if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
         if (!args.channel) return { action: punished, error: language.errors.noChannelFound };
 
-        client.ch.cache.channelBans.set(
+        client.cache.channelBans.set(
           Jobs.scheduleJob(
             `${args.channel?.id}-${args.target.id}`,
             new Date(Date.now() + Number(args.duration)),

@@ -1,8 +1,10 @@
 import readline from 'readline';
 import client from './BaseClient/Client.js';
-import * as ClientHelper from './BaseClient/ClientHelper.js';
+import * as ch from './BaseClient/ClientHelper.js';
+import cache from './BaseClient/ClientHelperModules/cache.js';
 
-client.ch = ClientHelper;
+client.ch = ch;
+client.cache = cache;
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
@@ -29,3 +31,13 @@ process.on('promiseRejectionHandledWarning', (error: string) =>
   client.emit('uncaughtException', error),
 );
 process.on('experimentalWarning', (error: string) => client.emit('uncaughtException', error));
+
+client.ch.getEvents().forEach(async (path) => {
+  const eventName = path.replace('.js', '').split(/\/+/).pop();
+  if (!eventName) return;
+
+  const eventHandler = (await import('./Events/baseEventHandler.js')).default;
+
+  if (eventName === 'ready') client.once(eventName, (...args) => eventHandler(eventName, args));
+  else client.on(eventName, (...args) => eventHandler(eventName, args));
+});

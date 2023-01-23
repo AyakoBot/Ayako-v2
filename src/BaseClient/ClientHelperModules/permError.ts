@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
-import client from '../Client.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default async (
@@ -16,7 +15,7 @@ export default async (
   if (typeof bits === 'number') bits = BigInt(bits);
 
   const clientMember = msg.guild?.members.me;
-
+  const client = (await import('../Client.js')).default;
   const neededPerms = new Discord.PermissionsBitField(
     bitUniques(
       bits,

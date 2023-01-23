@@ -2,7 +2,6 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable prettier/prettier */
 
-export const cache                      = (await import(`./ClientHelperModules/cache.js`)).default;
 export const send                       = (await import(`./ClientHelperModules/send.js`)).default;
 export const replyMsg                   = (await import(`./ClientHelperModules/replyMsg.js`)).default;
 export const replyCmd                   = (await import(`./ClientHelperModules/replyCmd.js`)).default;
@@ -49,3 +48,4 @@ export const arrayBufferToBuffer        = (await import(`./ClientHelperModules/a
 export const getChannel                 =  await import(`./ClientHelperModules/getChannel.js`);
 export const makePermissionsStrings     = (await import(`./ClientHelperModules/makePermissionsStrings.js`)).default;
 export const isManageable               = (await import(`./ClientHelperModules/isManageable.js`)).default;
+export const getEvents                  = (await import(`./ClientHelperModules/getEvents.js`)).default;

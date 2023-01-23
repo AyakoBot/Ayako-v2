@@ -87,7 +87,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.webhookId) {
-    const webhook = await client.ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id);
+    const webhook = await client.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id);
 
     if (webhook) {
       embed.fields?.push({

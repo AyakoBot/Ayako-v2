@@ -332,17 +332,26 @@ export default async (
     );
 
     if (removedPermissions?.size) typeID = 14;
-    changedPermissions.forEach((p) => {
-      permEmbed.fields?.push({
-        name: `\u200b`,
-        value: [
-          `${client.stringEmotes.edit} ${
-            p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-          }\n`,
-          ...client.ch.makePermissionsStrings(p, oldChannel, channel, language),
-        ].join('\n'),
+
+    const permissionStrings = await Promise.all(
+      changedPermissions.map((p) =>
+        client.ch.makePermissionsStrings(p, oldChannel, channel, language),
+      ),
+    );
+
+    changedPermissions
+      .map((o) => o)
+      .forEach((p, i) => {
+        permEmbed.fields?.push({
+          name: `\u200b`,
+          value: [
+            `${client.stringEmotes.edit} ${
+              p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+            }\n`,
+            ...permissionStrings[i],
+          ].join('\n'),
+        });
       });
-    });
   }
 
   const audit = await client.ch.getAudit(channel.guild, typeID, channel.id);

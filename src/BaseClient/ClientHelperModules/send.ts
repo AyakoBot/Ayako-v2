@@ -1,7 +1,6 @@
 import type * as Discord from 'discord.js';
 import jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings';
-import client from '../Client.js';
 
 async function send(
   c: Discord.Channel,
@@ -60,6 +59,7 @@ async function send(
 
   if (payload.files?.length) timeout = undefined;
   if (payload.components?.length) timeout = undefined;
+  const client = (await import('../Client.js')).default;
 
   const channel = !('name' in c) ? client.channels.cache.get(c.id) : c;
   if (!channel) return null;
@@ -91,6 +91,7 @@ const combineMessages = async (
   timeout: number,
   language: CT.Language,
 ) => {
+  const client = (await import('../Client.js')).default;
   if (!client.channelQueue.get(channel.guild.id)) {
     client.channelQueue.set(channel.guild.id, new Map());
   }
@@ -194,6 +195,7 @@ const queueSend = async (
   language: CT.Language,
 ) => {
   if (![0, 1, 2, 3, 5, 10, 11, 12].includes(channel.type)) return;
+  const client = (await import('../Client.js')).default;
 
   const guildMap = client.channelTimeout.get(channel.guild.id) ?? new Map();
   guildMap.set(

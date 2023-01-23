@@ -4,7 +4,6 @@ import query from './query.js';
 import type CT from '../../Typings/CustomTypings';
 import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
-import client from '../Client.js';
 
 export default async (
   msg: Discord.Message | CT.GuildMessage | CT.Message,
@@ -76,6 +75,8 @@ export const cooldownHandler = async (
   }
 
   jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown)), async () => {
+    const client = (await import('../Client.js')).default;
+
     reactions.forEach((react) => {
       sentMessage.reactions.cache
         .get(react)

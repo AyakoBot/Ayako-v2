@@ -1,78 +1,10 @@
-import fs from 'fs';
-
-// TODO
-const getEvents = () => {
-  const paths: string[] = [];
-
-  const eventsDir = fs.readdirSync(`${process.cwd()}/Events`);
-
-  eventsDir.forEach((folder) => {
-    if (isDisallowed(folder)) return;
-
-    if (folder.includes('.')) {
-      const path = `${process.cwd()}/Events/${folder}`;
-      paths.push(path);
-
-      return;
-    }
-
-    const key = folder.replace(/events/gi, '');
-    const eventFiles = fs.readdirSync(`${process.cwd()}/Events/${folder}`);
-
-    eventFiles.forEach((file) => {
-      if (isDisallowed(file)) return;
-
-      if (file.includes('.') && file.startsWith(key)) {
-        const path = `${process.cwd()}/Events/${folder}/${file}`;
-        paths.push(path);
-
-        return;
-      }
-
-      if (file.startsWith(key) && !file.includes('.')) {
-        fs.readdirSync(`${process.cwd()}/Events/${folder}/${file}`).forEach((eventFolderFile) => {
-          if (isDisallowed(eventFolderFile)) return;
-
-          if (String(eventFolderFile).includes('.') && String(eventFolderFile).startsWith(key)) {
-            const path = `${process.cwd()}/Events/${folder}/${file}/${eventFolderFile}`;
-
-            paths.push(path);
-          }
-        });
-      }
-    });
-  });
-
-  return paths;
-};
-
-const isDisallowed = (file: string) =>
-  ['.d.ts', '.d.ts.map', '.js.map'].some((end) => file.endsWith(end));
+import getEvents from '../BaseClient/ClientHelperModules/getEvents.js';
 
 export default async (...args: unknown[]) => {
-  args.shift();
+  const eventName = args.shift();
+  const events = getEvents();
+  const event = events.find((e) => e.endsWith(`${eventName}.js`));
+  if (!event) return;
 
-  const { stack } = new Error();
-  if (!stack) return;
-
-  const relevantEntry = stack.split(/\n/g)[2];
-  if (!relevantEntry) return;
-
-  const as = relevantEntry.split('as ')[1];
-  if (!as) return;
-
-  const eventName = as.split(']')[0];
-  if (!eventName) return;
-
-  const splitEventName = eventName.split(/_/g);
-  const formattedEventName = splitEventName
-    .map((s) => s.charAt(0) + s.slice(1).toLowerCase())
-    .join('');
-  const finishedEventName =
-    formattedEventName.charAt(0).toLowerCase() + formattedEventName.slice(1);
-
-  const path = getEvents().find((p) => p.endsWith(`${finishedEventName}.js`));
-  if (!path) return;
-
-  (await import(path)).default(...args);
+  (await import(event)).default(args);
 };

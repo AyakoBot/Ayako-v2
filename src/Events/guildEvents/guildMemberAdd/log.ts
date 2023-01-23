@@ -51,13 +51,13 @@ export default async (member: Discord.GuildMember) => {
 const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   if (user.bot) return undefined;
 
-  const oldInvites = Array.from(client.ch.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
+  const oldInvites = Array.from(client.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
     Array.from(i, ([, i2]) => i2),
   ).flat();
   const newInvites = await guild.invites.fetch();
   if (!newInvites) return undefined;
 
-  newInvites.forEach((i) => client.ch.cache.invites.set(i, guild.id));
+  newInvites.forEach((i) => client.cache.invites.set(i, guild.id));
   if (!oldInvites) {
     return undefined;
   }

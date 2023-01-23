@@ -4,6 +4,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (m: Discord.Message) => {
   if (!m) return;
+  if (!m.author) return;
 
   const msg = (await convertMsg(m)) as CT.Message;
   const files: { default: (t: CT.Message) => void }[] = await Promise.all(
@@ -14,20 +15,23 @@ export default async (m: Discord.Message) => {
 };
 
 const getPaths = (msg: CT.Message) => {
-  if (msg.author.discriminator === '0000') return ['./ashes.js'];
+  //  if (msg.author.discriminator === '0000') return ['./ashes.js'];
 
-  const paths = ['./commandHandler.js', './antivirus.js'];
+  const paths = [
+    './commandHandler.js',
+    //    './antivirus.js'
+  ];
 
   if (msg.guild) {
     paths.push(
-      './disboard.js',
-      './other.js',
-      './leveling.js',
-      './afk.js',
-      './blacklist.js',
-      './willis.js',
+      //      './disboard.js',
+      //      './other.js',
+      //      './leveling.js',
+      //      './afk.js',
+      //      './blacklist.js',
+      //      './willis.js',
       './revengePing.js',
-      './antispam.js',
+      //      './antispam.js',
     );
   } else paths.push('./DMlog.js');
 

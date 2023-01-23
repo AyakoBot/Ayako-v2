@@ -1,13 +1,13 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
-import client from '../Client.js';
 
-export default (
+export default async (
   p: Discord.PermissionOverwrites,
   oldChannel: Discord.GuildChannel | undefined,
   channel: Discord.GuildChannel,
   language: CT.Language,
 ) => {
+  const client = (await import('../Client.js')).default;
   const before = oldChannel?.permissionOverwrites.cache.get(p.id);
   const after = channel.permissionOverwrites.cache.get(p.id);
   const beforeDenied = Object.entries(before?.deny.serialize() ?? {});

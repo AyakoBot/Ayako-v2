@@ -7,7 +7,7 @@ export default async (invite: Discord.Invite) => {
   const guild = client.guilds.cache.get(invite.guild.id);
   if (!guild) return;
 
-  client.ch.cache.invites.delete(invite.code, invite.guild.id);
+  client.cache.invites.delete(invite.code, invite.guild.id);
 
   const files: {
     default: (i: Discord.Invite, g: Discord.Guild) => void;

@@ -22,9 +22,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     color: client.customConstants.colors.loading,
   };
 
-  const oldWelcomeScreen = await client.ch.cache.welcomeScreens.get(guild.id);
+  const oldWelcomeScreen = await client.cache.welcomeScreens.get(guild.id);
   const newWelcomeScreen = await guild.fetchWelcomeScreen();
-  if (newWelcomeScreen) client.ch.cache.welcomeScreens.set(newWelcomeScreen);
+  if (newWelcomeScreen) client.cache.welcomeScreens.set(newWelcomeScreen);
 
   const files: Discord.AttachmentPayload[] = [];
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

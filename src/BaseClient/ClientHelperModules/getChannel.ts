@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
-import client from '../Client.js';
 
-const getChannel = (channelId: string) =>
-  client.channels.fetch(channelId, { allowUnknownGuild: true }).catch(() => undefined);
+const getChannel = async (channelId: string) => {
+  const client = (await import('../Client.js')).default;
+  return client.channels.fetch(channelId, { allowUnknownGuild: true }).catch(() => undefined);
+};
 
 export const guildTextChannel = async (channelId: string) => {
   const channel = await getChannel(channelId);

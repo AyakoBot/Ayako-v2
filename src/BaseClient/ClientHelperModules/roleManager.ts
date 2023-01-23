@@ -1,6 +1,5 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import client from '../Client.js';
 
 const MemberCache: {
   member: Discord.GuildMember;
@@ -32,6 +31,7 @@ const handleRoleUpdate = async (
   prio: number,
   type: 'addRoles' | 'removeRoles',
 ) => {
+  const client = (await import('../Client.js')).default;
   const guild = client.guilds.cache.get(member.guild.id);
   if (!guild) return;
 
@@ -66,6 +66,7 @@ const handleRoleUpdate = async (
 export default roleManager;
 
 const runJob = async (guildID: string) => {
+  const client = (await import('../Client.js')).default;
   const guild = client.guilds.cache.get(guildID);
   if (!guild) return;
 

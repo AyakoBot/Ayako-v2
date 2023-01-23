@@ -4,12 +4,12 @@ import client from '../../BaseClient/Client.js';
 export default async (
   channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
 ) => {
-  const oldWebhooks = client.ch.cache.webhooks.cache.get(channel.guild.id)?.get(channel.id);
+  const oldWebhooks = client.cache.webhooks.cache.get(channel.guild.id)?.get(channel.id);
   const newWebhooks = await channel.fetchWebhooks();
 
-  client.ch.cache.webhooks.cache.get(channel.guild.id)?.delete(channel.id);
+  client.cache.webhooks.cache.get(channel.guild.id)?.delete(channel.id);
   newWebhooks.forEach((w) => {
-    client.ch.cache.webhooks.set(w);
+    client.cache.webhooks.set(w);
   });
 
   if (!oldWebhooks) return;

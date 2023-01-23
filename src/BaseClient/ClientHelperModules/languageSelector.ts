@@ -13,8 +13,6 @@ export default async (guildID: bigint | undefined | null | string): Promise<CT.L
     String(guildID),
   ]).then((r: DBT.guildsettings[] | null) => (r ? r[0].lan : null));
 
-  const { default: language } = await import(`../../Languages/${lan || 'en'}.js`, {
-    assert: { type: 'json' },
-  });
+  const { default: language } = await import(`../../Languages/${lan || 'en'}.js`);
   return language;
 };

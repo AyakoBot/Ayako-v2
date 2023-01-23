@@ -8,35 +8,40 @@ export default () => {
     const language = await client.ch.languageSelector(guild.id);
 
     const invites = await guild.invites.fetch();
-    invites.forEach((i) => client.ch.cache.invites.set(i, guild.id));
+    invites.forEach((i) => client.cache.invites.set(i, guild.id));
 
-    guild.channels.cache.forEach(async (channel) => {
-      const webhooks = await guild.channels.fetchWebhooks(channel);
-      webhooks.forEach((w) => {
-        client.ch.cache.webhooks.set(w);
+    guild.channels.cache
+      .filter((c) => c.isTextBased())
+      .filter((c) => !c.isThread())
+      .forEach(async (channel) => {
+        const webhooks = await guild.channels.fetchWebhooks(channel);
+        webhooks.forEach((w) => {
+          client.cache.webhooks.set(w);
+        });
       });
-    });
 
     guild.channels.cache.forEach(async (c) => {
       if (!c.isTextBased()) return;
 
       const pins = await c.messages.fetchPinned();
-      pins.forEach((pin) => client.ch.cache.pins.set(pin));
+      pins.forEach((pin) => client.cache.pins.set(pin));
     });
 
-    const welcomeScreen = await guild.fetchWelcomeScreen();
-    client.ch.cache.welcomeScreens.set(welcomeScreen);
+    if (guild.features.includes('WELCOME_SCREEN_ENABLED')) {
+      const welcomeScreen = await guild.fetchWelcomeScreen();
+      client.cache.welcomeScreens.set(welcomeScreen);
+    }
 
     const intergrations = await guild.fetchIntegrations();
     intergrations.forEach((i) => {
-      client.ch.cache.integrations.set(i, guild.id);
+      client.cache.integrations.set(i, guild.id);
     });
 
     const scheduledEvents = await guild.scheduledEvents.fetch();
     scheduledEvents.forEach(async (event) => {
       const users = await event.fetchSubscribers();
       users.forEach((u) => {
-        client.ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
+        client.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
       });
     });
 
@@ -55,7 +60,7 @@ export default () => {
       .then((r: DBT.punish_tempmutes[] | null) => r || null);
     mutes?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.ch.cache.mutes.set(
+      client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid)) ?? client.user
@@ -87,7 +92,7 @@ export default () => {
       .then((r: DBT.punish_tempbans[] | null) => r || null);
     bans?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.ch.cache.mutes.set(
+      client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid)) ?? client.user
@@ -119,7 +124,7 @@ export default () => {
       .then((r: DBT.punish_tempchannelbans[] | null) => r || null);
     channelBans?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.ch.cache.mutes.set(
+      client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid)) ?? client.user

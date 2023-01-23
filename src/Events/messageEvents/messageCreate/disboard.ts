@@ -18,7 +18,7 @@ export default async (msg: CT.GuildMessage) => {
     : msg.channel;
   if (!channel) return;
 
-  client.ch.cache.disboardBumpReminders.delete(msg.guild.id);
+  client.cache.disboardBumpReminders.delete(msg.guild.id);
 
   await msg.react(client.stringEmotes.tick).catch(() => null);
 
@@ -54,7 +54,7 @@ const setReminder = async (msg: CT.GuildMessage, isBump: boolean, settings: DBT.
     String(msg.guild.id),
   ]);
 
-  client.ch.cache.disboardBumpReminders.set(
+  client.cache.disboardBumpReminders.set(
     jobs.scheduleJob(
       new Date(Date.now() + (isBump ? 7200000 : Number(settings.repeatreminder) * 60 * 1000)),
       () => {
