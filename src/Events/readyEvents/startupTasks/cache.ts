@@ -2,6 +2,9 @@ import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings.js';
 
+// import checks to guildCreate
+// cache stuff like welcome screen on change
+
 export default () => {
   client.guilds.cache.forEach(async (guild) => {
     guild.members.fetch();

@@ -6,7 +6,7 @@ import type DBT from '../Typings/DataBaseTypings';
 let messageCache: string[] = [];
 
 export default async (msg: CT.GuildMessage, m?: Discord.Message) => {
-  if (msg) msg.delete().catch(() => null);
+  if (msg && msg.deletable) msg.delete().catch(() => null);
 
   const settingsRow = await getSettings(msg);
   if (!settingsRow) return;

@@ -20,7 +20,7 @@ export default (
     description: content,
   };
 
-  if (m) return m.edit({ embeds: [embed] }).catch(() => null);
+  if (m && m.editable) return m.edit({ embeds: [embed] }).catch(() => null);
 
   return reply(msg, { embeds: [embed] });
 };
