@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import type CT from '../../../Typings/CustomTypings';
+import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (msg: CT.GuildMessage) => {
@@ -16,12 +17,68 @@ export default async (msg: CT.GuildMessage) => {
   ) {
     msg.delete().catch(() => null);
   }
+
+  const pin = () => {
+    if (msg.channel.id !== '1060213963205394552') return;
+    setTimeout(() => {
+      if (!msg.pinned) msg.delete().catch(() => null);
+    }, 5000);
+  };
+  pin();
 };
 
 const gvMessageCheck = (msg: CT.GuildMessage) => {
+  if (!msg.member) return;
   if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
   if (msg.guild.id !== '366219406776336385') return;
   if (msg.channelId === '801804774759727134') return;
+
+  const staffPing = async () => {
+    if (!msg.content.includes('<@&809261905855643668>')) return;
+    await msg.guild.members.fetch();
+
+    msg.channel.send({
+      content: msg.guild.roles.cache
+        .get('809261905855643668')
+        ?.members.map((m) => `<@${m.id}>`)
+        .join(', '),
+      allowedMentions: {
+        users: msg.guild.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
+      },
+    });
+  };
+  staffPing();
+
+  const sticky = async () => {
+    if (
+      msg.channel.id !== '554487212276842534' &&
+      (msg.attachments.size === 0 || msg.author.id !== '650691698409734151')
+    ) {
+      return;
+    }
+
+    const res = await client.ch
+      .query(`SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`, [
+        msg.guild.id,
+        msg.channel.id,
+      ])
+      .then((r: DBT.stickymessages[] | null) => (r ? r[0] : null));
+    if (!res) return;
+
+    const lastMsg = await msg.channel.messages.fetch(res.lastmsgid);
+    const newMsg = {
+      content: lastMsg.content,
+      embeds: lastMsg.embeds,
+      attachments: lastMsg.attachments,
+    };
+    await lastMsg.delete();
+    const newM = await msg.channel.send(newMsg);
+    client.ch.query(
+      `UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND lastmsgid = $3;`,
+      [newM.id, msg.guild.id, res.lastmsgid],
+    );
+  };
+  sticky();
 
   const inviteCheck = () => {
     if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
@@ -81,13 +138,49 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
 };
 
 const amMessageCheck = (msg: CT.GuildMessage) => {
-  if (!msg.content.includes(' is now level ') || !msg.content.includes(' leveled up!')) return;
-  if (Number(msg.content?.split(/ +/)[4].replace(/!/g, '')) > 39) return;
+  const lunar = () => {
+    if (msg.author.id !== '1066084719818702910') return;
+    if (msg.channel.id !== '298954459172700181') return;
+
+    setTimeout(() => {
+      msg.delete();
+    }, 10000);
+  };
+  lunar();
+
+  const intros = async () => {
+    if (msg.channel.id !== '763132467041140737') return;
+    if (msg.author.bot) return;
+
+    const messages = await msg.channel.messages.fetch({ limit: 100 });
+    const messagesFromSameAuthor = (messages as Discord.Collection<string, Discord.Message>).filter(
+      (m) => m.author.id === msg.author.id,
+    );
+
+    if (messagesFromSameAuthor.size > 1) {
+      const reply = await msg.reply({
+        content:
+          '__We appreciate your enthusiasm, but you have already sent an introduction!__\nIf you want to refresh your intro, please wait a little longer before posting again\nYou have 20 Seconds before your intro is deleted. **Copy and Save it for later.**',
+        allowedMentions: {
+          repliedUser: true,
+        },
+      });
+
+      setTimeout(() => {
+        msg.delete();
+        reply.delete();
+      }, 20000);
+    }
+  };
+  intros();
 
   const levelUp = () => {
     if (msg.author.id !== '159985870458322944' && msg.author.id !== '172002275412279296') {
       return;
     }
+
+    if (!msg.content.includes(' is now level ') || !msg.content.includes(' leveled up!')) return;
+    if (Number(msg.content?.split(/ +/)[4].replace(/!/g, '')) > 39) return;
 
     jobs.scheduleJob(new Date(Date.now() + 10000), () => {
       msg.delete().catch(() => null);
