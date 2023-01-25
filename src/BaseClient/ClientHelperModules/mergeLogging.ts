@@ -30,9 +30,7 @@ export default (
     }
     case 'icon': {
       embed.thumbnail = {
-        url: `attachment://${after}.${
-          String(before).split(/\./g)[String(before).split(/\./g).length - 1]
-        }`,
+        url: `attachment://${after}`,
       };
       break;
     }

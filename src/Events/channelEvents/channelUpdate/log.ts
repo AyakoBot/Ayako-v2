@@ -68,12 +68,14 @@ export default async (
     const removed = client.ch.getDifference(oldFlags, newFlags) as ('Pinned' | 'RequireTag')[];
     const added = client.ch.getDifference(newFlags, oldFlags) as ('Pinned' | 'RequireTag')[];
 
-    merge(
-      added.map((r) => lan.flags[r]).join(', '),
-      removed.map((r) => lan.flags[r]).join(', '),
-      'difference',
-      language.Flags,
-    );
+    if (removed.length || added.length) {
+      merge(
+        added.map((r) => lan.flags[r]).join(', '),
+        removed.map((r) => lan.flags[r]).join(', '),
+        'difference',
+        language.Flags,
+      );
+    }
   }
 
   if (oldChannel?.name !== channel.name) {

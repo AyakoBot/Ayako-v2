@@ -241,6 +241,7 @@ export default {
     patreon: 'https://www.patreon.com/Lars_und_so',
     error: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
     appURL: (user: Discord.User) => `discord://-/users/${user.id}`,
+    userURL: (user: Discord.User) => `https://discord.com/users/${user.id}`,
     getEmote: (emoji: Discord.Emoji) =>
       emoji.id ? `<${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
     getTime: (time: number) =>

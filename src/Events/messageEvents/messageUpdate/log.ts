@@ -16,11 +16,11 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: con.delete,
-      name: lan.nameDelete,
+      icon_url: con.update,
+      name: lan.nameUpdate,
     },
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.loading,
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
@@ -38,7 +38,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
         client.ch.getDifference(newFlags, oldFlags) as Discord.MessageFlagsString[]
       ).map((f) => lan.flags[f]);
 
-      merge(added, removed, 'difference', language.Flags);
+      if (added.length || removed.length) merge(added, removed, 'difference', language.Flags);
       break;
     }
     case JSON.stringify(oldMsg.components) !== JSON.stringify(msg.components) &&

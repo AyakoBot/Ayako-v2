@@ -13,7 +13,7 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   const embed: Discord.APIEmbed = {
     author: {
       name: lan.name,
-      url: client.customConstants.standard.appURL(user),
+      url: client.customConstants.standard.userURL(user),
     },
     description: lan.desc(user),
     fields: [],
@@ -29,11 +29,16 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
         await client.ch.fileURL2Buffer([user.displayAvatarURL({ size: 4096 })])
       )?.[0]?.attachment;
 
-      merge(user.displayAvatarURL({ size: 4096 }), user.avatar, 'icon', lan.avatar);
+      merge(
+        user.displayAvatarURL({ size: 4096 }),
+        client.ch.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
+        'icon',
+        lan.avatar,
+      );
 
       if (attachment) {
         files.push({
-          name: String(user.avatar),
+          name: client.ch.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
           attachment,
         });
       }
@@ -45,24 +50,26 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
       const removed = client.ch.getDifference(flagsBefore, flagsAfter) as string[];
       const added = client.ch.getDifference(flagsAfter, flagsBefore) as string[];
 
-      merge(
-        added
-          .map((r) =>
-            flagsBefore.length
-              ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
-              : language.unknown,
-          )
-          .join(', '),
-        removed
-          .map((r) =>
-            flagsAfter.length
-              ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
-              : language.unknown,
-          )
-          .join(', '),
-        'difference',
-        lan.flags,
-      );
+      if (removed.length || added.length) {
+        merge(
+          added
+            .map((r) =>
+              flagsBefore.length
+                ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+                : language.unknown,
+            )
+            .join(', '),
+          removed
+            .map((r) =>
+              flagsAfter.length
+                ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+                : language.unknown,
+            )
+            .join(', '),
+          'difference',
+          lan.flags,
+        );
+      }
       break;
     }
     case user.discriminator !== oldUser?.discriminator: {

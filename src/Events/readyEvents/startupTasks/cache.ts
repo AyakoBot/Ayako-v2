@@ -7,7 +7,7 @@ import type DBT from '../../../Typings/DataBaseTypings.js';
 
 export default () => {
   client.guilds.cache.forEach(async (guild) => {
-    guild.members.fetch();
+    guild.members.fetch().catch(() => undefined);
     const language = await client.ch.languageSelector(guild.id);
 
     const invites = await guild.invites.fetch();
@@ -17,8 +17,8 @@ export default () => {
       .filter((c) => c.isTextBased())
       .filter((c) => !c.isThread())
       .forEach(async (channel) => {
-        const webhooks = await guild.channels.fetchWebhooks(channel);
-        webhooks.forEach((w) => {
+        const webhooks = await guild.channels.fetchWebhooks(channel).catch(() => undefined);
+        webhooks?.forEach((w) => {
           client.cache.webhooks.set(w);
         });
       });
@@ -26,13 +26,13 @@ export default () => {
     guild.channels.cache.forEach(async (c) => {
       if (!c.isTextBased()) return;
 
-      const pins = await c.messages.fetchPinned();
-      pins.forEach((pin) => client.cache.pins.set(pin));
+      const pins = await c.messages.fetchPinned().catch(() => undefined);
+      pins?.forEach((pin) => client.cache.pins.set(pin));
     });
 
     if (guild.features.includes('WELCOME_SCREEN_ENABLED')) {
-      const welcomeScreen = await guild.fetchWelcomeScreen();
-      client.cache.welcomeScreens.set(welcomeScreen);
+      const welcomeScreen = await guild.fetchWelcomeScreen().catch(() => undefined);
+      if (welcomeScreen) client.cache.welcomeScreens.set(welcomeScreen);
     }
 
     const intergrations = await guild.fetchIntegrations();
@@ -40,10 +40,10 @@ export default () => {
       client.cache.integrations.set(i, guild.id);
     });
 
-    const scheduledEvents = await guild.scheduledEvents.fetch();
-    scheduledEvents.forEach(async (event) => {
-      const users = await event.fetchSubscribers();
-      users.forEach((u) => {
+    const scheduledEvents = await guild.scheduledEvents.fetch().catch(() => undefined);
+    scheduledEvents?.forEach(async (event) => {
+      const users = await event.fetchSubscribers().catch(() => undefined);
+      users?.forEach((u) => {
         client.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
       });
     });
@@ -66,19 +66,21 @@ export default () => {
       client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid)) ?? client.user
+            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
-            executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+            executor: m.executorid
+              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              : undefined,
             target,
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (
-                    await client.ch.getChannel.guildTextChannel(m.channelid)
-                  )?.messages.fetch(m.msgid)
+                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                    .fetch(m.msgid)
+                    .catch(() => undefined)
                 : undefined,
             guild,
             type: 'muteRemove',
@@ -98,19 +100,21 @@ export default () => {
       client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid)) ?? client.user
+            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
-            executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+            executor: m.executorid
+              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              : undefined,
             target,
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (
-                    await client.ch.getChannel.guildTextChannel(m.channelid)
-                  )?.messages.fetch(m.msgid)
+                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                    .fetch(m.msgid)
+                    .catch(() => undefined)
                 : undefined,
             guild,
             type: 'banRemove',
@@ -130,19 +134,21 @@ export default () => {
       client.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid)) ?? client.user
+            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
-            executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+            executor: m.executorid
+              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              : undefined,
             target,
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (
-                    await client.ch.getChannel.guildTextChannel(m.channelid)
-                  )?.messages.fetch(m.msgid)
+                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                    .fetch(m.msgid)
+                    .catch(() => undefined)
                 : undefined,
             guild,
             type: 'channelbanRemove',

@@ -30,19 +30,27 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
 
   switch (true) {
     case role.icon !== oldRole.icon: {
-      if (role.icon) {
-        const attachment = (await client.ch.fileURL2Buffer([role.iconURL({ size: 4096 })]))?.[0]
-          ?.attachment;
+      if (!role.icon) {
+        embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
+        break;
+      }
 
-        merge(role.iconURL({ size: 4096 }), role.icon, 'icon', lan.icon);
+      const url = role.iconURL({ size: 4096 });
+      if (!url) {
+        embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
+        break;
+      }
 
-        if (attachment) {
-          files.push({
-            name: String(role.icon),
-            attachment,
-          });
-        }
-      } else embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.icon);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
       break;
     }
     case role.unicodeEmoji !== oldRole.unicodeEmoji: {

@@ -25,13 +25,16 @@ export default async (emote: Discord.GuildEmoji) => {
   };
 
   const attachment = (await client.ch.fileURL2Buffer([emote.url]))?.[0]?.attachment;
-  client.ch.mergeLogging(emote.url, emote.name, 'icon', embed, language);
 
   if (attachment) {
     files.push({
-      name: String(emote.name),
+      name: client.ch.getNameAndFileType(emote.url),
       attachment,
     });
+
+    embed.thumbnail = {
+      url: `attachment://${client.ch.getNameAndFileType(emote.url)}`,
+    };
   }
 
   client.ch.send(

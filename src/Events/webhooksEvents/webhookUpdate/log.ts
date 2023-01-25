@@ -47,20 +47,33 @@ export default async (
 
   switch (true) {
     case oldWebhook?.avatar !== newWebhook?.avatar: {
-      if (newWebhook?.avatar) {
-        const attachment = (
-          await client.ch.fileURL2Buffer([webhook.avatarURL({ size: 4096 })])
-        )?.[0]?.attachment;
-
-        if (attachment) {
-          files.push({
-            name: String(webhook.avatar),
-            attachment,
-          });
-        }
-
-        merge(webhook.avatarURL({ size: 4096 }), webhook.avatar, 'icon', lan.avatar);
+      if (!newWebhook?.avatar) {
+        embed.fields?.push({ name: lan.avatar, value: lan.avatarRemoved });
+        break;
       }
+
+      const url = webhook.avatarURL({ size: 4096 });
+
+      if (!url) {
+        embed.fields?.push({ name: lan.avatar, value: lan.avatarRemoved });
+        break;
+      }
+
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+
+      merge(url, webhook.avatar, 'icon', lan.avatar);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+
+        embed.thumbnail = {
+          url: `attachment://${client.ch.getNameAndFileType(url)}`,
+        };
+      }
+
       break;
     }
     case oldWebhook?.name !== webhook.name: {

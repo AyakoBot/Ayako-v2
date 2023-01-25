@@ -25,13 +25,15 @@ export default async (sticker: Discord.Sticker) => {
   };
 
   const attachment = (await client.ch.fileURL2Buffer([sticker.url]))?.[0]?.attachment;
-  client.ch.mergeLogging(sticker.url, sticker.name, 'icon', embed, language);
-
   if (attachment) {
     files.push({
-      name: String(sticker.name),
+      name: client.ch.getNameAndFileType(sticker.url),
       attachment,
     });
+
+    embed.thumbnail = {
+      url: `attachment://${client.ch.getNameAndFileType(sticker.url)}`,
+    };
   }
 
   if (sticker.description) {

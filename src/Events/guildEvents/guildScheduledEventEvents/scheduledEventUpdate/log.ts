@@ -60,20 +60,28 @@ export default async (
 
   switch (true) {
     case event.image !== oldEvent.image: {
-      if (event.image) {
-        const url = event.coverImageURL({ size: 4096 });
-        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
-
-        merge(url, event.image, 'icon', lan.image);
-
-        if (attachment) {
-          files.push({
-            name: String(event.image),
-            attachment,
-          });
-        }
+      if (!event.image) {
+        embed.fields?.push({ name: lan.image, value: lan.imageRemoved });
         break;
-      } else embed.fields?.push({ name: lan.image, value: lan.imageRemoved });
+      }
+
+      const url = event.coverImageURL({ size: 4096 });
+
+      if (!url) {
+        embed.fields?.push({ name: lan.image, value: lan.imageRemoved });
+        break;
+      }
+
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.image);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
       break;
     }
     case event.description !== oldEvent.description: {

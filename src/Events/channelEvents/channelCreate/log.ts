@@ -64,7 +64,7 @@ export default async (
     .map((f) => `\`${f}\``)
     .join(', ');
 
-  if (flagsText) {
+  if (flagsText?.length) {
     embed.fields?.push({
       name: language.Flags,
       value: flagsText,

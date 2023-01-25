@@ -13,7 +13,7 @@ const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
 
 const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
-  `[Message](${client.ch.getJumpLink(msg)})\n`;
+  `[This Message](${client.ch.getJumpLink(msg)})\n`;
 
 const getChannel = (
   channel:
@@ -386,6 +386,7 @@ export default {
         sourceGuild: 'Source Server',
         sourceChannel: 'Source Channel',
         avatar: 'Avatar',
+        avatarRemoved: 'Avatar Removed',
         webhookTypes: {
           1: 'Incoming',
           2: 'Channel Follow',
@@ -430,6 +431,7 @@ export default {
       },
       message: {
         nameDelete: 'Message Deleted',
+        nameUpdate: 'Message Updated',
         descDeleteAudit: (user: Discord.User, msg: Discord.Message) =>
           `${getUser(user)}has deleted\n${getMessage(msg)}from\n${getUser(msg.author)}`,
         descDelete: (msg: Discord.Message) =>

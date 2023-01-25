@@ -50,16 +50,25 @@ async function send(
     return sentMessages;
   }
 
+  const client = (await import('../Client.js')).default;
+
   if (Array.isArray(c.id)) {
     const sentMessages = await Promise.all(
-      c.id.map((id) => send(id as unknown as Discord.Channel, payload, language, command, timeout)),
+      c.id.map((id) =>
+        send(
+          client.channels.cache.get(id) as unknown as Discord.Channel,
+          payload,
+          language,
+          command,
+          timeout,
+        ),
+      ),
     );
     return sentMessages;
   }
 
   if (payload.files?.length) timeout = undefined;
   if (payload.components?.length) timeout = undefined;
-  const client = (await import('../Client.js')).default;
 
   const channel = !('name' in c) ? client.channels.cache.get(c.id) : c;
   if (!channel) return null;

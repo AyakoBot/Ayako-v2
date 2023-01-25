@@ -49,3 +49,4 @@ export const getChannel                 =  await import(`./ClientHelperModules/g
 export const makePermissionsStrings     = (await import(`./ClientHelperModules/makePermissionsStrings.js`)).default;
 export const isManageable               = (await import(`./ClientHelperModules/isManageable.js`)).default;
 export const getEvents                  = (await import(`./ClientHelperModules/getEvents.js`)).default;
+export const getNameAndFileType         = (await import(`./ClientHelperModules/getNameAndFileType.js`)).default;

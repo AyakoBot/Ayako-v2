@@ -41,14 +41,21 @@ export default async (
   };
 
   if (webhook.avatar) {
-    const attachment = (await client.ch.fileURL2Buffer([webhook.avatarURL({ size: 4096 })]))?.[0]
-      ?.attachment;
+    const url = webhook.avatarURL({ size: 4096 });
 
-    if (attachment) {
-      files.push({
-        name: String(webhook.avatar),
-        attachment,
-      });
+    if (url) {
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+
+        embed.thumbnail = {
+          url: `attachment://${client.ch.getNameAndFileType(url)}`,
+        };
+      }
     }
   }
 

@@ -38,54 +38,62 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     case guild.banner !== oldGuild.banner: {
       const url = guild.bannerURL({ size: 4096 });
 
-      if (url) {
-        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      if (!url) {
+        embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
+        break;
+      }
 
-        merge(url, guild.banner, 'icon', lan.banner);
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
-        if (attachment) {
-          files.push({
-            name: String(guild.banner),
-            attachment,
-          });
-        }
-      } else embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.banner);
 
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
       break;
     }
     case guild.icon !== oldGuild.icon: {
       const url = guild.iconURL({ size: 4096 });
 
-      if (url) {
-        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      if (!url) {
+        embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
+        break;
+      }
 
-        merge(url, guild.icon, 'icon', lan.icon);
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
-        if (attachment) {
-          files.push({
-            name: String(guild.icon),
-            attachment,
-          });
-        }
-      } else embed.fields?.push({ name: lan.icon, value: lan.iconRemoved });
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.icon);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
 
       break;
     }
     case guild.splash !== oldGuild.splash: {
       const url = guild.splashURL({ size: 4096 });
 
-      if (url) {
-        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      if (!url) {
+        embed.fields?.push({ name: lan.splash, value: lan.splashRemoved });
+        break;
+      }
 
-        merge(url, guild.splash, 'icon', lan.splash);
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
-        if (attachment) {
-          files.push({
-            name: String(guild.splash),
-            attachment,
-          });
-        }
-      } else embed.fields?.push({ name: lan.splash, value: lan.splashRemoved });
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.splash);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
 
       break;
     }
@@ -100,18 +108,21 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     case guild.discoverySplash !== oldGuild.discoverySplash: {
       const url = guild.discoverySplashURL({ size: 4096 });
 
-      if (url) {
-        const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      if (!url) {
+        embed.fields?.push({ name: lan.discoverySplash, value: lan.discoverySplashRemoved });
+        break;
+      }
 
-        merge(url, guild.discoverySplash, 'icon', lan.discoverySplash);
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
 
-        if (attachment) {
-          files.push({
-            name: String(guild.discoverySplash),
-            attachment,
-          });
-        }
-      } else embed.fields?.push({ name: lan.discoverySplash, value: lan.discoverySplashRemoved });
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.discoverySplash);
+
+      if (attachment) {
+        files.push({
+          name: client.ch.getNameAndFileType(url),
+          attachment,
+        });
+      }
 
       break;
     }

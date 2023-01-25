@@ -41,11 +41,16 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
         await client.ch.fileURL2Buffer([member.displayAvatarURL({ size: 4096 })])
       )?.[0]?.attachment;
 
-      merge(member.displayAvatarURL({ size: 4096 }), member.user.avatar, 'icon', lan.avatar);
+      merge(
+        member.displayAvatarURL({ size: 4096 }),
+        client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
+        'icon',
+        lan.avatar,
+      );
 
       if (attachment) {
         files.push({
-          name: String(member.user.avatar),
+          name: client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
           attachment,
         });
       }
