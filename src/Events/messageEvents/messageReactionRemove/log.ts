@@ -32,7 +32,7 @@ export default async (
       value: msg.reactions.cache
         ?.map(
           (r) =>
-            `\`${client.ch.spaces(`${r.users.cache.size}`, 5)}\` ${
+            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
               reaction.emoji.id === r.emoji.id ||
               (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
                 ? ` ${client.stringEmotes.plusBG}`
