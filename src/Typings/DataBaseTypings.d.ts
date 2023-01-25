@@ -637,3 +637,10 @@ export type voters = {
   rewardtype: rewardtype[];
   reward: string[];
 };
+
+export type stickymessages = {
+  guildid: string;
+  uniquetimestamp: string;
+  lastmsgid: string;
+  channelid: strin;
+};
