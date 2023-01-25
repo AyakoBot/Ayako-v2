@@ -52,7 +52,7 @@ const getInvite = (invite: Discord.Invite) =>
 const getIntegration = (integration: Discord.Integration) =>
   `Integration \`${integration.name}\` / \`${integration.id}\`\n`;
 
-const getRole = (role: Discord.Role) => `Role <@&${role}> / \`${role.name}\` / \`${role.id}\`\n`;
+const getRole = (role: Discord.Role) => `Role <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`;
 
 const getApplication = (
   application: Discord.Application | Discord.IntegrationApplication | bigint,
