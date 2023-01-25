@@ -414,7 +414,7 @@ export default {
       },
       reaction: {
         descAdded: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
-          `${getUser(user)}has reacted with\n${getEmote(emoji)}to ${getMessage(msg)}`,
+          `${getUser(user)}has reacted with\n${getEmote(emoji)}to\n${getMessage(msg)}`,
         descRemoved: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
           `Reaction on\n${getMessage(msg)}with ${getEmote(emoji)}by ${getUser(
             user,
@@ -423,7 +423,7 @@ export default {
           `All Reactions on\n${getMessage(msg)}were removed`,
         descRemoveEmoji: (msg: Discord.Message, emoji: Discord.Emoji) =>
           `Reaction with\n${getEmote(emoji)}was removed from\n${getMessage(msg)}`,
-        nameRemoveAll: 'Reaction remove All',
+        nameRemoveAll: 'All Reactions removed',
         nameAdd: 'Reaction added',
         nameRemove: 'Reaction removed',
         nameRemoveEmoji: 'Emoji Reaction removed',

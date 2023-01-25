@@ -140,7 +140,7 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
 const amMessageCheck = (msg: CT.GuildMessage) => {
   const lunar = () => {
     if (msg.author.id !== '1066084719818702910') return;
-    if (msg.channel.id !== '298954459172700181') return;
+    if (msg.guild.id !== '298954459172700181') return;
 
     setTimeout(() => {
       msg.delete();
