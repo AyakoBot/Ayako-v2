@@ -18,10 +18,10 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
 
   const embed: Discord.APIEmbed = {
     author: {
-      name: lan[`${channelType}Leave` as keyof typeof lan] as string,
-      icon_url: con[`${channelType}Leave` as keyof typeof con],
+      name: lan.nameUpdate,
+      icon_url: con.update,
     },
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.loading,
     description: lan.descUpdate(
       state.member.user,
       state.channel,
@@ -66,6 +66,30 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
     }
     case state.selfVideo !== oldState.selfVideo: {
       merge(oldState.selfVideo, state.selfVideo, 'boolean', lan.selfVideo);
+      break;
+    }
+    case state.channel !== oldState.channel: {
+      if (embed.author) {
+        embed.author.name = lan[`${channelType}Switch` as keyof typeof lan] as string;
+        embed.author.icon_url = con[`${channelType}Switch` as keyof typeof con];
+      }
+
+      merge(
+        oldState.channel
+          ? language.languageFunction.getChannel(
+              oldState.channel,
+              language.channelTypes[oldState.channel.type],
+            )
+          : language.none,
+        state.channel
+          ? language.languageFunction.getChannel(
+              state.channel,
+              language.channelTypes[state.channel.type],
+            )
+          : language.none,
+        'string',
+        language.Channel,
+      );
       break;
     }
     default: {

@@ -16,8 +16,8 @@ export default async (state: Discord.VoiceState) => {
 
   const embed: Discord.APIEmbed = {
     author: {
-      name: lan[`${channelType}Switch` as keyof typeof lan] as string,
-      icon_url: con[`${channelType}Switch` as keyof typeof con],
+      name: lan[`${channelType}Leave` as keyof typeof lan] as string,
+      icon_url: con[`${channelType}Leave` as keyof typeof con],
     },
     color: client.customConstants.colors.warning,
     description: lan.descDelete(
