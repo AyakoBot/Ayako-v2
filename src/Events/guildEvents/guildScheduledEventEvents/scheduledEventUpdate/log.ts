@@ -58,18 +58,18 @@ export default async (
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case event.image !== oldEvent.image: {
+  if (event.image !== oldEvent.image) {
+    const getImage = async () => {
       if (!event.image) {
         embed.fields?.push({ name: lan.image, value: lan.imageRemoved });
-        break;
+        return;
       }
 
       const url = event.coverImageURL({ size: 4096 });
 
       if (!url) {
         embed.fields?.push({ name: lan.image, value: lan.imageRemoved });
-        break;
+        return;
       }
 
       const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
@@ -82,103 +82,92 @@ export default async (
           attachment,
         });
       }
-      break;
-    }
-    case event.description !== oldEvent.description: {
-      merge(oldEvent.description, event.description, 'string', language.Description);
-      break;
-    }
-    case event.entityMetadata?.location !== oldEvent.entityMetadata?.location: {
-      merge(
-        oldEvent.entityMetadata?.location,
-        event.entityMetadata?.location,
-        'string',
-        lan.location,
-      );
-      break;
-    }
-    case event.channelId !== oldEvent.channelId: {
-      const oldChannel =
-        oldEvent.channel ??
-        (oldEvent.channelId
-          ? (await client.ch.getChannel.guildTextChannel(oldEvent.channelId)) ??
-            (await client.ch.getChannel.guildVoiceChannel(oldEvent.channelId))
-          : undefined);
+    };
 
-      const newChannel =
-        event.channel ??
-        (event.channelId
-          ? (await client.ch.getChannel.guildTextChannel(event.channelId)) ??
-            (await client.ch.getChannel.guildVoiceChannel(event.channelId))
-          : undefined);
+    getImage();
+  }
+  if (event.description !== oldEvent.description) {
+    merge(oldEvent.description, event.description, 'string', language.Description);
+  }
+  if (event.entityMetadata?.location !== oldEvent.entityMetadata?.location) {
+    merge(
+      oldEvent.entityMetadata?.location,
+      event.entityMetadata?.location,
+      'string',
+      lan.location,
+    );
+  }
+  if (event.channelId !== oldEvent.channelId) {
+    const oldChannel =
+      oldEvent.channel ??
+      (oldEvent.channelId
+        ? (await client.ch.getChannel.guildTextChannel(oldEvent.channelId)) ??
+          (await client.ch.getChannel.guildVoiceChannel(oldEvent.channelId))
+        : undefined);
 
-      merge(
-        oldChannel
-          ? language.languageFunction.getChannel(oldChannel, language.channelTypes[oldChannel.type])
-          : language.unknown,
-        newChannel
-          ? language.languageFunction.getChannel(newChannel, language.channelTypes[newChannel.type])
-          : language.unknown,
-        'string',
-        language.Channel,
-      );
-      break;
-    }
-    case event.scheduledEndTimestamp !== oldEvent.scheduledEndTimestamp: {
-      merge(
-        oldEvent.scheduledEndTimestamp
-          ? client.customConstants.standard.getTime(oldEvent.scheduledEndTimestamp)
-          : language.none,
-        event.scheduledEndTimestamp
-          ? client.customConstants.standard.getTime(event.scheduledEndTimestamp)
-          : language.none,
-        'string',
-        lan.scheduledEndTime,
-      );
-      break;
-    }
-    case event.scheduledStartTimestamp !== oldEvent.scheduledStartTimestamp: {
-      merge(
-        oldEvent.scheduledStartTimestamp
-          ? client.customConstants.standard.getTime(oldEvent.scheduledStartTimestamp)
-          : language.none,
-        event.scheduledStartTimestamp
-          ? client.customConstants.standard.getTime(event.scheduledStartTimestamp)
-          : language.none,
-        'string',
-        lan.scheduledStartTime,
-      );
-      break;
-    }
-    case event.name !== oldEvent.name: {
-      merge(oldEvent.name, event.name, 'string', language.name);
-      break;
-    }
-    case event.status !== oldEvent.status: {
-      merge(lan.status[oldEvent.status], lan.status[event.status], 'string', lan.statusName);
-      break;
-    }
-    case event.privacyLevel !== oldEvent.privacyLevel: {
-      merge(
-        lan.privacyLevel[oldEvent.privacyLevel],
-        lan.privacyLevel[event.privacyLevel],
-        'string',
-        lan.privacyLevelName,
-      );
-      break;
-    }
-    case event.entityType !== oldEvent.entityType: {
-      merge(
-        lan.entityType[oldEvent.entityType],
-        lan.entityType[event.entityType],
-        'string',
-        lan.entityTypeName,
-      );
-      break;
-    }
-    default: {
-      return;
-    }
+    const newChannel =
+      event.channel ??
+      (event.channelId
+        ? (await client.ch.getChannel.guildTextChannel(event.channelId)) ??
+          (await client.ch.getChannel.guildVoiceChannel(event.channelId))
+        : undefined);
+
+    merge(
+      oldChannel
+        ? language.languageFunction.getChannel(oldChannel, language.channelTypes[oldChannel.type])
+        : language.unknown,
+      newChannel
+        ? language.languageFunction.getChannel(newChannel, language.channelTypes[newChannel.type])
+        : language.unknown,
+      'string',
+      language.Channel,
+    );
+  }
+  if (event.scheduledEndTimestamp !== oldEvent.scheduledEndTimestamp) {
+    merge(
+      oldEvent.scheduledEndTimestamp
+        ? client.customConstants.standard.getTime(oldEvent.scheduledEndTimestamp)
+        : language.none,
+      event.scheduledEndTimestamp
+        ? client.customConstants.standard.getTime(event.scheduledEndTimestamp)
+        : language.none,
+      'string',
+      lan.scheduledEndTime,
+    );
+  }
+  if (event.scheduledStartTimestamp !== oldEvent.scheduledStartTimestamp) {
+    merge(
+      oldEvent.scheduledStartTimestamp
+        ? client.customConstants.standard.getTime(oldEvent.scheduledStartTimestamp)
+        : language.none,
+      event.scheduledStartTimestamp
+        ? client.customConstants.standard.getTime(event.scheduledStartTimestamp)
+        : language.none,
+      'string',
+      lan.scheduledStartTime,
+    );
+  }
+  if (event.name !== oldEvent.name) {
+    merge(oldEvent.name, event.name, 'string', language.name);
+  }
+  if (event.status !== oldEvent.status) {
+    merge(lan.status[oldEvent.status], lan.status[event.status], 'string', lan.statusName);
+  }
+  if (event.privacyLevel !== oldEvent.privacyLevel) {
+    merge(
+      lan.privacyLevel[oldEvent.privacyLevel],
+      lan.privacyLevel[event.privacyLevel],
+      'string',
+      lan.privacyLevelName,
+    );
+  }
+  if (event.entityType !== oldEvent.entityType) {
+    merge(
+      lan.entityType[oldEvent.entityType],
+      lan.entityType[event.entityType],
+      'string',
+      lan.entityTypeName,
+    );
   }
 
   client.ch.send(

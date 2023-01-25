@@ -45,18 +45,18 @@ export default async (
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case oldWebhook?.avatar !== newWebhook?.avatar: {
+  if (oldWebhook?.avatar !== newWebhook?.avatar) {
+    const getImage = async () => {
       if (!newWebhook?.avatar) {
         embed.fields?.push({ name: lan.avatar, value: lan.avatarRemoved });
-        break;
+        return;
       }
 
       const url = webhook.avatarURL({ size: 4096 });
 
       if (!url) {
         embed.fields?.push({ name: lan.avatar, value: lan.avatarRemoved });
-        break;
+        return;
       }
 
       const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
@@ -68,21 +68,13 @@ export default async (
           name: client.ch.getNameAndFileType(url),
           attachment,
         });
-
-        embed.thumbnail = {
-          url: `attachment://${client.ch.getNameAndFileType(url)}`,
-        };
       }
+    };
 
-      break;
-    }
-    case oldWebhook?.name !== webhook.name: {
-      merge(oldWebhook?.name ?? language.unknown, webhook.name, 'string', language.name);
-      break;
-    }
-    default: {
-      return;
-    }
+    getImage();
+  }
+  if (oldWebhook?.name !== webhook.name) {
+    merge(oldWebhook?.name ?? language.unknown, webhook.name, 'string', language.name);
   }
 
   client.ch.send(

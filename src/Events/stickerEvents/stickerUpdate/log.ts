@@ -28,23 +28,13 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case oldSticker.description !== sticker.description: {
-      merge(oldSticker.description, sticker.description, 'string', lan.description);
-      break;
-    }
-    case oldSticker.name !== sticker.name: {
-      merge(oldSticker.name, sticker.name, 'string', language.name);
-      break;
-    }
-    case oldSticker.tags !== sticker.tags: {
-      merge(oldSticker.tags, sticker.tags, 'string', lan.tags);
-      break;
-    }
-    default: {
-      return;
-    }
+  if (oldSticker.description !== sticker.description) {
+    merge(oldSticker.description, sticker.description, 'string', lan.description);
   }
+  if (oldSticker.name !== sticker.name) {
+    merge(oldSticker.name, sticker.name, 'string', language.name);
+  }
+  if (oldSticker.tags !== sticker.tags) merge(oldSticker.tags, sticker.tags, 'string', lan.tags);
 
   client.ch.send(
     { id: channels, guildId: sticker.guild.id },

@@ -35,84 +35,71 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case member.avatar !== oldMember.avatar: {
-      const attachment = (
-        await client.ch.fileURL2Buffer([member.displayAvatarURL({ size: 4096 })])
-      )?.[0]?.attachment;
+  if (member.avatar !== oldMember.avatar) {
+    const attachment = (
+      await client.ch.fileURL2Buffer([member.displayAvatarURL({ size: 4096 })])
+    )?.[0]?.attachment;
 
-      merge(
-        member.displayAvatarURL({ size: 4096 }),
-        client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
-        'icon',
-        lan.avatar,
-      );
+    merge(
+      member.displayAvatarURL({ size: 4096 }),
+      client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
+      'icon',
+      lan.avatar,
+    );
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
-          attachment,
-        });
-      }
+    if (attachment) {
+      files.push({
+        name: client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
+        attachment,
+      });
+    }
+  }
+  if (member.nickname !== oldMember.nickname) {
+    merge(member.nickname, oldMember.nickname, 'string', language.name);
+  }
+  if (member.premiumSince !== oldMember.premiumSince) {
+    merge(
+      member.premiumSince
+        ? client.customConstants.standard.getTime(member.premiumSince.getTime())
+        : language.none,
+      oldMember.premiumSince
+        ? client.customConstants.standard.getTime(oldMember.premiumSince.getTime())
+        : language.none,
+      'string',
+      lan.premiumSince,
+    );
+  }
+  if (member.communicationDisabledUntil !== oldMember.communicationDisabledUntil) {
+    merge(
+      member.communicationDisabledUntil
+        ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
+        : language.none,
+      oldMember.communicationDisabledUntil
+        ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
+        : language.none,
+      'string',
+      lan.communicationDisabledUntil,
+    );
+  }
+  if (JSON.stringify(member.roles) !== JSON.stringify(oldMember.roles)) {
+    const addedRoles = client.ch.getDifference(
+      member.roles.cache.map((r) => r),
+      oldMember.roles.cache.map((r) => r),
+    );
+    const removedRoles = client.ch.getDifference(
+      oldMember.roles.cache.map((r) => r),
+      member.roles.cache.map((r) => r),
+    );
 
-      break;
-    }
-    case member.nickname !== oldMember.nickname: {
-      merge(member.nickname, oldMember.nickname, 'string', language.name);
-      break;
-    }
-    case member.premiumSince !== oldMember.premiumSince: {
-      merge(
-        member.premiumSince
-          ? client.customConstants.standard.getTime(member.premiumSince.getTime())
-          : language.none,
-        oldMember.premiumSince
-          ? client.customConstants.standard.getTime(oldMember.premiumSince.getTime())
-          : language.none,
-        'string',
-        lan.premiumSince,
-      );
-      break;
-    }
-    case member.communicationDisabledUntil !== oldMember.communicationDisabledUntil: {
-      merge(
-        member.communicationDisabledUntil
-          ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
-          : language.none,
-        oldMember.communicationDisabledUntil
-          ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
-          : language.none,
-        'string',
-        lan.communicationDisabledUntil,
-      );
-      break;
-    }
-    case JSON.stringify(member.roles) !== JSON.stringify(oldMember.roles): {
-      const addedRoles = client.ch.getDifference(
-        member.roles.cache.map((r) => r),
-        oldMember.roles.cache.map((r) => r),
-      );
-      const removedRoles = client.ch.getDifference(
-        oldMember.roles.cache.map((r) => r),
-        member.roles.cache.map((r) => r),
-      );
-
-      merge(
-        addedRoles.map((r) => `<@&${r}>`).join(', '),
-        removedRoles.map((r) => `<@&${r}>`).join(', '),
-        'difference',
-        language.roles,
-      );
-
-      break;
-    }
-    case member.pending !== oldMember.pending: {
-      merge(member.pending, oldMember.pending, 'boolean', lan.deaf);
-      break;
-    }
-    default: {
-      return;
-    }
+    merge(
+      addedRoles.map((r) => `<@&${r}>`).join(', '),
+      removedRoles.map((r) => `<@&${r}>`).join(', '),
+      'difference',
+      language.roles,
+    );
+  }
+  if (member.pending !== oldMember.pending) {
+    merge(member.pending, oldMember.pending, 'boolean', lan.deaf);
   }
 
   client.ch.send(

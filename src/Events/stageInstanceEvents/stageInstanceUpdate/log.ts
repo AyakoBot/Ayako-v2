@@ -34,46 +34,38 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case oldStage.guildScheduledEventId !== stage.guildScheduledEventId: {
-      merge(
-        oldStage.guildScheduledEvent
-          ? language.languageFunction.getScheduledEvent(oldStage.guildScheduledEvent)
-          : language.none,
-        stage.guildScheduledEvent
-          ? language.languageFunction.getScheduledEvent(stage.guildScheduledEvent)
-          : language.none,
-        'string',
-        language.ScheduledEvent,
-      );
-      break;
-    }
-    case oldStage.topic !== stage.topic: {
-      merge(oldStage.topic, stage.topic, 'string', lan.topic);
-      break;
-    }
-    case oldStage.channelId !== stage.channelId: {
-      merge(
-        oldStage.channel
-          ? language.languageFunction.getChannel(
-              oldStage.channel,
-              language.channelTypes[oldStage.channel.type],
-            )
-          : language.unknown,
-        stage.channel
-          ? language.languageFunction.getChannel(
-              stage.channel,
-              language.channelTypes[stage.channel.type],
-            )
-          : language.unknown,
-        'string',
-        language.Channel,
-      );
-      break;
-    }
-    default: {
-      return;
-    }
+  if (oldStage.guildScheduledEventId !== stage.guildScheduledEventId) {
+    merge(
+      oldStage.guildScheduledEvent
+        ? language.languageFunction.getScheduledEvent(oldStage.guildScheduledEvent)
+        : language.none,
+      stage.guildScheduledEvent
+        ? language.languageFunction.getScheduledEvent(stage.guildScheduledEvent)
+        : language.none,
+      'string',
+      language.ScheduledEvent,
+    );
+  }
+  if (oldStage.topic !== stage.topic) {
+    merge(oldStage.topic, stage.topic, 'string', lan.topic);
+  }
+  if (oldStage.channelId !== stage.channelId) {
+    merge(
+      oldStage.channel
+        ? language.languageFunction.getChannel(
+            oldStage.channel,
+            language.channelTypes[oldStage.channel.type],
+          )
+        : language.unknown,
+      stage.channel
+        ? language.languageFunction.getChannel(
+            stage.channel,
+            language.channelTypes[stage.channel.type],
+          )
+        : language.unknown,
+      'string',
+      language.Channel,
+    );
   }
 
   client.ch.send(

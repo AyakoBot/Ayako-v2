@@ -33,23 +33,17 @@ export default async (oldEmote: Discord.GuildEmoji, emote: Discord.GuildEmoji) =
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  switch (true) {
-    case emote.name !== oldEmote.name: {
-      merge(oldEmote.name, emote.name, 'string', language.name);
-      break;
-    }
-    case JSON.stringify(emote.roles) !== JSON.stringify(oldEmote.roles): {
-      merge(
-        oldEmote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
-        emote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
-        'string',
-        language.roles,
-      );
-      break;
-    }
-    default: {
-      return;
-    }
+  if (emote.name !== oldEmote.name) {
+    merge(oldEmote.name, emote.name, 'string', language.name);
+  }
+
+  if (JSON.stringify(emote.roles) !== JSON.stringify(oldEmote.roles)) {
+    merge(
+      oldEmote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
+      emote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
+      'string',
+      language.roles,
+    );
   }
 
   client.ch.send(
