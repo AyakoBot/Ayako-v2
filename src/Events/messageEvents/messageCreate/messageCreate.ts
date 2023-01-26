@@ -32,6 +32,7 @@ const getPaths = (msg: CT.Message) => {
       //      './willis.js',
       './revengePing.js',
       //      './antispam.js',
+      './sticky.js',
     );
   } else paths.push('./DMlog.js');
 

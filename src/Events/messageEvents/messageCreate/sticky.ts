@@ -12,7 +12,6 @@ export default async (msg: CT.GuildMessage) => {
       [msg.guild.id, msg.channel.id],
     )
     .then((r: DBT.stickymessages[] | null) => r || null);
-
   if (!sticky) return;
 
   sticky.forEach(async (s) => {
@@ -36,7 +35,7 @@ export default async (msg: CT.GuildMessage) => {
     if (!m) return;
     if (oldMessage.deletable) oldMessage.delete().catch(() => undefined);
 
-    client.ch.query(`UPDATE lastmsgid = $1 FROM stickymessages WHERE uniquetimestamp = $2;`, [
+    client.ch.query(`UPDATE stickymessages SET lastmsgid = $1 WHERE uniquetimestamp = $2;`, [
       m.id,
       s.uniquetimestamp,
     ]);
