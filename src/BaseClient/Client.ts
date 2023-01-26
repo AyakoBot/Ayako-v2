@@ -28,7 +28,6 @@ class CustomClient extends Discord.Client {
 
   channelQueue: Map<string, Map<string, Discord.MessageCreateOptions[]>>;
   channelTimeout: Map<string, Map<string, Jobs.Job>>;
-  channelCharLimit: Map<string, Map<string, number>>;
 
   database: RedisxPSQL;
   ch: typeof ch;
@@ -50,7 +49,6 @@ class CustomClient extends Discord.Client {
 
     this.channelQueue = new Map();
     this.channelTimeout = new Map();
-    this.channelCharLimit = new Map();
 
     this.database = DataBase;
     this.ch = ch;

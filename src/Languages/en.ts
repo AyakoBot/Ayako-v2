@@ -296,7 +296,7 @@ export default {
       voiceState: {
         descCreate: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
           `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
-        descUpdate: (
+        descUpdateChannel: (
           user: Discord.User,
           channel: Discord.GuildChannel,
           channelType: string,
@@ -307,6 +307,8 @@ export default {
             oldChannel,
             oldChannelType,
           )}into\n${getChannel(channel, channelType)}`,
+        descUpdate: (user: Discord.User, channel: Discord.VoiceBasedChannel, channelType: string) =>
+          `The Voice State of\n${getUser(user)}in\n${getChannel(channel, channelType)}was updated`,
         descDelete: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
           `${getUser(user)}has left\n${getChannel(channel, channelType)}`,
         nameUpdate: 'Voice State updated',
@@ -324,8 +326,8 @@ export default {
         mute: 'Server Muted',
         selfDeaf: 'Locally Deafened',
         selfMute: 'Locally Muted',
-        selfStream: 'Streaming enabled',
-        selfVideo: 'Camera enabled',
+        selfStream: 'Streaming',
+        selfVideo: 'Camera',
       },
       webhook: {
         descCreateAudit: (
@@ -608,10 +610,10 @@ export default {
           `${getUser(executor)}has added\n${getUser(user)}`,
         descMemberJoin: (user: Discord.User) => `${getUser(user)}has joined`,
         descBotJoin: (user: Discord.User) => `${getUser(user)}was added`,
-        descBotLeave: (user: Discord.User) => `${getUser(user)}has left`,
+        descBotLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
         descBotLeaveAudit: (user: Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has kicked\n${getUser(user)}`,
-        descMemberLeave: (user: Discord.User) => `${getUser(user)}has left`,
+        descMemberLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
         descMemberLeaveAudit: (user: Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has kicked\n${getUser(user)}`,
         descBotUpdate: (user: Discord.User) => `${getUser(user)}was updated`,

@@ -26,9 +26,8 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
       state.member.user,
       state.channel,
       language.channelTypes[state.channel.type],
-      oldState.channel,
-      oldState.channel ? language.channelTypes[oldState.channel.type] : undefined,
     ),
+    fields: [],
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
@@ -60,11 +59,19 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
   if (state.selfVideo !== oldState.selfVideo) {
     merge(oldState.selfVideo, state.selfVideo, 'boolean', lan.selfVideo);
   }
-  if (state.channel !== oldState.channel) {
+  if (state.channelId !== oldState.channelId) {
     if (embed.author) {
       embed.author.name = lan[`${channelType}Switch` as keyof typeof lan] as string;
       embed.author.icon_url = con[`${channelType}Switch` as keyof typeof con];
     }
+
+    embed.description = lan.descUpdateChannel(
+      state.member.user,
+      state.channel,
+      language.channelTypes[state.channel.type],
+      oldState.channel,
+      oldState.channel ? language.channelTypes[oldState.channel.type] : undefined,
+    );
 
     merge(
       oldState.channel

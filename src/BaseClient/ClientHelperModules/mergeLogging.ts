@@ -44,5 +44,5 @@ export default (
 
 const boolify = (b: unknown, l: CT.Language) =>
   b
-    ? `${l.Enabled} ${stringEmotes.tickWithBackground}`
-    : `${l.Disabled} ${stringEmotes.crossWithBackground}`;
+    ? `${stringEmotes.tickWithBackground} ${l.Enabled}`
+    : `${stringEmotes.crossWithBackground} ${l.Disabled}`;

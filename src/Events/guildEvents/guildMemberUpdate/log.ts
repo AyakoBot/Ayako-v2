@@ -57,7 +57,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   if (member.nickname !== oldMember.nickname) {
     merge(member.nickname, oldMember.nickname, 'string', language.name);
   }
-  if (member.premiumSince !== oldMember.premiumSince) {
+  if (member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp) {
     merge(
       member.premiumSince
         ? client.customConstants.standard.getTime(member.premiumSince.getTime())
@@ -69,7 +69,9 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
       lan.premiumSince,
     );
   }
-  if (member.communicationDisabledUntil !== oldMember.communicationDisabledUntil) {
+  if (
+    member.communicationDisabledUntilTimestamp !== oldMember.communicationDisabledUntilTimestamp
+  ) {
     merge(
       member.communicationDisabledUntil
         ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
@@ -92,8 +94,8 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     );
 
     merge(
-      addedRoles.map((r) => `<@&${r}>`).join(', '),
-      removedRoles.map((r) => `<@&${r}>`).join(', '),
+      addedRoles.length ? addedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
+      removedRoles.length ? removedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
       'difference',
       language.roles,
     );

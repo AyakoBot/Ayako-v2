@@ -4,6 +4,7 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (msg: CT.GuildMessage) => {
+  if (msg.author.tag === '0000') return;
   gvMessageCheck(msg);
   amMessageCheck(msg);
 
