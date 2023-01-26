@@ -21,7 +21,7 @@ export default async (msg: CT.GuildMessage) => {
     const m = await client.ch.send(
       msg.channel,
       {
-        embeds: oldMessage.embeds,
+        embeds: oldMessage.embeds.map((e) => e.data),
         files: (
           await Promise.all(oldMessage.attachments.map((a) => client.ch.fileURL2Buffer([a.url])))
         )

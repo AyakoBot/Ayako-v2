@@ -394,7 +394,7 @@ const doEmbed = async (
 
 const send = async (
   msg: CT.GuildMessage,
-  payload: Discord.MessageCreateOptions,
+  payload: { embeds: Discord.APIEmbed[] },
   row: DBT.leveling,
 ) => {
   const channels =

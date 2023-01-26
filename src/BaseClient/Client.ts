@@ -26,7 +26,7 @@ class CustomClient extends Discord.Client {
 
   mainID: string;
 
-  channelQueue: Map<string, Map<string, Discord.MessageCreateOptions[]>>;
+  channelQueue: Map<string, Map<string, Discord.APIEmbed[]>>;
   channelTimeout: Map<string, Map<string, Jobs.Job>>;
 
   database: RedisxPSQL;
