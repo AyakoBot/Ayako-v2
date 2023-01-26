@@ -1,7 +1,6 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import type CT from '../../../Typings/CustomTypings';
-import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (msg: CT.GuildMessage) => {
@@ -48,37 +47,6 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
     });
   };
   staffPing();
-
-  const sticky = async () => {
-    if (
-      msg.channel.id !== '554487212276842534' &&
-      (msg.attachments.size === 0 || msg.author.id !== '650691698409734151')
-    ) {
-      return;
-    }
-
-    const res = await client.ch
-      .query(`SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`, [
-        msg.guild.id,
-        msg.channel.id,
-      ])
-      .then((r: DBT.stickymessages[] | null) => (r ? r[0] : null));
-    if (!res) return;
-
-    const lastMsg = await msg.channel.messages.fetch(res.lastmsgid);
-    const newMsg = {
-      content: lastMsg.content,
-      embeds: lastMsg.embeds,
-      attachments: lastMsg.attachments,
-    };
-    await lastMsg.delete();
-    const newM = await msg.channel.send(newMsg);
-    client.ch.query(
-      `UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND lastmsgid = $3;`,
-      [newM.id, msg.guild.id, res.lastmsgid],
-    );
-  };
-  sticky();
 
   const inviteCheck = () => {
     if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
@@ -141,6 +109,7 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
   const lunar = () => {
     if (msg.author.id !== '1066084719818702910') return;
     if (msg.guild.id !== '298954459172700181') return;
+    if (msg.channel.id === '298955020232032258') return;
 
     setTimeout(() => {
       msg.delete();
@@ -198,6 +167,8 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
 
     if (msg.member.roles.cache.has('334832484581769217')) return;
     if (msg.member.roles.cache.has('606164114691194900')) return;
+
+    msg.delete();
 
     client.ch
       .send(

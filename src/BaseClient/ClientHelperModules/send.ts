@@ -3,13 +3,6 @@ import jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings';
 
 async function send(
-  c: Discord.Channel,
-  payload: Discord.MessageCreateOptions,
-  language: CT.Language,
-  command?: CT.Command,
-  timeout?: number,
-): Promise<Discord.Message | null | void>;
-async function send(
   c: { id: string; guildId: string },
   payload: Discord.MessageCreateOptions,
   language: CT.Language,
@@ -17,7 +10,7 @@ async function send(
   timeout?: number,
 ): Promise<Discord.Message | null | void>;
 async function send(
-  c: Discord.Channel[],
+  c: Discord.TextBasedChannel[],
   payload: Discord.MessageCreateOptions,
   language: CT.Language,
   command?: CT.Command,
@@ -31,9 +24,16 @@ async function send(
   timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
+  c: Discord.TextBasedChannel,
+  payload: Discord.MessageCreateOptions,
+  language: CT.Language,
+  command?: CT.Command,
+  timeout?: number,
+): Promise<Discord.Message | null | void>;
+async function send(
   c:
-    | Discord.Channel
-    | Discord.Channel[]
+    | Discord.TextBasedChannel
+    | Discord.TextBasedChannel[]
     | { id: string[]; guildId: string }
     | { id: string; guildId: string },
   payload: Discord.MessageCreateOptions,
@@ -56,7 +56,7 @@ async function send(
     const sentMessages = await Promise.all(
       c.id.map((id) =>
         send(
-          client.channels.cache.get(id) as unknown as Discord.Channel,
+          client.channels.cache.get(id) as unknown as Discord.TextBasedChannel,
           payload,
           language,
           command,

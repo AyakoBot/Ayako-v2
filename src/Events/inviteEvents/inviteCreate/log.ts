@@ -9,7 +9,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   const lan = language.events.logs.invite;
   const con = client.customConstants.events.logs.invite;
   const audit = await client.ch.getAudit(guild, 40, invite.code);
-  const auditUser = audit?.executor ?? undefined;
+  const auditUser = audit?.executor ?? invite.inviter ?? undefined;
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -101,7 +101,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
 
   embed.fields?.push({
     name: lan.maxUses,
-    value: String(invite.maxUses) ?? '∞',
+    value: String(invite.maxUses ?? '∞'),
   });
 
   client.ch.send(

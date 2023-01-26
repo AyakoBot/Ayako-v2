@@ -105,7 +105,12 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     merge(oldStickers, newStickers, 'difference', lan.stickers);
   }
   if (oldMsg.type !== msg.type) {
-    merge(lan.type[oldMsg.type], lan.type[msg.type], 'string', language.Type);
+    merge(
+      lan.type[oldMsg.type] ?? language.unknown,
+      lan.type[msg.type] ?? language.unknown,
+      'string',
+      language.Type,
+    );
 
     byAuthor = false;
   }

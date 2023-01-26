@@ -87,7 +87,12 @@ export default async (
     'topic' in channel &&
     oldChannel?.topic !== channel.topic
   ) {
-    merge(oldChannel?.topic ?? language.unknown, channel.topic, 'string', lan.topic);
+    merge(
+      oldChannel?.topic ?? language.unknown,
+      channel.topic ?? language.none,
+      'string',
+      lan.topic,
+    );
   }
 
   if (

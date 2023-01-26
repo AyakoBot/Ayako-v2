@@ -3,6 +3,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (msg: Discord.Message) => {
   if (!msg.guild) return;
+  if (!msg.author) return;
 
   const channels = await client.ch.getLogChannels('messageevents', msg.guild);
   if (!channels) return;
@@ -64,8 +65,13 @@ export default async (msg: Discord.Message) => {
     embed.fields?.push({
       name: lan.reactions,
       value: msg.reactions.cache
-        .map((r) => `${language.languageFunction.getEmote(r.emoji)} ${r.count}`)
-        .join('\n'),
+        .map(
+          (r) =>
+            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(
+              r.emoji,
+            )}`,
+        )
+        .join(''),
     });
   }
 
@@ -136,15 +142,15 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.content) {
-    const contentEmbed: Discord.APIEmbed = {
-      description: msg.content,
-      color: client.customConstants.colors.ephemeral,
-      author: {
+    if (msg.content?.length > 2000) {
+      const content = client.ch.txtFileWriter(msg.content, undefined, language.content);
+      if (content) files.push(content);
+    } else {
+      embed.fields?.push({
         name: language.content,
-      },
-    };
-
-    embeds.push(contentEmbed);
+        value: msg.content ?? language.none,
+      });
+    }
   }
 
   if (msg.attachments?.size) {
@@ -157,9 +163,9 @@ export default async (msg: Discord.Message) => {
 
   client.ch.send(
     { id: channels, guildId: msg.guild.id },
-    { embeds: [embed], files },
+    { embeds, files },
     language,
     undefined,
-    files.length ? undefined : 10000,
+    10000,
   );
 };

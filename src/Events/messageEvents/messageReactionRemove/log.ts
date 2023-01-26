@@ -35,11 +35,11 @@ export default async (
             `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
               reaction.emoji.id === r.emoji.id ||
               (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
-                ? ` ${client.stringEmotes.plusBG}`
+                ? ` ${client.stringEmotes.minusBG}`
                 : ` ${client.stringEmotes.invis}`
             } ${language.languageFunction.getEmote(r.emoji)}`,
         )
-        .join('\n'),
+        .join(''),
     });
   }
 

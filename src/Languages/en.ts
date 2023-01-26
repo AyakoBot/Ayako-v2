@@ -47,7 +47,7 @@ const getInviteDetails = (invite: Discord.Invite, user?: Discord.User) =>
   }`;
 
 const getInvite = (invite: Discord.Invite) =>
-  `Invite discord.gg/${invite.code} / \`${invite.code}\`\n`;
+  `Invite https://discord.gg/${invite.code} / \`${invite.code}\`\n`;
 
 const getIntegration = (integration: Discord.Integration) =>
   `Integration \`${integration.name}\` / \`${integration.id}\`\n`;
@@ -523,8 +523,8 @@ export default {
         mentionedRoles: 'Mentioned Roles',
         mentionedChannels: 'Mentioned Channels',
         editedTimestamp: 'Last edited',
-        beforeContent: 'Content before:',
-        afterContent: 'Content after:',
+        beforeContent: '__Content before__:',
+        afterContent: '__Content after__:',
       },
       invite: {
         descCreateAudit: (user: Discord.User, invite: Discord.Invite) =>

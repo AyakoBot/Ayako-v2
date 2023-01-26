@@ -61,9 +61,15 @@ export interface Message extends Discord.Message {
   language: Language;
 }
 
-export interface GuildMessage extends Omit<Message, 'guild' | 'member'> {
+export interface GuildMessage extends Omit<Message, 'guild' | 'member' | 'channel'> {
   guild: Discord.Guild;
   member: Discord.GuildMember;
+  channel:
+    | Discord.NewsChannel
+    | Discord.TextChannel
+    | Discord.PrivateThreadChannel
+    | Discord.PublicThreadChannel
+    | Discord.VoiceChannel;
 }
 
 export type DMMessage = Omit<Message, 'guild' | 'member'>;
