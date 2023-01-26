@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import client from '../../../BaseClient/Client.js';
@@ -17,7 +17,7 @@ export default async (oldMsg: Discord.Message, message: Discord.Message) => {
   const prefixStandard = client.customConstants.standard.prefix;
   let prefixCustom;
 
-  if (msg.channel.type !== 1) {
+  if (msg.channel.type !== Discord.ChannelType.GuildAnnouncement) {
     prefixCustom = await client.ch
       .query('SELECT * FROM guildsettings WHERE guildid = $1;', [String(msg.guild.id)])
       .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
