@@ -115,7 +115,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     byAuthor = false;
   }
   if (oldMsg.content !== msg.content) {
-    if (oldMsg.content?.length > 2000) {
+    if (oldMsg.content?.length > 1024) {
       const content = client.ch.txtFileWriter(oldMsg.content, undefined, language.content);
       if (content) files.push(content);
     } else {
@@ -126,7 +126,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
       });
     }
 
-    if (msg.content?.length > 2000) {
+    if (msg.content?.length > 1024) {
       const content = client.ch.txtFileWriter(msg.content, undefined, language.content);
       if (content) files.push(content);
     } else {
