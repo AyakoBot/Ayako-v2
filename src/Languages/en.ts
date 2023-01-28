@@ -637,6 +637,8 @@ export default {
         memberKick: 'Member kicked',
         memberUpdate: 'Member updated',
         botUpdate: 'Bot updated',
+        botLeave: 'Bot left',
+        memberLeave: 'Member left',
         avatar: 'Avatar',
         premiumSince: 'Boosting since',
         communicationDisabledUntil: 'Timed out',
@@ -737,6 +739,7 @@ export default {
           SuppressGuildReminderNotifications: 'Supress Server Reminder Notifications',
           SuppressJoinNotificationReplies: 'Supress Join Notification Sticker Reactions',
         },
+        pending: 'Pending',
       },
       channel: {
         descCreateAudit: (

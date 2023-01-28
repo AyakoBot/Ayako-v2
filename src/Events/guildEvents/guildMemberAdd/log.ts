@@ -58,14 +58,12 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   if (!newInvites) return undefined;
 
   newInvites.forEach((i) => client.cache.invites.set(i, guild.id));
-  if (!oldInvites) {
-    return undefined;
-  }
+  if (!oldInvites) return undefined;
 
   return oldInvites
     .map((oldInvite) => {
       const newInvite = newInvites.find((invite) => invite.code === oldInvite.code);
-      if (newInvite && oldInvite.uses === Number(newInvite.uses) - 1) return newInvite;
+      if (newInvite && Number(oldInvite.uses) < Number(newInvite.uses)) return newInvite;
       return undefined;
     })
     .filter((i): i is Discord.Invite => !!i)[0];

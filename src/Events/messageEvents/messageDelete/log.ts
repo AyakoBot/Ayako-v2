@@ -149,6 +149,7 @@ export default async (msg: Discord.Message) => {
       embed.fields?.push({
         name: language.content,
         value: msg.content ?? language.none,
+        inline: false,
       });
     }
   }

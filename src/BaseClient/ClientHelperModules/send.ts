@@ -91,9 +91,15 @@ async function send(
   }
 
   payload.embeds?.forEach((e) => {
-    if (e.author && !e.author.icon_url) {
-      e.author.icon_url = client.customConstants.standard.invite;
+    if (e.author && !e.author.url) {
+      e.author.url = client.customConstants.standard.invite;
     }
+
+    e.fields?.forEach((f) => {
+      if (typeof f.inline !== 'boolean') {
+        f.inline = true;
+      }
+    });
   });
 
   if (timeout && 'guild' in channel && payload.embeds?.length) {

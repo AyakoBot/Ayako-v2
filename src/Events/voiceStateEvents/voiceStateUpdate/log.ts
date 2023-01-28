@@ -91,6 +91,10 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
     );
   }
 
+  if (!embed.fields?.length) {
+    console.log(oldState, state);
+  }
+
   client.ch.send(
     { id: channels, guildId: state.guild.id },
     { embeds: [embed], files },

@@ -55,16 +55,17 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     }
   }
   if (member.nickname !== oldMember.nickname) {
-    merge(member.nickname, oldMember.nickname, 'string', language.name);
+    merge(oldMember.nickname, member.nickname, 'string', language.name);
   }
   if (member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp) {
     merge(
-      member.premiumSince
-        ? client.customConstants.standard.getTime(member.premiumSince.getTime())
-        : language.none,
       oldMember.premiumSince
         ? client.customConstants.standard.getTime(oldMember.premiumSince.getTime())
         : language.none,
+      member.premiumSince
+        ? client.customConstants.standard.getTime(member.premiumSince.getTime())
+        : language.none,
+
       'string',
       lan.premiumSince,
     );
@@ -73,17 +74,20 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     member.communicationDisabledUntilTimestamp !== oldMember.communicationDisabledUntilTimestamp
   ) {
     merge(
-      member.communicationDisabledUntil
-        ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
-        : language.none,
       oldMember.communicationDisabledUntil
         ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
+        : language.none,
+      member.communicationDisabledUntil
+        ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
         : language.none,
       'string',
       lan.communicationDisabledUntil,
     );
   }
-  if (JSON.stringify(member.roles) !== JSON.stringify(oldMember.roles)) {
+  if (
+    JSON.stringify(member.roles.cache.map((r) => r.id)) !==
+    JSON.stringify(oldMember.roles.cache.map((r) => r.id))
+  ) {
     const addedRoles = client.ch.getDifference(
       member.roles.cache.map((r) => r),
       oldMember.roles.cache.map((r) => r),
@@ -101,7 +105,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     );
   }
   if (member.pending !== oldMember.pending) {
-    merge(member.pending, oldMember.pending, 'boolean', lan.deaf);
+    merge(oldMember.pending, member.pending, 'boolean', lan.pending);
   }
 
   client.ch.send(

@@ -248,54 +248,6 @@ export default {
       `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
     ytURL: 'https://www.youtube.com/@AyakoBot',
   },
-  mod: {
-    strike: {
-      color: 16711680,
-      confirmColor: 16711680,
-    },
-    roleAdd: {
-      color: 65280,
-    },
-    roleRemove: {
-      color: 65280,
-    },
-    tempmuteAdd: {
-      color: 16711680,
-    },
-    tempbanAdd: {
-      color: 16711680,
-    },
-    muteRemove: {
-      color: 65280,
-    },
-    kickAdd: {
-      color: 16711680,
-    },
-    banAdd: {
-      color: 16711680,
-    },
-    softbanAdd: {
-      color: 16711680,
-    },
-    banRemove: {
-      color: 65280,
-    },
-    channelbanAdd: {
-      color: 16711680,
-    },
-    tempchannelbanAdd: {
-      color: 16711680,
-    },
-    channelbanRemove: {
-      color: 65280,
-    },
-    warnAdd: {
-      color: 16711680,
-    },
-    softwarnAdd: {
-      color: 16711680,
-    },
-  },
   customembeds: {
     limits: {
       fields: {
@@ -327,35 +279,12 @@ export default {
       'footer-text',
     ],
   },
-  expire: {
-    success: 65280,
-    color: 65280,
-  },
   commands: {
     synclevel: {
       methods: ['api', 'lb', 'lr'],
     },
-    afk: 16776960,
-    toxicityCheck: 16711680,
-    pardon: {
-      success: 65280,
-      color: 65280,
-    },
     edit: {
-      success: 65280,
-      color: 65280,
       image: 'https://ayakobot.com/cdn/Ayako_Assets/Edit.png',
-    },
-    clearwarns: {
-      success: 65280,
-      fail: 16711680,
-      loading: 16776960,
-      color: 65280,
-    },
-    massban: {
-      success: 65280,
-      fail: 16711680,
-      color: 16711680,
     },
     invite: {
       image: 'https://ayakobot.com/cdn/Ayako_Assets/help.png',

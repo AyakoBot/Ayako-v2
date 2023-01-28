@@ -4,7 +4,8 @@ import type CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 
 export default async (msg: CT.GuildMessage) => {
-  if (msg.author.tag === '0000') return;
+  if (msg.author.discriminator === '0000') return;
+
   gvMessageCheck(msg);
   amMessageCheck(msg);
 
@@ -32,22 +33,6 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
   if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
   if (msg.guild.id !== '366219406776336385') return;
   if (msg.channelId === '801804774759727134') return;
-
-  const staffPing = async () => {
-    if (!msg.content.includes('<@&809261905855643668>')) return;
-    await msg.guild.members.fetch();
-
-    msg.channel.send({
-      content: msg.guild.roles.cache
-        .get('809261905855643668')
-        ?.members.map((m) => `<@${m.id}>`)
-        .join(', '),
-      allowedMentions: {
-        users: msg.guild.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
-      },
-    });
-  };
-  staffPing();
 
   const inviteCheck = () => {
     if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
@@ -107,6 +92,22 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
 };
 
 const amMessageCheck = (msg: CT.GuildMessage) => {
+  const staffPing = async () => {
+    if (!msg.content.includes('<@&809261905855643668>')) return;
+    await msg.guild.members.fetch();
+
+    msg.channel.send({
+      content: msg.guild.roles.cache
+        .get('809261905855643668')
+        ?.members.map((m) => `<@${m.id}>`)
+        .join(', '),
+      allowedMentions: {
+        users: msg.guild.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
+      },
+    });
+  };
+  staffPing();
+
   const lunar = () => {
     if (msg.author.id !== '1066084719818702910') return;
     if (msg.guild.id !== '298954459172700181') return;

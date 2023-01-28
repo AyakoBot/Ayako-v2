@@ -20,7 +20,7 @@ export default async (member: Discord.GuildMember) => {
   } else if (audit && auditUser) description = lan.descMemberLeaveAudit(member.user, auditUser);
   else description = lan.descMemberLeave(member.user);
 
-  let name = member.user.bot ? lan.botJoin : lan.memberJoin;
+  let name = member.user.bot ? lan.botLeave : lan.memberLeave;
   if (audit) name = member.user.bot ? lan.botKick : lan.memberKick;
 
   const embed: Discord.APIEmbed = {

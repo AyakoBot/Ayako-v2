@@ -122,6 +122,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
       embed.fields?.push({
         name: lan.beforeContent,
         value: oldMsg.content ?? language.none,
+        inline: false,
       });
     }
 
@@ -132,6 +133,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
       embed.fields?.push({
         name: lan.afterContent,
         value: msg.content ?? language.none,
+        inline: false,
       });
     }
   }

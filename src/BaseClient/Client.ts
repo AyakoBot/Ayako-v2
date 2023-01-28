@@ -7,15 +7,9 @@ import Constants from './Other/Constants.js';
 import ObjectEmotes from './Other/ObjectEmotes.json' assert { type: 'json' };
 import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
 import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
-import eventHandler from '../Events/baseEventHandler.js';
 import DataBase from './DataBase.js';
 import auth from '../auth.json' assert { type: 'json' };
 import type cache from './ClientHelperModules/cache.js';
-
-const events: { [key: string]: typeof eventHandler } = {};
-Constants.allEvents.forEach((e) => {
-  events[e] = eventHandler;
-});
 
 class CustomClient extends Discord.Client {
   neko: typeof NekoClient;

@@ -101,7 +101,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
 
   embed.fields?.push({
     name: lan.maxUses,
-    value: String(invite.maxUses ?? '∞'),
+    value: String(invite.maxUses || '∞'),
   });
 
   client.ch.send(

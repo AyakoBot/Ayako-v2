@@ -18,7 +18,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, invite) : lan.descDelete(invite),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.warning,
   };
 
   const flagsText = [invite.temporary ? lan.temporary : null]
@@ -38,6 +38,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: lan.inviter,
       value: language.languageFunction.getUser(invite.inviter),
+      inline: false,
     });
   }
 
@@ -45,6 +46,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: lan.targetUser,
       value: language.languageFunction.getUser(invite.targetUser),
+      inline: false,
     });
   }
 
@@ -55,6 +57,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
       embed.fields?.push({
         name: language.Channel,
         value: language.languageFunction.getChannel(channel, language.channelTypes[channel.type]),
+        inline: false,
       });
     }
   }
@@ -82,7 +85,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
 
   embed.fields?.push({
     name: lan.maxUses,
-    value: String(invite.maxUses) ?? '∞',
+    value: String(invite.maxUses || '∞'),
   });
 
   client.ch.send(

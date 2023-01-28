@@ -2,16 +2,20 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
+  console.log(1);
   if (!rule.guild.id) return;
+  console.log(2);
 
   const channels = await client.ch.getLogChannels('automodevents', rule.guild);
   if (!channels) return;
+  console.log(3);
 
   const language = await client.ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
   const con = client.customConstants.events.logs.automodRule;
   const user = await client.users.fetch(rule.creatorId);
   if (!user) return;
+  console.log(4);
 
   const embed: Discord.APIEmbed = {
     author: {
