@@ -22,7 +22,7 @@ export default async (emote: Discord.GuildEmoji) => {
       ? lan.descEmojiDeleteAudit(auditUser, emote)
       : lan.descEmojiDelete(emote),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   const attachment = (await client.ch.fileURL2Buffer([emote.url]))?.[0]?.attachment;

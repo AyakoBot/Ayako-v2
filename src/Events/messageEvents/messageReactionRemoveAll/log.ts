@@ -22,7 +22,7 @@ export default async (
       url: msg.url,
     },
     description: lan.descRemovedAll(msg),
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     fields: [],
   };
 

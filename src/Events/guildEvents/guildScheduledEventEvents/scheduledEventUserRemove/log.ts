@@ -23,7 +23,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
       name: lan.nameUserRemove,
       icon_url: con.MemberDelete,
     },
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     description: channel
       ? lan.descUserRemoveChannel(user, event, channel, language.channelTypes[channel.type])
       : lan.descUserRemove(user, event),

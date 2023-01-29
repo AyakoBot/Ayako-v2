@@ -55,5 +55,5 @@ export default async () => {
 
 const getEmbed = (guild: Discord.Guild, lan: CT.Language['verification']): Discord.APIEmbed => ({
   description: lan.kickMsg(guild),
-  color: client.customConstants.mod.kickAdd.color,
+  color: client.customConstants.colors.danger,
 });

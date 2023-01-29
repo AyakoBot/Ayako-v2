@@ -23,7 +23,7 @@ export default async (
     },
     description: lan.descRemoved(reaction.emoji, user, msg),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   if (msg.reactions.cache?.size) {

@@ -19,7 +19,7 @@ export default async (state: Discord.VoiceState) => {
       name: lan[`${channelType}Leave` as keyof typeof lan] as string,
       icon_url: con[`${channelType}Leave` as keyof typeof con],
     },
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     description: lan.descDelete(
       state.member.user,
       state.channel,

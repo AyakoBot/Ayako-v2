@@ -136,9 +136,11 @@ const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => 
       .then((r: DBT.logchannels[] | null) => r?.[0]?.modlog || null);
 
   const lan = language.mod[args.type];
-  const con = client.customConstants.mod[args.type];
   const embed: Discord.APIEmbed = {
-    color: con.color,
+    color:
+      client.customConstants.colors[
+        client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
+      ],
     author: {
       name: lan.author(args),
       icon_url: args.target?.displayAvatarURL({ size: 4096 }),
@@ -175,13 +177,15 @@ const loadingEmbed = (language: CT.Language, args: CT.ModBaseEventOptions) => {
   if (!args.msg) return {};
 
   const lan = language.mod[args.type];
-  const con = client.customConstants.mod[args.type];
   const embed = args.m?.embeds[0].data as Discord.APIEmbed;
 
   if (!embed.fields?.length) embed.fields = [];
   if (args.m || args.source) embed.fields?.pop();
 
-  embed.color = con.color;
+  embed.color =
+    client.customConstants.colors[
+      client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
+    ];
   embed.fields?.push({ name: '\u200b', value: `${client.stringEmotes.loading} ${lan.loading}` });
 
   return embed;
@@ -407,11 +411,13 @@ const doDM = async (
   targetMember: Discord.GuildMember | undefined,
   args: CT.ModBaseEventOptions,
 ) => {
-  const con = client.customConstants.mod[args.type];
   const lan = language.mod[args.type];
   const dmChannel = await targetMember?.createDM().catch(() => undefined);
   const DMembed: Discord.APIEmbed = {
-    color: con.color,
+    color:
+      client.customConstants.colors[
+        client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
+      ],
     timestamp: String(Date.now()),
     author: {
       name: lan.dm.author(args),

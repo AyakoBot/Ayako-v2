@@ -41,7 +41,7 @@ export default async (
         msg.delete().catch(() => null);
 
         const embed: Discord.APIEmbed = {
-          color: client.customConstants.standard.color,
+          color: client.customConstants.colors.base,
           thumbnail: { url: user.displayAvatarURL({ size: 4096 }) },
           description: `<@${user.id}> accepted the submission of <@${msg.author.id}>`,
           author: {
@@ -88,7 +88,7 @@ export default async (
             url: client.customConstants.standard.invite,
           },
           description: '**Your submission was accepted!**\nGood Luck!',
-          color: client.customConstants.standard.color,
+          color: client.customConstants.colors.base,
         };
 
         const dmChannel = await msg.author.createDM();

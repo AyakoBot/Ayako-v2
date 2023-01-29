@@ -35,7 +35,7 @@ export default async (member: Discord.GuildMember) => {
         value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
       },
     ],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   if (member.joinedAt) {

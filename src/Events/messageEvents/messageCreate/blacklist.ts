@@ -102,7 +102,7 @@ export const resetData = () => {
 
 const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.blacklist) => {
   const embed: Discord.APIEmbed = {
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     author: {
       icon_url: client.customConstants.standard.error,
       url: client.customConstants.standard.invite,

@@ -6,7 +6,7 @@ export default async (msg: CT.DMMessage) => {
   if (msg.author.id === client.user?.id) return;
 
   const embed: Discord.APIEmbed = {
-    color: client.customConstants.standard.color,
+    color: client.customConstants.colors.base,
     description: `${msg.author} / ${msg.author.id}\n${msg.content}`,
     fields: [
       {

@@ -329,7 +329,7 @@ const blacklisted = async (
   if (note && typeof note === 'string') {
     const embed: Discord.APIEmbed = {
       description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-      color: client.customConstants.colors.warning,
+      color: client.customConstants.colors.danger,
       fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
     };
 
@@ -339,7 +339,7 @@ const blacklisted = async (
   } else {
     const embed: Discord.APIEmbed = {
       description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-      color: client.customConstants.colors.warning,
+      color: client.customConstants.colors.danger,
     };
 
     embed.fields = [];
@@ -363,7 +363,7 @@ const blacklisted = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.warning,
+    client.customConstants.colors.danger,
     linkObject,
     lan.malicious(client.stringEmotes.cross),
     res,
@@ -390,7 +390,7 @@ const severeLink = async (
 
   const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
   embed.fields = [];
 
@@ -411,7 +411,7 @@ const severeLink = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.warning,
+    client.customConstants.colors.danger,
     linkObject,
     lan.malicious(client.stringEmotes.cross),
     res,
@@ -430,7 +430,7 @@ const ccscam = async (
   saveToBadLink(linkObject, msg);
   const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   embed.fields = [];
@@ -452,7 +452,7 @@ const ccscam = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.warning,
+    client.customConstants.colors.danger,
     linkObject,
     lan.malicious(client.stringEmotes.cross),
     res,
@@ -472,7 +472,7 @@ const newUrl = async (
 
   const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.newLink(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   embed.fields = [];
@@ -494,7 +494,7 @@ const newUrl = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.warning,
+    client.customConstants.colors.danger,
     linkObject,
     lan.newLink(client.stringEmotes.cross),
     res,

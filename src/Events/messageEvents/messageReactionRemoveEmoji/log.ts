@@ -20,7 +20,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message) =
       url: client.ch.getJumpLink(msg),
     },
     description: lan.descRemoveEmoji(msg, reaction.emoji),
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     fields: [],
   };
 

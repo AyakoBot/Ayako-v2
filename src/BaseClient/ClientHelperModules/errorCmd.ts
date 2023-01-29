@@ -16,7 +16,7 @@ export default (
       icon_url: objectEmotes.warning.link,
       url: constants.standard.invite,
     },
-    color: constants.colors.warning,
+    color: constants.colors.danger,
     description: content,
   };
 

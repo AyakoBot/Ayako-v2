@@ -24,7 +24,7 @@ export default async (rule: Discord.AutoModerationRule) => {
     },
     description: lan.descCreate(user, rule),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   if (rule.triggerMetadata) {

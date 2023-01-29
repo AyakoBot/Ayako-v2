@@ -20,7 +20,7 @@ export default async (
       name: lan.nameDelete,
       icon_url: con.delete,
     },
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     description: auditUser
       ? lan.descDeleteAudit(
           webhook,

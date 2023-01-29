@@ -23,7 +23,7 @@ export default async (
       ? lan.descDeleteBulkAudit(auditUser, msgs.size, channel)
       : lan.descDeleteBulk(msgs.size, channel),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   await client.ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, language);

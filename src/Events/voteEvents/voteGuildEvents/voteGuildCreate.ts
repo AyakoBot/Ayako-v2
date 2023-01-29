@@ -212,7 +212,7 @@ const endVote = async (vote: CT.TopGGGuildVote, g: Discord.Guild) => {
       name: lan.reminder.name,
       icon_url: client.objectEmotes.userFlags.EarlySupporter.link,
     },
-    color: client.customConstants.standard.color,
+    color: client.customConstants.colors.base,
     description: lan.reminder.descGuild(guild),
     fields: [
       {

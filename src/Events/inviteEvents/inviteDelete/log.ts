@@ -18,7 +18,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, invite) : lan.descDelete(invite),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   const flagsText = [invite.temporary ? lan.temporary : null]

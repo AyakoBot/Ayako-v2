@@ -12,7 +12,7 @@ export default (interaction: Discord.ButtonInteraction, language: CT.Language) =
           icon_url: constants.standard.error,
           url: constants.standard.invite,
         },
-        color: constants.colors.warning,
+        color: constants.colors.danger,
         description: language.errors.notYours,
       },
     ],

@@ -7,7 +7,7 @@ export default async (_: bigint, guild: Discord.Guild | undefined) => {
     {
       embeds: [
         {
-          color: client.customConstants.colors.success,
+          color: client.customConstants.colors.danger,
           description: '<@&669894051851403294> joined a new Guild',
           fields: [
             {

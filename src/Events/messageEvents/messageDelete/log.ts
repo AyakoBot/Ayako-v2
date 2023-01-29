@@ -23,7 +23,7 @@ export default async (msg: Discord.Message) => {
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   embeds.push(embed);

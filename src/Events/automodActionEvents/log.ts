@@ -26,7 +26,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
       url: msg ? msg.url : undefined,
     },
     description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     fields: [],
   };
 

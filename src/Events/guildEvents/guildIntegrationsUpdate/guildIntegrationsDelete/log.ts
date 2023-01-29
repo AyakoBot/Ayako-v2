@@ -27,7 +27,7 @@ export default async (integration: Discord.Integration) => {
     },
     description,
     fields: [],
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
   };
 
   if (integration) {

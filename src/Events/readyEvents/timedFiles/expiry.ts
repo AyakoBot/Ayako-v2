@@ -83,7 +83,6 @@ const logExpire = async (
 
   const language = await client.ch.languageSelector(guildid);
   const lan = language.expire;
-  const con = client.customConstants.expire;
 
   const embeds: (Discord.APIEmbed | undefined)[] = rows.map((p) => {
     const user = client.users.cache.get(p.userid);
@@ -96,7 +95,7 @@ const logExpire = async (
         name: lan.punishmentOf(user),
         url: `https://discord.com/channels/${guild.id}/${p.channelid}/${p.msgid}`,
       },
-      color: con.color,
+      color: client.customConstants.colors.success,
       fields: [
         {
           name: lan.punishmentIssue,

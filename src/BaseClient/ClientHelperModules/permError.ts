@@ -31,7 +31,7 @@ export default async (
       icon_url: client.customConstants.standard.error,
       url: client.customConstants.standard.invite,
     },
-    color: client.customConstants.colors.warning,
+    color: client.customConstants.colors.danger,
     description: me ? language.permissions.error.msg : language.permissions.error.you,
     fields: [
       {
