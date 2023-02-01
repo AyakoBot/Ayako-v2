@@ -67,10 +67,10 @@ const client = new CustomClient({
   ],
   failIfNotExists: false,
   presence: {
-    status: 'dnd',
+    status: 'online',
     afk: false,
     activities: [
-      { name: 'Starting up!', type: Discord.ActivityType.Playing, url: Constants.standard.ytURL },
+      { name: 'Starting up!', type: Discord.ActivityType.Streaming, url: Constants.standard.ytURL },
     ],
   },
   intents: [
