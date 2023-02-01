@@ -28,19 +28,14 @@ export default async (oldState: RealState, state: RealState) => {
   }
 
   if (!oldState.channelId) {
-    (await import(`./voiceStateCreate/voiceStateCreates.js`)).default(state as Discord.VoiceState);
+    client.emit('voiceStateCreates', state);
     return;
   }
 
   if (!state.channelId) {
-    (await import(`./voiceStateDelete/voiceStateDeletes.js`)).default(
-      oldState as Discord.VoiceState,
-    );
+    client.emit('voiceStateDeletes', state);
     return;
   }
 
-  (await import(`./voiceStateUpdate/voiceStateUpdates.js`)).default(
-    oldState as Discord.VoiceState,
-    state as Discord.VoiceState,
-  );
+  client.emit('voiceStateUpdates', oldState, state);
 };

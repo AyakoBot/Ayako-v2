@@ -30,17 +30,11 @@ export default async (
   ) as Discord.Webhook[];
 
   if (changed?.length) {
-    const changeEvent = (await import('./webhooksUpdate/webhooksUpdate.js')).default;
-    changed.forEach((c) => changeEvent(oldWebhooks.get(c.id), newWebhooks.get(c.id), channel));
+    changed.forEach((c) =>
+      client.emit('webhooksUpdate', oldWebhooks.get(c.id), newWebhooks.get(c.id), channel),
+    );
   }
 
-  if (removed.length) {
-    const removeEvent = (await import('./webhooksDelete/webhooksDelete.js')).default;
-    removed.forEach((c) => removeEvent(c, channel));
-  }
-
-  if (added.length) {
-    const addedEvent = (await import('./webhooksCreate/webhooksCreate.js')).default;
-    added.forEach((c) => addedEvent(c, channel));
-  }
+  if (removed.length) removed.forEach((c) => client.emit('webhooksDelete', c, channel));
+  if (added.length) removed.forEach((c) => client.emit('webhooksCreate', c, channel));
 };
