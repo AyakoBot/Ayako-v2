@@ -21,7 +21,8 @@ const getChannel = (
     | Discord.GuildChannel
     | Discord.ThreadChannel
     | Discord.APIPartialChannel
-    | undefined,
+    | undefined
+    | null,
   type?: string,
 ) =>
   channel
@@ -37,14 +38,14 @@ const getEmote = (emoji: Discord.Emoji) =>
     emoji.id ?? 'None'
   }\`\n`;
 
-const getInviteDetails = (invite: Discord.Invite, user?: Discord.User) =>
+const getInviteDetails = (invite: Discord.Invite, user?: Discord.User, channelType?: string) =>
   `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
     invite.uses
   }\nCreated: ${
     invite.createdAt
       ? client.customConstants.standard.getTime(invite.createdAt.getTime())
       : 'unknown'
-  }`;
+  }\n${getChannel(invite.channel, channelType)}`;
 
 const getInvite = (invite: Discord.Invite) =>
   `Invite https://discord.gg/${invite.code} / \`${invite.code}\`\n`;

@@ -35,7 +35,11 @@ export default async (member: Discord.GuildMember) => {
 
     embed.fields?.push({
       name: lan.invite,
-      value: language.languageFunction.getInviteDetails(usedInvite, inviter),
+      value: language.languageFunction.getInviteDetails(
+        usedInvite,
+        inviter,
+        usedInvite.channel ? language.channelTypes[usedInvite.channel.type] : undefined,
+      ),
     });
   }
 
