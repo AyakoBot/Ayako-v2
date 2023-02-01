@@ -163,6 +163,10 @@ const cache: {
       return fetched?.find((f) => f.id === id);
     },
     set: (webhook) => {
+      if (!cache.webhooks.cache.get(webhook.guildId)) {
+        cache.webhooks.cache.set(webhook.guildId, new Map());
+      }
+
       if (!cache.webhooks.cache.get(webhook.guildId)?.get(webhook.channelId)) {
         cache.webhooks.cache.get(webhook.guildId)?.set(webhook.channelId, new Map());
       }
@@ -293,6 +297,10 @@ const cache: {
     },
     set: (msg) => {
       if (!msg.guildId) return;
+
+      if (!cache.pins.cache.get(msg.guildId)) {
+        cache.pins.cache.set(msg.guildId, new Map());
+      }
 
       if (!cache.pins.cache.get(msg.guildId)?.get(msg.channelId)) {
         cache.pins.cache.get(msg.guildId)?.set(msg.channelId, new Map());
