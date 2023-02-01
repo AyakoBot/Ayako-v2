@@ -13,6 +13,7 @@ export default () => {
 
     const invites = await guild.invites.fetch();
     invites.forEach((i) => client.cache.invites.set(i, guild.id));
+
     const vanity = await guild.fetchVanityData().catch(() => undefined);
     if (vanity) {
       const invite = vanity as Discord.Invite;

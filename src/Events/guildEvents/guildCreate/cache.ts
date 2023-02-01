@@ -10,6 +10,16 @@ export default async (guild: Discord.Guild) => {
   const invites = await guild.invites.fetch();
   invites.forEach((i) => client.cache.invites.set(i, guild.id));
 
+  const vanity = await guild.fetchVanityData().catch(() => undefined);
+  if (vanity) {
+    const invite = vanity as Discord.Invite;
+    invite.channel = (guild.channels.cache.get(guild.id) ??
+      guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
+    invite.channelId = invite.channel?.id;
+
+    client.cache.invites.set(invite, guild.id);
+  }
+
   guild.channels.cache.forEach(async (channel) => {
     const webhooks = await guild.channels.fetchWebhooks(channel);
     webhooks.forEach((w) => {
