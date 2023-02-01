@@ -59,7 +59,7 @@ export default async (event: Discord.GuildScheduledEvent) => {
       if (attachment) files.push(attachment);
     };
 
-    getImage();
+    await getImage();
   }
 
   if (event.description) {

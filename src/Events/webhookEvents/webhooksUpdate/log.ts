@@ -59,18 +59,30 @@ export default async (
 
       const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, webhook.avatar, 'icon', lan.avatar);
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.avatar);
 
       if (attachment) files.push(attachment);
     };
 
-    getImage();
+    await getImage();
   }
   if (oldWebhook?.name !== webhook.name) {
     merge(oldWebhook?.name ?? language.unknown, webhook.name, 'string', language.name);
   }
+  if (oldWebhook.channel?.id !== webhook.channel?.id) {
+    merge(
+      oldWebhook.channel
+        ? language.languageFunction.getChannel(
+            oldWebhook.channel,
+            language.channelTypes[oldWebhook.channel.type],
+          )
+        : language.unknown,
 
-  console.log(files);
+      language.languageFunction.getChannel(channel, language.channelTypes[channel.type]),
+      'string',
+      language.Channel,
+    );
+  }
 
   client.ch.send(
     { id: channels, guildId: channel.guild.id },

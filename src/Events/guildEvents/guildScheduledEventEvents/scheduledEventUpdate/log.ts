@@ -79,7 +79,7 @@ export default async (
       if (attachment) files.push(attachment);
     };
 
-    getImage();
+    await getImage();
   }
   if (event.description !== oldEvent.description) {
     merge(oldEvent.description, event.description, 'string', language.Description);

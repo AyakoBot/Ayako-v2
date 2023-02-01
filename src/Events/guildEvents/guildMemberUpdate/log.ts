@@ -36,18 +36,25 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
   if (member.avatar !== oldMember.avatar) {
-    const attachment = (
-      await client.ch.fileURL2Buffer([member.displayAvatarURL({ size: 4096 })])
-    )?.[0];
+    const getImage = async () => {
+      const url = member.displayAvatarURL({ size: 4096 });
 
-    merge(
-      member.displayAvatarURL({ size: 4096 }),
-      client.ch.getNameAndFileType(member.displayAvatarURL({ size: 4096 })),
-      'icon',
-      lan.avatar,
-    );
+      if (!url) {
+        embed.fields?.push({
+          name: lan.avatar,
+          value: lan.avatarRemoved,
+        });
+        return;
+      }
 
-    if (attachment) files.push(attachment);
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+
+      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.avatar);
+
+      if (attachment) files.push(attachment);
+    };
+
+    await getImage();
   }
   if (member.nickname !== oldMember.nickname) {
     merge(oldMember.displayName, member.displayName, 'string', language.name);

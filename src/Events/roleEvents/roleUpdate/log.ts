@@ -53,7 +53,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
       }
     };
 
-    getImage();
+    await getImage();
   }
   if (role.unicodeEmoji !== oldRole.unicodeEmoji) {
     merge(oldRole.unicodeEmoji, role.unicodeEmoji, 'string', lan.unicodeEmoji);

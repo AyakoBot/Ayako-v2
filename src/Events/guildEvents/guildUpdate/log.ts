@@ -48,7 +48,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
       if (attachment) files.push(attachment);
     };
-    getImage();
+
+    await getImage();
   }
   if (guild.icon !== oldGuild.icon) {
     const getImage = async () => {
@@ -65,7 +66,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
       if (attachment) files.push(attachment);
     };
-    getImage();
+
+    await getImage();
   }
   if (guild.splash !== oldGuild.splash) {
     const getImage = async () => {
@@ -82,7 +84,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
       if (attachment) files.push(attachment);
     };
-    getImage();
+
+    await getImage();
   }
   if (guild.maximumMembers !== oldGuild.maximumMembers) {
     merge(oldGuild.maximumMembers, guild.maximumMembers, 'string', lan.maxMembers);
@@ -105,7 +108,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
       if (attachment) files.push(attachment);
     };
-    getImage();
+
+    await getImage();
   }
   if (guild.afkChannelId !== oldGuild.afkChannelId) {
     merge(`<#${oldGuild.afkChannelId}>`, `<#${guild.afkChannelId}>`, 'string', lan.afkChannelId);
