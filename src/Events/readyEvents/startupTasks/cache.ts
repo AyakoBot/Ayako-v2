@@ -24,15 +24,15 @@ export default () => {
       client.cache.invites.set(invite, guild.id);
     }
 
-    guild.channels.cache
-      .filter((c) => c.isTextBased())
-      .filter((c) => !c.isThread())
-      .forEach(async (channel) => {
-        const webhooks = await guild.channels.fetchWebhooks(channel).catch(() => undefined);
-        webhooks?.forEach((w) => {
-          client.cache.webhooks.set(w);
-        });
+    guild.channels.cache.forEach(async (c) => {
+      if (c.isThread()) return;
+      if (!c.isTextBased()) return;
+
+      const webhooks = await guild.channels.fetchWebhooks(c).catch(() => undefined);
+      webhooks?.forEach((w) => {
+        client.cache.webhooks.set(w);
       });
+    });
 
     guild.channels.cache.forEach(async (c) => {
       if (!c.isTextBased()) return;
