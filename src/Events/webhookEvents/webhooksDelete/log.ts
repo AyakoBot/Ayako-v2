@@ -37,22 +37,6 @@ export default async (
         ),
   };
 
-  if (webhook.avatar) {
-    const url = webhook.avatarURL({ size: 4096 });
-
-    if (url) {
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
-
-      if (attachment) {
-        files.push(attachment);
-
-        embed.thumbnail = {
-          url: `attachment://${client.ch.getNameAndFileType(url)}`,
-        };
-      }
-    }
-  }
-
   if (webhook.sourceGuild) {
     embed.fields?.push({
       name: lan.sourceGuild,

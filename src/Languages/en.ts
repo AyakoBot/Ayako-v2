@@ -641,6 +641,7 @@ export default {
         botLeave: 'Bot left',
         memberLeave: 'Member left',
         avatar: 'Avatar',
+        avatarRemoved: 'Avatar Removed',
         premiumSince: 'Boosting since',
         communicationDisabledUntil: 'Timed out',
         deaf: 'Server Deafened',
