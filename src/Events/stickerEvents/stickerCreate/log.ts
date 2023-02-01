@@ -24,12 +24,9 @@ export default async (sticker: Discord.Sticker) => {
     color: client.customConstants.colors.success,
   };
 
-  const attachment = (await client.ch.fileURL2Buffer([sticker.url]))?.[0]?.attachment;
+  const attachment = (await client.ch.fileURL2Buffer([sticker.url]))?.[0];
   if (attachment) {
-    files.push({
-      name: client.ch.getNameAndFileType(sticker.url),
-      attachment,
-    });
+    files.push(attachment);
 
     embed.thumbnail = {
       url: `attachment://${client.ch.getNameAndFileType(sticker.url)}`,

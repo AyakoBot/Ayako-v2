@@ -2,6 +2,7 @@
 import fetch from 'node-fetch';
 import type * as Discord from 'discord.js';
 import arrayBufferToBuffer from './arrayBufferToBuffer.js';
+import getNameAndFileType from './getNameAndFileType.js';
 
 export default async (
   urls: (string | null)[],
@@ -24,16 +25,11 @@ export default async (
 
       if (!arrayBuffer) return null;
       const buffer = arrayBufferToBuffer(arrayBuffer);
-
-      const URLObject = new URL(url);
-      const fileName = names?.length
-        ? names[i]
-        : URLObject.pathname.split(/\/+/).pop() || 'unknown';
+      const fileName = names?.length ? names[i] : getNameAndFileType(url);
 
       return {
         attachment: buffer,
         name: fileName,
       };
-      return null;
     })
     .filter((r) => !!r);

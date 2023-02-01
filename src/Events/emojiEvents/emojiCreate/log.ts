@@ -24,13 +24,10 @@ export default async (emote: Discord.GuildEmoji) => {
     color: client.customConstants.colors.success,
   };
 
-  const attachment = (await client.ch.fileURL2Buffer([emote.url]))?.[0]?.attachment;
+  const attachment = (await client.ch.fileURL2Buffer([emote.url]))?.[0];
 
   if (attachment) {
-    files.push({
-      name: client.ch.getNameAndFileType(emote.url),
-      attachment,
-    });
+    files.push(attachment);
 
     embed.thumbnail = {
       url: `attachment://${client.ch.getNameAndFileType(emote.url)}`,

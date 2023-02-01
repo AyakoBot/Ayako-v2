@@ -26,7 +26,7 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   if (user.avatar !== oldUser.avatar) {
     const attachment = (
       await client.ch.fileURL2Buffer([user.displayAvatarURL({ size: 4096 })])
-    )?.[0]?.attachment;
+    )?.[0];
 
     merge(
       user.displayAvatarURL({ size: 4096 }),
@@ -35,12 +35,7 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
       lan.avatar,
     );
 
-    if (attachment) {
-      files.push({
-        name: client.ch.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
-        attachment,
-      });
-    }
+    if (attachment) files.push(attachment);
   }
   if (user.flags !== oldUser.flags) {
     const flagsBefore = oldUser.flags?.toArray() ?? [];

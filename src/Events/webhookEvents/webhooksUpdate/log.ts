@@ -3,13 +3,10 @@ import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
-  oldWebhook: Discord.Webhook | undefined,
-  newWebhook: Discord.Webhook | undefined,
+  oldWebhook: Discord.Webhook,
+  webhook: Discord.Webhook,
   channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
 ) => {
-  const webhook = oldWebhook ?? newWebhook;
-  if (!webhook) return;
-
   const channels = await client.ch.getLogChannels('webhookevents', channel.guild);
   if (!channels) return;
 
@@ -26,6 +23,7 @@ export default async (
       icon_url: con.update,
     },
     color: client.customConstants.colors.loading,
+    fields: [],
     description: auditUser
       ? lan.descUpdateAudit(
           webhook,
@@ -45,9 +43,9 @@ export default async (
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  if (oldWebhook?.avatar !== newWebhook?.avatar) {
+  if (oldWebhook?.avatar !== webhook?.avatar) {
     const getImage = async () => {
-      if (!newWebhook?.avatar) {
+      if (!webhook?.avatar) {
         embed.fields?.push({ name: lan.avatar, value: lan.avatarRemoved });
         return;
       }
@@ -59,16 +57,11 @@ export default async (
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, webhook.avatar, 'icon', lan.avatar);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
 
     getImage();
@@ -76,6 +69,8 @@ export default async (
   if (oldWebhook?.name !== webhook.name) {
     merge(oldWebhook?.name ?? language.unknown, webhook.name, 'string', language.name);
   }
+
+  console.log(files);
 
   client.ch.send(
     { id: channels, guildId: channel.guild.id },

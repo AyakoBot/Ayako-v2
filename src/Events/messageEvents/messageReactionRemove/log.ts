@@ -45,14 +45,11 @@ export default async (
 
   if (reaction.emoji.url) {
     embed.thumbnail = {
-      url: `attachment://${reaction.emoji.name ?? reaction.emoji.id}`,
+      url: `attachment://${client.ch.getNameAndFileType(reaction.emoji.url)}`,
     };
 
-    const attachment = (await client.ch.fileURL2Buffer([reaction.emoji.url])).filter(
-      (e): e is Discord.AttachmentPayload => !!e,
-    );
-
-    if (attachment) files.push(...attachment);
+    const attachment = (await client.ch.fileURL2Buffer([reaction.emoji.url]))?.[0];
+    if (attachment) files.push(attachment);
   }
 
   await client.ch.send(

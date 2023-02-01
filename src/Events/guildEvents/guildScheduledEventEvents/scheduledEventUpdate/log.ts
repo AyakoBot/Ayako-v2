@@ -72,16 +72,11 @@ export default async (
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, client.ch.getNameAndFileType(url), 'icon', lan.image);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
 
     getImage();

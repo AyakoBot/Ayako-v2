@@ -42,16 +42,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, client.ch.getNameAndFileType(url), 'icon', lan.banner);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
     getImage();
   }
@@ -64,16 +59,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, client.ch.getNameAndFileType(url), 'icon', lan.icon);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
     getImage();
   }
@@ -86,16 +76,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, client.ch.getNameAndFileType(url), 'icon', lan.splash);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
     getImage();
   }
@@ -114,16 +99,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       merge(url, client.ch.getNameAndFileType(url), 'icon', lan.discoverySplash);
 
-      if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
-      }
+      if (attachment) files.push(attachment);
     };
     getImage();
   }

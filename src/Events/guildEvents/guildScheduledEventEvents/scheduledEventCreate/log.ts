@@ -47,14 +47,19 @@ export default async (event: Discord.GuildScheduledEvent) => {
   };
 
   if (event.image) {
-    embed.image = {
-      url: `attachment://${event.image}`,
+    const getImage = async () => {
+      const url = event.coverImageURL({ size: 4096 });
+
+      if (!url) return;
+      embed.image = {
+        url: `attachment://${client.ch.getNameAndFileType(url)}`,
+      };
+
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      if (attachment) files.push(attachment);
     };
 
-    const attachment = await (
-      await client.ch.fileURL2Buffer([event.coverImageURL({ size: 4096 })])
-    ).filter((a): a is Discord.AttachmentPayload => !!a);
-    if (attachment) files.push(...attachment);
+    getImage();
   }
 
   if (event.description) {

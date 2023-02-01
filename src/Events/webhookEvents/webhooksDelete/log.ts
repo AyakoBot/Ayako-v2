@@ -41,13 +41,10 @@ export default async (
     const url = webhook.avatarURL({ size: 4096 });
 
     if (url) {
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0]?.attachment;
+      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
 
       if (attachment) {
-        files.push({
-          name: client.ch.getNameAndFileType(url),
-          attachment,
-        });
+        files.push(attachment);
 
         embed.thumbnail = {
           url: `attachment://${client.ch.getNameAndFileType(url)}`,
