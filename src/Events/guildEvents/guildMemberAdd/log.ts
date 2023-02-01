@@ -64,11 +64,24 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   newInvites.forEach((i) => client.cache.invites.set(i, guild.id));
   if (!oldInvites) return undefined;
 
-  return oldInvites
+  const inv = oldInvites
     .map((oldInvite) => {
       const newInvite = newInvites.find((invite) => invite.code === oldInvite.code);
       if (newInvite && Number(oldInvite.uses) < Number(newInvite.uses)) return newInvite;
       return undefined;
     })
     .filter((i): i is Discord.Invite => !!i)[0];
+  if (inv) return inv;
+
+  const vanity = (await guild.fetchVanityData().catch(() => undefined)) as
+    | { inviter: Discord.User | undefined; inviterId: string; guild: Discord.Guild }
+    | undefined;
+
+  if (vanity) {
+    vanity.inviter = await client.users.fetch(guild.ownerId).catch(() => undefined);
+    vanity.inviterId = guild.ownerId;
+    vanity.guild = guild;
+  }
+
+  return vanity as Discord.Invite | undefined;
 };
