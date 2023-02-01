@@ -19,21 +19,40 @@ export default async (
       name: lan.nameJoin,
       icon_url: con.update,
     },
+    fields: [],
     color: client.customConstants.colors.loading,
   };
 
   if (added?.size) {
-    embed.fields?.push({
-      name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
-      value: added.map((m) => `<@${m.id}>`).join(', '),
-    });
+    const userMentions = added.map((m) => `<@${m.id}>`).join(', ');
+
+    if (userMentions.length > 1024) {
+      const content = client.ch.txtFileWriter(userMentions, undefined, language.Added);
+      if (content) files.push(content);
+    } else {
+      embed.fields?.push({
+        name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
+        value: userMentions,
+      });
+    }
+
+    embed.description = lan.descJoinMember(thread, language.channelTypes[thread.type]);
   }
 
   if (removed?.size) {
-    embed.fields?.push({
-      name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
-      value: removed.map((m) => `<@${m}>`).join(', '),
-    });
+    const userMentions = removed.map((m) => `<@${m.id}>`).join(', ');
+
+    if (userMentions.length > 1024) {
+      const content = client.ch.txtFileWriter(userMentions, undefined, language.Added);
+      if (content) files.push(content);
+    } else {
+      embed.fields?.push({
+        name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
+        value: userMentions,
+      });
+    }
+
+    embed.description = lan.descLeaveMember(thread, language.channelTypes[thread.type]);
   }
 
   client.ch.send(
