@@ -29,11 +29,11 @@ export default async (
   if (msg.reactions.cache?.size) {
     embed.fields?.push({
       name: lan.reactions,
-      value: msg.reactions.cache
+      value: (msg.reactions.cache ?? [{ count: 0, emoji: reaction.emoji }])
         ?.map(
           (r) =>
             `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
-              reaction.emoji.id === r.emoji.id ||
+              (reaction.emoji.id && r.emoji.id && reaction.emoji.id === r.emoji.id) ||
               (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
                 ? ` ${client.stringEmotes.minusBG}`
                 : ` ${client.stringEmotes.invis}`
