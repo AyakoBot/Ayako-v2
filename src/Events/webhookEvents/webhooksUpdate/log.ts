@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import type CT from '../../../Typings/CustomTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
   oldWebhook: Discord.Webhook | undefined,

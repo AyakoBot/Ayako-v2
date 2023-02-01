@@ -427,6 +427,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     }
   }
 
+  if (!embed.fields?.length) console.log(oldGuild, guild);
+
   client.ch.send(
     { id: channels, guildId: guild.id },
     { embeds: [embed], files },
