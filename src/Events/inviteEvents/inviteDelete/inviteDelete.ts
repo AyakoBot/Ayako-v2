@@ -2,12 +2,13 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (invite: Discord.Invite) => {
-  if (!invite.guild?.id) return;
+  if (!invite.guild) return;
+  if (!invite.channel) return;
 
   const guild = client.guilds.cache.get(invite.guild.id);
   if (!guild) return;
 
-  client.cache.invites.delete(invite.code, invite.guild.id);
+  client.cache.invites.delete(invite.code, invite.guild.id, invite.channel.id);
 
   const files: {
     default: (i: Discord.Invite, g: Discord.Guild) => void;

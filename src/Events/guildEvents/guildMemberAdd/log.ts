@@ -52,7 +52,7 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   if (user.bot) return undefined;
 
   const oldInvites = Array.from(client.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
-    Array.from(i, ([, i2]) => i2),
+    Array.from(i, ([c, i2]) => ({ uses: i2, code: c })),
   ).flat();
   const newInvites = await guild.invites.fetch();
   if (!newInvites) return undefined;

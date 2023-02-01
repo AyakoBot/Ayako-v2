@@ -55,7 +55,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     }
   }
   if (member.nickname !== oldMember.nickname) {
-    merge(oldMember.nickname, member.nickname, 'string', language.name);
+    merge(oldMember.displayName, member.displayName, 'string', language.name);
   }
   if (member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp) {
     merge(
@@ -104,7 +104,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
       language.roles,
     );
   }
-  if (member.pending !== oldMember.pending) {
+  if (!!member.pending !== !!oldMember.pending) {
     merge(oldMember.pending, member.pending, 'boolean', lan.pending);
   }
 

@@ -38,6 +38,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: lan.inviter,
       value: language.languageFunction.getUser(invite.inviter),
+      inline: false,
     });
   }
 
@@ -45,6 +46,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: lan.targetUser,
       value: language.languageFunction.getUser(invite.targetUser),
+      inline: false,
     });
   }
 
@@ -68,6 +70,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: language.Channel,
       value: language.languageFunction.getChannel(channel, language.channelTypes[channel.type]),
+      inline: false,
     });
   }
 
@@ -75,6 +78,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
     embed.fields?.push({
       name: language.ScheduledEvent,
       value: language.languageFunction.getScheduledEvent(invite.guildScheduledEvent),
+      inline: false,
     });
   }
 
