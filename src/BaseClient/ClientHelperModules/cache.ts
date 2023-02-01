@@ -5,11 +5,11 @@ import client from '../Client.js';
 const cache: {
   // Discord Cache
   invites: {
-    get: (code: string, channelId: string, guildId: string) => Promise<Discord.Invite | undefined>;
+    get: (code: string, channelId: string, guildId: string) => Promise<number | undefined>;
     set: (invite: Discord.Invite, guildId: string) => void;
-    find: (code: string) => Discord.Invite | undefined;
-    delete: (code: string, guildId: string) => void;
-    cache: Map<string, Map<string, Map<string, Discord.Invite>>>;
+    find: (code: string) => number | undefined;
+    delete: (code: string, guildId: string, channelId: string) => void;
+    cache: Map<string, Map<string, Map<string, number>>>;
   };
   webhooks: {
     get: (
@@ -106,7 +106,7 @@ const cache: {
         cache.invites.set(f, guildId);
       });
 
-      return fetched?.find((f) => f.code === code);
+      return Number(fetched?.find((f) => f.code === code));
     },
     set: (invite, guildId) => {
       if (!invite.channelId) {
@@ -123,7 +123,10 @@ const cache: {
         cache.invites.cache.get(guildId)?.set(invite.channelId, new Map());
       }
 
-      cache.invites.cache.get(guildId)?.get(invite.channelId)?.set(invite.code, invite);
+      cache.invites.cache
+        .get(guildId)
+        ?.get(invite.channelId)
+        ?.set(invite.code, Number(invite.uses));
     },
     find: (code) =>
       Array.from(cache.invites.cache, ([, g]) => g)
@@ -131,20 +134,20 @@ const cache: {
         .flat()
         .find((c) => c.get(code))
         ?.get(code),
-    delete: (code, guildId) => {
+    delete: (code, guildId, channelId) => {
       const cached = cache.invites.find(code);
-      if (!cached || !cached.channelId) return;
+      if (!cached || !channelId) return;
 
       if (cache.invites.cache.get(guildId)?.size === 1) {
-        if (cache.invites.cache.get(guildId)?.get(cached.channelId)?.size === 1) {
-          cache.invites.cache.get(guildId)?.get(cached.channelId)?.clear();
+        if (cache.invites.cache.get(guildId)?.get(channelId)?.size === 1) {
+          cache.invites.cache.get(guildId)?.get(channelId)?.clear();
         } else {
-          cache.invites.cache.get(guildId)?.get(cached.channelId)?.delete(code);
+          cache.invites.cache.get(guildId)?.get(channelId)?.delete(code);
         }
-      } else if (cache.invites.cache.get(guildId)?.get(cached.channelId)?.size === 1) {
-        cache.invites.cache.get(guildId)?.delete(cached.channelId);
+      } else if (cache.invites.cache.get(guildId)?.get(channelId)?.size === 1) {
+        cache.invites.cache.get(guildId)?.delete(channelId);
       } else {
-        cache.invites.cache.get(guildId)?.get(cached.channelId)?.delete(code);
+        cache.invites.cache.get(guildId)?.get(channelId)?.delete(code);
       }
     },
     cache: new Map(),
