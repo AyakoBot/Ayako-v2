@@ -45,7 +45,7 @@ export default async (
       ? lan.descDeleteAudit(auditUser, channel, language.channelTypes[channel.type])
       : lan.descDelete(channel, language.channelTypes[channel.type]),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.danger,
   };
 
   const embeds = [embed];

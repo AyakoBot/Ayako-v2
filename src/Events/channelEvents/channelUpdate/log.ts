@@ -40,7 +40,7 @@ export default async (
       name: lan.nameUpdate,
     },
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.loading,
   };
 
   const embeds = [embed];
@@ -154,8 +154,12 @@ export default async (
     oldChannel?.rateLimitPerUser !== channel.rateLimitPerUser
   ) {
     merge(
-      client.ch.moment(oldChannel?.rateLimitPerUser || 0, language),
-      client.ch.moment(channel.rateLimitPerUser || 0, language),
+      oldChannel?.rateLimitPerUser
+        ? client.ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
+        : language.none,
+      channel.rateLimitPerUser
+        ? client.ch.moment(channel.rateLimitPerUser * 1000, language)
+        : language.none,
       'string',
       lan.rateLimitPerUser,
     );
