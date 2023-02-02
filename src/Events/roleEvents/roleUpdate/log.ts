@@ -56,13 +56,18 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
     await getImage();
   }
   if (role.unicodeEmoji !== oldRole.unicodeEmoji) {
-    merge(oldRole.unicodeEmoji, role.unicodeEmoji, 'string', lan.unicodeEmoji);
+    merge(
+      oldRole.unicodeEmoji ?? language.none,
+      role.unicodeEmoji ?? language.none,
+      'string',
+      lan.unicodeEmoji,
+    );
   }
   if (role.name !== oldRole.name) {
     merge(oldRole.name, role.name, 'string', language.name);
   }
   if (role.color !== oldRole.color) {
-    merge(oldRole.color.toString(), role.name.toString(), 'string', language.color);
+    merge(oldRole.hexColor, role.hexColor, 'string', language.color);
   }
   if (role.hoist !== oldRole.hoist) {
     merge(oldRole.hoist, role.hoist, 'boolean', lan.hoisted);
@@ -70,7 +75,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   if (role.mentionable !== oldRole.mentionable) {
     merge(oldRole.mentionable, role.mentionable, 'boolean', lan.mentionable);
   }
-  if (role.permissions !== oldRole.permissions) {
+  if (role.permissions.bitfield !== oldRole.permissions.bitfield) {
     const oldPermissions = new Discord.PermissionsBitField(oldRole.permissions).serialize();
     const newPermissions = new Discord.PermissionsBitField(role.permissions).serialize();
     const changedDenied = client.ch.getDifference(
@@ -102,7 +107,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
         .join('\n')}\n${changedAllowed
         .map(
           (p) =>
-            `${client.stringEmotes.disabled} \`${
+            `${client.stringEmotes.enabled} \`${
               language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
             }\``,
         )

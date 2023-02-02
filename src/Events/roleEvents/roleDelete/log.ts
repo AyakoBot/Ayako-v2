@@ -15,12 +15,12 @@ export default async (role: Discord.Role) => {
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: con.create,
-      name: lan.nameCreate,
+      icon_url: con.remove,
+      name: lan.nameDelete,
     },
-    description: auditUser ? lan.descCreateAudit(auditUser, role) : lan.descCreate(role),
+    description: auditUser ? lan.descDeleteAudit(auditUser, role) : lan.descDelete(role),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.danger,
   };
 
   if (role.icon) {
@@ -66,7 +66,7 @@ export default async (role: Discord.Role) => {
   if (role.color) {
     embed.fields?.push({
       name: language.color,
-      value: role.color.toString(),
+      value: role.color.toString(16),
     });
   }
 

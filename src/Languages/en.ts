@@ -401,6 +401,9 @@ export default {
         descCreateAudit: (user: Discord.User, role: Discord.Role) =>
           `${getUser(user)}has created\n${getRole(role)}`,
         descCreate: (role: Discord.Role) => `${getRole(role)}was created`,
+        descDeleteAudit: (user: Discord.User, role: Discord.Role) =>
+          `${getUser(user)}has deleted\n${getRole(role)}`,
+        descDelete: (role: Discord.Role) => `${getRole(role)}was deleted`,
         descUpdateAudit: (role: Discord.Role, user: Discord.User) =>
           `${getUser(user)}has updated\n${getRole(role)}`,
         descUpdate: (role: Discord.Role) => `${getRole(role)}was updated`,
