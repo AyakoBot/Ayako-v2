@@ -28,7 +28,7 @@ export default async (member: Discord.GuildMember) => {
   };
 
   const usedInvite = await getUsedInvite(member.guild, member.user);
-  if (usedInvite) {
+  if (usedInvite && typeof usedInvite !== 'boolean') {
     const inviter =
       usedInvite.inviter ??
       (usedInvite.inviterId ? await client.users.fetch(usedInvite.inviterId) : undefined);
@@ -40,6 +40,11 @@ export default async (member: Discord.GuildMember) => {
         inviter,
         usedInvite.channel ? language.channelTypes[usedInvite.channel.type] : undefined,
       ),
+    });
+  } else if (usedInvite) {
+    embed.fields?.push({
+      name: lan.invite,
+      value: lan.discovery,
     });
   }
 
@@ -74,14 +79,29 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   if (inv) return inv;
 
   const vanity = (await guild.fetchVanityData().catch(() => undefined)) as
-    | { inviter: Discord.User | undefined; inviterId: string; guild: Discord.Guild }
+    | {
+        inviter: Discord.User | undefined;
+        inviterId: string;
+        guild: Discord.Guild;
+        code: string | null;
+        uses: number;
+        channel: Discord.NonThreadGuildBasedChannel | null;
+        channelId: string | null;
+      }
     | undefined;
 
   if (vanity) {
     vanity.inviter = await client.users.fetch(guild.ownerId).catch(() => undefined);
     vanity.inviterId = guild.ownerId;
     vanity.guild = guild;
+    vanity.channel = (guild.channels.cache.get(guild.id) ??
+      guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
+    vanity.channelId = vanity.channel?.id;
   }
 
-  return vanity as Discord.Invite | undefined;
+  const cachedVanity = oldInvites.find((i) => i.code === vanity?.code);
+  client.cache.invites.set(vanity as Discord.Invite, guild.id);
+  if (Number(cachedVanity?.uses) < Number(vanity?.uses)) return vanity as Discord.Invite;
+
+  return true;
 };

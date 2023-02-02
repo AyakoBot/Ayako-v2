@@ -634,6 +634,7 @@ export default {
         emojiDelete: 'Emoji deleted',
         emojiUpdate: 'Emoji updated',
         invite: 'Invite',
+        discovery: 'Joined through Server Discovery, an Emote, or a Sticker',
         botKick: 'Bot kicked',
         memberKick: 'Member kicked',
         memberUpdate: 'Member updated',
@@ -819,6 +820,8 @@ export default {
         namePin: 'Message pinned',
         nameUnpin: 'Message un-pinned',
         nameJoin: 'Channel joined',
+        join: 'Joined Users',
+        left: 'Left Users',
         topic: 'Description',
         flagsName: 'Flags',
         flags: {
