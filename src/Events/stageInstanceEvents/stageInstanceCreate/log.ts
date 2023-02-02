@@ -20,7 +20,7 @@ export default async (stage: Discord.StageInstance) => {
       name: lan.nameStageCreate,
       icon_url: con.StageCreate,
     },
-    color: client.customConstants.colors.loading,
+    color: client.customConstants.colors.success,
     description: auditUser
       ? lan.descCreateStageAudit(
           stage.channel,
@@ -28,6 +28,7 @@ export default async (stage: Discord.StageInstance) => {
           auditUser,
         )
       : lan.descCreateStage(stage.channel, language.channelTypes[stage.channel.type]),
+    fields: [],
   };
 
   if (stage.guildScheduledEvent) {
@@ -43,14 +44,6 @@ export default async (stage: Discord.StageInstance) => {
       value: stage.topic,
     });
   }
-
-  embed.fields?.push({
-    name: lan.topic,
-    value: language.languageFunction.getChannel(
-      stage.channel,
-      language.channelTypes[stage.channel.type],
-    ),
-  });
 
   client.ch.send(
     { id: channels, guildId: stage.guild.id },
