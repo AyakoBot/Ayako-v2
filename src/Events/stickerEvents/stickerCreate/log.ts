@@ -43,7 +43,7 @@ export default async (sticker: Discord.Sticker) => {
   if (sticker.tags) {
     embed.fields?.push({
       name: lan.tags,
-      value: sticker.tags,
+      value: `:${sticker.tags}:`,
     });
   }
 

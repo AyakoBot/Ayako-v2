@@ -21,7 +21,7 @@ export default async (sticker: Discord.Sticker) => {
     },
     description: auditUser ? lan.descDeleteAudit(sticker, auditUser) : lan.descDelete(sticker),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.danger,
   };
 
   const attachment = (await client.ch.fileURL2Buffer([sticker.url]))?.[0];
@@ -43,7 +43,7 @@ export default async (sticker: Discord.Sticker) => {
   if (sticker.tags) {
     embed.fields?.push({
       name: lan.tags,
-      value: sticker.tags,
+      value: `:${sticker.tags}:`,
     });
   }
 

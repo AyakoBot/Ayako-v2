@@ -22,7 +22,7 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
     },
     description: auditUser ? lan.descUpdateAudit(sticker, auditUser) : lan.descUpdate(sticker),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: client.customConstants.colors.loading,
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
@@ -34,7 +34,9 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   if (oldSticker.name !== sticker.name) {
     merge(oldSticker.name, sticker.name, 'string', language.name);
   }
-  if (oldSticker.tags !== sticker.tags) merge(oldSticker.tags, sticker.tags, 'string', lan.tags);
+  if (oldSticker.tags !== sticker.tags) {
+    merge(`:${oldSticker.tags}:`, `:${sticker.tags}:`, 'string', lan.tags);
+  }
 
   client.ch.send(
     { id: channels, guildId: sticker.guild.id },
