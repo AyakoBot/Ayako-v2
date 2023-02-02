@@ -15,6 +15,7 @@ export default async (
   const lan = language.events.logs.reaction;
   const con = client.customConstants.events.logs.reaction;
   const files: Discord.AttachmentPayload[] = [];
+  const embeds: Discord.APIEmbed[] = [];
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -26,10 +27,12 @@ export default async (
     color: client.customConstants.colors.danger,
   };
 
+  embeds.push(embed);
+
   if (msg.reactions.cache?.size) {
-    embed.fields?.push({
-      name: lan.reactions,
-      value: (msg.reactions.cache ?? [{ count: 0, emoji: reaction.emoji }])
+    embeds.push({
+      title: lan.reactions,
+      description: (msg.reactions.cache ?? [{ count: 0, emoji: reaction.emoji }])
         ?.map(
           (r) =>
             `\`${client.ch.spaces(`${r.count}`, 5)}\` ${
@@ -40,6 +43,7 @@ export default async (
             } ${language.languageFunction.getEmote(r.emoji)}`,
         )
         .join(''),
+      color: client.customConstants.colors.ephemeral,
     });
   }
 
@@ -54,7 +58,7 @@ export default async (
 
   await client.ch.send(
     { id: channels, guildId: msg.guild.id },
-    { embeds: [embed], files },
+    { embeds, files },
     language,
     undefined,
     10000,
