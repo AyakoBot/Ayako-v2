@@ -31,7 +31,7 @@ export default async (
       if (content) files.push(content);
     } else {
       embed.fields?.push({
-        name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
+        name: lan.join,
         value: userMentions,
       });
     }
@@ -47,7 +47,7 @@ export default async (
       if (content) files.push(content);
     } else {
       embed.fields?.push({
-        name: lan.descJoinMember(thread, language.channelTypes[thread.type]),
+        name: lan.left,
         value: userMentions,
       });
     }
