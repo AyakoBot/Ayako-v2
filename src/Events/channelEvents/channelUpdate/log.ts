@@ -85,14 +85,9 @@ export default async (
   if (
     (!oldChannel || 'topic' in oldChannel) &&
     'topic' in channel &&
-    oldChannel?.topic !== channel.topic
+    !!oldChannel?.topic !== !!channel.topic
   ) {
-    merge(
-      oldChannel?.topic ?? language.unknown,
-      channel.topic ?? language.none,
-      'string',
-      lan.topic,
-    );
+    merge(oldChannel?.topic || language.none, channel.topic || language.none, 'string', lan.topic);
   }
 
   if (
@@ -239,16 +234,16 @@ export default async (
   }
 
   if (
-    (!oldChannel || 'autoArchiveDuration' in oldChannel) &&
-    'autoArchiveDuration' in channel &&
-    oldChannel?.autoArchiveDuration !== channel.autoArchiveDuration
+    (!oldChannel || 'defaultAutoArchiveDuration' in oldChannel) &&
+    'defaultAutoArchiveDuration' in channel &&
+    oldChannel?.defaultAutoArchiveDuration !== channel.defaultAutoArchiveDuration
   ) {
     merge(
-      oldChannel?.autoArchiveDuration
-        ? `<t:${String(oldChannel.autoArchiveDuration).slice(0, -3)}:f>`
+      oldChannel?.defaultAutoArchiveDuration
+        ? client.ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
         : language.unknown,
-      channel.autoArchiveDuration
-        ? `<t:${String(channel.autoArchiveDuration).slice(0, -3)}:f>`
+      channel.defaultAutoArchiveDuration
+        ? client.ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
         : language.none,
       'string',
       lan.autoArchiveDuration,
@@ -267,102 +262,145 @@ export default async (
   if (
     (!oldChannel || 'permissionOverwrites' in oldChannel) &&
     'permissionOverwrites' in channel &&
-    JSON.stringify(oldChannel?.permissionOverwrites) !==
-      JSON.stringify(channel.permissionOverwrites)
+    JSON.stringify(oldChannel?.permissionOverwrites.cache.map((o) => o)) !==
+      JSON.stringify(channel.permissionOverwrites.cache.map((o) => o))
   ) {
-    const permEmbed: Discord.APIEmbed = {
-      color: client.customConstants.colors.loading,
+    const addEmbed: Discord.APIEmbed = {
+      color: client.customConstants.colors.ephemeral,
       fields: [],
     };
-    embeds.push(permEmbed);
 
-    const addedPermissions = channel.permissionOverwrites.cache.filter(
-      (c) => !oldChannel?.permissionOverwrites.cache.has(c.id),
-    );
-    const removedPermissions = oldChannel?.permissionOverwrites.cache.filter(
-      (c) => !channel.permissionOverwrites.cache.has(c.id),
-    );
-    const changedPermissions = oldChannel?.permissionOverwrites.cache.size
-      ? oldChannel?.permissionOverwrites.cache.filter(
-          (e) =>
-            JSON.stringify(e) !==
-              JSON.stringify(
-                channel?.permissionOverwrites.cache.find((c) => c.id === e.id) ?? undefined,
-              ) && channel?.permissionOverwrites.cache.find((c) => c.id === e.id),
-        )
-      : channel?.permissionOverwrites.cache.filter(
-          (e) =>
-            JSON.stringify(e) !==
-              JSON.stringify(
-                oldChannel?.permissionOverwrites.cache.find((c) => c.id === e.id) ?? undefined,
-              ) && oldChannel?.permissionOverwrites.cache.find((c) => c.id === e.id),
-        );
+    const removeEmbed: Discord.APIEmbed = {
+      color: client.customConstants.colors.ephemeral,
+      fields: [],
+    };
 
-    if (addedPermissions.size) typeID = 13;
-    addedPermissions.forEach((p) =>
-      permEmbed.fields?.push({
-        name: `\u200b`,
-        value: [
-          `${client.stringEmotes.plusBG} ${
-            p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-          }`,
-          Object.entries(p.allow.serialize())
-            .filter(([, a]) => !!a)
-            .map(
-              (a) =>
-                `${client.stringEmotes.switch.enable} ${
-                  language.permissions.perms[
-                    a as unknown as keyof typeof language.permissions.perms
-                  ]
-                }`,
-            ),
-        ].join('\n'),
-      }),
-    );
+    const changeEmbed: Discord.APIEmbed = {
+      color: client.customConstants.colors.ephemeral,
+      fields: [],
+    };
 
-    if (removedPermissions?.size) typeID = 15;
-    removedPermissions?.forEach((p) =>
-      permEmbed.fields?.push({
-        name: `\u200b`,
-        value: [
-          `${client.stringEmotes.minusBG} ${
-            p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-          }`,
-          Object.entries(p.allow.serialize())
-            .filter(([, a]) => !!a)
-            .map(
-              (a) =>
-                `${client.stringEmotes.switch.disable} ${
-                  language.permissions.perms[
-                    a as unknown as keyof typeof language.permissions.perms
-                  ]
-                }`,
-            ),
-        ].join('\n'),
-      }),
-    );
+    const oldPerms = oldChannel ? client.ch.getSerializedChannelPerms(oldChannel) : [];
+    const perms = client.ch.getSerializedChannelPerms(channel);
 
-    if (removedPermissions?.size) typeID = 14;
+    const addedPerms = perms.filter((p) => !oldPerms.find((p2) => p2.id === p.id));
+    const removedPerms = oldPerms.filter((p) => !perms.find((p2) => p2.id === p.id));
+    const changedPerms = perms.filter((p) => oldPerms.find((p2) => p2.id === p.id));
 
-    const permissionStrings = await Promise.all(
-      changedPermissions.map((p) =>
-        client.ch.makePermissionsStrings(p, oldChannel, channel, language),
-      ),
-    );
+    if (addedPerms.length) typeID = 13;
+    if (changedPerms.length) typeID = 14;
+    if (removedPerms.length) typeID = 15;
 
-    changedPermissions
-      .map((o) => o)
-      .forEach((p, i) => {
-        permEmbed.fields?.push({
-          name: `\u200b`,
-          value: [
-            `${client.stringEmotes.edit} ${
-              p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-            }\n`,
-            ...permissionStrings[i],
-          ].join('\n'),
+    const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
+      if (denied) return client.stringEmotes.switch.disable;
+      if (allowed) return client.stringEmotes.switch.enable;
+      return client.stringEmotes.switch.neutral;
+    };
+
+    let atLeastOneAdded = false;
+    addedPerms.forEach((p) => {
+      const filterPerms = p.perms.filter((perm) => !perm.neutral);
+      const field = embed.fields?.find((f) => f.name === lan.addedPermissionOverwrite);
+
+      if (field) {
+        field.value += `, ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }`;
+      } else {
+        embed.fields?.push({
+          name: lan.addedPermissionOverwrite,
+          value: `${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}`,
         });
+      }
+
+      if (!filterPerms.length) return;
+      atLeastOneAdded = true;
+
+      addEmbed.fields?.push({
+        name: '\u200b',
+        value: `${client.stringEmotes.plusBG} ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }\n${filterPerms
+          .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+          .join('\n')}`,
+        inline: false,
       });
+    });
+
+    let atLeastOneChanged = false;
+    changedPerms.forEach((p) => {
+      const filteredPerms = p.perms.filter(
+        (perm) =>
+          !oldPerms
+            .find((oldPerm) => oldPerm.id === p.id)
+            ?.perms.find(
+              (oldPerm) =>
+                oldPerm.perm === perm.perm &&
+                oldPerm.allowed === perm.allowed &&
+                oldPerm.denied === perm.denied &&
+                oldPerm.neutral === perm.neutral,
+            ),
+      );
+      const field = embed.fields?.find((f) => f.name === lan.changedPermissionOverwrite);
+
+      if (field) {
+        field.value += `, ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }`;
+      } else {
+        embed.fields?.push({
+          name: lan.changedPermissionOverwrite,
+          value: `${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}`,
+        });
+      }
+
+      if (!filteredPerms.length) return;
+      atLeastOneChanged = true;
+
+      changeEmbed.fields?.push({
+        name: '\u200b',
+        value: `${client.stringEmotes.edit} ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }\n${filteredPerms
+          .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+          .join('\n')}`,
+        inline: false,
+      });
+    });
+
+    let atLeastOneRemoved = false;
+    removedPerms.forEach((p) => {
+      const filterPerms = p.perms.filter((perm) => !perm.neutral);
+      const field = embed.fields?.find((f) => f.name === lan.removedPermissionOverwrite);
+
+      if (field) {
+        field.value += `, ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }`;
+      } else {
+        embed.fields?.push({
+          name: lan.removedPermissionOverwrite,
+          value: `${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}`,
+        });
+      }
+
+      if (!filterPerms.length) return;
+      atLeastOneRemoved = true;
+
+      removeEmbed.fields?.push({
+        name: '\u200b',
+        value: `${client.stringEmotes.minusBG} ${
+          p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+        }\n${filterPerms
+          .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+          .join('\n')}`,
+        inline: false,
+      });
+    });
+
+    if (atLeastOneAdded) embeds.push(addEmbed);
+    if (atLeastOneChanged) embeds.push(changeEmbed);
+    if (atLeastOneRemoved) embeds.push(removeEmbed);
   }
 
   const audit = await client.ch.getAudit(channel.guild, typeID, channel.id);
@@ -381,7 +419,7 @@ export default async (
 
   client.ch.send(
     { id: channels, guildId: channel.guild.id },
-    { embeds: [embed] },
+    { embeds },
     language,
     undefined,
     10000,
