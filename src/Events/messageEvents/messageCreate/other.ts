@@ -115,7 +115,7 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
 
     setTimeout(() => {
       msg.delete();
-    }, 10000);
+    }, 20000);
   };
   lunar();
 
