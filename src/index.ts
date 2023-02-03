@@ -5,6 +5,7 @@ import cache from './BaseClient/ClientHelperModules/cache.js';
 
 client.ch = ch;
 client.cache = cache;
+client.setMaxListeners(client.events.length);
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
@@ -32,7 +33,7 @@ process.on('promiseRejectionHandledWarning', (error: string) =>
 );
 process.on('experimentalWarning', (error: string) => client.emit('uncaughtException', error));
 
-client.ch.getEvents().forEach(async (path) => {
+client.events.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop();
   if (!eventName) return;
 

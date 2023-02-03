@@ -11,11 +11,6 @@ export default async (channel: Discord.TextBasedChannel, date: Date) => {
     ([, p]) => p,
   ).filter((p) => !newPins.has(p.id));
 
-  addedPins.forEach(async (p) => {
-    (await import('./channelPinsCreate/channelPinsCreate.js')).default(p, channel, date);
-  });
-
-  removedPins.forEach(async (p) => {
-    (await import('./channelPinsDelete/channelPinsDelete.js')).default(p, channel);
-  });
+  addedPins.forEach(async (p) => client.emit('channelPinsCreate', p, channel, date));
+  removedPins.forEach(async (p) => client.emit('channelPinsDelete', p, channel, date));
 };

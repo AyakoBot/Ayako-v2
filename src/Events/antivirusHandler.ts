@@ -15,7 +15,7 @@ export default async (msg: CT.GuildMessage, m?: Discord.Message) => {
 
   await runPunishment(msg, m);
 
-  (await import('./modSourceHandler.js')).default('antivirus', m, settingsRow);
+  client.emit('antivirus', m, settingsRow);
 };
 
 export const resetData = () => {

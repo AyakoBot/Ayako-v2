@@ -16,18 +16,17 @@ export default async (guild: Discord.Guild) => {
   ) as unknown as Discord.Integration[];
 
   if (added.length) {
-    added.forEach(async (add) =>
-      (await import('./guildIntegrationsCreate/guildIntegrationsCreate.js')).default(add),
-    );
+    added.forEach(async (add) => client.emit('guildIntegrationsCreates', add));
   }
+
   if (removed.length) {
-    removed.forEach(async (remove) =>
-      (await import('./guildIntegrationsDelete/guildIntegrationsDelete.js')).default(remove),
-    );
+    removed.forEach(async (remove) => client.emit('guildIntegrationsDeletes', remove));
   }
+
   if (changed.length) {
     changed.forEach(async (change) =>
-      (await import('./guildIntegrationsUpdate/guildIntegrationsUpdate.js')).default(
+      client.emit(
+        'guildIntegrationsUpdates',
         cached.get(change.id) as Discord.Integration,
         fetched.get(change.id) as Discord.Integration,
       ),

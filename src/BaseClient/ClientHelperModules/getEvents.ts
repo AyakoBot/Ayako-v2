@@ -1,49 +1,98 @@
-import fs from 'fs';
+import glob from 'glob';
 
-export default () => {
-  const paths: string[] = [];
+export const gatewayEvents = [
+  'applicationCommandPermissionsUpdate',
+  'automodActionExecution',
+  'automodRuleCreate',
+  'automodRuleDelete',
+  'automodRuleUpdate',
+  'channelCreate',
+  'channelDelete',
+  'channelPinsCreate',
+  'channelPinsDelete',
+  'channelPinsUpdate',
+  'channelUpdate',
+  'debug',
+  'emojiCreate',
+  'emojiDelete',
+  'emojiUpdate',
+  'error',
+  'guildBanAdd',
+  'guildBanRemove',
+  'guildCreate',
+  'guildDelete',
+  'guildIntegrationsCreates',
+  'guildIntegrationsDeletes',
+  'guildIntegrationsUpdate',
+  'guildIntegrationsUpdates',
+  'guildMemberAdd',
+  'guildMemberRemove',
+  'guildMemberUpdate',
+  'guildScheduledEventCreate',
+  'guildScheduledEventDelete',
+  'guildScheduledEventUpdate',
+  'guildScheduledEventUserAdd',
+  'guildScheduledEventUserRemove',
+  'guildUpdate',
+  'interactionCreate',
+  'inviteCreate',
+  'inviteDelete',
+  'messageCreate',
+  'messageDelete',
+  'messageDeleteBulk',
+  'messageReactionAdd',
+  'messageReactionRemove',
+  'messageReactionRemoveAll',
+  'messageReactionRemoveEmoji',
+  'messageUpdate',
+  'modBaseEvent',
+  'modSourceHandler',
+  'ready',
+  'roleCreate',
+  'roleDelete',
+  'roleUpdate',
+  'stageInstanceCreate',
+  'stageInstanceDelete',
+  'stageInstanceUpdate',
+  'stickerCreate',
+  'stickerDelete',
+  'stickerUpdate',
+  'threadCreate',
+  'threadDelete',
+  'threadMembersUpdate',
+  'threadUpdate',
+  'typingStart',
+  'uncaughtException',
+  'unhandledRejection',
+  'userUpdate',
+  'voiceStateCreates',
+  'voiceStateDeletes',
+  'voiceStateUpdate',
+  'voiceStateUpdates',
+  'voteBotCreate',
+  'voteGuildCreate',
+  'webhooksCreate',
+  'webhooksDelete',
+  'webhooksUpdate',
+];
 
-  const eventsDir = fs.readdirSync(`${process.cwd()}/Events`);
-
-  eventsDir.forEach((folder) => {
-    if (isDisallowed(folder)) return;
-
-    if (folder.includes('.')) {
-      const path = `${process.cwd()}/Events/${folder}`;
-      paths.push(path);
-
-      return;
-    }
-
-    const key = folder.replace(/events/gi, '');
-    const eventFiles = fs.readdirSync(`${process.cwd()}/Events/${folder}`);
-
-    eventFiles.forEach((file) => {
-      if (isDisallowed(file)) return;
-
-      if (file.includes('.') && file.startsWith(key)) {
-        const path = `${process.cwd()}/Events/${folder}/${file}`;
-        paths.push(path);
-
-        return;
-      }
-
-      if (file.startsWith(key) && !file.includes('.')) {
-        fs.readdirSync(`${process.cwd()}/Events/${folder}/${file}`).forEach((eventFolderFile) => {
-          if (isDisallowed(eventFolderFile)) return;
-
-          if (String(eventFolderFile).includes('.') && String(eventFolderFile).startsWith(key)) {
-            const path = `${process.cwd()}/Events/${folder}/${file}/${eventFolderFile}`;
-
-            paths.push(path);
-          }
-        });
-      }
+export default async (): Promise<typeof gatewayEvents> => {
+  const events: string[] = await new Promise((resolve) => {
+    glob(`${process.cwd()}/Events/**/*`, (err, res) => {
+      if (err) throw err;
+      resolve(res);
     });
   });
 
-  return paths;
-};
+  const filteredEvents = events
+    .filter((path) => path.endsWith('.js'))
+    .filter((path) => {
+      const eventName = path.replace('.js', '').split(/\/+/).pop();
 
-const isDisallowed = (file: string) =>
-  ['.d.ts', '.d.ts.map', '.js.map'].some((end) => file.endsWith(end));
+      if (!eventName) return false;
+      if (!gatewayEvents.includes(eventName)) return false;
+      return true;
+    });
+
+  return filteredEvents;
+};

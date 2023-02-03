@@ -11,6 +11,7 @@ import DataBase from './DataBase.js';
 import auth from '../auth.json' assert { type: 'json' };
 import type cache from './ClientHelperModules/cache.js';
 
+const events = await ch.getEvents();
 class CustomClient extends Discord.Client {
   neko: typeof NekoClient;
   customConstants: typeof Constants;
@@ -29,6 +30,7 @@ class CustomClient extends Discord.Client {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   cache: typeof cache;
+  events: typeof events;
 
   constructor(options: Discord.ClientOptions) {
     super(options);
@@ -46,6 +48,7 @@ class CustomClient extends Discord.Client {
 
     this.database = DataBase;
     this.ch = ch;
+    this.events = events;
   }
 }
 
