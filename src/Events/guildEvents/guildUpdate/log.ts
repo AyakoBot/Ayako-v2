@@ -114,14 +114,6 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   if (guild.afkChannelId !== oldGuild.afkChannelId) {
     merge(`<#${oldGuild.afkChannelId}>`, `<#${guild.afkChannelId}>`, 'string', lan.afkChannelId);
   }
-  if (guild.widgetChannelId !== oldGuild.widgetChannelId) {
-    merge(
-      oldGuild.widgetChannelId ? `<#${oldGuild.widgetChannelId}>` : language.none,
-      guild.widgetChannelId ? `<#${guild.widgetChannelId}>` : language.none,
-      'string',
-      lan.widgetChannelId,
-    );
-  }
   if (guild.systemChannelId !== oldGuild.systemChannelId) {
     merge(
       oldGuild.systemChannelId ? `<#${oldGuild.systemChannelId}>` : language.none,
@@ -355,6 +347,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       });
     }
   }
+
   if (guild.features !== oldGuild.features) {
     const removedToggles = client.ch.getDifference(
       guild.features,
@@ -411,7 +404,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     }
   }
 
-  if (!embed.fields?.length) console.log(oldGuild, guild);
+  if (!embed.fields?.length) return;
 
   client.ch.send(
     { id: channels, guildId: guild.id },

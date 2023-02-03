@@ -341,8 +341,9 @@ export default async (
                 oldPerm.neutral === perm.neutral,
             ),
       );
-      const field = embed.fields?.find((f) => f.name === lan.changedPermissionOverwrite);
+      if (!filteredPerms.length) return;
 
+      const field = embed.fields?.find((f) => f.name === lan.changedPermissionOverwrite);
       if (field) {
         field.value += `, ${
           p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
@@ -354,7 +355,6 @@ export default async (
         });
       }
 
-      if (!filteredPerms.length) return;
       atLeastOneChanged = true;
 
       changeEmbed.fields?.push({

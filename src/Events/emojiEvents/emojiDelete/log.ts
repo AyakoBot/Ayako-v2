@@ -8,9 +8,8 @@ export default async (emote: Discord.GuildEmoji) => {
   const language = await client.ch.languageSelector(emote.guild.id);
   const lan = language.events.logs.guild;
   const con = client.customConstants.events.logs.emoji;
-  const audit = !emote.author ? await client.ch.getAudit(emote.guild, 62, emote.id) : undefined;
-  const auditUser = emote.author ?? (await emote.fetchAuthor()) ?? audit?.executor ?? undefined;
-
+  const audit = await client.ch.getAudit(emote.guild, 62, emote.id);
+  const auditUser = audit?.executor ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {

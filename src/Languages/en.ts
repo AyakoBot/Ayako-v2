@@ -34,7 +34,7 @@ const getChannel = (
     : `Unknown Channel\n`;
 
 const getEmote = (emoji: Discord.Emoji) =>
-  `${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
+  `Emoji ${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
     emoji.id ?? 'None'
   }\`\n`;
 
@@ -662,7 +662,6 @@ export default {
         discoverySplash: 'Discovery Splash Image',
         discoverySplashRemoved: 'Discovery Splash Image Removed',
         afkChannelId: 'AFK Channel',
-        widgetChannelId: 'Widget Channel',
         systemChannelId: 'System Channel',
         rulesChannelId: 'Rules Channel',
         publicUpdatesChannelId: 'Public Updates Channel',
