@@ -22,9 +22,10 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
   const embed: Discord.APIEmbed = {
     author: {
       name: lan.nameUserAdd,
-      icon_url: con.MemberDelete,
+      icon_url: con.MemberCreate,
     },
     color: client.customConstants.colors.success,
+    fields: [],
     description: channel
       ? lan.descUserAddChannel(user, event, channel, language.channelTypes[channel.type])
       : lan.descUserAdd(user, event),

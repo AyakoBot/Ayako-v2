@@ -42,7 +42,8 @@ export default async (event: Discord.GuildScheduledEvent) => {
       name: lan.nameCreate,
       icon_url: con.ScheduledEventCreate,
     },
-    color: client.customConstants.colors.danger,
+    color: client.customConstants.colors.success,
+    fields: [],
     description,
   };
 

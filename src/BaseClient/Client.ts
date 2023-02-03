@@ -12,6 +12,7 @@ import auth from '../auth.json' assert { type: 'json' };
 import type cache from './ClientHelperModules/cache.js';
 
 const events = await ch.getEvents();
+
 class CustomClient extends Discord.Client {
   neko: typeof NekoClient;
   customConstants: typeof Constants;

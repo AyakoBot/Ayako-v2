@@ -46,18 +46,26 @@ export default async (
       icon_url: con.ScheduledEventDelete,
     },
     color: client.customConstants.colors.danger,
+    fields: [],
     description,
   };
 
   if (event.image) {
-    embed.image = {
-      url: `attachment://${event.image}`,
+    const getImage = async () => {
+      const url = event.coverImageURL({ size: 4096 });
+      if (!url) return;
+
+      embed.image = {
+        url: `attachment://${client.ch.getNameAndFileType(url)}`,
+      };
+
+      const attachment = (await client.ch.fileURL2Buffer([url])).filter(
+        (e): e is Discord.AttachmentPayload => !!e,
+      );
+      if (attachment) files.push(...attachment);
     };
 
-    const attachment = (await client.ch.fileURL2Buffer([event.coverImageURL({ size: 4096 })])).filter(
-      (e): e is Discord.AttachmentPayload => !!e,
-    );
-    if (attachment) files.push(...attachment);
+    await getImage();
   }
 
   if (event.description) {
@@ -117,7 +125,7 @@ export default async (
 
   if (users?.size) {
     const attachment = client.ch.txtFileWriter(
-      Array.from(users, ([, u]) => u).join(', '),
+      Array.from(users, ([, u]) => u.id).join(', '),
       undefined,
       lan.participants,
     );

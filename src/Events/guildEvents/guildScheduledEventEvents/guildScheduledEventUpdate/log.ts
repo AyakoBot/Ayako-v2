@@ -52,6 +52,7 @@ export default async (
       icon_url: con.ScheduledEventUpdate,
     },
     color: client.customConstants.colors.loading,
+    fields: [],
     description,
   };
 
@@ -84,14 +85,15 @@ export default async (
   if (event.description !== oldEvent.description) {
     merge(oldEvent.description, event.description, 'string', language.Description);
   }
-  if (event.entityMetadata?.location !== oldEvent.entityMetadata?.location) {
+  if (!!event.entityMetadata?.location !== !!oldEvent.entityMetadata?.location) {
     merge(
-      oldEvent.entityMetadata?.location,
-      event.entityMetadata?.location,
+      oldEvent.entityMetadata?.location ?? language.none,
+      event.entityMetadata?.location ?? language.none,
       'string',
       lan.location,
     );
   }
+
   if (event.channelId !== oldEvent.channelId) {
     const oldChannel =
       oldEvent.channel ??

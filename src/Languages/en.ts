@@ -275,7 +275,7 @@ export default {
         statusName: 'Status',
         status: {
           1: 'Scheduled',
-          2: 'ACtive',
+          2: 'Active',
           3: 'Completed',
           4: 'Canceled',
         },
