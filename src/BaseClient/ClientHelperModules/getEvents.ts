@@ -2,10 +2,10 @@ import glob from 'glob';
 
 export const gatewayEvents = [
   'applicationCommandPermissionsUpdate',
-  'automodActionExecution',
-  'automodRuleCreate',
-  'automodRuleDelete',
-  'automodRuleUpdate',
+  'autoModerationActionExecution',
+  'autoModerationRuleCreate',
+  'autoModerationRuleDelete',
+  'autoModerationRuleUpdate',
   'channelCreate',
   'channelDelete',
   'channelPinsCreate',

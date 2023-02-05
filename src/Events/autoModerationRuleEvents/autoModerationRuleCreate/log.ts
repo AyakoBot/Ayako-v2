@@ -2,29 +2,23 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
-  console.log(1);
-  if (!rule.guild.id) return;
-  console.log(2);
-
   const channels = await client.ch.getLogChannels('automodevents', rule.guild);
   if (!channels) return;
-  console.log(3);
 
   const language = await client.ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
   const con = client.customConstants.events.logs.automodRule;
   const user = await client.users.fetch(rule.creatorId);
   if (!user) return;
-  console.log(4);
 
   const embed: Discord.APIEmbed = {
     author: {
       icon_url: con.create,
-      name: lan.name,
+      name: lan.nameCreate,
     },
     description: lan.descCreate(user, rule),
     fields: [],
-    color: client.customConstants.colors.danger,
+    color: client.customConstants.colors.success,
   };
 
   if (rule.triggerMetadata) {
@@ -36,7 +30,7 @@ export default async (rule: Discord.AutoModerationRule) => {
       });
     }
 
-    if (rule.triggerMetadata.allowList) {
+    if (rule.triggerMetadata.allowList.length) {
       embed.fields?.push({
         name: lan.allowList,
         value: rule.triggerMetadata.allowList.map((w) => `\`${w}\``).join(', '),
@@ -52,7 +46,7 @@ export default async (rule: Discord.AutoModerationRule) => {
       });
     }
 
-    if (rule.triggerMetadata.presets) {
+    if (rule.triggerMetadata.presets.length) {
       embed.fields?.push({
         name: lan.presetsName,
         value: rule.triggerMetadata.presets.map((p) => lan.presets[p]).join(', '),
@@ -76,7 +70,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   if (rule.exemptRoles?.size) {
     embed.fields?.push({
       name: lan.exemptRoles,
-      value: rule.exemptRoles.map((r) => `<@&${r}`).join(', '),
+      value: rule.exemptRoles.map((r) => `<@&${r.id}>`).join(', '),
       inline: false,
     });
   }
@@ -84,7 +78,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   if (rule.exemptChannels?.size) {
     embed.fields?.push({
       name: lan.exemptChannels,
-      value: rule.exemptChannels.map((r) => `<#${r}`).join(', '),
+      value: rule.exemptChannels.map((r) => `<#${r.id}>`).join(', '),
       inline: false,
     });
   }
@@ -106,7 +100,7 @@ export default async (rule: Discord.AutoModerationRule) => {
                 a.type === 2
                   ? `${lan.alertChannel} <#${a.metadata?.channelId}>  / \`${actionChannels[i]?.name}\` / \`${a.metadata?.channelId}\``
                   : `${lan.timeoutDuration} ${client.ch.moment(
-                      a.metadata?.durationSeconds || 0,
+                      a.metadata?.durationSeconds ? Number(a.metadata.durationSeconds) * 1000 : 0,
                       language,
                     )}`
               }`

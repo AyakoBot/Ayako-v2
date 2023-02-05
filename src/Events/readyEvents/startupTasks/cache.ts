@@ -59,6 +59,8 @@ export default () => {
       });
     });
 
+    await guild.autoModerationRules.fetch().catch(() => undefined);
+
     const claimTimeouts = await client.ch
       .query(`SELECT * FROM giveawaycollecttime WHERE guildId = $1;`, [String(guild.id)])
       .then((r: DBT.giveawaycollecttime[] | null) => r || null);

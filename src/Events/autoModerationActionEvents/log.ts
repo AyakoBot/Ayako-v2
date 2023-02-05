@@ -44,26 +44,31 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     inline: true,
   });
 
+  if ('duration_seconds' in execution.action.metadata) {
+    execution.action.metadata.durationSeconds = execution.action.metadata
+      .duration_seconds as number;
+  }
+
   if ([2, 3].includes(execution.action.type)) {
     embed.fields?.push({
       name: execution.action.type === 2 ? lan.alert : lan.timeout,
       value:
         execution.action.type === 2
-          ? `${lan.alertChannel} <@${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
+          ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
               language.Message
-            }${language.Message}](${client.ch.getJumpLink({
+            }](${client.ch.getJumpLink({
               guildId: execution.guild.id,
               channelId: execution.action.metadata.channelId ?? '',
               id: execution.alertSystemMessageId ?? '',
             })})`
           : `${language.duration} \`${client.ch.moment(
-              execution.action.metadata.durationSeconds || 0,
+              execution.action.metadata.durationSeconds
+                ? Number(execution.action.metadata.durationSeconds) * 1000
+                : 0,
               language,
-            )}\` / ${language.End} <t:${String(
-              Number(execution.action.metadata.durationSeconds) + Date.now(),
-            ).slice(0, -3)}> <t:${String(
-              Number(execution.action.metadata.durationSeconds) + Date.now(),
-            ).slice(0, -3)}:R>`,
+            )}\` / ${language.End} ${client.customConstants.standard.getTime(
+              Number(execution.action.metadata.durationSeconds) * 1000 + Date.now(),
+            )}`,
       inline: true,
     });
   }

@@ -4,9 +4,9 @@ export default {
   events: {
     logs: {
       automodRule: {
-        create: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleCreate',
-        update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleUpdate',
-        delete: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleDelete',
+        create: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleCreate.png',
+        update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleUpdate.png',
+        delete: 'https://ayakobot.com/cdn/Ayako_Assets/Events/AutomoderationRuleDelete.png',
       },
       voiceState: {
         update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/MemberUpdate.png',

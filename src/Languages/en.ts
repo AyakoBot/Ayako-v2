@@ -899,9 +899,15 @@ export default {
           `${getUser(user)}deleted\n${getAutoModerationRule(rule)}`,
         descUpdate: (user: Discord.User, rule: Discord.AutoModerationRule) =>
           `${getUser(user)}updated\n${getAutoModerationRule(rule)}`,
-        name: 'Auto-Moderation Rule created',
+        nameCreate: 'Auto-Moderation Rule created',
+        nameDelete: 'Auto-Moderation Rule deleted',
+        nameUpdate: 'Auto-Moderation Rule updated',
         keywordFilter: 'Triggering Keywords',
         presetsName: 'Used Preset',
+        addedActions: 'Added Actions',
+        removedActions: 'Removed Actions',
+        changedActions: 'Changed Actions',
+        regexPatterns: 'Regex Patterns',
         presets: {
           1: 'Profanity',
           2: 'Sexual Content',
