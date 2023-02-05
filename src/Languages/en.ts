@@ -126,18 +126,16 @@ export default {
       },
       application: {
         name: 'Application Command Permissions updated',
-        descUpdateAudit: (
+        descUpdateCommand: (
           application: Discord.User,
           user: Discord.User,
           command: Discord.ApplicationCommand,
         ) =>
-          `${getUser(user)}has updated Permissions of\n${getCommand(command)}from\n${getApplication(
-            application as unknown as Discord.Application,
+          `${getUser(user)}has updated Permissions of\n${getCommand(command)}from\n${getUser(
+            application,
           )}`,
-        descUpdate: (application: Discord.User, command: Discord.ApplicationCommand) =>
-          `The Permissions\n${getCommand(command)}from\n${getApplication(
-            application as unknown as Discord.Application,
-          )}were updated`,
+        descUpdateAll: (application: Discord.User, user: Discord.User) =>
+          `${getUser(user)}has updated Permissions of\nall Commands\nfrom\n${getUser(application)}`,
         permissionTypeName: 'Permission Type',
         allChannels: 'All Channels',
       },

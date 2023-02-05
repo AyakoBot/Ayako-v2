@@ -274,12 +274,12 @@ export default async (
                 ? ` - ${
                     action.type === 2
                       ? `${lan.alertChannel} <#${action.metadata.channelId}>  / \`${channel[i]?.name}\` / \`${action.metadata?.channelId}\``
-                      : `${lan.timeoutDuration} ${client.ch.moment(
+                      : `${lan.timeoutDuration} \`${client.ch.moment(
                           action.metadata?.durationSeconds
                             ? Number(action.metadata.durationSeconds) * 1000
                             : 0,
                           language,
-                        )}`
+                        )}\``
                   }`
                 : ''
             }`,

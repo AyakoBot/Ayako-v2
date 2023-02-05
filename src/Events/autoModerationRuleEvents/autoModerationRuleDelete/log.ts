@@ -99,10 +99,10 @@ export default async (rule: Discord.AutoModerationRule) => {
             ? `- ${
                 a.type === 2
                   ? `${lan.alertChannel} <#${a.metadata?.channelId}>  / \`${actionChannels[i]?.name}\` / \`${a.metadata?.channelId}\``
-                  : `${lan.timeoutDuration} ${client.ch.moment(
+                  : `${lan.timeoutDuration} \`${client.ch.moment(
                       a.metadata?.durationSeconds ? Number(a.metadata.durationSeconds) * 1000 : 0,
                       language,
-                    )}`
+                    )}\``
               }`
             : ''
         }`,
