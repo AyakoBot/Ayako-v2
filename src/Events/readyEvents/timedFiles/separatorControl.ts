@@ -1,8 +1,7 @@
 import Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-// TODO
-import { separatorAssigner, oneTimeRunner } from '../../guildEvents/guildMemberUpdate/separator';
+import { separatorAssigner, oneTimeRunner } from '../../guildEvents/guildMemberUpdate/separator.js';
 
 export default async () => {
   const roleseparatorsettingsRow = await client.ch
@@ -29,11 +28,12 @@ export default async () => {
     if (!message) return;
 
     Jobs.scheduleJob(new Date(Date.now() + 300000), () => {
+      if (!client.user) return;
       oneTimeRunner(
-        { guildID: guild.id, author: client.user, channel },
+        { guild, author: client.user, channel },
         message,
         {},
-        null,
+        undefined,
         row.index === row.length,
       );
     });

@@ -1,6 +1,6 @@
+import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-// TODO
 import { oneTimeRunner } from '../../guildEvents/guildMemberUpdate/separator.js';
 
 export default async () => {
@@ -22,8 +22,10 @@ export default async () => {
       .catch(() => null);
     if (!message) return;
 
-    oneTimeRunner({ guildID: guild.id, author: client.user, channel: message.channel }, message, {
-      type: 'rich',
-    });
+    oneTimeRunner(
+      { guild, author: client.user as Discord.User, channel: message.channel },
+      message,
+      {},
+    );
   });
 };
