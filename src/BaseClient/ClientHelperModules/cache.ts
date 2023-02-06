@@ -52,7 +52,7 @@ const cache: {
     cache: Map<string, Map<string, Map<string, Discord.Message>>>;
   };
 
-  // Ayako Cache
+  // Cache
   giveawayClaimTimeout: {
     set: (job: Jobs.Job, guildId: string, userId: string) => void;
     delete: (guildId: string, userId: string) => void;

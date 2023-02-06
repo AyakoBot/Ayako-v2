@@ -940,10 +940,10 @@ export default {
       },
     },
     messageReactionAdd: {
-      rrReason: 'Ayako Reaction Roles',
+      rrReason: `${client.user?.username} Reaction Roles`,
     },
     messageReactionRemove: {
-      rrReason: 'Ayako Reaction Roles',
+      rrReason: `${client.user?.username} Reaction Roles`,
     },
     guildMemberUpdate: {
       boostingStart: `Member Started Boosting`,
@@ -959,7 +959,7 @@ export default {
       unmute: `Automatically Un-Muted`,
       disboard: {
         desc: `You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>`,
-        title: `Ayako DISBOARD Bump Reminder`,
+        title: `${client.user?.username} DISBOARD Bump Reminder`,
       },
       reminder: {
         description: `Your reminder is due!`,
@@ -1023,7 +1023,7 @@ export default {
     15: `Forum Channel`,
   },
   verification: {
-    title: `Ayako Verification`,
+    title: `${client.user?.username} Verification`,
     verify: `Verify`,
     checkDMs: `Verification Started, please Check our DMs`,
     startchannelmessage: `Please **open your DMs** so I can DM you a verification Captcha.\nAfter you opened them, press the Button below to re-/start Verification!.`,
@@ -1033,7 +1033,7 @@ export default {
     kickMsg: (guild: Discord.Guild) =>
       `You have been kicked from \`${guild.name}\` because you didn't verify.\nYou can rejoin anytime with a valid Invite Link`,
     hintmsg: `Type out the traced colored Characters from left to right ➡️\nIgnore all gray decoy Characters\nIgnore Character Cases (upper & lower case)\nThe captcha contains 5 digits`,
-    kickReason: `Ayako Verification | Unverified for too long`,
+    kickReason: `${client.user?.username} Verification | Unverified for too long`,
     openDMs: (user: Discord.User) =>
       `<@${user.id}> **Please open your DM's** in order to verify as human. Then press the Button above to re-/start Verification.\n**You can close your DM's afterwards**.`,
     wrongInput: (solution: string) =>
@@ -1073,8 +1073,8 @@ export default {
   },
   commands: {
     deleteHandler: {
-      reasonCommand: `Command declared as Self-Deleting in Ayako Settings`,
-      reasonReply: `Reply declared as Self-Deleting in Ayako Settings`,
+      reasonCommand: `Command declared as Self-Deleting in ${client.user?.username} Settings`,
+      reasonReply: `Reply declared as Self-Deleting in ${client.user?.username} Settings`,
     },
     antispamHandler: {
       banErrorMessage: (user: Discord.User) =>
@@ -1129,13 +1129,13 @@ export default {
     toxicityCheck: {
       warning: (user: Discord.User) => `<@${user.id}> Please do not use this word!`,
       warnReason: `Repeatedly sending Blacklisted words`,
-      author: `Ayako Blacklist`,
+      author: `${client.user?.username} Blacklist`,
       info: (guild: Discord.Guild) =>
         `The following Words are Blacklisted on **\`${guild.name}\`**:\n`,
     },
     reminder: {
       category: `Info`,
-      description: `Set, view and delete Reminders Ayako will remind you of`,
+      description: `Set, view and delete Reminders ${client.user?.username} will remind you of`,
       usage: [`reminder [duration] [text]`, `reminder delete [reminder ID]`, `reminder list`],
       set: `set`,
       delete: `delete`,
@@ -1149,12 +1149,12 @@ export default {
       editReason: `Edit`,
       del: `Delete Reminder`,
       desc: `Use the Buttons below to Select a Reminder to Edit or Delete\nTo create a Reminder use the \`reminder [duration] [text]\` Command`,
-      author: `Ayako Reminders`,
+      author: `${client.user?.username} Reminders`,
       ends: `Ends`,
       editTitle: `Edit a Reminder`,
       timeLabel: `Insert new Time Below`,
       editLabel: `Insert new Text Below`,
-      editPlaceholder: `Remind me to Vote for Ayako!`,
+      editPlaceholder: `Remind me to Vote for ${client.user?.username}!`,
       timePlaceholder: `11 hours 30 minutes`,
     },
   },
@@ -1171,13 +1171,13 @@ export default {
       active: `Active`,
       mmrPlaceholder: `Select an entry to view`,
       noneFound: `No Settings found`,
-      authorType: (type: string) => `Ayako "${type}" Settings Management`,
-      author: `Ayako Settings Management`,
+      authorType: (type: string) => `${client.user?.username} "${type}" Settings Management`,
+      author: `${client.user?.username} Settings Management`,
       declareCategory: `Declare a Category first`,
       nameDescription: `Colour Code Explanation`,
       selectCategory: `Select a Category`,
       selectSetting: `Select a Setting`,
-      editingAuthor: `Editing Ayako Settings`,
+      editingAuthor: `Editing ${client.user?.username} Settings`,
       commandDesc: `Use this Command to edit your currently selected Setting`,
       useToEdit: (command: Discord.ApplicationCommand) =>
         `Use </${command.name}:${command.id}> to edit this Setting`,
@@ -1246,9 +1246,9 @@ export default {
           "Stopping Members from saying Words or Phrases you'd rather not have them say on your Server",
         expiry: `Let Punishments expire after a certain Amount of Time`,
         'auto-roles': `Automatically assign Roles to newly joining Members or Bots, or Members and Bots`,
-        cooldowns: `Define custom Cooldowns on Ayakos Commands`,
-        'disabled-commands': `Disable certain Commands of Ayako in some Channels, by Role, or across the whole Server`,
-        'disboard-reminders': `Let Ayako remind you to Bump your server on Disboard`,
+        cooldowns: `Define custom Cooldowns on ${client.user?.username}'s Commands`,
+        'disabled-commands': `Disable certain Commands of ${client.user?.username} in some Channels, by Role, or across the whole Server`,
+        'disboard-reminders': `Let ${client.user?.username} remind you to Bump your server on Disboard`,
         'self-roles': `Set Roles as self-assignable, good for Color Roles, Region Roles, Age Roles and similar`,
         separators: `Group the Roles a User has by their Category, good for Servers with many self-assignable and reaction Roles`,
         sticky: `Make Roles and Channel Permissions stick to a Member across re-joins`,
@@ -1258,11 +1258,11 @@ export default {
         leveling: `Reward Members for their Activity with Roles, and let them compete for the top Spots on a Leaderboard`,
         nitro: `Monitor your Servers Boosters, and reward them with continuously boosting`,
         'reaction-roles': `Let Members pick their own Roles by Reactions or Buttons`,
-        'delete-commands': `Delete Commands issued by Users after a certain Amount of Time, or/and Ayakos Response to them`,
+        'delete-commands': `Delete Commands issued by Users after a certain Amount of Time, or/and ${client.user?.username}'s Response to them`,
         logs: `Log Events of every kind into designated Log Channels`,
-        language: `Change the display Language of Ayako`,
-        overview: `Get a quick Overview over the most important Settings of Ayako`,
-        prefix: `Assign a custom Prefix to Ayako`,
+        language: `Change the display Language of ${client.user?.username}`,
+        overview: `Get a quick Overview over the most important Settings of ${client.user?.username}`,
+        prefix: `Assign a custom Prefix to ${client.user?.username}`,
       },
       settings: {
         leveling: {
@@ -1306,27 +1306,27 @@ export default {
           },
           blchannels: {
             name: `Blacklisted Channels`,
-            desc: `Channels ignored by Ayako Leveling`,
+            desc: `Channels ignored by ${client.user?.username} Leveling`,
           },
           blusers: {
             name: `Blacklisted Users`,
-            desc: `Users ignored by Ayako Leveling`,
+            desc: `Users ignored by ${client.user?.username} Leveling`,
           },
           blroles: {
             name: `Blacklisted Roles`,
-            desc: `Roles ignored by Ayako Leveling`,
+            desc: `Roles ignored by ${client.user?.username} Leveling`,
           },
           wlchannels: {
             name: `Whitelisted Channels`,
-            desc: `Channels ignored by Ayako Anti-Spam`,
+            desc: `Channels ignored by ${client.user?.username} Anti-Spam`,
           },
           wlusers: {
             name: `Whitelisted Users`,
-            desc: `Users ignored by Ayako Anti-Spam`,
+            desc: `Users ignored by ${client.user?.username} Anti-Spam`,
           },
           wlroles: {
             name: `Whitelisted Roles`,
-            desc: `Roles ignored by Ayako Anti-Spam`,
+            desc: `Roles ignored by ${client.user?.username} Anti-Spam`,
           },
           lvlupemotes: {
             name: `Reactions`,
@@ -1455,7 +1455,7 @@ export default {
           },
         },
         expiry: {
-          desc: `⚠️Note:⚠️\nAll of these Settings are Ayako-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
+          desc: `⚠️Note:⚠️\nAll of these Settings are ${client.user?.username}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
           bans: {
             name: `Bans Expire`,
           },
@@ -1493,7 +1493,7 @@ export default {
           },
         },
         logs: {
-          ayako: `Ayako Logs`,
+          self: `${client.user?.username} Logs`,
           guild: `Discord Logs`,
           emojievents: {
             name: `Emoji Events`,
@@ -1533,7 +1533,7 @@ export default {
           },
           settingslog: {
             name: `Setting Log`,
-            desc: `Log-Channels for changes to this Ayakos Settings`,
+            desc: `Log-Channels for changes to this ${client.user?.username}'s Settings`,
           },
           channelevents: {
             name: `Channel Events`,
@@ -1562,14 +1562,14 @@ export default {
           requiresAdmin: `This Setting requires Administrator Permissions`,
           prefix: {
             name: `Prefix`,
-            desc: `Ayako Custom Prefix`,
+            desc: `${client.user?.username} Custom Prefix`,
           },
           interactionsmode: {
             name: `Interactions Size`,
           },
           lan: {
             name: `Language`,
-            desc: `Ayakos display Language`,
+            desc: `${client.user?.username}'s display Language`,
           },
           errorchannel: {
             name: `Error Channel`,
@@ -1640,15 +1640,15 @@ export default {
           },
           bpchannelid: {
             name: `Whitelisted Channels`,
-            desc: `Channels ignored by Ayako Blacklist`,
+            desc: `Channels ignored by ${client.user?.username} Blacklist`,
           },
           bpuserid: {
             name: `Whitelisted Users`,
-            desc: `Users ignored by Ayako Blacklist`,
+            desc: `Users ignored by ${client.user?.username} Blacklist`,
           },
           bproleid: {
             name: `Whitelisted Roles`,
-            desc: `Roles ignored by Ayako Blacklist`,
+            desc: `Roles ignored by ${client.user?.username} Blacklist`,
           },
           activechannelid: {
             name: `Active Channels`,
@@ -1666,15 +1666,15 @@ export default {
           field: `You used following Words`,
           bpchannelid: {
             name: `Whitelisted Channels`,
-            desc: `Channels ignored by Ayako Blacklist`,
+            desc: `Channels ignored by ${client.user?.username} Blacklist`,
           },
           bpuserid: {
             name: `Whitelisted Users`,
-            desc: `Users ignored by Ayako Blacklist`,
+            desc: `Users ignored by ${client.user?.username} Blacklist`,
           },
           bproleid: {
             name: `Whitelisted Roles`,
-            desc: `Roles ignored by Ayako Blacklist`,
+            desc: `Roles ignored by ${client.user?.username} Blacklist`,
           },
           words: {
             name: `Words/Phrases`,
@@ -1800,15 +1800,15 @@ export default {
           },
           wlchannelid: {
             name: `Whitelisted Channels`,
-            desc: `Channels ignored by Ayako Anti-Spam`,
+            desc: `Channels ignored by ${client.user?.username} Anti-Spam`,
           },
           wluserid: {
             name: `Whitelisted Users`,
-            desc: `Users ignored by Ayako Anti-Spam`,
+            desc: `Users ignored by ${client.user?.username} Anti-Spam`,
           },
           wlroleid: {
             name: `Whitelisted Roles`,
-            desc: `Roles ignored by Ayako Anti-Spam`,
+            desc: `Roles ignored by ${client.user?.username} Anti-Spam`,
           },
           msgthreshold: {
             name: `Message Threshold`,
@@ -1886,8 +1886,8 @@ export default {
           },
         },
         sticky: {
-          roleReason: `Ayako Sticky Roles`,
-          permReason: `Ayako Sticky Perms`,
+          roleReason: `${client.user?.username} Sticky Roles`,
+          permReason: `${client.user?.username} Sticky Perms`,
           unstickyroles: {
             name: `Un-Sticky Roles`,
             desc: `Roles which are excluded from being sticky`,
@@ -1917,7 +1917,7 @@ export default {
         description: `Create a Giveaway`,
         missingPermissions: "I can't send or view Messages in this Channel",
         invalidTime: `The provided Time was invalid`,
-        author: `Ayako Giveaways`,
+        author: `${client.user?.username} Giveaways`,
         participants: `Participants`,
         winners: `Possible Winners: `,
         end: `End:`,
@@ -1932,7 +1932,7 @@ export default {
         ended: `Ended`,
         winner: `Winner`,
         winners: `Winners`,
-        author: `Ayako Giveaways`,
+        author: `${client.user?.username} Giveaways`,
         title: `Congratulations! You won a Giveaway! [Click me to get to the Giveaway]`,
         trouble: `If you have trouble with your Giveaway, DM or @Mention the User below`,
         getPrize: `To get your Prize, DM or @Mention the User below`,
@@ -1973,16 +1973,16 @@ export default {
     taken: (user: Discord.User, roles: string) => `<@${user.id}> has been taken\n${roles}\nfrom`,
   },
   autotypes: {
-    antispam: `Ayako Anti-Spam`,
-    antiraid: `Ayako Anti-Raid`,
-    antivirus: `Ayako Anti-Virus`,
-    blacklist: `Ayako Blacklist`,
-    statschannel: `Ayako Stats-Channel`,
-    separators: `Ayako Separators`,
-    autopunish: `Ayako Auto-Punish`,
-    selfroles: `Ayako Self-Roles`,
-    nitro: `Ayako Nitro-Monitoring`,
-    autoroles: `Ayako Auto-Roles`,
+    antispam: `${client.user?.username} Anti-Spam`,
+    antiraid: `${client.user?.username} Anti-Raid`,
+    antivirus: `${client.user?.username} Anti-Virus`,
+    blacklist: `${client.user?.username} Blacklist`,
+    statschannel: `${client.user?.username} Stats-Channel`,
+    separators: `${client.user?.username} Separators`,
+    autopunish: `${client.user?.username} Auto-Punish`,
+    selfroles: `${client.user?.username} Self-Roles`,
+    nitro: `${client.user?.username} Nitro-Monitoring`,
+    autoroles: `${client.user?.username} Auto-Roles`,
   },
   mod: {
     warning: {
@@ -2408,7 +2408,7 @@ export default {
           ? `The current Reactions are: ${reactions}`
           : "However, I currently don't have access to the Emotes or there are none set"
       }`,
-    reason: `Ayako Leveling`,
+    reason: `${client.user?.username} Leveling`,
   },
   antivirus: {
     whitelisted: (tick: string) => `${tick} This Link is __not__ Malicious`,
@@ -2435,7 +2435,7 @@ export default {
       hostname: `URL Hostname`,
       baseURL: `Base URL`,
       baseURLhostname: `Base URL Hostname`,
-      author: `Ayako Link Log`,
+      author: `${client.user?.username} Link Log`,
     },
   },
   errors: {
@@ -2495,10 +2495,12 @@ export default {
   },
   antiraid: {
     banAdd: {
-      author: (amount: Strumber) => `${amount} Users were Banned by Ayako Anti-Raid`,
+      author: (amount: Strumber) =>
+        `${amount} Users were Banned by ${client.user?.username} Anti-Raid`,
     },
     kickAdd: {
-      author: (amount: Strumber) => `${amount} Users were Kicked by Ayako Anti-Raid`,
+      author: (amount: Strumber) =>
+        `${amount} Users were Kicked by ${client.user?.username} Anti-Raid`,
     },
   },
   userFlags: {
@@ -2667,14 +2669,14 @@ export default {
   deleteReasons: {
     deleteCommand: `Delete Commands`,
     deleteReply: `Delete Reply`,
-    deleteBlacklist: `Ayako Blacklists`,
-    leveling: `Ayako Leveling`,
-    disboard: `Ayako DISBOARD Reminder`,
-    antivirus: `Ayako Anti-Virus`,
-    antispam: `Ayako Anti-Spam`,
-    cooldown: `Ayako Cooldowns`,
+    deleteBlacklist: `${client.user?.username} Blacklists`,
+    leveling: `${client.user?.username} Leveling`,
+    disboard: `${client.user?.username} DISBOARD Reminder`,
+    antivirus: `${client.user?.username} Anti-Virus`,
+    antispam: `${client.user?.username} Anti-Spam`,
+    cooldown: `${client.user?.username} Cooldowns`,
     abortedMod: `Aborted Mod Command`,
-    afk: `Ayako AFK`,
+    afk: `${client.user?.username} AFK`,
   },
   regions: {
     null: 'Automatic',

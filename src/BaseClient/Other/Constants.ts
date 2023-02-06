@@ -182,7 +182,6 @@ export default {
     base: 11599616,
   },
   standard: {
-    name: 'Ayako',
     prefix: 't!',
     invite:
       'https://discord.com/api/oauth2/authorize?client_id=650691698409734151&permissions=1642787630327&scope=bot%20applications.commands',

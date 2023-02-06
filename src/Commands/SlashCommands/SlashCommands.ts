@@ -1,16 +1,17 @@
 import * as Discord from 'discord.js';
+import client from '../../BaseClient/Client.js';
 
 // Commands
 
 const settings = new Discord.SlashCommandBuilder()
   .setName('settings')
   .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
-  .setDescription("Manage Ayako's Settings")
+  .setDescription(`Manage ${client.user?.username}'s Settings`)
   .setDMPermission(false)
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
       .setName('moderation')
-      .setDescription("Everthing about Ayako's Moderation")
+      .setDescription(`Everthing about ${client.user?.username}'s Moderation`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('anti-spam')
@@ -40,7 +41,7 @@ const settings = new Discord.SlashCommandBuilder()
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
       .setName('automation')
-      .setDescription("Everthing about Ayako's Automation")
+      .setDescription(`Everthing about ${client.user?.username}'s Automation`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-role')
@@ -49,7 +50,9 @@ const settings = new Discord.SlashCommandBuilder()
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('cooldowns')
-          .setDescription('Assign custom defined Cooldowns to Commands of Ayako'),
+          .setDescription(
+            `Assign custom defined Cooldowns to Commands of ${client.user?.username}`,
+          ),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -115,7 +118,7 @@ const settings = new Discord.SlashCommandBuilder()
   .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
       .setName('basic')
-      .setDescription("Basic Settings to modify Ayako's behaviour"),
+      .setDescription(`Basic Settings to modify ${client.user?.username}'s behaviour`),
   );
 
 export default { public: { settings } };
