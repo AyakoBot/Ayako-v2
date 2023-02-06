@@ -4,6 +4,8 @@ import client from '../../../BaseClient/Client.js';
 export default async (guild: Discord.Guild) => {
   const cached = client.cache.integrations.cache.get(guild.id);
   const fetched = await guild.fetchIntegrations();
+
+  client.cache.integrations.cache.delete(guild.id);
   fetched.forEach((f) => client.cache.integrations.set(f, guild.id));
   if (!cached) return;
 
