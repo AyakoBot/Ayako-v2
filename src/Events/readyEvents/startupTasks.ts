@@ -27,6 +27,7 @@ export default async () => {
   //    (await import('./timedFiles/timedManager.js')).default();
   //  });
 
+  (await import('./startupTasks/slashCommands.js')).default();
   (await import('./startupTasks/cache.js')).default();
   (await import('./startupTasks/voteHandle.js')).default();
   // (await import('./startupTasks/separators.js')).default();

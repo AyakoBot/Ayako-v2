@@ -5,7 +5,9 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
-const UpdateWorker = new Worker('./dist/Events/guildEvents/guildMemberUpdate/separatorUpdater.js');
+const UpdateWorker = new Worker(
+  `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
+);
 export const separatorAssigner: Map<string, jobs.Job[]> = new Map();
 
 UpdateWorker.on(
