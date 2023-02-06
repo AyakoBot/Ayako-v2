@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import glob from 'glob';
 
 export default async (cmd: Discord.Interaction) => {
@@ -11,23 +11,25 @@ export default async (cmd: Discord.Interaction) => {
     });
   });
 
-  const subcommand = cmd.options.data.find((c) => c.type === 1);
+  const subcommandGroup = cmd.options.data.find(
+    (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,
+  );
+  const subcommand = (subcommandGroup?.options ?? cmd.options.data).find(
+    (c) => c.type === Discord.ApplicationCommandOptionType.Subcommand,
+  );
 
-  if (!subcommand) {
-    const command = files.find((f) => f.endsWith(`${cmd.commandName}.js`));
-    if (!command) return;
+  const path = () => {
+    const pathArgs: string[] = [];
 
-    (await import(command)).default(cmd);
-    return;
-  }
+    if (cmd.commandName) pathArgs.push(cmd.commandName);
+    if (subcommandGroup?.name) pathArgs.push(subcommandGroup?.name);
+    if (subcommand?.name) pathArgs.push(subcommand?.name);
 
-  if (subcommand) {
-    const command = files.find((f) => f.endsWith(`${cmd.commandName}/${subcommand.name}.js`));
-    if (!command) return;
+    return pathArgs.join('/');
+  };
 
-    (await import(command)).default(cmd);
-    return;
-  }
+  const command = files.find((f) => f.endsWith(`${path()}.js`));
+  if (!command) return;
 
-  throw new Error(`Unknown Command Type encountered\n${JSON.stringify(cmd)}`);
+  (await import(command)).default(cmd);
 };
