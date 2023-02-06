@@ -11,7 +11,7 @@ const settings = new Discord.SlashCommandBuilder()
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
       .setName('moderation')
-      .setDescription(`Everthing about ${client.user?.username}'s Moderation`)
+      .setDescription(`Everything about ${client.user?.username}'s Moderation`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('anti-spam')
