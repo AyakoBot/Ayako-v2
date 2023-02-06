@@ -24,6 +24,11 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
+          .setName('anti-raid')
+          .setDescription('Automatically detect Raids and punish Raiders'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-punish')
           .setDescription('Help Moderators punish consistently'),
       )
@@ -44,7 +49,7 @@ const settings = new Discord.SlashCommandBuilder()
       .setDescription(`Everthing about ${client.user?.username}'s Automation`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
-          .setName('auto-role')
+          .setName('auto-roles')
           .setDescription('Assign Roles to Users and Bots when joining'),
       )
       .addSubcommand(
