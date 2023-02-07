@@ -70,9 +70,9 @@ export type autoroles = {
 
 export type blacklist = {
   active: boolean;
-  bpchannelid?: string[];
-  bproleid?: string[];
-  bpuserid?: string[];
+  wlchannelid?: string[];
+  wlroleid?: string[];
+  wluserid?: string[];
   words?: string[];
   guildid: string;
 };
@@ -81,9 +81,9 @@ export type cooldowns = {
   command: string;
   cooldown: string;
   active: boolean;
-  bpchannelid?: string[];
-  bproleid?: string[];
-  bpuserid?: string[];
+  wlchannelid?: string[];
+  wlroleid?: string[];
+  wluserid?: string[];
   activechannelid?: string[];
   uniquetimestamp: string;
   guildid: string;
@@ -120,20 +120,6 @@ export type deletecommands = {
   command: string;
   wlchannelid: string[];
   activechannelid: string[];
-};
-
-export type disabledcommands = {
-  guildid: string;
-  active: boolean;
-  commands?: string[];
-  channels?: string[];
-  bproleid?: string[];
-  blroleid?: string[];
-  bpuserid?: string[];
-  bluserid?: string[];
-  bpchannelid?: string[];
-  blchannelid?: string[];
-  uniquetimestamp: string;
 };
 
 export type disboard = {
@@ -489,10 +475,10 @@ export type selfroles = {
   roles?: string[];
   onlyone: boolean;
   uniquetimestamp: string;
-  blacklistedroles?: string[];
-  blacklistedusers?: string[];
-  whitelistedroles?: string[];
-  whitelistedusers?: string[];
+  blroles?: string[];
+  blusers?: string[];
+  wlroles?: string[];
+  wlusers?: string[];
   active: boolean;
   name: string;
 };
@@ -600,15 +586,6 @@ export interface giveawaycollecttime {
   msgid: string;
   endtime: number;
   guildid: string;
-}
-
-interface BasicPunishmentsTable {
-  guildid: string;
-  punishment: string;
-  warnamount: string;
-  uniquetimestamp: string;
-  active: boolean;
-  duration: string;
 }
 
 export interface votesettings {

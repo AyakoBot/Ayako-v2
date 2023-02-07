@@ -350,6 +350,6 @@ export default async (
     { embeds: [embed] },
     language,
     undefined,
-    0,
+    10000,
   );
 };
