@@ -1168,12 +1168,33 @@ export default {
     },
     settings: {
       authorType: (type: string) => `${client.user?.username} ${type} Settings`,
+      active: 'Active',
+      wlchannelid: 'Whitelisted Channels',
+      blchannelid: 'Blacklisted Channels',
+      wlroleid: 'Whitelisted Roles',
+      blroleid: 'Blacklisted Roles',
+      wluserid: 'Whitelisted Users',
+      bluserid: 'Blacklisted Roles',
       categories: {
         'anti-spam-punishments': {
           name: `Anti-Spam Punishments`,
         },
         'anti-spam': {
           name: `Anti-Spam`,
+          fields: {
+            msgthreshold: {
+              name: 'Message Threshold',
+            },
+            dupemsgthreshold: {
+              name: 'Dupe Message Threshold',
+            },
+            timeout: {
+              name: 'Timeout (in Seconds)',
+            },
+            deletespam: {
+              name: 'Delete Spam',
+            },
+          },
         },
         'anti-virus': {
           name: `Anti-Virus`,
@@ -1184,7 +1205,18 @@ export default {
         'anti-raid': { name: `Anti-Raid` },
         'auto-punish': { name: `Auto Punish` },
         blacklist: {
+          action: {
+            author: 'Blacklisted Word used',
+            field: 'You used following Words',
+            desc: (words: string) =>
+              `Please refrain from using any of the following Words\nThis __includes__ not blacklisted Variations of following Words\n*Server Staff may punish more strictly for bypassing the Blacklist*\n${words}`,
+          },
           name: `Blacklist`,
+          fields: {
+            words: {
+              name: 'Words / Phrases',
+            },
+          },
         },
         'blacklist-punishments': {
           name: `Blacklist Punishments`,
@@ -1199,7 +1231,23 @@ export default {
         },
         disboard: { name: `Disboard Reminders` },
         'self-roles': { name: `Self Roles` },
-        separators: { name: `Separators` },
+        separators: {
+          name: `Separators`,
+          oneTimeRunner: {
+            name: 'Apply ALL Separators to EVERY Member of your Server',
+            description: 'Can only be run if the previous Process is finished.',
+            cant: "You don't have any Separators set, so you can't uset his function",
+            timeout:
+              'The Operation timed out, please contact Support\nhttps://support.ayakobot.com',
+            recommended:
+              'Are you sure you want to run this Function?\nThis can only be run if the previous Process is finished',
+            stats: (roles: number, members: number, finishTime: string) =>
+              `Adding and Removing \`${roles}\` Roles from \`${members}\` Server Members\nThis Process may take until ${finishTime}.\n\nThis Embed will be updated every Hour (+ Calculation delay depending on the size of your Server)`,
+            answers: '`Yes` or `No`',
+            stillrunning: 'The last initiated Process is still running',
+            finished: 'Process finished, all Roles should be up to Date',
+          },
+        },
         sticky: { name: `Sticky` },
         suggestions: { name: `Suggestions` },
         verification: { name: `Verification` },

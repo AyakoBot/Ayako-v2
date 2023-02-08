@@ -306,6 +306,15 @@ export type policy_users = {
   userid: string;
 };
 
+export type BasicPunishmentsTable = {
+  guildid: string;
+  punishment: string;
+  warnamount: string;
+  uniquetimestamp: string;
+  active: boolean;
+  duration: string;
+};
+
 export type punish_bans = {
   guildid: string;
   userid: string;

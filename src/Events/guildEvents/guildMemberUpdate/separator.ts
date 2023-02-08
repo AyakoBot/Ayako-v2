@@ -158,9 +158,9 @@ export const oneTimeRunner = async (
   }
 
   embed.author = {
-    name: client.ch.stp(language.slashCommands.settings.author, {
-      type: language.slashCommands.settings.settings.separators.type,
-    }),
+    name: language.slashCommands.settings.authorType(
+      language.slashCommands.settings.categories.separators.name,
+    ),
     icon_url: client.objectEmotes.settings.link,
     url: client.customConstants.standard.invite,
   };
@@ -170,12 +170,12 @@ export const oneTimeRunner = async (
   if (!Array.isArray(membersWithRoles)) {
     if (!membersWithRoles) {
       embed.description =
-        language.slashCommands.settings.settings.separators.oneTimeRunner.finished;
+        language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
       m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
     } else {
       embed.description =
-        language.slashCommands.settings.settings.separators.oneTimeRunner.stillrunning;
+        language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning;
 
       m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
     }
@@ -208,15 +208,15 @@ export const oneTimeRunner = async (
     );
 
     embed.author = {
-      name: client.ch.stp(language.slashCommands.settings.author, {
-        type: language.slashCommands.settings.settings.separators.type,
-      }),
+      name: language.slashCommands.settings.authorType(
+        language.slashCommands.settings.categories.separators.name,
+      ),
       icon_url: client.objectEmotes.settings.link,
       url: client.customConstants.standard.invite,
     };
-    embed.description = language.slashCommands.settings.settings.separators.oneTimeRunner.stats(
-      membersWithRoles && membersWithRoles.length ? membersWithRoles.length : '0',
-      membersWithRoles && membersWithRoles.length ? membersWithRoles.length * 4 : '0',
+    embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
+      membersWithRoles && membersWithRoles.length ? membersWithRoles.length : 0,
+      membersWithRoles && membersWithRoles.length ? membersWithRoles.length * 4 : 0,
       `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
     );
 
@@ -386,13 +386,14 @@ const assinger = async (
   if (!membersWithRoles?.length) {
     embed.author = {
       name: language.slashCommands.settings.authorType(
-        language.slashCommands.settings.settings.separators.type,
+        language.slashCommands.settings.categories.separators.name,
       ),
       icon_url: client.objectEmotes.settings.link,
       url: client.customConstants.standard.invite,
     };
 
-    embed.description = language.slashCommands.settings.settings.separators.oneTimeRunner.finished;
+    embed.description =
+      language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
     m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
     client.ch.query(
       'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4 WHERE guildid = $2;',
@@ -423,14 +424,14 @@ const assinger = async (
 
         if (index === membersWithRoles.length - 1 && lastTime) {
           embed.author = {
-            name: client.ch.stp(language.slashCommands.settings.author, {
-              type: language.slashCommands.settings.settings.separators.type,
-            }),
+            name: language.slashCommands.settings.authorType(
+              language.slashCommands.settings.categories.separators.name,
+            ),
             icon_url: client.objectEmotes.settings.link,
             url: client.customConstants.standard.invite,
           };
           embed.description =
-            language.slashCommands.settings.settings.separators.oneTimeRunner.finished;
+            language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
           m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
           client.ch.query(

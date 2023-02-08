@@ -12,11 +12,11 @@ export default async (msg: CT.GuildMessage) => {
   const settings = await getSettings(msg);
   if (!settings) return;
   if (!settings.words?.length) return;
-  if (settings.bpchannelid && settings.bpchannelid.includes(String(msg.channelId))) return;
-  if (settings.bpuserid && settings.bpuserid.includes(String(msg.author.id))) return;
+  if (settings.wlchannelid && settings.wlchannelid.includes(String(msg.channelId))) return;
+  if (settings.wluserid && settings.wluserid.includes(String(msg.author.id))) return;
   if (
-    settings.bproleid &&
-    msg.member.roles.cache.some((role) => settings.bproleid?.includes(role.id))
+    settings.wlroleid &&
+    msg.member.roles.cache.some((role) => settings.wlroleid?.includes(role.id))
   ) {
     return;
   }
@@ -106,14 +106,14 @@ const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.bla
     author: {
       icon_url: client.customConstants.standard.error,
       url: client.customConstants.standard.invite,
-      name: msg.language.slashCommands.settings.settings.blacklist.authorName,
+      name: msg.language.slashCommands.settings.categories.blacklist.action.author,
     },
-    description: msg.language.slashCommands.settings.settings.blacklist.description(
-      settings.words?.map((w) => `\`${w}\``).join(' | '),
+    description: msg.language.slashCommands.settings.categories.blacklist.action.desc(
+      settings.words?.map((w) => `\`${w}\``).join(' | ') as string,
     ),
     fields: [
       {
-        name: msg.language.slashCommands.settings.settings.blacklist.field,
+        name: msg.language.slashCommands.settings.categories.blacklist.action.field,
         value: `${words.map((w) => `\`${w}\``).join(' | ')}`,
         inline: false,
       },

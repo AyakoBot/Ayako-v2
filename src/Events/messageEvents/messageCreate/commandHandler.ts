@@ -125,36 +125,8 @@ const getGuildAllowed = (msg: CT.GuildMessage, command: CT.Command) => {
   return true;
 };
 
-const getCommandIsDisabled = async (msg: CT.GuildMessage, command: CT.Command) => {
-  const getDisabledRows = async () =>
-    client.ch
-      .query('SELECT * FROM disabledcommands WHERE guildid = $1 AND active = true;', [msg.guild.id])
-      .then((r: DBT.disabledcommands[] | null) => r || null);
-
-  const checkDisabled = (rows: DBT.disabledcommands[]) => {
-    const includingRows = rows
-      .filter(
-        (r) =>
-          r.commands?.includes(command.name) &&
-          (!r.channels?.length || r.channels?.includes(msg.channelId)) &&
-          (!r.blroleid || msg.member.roles.cache.some((role) => r.blroleid?.includes(role.id))) &&
-          (!r.bluserid || r.bluserid?.includes(msg.author.id)),
-      )
-      .filter(
-        (r) =>
-          !msg.member?.roles.cache.some((role) => r.bproleid?.includes(role.id)) &&
-          !r.bpuserid?.includes(msg.author.id),
-      );
-
-    if (includingRows.length) return true;
-    return false;
-  };
-
-  const disabledCommandRows = await getDisabledRows();
-  if (disabledCommandRows && disabledCommandRows.length) {
-    const disabled = checkDisabled(disabledCommandRows);
-    if (disabled) return true;
-  }
+const getCommandIsDisabled = async (_msg: CT.GuildMessage, _command: CT.Command) => {
+  // TODO
   return false;
 };
 
@@ -228,9 +200,9 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
   const applyingRows = rows.filter(
     (row) =>
       (!row.activechannelid?.length || row.activechannelid?.includes(msg.channelId)) &&
-      !row.bpchannelid?.includes(msg.channelId) &&
-      !row.bpuserid?.includes(msg.author.id) &&
-      !row.bproleid?.some((r) => msg.member.roles.cache.has(r)),
+      !row.wlchannelid?.includes(msg.channelId) &&
+      !row.wluserid?.includes(msg.author.id) &&
+      !row.wlroleid?.some((r) => msg.member.roles.cache.has(r)),
   );
 
   const applyingCooldown = Math.max(...applyingRows.map((r) => Number(r.cooldown) * 1000));

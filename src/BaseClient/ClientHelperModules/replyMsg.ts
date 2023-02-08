@@ -39,13 +39,13 @@ export const cooldownHandler = async (
   const r = await getCooldownRow(msg.guild, command);
   if (!r) return;
   if (!authorId) return;
-  if (r.bpuserid?.includes(String(authorId))) return;
-  if (msg.channel && r.bpchannelid?.includes(msg.channel.id)) return;
+  if (r.wluserid?.includes(String(authorId))) return;
+  if (msg.channel && r.wlchannelid?.includes(msg.channel.id)) return;
 
   if (msg.member) {
     const { roles } = msg.member;
-    if (Array.isArray(roles) && r.bproleid?.some((id) => roles.includes(id))) return;
-    if ('cache' in roles && r.bproleid?.some((id) => roles.cache.has(id))) return;
+    if (Array.isArray(roles) && r.wlroleid?.some((id) => roles.includes(id))) return;
+    if ('cache' in roles && r.wlroleid?.some((id) => roles.cache.has(id))) return;
   }
   if (r.activechannelid?.length && !r.activechannelid?.includes(String(msg.channelId))) return;
 
