@@ -555,9 +555,7 @@ export default {
         'delete-commands': 'deletecommands',
         suggestions: 'suggestionsettings',
         logs: 'logchannels',
-        language: 'guildsettings',
-        prefix: 'guildsettings',
-        overview: 'guildsettings',
+        basic: 'guildsettings',
         'leveling-multi-channels': 'levelingmultiplierchannels',
         'leveling-multi-roles': 'levelingmultiplierroles',
         'level-roles': 'levelingroles',
@@ -565,6 +563,7 @@ export default {
         'nitro-rules': 'nitrorules',
         'reaction-button-settings': 'rrbuttons',
         'reaction-role-settings': 'rrreactions',
+        vote: 'votesettings',
       },
       mrmIdentifiers: {
         'anti-spam-punishments': [{ ident: 'warnamount', type: 'string' }],

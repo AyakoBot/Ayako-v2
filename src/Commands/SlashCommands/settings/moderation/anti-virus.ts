@@ -14,12 +14,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
 
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['anti-virus']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.blacklist;
-  const name = 'blacklist';
+    .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
+  const lan = language.slashCommands.settings.categories['anti-virus'];
+  const name = 'anti-virus';
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -28,9 +28,6 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
         name: language.slashCommands.settings.authorType(lan.name),
         url: client.customConstants.standard.invite,
       },
-      description: settings?.words?.length
-        ? `${lan.fields.words.name} ${client.ch.util.makeCodeBlock(settings.words.join(', '))}`
-        : language.none,
       fields: [
         {
           name: language.slashCommands.settings.active,
@@ -38,18 +35,39 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
+          name: lan.fields.minimizetof.name,
+          value: embedParsers.boolean(settings?.minimizetof, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.minimize.name,
+          value: embedParsers.number(settings?.minimize, language),
+          inline: true,
+        },
+        {
+          name: '\u200b',
+          value: '\u200b',
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroleid, language),
+          name: lan.fields.deletetof.name,
+          value: embedParsers.boolean(settings?.deletetof, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.delete.name,
+          value: embedParsers.number(settings?.delete, language),
+          inline: true,
+        },
+
+        {
+          name: lan.fields.linklogging.name,
+          value: embedParsers.boolean(settings?.linklogging, language),
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wluser,
-          value: embedParsers.users(settings?.wluserid, language),
+          name: lan.fields.linklogchannels.name,
+          value: embedParsers.channels(settings?.linklogchannels, language),
           inline: false,
         },
       ],
@@ -63,14 +81,18 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
     },
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.words, 'words', name)],
+      components: [
+        buttonParsers.specific(language, settings?.deletetof, 'deletetof', name),
+        buttonParsers.specific(language, settings?.delete, 'delete', name),
+        buttonParsers.specific(language, settings?.minimizetof, 'minimizetof', name),
+        buttonParsers.specific(language, settings?.minimize, 'minimize', name),
+      ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', 'wlchannel'),
-        buttonParsers.global(language, settings?.wlroleid, 'wlroleid', 'wlrole'),
-        buttonParsers.global(language, settings?.wluserid, 'wluserid', 'wluser'),
+        buttonParsers.specific(language, settings?.linklogging, 'linklogging', name),
+        buttonParsers.specific(language, settings?.linklogchannels, 'linklogchannels', name, 'channel'),
       ],
     },
   ];

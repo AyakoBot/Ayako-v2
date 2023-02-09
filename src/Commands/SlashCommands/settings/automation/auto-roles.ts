@@ -14,12 +14,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
 
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['auto-roles']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.blacklist;
-  const name = 'blacklist';
+    .then((r: DBT.autoroles[] | null) => (r ? r[0] : null));
+  const lan = language.slashCommands.settings.categories['auto-roles'];
+  const name = 'auto-roles';
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -28,9 +28,6 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
         name: language.slashCommands.settings.authorType(lan.name),
         url: client.customConstants.standard.invite,
       },
-      description: settings?.words?.length
-        ? `${lan.fields.words.name} ${client.ch.util.makeCodeBlock(settings.words.join(', '))}`
-        : language.none,
       fields: [
         {
           name: language.slashCommands.settings.active,
@@ -38,19 +35,19 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
-          inline: false,
+          name: lan.fields.botroleid.name,
+          value: embedParsers.roles(settings?.botroleid, language),
+          inline: true,
         },
         {
-          name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroleid, language),
-          inline: false,
+          name: lan.fields.userroleid.name,
+          value: embedParsers.roles(settings?.userroleid, language),
+          inline: true,
         },
         {
-          name: language.slashCommands.settings.wluser,
-          value: embedParsers.users(settings?.wluserid, language),
-          inline: false,
+          name: lan.fields.allroleid.name,
+          value: embedParsers.roles(settings?.allroleid, language),
+          inline: true,
         },
       ],
     },
@@ -63,14 +60,10 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
     },
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.words, 'words', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', 'wlchannel'),
-        buttonParsers.global(language, settings?.wlroleid, 'wlroleid', 'wlrole'),
-        buttonParsers.global(language, settings?.wluserid, 'wluserid', 'wluser'),
+        buttonParsers.specific(language, settings?.botroleid, 'botroleid', name, 'role'),
+        buttonParsers.specific(language, settings?.userroleid, 'userroleid', name, 'role'),
+        buttonParsers.specific(language, settings?.allroleid, 'allroleid', name, 'role'),
       ],
     },
   ];

@@ -385,5 +385,17 @@
     "id": "971922434901024798",
     "animated": false,
     "link": "https://cdn.discordapp.com/emojis/971922434901024798.png"
+  },
+  "Role": {
+    "name": "Role",
+    "id": "1073251376047587328",
+    "animated": false,
+    "link": "https://cdn.discordapp.com/emojis/1073251376047587328.png"
+  },
+  "Member": {
+    "name": "Member",
+    "id": "1073254214995816489",
+    "animated": false,
+    "link": "https://cdn.discordapp.com/emojis/1073254214995816489.png"
   }
 }

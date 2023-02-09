@@ -50,3 +50,4 @@ export const getSerializedChannelPerms  = (await import(`./ClientHelperModules/g
 export const isManageable               = (await import(`./ClientHelperModules/isManageable.js`)).default;
 export const getEvents                  = (await import(`./ClientHelperModules/getEvents.js`)).default;
 export const getNameAndFileType         = (await import(`./ClientHelperModules/getNameAndFileType.js`)).default;
+export const settingsHelpers            = (await import(`./ClientHelperModules/settingsHelpers.js`)).default

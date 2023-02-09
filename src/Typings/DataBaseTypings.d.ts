@@ -13,36 +13,45 @@ export type afk = {
 export type antiraid = {
   guildid: string;
   active: boolean;
+
+  punishmenttof?: boolean;
   punishment: string;
+
   posttof?: boolean;
   postchannel?: string;
-  pingroles?: string[];
-  pingusers?: string[];
+
   time: string;
   jointhreshold: string;
-  punishmenttof?: boolean;
+
+  pingroles?: string[];
+  pingusers?: string[];
 };
 
 export type antispam = {
+  forcedisabled?: boolean;
   guildid: string;
   active: boolean;
-  wluserid?: string[];
-  wlroleid?: string[];
-  wlchannelid?: string[];
-  forcedisabled?: boolean;
+
   msgthreshold: string;
   dupemsgthreshold: string;
   timeout: string;
   deletespam: boolean;
+
+  wluserid?: string[];
+  wlroleid?: string[];
+  wlchannelid?: string[];
 };
 
 export type antivirus = {
   guildid: string;
   active: boolean;
-  minimize?: string;
-  delete?: string;
+
   minimizetof: boolean;
+  minimize?: string;
+
   deletetof: boolean;
+  delete?: string;
+
   linklogging: boolean;
   linklogchannels?: string[];
 };
@@ -50,12 +59,15 @@ export type antivirus = {
 export type autopunish = {
   guildid: string;
   uniquetimestamp: string;
-  duration?: string;
+  active: boolean;
+
   warnamount: string;
   punishment?: string;
-  active: boolean;
+  duration?: string;
+
   addroles?: string[];
   removeroles?: string[];
+
   confirmationreq: boolean;
   punishmentawaittime: string;
 };
@@ -63,33 +75,43 @@ export type autopunish = {
 export type autoroles = {
   guildid: string;
   active: boolean;
+
   botroleid?: string[];
   userroleid?: string[];
   allroleid?: string[];
 };
 
 export type blacklist = {
+  guildid: string;
   active: boolean;
+
+  words?: string[];
+
   wlchannelid?: string[];
   wlroleid?: string[];
   wluserid?: string[];
-  words?: string[];
-  guildid: string;
 };
 
 export type cooldowns = {
-  command: string;
-  cooldown: string;
-  active: boolean;
-  wlchannelid?: string[];
-  wlroleid?: string[];
-  wluserid?: string[];
-  activechannelid?: string[];
   uniquetimestamp: string;
   guildid: string;
+  active: boolean;
+
+  command: string;
+  cooldown: string;
+
+  activechannelid?: string[];
+  wlchannelid?: string[];
+
+  wlroleid?: string[];
+  wluserid?: string[];
 };
 
 export type customembeds = {
+  name?: string;
+  guildid: string;
+  uniquetimestamp: string;
+
   color?: string;
   title?: string;
   url?: string;
@@ -105,35 +127,38 @@ export type customembeds = {
   timestamp?: string;
   footertext?: string;
   footericon_url?: string;
-  uniquetimestamp: string;
-  guildid: string;
-  name?: string;
 };
 
 export type deletecommands = {
   uniquetimestamp: string;
   guildid: string;
+  active: boolean;
+
+  command: string;
+  deletetimeout?: string;
+
   deletecommand: boolean;
   deletereply: boolean;
-  deletetimeout?: string;
-  active: boolean;
-  command: string;
+
   wlchannelid: string[];
   activechannelid: string[];
 };
 
 export type disboard = {
   guildid: string;
-  active: boolean;
   nextbump?: string;
+  tempchannelid?: string;
+  msgid?: string;
+  active: boolean;
+
+  deletereply: boolean;
   channelid?: string;
+
+  repeatenabled: boolean;
   repeatreminder: string;
+
   roles?: string[];
   users?: string[];
-  tempchannelid?: string;
-  deletereply: boolean;
-  msgid?: string;
-  repeatenabled: boolean;
 };
 
 export type giveaways = {
@@ -153,11 +178,11 @@ export type giveaways = {
 
 export type guildsettings = {
   guildid: string;
+
   prefix?: string;
   interactionsmode: boolean;
   lan: string;
   errorchannel?: string;
-  vanity?: string;
 };
 
 export type level = {
@@ -177,15 +202,16 @@ export type leveling = {
   rolemode: boolean;
 
   lvlupmode?: string;
-  lvlupemotes?: (string | string)[];
+  // saved as ID
+  lvlupemotes?: string[];
   lvlupdeltimeout?: string;
   embed?: string;
   lvlupchannels?: string[];
 
   ignoreprefixes: boolean;
   prefixes?: string[];
-  blchannels?: string[];
 
+  blchannels?: string[];
   blroles?: string[];
   blusers?: string[];
   wlchannels?: string[];
@@ -194,30 +220,35 @@ export type leveling = {
 };
 
 export type levelingmultiplierchannels = {
+  uniquetimestamp: string;
   guildid: string;
+
   channels?: string[];
   multiplier: string;
-  uniquetimestamp: string;
 };
 
 export type levelingmultiroles = {
   guildid: string;
+  uniquetimestamp: string;
+
   roles?: string[];
   multiplier: string;
-  uniquetimestamp: string;
 };
 
 export type levelingroles = {
   guildid: string;
+  uniquetimestamp: string;
+
   level?: string;
   roles?: string[];
-  uniquetimestamp: string;
 };
 
 export type levelingruleschannels = {
   guildid: string;
-  channels?: string[];
+
   rules?: string;
+  channels?: string[];
+
   uniquetimestamp: string;
   hasleastattachments?: string;
   hasmostattachments?: string;
@@ -241,6 +272,7 @@ export type levelingruleschannels = {
 
 export type logchannels = {
   guildid: string;
+
   applicationevents: string[];
   automodevents: string[];
   channelevents: string[];
@@ -264,21 +296,27 @@ export type logchannels = {
 
 export type expiry = {
   guildid: string;
+
   bans: boolean;
-  channelbans: boolean;
-  kicks: boolean;
-  mutes: boolean;
-  warns: boolean;
   banstime?: string;
+
+  channelbans: boolean;
   channelbanstime?: string;
+
+  kicks: boolean;
   kickstime?: string;
+
+  mutes: boolean;
   mutestime?: string;
+
+  warns: boolean;
   warnstime?: string;
 };
 
 export type nitroroles = {
   guildid: string;
   uniquetimestamp: string;
+
   roles?: string[];
   days?: string;
 };
@@ -286,6 +324,7 @@ export type nitroroles = {
 export type nitrosettings = {
   guildid: string;
   active: boolean;
+
   logchannels?: string[];
   rolemode: boolean;
 };
@@ -308,10 +347,11 @@ export type policy_users = {
 
 export type BasicPunishmentsTable = {
   guildid: string;
-  punishment: string;
-  warnamount: string;
   uniquetimestamp: string;
   active: boolean;
+
+  punishment: string;
+  warnamount: string;
   duration: string;
 };
 
@@ -430,13 +470,14 @@ export type reminders = {
 
 export type roleseparator = {
   guildid: string;
-  separator: string;
+  uniquetimestamp: string;
   active: boolean;
+
+  name: string;
+  separator: string;
   stoprole?: string;
   isvarying: boolean;
   roles?: string[];
-  uniquetimestamp: string;
-  name: string;
 };
 
 export type roleseparatorsettings = {
@@ -452,44 +493,50 @@ export type roleseparatorsettings = {
 
 export type rrbuttons = {
   uniquetimestamp: string;
+  guildid: string;
+  active: boolean;
+
   roles?: string[];
   emoteid?: string;
   buttontext?: string;
-  active: boolean;
   messagelink: string;
-  guildid: string;
 };
 
 export type rrreactions = {
   uniquetimestamp: string;
+  active: boolean;
+  guildid: string;
+
   emoteid: string;
   roles?: string[];
-  active: boolean;
   messagelink: string;
-  guildid: string;
 };
 
 export type rrsettings = {
   guildid: string;
-  messagelink: string;
   uniquetimestamp: string;
-  name: string;
-  onlyone?: boolean;
   active: boolean;
+
+  messagelink: string;
+  name: string;
+
+  onlyone?: boolean;
   anyroles?: string[];
 };
 
 export type selfroles = {
   guildid: string;
-  roles?: string[];
-  onlyone: boolean;
   uniquetimestamp: string;
+  active: boolean;
+
+  name: string;
+  onlyone: boolean;
+
+  roles?: string[];
   blroles?: string[];
   blusers?: string[];
   wlroles?: string[];
   wlusers?: string[];
-  active: boolean;
-  name: string;
 };
 
 export type stats = {
@@ -513,10 +560,12 @@ export type statschannel = {
 
 export type sticky = {
   guildid: string;
-  roles?: string[];
-  stickyrolesmode: boolean;
-  stickyrolesactive: boolean;
+
   stickypermsactive: boolean;
+  stickyrolesactive: boolean;
+
+  stickyrolesmode: boolean;
+  roles?: string[];
 };
 
 export type stickypermmembers = {
@@ -536,12 +585,16 @@ export type stickyrolemembers = {
 export type suggestionsettings = {
   guildid: string;
   active: boolean;
+
   channelid?: string;
-  novoteroles?: string[];
-  novoteusers?: string[];
   approverroleid?: string[];
+
   anonvote: boolean;
   anonsuggestion: boolean;
+
+  novoteroles?: string[];
+  novoteusers?: string[];
+
   nosendroles?: string[];
   nosendusers?: string[];
 };
@@ -562,31 +615,37 @@ export type users = {
 
 export type verification = {
   guildid: string;
-  logchannel?: string;
-  finishedrole?: string;
-  pendingrole?: string;
-  startchannel?: string;
-  selfstart: boolean;
-  kickafter?: string;
-  kicktof: boolean;
   active: boolean;
+
+  selfstart: boolean;
+  startchannel?: string;
+  logchannel?: string;
+
+  pendingrole?: string;
+  finishedrole?: string;
+
+  kicktof: boolean;
+  kickafter?: string;
 };
 
 export type welcome = {
   guildid: string;
-  channelid?: string;
   active: boolean;
+
+  channelid?: string;
   embed: string;
+  pingjoin: boolean;
+
   pingroles?: string[];
   pingusers?: string[];
-  pingjoin: boolean;
 };
 
 export type levelingmultiplierroles = {
+  uniquetimestamp: string;
   guildid: string;
+
   roles?: string[];
   multiplier?: number;
-  uniquetimestamp: string;
 };
 
 export interface giveawaycollecttime {
@@ -599,6 +658,8 @@ export interface giveawaycollecttime {
 
 export interface votesettings {
   guildid: string;
+  active: boolean;
+
   token: string;
   reminders: boolean;
   announcementchannel: string;
@@ -609,6 +670,7 @@ type rewardtype = 'role' | 'currency' | 'xp' | 'xpmultiplier';
 export interface voterewards {
   guildid: string;
   uniquetimestamp: string;
+
   tier: number;
   rewardtype;
   reward: string;

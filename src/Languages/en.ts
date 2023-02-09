@@ -4,6 +4,18 @@ import client from '../BaseClient/Client.js';
 
 type Strumber = string | number;
 
+const punishmentFields = {
+  punishment: {
+    name: 'Punishment',
+  },
+  warnamount: {
+    name: 'Warn Amount',
+  },
+  duration: {
+    name: 'Duration',
+  },
+};
+
 const getUser = (user: Discord.User) =>
   `${user.bot ? 'Bot' : 'User'} <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
     user.id
@@ -1169,15 +1181,16 @@ export default {
     settings: {
       authorType: (type: string) => `${client.user?.username} ${type} Settings`,
       active: 'Active',
-      wlchannelid: 'Whitelisted Channels',
-      blchannelid: 'Blacklisted Channels',
-      wlroleid: 'Whitelisted Roles',
-      blroleid: 'Blacklisted Roles',
-      wluserid: 'Whitelisted Users',
-      bluserid: 'Blacklisted Roles',
+      wlchannel: 'Whitelisted Channels',
+      blchannel: 'Blacklisted Channels',
+      wlrole: 'Whitelisted Roles',
+      blrole: 'Blacklisted Roles',
+      wluser: 'Whitelisted Users',
+      bluser: 'Blacklisted Roles',
       categories: {
         'anti-spam-punishments': {
           name: `Anti-Spam Punishments`,
+          fields: punishmentFields,
         },
         'anti-spam': {
           name: `Anti-Spam`,
@@ -1198,12 +1211,89 @@ export default {
         },
         'anti-virus': {
           name: `Anti-Virus`,
+          fields: {
+            minimize: {
+              name: 'Minimize Timeout',
+            },
+            delete: {
+              name: 'Delete Timeout',
+            },
+            minimizetof: {
+              name: 'Minimize',
+            },
+            deletetof: {
+              name: 'Delete',
+            },
+            linklogging: {
+              name: 'Log Links',
+            },
+            linklogchannels: {
+              name: 'Links Log-Channels',
+            },
+          },
         },
         'anti-virus-punishments': {
           name: `Anti-Virus Punishments`,
+          fields: punishmentFields,
         },
-        'anti-raid': { name: `Anti-Raid` },
-        'auto-punish': { name: `Auto Punish` },
+        'anti-raid': {
+          name: `Anti-Raid`,
+          fields: {
+            punishment: {
+              name: 'Punishment',
+            },
+            posttof: {
+              name: 'Post',
+            },
+            postchannel: {
+              name: 'Post-Channels',
+            },
+            pingroles: {
+              name: 'Ping Roles',
+            },
+            pingusers: {
+              name: 'Ping Users',
+            },
+            time: {
+              name: 'Join-Remember Time',
+            },
+            jointhreshold: {
+              name: 'Join Threshold',
+            },
+            punishmenttof: {
+              name: 'Punish',
+            },
+          },
+        },
+        'auto-punish': {
+          name: `Auto Punish`,
+          fields: {
+            duration: {
+              name: 'Punishment',
+            },
+            posttof: {
+              name: 'Post',
+            },
+            postchannel: {
+              name: 'Post-Channels',
+            },
+            pingroles: {
+              name: 'Ping Roles',
+            },
+            pingusers: {
+              name: 'Ping Users',
+            },
+            time: {
+              name: 'Join-Remember Time',
+            },
+            jointhreshold: {
+              name: 'Join Threshold',
+            },
+            punishmenttof: {
+              name: 'Punish',
+            },
+          },
+        },
         blacklist: {
           action: {
             author: 'Blacklisted Word used',
@@ -1220,19 +1310,111 @@ export default {
         },
         'blacklist-punishments': {
           name: `Blacklist Punishments`,
+          fields: punishmentFields,
         },
         expiry: {
           desc: `⚠️Note:⚠️\nAll of these Settings are ${client.user?.username}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
           name: `Expiry`,
+          fields: {
+            bans: {
+              name: 'Bans',
+            },
+            channelbans: {
+              name: 'Channel-Bans',
+            },
+            kicks: {
+              name: 'Kicks',
+            },
+            mutes: {
+              name: 'Mutes',
+            },
+            warns: {
+              name: 'Warns',
+            },
+            banstime: {
+              name: 'Bans-Expire Time',
+            },
+            channelbanstime: {
+              name: 'Channel-Bans-Expire Time',
+            },
+            kickstime: {
+              name: 'Kicks-Expire Time',
+            },
+            mutestime: {
+              name: 'Mutes-Expire Time',
+            },
+            warnstime: {
+              name: 'Warns-Expire Time',
+            },
+          },
         },
-        'auto-roles': { name: `Auto Roles` },
+        'auto-roles': {
+          name: `Auto Roles`,
+          fields: {
+            botroleid: {
+              name: 'Bot Role IDs',
+            },
+            userroleid: {
+              name: 'User Role IDs',
+            },
+            allroleid: {
+              name: 'All Role IDs',
+            },
+          },
+        },
         cooldowns: {
           name: `Cooldowns`,
+          fields: {
+            command: {
+              name: 'Command',
+            },
+            cooldown: {
+              name: 'Cooldown',
+            },
+            activechannelid: {
+              name: 'Active Channels',
+            },
+          },
         },
-        disboard: { name: `Disboard Reminders` },
-        'self-roles': { name: `Self Roles` },
+        'disboard-reminders': {
+          name: `Disboard Reminders`,
+          fields: {
+            channelid: {
+              name: 'Channel',
+            },
+            repeatreminder: {
+              name: 'Repeat Reminder Timeout',
+            },
+            roles: {
+              name: 'Ping Roles',
+            },
+            users: {
+              name: 'Ping Users',
+            },
+            deletereply: {
+              name: 'Delete Reply',
+            },
+            repeatenabled: {
+              name: 'Repeat Reminder',
+            },
+          },
+        },
+        'self-roles': {
+          name: `Self Roles`,
+          fields: {
+            roles: {
+              name: 'Roles',
+            },
+            onlyone: {
+              name: 'Only One assignable',
+            },
+            name: {
+              name: 'Name',
+            },
+          },
+        },
         separators: {
-          name: `Separators`,
+          name: `Role Separators`,
           oneTimeRunner: {
             name: 'Apply ALL Separators to EVERY Member of your Server',
             description: 'Can only be run if the previous Process is finished.',
@@ -1247,20 +1429,299 @@ export default {
             stillrunning: 'The last initiated Process is still running',
             finished: 'Process finished, all Roles should be up to Date',
           },
+          fields: {
+            separator: {
+              name: 'Separator Role',
+            },
+            stoprole: {
+              name: 'Stop Role',
+            },
+            isvarying: {
+              name: 'Is Dynamic',
+            },
+            roles: {
+              name: 'Roles',
+            },
+            name: {
+              name: 'Name',
+            },
+          },
         },
-        sticky: { name: `Sticky` },
-        suggestions: { name: `Suggestions` },
-        verification: { name: `Verification` },
-        welcome: { name: `Welcome` },
-        leveling: { name: `Leveling` },
-        'nitro-monitoring': { name: `Nitro Monitoring` },
-        'reaction-roles': { name: `Reaction Roles` },
-        'button-roles': { name: `Button Roles` },
-        'delete-commands': { name: `Delete Commands` },
-        logs: { name: `Logs` },
-        overview: { name: `Overview` },
-        seprators: { name: `Role Separators` },
-        basic: { name: 'Baisc' },
+        sticky: {
+          name: `Sticky`,
+          unsticky: 'These Roles will __not__ be sticky',
+          sticky: 'These Roles will be sticky',
+          fields: {
+            roles: {
+              name: 'Separator Role',
+            },
+            stickyrolesmode: {
+              name: 'Roles Mode',
+            },
+            stickyrolesactive: {
+              name: 'Sticky-Roles Active',
+            },
+            stickypermsactive: {
+              name: 'Sticky-Perms Active',
+            },
+          },
+        },
+        suggestions: {
+          name: `Suggestions`,
+          fields: {
+            channelid: {
+              name: 'Suggestion Channel',
+            },
+            novoteroles: {
+              name: 'Vote-Banned Roles',
+            },
+            novoteusers: {
+              name: 'Vote-Banner Users',
+            },
+            approverroleid: {
+              name: 'Approver Roles',
+            },
+            anonvote: {
+              name: 'Anonymous Votes',
+            },
+            anonsuggestion: {
+              name: 'Anonymous Suggestions',
+            },
+            nosendroles: {
+              name: 'Suggest-Banned Roles',
+            },
+            nosendusers: {
+              name: 'Suggest-Banned Users',
+            },
+          },
+        },
+        verification: {
+          name: `Verification`,
+          fields: {
+            logchannel: {
+              name: 'Log Channel',
+            },
+            finishedrole: {
+              name: 'Verified Role',
+            },
+            pendingrole: {
+              name: 'Pending Role',
+            },
+            startchannel: {
+              name: 'Start Channel',
+            },
+            selfstart: {
+              name: 'Self-Start',
+            },
+            kickafter: {
+              name: 'Kick Timeout',
+            },
+            kicktof: {
+              name: 'Kick',
+            },
+          },
+        },
+        welcome: {
+          name: `Welcome`,
+          fields: {
+            channelid: {
+              name: 'Welcome Channel',
+            },
+            embed: {
+              name: 'Welcome Embed',
+            },
+            pingroles: {
+              name: 'Ping Roles',
+            },
+            pingusers: {
+              name: 'Ping Users',
+            },
+            pingjoin: {
+              name: 'Ping joined User',
+            },
+          },
+        },
+        vote: {
+          name: 'Vote',
+          desc: 'Announce Votes for your Server or Bot on Top.gg',
+          fields: {
+            token: {
+              name: 'Token',
+            },
+            reminders: {
+              name: 'Reminder',
+            },
+            announcementchannel: {
+              name: 'Announcement Channel',
+            },
+          },
+        },
+        leveling: {
+          name: `Leveling`,
+          replace: 'Replace',
+          stack: 'Stack',
+          messages: 'Messages',
+          reactions: 'Reactions',
+          silent: 'Silent',
+          fields: {
+            xppermsg: {
+              name: 'XP per Message',
+            },
+            xpmultiplier: {
+              name: 'XP Multiplier',
+            },
+            rolemode: {
+              name: 'Role Mode',
+            },
+            lvlupmode: {
+              name: 'Level-up Mode',
+            },
+            lvlupemotes: {
+              name: 'Level-up Emotes',
+            },
+            lvlupdeltimeout: {
+              name: 'Level-up Deletion Timeout',
+            },
+            embed: {
+              name: 'Level-up Embed',
+            },
+            lvlupchannels: {
+              name: 'Level-up Channels',
+            },
+            ignoreprefixes: {
+              name: 'Ignore Prefixes',
+            },
+            prefixes: {
+              name: 'Prefixes',
+            },
+          },
+        },
+        'nitro-monitoring': {
+          name: `Nitro Monitoring`,
+          fields: {
+            logchannels: {
+              name: 'Log Channels',
+            },
+            rolemode: {
+              name: 'Role Mode',
+            },
+          },
+        },
+        'reaction-roles': {
+          name: `Reaction Roles`,
+          fields: {
+            todo: {
+              name: 'todo',
+            },
+          },
+        },
+        'button-roles': {
+          name: `Button Roles`,
+          fields: {
+            todo: {
+              name: 'todo',
+            },
+          },
+        },
+        'delete-commands': {
+          name: `Delete Commands`,
+          fields: {
+            deletecommand: {
+              name: 'Delete Command',
+            },
+            deletereply: {
+              name: 'Delete Reply',
+            },
+            deletetimeout: {
+              name: 'Delete Timeout',
+            },
+            command: {
+              name: 'Command',
+            },
+            activechannelid: {
+              name: 'Active Channel',
+            },
+          },
+        },
+        logs: {
+          name: `Logs`,
+          fields: {
+            applicationevents: {
+              name: 'Application Events',
+            },
+            automodevents: {
+              name: 'Auto-Mod Events',
+            },
+            channelevents: {
+              name: 'Channel Events',
+            },
+            emojievents: {
+              name: 'Emoji Events',
+            },
+            guildevents: {
+              name: 'Server Events',
+            },
+            scheduledeventevents: {
+              name: 'Scheduled Event Events',
+            },
+            inviteevents: {
+              name: 'Invite Events',
+            },
+            messageevents: {
+              name: 'Message Events',
+            },
+            roleevents: {
+              name: 'Role Events',
+            },
+            stageevents: {
+              name: 'Stage Events',
+            },
+            stickerevents: {
+              name: 'Sticker Events',
+            },
+            typingevents: {
+              name: 'Typing Events',
+            },
+            userevents: {
+              name: 'User Events',
+            },
+            voiceevents: {
+              name: 'Voice Events',
+            },
+            webhookevents: {
+              name: 'Webhook Events',
+            },
+            settingslog: {
+              name: 'Settings Log',
+            },
+            modlog: {
+              name: 'Moderation Log',
+            },
+            reactionevents: {
+              name: 'Reaction Events',
+            },
+            memberevents: {
+              name: 'Memober Events',
+            },
+          },
+        },
+        basic: {
+          name: `Basic`,
+          fields: {
+            prefix: {
+              name: 'Prefix',
+            },
+            interactionsmode: {
+              name: 'Interactions Mode',
+            },
+            lan: {
+              name: 'Language',
+            },
+            errorchannel: {
+              name: 'Error Channel',
+            },
+          },
+        },
       },
     },
     giveaway: {

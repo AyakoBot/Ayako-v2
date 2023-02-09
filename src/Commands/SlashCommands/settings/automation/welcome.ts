@@ -14,12 +14,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
 
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.welcome} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.blacklist;
-  const name = 'blacklist';
+    .then((r: DBT.welcome[] | null) => (r ? r[0] : null));
+  const lan = language.slashCommands.settings.categories.welcome;
+  const name = 'welcome';
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -28,9 +28,6 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
         name: language.slashCommands.settings.authorType(lan.name),
         url: client.customConstants.standard.invite,
       },
-      description: settings?.words?.length
-        ? `${lan.fields.words.name} ${client.ch.util.makeCodeBlock(settings.words.join(', '))}`
-        : language.none,
       fields: [
         {
           name: language.slashCommands.settings.active,
@@ -38,18 +35,28 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
+          name: lan.fields.channelid.name,
+          value: embedParsers.channel(settings?.channelid, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.embed.name,
+          value: await embedParsers.embed(settings?.embed, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.pingjoin.name,
+          value: embedParsers.boolean(settings?.pingjoin, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.pingroles.name,
+          value: embedParsers.roles(settings?.pingroles, language),
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroleid, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wluser,
-          value: embedParsers.users(settings?.wluserid, language),
+          name: lan.fields.pingusers.name,
+          value: embedParsers.users(settings?.pingusers, language),
           inline: false,
         },
       ],
@@ -63,14 +70,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
     },
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.words, 'words', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', 'wlchannel'),
-        buttonParsers.global(language, settings?.wlroleid, 'wlroleid', 'wlrole'),
-        buttonParsers.global(language, settings?.wluserid, 'wluserid', 'wluser'),
+        buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
+        buttonParsers.specific(language, settings?.embed, 'embed', name),
+        buttonParsers.specific(language, settings?.pingjoin, 'pingjoin', name),
+        buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, 'role'),
+        buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, 'user'),
       ],
     },
   ];

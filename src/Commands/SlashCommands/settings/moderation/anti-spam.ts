@@ -14,12 +14,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
 
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['anti-spam']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.blacklist;
-  const name = 'blacklist';
+    .then((r: DBT.antispam[] | null) => (r ? r[0] : null));
+  const lan = language.slashCommands.settings.categories['anti-spam'];
+  const name = 'anti-spam';
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -28,15 +28,34 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
         name: language.slashCommands.settings.authorType(lan.name),
         url: client.customConstants.standard.invite,
       },
-      description: settings?.words?.length
-        ? `${lan.fields.words.name} ${client.ch.util.makeCodeBlock(settings.words.join(', '))}`
-        : language.none,
       fields: [
         {
           name: language.slashCommands.settings.active,
           value: embedParsers.boolean(settings?.active, language),
           inline: false,
         },
+
+        {
+          name: lan.fields.msgthreshold.name,
+          value: embedParsers.number(settings?.msgthreshold, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.dupemsgthreshold.name,
+          value: embedParsers.number(settings?.dupemsgthreshold, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.timeout.name,
+          value: embedParsers.number(settings?.timeout, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.deletespam.name,
+          value: embedParsers.boolean(settings?.deletespam, language),
+          inline: true,
+        },
+
         {
           name: language.slashCommands.settings.wlchannel,
           value: embedParsers.channels(settings?.wlchannelid, language),
@@ -63,7 +82,12 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
     },
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.words, 'words', name)],
+      components: [
+        buttonParsers.specific(language, settings?.msgthreshold, 'msgthreshold', name),
+        buttonParsers.specific(language, settings?.dupemsgthreshold, 'dupemsgthreshold', name),
+        buttonParsers.specific(language, settings?.timeout, 'timeout', name),
+        buttonParsers.specific(language, settings?.deletespam, 'deletespam', name),
+      ],
     },
     {
       type: Discord.ComponentType.ActionRow,
