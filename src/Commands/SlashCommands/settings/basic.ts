@@ -1,15 +1,11 @@
 import * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
-import type * as DBT from '../../Typings/DataBaseTypings';
+import client from '../../../BaseClient/Client.js';
+import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await client.ch.languageSelector(cmd.guild?.id);
-  const subcommandName = cmd.options.data
-    .find((c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup)
-    ?.options?.find((c) => c.type === Discord.ApplicationCommandOptionType.Subcommand)?.name;
-  if (!subcommandName) throw new Error('No Sub-Command Name found');
   const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
 
   const settings = await client.ch

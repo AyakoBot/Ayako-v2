@@ -81,16 +81,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.deletereply, 'deletereply', name),
+        buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name),
         buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
-        buttonParsers.specific(language, settings?.repeatenabled, 'repeatenabled', name),
+        buttonParsers.boolean(language, settings?.repeatenabled, 'repeatenabled', name),
         buttonParsers.specific(language, settings?.repeatreminder, 'repeatreminder', name),
-
       ],
     },
     {
@@ -98,7 +97,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       components: [
         buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
         buttonParsers.specific(language, settings?.users, 'users', name, 'user'),
-
       ],
     },
   ];

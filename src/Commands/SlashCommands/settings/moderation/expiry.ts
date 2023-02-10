@@ -107,11 +107,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.bans, 'bans', name),
-        buttonParsers.specific(language, settings?.channelbans, 'channelbans', name),
-        buttonParsers.specific(language, settings?.kicks, 'kicks', name),
-        buttonParsers.specific(language, settings?.mutes, 'mutes', name),
-        buttonParsers.specific(language, settings?.warns, 'warns', name),
+        buttonParsers.boolean(language, settings?.bans, 'bans', name),
+        buttonParsers.boolean(language, settings?.channelbans, 'channelbans', name),
+        buttonParsers.boolean(language, settings?.kicks, 'kicks', name),
+        buttonParsers.boolean(language, settings?.mutes, 'mutes', name),
+        buttonParsers.boolean(language, settings?.warns, 'warns', name),
       ],
     },
     {

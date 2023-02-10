@@ -78,7 +78,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,
@@ -86,15 +86,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         buttonParsers.specific(language, settings?.msgthreshold, 'msgthreshold', name),
         buttonParsers.specific(language, settings?.dupemsgthreshold, 'dupemsgthreshold', name),
         buttonParsers.specific(language, settings?.timeout, 'timeout', name),
-        buttonParsers.specific(language, settings?.deletespam, 'deletespam', name),
+        buttonParsers.boolean(language, settings?.deletespam, 'deletespam', name),
       ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', 'wlchannel'),
-        buttonParsers.global(language, settings?.wlroleid, 'wlroleid', 'wlrole'),
-        buttonParsers.global(language, settings?.wluserid, 'wluserid', 'wluser'),
+        buttonParsers.global(language, settings?.wlchannelid, 'wlchannels', name),
+        buttonParsers.global(language, settings?.wlroleid, 'wlroles', name),
+        buttonParsers.global(language, settings?.wluserid, 'wlusers', name),
       ],
     },
   ];

@@ -57,7 +57,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         {
           name: '\u200b',
           value: '\u200b',
-          inline: false
+          inline: false,
         },
         {
           name: lan.fields.novoteroles.name,
@@ -86,15 +86,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
         buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
         buttonParsers.specific(language, settings?.approverroleid, 'approverroleid', name, 'role'),
-        buttonParsers.specific(language, settings?.anonvote, 'anonvote', name),
-        buttonParsers.specific(language, settings?.anonsuggestion, 'anonsuggestion', name),
+        buttonParsers.boolean(language, settings?.anonvote, 'anonvote', name),
+        buttonParsers.boolean(language, settings?.anonsuggestion, 'anonsuggestion', name),
       ],
     },
     {

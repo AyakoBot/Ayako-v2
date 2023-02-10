@@ -64,7 +64,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,
@@ -81,19 +81,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.ignoreprefixes, 'ignoreprefixes', name),
+        buttonParsers.boolean(language, settings?.ignoreprefixes, 'ignoreprefixes', name),
         buttonParsers.specific(language, settings?.prefixes, 'prefixes', name),
-        buttonParsers.specific(language, settings?.blchannels, 'blchannels', name, 'channel'),
+        buttonParsers.global(language, settings?.blchannels, 'blchannels', name),
       ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.blroles, 'blroles', name, 'role'),
-        buttonParsers.specific(language, settings?.blusers, 'blusers', name, 'user'),
-        buttonParsers.specific(language, settings?.wlchannels, 'wlchannels', name, 'channel'),
-        buttonParsers.specific(language, settings?.wlroles, 'wlroles', name, 'role'),
-        buttonParsers.specific(language, settings?.wlusers, 'wlusers', name, 'user'),
+        buttonParsers.global(language, settings?.blroles, 'blroles', name),
+        buttonParsers.global(language, settings?.blusers, 'blusers', name),
+        buttonParsers.global(language, settings?.wlchannels, 'wlchannels', name),
+        buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
+        buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
       ],
     },
   ];

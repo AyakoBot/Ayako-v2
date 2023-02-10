@@ -56,7 +56,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,

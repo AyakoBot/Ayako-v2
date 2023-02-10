@@ -1187,7 +1187,7 @@ export default {
       wlrole: 'Whitelisted Roles',
       blrole: 'Blacklisted Roles',
       wluser: 'Whitelisted Users',
-      bluser: 'Blacklisted Roles',
+      bluser: 'Blacklisted Users',
       replace: 'Replace',
       stack: 'Stack',
       categories: {

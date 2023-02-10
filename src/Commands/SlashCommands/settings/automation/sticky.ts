@@ -64,8 +64,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.stickypermsactive, 'stickypermsactive', name),
-        buttonParsers.specific(language, settings?.stickyrolesactive, 'stickyrolesactive', name),
+        buttonParsers.boolean(language, settings?.stickypermsactive, 'stickypermsactive', name),
+        buttonParsers.boolean(language, settings?.stickyrolesactive, 'stickyrolesactive', name),
         buttonParsers.specific(language, settings?.stickyrolesmode, 'stickyrolesmode', name),
         buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
       ],

@@ -66,14 +66,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
         buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
         buttonParsers.specific(language, settings?.embed, 'embed', name),
-        buttonParsers.specific(language, settings?.pingjoin, 'pingjoin', name),
+        buttonParsers.boolean(language, settings?.pingjoin, 'pingjoin', name),
         buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, 'role'),
         buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, 'user'),
       ],

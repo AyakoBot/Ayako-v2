@@ -46,13 +46,13 @@ export default {
     global: (
       language: CT.Language,
       setting: boolean | string[] | undefined,
+      type: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
       settingName: string,
-      type?: 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser',
     ): Discord.APIButtonComponent => ({
       type: Discord.ComponentType.Button,
       label: getLabel(language, type),
       style: getStyle(setting),
-      custom_id: `settings/${type ?? 'active'}_${settingName}`,
+      custom_id: `settings/${type}_${settingName}`,
       emoji: getEmoji(setting, type),
     }),
     specific: <T extends keyof SettingsNames>(
@@ -70,26 +70,39 @@ export default {
           ? Discord.ButtonStyle.Primary
           : Discord.ButtonStyle.Secondary,
       custom_id: `settings/${String(name)}_${setting}`,
-      emoji: type ? getEmoji(setting, `wl${type}`) : undefined,
+      emoji: type ? getEmoji(setting, `wl${type}s`) : undefined,
+    }),
+    boolean: <T extends keyof SettingsNames>(
+      language: CT.Language,
+      setting: boolean | undefined,
+      name: keyof FieldName<T>,
+      settingName: T,
+    ): Discord.APIButtonComponent => ({
+      type: Discord.ComponentType.Button,
+      label: (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name]
+        .name,
+      style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+      custom_id: `settings/${String(name)}_${setting}`,
+      emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
     }),
   },
 };
 
 const getEmoji = (
   setting: string | boolean | string[] | undefined,
-  type?: 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser',
+  type?: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
 ) => {
   switch (type) {
-    case 'blchannel':
-    case 'wlchannel': {
+    case 'blchannels':
+    case 'wlchannels': {
       return objectEmotes.channelTypes[0];
     }
-    case 'blrole':
-    case 'wlrole': {
+    case 'blroles':
+    case 'wlroles': {
       return objectEmotes.Role;
     }
-    case 'bluser':
-    case 'wluser': {
+    case 'blusers':
+    case 'wlusers': {
       return objectEmotes.Member;
     }
     default: {
@@ -100,9 +113,13 @@ const getEmoji = (
 
 const getLabel = (
   language: CT.Language,
-  type?: 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser',
+  type: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
 ) => {
-  if (type) return language.slashCommands.settings[type];
+  if (type && type !== 'active') {
+    return language.slashCommands.settings[
+      type.slice(0, -1) as 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser'
+    ];
+  }
   return language.slashCommands.settings.active;
 };
 
