@@ -125,7 +125,7 @@ export default async (
   if ('autoArchiveDuration' in channel && channel.autoArchiveDuration) {
     embed.fields?.push({
       name: lan.autoArchiveDuration,
-      value: client.ch.moment(channel.autoArchiveDuration, language),
+      value: client.ch.moment(channel.autoArchiveDuration * 60000, language),
       inline: true,
     });
   }
