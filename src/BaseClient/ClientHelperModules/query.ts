@@ -23,7 +23,7 @@ export default async (
       throw new Error(err);
     });
 
-  if (!res || !res.length) return null;
+  if (!res || !res.rowCount) return null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return res as unknown as any[];
+  return res.rows;
 };
