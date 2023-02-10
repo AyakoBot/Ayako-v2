@@ -1,13 +1,11 @@
 import * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
-import type RedisxPSQL from 'pg-x-redis';
 import * as ch from './ClientHelper.js';
 import NekoClient from './NekoClient.js';
 import Constants from './Other/Constants.js';
 import ObjectEmotes from './Other/ObjectEmotes.json' assert { type: 'json' };
 import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
 import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
-import DataBase from './DataBase.js';
 import auth from '../auth.json' assert { type: 'json' };
 import type cache from './ClientHelperModules/cache.js';
 
@@ -25,7 +23,6 @@ class CustomClient extends Discord.Client {
   channelQueue: Map<string, Map<string, Discord.APIEmbed[]>>;
   channelTimeout: Map<string, Map<string, Jobs.Job>>;
 
-  database: RedisxPSQL;
   ch: typeof ch;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -47,7 +44,6 @@ class CustomClient extends Discord.Client {
     this.channelQueue = new Map();
     this.channelTimeout = new Map();
 
-    this.database = DataBase;
     this.ch = ch;
     this.events = events;
   }
