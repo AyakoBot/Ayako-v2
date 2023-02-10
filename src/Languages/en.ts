@@ -1188,6 +1188,8 @@ export default {
       blrole: 'Blacklisted Roles',
       wluser: 'Whitelisted Users',
       bluser: 'Blacklisted Roles',
+      replace: 'Replace',
+      stack: 'Stack',
       categories: {
         'anti-spam-punishments': {
           name: `Anti-Spam Punishments`,
@@ -1559,8 +1561,6 @@ export default {
         },
         leveling: {
           name: `Leveling`,
-          replace: 'Replace',
-          stack: 'Stack',
           messages: 'Messages',
           reactions: 'Reactions',
           silent: 'Silent',

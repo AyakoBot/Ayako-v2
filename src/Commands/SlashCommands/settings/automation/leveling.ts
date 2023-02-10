@@ -48,8 +48,8 @@ export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommand
         {
           name: lan.fields.rolemode.name,
           value: settings?.rolemode
-            ? `${client.stringEmotes.enabled} ${lan.replace}`
-            : `${client.stringEmotes.disabled} ${lan.stack}`,
+            ? language.slashCommands.settings.replace
+            : language.slashCommands.settings.stack,
           inline: true,
         },
         {

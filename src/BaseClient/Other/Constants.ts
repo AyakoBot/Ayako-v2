@@ -550,7 +550,7 @@ export default {
         verification: 'verification',
         welcome: 'welcome',
         leveling: 'leveling',
-        nitro: 'nitrosettings',
+        'nitro-monitoring': 'nitrosettings',
         'reaction-roles': 'rrsettings',
         'delete-commands': 'deletecommands',
         suggestions: 'suggestionsettings',
