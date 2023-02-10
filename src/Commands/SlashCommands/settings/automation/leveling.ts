@@ -3,7 +3,7 @@ import client from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
-export default async (cmd: Discord.CommandInteraction | Discord.ChatInputCommandInteraction) => {
+export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await client.ch.languageSelector(cmd.guild?.id);
