@@ -63,7 +63,7 @@ export default async (guild: Discord.Guild) => {
   const modBaseEvent = (await import('../../modBaseEvent.js')).default;
 
   const mutes = await client.ch
-    .query(`SELECT * FROM punish_tempmutes WHERE userid = $1 AND guildid = $2;`)
+    .query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.punish_tempmutes[] | null) => r || null);
   mutes?.forEach((m) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
@@ -93,7 +93,7 @@ export default async (guild: Discord.Guild) => {
   });
 
   const bans = await client.ch
-    .query(`SELECT * FROM punish_tempbans WHERE userid = $1 AND guildid = $2;`)
+    .query(`SELECT * FROM punish_tempbans WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.punish_tempbans[] | null) => r || null);
   bans?.forEach((m) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
@@ -123,7 +123,7 @@ export default async (guild: Discord.Guild) => {
   });
 
   const channelBans = await client.ch
-    .query(`SELECT * FROM punish_tempchannelbans WHERE userid = $1 AND guildid = $2;`)
+    .query(`SELECT * FROM punish_tempchannelbans WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.punish_tempchannelbans[] | null) => r || null);
   channelBans?.forEach((m) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
