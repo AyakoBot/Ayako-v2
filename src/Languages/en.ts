@@ -475,6 +475,7 @@ export default {
           HasThread: 'Message has Thread',
           Ephemeral: 'Ephemeral Message',
           FailedToMentionSomeRolesInThread: 'Failed to mention some Roles in Thread',
+          SuppressNotifications: 'Supress Notifications'
         },
         reactions: 'Reactions',
         components: 'Components',
