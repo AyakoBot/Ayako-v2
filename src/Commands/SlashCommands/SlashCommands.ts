@@ -1,6 +1,16 @@
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Client.js';
 
+// Pre-defined values
+
+const IDSelector = new Discord.SlashCommandStringOption()
+  .setAutocomplete(true)
+  .setDescription('The ID of the Setting')
+  .setRequired(false)
+  .setMaxLength(8)
+  .setMinLength(8)
+  .setName('id');
+
 // Commands
 
 const settings = new Discord.SlashCommandBuilder()
@@ -30,7 +40,8 @@ const settings = new Discord.SlashCommandBuilder()
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-punish')
-          .setDescription('Help Moderators punish consistently'),
+          .setDescription('Help Moderators punish consistently')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -45,8 +56,42 @@ const settings = new Discord.SlashCommandBuilder()
   )
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
+      .setName('leveling')
+      .setDescription(`Everything about ${client.user?.username}'s Leveling`)
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('basic')
+          .setDescription('Reward Members for their activity with Server Levels'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('multi-channels')
+          .setDescription('Increase or decrease XP rewarded by Channel')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('multi-roles')
+          .setDescription('Increase or decrease XP rewarded by Role')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('level-roles')
+          .setDescription('Reward Activity with Level-Roles')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('rule-channels')
+          .setDescription('Apply conditional XP rewarded by Action in a Channel')
+          .addStringOption(IDSelector),
+      ),
+  )
+  .addSubcommandGroup(
+    new Discord.SlashCommandSubcommandGroupBuilder()
       .setName('automation')
-      .setDescription(`Everthing about ${client.user?.username}'s Automation`)
+      .setDescription(`Everything about ${client.user?.username}'s Automation`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-roles')
@@ -55,9 +100,8 @@ const settings = new Discord.SlashCommandBuilder()
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('cooldowns')
-          .setDescription(
-            `Assign custom defined Cooldowns to Commands of ${client.user?.username}`,
-          ),
+          .setDescription(`Assign custom defined Cooldowns to Commands of ${client.user?.username}`)
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -72,12 +116,14 @@ const settings = new Discord.SlashCommandBuilder()
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('self-roles')
-          .setDescription('Let Members pick their own Roles'),
+          .setDescription('Let Members pick their own Roles')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('separators')
-          .setDescription('Separate Roles into Categories using Category Roles / Role Separators'),
+          .setDescription('Separate Roles into Categories using Category Roles / Role Separators')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -101,23 +147,20 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
-          .setName('leveling')
-          .setDescription('Reward Members for their activity with Server Levels'),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
           .setName('nitro-monitoring')
           .setDescription('Reward Boosters with Roles for consistent Boosting or other Rewards'),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('reaction-roles')
-          .setDescription('Let Members pick their own Roles through Reactions'),
+          .setDescription('Let Members pick their own Roles through Reactions')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('button-roles')
-          .setDescription('Let Members pick their own Roles through Buttons'),
+          .setDescription('Let Members pick their own Roles through Buttons')
+          .addStringOption(IDSelector),
       ),
   )
   .addSubcommand(

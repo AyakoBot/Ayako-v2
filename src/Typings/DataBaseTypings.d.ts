@@ -65,11 +65,11 @@ export type autopunish = {
   punishment?: string;
   duration?: string;
 
-  addroles?: string[];
-  removeroles?: string[];
-
   confirmationreq: boolean;
   punishmentawaittime: string;
+
+  addroles?: string[];
+  removeroles?: string[];
 };
 
 export type autoroles = {
@@ -219,7 +219,7 @@ export type leveling = {
   wlusers?: string[];
 };
 
-export type levelingmultiplierchannels = {
+export type levelingmultichannels = {
   uniquetimestamp: string;
   guildid: string;
 
@@ -244,12 +244,12 @@ export type levelingroles = {
 };
 
 export type levelingruleschannels = {
+  uniquetimestamp: string;
   guildid: string;
 
   rules?: string;
   channels?: string[];
 
-  uniquetimestamp: string;
   hasleastattachments?: string;
   hasmostattachments?: string;
   hasleastcharacters?: string;
@@ -640,7 +640,7 @@ export type welcome = {
   pingusers?: string[];
 };
 
-export type levelingmultiplierroles = {
+export type levelingmultiroles = {
   uniquetimestamp: string;
   guildid: string;
 

@@ -17,9 +17,9 @@ const punishmentFields = {
 };
 
 const getUser = (user: Discord.User) =>
-  `${user.bot ? 'Bot' : 'User'} <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${
-    user.id
-  }\`\n`;
+  `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${user?.username}#${
+    user?.discriminator
+  }\` / \`${user?.id}\`\n`;
 
 const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
@@ -475,7 +475,7 @@ export default {
           HasThread: 'Message has Thread',
           Ephemeral: 'Ephemeral Message',
           FailedToMentionSomeRolesInThread: 'Failed to mention some Roles in Thread',
-          SuppressNotifications: 'Supress Notifications'
+          SuppressNotifications: 'Supress Notifications',
         },
         reactions: 'Reactions',
         components: 'Components',
@@ -1189,7 +1189,12 @@ export default {
       wluser: 'Whitelisted Users',
       bluser: 'Blacklisted Users',
       replace: 'Replace',
+      create: 'Create',
+      delete: 'Delete',
       stack: 'Stack',
+      previous: 'Previous',
+      next: 'Next',
+      noFields: 'No Settings found, get started by creating some',
       categories: {
         'anti-spam-punishments': {
           name: `Anti-Spam Punishments`,
@@ -1269,31 +1274,28 @@ export default {
           },
         },
         'auto-punish': {
-          name: `Auto Punish`,
+          name: `Auto-Punish`,
           fields: {
-            duration: {
+            warnamount: {
+              name: 'Warns Required',
+            },
+            punishment: {
               name: 'Punishment',
             },
-            posttof: {
-              name: 'Post',
+            duration: {
+              name: 'Duration',
             },
-            postchannel: {
-              name: 'Post-Channels',
+            addroles: {
+              name: 'Roles to add',
             },
-            pingroles: {
-              name: 'Ping Roles',
+            removeroles: {
+              name: 'Roles to remove',
             },
-            pingusers: {
-              name: 'Ping Users',
+            confirmationreq: {
+              name: 'Require confirmation',
             },
-            time: {
-              name: 'Join-Remember Time',
-            },
-            jointhreshold: {
-              name: 'Join Threshold',
-            },
-            punishmenttof: {
-              name: 'Punish',
+            punishmentawaittime: {
+              name: 'Confimation await time',
             },
           },
         },
@@ -1352,7 +1354,7 @@ export default {
           },
         },
         'auto-roles': {
-          name: `Auto Roles`,
+          name: `Auto-Roles`,
           fields: {
             botroleid: {
               name: 'Bot Role IDs',
@@ -1380,7 +1382,7 @@ export default {
           },
         },
         'disboard-reminders': {
-          name: `Disboard Reminders`,
+          name: `Disboard-Reminders`,
           fields: {
             channelid: {
               name: 'Channel',
@@ -1403,7 +1405,7 @@ export default {
           },
         },
         'self-roles': {
-          name: `Self Roles`,
+          name: `Self-Roles`,
           fields: {
             roles: {
               name: 'Roles',
@@ -1417,7 +1419,7 @@ export default {
           },
         },
         separators: {
-          name: `Role Separators`,
+          name: `Role-Separators`,
           oneTimeRunner: {
             name: 'Apply ALL Separators to EVERY Member of your Server',
             description: 'Can only be run if the previous Process is finished.',
@@ -1597,8 +1599,53 @@ export default {
             },
           },
         },
+        'multi-channels': {
+          name: 'Leveling Multi-Channels',
+          fields: {
+            channels: {
+              name: 'Channels',
+            },
+            multiplier: {
+              name: 'Multiplier',
+            },
+          },
+        },
+        'multi-roles': {
+          name: 'Leveling Multi-Channels',
+          fields: {
+            roles: {
+              name: 'Roles',
+            },
+            multiplier: {
+              name: 'Multiplier',
+            },
+          },
+        },
+        'level-roles': {
+          name: 'Level-Roles',
+          fields: {
+            roles: {
+              name: 'Roles',
+            },
+            level: {
+              name: 'Level',
+            },
+          },
+        },
+        'rule-channels': {
+          name: 'Leveling Rules-Channels',
+          amount: 'Amount',
+          fields: {
+            rules: {
+              name: 'Rules',
+            },
+            channels: {
+              name: 'Channels',
+            },
+          },
+        },
         'nitro-monitoring': {
-          name: `Nitro Monitoring`,
+          name: `Nitro-Monitoring`,
           fields: {
             logchannels: {
               name: 'Log Channels',
@@ -1625,7 +1672,7 @@ export default {
           },
         },
         'delete-commands': {
-          name: `Delete Commands`,
+          name: `Delete-Commands`,
           fields: {
             deletecommand: {
               name: 'Delete Command',
@@ -2622,4 +2669,6 @@ export default {
   ScheduledEvent: 'Scheduled Event',
   Webhook: 'Webhook',
   color: 'Color',
+  ChannelRules: 'Channel Rules',
+  Channels: 'Channels',
 };

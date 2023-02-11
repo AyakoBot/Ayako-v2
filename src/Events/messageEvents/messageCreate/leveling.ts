@@ -573,14 +573,14 @@ const checkPass = (msg: CT.GuildMessage, rows: DBT.levelingruleschannels[]) => {
 };
 
 const getRoleMultiplier = async (msg: CT.GuildMessage) => {
-  const levelingmultiplierrolesRows = await client.ch
-    .query(`SELECT * FROM levelingmultiplierroles WHERE guildid = $1 ORDER BY multiplier DESC;`, [
+  const levelingmultirolesRows = await client.ch
+    .query(`SELECT * FROM levelingmultiroles WHERE guildid = $1 ORDER BY multiplier DESC;`, [
       String(msg.guild.id),
     ])
-    .then((r: DBT.levelingmultiplierroles[] | null) => r || null);
+    .then((r: DBT.levelingmultiroles[] | null) => r || null);
 
-  if (levelingmultiplierrolesRows) {
-    const rows = levelingmultiplierrolesRows.filter((row) =>
+  if (levelingmultirolesRows) {
+    const rows = levelingmultirolesRows.filter((row) =>
       msg.member?.roles.cache.some((r) => row.roles?.includes(r.id)),
     );
     if (!rows || !rows.length) return null;
@@ -593,10 +593,10 @@ const getRoleMultiplier = async (msg: CT.GuildMessage) => {
 const getChannelMultiplier = async (msg: CT.GuildMessage) => {
   const allRows = await client.ch
     .query(
-      `SELECT * FROM levelingmultiplierchannels WHERE guildid = $1 ORDER BY multiplier DESC;`,
+      `SELECT * FROM levelingmultichannels WHERE guildid = $1 ORDER BY multiplier DESC;`,
       [String(msg.guild.id)],
     )
-    .then((r: DBT.levelingmultiplierchannels[] | null) => r || null);
+    .then((r: DBT.levelingmultichannels[] | null) => r || null);
 
   if (allRows) {
     const rows = allRows.filter((row) => row.channels?.includes(String(msg.channelId)));

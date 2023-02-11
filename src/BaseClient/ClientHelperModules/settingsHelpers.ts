@@ -61,6 +61,7 @@ export default {
       name: keyof FieldName<T>,
       settingName: T,
       type?: 'channel' | 'role' | 'user',
+      emoji?: Discord.APIMessageComponentEmoji,
     ): Discord.APIButtonComponent => ({
       type: Discord.ComponentType.Button,
       label: (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name]
@@ -70,7 +71,7 @@ export default {
           ? Discord.ButtonStyle.Primary
           : Discord.ButtonStyle.Secondary,
       custom_id: `settings/${String(name)}_${setting}`,
-      emoji: type ? getEmoji(setting, `wl${type}s`) : undefined,
+      emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
     }),
     boolean: <T extends keyof SettingsNames>(
       language: CT.Language,
@@ -84,6 +85,44 @@ export default {
       style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
       custom_id: `settings/${String(name)}_${setting}`,
       emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
+    }),
+    create: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
+      type: Discord.ComponentType.Button,
+      label: language.slashCommands.settings.create,
+      style: Discord.ButtonStyle.Success,
+      custom_id: `settings/create_${name}`,
+      emoji: objectEmotes.plusBG,
+    }),
+    delete: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
+      type: Discord.ComponentType.Button,
+      label: language.slashCommands.settings.delete,
+      style: Discord.ButtonStyle.Danger,
+      custom_id: `settings/delete_${name}`,
+      emoji: objectEmotes.minusBG,
+    }),
+    previous: (
+      language: CT.Language,
+      name: string,
+      enabled: boolean = false,
+    ): Discord.APIButtonComponent => ({
+      type: Discord.ComponentType.Button,
+      label: language.slashCommands.settings.previous,
+      style: Discord.ButtonStyle.Success,
+      custom_id: `settings/create_${name}`,
+      emoji: objectEmotes.plusBG,
+      disabled: !enabled,
+    }),
+    next: (
+      language: CT.Language,
+      name: string,
+      enabled: boolean = false,
+    ): Discord.APIButtonComponent => ({
+      type: Discord.ComponentType.Button,
+      label: language.slashCommands.settings.next,
+      style: Discord.ButtonStyle.Success,
+      custom_id: `settings/delete_${name}`,
+      emoji: objectEmotes.minusBG,
+      disabled: !enabled,
     }),
   },
 };
