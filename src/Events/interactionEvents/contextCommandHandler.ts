@@ -12,7 +12,7 @@ export default async (cmd: Discord.Interaction) => {
   });
 
   const command = files.find((f) =>
-    f.endsWith(`${cmd.commandName.replace(/\s+/g, '').toLowerCase()}.js`),
+    f.endsWith(`/${cmd.commandName.replace(/\s+/g, '').toLowerCase()}.js`),
   );
   if (!command) return;
 

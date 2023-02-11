@@ -28,7 +28,7 @@ export default async (cmd: Discord.Interaction) => {
     return pathArgs.join('/');
   };
 
-  const command = files.find((f) => f.endsWith(`${path()}.js`));
+  const command = files.find((f) => f.endsWith(`/${path()}.js`));
   if (!command) return;
 
   (await import(command)).default(cmd);
