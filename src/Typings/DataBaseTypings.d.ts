@@ -473,7 +473,6 @@ export type roleseparator = {
   uniquetimestamp: string;
   active: boolean;
 
-  name: string;
   separator: string;
   stoprole?: string;
   isvarying: boolean;
@@ -491,6 +490,7 @@ export type roleseparatorsettings = {
   length?: string;
 };
 
+// TODO
 export type rrbuttons = {
   uniquetimestamp: string;
   guildid: string;
@@ -502,6 +502,7 @@ export type rrbuttons = {
   messagelink: string;
 };
 
+// TODO
 export type rrreactions = {
   uniquetimestamp: string;
   active: boolean;
@@ -512,6 +513,7 @@ export type rrreactions = {
   messagelink: string;
 };
 
+// TODO
 export type rrsettings = {
   guildid: string;
   uniquetimestamp: string;
@@ -665,14 +667,14 @@ export interface votesettings {
   announcementchannel: string;
 }
 
-type rewardtype = 'role' | 'currency' | 'xp' | 'xpmultiplier';
+type RewardType = 'role' | 'currency' | 'xp' | 'xpmultiplier';
 
 export interface voterewards {
   guildid: string;
   uniquetimestamp: string;
 
   tier: number;
-  rewardtype;
+  rewardtype?: RewardType;
   reward: string;
 }
 
@@ -682,7 +684,7 @@ export type voters = {
   voted: string;
   votetype: 'guild' | 'bot';
   tier: string;
-  rewardtype: rewardtype[];
+  rewardtype: RewardType[];
   reward: string[];
 };
 

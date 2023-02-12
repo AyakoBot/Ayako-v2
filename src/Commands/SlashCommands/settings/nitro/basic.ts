@@ -10,20 +10,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['nitro-monitoring']} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.nitro} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.nitrosettings[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories['nitro-monitoring'];
-  const name = 'nitro-monitoring';
+  const lan = language.slashCommands.settings.categories.nitro;
+  const name = 'nitro';
 
   const embeds: Discord.APIEmbed[] = [
     {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
+      author: embedParsers.author(language, lan),
       fields: [
         {
           name: language.slashCommands.settings.active,

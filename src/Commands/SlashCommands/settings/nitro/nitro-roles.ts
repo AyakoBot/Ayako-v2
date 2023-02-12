@@ -7,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await client.ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories['level-roles'];
+  const lan = language.slashCommands.settings.categories['nitro-roles'];
 
   const ID = cmd.options.get('ID', false)?.value as string;
   if (ID) {
@@ -21,16 +21,16 @@ const showID = async (
   cmd: Discord.ChatInputCommandInteraction,
   ID: string,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['level-roles'],
+  lan: CT.Language['slashCommands']['settings']['categories']['nitro-roles'],
 ) => {
   const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
-  const name = 'level-roles';
+  const name = 'nitro-roles';
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['level-roles']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['nitro-roles']} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
-    .then((r: DBT.levelingroles[] | null) => (r ? r[0] : null));
+    .then((r: DBT.nitroroles[] | null) => (r ? r[0] : null));
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -42,8 +42,8 @@ const showID = async (
           inline: false,
         },
         {
-          name: lan.fields.level.name,
-          value: embedParsers.number(settings?.level, language),
+          name: lan.fields.days.name,
+          value: embedParsers.number(settings?.days, language),
           inline: true,
         },
       ],
@@ -55,7 +55,7 @@ const showID = async (
       type: Discord.ComponentType.ActionRow,
       components: [
         buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-        buttonParsers.specific(language, settings?.level, 'level', name),
+        buttonParsers.specific(language, settings?.days, 'days', name),
       ],
     },
   ];
@@ -70,19 +70,19 @@ const showID = async (
 const showAll = async (
   cmd: Discord.ChatInputCommandInteraction,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['level-roles'],
+  lan: CT.Language['slashCommands']['settings']['categories']['nitro-roles'],
 ) => {
-  const name = 'level-roles';
+  const name = 'nitro-roles';
   const { multiRowHelpers } = client.ch.settingsHelpers;
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['level-roles']} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['nitro-roles']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.levelingroles[] | null) => r || null);
+    .then((r: DBT.nitroroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.level.name}: \`${s.level ?? language.none}\``,
+    name: `${lan.fields.days.name}: \`${s.days ?? language.none}\``,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 

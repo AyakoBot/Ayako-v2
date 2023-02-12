@@ -19,11 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
   const embeds: Discord.APIEmbed[] = [
     {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
+      author: embedParsers.author(language, lan),
       fields: [
         {
           name: language.slashCommands.settings.active,

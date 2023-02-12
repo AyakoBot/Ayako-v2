@@ -7,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await client.ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories.cooldowns;
+  const lan = language.slashCommands.settings.categories['self-roles'];
 
   const ID = cmd.options.get('ID', false)?.value as string;
   if (ID) {
@@ -21,16 +21,16 @@ const showID = async (
   cmd: Discord.ChatInputCommandInteraction,
   ID: string,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['cooldowns'],
+  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
 ) => {
   const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
-  const name = 'cooldowns';
+  const name = 'self-roles';
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['cooldowns']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['self-roles']} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
-    .then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));
+    .then((r: DBT.selfroles[] | null) => (r ? r[0] : null));
 
   const embeds: Discord.APIEmbed[] = [
     {
@@ -42,33 +42,38 @@ const showID = async (
           inline: false,
         },
         {
-          name: lan.fields.command.name,
-          value: settings?.command ?? language.none,
+          name: lan.fields.name.name,
+          value: settings?.name ?? language.none,
           inline: true,
         },
         {
-          name: lan.fields.cooldown.name,
-          value: embedParsers.time(Number(settings?.cooldown), language),
+          name: lan.fields.onlyone.name,
+          value: embedParsers.boolean(settings?.onlyone, language),
           inline: true,
         },
         {
-          name: lan.fields.activechannelid.name,
-          value: embedParsers.channels(settings?.activechannelid, language),
+          name: lan.fields.roles.name,
+          value: embedParsers.roles(settings?.roles, language),
           inline: false,
         },
         {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
+          name: language.slashCommands.settings.blrole,
+          value: embedParsers.roles(settings?.blroles, language),
+          inline: false,
+        },
+        {
+          name: language.slashCommands.settings.bluser,
+          value: embedParsers.roles(settings?.blusers, language),
           inline: false,
         },
         {
           name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroleid, language),
+          value: embedParsers.roles(settings?.wlroles, language),
           inline: false,
         },
         {
           name: language.slashCommands.settings.wluser,
-          value: embedParsers.users(settings?.wluserid, language),
+          value: embedParsers.roles(settings?.wlusers, language),
           inline: false,
         },
       ],
@@ -83,23 +88,25 @@ const showID = async (
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.command, 'command', name),
-        buttonParsers.specific(language, settings?.cooldown, 'cooldown', name),
+        buttonParsers.specific(language, settings?.name, 'name', name),
+        buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
       ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(
-          language,
-          settings?.activechannelid,
-          'activechannelid',
-          name,
-          'channel',
-        ),
-        buttonParsers.specific(language, settings?.wlchannelid, 'wlchannelid', name, 'channel'),
-        buttonParsers.specific(language, settings?.wlroleid, 'wlroleid', name, 'role'),
-        buttonParsers.specific(language, settings?.wluserid, 'wluserid', name, 'user'),
+        buttonParsers.specific(language, settings?.name, 'name', name),
+        buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
+      ],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+        buttonParsers.global(language, settings?.blroles, 'blroles', name),
+        buttonParsers.global(language, settings?.blusers, 'blusers', name),
+        buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
+        buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
       ],
     },
   ];
@@ -114,24 +121,20 @@ const showID = async (
 const showAll = async (
   cmd: Discord.ChatInputCommandInteraction,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['cooldowns'],
+  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
 ) => {
-  const name = 'cooldowns';
-  const { embedParsers, multiRowHelpers } = client.ch.settingsHelpers;
+  const name = 'self-roles';
+  const { multiRowHelpers } = client.ch.settingsHelpers;
   const settings = await client.ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['cooldowns']} WHERE guildid = $1;`,
+      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['self-roles']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
-    .then((r: DBT.cooldowns[] | null) => r || null);
+    .then((r: DBT.selfroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.command.name}: \`${s.command ?? language.none}\` - ${
-      lan.fields.cooldown
-    }: \`${embedParsers.time(Number(s.cooldown), language)}\``,
-    value: `${
-      s.active ? client.stringEmotes.enabled : client.stringEmotes.disabled
-    } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+    name: `${lan.fields.name.name}: \`${s.name ?? language.none}\``,
+    value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
   const embeds = multiRowHelpers.embeds(fields, language, lan);

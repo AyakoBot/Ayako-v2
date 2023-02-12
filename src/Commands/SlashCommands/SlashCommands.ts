@@ -90,8 +90,45 @@ const settings = new Discord.SlashCommandBuilder()
   )
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
+      .setName('nitro')
+      .setDescription(`Everything about ${client.user?.username}'s Nitro-Rewards`)
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('basic')
+          .setDescription('Basic Nitro-Reward Settings'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('nitro-roles')
+          .setDescription(`Reward Members for continuously boosting your Server`)
+          .addStringOption(IDSelector),
+      ),
+  )
+  .addSubcommandGroup(
+    new Discord.SlashCommandSubcommandGroupBuilder()
+      .setName('vote')
+      .setDescription('Everything about Voting for your Bot/Server')
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('topgg')
+          .setDescription(`Basic Settings for Voting on Top.gg`),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('vote-rewards')
+          .setDescription(`Reward Members for Voting for your Bot/Server`),
+      ),
+  )
+  .addSubcommandGroup(
+    new Discord.SlashCommandSubcommandGroupBuilder()
       .setName('automation')
       .setDescription(`Everything about ${client.user?.username}'s Automation`)
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('delete-commands')
+          .setDescription(`Make ${client.user?.username} delete Commands and/or Replies`)
+          .addStringOption(IDSelector),
+      )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-roles')
@@ -144,11 +181,6 @@ const settings = new Discord.SlashCommandBuilder()
         new Discord.SlashCommandSubcommandBuilder()
           .setName('welcome')
           .setDescription('Greet joining Users with a welcome Message'),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('nitro-monitoring')
-          .setDescription('Reward Boosters with Roles for consistent Boosting or other Rewards'),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()

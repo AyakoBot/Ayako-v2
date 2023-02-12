@@ -34,11 +34,7 @@ const showID = async (
 
   const embeds: Discord.APIEmbed[] = [
     {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
+      author: embedParsers.author(language, lan),
       fields: [
         {
           name: language.slashCommands.settings.active,
@@ -128,7 +124,7 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['auto-punish'],
 ) => {
   const name = 'auto-punish';
-  const { buttonParsers } = client.ch.settingsHelpers;
+  const { multiRowHelpers } = client.ch.settingsHelpers;
   const settings = await client.ch
     .query(
       `SELECT * FROM ${client.customConstants.commands.settings.tableNames['auto-punish']} WHERE guildid = $1;`,
@@ -142,46 +138,15 @@ const showAll = async (
         ? language.punishments[s.punishment as keyof typeof language.punishments]
         : language.none
     }\``,
-    value: `${s.active ? client.stringEmotes.enabled : client.stringEmotes.disabled} - ID: \`${Number(
-      s.uniquetimestamp,
-    ).toString(36)}\``,
+    value: `${
+      s.active ? client.stringEmotes.enabled : client.stringEmotes.disabled
+    } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
-      fields: fields?.splice(0, 24) ?? [],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.delete(language, name), buttonParsers.create(language, name)],
-    },
-  ];
-
-  if (Number(fields?.length) > 25) {
-    components.unshift({
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.previous(language, name),
-        buttonParsers.next(language, name, true),
-      ],
-    });
-  }
-
-  if (!fields?.length) {
-    embeds[0].fields?.push({
-      name: '\u200b',
-      value: language.slashCommands.settings.noFields,
-      inline: false,
-    });
-  }
+  const embeds = multiRowHelpers.embeds(fields, language, lan);
+  const components = multiRowHelpers.options(language, name);
+  multiRowHelpers.noFields(embeds, language);
+  multiRowHelpers.components(embeds, components, language, name);
 
   cmd.reply({
     embeds,

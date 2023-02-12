@@ -34,11 +34,7 @@ const showID = async (
 
   const embeds: Discord.APIEmbed[] = [
     {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
+      author: embedParsers.author(language, lan),
       fields: [
         {
           name: lan.fields.roles.name,
@@ -77,7 +73,7 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['multi-roles'],
 ) => {
   const name = 'multi-roles';
-  const { buttonParsers } = client.ch.settingsHelpers;
+  const { multiRowHelpers } = client.ch.settingsHelpers;
   const settings = await client.ch
     .query(
       `SELECT * FROM ${client.customConstants.commands.settings.tableNames['multi-roles']} WHERE guildid = $1;`,
@@ -90,41 +86,10 @@ const showAll = async (
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: {
-        icon_url: client.objectEmotes.settings.link,
-        name: language.slashCommands.settings.authorType(lan.name),
-        url: client.customConstants.standard.invite,
-      },
-      fields: fields?.splice(0, 24) ?? [],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.delete(language, name), buttonParsers.create(language, name)],
-    },
-  ];
-
-  if (Number(fields?.length) > 25) {
-    components.unshift({
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.previous(language, name),
-        buttonParsers.next(language, name, true),
-      ],
-    });
-  }
-
-  if (!fields?.length) {
-    embeds[0].fields?.push({
-      name: '\u200b',
-      value: language.slashCommands.settings.noFields,
-      inline: false,
-    });
-  }
+  const embeds = multiRowHelpers.embeds(fields, language, lan);
+  const components = multiRowHelpers.options(language, name);
+  multiRowHelpers.noFields(embeds, language);
+  multiRowHelpers.components(embeds, components, language, name);
 
   cmd.reply({
     embeds,

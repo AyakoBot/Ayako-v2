@@ -108,17 +108,6 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
   };
   staffPing();
 
-  const lunar = () => {
-    if (msg.author.id !== '1066084719818702910') return;
-    if (msg.guild.id !== '298954459172700181') return;
-    if (msg.channel.id === '298955020232032258') return;
-
-    setTimeout(() => {
-      msg.delete();
-    }, 20000);
-  };
-  lunar();
-
   const intros = async () => {
     if (msg.channel.id !== '763132467041140737') return;
     if (msg.author.bot) return;

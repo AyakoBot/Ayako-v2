@@ -1196,6 +1196,26 @@ export default {
       next: 'Next',
       noFields: 'No Settings found, get started by creating some',
       categories: {
+        'vote-rewards': {
+          name: 'Vote Rewards',
+          rewardTypes: {
+            role: 'Role',
+            currency: 'Currency',
+            xp: 'XP',
+            xpmultiplier: 'XP Multiplier',
+          },
+          fields: {
+            tier: {
+              name: 'Tier',
+            },
+            rewardtype: {
+              name: 'Reward Type',
+            },
+            reward: {
+              name: 'Reward',
+            },
+          },
+        },
         'anti-spam-punishments': {
           name: `Anti-Spam Punishments`,
           fields: punishmentFields,
@@ -1442,7 +1462,7 @@ export default {
               name: 'Stop Role',
             },
             isvarying: {
-              name: 'Is Dynamic',
+              name: 'Dynamic Roles',
             },
             roles: {
               name: 'Roles',
@@ -1644,7 +1664,7 @@ export default {
             },
           },
         },
-        'nitro-monitoring': {
+        nitro: {
           name: `Nitro-Monitoring`,
           fields: {
             logchannels: {
@@ -1767,6 +1787,17 @@ export default {
             },
             errorchannel: {
               name: 'Error Channel',
+            },
+          },
+        },
+        'nitro-roles': {
+          name: 'Nitro Roles',
+          fields: {
+            roles: {
+              name: 'Roles',
+            },
+            days: {
+              name: 'Days',
             },
           },
         },
