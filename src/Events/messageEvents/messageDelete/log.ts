@@ -142,7 +142,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.content) {
-    if (msg.content?.length > 2000) {
+    if (msg.content?.length > 1024) {
       const content = client.ch.txtFileWriter(msg.content, undefined, language.content);
       if (content) files.push(content);
     } else {
