@@ -694,3 +694,21 @@ export type stickymessages = {
   lastmsgid: string;
   channelid: strin;
 };
+
+export type punishments = {
+  uniquetimestamp: string;
+  guildid: string;
+  warnamount: string;
+  punishment:
+    | 'warn'
+    | 'ban'
+    | 'verbal'
+    | 'kick'
+    | 'tempmute'
+    | 'tempban'
+    | 'channelban'
+    | 'tempchannelban';
+    active: boolean;
+    duration: string;
+    type: 'anti-spam' | 'anti-virus' | 'blacklist'
+};

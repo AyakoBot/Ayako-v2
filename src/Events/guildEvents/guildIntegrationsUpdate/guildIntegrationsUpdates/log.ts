@@ -14,8 +14,8 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: con.BotDelete,
-      name: lan.nameDelete,
+      icon_url: con.BotUpdate,
+      name: lan.nameUpdate,
     },
     description: auditUser
       ? lan.descUpdateAudit(auditUser, integration)
@@ -27,7 +27,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
     client.ch.mergeLogging(before, after, type, embed, language, name);
 
-  if (oldIntegration.enabled !== integration.enabled) {
+  if (oldIntegration?.enabled !== integration?.enabled) {
     merge(oldIntegration.enabled, integration.enabled, 'boolean', language.Enabled);
   }
 
@@ -109,6 +109,11 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
       'string',
       lan.account,
     );
+  }
+
+  if (!embed.fields?.length) {
+    console.log(oldIntegration, integration);
+    return;
   }
 
   client.ch.send(
