@@ -19,23 +19,28 @@ export default async (oldState: RealState, state: RealState) => {
     )) as Discord.VoiceChannel;
   }
 
-  if (!oldState.member && oldState.id) {
-    oldState.member = await oldState.guild.members.fetch(state.id).catch(() => undefined);
-  }
-
-  if (!state.member && state.id) {
-    state.member = await state.guild.members.fetch(state.id).catch(() => undefined);
-  }
-
   if (!oldState.channelId) {
-    client.emit('voiceStateCreates', state);
+    client.emit(
+      'voiceStateCreates',
+      state,
+      await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
+    );
     return;
   }
 
   if (!state.channelId) {
-    client.emit('voiceStateDeletes', state);
+    client.emit(
+      'voiceStateDeletes',
+      state,
+      await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
+    );
     return;
   }
 
-  client.emit('voiceStateUpdates', oldState, state);
+  client.emit(
+    'voiceStateUpdates',
+    oldState,
+    state,
+    await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
+  );
 };

@@ -2,10 +2,14 @@ import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
-export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
+export default async (
+  oldState: Discord.VoiceState,
+  state: Discord.VoiceState,
+  member: Discord.GuildMember,
+) => {
   if (!state.channel) return;
   if (!oldState.channel) return;
-  if (!state.member) return;
+  if (!member) return;
 
   const channels = await client.ch.getLogChannels('voiceevents', state.guild);
   if (!channels) return;
@@ -23,7 +27,7 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
     },
     color: client.customConstants.colors.loading,
     description: lan.descUpdate(
-      state.member.user,
+      member.user,
       state.channel,
       language.channelTypes[state.channel.type],
     ),
@@ -66,7 +70,7 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
     }
 
     embed.description = lan.descUpdateChannel(
-      state.member.user,
+      member.user,
       state.channel,
       language.channelTypes[state.channel.type],
       oldState.channel,

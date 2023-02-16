@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (state: Discord.VoiceState) => {
+export default async (state: Discord.VoiceState, member: Discord.GuildMember) => {
   if (!state.channel) return;
-  if (!state.member) return;
+  if (!member) return;
 
   const channels = await client.ch.getLogChannels('voiceevents', state.guild);
   if (!channels) return;
@@ -21,7 +21,7 @@ export default async (state: Discord.VoiceState) => {
     },
     color: client.customConstants.colors.danger,
     description: lan.descDelete(
-      state.member.user,
+      member.user,
       state.channel,
       language.channelTypes[state.channel.type],
     ),
