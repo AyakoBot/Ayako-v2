@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import stringEmotes from '../Other/StringEmotes.json' assert { type: 'json' };
+import stringEmotes from '../ClientHelperModules/stringEmotes.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (bits: number, lan: CT.Language, emotes = false) => {

@@ -1,6 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 
@@ -13,14 +13,14 @@ export default async (
   const settings = await getSettings(guild);
   if (!settings) return;
 
-  const allRewards = await client.ch
+  const allRewards = await ch
     .query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.voterewards[] | null) => r ?? null);
 
   const bot = await client.users.fetch(vote.bot).catch(() => undefined);
   if (!bot) return;
 
-  const language = await client.ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(member.guild.id);
 
   if (!allRewards?.length) {
     doAnnouncement(settings, member, bot, language);
@@ -33,7 +33,7 @@ export default async (
   rewards.forEach((r) => {
     switch (r.rewardtype) {
       case 'currency': {
-        client.ch.query(
+        ch.query(
           `INSERT INTO balance (userid, guildid, balance) VALUES ($1, $2, $3) ON CONFLICT (userid, guildid) DO UPDATE SET balance = balance + $3;`,
           [user.id, guild.id, Number(r.reward)],
         );
@@ -47,11 +47,11 @@ export default async (
         const role = guild.roles.cache.get(r.reward);
         if (!role) return;
 
-        client.ch.roleManager.add(member, [role.id], language.events.vote.botReason(bot), 1);
+        ch.roleManager.add(member, [role.id], language.events.vote.botReason(bot), 1);
         break;
       }
       case 'xp': {
-        client.ch.query(
+        ch.query(
           `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
           [user.id, guild.id, 'guild', Number(r.reward), 0],
         );
@@ -59,7 +59,7 @@ export default async (
         break;
       }
       case 'xpmultiplier': {
-        client.ch.query(
+        ch.query(
           `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
           [user.id, guild.id, 'guild', Number(r.reward), 0],
         );
@@ -75,7 +75,7 @@ export default async (
   const rewardTypes = rewards.map((r) => r.rewardtype);
   const rewardStrings = rewards.map((r) => r.reward);
 
-  await client.ch.query(
+  await ch.query(
     `INSERT INTO voters (userid, removetime, voted, votedtype, tier, rewardtype, reward) VALUE ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(userid, voted) DO NOTHING;`,
     [user.id, Date.now() + 43200000, vote.bot, 'bot', tier, rewardTypes, rewardStrings],
   );
@@ -108,7 +108,7 @@ const doAnnouncement = async (
 ) => {
   if (!settings.announcementchannel) return;
 
-  const channel = await client.ch.getChannel.guildTextChannel(settings.announcementchannel);
+  const channel = await ch.getChannel.guildTextChannel(settings.announcementchannel);
   if (!channel) return;
 
   const currencyRewards = rewards?.filter((r) => r.rewardtype === 'currency');
@@ -135,27 +135,27 @@ const doAnnouncement = async (
               }
             }
           })
-          .join(` ${client.stringEmotes.plusBG} `),
+          .join(` ${ch.stringEmotes.plusBG} `),
       )}${
         currencyRewards?.length
-          ? `${client.stringEmotes.plusBG} ${currencyRewards
+          ? `${ch.stringEmotes.plusBG} ${currencyRewards
               ?.map((r) => Number(r.reward))
-              .reduce((b, a) => b + a, 0)} ${client.stringEmotes.book}`
+              .reduce((b, a) => b + a, 0)} ${ch.stringEmotes.book}`
           : ''
       }`
     : '';
 
-  client.ch.send(channel, { content: `${lan.bot(member.user, bot)}${rewardText}` }, language);
+  ch.send(channel, { content: `${lan.bot(member.user, bot)}${rewardText}` });
 };
 
 const getSettings = async (guild: Discord.Guild) =>
-  client.ch
+  ch
     .query(`SELECT * FROM votesettings WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
 
 const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
   const now = Date.now();
-  const savedRewards = await client.ch
+  const savedRewards = await ch
     .query(`SELECT * FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
       vote.user,
       vote.bot,
@@ -164,10 +164,11 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
     .then((r: DBT.voters[] | null) => r ?? null);
   if (!savedRewards) return;
 
-  await client.ch.query(
-    `DELETE FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`,
-    [vote.user, vote.bot, now],
-  );
+  await ch.query(`DELETE FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
+    vote.user,
+    vote.bot,
+    now,
+  ]);
 
   const guild = client.guilds.cache.get(g.id);
   if (!guild) return;
@@ -175,7 +176,7 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
   const member = await guild.members.fetch(vote.user).catch(() => undefined);
   if (!member) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await ch.languageSelector(guild.id);
   const lan = language.events.vote;
 
   const rolesToRemove = savedRewards
@@ -192,14 +193,14 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
     })
     .flat();
 
-  client.ch.roleManager.remove(
+  ch.roleManager.remove(
     member,
     rolesToRemove.map((r) => r.id),
     language.events.vote.endReason,
     1,
   );
 
-  const userSettings = await client.ch
+  const userSettings = await ch
     .query(`SELECT * FROM users WHERE userid = $1;`, [member.user.id])
     .then((r: DBT.users[] | null) => (r ? r[0] : null));
   if (userSettings && !userSettings.votereminders) return;
@@ -213,9 +214,9 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
   const embed: Discord.APIEmbed = {
     author: {
       name: lan.reminder.name,
-      icon_url: client.objectEmotes.userFlags.EarlySupporter.link,
+      icon_url: ch.objectEmotes.userFlags.EarlySupporter.link,
     },
-    color: client.customConstants.colors.base,
+    color: ch.constants.colors.base,
     description: lan.reminder.descBot(bot),
     fields: [
       {

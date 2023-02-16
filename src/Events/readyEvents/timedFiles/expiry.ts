@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
-  const settingsRows = await client.ch
+  const settingsRows = await ch
     .query(
       `SELECT * FROM expiry WHERE warns = true AND warnstime IS NOT NULL OR mutes = true AND mutestime IS NOT NULL OR kicks = true AND kickstime IS NOT NULL OR channelbans = true AND channelbanstime IS NOT NULL OR bans = true AND banstime IS NOT NULL;`,
     )
@@ -36,7 +36,7 @@ export default async () => {
 };
 
 const expire = async (row: { expire: string; guildid: string }, tableName: string) => {
-  const tableRows = (await client.ch
+  const tableRows = (await ch
     .query(`SELECT * FROM ${tableName} WHERE guildid = $1 AND uniquetimestamp < $2;`, [
       row.guildid,
       Math.abs(Date.now() - Number(row.expire)),
@@ -52,7 +52,7 @@ const expire = async (row: { expire: string; guildid: string }, tableName: strin
   if (!tableRows) return;
 
   tableRows.forEach((r) => {
-    client.ch.query(`DELETE FROM ${tableName} WHERE uniquetimestamp = $1 AND guildid = $2;`, [
+    ch.query(`DELETE FROM ${tableName} WHERE uniquetimestamp = $1 AND guildid = $2;`, [
       r.uniquetimestamp,
       r.guildid,
     ]);
@@ -73,7 +73,7 @@ const logExpire = async (
   const guild = client.guilds.cache.get(guildid);
   if (!guild) return;
 
-  const channels = await client.ch
+  const channels = await ch
     .query('SELECT modevents FROM logchannels WHERE guildid = $1;', [guild.id])
     .then((r: DBT.logchannels[] | null) => (r ? r[0].modlog : null));
   if (!channels) return;
@@ -81,7 +81,7 @@ const logExpire = async (
   await Promise.all(rows.map((p) => guild.members.fetch(p.userid).catch(() => null)));
   await Promise.all(rows.map((p) => client.users.fetch(p.userid).catch(() => null)));
 
-  const language = await client.ch.languageSelector(guildid);
+  const language = await ch.languageSelector(guildid);
   const lan = language.expire;
 
   const embeds: (Discord.APIEmbed | undefined)[] = rows.map((p) => {
@@ -95,7 +95,7 @@ const logExpire = async (
         name: lan.punishmentOf(user),
         url: `https://discord.com/channels/${guild.id}/${p.channelid}/${p.msgid}`,
       },
-      color: client.customConstants.colors.success,
+      color: ch.constants.colors.success,
       fields: [
         {
           name: lan.punishmentIssue,
@@ -120,13 +120,13 @@ const logExpire = async (
 
     if ('duration' in p) {
       const endedAt = lan.endedAt(
-        client.customConstants.standard.getTime(Number(p.uniquetimestamp) + Number(p.duration)),
+        ch.constants.standard.getTime(Number(p.uniquetimestamp) + Number(p.duration)),
       );
 
       embed.fields?.push(
         {
           name: lan.duration,
-          value: `${p.duration ? client.ch.moment(Number(p.duration), language) : '∞'}`,
+          value: `${p.duration ? ch.moment(Number(p.duration), language) : '∞'}`,
           inline: false,
         },
         {
@@ -148,12 +148,6 @@ const logExpire = async (
   embeds
     .filter((e): e is Discord.APIEmbed => !!e)
     .forEach((e) =>
-      client.ch.send(
-        { id: channels, guildId: guild.id },
-        { embeds: [e] },
-        language,
-        undefined,
-        10000,
-      ),
+      ch.send({ id: channels, guildId: guild.id }, { embeds: [e] }, undefined, 10000),
     );
 };

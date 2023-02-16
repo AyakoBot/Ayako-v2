@@ -1,15 +1,15 @@
 import * as Jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings.js';
 
 export default () => {
   client.guilds.cache.forEach(async (guild) => {
     guild.members.fetch().catch(() => undefined);
-    const language = await client.ch.languageSelector(guild.id);
+    const language = await ch.languageSelector(guild.id);
 
     const invites = await guild.invites.fetch();
-    invites.forEach((i) => client.cache.invites.set(i, guild.id));
+    invites.forEach((i) => ch.cache.invites.set(i, guild.id));
 
     const vanity = await guild.fetchVanityData().catch(() => undefined);
     if (vanity) {
@@ -18,7 +18,7 @@ export default () => {
         guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
       invite.channelId = invite.channel?.id;
 
-      client.cache.invites.set(invite, guild.id);
+      ch.cache.invites.set(invite, guild.id);
     }
 
     guild.channels.cache.forEach(async (c) => {
@@ -27,7 +27,7 @@ export default () => {
 
       const webhooks = await guild.channels.fetchWebhooks(c).catch(() => undefined);
       webhooks?.forEach((w) => {
-        client.cache.webhooks.set(w);
+        ch.cache.webhooks.set(w);
       });
     });
 
@@ -35,30 +35,30 @@ export default () => {
       if (!c.isTextBased()) return;
 
       const pins = await c.messages.fetchPinned().catch(() => undefined);
-      pins?.forEach((pin) => client.cache.pins.set(pin));
+      pins?.forEach((pin) => ch.cache.pins.set(pin));
     });
 
     if (guild.features.includes('WELCOME_SCREEN_ENABLED')) {
       const welcomeScreen = await guild.fetchWelcomeScreen().catch(() => undefined);
-      if (welcomeScreen) client.cache.welcomeScreens.set(welcomeScreen);
+      if (welcomeScreen) ch.cache.welcomeScreens.set(welcomeScreen);
     }
 
     const intergrations = await guild.fetchIntegrations();
     intergrations.forEach((i) => {
-      client.cache.integrations.set(i, guild.id);
+      ch.cache.integrations.set(i, guild.id);
     });
 
     const scheduledEvents = await guild.scheduledEvents.fetch().catch(() => undefined);
     scheduledEvents?.forEach(async (event) => {
       const users = await event.fetchSubscribers().catch(() => undefined);
       users?.forEach((u) => {
-        client.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
+        ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
       });
     });
 
     await guild.autoModerationRules.fetch().catch(() => undefined);
 
-    const claimTimeouts = await client.ch
+    const claimTimeouts = await ch
       .query(`SELECT * FROM giveawaycollecttime WHERE guildId = $1;`, [String(guild.id)])
       .then((r: DBT.giveawaycollecttime[] | null) => r || null);
 
@@ -68,12 +68,12 @@ export default () => {
 
     const modBaseEvent = (await import('../../modBaseEvent.js')).default;
 
-    const mutes = await client.ch
+    const mutes = await ch
       .query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id])
       .then((r: DBT.punish_tempmutes[] | null) => r || null);
     mutes?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.cache.mutes.set(
+      ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
@@ -88,7 +88,7 @@ export default () => {
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
                     .fetch(m.msgid)
                     .catch(() => undefined)
                 : undefined,
@@ -102,12 +102,12 @@ export default () => {
       );
     });
 
-    const bans = await client.ch
+    const bans = await ch
       .query(`SELECT * FROM punish_tempbans WHERE guildid = $1;`, [guild.id])
       .then((r: DBT.punish_tempbans[] | null) => r || null);
     bans?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.cache.mutes.set(
+      ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
@@ -122,7 +122,7 @@ export default () => {
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
                     .fetch(m.msgid)
                     .catch(() => undefined)
                 : undefined,
@@ -136,12 +136,12 @@ export default () => {
       );
     });
 
-    const channelBans = await client.ch
+    const channelBans = await ch
       .query(`SELECT * FROM punish_tempchannelbans WHERE guildid = $1;`, [guild.id])
       .then((r: DBT.punish_tempchannelbans[] | null) => r || null);
     channelBans?.forEach((m) => {
       const time = Number(m.uniquetimestamp) + Number(m.duration);
-      client.cache.mutes.set(
+      ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
             ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
@@ -156,7 +156,7 @@ export default () => {
             reason: m.reason ?? language.none,
             msg:
               m.msgid && m.channelid
-                ? await (await client.ch.getChannel.guildTextChannel(m.channelid))?.messages
+                ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
                     .fetch(m.msgid)
                     .catch(() => undefined)
                 : undefined,
@@ -173,7 +173,7 @@ export default () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const disboard = (_: unknown) => null; // TODO: import disboard handler
 
-    const disboardBumpReminders = await client.ch
+    const disboardBumpReminders = await ch
       .query(`SELECT * FROM disboard WHERE guildid = $1;`, [String(guild.id)])
       .then((r: DBT.disboard[] | null) => (r ? r[0] : null));
     if (disboardBumpReminders) disboard(disboardBumpReminders);
@@ -181,7 +181,7 @@ export default () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const giveawayEnd = (_: unknown) => null; // TODO: import giveaway handler
 
-    const giveaways = await client.ch
+    const giveaways = await ch
       .query(`SELECT * FROM giveaways WHERE guildid = $1;`, [String(guild.id)])
       .then((r: DBT.giveaways[] | null) => r || null);
     giveaways?.forEach((g) => giveawayEnd(g));

@@ -1,16 +1,16 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
-  const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
+  const language = await ch.languageSelector(cmd.guild?.id);
+  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
@@ -21,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     {
       author: embedParsers.author(language, lan),
       description: settings?.words?.length
-        ? `${lan.fields.words.name} ${client.ch.util.makeCodeBlock(settings.words.join(', '))}`
+        ? `${lan.fields.words.name} ${ch.util.makeCodeBlock(settings.words.join(', '))}`
         : language.none,
       fields: [
         {

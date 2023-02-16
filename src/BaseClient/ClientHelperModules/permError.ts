@@ -3,6 +3,7 @@ import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
 import type CT from '../../Typings/CustomTypings';
+import constants from '../Other/constants.js';
 
 export default async (
   msg: Discord.Message,
@@ -15,7 +16,6 @@ export default async (
   if (typeof bits === 'number') bits = BigInt(bits);
 
   const clientMember = msg.guild?.members.me;
-  const client = (await import('../Client.js')).default;
   const neededPerms = new Discord.PermissionsBitField(
     bitUniques(
       bits,
@@ -28,10 +28,10 @@ export default async (
   const embed: Discord.APIEmbed = {
     author: {
       name: language.error,
-      icon_url: client.customConstants.standard.error,
-      url: client.customConstants.standard.invite,
+      icon_url: constants.standard.error,
+      url: constants.standard.invite,
     },
-    color: client.customConstants.colors.danger,
+    color: constants.colors.danger,
     description: me ? language.permissions.error.msg : language.permissions.error.you,
     fields: [
       {

@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
+  const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories['delete-commands'];
 
   const ID = cmd.options.get('ID', false)?.value as string;
@@ -23,11 +23,11 @@ const showID = async (
   language: CT.Language,
   lan: CT.Language['slashCommands']['settings']['categories']['delete-commands'],
 ) => {
-  const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
+  const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const name = 'delete-commands';
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['delete-commands']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['delete-commands']} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.deletecommands[] | null) => (r ? r[0] : null));
@@ -122,10 +122,10 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['delete-commands'],
 ) => {
   const name = 'delete-commands';
-  const { embedParsers, multiRowHelpers } = client.ch.settingsHelpers;
-  const settings = await client.ch
+  const { embedParsers, multiRowHelpers } = ch.settingsHelpers;
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['delete-commands']} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['delete-commands']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.deletecommands[] | null) => r || null);
@@ -135,7 +135,7 @@ const showAll = async (
       lan.fields.deletetimeout
     }: \`${embedParsers.time(Number(s.deletetimeout), language)}\``,
     value: `${
-      s.active ? client.stringEmotes.enabled : client.stringEmotes.disabled
+      s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled
     } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 

@@ -1,11 +1,11 @@
 import * as Jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
-import client from '../BaseClient/Client.js';
+import { ch, client } from '../BaseClient/Client.js';
 import type CT from '../Typings/CustomTypings';
 import type DBT from '../Typings/DataBaseTypings';
 
 export default async (args: CT.ModBaseEventOptions) => {
-  const language = await client.ch.languageSelector(args.guild?.id);
+  const language = await ch.languageSelector(args.guild?.id);
   args.guild =
     args.guild ?? args.msg?.guild ?? args.m?.guild ?? args.channel?.guild ?? args.role?.guild;
 
@@ -19,7 +19,7 @@ export default async (args: CT.ModBaseEventOptions) => {
 
     if (args.msg && args.m && args.m.editable) {
       await args.m.edit({ embeds: [embed] }).catch(() => null);
-    } else if (args.msg) args.m = await client.ch.replyMsg(args.msg, { embeds: [embed] });
+    } else if (args.msg) args.m = await ch.replyMsg(args.msg, { embeds: [embed] });
 
     const targetMember = await args.guild.members.fetch(args.target.id).catch(() => undefined);
     const executingMember = args.executor
@@ -76,13 +76,13 @@ const declareSuccess = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.tick} ${lan.success(args)}`,
+      value: `${ch.stringEmotes.tick} ${lan.success(args)}`,
     });
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
+    embed.description = `${ch.stringEmotes.tick} ${lan.success(args)}`;
   } else {
-    embed.description = `${client.stringEmotes.tick} ${lan.success(args)}`;
+    embed.description = `${ch.stringEmotes.tick} ${lan.success(args)}`;
   }
 
   if (args.m && args.m.editable) await args.m.edit({ embeds: [embed] }).catch(() => null);
@@ -107,17 +107,15 @@ const errorEmbed = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
-        String(err),
-      )}`,
+      value: `${ch.stringEmotes.cross} ${lan.error} ${ch.util.makeCodeBlock(String(err))}`,
     });
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
+    embed.description = `${ch.stringEmotes.cross} ${lan.error} ${ch.util.makeCodeBlock(
       String(err),
     )}`;
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.error} ${client.ch.util.makeCodeBlock(
+    embed.description = `${ch.stringEmotes.cross} ${lan.error} ${ch.util.makeCodeBlock(
       String(err),
     )}`;
   }
@@ -129,7 +127,7 @@ const errorEmbed = async (
 
 const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => {
   const getLogchannels = async () =>
-    client.ch
+    ch
       .query(`SELECT modlogs FROM logchannels WHERE guildid = $1 AND modlogs IS NOT NULL;`, [
         args.guild?.id,
       ])
@@ -138,9 +136,7 @@ const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => 
   const lan = language.mod[args.type];
   const embed: Discord.APIEmbed = {
     color:
-      client.customConstants.colors[
-        client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
-      ],
+      ch.constants.colors[ch.constants.modColors[args.type] as keyof typeof ch.constants.colors],
     author: {
       name: lan.author(args),
       icon_url: args.target?.displayAvatarURL({ size: 4096 }),
@@ -158,18 +154,14 @@ const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => 
   if (args.duration) {
     embed.fields?.push({
       name: language.duration,
-      value: client.ch.moment(args.duration, language),
+      value: ch.moment(args.duration, language),
       inline: false,
     });
   }
 
   const logchannels = await getLogchannels();
   if (logchannels && logchannels.length && args.guild) {
-    await client.ch.send(
-      { id: logchannels, guildId: args.guild.id },
-      { embeds: [embed] },
-      language,
-    );
+    await ch.send({ id: logchannels, guildId: args.guild.id }, { embeds: [embed] });
   }
 };
 
@@ -183,10 +175,8 @@ const loadingEmbed = (language: CT.Language, args: CT.ModBaseEventOptions) => {
   if (args.m || args.source) embed.fields?.pop();
 
   embed.color =
-    client.customConstants.colors[
-      client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
-    ];
-  embed.fields?.push({ name: '\u200b', value: `${client.stringEmotes.loading} ${lan.loading}` });
+    ch.constants.colors[ch.constants.modColors[args.type] as keyof typeof ch.constants.colors];
+  embed.fields?.push({ name: '\u200b', value: `${ch.stringEmotes.loading} ${lan.loading}` });
 
   return embed;
 };
@@ -216,17 +206,17 @@ const roleCheck = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.exeNoPerms}`,
+      value: `${ch.stringEmotes.cross} ${lan.exeNoPerms}`,
     });
 
     deleter(args);
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.exeNoPerms}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.exeNoPerms}`;
 
     deleter(args);
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.exeNoPerms}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.exeNoPerms}`;
 
     deleter(args);
   }
@@ -252,17 +242,17 @@ const checkSelfPunish = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.selfPunish}`,
+      value: `${ch.stringEmotes.cross} ${lan.selfPunish}`,
     });
 
     deleter(args);
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.selfPunish}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.selfPunish}`;
 
     deleter(args);
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.selfPunish}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.selfPunish}`;
 
     deleter(args);
   }
@@ -287,17 +277,17 @@ const checkMePunish = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.mePunish}`,
+      value: `${ch.stringEmotes.cross} ${lan.mePunish}`,
     });
 
     deleter(args);
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.mePunish}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.mePunish}`;
 
     deleter(args);
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.mePunish}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.mePunish}`;
 
     deleter(args);
   }
@@ -387,17 +377,17 @@ const checkPunishable = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.permissionError}`,
+      value: `${ch.stringEmotes.cross} ${lan.permissionError}`,
     });
 
     deleter(args);
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.permissionError}`;
 
     deleter(args);
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.permissionError}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.permissionError}`;
 
     deleter(args);
   }
@@ -415,9 +405,7 @@ const doDM = async (
   const dmChannel = await targetMember?.createDM().catch(() => undefined);
   const DMembed: Discord.APIEmbed = {
     color:
-      client.customConstants.colors[
-        client.customConstants.modColors[args.type] as keyof typeof client.customConstants.colors
-      ],
+      ch.constants.colors[ch.constants.modColors[args.type] as keyof typeof ch.constants.colors],
     timestamp: String(Date.now()),
     author: {
       name: lan.dm.author(args),
@@ -426,7 +414,7 @@ const doDM = async (
 
   if (args.reason) DMembed.description = `**${language.reason}:** \n${args.reason}`;
 
-  return dmChannel ? client.ch.send(dmChannel, { embeds: [DMembed] }, language) : undefined;
+  return dmChannel ? ch.send(dmChannel, { embeds: [DMembed] }) : undefined;
 };
 
 const checkActionTaken = async (
@@ -506,17 +494,17 @@ const checkActionTaken = async (
     embed.fields?.pop();
     embed.fields?.push({
       name: '\u200b',
-      value: `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`,
+      value: `${ch.stringEmotes.cross} ${lan.alreadyApplied(args)}`,
     });
 
     deleter(args);
   } else if (args.m) {
     embed.fields?.pop();
-    embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
     deleter(args);
   } else {
-    embed.description = `${client.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
+    embed.description = `${ch.stringEmotes.cross} ${lan.alreadyApplied(args)}`;
 
     deleter(args);
   }
@@ -554,7 +542,7 @@ const takeAction = async (
 
       if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
 
-      client.cache.mutes.set(
+      ch.cache.mutes.set(
         Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
           client.emit('modBaseEvent', {
             target: args.target,
@@ -622,7 +610,7 @@ const takeAction = async (
 
       if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
 
-      client.cache.bans.set(
+      ch.cache.bans.set(
         Jobs.scheduleJob(new Date(Date.now() + Number(args.duration)), () => {
           client.emit('modBaseEvent', {
             target: args.target,
@@ -682,7 +670,7 @@ const takeAction = async (
         if (!args.guild) return { action: punished, error: language.errors.noGuildFound };
         if (!args.channel) return { action: punished, error: language.errors.noChannelFound };
 
-        client.cache.channelBans.set(
+        ch.cache.channelBans.set(
           Jobs.scheduleJob(
             `${args.channel?.id}-${args.target.id}`,
             new Date(Date.now() + Number(args.duration)),
@@ -792,7 +780,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
       ? [args.target.id, args.guild?.id, ...extraArgs]
       : [args.target.id, args.guild?.id];
 
-    const res = await client.ch.query(
+    const res = await ch.query(
       `SELECT * FROM ${table} WHERE userid = $1 AND guildid = $2 ${
         extraSelectArgs
           ? `${extraSelectArgs.map((arg, i) => `AND ${arg} = $${i + 3}`).join('')}`
@@ -802,7 +790,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
     );
 
     if (res && res.length) {
-      await client.ch.query(
+      await ch.query(
         `DELETE FROM ${table} WHERE userid = $1 AND guildid = $2 AND uniquetimestamp = $3;`,
         [args.target.id, args.guild?.id, res[0].uniquetimestamp],
       ); // js
@@ -852,7 +840,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
         insertArgs.push(...mergeArr);
       }
 
-      await client.ch.query(
+      await ch.query(
         `INSERT INTO ${insertTable} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
           extraInsertArgNames ? `, ${extraInsertArgNames.join(', ')}` : ''
         }) VALUES
@@ -890,7 +878,7 @@ const doDataBaseAction = async (args: CT.ModBaseEventOptions) => {
           args.msg?.id,
         ];
 
-    client.ch.query(
+    ch.query(
       `INSERT INTO ${table} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
         extraArgNames ? `, ${extraArgNames.join(', ')}` : '' // `
       }) VALUES (

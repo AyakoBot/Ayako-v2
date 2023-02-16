@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
-import constants from '../Other/Constants.js';
+import constants from '../Other/constants.js';
 import reply from './replyCmd.js';
 
 export default (interaction: Discord.ButtonInteraction, language: CT.Language) =>

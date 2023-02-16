@@ -1,10 +1,10 @@
 import Jobs from 'node-schedule';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import { separatorAssigner, oneTimeRunner } from '../../guildEvents/guildMemberUpdate/separator.js';
 
 export default async () => {
-  const roleseparatorsettingsRow = await client.ch
+  const roleseparatorsettingsRow = await ch
     .query('SELECT * FROM roleseparatorsettings WHERE startat < $1;', [Date.now() - 3900000])
     .then((r: DBT.roleseparatorsettings[] | null) => r || null);
   if (!roleseparatorsettingsRow) return;
@@ -22,7 +22,7 @@ export default async () => {
     if (!row.channelid) return;
     if (!row.messageid) return;
 
-    const channel = await client.ch.getChannel.guildTextChannel(row.channelid);
+    const channel = await ch.getChannel.guildTextChannel(row.channelid);
     if (!channel) return;
     const message = await channel.messages.fetch(row.messageid).catch(() => null);
     if (!message) return;

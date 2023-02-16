@@ -1,18 +1,18 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldStage: Discord.StageInstance, stage: Discord.StageInstance) => {
   if (!stage.guild) return;
   if (!stage.channel) return;
 
-  const channels = await client.ch.getLogChannels('stageevents', stage.guild);
+  const channels = await ch.getLogChannels('stageevents', stage.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(stage.guild.id);
+  const language = await ch.languageSelector(stage.guild.id);
   const lan = language.events.logs.channel;
-  const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(stage.guild, 84, stage.id);
+  const con = ch.constants.events.logs.channel;
+  const audit = await ch.getAudit(stage.guild, 84, stage.id);
   const auditUser = audit?.executor ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
 
@@ -21,7 +21,7 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
       name: lan.nameStageUpdate,
       icon_url: con.StageUpdate,
     },
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
     description: auditUser
       ? lan.descUpdateStageAudit(
           stage.channel,
@@ -33,7 +33,7 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (oldStage.guildScheduledEventId !== stage.guildScheduledEventId) {
     merge(
@@ -69,11 +69,5 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
     );
   }
 
-  client.ch.send(
-    { id: channels, guildId: stage.guild.id },
-    { embeds: [embed], files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: stage.guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

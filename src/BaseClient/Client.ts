@@ -1,55 +1,9 @@
 import * as Discord from 'discord.js';
-import type Jobs from 'node-schedule';
-import * as ch from './ClientHelper.js';
-import NekoClient from './NekoClient.js';
-import Constants from './Other/Constants.js';
-import ObjectEmotes from './Other/ObjectEmotes.json' assert { type: 'json' };
-import StringEmotes from './Other/StringEmotes.json' assert { type: 'json' };
-import ReactionEmotes from './Other/ReactionEmotes.json' assert { type: 'json' };
+import Constants from './Other/constants.js';
 import auth from '../auth.json' assert { type: 'json' };
-import type cache from './ClientHelperModules/cache.js';
 
-const events = await ch.getEvents();
-
-class CustomClient extends Discord.Client {
-  neko: typeof NekoClient;
-  customConstants: typeof Constants;
-  objectEmotes: typeof ObjectEmotes;
-  stringEmotes: typeof StringEmotes;
-  reactionEmotes: typeof ReactionEmotes;
-
-  mainID: string;
-
-  channelQueue: Map<string, Map<string, Discord.APIEmbed[]>>;
-  channelTimeout: Map<string, Map<string, Jobs.Job>>;
-
-  ch: typeof ch;
-
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  cache: typeof cache;
-  events: typeof events;
-
-  constructor(options: Discord.ClientOptions) {
-    super(options);
-    this.neko = NekoClient;
-    this.customConstants = Constants;
-
-    this.objectEmotes = ObjectEmotes;
-    this.stringEmotes = StringEmotes;
-    this.reactionEmotes = ReactionEmotes;
-
-    this.mainID = '650691698409734151';
-
-    this.channelQueue = new Map();
-    this.channelTimeout = new Map();
-
-    this.ch = ch;
-    this.events = events;
-  }
-}
-
-const client = new CustomClient({
+export * as ch from './ClientHelper.js';
+export const client = new Discord.Client({
   shards: 'auto',
   allowedMentions: {
     parse: ['users'],
@@ -101,5 +55,3 @@ const client = new CustomClient({
 });
 
 await client.login(auth.token);
-
-export default client;

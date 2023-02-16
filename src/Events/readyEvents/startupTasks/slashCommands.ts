@@ -1,5 +1,5 @@
 import commands from '../../../Commands/SlashCommands/SlashCommands.js';
-import client from '../../../BaseClient/Client.js';
+import { client } from '../../../BaseClient/Client.js';
 
 export default async () => {
   await client.application?.commands.fetch();

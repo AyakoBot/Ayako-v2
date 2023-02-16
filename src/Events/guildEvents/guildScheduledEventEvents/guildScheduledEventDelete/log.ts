@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch, client } from '../../../../BaseClient/Client.js';
 
 export default async (
   event: Discord.GuildScheduledEvent,
@@ -8,19 +8,19 @@ export default async (
   const guild = event.guild ?? client.guilds.cache.get(event.guildId);
   if (!guild) return;
 
-  const channels = await client.ch.getLogChannels('scheduledeventevents', guild);
+  const channels = await ch.getLogChannels('scheduledeventevents', guild);
   if (!channels) return;
 
   const channel =
     event.channel ??
     (event.channelId
-      ? (await client.ch.getChannel.guildTextChannel(event.channelId)) ??
-        (await client.ch.getChannel.guildVoiceChannel(event.channelId))
+      ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
+        (await ch.getChannel.guildVoiceChannel(event.channelId))
       : undefined);
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await ch.languageSelector(guild.id);
   const lan = language.events.logs.scheduledEvent;
-  const con = client.customConstants.events.logs.guild;
-  const audit = await client.ch.getAudit(guild, 102, event.id);
+  const con = ch.constants.events.logs.guild;
+  const audit = await ch.getAudit(guild, 102, event.id);
   const auditUser = audit?.executor ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
   let description = '';
@@ -45,7 +45,7 @@ export default async (
       name: lan.nameDelete,
       icon_url: con.ScheduledEventDelete,
     },
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
     fields: [],
     description,
   };
@@ -56,10 +56,10 @@ export default async (
       if (!url) return;
 
       embed.image = {
-        url: `attachment://${client.ch.getNameAndFileType(url)}`,
+        url: `attachment://${ch.getNameAndFileType(url)}`,
       };
 
-      const attachment = (await client.ch.fileURL2Buffer([url])).filter(
+      const attachment = (await ch.fileURL2Buffer([url])).filter(
         (e): e is Discord.AttachmentPayload => !!e,
       );
       if (attachment) files.push(...attachment);
@@ -85,14 +85,14 @@ export default async (
   if (event.scheduledStartTimestamp) {
     embed.fields?.push({
       name: lan.scheduledStartTime,
-      value: client.customConstants.standard.getTime(event.scheduledStartTimestamp),
+      value: ch.constants.standard.getTime(event.scheduledStartTimestamp),
     });
   }
 
   if (event.scheduledEndTimestamp) {
     embed.fields?.push({
       name: lan.scheduledEndTime,
-      value: client.customConstants.standard.getTime(event.scheduledEndTimestamp),
+      value: ch.constants.standard.getTime(event.scheduledEndTimestamp),
     });
   }
 
@@ -124,7 +124,7 @@ export default async (
   );
 
   if (users?.size) {
-    const attachment = client.ch.txtFileWriter(
+    const attachment = ch.txtFileWriter(
       Array.from(users, ([, u]) => u.id).join(', '),
       undefined,
       lan.participants,
@@ -132,11 +132,5 @@ export default async (
     if (attachment) files.push(attachment);
   }
 
-  client.ch.send(
-    { id: channels, guildId: guild.id },
-    { embeds: [embed], files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

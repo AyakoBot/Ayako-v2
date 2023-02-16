@@ -1,16 +1,14 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 export default async (member: Discord.GuildMember) => {
-  const channels = await client.ch.getLogChannels('memberevents', member.guild);
+  const channels = await ch.getLogChannels('memberevents', member.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(member.guild.id);
   const lan = language.events.logs.guild;
-  const con = client.customConstants.events.logs.guild;
-  const audit = member.user.bot
-    ? await client.ch.getAudit(member.guild, 20, member.user.id)
-    : undefined;
+  const con = ch.constants.events.logs.guild;
+  const audit = member.user.bot ? await ch.getAudit(member.guild, 20, member.user.id) : undefined;
   const auditUser = audit?.executor ?? undefined;
   let description = '';
 
@@ -35,21 +33,15 @@ export default async (member: Discord.GuildMember) => {
         value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
       },
     ],
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
   };
 
   if (member.joinedAt) {
     embed.fields?.push({
       name: language.joinedAt,
-      value: client.customConstants.standard.getTime(member.joinedAt.getTime()),
+      value: ch.constants.standard.getTime(member.joinedAt.getTime()),
     });
   }
 
-  client.ch.send(
-    { id: channels, guildId: member.guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
+  const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories['rule-channels'];
 
   const ID = cmd.options.get('ID', false)?.value as string;
@@ -23,11 +23,11 @@ const showID = async (
   language: CT.Language,
   lan: CT.Language['slashCommands']['settings']['categories']['rule-channels'],
 ) => {
-  const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
+  const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const name = 'rule-channels';
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['rule-channels']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['rule-channels']} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.levelingruleschannels[] | null) => (r ? r[0] : null));
@@ -36,7 +36,7 @@ const showID = async (
     {
       author: embedParsers.author(language, lan),
       description: settings?.rules
-        ? `\`${client.ch.channelRuleCalc(Number(settings.rules), language).join('`\n `')}\``
+        ? `\`${ch.channelRuleCalc(Number(settings.rules), language).join('`\n `')}\``
         : language.none,
       fields: [
         {
@@ -48,12 +48,12 @@ const showID = async (
     },
   ];
 
-  client.ch.channelRuleCalc(Number(settings?.rules), language).forEach((rule, i) => {
+  ch.channelRuleCalc(Number(settings?.rules), language).forEach((rule, i) => {
     const key = Object.values(language.channelRules).find((v) => v === rule);
     if (!key) return;
 
     const emote =
-      client.stringEmotes.numbers[String((i % 5) + 1) as keyof typeof client.stringEmotes.numbers];
+      ch.stringEmotes.numbers[String((i % 5) + 1) as keyof typeof ch.stringEmotes.numbers];
 
     embeds[0].fields?.push({
       name: `${emote} ${rule}`,
@@ -82,8 +82,8 @@ const showID = async (
           'hasleastattachments',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((1 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -92,8 +92,8 @@ const showID = async (
           'hasmostattachments',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((2 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -102,8 +102,8 @@ const showID = async (
           'hasleastcharacters',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((3 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -112,8 +112,8 @@ const showID = async (
           'hasmostcharacters',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((4 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -122,8 +122,8 @@ const showID = async (
           'hasleastwords',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((5 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
       ],
@@ -137,8 +137,8 @@ const showID = async (
           'hasmostwords',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((1 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -147,8 +147,8 @@ const showID = async (
           'mentionsleastusers',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((2 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -157,8 +157,8 @@ const showID = async (
           'mentionsmostusers',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((3 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -167,8 +167,8 @@ const showID = async (
           'mentionsleastchannels',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((4 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -177,8 +177,8 @@ const showID = async (
           'mentionsmostchannels',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((5 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
       ],
@@ -192,8 +192,8 @@ const showID = async (
           'mentionsleastroles',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((1 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -202,8 +202,8 @@ const showID = async (
           'mentionsmostroles',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((2 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -212,8 +212,8 @@ const showID = async (
           'hasleastlinks',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((3 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -222,8 +222,8 @@ const showID = async (
           'hasmostlinks',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((4 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -232,8 +232,8 @@ const showID = async (
           'hasleastemotes',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((5 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
       ],
@@ -247,8 +247,8 @@ const showID = async (
           'hasmostemotes',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((1 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -257,8 +257,8 @@ const showID = async (
           'hasleastmentions',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((2 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
         buttonParsers.specific(
@@ -267,8 +267,8 @@ const showID = async (
           'hasmostmentions',
           name,
           undefined,
-          client.objectEmotes.numbers[
-            String((3 % 5) + 1) as keyof typeof client.stringEmotes.numbers
+          ch.objectEmotes.numbers[
+            String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers
           ],
         ),
       ],
@@ -288,16 +288,16 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['rule-channels'],
 ) => {
   const name = 'rule-channels';
-  const { multiRowHelpers } = client.ch.settingsHelpers;
-  const settings = await client.ch
+  const { multiRowHelpers } = ch.settingsHelpers;
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['rule-channels']} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['rule-channels']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.levelingruleschannels[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${client.ch.channelRuleCalc(Number(s.rules), language)} ${
+    name: `${ch.channelRuleCalc(Number(s.rules), language)} ${
       language.ChannelRules
     } - ${Number(s.channels?.length)} ${language.Channels}`,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,

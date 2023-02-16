@@ -1,8 +1,8 @@
 import type * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
+import { ch, client } from '../../BaseClient/Client.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
-  const channels = await client.ch.getLogChannels('automodevents', execution.guild);
+  const channels = await ch.getLogChannels('automodevents', execution.guild);
   if (!channels) return;
 
   const user = await client.users.fetch(execution.userId);
@@ -12,21 +12,21 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   if (!rule) return;
 
   const channel = execution.channelId
-    ? await client.ch.getChannel.guildTextChannel(execution.channelId)
+    ? await ch.getChannel.guildTextChannel(execution.channelId)
     : undefined;
   const msg =
     execution.messageId && channel ? await channel.messages.fetch(execution.messageId) : undefined;
-  const language = await client.ch.languageSelector(execution.guild.id);
+  const language = await ch.languageSelector(execution.guild.id);
   const lan = language.events.logs.automodActionExecution;
 
   const embed: Discord.APIEmbed = {
     author: {
-      icon_url: client.objectEmotes.userFlags.DiscordCertifiedModerator.link,
+      icon_url: ch.objectEmotes.userFlags.DiscordCertifiedModerator.link,
       name: lan.name,
       url: msg ? msg.url : undefined,
     },
     description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
     fields: [],
   };
 
@@ -56,17 +56,17 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
         execution.action.type === 2
           ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
               language.Message
-            }](${client.ch.getJumpLink({
+            }](${ch.getJumpLink({
               guildId: execution.guild.id,
               channelId: execution.action.metadata.channelId ?? '',
               id: execution.alertSystemMessageId ?? '',
             })})`
-          : `${language.duration} \`${client.ch.moment(
+          : `${language.duration} \`${ch.moment(
               execution.action.metadata.durationSeconds
                 ? Number(execution.action.metadata.durationSeconds) * 1000
                 : 0,
               language,
-            )}\` / ${language.End} ${client.customConstants.standard.getTime(
+            )}\` / ${language.End} ${ch.constants.standard.getTime(
               Number(execution.action.metadata.durationSeconds) * 1000 + Date.now(),
             )}`,
       inline: true,
@@ -97,10 +97,9 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     });
   }
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: execution.guild.id },
     { embeds: [embed] },
-    language,
     undefined,
     10000,
   );

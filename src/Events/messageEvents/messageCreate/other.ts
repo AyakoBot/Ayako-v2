@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import type CT from '../../../Typings/CustomTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (msg: CT.GuildMessage) => {
   if (msg.author.discriminator === '0000') return;
@@ -38,18 +38,14 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
     if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
     msg.delete().catch(() => null);
 
-    client.ch
-      .send(
-        msg.channel,
-        { content: `${msg.author} **Do not send Discord Links in this Channel**` },
-        msg.language,
-      )
-      .then((m) => {
-        if (Array.isArray(m)) return;
-        jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) m.delete().catch(() => null);
-        });
+    ch.send(msg.channel, {
+      content: `${msg.author} **Do not send Discord Links in this Channel**`,
+    }).then((m) => {
+      if (Array.isArray(m)) return;
+      jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+        if (m) m.delete().catch(() => null);
       });
+    });
   };
 
   const linkCheck = () => {
@@ -71,20 +67,14 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
 
     msg.delete().catch(() => null);
 
-    client.ch
-      .send(
-        msg.channel,
-        {
-          content: `${msg.author} You are not allowed to post links yet. \`Needed level: Donut [40]\`\n Please use <#298954962699026432> and <#348601610244587531> instead.`,
-        },
-        msg.language,
-      )
-      .then((m) => {
-        if (Array.isArray(m)) return;
-        jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) m.delete().catch(() => null);
-        });
+    ch.send(msg.channel, {
+      content: `${msg.author} You are not allowed to post links yet. \`Needed level: Donut [40]\`\n Please use <#298954962699026432> and <#348601610244587531> instead.`,
+    }).then((m) => {
+      if (Array.isArray(m)) return;
+      jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+        if (m) m.delete().catch(() => null);
       });
+    });
   };
 
   inviteCheck();
@@ -161,20 +151,14 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
 
     msg.delete();
 
-    client.ch
-      .send(
-        msg.channel,
-        {
-          content: `${msg.author} You are not allowed to post links yet. \`Needed level: Cookie [20]\`\n Please use <#298954962699026432> and <#348601610244587531> instead.`,
-        },
-        msg.language,
-      )
-      .then((m) => {
-        if (Array.isArray(m)) return;
-        jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-          if (m) m.delete().catch(() => null);
-        });
+    ch.send(msg.channel, {
+      content: `${msg.author} You are not allowed to post links yet. \`Needed level: Cookie [20]\`\n Please use <#298954962699026432> and <#348601610244587531> instead.`,
+    }).then((m) => {
+      if (Array.isArray(m)) return;
+      jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+        if (m) m.delete().catch(() => null);
       });
+    });
   };
 
   levelUp();

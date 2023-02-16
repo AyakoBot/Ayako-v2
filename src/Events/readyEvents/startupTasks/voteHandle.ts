@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 // eslint-disable-next-line
 import io from 'socket.io-client';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };
@@ -16,7 +16,7 @@ export default async () => {
   });
 
   socket.on('TOP_GG', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
-    const row = await client.ch
+    const row = await ch
       .query(`SELECT guildid FROM votesettings WHERE token = $1;`, [vote.authorization])
       .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
     if (!row) return;

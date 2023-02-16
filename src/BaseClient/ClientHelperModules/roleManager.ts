@@ -31,22 +31,18 @@ const handleRoleUpdate = async (
   prio: number,
   type: 'addRoles' | 'removeRoles',
 ) => {
-  const client = (await import('../Client.js')).default;
-  const guild = client.guilds.cache.get(member.guild.id);
-  if (!guild) return;
-
-  const { me } = guild.members;
+  const { me } = member.guild.members;
   if (!me) return;
 
   if (!member.manageable) return;
   if (!new Discord.PermissionsBitField(me.permissions).has(268435456n)) return;
 
-  const roleGuild = GuildCache.get(guild.id);
+  const roleGuild = GuildCache.get(member.guild.id);
   if (!roleGuild) {
-    GuildCache.set(guild.id, {
-      job: Jobs.scheduleJob('*/1 * * * * *', () => runJob(guild.id)),
+    GuildCache.set(member.guild.id, {
+      job: Jobs.scheduleJob('*/1 * * * * *', () => runJob(member.guild)),
       members: [{ member, [type]: roles, reason, prio, added: Date.now() }],
-      guild,
+      guild: member.guild,
     });
     return;
   }
@@ -65,12 +61,8 @@ const handleRoleUpdate = async (
 
 export default roleManager;
 
-const runJob = async (guildID: string) => {
-  const client = (await import('../Client.js')).default;
-  const guild = client.guilds.cache.get(guildID);
-  if (!guild) return;
-
-  const memberCache = GuildCache.get(guildID);
+const runJob = async (guild: Discord.Guild) => {
+  const memberCache = GuildCache.get(guild.id);
   if (!memberCache) return;
 
   const prioSort = memberCache?.members.sort((a, b) => a.prio - b.prio);
@@ -88,6 +80,7 @@ const runJob = async (guildID: string) => {
     .sort((a, b) => b.position - a.position)
     .map((r) => r)
     .shift();
+
   if (!clientHighestRole) return;
 
   const editedRoles = roles.filter((r) => {
@@ -112,6 +105,6 @@ const runJob = async (guildID: string) => {
 
   if (!memberCache.members.length) {
     memberCache.job.cancel();
-    GuildCache.delete(guildID);
+    GuildCache.delete(guild.id);
   }
 };

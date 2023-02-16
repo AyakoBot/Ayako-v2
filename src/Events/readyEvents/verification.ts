@@ -1,10 +1,10 @@
 import type * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
+import { ch, client } from '../../BaseClient/Client.js';
 import type DBT from '../../Typings/DataBaseTypings';
 import type CT from '../../Typings/CustomTypings';
 
 export default async () => {
-  const verificationRows = await client.ch
+  const verificationRows = await ch
     .query('SELECT * FROM verification WHERE active = true AND kicktof = true;')
     .then((r: DBT.verification[] | null) => r || null);
   if (!verificationRows) return;
@@ -14,7 +14,7 @@ export default async () => {
     const guild = client.guilds.cache.get(r.guildid);
     if (!guild) return;
 
-    const language = await client.ch.languageSelector(guild.id);
+    const language = await ch.languageSelector(guild.id);
     const embed = getEmbed(guild, language.verification);
 
     const unverifiedRoleCheck = () => {
@@ -28,7 +28,7 @@ export default async () => {
           if (Number(member.joinedAt) >= Math.abs(Date.now() - Number(r.kickafter) * 60000)) return;
           if (member.kickable) {
             const DM = await member.user.createDM().catch(() => null);
-            if (DM) await client.ch.send(DM, { embeds: [embed] }, language);
+            if (DM) await ch.send(DM, { embeds: [embed] });
 
             member.kick(language.verification.kickReason).catch(() => null);
           }
@@ -41,7 +41,7 @@ export default async () => {
         if (Number(member.joinedAt) >= Math.abs(Date.now() - Number(r.kickafter) * 60000)) return;
         if (member.kickable) {
           const DM = await member.user.createDM().catch(() => null);
-          if (DM) await client.ch.send(DM, { embeds: [embed] }, language);
+          if (DM) await ch.send(DM, { embeds: [embed] });
 
           member.kick(language.verification.kickReason).catch(() => null);
         }
@@ -55,5 +55,5 @@ export default async () => {
 
 const getEmbed = (guild: Discord.Guild, lan: CT.Language['verification']): Discord.APIEmbed => ({
   description: lan.kickMsg(guild),
-  color: client.customConstants.colors.danger,
+  color: ch.constants.colors.danger,
 });

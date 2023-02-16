@@ -1,14 +1,14 @@
 import type * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 
 export default async (integration: Discord.Integration) => {
-  const channels = await client.ch.getLogChannels('guildevents', integration.guild);
+  const channels = await ch.getLogChannels('guildevents', integration.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(integration.guild.id);
+  const language = await ch.languageSelector(integration.guild.id);
   const lan = language.events.logs.integration;
-  const con = client.customConstants.events.logs.guild;
-  const audit = await client.ch.getAudit(integration.guild, 80, integration.id);
+  const con = ch.constants.events.logs.guild;
+  const audit = await ch.getAudit(integration.guild, 80, integration.id);
   const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
@@ -20,7 +20,7 @@ export default async (integration: Discord.Integration) => {
       ? lan.descCreateAudit(integration, auditUser)
       : lan.descCreate(integration),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
   const flagsText = [
@@ -65,21 +65,21 @@ export default async (integration: Discord.Integration) => {
   if (integration.expireGracePeriod) {
     embed.fields?.push({
       name: lan.expireGracePeriod,
-      value: client.ch.moment(integration.expireGracePeriod, language),
+      value: ch.moment(integration.expireGracePeriod, language),
     });
   }
 
   if (integration.expireGracePeriod) {
     embed.fields?.push({
       name: lan.expireGracePeriod,
-      value: client.ch.moment(integration.expireGracePeriod, language),
+      value: ch.moment(integration.expireGracePeriod, language),
     });
   }
 
   if (integration.syncedAt) {
     embed.fields?.push({
       name: lan.syncedAt,
-      value: client.customConstants.standard.getTime(integration.syncedAt.getTime()),
+      value: ch.constants.standard.getTime(integration.syncedAt.getTime()),
     });
   }
 
@@ -122,11 +122,5 @@ export default async (integration: Discord.Integration) => {
     },
   );
 
-  client.ch.send(
-    { id: channels, guildId: integration.guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

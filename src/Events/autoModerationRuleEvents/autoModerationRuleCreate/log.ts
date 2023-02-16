@@ -1,13 +1,13 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
-  const channels = await client.ch.getLogChannels('automodevents', rule.guild);
+  const channels = await ch.getLogChannels('automodevents', rule.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(rule.guild.id);
+  const language = await ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
-  const con = client.customConstants.events.logs.automodRule;
+  const con = ch.constants.events.logs.automodRule;
   const user = await client.users.fetch(rule.creatorId);
   if (!user) return;
 
@@ -18,7 +18,7 @@ export default async (rule: Discord.AutoModerationRule) => {
     },
     description: lan.descCreate(user, rule),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
   if (rule.triggerMetadata) {
@@ -86,7 +86,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
       r.metadata?.channelId
-        ? client.ch.getChannel.guildTextChannel(r.metadata.channelId)
+        ? ch.getChannel.guildTextChannel(r.metadata.channelId)
         : undefined,
     ),
   );
@@ -99,7 +99,7 @@ export default async (rule: Discord.AutoModerationRule) => {
             ? `- ${
                 a.type === 2
                   ? `${lan.alertChannel} <#${a.metadata?.channelId}>  / \`${actionChannels[i]?.name}\` / \`${a.metadata?.channelId}\``
-                  : `${lan.timeoutDuration} \`${client.ch.moment(
+                  : `${lan.timeoutDuration} \`${ch.moment(
                       a.metadata?.durationSeconds ? Number(a.metadata.durationSeconds) * 1000 : 0,
                       language,
                     )}\``
@@ -118,15 +118,14 @@ export default async (rule: Discord.AutoModerationRule) => {
   embed.fields?.push({
     name: lan.enabled,
     value: rule.enabled
-      ? `${client.stringEmotes.tickWithBackground} ${language.Enabled}`
-      : `${client.stringEmotes.crossWithBackground} ${language.Disabled}`,
+      ? `${ch.stringEmotes.tickWithBackground} ${language.Enabled}`
+      : `${ch.stringEmotes.crossWithBackground} ${language.Disabled}`,
     inline: true,
   });
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: rule.guild.id },
     { embeds: [embed] },
-    language,
     undefined,
     10000,
   );

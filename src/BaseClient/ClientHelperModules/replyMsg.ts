@@ -3,7 +3,7 @@ import jobs, { scheduleJob } from 'node-schedule';
 import query from './query.js';
 import type CT from '../../Typings/CustomTypings';
 import type DBT from '../../Typings/DataBaseTypings';
-import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
+import objectEmotes from '../ClientHelperModules/objectEmotes.js';
 
 export default async (
   msg: Discord.Message | CT.GuildMessage | CT.Message,
@@ -75,7 +75,7 @@ export const cooldownHandler = async (
   }
 
   jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown)), async () => {
-    const client = (await import('../Client.js')).default;
+    const { client } = await import('../Client.js');
 
     reactions.forEach((react) => {
       sentMessage.reactions.cache

@@ -1,5 +1,5 @@
 import type CT from '../../../Typings/CustomTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 export default (msg: CT.GuildMessage) => {
   if (
@@ -11,7 +11,7 @@ export default (msg: CT.GuildMessage) => {
     ].includes(msg.author.id) &&
     msg.mentions.users.has('318453143476371456')
   ) {
-    client.ch.replyMsg(msg, {
+    ch.replyMsg(msg, {
       content: `<@${msg.author.id}>`,
       allowedMentions: { users: [msg.author.id] },
     });

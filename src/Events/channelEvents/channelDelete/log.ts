@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (
   channel:
@@ -15,18 +15,18 @@ export default async (
 ) => {
   if (!channel.guild.id) return;
 
-  const channels = await client.ch.getLogChannels('channelevents', channel.guild);
+  const channels = await ch.getLogChannels('channelevents', channel.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(channel.guild.id);
+  const language = await ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
-  const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(
+  const con = ch.constants.events.logs.channel;
+  const audit = await ch.getAudit(
     channel.guild,
     [10, 11, 12].includes(channel.type) ? 112 : 12,
     channel.id,
   );
-  const channelType = `${client.ch.getTrueChannelType(channel, channel.guild)}Delete`;
+  const channelType = `${ch.getTrueChannelType(channel, channel.guild)}Delete`;
   const getChannelOwner = () => {
     if (audit?.executor) return audit.executor;
     if ('ownerId' in channel && channel.ownerId) {
@@ -45,7 +45,7 @@ export default async (
       ? lan.descDeleteAudit(auditUser, channel, language.channelTypes[channel.type])
       : lan.descDelete(channel, language.channelTypes[channel.type]),
     fields: [],
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
   };
 
   const embeds = [embed];
@@ -87,7 +87,7 @@ export default async (
   if ('rateLimitPerUser' in channel && channel.rateLimitPerUser) {
     embed.fields?.push({
       name: lan.rateLimitPerUser,
-      value: client.ch.moment(channel.rateLimitPerUser, language),
+      value: ch.moment(channel.rateLimitPerUser, language),
       inline: true,
     });
   }
@@ -110,7 +110,7 @@ export default async (
 
   if ('nsfw' in channel && channel.parentId) {
     const parent = channel.parentId
-      ? await client.ch.getChannel.parentChannel(channel.parentId)
+      ? await ch.getChannel.parentChannel(channel.parentId)
       : undefined;
 
     if (parent) {
@@ -125,14 +125,14 @@ export default async (
   if ('autoArchiveDuration' in channel && channel.autoArchiveDuration) {
     embed.fields?.push({
       name: lan.autoArchiveDuration,
-      value: client.ch.moment(channel.autoArchiveDuration * 60000, language),
+      value: ch.moment(channel.autoArchiveDuration * 60000, language),
       inline: true,
     });
   }
 
   if ('permissionOverwrites' in channel) {
     const permEmbed: Discord.APIEmbed = {
-      color: client.customConstants.colors.ephemeral,
+      color: ch.constants.colors.ephemeral,
       description: channel.permissionOverwrites.cache
         .map(
           (perm) =>
@@ -142,7 +142,7 @@ export default async (
               .filter(([, a]) => !!a)
               .map(
                 (permissionString) =>
-                  `${client.stringEmotes.enabled} \`${
+                  `${ch.stringEmotes.enabled} \`${
                     language.permissions.perms[
                       permissionString[0] as keyof typeof language.permissions.perms
                     ]
@@ -154,7 +154,7 @@ export default async (
               .filter(([, a]) => !!a)
               .map(
                 (permissionString) =>
-                  `${client.stringEmotes.disabled} \`${
+                  `${ch.stringEmotes.disabled} \`${
                     language.permissions.perms[
                       permissionString[0] as keyof typeof language.permissions.perms
                     ]
@@ -168,10 +168,9 @@ export default async (
     embeds.push(permEmbed);
   }
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: channel.guild.id },
     { embeds },
-    language,
     undefined,
     10000,
   );

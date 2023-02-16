@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import type * as Discord from 'discord.js';
-import client from '../Client.js';
+import { client } from'../Client.js';
 
 class SlashCommandCollector extends EventEmitter {
   ended: boolean;

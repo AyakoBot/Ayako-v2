@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 
 export default async (
   msg: Discord.Message,
@@ -11,14 +11,14 @@ export default async (
     | Discord.VoiceChannel,
   date: Date,
 ) => {
-  const channels = await client.ch.getLogChannels('channelevents', channel.guild);
+  const channels = await ch.getLogChannels('channelevents', channel.guild);
   if (!channels) return;
 
   const last100 = await channel.messages.fetch({ limit: 100 }).catch(() => undefined);
-  const language = await client.ch.languageSelector(channel.guild.id);
+  const language = await ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
-  const con = client.customConstants.events.logs.channel;
-  const audit = await client.ch.getAudit(channel.guild, 74);
+  const con = ch.constants.events.logs.channel;
+  const audit = await ch.getAudit(channel.guild, 74);
   const auditUser =
     audit?.executor ??
     last100?.find(
@@ -37,14 +37,8 @@ export default async (
       ? lan.descPinCreateAudit(auditUser, msg, language.channelTypes[msg.channel.type])
       : lan.descPinCreate(msg, language.channelTypes[msg.channel.type]),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
-  client.ch.send(
-    { id: channels, guildId: channel.guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

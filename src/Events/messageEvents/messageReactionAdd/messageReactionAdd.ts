@@ -12,7 +12,7 @@ export default async (reaction: Discord.MessageReaction, user: Discord.User) => 
 
   const files: {
     default: (a: Discord.MessageReaction, u: Discord.User, m: Discord.Message) => void;
-  }[] = await Promise.all(['./willis.js', './reactionRoles.js', './log.js'].map((p) => import(p)));
+  }[] = await Promise.all(['./reactionRoles.js', './log.js'].map((p) => import(p)));
 
   files.forEach((f) => f.default(reaction, user, msg));
 };

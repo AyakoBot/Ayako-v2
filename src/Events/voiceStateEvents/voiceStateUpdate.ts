@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
+import { ch, client } from '../../BaseClient/Client.js';
 
 interface RealState extends Omit<Discord.VoiceState, 'channel' | 'member'> {
   channel?: Discord.VoiceChannel;
@@ -8,13 +8,13 @@ interface RealState extends Omit<Discord.VoiceState, 'channel' | 'member'> {
 
 export default async (oldState: RealState, state: RealState) => {
   if (!oldState.channel && oldState.channelId) {
-    oldState.channel = (await client.ch.getChannel.guildVoiceChannel(
+    oldState.channel = (await ch.getChannel.guildVoiceChannel(
       oldState.channelId,
     )) as Discord.VoiceChannel;
   }
 
   if (!state.channel && state.channelId) {
-    state.channel = (await client.ch.getChannel.guildVoiceChannel(
+    state.channel = (await ch.getChannel.guildVoiceChannel(
       state.channelId,
     )) as Discord.VoiceChannel;
   }

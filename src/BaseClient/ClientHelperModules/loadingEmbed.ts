@@ -1,5 +1,8 @@
 import type * as Discord from 'discord.js';
 import colorSelector from './colorSelector.js';
+import stringEmotes from './stringEmotes.js';
+import objectEmotes from './objectEmotes.js';
+import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default async (
@@ -12,15 +15,13 @@ export default async (
     lan: { author: string; loading?: string };
   },
 ): Promise<Discord.APIEmbed> => {
-  const client = (await import('../Client.js')).default;
-
   return {
     author: {
       name: lan.author,
-      icon_url: client.objectEmotes.loading.link,
-      url: client.customConstants.standard.invite,
+      icon_url: objectEmotes.loading.link,
+      url: constants.standard.invite,
     },
     color: colorSelector(guild.members.me ?? undefined),
-    description: `${client.stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
+    description: `${stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
   };
 };

@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import constants from '../Other/Constants.js';
+import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (msg: Discord.Message, language: CT.Language) => {

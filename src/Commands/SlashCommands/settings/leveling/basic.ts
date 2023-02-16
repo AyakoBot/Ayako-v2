@@ -1,17 +1,17 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch, client } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
-  const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
+  const language = await ch.languageSelector(cmd.guild?.id);
+  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.leveling} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames.leveling} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
@@ -126,7 +126,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
                 .map((e) => client.emojis.cache.get(e))
                 .filter((e): e is Discord.GuildEmoji => !!e)
                 .join(', ')
-            : client.stringEmotes.levelupemotes.join(', '),
+            : ch.stringEmotes.levelupemotes.join(', '),
           inline: true,
         },
         {

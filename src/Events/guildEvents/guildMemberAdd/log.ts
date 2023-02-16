@@ -1,15 +1,15 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (member: Discord.GuildMember) => {
-  const channels = await client.ch.getLogChannels('memberevents', member.guild);
+  const channels = await ch.getLogChannels('memberevents', member.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(member.guild.id);
   const lan = language.events.logs.guild;
-  const con = client.customConstants.events.logs.guild;
+  const con = ch.constants.events.logs.guild;
 
-  const audit = member.user.bot ? await client.ch.getAudit(member.guild, 28, member.id) : undefined;
+  const audit = member.user.bot ? await ch.getAudit(member.guild, 28, member.id) : undefined;
   const auditUser = audit?.executor ?? undefined;
   let description = auditUser ? lan.descJoinAudit(member.user, auditUser) : undefined;
 
@@ -24,7 +24,7 @@ export default async (member: Discord.GuildMember) => {
     },
     description,
     fields: [],
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
   const usedInvite = await getUsedInvite(member.guild, member.user);
@@ -48,25 +48,19 @@ export default async (member: Discord.GuildMember) => {
     });
   }
 
-  client.ch.send(
-    { id: channels, guildId: member.guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, undefined, 10000);
 };
 
 const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   if (user.bot) return undefined;
 
-  const oldInvites = Array.from(client.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
+  const oldInvites = Array.from(ch.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
     Array.from(i, ([c, i2]) => ({ uses: i2, code: c })),
   ).flat();
   const newInvites = await guild.invites.fetch();
   if (!newInvites) return undefined;
 
-  newInvites.forEach((i) => client.cache.invites.set(i, guild.id));
+  newInvites.forEach((i) => ch.cache.invites.set(i, guild.id));
   if (!oldInvites) return undefined;
 
   const inv = oldInvites
@@ -100,7 +94,7 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   }
 
   const cachedVanity = oldInvites.find((i) => i.code === vanity?.code);
-  client.cache.invites.set(vanity as Discord.Invite, guild.id);
+  ch.cache.invites.set(vanity as Discord.Invite, guild.id);
   if (Number(cachedVanity?.uses) < Number(vanity?.uses)) return vanity as Discord.Invite;
 
   return true;

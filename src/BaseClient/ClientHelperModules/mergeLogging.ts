@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
-import stringEmotes from '../Other/StringEmotes.json' assert { type: 'json' };
+import stringEmotes from './stringEmotes.js';
 
 export default (
   before: unknown,

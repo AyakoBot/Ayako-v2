@@ -1,17 +1,15 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
-  const channels = await client.ch.getLogChannels('memberevents', member.guild);
+  const channels = await ch.getLogChannels('memberevents', member.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(member.guild.id);
   const lan = language.events.logs.guild;
-  const con = client.customConstants.events.logs.guild;
-  const audit = member.user.bot
-    ? await client.ch.getAudit(member.guild, 20, member.user.id)
-    : undefined;
+  const con = ch.constants.events.logs.guild;
+  const audit = member.user.bot ? await ch.getAudit(member.guild, 20, member.user.id) : undefined;
   const auditUser = audit?.executor ?? undefined;
   let description = '';
 
@@ -28,12 +26,12 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     },
     description,
     fields: [],
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
   const files: Discord.AttachmentPayload[] = [];
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (member.avatar !== oldMember.avatar) {
     const getImage = async () => {
@@ -47,9 +45,9 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.avatar);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.avatar);
 
       if (attachment) files.push(attachment);
     };
@@ -62,10 +60,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   if (member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp) {
     merge(
       oldMember.premiumSince
-        ? client.customConstants.standard.getTime(oldMember.premiumSince.getTime())
+        ? ch.constants.standard.getTime(oldMember.premiumSince.getTime())
         : language.none,
       member.premiumSince
-        ? client.customConstants.standard.getTime(member.premiumSince.getTime())
+        ? ch.constants.standard.getTime(member.premiumSince.getTime())
         : language.none,
 
       'string',
@@ -77,10 +75,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   ) {
     merge(
       oldMember.communicationDisabledUntil
-        ? client.customConstants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
+        ? ch.constants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
         : language.none,
       member.communicationDisabledUntil
-        ? client.customConstants.standard.getTime(member.communicationDisabledUntil.getTime())
+        ? ch.constants.standard.getTime(member.communicationDisabledUntil.getTime())
         : language.none,
       'string',
       lan.communicationDisabledUntil,
@@ -90,11 +88,11 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     JSON.stringify(member.roles.cache.map((r) => r.id)) !==
     JSON.stringify(oldMember.roles.cache.map((r) => r.id))
   ) {
-    const addedRoles = client.ch.getDifference(
+    const addedRoles = ch.getDifference(
       member.roles.cache.map((r) => r),
       oldMember.roles.cache.map((r) => r),
     );
-    const removedRoles = client.ch.getDifference(
+    const removedRoles = ch.getDifference(
       oldMember.roles.cache.map((r) => r),
       member.roles.cache.map((r) => r),
     );
@@ -110,11 +108,5 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     merge(oldMember.pending, member.pending, 'boolean', lan.pending);
   }
 
-  client.ch.send(
-    { id: channels, guildId: member.guild.id },
-    { embeds: [embed], files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

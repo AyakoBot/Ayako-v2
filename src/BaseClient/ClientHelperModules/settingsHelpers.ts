@@ -1,11 +1,11 @@
 import * as Discord from 'discord.js';
-import stringEmotes from '../Other/StringEmotes.json' assert { type: 'json' };
-import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
-import type * as CT from '../../Typings/CustomTypings';
 import type * as DBT from '../../Typings/DataBaseTypings';
+import type * as CT from '../../Typings/CustomTypings';
+import stringEmotes from './stringEmotes.js';
+import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
 import query from './query.js';
-import constants from '../Other/Constants.js';
+import constants from '../Other/constants.js';
 
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'] & {

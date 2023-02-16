@@ -1,5 +1,5 @@
 import Jobs from 'node-schedule';
-import client from '../../BaseClient/Client.js';
+import { ch, client } from '../../BaseClient/Client.js';
 
 export default async () => {
   (await import('./antivirusBlocklistCacher')).default();
@@ -10,7 +10,7 @@ export default async () => {
   Jobs.scheduleJob('*/1 */1 */1 * *', async () => {
     (await import('./startupTasks/nitroCycle.js')).default();
 
-    if (client.user?.id === client.mainID) (await import('./websiteFetcher.js')).default();
+    if (client.user?.id === ch.mainID) (await import('./websiteFetcher.js')).default();
     if (new Date().getHours() === 0) {
       (await import('../messageEvents/messageCreate/antispam.js')).resetData();
       (await import('../messageEvents/messageCreate/blacklist.js')).resetData();

@@ -1,5 +1,5 @@
 import type CT from '../../../Typings/CustomTypings';
-import client from '../../../BaseClient/Client';
+import { ch, client } from '../../../BaseClient/Client';
 
 export default async (msg: CT.GuildMessage) => {
   rolePing(msg);
@@ -20,8 +20,8 @@ const banHandler = async (msg: CT.GuildMessage) => {
   ids.forEach(async (id) => {
     const user = await client.users.fetch(id);
     if (!user) {
-      const language = await client.ch.languageSelector(msg.guild.id);
-      client.ch.errorMsg(msg, language.errors.userNotFound, language);
+      const language = await ch.languageSelector(msg.guild.id);
+      ch.errorMsg(msg, language.errors.userNotFound, language);
       return;
     }
 
@@ -77,5 +77,5 @@ const rolePing = (msg: CT.GuildMessage) => {
 
   if (!content) return;
 
-  client.ch.replyMsg(msg, { content, allowedMentions: { roles: [role] } });
+  ch.replyMsg(msg, { content, allowedMentions: { roles: [role] } });
 };

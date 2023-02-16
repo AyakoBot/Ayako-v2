@@ -1,13 +1,13 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 export default async (_: bigint, guild: Discord.Guild | undefined) => {
-  client.ch.send(
+  ch.send(
     { id: '718181439354437693', guildId: '669893888856817665' },
     {
       embeds: [
         {
-          color: client.customConstants.colors.danger,
+          color: ch.constants.colors.danger,
           description: '<@&669894051851403294> joined a new Guild',
           fields: [
             {
@@ -21,6 +21,5 @@ export default async (_: bigint, guild: Discord.Guild | undefined) => {
         },
       ],
     },
-    (await import('../../../Languages/en.js')).default,
   );
 };

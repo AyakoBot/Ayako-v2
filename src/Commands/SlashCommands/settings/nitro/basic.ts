@@ -1,18 +1,17 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
-  const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
+  const language = await ch.languageSelector(cmd.guild?.id);
+  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
-  const settings = await client.ch
-    .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.nitro} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+  const settings = await ch
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames.nitro} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.nitrosettings[] | null) => (r ? r[0] : null));
   const lan = language.slashCommands.settings.categories.nitro;
   const name = 'nitro';

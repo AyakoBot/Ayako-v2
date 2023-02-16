@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
@@ -7,13 +7,13 @@ export default async (
   webhook: Discord.Webhook,
   channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
 ) => {
-  const channels = await client.ch.getLogChannels('webhookevents', channel.guild);
+  const channels = await ch.getLogChannels('webhookevents', channel.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(channel.guild.id);
+  const language = await ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.webhook;
-  const con = client.customConstants.events.logs.webhook;
-  const audit = await client.ch.getAudit(channel.guild, 51, webhook.id);
+  const con = ch.constants.events.logs.webhook;
+  const audit = await ch.getAudit(channel.guild, 51, webhook.id);
   const auditUser = audit?.executor ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
 
@@ -22,7 +22,7 @@ export default async (
       name: lan.nameUpdate,
       icon_url: con.update,
     },
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
     fields: [],
     description: auditUser
       ? lan.descUpdateAudit(
@@ -41,7 +41,7 @@ export default async (
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (oldWebhook?.avatar !== webhook?.avatar) {
     const getImage = async () => {
@@ -57,9 +57,9 @@ export default async (
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.avatar);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.avatar);
 
       if (attachment) files.push(attachment);
     };
@@ -84,10 +84,9 @@ export default async (
     );
   }
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: channel.guild.id },
     { embeds: [embed], files },
-    language,
     undefined,
     10000,
   );

@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 let messageCache: string[] = [];
 
@@ -102,10 +102,10 @@ export const resetData = () => {
 
 const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.blacklist) => {
   const embed: Discord.APIEmbed = {
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
     author: {
-      icon_url: client.customConstants.standard.error,
-      url: client.customConstants.standard.invite,
+      icon_url: ch.constants.standard.error,
+      url: ch.constants.standard.invite,
       name: msg.language.slashCommands.settings.categories.blacklist.action.author,
     },
     description: msg.language.slashCommands.settings.categories.blacklist.action.desc(
@@ -121,27 +121,23 @@ const softWarn = async (msg: CT.GuildMessage, words: string[], settings: DBT.bla
   };
 
   const dmChannel = await msg.author.createDM();
-  if (dmChannel) client.ch.send(dmChannel, { embeds: [embed] }, msg.language);
+  if (dmChannel) ch.send(dmChannel, { embeds: [embed] });
 
-  client.ch.send(
-    msg.channel,
-    {
-      content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.blacklist}`,
-      allowedMentions: {
-        users: [msg.author.id],
-      },
+  ch.send(msg.channel, {
+    content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.blacklist}`,
+    allowedMentions: {
+      users: [msg.author.id],
     },
-    msg.language,
-  );
+  });
 };
 
 const getSettings = async (msg: CT.GuildMessage) =>
-  client.ch
+  ch
     .query(`SELECT * FROM blacklist WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
 
 const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
-  client.ch
+  ch
     .query(
       `SELECT * FROM blacklistpunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
       [String(msg.guild.id), warns],

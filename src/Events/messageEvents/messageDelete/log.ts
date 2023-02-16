@@ -1,17 +1,17 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 export default async (msg: Discord.Message) => {
   if (!msg.guild) return;
   if (!msg.author) return;
 
-  const channels = await client.ch.getLogChannels('messageevents', msg.guild);
+  const channels = await ch.getLogChannels('messageevents', msg.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guild.id);
   const lan = language.events.logs.message;
-  const con = client.customConstants.events.logs.message;
-  const audit = await client.ch.getAudit(msg.guild, 72, msg.id);
+  const con = ch.constants.events.logs.message;
+  const audit = await ch.getAudit(msg.guild, 72, msg.id);
   const auditUser = audit?.executor ?? msg.author;
   const files: Discord.AttachmentPayload[] = [];
   const embeds: Discord.APIEmbed[] = [];
@@ -23,7 +23,7 @@ export default async (msg: Discord.Message) => {
     },
     description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
     fields: [],
-    color: client.customConstants.colors.danger,
+    color: ch.constants.colors.danger,
   };
 
   embeds.push(embed);
@@ -52,7 +52,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.components?.length) {
-    const components = client.ch.txtFileWriter(
+    const components = ch.txtFileWriter(
       msg.components.map((c) => JSON.stringify(c, null, 2)),
       undefined,
       lan.components,
@@ -66,10 +66,7 @@ export default async (msg: Discord.Message) => {
       name: lan.reactions,
       value: msg.reactions.cache
         .map(
-          (r) =>
-            `\`${client.ch.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(
-              r.emoji,
-            )}`,
+          (r) => `\`${ch.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(r.emoji)}`,
         )
         .join(''),
     });
@@ -93,7 +90,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.webhookId) {
-    const webhook = await client.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id);
+    const webhook = await ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id);
 
     if (webhook) {
       embed.fields?.push({
@@ -111,7 +108,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.embeds) {
-    const msgEmbeds = client.ch.txtFileWriter(
+    const msgEmbeds = ch.txtFileWriter(
       msg.embeds.map((c) => JSON.stringify(c, null, 2)),
       undefined,
       lan.embeds,
@@ -143,7 +140,7 @@ export default async (msg: Discord.Message) => {
 
   if (msg.content) {
     if (msg.content?.length > 1024) {
-      const content = client.ch.txtFileWriter(msg.content, undefined, language.content);
+      const content = ch.txtFileWriter(msg.content, undefined, language.content);
       if (content) files.push(content);
     } else {
       embed.fields?.push({
@@ -155,18 +152,12 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.attachments?.size) {
-    const attachments = (await client.ch.fileURL2Buffer(msg.attachments.map((a) => a.url))).filter(
+    const attachments = (await ch.fileURL2Buffer(msg.attachments.map((a) => a.url))).filter(
       (e): e is Discord.AttachmentPayload => !!e,
     );
 
     if (attachments?.length) files.push(...attachments);
   }
 
-  client.ch.send(
-    { id: channels, guildId: msg.guild.id },
-    { embeds, files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: msg.guild.id }, { embeds, files }, undefined, 10000);
 };

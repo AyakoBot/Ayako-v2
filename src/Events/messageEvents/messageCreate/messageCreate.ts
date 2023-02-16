@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../../Typings/CustomTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 export default async (m: Discord.Message) => {
   if (!m) return;
@@ -42,7 +42,7 @@ const getPaths = (msg: CT.Message) => {
 export const convertMsg = async (m: Discord.Message): Promise<CT.Message> => {
   const msg = m as CT.Message;
   const fetchArray: Promise<CT.Language>[] = [
-    client.ch.languageSelector('guildId' in msg ? msg.guild?.id : undefined),
+    ch.languageSelector('guildId' in msg ? msg.guild?.id : undefined),
   ];
 
   const [language] = await Promise.all(fetchArray);

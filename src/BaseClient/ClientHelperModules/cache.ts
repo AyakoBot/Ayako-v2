@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
-import client from '../Client.js';
+import { client, ch } from'../Client.js';
 
 const cache: {
   // Discord Cache
@@ -289,7 +289,7 @@ const cache: {
       if (cached) return cached;
 
       const fetched = await (
-        await client.ch.getChannel.guildTextChannel(channelId)
+        await ch.getChannel.guildTextChannel(channelId)
       )?.messages.fetchPinned();
       fetched?.forEach((f) => cache.pins.set(f));
 

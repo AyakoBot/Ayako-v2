@@ -4,7 +4,7 @@ import type * as Discord from 'discord.js';
 import ChannelRules, { ActivityFlags } from '../../../BaseClient/Other/ChannelRules';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 const guildCooldown = new Set();
 const lastMessageGuild = new Map();
@@ -36,7 +36,7 @@ const globalLeveling = async (msg: CT.GuildMessage) => {
     globalCooldown.delete(msg.author.id);
   });
 
-  const levelRow = await client.ch
+  const levelRow = await ch
     .query(`SELECT * FROM level WHERE type = $1 AND userid = $2;`, ['global', msg.author.id])
     .then((r: DBT.level[] | null) => (r ? r[0] : null));
 
@@ -111,7 +111,7 @@ const guildLeveling = async (msg: CT.GuildMessage) => {
     guildCooldown.delete(msg.author.id);
   });
 
-  const res = await client.ch
+  const res = await ch
     .query(`SELECT * FROM level WHERE type = $1 AND userid = $2 AND guildid = $3;`, [
       'guild',
       msg.author.id,
@@ -144,16 +144,13 @@ const insertLevels = (
   baseXP: number,
   xpMultiplier: number,
 ) =>
-  client.ch.query(
-    `INSERT INTO level (type, userid, xp, level, guildid) VALUES ($1, $2, $3, $4, $5);`,
-    [
-      type,
-      msg.author.id,
-      Math.floor(Math.random() * baseXP + 10) * xpMultiplier,
-      0,
-      type === 'guild' ? String(msg.guild.id) : 1,
-    ],
-  );
+  ch.query(`INSERT INTO level (type, userid, xp, level, guildid) VALUES ($1, $2, $3, $4, $5);`, [
+    type,
+    msg.author.id,
+    Math.floor(Math.random() * baseXP + 10) * xpMultiplier,
+    0,
+    type === 'guild' ? String(msg.guild.id) : 1,
+  ]);
 
 const updateLevels = async (
   msg: CT.GuildMessage,
@@ -192,12 +189,12 @@ const updateLevels = async (
   }
 
   if (type === 'guild') {
-    client.ch.query(
+    ch.query(
       `UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4 AND guildid = $5;`,
       [newLevel, xp, type, msg.author.id, msg.guild.id],
     );
   } else {
-    client.ch.query(`UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4;`, [
+    ch.query(`UPDATE level SET level = $1, xp = $2 WHERE type = $3 AND userid = $4;`, [
       newLevel,
       xp,
       type,
@@ -207,7 +204,7 @@ const updateLevels = async (
 };
 
 const checkEnabled = async (msg: CT.GuildMessage) =>
-  client.ch
+  ch
     .query(`SELECT * FROM leveling WHERE guildid = $1 AND active = true;`, [String(msg.guild.id)])
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
 
@@ -241,7 +238,7 @@ const levelUp = async (
 const roleAssign = async (msg: CT.GuildMessage, rolemode: boolean, newLevel: number) => {
   if (!msg.member) return;
 
-  const levelingrolesRow = await client.ch
+  const levelingrolesRow = await ch
     .query(`SELECT * FROM levelingroles WHERE guildid = $1;`, [String(msg.guild.id)])
     .then((r: DBT.levelingroles[] | null) => r || null);
 
@@ -297,8 +294,8 @@ const roleAssign = async (msg: CT.GuildMessage, rolemode: boolean, newLevel: num
     }
   }
 
-  if (add.length) await client.ch.roleManager.add(msg.member, add, msg.language.leveling.reason);
-  if (rem.length) await client.ch.roleManager.remove(msg.member, rem, msg.language.leveling.reason);
+  if (add.length) await ch.roleManager.add(msg.member, add, msg.language.leveling.reason);
+  if (rem.length) await ch.roleManager.remove(msg.member, rem, msg.language.leveling.reason);
 };
 
 const doReact = async (
@@ -316,14 +313,14 @@ const doReact = async (
 
   if (row.lvlupemotes?.length) {
     emotes = (
-      await Promise.all(row.lvlupemotes.map((emoteID) => client.ch.getEmote(emoteID) ?? emoteID))
+      await Promise.all(row.lvlupemotes.map((emoteID) => ch.getEmote(emoteID) ?? emoteID))
     ).filter((emote): emote is Discord.GuildEmoji => !!emote);
 
     emotes.forEach((emote) => {
       reactions.push(`${emote.name}:${emote.id}`);
     });
   } else {
-    client.objectEmotes.levelupemotes.forEach((emote) => reactions.push(emote.id || emote.name));
+    ch.objectEmotes.levelupemotes.forEach((emote) => reactions.push(emote.id || emote.name));
   }
 
   if (levelData.newLevel === 1) {
@@ -357,7 +354,7 @@ const doEmbed = async (
     author: {
       name: msg.language.leveling.author(msg),
     },
-    color: await client.ch.colorSelector(msg.member),
+    color: await ch.colorSelector(msg.member),
   });
 
   let embed;
@@ -372,9 +369,9 @@ const doEmbed = async (
   ];
 
   if (!settinsgrow.embed) {
-    embed = client.ch.dynamicToEmbed(await getDefaultEmbed(), options as [string, unknown][]);
+    embed = ch.dynamicToEmbed(await getDefaultEmbed(), options as [string, unknown][]);
   } else {
-    const customembedRow = await client.ch
+    const customembedRow = await ch
       .query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1 AND guildid = $2;`, [
         settinsgrow.embed,
         String(msg.guild.id),
@@ -382,10 +379,10 @@ const doEmbed = async (
       .then((r: DBT.customembeds[] | null) => (r ? r[0] : null));
 
     if (customembedRow) {
-      const partialEmbed = client.ch.getDiscordEmbed(customembedRow);
-      embed = client.ch.dynamicToEmbed(partialEmbed, options as [string, unknown][]);
+      const partialEmbed = ch.getDiscordEmbed(customembedRow);
+      embed = ch.dynamicToEmbed(partialEmbed, options as [string, unknown][]);
     } else {
-      embed = client.ch.dynamicToEmbed(await getDefaultEmbed(), options as [string, unknown][]);
+      embed = ch.dynamicToEmbed(await getDefaultEmbed(), options as [string, unknown][]);
     }
   }
 
@@ -401,9 +398,7 @@ const send = async (
     row.lvlupchannels && row.lvlupchannels.length ? row.lvlupchannels : [msg.channel.id];
 
   const msgs = await Promise.all(
-    channels.map((c) =>
-      client.ch.send({ id: c, guildId: msg.guild.id }, payload, msg.language).catch(() => null),
-    ),
+    channels.map((c) => ch.send({ id: c, guildId: msg.guild.id }, payload).catch(() => null)),
   );
 
   if (row.lvlupdeltimeout) {
@@ -421,7 +416,7 @@ const send = async (
 };
 
 const getRulesRes = async (msg: CT.GuildMessage) => {
-  const levelingruleschannelsRows = await client.ch
+  const levelingruleschannelsRows = await ch
     .query(`SELECT * FROM levelingruleschannels WHERE guildid = $1;`, [String(msg.guild.id)])
     .then((r: DBT.levelingruleschannels[] | null) => r || null);
 
@@ -573,7 +568,7 @@ const checkPass = (msg: CT.GuildMessage, rows: DBT.levelingruleschannels[]) => {
 };
 
 const getRoleMultiplier = async (msg: CT.GuildMessage) => {
-  const levelingmultirolesRows = await client.ch
+  const levelingmultirolesRows = await ch
     .query(`SELECT * FROM levelingmultiroles WHERE guildid = $1 ORDER BY multiplier DESC;`, [
       String(msg.guild.id),
     ])
@@ -591,11 +586,10 @@ const getRoleMultiplier = async (msg: CT.GuildMessage) => {
 };
 
 const getChannelMultiplier = async (msg: CT.GuildMessage) => {
-  const allRows = await client.ch
-    .query(
-      `SELECT * FROM levelingmultichannels WHERE guildid = $1 ORDER BY multiplier DESC;`,
-      [String(msg.guild.id)],
-    )
+  const allRows = await ch
+    .query(`SELECT * FROM levelingmultichannels WHERE guildid = $1 ORDER BY multiplier DESC;`, [
+      String(msg.guild.id),
+    ])
     .then((r: DBT.levelingmultichannels[] | null) => r || null);
 
   if (allRows) {
@@ -612,13 +606,13 @@ const infoEmbed = async (
   reactions: (Discord.Emoji | Discord.GuildEmoji)[] | null,
 ) => {
   const embed: Discord.APIEmbed = {
-    color: client.ch.colorSelector(
+    color: ch.colorSelector(
       client.user ? await msg.guild.members.fetch(client.user.id) : undefined,
     ),
     description: msg.language.leveling.description(reactions?.join('')),
   };
 
-  client.ch.replyMsg(msg, { embeds: [embed] }).then((m) => {
+  ch.replyMsg(msg, { embeds: [embed] }).then((m) => {
     const date = new Date(Date.now() + 30000);
     jobs.scheduleJob(date, () => {
       if (m) m.delete().catch(() => null);

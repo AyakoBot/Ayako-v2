@@ -1,15 +1,15 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../../../Typings/CustomTypings';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 
 export default async (oldIntegration: Discord.Integration, integration: Discord.Integration) => {
-  const channels = await client.ch.getLogChannels('guildevents', integration.guild);
+  const channels = await ch.getLogChannels('guildevents', integration.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(integration.guild.id);
+  const language = await ch.languageSelector(integration.guild.id);
   const lan = language.events.logs.integration;
-  const con = client.customConstants.events.logs.guild;
-  const audit = await client.ch.getAudit(integration.guild, 81, integration.id);
+  const con = ch.constants.events.logs.guild;
+  const audit = await ch.getAudit(integration.guild, 81, integration.id);
   const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
@@ -21,11 +21,11 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
       ? lan.descUpdateAudit(auditUser, integration)
       : lan.descUpdate(integration),
     fields: [],
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (oldIntegration?.enabled !== integration?.enabled) {
     merge(oldIntegration.enabled, integration.enabled, 'boolean', language.Enabled);
@@ -67,10 +67,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   if (oldIntegration.expireGracePeriod !== integration.expireGracePeriod) {
     merge(
       oldIntegration.expireGracePeriod
-        ? client.ch.moment(oldIntegration.expireGracePeriod, language)
+        ? ch.moment(oldIntegration.expireGracePeriod, language)
         : language.none,
       integration.expireGracePeriod
-        ? client.ch.moment(integration.expireGracePeriod, language)
+        ? ch.moment(integration.expireGracePeriod, language)
         : language.none,
       'string',
       lan.expireGracePeriod,
@@ -80,10 +80,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   if (oldIntegration.syncedAt !== integration.syncedAt) {
     merge(
       oldIntegration.syncedAt
-        ? client.customConstants.standard.getTime(oldIntegration.syncedAt.getTime())
+        ? ch.constants.standard.getTime(oldIntegration.syncedAt.getTime())
         : language.none,
       integration.syncedAt
-        ? client.customConstants.standard.getTime(integration.syncedAt.getTime())
+        ? ch.constants.standard.getTime(integration.syncedAt.getTime())
         : language.none,
       'string',
       lan.syncedAt,
@@ -116,11 +116,5 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
     return;
   }
 
-  client.ch.send(
-    { id: channels, guildId: integration.guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

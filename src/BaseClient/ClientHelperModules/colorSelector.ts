@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import constants from '../Other/Constants.js';
+import constants from '../Other/constants.js';
 
 export default (member?: Discord.GuildMember) => {
   if (!member) return constants.colors.base;

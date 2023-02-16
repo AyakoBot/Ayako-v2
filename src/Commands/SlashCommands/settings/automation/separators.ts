@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
+  const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories.separators;
 
   const ID = cmd.options.get('ID', false)?.value as string;
@@ -23,11 +23,11 @@ const showID = async (
   language: CT.Language,
   lan: CT.Language['slashCommands']['settings']['categories']['separators'],
 ) => {
-  const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
+  const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const name = 'separators';
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.separators} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames.separators} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.roleseparator[] | null) => (r ? r[0] : null));
@@ -104,10 +104,10 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['separators'],
 ) => {
   const name = 'separators';
-  const { multiRowHelpers } = client.ch.settingsHelpers;
-  const settings = await client.ch
+  const { multiRowHelpers } = ch.settingsHelpers;
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['separators']} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['separators']} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.roleseparator[] | null) => r || null);

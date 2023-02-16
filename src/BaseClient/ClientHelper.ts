@@ -1,3 +1,6 @@
+import type * as Discord from 'discord.js';
+import type Jobs from 'node-schedule';
+
 /* eslint-disable max-len */
 /* eslint-disable no-multi-spaces */
 /* eslint-disable prettier/prettier */
@@ -50,4 +53,16 @@ export const getSerializedChannelPerms  = (await import(`./ClientHelperModules/g
 export const isManageable               = (await import(`./ClientHelperModules/isManageable.js`)).default;
 export const getEvents                  = (await import(`./ClientHelperModules/getEvents.js`)).default;
 export const getNameAndFileType         = (await import(`./ClientHelperModules/getNameAndFileType.js`)).default;
-export const settingsHelpers            = (await import(`./ClientHelperModules/settingsHelpers.js`)).default
+export const settingsHelpers            = (await import(`./ClientHelperModules/settingsHelpers.js`)).default;
+export const neko                       = (await import('./NekoClient.js')).default;
+export const constants                  = (await import('./Other/constants.js')).default;
+export const objectEmotes               = (await import('./ClientHelperModules/objectEmotes.js')).default;
+export const stringEmotes               = (await import('./ClientHelperModules/stringEmotes.js')).default;
+export const reactionEmotes             = (await import('./ClientHelperModules/reactionEmotes.js')).default;
+export const events                     =  await getEvents();
+export const mainID                     =  '650691698409734151';
+type CQ                                 =  Map<string, Map<string, Discord.APIEmbed[]>>
+type CT                                 =  Map<string, Map<string, Jobs.Job>>
+export const channelQueue: CQ           =  new Map();
+export const channelTimeout: CT         =  new Map();
+export const cache                      = (await import('./ClientHelperModules/cache.js')).default;

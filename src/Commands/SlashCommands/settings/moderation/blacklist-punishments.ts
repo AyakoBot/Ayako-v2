@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
+  const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories['blacklist-punishments'];
 
   const ID = cmd.options.get('ID', false)?.value as string;
@@ -23,11 +23,11 @@ const showID = async (
   language: CT.Language,
   lan: CT.Language['slashCommands']['settings']['categories']['blacklist-punishments'],
 ) => {
-  const { buttonParsers, embedParsers } = client.ch.settingsHelpers;
+  const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const name = 'blacklist-punishments';
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['blacklist-punishments']} WHERE uniquetimestamp = $1 AND type = $2;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['blacklist-punishments']} WHERE uniquetimestamp = $1 AND type = $2;`,
       [parseInt(ID, 36), 'blacklist'],
     )
     .then((r: DBT.autopunish[] | null) => (r ? r[0] : null));
@@ -95,10 +95,10 @@ const showAll = async (
   lan: CT.Language['slashCommands']['settings']['categories']['blacklist-punishments'],
 ) => {
   const name = 'blacklist-punishments';
-  const { multiRowHelpers } = client.ch.settingsHelpers;
-  const settings = await client.ch
+  const { multiRowHelpers } = ch.settingsHelpers;
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames['blacklist-punishments']} WHERE guildid = $1 AND type = $2;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames['blacklist-punishments']} WHERE guildid = $1 AND type = $2;`,
       [cmd.guild?.id, 'blacklist'],
     )
     .then((r: DBT.autopunish[] | null) => r || null);
@@ -109,9 +109,9 @@ const showAll = async (
         ? language.punishments[s.punishment as keyof typeof language.punishments]
         : language.none
     }\``,
-    value: `${
-      s.active ? client.stringEmotes.enabled : client.stringEmotes.disabled
-    } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+    value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
+      s.uniquetimestamp,
+    ).toString(36)}\``,
   }));
 
   const embeds = multiRowHelpers.embeds(fields, language, lan);

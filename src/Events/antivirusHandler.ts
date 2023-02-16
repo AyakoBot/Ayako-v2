@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../BaseClient/Client.js';
+import { ch, client } from '../BaseClient/Client.js';
 import type CT from '../Typings/CustomTypings';
 import type DBT from '../Typings/DataBaseTypings';
 
@@ -23,7 +23,7 @@ export const resetData = () => {
 };
 
 const getSettings = async (msg: CT.GuildMessage) =>
-  client.ch
+  ch
     .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
@@ -86,7 +86,7 @@ const runPunishment = async (msg: CT.GuildMessage, m?: Discord.Message) => {
 };
 
 const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
-  client.ch
+  ch
     .query(
       `SELECT * FROM antiviruspunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
       [String(msg.guild.id), warns],

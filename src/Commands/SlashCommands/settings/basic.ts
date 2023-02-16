@@ -1,16 +1,16 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
-  const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
+  const language = await ch.languageSelector(cmd.guild?.id);
+  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.basic} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames.basic} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.guildsettings[] | null) => (r ? r[0] : null));
@@ -29,8 +29,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         {
           name: lan.fields.interactionsmode.name,
           value: settings?.interactionsmode
-            ? `${language.small} ${client.stringEmotes.small}`
-            : `${language.large} ${client.stringEmotes.big}`,
+            ? `${language.small} ${ch.stringEmotes.small}`
+            : `${language.large} ${ch.stringEmotes.big}`,
           inline: true,
         },
         {

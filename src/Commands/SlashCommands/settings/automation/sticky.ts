@@ -1,16 +1,16 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
-  const language = await client.ch.languageSelector(cmd.guild?.id);
-  const { embedParsers, buttonParsers } = client.ch.settingsHelpers;
+  const language = await ch.languageSelector(cmd.guild?.id);
+  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
-  const settings = await client.ch
+  const settings = await ch
     .query(
-      `SELECT * FROM ${client.customConstants.commands.settings.tableNames.sticky} WHERE guildid = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames.sticky} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.sticky[] | null) => (r ? r[0] : null));
@@ -39,8 +39,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         {
           name: lan.fields.stickyrolesmode.name,
           value: settings?.stickyrolesmode
-            ? `${client.stringEmotes.enabled} ${lan.unsticky}`
-            : `${client.stringEmotes.disabled} ${lan.sticky}`,
+            ? `${ch.stringEmotes.enabled} ${lan.unsticky}`
+            : `${ch.stringEmotes.disabled} ${lan.sticky}`,
           inline: false,
         },
         {

@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 
@@ -16,7 +16,7 @@ export default async (msg: CT.GuildMessage) => {
   if (msg.author.bot) return;
   if (msg.editedTimestamp) return;
 
-  const stats = await client.ch
+  const stats = await ch
     .query('SELECT antispam FROM stats;')
     .then((r: DBT.stats[] | null) => (r ? r[0] : null));
   if (stats?.antispam === false) return;
@@ -148,7 +148,7 @@ const runPunishment = async (msg: CT.GuildMessage) => {
 };
 
 const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
-  client.ch
+  ch
     .query(
       `SELECT * FROM antispampunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
       [String(msg.guild.id), warns],
@@ -176,20 +176,16 @@ export const resetData = () => {
 };
 
 const softwarn = (msg: CT.GuildMessage) => {
-  client.ch.send(
-    msg.channel,
-    {
-      content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.antispam}`,
-      allowedMentions: {
-        users: [msg.author.id],
-      },
+  ch.send(msg.channel, {
+    content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.antispam}`,
+    allowedMentions: {
+      users: [msg.author.id],
     },
-    msg.language,
-  );
+  });
 };
 
 const getSettings = async (msg: CT.GuildMessage) =>
-  client.ch
+  ch
     .query(
       'SELECT * FROM antispam WHERE guildid = $1 AND active = true AND forcedisabled = false;',
       [String(msg.guild.id)],

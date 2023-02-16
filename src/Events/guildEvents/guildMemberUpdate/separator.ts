@@ -2,7 +2,7 @@
 import { Worker } from 'worker_threads';
 import jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
 const UpdateWorker = new Worker(
@@ -19,7 +19,7 @@ UpdateWorker.on(
   ]) => {
     switch (text) {
       case 'NO_SEP': {
-        client.ch.query('UPDATE roleseparator SET active = false WHERE separator = $1;', [
+        ch.query('UPDATE roleseparator SET active = false WHERE separator = $1;', [
           roleData[0],
         ]);
         break;
@@ -30,9 +30,9 @@ UpdateWorker.on(
         if (!guild) return;
         const member = guild.members.cache.get(userData.userid);
         if (!member) return;
-        const language = await client.ch.languageSelector(guild.id);
+        const language = await ch.languageSelector(guild.id);
 
-        client.ch.roleManager.remove(member, roleData, language.autotypes.separators);
+        ch.roleManager.remove(member, roleData, language.autotypes.separators);
         break;
       }
       case 'GIVE': {
@@ -41,9 +41,9 @@ UpdateWorker.on(
         if (!guild) return;
         const member = guild.members.cache.get(userData.userid);
         if (!member) return;
-        const language = await client.ch.languageSelector(guild.id);
+        const language = await ch.languageSelector(guild.id);
 
-        client.ch.roleManager.add(member, roleData, language.autotypes.separators);
+        ch.roleManager.add(member, roleData, language.autotypes.separators);
         break;
       }
       default: {
@@ -79,14 +79,14 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
   jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
     isWaiting.delete(`${member.id}-${member.guild.id}`);
 
-    const stillrunning = await client.ch
+    const stillrunning = await ch
       .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [
         member.guild.id,
       ])
       .then((r: DBT.roleseparatorsettings[] | null) => (r ? r[0].stillrunning : null));
     if (stillrunning) return;
 
-    const roleseparatorRows = await client.ch
+    const roleseparatorRows = await ch
       .query('SELECT * FROM roleseparator WHERE active = true AND guildid = $1;', [member.guild.id])
       .then((r: DBT.roleseparator[] | null) => r || null);
     if (!roleseparatorRows) return;
@@ -101,7 +101,7 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
       guildroles: map,
       highest: member.guild.roles.cache.map((r) => r).sort((a, b) => b.position - a.position)[0],
       res: roleseparatorRows,
-      language: await client.ch.languageSelector(member.guild.id),
+      language: await ch.languageSelector(member.guild.id),
     });
   });
 };
@@ -125,9 +125,9 @@ export const oneTimeRunner = async (
   lastTime?: boolean,
 ) => {
   if (!msg.guild) return;
-  const language = await client.ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guild.id);
 
-  const roleseparatorRows = await client.ch
+  const roleseparatorRows = await ch
     .query('SELECT * FROM roleseparator WHERE active = true AND guildid = $1;', [msg.guild.id])
     .then((r: DBT.roleseparator[] | null) => r || undefined);
   if (!roleseparatorRows) return;
@@ -143,14 +143,14 @@ export const oneTimeRunner = async (
     | undefined;
 
   if (
-    (await client.ch
+    (await ch
       .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [msg.guild.id])
       .then((r: DBT.roleseparatorsettings[] | null) => (r ? r[0].stillrunning : undefined))) &&
     msg.author.id !== client.user?.id
   ) {
     membersWithRoles = true;
   } else {
-    client.ch.query('UPDATE roleseparatorsettings SET stillrunning = $2 WHERE guildid = $1;', [
+    ch.query('UPDATE roleseparatorsettings SET stillrunning = $2 WHERE guildid = $1;', [
       msg.guild.id,
       true,
     ]);
@@ -161,8 +161,8 @@ export const oneTimeRunner = async (
     name: language.slashCommands.settings.authorType(
       language.slashCommands.settings.categories.separators.name,
     ),
-    icon_url: client.objectEmotes.settings.link,
-    url: client.customConstants.standard.invite,
+    icon_url: ch.objectEmotes.settings.link,
+    url: ch.constants.standard.invite,
   };
 
   if (button) await button.deleteReply().catch(() => undefined);
@@ -211,8 +211,8 @@ export const oneTimeRunner = async (
       name: language.slashCommands.settings.authorType(
         language.slashCommands.settings.categories.separators.name,
       ),
-      icon_url: client.objectEmotes.settings.link,
-      url: client.customConstants.standard.invite,
+      icon_url: ch.objectEmotes.settings.link,
+      url: ch.constants.standard.invite,
     };
     embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
       membersWithRoles && membersWithRoles.length ? membersWithRoles.length : 0,
@@ -221,7 +221,7 @@ export const oneTimeRunner = async (
     );
 
     m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-    client.ch.query(
+    ch.query(
       'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4, channelid = $5, messageid = $6 WHERE guildid = $2;',
       [
         true,
@@ -381,21 +381,21 @@ const assinger = async (
   lastTime?: boolean,
 ) => {
   if (!msg.guild) return;
-  const language = await client.ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guild.id);
 
   if (!membersWithRoles?.length) {
     embed.author = {
       name: language.slashCommands.settings.authorType(
         language.slashCommands.settings.categories.separators.name,
       ),
-      icon_url: client.objectEmotes.settings.link,
-      url: client.customConstants.standard.invite,
+      icon_url: ch.objectEmotes.settings.link,
+      url: ch.constants.standard.invite,
     };
 
     embed.description =
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
     m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-    client.ch.query(
+    ch.query(
       'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4 WHERE guildid = $2;',
       [false, msg.guild.id, null, null],
     );
@@ -413,8 +413,8 @@ const assinger = async (
         const member = msg.guild?.members.cache.get(raw.id);
 
         if (member) {
-          client.ch.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
-          client.ch.roleManager.remove(
+          ch.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
+          ch.roleManager.remove(
             member,
             raw.takeTheseRoles,
             language.autotypes.separators,
@@ -427,14 +427,14 @@ const assinger = async (
             name: language.slashCommands.settings.authorType(
               language.slashCommands.settings.categories.separators.name,
             ),
-            icon_url: client.objectEmotes.settings.link,
-            url: client.customConstants.standard.invite,
+            icon_url: ch.objectEmotes.settings.link,
+            url: ch.constants.standard.invite,
           };
           embed.description =
             language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
           m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-          client.ch.query(
+          ch.query(
             'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4 WHERE guildid = $2;',
             [false, msg.guild?.id, undefined, undefined],
           );
@@ -447,7 +447,7 @@ const assinger = async (
           return;
         }
 
-        client.ch.query(
+        ch.query(
           'UPDATE roleseparatorsettings SET index = $1, length = $3 WHERE guildid = $2;',
           [index, msg.guild?.id, membersWithRoles.length - 1],
         );

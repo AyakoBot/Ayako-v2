@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (role: Discord.Role) => {
-  const channels = await client.ch.getLogChannels('roleevents', role.guild);
+  const channels = await ch.getLogChannels('roleevents', role.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(role.guild.id);
+  const language = await ch.languageSelector(role.guild.id);
   const lan = language.events.logs.role;
-  const con = client.customConstants.events.logs.role;
-  const audit = role.tags?.botId ? undefined : await client.ch.getAudit(role.guild, 30, role.id);
+  const con = ch.constants.events.logs.role;
+  const audit = role.tags?.botId ? undefined : await ch.getAudit(role.guild, 30, role.id);
   const auditUser =
     (role.tags?.botId ? await client.users.fetch(role.tags.botId) : audit?.executor) ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
@@ -20,17 +20,17 @@ export default async (role: Discord.Role) => {
     },
     description: auditUser ? lan.descCreateAudit(auditUser, role) : lan.descCreate(role),
     fields: [],
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
   if (role.icon) {
     const url = role.iconURL({ size: 4096 });
     if (url) {
-      const attachments = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachments = (await ch.fileURL2Buffer([url]))?.[0];
       if (attachments) files.push(attachments);
 
       embed.thumbnail = {
-        url: `attachment://${client.ch.getNameAndFileType(url)}`,
+        url: `attachment://${ch.getNameAndFileType(url)}`,
       };
     } else {
       embed.fields?.push({
@@ -80,21 +80,20 @@ export default async (role: Discord.Role) => {
   }
 
   const permEmbed: Discord.APIEmbed = {
-    color: client.customConstants.colors.ephemeral,
+    color: ch.constants.colors.ephemeral,
     description: Object.entries(new Discord.PermissionsBitField(role.permissions).serialize(false))
       .map(
         ([name, value]) =>
-          `${value ? client.stringEmotes.enabled : client.stringEmotes.disabled} \`${
+          `${value ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} \`${
             language.permissions.perms[name as keyof typeof language.permissions.perms]
           }\``,
       )
       .join('\n'),
   };
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: role.guild.id },
     { embeds: [embed, permEmbed], files },
-    language,
     undefined,
     10000,
   );

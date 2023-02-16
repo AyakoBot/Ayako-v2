@@ -1,15 +1,11 @@
 import readline from 'readline';
-import client from './BaseClient/Client.js';
-import * as ch from './BaseClient/ClientHelper.js';
-import cache from './BaseClient/ClientHelperModules/cache.js';
+import { ch, client } from './BaseClient/Client.js';
 
-client.ch = ch;
-client.cache = cache;
-client.setMaxListeners(client.events.length);
+const events = await ch.getEvents();
+client.setMaxListeners(events.length);
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
-  if (msg === 'restart') process.exit();
   try {
     // eslint-disable-next-line no-console
     console.log(
@@ -33,7 +29,7 @@ process.on('promiseRejectionHandledWarning', (error: string) =>
 );
 process.on('experimentalWarning', (error: string) => client.emit('uncaughtException', error));
 
-client.events.forEach(async (path) => {
+events.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop();
   if (!eventName) return;
 

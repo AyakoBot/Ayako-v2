@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (
@@ -25,13 +25,13 @@ export default async (
     | Discord.ForumChannel
     | Discord.AnyThreadChannel,
 ) => {
-  const channels = await client.ch.getLogChannels('channelevents', channel.guild);
+  const channels = await ch.getLogChannels('channelevents', channel.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(channel.guild.id);
+  const language = await ch.languageSelector(channel.guild.id);
   const lan = language.events.logs.channel;
-  const con = client.customConstants.events.logs.channel;
-  const channelType = `${client.ch.getTrueChannelType(channel, channel.guild)}Update`;
+  const con = ch.constants.events.logs.channel;
+  const channelType = `${ch.getTrueChannelType(channel, channel.guild)}Update`;
   let typeID = [10, 11, 12].includes(channel.type) ? 111 : 11;
 
   const embed: Discord.APIEmbed = {
@@ -40,13 +40,13 @@ export default async (
       name: lan.nameUpdate,
     },
     fields: [],
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
   const embeds = [embed];
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (oldChannel?.flags !== channel.flags) {
     const [oldFlags, newFlags] = [oldChannel, channel]
@@ -65,8 +65,8 @@ export default async (
           | Discord.AnyThreadChannel => !!c,
       )
       .map((c) => new Discord.ChannelFlagsBitField(c.flags).toArray());
-    const removed = client.ch.getDifference(oldFlags, newFlags) as ('Pinned' | 'RequireTag')[];
-    const added = client.ch.getDifference(newFlags, oldFlags) as ('Pinned' | 'RequireTag')[];
+    const removed = ch.getDifference(oldFlags, newFlags) as ('Pinned' | 'RequireTag')[];
+    const added = ch.getDifference(newFlags, oldFlags) as ('Pinned' | 'RequireTag')[];
 
     if (removed.length || added.length) {
       merge(
@@ -150,10 +150,10 @@ export default async (
   ) {
     merge(
       oldChannel?.rateLimitPerUser
-        ? client.ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
+        ? ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
         : language.none,
       channel.rateLimitPerUser
-        ? client.ch.moment(channel.rateLimitPerUser * 1000, language)
+        ? ch.moment(channel.rateLimitPerUser * 1000, language)
         : language.none,
       'string',
       lan.rateLimitPerUser,
@@ -198,10 +198,10 @@ export default async (
     oldChannel?.parentId !== channel.parentId
   ) {
     const oldParent = oldChannel?.parentId
-      ? await client.ch.getChannel.parentChannel(oldChannel.parentId)
+      ? await ch.getChannel.parentChannel(oldChannel.parentId)
       : undefined;
     const parent = channel.parentId
-      ? await client.ch.getChannel.parentChannel(channel.parentId)
+      ? await ch.getChannel.parentChannel(channel.parentId)
       : undefined;
 
     merge(
@@ -240,10 +240,10 @@ export default async (
   ) {
     merge(
       oldChannel?.defaultAutoArchiveDuration
-        ? client.ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
+        ? ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
         : language.unknown,
       channel.defaultAutoArchiveDuration
-        ? client.ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
+        ? ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
         : language.none,
       'string',
       lan.autoArchiveDuration,
@@ -266,22 +266,22 @@ export default async (
       JSON.stringify(channel.permissionOverwrites.cache.map((o) => o))
   ) {
     const addEmbed: Discord.APIEmbed = {
-      color: client.customConstants.colors.ephemeral,
+      color: ch.constants.colors.ephemeral,
       fields: [],
     };
 
     const removeEmbed: Discord.APIEmbed = {
-      color: client.customConstants.colors.ephemeral,
+      color: ch.constants.colors.ephemeral,
       fields: [],
     };
 
     const changeEmbed: Discord.APIEmbed = {
-      color: client.customConstants.colors.ephemeral,
+      color: ch.constants.colors.ephemeral,
       fields: [],
     };
 
-    const oldPerms = oldChannel ? client.ch.getSerializedChannelPerms(oldChannel) : [];
-    const perms = client.ch.getSerializedChannelPerms(channel);
+    const oldPerms = oldChannel ? ch.getSerializedChannelPerms(oldChannel) : [];
+    const perms = ch.getSerializedChannelPerms(channel);
 
     const addedPerms = perms.filter((p) => !oldPerms.find((p2) => p2.id === p.id));
     const removedPerms = oldPerms.filter((p) => !perms.find((p2) => p2.id === p.id));
@@ -292,9 +292,9 @@ export default async (
     if (removedPerms.length) typeID = 15;
 
     const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
-      if (denied) return client.stringEmotes.switch.disable;
-      if (allowed) return client.stringEmotes.switch.enable;
-      return client.stringEmotes.switch.neutral;
+      if (denied) return ch.stringEmotes.switch.disable;
+      if (allowed) return ch.stringEmotes.switch.enable;
+      return ch.stringEmotes.switch.neutral;
     };
 
     let atLeastOneAdded = false;
@@ -318,7 +318,7 @@ export default async (
 
       addEmbed.fields?.push({
         name: '\u200b',
-        value: `${client.stringEmotes.plusBG} ${
+        value: `${ch.stringEmotes.plusBG} ${
           p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
         }\n${filterPerms
           .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
@@ -359,7 +359,7 @@ export default async (
 
       changeEmbed.fields?.push({
         name: '\u200b',
-        value: `${client.stringEmotes.edit} ${
+        value: `${ch.stringEmotes.edit} ${
           p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
         }\n${filteredPerms
           .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
@@ -389,7 +389,7 @@ export default async (
 
       removeEmbed.fields?.push({
         name: '\u200b',
-        value: `${client.stringEmotes.minusBG} ${
+        value: `${ch.stringEmotes.minusBG} ${
           p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
         }\n${filterPerms
           .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
@@ -403,7 +403,7 @@ export default async (
     if (atLeastOneRemoved) embeds.push(removeEmbed);
   }
 
-  const audit = await client.ch.getAudit(channel.guild, typeID, channel.id);
+  const audit = await ch.getAudit(channel.guild, typeID, channel.id);
   const getChannelOwner = () => {
     if (audit?.executor) return audit.executor;
     if ('ownerId' in channel && channel.ownerId) {
@@ -417,10 +417,9 @@ export default async (
     ? lan.descUpdateAudit(auditUser, channel, language.channelTypes[channel.type])
     : lan.descUpdate(channel, language.channelTypes[channel.type]);
 
-  client.ch.send(
+  ch.send(
     { id: channels, guildId: channel.guild.id },
     { embeds },
-    language,
     undefined,
     10000,
   );

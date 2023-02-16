@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 export default async (
   reaction: Discord.MessageReaction,
@@ -36,7 +36,7 @@ export default async (
 };
 
 const getBaseRow = (reaction: Discord.MessageReaction) =>
-  client.ch
+  ch
     .query(
       `SELECT * FROM rrsettings WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,
       [reaction.message.id, reaction.message.guild?.id, reaction.message.channel.id],
@@ -44,7 +44,7 @@ const getBaseRow = (reaction: Discord.MessageReaction) =>
     .then((r: DBT.rrsettings[] | null) => (r ? r[0] : null));
 
 const getReactionRows = (reaction: Discord.MessageReaction, emoteIdentifier: string) =>
-  client.ch
+  ch
     .query(
       'SELECT * FROM rrreactions WHERE emoteid = $1 AND msgid = $2 AND guildid = $3 AND channelid = $4 AND active = true;',
       [
@@ -60,7 +60,7 @@ const getRelatedReactions = async (
   reaction: Discord.MessageReaction,
   reactionRows: DBT.rrreactions[],
 ) => {
-  const buttonRows = await client.ch
+  const buttonRows = await ch
     .query(
       `SELECT * FROM rrbuttons WHERE msgid = $1 AND guildid = $2 AND channelid = $3 AND active = true;`,
       [reaction.message.id, reaction.message.guild?.id, reaction.message.channel.id],
@@ -107,7 +107,7 @@ const giveRoles = async (
   }
 
   if (rolesToAdd.length) {
-    const language = await client.ch.languageSelector(member.guild.id);
-    client.ch.roleManager.add(member, rolesToAdd, language.events.messageReactionAdd.rrReason);
+    const language = await ch.languageSelector(member.guild.id);
+    ch.roleManager.add(member, rolesToAdd, language.events.messageReactionAdd.rrReason);
   }
 };

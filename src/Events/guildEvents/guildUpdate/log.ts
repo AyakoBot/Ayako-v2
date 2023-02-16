@@ -1,15 +1,15 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
-  const channels = await client.ch.getLogChannels('guildevents', guild);
+  const channels = await ch.getLogChannels('guildevents', guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await ch.languageSelector(guild.id);
   const lan = language.events.logs.guild;
-  const con = client.customConstants.events.logs.guild;
-  const audit = await client.ch.getAudit(guild, 1);
+  const con = ch.constants.events.logs.guild;
+  const audit = await ch.getAudit(guild, 1);
   const auditUser = audit?.executor ?? undefined;
 
   const embed: Discord.APIEmbed = {
@@ -19,16 +19,16 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     },
     description: auditUser ? lan.descGuildUpdateAudit(auditUser) : lan.descGuildUpdate(),
     fields: [],
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
-  const oldWelcomeScreen = await client.cache.welcomeScreens.get(guild.id);
+  const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild.id);
   const newWelcomeScreen = await guild.fetchWelcomeScreen();
-  if (newWelcomeScreen) client.cache.welcomeScreens.set(newWelcomeScreen);
+  if (newWelcomeScreen) ch.cache.welcomeScreens.set(newWelcomeScreen);
 
   const files: Discord.AttachmentPayload[] = [];
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (guild.description !== oldGuild.description) {
     merge(oldGuild.description, guild.description, 'string', language.Description);
@@ -42,9 +42,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.banner);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.banner);
 
       if (attachment) files.push(attachment);
     };
@@ -60,9 +60,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.icon);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.icon);
 
       if (attachment) files.push(attachment);
     };
@@ -78,9 +78,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.splash);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.splash);
 
       if (attachment) files.push(attachment);
     };
@@ -102,9 +102,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
         return;
       }
 
-      const attachment = (await client.ch.fileURL2Buffer([url]))?.[0];
+      const attachment = (await ch.fileURL2Buffer([url]))?.[0];
 
-      merge(url, client.ch.getNameAndFileType(url), 'icon', lan.discoverySplash);
+      merge(url, ch.getNameAndFileType(url), 'icon', lan.discoverySplash);
 
       if (attachment) files.push(attachment);
     };
@@ -154,8 +154,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   }
   if (guild.afkTimeout !== oldGuild.afkTimeout) {
     merge(
-      client.ch.moment(oldGuild.afkTimeout, language),
-      client.ch.moment(guild.afkTimeout, language),
+      ch.moment(oldGuild.afkTimeout, language),
+      ch.moment(guild.afkTimeout, language),
       'string',
       lan.afkTimeout,
     );
@@ -228,7 +228,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     JSON.stringify(newWelcomeScreen?.welcomeChannels) !==
     JSON.stringify(oldWelcomeScreen?.welcomeChannels)
   ) {
-    const addedChannel = client.ch.getDifference(
+    const addedChannel = ch.getDifference(
       newWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
       oldWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
     ) as {
@@ -238,7 +238,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       emojiName: string | undefined;
     }[];
 
-    const removedChannel = client.ch.getDifference(
+    const removedChannel = ch.getDifference(
       oldWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
       newWelcomeScreen?.welcomeChannels.map((c) => c.channelId) ?? [],
     ) as {
@@ -248,7 +248,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
       emojiName: string | undefined;
     }[];
 
-    const changedChannel = client.ch.getChanged(
+    const changedChannel = ch.getChanged(
       (oldWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
         [key: string]: unknown;
       }[],
@@ -349,11 +349,11 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   }
 
   if (guild.features !== oldGuild.features) {
-    const removedToggles = client.ch.getDifference(
+    const removedToggles = ch.getDifference(
       guild.features,
       oldGuild.features,
     ) as Discord.GuildFeature[];
-    const addedToggles = client.ch.getDifference(
+    const addedToggles = ch.getDifference(
       oldGuild.features,
       guild.features,
     ) as Discord.GuildFeature[];
@@ -376,14 +376,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     const oldFlags = new Discord.SystemChannelFlagsBitField(oldGuild.systemChannelFlags).toArray();
     const newFlags = new Discord.SystemChannelFlagsBitField(guild.systemChannelFlags).toArray();
 
-    const addedFlags = client.ch.getDifference(
-      newFlags,
-      oldFlags,
-    ) as Discord.SystemChannelFlagsString[];
-    const removedFlags = client.ch.getDifference(
-      oldFlags,
-      newFlags,
-    ) as Discord.SystemChannelFlagsString[];
+    const addedFlags = ch.getDifference(newFlags, oldFlags) as Discord.SystemChannelFlagsString[];
+    const removedFlags = ch.getDifference(oldFlags, newFlags) as Discord.SystemChannelFlagsString[];
 
     if (addedFlags.length) {
       embed.fields?.push({
@@ -406,11 +400,5 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
   if (!embed.fields?.length) return;
 
-  client.ch.send(
-    { id: channels, guildId: guild.id },
-    { embeds: [embed], files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

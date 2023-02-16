@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import type DBT from '../../Typings/DataBaseTypings';
+import query from './query.js';
 
 export default async (
   columnName:
@@ -23,10 +24,7 @@ export default async (
     | 'reactionevents'
     | 'memberevents',
   guild: Discord.Guild,
-) => {
-  const client = (await import('../Client.js')).default;
-
-  return client.ch
-    .query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1;`, [guild.id])
-    .then((r: DBT.logchannels[] | null) => (r ? r[0][columnName] : null));
-};
+) =>
+  query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1;`, [guild.id]).then(
+    (r: DBT.logchannels[] | null) => (r ? r[0][columnName] : null),
+  );

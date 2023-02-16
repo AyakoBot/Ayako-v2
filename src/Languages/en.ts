@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type CT from '../Typings/CustomTypings';
-import client from '../BaseClient/Client.js';
+import { ch, client } from '../BaseClient/Client.js';
 
 type Strumber = string | number;
 
@@ -25,7 +25,7 @@ const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
 
 const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
-  `[This Message](${client.ch.getJumpLink(msg)})\n`;
+  `[This Message](${ch.getJumpLink(msg)})\n`;
 
 const getChannel = (
   channel:
@@ -46,7 +46,7 @@ const getChannel = (
     : `Unknown Channel\n`;
 
 const getEmote = (emoji: Discord.Emoji) =>
-  `Emoji ${client.customConstants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
+  `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
     emoji.id ?? 'None'
   }\`\n`;
 
@@ -55,7 +55,7 @@ const getInviteDetails = (invite: Discord.Invite, user?: Discord.User, channelTy
     invite.uses
   }\nCreated: ${
     invite.createdAt
-      ? client.customConstants.standard.getTime(invite.createdAt.getTime())
+      ? ch.constants.standard.getTime(invite.createdAt.getTime())
       : 'unknown'
   }\n${getChannel(invite.channel, channelType)}`;
 

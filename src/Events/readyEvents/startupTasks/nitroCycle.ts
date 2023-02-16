@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
@@ -10,7 +10,7 @@ export default async () => {
     const addedMembers: Discord.GuildMember[] = [];
     const removedMembers: Discord.GuildMember[] = [];
 
-    const nitrousersRows = await client.ch
+    const nitrousersRows = await ch
       .query(`SELECT * FROM nitrousers WHERE guildid = $1;`, [guild.id])
       .then((r: DBT.nitrousers[] | null) => r || null);
     if (!nitrousersRows) return;
@@ -19,7 +19,7 @@ export default async () => {
       if (!row.boostend && !guild.members.cache.get(row.userid)?.premiumSince) {
         if (!row.userid) return;
 
-        client.ch.query(
+        ch.query(
           `UPDATE nitrousers SET boostend = $1 WHERE guildid = $2 AND userid = $3 AND booststart = $4;`,
           [Date.now(), guild.id, row.userid, row.booststart],
         );
@@ -35,7 +35,7 @@ export default async () => {
 
       if (member.premiumSince) {
         if (!nitrousersRows) {
-          client.ch.query(
+          ch.query(
             `INSERT INTO nitrousers (guildid, userid, booststart) VALUES ($1, $2, $3) ON CONFLICT (booststart) DO NOTHING;`,
             [guild.id, member.id, member.premiumSinceTimestamp],
           );
@@ -48,7 +48,7 @@ export default async () => {
           );
 
           if (!row) {
-            client.ch.query(
+            ch.query(
               `INSERT INTO nitrousers (guildid, userid, booststart) VALUES ($1, $2, $3) ON CONFLICT (booststart) DO NOTHING;`,
               [guild.id, member.id, member.premiumSinceTimestamp],
             );
@@ -69,49 +69,37 @@ const logEnd = async (member: Discord.GuildMember, guild: Discord.Guild) => {
   const row = await getSettings(guild);
   if (!row?.logchannels || !row.logchannels.length) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await ch.languageSelector(guild.id);
 
   const embed: Discord.APIEmbed = {
     author: {
       name: language.events.guildMemberUpdate.boostingEnd,
     },
     description: language.events.guildMemberUpdate.descriptionBoostingEnd(member.user),
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
-  client.ch.send(
-    { id: row.logchannels, guildId: guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: row.logchannels, guildId: guild.id }, { embeds: [embed] }, undefined, 10000);
 };
 
 const logStart = async (member: Discord.GuildMember, guild: Discord.Guild) => {
   const row = await getSettings(guild);
   if (!row?.logchannels || !row.logchannels.length) return;
 
-  const language = await client.ch.languageSelector(guild.id);
+  const language = await ch.languageSelector(guild.id);
 
   const embed: Discord.APIEmbed = {
     author: {
       name: language.events.guildMemberUpdate.boostingStart,
     },
     description: language.events.guildMemberUpdate.descriptionBoostingStart(member.user),
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
   };
 
-  client.ch.send(
-    { id: row.logchannels, guildId: guild.id },
-    { embeds: [embed] },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: row.logchannels, guildId: guild.id }, { embeds: [embed] }, undefined, 10000);
 };
 
 const getSettings = async (guild: Discord.Guild) =>
-  client.ch
+  ch
     .query(`SELECT * FROM nitrosettings WHERE guildid = $1 AND active = true;`, [guild.id])
     .then((r: DBT.nitrosettings[] | null) => (r ? r[0] : null));

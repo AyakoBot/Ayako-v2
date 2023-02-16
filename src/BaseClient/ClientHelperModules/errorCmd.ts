@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import reply from './replyCmd.js';
-import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
-import constants from '../Other/Constants.js';
+import objectEmotes from './objectEmotes.js';
+import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (

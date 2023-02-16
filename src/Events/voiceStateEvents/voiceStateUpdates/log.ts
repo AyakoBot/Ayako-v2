@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
@@ -11,13 +11,13 @@ export default async (
   if (!oldState.channel) return;
   if (!member) return;
 
-  const channels = await client.ch.getLogChannels('voiceevents', state.guild);
+  const channels = await ch.getLogChannels('voiceevents', state.guild);
   if (!channels) return;
 
-  const language = await client.ch.languageSelector(state.guild.id);
+  const language = await ch.languageSelector(state.guild.id);
   const lan = language.events.logs.voiceState;
-  const con = client.customConstants.events.logs.voiceState;
-  const channelType = client.ch.getTrueChannelType(state.channel, state.guild);
+  const con = ch.constants.events.logs.voiceState;
+  const channelType = ch.getTrueChannelType(state.channel, state.guild);
   const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {
@@ -25,7 +25,7 @@ export default async (
       name: lan.nameUpdate,
       icon_url: con.update,
     },
-    color: client.customConstants.colors.loading,
+    color: ch.constants.colors.loading,
     description: lan.descUpdate(
       member.user,
       state.channel,
@@ -35,7 +35,7 @@ export default async (
   };
 
   const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-    client.ch.mergeLogging(before, after, type, embed, language, name);
+    ch.mergeLogging(before, after, type, embed, language, name);
 
   if (state.requestToSpeakTimestamp !== oldState.requestToSpeakTimestamp) {
     merge(
@@ -97,11 +97,5 @@ export default async (
 
   if (!embed.fields?.length) return;
 
-  client.ch.send(
-    { id: channels, guildId: state.guild.id },
-    { embeds: [embed], files },
-    language,
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: state.guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

@@ -8,7 +8,7 @@ import type * as Discord from 'discord.js';
 import blocklists from '../../../BaseClient/Other/Blocklist.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
-import client from '../../../BaseClient/Client.js';
+import { ch, client } from '../../../BaseClient/Client.js';
 
 interface LinkObject {
   href: string;
@@ -29,7 +29,7 @@ export default async (msg: CT.Message) => {
     return;
   }
 
-  const antivirusRow = await client.ch
+  const antivirusRow = await ch
     .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
@@ -80,7 +80,7 @@ const prepare = async (
   let includedBadLink = false;
   let exited = false;
 
-  if (links.length && check) await msg.react(client.stringEmotes.loading).catch(() => null);
+  if (links.length && check) await msg.react(ch.stringEmotes.loading).catch(() => null);
 
   fullLinks.forEach((linkObject: LinkObject, i) => {
     const AVworker = new WorkerThread(
@@ -102,7 +102,7 @@ const prepare = async (
       if (includedBadLink || i === fullLinks.length - 1) {
         if (client.user) {
           msg.reactions.cache
-            .get(client.objectEmotes.loading.id)
+            .get(ch.objectEmotes.loading.id)
             ?.users.remove(client.user.id)
             .catch(() => null);
         }
@@ -139,11 +139,7 @@ const prepare = async (
           break;
         }
         case 'send': {
-          client.ch.send(
-            { id: data.channelid, guildId: '669893888856817665' },
-            { content: data.content },
-            msg.language,
-          );
+          ch.send({ id: data.channelid, guildId: '669893888856817665' }, { content: data.content });
           break;
         }
         case 'VTfail': {
@@ -292,18 +288,18 @@ const doesntExist = async (
 ) => {
   const embed: Discord.APIEmbed = {
     description: `**${msg.language.Result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
-    color: client.customConstants.colors.success,
+    color: ch.constants.colors.success,
   };
 
   embed.fields = [];
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  client.ch.replyMsg(msg, { embeds: [embed] });
+  ch.replyMsg(msg, { embeds: [embed] });
 
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.success,
+    ch.constants.colors.success,
     linkObject,
     lan.notexistent(linkObject.baseURLhostname),
     res,
@@ -328,31 +324,30 @@ const blacklisted = async (
 ) => {
   if (note && typeof note === 'string') {
     const embed: Discord.APIEmbed = {
-      description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-      color: client.customConstants.colors.danger,
+      description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+      color: ch.constants.colors.danger,
       fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
     };
 
     if (check) embed.fields?.push({ name: lan.checking, value: linkObject.href });
 
-    await client.ch.replyMsg(msg, { embeds: [embed] });
+    await ch.replyMsg(msg, { embeds: [embed] });
   } else {
     const embed: Discord.APIEmbed = {
-      description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-      color: client.customConstants.colors.danger,
+      description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+      color: ch.constants.colors.danger,
     };
 
     embed.fields = [];
     if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-    const m = await client.ch.replyMsg(msg, { embeds: [embed] });
+    const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-    client.ch.send(
+    ch.send(
       { id: '726252103302905907', guildId: '669893888856817665' },
       {
-        content: client.ch.getJumpLink(msg),
+        content: ch.getJumpLink(msg),
       },
-      msg.language,
     );
 
     if (msg.guild) {
@@ -363,9 +358,9 @@ const blacklisted = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.danger,
+    ch.constants.colors.danger,
     linkObject,
-    lan.malicious(client.stringEmotes.cross),
+    lan.malicious(ch.stringEmotes.cross),
     res,
   );
 };
@@ -386,24 +381,23 @@ const severeLink = async (
   },
   res?: DBT.antivirus,
 ) => {
-  saveToBadLink(linkObject, msg, hrefLogging);
+  saveToBadLink(linkObject, hrefLogging);
 
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.danger,
+    description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+    color: ch.constants.colors.danger,
   };
   embed.fields = [];
 
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  const m = await client.ch.replyMsg(msg, { embeds: [embed] });
+  const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  client.ch.send(
+  ch.send(
     { id: '726252103302905907', guildId: '669893888856817665' },
     {
-      content: client.ch.getJumpLink(msg),
+      content: ch.getJumpLink(msg),
     },
-    msg.language,
   );
   if (msg.guild) {
     (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
@@ -411,9 +405,9 @@ const severeLink = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.danger,
+    ch.constants.colors.danger,
     linkObject,
-    lan.malicious(client.stringEmotes.cross),
+    lan.malicious(ch.stringEmotes.cross),
     res,
   );
 };
@@ -427,23 +421,22 @@ const ccscam = async (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  saveToBadLink(linkObject, msg);
+  saveToBadLink(linkObject);
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.malicious(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.danger,
+    description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+    color: ch.constants.colors.danger,
   };
 
   embed.fields = [];
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  const m = await client.ch.replyMsg(msg, { embeds: [embed] });
+  const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  client.ch.send(
+  ch.send(
     { id: '726252103302905907', guildId: '669893888856817665' },
     {
-      content: client.ch.getJumpLink(msg),
+      content: ch.getJumpLink(msg),
     },
-    msg.language,
   );
   if (msg.guild) {
     (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
@@ -452,9 +445,9 @@ const ccscam = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.danger,
+    ch.constants.colors.danger,
     linkObject,
-    lan.malicious(client.stringEmotes.cross),
+    lan.malicious(ch.stringEmotes.cross),
     res,
   );
 };
@@ -468,24 +461,23 @@ const newUrl = async (
   }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
   res?: DBT.antivirus,
 ) => {
-  saveToBadLink(linkObject, msg);
+  saveToBadLink(linkObject);
 
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.newLink(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.danger,
+    description: `**${msg.language.Result}**\n${lan.newLink(ch.stringEmotes.cross)}`,
+    color: ch.constants.colors.danger,
   };
 
   embed.fields = [];
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  const m = await client.ch.replyMsg(msg, { embeds: [embed] });
+  const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  client.ch.send(
+  ch.send(
     { id: '726252103302905907', guildId: '669893888856817665' },
     {
-      content: client.ch.getJumpLink(msg),
+      content: ch.getJumpLink(msg),
     },
-    msg.language,
   );
 
   if (msg.guild) {
@@ -494,29 +486,25 @@ const newUrl = async (
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.danger,
+    ch.constants.colors.danger,
     linkObject,
-    lan.newLink(client.stringEmotes.cross),
+    lan.newLink(ch.stringEmotes.cross),
     res,
   );
 };
 
-const saveToBadLink = async (linkObject: LinkObject, msg: CT.Message, hrefLogging?: boolean) => {
+const saveToBadLink = async (linkObject: LinkObject, hrefLogging?: boolean) => {
   const file = fs.readFileSync('/root/Bots/Website/CDN/antivirus/badLinks.txt', {
     encoding: 'utf8',
   });
   const res = file ? file.split(/\n+/).map((entry) => entry.replace(/\r/g, '')) : [];
-  const channel = await client.ch.getChannel.guildTextChannel('726252103302905907');
+  const channel = await ch.getChannel.guildTextChannel('726252103302905907');
   if (!channel) return;
 
   if (!res.includes(linkObject.baseURL)) {
-    client.ch.send(
-      channel,
-      {
-        content: `contentType: ${linkObject.contentType}\nhref: ${linkObject.href}\nurl: ${linkObject.url}\nhostname: ${linkObject.hostname}\nbaseURL: ${linkObject.baseURL}\nbaseURLhostname: ${linkObject.baseURLhostname}\n`,
-      },
-      msg.language,
-    );
+    ch.send(channel, {
+      content: `contentType: ${linkObject.contentType}\nhref: ${linkObject.href}\nurl: ${linkObject.url}\nhostname: ${linkObject.hostname}\nbaseURL: ${linkObject.baseURL}\nbaseURLhostname: ${linkObject.baseURLhostname}\n`,
+    });
   }
 
   const appended = hrefLogging ? linkObject.href : linkObject.baseURL;
@@ -533,22 +521,22 @@ const whitelisted = async (
   res?: DBT.antivirus,
 ) => {
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.whitelisted(client.stringEmotes.tick)}`,
-    color: client.customConstants.colors.success,
+    description: `**${msg.language.Result}**\n${lan.whitelisted(ch.stringEmotes.tick)}`,
+    color: ch.constants.colors.success,
   };
 
   embed.fields = [];
   if (check) {
     embed.fields.push({ name: lan.checking, value: linkObject.href });
-    client.ch.replyMsg(msg, { embeds: [embed] });
+    ch.replyMsg(msg, { embeds: [embed] });
   }
 
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.success,
+    ch.constants.colors.success,
     linkObject,
-    lan.whitelisted(client.stringEmotes.tick),
+    lan.whitelisted(ch.stringEmotes.tick),
     res,
   );
   return true;
@@ -571,17 +559,16 @@ const cloudFlare = async (
   embed.fields = [];
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  client.ch.replyMsg(msg, { embeds: [embed] });
+  ch.replyMsg(msg, { embeds: [embed] });
 
-  client.ch.send(
+  ch.send(
     { id: '726252103302905907', guildId: '669893888856817665' },
     {
-      content: `${client.ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
+      content: `${ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
     },
-    msg.language,
   );
 
-  linkLog(msg, lan, client.customConstants.colors.loading, linkObject, lan.cfProtected, res);
+  linkLog(msg, lan, ch.constants.colors.loading, linkObject, lan.cfProtected, res);
 };
 
 const VTfail = (
@@ -594,21 +581,21 @@ const VTfail = (
   res?: DBT.antivirus,
 ) => {
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.VTfail(client.stringEmotes.cross)}`,
-    color: client.customConstants.colors.loading,
+    description: `**${msg.language.Result}**\n${lan.VTfail(ch.stringEmotes.cross)}`,
+    color: ch.constants.colors.loading,
   };
 
   embed.fields = [];
   if (check) embed.fields.push({ name: lan.checking, value: linkObject.href });
 
-  client.ch.replyMsg(msg, { embeds: [embed] });
+  ch.replyMsg(msg, { embeds: [embed] });
 
   linkLog(
     msg,
     lan,
-    client.customConstants.colors.loading,
+    ch.constants.colors.loading,
     linkObject,
-    lan.VTfail(client.stringEmotes.cross),
+    lan.VTfail(ch.stringEmotes.cross),
     res,
   );
 };
@@ -627,34 +614,34 @@ const linkLog = async (
     description: lan.log.value(msg),
     author: {
       name: lan.log.author,
-      url: client.customConstants.standard.invite,
+      url: ch.constants.standard.invite,
     },
     color,
     fields: [
       { name: `\u200b`, value: text, inline: false },
       {
         name: lan.log.href,
-        value: client.ch.util.makeCodeBlock(linkObject.href),
+        value: ch.util.makeCodeBlock(linkObject.href),
         inline: false,
       },
       {
         name: lan.log.url,
-        value: client.ch.util.makeCodeBlock(String(linkObject.url)),
+        value: ch.util.makeCodeBlock(String(linkObject.url)),
         inline: false,
       },
       {
         name: lan.log.hostname,
-        value: client.ch.util.makeCodeBlock(String(linkObject.hostname)),
+        value: ch.util.makeCodeBlock(String(linkObject.hostname)),
         inline: true,
       },
       {
         name: lan.log.baseURL,
-        value: client.ch.util.makeCodeBlock(String(linkObject.baseURL)),
+        value: ch.util.makeCodeBlock(String(linkObject.baseURL)),
         inline: false,
       },
       {
         name: lan.log.baseURLhostname,
-        value: client.ch.util.makeCodeBlock(String(linkObject.baseURLhostname)),
+        value: ch.util.makeCodeBlock(String(linkObject.baseURLhostname)),
         inline: true,
       },
     ],
@@ -662,9 +649,5 @@ const linkLog = async (
 
   if (!msg.guild?.id) return;
 
-  client.ch.send(
-    { id: row.linklogchannels, guildId: msg.guild.id },
-    { embeds: [embed] },
-    msg.language,
-  );
+  ch.send({ id: row.linklogchannels, guildId: msg.guild.id }, { embeds: [embed] });
 };

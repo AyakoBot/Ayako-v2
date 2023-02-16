@@ -4,7 +4,7 @@ import * as jobs from 'node-schedule';
 import type * as CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };
-import client from '../../../BaseClient/Client.js';
+import { ch } from '../../../BaseClient/Client.js';
 
 const execute = async (msg: CT.Message) => {
   const prefix = await getPrefix(msg);
@@ -21,7 +21,7 @@ const execute = async (msg: CT.Message) => {
   }
 
   if (command.dmOnly) {
-    client.ch.errorMsg(msg, msg.language.commands.commandHandler.DMonly, msg.language);
+    ch.errorMsg(msg, msg.language.commands.commandHandler.DMonly, msg.language);
     return;
   }
 
@@ -64,11 +64,11 @@ const runDMCommand = async (
     commandExe(msg, command, args, triedCMD);
     return;
   }
-  client.ch.errorMsg(msg, msg.language.commands.commandHandler.GuildOnly, msg.language);
+  ch.errorMsg(msg, msg.language.commands.commandHandler.GuildOnly, msg.language);
 };
 
 export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
-  const prefixStandard = client.customConstants.standard.prefix;
+  const prefixStandard = ch.constants.standard.prefix;
   const prefixCustom = msg.guild ? await getCustomPrefix(msg as CT.GuildMessage) : undefined;
 
   let prefix;
@@ -82,7 +82,7 @@ export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
 };
 
 const getCustomPrefix = async (msg: CT.GuildMessage) =>
-  client.ch
+  ch
     .query('SELECT prefix FROM guildsettings WHERE guildid = $1;', [msg.guild.id])
     .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
 
@@ -130,7 +130,7 @@ const getCommandIsDisabled = async (_msg: CT.GuildMessage, _command: CT.Command)
 
 const getPermAllowed = async (msg: CT.GuildMessage, command: CT.Command) => {
   if (command.perm === 0 && msg.author.id !== auth.ownerID) {
-    client.ch.errorMsg(msg, msg.language.commands.commandHandler.creatorOnly, msg.language);
+    ch.errorMsg(msg, msg.language.commands.commandHandler.creatorOnly, msg.language);
     return false;
   }
   return true;
@@ -147,11 +147,11 @@ const cooldowns: clEntry[] = [];
 const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
   const onCooldown = (cl: clEntry) => {
     const getEmote = (secondsLeft: number) => {
-      let returned = `**${client.ch.moment(secondsLeft * 1000, msg.language)}**`;
+      let returned = `**${ch.moment(secondsLeft * 1000, msg.language)}**`;
       let usedEmote = false;
 
       if (secondsLeft <= 60) {
-        returned = `${client.stringEmotes.timers[secondsLeft]} **${msg.language.time.seconds}**`;
+        returned = `${ch.stringEmotes.timers[secondsLeft]} **${msg.language.time.seconds}**`;
         usedEmote = true;
       }
 
@@ -161,31 +161,27 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
     const timeLeft = cl.expire - Date.now();
     const { emote, usedEmote } = getEmote(Math.ceil(timeLeft / 1000));
 
-    client.ch
-      .replyMsg(msg, {
-        content: msg.language.commands.commandHandler.pleaseWait(emote),
-      })
-      .then((m) => {
-        if (!usedEmote && m) {
-          jobs.scheduleJob(new Date(Date.now() + (timeLeft - 60000)), () => {
-            m.edit({
-              content: msg.language.commands.commandHandler.pleaseWait(
-                client.stringEmotes.timers[60],
-              ),
-            });
+    ch.replyMsg(msg, {
+      content: msg.language.commands.commandHandler.pleaseWait(emote),
+    }).then((m) => {
+      if (!usedEmote && m) {
+        jobs.scheduleJob(new Date(Date.now() + (timeLeft - 60000)), () => {
+          m.edit({
+            content: msg.language.commands.commandHandler.pleaseWait(ch.stringEmotes.timers[60]),
           });
-        }
-
-        jobs.scheduleJob(new Date(cl.expire), () => {
-          if (m) m.delete().catch(() => null);
-
-          msg.delete().catch(() => null);
         });
+      }
+
+      jobs.scheduleJob(new Date(cl.expire), () => {
+        if (m) m.delete().catch(() => null);
+
+        msg.delete().catch(() => null);
       });
+    });
   };
 
   const getCooldownRows = async () =>
-    client.ch
+    ch
       .query(`SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2;`, [
         msg.guild.id,
         command.name,
@@ -252,7 +248,7 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
   if (command.type !== 'mod') return true;
 
   const editVerifier = async () => {
-    const m = await client.ch.replyMsg(msg, {
+    const m = await ch.replyMsg(msg, {
       content: msg.language.commands.commandHandler.verifyMessage,
       components: [
         {
@@ -263,14 +259,14 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
               style: Discord.ButtonStyle.Danger,
               label: msg.language.mod.warning.proceed,
               custom_id: `proceed`,
-              emoji: client.objectEmotes.warning,
+              emoji: ch.objectEmotes.warning,
             },
             {
               type: Discord.ComponentType.Button,
               style: Discord.ButtonStyle.Secondary,
               label: msg.language.mod.warning.abort,
               custom_id: `abort`,
-              emoji: client.objectEmotes.cross,
+              emoji: ch.objectEmotes.cross,
             },
           ],
         },
@@ -288,7 +284,7 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
         if (!interaction.isButton()) return;
 
         if (interaction.user.id !== msg.author.id) {
-          client.ch.notYours(interaction, msg.language);
+          ch.notYours(interaction, msg.language);
           resolve(false);
           return;
         }

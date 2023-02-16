@@ -12,11 +12,11 @@ export default async (guild: Discord.Guild) => {
   const vanityUrl = await guild.fetchVanityData();
   if (!vanityUrl) return invites;
 
-  const client = (await import('../Client.js')).default;
+  const { client } = await import('../Client.js');
   const owner = await client.users.fetch(guild.ownerId).catch(() => null);
 
   invites.push({
-    client: client as Discord.Client,
+    client,
     channel: null,
     channelId: null,
     code: guild.vanityURLCode,

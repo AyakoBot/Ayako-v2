@@ -1,9 +1,9 @@
-import client from '../../BaseClient/Client.js';
+import { ch, client } from '../../BaseClient/Client.js';
 import type DBT from '../../Typings/DataBaseTypings';
 
 export default async () => {
   const random = Math.floor(Math.random() * 3);
-  const users = await client.ch
+  const users = await ch
     .query(`SELECT allusers FROM stats;`)
     .then((r: DBT.stats[] | null) => (r ? r[0].allusers : null));
 
@@ -12,14 +12,14 @@ export default async () => {
   switch (random) {
     case 1: {
       activities.push({
-        name: `${client.guilds.cache.size} Servers | v1.6- | Default Prefix: ${client.customConstants.standard.prefix}`,
+        name: `${client.guilds.cache.size} Servers | v1.6- | Default Prefix: ${ch.constants.standard.prefix}`,
         type: 5,
       });
       break;
     }
     case 2: {
       activities.push({
-        name: `${users} Users | v1.6- | ${client.customConstants.standard.prefix}invite`,
+        name: `${users} Users | v1.6- | ${ch.constants.standard.prefix}invite`,
         type: 3,
       });
       break;
@@ -28,7 +28,7 @@ export default async () => {
       activities.push({
         type: 1,
         url: 'https://www.twitch.tv/lars_und_so_',
-        name: `Development | v1.6- | Default Prefix: ${client.customConstants.standard.prefix}`,
+        name: `Development | v1.6- | Default Prefix: ${ch.constants.standard.prefix}`,
       });
       break;
     }
