@@ -11,7 +11,7 @@ let messageCache: {
 
 let authorCache: string[] = [];
 
-export default async (msg: CT.GuildMessage) => {
+export default async (msg: Discord.Message) => {
   if (msg.author.id === client.user?.id) return;
   if (msg.author.bot) return;
   if (msg.editedTimestamp) return;
@@ -36,7 +36,7 @@ export default async (msg: CT.GuildMessage) => {
     return;
   }
 
-  const me = client.user ? await msg.guild.members.fetch(client.user.id) : undefined;
+  const me = client.user ? await msg.guild?.members.fetch(client.user.id) : undefined;
   if (!me) return;
 
   messageCache.push({
@@ -88,11 +88,12 @@ export default async (msg: CT.GuildMessage) => {
   }
 };
 
-const runPunishment = async (msg: CT.GuildMessage) => {
-  if (!msg.guild) return;
+const runPunishment = async (msg: Discord.Message) => {
+  if (!msg.inGuild()) return;
 
   const allPunishments = authorCache.filter((a) => a === msg.author.id).length;
   const punishment = await getPunishment(msg, allPunishments);
+  const language = await ch.languageSelector(msg.guildId);
 
   if (!client.user) return;
 
@@ -101,7 +102,7 @@ const runPunishment = async (msg: CT.GuildMessage) => {
     executor: client.user,
     target: msg.author,
     msg,
-    reason: msg.language.autotypes.antispam,
+    reason: language.autotypes.antispam,
     guild: msg.guild,
     source: 'antispam',
     forceFinish: true,
@@ -147,15 +148,15 @@ const runPunishment = async (msg: CT.GuildMessage) => {
   (await import('../../modBaseEvent.js')).default(obj);
 };
 
-const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
+const getPunishment = async (msg: Discord.Message, warns: number) =>
   ch
     .query(
       `SELECT * FROM antispampunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
-      [String(msg.guild.id), warns],
+      [String(msg.guildId), warns],
     )
     .then((r: DBT.BasicPunishmentsTable[] | null) => (r ? r[0] : null));
 
-const deleteMessages = async (msg: CT.GuildMessage, matches: number, antispam: DBT.antispam) => {
+const deleteMessages = async (msg: Discord.Message, matches: number, antispam: DBT.antispam) => {
   if (!antispam.deletespam) return;
 
   const msgs = await msg.channel.messages.fetch({ limit: 100 }).catch(() => null);
@@ -175,19 +176,21 @@ export const resetData = () => {
   messageCache = [];
 };
 
-const softwarn = (msg: CT.GuildMessage) => {
+const softwarn = async (msg: Discord.Message) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   ch.send(msg.channel, {
-    content: `<@${msg.author.id}> ${msg.language.mod.warnAdd.antispam}`,
+    content: `<@${msg.author.id}> ${language.mod.warnAdd.antispam}`,
     allowedMentions: {
       users: [msg.author.id],
     },
   });
 };
 
-const getSettings = async (msg: CT.GuildMessage) =>
+const getSettings = async (msg: Discord.Message) =>
   ch
     .query(
       'SELECT * FROM antispam WHERE guildid = $1 AND active = true AND forcedisabled = false;',
-      [String(msg.guild.id)],
+      [String(msg.guildId)],
     )
     .then((r: DBT.antispam[] | null) => (r ? r[0] : null));

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { ch, client } from '../../../../BaseClient/Client.js';
+import { ch } from '../../../../BaseClient/Client.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
@@ -122,8 +122,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         {
           name: lan.fields.lvlupemotes.name,
           value: settings?.lvlupemotes?.length
-            ? settings.lvlupemotes
-                .map((e) => client.emojis.cache.get(e))
+            ? (await Promise.all(settings.lvlupemotes.map((e) => ch.getEmote(e))))
                 .filter((e): e is Discord.GuildEmoji => !!e)
                 .join(', ')
             : ch.stringEmotes.levelupemotes.join(', '),

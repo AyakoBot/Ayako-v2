@@ -10,6 +10,23 @@ import * as util from '../../../BaseClient/ClientHelperModules/util';
 import auth from '../../../auth.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
 
+type Data = {
+  msgData: {
+    channelid: string;
+    msgid: string;
+    guildid: string;
+  };
+  linkObject: LinkObject;
+  lan: CT.Language['antivirus'];
+  includedBadLink: boolean;
+  check: boolean;
+  blacklist: string[];
+  whitelist: string[];
+  whitelistCDN: string[];
+  blocklist: string[];
+  badLinks: string[];
+};
+
 interface LinkObject {
   href: string;
   url: string;
@@ -75,7 +92,7 @@ type PromptAPIResponse = {
   };
 };
 
-parentPort?.on('message', async (data) => {
+parentPort?.on('message', async (data: Data) => {
   run(data);
 });
 
@@ -90,22 +107,7 @@ const run = async ({
   whitelistCDN,
   blocklist,
   badLinks,
-}: {
-  msgData: {
-    channelid: string;
-    msgid: string;
-    guildid: string;
-  };
-  linkObject: LinkObject;
-  lan: CT.Language['antivirus'];
-  includedBadLink: boolean;
-  check: boolean;
-  blacklist: string[];
-  whitelist: string[];
-  whitelistCDN: string[];
-  blocklist: string[];
-  badLinks: string[];
-}) => {
+}: Data) => {
   if (includedBadLink) {
     return;
   }

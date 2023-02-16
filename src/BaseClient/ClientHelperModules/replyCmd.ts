@@ -30,8 +30,8 @@ export default async (
   const replyMsg = await import('./replyMsg');
 
   if (command) {
-    replyMsg.cooldownHandler(cmd as CT.GuildInteraction, sentMessage, command);
-    replyMsg.deleteCommandHandler(cmd as CT.GuildInteraction, sentMessage, command);
+    replyMsg.cooldownHandler(cmd, sentMessage, command);
+    replyMsg.deleteCommandHandler(cmd, sentMessage, command);
   }
 
   return sentMessage;

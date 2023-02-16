@@ -6,7 +6,7 @@ import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };
 import { ch } from '../../../BaseClient/Client.js';
 
-const execute = async (msg: CT.Message) => {
+const execute = async (msg: Discord.Message) => {
   const prefix = await getPrefix(msg);
   if (!prefix) return;
 
@@ -15,18 +15,19 @@ const execute = async (msg: CT.Message) => {
   const { file: command, triedCMD } = await getCommand(args);
   if (!command) return;
 
-  if (!('guildId' in msg) || !msg.guild || msg.channel.type === 1) {
+  if (!msg.inGuild()) {
     runDMCommand(msg, command, args, triedCMD);
     return;
   }
 
   if (command.dmOnly) {
-    ch.errorMsg(msg, msg.language.commands.commandHandler.DMonly, msg.language);
+    const language = await ch.languageSelector(msg.guildId);
+    ch.errorMsg(msg, language.commands.commandHandler.DMonly, language);
     return;
   }
 
   if (msg.author.id !== auth.ownerID && msg.guild) {
-    const proceed = runChecks(msg as CT.GuildMessage, command);
+    const proceed = runChecks(msg as Discord.Message, command);
     if (!proceed) return;
   }
 
@@ -36,7 +37,7 @@ const execute = async (msg: CT.Message) => {
   commandExe(msg, command, args, triedCMD);
 };
 
-const runChecks = async (msg: CT.GuildMessage, command: CT.Command) => {
+const runChecks = async (msg: Discord.Message, command: CT.Command) => {
   const guildAllowed = getGuildAllowed(msg, command);
   if (!guildAllowed) return false;
 
@@ -55,7 +56,7 @@ const runChecks = async (msg: CT.GuildMessage, command: CT.Command) => {
 export default execute;
 
 const runDMCommand = async (
-  msg: CT.Message,
+  msg: Discord.Message,
   command: CT.Command,
   args?: string[],
   triedCMD?: unknown,
@@ -64,12 +65,16 @@ const runDMCommand = async (
     commandExe(msg, command, args, triedCMD);
     return;
   }
-  ch.errorMsg(msg, msg.language.commands.commandHandler.GuildOnly, msg.language);
+
+  const language = await ch.languageSelector(msg.guildId);
+  ch.errorMsg(msg, language.commands.commandHandler.GuildOnly, language);
 };
 
-export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
+export const getPrefix = async (msg: Discord.Message | Discord.Message) => {
+  if (!msg.inGuild()) return;
+
   const prefixStandard = ch.constants.standard.prefix;
-  const prefixCustom = msg.guild ? await getCustomPrefix(msg as CT.GuildMessage) : undefined;
+  const prefixCustom = msg.guild ? await getCustomPrefix(msg.guildId) : undefined;
 
   let prefix;
 
@@ -81,9 +86,9 @@ export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
   return prefix;
 };
 
-const getCustomPrefix = async (msg: CT.GuildMessage) =>
+const getCustomPrefix = async (id: string) =>
   ch
-    .query('SELECT prefix FROM guildsettings WHERE guildid = $1;', [msg.guild.id])
+    .query('SELECT prefix FROM guildsettings WHERE guildid = $1;', [id])
     .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
 
 export const getCommand = async (args: string[]) => {
@@ -117,20 +122,22 @@ export const getCommand = async (args: string[]) => {
   return { file: file || null, triedCMD };
 };
 
-const getGuildAllowed = (msg: CT.GuildMessage, command: CT.Command) => {
-  if (!msg.guild.id) return true;
-  if (command.thisGuildOnly && !command.thisGuildOnly?.includes(msg.guild.id)) return false;
+const getGuildAllowed = (msg: Discord.Message, command: CT.Command) => {
+  if (!msg.inGuild()) return true;
+  if (command.thisGuildOnly && !command.thisGuildOnly?.includes(msg.guildId)) return false;
   return true;
 };
 
-const getCommandIsDisabled = async (_msg: CT.GuildMessage, _command: CT.Command) => {
+const getCommandIsDisabled = async (_msg: Discord.Message, _command: CT.Command) => {
   // TODO
   return false;
 };
 
-const getPermAllowed = async (msg: CT.GuildMessage, command: CT.Command) => {
+const getPermAllowed = async (msg: Discord.Message, command: CT.Command) => {
   if (command.perm === 0 && msg.author.id !== auth.ownerID) {
-    ch.errorMsg(msg, msg.language.commands.commandHandler.creatorOnly, msg.language);
+    const language = await ch.languageSelector(msg.guildId);
+
+    ch.errorMsg(msg, language.commands.commandHandler.creatorOnly, language);
     return false;
   }
   return true;
@@ -144,14 +151,16 @@ type clEntry = {
 };
 const cooldowns: clEntry[] = [];
 
-const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
+const getCooldown = async (msg: Discord.Message, command: CT.Command) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   const onCooldown = (cl: clEntry) => {
     const getEmote = (secondsLeft: number) => {
-      let returned = `**${ch.moment(secondsLeft * 1000, msg.language)}**`;
+      let returned = `**${ch.moment(secondsLeft * 1000, language)}**`;
       let usedEmote = false;
 
       if (secondsLeft <= 60) {
-        returned = `${ch.stringEmotes.timers[secondsLeft]} **${msg.language.time.seconds}**`;
+        returned = `${ch.stringEmotes.timers[secondsLeft]} **${language.time.seconds}**`;
         usedEmote = true;
       }
 
@@ -162,12 +171,12 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
     const { emote, usedEmote } = getEmote(Math.ceil(timeLeft / 1000));
 
     ch.replyMsg(msg, {
-      content: msg.language.commands.commandHandler.pleaseWait(emote),
+      content: language.commands.commandHandler.pleaseWait(emote),
     }).then((m) => {
       if (!usedEmote && m) {
         jobs.scheduleJob(new Date(Date.now() + (timeLeft - 60000)), () => {
           m.edit({
-            content: msg.language.commands.commandHandler.pleaseWait(ch.stringEmotes.timers[60]),
+            content: language.commands.commandHandler.pleaseWait(ch.stringEmotes.timers[60]),
           });
         });
       }
@@ -183,7 +192,7 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
   const getCooldownRows = async () =>
     ch
       .query(`SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2;`, [
-        msg.guild.id,
+        msg.guildId,
         command.name,
       ])
       .then((r: DBT.cooldowns[] | null) => r || null);
@@ -196,7 +205,7 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
       (!row.activechannelid?.length || row.activechannelid?.includes(msg.channelId)) &&
       !row.wlchannelid?.includes(msg.channelId) &&
       !row.wluserid?.includes(msg.author.id) &&
-      !row.wlroleid?.some((r) => msg.member.roles.cache.has(r)),
+      !row.wlroleid?.some((r) => msg.member?.roles.cache.has(r)),
   );
 
   const applyingCooldown = Math.max(...applyingRows.map((r) => Number(r.cooldown) * 1000));
@@ -229,7 +238,7 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
 };
 
 const commandExe = async (
-  msg: CT.Message,
+  msg: Discord.Message,
   command: CT.Command,
   args?: string[],
   triedCMD?: unknown,
@@ -243,13 +252,15 @@ const commandExe = async (
   }
 };
 
-const editCheck = async (msg: CT.Message, command: CT.Command) => {
+const editCheck = async (msg: Discord.Message, command: CT.Command) => {
   if (!msg.editedTimestamp) return true;
   if (command.type !== 'mod') return true;
 
+  const language = await ch.languageSelector(msg.guildId);
+
   const editVerifier = async () => {
     const m = await ch.replyMsg(msg, {
-      content: msg.language.commands.commandHandler.verifyMessage,
+      content: language.commands.commandHandler.verifyMessage,
       components: [
         {
           type: Discord.ComponentType.ActionRow,
@@ -257,14 +268,14 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
             {
               type: Discord.ComponentType.Button,
               style: Discord.ButtonStyle.Danger,
-              label: msg.language.mod.warning.proceed,
+              label: language.mod.warning.proceed,
               custom_id: `proceed`,
               emoji: ch.objectEmotes.warning,
             },
             {
               type: Discord.ComponentType.Button,
               style: Discord.ButtonStyle.Secondary,
-              label: msg.language.mod.warning.abort,
+              label: language.mod.warning.abort,
               custom_id: `abort`,
               emoji: ch.objectEmotes.cross,
             },
@@ -284,7 +295,7 @@ const editCheck = async (msg: CT.Message, command: CT.Command) => {
         if (!interaction.isButton()) return;
 
         if (interaction.user.id !== msg.author.id) {
-          ch.notYours(interaction, msg.language);
+          ch.notYours(interaction, language);
           resolve(false);
           return;
         }

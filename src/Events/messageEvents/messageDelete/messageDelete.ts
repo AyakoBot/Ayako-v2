@@ -1,11 +1,10 @@
 import type * as Discord from 'discord.js';
+import log from './log.js';
+import cache from './cache.js';
 
 export default async (msg: Discord.Message) => {
-  if (!msg.guild) return;
+  if (!msg.inGuild()) return;
 
-  const files: {
-    default: (s: Discord.Message) => void;
-  }[] = await Promise.all(['./log.js', './cache.js'].map((p) => import(p)));
-
-  files.forEach((f) => f.default(msg));
+  log(msg);
+  cache(msg);
 };

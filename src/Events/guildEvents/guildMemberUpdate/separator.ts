@@ -19,9 +19,7 @@ UpdateWorker.on(
   ]) => {
     switch (text) {
       case 'NO_SEP': {
-        ch.query('UPDATE roleseparator SET active = false WHERE separator = $1;', [
-          roleData[0],
-        ]);
+        ch.query('UPDATE roleseparator SET active = false WHERE separator = $1;', [roleData[0]]);
         break;
       }
       case 'TAKE': {
@@ -414,12 +412,7 @@ const assinger = async (
 
         if (member) {
           ch.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
-          ch.roleManager.remove(
-            member,
-            raw.takeTheseRoles,
-            language.autotypes.separators,
-            2,
-          );
+          ch.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
         }
 
         if (index === membersWithRoles.length - 1 && lastTime) {
@@ -447,10 +440,11 @@ const assinger = async (
           return;
         }
 
-        ch.query(
-          'UPDATE roleseparatorsettings SET index = $1, length = $3 WHERE guildid = $2;',
-          [index, msg.guild?.id, membersWithRoles.length - 1],
-        );
+        ch.query('UPDATE roleseparatorsettings SET index = $1, length = $3 WHERE guildid = $2;', [
+          index,
+          msg.guild?.id,
+          membersWithRoles.length - 1,
+        ]);
       }),
     );
   });

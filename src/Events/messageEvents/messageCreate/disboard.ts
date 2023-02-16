@@ -1,10 +1,10 @@
 import jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import { ch, client } from '../../../BaseClient/Client.js';
 
-export default async (msg: CT.GuildMessage) => {
+export default async (msg: Discord.Message) => {
+  if (!msg.inGuild()) return;
   if (msg.author.id !== '302050872383242240') return;
   if (!msg.embeds[0]) return;
   if (!msg.embeds[0].color) return;
@@ -18,14 +18,14 @@ export default async (msg: CT.GuildMessage) => {
     : msg.channel;
   if (!channel) return;
 
-  ch.cache.disboardBumpReminders.delete(msg.guild.id);
+  ch.cache.disboardBumpReminders.delete(msg.guildId);
 
   await msg.react(ch.stringEmotes.tick).catch(() => null);
 
   await ch.query(`UPDATE disboard SET nextbump = $1, tempchannelid = $2 WHERE guildid = $3;`, [
     msg.createdTimestamp + 7200000,
     String(channel.id),
-    String(msg.guild.id),
+    String(msg.guildId),
   ]);
 
   if (settings.deletereply) {
@@ -40,9 +40,11 @@ const getSettings = async (guild: Discord.Guild) =>
     .query('SELECT * FROM disboard WHERE guildid = $1 AND active = true;', [String(guild.id)])
     .then((r: DBT.disboard[] | null) => (r ? r[0] : null));
 
-const setReminder = async (msg: CT.GuildMessage, isBump: boolean, settings: DBT.disboard) => {
+const setReminder = async (msg: Discord.Message, isBump: boolean, settings: DBT.disboard) => {
+  if (!msg.inGuild()) return;
+
   if (!isBump && !Number(settings.repeatreminder)) {
-    ch.query(`UPDATE disboard SET nextbump = NULL WHERE guildid = $1;`, [String(msg.guild.id)]);
+    ch.query(`UPDATE disboard SET nextbump = NULL WHERE guildid = $1;`, [String(msg.guildId)]);
     return;
   }
 
@@ -50,7 +52,7 @@ const setReminder = async (msg: CT.GuildMessage, isBump: boolean, settings: DBT.
 
   ch.query(`UPDATE disboard SET nextbump = $1 WHERE guildid = $2;`, [
     Date.now() + (isBump ? 7200000 : Number(settings.repeatreminder) * 60 * 1000),
-    String(msg.guild.id),
+    String(msg.guildId),
   ]);
 
   ch.cache.disboardBumpReminders.set(
@@ -60,11 +62,13 @@ const setReminder = async (msg: CT.GuildMessage, isBump: boolean, settings: DBT.
         endReminder(msg);
       },
     ),
-    msg.guild.id,
+    msg.guildId,
   );
 };
 
-export const endReminder = async (msg: CT.GuildMessage) => {
+export const endReminder = async (msg: Discord.Message) => {
+  if (!msg.inGuild()) return;
+
   const settings = await getSettings(msg.guild);
   if (!settings) return;
 
@@ -76,7 +80,8 @@ export const endReminder = async (msg: CT.GuildMessage) => {
   } else return;
   if (!channel) return;
 
-  const lan = msg.language.events.ready.disboard;
+  const language = await ch.languageSelector(msg.guildId);
+  const lan = language.events.ready.disboard;
 
   const embed: Discord.APIEmbed = {
     author: {
@@ -99,13 +104,13 @@ export const endReminder = async (msg: CT.GuildMessage) => {
 
   await ch.query(`UPDATE disboard SET msgid = $1 WHERE guildid = $2;`, [
     String(m.id),
-    String(msg.guild.id),
+    String(msg.guildId),
   ]);
 
   setReminder(msg, false, settings);
 };
 
-const doDelete = async (msg: CT.GuildMessage, settings: DBT.disboard) => {
+const doDelete = async (msg: Discord.Message, settings: DBT.disboard) => {
   if (!settings.deletereply) return;
   if (!settings.msgid) return;
   if (!settings.tempchannelid) return;

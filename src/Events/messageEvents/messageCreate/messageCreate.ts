@@ -1,52 +1,33 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
-import { ch } from '../../../BaseClient/Client.js';
 
-export default async (m: Discord.Message) => {
-  if (!m) return;
-  if (!m.author) return;
+import commandHandler from './commandHandler.js';
+import antivirus from './antivirus.js';
+import disboard from './disboard.js';
+import other from './other.js';
+import leveling from './leveling.js';
+import afk from './afk.js';
+import blacklist from './blacklist.js';
+import revengePing from './revengePing.js';
+import sticky from './sticky.js';
 
-  const msg = (await convertMsg(m)) as CT.Message;
-  const files: { default: (t: CT.Message) => void }[] = await Promise.all(
-    getPaths(msg).map((p) => import(p)),
-  );
+import dmLog from './dmLog.js';
 
-  files.forEach((f) => f.default(msg));
-};
+export default async (msg: Discord.Message) => {
+  if (!msg) return;
+  if (!msg.author) return;
 
-const getPaths = (msg: CT.Message) => {
-  //  if (msg.author.discriminator === '0000') return ['./ashes.js'];
+  antivirus(msg);
 
-  const paths = [
-    './commandHandler.js',
-    //    './antivirus.js'
-  ];
-
-  if (msg.guild) {
-    paths.push(
-      //      './disboard.js',
-      './other.js',
-      //      './leveling.js',
-      //      './afk.js',
-      //      './blacklist.js',
-      //      './willis.js',
-      './revengePing.js',
-      //      './antispam.js',
-      './sticky.js',
-    );
-  } else paths.push('./DMlog.js');
-
-  return paths;
-};
-
-export const convertMsg = async (m: Discord.Message): Promise<CT.Message> => {
-  const msg = m as CT.Message;
-  const fetchArray: Promise<CT.Language>[] = [
-    ch.languageSelector('guildId' in msg ? msg.guild?.id : undefined),
-  ];
-
-  const [language] = await Promise.all(fetchArray);
-  msg.language = language as CT.Language;
-
-  return msg;
+  if (msg.inGuild()) {
+    commandHandler(msg);
+    disboard(msg);
+    other(msg);
+    leveling(msg);
+    afk(msg);
+    blacklist(msg);
+    revengePing(msg);
+    sticky(msg);
+  } else {
+    dmLog(msg);
+  }
 };

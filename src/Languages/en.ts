@@ -2293,8 +2293,8 @@ export default {
     },
   },
   leveling: {
-    author: (msg: CT.GuildMessage) =>
-      `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild.name}`,
+    author: (msg: Discord.Message) =>
+      `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild?.name}`,
     description: (reactions?: string) =>
       `${
         reactions ? 'On' : 'Normally, on'

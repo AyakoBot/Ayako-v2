@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import log from './log.js';
 
 export default async (
   pin: Discord.Message,
@@ -10,18 +11,5 @@ export default async (
     | Discord.VoiceChannel,
   date: Date,
 ) => {
-  const files: {
-    default: (
-      r: Discord.Message,
-      t:
-        | Discord.NewsChannel
-        | Discord.TextChannel
-        | Discord.PrivateThreadChannel
-        | Discord.PublicThreadChannel<boolean>
-        | Discord.VoiceChannel,
-      d: Date,
-    ) => void;
-  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
-
-  files.forEach((f) => f.default(pin, channel, date));
+  log(pin, channel, date);
 };

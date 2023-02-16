@@ -1,9 +1,8 @@
 import type * as Discord from 'discord.js';
+import log from './log.js';
+import separator from './separator.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
-  const files: {
-    default: (m: Discord.GuildMember, o: Discord.GuildMember) => void;
-  }[] = await Promise.all(['./log.js', './separator.js'].map((p) => import(p)));
-
-  files.forEach((f) => f.default(oldMember, member));
+  log(oldMember, member);
+  separator(oldMember, member);
 };

@@ -13,7 +13,7 @@ export interface Command {
   dmAllowed: boolean;
   type: 'mod' | 'other' | 'owner';
   default: <T extends keyof Language['commands']>(
-    msg: Message,
+    msg: Discord.Message,
     command: Command,
     args?: string[],
     object?: { [key: string]: unknown },
@@ -24,7 +24,7 @@ export interface ModBaseEventOptions {
   executor: Discord.User | undefined;
   target: Discord.User;
   reason: string;
-  msg?: GuildMessage | Discord.Message;
+  msg?: Discord.Message;
   cmd?: Discord.GuildInteraction;
   guild: Discord.Guild | undefined;
   type:
@@ -48,27 +48,6 @@ export interface ModBaseEventOptions {
   forceFinish?: boolean;
   channel?: Discord.GuildChannel;
   role?: Discord.Role;
-}
-
-export interface Message extends Discord.Message {
-  language: Language;
-}
-
-export interface GuildMessage extends Omit<Message, 'guild' | 'member' | 'channel'> {
-  guild: Discord.Guild;
-  member: Discord.GuildMember;
-  channel:
-    | Discord.NewsChannel
-    | Discord.TextChannel
-    | Discord.PrivateThreadChannel
-    | Discord.PublicThreadChannel
-    | Discord.VoiceChannel;
-}
-
-export type DMMessage = Omit<Message, 'guild' | 'member'>;
-
-export interface GuildInteraction extends Omit<Discord.Interaction, 'guild'> {
-  guild: Discord.Guild;
 }
 
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';

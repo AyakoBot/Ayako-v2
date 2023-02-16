@@ -1,17 +1,14 @@
 import type * as Discord from 'discord.js';
+import commandHandler from './commandHandler.js';
+import buttonHandler from './buttonHandler.js';
+import modalHandler from './modalHandler.js';
+import contextCommandHandler from './contextCommandHandler.js';
+import selectHandler from './selectHandler.js';
 
 export default async (cmd: Discord.Interaction) => {
-  const files: {
-    default: (m: Discord.Interaction) => void;
-  }[] = await Promise.all(
-    [
-      './commandHandler.js',
-      './buttonHandler.js',
-      './modalHandler.js',
-      './contextCommandHandler.js',
-      './selectHandler.js',
-    ].map((p) => import(p)),
-  );
-
-  files.forEach((f) => f.default(cmd));
+  commandHandler(cmd);
+  buttonHandler(cmd);
+  modalHandler(cmd);
+  contextCommandHandler(cmd);
+  selectHandler(cmd);
 };

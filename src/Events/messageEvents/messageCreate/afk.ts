@@ -4,7 +4,7 @@ import { ch, client } from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 
-export default async (msg: CT.GuildMessage) => {
+export default async (msg: Discord.Message) => {
   const prefix = await (await import('./commandHandler.js')).getPrefix(msg);
   if (prefix) {
     const usedCommand: { file: CT.Command | null; triedCMD: undefined } = await (
@@ -17,14 +17,15 @@ export default async (msg: CT.GuildMessage) => {
   doMentionAFKcheck(msg);
 };
 
-const doSelfAFKCheck = async (msg: CT.GuildMessage) => {
+const doSelfAFKCheck = async (msg: Discord.Message) => {
   const afkRow = await getAfkRow(msg);
   if (!afkRow) return;
   const isOldEnoug = Number(afkRow.since) + 60000 < Date.now();
 
   if (!isOldEnoug) return;
+  const language = await ch.languageSelector(msg.guildId);
 
-  const embed = await getAFKdeletedEmbed(msg, afkRow);
+  const embed = await getAFKdeletedEmbed(msg, afkRow, language);
   const m = await ch.replyMsg(msg, { embeds: [embed] });
   jobs.scheduleJob(new Date(Date.now() + 30000), async () => {
     if (m) m.delete().catch(() => null);
@@ -36,12 +37,13 @@ const doSelfAFKCheck = async (msg: CT.GuildMessage) => {
   deleteNickname(msg);
 };
 
-const doMentionAFKcheck = (msg: CT.GuildMessage) => {
+const doMentionAFKcheck = (msg: Discord.Message) => {
   msg.mentions.users.forEach(async (mention) => {
     const afkRow = await getAfkRow(msg, mention);
     if (!afkRow) return;
 
-    const embed = await getIsAFKEmbed(msg, mention, afkRow);
+    const language = await ch.languageSelector(msg.guildId);
+    const embed = await getIsAFKEmbed(msg, mention, afkRow, language);
     const m = await ch.replyMsg(msg, { embeds: [embed] });
     jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
       if (m) m.delete().catch(() => null);
@@ -49,13 +51,18 @@ const doMentionAFKcheck = (msg: CT.GuildMessage) => {
   });
 };
 
-const getIsAFKEmbed = async (msg: CT.GuildMessage, mention: Discord.User, afkRow: DBT.afk) => {
+const getIsAFKEmbed = async (
+  msg: Discord.Message,
+  mention: Discord.User,
+  afkRow: DBT.afk,
+  language: CT.Language,
+) => {
   const embed: Discord.APIEmbed = {
     color: ch.colorSelector(
-      client.user ? await msg.guild.members.fetch(client.user?.id) : undefined,
+      client.user ? await msg.guild?.members.fetch(client.user?.id) : undefined,
     ),
     footer: {
-      text: msg.language.commands.afk.footer(mention.id, getTime(afkRow, msg.language)),
+      text: language.commands.afk.footer(mention.id, getTime(afkRow, language)),
     },
   };
 
@@ -64,21 +71,21 @@ const getIsAFKEmbed = async (msg: CT.GuildMessage, mention: Discord.User, afkRow
   return embed;
 };
 
-const getAfkRow = (msg: CT.GuildMessage, mention?: Discord.User) =>
+const getAfkRow = (msg: Discord.Message, mention?: Discord.User) =>
   ch
     .query('SELECT * FROM afk WHERE userid = $1 AND guildid = $2;', [
       String(mention || msg.author.id),
-      String(msg.guild.id),
+      String(msg.guildId),
     ])
     .then((r: DBT.afk[] | null) => (r ? r[0] : null));
 
 const getTime = (afkRow: DBT.afk, language: CT.Language) =>
   ch.moment(Math.abs(Number(afkRow.since) - Date.now()), language);
 
-const deleteNickname = async (msg: CT.GuildMessage) => {
-  const displayname = msg.member.nickname ?? msg.author.username;
+const deleteNickname = async (msg: Discord.Message) => {
+  const displayname = msg.member?.nickname ?? msg.author.username;
 
-  if (!msg.member.nickname || !msg.member.nickname.endsWith(' [AFK]')) return;
+  if (!msg.member?.nickname || !msg.member?.nickname.endsWith(' [AFK]')) return;
   const newNickname = displayname.slice(0, displayname.length - 6);
 
   if (!msg.member.manageable) return;
@@ -86,11 +93,8 @@ const deleteNickname = async (msg: CT.GuildMessage) => {
   msg.member.setNickname(newNickname).catch(() => null);
 };
 
-const deleteAfk = (msg: CT.GuildMessage) =>
-  ch.query('DELETE FROM afk WHERE userid = $1 AND guildid = $2;', [
-    msg.author.id,
-    msg.guild.id,
-  ]);
+const deleteAfk = (msg: Discord.Message) =>
+  ch.query('DELETE FROM afk WHERE userid = $1 AND guildid = $2;', [msg.author.id, msg.guildId]);
 
 const deleteM = (m?: Discord.Message) => {
   if (m && m.embeds.length > 1) {
@@ -101,18 +105,17 @@ const deleteM = (m?: Discord.Message) => {
 };
 
 const getAFKdeletedEmbed = async (
-  msg: CT.GuildMessage,
+  msg: Discord.Message,
   afkRow: DBT.afk,
+  language: CT.Language,
 ): Promise<Discord.APIEmbed> => ({
-  color: ch.colorSelector(
-    client.user ? await msg.guild.members.fetch(client.user.id) : undefined,
-  ),
+  color: ch.colorSelector(client.user ? await msg.guild?.members.fetch(client.user.id) : undefined),
   footer: {
-    text: msg.language.commands.afkHandler.footer(getTime(afkRow, msg.language)),
+    text: language.commands.afkHandler.footer(getTime(afkRow, language)),
   },
 });
 
-const handleReactions = async (msg: CT.GuildMessage, m?: Discord.Message) => {
+const handleReactions = async (msg: Discord.Message, m?: Discord.Message) => {
   if (!m) return;
   const emote = `${ch.objectEmotes.cross.name}:${ch.objectEmotes.cross.id}`;
 

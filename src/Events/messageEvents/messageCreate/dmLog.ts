@@ -1,8 +1,7 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
 import { ch, client } from '../../../BaseClient/Client.js';
 
-export default async (msg: CT.DMMessage) => {
+export default async (msg: Discord.Message) => {
   if (msg.author.id === client.user?.id) return;
 
   const embed: Discord.APIEmbed = {

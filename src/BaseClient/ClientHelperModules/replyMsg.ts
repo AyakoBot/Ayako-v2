@@ -6,7 +6,7 @@ import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from '../ClientHelperModules/objectEmotes.js';
 
 export default async (
-  msg: Discord.Message | CT.GuildMessage | CT.Message,
+  msg: Discord.Message | Discord.Message | Discord.Message,
   payload: Discord.MessagePayload | Discord.MessageReplyOptions,
   command?: CT.Command,
 ) => {
@@ -20,19 +20,20 @@ export default async (
   if (!sentMessage) return undefined;
 
   if (msg.guild && command) {
-    cooldownHandler(msg as CT.GuildMessage, sentMessage, command);
-    deleteCommandHandler(msg as CT.GuildMessage, sentMessage, command);
+    cooldownHandler(msg as Discord.Message, sentMessage, command);
+    deleteCommandHandler(msg as Discord.Message, sentMessage, command);
   }
 
   return sentMessage;
 };
 
 export const cooldownHandler = async (
-  msg: CT.GuildMessage | CT.GuildInteraction,
+  msg: Discord.Message | Discord.Interaction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {
   if (!command.cooldown) return;
+  if (!msg.guild) return;
 
   const authorId = 'author' in msg ? msg.author.id : msg.user.id;
 
@@ -87,10 +88,12 @@ export const cooldownHandler = async (
 };
 
 export const deleteCommandHandler = async (
-  msg: CT.GuildMessage | CT.GuildInteraction,
+  msg: Discord.Message | Discord.Interaction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {
+  if (!msg.guild) return;
+
   const settings = await getDeleteSettings(msg.guild, command.name);
   if (!settings) return;
 

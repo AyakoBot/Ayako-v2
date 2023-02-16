@@ -1,14 +1,9 @@
 import * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import { ch, client } from '../../../BaseClient/Client.js';
 import { getCommand } from '../messageCreate/commandHandler';
 
-export default async (oldMsg: Discord.Message, message: Discord.Message) => {
-  const msg = (await (
-    await import('../messageCreate/messageCreate')
-  ).convertMsg(message)) as CT.GuildMessage;
-
+export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   if (!oldMsg || !msg || !oldMsg.content || !msg.content) return;
   if (oldMsg.content === msg.content) return;
   if (oldMsg.crosspostable !== msg.crosspostable) return;
@@ -19,7 +14,7 @@ export default async (oldMsg: Discord.Message, message: Discord.Message) => {
 
   if (msg.channel.type !== Discord.ChannelType.GuildAnnouncement) {
     prefixCustom = await ch
-      .query('SELECT * FROM guildsettings WHERE guildid = $1;', [String(msg.guild.id)])
+      .query('SELECT * FROM guildsettings WHERE guildid = $1;', [String(msg.guildId)])
       .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
   }
 

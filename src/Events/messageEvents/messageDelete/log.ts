@@ -2,13 +2,13 @@ import type * as Discord from 'discord.js';
 import { ch } from '../../../BaseClient/Client.js';
 
 export default async (msg: Discord.Message) => {
-  if (!msg.guild) return;
+  if (!msg.inGuild()) return;
   if (!msg.author) return;
 
   const channels = await ch.getLogChannels('messageevents', msg.guild);
   if (!channels) return;
 
-  const language = await ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guildId);
   const lan = language.events.logs.message;
   const con = ch.constants.events.logs.message;
   const audit = await ch.getAudit(msg.guild, 72, msg.id);
@@ -90,7 +90,7 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.webhookId) {
-    const webhook = await ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild.id);
+    const webhook = await ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guildId);
 
     if (webhook) {
       embed.fields?.push({
@@ -159,5 +159,5 @@ export default async (msg: Discord.Message) => {
     if (attachments?.length) files.push(...attachments);
   }
 
-  ch.send({ id: channels, guildId: msg.guild.id }, { embeds, files }, undefined, 10000);
+  ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
 };

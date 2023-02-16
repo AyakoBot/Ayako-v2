@@ -5,12 +5,12 @@ export default async (
   msg: Discord.Message,
   reactions: Discord.Collection<string | Discord.Snowflake, Discord.MessageReaction>,
 ) => {
-  if (!msg.guild) return;
+  if (!msg.inGuild()) return;
 
   const channels = await ch.getLogChannels('reactionevents', msg.guild);
   if (!channels) return;
 
-  const language = await ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guildId);
   const lan = language.events.logs.reaction;
   const con = ch.constants.events.logs.reaction;
   const files: Discord.AttachmentPayload[] = [];
@@ -45,5 +45,5 @@ export default async (
     if (users) files.push(users);
   }
 
-  ch.send({ id: channels, guildId: msg.guild.id }, { embeds: [embed], files }, undefined, 10000);
+  ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, undefined, 10000);
 };

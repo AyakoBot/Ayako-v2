@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import log from './log.js';
 
 export default async (
   oldStage: Discord.StageInstance | undefined,
@@ -6,9 +7,5 @@ export default async (
 ) => {
   if (!oldStage) return;
 
-  const files: {
-    default: (p: Discord.StageInstance, o: Discord.StageInstance) => void;
-  }[] = await Promise.all(['./log.js'].map((p) => import(p)));
-
-  files.forEach((f) => f.default(oldStage, stage));
+  log(oldStage, stage);
 };

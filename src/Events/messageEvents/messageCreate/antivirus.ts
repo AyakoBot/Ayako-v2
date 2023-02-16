@@ -19,27 +19,43 @@ interface LinkObject {
   contentType: string;
 }
 
-export default async (msg: CT.Message) => {
+type Data = {
+  msgData: {
+    channelid: string;
+    msgid: string;
+    guildid: string;
+  };
+  linkObject: LinkObject;
+  lan: CT.Language['antivirus'];
+  check: boolean;
+  type: string;
+  note: string;
+  hrefLogging: boolean;
+};
+
+export default async (msg: Discord.Message) => {
   if (!msg.content || msg.author.id === client.user?.id) {
     return;
   }
 
+  const language = await ch.languageSelector(msg.guildId);
+
   if (!msg.guild) {
-    await prepare(msg, { lan: msg.language.antivirus, language: msg.language }, true);
+    await prepare(msg, language.antivirus, true);
     return;
   }
 
   const antivirusRow = await ch
-    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
+    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guildId)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
   if (!antivirusRow) return;
-  await prepare(msg, { lan: msg.language.antivirus, language: msg.language }, false, antivirusRow);
+  await prepare(msg, language.antivirus, false, antivirusRow);
 };
 
 const prepare = async (
-  msg: CT.Message,
-  { lan }: { lan: CT.Language['antivirus']; language: CT.Language },
+  msg: Discord.Message,
+  lan: CT.Language['antivirus'],
   check: boolean,
   res?: DBT.antivirus,
 ) => {
@@ -91,10 +107,7 @@ const prepare = async (
       exited = true;
     });
 
-    AVworker.on('message', async (data) => {
-      data.msg = msg;
-      data.language = msg.language;
-
+    AVworker.on('message', async (data: Data) => {
       if (!data.check && data.type !== 'send') {
         includedBadLink = true;
       }
@@ -111,39 +124,42 @@ const prepare = async (
 
       switch (data.type) {
         case 'doesntExist': {
-          doesntExist(data, res);
+          doesntExist(data, msg, res);
           break;
         }
         case 'blacklisted': {
-          blacklisted(data, res);
+          blacklisted(data, msg, res);
           break;
         }
         case 'whitelisted': {
-          whitelisted(data, res);
+          whitelisted(data, msg, res);
           break;
         }
         case 'newUrl': {
-          newUrl(data, res);
+          newUrl(data, msg, res);
           break;
         }
         case 'severeLink': {
-          severeLink(data, res);
+          severeLink(data, msg, res);
           break;
         }
         case 'ccscam': {
-          ccscam(data, res);
+          ccscam(data, msg, res);
           break;
         }
         case 'cloudFlare': {
-          cloudFlare(data, res);
+          cloudFlare(data, msg, res);
           break;
         }
         case 'send': {
-          ch.send({ id: data.channelid, guildId: '669893888856817665' }, { content: data.content });
+          ch.send(
+            { id: data.msgData.channelid, guildId: '669893888856817665' },
+            { content: msg.content },
+          );
           break;
         }
         case 'VTfail': {
-          VTfail(data, res);
+          VTfail(data, msg, res);
           break;
         }
         default:
@@ -278,16 +294,14 @@ const makeFullLinks = async (links: string[]) => {
 };
 
 const doesntExist = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+  { msgData, lan, linkObject, check }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
+  const language = await ch.languageSelector(msgData.guildid);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
+    description: `**${language.Result}**\n${lan.notexistent(linkObject.baseURLhostname)}`,
     color: ch.constants.colors.success,
   };
 
@@ -307,26 +321,17 @@ const doesntExist = async (
 };
 
 const blacklisted = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-    note,
-  }: {
-    msg: CT.Message;
-    lan: CT.Language['antivirus'];
-    linkObject: LinkObject;
-    check: boolean;
-    note: string | boolean;
-  },
+  { lan, linkObject, check, note }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   if (note && typeof note === 'string') {
     const embed: Discord.APIEmbed = {
-      description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+      description: `**${language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
       color: ch.constants.colors.danger,
-      fields: [{ name: msg.language.attention, value: note.split(/\|+/)[1] }],
+      fields: [{ name: language.attention, value: note.split(/\|+/)[1] }],
     };
 
     if (check) embed.fields?.push({ name: lan.checking, value: linkObject.href });
@@ -334,7 +339,7 @@ const blacklisted = async (
     await ch.replyMsg(msg, { embeds: [embed] });
   } else {
     const embed: Discord.APIEmbed = {
-      description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+      description: `**${language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
       color: ch.constants.colors.danger,
     };
 
@@ -351,7 +356,7 @@ const blacklisted = async (
     );
 
     if (msg.guild) {
-      (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
+      (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
     }
   }
 
@@ -366,25 +371,16 @@ const blacklisted = async (
 };
 
 const severeLink = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-    hrefLogging,
-  }: {
-    msg: CT.Message;
-    lan: CT.Language['antivirus'];
-    linkObject: LinkObject;
-    check: boolean;
-    hrefLogging: boolean;
-  },
+  { lan, linkObject, check, hrefLogging }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject, hrefLogging);
 
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+    description: `**${language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
     color: ch.constants.colors.danger,
   };
   embed.fields = [];
@@ -400,7 +396,7 @@ const severeLink = async (
     },
   );
   if (msg.guild) {
-    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
+    (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
   }
   linkLog(
     msg,
@@ -413,17 +409,17 @@ const severeLink = async (
 };
 
 const ccscam = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+  { lan, linkObject, check }: Data,
+  msg: Discord.Message,
+
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject);
+
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
+    description: `**${language.Result}**\n${lan.malicious(ch.stringEmotes.cross)}`,
     color: ch.constants.colors.danger,
   };
 
@@ -439,7 +435,7 @@ const ccscam = async (
     },
   );
   if (msg.guild) {
-    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
+    (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
   }
 
   linkLog(
@@ -453,18 +449,16 @@ const ccscam = async (
 };
 
 const newUrl = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+  { lan, linkObject, check }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
   saveToBadLink(linkObject);
 
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.newLink(ch.stringEmotes.cross)}`,
+    description: `**${language.Result}**\n${lan.newLink(ch.stringEmotes.cross)}`,
     color: ch.constants.colors.danger,
   };
 
@@ -481,7 +475,7 @@ const newUrl = async (
   );
 
   if (msg.guild) {
-    (await import('../../antivirusHandler.js')).default(msg as CT.GuildMessage, m ?? undefined);
+    (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
   }
   linkLog(
     msg,
@@ -512,16 +506,14 @@ const saveToBadLink = async (linkObject: LinkObject, hrefLogging?: boolean) => {
 };
 
 const whitelisted = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+  { lan, linkObject, check }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.whitelisted(ch.stringEmotes.tick)}`,
+    description: `**${language.Result}**\n${lan.whitelisted(ch.stringEmotes.tick)}`,
     color: ch.constants.colors.success,
   };
 
@@ -543,16 +535,15 @@ const whitelisted = async (
 };
 
 const cloudFlare = async (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+  { lan, linkObject, check }: Data,
+  msg: Discord.Message,
+
   res?: DBT.antivirus,
 ) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.cfProtected}`,
+    description: `**${language.Result}**\n${lan.cfProtected}`,
     color: 16776960,
   };
 
@@ -571,17 +562,15 @@ const cloudFlare = async (
   linkLog(msg, lan, ch.constants.colors.loading, linkObject, lan.cfProtected, res);
 };
 
-const VTfail = (
-  {
-    msg,
-    lan,
-    linkObject,
-    check,
-  }: { msg: CT.Message; lan: CT.Language['antivirus']; linkObject: LinkObject; check: boolean },
+const VTfail = async (
+  { lan, linkObject, check }: Data,
+  msg: Discord.Message,
   res?: DBT.antivirus,
 ) => {
+  const language = await ch.languageSelector(msg.guildId);
+
   const embed: Discord.APIEmbed = {
-    description: `**${msg.language.Result}**\n${lan.VTfail(ch.stringEmotes.cross)}`,
+    description: `**${language.Result}**\n${lan.VTfail(ch.stringEmotes.cross)}`,
     color: ch.constants.colors.loading,
   };
 
@@ -601,7 +590,7 @@ const VTfail = (
 };
 
 const linkLog = async (
-  msg: CT.Message,
+  msg: Discord.Message,
   lan: CT.Language['antivirus'],
   color: number,
   linkObject: LinkObject,
@@ -647,7 +636,7 @@ const linkLog = async (
     ],
   };
 
-  if (!msg.guild?.id) return;
+  if (!msg.inGuild()) return;
 
-  ch.send({ id: row.linklogchannels, guildId: msg.guild.id }, { embeds: [embed] });
+  ch.send({ id: row.linklogchannels, guildId: msg.guildId }, { embeds: [embed] });
 };

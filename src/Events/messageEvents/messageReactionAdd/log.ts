@@ -6,12 +6,12 @@ export default async (
   user: Discord.User,
   msg: Discord.Message,
 ) => {
-  if (!msg.guild) return;
+  if (!msg.inGuild()) return;
 
   const channels = await ch.getLogChannels('reactionevents', msg.guild);
   if (!channels) return;
 
-  const language = await ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guildId);
   const lan = language.events.logs.reaction;
   const con = ch.constants.events.logs.reaction;
   const files: Discord.AttachmentPayload[] = [];
@@ -59,5 +59,5 @@ export default async (
     if (attachment) files.push(...attachment);
   }
 
-  await ch.send({ id: channels, guildId: msg.guild.id }, { embeds, files }, undefined, 10000);
+  await ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
 };

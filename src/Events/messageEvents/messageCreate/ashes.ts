@@ -1,14 +1,15 @@
-import type CT from '../../../Typings/CustomTypings';
+import type * as Discord from 'discord.js';
 import { ch, client } from '../../../BaseClient/Client';
 
-export default async (msg: CT.GuildMessage) => {
+export default async (msg: Discord.Message) => {
   rolePing(msg);
   banHandler(msg);
 };
 
-const banHandler = async (msg: CT.GuildMessage) => {
+const banHandler = async (msg: Discord.Message) => {
   if (msg.author.id !== '868115102681956404') return;
   if (msg.channelId !== '757879586439823440') return;
+  if (!msg.inGuild()) return;
   if (!msg.content.includes('@Known-Scammers ping:')) return;
 
   const isUnban = msg.content.includes('REMOVAL FROM LIST');
@@ -20,7 +21,7 @@ const banHandler = async (msg: CT.GuildMessage) => {
   ids.forEach(async (id) => {
     const user = await client.users.fetch(id);
     if (!user) {
-      const language = await ch.languageSelector(msg.guild.id);
+      const language = await ch.languageSelector(msg.guildId);
       ch.errorMsg(msg, language.errors.userNotFound, language);
       return;
     }
@@ -28,7 +29,7 @@ const banHandler = async (msg: CT.GuildMessage) => {
     const reasonArgs = msg.content.replace(/```/g, '').split(/:/);
     const reason = reasonArgs[reasonArgs.findIndex((c) => c.includes('Reason')) + 1];
 
-    if (!msg.guild.id) return;
+    if (!msg.guildId) return;
     if (!client.user?.id) return;
 
     if (isUnban) {
@@ -53,7 +54,7 @@ const banHandler = async (msg: CT.GuildMessage) => {
   });
 };
 
-const rolePing = (msg: CT.GuildMessage) => {
+const rolePing = (msg: Discord.Message) => {
   if (!['808095830677782558', '757879586439823440'].includes(msg.channelId)) return;
   if (msg.author.id !== '646937666251915264n') return;
 

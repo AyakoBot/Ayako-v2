@@ -3,12 +3,12 @@ import { ch } from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
-  if (!msg.guild) return;
+  if (!msg.inGuild()) return;
 
   const channels = await ch.getLogChannels('messageevents', msg.guild);
   if (!channels) return;
 
-  const language = await ch.languageSelector(msg.guild.id);
+  const language = await ch.languageSelector(msg.guildId);
   const lan = language.events.logs.message;
   const con = ch.constants.events.logs.message;
   const files: Discord.AttachmentPayload[] = [];
@@ -234,5 +234,5 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     embed.description = lan.descUpdate(msg);
   } else embed.description = lan.descUpdateAuthor(msg);
 
-  ch.send({ id: channels, guildId: msg.guild.id }, { embeds: [embed], files }, undefined, 10000);
+  ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, undefined, 10000);
 };

@@ -5,7 +5,7 @@ import type DBT from '../Typings/DataBaseTypings';
 
 let messageCache: string[] = [];
 
-export default async (msg: CT.GuildMessage, m?: Discord.Message) => {
+export default async (msg: Discord.Message, m?: Discord.Message) => {
   if (msg && msg.deletable) msg.delete().catch(() => null);
 
   const settingsRow = await getSettings(msg);
@@ -22,14 +22,17 @@ export const resetData = () => {
   messageCache = [];
 };
 
-const getSettings = async (msg: CT.GuildMessage) =>
+const getSettings = async (msg: Discord.Message) =>
   ch
-    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guild.id)])
+    .query('SELECT * FROM antivirus WHERE guildid = $1 AND active = true;', [String(msg.guildId)])
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
-const runPunishment = async (msg: CT.GuildMessage, m?: Discord.Message) => {
+const runPunishment = async (msg: Discord.Message, m?: Discord.Message) => {
+  if (!msg.inGuild()) return;
+
   const amountOfTimes = messageCache.filter((a) => a === msg.author.id).length;
   const punishment = await getPunishment(msg, amountOfTimes);
+  const language = await ch.languageSelector(msg.guildId);
 
   if (!client.user) return;
 
@@ -38,7 +41,7 @@ const runPunishment = async (msg: CT.GuildMessage, m?: Discord.Message) => {
     executor: client.user,
     target: msg.author,
     msg,
-    reason: msg.language.autotypes.antivirus,
+    reason: language.autotypes.antivirus,
     guild: msg.guild,
     source: 'antivirus',
     forceFinish: true,
@@ -85,10 +88,10 @@ const runPunishment = async (msg: CT.GuildMessage, m?: Discord.Message) => {
   (await import('./modBaseEvent.js')).default(obj);
 };
 
-const getPunishment = async (msg: CT.GuildMessage, warns: number) =>
+const getPunishment = async (msg: Discord.Message, warns: number) =>
   ch
     .query(
       `SELECT * FROM antiviruspunishments WHERE guildid = $1 AND warnamount = $2 AND active = true;`,
-      [String(msg.guild.id), warns],
+      [String(msg.guildId), warns],
     )
     .then((r: DBT.BasicPunishmentsTable[] | null) => (r ? r[0] : null));

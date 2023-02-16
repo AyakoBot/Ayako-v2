@@ -1,8 +1,7 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings';
 
 export default async (
-  msg: CT.Message | CT.GuildMessage | Discord.Message,
+  msg: Discord.Message | Discord.Message | Discord.Message,
   answer: Discord.Component,
   options: { [key: string]: string },
   embed: Discord.APIEmbed,

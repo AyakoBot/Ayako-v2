@@ -1,9 +1,8 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
-import type CT from '../../../Typings/CustomTypings';
 import { ch, client } from '../../../BaseClient/Client.js';
 
-export default async (msg: CT.GuildMessage) => {
+export default async (msg: Discord.Message) => {
   if (msg.author.discriminator === '0000') return;
 
   gvMessageCheck(msg);
@@ -12,8 +11,8 @@ export default async (msg: CT.GuildMessage) => {
   if (
     (msg.channelId === '554487212276842534' || msg.channelId === '791390835916537906') &&
     msg.attachments.size < 1 &&
-    !msg.member.roles.cache.has('366238244775657472') &&
-    !msg.member.roles.cache.has('776248679363248168') &&
+    !msg.member?.roles.cache.has('366238244775657472') &&
+    !msg.member?.roles.cache.has('776248679363248168') &&
     msg.author.id !== client.user?.id
   ) {
     msg.delete().catch(() => null);
@@ -28,10 +27,10 @@ export default async (msg: CT.GuildMessage) => {
   pin();
 };
 
-const gvMessageCheck = (msg: CT.GuildMessage) => {
+const gvMessageCheck = (msg: Discord.Message) => {
   if (!msg.member) return;
   if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
-  if (msg.guild.id !== '366219406776336385') return;
+  if (msg.guildId !== '366219406776336385') return;
   if (msg.channelId === '801804774759727134') return;
 
   const inviteCheck = () => {
@@ -56,9 +55,9 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
       return;
     }
     if (
-      msg.member.roles.cache.has('369619820867747844') ||
-      msg.member.roles.cache.has('367781331683508224') ||
-      msg.member.roles.cache.has('585576789376630827') ||
+      msg.member?.roles.cache.has('369619820867747844') ||
+      msg.member?.roles.cache.has('367781331683508224') ||
+      msg.member?.roles.cache.has('585576789376630827') ||
       msg.channelId === '367403201646952450' ||
       msg.channelId === '77766025920027037'
     ) {
@@ -81,18 +80,18 @@ const gvMessageCheck = (msg: CT.GuildMessage) => {
   linkCheck();
 };
 
-const amMessageCheck = (msg: CT.GuildMessage) => {
+const amMessageCheck = (msg: Discord.Message) => {
   const staffPing = async () => {
     if (!msg.content.includes('<@&809261905855643668>')) return;
-    await msg.guild.members.fetch();
+    await msg.guild?.members.fetch();
 
     msg.channel.send({
-      content: msg.guild.roles.cache
+      content: msg.guild?.roles.cache
         .get('809261905855643668')
         ?.members.map((m) => `<@${m.id}>`)
         .join(', '),
       allowedMentions: {
-        users: msg.guild.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
+        users: msg.guild?.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
       },
     });
   };
@@ -146,8 +145,8 @@ const amMessageCheck = (msg: CT.GuildMessage) => {
       return;
     }
 
-    if (msg.member.roles.cache.has('334832484581769217')) return;
-    if (msg.member.roles.cache.has('606164114691194900')) return;
+    if (msg.member?.roles.cache.has('334832484581769217')) return;
+    if (msg.member?.roles.cache.has('606164114691194900')) return;
 
     msg.delete();
 
