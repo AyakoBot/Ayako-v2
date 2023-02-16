@@ -9,6 +9,7 @@ export default async (cmd: Discord.Interaction) => {
       './buttonHandler.js',
       './modalHandler.js',
       './contextCommandHandler.js',
+      './selectHandler.js',
     ].map((p) => import(p)),
   );
 

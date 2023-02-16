@@ -16,7 +16,7 @@ const execute = async (msg: CT.Message) => {
   if (!command) return;
 
   if (!('guildId' in msg) || !msg.guild || msg.channel.type === 1) {
-    runDMCommand({ msg, command }, triedCMD);
+    runDMCommand(msg, command, args, triedCMD);
     return;
   }
 
@@ -33,7 +33,7 @@ const execute = async (msg: CT.Message) => {
   const proceedEdit = await editCheck(msg, command);
   if (!proceedEdit) return;
 
-  commandExe(msg, command, triedCMD);
+  commandExe(msg, command, args, triedCMD);
 };
 
 const runChecks = async (msg: CT.GuildMessage, command: CT.Command) => {
@@ -55,11 +55,13 @@ const runChecks = async (msg: CT.GuildMessage, command: CT.Command) => {
 export default execute;
 
 const runDMCommand = async (
-  { msg, command }: { msg: CT.Message; command: CT.Command },
+  msg: CT.Message,
+  command: CT.Command,
+  args?: string[],
   triedCMD?: unknown,
 ) => {
   if (command.dmAllowed) {
-    commandExe(msg, command, triedCMD);
+    commandExe(msg, command, args, triedCMD);
     return;
   }
   client.ch.errorMsg(msg, msg.language.commands.commandHandler.GuildOnly, msg.language);
@@ -81,18 +83,14 @@ export const getPrefix = async (msg: CT.Message | CT.GuildMessage) => {
 
 const getCustomPrefix = async (msg: CT.GuildMessage) =>
   client.ch
-    .query(
-      'SELECT prefix FROM guildsettings WHERE guildid = $1;',
-      [msg.guild.id],
-      msg.author.id === '564052925828038658',
-    )
+    .query('SELECT prefix FROM guildsettings WHERE guildid = $1;', [msg.guild.id])
     .then((r: DBT.guildsettings[] | null) => (r ? r[0].prefix : null));
 
 export const getCommand = async (args: string[]) => {
   const isDisallowed = (file: string) =>
     ['.d.ts', '.d.ts.map', '.js.map'].some((end) => file.endsWith(end));
 
-  const dir = `${process.cwd()}/dist/Commands/TextCommands`;
+  const dir = `${process.cwd()}/Commands/TextCommands`;
   const files = fs.readdirSync(dir).filter((f) => !isDisallowed(dir) && f.endsWith('.js'));
   const searchedFileName = args.shift()?.toLowerCase();
   const possibleFiles = await Promise.all(files.map((f) => import(`${dir}/${f}`)));
@@ -100,14 +98,14 @@ export const getCommand = async (args: string[]) => {
   let triedCMD;
   const file: CT.Command = await files
     .map((_, i) => {
-      const { default: possibleFile }: { default: CT.Command } = possibleFiles[i];
+      const possibleFile: CT.Command = possibleFiles[i];
       if (
         searchedFileName &&
         (possibleFile.name === searchedFileName || possibleFile.aliases?.includes(searchedFileName))
       ) {
         if (possibleFile.takesFirstArg && !args[0]) {
           triedCMD = possibleFile;
-          return import(`${dir}/cmdhelp`);
+          return import(`${dir}/cmdhelp.js`);
         }
         return possibleFile;
       }
@@ -234,12 +232,15 @@ const getCooldown = async (msg: CT.GuildMessage, command: CT.Command) => {
   return false;
 };
 
-const commandExe = async (msg: CT.Message, command: CT.Command, triedCMD?: unknown) => {
-  const lan = msg.language.commands[command.name as keyof typeof msg.language.commands];
-
+const commandExe = async (
+  msg: CT.Message,
+  command: CT.Command,
+  args?: string[],
+  triedCMD?: unknown,
+) => {
   try {
     // eslint-disable-next-line no-console
-    command.execute(msg, { language: msg.language, lan }, command, { triedCMD });
+    command.default(msg, command, args, { triedCMD });
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error(`[Command Error] ${command.name}:`, e);

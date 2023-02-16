@@ -5,7 +5,6 @@ export type Language = typeof import('../Languages/en.js').default;
 export interface Command {
   cooldown: number;
   name: string;
-  language: Language;
   takesFirstArg: boolean;
   aliases?: string[];
   thisGuildOnly: string[];
@@ -13,16 +12,10 @@ export interface Command {
   dmOnly: boolean;
   dmAllowed: boolean;
   type: 'mod' | 'other' | 'owner';
-  execute: <T extends keyof Language['commands']>(
-    msg: Eris.Message,
-    {
-      language,
-      lan,
-    }: {
-      language: Language;
-      lan: Language.commands[T];
-    },
+  default: <T extends keyof Language['commands']>(
+    msg: Message,
     command: Command,
+    args?: string[],
     object?: { [key: string]: unknown },
   ) => void | Promise<void>;
 }
