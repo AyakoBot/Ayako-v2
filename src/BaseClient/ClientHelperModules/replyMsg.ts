@@ -7,7 +7,7 @@ import objectEmotes from '../Other/ObjectEmotes.json' assert { type: 'json' };
 
 export default async (
   msg: Discord.Message | CT.GuildMessage | CT.Message,
-  payload: Discord.MessageCreateOptions,
+  payload: Discord.MessagePayload | Discord.MessageReplyOptions,
   command?: CT.Command,
 ) => {
   if (!msg) return undefined;
