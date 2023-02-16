@@ -76,7 +76,7 @@ const buttonParsers = {
       (typeof setting !== 'boolean' && setting?.length) || !!setting
         ? Discord.ButtonStyle.Primary
         : Discord.ButtonStyle.Secondary,
-    custom_id: `settings/${String(name)}_${setting}`,
+    custom_id: `settings/${String(name)}_${settingName}`,
     emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
   }),
   boolean: <T extends keyof SettingsNames>(
@@ -89,7 +89,7 @@ const buttonParsers = {
     label: (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name]
       .name,
     style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
-    custom_id: `settings/${String(name)}_${setting}`,
+    custom_id: `settings/${String(name)}_${settingName}`,
     emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
   }),
   create: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
