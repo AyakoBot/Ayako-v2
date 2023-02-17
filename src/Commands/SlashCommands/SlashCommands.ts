@@ -29,8 +29,20 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
+          .setName('anti-spam-punishments')
+          .setDescription('The Punishments to use in Anti-Spam')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
           .setName('anti-virus')
           .setDescription('Stop Members from posting harmful Links'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('anti-virus-punishments')
+          .setDescription('The Punishments to use in Anti-Virus')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -47,6 +59,12 @@ const settings = new Discord.SlashCommandBuilder()
         new Discord.SlashCommandSubcommandBuilder()
           .setName('blacklist')
           .setDescription('Stop Members from using specific Words or Phrases'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('blacklist-punishments')
+          .setDescription('The Punishments to use in Blacklist')
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
