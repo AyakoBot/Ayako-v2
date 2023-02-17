@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {

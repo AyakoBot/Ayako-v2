@@ -7,7 +7,7 @@ export default async (
   embed: Discord.APIEmbed,
   page: number,
 ) =>
-  (await import(`${process.cwd()}/dist/Commands/TextCommands/embedbuilder`)).builder(
+  (await import(`${process.cwd()}/dist/Commands/TextCommands/embedbuilder.js`)).builder(
     msg,
     answer,
     embed,

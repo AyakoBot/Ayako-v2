@@ -1,5 +1,6 @@
 import Jobs from 'node-schedule';
-import { ch, client } from '../../BaseClient/Client.js';
+import * as ch from '../../BaseClient/ClientHelper.js';
+import client from '../../BaseClient/Client.js';
 
 export default async () => {
   (await import('./antivirusBlocklistCacher')).default();

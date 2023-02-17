@@ -76,7 +76,7 @@ export const cooldownHandler = async (
   }
 
   jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown)), async () => {
-    const { client } = await import('../Client.js');
+    const client = (await import('../Client.js')).default;
 
     reactions.forEach((react) => {
       sentMessage.reactions.cache

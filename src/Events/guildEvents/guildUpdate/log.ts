@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {

@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
-import { ch, client } from '../BaseClient/Client.js';
+import * as ch from '../BaseClient/ClientHelper.js';
+import client from '../BaseClient/Client.js';
 import type CT from '../Typings/CustomTypings';
 import type DBT from '../Typings/DataBaseTypings';
 

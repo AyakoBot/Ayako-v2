@@ -1,6 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default (msg: Discord.Message) => {
   if (!msg.inGuild()) return;

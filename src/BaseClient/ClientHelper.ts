@@ -59,7 +59,6 @@ export const constants                  = (await import('./Other/constants.js'))
 export const objectEmotes               = (await import('./ClientHelperModules/objectEmotes.js')).default;
 export const stringEmotes               = (await import('./ClientHelperModules/stringEmotes.js')).default;
 export const reactionEmotes             = (await import('./ClientHelperModules/reactionEmotes.js')).default;
-export const events                     =  await getEvents();
 export const mainID                     =  '650691698409734151';
 type CQ                                 =  Map<string, Map<string, Discord.APIEmbed[]>>
 type CT                                 =  Map<string, Map<string, Jobs.Job>>

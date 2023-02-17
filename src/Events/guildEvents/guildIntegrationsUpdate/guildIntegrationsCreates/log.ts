@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import { ch } from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (integration: Discord.Integration) => {
   const channels = await ch.getLogChannels('guildevents', integration.guild);

@@ -8,7 +8,8 @@ import type * as Discord from 'discord.js';
 import blocklists from '../../../BaseClient/Other/Blocklist.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 interface LinkObject {
   href: string;

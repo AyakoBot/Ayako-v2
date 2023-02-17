@@ -1,5 +1,6 @@
 import * as Jobs from 'node-schedule';
-import { ch, client } from '../../BaseClient/Client.js';
+import * as ch from '../../BaseClient/ClientHelper.js';
+import client from '../../BaseClient/Client.js';
 
 export default async () => {
   // eslint-disable-next-line no-console

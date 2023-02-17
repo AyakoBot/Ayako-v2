@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../../../Typings/CustomTypings';
-import { ch, client } from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 
 export default async (
   oldEvent: Discord.GuildScheduledEvent,

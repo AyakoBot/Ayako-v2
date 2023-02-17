@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as jobs from 'node-schedule';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 

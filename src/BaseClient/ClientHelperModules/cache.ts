@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
-import { client, ch } from'../Client.js';
 
 const cache: {
   // Discord Cache
@@ -101,6 +100,7 @@ const cache: {
 
       cache.invites.cache.get(guildId)?.clear();
 
+      const client = (await import('../Client.js')).default;
       const fetched = await client.guilds.cache.get(guildId)?.invites.fetch();
       fetched?.forEach((f) => {
         cache.invites.set(f, guildId);
@@ -157,6 +157,7 @@ const cache: {
       const cached = cache.webhooks.cache.get(guildId)?.get(channelId)?.get(id);
       if (cached) return cached;
 
+      const client = (await import('../Client.js')).default;
       const fetched = await client.guilds.cache.get(guildId)?.fetchWebhooks();
       fetched?.forEach((f) => cache.webhooks.set(f));
 
@@ -204,6 +205,7 @@ const cache: {
       const cached = cache.integrations.cache.get(guildId)?.get(id);
       if (cached) return cached;
 
+      const client = (await import('../Client.js')).default;
       const fetched = await client.guilds.cache.get(guildId)?.fetchIntegrations();
       fetched?.forEach((f) => cache.integrations.set(f, guildId));
 
@@ -269,6 +271,7 @@ const cache: {
       const cached = cache.welcomeScreens.cache.get(guildId);
       if (cached) return cached;
 
+      const client = (await import('../Client.js')).default;
       const fetched = await client.guilds.cache.get(guildId)?.fetchWelcomeScreen();
       if (!fetched) return undefined;
 
@@ -288,6 +291,7 @@ const cache: {
       const cached = cache.pins.cache.get(guildId)?.get(channelId)?.get(id);
       if (cached) return cached;
 
+      const ch = await import('../ClientHelper.js');
       const fetched = await (
         await ch.getChannel.guildTextChannel(channelId)
       )?.messages.fetchPinned();

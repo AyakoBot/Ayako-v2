@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { ch } from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (
   msg: Discord.Message,

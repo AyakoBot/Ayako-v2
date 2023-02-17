@@ -1,9 +1,7 @@
 import * as Discord from 'discord.js';
-import Constants from './Other/constants.js';
 import auth from '../auth.json' assert { type: 'json' };
 
-export * as ch from './ClientHelper.js';
-export const client = new Discord.Client({
+const client = new Discord.Client({
   shards: 'auto',
   allowedMentions: {
     parse: ['users'],
@@ -21,11 +19,8 @@ export const client = new Discord.Client({
   ],
   failIfNotExists: false,
   presence: {
-    status: 'online',
+    status: 'dnd',
     afk: false,
-    activities: [
-      { name: 'Starting up!', type: Discord.ActivityType.Streaming, url: Constants.standard.ytURL },
-    ],
   },
   intents: [
     Discord.IntentsBitField.Flags.Guilds,
@@ -55,3 +50,5 @@ export const client = new Discord.Client({
 });
 
 await client.login(auth.token);
+
+export default client;

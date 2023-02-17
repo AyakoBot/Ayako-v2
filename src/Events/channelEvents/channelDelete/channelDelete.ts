@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import log from './log.js';
 
 export default async (channel: Discord.Channel) => {

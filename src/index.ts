@@ -7,4 +7,10 @@ const manager = new Discord.ShardingManager('./bot.js', {
 
 manager.on('shardCreate', (shard) => console.log(`[Shard Manager] Launched Shard ${shard.id}`));
 
-manager.spawn();
+process.setMaxListeners(4);
+process.on('unhandledRejection', async (error: string) => console.error(error));
+process.on('uncaughtException', async (error: string) => console.error(error));
+process.on('promiseRejectionHandledWarning', (error: string) => console.error(error));
+process.on('experimentalWarning', (error: string) => console.error(error));
+
+await manager.spawn();

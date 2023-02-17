@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 // eslint-disable-next-line
 import io from 'socket.io-client';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };

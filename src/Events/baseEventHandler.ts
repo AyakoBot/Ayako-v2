@@ -1,4 +1,4 @@
-import { ch } from '../BaseClient/Client.js';
+import * as ch from '../BaseClient/ClientHelper.js';
 
 export default async (eventName: string, args: unknown[]) => {
   const event = (await ch.getEvents()).find((e) => e.endsWith(`${eventName}.js`));

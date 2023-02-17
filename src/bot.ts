@@ -1,5 +1,6 @@
 import readline from 'readline';
-import { ch, client } from './BaseClient/Client.js';
+import client from './BaseClient/Client.js';
+import * as ch from './BaseClient/ClientHelper.js';
 
 const events = await ch.getEvents();
 client.setMaxListeners(events.length);
@@ -22,12 +23,10 @@ rl.on('line', async (msg: string) => {
 });
 
 process.setMaxListeners(4);
-process.on('unhandledRejection', async (error: string) => client.emit('unhandledRejection', error));
-process.on('uncaughtException', async (error: string) => client.emit('uncaughtException', error));
-process.on('promiseRejectionHandledWarning', (error: string) =>
-  client.emit('uncaughtException', error),
-);
-process.on('experimentalWarning', (error: string) => client.emit('uncaughtException', error));
+process.on('unhandledRejection', async (error: string) => console.error(error));
+process.on('uncaughtException', async (error: string) => console.error(error));
+process.on('promiseRejectionHandledWarning', (error: string) => console.error(error));
+process.on('experimentalWarning', (error: string) => console.error(error));
 
 events.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop();
@@ -37,4 +36,15 @@ events.forEach(async (path) => {
 
   if (eventName === 'ready') client.once(eventName, (...args) => eventHandler(eventName, args));
   else client.on(eventName, (...args) => eventHandler(eventName, args));
+});
+
+client.on('debug', (info) => {
+  if (info.includes('Heartbeat')) return;
+
+  // eslint-disable-next-line no-console
+  console.log(info);
+});
+
+client.on('warn', (info) => {
+  console.log(info);
 });

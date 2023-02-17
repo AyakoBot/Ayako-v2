@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
-import { ch, client } from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 
 export default async (event: Discord.GuildScheduledEvent) => {
   const guild = event.guild ?? client.guilds.cache.get(event.guildId);

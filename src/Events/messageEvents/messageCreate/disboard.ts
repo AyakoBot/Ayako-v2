@@ -1,7 +1,8 @@
 import jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 export default async (msg: Discord.Message) => {
   if (!msg.inGuild()) return;

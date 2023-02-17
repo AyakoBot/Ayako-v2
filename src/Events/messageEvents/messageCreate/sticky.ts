@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
   if (msg.author.bot) return;

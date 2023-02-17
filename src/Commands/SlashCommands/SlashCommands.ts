@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { client } from '../../BaseClient/Client.js';
+import client from '../../BaseClient/Client.js';
 
 // Pre-defined values
 

@@ -3,7 +3,8 @@ import { AutoPoster } from 'topgg-autoposter';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
 import auth from '../../auth.json';
-import { ch, client } from '../../BaseClient/Client.js';
+import * as ch from '../../BaseClient/ClientHelper.js';
+import client from '../../BaseClient/Client.js';
 import type DBT from '../../Typings/DataBaseTypings';
 
 const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';

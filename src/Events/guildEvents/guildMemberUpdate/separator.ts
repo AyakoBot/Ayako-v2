@@ -2,7 +2,8 @@
 import { Worker } from 'worker_threads';
 import jobs from 'node-schedule';
 import type * as Discord from 'discord.js';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
 const UpdateWorker = new Worker(

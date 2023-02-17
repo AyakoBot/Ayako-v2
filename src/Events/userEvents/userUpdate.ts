@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import { client } from '../../BaseClient/Client.js';
+import client from '../../BaseClient/Client.js';
 import log from './log.js';
 
 export default async (oldUser: Discord.User, user: Discord.User) => {

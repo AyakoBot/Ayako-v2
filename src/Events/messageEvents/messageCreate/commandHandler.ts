@@ -4,7 +4,7 @@ import * as jobs from 'node-schedule';
 import type * as CT from '../../../Typings/CustomTypings';
 import type DBT from '../../../Typings/DataBaseTypings';
 import auth from '../../../auth.json' assert { type: 'json' };
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const execute = async (msg: Discord.Message) => {
   const prefix = await getPrefix(msg);

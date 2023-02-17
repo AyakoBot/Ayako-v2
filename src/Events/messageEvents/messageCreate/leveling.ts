@@ -1,9 +1,10 @@
 import jobs from 'node-schedule';
 import StringSimilarity from 'string-similarity';
 import type * as Discord from 'discord.js';
-import ChannelRules, { ActivityFlags } from '../../../BaseClient/Other/ChannelRules';
+import ChannelRules, { ActivityFlags } from '../../../BaseClient/Other/ChannelRules.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 const guildCooldown = new Set();
 const lastMessageGuild = new Map();

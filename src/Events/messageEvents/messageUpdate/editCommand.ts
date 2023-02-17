@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import type DBT from '../../../Typings/DataBaseTypings';
-import { ch, client } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import { getCommand } from '../messageCreate/commandHandler';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {

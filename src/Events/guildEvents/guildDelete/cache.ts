@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import { ch } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default (guild: Discord.Guild) => {
   const giveawayClaimTimeouts = ch.cache.giveawayClaimTimeout.cache.get(guild.id);

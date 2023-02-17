@@ -1,7 +1,6 @@
 import type * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings';
-import { client } from '../Client.js';
 
 interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
   embeds?: Discord.APIEmbed[];
@@ -64,6 +63,7 @@ async function send(
     return sentMessages;
   }
 
+  const client = (await import('../Client.js')).default;
   const response = await client.shard?.broadcastEval(
     async (cl, context) => {
       (cl as unknown as typeof Client).prototype;
@@ -92,12 +92,9 @@ async function send(
         return null;
       }
 
-      const ch = await import('../ClientHelper.js');
-
+      const constants = (await import(`${process.cwd()}/BaseClient/Other/constants.js`)).default;
       p.embeds?.forEach((e) => {
-        if (e.author && !e.author.url) {
-          e.author.url = ch.constants.standard.invite;
-        }
+        if (e.author && !e.author.url) e.author.url = constants.standard.invite;
 
         e.fields?.forEach((f) => {
           if (typeof f.inline !== 'boolean') {
@@ -115,6 +112,10 @@ async function send(
         embeds: Discord.APIEmbed[],
         timeout: number,
       ) => {
+        const ch = (await import(
+          `${process.cwd()}/BaseClient/ClientHelper.js`
+        )) as typeof import('../ClientHelper.js');
+
         let guildQueue = ch.channelQueue.get(channel.guildId);
         if (!guildQueue) {
           ch.channelQueue.set(channel.guildId, new Map());
@@ -122,33 +123,33 @@ async function send(
         }
 
         if (!guildQueue) {
-          send(channel, { embeds });
+          ch.send(channel, { embeds });
           return;
         }
 
-        let channelQueue = guildQueue.get(channel.id);
-        if (!channelQueue) {
+        let channelQueues = guildQueue.get(channel.id);
+        if (!ch.channelQueue) {
           guildQueue.set(channel.id, []);
-          channelQueue = guildQueue.get(channel.id);
+          channelQueues = guildQueue.get(channel.id);
         }
 
-        if (!channelQueue) {
-          send(channel, { embeds });
+        if (!channelQueues) {
+          ch.send(channel, { embeds });
           return;
         }
 
         if (
-          Number(channelQueue.length) + embeds.length > 10 ||
-          getEmbedCharLens([...channelQueue, ...embeds]) > 6000
+          Number(channelQueues.length) + embeds.length > 10 ||
+          getEmbedCharLens([...channelQueues, ...embeds]) > 6000
         ) {
           ch.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
-          send(channel, { embeds: channelQueue });
+          ch.send(channel, { embeds: channelQueues });
           guildQueue.set(channel.id, []);
-          channelQueue = guildQueue.get(channel.id);
+          channelQueues = guildQueue.get(channel.id);
         }
 
-        if (!channelQueue) {
-          send(channel, { embeds });
+        if (!channelQueues) {
+          ch.send(channel, { embeds });
           return;
         }
 
@@ -166,7 +167,7 @@ async function send(
         }
 
         if (!timeoutGuild) {
-          send(channel, { embeds });
+          ch.send(channel, { embeds });
           return;
         }
 
@@ -174,7 +175,7 @@ async function send(
           channel.guildId,
           Jobs.scheduleJob(new Date(Date.now() + timeout), () => {
             const queuedEmbeds = ch.channelQueue.get(channel.guildId)?.get(channel.id) || [];
-            send(channel, { embeds: queuedEmbeds });
+            ch.send(channel, { embeds: queuedEmbeds });
 
             ch.channelQueue.get(channel.guildId)?.delete(channel.id);
             ch.channelTimeout.get(channel.guildId)?.delete(channel.id);
@@ -223,6 +224,7 @@ async function send(
 
       const sentMessage = await channel.send(p as Discord.MessageCreateOptions).catch((err) => {
         // eslint-disable-next-line no-console
+        console.log(p.files);
         console.log('send err', err);
       });
 
