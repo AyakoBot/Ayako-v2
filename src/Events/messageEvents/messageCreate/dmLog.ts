@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 export default async (msg: Discord.Message) => {
   if (msg.author.id === client.user?.id) return;
@@ -29,10 +30,9 @@ export default async (msg: Discord.Message) => {
     embed.fields?.push({ name: '\u200b', value: text });
   }
 
-  ch.send(
-    { id: '825297763822469140', guildId: '669893888856817665' },
-    {
-      embeds: [embed],
-    },
-  );
+  const webhook = await client.fetchWebhook(auth.dmWebhook.id, auth.dmWebhook.token);
+
+  webhook?.send({
+    embeds: [embed],
+  });
 };

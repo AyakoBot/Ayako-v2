@@ -4,6 +4,7 @@ import fs from 'fs';
 import jobs from 'node-schedule';
 import { Worker as WorkerThread } from 'worker_threads';
 import type * as Discord from 'discord.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 import blocklists from '../../../BaseClient/Other/Blocklist.json' assert { type: 'json' };
 import type CT from '../../../Typings/CustomTypings';
@@ -153,10 +154,14 @@ const prepare = async (
           break;
         }
         case 'send': {
-          ch.send(
-            { id: data.msgData.channelid, guildId: '669893888856817665' },
-            { content: msg.content },
+          const webhook = await client.fetchWebhook(
+            auth.antivirusWebhook.id,
+            auth.antivirusWebhook.token,
           );
+          webhook?.send({
+            content: msg.content,
+          });
+
           break;
         }
         case 'VTfail': {
@@ -349,12 +354,13 @@ const blacklisted = async (
 
     const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-    ch.send(
-      { id: '726252103302905907', guildId: '669893888856817665' },
-      {
-        content: ch.getJumpLink(msg),
-      },
+    const webhook = await client.fetchWebhook(
+      auth.antivirusWebhook.id,
+      auth.antivirusWebhook.token,
     );
+    webhook?.send({
+      content: ch.getJumpLink(msg),
+    });
 
     if (msg.guild) {
       (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
@@ -390,12 +396,11 @@ const severeLink = async (
 
   const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  ch.send(
-    { id: '726252103302905907', guildId: '669893888856817665' },
-    {
-      content: ch.getJumpLink(msg),
-    },
-  );
+  const webhook = await client.fetchWebhook(auth.antivirusWebhook.id, auth.antivirusWebhook.token);
+  webhook?.send({
+    content: ch.getJumpLink(msg),
+  });
+
   if (msg.guild) {
     (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
   }
@@ -429,12 +434,11 @@ const ccscam = async (
 
   const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  ch.send(
-    { id: '726252103302905907', guildId: '669893888856817665' },
-    {
-      content: ch.getJumpLink(msg),
-    },
-  );
+  const webhook = await client.fetchWebhook(auth.antivirusWebhook.id, auth.antivirusWebhook.token);
+  webhook?.send({
+    content: ch.getJumpLink(msg),
+  });
+
   if (msg.guild) {
     (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
   }
@@ -468,12 +472,10 @@ const newUrl = async (
 
   const m = await ch.replyMsg(msg, { embeds: [embed] });
 
-  ch.send(
-    { id: '726252103302905907', guildId: '669893888856817665' },
-    {
-      content: ch.getJumpLink(msg),
-    },
-  );
+  const webhook = await client.fetchWebhook(auth.antivirusWebhook.id, auth.antivirusWebhook.token);
+  webhook?.send({
+    content: ch.getJumpLink(msg),
+  });
 
   if (msg.guild) {
     (await import('../../antivirusHandler.js')).default(msg as Discord.Message, m ?? undefined);
@@ -553,12 +555,10 @@ const cloudFlare = async (
 
   ch.replyMsg(msg, { embeds: [embed] });
 
-  ch.send(
-    { id: '726252103302905907', guildId: '669893888856817665' },
-    {
-      content: `${ch.getJumpLink(msg)}\nis CloudFlare Protected\n${linkObject.href}`,
-    },
-  );
+  const webhook = await client.fetchWebhook(auth.antivirusWebhook.id, auth.antivirusWebhook.token);
+  webhook?.send({
+    content: ch.getJumpLink(msg),
+  });
 
   linkLog(msg, lan, ch.constants.colors.loading, linkObject, lan.cfProtected, res);
 };

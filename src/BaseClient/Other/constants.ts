@@ -142,14 +142,6 @@ export default {
         update: 'https://ayakobot.com/cdn/Ayako_Assets/Events/SlashCommandUpdate.png',
       },
     },
-    guildDelete: {
-      guildName: 'Guild Name',
-      guildId: 'Guild ID',
-      memberCount: 'Membercount',
-      currentGuildCount: (length: number) => `Ayako is now in ${length} guilds`,
-      joinedAGuild: '<@&669894051851403294> left a Guild',
-      guildOwner: 'Guild Owner',
-    },
   },
   antiraidMessage: {
     image: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
