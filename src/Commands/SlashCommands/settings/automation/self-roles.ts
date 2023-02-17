@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'self-roles';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['self-roles']} WHERE uniquetimestamp = $1;`,
@@ -32,88 +31,9 @@ const showID = async (
     )
     .then((r: DBT.selfroles[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.name.name,
-          value: settings?.name ?? language.none,
-          inline: true,
-        },
-        {
-          name: lan.fields.onlyone.name,
-          value: embedParsers.boolean(settings?.onlyone, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.roles.name,
-          value: embedParsers.roles(settings?.roles, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.blrole,
-          value: embedParsers.roles(settings?.blroles, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.bluser,
-          value: embedParsers.roles(settings?.blusers, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroles, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wluser,
-          value: embedParsers.roles(settings?.wlusers, language),
-          inline: false,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.name, 'name', name),
-        buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.name, 'name', name),
-        buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-        buttonParsers.global(language, settings?.blroles, 'blroles', name),
-        buttonParsers.global(language, settings?.blusers, 'blusers', name),
-        buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
-        buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -148,3 +68,92 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.selfroles | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: language.slashCommands.settings.active,
+        value: embedParsers.boolean(settings?.active, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.name.name,
+        value: settings?.name ?? language.none,
+        inline: true,
+      },
+      {
+        name: lan.fields.onlyone.name,
+        value: embedParsers.boolean(settings?.onlyone, language),
+        inline: true,
+      },
+      {
+        name: lan.fields.roles.name,
+        value: embedParsers.roles(settings?.roles, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.blrole,
+        value: embedParsers.roles(settings?.blroles, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.bluser,
+        value: embedParsers.roles(settings?.blusers, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.wlrole,
+        value: embedParsers.roles(settings?.wlroles, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.wluser,
+        value: embedParsers.roles(settings?.wlusers, language),
+        inline: false,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.selfroles | null,
+  language: CT.Language,
+  name: 'self-roles' = 'self-roles',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.name, 'name', name),
+      buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.name, 'name', name),
+      buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+      buttonParsers.global(language, settings?.blroles, 'blroles', name),
+      buttonParsers.global(language, settings?.blusers, 'blusers', name),
+      buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
+      buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
+    ],
+  },
+];

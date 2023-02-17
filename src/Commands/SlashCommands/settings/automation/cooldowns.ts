@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['cooldowns'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'cooldowns';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['cooldowns']} WHERE uniquetimestamp = $1;`,
@@ -32,81 +31,9 @@ const showID = async (
     )
     .then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.command.name,
-          value: settings?.command ?? language.none,
-          inline: true,
-        },
-        {
-          name: lan.fields.cooldown.name,
-          value: embedParsers.time(Number(settings?.cooldown), language),
-          inline: true,
-        },
-        {
-          name: lan.fields.activechannelid.name,
-          value: embedParsers.channels(settings?.activechannelid, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wlrole,
-          value: embedParsers.roles(settings?.wlroleid, language),
-          inline: false,
-        },
-        {
-          name: language.slashCommands.settings.wluser,
-          value: embedParsers.users(settings?.wluserid, language),
-          inline: false,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.command, 'command', name),
-        buttonParsers.specific(language, settings?.cooldown, 'cooldown', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(
-          language,
-          settings?.activechannelid,
-          'activechannelid',
-          name,
-          'channel',
-        ),
-        buttonParsers.specific(language, settings?.wlchannelid, 'wlchannelid', name, 'channel'),
-        buttonParsers.specific(language, settings?.wlroleid, 'wlroleid', name, 'role'),
-        buttonParsers.specific(language, settings?.wluserid, 'wluserid', name, 'user'),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -129,9 +56,9 @@ const showAll = async (
     name: `${lan.fields.command.name}: \`${s.command ?? language.none}\` - ${
       lan.fields.cooldown
     }: \`${embedParsers.time(Number(s.cooldown), language)}\``,
-    value: `${
-      s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled
-    } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+    value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
+      s.uniquetimestamp,
+    ).toString(36)}\``,
   }));
 
   const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -145,3 +72,85 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.cooldowns | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['cooldowns'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: language.slashCommands.settings.active,
+        value: embedParsers.boolean(settings?.active, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.command.name,
+        value: settings?.command ?? language.none,
+        inline: true,
+      },
+      {
+        name: lan.fields.cooldown.name,
+        value: embedParsers.time(Number(settings?.cooldown), language),
+        inline: true,
+      },
+      {
+        name: lan.fields.activechannelid.name,
+        value: embedParsers.channels(settings?.activechannelid, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.wlchannel,
+        value: embedParsers.channels(settings?.wlchannelid, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.wlrole,
+        value: embedParsers.roles(settings?.wlroleid, language),
+        inline: false,
+      },
+      {
+        name: language.slashCommands.settings.wluser,
+        value: embedParsers.users(settings?.wluserid, language),
+        inline: false,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.cooldowns | null,
+  language: CT.Language,
+  name: 'cooldowns' = 'cooldowns',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.command, 'command', name),
+      buttonParsers.specific(language, settings?.cooldown, 'cooldown', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(
+        language,
+        settings?.activechannelid,
+        'activechannelid',
+        name,
+        'channel',
+      ),
+      buttonParsers.specific(language, settings?.wlchannelid, 'wlchannelid', name, 'channel'),
+      buttonParsers.specific(language, settings?.wlroleid, 'wlroleid', name, 'role'),
+      buttonParsers.specific(language, settings?.wluserid, 'wluserid', name, 'user'),
+    ],
+  },
+];

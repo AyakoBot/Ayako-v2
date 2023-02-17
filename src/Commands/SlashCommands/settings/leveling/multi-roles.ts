@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['multi-roles'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'multi-roles';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['multi-roles']} WHERE uniquetimestamp = $1;`,
@@ -32,37 +31,9 @@ const showID = async (
     )
     .then((r: DBT.levelingmultiroles[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: lan.fields.roles.name,
-          value: embedParsers.roles(settings?.roles, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.multiplier.name,
-          value: embedParsers.number(settings?.multiplier, language),
-          inline: true,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-        buttonParsers.specific(language, settings?.multiplier, 'multiplier', name),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -97,3 +68,41 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.levelingmultiroles | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['multi-roles'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: lan.fields.roles.name,
+        value: embedParsers.roles(settings?.roles, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.multiplier.name,
+        value: embedParsers.number(settings?.multiplier, language),
+        inline: true,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.levelingmultiroles | null,
+  language: CT.Language,
+  name: 'multi-roles' = 'multi-roles',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+      buttonParsers.specific(language, settings?.multiplier, 'multiplier', name),
+    ],
+  },
+];

@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['auto-punish'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'auto-punish';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['auto-punish']} WHERE uniquetimestamp = $1;`,
@@ -32,88 +31,9 @@ const showID = async (
     )
     .then((r: DBT.autopunish[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.warnamount.name,
-          value: embedParsers.number(settings?.warnamount, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.punishment.name,
-          value: settings?.punishment
-            ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-            : language.none,
-          inline: true,
-        },
-        {
-          name: lan.fields.duration.name,
-          value: embedParsers.time(Number(settings?.duration), language),
-          inline: true,
-        },
-        {
-          name: lan.fields.confirmationreq.name,
-          value: embedParsers.boolean(settings?.confirmationreq, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.punishmentawaittime.name,
-          value: embedParsers.time(Number(settings?.punishmentawaittime), language),
-          inline: true,
-        },
-        {
-          name: lan.fields.addroles.name,
-          value: embedParsers.roles(settings?.addroles, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.removeroles.name,
-          value: embedParsers.roles(settings?.removeroles, language),
-          inline: false,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
-        buttonParsers.specific(language, settings?.punishment, 'punishment', name),
-        buttonParsers.specific(language, settings?.duration, 'duration', name),
-        buttonParsers.boolean(language, settings?.confirmationreq, 'confirmationreq', name),
-        buttonParsers.specific(
-          language,
-          settings?.punishmentawaittime,
-          'punishmentawaittime',
-          name,
-        ),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.addroles, 'addroles', name, 'role'),
-        buttonParsers.specific(language, settings?.removeroles, 'removeroles', name, 'channel'),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -154,3 +74,87 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.autopunish | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['auto-punish'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: language.slashCommands.settings.active,
+        value: embedParsers.boolean(settings?.active, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.warnamount.name,
+        value: embedParsers.number(settings?.warnamount, language),
+        inline: true,
+      },
+      {
+        name: lan.fields.punishment.name,
+        value: settings?.punishment
+          ? language.punishments[settings?.punishment as keyof typeof language.punishments]
+          : language.none,
+        inline: true,
+      },
+      {
+        name: lan.fields.duration.name,
+        value: embedParsers.time(Number(settings?.duration), language),
+        inline: true,
+      },
+      {
+        name: lan.fields.confirmationreq.name,
+        value: embedParsers.boolean(settings?.confirmationreq, language),
+        inline: true,
+      },
+      {
+        name: lan.fields.punishmentawaittime.name,
+        value: embedParsers.time(Number(settings?.punishmentawaittime), language),
+        inline: true,
+      },
+      {
+        name: lan.fields.addroles.name,
+        value: embedParsers.roles(settings?.addroles, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.removeroles.name,
+        value: embedParsers.roles(settings?.removeroles, language),
+        inline: false,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.autopunish | null,
+  language: CT.Language,
+  name: 'auto-punish' = 'auto-punish',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
+      buttonParsers.specific(language, settings?.punishment, 'punishment', name),
+      buttonParsers.specific(language, settings?.duration, 'duration', name),
+      buttonParsers.boolean(language, settings?.confirmationreq, 'confirmationreq', name),
+      buttonParsers.specific(language, settings?.punishmentawaittime, 'punishmentawaittime', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.addroles, 'addroles', name, 'role'),
+      buttonParsers.specific(language, settings?.removeroles, 'removeroles', name, 'channel'),
+    ],
+  },
+];

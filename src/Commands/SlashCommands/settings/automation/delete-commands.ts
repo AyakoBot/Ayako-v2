@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['delete-commands'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'delete-commands';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['delete-commands']} WHERE uniquetimestamp = $1;`,
@@ -32,86 +31,9 @@ const showID = async (
     )
     .then((r: DBT.deletecommands[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.command.name,
-          value: settings?.command ?? language.none,
-          inline: true,
-        },
-        {
-          name: lan.fields.deletetimeout.name,
-          value: embedParsers.time(Number(settings?.deletetimeout), language),
-          inline: true,
-        },
-        {
-          name: '\u200b',
-          value: '\u200b',
-          inline: false,
-        },
-        {
-          name: lan.fields.deletecommand.name,
-          value: embedParsers.boolean(settings?.deletecommand, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.deletereply.name,
-          value: embedParsers.boolean(settings?.deletereply, language),
-          inline: true,
-        },
-        {
-          name: language.slashCommands.settings.wlchannel,
-          value: embedParsers.channels(settings?.wlchannelid, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.activechannelid.name,
-          value: embedParsers.channels(settings?.activechannelid, language),
-          inline: false,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.command, 'command', name),
-        buttonParsers.specific(language, settings?.deletetimeout, 'deletetimeout', name),
-        buttonParsers.boolean(language, settings?.deletecommand, 'deletecommand', name),
-        buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.global(language, settings?.wlchannelid, 'wlchannels', name),
-        buttonParsers.specific(
-          language,
-          settings?.activechannelid,
-          'activechannelid',
-          name,
-          'channel',
-        ),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -134,9 +56,9 @@ const showAll = async (
     name: `${lan.fields.command.name}: \`${s.command ?? language.none}\` - ${
       lan.fields.deletetimeout
     }: \`${embedParsers.time(Number(s.deletetimeout), language)}\``,
-    value: `${
-      s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled
-    } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+    value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
+      s.uniquetimestamp,
+    ).toString(36)}\``,
   }));
 
   const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -150,3 +72,90 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.deletecommands | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['delete-commands'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: language.slashCommands.settings.active,
+        value: embedParsers.boolean(settings?.active, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.command.name,
+        value: settings?.command ?? language.none,
+        inline: true,
+      },
+      {
+        name: lan.fields.deletetimeout.name,
+        value: embedParsers.time(Number(settings?.deletetimeout), language),
+        inline: true,
+      },
+      {
+        name: '\u200b',
+        value: '\u200b',
+        inline: false,
+      },
+      {
+        name: lan.fields.deletecommand.name,
+        value: embedParsers.boolean(settings?.deletecommand, language),
+        inline: true,
+      },
+      {
+        name: lan.fields.deletereply.name,
+        value: embedParsers.boolean(settings?.deletereply, language),
+        inline: true,
+      },
+      {
+        name: language.slashCommands.settings.wlchannel,
+        value: embedParsers.channels(settings?.wlchannelid, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.activechannelid.name,
+        value: embedParsers.channels(settings?.activechannelid, language),
+        inline: false,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.deletecommands | null,
+  language: CT.Language,
+  name: 'delete-commands' = 'delete-commands',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.command, 'command', name),
+      buttonParsers.specific(language, settings?.deletetimeout, 'deletetimeout', name),
+      buttonParsers.boolean(language, settings?.deletecommand, 'deletecommand', name),
+      buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.global(language, settings?.wlchannelid, 'wlchannels', name),
+      buttonParsers.specific(
+        language,
+        settings?.activechannelid,
+        'activechannelid',
+        name,
+        'channel',
+      ),
+    ],
+  },
+];

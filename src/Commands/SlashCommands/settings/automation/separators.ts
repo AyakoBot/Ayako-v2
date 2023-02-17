@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['separators'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'separators';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames.separators} WHERE uniquetimestamp = $1;`,
@@ -32,68 +31,9 @@ const showID = async (
     )
     .then((r: DBT.roleseparator[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.separator.name,
-          value: embedParsers.role(settings?.separator, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.isvarying.name,
-          value: embedParsers.boolean(settings?.isvarying, language),
-          inline: true,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.separator, 'separator', name, 'role'),
-        buttonParsers.boolean(language, settings?.isvarying, 'isvarying', name),
-      ],
-    },
-  ];
-
-  if (settings?.isvarying) {
-    embeds[0].fields?.push({
-      name: lan.fields.stoprole.name,
-      value: embedParsers.role(settings?.stoprole, language),
-      inline: true,
-    });
-
-    components[1].components.push(
-      buttonParsers.specific(language, settings?.stoprole, 'stoprole', name, 'role'),
-    );
-  } else {
-    embeds[0].fields?.push({
-      name: lan.fields.roles.name,
-      value: embedParsers.roles(settings?.roles, language),
-      inline: true,
-    });
-
-    components[1].components.push(
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-    );
-  }
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -127,4 +67,83 @@ const showAll = async (
     components,
     ephemeral: true,
   });
+};
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.roleseparator | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['separators'],
+): Discord.APIEmbed[] => {
+  const embeds: Discord.APIEmbed[] = [
+    {
+      author: embedParsers.author(language, lan),
+      fields: [
+        {
+          name: language.slashCommands.settings.active,
+          value: embedParsers.boolean(settings?.active, language),
+          inline: false,
+        },
+        {
+          name: lan.fields.separator.name,
+          value: embedParsers.role(settings?.separator, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.isvarying.name,
+          value: embedParsers.boolean(settings?.isvarying, language),
+          inline: true,
+        },
+      ],
+    },
+  ];
+
+  if (settings?.isvarying) {
+    embeds[0].fields?.push({
+      name: lan.fields.stoprole.name,
+      value: embedParsers.role(settings?.stoprole, language),
+      inline: true,
+    });
+  } else {
+    embeds[0].fields?.push({
+      name: lan.fields.roles.name,
+      value: embedParsers.roles(settings?.roles, language),
+      inline: true,
+    });
+  }
+
+  return embeds;
+};
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.roleseparator | null,
+  language: CT.Language,
+  name: 'separators' = 'separators',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
+  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.specific(language, settings?.separator, 'separator', name, 'role'),
+        buttonParsers.boolean(language, settings?.isvarying, 'isvarying', name),
+      ],
+    },
+  ];
+
+  if (settings?.isvarying) {
+    components[1].components.push(
+      buttonParsers.specific(language, settings?.stoprole, 'stoprole', name, 'role'),
+    );
+  } else {
+    components[1].components.push(
+      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+    );
+  }
+
+  return components;
 };

@@ -24,67 +24,16 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['anti-spam-punishments'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'anti-spam-punishments';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['anti-spam-punishments']} WHERE uniquetimestamp = $1 AND type = $2;`,
       [parseInt(ID, 36), 'anti-spam'],
     )
-    .then((r: DBT.autopunish[] | null) => (r ? r[0] : null));
-
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: language.slashCommands.settings.active,
-          value: embedParsers.boolean(settings?.active, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.warnamount.name,
-          value: embedParsers.number(settings?.warnamount, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.punishment.name,
-          value: settings?.punishment
-            ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-            : language.none,
-          inline: true,
-        },
-        {
-          name: lan.fields.duration.name,
-          value: embedParsers.time(Number(settings?.duration), language),
-          inline: true,
-        },
-        {
-          name: lan.fields.warnamount.name,
-          value: embedParsers.number(settings?.warnamount, language),
-          inline: true,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
-        buttonParsers.specific(language, settings?.punishment, 'punishment', name),
-        buttonParsers.specific(language, settings?.duration, 'duration', name),
-      ],
-    },
-  ];
+    .then((r: DBT.punishments[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -101,7 +50,7 @@ const showAll = async (
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['anti-spam-punishments']} WHERE guildid = $1 AND type = $2;`,
       [cmd.guild?.id, 'anti-spam'],
     )
-    .then((r: DBT.autopunish[] | null) => r || null);
+    .then((r: DBT.punishments[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
     name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
@@ -125,3 +74,63 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.punishments | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['anti-spam-punishments'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: language.slashCommands.settings.active,
+        value: embedParsers.boolean(settings?.active, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.warnamount.name,
+        value: embedParsers.number(settings?.warnamount, language),
+        inline: true,
+      },
+      {
+        name: lan.fields.punishment.name,
+        value: settings?.punishment
+          ? language.punishments[settings?.punishment as keyof typeof language.punishments]
+          : language.none,
+        inline: true,
+      },
+      {
+        name: lan.fields.duration.name,
+        value: embedParsers.time(Number(settings?.duration), language),
+        inline: true,
+      },
+      {
+        name: lan.fields.warnamount.name,
+        value: embedParsers.number(settings?.warnamount, language),
+        inline: true,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.punishments | null,
+  language: CT.Language,
+  name: 'anti-spam-punishments' = 'anti-spam-punishments',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
+      buttonParsers.specific(language, settings?.punishment, 'punishment', name),
+      buttonParsers.specific(language, settings?.duration, 'duration', name),
+    ],
+  },
+];

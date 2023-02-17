@@ -24,7 +24,6 @@ const showID = async (
   lan: CT.Language['slashCommands']['settings']['categories']['nitro-roles'],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
-  const name = 'nitro-roles';
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames['nitro-roles']} WHERE uniquetimestamp = $1;`,
@@ -32,37 +31,9 @@ const showID = async (
     )
     .then((r: DBT.nitroroles[] | null) => (r ? r[0] : null));
 
-  const embeds: Discord.APIEmbed[] = [
-    {
-      author: embedParsers.author(language, lan),
-      fields: [
-        {
-          name: lan.fields.roles.name,
-          value: embedParsers.roles(settings?.roles, language),
-          inline: false,
-        },
-        {
-          name: lan.fields.days.name,
-          value: embedParsers.number(settings?.days, language),
-          inline: true,
-        },
-      ],
-    },
-  ];
-
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-        buttonParsers.specific(language, settings?.days, 'days', name),
-      ],
-    },
-  ];
-
   cmd.reply({
-    embeds,
-    components,
+    embeds: getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -97,3 +68,41 @@ const showAll = async (
     ephemeral: true,
   });
 };
+
+export const getEmbeds = (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.nitroroles | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['nitro-roles'],
+): Discord.APIEmbed[] => [
+  {
+    author: embedParsers.author(language, lan),
+    fields: [
+      {
+        name: lan.fields.roles.name,
+        value: embedParsers.roles(settings?.roles, language),
+        inline: false,
+      },
+      {
+        name: lan.fields.days.name,
+        value: embedParsers.number(settings?.days, language),
+        inline: true,
+      },
+    ],
+  },
+];
+
+export const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.nitroroles | null,
+  language: CT.Language,
+  name: 'nitro-roles' = 'nitro-roles',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+      buttonParsers.specific(language, settings?.days, 'days', name),
+    ],
+  },
+];

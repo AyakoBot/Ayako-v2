@@ -7,17 +7,45 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
+  const lan = language.slashCommands.settings.categories.leveling;
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
-
   const settings = await ch
     .query(
       `SELECT * FROM ${ch.constants.commands.settings.tableNames.leveling} WHERE guildid = $1;`,
       [cmd.guild?.id],
     )
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.leveling;
-  const name = 'leveling';
 
+  cmd.reply({
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: getComponents(buttonParsers, settings, language),
+    ephemeral: true,
+  });
+};
+
+const getLevelUpMode = (
+  type: string | undefined,
+  lan: CT.Language['slashCommands']['settings']['categories']['leveling'],
+) => {
+  switch (type) {
+    case '1': {
+      return lan.messages;
+    }
+    case '2': {
+      return lan.reactions;
+    }
+    default: {
+      return lan.silent;
+    }
+  }
+};
+
+export const getEmbeds = async (
+  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  settings: DBT.leveling | null,
+  language: CT.Language,
+  lan: CT.Language['slashCommands']['settings']['categories']['leveling'],
+): Promise<Discord.APIEmbed[]> => {
   const embeds: Discord.APIEmbed[] = [
     {
       author: embedParsers.author(language, lan),
@@ -53,43 +81,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     },
   ];
 
-  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name),
-        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name),
-        buttonParsers.specific(language, settings?.rolemode, 'rolemode', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.lvlupmode, 'lvlupmode', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.boolean(language, settings?.ignoreprefixes, 'ignoreprefixes', name),
-        buttonParsers.specific(language, settings?.prefixes, 'prefixes', name),
-        buttonParsers.global(language, settings?.blchannels, 'blchannels', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.global(language, settings?.blroles, 'blroles', name),
-        buttonParsers.global(language, settings?.blusers, 'blusers', name),
-        buttonParsers.global(language, settings?.wlchannels, 'wlchannels', name),
-        buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
-        buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
-      ],
-    },
-  ];
-
   switch (settings?.lvlupmode) {
     case '1': {
       embeds[0].fields?.push(
@@ -110,11 +101,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         },
       );
 
-      components[2].components.push(
-        buttonParsers.specific(language, settings?.embed, 'embed', name),
-        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
-        buttonParsers.specific(language, settings?.lvlupchannels, 'lvlupchannels', name, 'channel'),
-      );
       break;
     }
     case '2': {
@@ -135,10 +121,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         },
       );
 
-      components[2].components.push(
-        buttonParsers.specific(language, settings?.lvlupemotes, 'lvlupemotes', name),
-        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
-      );
       break;
     }
     default: {
@@ -191,26 +173,72 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     },
   );
 
-  cmd.reply({
-    embeds,
-    components,
-    ephemeral: true,
-  });
+  return embeds;
 };
 
-const getLevelUpMode = (
-  type: string | undefined,
-  lan: CT.Language['slashCommands']['settings']['categories']['leveling'],
-) => {
-  switch (type) {
+const getComponents = (
+  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  settings: DBT.leveling | null,
+  language: CT.Language,
+  name: 'leveling' = 'leveling',
+): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
+  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name),
+        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name),
+        buttonParsers.specific(language, settings?.rolemode, 'rolemode', name),
+      ],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [buttonParsers.specific(language, settings?.lvlupmode, 'lvlupmode', name)],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.boolean(language, settings?.ignoreprefixes, 'ignoreprefixes', name),
+        buttonParsers.specific(language, settings?.prefixes, 'prefixes', name),
+        buttonParsers.global(language, settings?.blchannels, 'blchannels', name),
+      ],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.global(language, settings?.blroles, 'blroles', name),
+        buttonParsers.global(language, settings?.blusers, 'blusers', name),
+        buttonParsers.global(language, settings?.wlchannels, 'wlchannels', name),
+        buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
+        buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
+      ],
+    },
+  ];
+
+  switch (settings?.lvlupmode) {
     case '1': {
-      return lan.messages;
+      components[2].components.push(
+        buttonParsers.specific(language, settings?.embed, 'embed', name),
+        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
+        buttonParsers.specific(language, settings?.lvlupchannels, 'lvlupchannels', name, 'channel'),
+      );
+      break;
     }
     case '2': {
-      return lan.reactions;
+      components[2].components.push(
+        buttonParsers.specific(language, settings?.lvlupemotes, 'lvlupemotes', name),
+        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
+      );
+      break;
     }
     default: {
-      return lan.silent;
+      break;
     }
   }
+
+  return components;
 };
