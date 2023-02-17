@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import client from '../../BaseClient/Client.js';
 
 export default async (
   data: Discord.ApplicationCommandPermissionsUpdateData,
@@ -9,7 +8,7 @@ export default async (
   const channels = await ch.getLogChannels('applicationevents', guild);
   if (!channels) return;
 
-  const application = await client.users.fetch(data.applicationId);
+  const application = await ch.getUser(data.applicationId);
   if (!application) return;
 
   const language = await ch.languageSelector(guild.id);

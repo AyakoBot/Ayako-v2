@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (role: Discord.Role) => {
   const channels = await ch.getLogChannels('roleevents', role.guild);
@@ -11,7 +10,7 @@ export default async (role: Discord.Role) => {
   const con = ch.constants.events.logs.role;
   const audit = role.tags?.botId ? undefined : await ch.getAudit(role.guild, 30, role.id);
   const auditUser =
-    (role.tags?.botId ? await client.users.fetch(role.tags.botId) : audit?.executor) ?? undefined;
+    (role.tags?.botId ? await ch.getUser(role.tags.botId) : audit?.executor) ?? undefined;
   const files: Discord.AttachmentPayload[] = [];
 
   const embed: Discord.APIEmbed = {

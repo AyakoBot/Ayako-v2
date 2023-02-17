@@ -14,7 +14,14 @@ export default async () => {
   let allusers = await ch
     .query('SELECT allusers FROM stats;')
     .then((r: DBT.stats[] | null) => (r ? Number(r[0].allusers) : null));
-  if (!allusers) allusers = client.users.cache.size;
+
+  if (!allusers) {
+    const userSize = await client.shard?.broadcastEval((c) =>
+      c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+    );
+
+    allusers = userSize?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
+  }
 
   Jobs.scheduleJob('0 0 */1 * * *', () => {
     fetch(APIDiscordBots, {

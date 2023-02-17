@@ -94,7 +94,7 @@ export default async (event: Discord.GuildScheduledEvent) => {
 
   if (event.creator || event.creatorId) {
     const creator =
-      event.creator ?? (event.creatorId ? await client.users.fetch(event.creatorId) : undefined);
+      event.creator ?? (event.creatorId ? await ch.getUser(event.creatorId) : undefined);
 
     if (creator) {
       embed.fields?.push({

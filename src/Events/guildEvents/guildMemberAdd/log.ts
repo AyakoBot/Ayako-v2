@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (member: Discord.GuildMember) => {
   const channels = await ch.getLogChannels('memberevents', member.guild);
@@ -32,7 +31,7 @@ export default async (member: Discord.GuildMember) => {
   if (usedInvite && typeof usedInvite !== 'boolean') {
     const inviter =
       usedInvite.inviter ??
-      (usedInvite.inviterId ? await client.users.fetch(usedInvite.inviterId) : undefined);
+      (usedInvite.inviterId ? await ch.getUser(usedInvite.inviterId) : undefined);
 
     embed.fields?.push({
       name: lan.invite,
@@ -86,7 +85,7 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
     | undefined;
 
   if (vanity) {
-    vanity.inviter = await client.users.fetch(guild.ownerId).catch(() => undefined);
+    vanity.inviter = (await ch.getUser(guild.ownerId).catch(() => undefined)) as Discord.User;
     vanity.inviterId = guild.ownerId;
     vanity.guild = guild;
     vanity.channel = (guild.channels.cache.get(guild.id) ??

@@ -25,7 +25,7 @@ export default async () => {
     const guild = client.guilds.cache.get(row.guildid);
     if (!guild) return;
 
-    const user = await client.users.fetch(vote.user).catch(() => undefined);
+    const user = await ch.getUser(vote.user).catch(() => undefined);
     if (!user) return;
 
     const member = await guild.members.fetch(vote.user).catch(() => undefined);

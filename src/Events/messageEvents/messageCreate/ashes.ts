@@ -14,13 +14,13 @@ const banHandler = async (msg: Discord.Message) => {
   if (!msg.content.includes('@Known-Scammers ping:')) return;
 
   const isUnban = msg.content.includes('REMOVAL FROM LIST');
-  const executor = await client.users.fetch('646937666251915264');
+  const executor = await ch.getUser('646937666251915264');
 
   const ids = msg.content.match(/\d{17,19}/gm);
   if (!ids || !ids.length) return;
 
   ids.forEach(async (id) => {
-    const user = await client.users.fetch(id);
+    const user = await ch.getUser(id);
     if (!user) {
       const language = await ch.languageSelector(msg.guildId);
       ch.errorMsg(msg, language.errors.userNotFound, language);
@@ -36,7 +36,7 @@ const banHandler = async (msg: Discord.Message) => {
     if (isUnban) {
       (await import('../../modBaseEvent.js')).default({
         target: user,
-        executor: executor || (await client.users.fetch(client.user.id)),
+        executor: executor || (await ch.getUser(client.user.id)),
         reason,
         msg,
         guild: msg.guild,
@@ -45,7 +45,7 @@ const banHandler = async (msg: Discord.Message) => {
     } else {
       (await import('../../modBaseEvent.js')).default({
         target: user,
-        executor: executor || (await client.users.fetch(client.user.id)),
+        executor: executor || (await ch.getUser(client.user.id)),
         reason,
         msg,
         guild: msg.guild,

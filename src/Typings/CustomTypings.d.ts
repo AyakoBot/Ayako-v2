@@ -21,8 +21,8 @@ export interface Command {
 }
 
 export interface ModBaseEventOptions {
-  executor: Discord.User | undefined;
-  target: Discord.User;
+  executor: Discord.User | bEvalUser | undefined;
+  target: Discord.User | bEvalUser;
   reason: string;
   msg?: Discord.Message;
   cmd?: Discord.GuildInteraction;
@@ -67,4 +67,23 @@ export interface TopGGGuildVote {
   type: 'upvote' | 'test';
   query?: string;
   authorization: string;
+}
+
+export interface bEvalUser {
+  id: string;
+  bot: boolean;
+  system: boolean;
+  flags: number;
+  username: string;
+  discriminator: string;
+  avatar?: string;
+  banner?: string;
+  accentColor?: string;
+  createdTimestamp: number;
+  defaultAvatarURL: string;
+  hexAccentColor?: string;
+  tag: string;
+  avatarURL?: string;
+  displayAvatarURL: string;
+  bannerURL?: string;
 }

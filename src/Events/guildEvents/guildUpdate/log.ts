@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
@@ -268,10 +267,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
     if (addedChannel.length) {
       addedChannel.forEach((c) => {
-        const channel = client.channels.cache.get(String(c.channelId));
+        const channel = guild.channels.cache.get(String(c.channelId));
         if (!channel) return;
 
-        const emoji = c.emojiId ? client.emojis.cache.get(String(c.emojiId)) : c.emojiName;
+        const emoji = c.emojiId ? guild.emojis.cache.get(String(c.emojiId)) : c.emojiName;
 
         embed.fields?.push({
           name: lan.welcomeChannelAdded,
@@ -289,10 +288,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
     if (removedChannel.length) {
       removedChannel.forEach((c) => {
-        const channel = client.channels.cache.get(String(c.channelId));
+        const channel = guild.channels.cache.get(String(c.channelId));
         if (!channel) return;
 
-        const emoji = c.emojiId ? client.emojis.cache.get(String(c.emojiId)) : c.emojiName;
+        const emoji = c.emojiId ? guild.emojis.cache.get(String(c.emojiId)) : c.emojiName;
 
         embed.fields?.push({
           name: lan.welcomeChannelRemoved,
@@ -310,7 +309,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
     if (changedChannel.length) {
       changedChannel.forEach((c) => {
-        const channel = client.channels.cache.get(String(c.channelId));
+        const channel = guild.channels.cache.get(String(c.channelId));
         if (!channel) return;
 
         const oldChannel = oldWelcomeScreen?.welcomeChannels.find(
@@ -328,10 +327,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
           `${newChannel?.emoji.id}-${newChannel?.emoji.name}`
         ) {
           const oldEmoji = oldChannel?.emoji.id
-            ? client.emojis.cache.get(oldChannel.emoji.id)
+            ? guild.emojis.cache.get(oldChannel.emoji.id)
             : oldChannel?.emoji.name;
           const newEmoji = newChannel?.emoji.id
-            ? client.emojis.cache.get(newChannel.emoji.id)
+            ? guild.emojis.cache.get(newChannel.emoji.id)
             : newChannel?.emoji.name;
 
           merge(

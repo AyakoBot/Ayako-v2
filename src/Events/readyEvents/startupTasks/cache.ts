@@ -77,13 +77,13 @@ export default () => {
       ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
+            ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
             executor: m.executorid
-              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
             reason: m.reason ?? language.none,
@@ -111,13 +111,13 @@ export default () => {
       ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
+            ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
             executor: m.executorid
-              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
             reason: m.reason ?? language.none,
@@ -145,13 +145,13 @@ export default () => {
       ch.cache.mutes.set(
         Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
           const target = m.userid
-            ? (await client.users.fetch(m.userid).catch(() => undefined)) ?? client.user
+            ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
             : client.user;
           if (!target) return;
 
           modBaseEvent({
             executor: m.executorid
-              ? await client.users.fetch(m.executorid).catch(() => undefined)
+              ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
             reason: m.reason ?? language.none,

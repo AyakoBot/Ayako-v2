@@ -11,14 +11,16 @@ export const dmAllowed = true;
 export const type = 'owner';
 
 export default async (msg: Discord.Message) => {
+  const content = msg.content.split('eval ')[1];
+
   try {
     // eslint-disable-next-line no-console
     console.log(
       msg.content.includes('await') || msg.content.includes('return')
         ? // eslint-disable-next-line no-eval
-          await eval(`(async () => {${msg}})()`)
+          await eval(`(async () => {${content}})()`)
         : // eslint-disable-next-line no-eval
-          eval(msg.content),
+          eval(content),
     );
   } catch (e) {
     // eslint-disable-next-line no-console

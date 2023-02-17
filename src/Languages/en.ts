@@ -17,7 +17,7 @@ const punishmentFields = {
   },
 };
 
-const getUser = (user: Discord.User) =>
+const getUser = (user: CT.bEvalUser | Discord.User | CT.bEvalUser) =>
   `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${user?.username}#${
     user?.discriminator
   }\` / \`${user?.id}\`\n`;
@@ -51,13 +51,11 @@ const getEmote = (emoji: Discord.Emoji) =>
     emoji.id ?? 'None'
   }\`\n`;
 
-const getInviteDetails = (invite: Discord.Invite, user?: Discord.User, channelType?: string) =>
+const getInviteDetails = (invite: Discord.Invite, user?: Discord.User | CT.bEvalUser, channelType?: string) =>
   `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
     invite.uses
   }\nCreated: ${
-    invite.createdAt
-      ? ch.constants.standard.getTime(invite.createdAt.getTime())
-      : 'unknown'
+    invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : 'unknown'
   }\n${getChannel(invite.channel, channelType)}`;
 
 const getInvite = (invite: Discord.Invite) =>
@@ -115,13 +113,13 @@ export default {
       beforeAfter: (before: string, after: string) =>
         `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
       sticker: {
-        descCreateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+        descCreateAudit: (sticker: Discord.Sticker, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has created\n${getSticker(sticker)}`,
         descCreate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was created`,
-        descDeleteAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+        descDeleteAudit: (sticker: Discord.Sticker, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has deleted\n${getSticker(sticker)}`,
         descDelete: (sticker: Discord.Sticker) => `${getSticker(sticker)}was deleted`,
-        descUpdateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+        descUpdateAudit: (sticker: Discord.Sticker, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has updated\n${getSticker(sticker)}`,
         descUpdate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was updated`,
         nameCreate: 'Sticker created',
@@ -140,21 +138,24 @@ export default {
       application: {
         name: 'Application Command Permissions updated',
         descUpdateCommand: (
-          application: Discord.User,
-          user: Discord.User,
+          application: CT.bEvalUser | Discord.User,
+          user: CT.bEvalUser | Discord.User,
           command: Discord.ApplicationCommand,
         ) =>
           `${getUser(user)}has updated Permissions of\n${getCommand(command)}from\n${getUser(
             application,
           )}`,
-        descUpdateAll: (application: Discord.User, user: Discord.User) =>
+        descUpdateAll: (
+          application: CT.bEvalUser | Discord.User,
+          user: CT.bEvalUser | Discord.User,
+        ) =>
           `${getUser(user)}has updated Permissions of\nall Commands\nfrom\n${getUser(application)}`,
         permissionTypeName: 'Permission Type',
         allChannels: 'All Channels',
       },
       scheduledEvent: {
         descUserRemoveChannel: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           event: Discord.GuildScheduledEvent,
           channel:
             | Discord.NewsChannel
@@ -168,10 +169,10 @@ export default {
             channel,
             channelType,
           )}`,
-        descUserRemove: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
+        descUserRemove: (user: CT.bEvalUser | Discord.User, event: Discord.GuildScheduledEvent) =>
           `${getUser(user)}has left\n${getScheduledEvent(event)}`,
         descUserAddChannel: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           event: Discord.GuildScheduledEvent,
           channel:
             | Discord.NewsChannel
@@ -185,11 +186,11 @@ export default {
             channel,
             channelType,
           )}`,
-        descUserAdd: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
+        descUserAdd: (user: CT.bEvalUser | Discord.User, event: Discord.GuildScheduledEvent) =>
           `${getUser(user)}has joined\n${getScheduledEvent(event)}`,
         descDeleteChannelAudit: (
           event: Discord.GuildScheduledEvent,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel:
             | Discord.NewsChannel
             | Discord.TextChannel
@@ -202,7 +203,7 @@ export default {
             channel,
             channelType,
           )}`,
-        descDeleteAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+        descDeleteAudit: (event: Discord.GuildScheduledEvent, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has deleted\n${getScheduledEvent(event)}`,
         descDeleteChannel: (
           event: Discord.GuildScheduledEvent,
@@ -218,7 +219,7 @@ export default {
           `${getScheduledEvent(event)}was deleted`,
         descCreateChannelAudit: (
           event: Discord.GuildScheduledEvent,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel:
             | Discord.NewsChannel
             | Discord.TextChannel
@@ -231,7 +232,7 @@ export default {
             channel,
             channelType,
           )}`,
-        descCreateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+        descCreateAudit: (event: Discord.GuildScheduledEvent, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has created\n${getScheduledEvent(event)}`,
         descCreateChannel: (
           event: Discord.GuildScheduledEvent,
@@ -247,7 +248,7 @@ export default {
           `${getScheduledEvent(event)}was created`,
         descUpdateChannelAudit: (
           event: Discord.GuildScheduledEvent,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel:
             | Discord.NewsChannel
             | Discord.TextChannel
@@ -260,7 +261,7 @@ export default {
             channel,
             channelType,
           )}`,
-        descUpdateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+        descUpdateAudit: (event: Discord.GuildScheduledEvent, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has updated\n${getScheduledEvent(event)}`,
         descUpdateChannel: (
           event: Discord.GuildScheduledEvent,
@@ -306,10 +307,13 @@ export default {
         imageRemoved: 'Image removed',
       },
       voiceState: {
-        descCreate: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
-          `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
+        descCreate: (
+          user: CT.bEvalUser | Discord.User,
+          channel: Discord.GuildChannel,
+          channelType: string,
+        ) => `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
         descUpdateChannel: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel,
           channelType: string,
           oldChannel: Discord.GuildChannel | undefined,
@@ -319,10 +323,17 @@ export default {
             oldChannel,
             oldChannelType,
           )}into\n${getChannel(channel, channelType)}`,
-        descUpdate: (user: Discord.User, channel: Discord.VoiceBasedChannel, channelType: string) =>
+        descUpdate: (
+          user: CT.bEvalUser | Discord.User,
+          channel: Discord.VoiceBasedChannel,
+          channelType: string,
+        ) =>
           `The Voice State of\n${getUser(user)}in\n${getChannel(channel, channelType)}was updated`,
-        descDelete: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
-          `${getUser(user)}has left\n${getChannel(channel, channelType)}`,
+        descDelete: (
+          user: CT.bEvalUser | Discord.User,
+          channel: Discord.GuildChannel,
+          channelType: string,
+        ) => `${getUser(user)}has left\n${getChannel(channel, channelType)}`,
         nameUpdate: 'Voice State updated',
         LockedVoiceJoin: 'Locked Voice Channel joined',
         LockedVoiceLeave: 'Locked Voice Channel left',
@@ -345,7 +356,7 @@ export default {
         descCreateAudit: (
           webhook: Discord.Webhook,
           webhookType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel,
           channelType: string,
         ) =>
@@ -363,7 +374,7 @@ export default {
         descDeleteAudit: (
           webhook: Discord.Webhook,
           webhookType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel,
           channelType: string,
         ) =>
@@ -381,7 +392,7 @@ export default {
         descUpdateAudit: (
           webhook: Discord.Webhook,
           webhookType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel,
           channelType: string,
         ) =>
@@ -409,13 +420,13 @@ export default {
         },
       },
       role: {
-        descCreateAudit: (user: Discord.User, role: Discord.Role) =>
+        descCreateAudit: (user: CT.bEvalUser | Discord.User, role: Discord.Role) =>
           `${getUser(user)}has created\n${getRole(role)}`,
         descCreate: (role: Discord.Role) => `${getRole(role)}was created`,
-        descDeleteAudit: (user: Discord.User, role: Discord.Role) =>
+        descDeleteAudit: (user: CT.bEvalUser | Discord.User, role: Discord.Role) =>
           `${getUser(user)}has deleted\n${getRole(role)}`,
         descDelete: (role: Discord.Role) => `${getRole(role)}was deleted`,
-        descUpdateAudit: (role: Discord.Role, user: Discord.User) =>
+        descUpdateAudit: (role: Discord.Role, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has updated\n${getRole(role)}`,
         descUpdate: (role: Discord.Role) => `${getRole(role)}was updated`,
         nameCreate: 'Role created',
@@ -430,9 +441,16 @@ export default {
         iconRemoved: 'Icon Removed',
       },
       reaction: {
-        descAdded: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
-          `${getUser(user)}has reacted with\n${getEmote(emoji)}to\n${getMessage(msg)}`,
-        descRemoved: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
+        descAdded: (
+          emoji: Discord.Emoji,
+          user: CT.bEvalUser | Discord.User,
+          msg: Discord.Message,
+        ) => `${getUser(user)}has reacted with\n${getEmote(emoji)}to\n${getMessage(msg)}`,
+        descRemoved: (
+          emoji: Discord.Emoji,
+          user: CT.bEvalUser | Discord.User,
+          msg: Discord.Message,
+        ) =>
           `Reaction on\n${getMessage(msg)}with ${getEmote(emoji)}by ${getUser(
             user,
           )}was removed,\neither by the reactor themself or by a Moderator`,
@@ -450,12 +468,12 @@ export default {
       message: {
         nameDelete: 'Message Deleted',
         nameUpdate: 'Message Updated',
-        descDeleteAudit: (user: Discord.User, msg: Discord.Message) =>
+        descDeleteAudit: (user: CT.bEvalUser | Discord.User, msg: Discord.Message) =>
           `${getUser(user)}has deleted\n${getMessage(msg)}from\n${getUser(msg.author)}`,
         descDelete: (msg: Discord.Message) =>
           `${getMessage(msg)}from\n${getUser(msg.author)}was deleted`,
         descDeleteBulkAudit: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           size: number,
           channel: Discord.GuildTextBasedChannel,
         ) => `${getUser(user)}has bulk deleted\n${size} Messages in\n${getChannel(channel)}`,
@@ -545,10 +563,10 @@ export default {
         afterContent: '__Content after__:',
       },
       invite: {
-        descCreateAudit: (user: Discord.User, invite: Discord.Invite) =>
+        descCreateAudit: (user: CT.bEvalUser | Discord.User, invite: Discord.Invite) =>
           `${getUser(user)}has created\n${getInvite(invite)}`,
         descCreate: (invite: Discord.Invite) => `${getInvite(invite)}was created`,
-        descDeleteAudit: (user: Discord.User, invite: Discord.Invite) =>
+        descDeleteAudit: (user: CT.bEvalUser | Discord.User, invite: Discord.Invite) =>
           `${getUser(user)}has deleted\n${getInvite(invite)}`,
         descDelete: (invite: Discord.Invite) => `${getInvite(invite)}was deleted`,
         nameCreate: 'Invite created',
@@ -567,23 +585,23 @@ export default {
         expiresAt: 'Expires at',
       },
       integration: {
-        descCreateAudit: (integration: Discord.Integration, user: Discord.User) =>
+        descCreateAudit: (integration: Discord.Integration, user: CT.bEvalUser | Discord.User) =>
           `${getUser(user)}has created\n${getIntegration(integration)}`,
         descCreate: (integration: Discord.Integration) =>
           `${getIntegration(integration)}was created`,
         descDeleteIntegrationAudit: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           integration: Discord.Integration,
           application: Discord.Application,
         ) =>
           `${getUser(user)}has deleted\n${getIntegration(integration)}from${getApplication(
             application,
           )}`,
-        descDeleteAudit: (user: Discord.User, integration: Discord.Integration) =>
+        descDeleteAudit: (user: CT.bEvalUser | Discord.User, integration: Discord.Integration) =>
           `${getUser(user)}has deleted\n${getIntegration(integration)}`,
         descDeleteIntegration: (integration: Discord.Integration) =>
           `${getIntegration(integration)}was deleted`,
-        descUpdateAudit: (user: Discord.User, integration: Discord.Integration) =>
+        descUpdateAudit: (user: CT.bEvalUser | Discord.User, integration: Discord.Integration) =>
           `${getUser(user)}has updated\n${getIntegration(integration)}`,
         descUpdate: (integration: Discord.Integration) =>
           `${getIntegration(integration)}was updated`,
@@ -607,36 +625,37 @@ export default {
           `Account \`${account.name}\` / \`${account.id}\``,
       },
       guild: {
-        descBan: (user: Discord.User) => `${getUser(user)}was banned`,
-        descBanAudit: (user: Discord.User, executor: Discord.User) =>
+        descBan: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}was banned`,
+        descBanAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has banned\n${getUser(user)}`,
-        descUnban: (user: Discord.User) => `${getUser(user)} was un-banned`,
-        descUnbanAudit: (user: Discord.User, executor: Discord.User) =>
+        descUnban: (user: CT.bEvalUser | Discord.User) => `${getUser(user)} was un-banned`,
+        descUnbanAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has un-banned\n${getUser(user)}`,
-        descEmojiCreateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+        descEmojiCreateAudit: (user: CT.bEvalUser | Discord.User, emoji: Discord.Emoji) =>
           `${getUser(user)}has created\n${getEmote(emoji)}`,
         descEmojiCreate: (emoji: Discord.Emoji) => `${getEmote(emoji)}was created`,
-        descEmojiDeleteAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+        descEmojiDeleteAudit: (user: CT.bEvalUser | Discord.User, emoji: Discord.Emoji) =>
           `${getUser(user)}has deleted\n${getEmote(emoji)}`,
         descEmojiDelete: (emoji: Discord.Emoji) => `${getEmote(emoji)}was deleted`,
-        descEmojiUpdateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+        descEmojiUpdateAudit: (user: CT.bEvalUser | Discord.User, emoji: Discord.Emoji) =>
           `${getUser(user)}has updated\n${getEmote(emoji)}`,
         descEmojiUpdate: (emoji: Discord.Emoji) => `${getEmote(emoji)}was updated`,
-        descJoinAudit: (user: Discord.User, executor: Discord.User) =>
+        descJoinAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has added\n${getUser(user)}`,
-        descMemberJoin: (user: Discord.User) => `${getUser(user)}has joined`,
-        descBotJoin: (user: Discord.User) => `${getUser(user)}was added`,
-        descBotLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
-        descBotLeaveAudit: (user: Discord.User, executor: Discord.User) =>
+        descMemberJoin: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}has joined`,
+        descBotJoin: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}was added`,
+        descBotLeave: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}has left the Server`,
+        descBotLeaveAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has kicked\n${getUser(user)}`,
-        descMemberLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
-        descMemberLeaveAudit: (user: Discord.User, executor: Discord.User) =>
+        descMemberLeave: (user: CT.bEvalUser | Discord.User) =>
+          `${getUser(user)}has left the Server`,
+        descMemberLeaveAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has kicked\n${getUser(user)}`,
-        descBotUpdate: (user: Discord.User) => `${getUser(user)}was updated`,
-        descBotUpdateAudit: (user: Discord.User, executor: Discord.User) =>
+        descBotUpdate: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}was updated`,
+        descBotUpdateAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has updated\n${getUser(user)}`,
-        descMemberUpdate: (user: Discord.User) => `${getUser(user)}was updated`,
-        descMemberUpdateAudit: (user: Discord.User, executor: Discord.User) =>
+        descMemberUpdate: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}was updated`,
+        descMemberUpdateAudit: (user: CT.bEvalUser | Discord.User, executor: Discord.User) =>
           `${getUser(executor)}has updated\n${getUser(user)}`,
         descGuildUpdate: () => `The Server was updated`,
         descGuildUpdateAudit: (executor: Discord.User) =>
@@ -760,21 +779,21 @@ export default {
       },
       channel: {
         descCreateAudit: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel | Discord.AnyThreadChannel,
           type: string,
         ) => `${getUser(user)}has created\n${getChannel(channel, type)}`,
         descCreate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was created`,
         descDeleteAudit: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel | Discord.AnyThreadChannel,
           type: string,
         ) => `${getUser(user)}has deleted\n${getChannel(channel, type)}`,
         descDelete: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
           `${getChannel(channel, type)}was deleted`,
         descUpdateAudit: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildChannel | Discord.AnyThreadChannel,
           type: string,
         ) => `${getUser(user)}has updated\n${getChannel(channel, type)}`,
@@ -787,32 +806,40 @@ export default {
         descUpdateStageAudit: (
           channel: Discord.StageChannel,
           channelType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
         ) => `${getUser(user)}has changed\n${getChannel(channel, channelType)}`,
         descUpdateStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was changed`,
         descCreateStageAudit: (
           channel: Discord.StageChannel,
           channelType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
         ) => `${getUser(user)}has started\n${getChannel(channel, channelType)}`,
         descCreateStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was started`,
         descDeleteStageAudit: (
           channel: Discord.StageChannel,
           channelType: string,
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
         ) => `${getUser(user)}has ended\n${getChannel(channel, channelType)}`,
         descDeleteStage: (channel: Discord.StageChannel, channelType: string) =>
           `${getChannel(channel, channelType)}was ended`,
-        descPinCreateAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+        descPinCreateAudit: (
+          user: CT.bEvalUser | Discord.User,
+          msg: Discord.Message,
+          channelType: string,
+        ) =>
           `${getUser(user)}has pinned\n${getMessage(msg)}in\n${getChannel(
             msg.channel,
             channelType,
           )}`,
         descPinCreate: (msg: Discord.Message, channelType: string) =>
           `${getMessage(msg)}was pinned in\n${getChannel(msg.channel, channelType)}`,
-        descPinRemoveAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+        descPinRemoveAudit: (
+          user: CT.bEvalUser | Discord.User,
+          msg: Discord.Message,
+          channelType: string,
+        ) =>
           `${getUser(user)}has un-pinned\n${getMessage(msg)}in\n${getChannel(
             msg.channel,
             channelType,
@@ -820,7 +847,7 @@ export default {
         descPinRemove: (msg: Discord.Message, channelType: string) =>
           `${getMessage(msg)}was un-pinned in\n${getChannel(msg.channel, channelType)}`,
         descTyping: (
-          user: Discord.User,
+          user: CT.bEvalUser | Discord.User,
           channel: Discord.GuildTextBasedChannel,
           channelType: string,
         ) => `${getUser(user)}has started typing in\n${getChannel(channel, channelType)}`,
@@ -869,7 +896,7 @@ export default {
       },
       userUpdate: {
         name: 'User updated',
-        desc: (user: Discord.User) => `${getUser(user)}has updated`,
+        desc: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}has updated`,
         avatar: 'Avatar',
         flags: 'Badges',
         discriminator: 'Tag',
@@ -877,11 +904,15 @@ export default {
       },
       automodActionExecution: {
         name: 'Auto-Moderation Rule enforced',
-        descMessage: (rule: Discord.AutoModerationRule, msg: Discord.Message, user: Discord.User) =>
+        descMessage: (
+          rule: Discord.AutoModerationRule,
+          msg: Discord.Message,
+          user: CT.bEvalUser | Discord.User,
+        ) =>
           `${getAutoModerationRule(rule)}was enforced on\nthis ${getMessage(msg)}from\n${getUser(
             user,
           )}`,
-        desc: (rule: Discord.AutoModerationRule, user: Discord.User) =>
+        desc: (rule: Discord.AutoModerationRule, user: CT.bEvalUser | Discord.User) =>
           `${getAutoModerationRule(rule)}was enforced on\n${getUser(user)}`,
         matchedKeyword: 'Matched Keyword',
         matchedContent: 'Matched Content',
@@ -905,11 +936,11 @@ export default {
         alertChannel: 'Alert Channel',
       },
       automodRule: {
-        descCreate: (user: Discord.User, rule: Discord.AutoModerationRule) =>
+        descCreate: (user: CT.bEvalUser | Discord.User, rule: Discord.AutoModerationRule) =>
           `${getUser(user)}created\n${getAutoModerationRule(rule)}`,
-        descDelete: (user: Discord.User, rule: Discord.AutoModerationRule) =>
+        descDelete: (user: CT.bEvalUser | Discord.User, rule: Discord.AutoModerationRule) =>
           `${getUser(user)}deleted\n${getAutoModerationRule(rule)}`,
-        descUpdate: (user: Discord.User, rule: Discord.AutoModerationRule) =>
+        descUpdate: (user: CT.bEvalUser | Discord.User, rule: Discord.AutoModerationRule) =>
           `${getUser(user)}updated\n${getAutoModerationRule(rule)}`,
         nameCreate: 'Auto-Moderation Rule created',
         nameDelete: 'Auto-Moderation Rule deleted',
@@ -962,9 +993,9 @@ export default {
     guildMemberUpdate: {
       boostingStart: `Member Started Boosting`,
       boostingEnd: `Member Stopped Boosting`,
-      descriptionBoostingStart: (user: Discord.User) =>
+      descriptionBoostingStart: (user: CT.bEvalUser | Discord.User) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas started Boosting the Server`,
-      descriptionBoostingEnd: (user: Discord.User) =>
+      descriptionBoostingEnd: (user: CT.bEvalUser | Discord.User) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas stopped Boosting the Server`,
     },
     ready: {
@@ -986,29 +1017,30 @@ export default {
           `If you want to keep your multiplier streak up, ([click and vote](https://top.gg/bot/650691698409734151/vote))\nYour multiplyer is currently ${votegain}x`,
       },
       nitro: {
-        gotRole: (user: Discord.User, role: Discord.Role, days: Strumber) =>
+        gotRole: (user: CT.bEvalUser | Discord.User, role: Discord.Role, days: Strumber) =>
           `<@${user.id}> has been given the <@&${role.id}> role for boosting longer than ${days} days`,
       },
     },
     vote: {
-      bot: (user: Discord.User, bot: Discord.User) =>
+      bot: (user: CT.bEvalUser | Discord.User, bot: CT.bEvalUser | Discord.User) =>
         `Thanks to ${user.discriminator} for voting for ${bot.username}!`,
-      guild: (user: Discord.User, guild: Discord.Guild) =>
+      guild: (user: CT.bEvalUser | Discord.User, guild: Discord.Guild) =>
         `Thanks to ${user.discriminator} for voting for ${guild.name}!`,
       reward: (reward: string) => `\nYou have received ${reward} for the next 12 hours.`,
       xpmultiplier: 'XP Multiplier',
-      botReason: (bot: Discord.User) => `Voted for ${bot.username}`,
+      botReason: (bot: CT.bEvalUser | Discord.User) => `Voted for ${bot.username}`,
       guildReason: (guild: Discord.Guild) => `Voted for ${guild.name}`,
       endReason: 'Vote ran out',
       reminder: {
         name: 'You can vote again!',
-        descBot: (bot: Discord.User) => `Your Vote time-out for \`${bot.tag}\` has ended`,
+        descBot: (bot: CT.bEvalUser | Discord.User) =>
+          `Your Vote time-out for \`${bot.tag}\` has ended`,
         descGuild: (guild: Discord.Guild) => `Your Vote time-out for \`${guild.name}\` has ended`,
-        voteBot: (bot: Discord.User) =>
+        voteBot: (bot: CT.bEvalUser | Discord.User) =>
           `[Click here to Vote again](https://top.gg/bot/${bot.id}/vote)`,
         voteGuild: (guild: Discord.Guild) =>
           `[Click here to Vote again](https://top.gg/servers/${guild.id}/vote)`,
-        voteBotButton: (bot: Discord.User) => `Vote for ${bot.username}`,
+        voteBotButton: (bot: CT.bEvalUser | Discord.User) => `Vote for ${bot.username}`,
         voteGuildButton: (guild: Discord.Guild) => `Vote for ${guild.name}`,
         voteAyakoButton: `Vote for ${client.user?.username}`,
         disable: 'Disable all Vote Reminders',
@@ -1048,7 +1080,7 @@ export default {
       `You have been kicked from \`${guild.name}\` because you didn't verify.\nYou can rejoin anytime with a valid Invite Link`,
     hintmsg: `Type out the traced colored Characters from left to right ➡️\nIgnore all gray decoy Characters\nIgnore Character Cases (upper & lower case)\nThe captcha contains 5 digits`,
     kickReason: `${client.user?.username} Verification | Unverified for too long`,
-    openDMs: (user: Discord.User) =>
+    openDMs: (user: CT.bEvalUser | Discord.User) =>
       `<@${user.id}> **Please open your DM's** in order to verify as human. Then press the Button above to re-/start Verification.\n**You can close your DM's afterwards**.`,
     wrongInput: (solution: string) =>
       `That was wrong... Are you a robot?.\nThe solution was \`${solution}\`\nI added a new Image to the Embed above, try again!`,
@@ -1056,9 +1088,9 @@ export default {
       `Time ran out for this Verification\nPlease go to <#${channel.id}> and press the \`Verify\` Botton to re-/start verification`,
     alreadyVerified: `You are already verified`,
     log: {
-      start: (user: Discord.User) =>
+      start: (user: CT.bEvalUser | Discord.User) =>
         `User <@${user.id}> /\`${user.username}#${user.discriminator}\` / \`${user.id}\`\nstarted Verification`,
-      end: (user: Discord.User) =>
+      end: (user: CT.bEvalUser | Discord.User) =>
         `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nfinished Verification`,
     },
     error: `An error occured while verifying! I have reported this to the Devs. Please re-try verifying`,
@@ -1076,7 +1108,7 @@ export default {
   },
   expire: {
     punishmentIssue: `Punishment was issued at`,
-    punishmentOf: (target: Discord.User) =>
+    punishmentOf: (target: Discord.User | CT.bEvalUser) =>
       `A Punishment of ${target.username}#${target.discriminator} has expired`,
     punishmentIn: `Punished in`,
     punishmentBy: `Punished by`,
@@ -1091,9 +1123,9 @@ export default {
       reasonReply: `Reply declared as Self-Deleting in ${client.user?.username} Settings`,
     },
     antispamHandler: {
-      banErrorMessage: (user: Discord.User) =>
+      banErrorMessage: (user: CT.bEvalUser | Discord.User) =>
         `I was unable to ban <@${user.id}>. \`Insufficient Permissions\``,
-      kickErrorMessage: (user: Discord.User) =>
+      kickErrorMessage: (user: CT.bEvalUser | Discord.User) =>
         `I was unable to kick <@${user.id}>. \`Insufficient Permissions\``,
     },
     afk: {
@@ -1101,12 +1133,13 @@ export default {
       description: `Display a AFK text whenever someone pings you.\nAutomatically deleted if you send a Message 1 Minute after creating your AFK`,
       usage: [`afk (text)`],
       footer: (userId: string, time: Strumber) => `<@${userId}> is AFK since ${time}`,
-      updatedTo: (user: Discord.User, text: string) =>
+      updatedTo: (user: CT.bEvalUser | Discord.User, text: string) =>
         `**<@${user.id}>'s AFK updated to:**\n${text}`,
-      updated: (user: Discord.User) => `**<@${user.id}>'s AFK updated**`,
+      updated: (user: CT.bEvalUser | Discord.User) => `**<@${user.id}>'s AFK updated**`,
       noLinks: `**You may not set Links as AFK.**`,
-      set: (user: Discord.User) => `**<@${user.id}>'s AFK set**`,
-      setTo: (user: Discord.User, text: string) => `**<@${user.id}>'s AFK set to:**\n${text}`,
+      set: (user: CT.bEvalUser | Discord.User) => `**<@${user.id}>'s AFK set**`,
+      setTo: (user: CT.bEvalUser | Discord.User, text: string) =>
+        `**<@${user.id}>'s AFK set to:**\n${text}`,
     },
     antiraidHandler: {
       debugMessage: {
@@ -1123,7 +1156,7 @@ export default {
       footer: (time: Strumber) => `Welcome back! You have been AFK for ${time}`,
       setAfk: `User went AFK`,
       delAfk: `User returned from being AFK`,
-      forceDelAfk: (user: Discord.User, reason: string) =>
+      forceDelAfk: (user: CT.bEvalUser | Discord.User, reason: string) =>
         `User's AFK was forcefully deleted by ${user.username}#${user.discriminator} | ${reason}`,
     },
     commandHandler: {
@@ -1141,7 +1174,7 @@ export default {
       modRoleError: `One of your Roles does not allow you to use this Command`,
     },
     toxicityCheck: {
-      warning: (user: Discord.User) => `<@${user.id}> Please do not use this word!`,
+      warning: (user: CT.bEvalUser | Discord.User) => `<@${user.id}> Please do not use this word!`,
       warnReason: `Repeatedly sending Blacklisted words`,
       author: `${client.user?.username} Blacklist`,
       info: (guild: Discord.Guild) =>
@@ -1175,7 +1208,7 @@ export default {
   slashCommands: {
     strike: {
       noneFound: `Your most used Reasons will appear here`,
-      areYouSure: (user: Discord.User, punishment: string) =>
+      areYouSure: (user: CT.bEvalUser | Discord.User, punishment: string) =>
         `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
       confirmAuthor: `Confirm Strike`,
       notEnabled: `The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> \`setting: Auto-Punish\` to enable it`,
@@ -1832,7 +1865,7 @@ export default {
         title: `Congratulations! You won a Giveaway! [Click me to get to the Giveaway]`,
         trouble: `If you have trouble with your Giveaway, DM or @Mention the User below`,
         getPrize: `To get your Prize, DM or @Mention the User below`,
-        couldntDM: (user: Discord.User) =>
+        couldntDM: (user: CT.bEvalUser | Discord.User) =>
           `I was unable to DM <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
         noValidEntries: `No valid Entries | No Winner picked`,
         checkDMs: `Check your DMs! | If you had your DMs closed, DM or @Mention the User below`,
@@ -1864,9 +1897,10 @@ export default {
     },
   },
   nitro: {
-    given: (user: Discord.User, roles: string, days: Strumber) =>
+    given: (user: CT.bEvalUser | Discord.User, roles: string, days: Strumber) =>
       `<@${user.id}> has been given\n${roles}\nfor boosting ${days} Days`,
-    taken: (user: Discord.User, roles: string) => `<@${user.id}> has been taken\n${roles}\nfrom`,
+    taken: (user: CT.bEvalUser | Discord.User, roles: string) =>
+      `<@${user.id}> has been taken\n${roles}\nfrom`,
   },
   autotypes: {
     antispam: `${client.user?.username} Anti-Spam`,
@@ -2619,7 +2653,7 @@ export default {
     uk: 'Ukraine',
     vi: 'Vietnam',
   },
-  welcome: (user: Discord.User, guild: Discord.Guild) =>
+  welcome: (user: CT.bEvalUser | Discord.User, guild: Discord.Guild) =>
     `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`,
   scopes: {
     bot: 'Bot',

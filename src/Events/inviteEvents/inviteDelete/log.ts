@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   const channels = await ch.getLogChannels('inviteevents', guild);
@@ -52,7 +51,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   }
 
   if (invite.channelId) {
-    const channel = client.channels.cache.get(invite.channelId);
+    const channel = guild.channels.cache.get(invite.channelId);
 
     if (channel) {
       embed.fields?.push({

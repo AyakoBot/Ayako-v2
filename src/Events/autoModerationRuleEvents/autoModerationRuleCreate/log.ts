@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
   const channels = await ch.getLogChannels('automodevents', rule.guild);
@@ -9,7 +8,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   const language = await ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
   const con = ch.constants.events.logs.automodRule;
-  const user = await client.users.fetch(rule.creatorId);
+  const user = await ch.getUser(rule.creatorId);
   if (!user) return;
 
   const embed: Discord.APIEmbed = {
@@ -86,9 +85,7 @@ export default async (rule: Discord.AutoModerationRule) => {
 
   const actionChannels = await Promise.all(
     rule.actions.map((r) =>
-      r.metadata?.channelId
-        ? ch.getChannel.guildTextChannel(r.metadata.channelId)
-        : undefined,
+      r.metadata?.channelId ? ch.getChannel.guildTextChannel(r.metadata.channelId) : undefined,
     ),
   );
 
@@ -124,10 +121,5 @@ export default async (rule: Discord.AutoModerationRule) => {
     inline: true,
   });
 
-  ch.send(
-    { id: channels, guildId: rule.guild.id },
-    { embeds: [embed] },
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

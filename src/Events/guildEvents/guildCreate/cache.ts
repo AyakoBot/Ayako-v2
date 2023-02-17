@@ -70,18 +70,16 @@ export default async (guild: Discord.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
-        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
         modBaseEvent({
-          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.none,
           msg:
             m.msgid && m.channelid
-              ? await (
-                  await ch.getChannel.guildTextChannel(m.channelid)
-                )?.messages.fetch(m.msgid)
+              ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'muteRemove',
@@ -100,18 +98,16 @@ export default async (guild: Discord.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
-        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
         modBaseEvent({
-          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.none,
           msg:
             m.msgid && m.channelid
-              ? await (
-                  await ch.getChannel.guildTextChannel(m.channelid)
-                )?.messages.fetch(m.msgid)
+              ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'banRemove',
@@ -130,18 +126,16 @@ export default async (guild: Discord.Guild) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
     ch.cache.mutes.set(
       Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
-        const target = m.userid ? (await client.users.fetch(m.userid)) ?? client.user : client.user;
+        const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
         modBaseEvent({
-          executor: m.executorid ? await client.users.fetch(m.executorid) : undefined,
+          executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.none,
           msg:
             m.msgid && m.channelid
-              ? await (
-                  await ch.getChannel.guildTextChannel(m.channelid)
-                )?.messages.fetch(m.msgid)
+              ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
               : undefined,
           guild,
           type: 'channelbanRemove',

@@ -1,12 +1,11 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import client from '../../BaseClient/Client.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
   const channels = await ch.getLogChannels('automodevents', execution.guild);
   if (!channels) return;
 
-  const user = await client.users.fetch(execution.userId);
+  const user = await ch.getUser(execution.userId);
   if (!user) return;
 
   const rule = (await execution.guild.autoModerationRules.fetch())?.get(execution.ruleId);
@@ -98,10 +97,5 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     });
   }
 
-  ch.send(
-    { id: channels, guildId: execution.guild.id },
-    { embeds: [embed] },
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: execution.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

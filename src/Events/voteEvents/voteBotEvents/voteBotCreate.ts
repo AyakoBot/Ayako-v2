@@ -18,7 +18,7 @@ export default async (
     .query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.voterewards[] | null) => r ?? null);
 
-  const bot = await client.users.fetch(vote.bot).catch(() => undefined);
+  const bot = await ch.getUser(vote.bot).catch(() => undefined);
   if (!bot) return;
 
   const language = await ch.languageSelector(member.guild.id);
@@ -103,7 +103,7 @@ const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
 const doAnnouncement = async (
   settings: DBT.votesettings,
   member: Discord.GuildMember,
-  bot: Discord.User,
+  bot: Discord.User | CT.bEvalUser,
   language: CT.Language,
   rewards?: DBT.voterewards[],
 ) => {
@@ -206,7 +206,7 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
     .then((r: DBT.users[] | null) => (r ? r[0] : null));
   if (userSettings && !userSettings.votereminders) return;
 
-  const bot = await client.users.fetch(vote.bot).catch(() => undefined);
+  const bot = await ch.getUser(vote.bot).catch(() => undefined);
   if (!bot) return;
 
   const dm = await member.user.createDM().catch(() => undefined);

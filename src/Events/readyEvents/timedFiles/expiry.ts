@@ -80,13 +80,15 @@ const logExpire = async (
   if (!channels) return;
 
   await Promise.all(rows.map((p) => guild.members.fetch(p.userid).catch(() => null)));
-  await Promise.all(rows.map((p) => client.users.fetch(p.userid).catch(() => null)));
+  await Promise.all(rows.map((p) => ch.getUser(p.userid).catch(() => null)));
 
   const language = await ch.languageSelector(guildid);
   const lan = language.expire;
 
+  const users = await Promise.all(rows.map((r) => ch.getUser(r.userid)));
+
   const embeds: (Discord.APIEmbed | undefined)[] = rows.map((p) => {
-    const user = client.users.cache.get(p.userid);
+    const user = users.find((u) => u?.id === p.userid);
     if (!user) return undefined;
     if (!client.user) return undefined;
 

@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (
   webhook: Discord.Webhook,
@@ -14,7 +13,7 @@ export default async (
   const con = ch.constants.events.logs.webhook;
   const audit = await ch.getAudit(channel.guild, 50, webhook.id);
   const auditUser =
-    (webhook.owner ? await client.users.fetch(webhook.owner.id) : undefined) ??
+    (webhook.owner ? await ch.getUser(webhook.owner.id) : undefined) ??
     audit?.executor ??
     undefined;
   const files: Discord.AttachmentPayload[] = [];

@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 
 export default async (
   channel:
@@ -32,7 +31,7 @@ export default async (
   const getChannelOwner = () => {
     if (audit?.executor) return audit.executor;
     if ('ownerId' in channel && channel.ownerId) {
-      return client.users.fetch(channel.ownerId).catch(() => undefined);
+      return ch.getUser(channel.ownerId).catch(() => undefined);
     }
     return undefined;
   };
@@ -170,10 +169,5 @@ export default async (
     embeds.push(permEmbed);
   }
 
-  ch.send(
-    { id: channels, guildId: channel.guild.id },
-    { embeds },
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, undefined, 10000);
 };

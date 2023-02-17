@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
@@ -13,7 +12,7 @@ export default async (
   const language = await ch.languageSelector(rule.guild.id);
   const lan = language.events.logs.automodRule;
   const con = ch.constants.events.logs.automodRule;
-  const user = await client.users.fetch(rule.creatorId);
+  const user = await ch.getUser(rule.creatorId);
   if (!user) return;
 
   const embed: Discord.APIEmbed = {
@@ -241,9 +240,7 @@ export default async (
 
     const addedChannels = await Promise.all(
       addedActions.map((a) =>
-        a?.metadata?.channelId
-          ? ch.getChannel.guildTextChannel(a.metadata.channelId)
-          : undefined,
+        a?.metadata?.channelId ? ch.getChannel.guildTextChannel(a.metadata.channelId) : undefined,
       ),
     );
     const removedChannels = removedActions
@@ -346,10 +343,5 @@ export default async (
 
   if (!embed.fields?.length) return;
 
-  ch.send(
-    { id: channels, guildId: rule.guild.id },
-    { embeds: [embed] },
-    undefined,
-    10000,
-  );
+  ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, undefined, 10000);
 };

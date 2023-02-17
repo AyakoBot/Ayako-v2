@@ -140,7 +140,10 @@ const logEmbed = async (language: CT.Language, args: CT.ModBaseEventOptions) => 
       ch.constants.colors[ch.constants.modColors[args.type] as keyof typeof ch.constants.colors],
     author: {
       name: lan.author(args),
-      icon_url: args.target?.displayAvatarURL({ size: 4096 }),
+      icon_url:
+        (typeof args.target.avatarURL === 'function'
+          ? args.target.avatarURL()
+          : args.target.avatarURL) ?? undefined,
     },
     description: lan.description(args),
     timestamp: String(Date.now()),
