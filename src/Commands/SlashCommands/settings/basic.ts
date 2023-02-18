@@ -17,18 +17,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const lan = language.slashCommands.settings.categories.basic;
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.guildsettings | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['basic'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'basic'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -65,12 +65,12 @@ export const getEmbeds = (
   },
 ];
 
-const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.guildsettings | null,
-  language: CT.Language,
-  name: 'basic' = 'basic',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'basic'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'basic',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [

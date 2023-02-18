@@ -32,8 +32,8 @@ const showID = async (
     .then((r: DBT.levelingmultiroles[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -69,12 +69,12 @@ const showAll = async (
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.levelingmultiroles | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['multi-roles'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'multi-roles'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -92,12 +92,12 @@ export const getEmbeds = (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.levelingmultiroles | null,
-  language: CT.Language,
-  name: 'multi-roles' = 'multi-roles',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'multi-roles'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'multi-roles',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [

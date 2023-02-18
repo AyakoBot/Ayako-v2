@@ -32,8 +32,8 @@ const showID = async (
     .then((r: DBT.voterewards[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -73,12 +73,12 @@ const showAll = async (
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.voterewards | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['vote-rewards'],
-): Discord.APIEmbed[] => {
+export const getEmbeds: CT.SettingsFile<'vote-rewards'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => {
   const embeds: Discord.APIEmbed[] = [
     {
       author: embedParsers.author(language, lan),
@@ -140,12 +140,12 @@ export const getEmbeds = (
   return embeds;
 };
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.voterewards | null,
-  language: CT.Language,
-  name: 'vote-rewards' = 'vote-rewards',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'vote-rewards'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'vote-rewards',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [

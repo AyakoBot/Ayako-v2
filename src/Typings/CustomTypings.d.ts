@@ -1,4 +1,6 @@
 import type * as Discord from 'discord.js';
+import * as ch from '../BaseClient/ClientHelper.js';
+import * as DBT from './DataBaseTypings';
 
 export type Language = typeof import('../Languages/en.js').default;
 
@@ -86,4 +88,60 @@ export interface bEvalUser {
   avatarURL?: string;
   displayAvatarURL: string;
   bannerURL?: string;
+}
+
+type TableNamesMap = {
+  'anti-spam': DBT.antispam;
+  'anti-spam-punishments': DBT.punishments;
+  'anti-virus-punishments': DBT.punishments;
+  'blacklist-punishments': DBT.punishments;
+  'anti-raid': DBT.antiraid;
+  'anti-virus': DBT.antivirus;
+  'auto-punish': DBT.autopunish;
+  blacklist: DBT.blacklist;
+  'auto-roles': DBT.autoroles;
+  cooldowns: DBT.cooldowns;
+  expiry: DBT.expiry;
+  'disboard-reminders': DBT.disboard;
+  'self-roles': DBT.selfroles;
+  separators: DBT.roleseparator;
+  sticky: DBT.sticky;
+  verification: DBT.verification;
+  welcome: DBT.welcome;
+  leveling: DBT.leveling;
+  nitro: DBT.nitrosettings;
+  'delete-commands': DBT.deletecommands;
+  suggestions: DBT.suggestionsettings;
+  logs: DBT.logchannels;
+  basic: DBT.guildsettings;
+  'multi-channels': DBT.levelingmultichannels;
+  'multi-roles': DBT.levelingmultiroles;
+  'level-roles': DBT.levelingroles;
+  'rule-channels': DBT.levelingruleschannels;
+  'nitro-roles': DBT.nitroroles;
+  'reaction-button-settings': DBT.rrbuttons;
+  'reaction-role-settings': DBT.rrsettings;
+  vote: DBT.votesettings;
+  'vote-rewards': DBT.voterewards;
+};
+
+type SettingsTable<T extends keyof TableNamesMap> = {
+  [K in T]: { guildid: string } & TableNamesMap[K];
+};
+
+export interface SettingsFile<T extends keyof TableNamesMap> {
+  getEmbeds: <K extends keyof TableNamesMap>(
+    embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+    settings: TableNamesMap[T] | null,
+    language: CT.Language,
+    lan: CT.Language['slashCommands']['settings']['categories'][T],
+  ) => Discord.APIEmbed[] | Promise<Discord.APIEmbed[]>;
+  getComponents: (
+    buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+    settings: TableNamesMap[T] | null,
+    language: CT.Language,
+    name: T = T,
+  ) =>
+    | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
+    | Promise<Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]>;
 }

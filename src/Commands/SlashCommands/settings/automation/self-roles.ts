@@ -32,8 +32,8 @@ const showID = async (
     .then((r: DBT.selfroles[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -69,12 +69,12 @@ const showAll = async (
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.selfroles | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'self-roles'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -122,12 +122,12 @@ export const getEmbeds = (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.selfroles | null,
-  language: CT.Language,
-  name: 'self-roles' = 'self-roles',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'self-roles',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [buttonParsers.global(language, !!settings?.active, 'active', name)],

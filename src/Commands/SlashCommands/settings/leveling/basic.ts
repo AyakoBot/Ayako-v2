@@ -18,7 +18,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -40,12 +40,12 @@ const getLevelUpMode = (
   }
 };
 
-export const getEmbeds = async (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.leveling | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['leveling'],
-): Promise<Discord.APIEmbed[]> => {
+export const getEmbeds: CT.SettingsFile<'leveling'>['getEmbeds'] = async (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => {
   const embeds: Discord.APIEmbed[] = [
     {
       author: embedParsers.author(language, lan),
@@ -176,12 +176,12 @@ export const getEmbeds = async (
   return embeds;
 };
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.leveling | null,
-  language: CT.Language,
-  name: 'leveling' = 'leveling',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
+export const getComponents: CT.SettingsFile<'leveling'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'leveling',
+) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,

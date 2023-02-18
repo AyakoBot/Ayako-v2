@@ -32,8 +32,8 @@ const showID = async (
     .then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -73,12 +73,12 @@ const showAll = async (
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.cooldowns | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['cooldowns'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'cooldowns'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -121,12 +121,12 @@ export const getEmbeds = (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.cooldowns | null,
-  language: CT.Language,
-  name: 'cooldowns' = 'cooldowns',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'cooldowns'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'cooldowns',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [buttonParsers.global(language, !!settings?.active, 'active', name)],

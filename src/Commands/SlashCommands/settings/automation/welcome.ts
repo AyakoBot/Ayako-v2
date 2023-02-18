@@ -18,17 +18,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
 
-export const getEmbeds = async (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.welcome | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['welcome'],
-): Promise<Discord.APIEmbed[]> => [
+export const getEmbeds: CT.SettingsFile<'welcome'>['getEmbeds'] = async (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -66,12 +66,12 @@ export const getEmbeds = async (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.welcome | null,
-  language: CT.Language,
-  name: 'welcome' = 'welcome',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'welcome'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'welcome',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [buttonParsers.global(language, !!settings?.active, 'active', name)],

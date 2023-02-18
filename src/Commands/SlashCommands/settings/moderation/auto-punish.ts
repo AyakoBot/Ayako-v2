@@ -32,8 +32,8 @@ const showID = async (
     .then((r: DBT.autopunish[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
@@ -75,12 +75,12 @@ const showAll = async (
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.autopunish | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['auto-punish'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'auto-punish'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -130,12 +130,12 @@ export const getEmbeds = (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.autopunish | null,
-  language: CT.Language,
-  name: 'auto-punish' = 'auto-punish',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'auto-punish'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'auto-punish',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [buttonParsers.global(language, !!settings?.active, 'active', name)],

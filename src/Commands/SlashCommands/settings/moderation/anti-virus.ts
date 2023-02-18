@@ -17,18 +17,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then((r: DBT.antivirus[] | null) => (r ? r[0] : null));
 
   cmd.reply({
-    embeds: getEmbeds(embedParsers, settings, language, lan),
-    components: getComponents(buttonParsers, settings, language),
+    embeds: await getEmbeds(embedParsers, settings, language, lan),
+    components: await getComponents(buttonParsers, settings, language),
     ephemeral: true,
   });
 };
 
-export const getEmbeds = (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-  settings: DBT.antivirus | null,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['anti-virus'],
-): Discord.APIEmbed[] => [
+export const getEmbeds: CT.SettingsFile<'anti-virus'>['getEmbeds'] = (
+  embedParsers,
+  settings,
+  language,
+  lan,
+) => [
   {
     author: embedParsers.author(language, lan),
     fields: [
@@ -77,12 +77,12 @@ export const getEmbeds = (
   },
 ];
 
-export const getComponents = (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-  settings: DBT.antivirus | null,
-  language: CT.Language,
-  name: 'anti-virus' = 'anti-virus',
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+export const getComponents: CT.SettingsFile<'anti-virus'>['getComponents'] = (
+  buttonParsers,
+  settings,
+  language,
+  name = 'anti-virus',
+) => [
   {
     type: Discord.ComponentType.ActionRow,
     components: [buttonParsers.global(language, !!settings?.active, 'active', name)],

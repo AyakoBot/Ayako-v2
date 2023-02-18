@@ -219,4 +219,21 @@ const settings = new Discord.SlashCommandBuilder()
       .setDescription(`Basic Settings to modify ${client.user?.username}'s behaviour`),
   );
 
-export default { public: { settings } };
+const userinfo = new Discord.SlashCommandBuilder()
+  .setName('user-info')
+  .setDescription('Display Information about you or any other User')
+  .setDMPermission(true)
+  .addUserOption(
+    new Discord.SlashCommandUserOption()
+      .setName('user')
+      .setDescription('The User to display Information of')
+      .setRequired(false),
+  )
+  .addStringOption(
+    new Discord.SlashCommandStringOption()
+      .setName('user-name')
+      .setDescription('Search for the User to display Information of')
+      .setRequired(false),
+  );
+
+export default { public: { settings, userinfo } };
