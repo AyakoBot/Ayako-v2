@@ -184,10 +184,21 @@ const multiRowHelpers = {
   ],
 };
 
+export const updateLog = (
+  oldSetting: typeof DBT.Res,
+  newSetting: typeof DBT.Res,
+  changedSetting: string,
+  setting: string,
+  uniquetimestamp?: number,
+) => {
+  console.log(oldSetting, newSetting, changedSetting, setting, uniquetimestamp);
+};
+
 export default {
   embedParsers,
   buttonParsers,
   multiRowHelpers,
+  updateLog,
 };
 
 const getEmoji = (

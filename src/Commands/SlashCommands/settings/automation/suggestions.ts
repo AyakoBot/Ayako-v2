@@ -86,7 +86,7 @@ export const getEmbeds = (
   },
 ];
 
-const getComponents = (
+export const getComponents = (
   buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
   settings: DBT.suggestionsettings | null,
   language: CT.Language,

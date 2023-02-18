@@ -97,7 +97,7 @@ export type cooldowns = {
   guildid: string;
   active: boolean;
 
-  command: string;
+  command?: string;
   cooldown: string;
 
   activechannelid?: string[];
@@ -699,7 +699,7 @@ export type punishments = {
   uniquetimestamp: string;
   guildid: string;
   warnamount: string;
-  punishment:
+  punishment?:
     | 'warn'
     | 'ban'
     | 'verbal'
@@ -708,7 +708,7 @@ export type punishments = {
     | 'tempban'
     | 'channelban'
     | 'tempchannelban';
-    active: boolean;
-    duration: string;
-    type: 'anti-spam' | 'anti-virus' | 'blacklist'
+  active: boolean;
+  duration: string;
+  type?: 'anti-spam' | 'anti-virus' | 'blacklist';
 };

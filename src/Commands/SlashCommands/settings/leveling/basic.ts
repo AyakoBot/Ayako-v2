@@ -176,7 +176,7 @@ export const getEmbeds = async (
   return embeds;
 };
 
-const getComponents = (
+export const getComponents = (
   buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
   settings: DBT.leveling | null,
   language: CT.Language,
