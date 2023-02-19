@@ -4,6 +4,7 @@ import buttonHandler from './buttonHandler.js';
 import modalHandler from './modalHandler.js';
 import contextCommandHandler from './contextCommandHandler.js';
 import selectHandler from './selectHandler.js';
+import autocompleteHandler from './autocompleteHandler.js';
 
 export default async (cmd: Discord.Interaction) => {
   commandHandler(cmd);
@@ -11,4 +12,5 @@ export default async (cmd: Discord.Interaction) => {
   modalHandler(cmd);
   contextCommandHandler(cmd);
   selectHandler(cmd);
+  autocompleteHandler(cmd);
 };

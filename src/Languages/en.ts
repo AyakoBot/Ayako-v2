@@ -51,7 +51,11 @@ const getEmote = (emoji: Discord.Emoji) =>
     emoji.id ?? 'None'
   }\`\n`;
 
-const getInviteDetails = (invite: Discord.Invite, user?: Discord.User | CT.bEvalUser, channelType?: string) =>
+const getInviteDetails = (
+  invite: Discord.Invite,
+  user?: Discord.User | CT.bEvalUser,
+  channelType?: string,
+) =>
   `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
     invite.uses
   }\nCreated: ${
@@ -1212,6 +1216,43 @@ export default {
         `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
       confirmAuthor: `Confirm Strike`,
       notEnabled: `The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> \`setting: Auto-Punish\` to enable it`,
+    },
+    userinfo: {
+      authorUser: `${client.user?.username} User-Info`,
+      authorBot: `${client.user?.username} Bot-Info`,
+      userInfo: (user: Discord.User) =>
+        `**User:** ${user}\n**Tag:** \`${user.tag}\`\n**Discriminator:** \`${user.discriminator}\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** \`${user.accentColor}\`/\`${user.hexAccentColor}\``,
+      flags: 'Badges',
+      createdAt: 'Created At',
+      footer: '⬅️ Accent Color',
+      memberAuthorUser: `${client.user?.username} Member User-Info`,
+      memberAuthorBot: `${client.user?.username} Member Bot-Info`,
+      displayName: 'Display Name',
+      timeout: 'Timed Out',
+      joinedAt: 'Joined At',
+      permissions: 'Permissions',
+      boosting: 'Boosting',
+      boostingSince: 'Boosting Since',
+      communicationDisabledUntil: 'Timed out until: ',
+      viewRoles: 'View Roles',
+      viewBasicPermissions: 'View Basic Permissions',
+      viewChannelPermissions: 'View Channel Permissions',
+      rolesWithoutSep: 'Roles without Separator',
+      botInfo: (res: CT.TopGGResponse) =>
+        `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
+          res.server_count ?? 'Unknown'
+        }\n**Tags:** ${
+          res.tags.map((t) => `\`${t}\``).join(', ') ?? 'None'
+        }\n\n**__Links:__**\n**Website:** ${res.website ?? 'None'}\n**Support Server:** ${
+          res.support ? `https://discord.gg/${res.support}` : 'None'
+        }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
+          res.github ?? 'Unknown'
+        }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
+          res.monthlyPoints
+        }`,
+      browser: 'Try Opening Profile | Browser',
+      desktop: 'Try Opening Profile | Desktop App',
+      mobile: 'Try Opening Profile | Mobile',
     },
     settings: {
       authorType: (type: string) => `${client.user?.username} ${type} Settings`,

@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import stringEmotes from '../ClientHelperModules/stringEmotes.js';
 import type CT from '../../Typings/CustomTypings';
 
-export default (bits: number, lan: CT.Language, emotes = false) => {
+export default (bits: number, lan: CT.Language, emotes: boolean = false) => {
   if (!bits) return [];
   const bitField = new Discord.PermissionsBitField(BigInt(bits));
   const flags = [];

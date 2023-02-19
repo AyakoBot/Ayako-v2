@@ -54,6 +54,7 @@ export const isManageable               = (await import(`./ClientHelperModules/i
 export const getEvents                  = (await import(`./ClientHelperModules/getEvents.js`)).default;
 export const getNameAndFileType         = (await import(`./ClientHelperModules/getNameAndFileType.js`)).default;
 export const getUser                    = (await import(`./ClientHelperModules/getUser.js`)).default;
+export const findUserByName             = (await import(`./ClientHelperModules/findUserByName.js`)).default;
 
 export const settingsHelpers            = (await import(`./ClientHelperModules/settingsHelpers.js`)).default;
 export const neko                       = (await import('./NekoClient.js')).default;

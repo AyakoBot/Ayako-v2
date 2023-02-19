@@ -59,8 +59,8 @@ export default {
     Boost24: { name: '24Months', id: '945984202820702238', animated: false },
   },
   channelTypes: {
-    '2': { name: 'Voice', id: '946108239072878682', animated: false },
     '0': { name: 'Text', id: '946108242155667526', animated: false },
+    '2': { name: 'Voice', id: '946108239072878682', animated: false },
     '4': { name: 'Category', id: '946108238817030174', animated: false },
     '5': { name: 'News', id: '946108238737338388', animated: false },
     '10': { name: 'NewsThread', id: '946325567513440367', animated: false },

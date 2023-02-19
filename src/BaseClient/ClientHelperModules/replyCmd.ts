@@ -1,10 +1,13 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
+import * as replyMsg from './replyMsg.js';
 
 const sendMessage = (cmd: Discord.Interaction, payload: Discord.InteractionReplyOptions) => {
   if ('respond' in cmd) {
     return undefined;
   }
+
+  payload.ephemeral = true;
 
   if ('reply' in cmd && cmd.isRepliable()) {
     return cmd.reply(payload).catch((err) => {
@@ -26,8 +29,6 @@ export default async (
 
   const sentMessage = await sendMessage(cmd, payload);
   if (!sentMessage) return null;
-
-  const replyMsg = await import('./replyMsg');
 
   if (command) {
     replyMsg.cooldownHandler(cmd, sentMessage, command);

@@ -220,7 +220,7 @@ const settings = new Discord.SlashCommandBuilder()
   );
 
 const userinfo = new Discord.SlashCommandBuilder()
-  .setName('user-info')
+  .setName('userinfo')
   .setDescription('Display Information about you or any other User')
   .setDMPermission(true)
   .addUserOption(
@@ -233,7 +233,9 @@ const userinfo = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandStringOption()
       .setName('user-name')
       .setDescription('Search for the User to display Information of')
-      .setRequired(false),
+      .setRequired(false)
+      .setMinLength(2)
+      .setAutocomplete(true),
   );
 
 export default { public: { settings, userinfo } };
