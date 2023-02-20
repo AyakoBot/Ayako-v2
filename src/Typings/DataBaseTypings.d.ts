@@ -274,3 +274,23 @@ export type stickymessages = {
   channelid: strin;
 };
 
+export type nitrousers = {
+  guildid: string;
+  userid: string;
+  booststart: string;
+  boostend?: string;
+  days?: number;
+};
+
+export type stats = {
+  usercount: string;
+  guildcount: string;
+  channelcount: string;
+  rolecount: string;
+  allusers: string;
+  willis?: string[];
+  count?: string;
+  antispam: boolean;
+  verbosity: boolean;
+  heartbeat: string;
+};

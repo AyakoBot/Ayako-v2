@@ -129,7 +129,6 @@ export type disboard = {
 
 export type guildsettings = {
   guildid: string;
-
   prefix?: string;
   interactionsmode: boolean;
   lan: string;
@@ -272,14 +271,6 @@ export type nitrosettings = {
   rolemode: boolean;
 };
 
-export type nitrousers = {
-  guildid: string;
-  userid: string;
-  booststart: string;
-  boostend?: string;
-  days?: number;
-};
-
 export type roleseparator = {
   guildid: string;
   uniquetimestamp: string;
@@ -328,19 +319,6 @@ export type selfroles = {
   blusers?: string[];
   wlroles?: string[];
   wlusers?: string[];
-};
-
-export type stats = {
-  usercount: string;
-  guildcount: string;
-  channelcount: string;
-  rolecount: string;
-  allusers: string;
-  willis?: string[];
-  count?: string;
-  antispam: boolean;
-  verbosity: boolean;
-  heartbeat: string;
 };
 
 // TODO
