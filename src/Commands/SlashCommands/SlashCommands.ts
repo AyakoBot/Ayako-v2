@@ -219,8 +219,8 @@ const settings = new Discord.SlashCommandBuilder()
       .setDescription(`Basic Settings to modify ${client.user?.username}'s behaviour`),
   );
 
-const userinfo = new Discord.SlashCommandBuilder()
-  .setName('userinfo')
+const whois = new Discord.SlashCommandBuilder()
+  .setName('whois')
   .setDescription('Display Information about you or any other User')
   .setDMPermission(true)
   .addUserOption(
@@ -232,10 +232,12 @@ const userinfo = new Discord.SlashCommandBuilder()
   .addStringOption(
     new Discord.SlashCommandStringOption()
       .setName('user-name')
-      .setDescription('Search for the User to display Information of')
+      .setDescription(
+        `Username of the User (Searches across all of ${client.user?.username}'s Servers)`,
+      )
       .setRequired(false)
       .setMinLength(2)
       .setAutocomplete(true),
   );
 
-export default { public: { settings, userinfo } };
+export default { public: { settings, whois } };

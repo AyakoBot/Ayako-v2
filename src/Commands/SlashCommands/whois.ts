@@ -8,7 +8,7 @@ import auth from '../../auth.json' assert { type: 'json' };
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const userID = cmd.options.get('user-name', false)?.value as string | null;
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.userinfo;
+  const lan = language.slashCommands.whois;
 
   if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
     ch.errorCmd(cmd, language.errors.userNotFound, language);
@@ -61,7 +61,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const member = await cmd.guild?.members.fetch(user.id)?.catch(() => undefined);
   const components = getComponents(member, user, language, cmd.guild);
 
-  if (botInfo) userInfo.fields?.push({ name: language.Description, value: botInfo.description });
+  if (botInfo && botInfo.description) {
+    userInfo.fields?.push({ name: language.Description, value: botInfo.description });
+  }
 
   if (userflags.length) {
     userInfo.fields?.push({
@@ -95,7 +97,7 @@ const getMemberEmbed = (
   user: Discord.User,
   language: CT.Language,
 ) => {
-  const lan = language.slashCommands.userinfo;
+  const lan = language.slashCommands.whois;
 
   const memberEmbed: Discord.APIEmbed = {
     author: {
@@ -146,11 +148,13 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
   const res = await fetch(`https://top.gg/api/bots/${bot.id}`, {
     headers: { Authorization: auth.topGGtoken },
   })
-    .then((r) => r.json() as Promise<CT.TopGGResponse> | Promise<null>)
+    .then(
+      (r) => r.json() as Promise<CT.TopGGResponse<true> | CT.TopGGResponse<false>> | Promise<null>,
+    )
     .catch(() => {});
 
-  if (!res) return null;
-  return { info: language.slashCommands.userinfo.botInfo(res), description: res.shortdesc };
+  if (!res || 'error' in res) return null;
+  return { info: language.slashCommands.whois.botInfo(res), description: res.shortdesc };
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
@@ -208,7 +212,7 @@ const getComponents = (
   language: CT.Language,
   guild: Discord.Guild | null,
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent | Discord.APISelectMenuComponent>[] => {
-  const lan = language.slashCommands.userinfo;
+  const lan = language.slashCommands.whois;
 
   const linkButtons: Discord.APIButtonComponent[] = [
     {

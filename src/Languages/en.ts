@@ -1217,7 +1217,7 @@ export default {
       confirmAuthor: `Confirm Strike`,
       notEnabled: `The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> \`setting: Auto-Punish\` to enable it`,
     },
-    userinfo: {
+    whois: {
       authorUser: `${client.user?.username} User-Info`,
       authorBot: `${client.user?.username} Bot-Info`,
       userInfo: (user: Discord.User) =>
@@ -1238,11 +1238,11 @@ export default {
       viewBasicPermissions: 'View Basic Permissions',
       viewChannelPermissions: 'View Channel Permissions',
       rolesWithoutSep: 'Roles without Separator',
-      botInfo: (res: CT.TopGGResponse) =>
+      botInfo: (res: CT.TopGGResponse<true>) =>
         `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
           res.server_count ?? 'Unknown'
         }\n**Tags:** ${
-          res.tags.map((t) => `\`${t}\``).join(', ') ?? 'None'
+          res.tags?.map((t) => `\`${t}\``).join(', ') ?? 'None'
         }\n\n**__Links:__**\n**Website:** ${res.website ?? 'None'}\n**Support Server:** ${
           res.support ? `https://discord.gg/${res.support}` : 'None'
         }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
