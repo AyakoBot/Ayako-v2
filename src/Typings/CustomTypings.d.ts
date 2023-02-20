@@ -119,8 +119,6 @@ type TableNamesMap = {
   'level-roles': DBT.levelingroles;
   'rule-channels': DBT.levelingruleschannels;
   'nitro-roles': DBT.nitroroles;
-  'reaction-button-settings': DBT.rrbuttons;
-  'reaction-role-settings': DBT.rrsettings;
   vote: DBT.votesettings;
   'vote-rewards': DBT.voterewards;
 };
@@ -145,3 +143,38 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
     | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
     | Promise<Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]>;
 }
+
+type AllKeys<T> = T extends T ? keyof T : never;
+type FilterSettings<T, K extends AllKeys<T>> = Extract<T, Record<K, any>>;
+
+type SuccessfulTopGGResponse = {
+  username: string;
+  id: string;
+  discriminator: string;
+  avatar: string;
+  defAvatar: string;
+  prefix: string;
+  shortdesc: string;
+  longdesc: string;
+  tags?: string[];
+  website: string;
+  support: string;
+  github: string;
+  owners: string[];
+  guilds: string[];
+  invite: string;
+  date: string;
+  server_count: number;
+  shard_count: string;
+  certifiedBot: string;
+  vanity: string;
+  points: number;
+  monthlyPoints: number;
+  donatebotguildid: string;
+};
+
+type FailedTopGGResponse = { error: string };
+
+export type TopGGResponse<T extends boolean> = T extends true
+  ? SuccessfulTopGGResponse
+  : FailedTopGGResponse;
