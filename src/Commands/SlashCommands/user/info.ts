@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
-import * as ch from '../../BaseClient/ClientHelper.js';
-import type * as CT from '../../Typings/CustomTypings';
-import client from '../../BaseClient/Client.js';
-import auth from '../../auth.json' assert { type: 'json' };
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../Typings/CustomTypings';
+import client from '../../../BaseClient/Client.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const userID = cmd.options.get('user-name', false)?.value as string | null;
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.whois;
+  const lan = language.slashCommands.user.info;
 
   if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
     ch.errorCmd(cmd, language.errors.userNotFound, language);
@@ -16,7 +16,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   }
 
   const user =
-    cmd.options.getUser('user', false) ?? (userID ? await client.users.fetch(userID) : cmd.user);
+    cmd.options.getUser('user', false) ??
+    (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
+    cmd.user;
 
   if (!user) {
     ch.errorCmd(cmd, language.errors.userNotFound, language);
@@ -97,7 +99,7 @@ const getMemberEmbed = (
   user: Discord.User,
   language: CT.Language,
 ) => {
-  const lan = language.slashCommands.whois;
+  const lan = language.slashCommands.user.info;
 
   const memberEmbed: Discord.APIEmbed = {
     author: {
@@ -154,7 +156,7 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
     .catch(() => {});
 
   if (!res || 'error' in res) return null;
-  return { info: language.slashCommands.whois.botInfo(res), description: res.shortdesc };
+  return { info: language.slashCommands.user.info.botInfo(res), description: res.shortdesc };
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
@@ -212,7 +214,7 @@ const getComponents = (
   language: CT.Language,
   guild: Discord.Guild | null,
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent | Discord.APISelectMenuComponent>[] => {
-  const lan = language.slashCommands.whois;
+  const lan = language.slashCommands.user.info;
 
   const linkButtons: Discord.APIButtonComponent[] = [
     {

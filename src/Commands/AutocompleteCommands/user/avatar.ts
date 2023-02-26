@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.AutocompleteInteraction) => {
   const value = cmd.options.get('user-name', false)?.value as string;
