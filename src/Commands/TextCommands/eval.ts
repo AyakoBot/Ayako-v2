@@ -1,5 +1,10 @@
 import type * as Discord from 'discord.js';
 
+// @ts-ignore
+import auth from '../../auth.json' assert { type: 'json' };
+// @ts-ignore
+import fetch from 'node-fetch';
+
 export const cooldown = 0;
 export const name = 'eval';
 export const takesFirstArg = true;
