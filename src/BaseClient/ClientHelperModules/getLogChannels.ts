@@ -25,6 +25,6 @@ export default async (
     | 'memberevents',
   guild: Discord.Guild,
 ) =>
-  query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1;`, [guild.id]).then(
+  query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1 LIMIT 1;`, [guild.id]).then(
     (r: DBT.logchannels[] | null) => (r ? r[0][columnName] : null),
   );
