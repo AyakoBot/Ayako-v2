@@ -8,9 +8,7 @@ import query from './query.js';
 import constants from '../Other/constants.js';
 
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
-type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'] & {
-  [key: string]: { name: string };
-};
+type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
 
 const embedParsers = {
   author: <T extends keyof SettingsNames>(language: CT.Language, lan: SettingsNames[T]) => ({
@@ -68,30 +66,54 @@ const buttonParsers = {
     settingName: T,
     type?: 'channel' | 'role' | 'user',
     emoji?: Discord.APIMessageComponentEmoji,
-  ): Discord.APIButtonComponent => ({
-    type: Discord.ComponentType.Button,
-    label: (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name]
-      .name,
-    style:
-      (typeof setting !== 'boolean' && setting?.length) || !!setting
-        ? Discord.ButtonStyle.Primary
-        : Discord.ButtonStyle.Secondary,
-    custom_id: `settings/${String(name)}_${settingName}`,
-    emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
-  }),
+  ): Discord.APIButtonComponent => {
+    const constantTypes =
+      constants.commands.settings.types[
+        settingName as keyof typeof constants.commands.settings.types
+      ];
+
+    return {
+      type: Discord.ComponentType.Button,
+      label: (
+        (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
+          name
+        ] as Record<string, string>
+      ).name,
+      style:
+        (typeof setting !== 'boolean' && setting?.length) || !!setting
+          ? Discord.ButtonStyle.Primary
+          : Discord.ButtonStyle.Secondary,
+      custom_id: `settings/${settingName}/${
+        constantTypes[name as keyof typeof constantTypes]
+      }_${String(name)}_${settingName}`,
+      emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
+    };
+  },
   boolean: <T extends keyof SettingsNames>(
     language: CT.Language,
     setting: boolean | undefined,
     name: keyof FieldName<T>,
     settingName: T,
-  ): Discord.APIButtonComponent => ({
-    type: Discord.ComponentType.Button,
-    label: (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name]
-      .name,
-    style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
-    custom_id: `settings/${String(name)}_${settingName}`,
-    emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
-  }),
+  ): Discord.APIButtonComponent => {
+    const constantTypes =
+      constants.commands.settings.types[
+        settingName as keyof typeof constants.commands.settings.types
+      ];
+
+    return {
+      type: Discord.ComponentType.Button,
+      label: (
+        (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
+          name
+        ] as Record<'name', string>
+      ).name,
+      style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+      custom_id: `settings/${settingName}/${
+        constantTypes[name as keyof typeof constantTypes]
+      }_${String(name)}_${settingName}`,
+      emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
+    };
+  },
   create: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.create,
