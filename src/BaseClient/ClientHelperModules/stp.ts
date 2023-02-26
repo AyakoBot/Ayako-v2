@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import auth from '../../auth.json' assert { type: 'json' };
 
-export default (expression: string, obj: { [key: string]: any }) => {
+export default (expression: string, obj: Record<string, any>) => {
   const text = (e: string) => {
     const t = e.replace(/{{\s?([^{}\s]*)\s?}}/g, (substring: string, value: string) => {
       const newValue = value.split('.');

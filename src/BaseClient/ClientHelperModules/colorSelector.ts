@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import constants from '../Other/constants.js';
 
-export default (member?: Discord.GuildMember) => {
+export default (member?: Discord.GuildMember | null) => {
   if (!member) return constants.colors.base;
   if (!member.roles.highest) return constants.colors.base;
 

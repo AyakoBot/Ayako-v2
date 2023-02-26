@@ -228,8 +228,8 @@ export default async (
     );
     const changedActions = (
       ch.getChanged(
-        rule.actions as unknown as { [key: string]: unknown }[],
-        (oldRule?.actions ?? []) as unknown as { [key: string]: unknown }[],
+        rule.actions as unknown as Record<string, unknown>[],
+        (oldRule?.actions ?? []) as unknown as Record<string, unknown>[],
         'id',
       ) as unknown as Discord.AutoModerationRule['actions']
     ).filter(

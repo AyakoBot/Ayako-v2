@@ -1217,42 +1217,56 @@ export default {
       confirmAuthor: `Confirm Strike`,
       notEnabled: `The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> \`setting: Auto-Punish\` to enable it`,
     },
-    whois: {
-      authorUser: `${client.user?.username} User-Info`,
-      authorBot: `${client.user?.username} Bot-Info`,
-      userInfo: (user: Discord.User) =>
-        `**User:** ${user}\n**Tag:** \`${user.tag}\`\n**Discriminator:** \`${user.discriminator}\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** \`${user.accentColor}\`/\`${user.hexAccentColor}\``,
-      flags: 'Badges',
-      createdAt: 'Created At',
-      footer: '⬅️ Accent Color',
-      memberAuthorUser: `${client.user?.username} Member User-Info`,
-      memberAuthorBot: `${client.user?.username} Member Bot-Info`,
-      displayName: 'Display Name',
-      timeout: 'Timed Out',
-      joinedAt: 'Joined At',
-      permissions: 'Permissions',
-      boosting: 'Boosting',
-      boostingSince: 'Boosting Since',
-      communicationDisabledUntil: 'Timed out until: ',
-      viewRoles: 'View Roles',
-      viewBasicPermissions: 'View Basic Permissions',
-      viewChannelPermissions: 'View Channel Permissions',
-      rolesWithoutSep: 'Roles without Separator',
-      botInfo: (res: CT.TopGGResponse<true>) =>
-        `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
-          res.server_count ?? 'Unknown'
-        }\n**Tags:** ${
-          res.tags?.map((t) => `\`${t}\``).join(', ') ?? 'None'
-        }\n\n**__Links:__**\n**Website:** ${res.website ?? 'None'}\n**Support Server:** ${
-          res.support ? `https://discord.gg/${res.support}` : 'None'
-        }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
-          res.github ?? 'Unknown'
-        }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
-          res.monthlyPoints
-        }`,
-      browser: 'Try Opening Profile | Browser',
-      desktop: 'Try Opening Profile | Desktop App',
-      mobile: 'Try Opening Profile | Mobile',
+    user: {
+      info: {
+        authorUser: `${client.user?.username} User-Info`,
+        authorBot: `${client.user?.username} Bot-Info`,
+        userInfo: (user: Discord.User) =>
+          `**User:** ${user}\n**Tag:** \`${user.tag}\`\n**Discriminator:** \`${user.discriminator}\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** \`${user.accentColor}\`/\`${user.hexAccentColor}\``,
+        flags: 'Badges',
+        createdAt: 'Created At',
+        footer: '⬅️ Accent Color',
+        memberAuthorUser: `${client.user?.username} Member User-Info`,
+        memberAuthorBot: `${client.user?.username} Member Bot-Info`,
+        displayName: 'Display Name',
+        timeout: 'Timed Out',
+        joinedAt: 'Joined At',
+        permissions: 'Permissions',
+        boosting: 'Boosting',
+        boostingSince: 'Boosting Since',
+        communicationDisabledUntil: 'Timed out until: ',
+        viewRoles: 'View Roles',
+        viewBasicPermissions: 'View Basic Permissions',
+        viewChannelPermissions: 'View Channel Permissions',
+        rolesWithoutSep: 'Roles without Separator',
+        botInfo: (res: CT.TopGGResponse<true>) =>
+          `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
+            res.server_count ?? 'Unknown'
+          }\n**Tags:** ${
+            res.tags?.map((t) => `\`${t}\``).join(', ') ?? 'None'
+          }\n\n**__Links:__**\n**Website:** ${res.website ?? 'None'}\n**Support Server:** ${
+            res.support ? `https://discord.gg/${res.support}` : 'None'
+          }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
+            res.github ?? 'Unknown'
+          }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
+            res.monthlyPoints
+          }`,
+        browser: 'Try Opening Profile | Browser',
+        desktop: 'Try Opening Profile | Desktop App',
+        mobile: 'Try Opening Profile | Mobile',
+      },
+      avatar: {
+        authorUser: (user: Discord.User) => `${user.tag} User-Avatar`,
+        authorBot: (user: Discord.User) => `${user.tag} Bot-Avatar`,
+        authorMember: (user: Discord.User) => `${user.tag} Member-Avatar`,
+      },
+      banner: {
+        authorUser: (user: Discord.User) => `${user.tag} User-Banner`,
+        authorMember: (user: Discord.User) => `${user.tag} Member-Banner`,
+        authorBot: (user: Discord.User) => `${user.tag} Bot-Banner`,
+        guildBannerFail: 'Bots can currently not view Server Banners of Users',
+        noBanner: 'This User has no Banner',
+      },
     },
     settings: {
       authorType: (type: string) => `${client.user?.username} ${type} Settings`,
@@ -1737,6 +1751,24 @@ export default {
             channels: {
               name: 'Channels',
             },
+            hasleastattachments: { name: `Has at least this many Attachments` },
+            hasmostattachments: { name: `Has at most this many Attachments` },
+            hasleastcharacters: { name: `Has at least this many Characters in Content` },
+            hasmostcharacters: { name: `Has at most this many Characters in Content` },
+            hasleastwords: { name: `Has at least this many Words in Content` },
+            hasmostwords: { name: `Has at most this many Words in Content` },
+            mentionsleastusers: { name: `Mentions at least this many Users in Content` },
+            mentionsmostusers: { name: `Mentions at most this many Users in Content` },
+            mentionsleastchannels: { name: `Mentions at least this many Channels in Content` },
+            mentionsmostchannels: { name: `Mentions at most this many Channels in Content` },
+            mentionsleastroles: { name: `Mentions at least this many Roles in Content` },
+            mentionsmostroles: { name: `Mentions at most this many Roles in Content` },
+            hasleastlinks: { name: `Has at least this many Links` },
+            hasmostlinks: { name: `Has at most this many Links` },
+            hasleastemotes: { name: `Has at least this many Emotes` },
+            hasmostemotes: { name: `Has at most this many Emotes` },
+            hasleastmentions: { name: `Has at least this many @Mentions` },
+            hasmostmentions: { name: `Has at most this many @Mentions` },
           },
         },
         nitro: {

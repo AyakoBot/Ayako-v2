@@ -1,6 +1,6 @@
 export default (
-  array1: { [key: string]: unknown }[] | undefined,
-  array2: { [key: string]: unknown }[] | undefined,
+  array1: Record<string, unknown>[] | undefined,
+  array2: Record<string, unknown>[] | undefined,
   identifier: string,
 ) =>
   array2?.length

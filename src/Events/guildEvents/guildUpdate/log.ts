@@ -249,12 +249,14 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     }[];
 
     const changedChannel = ch.getChanged(
-      (oldWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
-        [key: string]: unknown;
-      }[],
-      (newWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as {
-        [key: string]: unknown;
-      }[],
+      (oldWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as Record<
+        string,
+        unknown
+      >[],
+      (newWelcomeScreen?.welcomeChannels.map((c) => c) ?? []) as unknown as Record<
+        string,
+        unknown
+      >[],
       'channelId',
     ) as
       | {

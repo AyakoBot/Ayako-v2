@@ -11,10 +11,10 @@ export default async (cmd: Discord.Interaction) => {
     });
   });
 
+  console.log(cmd.customId);
   const args = cmd.customId.split(/_+/g);
   const path = args.shift();
 
-  console.log(path);
 
   const command = files.find((f) => f.endsWith(`/${path}.js`));
   if (!command) return;

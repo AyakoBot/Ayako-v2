@@ -18,7 +18,7 @@ export interface Command {
     msg: Discord.Message,
     command: Command,
     args?: string[],
-    object?: { [key: string]: unknown },
+    object?: Record<string, unknown>,
   ) => void | Promise<void>;
 }
 

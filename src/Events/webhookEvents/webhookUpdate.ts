@@ -12,19 +12,19 @@ export default async (
 
   if (!oldWebhooks) return;
   const changed = ch.getChanged(
-    Array.from(oldWebhooks, ([, w]) => w) as unknown as { [key: string]: unknown }[],
-    newWebhooks.map((w) => w) as unknown as { [key: string]: unknown }[],
+    Array.from(oldWebhooks, ([, w]) => w) as unknown as Record<string, unknown>[],
+    newWebhooks.map((w) => w) as unknown as Record<string, unknown>[],
     'id',
   ) as Discord.Webhook[] | undefined;
 
   const removed = ch.getDifference(
-    Array.from(oldWebhooks, ([, w]) => w) as unknown as { [key: string]: unknown }[],
-    newWebhooks.map((w) => w) as unknown as { [key: string]: unknown }[],
+    Array.from(oldWebhooks, ([, w]) => w) as unknown as Record<string, unknown>[],
+    newWebhooks.map((w) => w) as unknown as Record<string, unknown>[],
   ) as Discord.Webhook[];
 
   const added = ch.getDifference(
-    newWebhooks.map((w) => w) as unknown as { [key: string]: unknown }[],
-    Array.from(oldWebhooks, ([, w]) => w) as unknown as { [key: string]: unknown }[],
+    newWebhooks.map((w) => w) as unknown as Record<string, unknown>[],
+    Array.from(oldWebhooks, ([, w]) => w) as unknown as Record<string, unknown>[],
   ) as Discord.Webhook[];
 
   changed?.forEach((w) => {

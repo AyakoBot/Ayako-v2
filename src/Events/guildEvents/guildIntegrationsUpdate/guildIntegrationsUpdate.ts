@@ -13,8 +13,8 @@ export default async (guild: Discord.Guild) => {
   const added = fetched.filter((f) => !cached.get(f.id)).map((o) => o);
   const removed = Array.from(cached, ([, f]) => f).filter((f) => !fetched?.get(f.id));
   const changed = ch.getChanged(
-    Array.from(cached, ([, f]) => f) as unknown as { [key: string]: unknown }[],
-    fetched.map((o) => o) as unknown as { [key: string]: unknown }[],
+    Array.from(cached, ([, f]) => f) as unknown as Record<string, unknown>[],
+    fetched.map((o) => o) as unknown as Record<string, unknown>[],
     'id',
   ) as unknown as Discord.Integration[];
 
