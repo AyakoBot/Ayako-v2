@@ -34,11 +34,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
   const member = await cmd.guild?.members.fetch(user.id).catch(() => undefined);
   if (member) {
+    const hasAvatar = !!member.avatar;
+
     embeds.push({
       author: {
         name: lan.authorMember(user),
       },
-      image: { url: member.displayAvatarURL({ size: 4096 }) },
+      image: hasAvatar ? { url: member.displayAvatarURL({ size: 4096 }) } : undefined,
+      description: hasAvatar ? language.none : undefined,
       color: ch.colorSelector(cmd.guild?.members.me),
     });
   }
