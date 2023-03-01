@@ -8,13 +8,21 @@ type Strumber = string | number;
 const punishmentFields = {
   punishment: {
     name: 'Punishment',
+    desc: 'The Punishment Type',
   },
   warnamount: {
     name: 'Warn Amount',
+    desc: 'The Amount of Warns required for this Punishment',
   },
   duration: {
     name: 'Duration',
+    desc: 'The Duration of the Punishment (only applies to Temporary Punishments)',
   },
+};
+
+const multiplier = {
+  name: 'Multiplier',
+  desc: 'Multiplier to multiply the awared XP per Message with',
 };
 
 const getUser = (user: CT.bEvalUser | Discord.User | CT.bEvalUser) =>
@@ -1284,6 +1292,8 @@ export default {
       previous: 'Previous',
       next: 'Next',
       noFields: 'No Settings found, get started by creating some',
+      insertHere: 'Insert Value here',
+      acceptedValue: 'Accepted Value',
       categories: {
         'vote-rewards': {
           name: 'Vote Rewards',
@@ -1296,12 +1306,15 @@ export default {
           fields: {
             tier: {
               name: 'Tier',
+              desc: 'The Reward Tier',
             },
             rewardtype: {
               name: 'Reward Type',
+              desc: 'The Type of the Reward',
             },
             reward: {
               name: 'Reward',
+              desc: 'The Reward itself',
             },
           },
         },
@@ -1314,15 +1327,19 @@ export default {
           fields: {
             msgthreshold: {
               name: 'Message Threshold',
+              desc: 'Amount of Messages required before Anti-Spam triggers',
             },
             dupemsgthreshold: {
               name: 'Dupe Message Threshold',
+              desc: 'Amount of duplicate Messages required before Anti-Spam triggers',
             },
             timeout: {
-              name: 'Timeout (in Seconds)',
+              name: 'Message-Remember Time (in Seconds)',
+              desc: "Time until a Message doesn't count into the Message Threshold anymore",
             },
             deletespam: {
               name: 'Delete Spam',
+              desc: 'Whether to Delete Spammed Messages',
             },
           },
         },
@@ -1330,22 +1347,28 @@ export default {
           name: `Anti-Virus`,
           fields: {
             minimize: {
-              name: 'Minimize Timeout',
+              name: 'Minimize Timeout (in Seconds)',
+              desc: 'Timeout until the Mod-Response is minimized',
             },
             delete: {
               name: 'Delete Timeout',
+              desc: 'Timeout until the Mod-Response is deleted',
             },
             minimizetof: {
               name: 'Minimize',
+              desc: 'Whether to Minimize the Mod-Response',
             },
             deletetof: {
               name: 'Delete',
+              desc: 'Whether to Delete the Mod-Response',
             },
             linklogging: {
               name: 'Log Links',
+              desc: 'Whether to Log posted Links',
             },
             linklogchannels: {
               name: 'Links Log-Channels',
+              desc: 'Where to Log posted Links',
             },
           },
         },
@@ -1358,27 +1381,35 @@ export default {
           fields: {
             punishment: {
               name: 'Punishment',
+              desc: 'The Punishment Type',
             },
             posttof: {
               name: 'Post',
+              desc: 'Whether to post a Raid Notice',
             },
             postchannel: {
               name: 'Post-Channels',
+              desc: 'Where to Post a Raid Notice',
             },
             pingroles: {
               name: 'Ping Roles',
+              desc: 'Roles to Ping with the Raid Notice',
             },
             pingusers: {
               name: 'Ping Users',
+              desc: 'Users to Ping with the Raid Notice',
             },
             time: {
               name: 'Join-Remember Time',
+              desc: 'Users to Ping with the Raid Notice',
             },
             jointhreshold: {
               name: 'Join Threshold',
+              desc: 'Amount of Joins required before Anti-Raid triggers',
             },
             punishmenttof: {
               name: 'Punish',
+              desc: 'Whether to Punish Raiders',
             },
           },
         },
@@ -1387,24 +1418,31 @@ export default {
           fields: {
             warnamount: {
               name: 'Warns Required',
+              desc: 'Amount of Warns required before this Punishment applies',
             },
             punishment: {
               name: 'Punishment',
+              desc: 'The Punishment to apply',
             },
             duration: {
               name: 'Duration',
+              desc: 'The Duration of the Punishment (only applies to Temporary Punishments)',
             },
             addroles: {
-              name: 'Roles to add',
+              name: 'Add-Roles',
+              desc: 'Roles to Add to the punished User',
             },
             removeroles: {
-              name: 'Roles to remove',
+              name: 'Remove-Roles',
+              desc: 'Roles to Remove from the punished User',
             },
             confirmationreq: {
               name: 'Require confirmation',
+              desc: 'Whether to ask for Confirmation before proceeding with a Punishment',
             },
             punishmentawaittime: {
-              name: 'Confimation await time',
+              name: 'Confimation await Time',
+              desc: 'How long to wait for Human confirmation before the Punishment is aborted',
             },
           },
         },
@@ -1419,6 +1457,7 @@ export default {
           fields: {
             words: {
               name: 'Words / Phrases',
+              desc: 'Words or Phrases that should be Filtered',
             },
           },
         },
@@ -1427,38 +1466,48 @@ export default {
           fields: punishmentFields,
         },
         expiry: {
-          desc: `⚠️Note:⚠️\nAll of these Settings are ${client.user?.username}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
+          desc: `⚠️ Note: ⚠️\nAll of these Settings are ${client.user?.username}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
           name: `Expiry`,
           fields: {
             bans: {
               name: 'Bans',
+              desc: 'Whether Bans expire or not',
             },
             channelbans: {
               name: 'Channel-Bans',
+              desc: 'Whether Channel-Bans expire or not',
             },
             kicks: {
               name: 'Kicks',
+              desc: 'Whether Kicks expire or not',
             },
             mutes: {
               name: 'Mutes',
+              desc: 'Whether Mutes expire or not',
             },
             warns: {
               name: 'Warns',
+              desc: 'Whether Warns expire or not',
             },
             banstime: {
               name: 'Bans-Expire Time',
+              desc: 'Time before Bans expire',
             },
             channelbanstime: {
               name: 'Channel-Bans-Expire Time',
+              desc: 'Time before Channel-Bans expire',
             },
             kickstime: {
               name: 'Kicks-Expire Time',
+              desc: 'Time before Kicks expire',
             },
             mutestime: {
               name: 'Mutes-Expire Time',
+              desc: 'Time before Mutes expire',
             },
             warnstime: {
               name: 'Warns-Expire Time',
+              desc: 'Time before Warns expire',
             },
           },
         },
@@ -1466,13 +1515,16 @@ export default {
           name: `Auto-Roles`,
           fields: {
             botroleid: {
-              name: 'Bot Role IDs',
+              name: 'Bot Role',
+              desc: 'Roles added to joining Bots',
             },
             userroleid: {
-              name: 'User Role IDs',
+              name: 'User Role',
+              desc: 'Roles added to joining Users',
             },
             allroleid: {
-              name: 'All Role IDs',
+              name: 'All Role',
+              desc: 'Roles added to joining Accounts (Bots and Users)',
             },
           },
         },
@@ -1481,12 +1533,15 @@ export default {
           fields: {
             command: {
               name: 'Command',
+              desc: 'The Command that triggers the Cooldown',
             },
             cooldown: {
-              name: 'Cooldown',
+              name: 'Cooldown (in Seconds)',
+              desc: 'The Cooldown duration applied to the Command',
             },
             activechannelid: {
               name: 'Active Channels',
+              desc: 'The Channels in which this Cooldown applies',
             },
           },
         },
@@ -1495,21 +1550,27 @@ export default {
           fields: {
             channelid: {
               name: 'Channel',
+              desc: 'The Channel to send BUMP Reminders in',
             },
             repeatreminder: {
-              name: 'Repeat Reminder Timeout',
+              name: 'Repeat-Reminder Timeout (in Seconds)',
+              desc: 'If no-one has bumped another Reminder will be sent after this Timeout',
             },
             roles: {
               name: 'Ping Roles',
+              desc: 'Roles to Ping with the BUMP Reminder',
             },
             users: {
               name: 'Ping Users',
+              desc: 'Users to Ping with the BUMP Reminder',
             },
             deletereply: {
               name: 'Delete Reply',
+              desc: 'Whether to delete the BUMP Command Reply',
             },
             repeatenabled: {
               name: 'Repeat Reminder',
+              desc: 'Whether to send a Repeating Reminder if no one has Bumped',
             },
           },
         },
@@ -1518,12 +1579,15 @@ export default {
           fields: {
             roles: {
               name: 'Roles',
+              desc: 'The Roles that are Self-Assignable',
             },
             onlyone: {
               name: 'Only One assignable',
+              desc: 'Whether only one of the Roles should be Self-Assignable',
             },
             name: {
               name: 'Name',
+              desc: 'The Name of the Role Category',
             },
           },
         },
@@ -1546,18 +1610,19 @@ export default {
           fields: {
             separator: {
               name: 'Separator Role',
+              desc: 'The Role that Separates Roles that belong to its Category from other Roles',
             },
             stoprole: {
               name: 'Stop Role',
+              desc: 'The Role that marks the end of a Roles Category',
             },
             isvarying: {
               name: 'Dynamic Roles',
+              desc: 'Whether to use Dynamic Role Categories or Strictly Defined ones',
             },
             roles: {
               name: 'Roles',
-            },
-            name: {
-              name: 'Name',
+              desc: 'The Roles that belong to this Role Category',
             },
           },
         },
@@ -1567,16 +1632,20 @@ export default {
           sticky: 'These Roles will be sticky',
           fields: {
             roles: {
-              name: 'Separator Role',
+              name: 'Roles',
+              desc: 'Roles that will or will not be sticky, depending on the Sticky-Roles Mode',
             },
             stickyrolesmode: {
               name: 'Roles Mode',
+              desc: 'Whether defined Roles are sticky or not sticky',
             },
             stickyrolesactive: {
               name: 'Sticky-Roles Active',
+              desc: 'Whether Sticky-Roles is active or not',
             },
             stickypermsactive: {
-              name: 'Sticky-Perms Active',
+              name: 'Sticky-Channel-Perms Active',
+              desc: 'Whether Sticky-Channel-Perms is active or not',
             },
           },
         },
@@ -1585,27 +1654,43 @@ export default {
           fields: {
             channelid: {
               name: 'Suggestion Channel',
+              desc: 'The Channel to post Suggestions in',
             },
             novoteroles: {
               name: 'Vote-Banned Roles',
+              desc: 'Roles banned from Voting on Suggestions',
             },
             novoteusers: {
               name: 'Vote-Banner Users',
+              desc: 'User banned from Voting on Suggestions',
             },
             approverroleid: {
               name: 'Approver Roles',
+              desc: 'Roles that can Approve or Deny Suggestions',
             },
             anonvote: {
               name: 'Anonymous Votes',
+              desc: 'Whether Votes are Anonymous or not',
             },
             anonsuggestion: {
               name: 'Anonymous Suggestions',
+              desc: 'Whether Suggestions are Anonymous or not',
             },
             nosendroles: {
               name: 'Suggest-Banned Roles',
+              desc: 'Roles banned from sending Suggestions',
             },
             nosendusers: {
               name: 'Suggest-Banned Users',
+              desc: 'Users banned from sending Suggestions',
+            },
+            pingroleid: {
+              name: 'Suggest-Banned Users',
+              desc: 'The Roles to ping when a new Suggestion is sent',
+            },
+            pinguserid: {
+              name: 'Suggest-Banned Users',
+              desc: 'The User to ping when a new Suggestion is sent',
             },
           },
         },
@@ -1614,24 +1699,31 @@ export default {
           fields: {
             logchannel: {
               name: 'Log Channel',
+              desc: 'The Channel to send Verification Logs in',
             },
             finishedrole: {
               name: 'Verified Role',
+              desc: 'The Role assigned to Members after finishing Verification',
             },
             pendingrole: {
               name: 'Pending Role',
+              desc: 'The Role assigned to Members before finishing Verification',
             },
             startchannel: {
               name: 'Start Channel',
+              desc: 'The Channel joining Members can start the Verification in',
             },
             selfstart: {
               name: 'Self-Start',
+              desc: 'Whether Verification should start itself or not',
             },
             kickafter: {
               name: 'Kick Timeout',
+              desc: 'How long to wait before unverified Members are kicked from the Server',
             },
             kicktof: {
               name: 'Kick',
+              desc: 'Whether to Kick unverified Members or not',
             },
           },
         },
@@ -1640,18 +1732,23 @@ export default {
           fields: {
             channelid: {
               name: 'Welcome Channel',
+              desc: 'The Channel to welcome joining Members in',
             },
             embed: {
               name: 'Welcome Embed',
+              desc: 'The Welcome Embed to use',
             },
             pingroles: {
               name: 'Ping Roles',
+              desc: 'The Roles to Ping when a Member is welcomed',
             },
             pingusers: {
               name: 'Ping Users',
+              desc: 'The Users to Ping when a Member is welcomed',
             },
             pingjoin: {
               name: 'Ping joined User',
+              desc: 'Whether to Ping the joining Member or not',
             },
           },
         },
@@ -1661,12 +1758,15 @@ export default {
           fields: {
             token: {
               name: 'Token',
+              desc: 'The Authentication Token used by Top.gg',
             },
             reminders: {
               name: 'Reminder',
+              desc: 'Whether to Remind Voters to Vote again',
             },
             announcementchannel: {
               name: 'Announcement Channel',
+              desc: 'The Channel to announce Votes in',
             },
           },
         },
@@ -1678,33 +1778,40 @@ export default {
           fields: {
             xppermsg: {
               name: 'XP per Message',
+              desc: 'Amount of XP awarded per Member',
             },
-            xpmultiplier: {
-              name: 'XP Multiplier',
-            },
+            multiplier,
             rolemode: {
               name: 'Role Mode',
+              desc: 'Whether to Stack or Replace Level-Roles',
             },
             lvlupmode: {
               name: 'Level-up Mode',
+              desc: 'The Type of Level-up Notification Method',
             },
             lvlupemotes: {
               name: 'Level-up Emotes',
+              desc: `The Emotes I will react with to Messages that triggered a Level-up`,
             },
             lvlupdeltimeout: {
               name: 'Level-up Deletion Timeout',
+              desc: 'The Timeout before the Level-up Message is Auto-Deleted',
             },
             embed: {
               name: 'Level-up Embed',
+              desc: 'The Embed sent in the Level-up Message',
             },
             lvlupchannels: {
               name: 'Level-up Channels',
+              desc: 'The Channel to send the Level-up Message in',
             },
             ignoreprefixes: {
               name: 'Ignore Prefixes',
+              desc: 'Whether to Ignore Prefixed Messages or not',
             },
             prefixes: {
               name: 'Prefixes',
+              desc: 'The Prefixes that will tell if the Message should be ignored',
             },
           },
         },
@@ -1713,10 +1820,9 @@ export default {
           fields: {
             channels: {
               name: 'Channels',
+              desc: 'The Channels in which this Multiplier applies',
             },
-            multiplier: {
-              name: 'Multiplier',
-            },
+            multiplier,
           },
         },
         'multi-roles': {
@@ -1724,10 +1830,9 @@ export default {
           fields: {
             roles: {
               name: 'Roles',
+              desc: 'The Roles that will have a Multiplier applied',
             },
-            multiplier: {
-              name: 'Multiplier',
-            },
+            multiplier,
           },
         },
         'level-roles': {
@@ -1735,9 +1840,11 @@ export default {
           fields: {
             roles: {
               name: 'Roles',
+              desc: 'The Roles applied when a Member achieves a Level',
             },
             level: {
               name: 'Level',
+              desc: 'The Level required to gain the Roles',
             },
           },
         },
@@ -1747,28 +1854,84 @@ export default {
           fields: {
             rules: {
               name: 'Rules',
+              desc: 'The Rules that apply to this Channels XP Rewards',
             },
             channels: {
               name: 'Channels',
+              desc: 'The Channels these Rules apply in',
             },
-            hasleastattachments: { name: `Has at least this many Attachments` },
-            hasmostattachments: { name: `Has at most this many Attachments` },
-            hasleastcharacters: { name: `Has at least this many Characters in Content` },
-            hasmostcharacters: { name: `Has at most this many Characters in Content` },
-            hasleastwords: { name: `Has at least this many Words in Content` },
-            hasmostwords: { name: `Has at most this many Words in Content` },
-            mentionsleastusers: { name: `Mentions at least this many Users in Content` },
-            mentionsmostusers: { name: `Mentions at most this many Users in Content` },
-            mentionsleastchannels: { name: `Mentions at least this many Channels in Content` },
-            mentionsmostchannels: { name: `Mentions at most this many Channels in Content` },
-            mentionsleastroles: { name: `Mentions at least this many Roles in Content` },
-            mentionsmostroles: { name: `Mentions at most this many Roles in Content` },
-            hasleastlinks: { name: `Has at least this many Links` },
-            hasmostlinks: { name: `Has at most this many Links` },
-            hasleastemotes: { name: `Has at least this many Emotes` },
-            hasmostemotes: { name: `Has at most this many Emotes` },
-            hasleastmentions: { name: `Has at least this many @Mentions` },
-            hasmostmentions: { name: `Has at most this many @Mentions` },
+            hasleastattachments: {
+              name: `Has at least this many Attachments`,
+              desc: 'The minimum Amount of Attachments required for this Message to gain XP',
+            },
+            hasmostattachments: {
+              name: `Has at most this many Attachments`,
+              desc: 'The maximum Amount of Attachments required for this Message to gain XP',
+            },
+            hasleastcharacters: {
+              name: `Has at least this many Characters in Content`,
+              desc: 'The minimum Amount of Characters required for this Message to gain XP',
+            },
+            hasmostcharacters: {
+              name: `Has at most this many Characters in Content`,
+              desc: 'The maximum Amount of Characters required for this Message to gain XP',
+            },
+            hasleastwords: {
+              name: `Has at least this many Words in Content`,
+              desc: 'The minimum Amount of Words required for this Message to gain XP',
+            },
+            hasmostwords: {
+              name: `Has at most this many Words in Content`,
+              desc: 'The maximum Amount of Words required for this Message to gain XP',
+            },
+            mentionsleastusers: {
+              name: `Mentions at least this many Users in Content`,
+              desc: 'The minimum Amount of mentioned Users required for this Message to gain XP',
+            },
+            mentionsmostusers: {
+              name: `Mentions at most this many Users in Content`,
+              desc: 'The maximum Amount of mentioned Users required for this Message to gain XP',
+            },
+            mentionsleastchannels: {
+              name: `Mentions at least this many Channels in Content`,
+              desc: 'The minimum Amount of mentioned Channels required for this Message to gain XP',
+            },
+            mentionsmostchannels: {
+              name: `Mentions at most this many Channels in Content`,
+              desc: 'The maximum Amount of mentioned Channels required for this Message to gain XP',
+            },
+            mentionsleastroles: {
+              name: `Mentions at least this many Roles in Content`,
+              desc: 'The minimum Amount of mentioned Roles required for this Message to gain XP',
+            },
+            mentionsmostroles: {
+              name: `Mentions at most this many Roles in Content`,
+              desc: 'The maximum Amount of mentioned Roles required for this Message to gain XP',
+            },
+            hasleastlinks: {
+              name: `Has at least this many Links`,
+              desc: 'The minimum Amount of Links required for this Message to gain XP',
+            },
+            hasmostlinks: {
+              name: `Has at most this many Links`,
+              desc: 'The maximum Amount of Links required for this Message to gain XP',
+            },
+            hasleastemotes: {
+              name: `Has at least this many Emotes`,
+              desc: 'The minimum Amount of Emotes required for this Message to gain XP',
+            },
+            hasmostemotes: {
+              name: `Has at most this many Emotes`,
+              desc: 'The maximum Amount of Emotes required for this Message to gain XP',
+            },
+            hasleastmentions: {
+              name: `Has at least this many Mentions`,
+              desc: 'The minimum Amount of Mentions required for this Message to gain XP',
+            },
+            hasmostmentions: {
+              name: `Has at most this many Mentions`,
+              desc: 'The maximum Amount of Mentions required for this Message to gain XP',
+            },
           },
         },
         nitro: {
@@ -1776,9 +1939,11 @@ export default {
           fields: {
             logchannels: {
               name: 'Log Channels',
+              desc: 'The Channels in which to Log when Members start or stop boosting and more',
             },
             rolemode: {
               name: 'Role Mode',
+              desc: 'Whether to Stack or Replace Nitro-Roles',
             },
           },
         },
@@ -1787,6 +1952,7 @@ export default {
           fields: {
             todo: {
               name: 'todo',
+              desc: 'todo',
             },
           },
         },
@@ -1795,6 +1961,7 @@ export default {
           fields: {
             todo: {
               name: 'todo',
+              desc: 'todo',
             },
           },
         },
@@ -1803,18 +1970,23 @@ export default {
           fields: {
             deletecommand: {
               name: 'Delete Command',
+              desc: 'Whether to delete the Command',
             },
             deletereply: {
               name: 'Delete Reply',
+              desc: 'Whether to delete the Command Reply',
             },
             deletetimeout: {
               name: 'Delete Timeout',
+              desc: 'The Timeout until the Reply or Command is deleted',
             },
             command: {
               name: 'Command',
+              desc: 'The Command this Delete-Setting applies to',
             },
             activechannelid: {
               name: 'Active Channel',
+              desc: 'The Channels this Delete-Setting applies to',
             },
           },
         },
@@ -1823,60 +1995,79 @@ export default {
           fields: {
             applicationevents: {
               name: 'Application Events',
+              desc: 'The Channel to log Application Events in',
             },
             automodevents: {
               name: 'Auto-Mod Events',
+              desc: 'The Channel to log Auto-Mod Events in',
             },
             channelevents: {
               name: 'Channel Events',
+              desc: 'The Channel to log Channel Events in',
             },
             emojievents: {
               name: 'Emoji Events',
+              desc: 'The Channel to log Emoji Events in',
             },
             guildevents: {
               name: 'Server Events',
+              desc: 'The Channel to log Server Events in',
             },
             scheduledeventevents: {
               name: 'Scheduled Event Events',
+              desc: 'The Channel to log Scheduled Event Events in',
             },
             inviteevents: {
               name: 'Invite Events',
+              desc: 'The Channel to log Invite Events in',
             },
             messageevents: {
               name: 'Message Events',
+              desc: 'The Channel to log Message Events in',
             },
             roleevents: {
               name: 'Role Events',
+              desc: 'The Channel to log Role Events in',
             },
             stageevents: {
               name: 'Stage Events',
+              desc: 'The Channel to log Stage Events in',
             },
             stickerevents: {
               name: 'Sticker Events',
+              desc: 'The Channel to log Sticker Events in',
             },
             typingevents: {
               name: 'Typing Events',
+              desc: 'The Channel to log Typing Events in',
             },
             userevents: {
               name: 'User Events',
+              desc: 'The Channel to log User Events in',
             },
             voiceevents: {
               name: 'Voice Events',
+              desc: 'The Channel to log Voice Events in',
             },
             webhookevents: {
               name: 'Webhook Events',
+              desc: 'The Channel to log Application Events in',
             },
             settingslog: {
               name: 'Settings Log',
+              desc: 'The Channel to log Settings Events in',
             },
             modlog: {
               name: 'Moderation Log',
+              desc: 'The Channel to log Moderation Events in',
             },
             reactionevents: {
               name: 'Reaction Events',
+              desc: 'The Channel to log Reaction Events in',
             },
             memberevents: {
-              name: 'Memober Events',
+              name: 'Member Events',
+              desc: 'The Channel to log Member Events in',
             },
           },
         },
@@ -1885,15 +2076,19 @@ export default {
           fields: {
             prefix: {
               name: 'Prefix',
+              desc: `The Prefix ${client.user?.username} should listen to`,
             },
             interactionsmode: {
-              name: 'Interactions Mode',
+              name: 'RP Command Size',
+              desc: 'Whether RP Commands should be large or small',
             },
             lan: {
               name: 'Language',
+              desc: `The Language ${client.user?.username} displays in`,
             },
             errorchannel: {
               name: 'Error Channel',
+              desc: 'The Channel to post Error Messages in',
             },
           },
         },
@@ -1902,9 +2097,11 @@ export default {
           fields: {
             roles: {
               name: 'Roles',
+              desc: 'The Roles applied when a Member achieves a Level',
             },
             days: {
               name: 'Days',
+              desc: 'The DAys required to gain the Roles',
             },
           },
         },
@@ -1936,12 +2133,12 @@ export default {
         winners: `Winners`,
         author: `${client.user?.username} Giveaways`,
         title: `Congratulations! You won a Giveaway! [Click me to get to the Giveaway]`,
-        trouble: `If you have trouble with your Giveaway, DM or @Mention the User below`,
-        getPrize: `To get your Prize, DM or @Mention the User below`,
+        trouble: `If you have trouble with your Giveaway, DM or Mention the User below`,
+        getPrize: `To get your Prize, DM or Mention the User below`,
         couldntDM: (user: CT.bEvalUser | Discord.User) =>
           `I was unable to DM <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
         noValidEntries: `No valid Entries | No Winner picked`,
-        checkDMs: `Check your DMs! | If you had your DMs closed, DM or @Mention the User below`,
+        checkDMs: `Check your DMs! | If you had your DMs closed, DM or Mention the User below`,
         button: `Get to Giveaway`,
         manuallyEnded: `Manually Ended Giveaway`,
         clickButton: `Click the Button below to claim your Prize`,
@@ -2442,9 +2639,10 @@ export default {
     },
   },
   errors: {
-    userNotExist: `The @Mentioned User does not exist`,
-    userNotFound: `The @Mentioned User could not be found`,
+    userNotExist: `The Mentioned User does not exist`,
+    userNotFound: `The Mentioned User could not be found`,
     numTooLarge: `Number too large`,
+    numNaN: `Not a Number`,
     guildCommand: `This Command is only available in Servers`,
     memberNotFound: `Member not found`,
     notAvailableAPI: `This Command is not yet available due to Discord API limitations`,
@@ -2491,10 +2689,10 @@ export default {
     HasLeastEmotesShort: `least Emotes count`,
     HasMostEmotes: `Has at most [externally defined] Emotes`,
     HasMostEmotesShort: `most Emotes count`,
-    HasLeastMentions: `Has at least [externally defined] @Mentions`,
-    HasLeastMentionsShort: `least @Mentions count`,
-    HasMostMentions: `Has at most [externally defined] @Mentions`,
-    HasMostMentionsShort: `most @Mentions count`,
+    HasLeastMentions: `Has at least [externally defined] Mentions`,
+    HasLeastMentionsShort: `least Mentions count`,
+    HasMostMentions: `Has at most [externally defined] Mentions`,
+    HasMostMentionsShort: `most Mentions count`,
   },
   antiraid: {
     banAdd: {
@@ -2810,4 +3008,5 @@ export default {
   color: 'Color',
   ChannelRules: 'Channel Rules',
   Channels: 'Channels',
+  Current: 'Current',
 };

@@ -95,7 +95,7 @@ async function send(
   });
 
   if (timeout && 'guild' in channel && payload.embeds?.length) {
-    combineMessages(channel, payload.embeds, timeout);
+    combineMessages(channel as Discord.TextChannel, payload.embeds, timeout);
     return null;
   }
 

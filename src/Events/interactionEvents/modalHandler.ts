@@ -12,7 +12,8 @@ export default async (cmd: Discord.Interaction) => {
   });
 
   const args = cmd.customId.split(/_+/g);
-  const path = args.unshift();
+  const path = args.shift();
+  console.log(path);
 
   const command = files.find((f) => f.endsWith(`/${path}.js`));
   if (!command) return;

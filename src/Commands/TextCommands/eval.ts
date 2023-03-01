@@ -4,6 +4,8 @@ import type * as Discord from 'discord.js';
 import auth from '../../auth.json' assert { type: 'json' };
 // @ts-ignore
 import fetch from 'node-fetch';
+// @ts-ignore
+import * as ch from '../../BaseClient/ClientHelper.js';
 
 export const cooldown = 0;
 export const name = 'eval';

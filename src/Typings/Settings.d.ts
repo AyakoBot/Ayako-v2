@@ -344,6 +344,8 @@ export type suggestionsettings = {
 
   channelid?: string;
   approverroleid?: string[];
+  pingroleid?: string[]
+  pinguserid?: string[]
 
   anonvote: boolean;
   anonsuggestion: boolean;

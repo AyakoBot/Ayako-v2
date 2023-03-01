@@ -191,7 +191,7 @@ export const getComponents: CT.SettingsFile<'leveling'>['getComponents'] = (
       type: Discord.ComponentType.ActionRow,
       components: [
         buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name),
-        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name),
+        buttonParsers.specific(language, settings?.xpmultiplier, 'multiplier', name),
         buttonParsers.specific(language, settings?.rolemode, 'rolemode', name),
       ],
     },

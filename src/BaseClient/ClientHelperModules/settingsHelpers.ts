@@ -83,9 +83,9 @@ const buttonParsers = {
         (typeof setting !== 'boolean' && setting?.length) || !!setting
           ? Discord.ButtonStyle.Primary
           : Discord.ButtonStyle.Secondary,
-      custom_id: `settings/${settingName}/${
-        constantTypes[name as keyof typeof constantTypes]
-      }_${String(name)}_${settingName}`,
+      custom_id: `settings/${constantTypes[name as keyof typeof constantTypes]}_${String(
+        name,
+      )}_${settingName}`,
       emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
     };
   },
@@ -108,9 +108,9 @@ const buttonParsers = {
         ] as Record<'name', string>
       ).name,
       style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
-      custom_id: `settings/${settingName}/${
-        constantTypes[name as keyof typeof constantTypes]
-      }_${String(name)}_${settingName}`,
+      custom_id: `settings/${constantTypes[name as keyof typeof constantTypes]}_${String(
+        name,
+      )}_${settingName}`,
       emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
     };
   },
@@ -216,11 +216,119 @@ export const updateLog = (
   console.log(oldSetting, newSetting, changedSetting, setting, uniquetimestamp);
 };
 
+const changeHelpers = {
+  changeModal: <T extends keyof SettingsNames>(
+    language: CT.Language,
+    lan: CT.Language['slashCommands']['settings']['categories'][T],
+    settingName: T,
+    fieldName: string,
+    type: 'number',
+    current: string | undefined,
+    short: boolean,
+    uniquetimestamp?: number,
+  ): Discord.APIModalInteractionResponseCallbackData => ({
+    title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
+    custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
+    components: [
+      {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+          {
+            type: Discord.ComponentType.TextInput,
+            style: Discord.TextInputStyle.Paragraph,
+            label: language.slashCommands.settings.acceptedValue,
+            custom_id: '-',
+            placeholder: (
+              lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>
+            ).desc,
+            value: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)
+              .desc,
+            max_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)
+              .desc.length,
+            min_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)
+              .desc.length,
+          },
+        ],
+      },
+      {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+          {
+            type: Discord.ComponentType.TextInput,
+            style: short ? Discord.TextInputStyle.Short : Discord.TextInputStyle.Paragraph,
+            label: language.slashCommands.settings.insertHere,
+            value: current ?? undefined,
+            custom_id: fieldName,
+          },
+        ],
+      },
+    ],
+  }),
+  modal: <T extends keyof SettingsNames>(
+    name: T,
+    fieldName: string,
+  ): Discord.APIButtonComponent => ({
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Danger,
+    custom_id: `settings/modal_${name}_${fieldName}`,
+    emoji: objectEmotes.back,
+  }),
+  back: <T extends keyof SettingsNames>(name: T): Discord.APIButtonComponent => ({
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Danger,
+    custom_id: `settings/${name}`,
+    emoji: objectEmotes.back,
+  }),
+  get: (
+    tableName: keyof SettingsNames,
+    fieldName: string,
+    guildId: string | null,
+    uniquetimestamp?: number,
+  ) =>
+    (uniquetimestamp
+      ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [
+          uniquetimestamp,
+        ])
+      : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId])
+    ).then((r: any[] | null) => {
+      if (!r) {
+        if (uniquetimestamp) {
+          return query(
+            `INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1) RETURNING ${fieldName};`,
+            [guildId, Date.now()],
+          ).then((r: any[] | null) => (r ? r[0] : null));
+        } else {
+          return query(`INSERT INTO ${tableName} (guildid) VALUES ($1) RETURNING ${fieldName};`, [
+            guildId,
+          ]).then((r: any[] | null) => (r ? r[0] : null));
+        }
+      }
+
+      return r ? r[0] : null;
+    }),
+  getAndInsert: (
+    tableName: keyof SettingsNames,
+    fieldName: string,
+    guildId: string | null,
+    newSetting: any,
+    uniquetimestamp?: number,
+  ) =>
+    uniquetimestamp
+      ? query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`, [
+          uniquetimestamp,
+        ]).then((r: any[] | null) => (r ? r[0] : null))
+      : query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`, [
+          newSetting,
+          guildId,
+        ]).then((r: any[] | null) => (r ? r[0] : null)),
+};
+
 export default {
   embedParsers,
   buttonParsers,
   multiRowHelpers,
   updateLog,
+  changeHelpers,
 };
 
 const getEmoji = (
