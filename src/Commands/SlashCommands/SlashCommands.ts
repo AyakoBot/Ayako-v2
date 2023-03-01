@@ -11,6 +11,20 @@ const IDSelector = new Discord.SlashCommandStringOption()
   .setMinLength(8)
   .setName('id');
 
+const SearchUsername = new Discord.SlashCommandStringOption()
+  .setName('user-name')
+  .setDescription(
+    `Username of the User (Searches across all of ${client.user?.username}'s Servers)`,
+  )
+  .setRequired(false)
+  .setMinLength(2)
+  .setAutocomplete(true);
+
+const User = new Discord.SlashCommandUserOption()
+  .setName('user')
+  .setDescription('The User to display the Banner of')
+  .setRequired(false);
+
 // Commands
 
 const settings = new Discord.SlashCommandBuilder()
@@ -219,25 +233,30 @@ const settings = new Discord.SlashCommandBuilder()
       .setDescription(`Basic Settings to modify ${client.user?.username}'s behaviour`),
   );
 
-const whois = new Discord.SlashCommandBuilder()
-  .setName('whois')
-  .setDescription('Display Information about you or any other User')
+const user = new Discord.SlashCommandBuilder()
+  .setName('user')
+  .setDescription('Any kind of User Command')
   .setDMPermission(true)
-  .addUserOption(
-    new Discord.SlashCommandUserOption()
-      .setName('user')
-      .setDescription('The User to display Information of')
-      .setRequired(false),
+  .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+      .setName('info')
+      .setDescription('Display Information about you or any other User')
+      .addUserOption(User)
+      .addStringOption(SearchUsername),
   )
-  .addStringOption(
-    new Discord.SlashCommandStringOption()
-      .setName('user-name')
-      .setDescription(
-        `Username of the User (Searches across all of ${client.user?.username}'s Servers)`,
-      )
-      .setRequired(false)
-      .setMinLength(2)
-      .setAutocomplete(true),
+  .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+      .setName('avatar')
+      .setDescription('Display the Avatar of a User and Member')
+      .addUserOption(User)
+      .addStringOption(SearchUsername),
+  )
+  .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+      .setName('banner')
+      .setDescription('Display the Banner of a User and Member')
+      .addUserOption(User)
+      .addStringOption(SearchUsername),
   );
 
-export default { public: { settings, whois } };
+export default { public: { settings, user } };

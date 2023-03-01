@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import stringEmotes from '../../../BaseClient/ClientHelperModules/stringEmotes.js';
 
 import commandHandler from './commandHandler.js';
 //import antivirus from './antivirus.js';
@@ -16,6 +17,8 @@ export default async (msg: Discord.Message) => {
   if (!msg) return;
   if (!msg.author) return;
 
+  memix(msg);
+
   //antivirus(msg);
 
   if (msg.inGuild()) {
@@ -30,4 +33,14 @@ export default async (msg: Discord.Message) => {
   } else {
     //dmLog(msg);
   }
+};
+
+const memix = (msg: Discord.Message) => {
+  if (msg.channel.id !== '1077576079281229845') return;
+  if (msg.author.id !== '1050732083254923274') {
+    msg.delete();
+    return;
+  }
+
+  msg.react(stringEmotes.up);
 };
