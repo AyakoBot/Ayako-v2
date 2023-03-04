@@ -9,6 +9,7 @@ import constants from '../Other/constants.js';
 
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
+type BLWLType = 'blchannelid' | 'blroleid' | 'bluserid' | 'wlchannelid' | 'wlroleid' | 'wluserid';
 
 const embedParsers = {
   author: <T extends keyof SettingsNames>(language: CT.Language, lan: SettingsNames[T]) => ({
@@ -50,13 +51,13 @@ const buttonParsers = {
   global: (
     language: CT.Language,
     setting: boolean | string[] | undefined,
-    type: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
+    type: BLWLType | 'active',
     settingName: string,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: getLabel(language, type),
     style: getStyle(setting),
-    custom_id: `settings/${type}_${settingName}`,
+    custom_id: `settings/editors/${getGlobalType(type)}_${type}_${settingName}`,
     emoji: getEmoji(setting, type),
   }),
   specific: <T extends keyof SettingsNames>(
@@ -83,10 +84,10 @@ const buttonParsers = {
         (typeof setting !== 'boolean' && setting?.length) || !!setting
           ? Discord.ButtonStyle.Primary
           : Discord.ButtonStyle.Secondary,
-      custom_id: `settings/${constantTypes[name as keyof typeof constantTypes]}_${String(
+      custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
         name,
       )}_${settingName}`,
-      emoji: (type ? getEmoji(setting, `wl${type}s`) : undefined) ?? emoji,
+      emoji: (type ? getEmoji(setting, `wl${type}id`) : undefined) ?? emoji,
     };
   },
   boolean: <T extends keyof SettingsNames>(
@@ -108,7 +109,7 @@ const buttonParsers = {
         ] as Record<'name', string>
       ).name,
       style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
-      custom_id: `settings/${constantTypes[name as keyof typeof constantTypes]}_${String(
+      custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
         name,
       )}_${settingName}`,
       emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
@@ -217,6 +218,70 @@ export const updateLog = (
 };
 
 const changeHelpers = {
+  changeEmbed: <T extends keyof SettingsNames>(
+    language: CT.Language,
+    lan: CT.Language['slashCommands']['settings']['categories'][T],
+    fieldName: string,
+    values: string[] | string | undefined,
+    type: 'channel' | 'role' | 'user' | 'mention',
+  ): Discord.APIEmbed => ({
+    author: {
+      name: language.slashCommands.settings.authorType(lan.name),
+      icon_url: objectEmotes.settings.link,
+    },
+    title: language.slashCommands.settings.previouslySet,
+    description: `${
+      (Array.isArray(values) ? values : [values])
+        .map((v) => (v ? getMention(type, v) : null))
+        .filter((v): v is string => !!v)
+        .join(', ') || language.none
+    }`,
+    fields: [
+      {
+        name: '\u200b',
+        value:
+          (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)?.desc ??
+          getGlobalDesc(fieldName as BLWLType, language),
+      },
+    ],
+    color: constants.colors.ephemeral,
+  }),
+  changeSelect: <T extends keyof SettingsNames>(
+    language: CT.Language,
+    type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
+    fieldName: string,
+    settingName: T,
+    uniquetimestamp?: number,
+  ) => {
+    const menu:
+      | Discord.APIRoleSelectComponent
+      | Discord.APIChannelSelectComponent
+      | Discord.APIUserSelectComponent
+      | Discord.APIMentionableSelectComponent = {
+      min_values: 0,
+      max_values: type.includes('s') ? 25 : 1,
+      custom_id: `settings/${type}_${fieldName}_${settingName}${
+        uniquetimestamp ? `_${uniquetimestamp}` : ''
+      }`,
+      type: getChangeSelectType(type),
+      placeholder: getPlaceholder(type, language),
+    };
+
+    if (menu.type === Discord.ComponentType.ChannelSelect) {
+      menu.channel_types = [
+        Discord.ChannelType.AnnouncementThread,
+        Discord.ChannelType.GuildAnnouncement,
+        Discord.ChannelType.GuildForum,
+        Discord.ChannelType.GuildStageVoice,
+        Discord.ChannelType.GuildText,
+        Discord.ChannelType.GuildVoice,
+        Discord.ChannelType.PrivateThread,
+        Discord.ChannelType.PublicThread,
+      ];
+    }
+
+    return menu;
+  },
   changeModal: <T extends keyof SettingsNames>(
     language: CT.Language,
     lan: CT.Language['slashCommands']['settings']['categories'][T],
@@ -228,7 +293,7 @@ const changeHelpers = {
     uniquetimestamp?: number,
   ): Discord.APIModalInteractionResponseCallbackData => ({
     title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
-    custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
+    custom_id: `settings/editors/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
     components: [
       {
         type: Discord.ComponentType.ActionRow,
@@ -276,8 +341,19 @@ const changeHelpers = {
   back: <T extends keyof SettingsNames>(name: T): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     style: Discord.ButtonStyle.Danger,
-    custom_id: `settings/${name}`,
+    custom_id: `settings/settingsDisplay_${name}`,
     emoji: objectEmotes.back,
+  }),
+  done: <T extends keyof SettingsNames>(
+    name: T,
+    fieldName: string,
+    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users',
+    language: CT.Language,
+  ): Discord.APIButtonComponent => ({
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Success,
+    custom_id: `settings/done/${type}_${name}_${fieldName}`,
+    label: language.Done,
   }),
   get: (
     tableName: keyof SettingsNames,
@@ -318,7 +394,7 @@ const changeHelpers = {
           uniquetimestamp,
         ]).then((r: any[] | null) => (r ? r[0] : null))
       : query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`, [
-          newSetting,
+          newSetting || null,
           guildId,
         ]).then((r: any[] | null) => (r ? r[0] : null)),
 };
@@ -331,21 +407,18 @@ export default {
   changeHelpers,
 };
 
-const getEmoji = (
-  setting: string | boolean | string[] | undefined,
-  type?: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
-) => {
+const getEmoji = (setting: string | boolean | string[] | undefined, type?: BLWLType | 'active') => {
   switch (type) {
-    case 'blchannels':
-    case 'wlchannels': {
+    case 'blchannelid':
+    case 'wlchannelid': {
       return objectEmotes.channelTypes[0];
     }
-    case 'blroles':
-    case 'wlroles': {
+    case 'blroleid':
+    case 'wlroleid': {
       return objectEmotes.Role;
     }
-    case 'blusers':
-    case 'wlusers': {
+    case 'bluserid':
+    case 'wluserid': {
       return objectEmotes.Member;
     }
     default: {
@@ -354,13 +427,10 @@ const getEmoji = (
   }
 };
 
-const getLabel = (
-  language: CT.Language,
-  type: 'blchannels' | 'blroles' | 'blusers' | 'wlchannels' | 'wlroles' | 'wlusers' | 'active',
-) => {
+const getLabel = (language: CT.Language, type: BLWLType | 'active') => {
   if (type && type !== 'active') {
     return language.slashCommands.settings[
-      type.slice(0, -1) as 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser'
+      type.slice(0, -2) as 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser'
     ];
   }
   return language.slashCommands.settings.active;
@@ -370,5 +440,110 @@ const getStyle = (setting: boolean | string | string[] | undefined) => {
   if (typeof setting === 'boolean' || !setting) {
     return setting ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger;
   }
-  return setting?.length ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary;
+  return setting?.length ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger;
+};
+
+const getGlobalType = (type: BLWLType | 'active') => {
+  switch (true) {
+    case type.includes('channel'): {
+      return 'channels';
+    }
+    case type.includes('role'): {
+      return 'roles';
+    }
+    case type.includes('user'): {
+      return 'users';
+    }
+    default: {
+      return 'boolean';
+    }
+  }
+};
+
+const getChangeSelectType = (
+  type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
+) => {
+  switch (type) {
+    case 'channel':
+    case 'channels': {
+      return Discord.ComponentType.ChannelSelect;
+    }
+    case 'user':
+    case 'users': {
+      return Discord.ComponentType.UserSelect;
+    }
+    case 'role':
+    case 'roles': {
+      return Discord.ComponentType.RoleSelect;
+    }
+    default: {
+      return Discord.ComponentType.MentionableSelect;
+    }
+  }
+};
+
+const getPlaceholder = (
+  type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
+  language: CT.Language,
+) => {
+  switch (type) {
+    case 'channel':
+    case 'channels': {
+      return language.Channels;
+    }
+    case 'user':
+    case 'users': {
+      return language.Users;
+    }
+    case 'role':
+    case 'roles': {
+      return language.Roles;
+    }
+    default: {
+      return language.Mentionables;
+    }
+  }
+};
+
+const getMention = (type: 'channel' | 'role' | 'user' | 'mention', value: string) => {
+  switch (type) {
+    case 'channel': {
+      return `<#${value}>`;
+    }
+    case 'role': {
+      return `<@&${value}>`;
+    }
+    case 'user': {
+      return `<@${value}>`;
+    }
+    default: {
+      return value;
+    }
+  }
+};
+
+const getGlobalDesc = (type: BLWLType, language: CT.Language) => {
+  switch (type) {
+    case 'blchannelid': {
+      return language.slashCommands.settings.blchannel;
+    }
+    case 'blroleid': {
+      return language.slashCommands.settings.blrole;
+    }
+    case 'bluserid': {
+      return language.slashCommands.settings.bluser;
+    }
+    case 'wlchannelid': {
+      return language.slashCommands.settings.wlchannel;
+    }
+    case 'wlroleid': {
+      return language.slashCommands.settings.wlrole;
+    }
+    case 'wluserid': {
+      return language.slashCommands.settings.wluser;
+    }
+    default: {
+      return language.unknown;
+    }
+  }
 };

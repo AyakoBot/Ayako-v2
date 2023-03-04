@@ -148,7 +148,7 @@ export const getComponents: CT.SettingsFile<'delete-commands'>['getComponents'] 
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannels', name),
+      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
       buttonParsers.specific(
         language,
         settings?.activechannelid,

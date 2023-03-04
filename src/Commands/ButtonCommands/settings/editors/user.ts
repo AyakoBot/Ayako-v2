@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const fieldName = args.shift();
@@ -31,15 +31,36 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const language = await ch.languageSelector(cmd.guildId);
   const lan = language.slashCommands.settings.categories[settingName];
 
-  cmd.showModal(
-    ch.settingsHelpers.changeHelpers.changeModal(
-      language,
-      lan,
-      settingName,
-      fieldName,
-      'number',
-      currentSetting?.[fieldName as keyof typeof currentSetting],
-      true,
-    ),
-  );
+  cmd.update({
+    embeds: [
+      ch.settingsHelpers.changeHelpers.changeEmbed(
+        language,
+        lan,
+        fieldName,
+        currentSetting?.[fieldName as keyof typeof currentSetting],
+        'user',
+      ),
+    ],
+    components: [
+      {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+          ch.settingsHelpers.changeHelpers.changeSelect(
+            language,
+            'user',
+            fieldName,
+            settingName,
+            uniquetimestamp,
+          ),
+        ],
+      },
+      {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+          ch.settingsHelpers.changeHelpers.back(settingName),
+          ch.settingsHelpers.changeHelpers.done(settingName, fieldName, 'user', language),
+        ],
+      },
+    ],
+  });
 };

@@ -154,7 +154,8 @@ export const getComponents: CT.SettingsFile<'auto-punish'>['getComponents'] = (
     type: Discord.ComponentType.ActionRow,
     components: [
       buttonParsers.specific(language, settings?.addroles, 'addroles', name, 'role'),
-      buttonParsers.specific(language, settings?.removeroles, 'removeroles', name, 'channel'),
+      buttonParsers.specific(language, settings?.removeroles, 'removeroles', name, 'role'),
     ],
   },
 ];
+

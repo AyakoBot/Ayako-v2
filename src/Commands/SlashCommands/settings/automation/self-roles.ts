@@ -150,10 +150,10 @@ export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
     type: Discord.ComponentType.ActionRow,
     components: [
       buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-      buttonParsers.global(language, settings?.blroles, 'blroles', name),
-      buttonParsers.global(language, settings?.blusers, 'blusers', name),
-      buttonParsers.global(language, settings?.wlroles, 'wlroles', name),
-      buttonParsers.global(language, settings?.wlusers, 'wlusers', name),
+      buttonParsers.global(language, settings?.blroles, 'blroleid', name),
+      buttonParsers.global(language, settings?.blusers, 'bluserid', name),
+      buttonParsers.global(language, settings?.wlroles, 'wlroleid', name),
+      buttonParsers.global(language, settings?.wlusers, 'wluserid', name),
     ],
   },
 ];

@@ -18,6 +18,9 @@ export default async (cmd: Discord.Interaction) => {
       case cmd.isStringSelectMenu(): {
         return 'String';
       }
+      case cmd.isMentionableSelectMenu(): {
+        return 'Mention';
+      }
       default: {
         throw new Error(`Unknown Select Menu\n${JSON.stringify(cmd, null, 2)}`);
       }
@@ -33,8 +36,11 @@ export default async (cmd: Discord.Interaction) => {
 
   const args = cmd.customId.split(/_+/g);
   const path = args.shift();
+  console.log(getType());
+  console.log(path);
 
   const command = files.find((f) => f.endsWith(`/${path}.js`));
+  console.log(command);
   if (!command) return;
 
   (await import(command)).default(cmd, args);

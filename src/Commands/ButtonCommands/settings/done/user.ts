@@ -1,14 +1,14 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import glob from 'glob';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
-  const fieldName = args.shift();
-  if (!fieldName) return;
-
   const settingName = args.shift() as keyof CT.TableNamesMap;
   if (!settingName) return;
+
+  const fieldName = args.shift();
+  if (!fieldName) return;
 
   const tableName = ch.constants.commands.settings.tableNames[
     settingName as keyof typeof ch.constants.commands.settings.tableNames
@@ -29,13 +29,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     uniquetimestamp,
   )) as SettingsType;
 
-  const newSetting = !currentSetting?.[fieldName as keyof typeof currentSetting];
+  const userText = cmd.message.embeds[0].description?.split(/,\s/g);
+  const userIDs = userText
+    ?.map((c) => c.replace(/\D/g, '') || undefined)
+    .filter((c): c is string => !!c);
 
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,
     fieldName,
     cmd.guildId,
-    newSetting,
+    userIDs,
     uniquetimestamp,
   )) as SettingsType;
 

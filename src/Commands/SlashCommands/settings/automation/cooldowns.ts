@@ -148,9 +148,9 @@ export const getComponents: CT.SettingsFile<'cooldowns'>['getComponents'] = (
         name,
         'channel',
       ),
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannels', name),
-      buttonParsers.global(language, settings?.wlroleid, 'wlroles', name),
-      buttonParsers.global(language, settings?.wluserid, 'wlusers', name),
+      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
+      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name),
+      buttonParsers.global(language, settings?.wluserid, 'wluserid', name),
     ],
   },
 ];
