@@ -53,7 +53,9 @@ const showAll = async (
     .then((r: DBT.autopunish[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
+    name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.none}\` - ${
+      lan.fields.punishment.name
+    }: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
         : language.none
@@ -158,4 +160,3 @@ export const getComponents: CT.SettingsFile<'auto-punish'>['getComponents'] = (
     ],
   },
 ];
-

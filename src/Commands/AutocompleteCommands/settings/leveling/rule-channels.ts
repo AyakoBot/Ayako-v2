@@ -6,10 +6,10 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
   const settings = (
     await ch
       .query(
-        `SELECT * FROM ${ch.constants.commands.settings.tableNames['auto-punish']} WHERE guildid = $1;`,
+        `SELECT * FROM ${ch.constants.commands.settings.tableNames['rule-channels']} WHERE guildid = $1;`,
         [cmd.guildId],
       )
-      .then((r: DBT.autopunish[] | null) => r)
+      .then((r: DBT.levelingruleschannels[] | null) => r)
   )?.filter((s) => {
     const id = String(cmd.options.get('id', false)?.value);
 
@@ -17,7 +17,6 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
   });
 
   const language = await ch.languageSelector(cmd.guildId);
-  const lan = language.slashCommands.settings.categories['auto-punish'];
 
   if (!settings) {
     cmd.respond([]);
@@ -26,13 +25,9 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
 
   cmd.respond(
     settings?.map((s) => ({
-      name: `${lan.fields.warnamount.name}: ${s.warnamount ?? language.none} - ${
-        lan.fields.punishment.name
-      }: ${
-        s.punishment
-          ? language.punishments[s.punishment as keyof typeof language.punishments]
-          : language.none
-      }`,
+      name: `${ch.channelRuleCalc(Number(s.rules), language)} ${language.ChannelRules} - ${Number(
+        s.channels?.length,
+      )} ${language.Channels}`,
       value: Number(s.uniquetimestamp).toString(36),
     })),
   );

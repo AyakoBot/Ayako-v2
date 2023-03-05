@@ -148,7 +148,8 @@ const settings = new Discord.SlashCommandBuilder()
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('vote-rewards')
-          .setDescription(`Reward Members for Voting for your Bot/Server`),
+          .setDescription(`Reward Members for Voting for your Bot/Server`)
+          .addStringOption(IDSelector),
       ),
   )
   .addSubcommandGroup(

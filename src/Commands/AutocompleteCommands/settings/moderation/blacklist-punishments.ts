@@ -6,10 +6,10 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
   const settings = (
     await ch
       .query(
-        `SELECT * FROM ${ch.constants.commands.settings.tableNames['auto-punish']} WHERE guildid = $1;`,
-        [cmd.guildId],
+        `SELECT * FROM ${ch.constants.commands.settings.tableNames['blacklist-punishments']} WHERE guildid = $1 AND type = $2;`,
+        [cmd.guildId, 'blacklist'],
       )
-      .then((r: DBT.autopunish[] | null) => r)
+      .then((r: DBT.punishments[] | null) => r)
   )?.filter((s) => {
     const id = String(cmd.options.get('id', false)?.value);
 
@@ -17,7 +17,7 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
   });
 
   const language = await ch.languageSelector(cmd.guildId);
-  const lan = language.slashCommands.settings.categories['auto-punish'];
+  const lan = language.slashCommands.settings.categories['blacklist-punishments'];
 
   if (!settings) {
     cmd.respond([]);

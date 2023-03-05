@@ -474,9 +474,9 @@ export default {
       },
       tableNames: {
         'anti-spam': 'antispam',
-        'anti-spam-punishments': 'antispampunishments',
-        'anti-virus-punishments': 'antiviruspunishments',
-        'blacklist-punishments': 'blacklistpunishments',
+        'anti-spam-punishments': 'punishments',
+        'anti-virus-punishments': 'punishments',
+        'blacklist-punishments': 'punishments',
         'anti-raid': 'antiraid',
         'anti-virus': 'antivirus',
         'auto-punish': 'autopunish',

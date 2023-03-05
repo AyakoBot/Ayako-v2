@@ -53,7 +53,9 @@ const showAll = async (
     .then((r: DBT.punishments[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
+    name: `${lan.fields.warnamount.name ?? language.none}: \`${s.warnamount}\` - ${
+      lan.fields.punishment.name
+    }: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
         : language.none
