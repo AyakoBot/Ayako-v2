@@ -124,24 +124,59 @@ export const getComponents: CT.SettingsFile<'separators'>['getComponents'] = (
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+      components: [
+        buttonParsers.global(
+          language,
+          !!settings?.active,
+          'active',
+          name,
+          settings?.uniquetimestamp,
+        ),
+      ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.separator, 'separator', name, 'role'),
-        buttonParsers.boolean(language, settings?.isvarying, 'isvarying', name),
+        buttonParsers.specific(
+          language,
+          settings?.separator,
+          'separator',
+          name,
+          settings?.uniquetimestamp,
+          'role',
+        ),
+        buttonParsers.boolean(
+          language,
+          settings?.isvarying,
+          'isvarying',
+          name,
+          settings?.uniquetimestamp,
+        ),
       ],
     },
   ];
 
   if (settings?.isvarying) {
     components[1].components.push(
-      buttonParsers.specific(language, settings?.stoprole, 'stoprole', name, 'role'),
+      buttonParsers.specific(
+        language,
+        settings?.stoprole,
+        'stoprole',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
     );
   } else {
     components[1].components.push(
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+      buttonParsers.specific(
+        language,
+        settings?.roles,
+        'roles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
     );
   }
 

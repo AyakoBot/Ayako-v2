@@ -101,8 +101,21 @@ export const getComponents: CT.SettingsFile<'multi-roles'>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-      buttonParsers.specific(language, settings?.multiplier, 'multiplier', name),
+      buttonParsers.specific(
+        language,
+        settings?.roles,
+        'roles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.multiplier,
+        'multiplier',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
 ];

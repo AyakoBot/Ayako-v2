@@ -9,7 +9,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories['auto-punish'];
 
-  const ID = cmd.options.get('ID', false)?.value as string;
+  const ID = cmd.options.get('id', false)?.value as string;
+  console.log(ID);
   if (ID) {
     showID(cmd, ID, language, lan);
     return;
@@ -140,23 +141,74 @@ export const getComponents: CT.SettingsFile<'auto-punish'>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
-      buttonParsers.specific(language, settings?.punishment, 'punishment', name),
-      buttonParsers.specific(language, settings?.duration, 'duration', name),
-      buttonParsers.boolean(language, settings?.confirmationreq, 'confirmationreq', name),
-      buttonParsers.specific(language, settings?.punishmentawaittime, 'punishmentawaittime', name),
+      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.addroles, 'addroles', name, 'role'),
-      buttonParsers.specific(language, settings?.removeroles, 'removeroles', name, 'role'),
+      buttonParsers.specific(
+        language,
+        settings?.warnamount,
+        'warnamount',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.punishment,
+        'punishment',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.duration,
+        'duration',
+        name,
+        settings?.uniquetimestamp,
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.boolean(
+        language,
+        settings?.confirmationreq,
+        'confirmationreq',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.punishmentawaittime,
+        'punishmentawaittime',
+        name,
+        settings?.uniquetimestamp,
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(
+        language,
+        settings?.addroles,
+        'addroles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.removeroles,
+        'removeroles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
     ],
   },
 ];

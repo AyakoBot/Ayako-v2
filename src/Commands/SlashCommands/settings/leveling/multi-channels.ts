@@ -101,8 +101,21 @@ export const getComponents: CT.SettingsFile<'multi-channels'>['getComponents'] =
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.channels, 'channels', name, 'channel'),
-      buttonParsers.specific(language, settings?.multiplier, 'multiplier', name),
+      buttonParsers.specific(
+        language,
+        settings?.channels,
+        'channels',
+        name,
+        settings?.uniquetimestamp,
+        'channel',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.multiplier,
+        'multiplier',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
 ];

@@ -20,6 +20,8 @@ const punishmentFields = {
   },
 };
 
+const none = 'none';
+
 const multiplier = {
   name: 'Multiplier',
   desc: 'Multiplier to multiply the awared XP per Message with',
@@ -55,8 +57,8 @@ const getChannel = (
     : `Unknown Channel\n`;
 
 const getEmote = (emoji: Discord.Emoji) =>
-  `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? 'None'}\` / \`${
-    emoji.id ?? 'None'
+  `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? none}\` / \`${
+    emoji.id ?? none
   }\`\n`;
 
 const getInviteDetails = (
@@ -99,7 +101,8 @@ const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
 const getCommand = (command: Discord.ApplicationCommand) =>
   `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`;
 
-const getSticker = (sticker: Discord.Sticker) => `Sticker \`${sticker.name}\` / \`${sticker.id}\``;
+const getSticker = (sticker: Discord.Sticker) =>
+  `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`;
 
 export default {
   languageFunction: {
@@ -284,7 +287,7 @@ export default {
             | Discord.PublicThreadChannel<boolean>
             | Discord.VoiceBasedChannel,
           channelType: string,
-        ) => `${getScheduledEvent(event)}has updated from\n${getChannel(channel, channelType)}`,
+        ) => `${getChannel(channel, channelType)} of \n${getScheduledEvent(event)}\nwas updated`,
         descUpdate: (event: Discord.GuildScheduledEvent) =>
           `${getScheduledEvent(event)}was updated`,
         nameUserRemove: 'Scheduled Event Member removed',
@@ -723,7 +726,7 @@ export default {
         },
         explicitContentFilterName: 'Excplicit Content Filter',
         mfaLevel: {
-          0: 'None',
+          0: none,
           1: 'Elevated',
         },
         mfaLevelName: 'MFA Level',
@@ -1251,9 +1254,9 @@ export default {
           `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
             res.server_count ?? 'Unknown'
           }\n**Tags:** ${
-            res.tags?.map((t) => `\`${t}\``).join(', ') ?? 'None'
-          }\n\n**__Links:__**\n**Website:** ${res.website ?? 'None'}\n**Support Server:** ${
-            res.support ? `https://discord.gg/${res.support}` : 'None'
+            res.tags?.map((t) => `\`${t}\``).join(', ') ?? none
+          }\n\n**__Links:__**\n**Website:** ${res.website ?? none}\n**Support Server:** ${
+            res.support ? `https://discord.gg/${res.support}` : none
           }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
             res.github ?? 'Unknown'
           }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
@@ -2957,7 +2960,7 @@ export default {
   Scopes: 'Scopes',
   Result: `Result`,
   stagePrivacyLevels: [`Public`, `Server Only`],
-  none: `None`,
+  none,
   defaultValuesLog: (oldValue: string, newValue: string) =>
     `__Before:__\n${oldValue}\n\n__After:__\n${newValue}`,
   reason: `Reason`,

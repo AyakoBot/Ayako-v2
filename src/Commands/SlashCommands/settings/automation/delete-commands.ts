@@ -134,21 +134,53 @@ export const getComponents: CT.SettingsFile<'delete-commands'>['getComponents'] 
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.command, 'command', name),
-      buttonParsers.specific(language, settings?.deletetimeout, 'deletetimeout', name),
-      buttonParsers.boolean(language, settings?.deletecommand, 'deletecommand', name),
-      buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name),
+      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
+      buttonParsers.specific(
+        language,
+        settings?.command,
+        'command',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.deletetimeout,
+        'deletetimeout',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.boolean(
+        language,
+        settings?.deletecommand,
+        'deletecommand',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.boolean(
+        language,
+        settings?.deletereply,
+        'deletereply',
+        name,
+        settings?.uniquetimestamp,
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.global(
+        language,
+        settings?.wlchannelid,
+        'wlchannelid',
+        name,
+        settings?.uniquetimestamp,
+      ),
       buttonParsers.specific(
         language,
         settings?.activechannelid,

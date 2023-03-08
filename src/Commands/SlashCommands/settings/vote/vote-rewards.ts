@@ -149,9 +149,21 @@ export const getComponents: CT.SettingsFile<'vote-rewards'>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, String(settings?.tier), 'tier', name),
-      buttonParsers.specific(language, settings?.rewardtype, 'rewardtype', name),
-      buttonParsers.specific(language, settings?.reward, 'reward', name),
+      buttonParsers.specific(
+        language,
+        String(settings?.tier),
+        'tier',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.rewardtype,
+        'rewardtype',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(language, settings?.reward, 'reward', name, settings?.uniquetimestamp),
     ],
   },
 ];

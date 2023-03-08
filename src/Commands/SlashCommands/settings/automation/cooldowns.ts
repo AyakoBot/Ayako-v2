@@ -134,8 +134,20 @@ export const getComponents: CT.SettingsFile<'cooldowns'>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.command, 'command', name),
-      buttonParsers.specific(language, settings?.cooldown, 'cooldown', name),
+      buttonParsers.specific(
+        language,
+        settings?.command,
+        'command',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.cooldown,
+        'cooldown',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
   {
@@ -146,11 +158,30 @@ export const getComponents: CT.SettingsFile<'cooldowns'>['getComponents'] = (
         settings?.activechannelid,
         'activechannelid',
         name,
+        settings?.uniquetimestamp,
         'channel',
       ),
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
-      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name),
-      buttonParsers.global(language, settings?.wluserid, 'wluserid', name),
+      buttonParsers.global(
+        language,
+        settings?.wlchannelid,
+        'wlchannelid',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.global(
+        language,
+        settings?.wlroleid,
+        'wlroleid',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.global(
+        language,
+        settings?.wluserid,
+        'wluserid',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
 ];

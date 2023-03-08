@@ -7,8 +7,6 @@ const IDSelector = new Discord.SlashCommandStringOption()
   .setAutocomplete(true)
   .setDescription('The ID of the Setting')
   .setRequired(false)
-  .setMaxLength(8)
-  .setMinLength(8)
   .setName('id');
 
 const SearchUsername = new Discord.SlashCommandStringOption()

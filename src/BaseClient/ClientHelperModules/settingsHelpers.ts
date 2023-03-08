@@ -53,11 +53,12 @@ const buttonParsers = {
     setting: boolean | string[] | undefined,
     type: BLWLType | 'active',
     settingName: string,
+    uniquetimestamp?: string,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: getLabel(language, type),
     style: getStyle(setting),
-    custom_id: `settings/editors/${getGlobalType(type)}_${type}_${settingName}`,
+    custom_id: `settings/editors/${getGlobalType(type)}_${type}_${settingName}_${uniquetimestamp}`,
     emoji: getEmoji(setting, type),
   }),
   specific: <T extends keyof SettingsNames>(
@@ -65,6 +66,7 @@ const buttonParsers = {
     setting: string[] | string | boolean | undefined,
     name: keyof FieldName<T>,
     settingName: T,
+    uniquetimestamp?: string,
     type?: 'channel' | 'role' | 'user',
     emoji?: Discord.APIMessageComponentEmoji,
   ): Discord.APIButtonComponent => {
@@ -86,7 +88,7 @@ const buttonParsers = {
           : Discord.ButtonStyle.Secondary,
       custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
         name,
-      )}_${settingName}`,
+      )}_${settingName}_${uniquetimestamp}`,
       emoji: (type ? getEmoji(setting, `wl${type}id`) : undefined) ?? emoji,
     };
   },
@@ -95,6 +97,7 @@ const buttonParsers = {
     setting: boolean | undefined,
     name: keyof FieldName<T>,
     settingName: T,
+    uniquetimestamp?: string,
   ): Discord.APIButtonComponent => {
     const constantTypes =
       constants.commands.settings.types[
@@ -111,7 +114,7 @@ const buttonParsers = {
       style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
       custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
         name,
-      )}_${settingName}`,
+      )}_${settingName}_${uniquetimestamp}`,
       emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
     };
   },
@@ -122,6 +125,7 @@ const buttonParsers = {
     custom_id: `settings/create_${name}`,
     emoji: objectEmotes.plusBG,
   }),
+  /*
   delete: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.delete,
@@ -129,6 +133,7 @@ const buttonParsers = {
     custom_id: `settings/delete_${name}`,
     emoji: objectEmotes.minusBG,
   }),
+  */
   previous: (
     language: CT.Language,
     name: string,
@@ -145,11 +150,12 @@ const buttonParsers = {
     language: CT.Language,
     name: string,
     enabled: boolean = false,
+    uniquetimestamp?: string,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.next,
     style: Discord.ButtonStyle.Success,
-    custom_id: `settings/delete_${name}`,
+    custom_id: `settings/delete_${name}_${uniquetimestamp}`,
     emoji: objectEmotes.minusBG,
     disabled: !enabled,
   }),
@@ -171,7 +177,7 @@ const multiRowHelpers = {
   ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.delete(language, name), buttonParsers.create(language, name)],
+      components: [buttonParsers.create(language, name)],
     },
   ],
   components: (
@@ -293,7 +299,9 @@ const changeHelpers = {
     uniquetimestamp?: number,
   ): Discord.APIModalInteractionResponseCallbackData => ({
     title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
-    custom_id: `settings/editors/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
+    custom_id: `settings/editors/${type}_${settingName}${
+      uniquetimestamp ? `_${uniquetimestamp}` : ''
+    }`,
     components: [
       {
         type: Discord.ComponentType.ActionRow,
@@ -391,10 +399,11 @@ const changeHelpers = {
   ) =>
     uniquetimestamp
       ? query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`, [
+          newSetting ?? null,
           uniquetimestamp,
         ]).then((r: any[] | null) => (r ? r[0] : null))
       : query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`, [
-          newSetting || null,
+          newSetting ?? null,
           guildId,
         ]).then((r: any[] | null) => (r ? r[0] : null)),
 };

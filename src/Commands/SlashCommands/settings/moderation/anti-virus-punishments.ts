@@ -123,14 +123,34 @@ export const getComponents: CT.SettingsFile<'anti-virus-punishments'>['getCompon
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [
+      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
+    ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.warnamount, 'warnamount', name),
-      buttonParsers.specific(language, settings?.punishment, 'punishment', name),
-      buttonParsers.specific(language, settings?.duration, 'duration', name),
+      buttonParsers.specific(
+        language,
+        settings?.warnamount,
+        'warnamount',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.punishment,
+        'punishment',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.duration,
+        'duration',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
 ];

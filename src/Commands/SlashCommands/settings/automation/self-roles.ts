@@ -130,30 +130,75 @@ export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.name, 'name', name),
-      buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
+      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.name, 'name', name),
-      buttonParsers.boolean(language, settings?.onlyone, 'onlyone', name),
+      buttonParsers.specific(language, settings?.name, 'name', name, settings?.uniquetimestamp),
+      buttonParsers.boolean(
+        language,
+        settings?.onlyone,
+        'onlyone',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-      buttonParsers.global(language, settings?.blroles, 'blroleid', name),
-      buttonParsers.global(language, settings?.blusers, 'bluserid', name),
-      buttonParsers.global(language, settings?.wlroles, 'wlroleid', name),
-      buttonParsers.global(language, settings?.wlusers, 'wluserid', name),
+      buttonParsers.specific(language, settings?.name, 'name', name, settings?.uniquetimestamp),
+      buttonParsers.boolean(
+        language,
+        settings?.onlyone,
+        'onlyone',
+        name,
+        settings?.uniquetimestamp,
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(
+        language,
+        settings?.roles,
+        'roles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
+      buttonParsers.global(
+        language,
+        settings?.blroles,
+        'blroleid',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.global(
+        language,
+        settings?.blusers,
+        'bluserid',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.global(
+        language,
+        settings?.wlroles,
+        'wlroleid',
+        name,
+        settings?.uniquetimestamp,
+      ),
+      buttonParsers.global(
+        language,
+        settings?.wlusers,
+        'wluserid',
+        name,
+        settings?.uniquetimestamp,
+      ),
     ],
   },
 ];
