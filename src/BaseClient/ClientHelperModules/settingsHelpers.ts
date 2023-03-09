@@ -325,7 +325,7 @@ const changeHelpers = {
     uniquetimestamp?: number,
   ): Discord.APIModalInteractionResponseCallbackData => ({
     title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
-    custom_id: `settings/editors/${type}_${settingName}${
+    custom_id: `settings/${type}_${settingName}${
       uniquetimestamp ? `_${uniquetimestamp}` : ''
     }`,
     components: [

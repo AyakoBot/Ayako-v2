@@ -25,16 +25,18 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
   const fieldName = field.customId;
 
-  const verify = () => {
-    try {
-      return { value: ms(field.value) };
-    } catch (e) {
-      return { error: e as Error };
-    }
-  };
-  const { value: newSetting, error } = verify();
+  const verify = (): Promise<{ value?: number; error?: Error }> =>
+    new Promise((res) => {
+      try {
+        ms(field.value);
+        return res({ value: ch.getDuration(field.value) / 1000 });
+      } catch (e) {
+        return res({ error: e as Error });
+      }
+    });
+  const { value: newSetting, error } = await verify();
 
-  console.log(newSetting, error);
+  console.log(newSetting);
 
   if (error) {
     ch.errorCmd(cmd, error.message, language);
