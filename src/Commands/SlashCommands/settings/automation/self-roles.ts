@@ -53,7 +53,7 @@ const showAll = async (
     .then((r: DBT.selfroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.name.name}: \`${s.name ?? language.none}\``,
+    name: `${lan.fields.name.name}: \`${s.name ?? language.None}\``,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
@@ -85,7 +85,7 @@ export const getEmbeds: CT.SettingsFile<'self-roles'>['getEmbeds'] = (
       },
       {
         name: lan.fields.name.name,
-        value: settings?.name ?? language.none,
+        value: settings?.name ?? language.None,
         inline: true,
       },
       {

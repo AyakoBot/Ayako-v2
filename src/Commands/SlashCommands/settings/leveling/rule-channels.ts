@@ -82,7 +82,7 @@ export const getEmbeds: CT.SettingsFile<'rule-channels'>['getEmbeds'] = (
       author: embedParsers.author(language, lan),
       description: settings?.rules
         ? `\`${ch.channelRuleCalc(Number(settings.rules), language).join('`\n `')}\``
-        : language.none,
+        : language.None,
       fields: [
         {
           name: lan.fields.channels.name,
@@ -105,7 +105,7 @@ export const getEmbeds: CT.SettingsFile<'rule-channels'>['getEmbeds'] = (
       value: `${lan.amount}: ${
         typeof settings?.[key as keyof typeof settings] === 'string'
           ? settings[key as keyof typeof settings]
-          : language.none
+          : language.None
       }`,
       inline: true,
     });

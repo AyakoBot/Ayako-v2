@@ -47,7 +47,7 @@ export const getEmbeds: CT.SettingsFile<'anti-raid'>['getEmbeds'] = (
         name: lan.fields.punishment.name,
         value: settings?.punishment
           ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-          : language.none,
+          : language.None,
         inline: true,
       },
       {

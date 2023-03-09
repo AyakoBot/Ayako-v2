@@ -53,7 +53,7 @@ const showAll = async (
     .then((r: DBT.deletecommands[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.command.name}: \`${s.command ?? language.none}\` - ${
+    name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${
       lan.fields.deletetimeout
     }: \`${embedParsers.time(Number(s.deletetimeout), language)}\``,
     value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
@@ -89,7 +89,7 @@ export const getEmbeds: CT.SettingsFile<'delete-commands'>['getEmbeds'] = (
       },
       {
         name: lan.fields.command.name,
-        value: settings?.command ?? language.none,
+        value: settings?.command ?? language.None,
         inline: true,
       },
       {

@@ -53,12 +53,12 @@ const showAll = async (
     .then((r: DBT.punishments[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.warnamount.name ?? language.none}: \`${s.warnamount}\` - ${
+    name: `${lan.fields.warnamount.name ?? language.None}: \`${s.warnamount}\` - ${
       lan.fields.punishment.name
     }: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
-        : language.none
+        : language.None
     }\``,
     value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
       s.uniquetimestamp,
@@ -100,7 +100,7 @@ export const getEmbeds: CT.SettingsFile<'anti-spam-punishments'>['getEmbeds'] = 
         name: lan.fields.punishment.name,
         value: settings?.punishment
           ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-          : language.none,
+          : language.None,
         inline: true,
       },
       {

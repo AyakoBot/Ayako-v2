@@ -87,7 +87,7 @@ export default async (
     'topic' in channel &&
     !!oldChannel?.topic !== !!channel.topic
   ) {
-    merge(oldChannel?.topic || language.none, channel.topic || language.none, 'string', lan.topic);
+    merge(oldChannel?.topic || language.None, channel.topic || language.None, 'string', lan.topic);
   }
 
   if (
@@ -151,10 +151,10 @@ export default async (
     merge(
       oldChannel?.rateLimitPerUser
         ? ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
-        : language.none,
+        : language.None,
       channel.rateLimitPerUser
         ? ch.moment(channel.rateLimitPerUser * 1000, language)
-        : language.none,
+        : language.None,
       'string',
       lan.rateLimitPerUser,
     );
@@ -207,10 +207,10 @@ export default async (
     merge(
       oldParent
         ? language.languageFunction.getChannel(oldParent, language.channelTypes[oldParent.type])
-        : language.none,
+        : language.None,
       parent
         ? language.languageFunction.getChannel(parent, language.channelTypes[parent.type])
-        : language.none,
+        : language.None,
       'string',
       lan.parentChannel,
     );
@@ -227,7 +227,7 @@ export default async (
         : language.unknown,
       channel.archiveTimestamp
         ? `<t:${String(channel.archiveTimestamp).slice(0, -3)}:f>`
-        : language.none,
+        : language.None,
       'string',
       lan.archiveTimestamp,
     );
@@ -244,7 +244,7 @@ export default async (
         : language.unknown,
       channel.defaultAutoArchiveDuration
         ? ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
-        : language.none,
+        : language.None,
       'string',
       lan.autoArchiveDuration,
     );

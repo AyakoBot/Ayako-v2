@@ -34,7 +34,7 @@ export const getEmbeds: CT.SettingsFile<'basic'>['getEmbeds'] = (
     fields: [
       {
         name: lan.fields.prefix.name,
-        value: settings?.prefix ? `\`${settings?.prefix}\`` : language.none,
+        value: settings?.prefix ? `\`${settings?.prefix}\`` : language.None,
         inline: true,
       },
       {

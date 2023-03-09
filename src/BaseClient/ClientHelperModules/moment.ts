@@ -4,7 +4,7 @@ import type * as CT from '../../Typings/CustomTypings';
 
 export default (duration: number, language: CT.Language) =>
   !duration
-    ? language.none
+    ? language.None
     : moment
         .duration(duration)
         .format(

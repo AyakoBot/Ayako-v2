@@ -21,6 +21,7 @@ const punishmentFields = {
 };
 
 const none = 'none';
+const None = 'None';
 
 const multiplier = {
   name: 'Multiplier',
@@ -726,7 +727,7 @@ export default {
         },
         explicitContentFilterName: 'Excplicit Content Filter',
         mfaLevel: {
-          0: none,
+          0: None,
           1: 'Elevated',
         },
         mfaLevelName: 'MFA Level',
@@ -1260,9 +1261,9 @@ export default {
           `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
             res.server_count ?? 'Unknown'
           }\n**Tags:** ${
-            res.tags?.map((t) => `\`${t}\``).join(', ') ?? none
-          }\n\n**__Links:__**\n**Website:** ${res.website ?? none}\n**Support Server:** ${
-            res.support ? `https://discord.gg/${res.support}` : none
+            res.tags?.map((t) => `\`${t}\``).join(', ') ?? None
+          }\n\n**__Links:__**\n**Website:** ${res.website ?? None}\n**Support Server:** ${
+            res.support ? `https://discord.gg/${res.support}` : None
           }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
             res.github ?? 'Unknown'
           }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
@@ -1451,7 +1452,7 @@ export default {
               desc: 'Whether to ask for Confirmation before proceeding with a Punishment',
             },
             punishmentawaittime: {
-              name: 'Confimation await Time',
+              name: 'Confimation await Time (in Seconds)',
               desc: 'How long to wait for Human confirmation before the Punishment is aborted',
             },
           },
@@ -3034,4 +3035,5 @@ export default {
   Mentionables: 'Mentionables',
   Mentionable: 'Mentionable',
   Done: 'Done',
+  None
 };

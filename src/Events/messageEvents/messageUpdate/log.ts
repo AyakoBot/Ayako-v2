@@ -57,16 +57,16 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     merge(
       oldMsg.editedTimestamp
         ? ch.constants.standard.getTime(oldMsg.editedTimestamp)
-        : language.none,
-      msg.editedTimestamp ? ch.constants.standard.getTime(msg.editedTimestamp) : language.none,
+        : language.None,
+      msg.editedTimestamp ? ch.constants.standard.getTime(msg.editedTimestamp) : language.None,
       'string',
       lan.editedTimestamp,
     );
   }
   if (oldMsg.activity?.type !== msg.activity?.type) {
     merge(
-      oldMsg.activity ? lan.activity[oldMsg.activity?.type] : language.none,
-      msg.activity ? lan.activity[msg.activity?.type] : language.none,
+      oldMsg.activity ? lan.activity[oldMsg.activity?.type] : language.None,
+      msg.activity ? lan.activity[msg.activity?.type] : language.None,
       'string',
       language.Flags,
     );
@@ -80,10 +80,10 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
             oldMsg.thread,
             language.channelTypes[oldMsg.thread.type],
           )
-        : language.none,
+        : language.None,
       msg.thread
         ? language.languageFunction.getChannel(msg.thread, language.channelTypes[msg.thread.type])
-        : language.none,
+        : language.None,
       'string',
       language.channelTypes[(msg.thread ?? oldMsg.thread)?.type ?? 11],
     );
@@ -119,7 +119,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     } else {
       embed.fields?.push({
         name: lan.beforeContent,
-        value: oldMsg.content ?? language.none,
+        value: oldMsg.content ?? language.None,
         inline: false,
       });
     }
@@ -130,7 +130,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
     } else {
       embed.fields?.push({
         name: lan.afterContent,
-        value: msg.content ?? language.none,
+        value: msg.content ?? language.None,
         inline: false,
       });
     }

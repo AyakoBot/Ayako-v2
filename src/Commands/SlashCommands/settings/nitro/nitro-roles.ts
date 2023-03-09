@@ -53,7 +53,7 @@ const showAll = async (
     .then((r: DBT.nitroroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.days.name}: \`${s.days ?? language.none}\``,
+    name: `${lan.fields.days.name}: \`${s.days ?? language.None}\``,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 

@@ -26,12 +26,12 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
 
   cmd.respond(
     settings?.map((s) => ({
-      name: `${lan.fields.warnamount.name}: ${s.warnamount ?? language.none} - ${
+      name: `${lan.fields.warnamount.name}: ${s.warnamount ?? language.None} - ${
         lan.fields.punishment.name
       }: ${
         s.punishment
           ? language.punishments[s.punishment as keyof typeof language.punishments]
-          : language.none
+          : language.None
       }`,
       value: Number(s.uniquetimestamp).toString(36),
     })),

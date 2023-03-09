@@ -26,7 +26,7 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
 
   cmd.respond(
     settings?.map((s) => ({
-      name: `${lan.fields.days.name}: ${s.days ?? language.none}`,
+      name: `${lan.fields.days.name}: ${s.days ?? language.None}`,
       value: Number(s.uniquetimestamp).toString(36),
     })),
   );

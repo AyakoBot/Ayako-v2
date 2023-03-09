@@ -57,8 +57,8 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
     merge(
       oldIntegration.expireBehavior
         ? lan.expireBehavior[oldIntegration.expireBehavior]
-        : language.none,
-      integration.expireBehavior ? lan.expireBehavior[integration.expireBehavior] : language.none,
+        : language.None,
+      integration.expireBehavior ? lan.expireBehavior[integration.expireBehavior] : language.None,
       'string',
       lan.expireBehaviorName,
     );
@@ -68,10 +68,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
     merge(
       oldIntegration.expireGracePeriod
         ? ch.moment(oldIntegration.expireGracePeriod, language)
-        : language.none,
+        : language.None,
       integration.expireGracePeriod
         ? ch.moment(integration.expireGracePeriod, language)
-        : language.none,
+        : language.None,
       'string',
       lan.expireGracePeriod,
     );
@@ -81,10 +81,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
     merge(
       oldIntegration.syncedAt
         ? ch.constants.standard.getTime(oldIntegration.syncedAt.getTime())
-        : language.none,
+        : language.None,
       integration.syncedAt
         ? ch.constants.standard.getTime(integration.syncedAt.getTime())
-        : language.none,
+        : language.None,
       'string',
       lan.syncedAt,
     );

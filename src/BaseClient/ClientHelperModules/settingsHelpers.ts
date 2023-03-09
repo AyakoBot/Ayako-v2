@@ -4,6 +4,7 @@ import type * as CT from '../../Typings/CustomTypings';
 import stringEmotes from './stringEmotes.js';
 import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
+import ms from 'ms';
 import query from './query.js';
 import constants from '../Other/constants.js';
 
@@ -22,29 +23,29 @@ const embedParsers = {
       ? `${stringEmotes.enabled} ${language.Enabled}`
       : `${stringEmotes.disabled} ${language.Disabled}`,
   channels: (val: string[] | undefined, language: CT.Language) =>
-    val?.length ? val.map((c) => `<#${c}>`).join(', ') : language.none,
+    val?.length ? val.map((c) => `<#${c}>`).join(', ') : language.None,
   roles: (val: string[] | undefined, language: CT.Language) =>
-    val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.none,
+    val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.None,
   users: (val: string[] | undefined, language: CT.Language) =>
-    val?.length ? val.map((c) => `<@${c}>`).join(', ') : language.none,
+    val?.length ? val.map((c) => `<@${c}>`).join(', ') : language.None,
   channel: (val: string | undefined, language: CT.Language) =>
-    val?.length ? `<#${val}>` : language.none,
+    val?.length ? `<#${val}>` : language.None,
   role: (val: string | undefined, language: CT.Language) =>
-    val?.length ? `<@&${val}>` : language.none,
+    val?.length ? `<@&${val}>` : language.None,
   user: (val: string | undefined, language: CT.Language) =>
-    val?.length ? `<@${val}>` : language.none,
+    val?.length ? `<@${val}>` : language.None,
   number: (val: string | number | undefined, language: CT.Language) =>
-    val ? String(val) : language.none,
+    val ? String(val) : language.None,
   time: (val: number | undefined, language: CT.Language) =>
-    val ? moment(val, language) : language.none,
+    val ? moment(val, language) : language.None,
   embed: async (val: string | undefined, language: CT.Language) =>
     val
       ? (
           await query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [val]).then(
             (r: DBT.customembeds[] | null) => (r ? r[0] : null),
           )
-        )?.name ?? language.none
-      : language.none,
+        )?.name ?? language.None
+      : language.None,
 };
 
 const buttonParsers = {
@@ -240,7 +241,7 @@ const changeHelpers = {
       (Array.isArray(values) ? values : [values])
         .map((v) => (v ? getMention(language, type, v) : null))
         .filter((v): v is string => !!v)
-        .join(', ') || language.none
+        .join(', ') || language.None
     }`,
     fields: [
       {
@@ -318,7 +319,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     settingName: T,
     fieldName: string,
-    type: 'number',
+    type: 'number' | 'duration',
     current: string | undefined,
     short: boolean,
     uniquetimestamp?: number,
@@ -355,7 +356,9 @@ const changeHelpers = {
             type: Discord.ComponentType.TextInput,
             style: short ? Discord.TextInputStyle.Short : Discord.TextInputStyle.Paragraph,
             label: language.slashCommands.settings.insertHere,
-            value: current ?? undefined,
+            value:
+              (type === 'duration' && current ? String(ms(Number(current) * 1000)) : current) ??
+              undefined,
             custom_id: fieldName,
           },
         ],

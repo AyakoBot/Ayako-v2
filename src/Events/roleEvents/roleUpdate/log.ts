@@ -57,8 +57,8 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   }
   if (role.unicodeEmoji !== oldRole.unicodeEmoji) {
     merge(
-      oldRole.unicodeEmoji ?? language.none,
-      role.unicodeEmoji ?? language.none,
+      oldRole.unicodeEmoji ?? language.None,
+      role.unicodeEmoji ?? language.None,
       'string',
       lan.unicodeEmoji,
     );

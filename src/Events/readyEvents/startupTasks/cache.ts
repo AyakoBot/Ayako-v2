@@ -86,7 +86,7 @@ export default () => {
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
-            reason: m.reason ?? language.none,
+            reason: m.reason ?? language.None,
             msg:
               m.msgid && m.channelid
                 ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
@@ -120,7 +120,7 @@ export default () => {
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
-            reason: m.reason ?? language.none,
+            reason: m.reason ?? language.None,
             msg:
               m.msgid && m.channelid
                 ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
@@ -154,7 +154,7 @@ export default () => {
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
             target,
-            reason: m.reason ?? language.none,
+            reason: m.reason ?? language.None,
             msg:
               m.msgid && m.channelid
                 ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages

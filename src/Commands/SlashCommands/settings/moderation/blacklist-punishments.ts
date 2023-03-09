@@ -56,7 +56,7 @@ const showAll = async (
     name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
-        : language.none
+        : language.None
     }\``,
     value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
       s.uniquetimestamp,
@@ -98,7 +98,7 @@ export const getEmbeds: CT.SettingsFile<'blacklist-punishments'>['getEmbeds'] = 
         name: lan.fields.punishment.name,
         value: settings?.punishment
           ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-          : language.none,
+          : language.None,
         inline: true,
       },
       {

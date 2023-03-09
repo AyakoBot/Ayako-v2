@@ -53,7 +53,7 @@ const showAll = async (
     .then((r: DBT.levelingmultichannels[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.multiplier.name}: \`${s.multiplier ?? language.none}\``,
+    name: `${lan.fields.multiplier.name}: \`${s.multiplier ?? language.None}\``,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 

@@ -26,7 +26,7 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
 
   cmd.respond(
     settings?.map((s) => ({
-      name: `${lan.fields.command.name}: \`${s.command ?? language.none}\` - ${
+      name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${
         lan.fields.cooldown
       }: ${ch.settingsHelpers.embedParsers.time(Number(s.cooldown), language)}`,
       value: Number(s.uniquetimestamp).toString(36),

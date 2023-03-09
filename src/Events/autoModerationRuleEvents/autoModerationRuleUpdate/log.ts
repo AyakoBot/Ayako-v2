@@ -57,7 +57,7 @@ export default async (
   ) {
     merge(
       oldRule ? oldRule?.triggerMetadata?.mentionTotalLimit : language.unknown,
-      rule.triggerMetadata?.mentionTotalLimit ?? language.none,
+      rule.triggerMetadata?.mentionTotalLimit ?? language.None,
       'string',
       lan.mentionTotalLimit,
     );
@@ -107,8 +107,8 @@ export default async (
       .join(', ');
 
     merge(
-      beforeContent?.length ? beforeContent : language.none,
-      afterContent?.length ? afterContent : language.none,
+      beforeContent?.length ? beforeContent : language.None,
+      afterContent?.length ? afterContent : language.None,
       'difference',
       lan.exemptChannels,
     );
@@ -135,8 +135,8 @@ export default async (
       .join(', ');
 
     merge(
-      beforeContent.length ? beforeContent : language.none,
-      afterContent.length ? afterContent : language.none,
+      beforeContent.length ? beforeContent : language.None,
+      afterContent.length ? afterContent : language.None,
       'difference',
       lan.keywordFilter,
     );
@@ -157,8 +157,8 @@ export default async (
       .join(', ');
 
     merge(
-      beforeContent.length ? beforeContent : language.none,
-      afterContent.length ? afterContent : language.none,
+      beforeContent.length ? beforeContent : language.None,
+      afterContent.length ? afterContent : language.None,
       'difference',
       lan.presetsName,
     );
@@ -185,8 +185,8 @@ export default async (
       .join(', ');
 
     merge(
-      beforeContent.length ? beforeContent : language.none,
-      afterContent.length ? afterContent : language.none,
+      beforeContent.length ? beforeContent : language.None,
+      afterContent.length ? afterContent : language.None,
       'difference',
       lan.allowList,
     );
@@ -213,8 +213,8 @@ export default async (
       .join(', ');
 
     merge(
-      beforeContent.length ? beforeContent : language.none,
-      afterContent.length ? afterContent : language.none,
+      beforeContent.length ? beforeContent : language.None,
+      afterContent.length ? afterContent : language.None,
       'difference',
       lan.regexPatterns,
     );

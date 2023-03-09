@@ -53,7 +53,7 @@ const showAll = async (
     .then((r: DBT.levelingroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.level.name}: \`${s.level ?? language.none}\``,
+    name: `${lan.fields.level.name}: \`${s.level ?? language.None}\``,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 

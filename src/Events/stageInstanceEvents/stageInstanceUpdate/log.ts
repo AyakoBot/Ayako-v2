@@ -39,10 +39,10 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
     merge(
       oldStage.guildScheduledEvent
         ? language.languageFunction.getScheduledEvent(oldStage.guildScheduledEvent)
-        : language.none,
+        : language.None,
       stage.guildScheduledEvent
         ? language.languageFunction.getScheduledEvent(stage.guildScheduledEvent)
-        : language.none,
+        : language.None,
       'string',
       language.ScheduledEvent,
     );

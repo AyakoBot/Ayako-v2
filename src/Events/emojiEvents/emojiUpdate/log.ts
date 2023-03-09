@@ -36,8 +36,8 @@ export default async (oldEmote: Discord.GuildEmoji, emote: Discord.GuildEmoji) =
     JSON.stringify(oldEmote.roles.cache.map((r) => r.id))
   ) {
     merge(
-      oldEmote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
-      emote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.none,
+      oldEmote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.None,
+      emote.roles?.cache.map((r) => `<@&${r.id}>`) ?? language.None,
       'string',
       language.roles,
     );

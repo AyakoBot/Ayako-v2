@@ -76,7 +76,7 @@ export default async (guild: Discord.Guild) => {
         modBaseEvent({
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
-          reason: m.reason ?? language.none,
+          reason: m.reason ?? language.None,
           msg:
             m.msgid && m.channelid
               ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
@@ -104,7 +104,7 @@ export default async (guild: Discord.Guild) => {
         modBaseEvent({
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
-          reason: m.reason ?? language.none,
+          reason: m.reason ?? language.None,
           msg:
             m.msgid && m.channelid
               ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
@@ -132,7 +132,7 @@ export default async (guild: Discord.Guild) => {
         modBaseEvent({
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
-          reason: m.reason ?? language.none,
+          reason: m.reason ?? language.None,
           msg:
             m.msgid && m.channelid
               ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)

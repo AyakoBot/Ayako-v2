@@ -23,8 +23,8 @@ export default (
     }
     case 'difference': {
       value = language.events.logs.addedRemoved(
-        (before as string) ?? language.none,
-        (after as string) ?? language.none,
+        (before as string) ?? language.None,
+        (after as string) ?? language.None,
       );
       break;
     }

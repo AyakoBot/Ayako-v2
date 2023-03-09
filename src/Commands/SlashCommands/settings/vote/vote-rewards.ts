@@ -53,10 +53,10 @@ const showAll = async (
     .then((r: DBT.voterewards[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.tier.name}: \`${s.tier ?? language.none}\` - ${
+    name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${
       lan.fields.rewardtype.name
     }: ${
-      s.rewardtype ? lan.rewardTypes[s.rewardtype as keyof typeof lan.rewardTypes] : language.none
+      s.rewardtype ? lan.rewardTypes[s.rewardtype as keyof typeof lan.rewardTypes] : language.None
     }`,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
@@ -128,7 +128,7 @@ export const getEmbeds: CT.SettingsFile<'vote-rewards'>['getEmbeds'] = (
     default: {
       typeField = {
         name: lan.fields.rewardtype.name,
-        value: language.none,
+        value: language.None,
         inline: true,
       };
     }

@@ -116,24 +116,24 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   }
   if (guild.systemChannelId !== oldGuild.systemChannelId) {
     merge(
-      oldGuild.systemChannelId ? `<#${oldGuild.systemChannelId}>` : language.none,
-      guild.systemChannelId ? `<#${guild.systemChannelId}>` : language.none,
+      oldGuild.systemChannelId ? `<#${oldGuild.systemChannelId}>` : language.None,
+      guild.systemChannelId ? `<#${guild.systemChannelId}>` : language.None,
       'string',
       lan.systemChannelId,
     );
   }
   if (guild.rulesChannelId !== oldGuild.rulesChannelId) {
     merge(
-      oldGuild.rulesChannelId ? `<#${oldGuild.rulesChannelId}>` : language.none,
-      guild.rulesChannelId ? `<#${guild.rulesChannelId}>` : language.none,
+      oldGuild.rulesChannelId ? `<#${oldGuild.rulesChannelId}>` : language.None,
+      guild.rulesChannelId ? `<#${guild.rulesChannelId}>` : language.None,
       'string',
       lan.rulesChannelId,
     );
   }
   if (guild.publicUpdatesChannelId !== oldGuild.publicUpdatesChannelId) {
     merge(
-      oldGuild.publicUpdatesChannelId ? `<#${oldGuild.publicUpdatesChannelId}>` : language.none,
-      guild.publicUpdatesChannelId ? `<#${guild.publicUpdatesChannelId}>` : language.none,
+      oldGuild.publicUpdatesChannelId ? `<#${oldGuild.publicUpdatesChannelId}>` : language.None,
+      guild.publicUpdatesChannelId ? `<#${guild.publicUpdatesChannelId}>` : language.None,
       'string',
       lan.publicUpdatesChannelId,
     );
@@ -218,8 +218,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   }
   if (newWelcomeScreen?.description !== oldWelcomeScreen?.description) {
     merge(
-      oldWelcomeScreen?.description ?? language.none,
-      newWelcomeScreen?.description ?? language.none,
+      oldWelcomeScreen?.description ?? language.None,
+      newWelcomeScreen?.description ?? language.None,
       'string',
       lan.welcomeScreenDescription,
     );
@@ -282,7 +282,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
           )}\n${language.Description}: \`${c.description}\`\n${language.Emoji}: ${
             (emoji && typeof emoji === 'object'
               ? language.languageFunction.getEmote(emoji)
-              : emoji) ?? language.none
+              : emoji) ?? language.None
           }`,
         });
       });
@@ -303,7 +303,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
           )}\n${language.Description}: \`${c.description}\`\n${language.Emoji}: ${
             (emoji && typeof emoji === 'object'
               ? language.languageFunction.getEmote(emoji)
-              : emoji) ?? language.none
+              : emoji) ?? language.None
           }`,
         });
       });
@@ -338,10 +338,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
           merge(
             (oldEmoji && typeof oldEmoji === 'object'
               ? language.languageFunction.getEmote(oldEmoji)
-              : oldEmoji) ?? language.none,
+              : oldEmoji) ?? language.None,
             (newEmoji && typeof newEmoji === 'object'
               ? language.languageFunction.getEmote(newEmoji)
-              : newEmoji) ?? language.none,
+              : newEmoji) ?? language.None,
             'string',
             lan.welcomeChannelEmoji(channel as Discord.GuildChannel),
           );

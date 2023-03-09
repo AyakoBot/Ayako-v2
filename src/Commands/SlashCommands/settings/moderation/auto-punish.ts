@@ -53,12 +53,12 @@ const showAll = async (
     .then((r: DBT.autopunish[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.none}\` - ${
+    name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.None}\` - ${
       lan.fields.punishment.name
     }: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
-        : language.none
+        : language.None
     }\``,
     value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
       s.uniquetimestamp,
@@ -100,12 +100,12 @@ export const getEmbeds: CT.SettingsFile<'auto-punish'>['getEmbeds'] = (
         name: lan.fields.punishment.name,
         value: settings?.punishment
           ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-          : language.none,
+          : language.None,
         inline: true,
       },
       {
         name: lan.fields.duration.name,
-        value: embedParsers.time(Number(settings?.duration), language),
+        value: embedParsers.time(Number(settings?.duration) * 1000, language),
         inline: true,
       },
       {
@@ -115,7 +115,7 @@ export const getEmbeds: CT.SettingsFile<'auto-punish'>['getEmbeds'] = (
       },
       {
         name: lan.fields.punishmentawaittime.name,
-        value: embedParsers.time(Number(settings?.punishmentawaittime), language),
+        value: embedParsers.time(Number(settings?.punishmentawaittime) * 1000, language),
         inline: true,
       },
       {

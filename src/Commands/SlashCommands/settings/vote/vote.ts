@@ -38,7 +38,7 @@ export const getEmbeds: CT.SettingsFile<'vote'>['getEmbeds'] = (
       },
       {
         name: lan.fields.token.name,
-        value: settings?.token ?? language.none,
+        value: settings?.token ?? language.None,
         inline: true,
       },
       {

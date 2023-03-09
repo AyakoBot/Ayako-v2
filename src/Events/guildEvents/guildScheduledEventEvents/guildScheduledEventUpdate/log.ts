@@ -88,8 +88,8 @@ export default async (
   }
   if (!!event.entityMetadata?.location !== !!oldEvent.entityMetadata?.location) {
     merge(
-      oldEvent.entityMetadata?.location ?? language.none,
-      event.entityMetadata?.location ?? language.none,
+      oldEvent.entityMetadata?.location ?? language.None,
+      event.entityMetadata?.location ?? language.None,
       'string',
       lan.location,
     );
@@ -125,10 +125,10 @@ export default async (
     merge(
       oldEvent.scheduledEndTimestamp
         ? ch.constants.standard.getTime(oldEvent.scheduledEndTimestamp)
-        : language.none,
+        : language.None,
       event.scheduledEndTimestamp
         ? ch.constants.standard.getTime(event.scheduledEndTimestamp)
-        : language.none,
+        : language.None,
       'string',
       lan.scheduledEndTime,
     );
@@ -137,10 +137,10 @@ export default async (
     merge(
       oldEvent.scheduledStartTimestamp
         ? ch.constants.standard.getTime(oldEvent.scheduledStartTimestamp)
-        : language.none,
+        : language.None,
       event.scheduledStartTimestamp
         ? ch.constants.standard.getTime(event.scheduledStartTimestamp)
-        : language.none,
+        : language.None,
       'string',
       lan.scheduledStartTime,
     );

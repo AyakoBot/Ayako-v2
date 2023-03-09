@@ -61,10 +61,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     merge(
       oldMember.premiumSince
         ? ch.constants.standard.getTime(oldMember.premiumSince.getTime())
-        : language.none,
+        : language.None,
       member.premiumSince
         ? ch.constants.standard.getTime(member.premiumSince.getTime())
-        : language.none,
+        : language.None,
 
       'string',
       lan.premiumSince,
@@ -76,10 +76,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     merge(
       oldMember.communicationDisabledUntil
         ? ch.constants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
-        : language.none,
+        : language.None,
       member.communicationDisabledUntil
         ? ch.constants.standard.getTime(member.communicationDisabledUntil.getTime())
-        : language.none,
+        : language.None,
       'string',
       lan.communicationDisabledUntil,
     );

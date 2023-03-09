@@ -138,7 +138,7 @@ export const getEmbeds: CT.SettingsFile<'leveling'>['getEmbeds'] = async (
       name: lan.fields.prefixes.name,
       value: settings?.prefixes?.length
         ? settings.prefixes.map((p) => `\`${p}\``).join(', ')
-        : language.none,
+        : language.None,
       inline: true,
     },
     {
