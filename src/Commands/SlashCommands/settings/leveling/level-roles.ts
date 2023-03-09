@@ -112,4 +112,8 @@ export const getComponents: CT.SettingsFile<'level-roles'>['getComponents'] = (
       buttonParsers.specific(language, settings?.level, 'level', name, settings?.uniquetimestamp),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

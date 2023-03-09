@@ -155,4 +155,8 @@ export const getComponents: CT.SettingsFile<'anti-spam-punishments'>['getCompone
       ),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

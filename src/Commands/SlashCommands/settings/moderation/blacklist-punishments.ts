@@ -153,4 +153,8 @@ export const getComponents: CT.SettingsFile<'blacklist-punishments'>['getCompone
       ),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

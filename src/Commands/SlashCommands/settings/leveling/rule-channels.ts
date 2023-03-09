@@ -315,4 +315,8 @@ export const getComponents: CT.SettingsFile<'rule-channels'>['getComponents'] = 
       ),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

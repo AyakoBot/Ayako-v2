@@ -201,4 +201,8 @@ export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
       ),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

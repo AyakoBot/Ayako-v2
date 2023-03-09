@@ -166,4 +166,8 @@ export const getComponents: CT.SettingsFile<'vote-rewards'>['getComponents'] = (
       buttonParsers.specific(language, settings?.reward, 'reward', name, settings?.uniquetimestamp),
     ],
   },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+  },
 ];

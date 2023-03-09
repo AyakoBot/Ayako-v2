@@ -101,8 +101,19 @@ export const getComponents: CT.SettingsFile<'nitro-roles'>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.roles, 'roles', name, settings?.uniquetimestamp, 'role'),
+      buttonParsers.specific(
+        language,
+        settings?.roles,
+        'roles',
+        name,
+        settings?.uniquetimestamp,
+        'role',
+      ),
       buttonParsers.specific(language, settings?.days, 'days', name, settings?.uniquetimestamp),
     ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
   },
 ];

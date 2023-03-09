@@ -126,15 +126,17 @@ const buttonParsers = {
     custom_id: `settings/create_${name}`,
     emoji: objectEmotes.plusBG,
   }),
-  /*
-  delete: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
+  delete: (
+    language: CT.Language,
+    name: string,
+    uniquetimestamp: number,
+  ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.delete,
     style: Discord.ButtonStyle.Danger,
-    custom_id: `settings/delete_${name}`,
+    custom_id: `settings/delete_${name}_${uniquetimestamp}`,
     emoji: objectEmotes.minusBG,
   }),
-  */
   previous: (
     language: CT.Language,
     name: string,
@@ -325,9 +327,7 @@ const changeHelpers = {
     uniquetimestamp?: number,
   ): Discord.APIModalInteractionResponseCallbackData => ({
     title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
-    custom_id: `settings/${type}_${settingName}${
-      uniquetimestamp ? `_${uniquetimestamp}` : ''
-    }`,
+    custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
     components: [
       {
         type: Discord.ComponentType.ActionRow,
