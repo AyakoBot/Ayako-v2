@@ -229,7 +229,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention',
+    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -238,7 +238,7 @@ const changeHelpers = {
     title: language.slashCommands.settings.previouslySet,
     description: `${
       (Array.isArray(values) ? values : [values])
-        .map((v) => (v ? getMention(type, v) : null))
+        .map((v) => (v ? getMention(language, type, v) : null))
         .filter((v): v is string => !!v)
         .join(', ') || language.none
     }`,
@@ -252,7 +252,7 @@ const changeHelpers = {
     ],
     color: constants.colors.ephemeral,
   }),
-  changeSelect: <T extends keyof SettingsNames>(
+  changeSelectGlobal: <T extends keyof SettingsNames>(
     language: CT.Language,
     type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
     fieldName: string,
@@ -285,6 +285,31 @@ const changeHelpers = {
         Discord.ChannelType.PublicThread,
       ];
     }
+
+    return menu;
+  },
+  changeSelect: <T extends keyof SettingsNames>(
+    fieldName: string,
+    settingName: T,
+    type: string,
+    options: {
+      options: Discord.StringSelectMenuComponent['options'];
+      placeholder?: string;
+      max_values?: number;
+      min_values?: number;
+    },
+    uniquetimestamp?: number,
+  ) => {
+    const menu: Discord.APIStringSelectComponent = {
+      min_values: options.min_values ?? 0,
+      max_values: options.max_values ?? 1,
+      custom_id: `settings/${type}_${fieldName}_${settingName}${
+        uniquetimestamp ? `_${uniquetimestamp}` : ''
+      }`,
+      type: Discord.ComponentType.StringSelect,
+      options: options.options,
+      placeholder: options.placeholder,
+    };
 
     return menu;
   },
@@ -355,7 +380,7 @@ const changeHelpers = {
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users',
+    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment',
     language: CT.Language,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
@@ -514,7 +539,11 @@ const getPlaceholder = (
   }
 };
 
-const getMention = (type: 'channel' | 'role' | 'user' | 'mention', value: string) => {
+const getMention = (
+  language: CT.Language,
+  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment',
+  value: string,
+) => {
   switch (type) {
     case 'channel': {
       return `<#${value}>`;
@@ -524,6 +553,9 @@ const getMention = (type: 'channel' | 'role' | 'user' | 'mention', value: string
     }
     case 'user': {
       return `<@${value}>`;
+    }
+    case 'punishment': {
+      return language.punishments[value as keyof typeof language.punishments];
     }
     default: {
       return value;

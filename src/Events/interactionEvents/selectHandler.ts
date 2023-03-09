@@ -36,11 +36,7 @@ export default async (cmd: Discord.Interaction) => {
 
   const args = cmd.customId.split(/_+/g);
   const path = args.shift();
-  console.log(getType());
-  console.log(path);
-
   const command = files.find((f) => f.endsWith(`/${path}.js`));
-  console.log(command);
   if (!command) return;
 
   (await import(command)).default(cmd, args);

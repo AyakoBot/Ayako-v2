@@ -10,7 +10,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const lan = language.slashCommands.settings.categories['auto-punish'];
 
   const ID = cmd.options.get('id', false)?.value as string;
-  console.log(ID);
   if (ID) {
     showID(cmd, ID, language, lan);
     return;

@@ -45,7 +45,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       {
         type: Discord.ComponentType.ActionRow,
         components: [
-          ch.settingsHelpers.changeHelpers.changeSelect(
+          ch.settingsHelpers.changeHelpers.changeSelectGlobal(
             language,
             'user',
             fieldName,

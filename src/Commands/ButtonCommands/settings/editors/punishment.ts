@@ -38,18 +38,23 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
         lan,
         fieldName,
         currentSetting?.[fieldName as keyof typeof currentSetting],
-        'role',
+        'punishment',
       ),
     ],
     components: [
       {
         type: Discord.ComponentType.ActionRow,
         components: [
-          ch.settingsHelpers.changeHelpers.changeSelectGlobal(
-            language,
-            'roles',
+          ch.settingsHelpers.changeHelpers.changeSelect(
             fieldName,
             settingName,
+            'punishment',
+            {
+              options: Object.entries(language.punishments).map(([k, v]) => ({
+                label: v,
+                value: k,
+              })),
+            },
             uniquetimestamp,
           ),
         ],
@@ -58,7 +63,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
         type: Discord.ComponentType.ActionRow,
         components: [
           ch.settingsHelpers.changeHelpers.back(settingName),
-          ch.settingsHelpers.changeHelpers.done(settingName, fieldName, 'roles', language),
+          ch.settingsHelpers.changeHelpers.done(settingName, fieldName, 'punishment', language),
         ],
       },
     ],
