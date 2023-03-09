@@ -5,68 +5,131 @@ import type Jobs from 'node-schedule';
 /* eslint-disable no-multi-spaces */
 /* eslint-disable prettier/prettier */
 
-export * from './ClientHelperModules/send.js';
-export * from './ClientHelperModules/send.js';
-export * from './ClientHelperModules/replyMsg.js';
-export * from './ClientHelperModules/replyCmd.js';
-export * from './ClientHelperModules/query.js';
-export * from './ClientHelperModules/stp.js';
-export * from './ClientHelperModules/regexes.js';
-export * from './ClientHelperModules/fileURL2Buffer.js';
-export * from './ClientHelperModules/memberBoostCalc.js';
-export * from './ClientHelperModules/userFlagsCalc.js';
-export * from './ClientHelperModules/channelRuleCalc.js';
-export * from './ClientHelperModules/permCalc.js';
-export * from './ClientHelperModules/getUnix.js';
-export * from './ClientHelperModules/getDifference.js';
-export * from './ClientHelperModules/languageSelector.js';
-export * from './ClientHelperModules/bitUniques.js';
-export * from './ClientHelperModules/txtFileWriter.js';
-export * from './ClientHelperModules/util.js';
-export * from './ClientHelperModules/errorMsg.js';
-export * from './ClientHelperModules/errorCmd.js';
-export * from './ClientHelperModules/permError.js';
-export * from './ClientHelperModules/notYours.js';
-export * from './ClientHelperModules/collectorEnd.js';
-export * from './ClientHelperModules/colorSelector.js';
-export * from './ClientHelperModules/loadingEmbed.js';
-export * from './ClientHelperModules/arrayEquals.js';
-export * from './ClientHelperModules/txtFileLinkToString.js';
-export * from './ClientHelperModules/getAllInvites.js';
-export * from './ClientHelperModules/getDiscordEmbed.js';
-export * from './ClientHelperModules/dynamicToEmbed.js';
-export * from './ClientHelperModules/embedBuilder.js';
-export * from './ClientHelperModules/roleManager.js';
-export * from './ClientHelperModules/getEmote.js';
-export * from './ClientHelperModules/getAudit.js';
-export * from './DataBase.js';
-export * from './ClientHelperModules/getEmbed.js';
-export * from './ClientHelperModules/getJumpLink.js';
-export * from './ClientHelperModules/getLogChannels.js';
-export * from './ClientHelperModules/mergeLogging.js';
-export * from './ClientHelperModules/getTrueChannelType.js';
-export * from './ClientHelperModules/moment.js';
-export * from './ClientHelperModules/getChanged.js';
-export * from './ClientHelperModules/spaces.js';
-export * from './ClientHelperModules/arrayBufferToBuffer.js';
-export * from './ClientHelperModules/getChannel.js';
-export * from './ClientHelperModules/getSerializedChannelPerms.js';
-export * from './ClientHelperModules/isManageable.js';
-export * from './ClientHelperModules/getEvents.js';
-export * from './ClientHelperModules/getNameAndFileType.js';
-export * from './ClientHelperModules/getUser.js';
-export * from './ClientHelperModules/findUserByName.js';
-export * from './ClientHelperModules/getDuration.js';
+import send from './ClientHelperModules/send.js';
+import replyMsg from './ClientHelperModules/replyMsg.js';
+import replyCmd from './ClientHelperModules/replyCmd.js';
+import query from './ClientHelperModules/query.js';
+import stp from './ClientHelperModules/stp.js';
+import regexes from './ClientHelperModules/regexes.js';
+import fileURL2Buffer from './ClientHelperModules/fileURL2Buffer.js';
+import memberBoostCalc from './ClientHelperModules/memberBoostCalc.js';
+import userFlagsCalc from './ClientHelperModules/userFlagsCalc.js';
+import channelRuleCalc from './ClientHelperModules/channelRuleCalc.js';
+import permCalc from './ClientHelperModules/permCalc.js';
+import getUnix from './ClientHelperModules/getUnix.js';
+import getDifference from './ClientHelperModules/getDifference.js';
+import languageSelector from './ClientHelperModules/languageSelector.js';
+import bitUniques from './ClientHelperModules/bitUniques.js';
+import txtFileWriter from './ClientHelperModules/txtFileWriter.js';
+import * as util from './ClientHelperModules/util.js';
+import errorMsg from './ClientHelperModules/errorMsg.js';
+import errorCmd from './ClientHelperModules/errorCmd.js';
+import permError from './ClientHelperModules/permError.js';
+import notYours from './ClientHelperModules/notYours.js';
+import collectorEnd from './ClientHelperModules/collectorEnd.js';
+import colorSelector from './ClientHelperModules/colorSelector.js';
+import loadingEmbed from './ClientHelperModules/loadingEmbed.js';
+import arrayEquals from './ClientHelperModules/arrayEquals.js';
+import txtFileLinkToString from './ClientHelperModules/txtFileLinkToString.js';
+import getAllInvites from './ClientHelperModules/getAllInvites.js';
+import getDiscordEmbed from './ClientHelperModules/getDiscordEmbed.js';
+import dynamicToEmbed from './ClientHelperModules/dynamicToEmbed.js';
+import embedBuilder from './ClientHelperModules/embedBuilder.js';
+import roleManager from './ClientHelperModules/roleManager.js';
+import getEmote from './ClientHelperModules/getEmote.js';
+import getAudit from './ClientHelperModules/getAudit.js';
+import DataBase from './DataBase.js';
+import getEmbed from './ClientHelperModules/getEmbed.js';
+import getJumpLink from './ClientHelperModules/getJumpLink.js';
+import getLogChannels from './ClientHelperModules/getLogChannels.js';
+import mergeLogging from './ClientHelperModules/mergeLogging.js';
+import getTrueChannelType from './ClientHelperModules/getTrueChannelType.js';
+import moment from './ClientHelperModules/moment.js';
+import getChanged from './ClientHelperModules/getChanged.js';
+import spaces from './ClientHelperModules/spaces.js';
+import arrayBufferToBuffer from './ClientHelperModules/arrayBufferToBuffer.js';
+import * as getChannel from './ClientHelperModules/getChannel.js';
+import getSerializedChannelPerms from './ClientHelperModules/getSerializedChannelPerms.js';
+import isManageable from './ClientHelperModules/isManageable.js';
+import getEvents from './ClientHelperModules/getEvents.js';
+import getNameAndFileType from './ClientHelperModules/getNameAndFileType.js';
+import getUser from './ClientHelperModules/getUser.js';
+import findUserByName from './ClientHelperModules/findUserByName.js';
+import settingsHelpers from './ClientHelperModules/settingsHelpers.js';
+import getDuration from './ClientHelperModules/getDuration.js';
+import objectEmotes from './ClientHelperModules/objectEmotes.js';
+import stringEmotes from './ClientHelperModules/stringEmotes.js';
+import reactionEmotes from './ClientHelperModules/reactionEmotes.js';
+import cache from './ClientHelperModules/cache.js';
+import constants from './Other/constants.js';
+import neko from './NekoClient.js';
 
-export * from './ClientHelperModules/settingsHelpers.js';
-export const neko = (await import('./NekoClient.js')).default;
-export const constants = (await import('./Other/constants.js')).default;
-export const objectEmotes = (await import('./ClientHelperModules/objectEmotes.js')).default;
-export const stringEmotes = (await import('./ClientHelperModules/stringEmotes.js')).default;
-export const reactionEmotes = (await import('./ClientHelperModules/reactionEmotes.js')).default;
-export const mainID = '650691698409734151';
+const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
 type CT = Map<string, Map<string, Jobs.Job>>;
-export const channelQueue: CQ = new Map();
-export const channelTimeout: CT = new Map();
-export const cache = (await import('./ClientHelperModules/cache.js')).default;
+const channelQueue: CQ = new Map();
+const channelTimeout: CT = new Map();
+
+export {
+  send,
+  replyMsg,
+  replyCmd,
+  query,
+  stp,
+  regexes,
+  fileURL2Buffer,
+  memberBoostCalc,
+  userFlagsCalc,
+  channelRuleCalc,
+  permCalc,
+  getUnix,
+  getDifference,
+  languageSelector,
+  bitUniques,
+  txtFileWriter,
+  util,
+  errorMsg,
+  errorCmd,
+  permError,
+  notYours,
+  collectorEnd,
+  colorSelector,
+  loadingEmbed,
+  arrayEquals,
+  txtFileLinkToString,
+  getAllInvites,
+  getDiscordEmbed,
+  dynamicToEmbed,
+  embedBuilder,
+  roleManager,
+  getEmote,
+  getAudit,
+  DataBase,
+  getEmbed,
+  getJumpLink,
+  getLogChannels,
+  mergeLogging,
+  getTrueChannelType,
+  moment,
+  getChanged,
+  spaces,
+  arrayBufferToBuffer,
+  getChannel,
+  getSerializedChannelPerms,
+  isManageable,
+  getEvents,
+  getNameAndFileType,
+  getUser,
+  findUserByName,
+  settingsHelpers,
+  getDuration,
+  objectEmotes,
+  stringEmotes,
+  reactionEmotes,
+  cache,
+  constants,
+  neko,
+  mainID,
+  channelQueue,
+  channelTimeout,
+};
