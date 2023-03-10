@@ -119,16 +119,19 @@ const buttonParsers = {
       emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
     };
   },
-  create: (language: CT.Language, name: string): Discord.APIButtonComponent => ({
+  create: <T extends keyof SettingsNames>(
+    language: CT.Language,
+    name: T,
+  ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.create,
     style: Discord.ButtonStyle.Success,
     custom_id: `settings/create_${name}`,
     emoji: objectEmotes.plusBG,
   }),
-  delete: (
+  delete: <T extends keyof SettingsNames>(
     language: CT.Language,
-    name: string,
+    name: T,
     uniquetimestamp: number,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
@@ -137,9 +140,9 @@ const buttonParsers = {
     custom_id: `settings/delete_${name}_${uniquetimestamp}`,
     emoji: objectEmotes.minusBG,
   }),
-  previous: (
+  previous: <T extends keyof SettingsNames>(
     language: CT.Language,
-    name: string,
+    name: T,
     enabled: boolean = false,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
@@ -149,9 +152,9 @@ const buttonParsers = {
     emoji: objectEmotes.plusBG,
     disabled: !enabled,
   }),
-  next: (
+  next: <T extends keyof SettingsNames>(
     language: CT.Language,
-    name: string,
+    name: T,
     enabled: boolean = false,
     uniquetimestamp?: string,
   ): Discord.APIButtonComponent => ({
@@ -174,20 +177,20 @@ const multiRowHelpers = {
       });
     }
   },
-  options: (
+  options: <T extends keyof SettingsNames>(
     language: CT.Language,
-    name: string,
+    name: T,
   ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
     {
       type: Discord.ComponentType.ActionRow,
       components: [buttonParsers.create(language, name)],
     },
   ],
-  components: (
+  components: <T extends keyof SettingsNames>(
     embeds: Discord.APIEmbed[],
     components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[],
     language: CT.Language,
-    name: string,
+    name: T,
   ) => {
     if (Number(embeds[0].fields?.length) > 25) {
       components.unshift({
@@ -321,7 +324,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     settingName: T,
     fieldName: string,
-    type: 'number' | 'duration',
+    type: 'number' | 'duration' | 'string',
     current: string | undefined,
     short: boolean,
     uniquetimestamp?: number,
