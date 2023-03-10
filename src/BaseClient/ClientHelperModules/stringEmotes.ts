@@ -71,7 +71,7 @@ export default {
   },
   folder: '📁',
   settings: '<:Settings:781982956138659880>',
-  small: '<:Small1:756379345190387712><:Small2:756379369739386910>',
+  small: '<:Small2:756379369739386910><:Small1:756379345190387712>',
   big: '<:Big:756380855395549256>',
   warning: '⚠',
   green: '🟢',

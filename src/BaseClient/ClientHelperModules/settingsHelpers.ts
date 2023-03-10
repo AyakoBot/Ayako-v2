@@ -235,7 +235,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment',
+    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -386,7 +386,7 @@ const changeHelpers = {
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment',
+    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment' | 'language',
     language: CT.Language,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
@@ -547,7 +547,7 @@ const getPlaceholder = (
 
 const getMention = (
   language: CT.Language,
-  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment',
+  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
   value: string,
 ) => {
   switch (type) {
@@ -562,6 +562,9 @@ const getMention = (
     }
     case 'punishment': {
       return language.punishments[value as keyof typeof language.punishments];
+    }
+    case 'language': {
+      return language.languages[value as keyof typeof language.languages];
     }
     default: {
       return value;

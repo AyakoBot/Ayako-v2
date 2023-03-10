@@ -32,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const channelText = cmd.message.embeds[0].description?.split(/,\s/g);
   const channelIDs = channelText
     ?.map((c) => c.replace(/\D/g, '') || undefined)
-    .filter((c): c is string => !!c);
+    .filter((c): c is string => !!c)?.[0];
 
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,

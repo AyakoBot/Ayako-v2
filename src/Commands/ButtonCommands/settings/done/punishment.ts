@@ -34,8 +34,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     (e) => e[1] === cmd.message.embeds[0].description,
   )?.[0];
 
-  console.log(punishmentID);
-
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,
     fieldName,

@@ -29,16 +29,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     uniquetimestamp,
   )) as SettingsType;
 
-  const userText = cmd.message.embeds[0].description?.split(/,\s/g);
-  const userIDs = userText
-    ?.map((c) => c.replace(/\D/g, '') || undefined)
-    .filter((c): c is string => !!c)?.[0];
+  const language = await ch.languageSelector(cmd.guildId);
+  const languageID = Object.entries(language.languages).find(
+    (e) => e[1] === cmd.message.embeds[0].description,
+  )?.[0];
 
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,
     fieldName,
     cmd.guildId,
-    userIDs,
+    languageID,
     uniquetimestamp,
   )) as SettingsType;
 
@@ -61,7 +61,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   if (!file) return;
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
-  const language = await ch.languageSelector(cmd.guildId);
 
   cmd.update({
     embeds: await settingsFile.getEmbeds(

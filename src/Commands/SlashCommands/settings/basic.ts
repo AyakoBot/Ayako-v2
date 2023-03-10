@@ -39,9 +39,7 @@ export const getEmbeds: CT.SettingsFile<'basic'>['getEmbeds'] = (
       },
       {
         name: lan.fields.interactionsmode.name,
-        value: settings?.interactionsmode
-          ? `${language.small} ${ch.stringEmotes.small}`
-          : `${language.large} ${ch.stringEmotes.big}`,
+        value: settings?.interactionsmode ? `${language.small}` : `${language.large}`,
         inline: true,
       },
       {
