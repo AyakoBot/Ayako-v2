@@ -89,23 +89,51 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.selfstart, 'selfstart', name),
-      buttonParsers.specific(language, settings?.startchannel, 'startchannel', name, 'channel'),
-      buttonParsers.specific(language, settings?.logchannel, 'logchannel', name, 'channel'),
+      buttonParsers.boolean(language, settings?.selfstart, 'selfstart', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.startchannel,
+        'startchannel',
+        name,
+        undefined,
+        'channel',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.logchannel,
+        'logchannel',
+        name,
+        undefined,
+        'channel',
+      ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.pendingrole, 'pendingrole', name, 'role'),
-      buttonParsers.specific(language, settings?.finishedrole, 'finishedrole', name, 'role'),
-      buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name),
-      buttonParsers.specific(language, settings?.kickafter, 'kickafter', name),
+      buttonParsers.specific(
+        language,
+        settings?.pendingrole,
+        'pendingrole',
+        name,
+        undefined,
+        'role',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.finishedrole,
+        'finishedrole',
+        name,
+        undefined,
+        'role',
+      ),
+      buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name, undefined),
+      buttonParsers.specific(language, settings?.kickafter, 'kickafter', name, undefined),
     ],
   },
 ];

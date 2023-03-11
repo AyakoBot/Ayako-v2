@@ -16,6 +16,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     tableName,
     '*',
     cmd.guildId,
+    undefined,
   )) as SettingsType;
 
   const files: string[] = await new Promise((resolve) => {

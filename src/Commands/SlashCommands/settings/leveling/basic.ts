@@ -185,36 +185,44 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
       type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+      components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name),
-        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name),
-        buttonParsers.specific(language, settings?.rolemode, 'rolemode', name),
-      ],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [buttonParsers.specific(language, settings?.lvlupmode, 'lvlupmode', name)],
-    },
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-        buttonParsers.boolean(language, settings?.ignoreprefixes, 'ignoreprefixes', name),
-        buttonParsers.specific(language, settings?.prefixes, 'prefixes', name),
-        buttonParsers.global(language, settings?.blchannels, 'blchannelid', name),
+        buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name, undefined),
+        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name, undefined),
+        buttonParsers.specific(language, settings?.rolemode, 'rolemode', name, undefined),
       ],
     },
     {
       type: Discord.ComponentType.ActionRow,
       components: [
-        buttonParsers.global(language, settings?.blroles, 'blroleid', name),
-        buttonParsers.global(language, settings?.blusers, 'bluserid', name),
-        buttonParsers.global(language, settings?.wlchannels, 'wlchannelid', name),
-        buttonParsers.global(language, settings?.wlroles, 'wlroleid', name),
-        buttonParsers.global(language, settings?.wlusers, 'wluserid', name),
+        buttonParsers.specific(language, settings?.lvlupmode, 'lvlupmode', name, undefined),
+      ],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.boolean(
+          language,
+          settings?.ignoreprefixes,
+          'ignoreprefixes',
+          name,
+          undefined,
+        ),
+        buttonParsers.specific(language, settings?.prefixes, 'prefixes', name, undefined),
+        buttonParsers.global(language, settings?.blchannels, 'blchannelid', name, undefined),
+      ],
+    },
+    {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+        buttonParsers.global(language, settings?.blroles, 'blroleid', name, undefined),
+        buttonParsers.global(language, settings?.blusers, 'bluserid', name, undefined),
+        buttonParsers.global(language, settings?.wlchannels, 'wlchannelid', name, undefined),
+        buttonParsers.global(language, settings?.wlroles, 'wlroleid', name, undefined),
+        buttonParsers.global(language, settings?.wlusers, 'wluserid', name, undefined),
       ],
     },
   ];
@@ -222,16 +230,35 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   switch (settings?.lvlupmode) {
     case '1': {
       components[2].components.push(
-        buttonParsers.specific(language, settings?.embed, 'embed', name),
-        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
-        buttonParsers.specific(language, settings?.lvlupchannels, 'lvlupchannels', name, 'channel'),
+        buttonParsers.specific(language, settings?.embed, 'embed', name, undefined),
+        buttonParsers.specific(
+          language,
+          settings?.lvlupdeltimeout,
+          'lvlupdeltimeout',
+          name,
+          undefined,
+        ),
+        buttonParsers.specific(
+          language,
+          settings?.lvlupchannels,
+          'lvlupchannels',
+          name,
+          undefined,
+          'channel',
+        ),
       );
       break;
     }
     case '2': {
       components[2].components.push(
-        buttonParsers.specific(language, settings?.lvlupemotes, 'lvlupemotes', name),
-        buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name),
+        buttonParsers.specific(language, settings?.lvlupemotes, 'lvlupemotes', name, undefined),
+        buttonParsers.specific(
+          language,
+          settings?.lvlupdeltimeout,
+          'lvlupdeltimeout',
+          name,
+          undefined,
+        ),
       );
       break;
     }

@@ -112,10 +112,16 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.roles,
         'roles',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
         'role',
       ),
-      buttonParsers.specific(language, settings?.days, 'days', name, settings?.uniquetimestamp),
+      buttonParsers.specific(
+        language,
+        settings?.days,
+        'days',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
     ],
   },
   {

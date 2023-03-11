@@ -73,10 +73,16 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.prefix, 'prefix', name),
-      buttonParsers.specific(language, settings?.interactionsmode, 'interactionsmode', name),
-      buttonParsers.specific(language, settings?.lan, 'lan', name),
-      buttonParsers.specific(language, settings?.errorchannel, 'errorchannel', name),
+      buttonParsers.specific(language, settings?.prefix, 'prefix', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.interactionsmode,
+        'interactionsmode',
+        name,
+        undefined,
+      ),
+      buttonParsers.specific(language, settings?.lan, 'lan', name, undefined),
+      buttonParsers.specific(language, settings?.errorchannel, 'errorchannel', name, undefined),
     ],
   },
 ];

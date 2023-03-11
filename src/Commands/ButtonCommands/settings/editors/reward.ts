@@ -63,7 +63,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
         type: Discord.ComponentType.ActionRow,
         components: [
           ch.settingsHelpers.changeHelpers.back(settingName),
-          ch.settingsHelpers.changeHelpers.done(settingName, fieldName, 'reward', language),
+          ch.settingsHelpers.changeHelpers.done(
+            settingName,
+            fieldName,
+            'reward',
+            language,
+            Number(uniquetimestamp),
+          ),
         ],
       },
     ],

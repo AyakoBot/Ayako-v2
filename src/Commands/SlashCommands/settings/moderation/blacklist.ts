@@ -67,18 +67,18 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.specific(language, settings?.words, 'words', name)],
+    components: [buttonParsers.specific(language, settings?.words, 'words', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
-      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name),
-      buttonParsers.global(language, settings?.wluserid, 'wluserid', name),
+      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name, undefined),
+      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name, undefined),
+      buttonParsers.global(language, settings?.wluserid, 'wluserid', name, undefined),
     ],
   },
 ];

@@ -118,20 +118,41 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [
+      buttonParsers.global(
+        language,
+        !!settings?.active,
+        'active',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
+    ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.reminders, 'reminders', name),
+      buttonParsers.boolean(
+        language,
+        settings?.reminders,
+        'reminders',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
       buttonParsers.specific(
         language,
         settings?.announcementchannel,
         'announcementchannel',
         name,
+        Number(settings?.uniquetimestamp),
         'channel',
       ),
-      buttonParsers.specific(language, settings?.token, 'token', name),
+      buttonParsers.specific(
+        language,
+        settings?.token,
+        'token',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
     ],
   },
   {

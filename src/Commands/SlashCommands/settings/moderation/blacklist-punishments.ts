@@ -131,7 +131,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
+      buttonParsers.global(
+        language,
+        !!settings?.active,
+        'active',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
     ],
   },
   {
@@ -142,21 +148,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.warnamount,
         'warnamount',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
         settings?.punishment,
         'punishment',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
         settings?.duration,
         'duration',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },

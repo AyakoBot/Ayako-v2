@@ -135,7 +135,15 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [
+      buttonParsers.global(
+        language,
+        !!settings?.active,
+        'active',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
+    ],
   },
   {
     type: Discord.ComponentType.ActionRow,
@@ -145,14 +153,14 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.command,
         'command',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
         settings?.cooldown,
         'cooldown',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },
@@ -164,7 +172,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.activechannelid,
         'activechannelid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
         'channel',
       ),
       buttonParsers.global(
@@ -172,21 +180,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.wlchannelid,
         'wlchannelid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.global(
         language,
         settings?.wlroleid,
         'wlroleid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.global(
         language,
         settings?.wluserid,
         'wluserid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },

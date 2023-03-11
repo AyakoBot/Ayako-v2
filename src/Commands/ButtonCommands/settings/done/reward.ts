@@ -4,6 +4,8 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+  console.log(args);
+
   const settingName = args.shift() as keyof CT.TableNamesMap;
   if (!settingName) return;
 

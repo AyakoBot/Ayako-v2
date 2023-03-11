@@ -137,32 +137,50 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, !!settings?.active, 'active', name, settings?.uniquetimestamp),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.specific(language, settings?.name, 'name', name, settings?.uniquetimestamp),
-      buttonParsers.boolean(
+      buttonParsers.global(
         language,
-        settings?.onlyone,
-        'onlyone',
+        !!settings?.active,
+        'active',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.name, 'name', name, settings?.uniquetimestamp),
+      buttonParsers.specific(
+        language,
+        settings?.name,
+        'name',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
       buttonParsers.boolean(
         language,
         settings?.onlyone,
         'onlyone',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.specific(
+        language,
+        settings?.name,
+        'name',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
+      buttonParsers.boolean(
+        language,
+        settings?.onlyone,
+        'onlyone',
+        name,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },
@@ -174,7 +192,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.roles,
         'roles',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
         'role',
       ),
       buttonParsers.global(
@@ -182,28 +200,28 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.blroles,
         'blroleid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.global(
         language,
         settings?.blusers,
         'bluserid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.global(
         language,
         settings?.wlroles,
         'wlroleid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.global(
         language,
         settings?.wlusers,
         'wluserid',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },

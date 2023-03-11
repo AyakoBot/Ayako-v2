@@ -74,16 +74,23 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
-      buttonParsers.specific(language, settings?.embed, 'embed', name),
-      buttonParsers.boolean(language, settings?.pingjoin, 'pingjoin', name),
-      buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, 'role'),
-      buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, 'user'),
+      buttonParsers.specific(
+        language,
+        settings?.channelid,
+        'channelid',
+        name,
+        undefined,
+        'channel',
+      ),
+      buttonParsers.specific(language, settings?.embed, 'embed', name, undefined),
+      buttonParsers.boolean(language, settings?.pingjoin, 'pingjoin', name, undefined),
+      buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, undefined, 'role'),
+      buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, undefined, 'user'),
     ],
   },
 ];

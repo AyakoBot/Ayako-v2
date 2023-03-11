@@ -103,24 +103,31 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.punishmenttof, 'punishmenttof', name),
-      buttonParsers.specific(language, settings?.punishment, 'punishment', name),
-      buttonParsers.boolean(language, settings?.posttof, 'posttof', name),
-      buttonParsers.specific(language, settings?.postchannel, 'postchannel', name, 'channel'),
+      buttonParsers.boolean(language, settings?.punishmenttof, 'punishmenttof', name, undefined),
+      buttonParsers.specific(language, settings?.punishment, 'punishment', name, undefined),
+      buttonParsers.boolean(language, settings?.posttof, 'posttof', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.postchannel,
+        'postchannel',
+        name,
+        undefined,
+        'channel',
+      ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.time, 'time', name),
-      buttonParsers.specific(language, settings?.jointhreshold, 'jointhreshold', name),
-      buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, 'role'),
-      buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, 'user'),
+      buttonParsers.specific(language, settings?.time, 'time', name, undefined),
+      buttonParsers.specific(language, settings?.jointhreshold, 'jointhreshold', name, undefined),
+      buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, undefined, 'role'),
+      buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, undefined, 'user'),
     ],
   },
 ];

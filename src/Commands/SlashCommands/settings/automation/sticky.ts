@@ -72,10 +72,28 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.stickypermsactive, 'stickypermsactive', name),
-      buttonParsers.boolean(language, settings?.stickyrolesactive, 'stickyrolesactive', name),
-      buttonParsers.specific(language, settings?.stickyrolesmode, 'stickyrolesmode', name),
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
+      buttonParsers.boolean(
+        language,
+        settings?.stickypermsactive,
+        'stickypermsactive',
+        name,
+        undefined,
+      ),
+      buttonParsers.boolean(
+        language,
+        settings?.stickyrolesactive,
+        'stickyrolesactive',
+        name,
+        undefined,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.stickyrolesmode,
+        'stickyrolesmode',
+        name,
+        undefined,
+      ),
+      buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, 'role'),
     ],
   },
 ];

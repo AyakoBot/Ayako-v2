@@ -150,7 +150,6 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
     oldSetting: TableNamesMap[T] | null,
     newSetting: TableNamesMap[T] | null,
     changedSetting: keyof FieldName<T>,
-    settingName: keyof CT.TableNamesMap,
     uniquetimestamp?: number,
   ) => Promise<void>;
 }

@@ -62,7 +62,7 @@ const buttonParsers = {
     setting: boolean | string[] | undefined,
     type: BLWLType | 'active',
     settingName: string,
-    uniquetimestamp?: string,
+    uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: getLabel(language, type),
@@ -75,7 +75,7 @@ const buttonParsers = {
     setting: string[] | string | boolean | undefined,
     name: keyof FieldName<T>,
     settingName: T,
-    uniquetimestamp?: string,
+    uniquetimestamp: number | undefined,
     type?: 'channel' | 'role' | 'user',
     emoji?: Discord.APIMessageComponentEmoji,
   ): Discord.APIButtonComponent => {
@@ -111,7 +111,7 @@ const buttonParsers = {
     setting: boolean | undefined,
     name: keyof FieldName<T>,
     settingName: T,
-    uniquetimestamp?: string,
+    uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => {
     const constantTypes =
       constants.commands.settings.types[
@@ -145,7 +145,7 @@ const buttonParsers = {
   delete: <T extends keyof SettingsNames>(
     language: CT.Language,
     name: T,
-    uniquetimestamp: number,
+    uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.delete,
@@ -169,7 +169,7 @@ const buttonParsers = {
     language: CT.Language,
     name: T,
     enabled: boolean = false,
-    uniquetimestamp?: string,
+    uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     label: language.slashCommands.settings.next,
@@ -211,7 +211,7 @@ const multiRowHelpers = {
         type: Discord.ComponentType.ActionRow,
         components: [
           buttonParsers.previous(language, name),
-          buttonParsers.next(language, name, true),
+          buttonParsers.next(language, name, true, undefined),
         ],
       });
     }
@@ -238,10 +238,10 @@ export const updateLog = (
   newSetting: typeof DBT.Res,
   changedSetting: string,
   settingName: keyof CT.TableNamesMap,
-  uniquetimestamp?: number,
+  uniquetimestamp: number | undefined,
 ) => {
   postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
-  console.log(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+  console.log(oldSetting, newSetting, changedSetting, uniquetimestamp);
 };
 
 const postUpdate = async (
@@ -249,7 +249,7 @@ const postUpdate = async (
   newSetting: typeof DBT.Res,
   changedSetting: string,
   settingName: keyof CT.TableNamesMap,
-  uniquetimestamp?: number,
+  uniquetimestamp: number | undefined,
 ) => {
   const files: string[] = await new Promise((resolve) => {
     glob(`${process.cwd()}/Commands/SlashCommands/**/*`, (err, res) => {
@@ -275,7 +275,7 @@ const postUpdate = async (
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
 
-  settingsFile.postChange?.(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+  settingsFile.postChange?.(oldSetting, newSetting, changedSetting, uniquetimestamp);
 };
 
 const changeHelpers = {
@@ -312,7 +312,7 @@ const changeHelpers = {
     type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
     fieldName: string,
     settingName: T,
-    uniquetimestamp?: number,
+    uniquetimestamp: number | undefined,
   ) => {
     const menu:
       | Discord.APIRoleSelectComponent
@@ -353,7 +353,7 @@ const changeHelpers = {
       max_values?: number;
       min_values?: number;
     },
-    uniquetimestamp?: number,
+    uniquetimestamp: number | undefined,
   ) => {
     const menu: Discord.APIStringSelectComponent = {
       min_values: options.min_values ?? 0,
@@ -376,7 +376,7 @@ const changeHelpers = {
     type: 'number' | 'duration' | 'string',
     current: string | undefined,
     short: boolean,
-    uniquetimestamp?: number,
+    uniquetimestamp: number | undefined,
   ): Discord.APIModalInteractionResponseCallbackData => ({
     title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
     custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
@@ -438,17 +438,18 @@ const changeHelpers = {
       | 'language'
       | 'reward',
     language: CT.Language,
+    uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
     style: Discord.ButtonStyle.Success,
-    custom_id: `settings/done/${type}_${name}_${fieldName}`,
+    custom_id: `settings/done/${type}_${name}_${fieldName}_${uniquetimestamp}`,
     label: language.Done,
   }),
   get: (
     tableName: keyof SettingsNames,
     fieldName: string,
     guildId: string | null,
-    uniquetimestamp?: number,
+    uniquetimestamp: number | undefined,
   ) =>
     (uniquetimestamp
       ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [
@@ -476,7 +477,7 @@ const changeHelpers = {
     fieldName: string,
     guildId: string | null,
     newSetting: any,
-    uniquetimestamp?: number,
+    uniquetimestamp: number | undefined,
   ) =>
     uniquetimestamp
       ? query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`, [

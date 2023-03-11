@@ -85,26 +85,27 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.deletetof, 'deletetof', name),
-      buttonParsers.specific(language, settings?.delete, 'delete', name),
-      buttonParsers.boolean(language, settings?.minimizetof, 'minimizetof', name),
-      buttonParsers.specific(language, settings?.minimize, 'minimize', name),
+      buttonParsers.boolean(language, settings?.deletetof, 'deletetof', name, undefined),
+      buttonParsers.specific(language, settings?.delete, 'delete', name, undefined),
+      buttonParsers.boolean(language, settings?.minimizetof, 'minimizetof', name, undefined),
+      buttonParsers.specific(language, settings?.minimize, 'minimize', name, undefined),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.linklogging, 'linklogging', name),
+      buttonParsers.specific(language, settings?.linklogging, 'linklogging', name, undefined),
       buttonParsers.specific(
         language,
         settings?.linklogchannels,
         'linklogchannels',
         name,
+        undefined,
         'channel',
       ),
     ],

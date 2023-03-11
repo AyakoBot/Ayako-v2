@@ -112,7 +112,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.channels,
         'channels',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
         'channel',
       ),
       buttonParsers.specific(
@@ -120,7 +120,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         settings?.multiplier,
         'multiplier',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
     ],
   },

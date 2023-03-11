@@ -64,14 +64,14 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.botroleid, 'botroleid', name, 'role'),
-      buttonParsers.specific(language, settings?.userroleid, 'userroleid', name, 'role'),
-      buttonParsers.specific(language, settings?.allroleid, 'allroleid', name, 'role'),
+      buttonParsers.specific(language, settings?.botroleid, 'botroleid', name, undefined, 'role'),
+      buttonParsers.specific(language, settings?.userroleid, 'userroleid', name, undefined, 'role'),
+      buttonParsers.specific(language, settings?.allroleid, 'allroleid', name, undefined, 'role'),
     ],
   },
 ];

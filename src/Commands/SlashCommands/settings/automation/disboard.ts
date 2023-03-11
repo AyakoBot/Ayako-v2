@@ -89,22 +89,29 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name),
-      buttonParsers.specific(language, settings?.channelid, 'channelid', name, 'channel'),
-      buttonParsers.boolean(language, settings?.repeatenabled, 'repeatenabled', name),
-      buttonParsers.specific(language, settings?.repeatreminder, 'repeatreminder', name),
+      buttonParsers.boolean(language, settings?.deletereply, 'deletereply', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.channelid,
+        'channelid',
+        name,
+        undefined,
+        'channel',
+      ),
+      buttonParsers.boolean(language, settings?.repeatenabled, 'repeatenabled', name, undefined),
+      buttonParsers.specific(language, settings?.repeatreminder, 'repeatreminder', name, undefined),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.roles, 'roles', name, 'role'),
-      buttonParsers.specific(language, settings?.users, 'users', name, 'user'),
+      buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, 'role'),
+      buttonParsers.specific(language, settings?.users, 'users', name, undefined, 'user'),
     ],
   },
 ];

@@ -40,6 +40,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       'number',
       currentSetting?.[fieldName as keyof typeof currentSetting],
       true,
+      uniquetimestamp,
     ),
   );
 };

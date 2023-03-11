@@ -86,23 +86,29 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name)],
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.msgthreshold, 'msgthreshold', name),
-      buttonParsers.specific(language, settings?.dupemsgthreshold, 'dupemsgthreshold', name),
-      buttonParsers.specific(language, settings?.timeout, 'timeout', name),
-      buttonParsers.boolean(language, settings?.deletespam, 'deletespam', name),
+      buttonParsers.specific(language, settings?.msgthreshold, 'msgthreshold', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.dupemsgthreshold,
+        'dupemsgthreshold',
+        name,
+        undefined,
+      ),
+      buttonParsers.specific(language, settings?.timeout, 'timeout', name, undefined),
+      buttonParsers.boolean(language, settings?.deletespam, 'deletespam', name, undefined),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name),
-      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name),
-      buttonParsers.global(language, settings?.wluserid, 'wluserid', name),
+      buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name, undefined),
+      buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name, undefined),
+      buttonParsers.global(language, settings?.wluserid, 'wluserid', name, undefined),
     ],
   },
 ];

@@ -156,21 +156,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         String(settings?.tier),
         'tier',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
         settings?.rewardtype,
         'rewardtype',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
         settings?.reward,
         'reward',
         name,
-        settings?.uniquetimestamp,
+        Number(settings?.uniquetimestamp),
         settings?.rewardtype === 'role' ? 'role' : undefined,
       ),
     ],
@@ -185,9 +185,24 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ];
 
 export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
-  _oldSetting,
-  _newSetting,
-  _changedSetting,
-  _settingName,
-  _uniquetimestamp,
-) => {};
+  _a,
+  _b,
+  changedSetting,
+  uniquetimestamp,
+) => {
+  console.log(uniquetimestamp);
+
+  switch (changedSetting) {
+    case 'rewardtype': {
+      await ch.query(
+        `UPDATE ${ch.constants.commands.settings.tableNames['vote-rewards']} SET reward = $1 WHERE uniquetimestamp = $2;`,
+        [null, uniquetimestamp],
+      );
+
+      return;
+    }
+    default: {
+      break;
+    }
+  }
+};

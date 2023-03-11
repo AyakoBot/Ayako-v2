@@ -12,10 +12,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const lan = language.slashCommands.settings.categories[name];
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.expiry[] | null) => (r ? r[0] : null));
 
   cmd.reply({
@@ -116,21 +115,27 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.boolean(language, settings?.bans, 'bans', name),
-      buttonParsers.boolean(language, settings?.channelbans, 'channelbans', name),
-      buttonParsers.boolean(language, settings?.kicks, 'kicks', name),
-      buttonParsers.boolean(language, settings?.mutes, 'mutes', name),
-      buttonParsers.boolean(language, settings?.warns, 'warns', name),
+      buttonParsers.boolean(language, settings?.bans, 'bans', name, undefined),
+      buttonParsers.boolean(language, settings?.channelbans, 'channelbans', name, undefined),
+      buttonParsers.boolean(language, settings?.kicks, 'kicks', name, undefined),
+      buttonParsers.boolean(language, settings?.mutes, 'mutes', name, undefined),
+      buttonParsers.boolean(language, settings?.warns, 'warns', name, undefined),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.specific(language, settings?.banstime, 'banstime', name),
-      buttonParsers.specific(language, settings?.channelbanstime, 'channelbanstime', name),
-      buttonParsers.specific(language, settings?.kickstime, 'kickstime', name),
-      buttonParsers.specific(language, settings?.mutestime, 'mutestime', name),
-      buttonParsers.specific(language, settings?.warnstime, 'warnstime', name),
+      buttonParsers.specific(language, settings?.banstime, 'banstime', name, undefined),
+      buttonParsers.specific(
+        language,
+        settings?.channelbanstime,
+        'channelbanstime',
+        name,
+        undefined,
+      ),
+      buttonParsers.specific(language, settings?.kickstime, 'kickstime', name, undefined),
+      buttonParsers.specific(language, settings?.mutestime, 'mutestime', name, undefined),
+      buttonParsers.specific(language, settings?.warnstime, 'warnstime', name, undefined),
     ],
   },
 ];
