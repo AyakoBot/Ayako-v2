@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import readline from 'readline';
 import auth from './auth.json' assert { type: 'json' };
 
+console.clear();
 console.log(`
 +++++++++++++++ Welcome to Ayako +++++++++++++++
 +      Restart all Shards with "restart"       +

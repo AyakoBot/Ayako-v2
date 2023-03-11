@@ -421,14 +421,15 @@ export type punishments = {
   type?: 'anti-spam' | 'anti-virus' | 'blacklist';
 };
 
-export type RewardType = 'role' | 'currency' | 'xp' | 'xpmultiplier';
-
 export interface voterewards {
   guildid: string;
   uniquetimestamp: string;
+  active: boolean;
 
   tier?: string;
-  rewardtype?: RewardType;
-  reward?: string;
+  rewardxp?: string;
+  rewardxpmultiplier?: string;
+  rewardcurrency?: string;
+  rewardroles?: string[];
   linkedid?: string;
 }

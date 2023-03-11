@@ -1313,13 +1313,21 @@ export default {
               name: 'Tier',
               desc: 'The Reward Tier',
             },
-            rewardtype: {
-              name: 'Reward Type',
-              desc: 'The Type of the Reward',
+            rewardxp: {
+              name: 'Reward XP',
+              desc: 'Amount of XP Rewarded',
             },
-            reward: {
-              name: 'Reward',
-              desc: 'The Reward itself\nCurrency: Amount of Currency to Reward\nXP: Amount of XP to Reward\nXP Multiplier: Number to Multiply gained XP with',
+            rewardxpmultiplier: {
+              name: 'Reward XP Multiplier',
+              desc: 'Rewarded Multiplier gathered XP are multiplied with',
+            },
+            rewardcurrency: {
+              name: 'Reward Currency',
+              desc: 'Amount of Currency Rewarded',
+            },
+            rewardroles: {
+              name: 'Reward Roles',
+              desc: 'Roles Rewarded (will be removed when the User can Vote again)',
             },
             linkedid: {
               name: 'Linked ID',
@@ -2972,12 +2980,6 @@ export default {
     'application.commands': 'Use Slash Commands',
     'applicaiton.commands.update': 'Update Slash Commands',
     'application.commands.permissions.update': 'Update Slash Command Permissions',
-  },
-  rewardTypes: {
-    role: 'Role',
-    currency: 'Currency',
-    xp: 'XP',
-    xpmultiplier: 'XP Multiplier',
   },
   Scopes: 'Scopes',
   Result: 'Result',

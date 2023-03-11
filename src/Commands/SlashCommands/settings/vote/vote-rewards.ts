@@ -19,11 +19,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   showAll(cmd, language, lan);
 };
 
-const showID = async (
-  cmd: Discord.ChatInputCommandInteraction,
-  ID: string,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
+export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async (
+  cmd,
+  ID,
+  language,
+  lan,
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
@@ -32,6 +32,14 @@ const showID = async (
       [parseInt(ID, 36)],
     )
     .then((r: DBT.voterewards[] | null) => (r ? r[0] : null));
+
+  if (cmd.isButton()) {
+    cmd.update({
+      embeds: await getEmbeds(embedParsers, settings, language, lan),
+      components: await getComponents(buttonParsers, settings, language),
+    });
+    return;
+  }
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
@@ -53,9 +61,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     .then((r: DBT.voterewards[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${
-      lan.fields.rewardtype.name
-    }: ${s.rewardtype ? language.rewardTypes[s.rewardtype] : language.None}`,
+    name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${lan.fields.linkedid.name}: ${
+      s?.linkedid ? Number(s.linkedid).toString(36) : language.None
+    }`,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
@@ -89,56 +97,46 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       author: embedParsers.author(language, lan),
       fields: [
         {
+          name: language.slashCommands.settings.active,
+          value: embedParsers.boolean(settings?.active, language),
+          inline: false,
+        },
+        {
           name: lan.fields.tier.name,
           value: embedParsers.number(settings?.tier, language),
           inline: true,
         },
+        {
+          name: lan.fields.rewardxp.name,
+          value: embedParsers.number(settings?.rewardxp, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.rewardxpmultiplier.name,
+          value: embedParsers.number(settings?.rewardxpmultiplier, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.rewardcurrency.name,
+          value: embedParsers.number(settings?.rewardcurrency, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.rewardroles.name,
+          value: embedParsers.roles(settings?.rewardroles, language),
+          inline: true,
+        },
+        {
+          name: lan.fields.linkedid.name,
+          value: embedParsers.string(
+            settings?.linkedid ? Number(settings.linkedid).toString(36) : language.None,
+            language,
+          ),
+          inline: false,
+        },
       ],
     },
   ];
-
-  let typeField = {
-    name: lan.fields.rewardtype.name,
-    value: settings?.rewardtype ? language.rewardTypes[settings.rewardtype] : '\u200b',
-    inline: true,
-  };
-
-  let rewardField = {
-    name: '\u200b',
-    value: '\u200b',
-    inline: false,
-  };
-
-  switch (settings?.rewardtype) {
-    case 'role': {
-      rewardField = {
-        name: lan.fields.reward.name,
-        value: embedParsers.role(settings?.reward, language),
-        inline: true,
-      };
-      break;
-    }
-    case 'currency':
-    case 'xpmultiplier':
-    case 'xp': {
-      rewardField = {
-        name: lan.fields.reward.name,
-        value: embedParsers.number(settings?.reward, language),
-        inline: true,
-      };
-      break;
-    }
-    default: {
-      typeField = {
-        name: lan.fields.rewardtype.name,
-        value: language.None,
-        inline: true,
-      };
-    }
-  }
-
-  embeds[0].fields?.push(typeField);
-  if (rewardField.inline) embeds[0].fields?.push(rewardField);
 
   return embeds;
 };
@@ -150,59 +148,66 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
+    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
     components: [
       buttonParsers.specific(
         language,
-        String(settings?.tier),
+        settings?.tier,
         'tier',
         name,
         Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
-        settings?.rewardtype,
-        'rewardtype',
+        settings?.rewardxp,
+        'rewardxp',
         name,
         Number(settings?.uniquetimestamp),
       ),
       buttonParsers.specific(
         language,
-        settings?.reward,
-        'reward',
+        settings?.rewardxpmultiplier,
+        'rewardxpmultiplier',
         name,
         Number(settings?.uniquetimestamp),
-        settings?.rewardtype === 'role' ? 'role' : undefined,
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.rewardcurrency,
+        'rewardcurrency',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.rewardroles,
+        'rewardroles',
+        name,
+        Number(settings?.uniquetimestamp),
+        'role',
       ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.back(name),
+      buttonParsers.specific(
+        language,
+        Number(settings?.linkedid).toString(36) || undefined,
+        'linkedid',
+        name,
+        Number(settings?.uniquetimestamp),
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.back(name, undefined),
       buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
 ];
-
-export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
-  _a,
-  _b,
-  changedSetting,
-  uniquetimestamp,
-) => {
-  console.log(uniquetimestamp);
-
-  switch (changedSetting) {
-    case 'rewardtype': {
-      await ch.query(
-        `UPDATE ${ch.constants.commands.settings.tableNames['vote-rewards']} SET reward = $1 WHERE uniquetimestamp = $2;`,
-        [null, uniquetimestamp],
-      );
-
-      return;
-    }
-    default: {
-      break;
-    }
-  }
-};

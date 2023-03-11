@@ -146,6 +146,12 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
     language: Language,
     lan: Language['slashCommands']['settings']['categories'][T],
   ) => Promise<void>;
+  showID?: (
+    cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+    ID: string,
+    language: Language,
+    lan: Language['slashCommands']['settings']['categories'][T],
+  ) => Promise<void>;
   postChange?: (
     oldSetting: TableNamesMap[T] | null,
     newSetting: TableNamesMap[T] | null,

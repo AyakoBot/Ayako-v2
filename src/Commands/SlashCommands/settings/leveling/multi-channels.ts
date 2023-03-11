@@ -19,11 +19,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   showAll(cmd, language, lan);
 };
 
-const showID = async (
-  cmd: Discord.ChatInputCommandInteraction,
-  ID: string,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
+export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async (
+  cmd,
+  ID,
+  language,
+  lan,
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
@@ -32,6 +32,14 @@ const showID = async (
       [parseInt(ID, 36)],
     )
     .then((r: DBT.levelingmultichannels[] | null) => (r ? r[0] : null));
+
+  if (cmd.isButton()) {
+    cmd.update({
+      embeds: await getEmbeds(embedParsers, settings, language, lan),
+      components: await getComponents(buttonParsers, settings, language),
+    });
+    return;
+  }
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
@@ -127,7 +135,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
-      buttonParsers.back(name),
+      buttonParsers.back(name, undefined),
       buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },

@@ -19,6 +19,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     undefined,
   )) as SettingsType;
 
+  const getUniquetimestamp = () => {
+    const arg = args.shift();
+    if (arg) return Number(arg);
+    return undefined;
+  };
+  const uniquetimestamp = getUniquetimestamp();
+
   const files: string[] = await new Promise((resolve) => {
     glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
       if (err) throw err;
@@ -39,6 +46,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
   const language = await ch.languageSelector(cmd.guildId);
+
+  if (settingsFile.showID && uniquetimestamp) {
+    settingsFile.showID(
+      cmd,
+      uniquetimestamp.toString(36),
+      language,
+      language.slashCommands.settings.categories[settingName],
+    );
+    return;
+  }
 
   if (settingsFile.showAll) {
     settingsFile.showAll(cmd, language, language.slashCommands.settings.categories[settingName]);

@@ -39,6 +39,7 @@ const embedParsers = {
     val ? String(val) : language.None,
   time: (val: number | undefined, language: CT.Language) =>
     val ? moment(val, language) : language.None,
+  string: (val: string, language: CT.Language) => val ?? language.None,
   embed: async (val: string | undefined, language: CT.Language) =>
     val
       ? (
@@ -49,10 +50,13 @@ const embedParsers = {
       : language.None,
 };
 
-const back = <T extends keyof SettingsNames>(name: T): Discord.APIButtonComponent => ({
+const back = <T extends keyof SettingsNames>(
+  name: T,
+  uniquetimestamp: number | undefined,
+): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   style: Discord.ButtonStyle.Danger,
-  custom_id: `settings/settingsDisplay_${name}`,
+  custom_id: `settings/settingsDisplay_${name}_${uniquetimestamp}`,
   emoji: objectEmotes.back,
 });
 
@@ -84,10 +88,11 @@ const buttonParsers = {
         settingName as keyof typeof constants.commands.settings.types
       ];
 
-    if (!constantTypes)
+    if (!constantTypes) {
       throw new Error(
         `Constants for ${settingName} missing at constants.commands.settings.types[]`,
       );
+    }
 
     return {
       type: Discord.ComponentType.Button,
@@ -284,7 +289,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'reward',
+    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -346,7 +351,7 @@ const changeHelpers = {
   changeSelect: <T extends keyof SettingsNames>(
     fieldName: string,
     settingName: T,
-    type: string,
+    type: 'punishment' | 'language',
     options: {
       options: Discord.StringSelectMenuComponent['options'];
       placeholder?: string;
@@ -427,16 +432,7 @@ const changeHelpers = {
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type:
-      | 'channel'
-      | 'channels'
-      | 'role'
-      | 'roles'
-      | 'user'
-      | 'users'
-      | 'punishment'
-      | 'language'
-      | 'reward',
+    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment' | 'language',
     language: CT.Language,
     uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
@@ -598,7 +594,7 @@ const getPlaceholder = (
 
 const getMention = (
   language: CT.Language,
-  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'reward',
+  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
   value: string,
 ) => {
   switch (type) {
@@ -616,9 +612,6 @@ const getMention = (
     }
     case 'language': {
       return language.languages[value as keyof typeof language.languages];
-    }
-    case 'reward': {
-      return language.rewardTypes[value as keyof typeof language.rewardTypes];
     }
     default: {
       return value;

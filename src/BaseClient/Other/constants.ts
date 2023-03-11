@@ -462,7 +462,7 @@ export default {
         },
         'vote-rewards': {
           tier: 'number',
-          rewardtype: 'reward',
+          rewardtype: 'rewardtype',
           reward: 'string',
           linkedid: 'voteid',
         },
