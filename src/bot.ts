@@ -1,26 +1,8 @@
-import readline from 'readline';
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 
 const events = await ch.getEvents();
 client.setMaxListeners(events.length);
-
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-rl.on('line', async (msg: string) => {
-  try {
-    // eslint-disable-next-line no-console
-    console.log(
-      msg.includes('await') || msg.includes('return')
-        ? // eslint-disable-next-line no-eval
-          await eval(`(async () => {${msg}})()`)
-        : // eslint-disable-next-line no-eval
-          eval(msg),
-    );
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
-  }
-});
 
 process.setMaxListeners(4);
 process.on('unhandledRejection', async (error: string) => console.error(error));

@@ -1,5 +1,13 @@
 import * as Discord from 'discord.js';
+import readline from 'readline';
 import auth from './auth.json' assert { type: 'json' };
+
+console.log(`
++++++++++++++++ Welcome to Ayako +++++++++++++++
++      Restart all Shards with "restart"       +
++  Restart one Shard with "restart [Shard ID]" +
+++++++++++++++++++++++++++++++++++++++++++++++++
+`);
 
 const manager = new Discord.ShardingManager('./bot.js', {
   token: auth.token,
@@ -14,3 +22,15 @@ process.on('promiseRejectionHandledWarning', (error: string) => console.error(er
 process.on('experimentalWarning', (error: string) => console.error(error));
 
 await manager.spawn();
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+rl.on('line', async (msg: string) => {
+  const parts = msg.trim().split(/\s+/);
+  const code = parts.join(' ');
+
+  if (!code.startsWith('restart')) return;
+
+  const shardID = code.split(/\s+/)[1];
+  if (!shardID) manager.respawnAll();
+  else manager.shards.get(Number(shardID))?.respawn();
+});
