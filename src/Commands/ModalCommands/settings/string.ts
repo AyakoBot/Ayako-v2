@@ -63,7 +63,15 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     });
   });
 
-  const file = files.find((f) => f.endsWith(`/${settingName}.js`));
+  const file = files.find((f) =>
+    f.endsWith(
+      `/${
+        ch.constants.commands.settings.basicSettings.includes(settingName)
+          ? `${settingName}/basic`
+          : settingName
+      }.js`,
+    ),
+  );
   if (!file) return;
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;

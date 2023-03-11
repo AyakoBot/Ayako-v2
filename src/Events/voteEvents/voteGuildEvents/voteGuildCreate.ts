@@ -83,9 +83,9 @@ export default async (
 
 const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
   const doesntHave = rewards
-    .filter((r) => r.rewardtype === 'role')
+    .filter((r) => r.rewardtype === 'role' && !!r.reward)
     .sort((a, b) => Number(a.tier) - Number(b.tier))
-    .find((r) => !member.roles.cache.has(r.reward));
+    .find((r) => !member.roles.cache.has(r.reward as string));
 
   const highestTier = Math.max(...rewards.map((r) => Number(r.tier)));
 

@@ -344,8 +344,8 @@ export type suggestionsettings = {
 
   channelid?: string;
   approverroleid?: string[];
-  pingroleid?: string[]
-  pinguserid?: string[]
+  pingroleid?: string[];
+  pinguserid?: string[];
 
   anonvote: boolean;
   anonsuggestion: boolean;
@@ -394,11 +394,12 @@ export type levelingmultiroles = {
 
 export interface votesettings {
   guildid: string;
+  uniquetimestamp: string;
   active: boolean;
 
-  token: string;
+  token?: string;
   reminders: boolean;
-  announcementchannel: string;
+  announcementchannel?: string;
 }
 
 export type punishments = {
@@ -419,3 +420,15 @@ export type punishments = {
   duration: string;
   type?: 'anti-spam' | 'anti-virus' | 'blacklist';
 };
+
+export type RewardType = 'role' | 'currency' | 'xp' | 'xpmultiplier';
+
+export interface voterewards {
+  guildid: string;
+  uniquetimestamp: string;
+
+  tier?: string;
+  rewardtype?: RewardType;
+  reward?: string;
+  linkedid?: string;
+}

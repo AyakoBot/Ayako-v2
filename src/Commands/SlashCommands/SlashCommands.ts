@@ -140,8 +140,9 @@ const settings = new Discord.SlashCommandBuilder()
       .setDescription('Everything about Voting for your Bot/Server')
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
-          .setName('topgg')
-          .setDescription(`Basic Settings for Voting on Top.gg`),
+          .setName('basic')
+          .setDescription(`Basic Settings for Voting on Top.gg`)
+          .addStringOption(IDSelector),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()

@@ -1,5 +1,6 @@
 import type { QueryResultBase } from 'pg';
 
+import { RewardType } from './Settings';
 export * from './Settings';
 export const Res = QueryResultBase;
 
@@ -244,17 +245,6 @@ export interface giveawaycollecttime {
   msgid: string;
   endtime: number;
   guildid: string;
-}
-
-type RewardType = 'role' | 'currency' | 'xp' | 'xpmultiplier';
-
-export interface voterewards {
-  guildid: string;
-  uniquetimestamp: string;
-
-  tier: number;
-  rewardtype?: RewardType;
-  reward: string;
 }
 
 export type voters = {

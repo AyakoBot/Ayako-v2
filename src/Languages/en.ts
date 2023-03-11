@@ -1327,6 +1327,10 @@ export default {
               name: 'Reward',
               desc: 'The Reward itself',
             },
+            linkedid: {
+              name: 'Linked ID',
+              desc: 'The linked Setting'
+            }
           },
         },
         'anti-spam-punishments': {
@@ -1766,6 +1770,7 @@ export default {
         vote: {
           name: 'Vote',
           desc: 'Announce Votes for your Server or Bot on Top.gg',
+          linkedId: 'Linked ID',
           fields: {
             token: {
               name: 'Token',

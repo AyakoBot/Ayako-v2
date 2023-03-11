@@ -9,7 +9,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const language = await ch.languageSelector(cmd.guild?.id);
   const lan = language.slashCommands.settings.categories['vote-rewards'];
 
-  const ID = cmd.options.get('ID', false)?.value as string;
+  const ID = cmd.options.get('id', false)?.value as string;
   if (ID) {
     showID(cmd, ID, language, lan);
     return;

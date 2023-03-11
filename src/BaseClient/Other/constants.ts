@@ -149,9 +149,6 @@ export default {
       },
     },
   },
-  antiraidMessage: {
-    image: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png',
-  },
   discordMsgUrls: [
     'https://discord.com/channels/[Guild ID]/[Channel ID]/[Message ID]',
     'https://ptb.discord.com/channels/[Guild ID]/[Channel ID]/[Message ID]',
@@ -231,19 +228,11 @@ export default {
     ],
   },
   commands: {
-    synclevel: {
-      methods: ['api', 'lb', 'lr'],
-    },
-    edit: {
-      image: 'https://ayakobot.com/cdn/Ayako_Assets/Edit.png',
-    },
-    invite: {
-      image: 'https://ayakobot.com/cdn/Ayako_Assets/help.png',
-    },
     settings: {
       tutorials: {
         separators: ['https://youtu.be/yLKgn-Ecduc'],
       },
+      basicSettings: ['vote', 'leveling', 'nitro'],
       types: {
         'anti-raid': {
           punishment: 'punishment',
