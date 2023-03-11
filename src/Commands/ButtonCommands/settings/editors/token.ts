@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import glob from 'glob';
+import crypto from 'crypto';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings';
 
@@ -29,7 +30,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     uniquetimestamp,
   )) as SettingsType;
 
-  const newSetting = !currentSetting?.[fieldName as keyof typeof currentSetting];
+  const newSetting = crypto.randomUUID();
 
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,

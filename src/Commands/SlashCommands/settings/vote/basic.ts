@@ -90,14 +90,14 @@ export const getEmbeds: CT.SettingsFile<'vote'>['getEmbeds'] = (
         inline: true,
       },
       {
-        name: lan.fields.token.name,
-        value: settings?.token ?? language.None,
-        inline: true,
-      },
-      {
         name: lan.fields.announcementchannel.name,
         value: embedParsers.channel(settings?.announcementchannel, language),
         inline: true,
+      },
+      {
+        name: lan.fields.token.name,
+        value: settings?.token ? ch.util.makeSpoiler(settings.token) : language.None,
+        inline: false,
       },
     ],
   },
@@ -117,7 +117,6 @@ export const getComponents: CT.SettingsFile<'vote'>['getComponents'] = (
     type: Discord.ComponentType.ActionRow,
     components: [
       buttonParsers.boolean(language, settings?.reminders, 'reminders', name),
-      buttonParsers.specific(language, settings?.token, 'token', name),
       buttonParsers.specific(
         language,
         settings?.announcementchannel,
@@ -125,6 +124,7 @@ export const getComponents: CT.SettingsFile<'vote'>['getComponents'] = (
         name,
         'channel',
       ),
+      buttonParsers.specific(language, settings?.token, 'token', name),
     ],
   },
 ];
