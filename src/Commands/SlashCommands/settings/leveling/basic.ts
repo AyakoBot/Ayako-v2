@@ -3,17 +3,18 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'leveling';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories.leveling;
+  const lan = language.slashCommands.settings.categories[name];
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames.leveling} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.leveling[] | null) => (r ? r[0] : null));
 
   cmd.reply({
@@ -25,7 +26,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
 const getLevelUpMode = (
   type: string | undefined,
-  lan: CT.Language['slashCommands']['settings']['categories']['leveling'],
+  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
   switch (type) {
     case '1': {
@@ -40,7 +41,7 @@ const getLevelUpMode = (
   }
 };
 
-export const getEmbeds: CT.SettingsFile<'leveling'>['getEmbeds'] = async (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
   embedParsers,
   settings,
   language,
@@ -176,11 +177,10 @@ export const getEmbeds: CT.SettingsFile<'leveling'>['getEmbeds'] = async (
   return embeds;
 };
 
-export const getComponents: CT.SettingsFile<'leveling'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'leveling',
 ) => {
   const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
     {
@@ -191,7 +191,7 @@ export const getComponents: CT.SettingsFile<'leveling'>['getComponents'] = (
       type: Discord.ComponentType.ActionRow,
       components: [
         buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name),
-        buttonParsers.specific(language, settings?.xpmultiplier, 'multiplier', name),
+        buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name),
         buttonParsers.specific(language, settings?.rolemode, 'rolemode', name),
       ],
     },

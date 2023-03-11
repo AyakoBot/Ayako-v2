@@ -3,11 +3,13 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'self-roles';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories['self-roles'];
+  const lan = language.slashCommands.settings.categories[name];
 
   const ID = cmd.options.get('id', false)?.value as string;
   if (ID) {
@@ -21,12 +23,12 @@ const showID = async (
   cmd: Discord.ChatInputCommandInteraction,
   ID: string,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
+  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
     .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames['self-roles']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.selfroles[] | null) => (r ? r[0] : null));
@@ -38,18 +40,16 @@ const showID = async (
   });
 };
 
-const showAll = async (
-  cmd: Discord.ChatInputCommandInteraction,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['self-roles'],
+export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = async (
+  cmd,
+  language,
+  lan,
 ) => {
-  const name = 'self-roles';
   const { multiRowHelpers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames['self-roles']} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.selfroles[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
@@ -62,6 +62,13 @@ const showAll = async (
   multiRowHelpers.noFields(embeds, language);
   multiRowHelpers.components(embeds, components, language, name);
 
+  if (cmd.isButton()) {
+    cmd.update({
+      embeds,
+      components,
+    });
+    return;
+  }
   cmd.reply({
     embeds,
     components,
@@ -69,7 +76,7 @@ const showAll = async (
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'self-roles'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -122,11 +129,10 @@ export const getEmbeds: CT.SettingsFile<'self-roles'>['getEmbeds'] = (
   },
 ];
 
-export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'self-roles',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
@@ -203,6 +209,9 @@ export const getComponents: CT.SettingsFile<'self-roles'>['getComponents'] = (
   },
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+    components: [
+      buttonParsers.back(name),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
+    ],
   },
 ];

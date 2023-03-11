@@ -4,7 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
-  const settingName = args.shift();
+  const settingName = args.shift() as keyof CT.TableNamesMap;
   if (!settingName) return;
 
   const tableName = ch.constants.commands.settings.tableNames[
@@ -45,9 +45,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       ch.settingsHelpers.embedParsers,
       currentSettings,
       language,
-      language.slashCommands.settings.categories[
-        settingName as keyof typeof language.slashCommands.settings.categories
-      ],
+      language.slashCommands.settings.categories[settingName],
     ),
     components: await settingsFile.getComponents(
       ch.settingsHelpers.buttonParsers,

@@ -3,17 +3,18 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'blacklist';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories.blacklist;
+  const lan = language.slashCommands.settings.categories[name];
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames.blacklist} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.blacklist[] | null) => (r ? r[0] : null));
 
   cmd.reply({
@@ -23,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'blacklist'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -59,11 +60,10 @@ export const getEmbeds: CT.SettingsFile<'blacklist'>['getEmbeds'] = (
   },
 ];
 
-export const getComponents: CT.SettingsFile<'blacklist'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'blacklist',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,

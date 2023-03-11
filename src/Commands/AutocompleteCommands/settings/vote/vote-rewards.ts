@@ -27,8 +27,8 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
   cmd.respond(
     settings?.map((s) => ({
       name: `${lan.fields.reward.name}: ${
-        s.rewardtype ? lan.rewardTypes[s.rewardtype] : language.None
-      }\n${lan.fields.linkedid.name}: ${Number(s.linkedid).toString(36)}`,
+        s.rewardtype ? language.rewardTypes[s.rewardtype] : language.None
+      } - ${lan.fields.linkedid.name}: ${Number(s.linkedid).toString(36)}`,
       value: Number(s.uniquetimestamp).toString(36),
     })),
   );

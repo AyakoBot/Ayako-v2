@@ -131,17 +131,28 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
   getEmbeds: <K extends keyof TableNamesMap>(
     embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
     settings: TableNamesMap[T] | null,
-    language: CT.Language,
-    lan: CT.Language['slashCommands']['settings']['categories'][T],
+    language: Language,
+    lan: Language['slashCommands']['settings']['categories'][T],
   ) => Discord.APIEmbed[] | Promise<Discord.APIEmbed[]>;
   getComponents: (
     buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
     settings: TableNamesMap[T] | null,
-    language: CT.Language,
-    name: T = T,
+    language: Language,
   ) =>
     | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
     | Promise<Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]>;
+  showAll?: (
+    cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+    language: Language,
+    lan: Language['slashCommands']['settings']['categories'][T],
+  ) => Promise<void>;
+  postChange?: (
+    oldSetting: TableNamesMap[T] | null,
+    newSetting: TableNamesMap[T] | null,
+    changedSetting: keyof FieldName<T>,
+    settingName: keyof CT.TableNamesMap,
+    uniquetimestamp?: number,
+  ) => Promise<void>;
 }
 
 type AllKeys<T> = T extends T ? keyof T : never;

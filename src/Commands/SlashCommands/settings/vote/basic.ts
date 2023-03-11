@@ -3,11 +3,13 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'vote';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories.vote;
+  const lan = language.slashCommands.settings.categories[name];
 
   const ID = cmd.options.get('id', false)?.value as string;
   if (ID) {
@@ -21,12 +23,12 @@ const showID = async (
   cmd: Discord.ChatInputCommandInteraction,
   ID: string,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['vote'],
+  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
     .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames.vote} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
@@ -38,15 +40,14 @@ const showID = async (
   });
 };
 
-const showAll = async (
-  cmd: Discord.ChatInputCommandInteraction,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['vote'],
+export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = async (
+  cmd,
+  language,
+  lan,
 ) => {
-  const name = 'vote';
   const { multiRowHelpers } = ch.settingsHelpers;
   const settings = await ch
-    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames.vote} WHERE guildid = $1;`, [
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
       cmd.guild?.id,
     ])
     .then((r: DBT.votesettings[] | null) => r || null);
@@ -63,6 +64,13 @@ const showAll = async (
   multiRowHelpers.noFields(embeds, language);
   multiRowHelpers.components(embeds, components, language, name);
 
+  if (cmd.isButton()) {
+    cmd.update({
+      embeds,
+      components,
+    });
+    return;
+  }
   cmd.reply({
     embeds,
     components,
@@ -70,7 +78,7 @@ const showAll = async (
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'vote'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -103,11 +111,10 @@ export const getEmbeds: CT.SettingsFile<'vote'>['getEmbeds'] = (
   },
 ];
 
-export const getComponents: CT.SettingsFile<'vote'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'vote',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
@@ -125,6 +132,13 @@ export const getComponents: CT.SettingsFile<'vote'>['getComponents'] = (
         'channel',
       ),
       buttonParsers.specific(language, settings?.token, 'token', name),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+      buttonParsers.back(name),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
 ];

@@ -3,17 +3,18 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'sticky';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories.sticky;
+  const lan = language.slashCommands.settings.categories[name];
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames.sticky} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.sticky[] | null) => (r ? r[0] : null));
 
   cmd.reply({
@@ -23,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'sticky'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -63,11 +64,10 @@ export const getEmbeds: CT.SettingsFile<'sticky'>['getEmbeds'] = (
   },
 ];
 
-export const getComponents: CT.SettingsFile<'sticky'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'sticky',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,

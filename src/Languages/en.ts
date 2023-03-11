@@ -1308,12 +1308,6 @@ export default {
       categories: {
         'vote-rewards': {
           name: 'Vote Rewards',
-          rewardTypes: {
-            role: 'Role',
-            currency: 'Currency',
-            xp: 'XP',
-            xpmultiplier: 'XP Multiplier',
-          },
           fields: {
             tier: {
               name: 'Tier',
@@ -1325,12 +1319,12 @@ export default {
             },
             reward: {
               name: 'Reward',
-              desc: 'The Reward itself',
+              desc: 'The Reward itself\nCurrency: Amount of Currency to Reward\nXP: Amount of XP to Reward\nXP Multiplier: Number to Multiply gained XP with',
             },
             linkedid: {
               name: 'Linked ID',
-              desc: 'The linked Setting'
-            }
+              desc: 'The linked Setting',
+            },
           },
         },
         'anti-spam-punishments': {
@@ -1796,7 +1790,7 @@ export default {
               name: 'XP per Message',
               desc: 'Amount of XP awarded per Member',
             },
-            multiplier,
+            xpmultiplier: multiplier,
             rolemode: {
               name: 'Role Mode',
               desc: 'Whether to Stack or Replace Level-Roles',
@@ -2979,6 +2973,12 @@ export default {
     'applicaiton.commands.update': 'Update Slash Commands',
     'application.commands.permissions.update': 'Update Slash Command Permissions',
   },
+  rewardTypes: {
+    role: 'Role',
+    currency: 'Currency',
+    xp: 'XP',
+    xpmultiplier: 'XP Multiplier',
+  },
   Scopes: 'Scopes',
   Result: 'Result',
   stagePrivacyLevels: ['Public', 'Server Only'],
@@ -3040,5 +3040,5 @@ export default {
   Mentionables: 'Mentionables',
   Mentionable: 'Mentionable',
   Done: 'Done',
-  None
+  None,
 };

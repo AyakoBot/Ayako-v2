@@ -3,11 +3,13 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
+const name = 'vote-rewards';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
   const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories['vote-rewards'];
+  const lan = language.slashCommands.settings.categories[name];
 
   const ID = cmd.options.get('id', false)?.value as string;
   if (ID) {
@@ -21,12 +23,12 @@ const showID = async (
   cmd: Discord.ChatInputCommandInteraction,
   ID: string,
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['vote-rewards'],
+  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
     .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames['vote-rewards']} WHERE uniquetimestamp = $1;`,
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
     .then((r: DBT.voterewards[] | null) => (r ? r[0] : null));
@@ -38,26 +40,22 @@ const showID = async (
   });
 };
 
-const showAll = async (
-  cmd: Discord.ChatInputCommandInteraction,
-  language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories']['vote-rewards'],
+export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = async (
+  cmd,
+  language,
+  lan,
 ) => {
-  const name = 'vote-rewards';
   const { multiRowHelpers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames['vote-rewards']} WHERE guildid = $1;`,
-      [cmd.guild?.id],
-    )
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
     .then((r: DBT.voterewards[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
     name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${
       lan.fields.rewardtype.name
-    }: ${
-      s.rewardtype ? lan.rewardTypes[s.rewardtype as keyof typeof lan.rewardTypes] : language.None
-    }`,
+    }: ${s.rewardtype ? language.rewardTypes[s.rewardtype] : language.None}`,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   }));
 
@@ -66,6 +64,13 @@ const showAll = async (
   multiRowHelpers.noFields(embeds, language);
   multiRowHelpers.components(embeds, components, language, name);
 
+  if (cmd.isButton()) {
+    cmd.update({
+      embeds,
+      components,
+    });
+    return;
+  }
   cmd.reply({
     embeds,
     components,
@@ -73,7 +78,7 @@ const showAll = async (
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'vote-rewards'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -93,10 +98,8 @@ export const getEmbeds: CT.SettingsFile<'vote-rewards'>['getEmbeds'] = (
   ];
 
   let typeField = {
-    name: lan.fields.tier.name,
-    value: settings?.rewardtype
-      ? lan.rewardTypes[settings.rewardtype as keyof typeof lan.rewardTypes]
-      : '\u200b',
+    name: lan.fields.rewardtype.name,
+    value: settings?.rewardtype ? language.rewardTypes[settings.rewardtype] : '\u200b',
     inline: true,
   };
 
@@ -140,11 +143,10 @@ export const getEmbeds: CT.SettingsFile<'vote-rewards'>['getEmbeds'] = (
   return embeds;
 };
 
-export const getComponents: CT.SettingsFile<'vote-rewards'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'vote-rewards',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
@@ -163,11 +165,29 @@ export const getComponents: CT.SettingsFile<'vote-rewards'>['getComponents'] = (
         name,
         settings?.uniquetimestamp,
       ),
-      buttonParsers.specific(language, settings?.reward, 'reward', name, settings?.uniquetimestamp),
+      buttonParsers.specific(
+        language,
+        settings?.reward,
+        'reward',
+        name,
+        settings?.uniquetimestamp,
+        settings?.rewardtype === 'role' ? 'role' : undefined,
+      ),
     ],
   },
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.delete(language, name, Number(settings?.uniquetimestamp))],
+    components: [
+      buttonParsers.back(name),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
+    ],
   },
 ];
+
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+  _oldSetting,
+  _newSetting,
+  _changedSetting,
+  _settingName,
+  _uniquetimestamp,
+) => {};

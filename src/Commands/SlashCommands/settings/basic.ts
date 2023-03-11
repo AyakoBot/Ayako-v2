@@ -3,6 +3,8 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../Typings/DataBaseTypings';
 import type * as CT from '../../../Typings/CustomTypings';
 
+const name = 'basic';
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if (!cmd.inGuild()) return;
 
@@ -10,11 +12,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
   const settings = await ch
-    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames.basic} WHERE guildid = $1;`, [
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
       cmd.guild?.id,
     ])
     .then((r: DBT.guildsettings[] | null) => (r ? r[0] : null));
-  const lan = language.slashCommands.settings.categories.basic;
+  const lan = language.slashCommands.settings.categories[name];
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
@@ -23,7 +25,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   });
 };
 
-export const getEmbeds: CT.SettingsFile<'basic'>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   embedParsers,
   settings,
   language,
@@ -63,11 +65,10 @@ export const getEmbeds: CT.SettingsFile<'basic'>['getEmbeds'] = (
   },
 ];
 
-export const getComponents: CT.SettingsFile<'basic'>['getComponents'] = (
+export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   buttonParsers,
   settings,
   language,
-  name = 'basic',
 ) => [
   {
     type: Discord.ComponentType.ActionRow,

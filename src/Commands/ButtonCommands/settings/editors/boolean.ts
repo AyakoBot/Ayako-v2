@@ -79,7 +79,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       ch.settingsHelpers.buttonParsers,
       updatedSetting,
       language,
-      settingName,
     ),
   });
 };

@@ -460,6 +460,12 @@ export default {
           reminders: 'boolean',
           announcementchannel: 'channel',
         },
+        'vote-rewards': {
+          tier: 'number',
+          rewardtype: 'reward',
+          reward: 'string',
+          linkedid: 'voteid',
+        },
       },
       tableNames: {
         'anti-spam': 'antispam',

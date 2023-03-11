@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import glob from 'glob';
 import type * as DBT from '../../Typings/DataBaseTypings';
 import type * as CT from '../../Typings/CustomTypings';
 import stringEmotes from './stringEmotes.js';
@@ -48,6 +49,13 @@ const embedParsers = {
       : language.None,
 };
 
+const back = <T extends keyof SettingsNames>(name: T): Discord.APIButtonComponent => ({
+  type: Discord.ComponentType.Button,
+  style: Discord.ButtonStyle.Danger,
+  custom_id: `settings/settingsDisplay_${name}`,
+  emoji: objectEmotes.back,
+});
+
 const buttonParsers = {
   global: (
     language: CT.Language,
@@ -75,6 +83,11 @@ const buttonParsers = {
       constants.commands.settings.types[
         settingName as keyof typeof constants.commands.settings.types
       ];
+
+    if (!constantTypes)
+      throw new Error(
+        `Constants for ${settingName} missing at constants.commands.settings.types[]`,
+      );
 
     return {
       type: Discord.ComponentType.Button,
@@ -165,6 +178,7 @@ const buttonParsers = {
     emoji: objectEmotes.minusBG,
     disabled: !enabled,
   }),
+  back,
 };
 
 const multiRowHelpers = {
@@ -223,10 +237,45 @@ export const updateLog = (
   oldSetting: typeof DBT.Res,
   newSetting: typeof DBT.Res,
   changedSetting: string,
-  setting: string,
+  settingName: keyof CT.TableNamesMap,
   uniquetimestamp?: number,
 ) => {
-  console.log(oldSetting, newSetting, changedSetting, setting, uniquetimestamp);
+  postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+  console.log(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+};
+
+const postUpdate = async (
+  oldSetting: typeof DBT.Res,
+  newSetting: typeof DBT.Res,
+  changedSetting: string,
+  settingName: keyof CT.TableNamesMap,
+  uniquetimestamp?: number,
+) => {
+  const files: string[] = await new Promise((resolve) => {
+    glob(`${process.cwd()}/Commands/SlashCommands/**/*`, (err, res) => {
+      if (err) throw err;
+      resolve(res);
+    });
+  });
+
+  const file = files.find((f) =>
+    f.endsWith(
+      `/${
+        constants.commands.settings.basicSettings.includes(settingName)
+          ? `${settingName}/basic`
+          : settingName
+      }.js`,
+    ),
+  );
+  if (!file) return;
+
+  const tableName = constants.commands.settings.tableNames[
+    settingName as keyof typeof constants.commands.settings.tableNames
+  ] as keyof CT.TableNamesMap;
+
+  const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
+
+  settingsFile.postChange?.(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
 };
 
 const changeHelpers = {
@@ -235,7 +284,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
+    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'reward',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -340,9 +389,6 @@ const changeHelpers = {
             style: Discord.TextInputStyle.Paragraph,
             label: language.slashCommands.settings.acceptedValue,
             custom_id: '-',
-            placeholder: (
-              lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>
-            ).desc,
             value: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)
               .desc,
             max_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)
@@ -377,16 +423,20 @@ const changeHelpers = {
     custom_id: `settings/modal_${name}_${fieldName}`,
     emoji: objectEmotes.back,
   }),
-  back: <T extends keyof SettingsNames>(name: T): Discord.APIButtonComponent => ({
-    type: Discord.ComponentType.Button,
-    style: Discord.ButtonStyle.Danger,
-    custom_id: `settings/settingsDisplay_${name}`,
-    emoji: objectEmotes.back,
-  }),
+  back,
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment' | 'language',
+    type:
+      | 'channel'
+      | 'channels'
+      | 'role'
+      | 'roles'
+      | 'user'
+      | 'users'
+      | 'punishment'
+      | 'language'
+      | 'reward',
     language: CT.Language,
   ): Discord.APIButtonComponent => ({
     type: Discord.ComponentType.Button,
@@ -547,7 +597,7 @@ const getPlaceholder = (
 
 const getMention = (
   language: CT.Language,
-  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
+  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'reward',
   value: string,
 ) => {
   switch (type) {
@@ -565,6 +615,9 @@ const getMention = (
     }
     case 'language': {
       return language.languages[value as keyof typeof language.languages];
+    }
+    case 'reward': {
+      return language.rewardTypes[value as keyof typeof language.rewardTypes];
     }
     default: {
       return value;

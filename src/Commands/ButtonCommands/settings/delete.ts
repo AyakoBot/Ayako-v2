@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import glob from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings';
+import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const settingName = args.shift() as keyof CT.TableNamesMap;
@@ -10,13 +10,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const tableName = ch.constants.commands.settings.tableNames[
     settingName as keyof typeof ch.constants.commands.settings.tableNames
   ] as keyof CT.TableNamesMap;
-  type SettingsType = CT.TableNamesMap[typeof tableName];
 
-  const settings = (await ch.settingsHelpers.changeHelpers.get(
-    tableName,
-    '*',
-    cmd.guildId,
-  )) as SettingsType;
+  const uniquetimestamp = Number(args.shift());
+
+  const oldSettings = await ch.query(
+    `DELETE FROM ${tableName} WHERE guildid = $1 AND uniquetimestamp = $2 RETURNING *;`,
+    [cmd.guildId, uniquetimestamp],
+  );
 
   const files: string[] = await new Promise((resolve) => {
     glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
@@ -38,23 +38,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
   const language = await ch.languageSelector(cmd.guildId);
+  const lan = language.slashCommands.settings.categories[settingName];
 
-  if (settingsFile.showAll) {
-    settingsFile.showAll(cmd, language, language.slashCommands.settings.categories[settingName]);
-    return;
-  }
-
-  cmd.update({
-    embeds: await settingsFile.getEmbeds(
-      ch.settingsHelpers.embedParsers,
-      settings,
-      language,
-      language.slashCommands.settings.categories[settingName],
-    ),
-    components: await settingsFile.getComponents(
-      ch.settingsHelpers.buttonParsers,
-      settings,
-      language,
-    ),
-  });
+  ch.settingsHelpers.updateLog(oldSettings, {}, '*', settingName, uniquetimestamp);
+  settingsFile.showAll?.(cmd, language, lan);
 };
