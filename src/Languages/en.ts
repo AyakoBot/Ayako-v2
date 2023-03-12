@@ -1319,7 +1319,7 @@ export default {
             },
             rewardxpmultiplier: {
               name: 'Reward XP Multiplier',
-              desc: 'Rewarded Multiplier gathered XP are multiplied with',
+              desc: 'Rewarded Multiplier gathered XP are multiplied with (will be removed when the User can Vote again)',
             },
             rewardcurrency: {
               name: 'Reward Currency',

@@ -1,6 +1,5 @@
 import type { QueryResultBase } from 'pg';
 
-import { RewardType } from './Settings';
 export * from './Settings';
 export const Res = QueryResultBase;
 
@@ -253,8 +252,11 @@ export type voters = {
   voted: string;
   votetype: 'guild' | 'bot';
   tier: string;
-  rewardtype: RewardType[];
-  reward: string[];
+
+  rewardroles?: string[];
+  rewardxp?: string;
+  rewardcurrency?: number;
+  rewardxpmultiplier?: number;
 };
 
 export type stickymessages = {

@@ -32,63 +32,70 @@ export default async (
   const rewards = allRewards.filter((r) => Number(r.tier) === tier);
 
   rewards.forEach((r) => {
-    switch (r.rewardtype) {
-      case 'currency': {
-        ch.query(
-          `INSERT INTO balance (userid, guildid, balance) VALUES ($1, $2, $3) ON CONFLICT (userid, guildid) DO UPDATE SET balance = balance + $3;`,
-          [user.id, guild.id, Number(r.reward)],
-        );
+    const currency = () => {
+      if (!r.rewardcurrency) return;
 
-        break;
-      }
-      case 'role': {
-        if (!member.manageable) return;
-        if (!r.reward) return;
+      ch.query(
+        `INSERT INTO balance (userid, guildid, balance) VALUES ($1, $2, $3) ON CONFLICT (userid, guildid) DO UPDATE SET balance = balance + $3;`,
+        [user.id, guild.id, Number(r.rewardcurrency)],
+      );
+    };
 
-        const role = guild.roles.cache.get(r.reward);
-        if (!role) return;
+    const roles = () => {
+      if (!member.manageable) return;
+      if (!r.rewardroles?.length) return;
 
-        ch.roleManager.add(member, [role.id], language.events.vote.botReason(bot), 1);
-        break;
-      }
-      case 'xp': {
-        ch.query(
-          `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
-          [user.id, guild.id, 'guild', Number(r.reward), 0],
-        );
+      ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
+    };
 
-        break;
-      }
-      case 'xpmultiplier': {
-        ch.query(
-          `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
-          [user.id, guild.id, 'guild', Number(r.reward), 0],
-        );
+    const xp = () => {
+      if (!r.rewardxp) return;
 
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+      ch.query(
+        `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
+        [user.id, guild.id, 'guild', Number(r.rewardxp), 0],
+      );
+    };
+
+    const xpmultiplier = () => {
+      if (!r.rewardxpmultiplier) return;
+
+      ch.query(
+        `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
+        [user.id, guild.id, 'guild', Number(r.rewardxpmultiplier), 0],
+      );
+    };
+
+    currency();
+    roles();
+    xp();
+    xpmultiplier();
+
+    ch.query(
+      `INSERT INTO voters (userid, removetime, voted, votedtype, tier, rewardroles, rewardxp, rewardcurrency, rewardxpmultiplier) VALUE ($1, $2, $3, $4, $5, $6, $7) 
+      ON CONFLICT(userid, voted) DO UPDATE SET voters.rewardxp + $7, voters.rewardcurrency + $8, voters.rewardxpmultiplier + $9, COALESCE(ARRAY_CAT(voters.rewardroles, $6), $6);`,
+      [
+        user.id,
+        Date.now() + 43200000,
+        vote.bot,
+        'bot',
+        tier,
+        r.rewardroles,
+        r.rewardxp,
+        r.rewardcurrency,
+        r.rewardxpmultiplier,
+      ],
+    );
   });
-
-  const rewardTypes = rewards.map((r) => r.rewardtype);
-  const rewardStrings = rewards.map((r) => r.reward);
-
-  await ch.query(
-    `INSERT INTO voters (userid, removetime, voted, votedtype, tier, rewardtype, reward) VALUE ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT(userid, voted) DO NOTHING;`,
-    [user.id, Date.now() + 43200000, vote.bot, 'bot', tier, rewardTypes, rewardStrings],
-  );
 
   Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
 };
 
-const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
+export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
   const doesntHave = rewards
-    .filter((r) => r.rewardtype === 'role' && !!r.reward)
+    .filter((r) => r.rewardroles?.length)
     .sort((a, b) => Number(a.tier) - Number(b.tier))
-    .find((r) => !member.roles.cache.has(r.reward as string));
+    .find((r) => !member.roles.cache.hasAny(...(r.rewardroles as string[])));
 
   const highestTier = Math.max(...rewards.map((r) => Number(r.tier)));
 
@@ -100,10 +107,10 @@ const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
   return 1;
 };
 
-const doAnnouncement = async (
+export const doAnnouncement = async (
   settings: DBT.votesettings,
   member: Discord.GuildMember,
-  bot: Discord.User | CT.bEvalUser,
+  voted: Discord.User | CT.bEvalUser | Discord.Guild,
   language: CT.Language,
   rewards?: DBT.voterewards[],
 ) => {
@@ -112,54 +119,57 @@ const doAnnouncement = async (
   const channel = await ch.getChannel.guildTextChannel(settings.announcementchannel);
   if (!channel) return;
 
-  const currencyRewards = rewards?.filter((r) => r.rewardtype === 'currency');
+  const currencyRewards = rewards?.filter((r) => !!r.rewardcurrency);
   const lan = language.events.vote;
 
   const rewardText = rewards?.length
     ? `${lan.reward(
         rewards
-          .map((r) => {
-            if (!r.reward) return null;
-
-            switch (r.rewardtype) {
-              case 'role': {
-                return `<@&${r.reward}>`;
+          .map((r, i) => {
+            switch (i) {
+              case 0 && r.rewardroles?.length: {
+                return r.rewardroles?.map((roleID) => `<@&${roleID}>`).join(', ');
               }
-              case 'xp': {
-                return `${r.reward} XP`;
+              case 1: {
+                return `${r.rewardxp} XP`;
               }
-              case 'xpmultiplier': {
-                return `${r.reward}x ${lan.xpmultiplier}`;
+              case 2: {
+                return `${r.rewardxpmultiplier}x ${lan.xpmultiplier}`;
               }
               default: {
                 return null;
               }
             }
           })
+          .filter((r): r is string => !!r)
           .join(` ${ch.stringEmotes.plusBG} `),
       )}${
         currencyRewards?.length
           ? `${ch.stringEmotes.plusBG} ${currencyRewards
-              ?.map((r) => Number(r.reward))
+              ?.map((r) => Number(r.rewardcurrency))
               .reduce((b, a) => b + a, 0)} ${ch.stringEmotes.book}`
           : ''
       }`
     : '';
 
-  ch.send(channel, { content: `${lan.bot(member.user, bot)}${rewardText}` });
+  ch.send(channel, {
+    content: `${
+      'username' in voted ? lan.bot(member.user, voted) : lan.guild(member.user, voted)
+    }${rewardText}`,
+  });
 };
 
-const getSettings = async (guild: Discord.Guild) =>
+export const getSettings = async (guild: Discord.Guild) =>
   ch
     .query(`SELECT * FROM votesettings WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
 
-const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
+export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Discord.Guild) => {
   const now = Date.now();
   const savedRewards = await ch
     .query(`SELECT * FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
       vote.user,
-      vote.bot,
+      'bot' in vote ? vote.bot : vote.guild,
       now,
     ])
     .then((r: DBT.voters[] | null) => r ?? null);
@@ -167,7 +177,7 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
 
   await ch.query(`DELETE FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
     vote.user,
-    vote.bot,
+    'bot' in vote ? vote.bot : vote.guild,
     now,
   ]);
 
@@ -180,23 +190,13 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
   const language = await ch.languageSelector(guild.id);
   const lan = language.events.vote;
 
-  const rolesToRemove = savedRewards
-    ?.map((r) => {
-      const roleRewards = r.rewardtype
-        .map((rewardtype, i) => (rewardtype === 'role' ? i : undefined))
-        .filter((index): index is number => index !== undefined);
-      const roles = roleRewards
-        .map((rewardIndex) => guild.roles.cache.get(r.reward[rewardIndex]))
-        .filter((role): role is Discord.Role => !!role)
-        .filter((role) => member.roles.cache.has(role.id));
-
-      return roles;
-    })
-    .flat();
-
   ch.roleManager.remove(
     member,
-    rolesToRemove.map((r) => r.id),
+    savedRewards
+      .filter((r) => r.rewardroles?.length)
+      .map((r) => r.rewardroles)
+      .filter((r): r is string[] => !!r)
+      .flat(),
     language.events.vote.endReason,
     1,
   );
@@ -206,8 +206,11 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
     .then((r: DBT.users[] | null) => (r ? r[0] : null));
   if (userSettings && !userSettings.votereminders) return;
 
-  const bot = await ch.getUser(vote.bot).catch(() => undefined);
-  if (!bot) return;
+  const voted =
+    'bot' in vote
+      ? await ch.getUser(vote.bot).catch(() => undefined)
+      : client.guilds.cache.get(g.id);
+  if (!voted) return;
 
   const dm = await member.user.createDM().catch(() => undefined);
   if (!dm) return;
@@ -218,11 +221,11 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
       icon_url: ch.objectEmotes.userFlags.EarlySupporter.link,
     },
     color: ch.constants.colors.base,
-    description: lan.reminder.descBot(bot),
+    description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
     fields: [
       {
         name: '\u200b',
-        value: lan.reminder.voteBot(bot),
+        value: 'username' in voted ? lan.reminder.voteBot(voted) : lan.reminder.voteGuild(voted),
       },
     ],
   };
@@ -236,8 +239,14 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
           {
             type: Discord.ComponentType.Button,
             style: Discord.ButtonStyle.Link,
-            label: lan.reminder.voteBotButton(bot),
-            url: `https://top.gg/bot/${bot.id}/vote`,
+            label:
+              'username' in voted
+                ? lan.reminder.voteBotButton(voted)
+                : lan.reminder.voteGuildButton(voted),
+            url:
+              'username' in voted
+                ? `https://top.gg/bot/${voted.id}/vote`
+                : `https://top.gg/servers/${guild.id}/vote`,
           },
           {
             type: Discord.ComponentType.Button,
@@ -254,7 +263,7 @@ const endVote = async (vote: CT.TopGGBotVote, g: Discord.Guild) => {
             type: Discord.ComponentType.Button,
             style: Discord.ButtonStyle.Danger,
             label: lan.reminder.disable,
-            custom_id: `voteReminder_bot_disable_${vote.bot}`,
+            custom_id: `voteReminder_${'bot' in vote ? 'bot' : 'guild'}_disable_${voted.id}`,
           },
         ],
       },
