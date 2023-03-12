@@ -6,10 +6,10 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   const settings = (
     await ch
       .query(
-        `SELECT * FROM ${ch.constants.commands.settings.tableNames['anti-spam-punishments']} WHERE guildid = $1 AND type = $2;`,
-        [cmd.guildId, 'anti-spam'],
+        `SELECT * FROM ${ch.constants.commands.settings.tableNames['anti-spam-punishments']} WHERE guildid = $1;`,
+        [cmd.guildId],
       )
-      .then((r: DBT.punishments[] | null) => r)
+      .then((r: DBT.punishments_antispam[] | null) => r)
   )?.filter((s) => {
     const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 

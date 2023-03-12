@@ -46,8 +46,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       {
         name: lan.fields.rolemode.name,
         value: settings?.rolemode
-          ? language.slashCommands.settings.replace
-          : language.slashCommands.settings.stack,
+          ? language.rolemodes.replace
+          : language.rolemodes.stack,
         inline: true,
       },
     ],

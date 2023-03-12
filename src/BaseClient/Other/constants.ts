@@ -453,7 +453,7 @@ export default {
         },
         nitro: {
           logchannels: 'channels',
-          rolemode: 'rolemode',
+          rolemode: 'boolean',
         },
         vote: {
           token: 'token',
@@ -470,9 +470,9 @@ export default {
       },
       tableNames: {
         'anti-spam': 'antispam',
-        'anti-spam-punishments': 'punishments',
-        'anti-virus-punishments': 'punishments',
-        'blacklist-punishments': 'punishments',
+        'anti-spam-punishments': 'punishments_antispam',
+        'anti-virus-punishments': 'punishments_antivirus',
+        'blacklist-punishments': 'punishments_blacklist',
         'anti-raid': 'antiraid',
         'anti-virus': 'antivirus',
         'auto-punish': 'autopunish',

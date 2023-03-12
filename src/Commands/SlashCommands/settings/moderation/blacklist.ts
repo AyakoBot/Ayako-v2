@@ -33,7 +33,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   {
     author: embedParsers.author(language, lan),
     description: settings?.words?.length
-      ? `${lan.fields.words.name} ${ch.util.makeCodeBlock(settings.words.join(', '))}`
+      ? `${lan.fields.words.name} ${ch.util.makeCodeBlock(settings.words.join(' # '))}`
       : language.None,
     fields: [
       {

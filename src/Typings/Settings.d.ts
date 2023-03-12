@@ -1,3 +1,5 @@
+import type * as DBT from './DataBaseTypings';
+
 export type antiraid = {
   guildid: string;
   active: boolean;
@@ -402,24 +404,9 @@ export interface votesettings {
   announcementchannel?: string;
 }
 
-export type punishments = {
-  uniquetimestamp: string;
-  guildid: string;
-  active: boolean;
-
-  warnamount: string;
-  punishment?:
-    | 'warn'
-    | 'ban'
-    | 'verbal'
-    | 'kick'
-    | 'tempmute'
-    | 'tempban'
-    | 'channelban'
-    | 'tempchannelban';
-  duration: string;
-  type?: 'anti-spam' | 'anti-virus' | 'blacklist';
-};
+export type punishments_blacklist = DBT.BasicPunishmentsTable;
+export type punishments_antispam = DBT.BasicPunishmentsTable;
+export type punishments_antivirus = DBT.BasicPunishmentsTable;
 
 export interface voterewards {
   guildid: string;

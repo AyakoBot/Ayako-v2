@@ -108,7 +108,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.warnamount.name,
-        value: embedParsers.number(settings?.warnamount, language),
+        value: embedParsers.number(Number(settings?.warnamount), language),
         inline: true,
       },
       {

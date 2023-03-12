@@ -309,7 +309,15 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'settinglink',
+    type:
+      | 'rolemode'
+      | 'channel'
+      | 'role'
+      | 'user'
+      | 'mention'
+      | 'punishment'
+      | 'language'
+      | 'settinglink',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -371,7 +379,7 @@ const changeHelpers = {
   changeSelect: <T extends keyof SettingsNames>(
     fieldName: string,
     settingName: T,
-    type: 'punishment' | 'language' | 'settinglink',
+    type: string,
     options: {
       options: Discord.StringSelectMenuComponent['options'];
       placeholder?: string;
@@ -400,7 +408,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     settingName: T,
     fieldName: string,
-    type: 'number' | 'duration' | 'string',
+    type: 'number' | 'duration' | 'string' | 'strings',
     current: string | undefined,
     short: boolean,
     uniquetimestamp: number | undefined,
@@ -454,16 +462,7 @@ const changeHelpers = {
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type:
-      | 'settinglink'
-      | 'channel'
-      | 'channels'
-      | 'role'
-      | 'roles'
-      | 'user'
-      | 'users'
-      | 'punishment'
-      | 'language',
+    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | string,
     language: CT.Language,
     uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
@@ -625,7 +624,15 @@ const getPlaceholder = (
 
 const getMention = (
   language: CT.Language,
-  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'settinglink',
+  type:
+    | 'rolemode'
+    | 'channel'
+    | 'role'
+    | 'user'
+    | 'mention'
+    | 'punishment'
+    | 'language'
+    | 'settinglink',
   value: string,
 ) => {
   switch (type) {
@@ -643,6 +650,9 @@ const getMention = (
     }
     case 'language': {
       return language.languages[value as keyof typeof language.languages];
+    }
+    case 'rolemode': {
+      return language.rolemodes[value as keyof typeof language.rolemodes];
     }
     default: {
       return value;

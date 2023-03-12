@@ -69,7 +69,15 @@ export type BasicPunishmentsTable = {
   uniquetimestamp: string;
   active: boolean;
 
-  punishment: string;
+  punishment:
+    | 'warn'
+    | 'ban'
+    | 'verbal'
+    | 'kick'
+    | 'tempmute'
+    | 'tempban'
+    | 'channelban'
+    | 'tempchannelban';
   warnamount: string;
   duration: string;
 };

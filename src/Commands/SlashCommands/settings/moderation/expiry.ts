@@ -40,7 +40,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.banstime.name,
-        value: embedParsers.time(Number(settings?.banstime), language),
+        value: embedParsers.time(Number(settings?.banstime) * 1000, language),
         inline: true,
       },
       {
@@ -55,7 +55,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.channelbanstime.name,
-        value: embedParsers.time(Number(settings?.channelbanstime), language),
+        value: embedParsers.time(Number(settings?.channelbanstime) * 1000, language),
         inline: true,
       },
       {
@@ -70,7 +70,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.kickstime.name,
-        value: embedParsers.time(Number(settings?.kickstime), language),
+        value: embedParsers.time(Number(settings?.kickstime) * 1000, language),
         inline: true,
       },
       {
@@ -85,7 +85,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.mutestime.name,
-        value: embedParsers.time(Number(settings?.mutestime), language),
+        value: embedParsers.time(Number(settings?.mutestime) * 1000, language),
         inline: true,
       },
       {
@@ -100,7 +100,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.warnstime.name,
-        value: embedParsers.time(Number(settings?.warnstime), language),
+        value: embedParsers.time(Number(settings?.warnstime) * 1000, language),
         inline: true,
       },
     ],

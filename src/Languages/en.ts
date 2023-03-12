@@ -1295,10 +1295,8 @@ export default {
       blrole: 'Blacklisted Roles',
       wluser: 'Whitelisted Users',
       bluser: 'Blacklisted Users',
-      replace: 'Replace',
       create: 'Create',
       delete: 'Delete',
-      stack: 'Stack',
       previous: 'Previous',
       previouslySet: 'Previously set',
       next: 'Next',
@@ -1474,7 +1472,7 @@ export default {
           fields: {
             words: {
               name: 'Words / Phrases',
-              desc: 'Words or Phrases that should be Filtered',
+              desc: 'Words or Phrases that should be filtered (Separate by #)',
             },
           },
         },
@@ -2980,6 +2978,10 @@ export default {
     'application.commands': 'Use Slash Commands',
     'applicaiton.commands.update': 'Update Slash Commands',
     'application.commands.permissions.update': 'Update Slash Command Permissions',
+  },
+  rolemodes: {
+    stack: 'Stack',
+    replace: 'Replace',
   },
   Scopes: 'Scopes',
   Result: 'Result',

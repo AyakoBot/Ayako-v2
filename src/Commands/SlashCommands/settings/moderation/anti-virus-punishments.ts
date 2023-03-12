@@ -28,10 +28,10 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
   const { buttonParsers, embedParsers } = ch.settingsHelpers;
   const settings = await ch
     .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1 AND type = $2;`,
-      [parseInt(ID, 36), 'anti-virus'],
+      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
+      [parseInt(ID, 36)],
     )
-    .then((r: DBT.punishments[] | null) => (r ? r[0] : null));
+    .then((r: DBT.punishments_antivirus[] | null) => (r ? r[0] : null));
 
   if (cmd.isButton()) {
     cmd.update({
@@ -55,11 +55,10 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 ) => {
   const { multiRowHelpers } = ch.settingsHelpers;
   const settings = await ch
-    .query(
-      `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1 AND type = $2;`,
-      [cmd.guild?.id, 'anti-virus'],
-    )
-    .then((r: DBT.punishments[] | null) => r || null);
+    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+      cmd.guild?.id,
+    ])
+    .then((r: DBT.punishments_antivirus[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
     name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
@@ -107,7 +106,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.warnamount.name,
-        value: embedParsers.number(settings?.warnamount, language),
+        value: embedParsers.number(Number(settings?.warnamount), language),
         inline: true,
       },
       {
@@ -119,12 +118,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.duration.name,
-        value: embedParsers.time(Number(settings?.duration), language),
+        value: embedParsers.time(Number(settings?.duration) * 1000, language),
         inline: true,
       },
       {
         name: lan.fields.warnamount.name,
-        value: embedParsers.number(settings?.warnamount, language),
+        value: embedParsers.number(Number(settings?.warnamount), language),
         inline: true,
       },
     ],
