@@ -33,5 +33,7 @@ export default async (cmd: Discord.Interaction) => {
   const command = files.find((f) => f.endsWith(`/${path()}.js`));
   if (!command) return;
 
-  (await import(command)).default(cmd);
+  const responses = await (await import(command)).default(cmd);
+
+  cmd.respond(responses);
 };

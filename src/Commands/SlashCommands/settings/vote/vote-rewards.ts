@@ -107,6 +107,14 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
           inline: true,
         },
         {
+          name: lan.fields.linkedid.name,
+          value: embedParsers.string(
+            settings?.linkedid ? Number(settings.linkedid).toString(36) : language.None,
+            language,
+          ),
+          inline: false,
+        },
+        {
           name: lan.fields.rewardxp.name,
           value: embedParsers.number(settings?.rewardxp, language),
           inline: true,
@@ -124,14 +132,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         {
           name: lan.fields.rewardroles.name,
           value: embedParsers.roles(settings?.rewardroles, language),
-          inline: true,
-        },
-        {
-          name: lan.fields.linkedid.name,
-          value: embedParsers.string(
-            settings?.linkedid ? Number(settings.linkedid).toString(36) : language.None,
-            language,
-          ),
           inline: false,
         },
       ],
@@ -148,11 +148,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
     components: [
+      buttonParsers.global(language, !!settings?.active, 'active', name, undefined),
       buttonParsers.specific(
         language,
         settings?.tier,
@@ -160,6 +157,19 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
       ),
+      buttonParsers.setting(
+        language,
+        Number(settings?.linkedid).toString(36) || undefined,
+        'linkedid',
+        name,
+        'vote',
+        Number(settings?.uniquetimestamp),
+      ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
       buttonParsers.specific(
         language,
         settings?.rewardxp,
@@ -188,18 +198,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         'role',
-      ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.specific(
-        language,
-        Number(settings?.linkedid).toString(36) || undefined,
-        'linkedid',
-        name,
-        Number(settings?.uniquetimestamp),
       ),
     ],
   },

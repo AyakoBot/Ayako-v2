@@ -2119,7 +2119,7 @@ export default {
             },
             days: {
               name: 'Days',
-              desc: 'The DAys required to gain the Roles',
+              desc: 'The Days required to gain the Roles',
             },
           },
         },

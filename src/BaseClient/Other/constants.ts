@@ -462,9 +462,10 @@ export default {
         },
         'vote-rewards': {
           tier: 'number',
-          rewardtype: 'rewardtype',
-          reward: 'string',
-          linkedid: 'voteid',
+          rewardxp: 'number',
+          rewardxpmultiplier: 'number',
+          rewardcurrency: 'number',
+          rewardroles: 'roles',
         },
       },
       tableNames: {

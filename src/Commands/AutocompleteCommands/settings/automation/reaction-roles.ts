@@ -1,5 +1,9 @@
-import * as Discord from 'discord.js';
+import type * as CT from '../../../../Typings/CustomTypings';
 
-export default async (_cmd: Discord.AutocompleteInteraction) => {
-  // TODO
+const f: CT.AutoCompleteFile['default'] = async () => {
+  // todo
+
+  return [];
 };
+
+export default f;

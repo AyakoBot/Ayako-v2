@@ -127,6 +127,10 @@ type SettingsTable<T extends keyof TableNamesMap> = {
   [K in T]: { guildid: string } & TableNamesMap[K];
 };
 
+export interface AutoCompleteFile {
+  default: (cmd: Discord.AutocompleteInteraction | Discord.ButtonInteraction) => Promise<{ name: string; value: string }[]>;
+}
+
 export interface SettingsFile<T extends keyof TableNamesMap> {
   getEmbeds: <K extends keyof TableNamesMap>(
     embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],

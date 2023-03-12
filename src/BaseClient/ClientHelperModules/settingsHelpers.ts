@@ -111,6 +111,26 @@ const buttonParsers = {
       emoji: (type ? getEmoji(setting, `wl${type}id`) : undefined) ?? emoji,
     };
   },
+  setting: <T extends keyof SettingsNames>(
+    language: CT.Language,
+    setting: string[] | string | boolean | undefined,
+    name: keyof FieldName<T>,
+    settingName: T,
+    linkName: keyof SettingsNames,
+    uniquetimestamp: number | undefined,
+  ): Discord.APIButtonComponent => ({
+    type: Discord.ComponentType.Button,
+    label: (
+      (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
+        name
+      ] as Record<string, string>
+    ).name,
+    style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+    custom_id: `settings/editors/settinglink_${String(
+      name,
+    )}_${settingName}_${linkName}_${uniquetimestamp}`,
+    emoji: objectEmotes.settings,
+  }),
   boolean: <T extends keyof SettingsNames>(
     language: CT.Language,
     setting: boolean | undefined,
@@ -289,7 +309,7 @@ const changeHelpers = {
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
     values: string[] | string | undefined,
-    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
+    type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'settinglink',
   ): Discord.APIEmbed => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
@@ -351,12 +371,13 @@ const changeHelpers = {
   changeSelect: <T extends keyof SettingsNames>(
     fieldName: string,
     settingName: T,
-    type: 'punishment' | 'language',
+    type: 'punishment' | 'language' | 'settinglink',
     options: {
       options: Discord.StringSelectMenuComponent['options'];
       placeholder?: string;
       max_values?: number;
       min_values?: number;
+      disabled?: boolean;
     },
     uniquetimestamp: number | undefined,
   ) => {
@@ -369,6 +390,7 @@ const changeHelpers = {
       type: Discord.ComponentType.StringSelect,
       options: options.options,
       placeholder: options.placeholder,
+      disabled: options.disabled,
     };
 
     return menu;
@@ -432,7 +454,16 @@ const changeHelpers = {
   done: <T extends keyof SettingsNames>(
     name: T,
     fieldName: string,
-    type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | 'punishment' | 'language',
+    type:
+      | 'settinglink'
+      | 'channel'
+      | 'channels'
+      | 'role'
+      | 'roles'
+      | 'user'
+      | 'users'
+      | 'punishment'
+      | 'language',
     language: CT.Language,
     uniquetimestamp: number | undefined,
   ): Discord.APIButtonComponent => ({
@@ -594,7 +625,7 @@ const getPlaceholder = (
 
 const getMention = (
   language: CT.Language,
-  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language',
+  type: 'channel' | 'role' | 'user' | 'mention' | 'punishment' | 'language' | 'settinglink',
   value: string,
 ) => {
   switch (type) {

@@ -1,8 +1,8 @@
-import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
+import type * as CT from '../../../../Typings/CustomTypings';
 
-export default async (cmd: Discord.AutocompleteInteraction) => {
+const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   const settings = (
     await ch
       .query(
@@ -11,24 +11,21 @@ export default async (cmd: Discord.AutocompleteInteraction) => {
       )
       .then((r: DBT.levelingruleschannels[] | null) => r)
   )?.filter((s) => {
-    const id = String(cmd.options.get('id', false)?.value);
+    const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 
     return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
   });
 
   const language = await ch.languageSelector(cmd.guildId);
 
-  if (!settings) {
-    cmd.respond([]);
-    return;
-  }
+  if (!settings) return [];
 
-  cmd.respond(
-    settings?.map((s) => ({
-      name: `${ch.channelRuleCalc(Number(s.rules), language)} ${language.ChannelRules} - ${Number(
-        s.channels?.length,
-      )} ${language.Channels}`,
-      value: Number(s.uniquetimestamp).toString(36),
-    })),
-  );
+  return settings?.map((s) => ({
+    name: `${ch.channelRuleCalc(Number(s.rules), language)} ${language.ChannelRules} - ${Number(
+      s.channels?.length,
+    )} ${language.Channels}`,
+    value: Number(s.uniquetimestamp).toString(36),
+  }));
 };
+
+export default f;
