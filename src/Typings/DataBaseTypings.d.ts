@@ -289,7 +289,6 @@ export type stats = {
   rolecount: string;
   allusers: string;
   willis?: string[];
-  count?: string;
   antispam: boolean;
   verbosity: boolean;
   heartbeat: string;

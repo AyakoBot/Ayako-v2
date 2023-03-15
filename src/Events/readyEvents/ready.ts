@@ -17,9 +17,10 @@ export default async () => {
 
   (await import('./startupTasks/cache.js')).default();
   (await import('./startupTasks/slashCommands.js')).default();
+  (await import('./startupTasks.js')).default();
 
   if (ch.mainID !== client.user?.id) return;
-  // (await import('./startupTasks')).default();
+
   Jobs.scheduleJob('0 0 0 */1 * *', async () => {
     const guild = client.guilds.cache.get('298954459172700181');
     if (!guild) return;

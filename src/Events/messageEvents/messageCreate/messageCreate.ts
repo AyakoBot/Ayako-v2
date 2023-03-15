@@ -17,7 +17,7 @@ export default async (msg: Discord.Message) => {
   if (!msg) return;
   if (!msg.author) return;
 
-  memix(msg);
+  willis(msg);
 
   //antivirus(msg);
 
@@ -35,12 +35,12 @@ export default async (msg: Discord.Message) => {
   }
 };
 
-const memix = (msg: Discord.Message) => {
-  if (msg.channel.id !== '1077576079281229845') return;
-  if (msg.author.id !== '1050732083254923274') {
-    msg.delete();
+const willis = (msg: Discord.Message) => {
+  if (msg.channel.id !== '1085592754781945877') return;
+  if (msg.attachments.size) {
+    msg.react(stringEmotes.up);
     return;
   }
 
-  msg.react(stringEmotes.up);
+  msg.delete();
 };

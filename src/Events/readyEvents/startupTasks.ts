@@ -2,7 +2,15 @@ import Jobs from 'node-schedule';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
 
+import willis from './startupTasks/willis.js';
+
 export default async () => {
+  Jobs.scheduleJob('0 13 15 * *', () => {
+    willis();
+  });
+
+  if (ch.mainID !== client.user?.id) return;
+
   (await import('./antivirusBlocklistCacher')).default();
   Jobs.scheduleJob('*/30 * * * *', async () => {
     (await import('./antivirusBlocklistCacher')).default();
