@@ -281,11 +281,11 @@ export default {
         },
         'multi-channels': {
           channels: 'channels',
-          multiplier: 'integer',
+          multiplier: 'number',
         },
         'multi-roles': {
           roles: 'roles',
-          multiplier: 'integer',
+          multiplier: 'number',
         },
         welcome: {
           channelid: 'channel',
