@@ -19,6 +19,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   const language = await ch.languageSelector(execution.guild.id);
   const lan = language.events.logs.automodActionExecution;
 
+  const files: Discord.AttachmentPayload[] = [];
   const embed: Discord.APIEmbed = {
     author: {
       icon_url: ch.objectEmotes.userFlags.DiscordCertifiedModerator.link,
@@ -74,11 +75,16 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   }
 
   if (execution.content) {
-    embed.fields?.push({
-      name: lan.content,
-      value: execution.content,
-      inline: false,
-    });
+    if (execution.content?.length > 1024) {
+      const content = ch.txtFileWriter(execution.content, undefined, language.content);
+      if (content) files.push(content);
+    } else {
+      embed.fields?.push({
+        name: language.content,
+        value: execution.content ?? language.None,
+        inline: false,
+      });
+    }
   }
 
   if (execution.matchedKeyword) {
@@ -97,5 +103,10 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     });
   }
 
-  ch.send({ id: channels, guildId: execution.guild.id }, { embeds: [embed] }, undefined, 10000);
+  ch.send(
+    { id: channels, guildId: execution.guild.id },
+    { embeds: [embed], files },
+    undefined,
+    10000,
+  );
 };
