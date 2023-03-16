@@ -31,7 +31,9 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
       `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
-    .then((r: DBT.levelingmultichannels[] | null) => (r ? r[0] : null));
+    .then(async (r: DBT.levelingmultichannels[] | null) =>
+      r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+    );
 
   if (cmd.isButton()) {
     cmd.update({

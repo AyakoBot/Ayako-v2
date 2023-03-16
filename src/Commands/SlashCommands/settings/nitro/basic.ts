@@ -15,7 +15,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
       cmd.guild?.id,
     ])
-    .then((r: DBT.nitrosettings[] | null) => (r ? r[0] : null));
+    .then(async (r: DBT.nitrosettings[] | null) =>
+      r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+    );
 
   cmd.reply({
     embeds: await getEmbeds(embedParsers, settings, language, lan),
@@ -45,9 +47,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.rolemode.name,
-        value: settings?.rolemode
-          ? language.rolemodes.replace
-          : language.rolemodes.stack,
+        value: settings?.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
         inline: true,
       },
     ],

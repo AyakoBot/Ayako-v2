@@ -483,18 +483,7 @@ const changeHelpers = {
         ])
       : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId])
     ).then((r: any[] | null) => {
-      if (!r) {
-        if (uniquetimestamp) {
-          return query(
-            `INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1) RETURNING ${fieldName};`,
-            [guildId, Date.now()],
-          ).then((r: any[] | null) => (r ? r[0] : null));
-        } else {
-          return query(`INSERT INTO ${tableName} (guildid) VALUES ($1) RETURNING ${fieldName};`, [
-            guildId,
-          ]).then((r: any[] | null) => (r ? r[0] : null));
-        }
-      }
+      if (!r) return runSetup(guildId, tableName);
 
       return r ? r[0] : null;
     }),
@@ -516,12 +505,26 @@ const changeHelpers = {
         ]).then((r: any[] | null) => (r ? r[0] : null)),
 };
 
+const runSetup = async <T extends keyof CT.TableNamesMap>(
+  guildid: string | null,
+  tableName: keyof SettingsNames,
+): Promise<CT.TableNamesMap[T]> =>
+  query(
+    `INSERT INTO ${
+      constants.commands.settings.tableNames[
+        tableName as keyof typeof constants.commands.settings.tableNames
+      ]
+    } (guildid) VALUES ($1);`,
+    [guildid],
+  ).then((r: any[] | null) => (r ? r[0] : null));
+
 export default {
   embedParsers,
   buttonParsers,
   multiRowHelpers,
   updateLog,
   changeHelpers,
+  runSetup,
 };
 
 const getEmoji = (setting: string | boolean | string[] | undefined, type?: BLWLType | 'active') => {

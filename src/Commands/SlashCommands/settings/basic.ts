@@ -15,7 +15,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
       cmd.guild?.id,
     ])
-    .then((r: DBT.guildsettings[] | null) => (r ? r[0] : null));
+    .then(async (r: DBT.guildsettings[] | null) =>
+      r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+    );
   const lan = language.slashCommands.settings.categories[name];
 
   cmd.reply({
