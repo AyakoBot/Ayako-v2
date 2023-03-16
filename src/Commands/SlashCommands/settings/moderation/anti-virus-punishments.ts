@@ -63,7 +63,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     .then((r: DBT.punishments_antivirus[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${lan.fields.warnamount.name}: \`${s.warnamount}\` - ${lan.fields.punishment.name}: \`${
+    name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.none}\` - ${
+      lan.fields.punishment.name
+    }: \`${
       s.punishment
         ? language.punishments[s.punishment as keyof typeof language.punishments]
         : language.None
