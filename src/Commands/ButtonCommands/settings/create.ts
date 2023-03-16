@@ -14,10 +14,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const uniquetimestamp = Date.now();
   type SettingsType = CT.TableNamesMap[typeof tableName];
 
-  const currentSettings = (await ch.query(
-    `INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1, $2) RETURNING *;`,
-    [cmd.guildId, uniquetimestamp],
-  )) as unknown as SettingsType;
+  const currentSettings = await ch
+    .query(`INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1, $2) RETURNING *;`, [
+      cmd.guildId,
+      uniquetimestamp,
+    ])
+    .then((r: SettingsType[] | null) => (r ? r[0] : null));
 
   const files: string[] = await new Promise((resolve) => {
     glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
