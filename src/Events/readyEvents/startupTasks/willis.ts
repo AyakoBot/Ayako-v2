@@ -15,6 +15,8 @@ export default async () => {
   const winner = await client.users.fetch(winnerID).catch(() => undefined);
   if (!winner) return;
 
+  ch.query(`UPDATE stats SET willis = $1;`, [[]]);
+
   dm(winner);
   announce(winner);
   tellWill(winner);
