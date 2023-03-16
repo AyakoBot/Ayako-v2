@@ -32,7 +32,7 @@ export default async (oldState: RealState, state: RealState) => {
   if (!state.channelId) {
     client.emit(
       'voiceStateDeletes',
-      state,
+      oldState,
       await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
     );
     return;
