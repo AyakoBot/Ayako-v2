@@ -152,6 +152,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     type: Discord.ComponentType.ActionRow,
     components: [
       buttonParsers.global(language, !!settings?.active, 'active', name, undefined),
+      buttonParsers.back(name, undefined),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
       buttonParsers.specific(
         language,
         settings?.tier,
@@ -167,11 +174,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         'vote',
         Number(settings?.uniquetimestamp),
       ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
       buttonParsers.specific(
         language,
         settings?.rewardxp,
@@ -186,6 +188,11 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
       ),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
       buttonParsers.specific(
         language,
         settings?.rewardcurrency,
@@ -201,13 +208,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         Number(settings?.uniquetimestamp),
         'role',
       ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.back(name, undefined),
-      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
 ];

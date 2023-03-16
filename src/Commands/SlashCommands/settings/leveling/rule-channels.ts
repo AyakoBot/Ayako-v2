@@ -147,6 +147,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         Number(settings?.uniquetimestamp),
         'channel',
       ),
+      buttonParsers.back(name, undefined),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
   {
@@ -329,13 +331,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         undefined,
         ch.objectEmotes.numbers[String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.back(name, undefined),
-      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
 ];

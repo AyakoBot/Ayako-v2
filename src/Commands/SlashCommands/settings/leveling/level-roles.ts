@@ -117,6 +117,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
     type: Discord.ComponentType.ActionRow,
     components: [
+      buttonParsers.back(name, undefined),
+      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
+    ],
+  },
+  {
+    type: Discord.ComponentType.ActionRow,
+    components: [
       buttonParsers.specific(
         language,
         settings?.roles,
@@ -132,13 +139,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
       ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.back(name, undefined),
-      buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
     ],
   },
 ];
