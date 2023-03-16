@@ -514,7 +514,7 @@ const runSetup = async <T extends keyof CT.TableNamesMap>(
       constants.commands.settings.tableNames[
         tableName as keyof typeof constants.commands.settings.tableNames
       ]
-    } (guildid) VALUES ($1);`,
+    } (guildid) VALUES ($1) RETURNING *;`,
     [guildid],
   ).then((r: any[] | null) => (r ? r[0] : null));
 
