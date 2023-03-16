@@ -125,11 +125,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         value: embedParsers.time(Number(settings?.duration) * 1000, language),
         inline: true,
       },
-      {
-        name: lan.fields.warnamount.name,
-        value: embedParsers.number(Number(settings?.warnamount), language),
-        inline: true,
-      },
     ],
   },
 ];
