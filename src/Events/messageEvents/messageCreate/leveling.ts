@@ -438,8 +438,7 @@ type AppliedRules = {
 
 const checkPass = (msg: Discord.Message, rows: DBT.levelingruleschannels[]) => {
   const passes = rows.map((row) => {
-    if (!row.rules) return true;
-    const rules = new ChannelRules(Number(row.rules)).toArray();
+    const rules = new ChannelRules(row).toArray();
     const appliedRules: AppliedRules = {};
 
     rules.forEach((nameKey) => {

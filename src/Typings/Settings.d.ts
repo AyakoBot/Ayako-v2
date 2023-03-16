@@ -191,7 +191,6 @@ export type levelingruleschannels = {
   uniquetimestamp: string;
   guildid: string;
 
-  rules?: string;
   channels?: string[];
 
   hasleastattachments?: string;

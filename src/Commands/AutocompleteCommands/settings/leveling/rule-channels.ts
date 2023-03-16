@@ -1,4 +1,5 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
@@ -21,8 +22,8 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   if (!settings) return [];
 
   return settings?.map((s) => ({
-    name: `${ch.channelRuleCalc(Number(s.rules), language)} ${language.ChannelRules} - ${Number(
-      s.channels?.length,
+    name: `${new ChannelRules(s).toArray().length} ${language.ChannelRules} - ${Number(
+      s.channels?.length ?? 0,
     )} ${language.Channels}`,
     value: Number(s.uniquetimestamp).toString(36),
   }));

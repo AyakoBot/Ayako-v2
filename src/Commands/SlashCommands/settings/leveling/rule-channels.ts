@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
 import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
@@ -63,7 +64,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     .then((r: DBT.levelingruleschannels[] | null) => r || null);
 
   const fields = settings?.map((s) => ({
-    name: `${ch.channelRuleCalc(Number(s.rules), language)} ${language.ChannelRules} - ${Number(
+    name: `${new ChannelRules(s).toArray().length} ${language.ChannelRules} - ${Number(
       s.channels?.length,
     )} ${language.Channels}`,
     value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
@@ -97,9 +98,22 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   const embeds: Discord.APIEmbed[] = [
     {
       author: embedParsers.author(language, lan),
-      description: settings?.rules
-        ? `\`${ch.channelRuleCalc(Number(settings.rules), language).join('`\n `')}\``
-        : language.None,
+      description: `${
+        settings
+          ? new ChannelRules(settings)
+              .toArray()
+              .map((key) => {
+                const rule = Object.entries(settings).find(([k, v]) =>
+                  k === key.toLowerCase() ? v : null,
+                );
+                if (!rule) return null;
+
+                return `\`${language.channelRules[key](rule[1] as string)}\``;
+              })
+              .filter((r): r is string => !!r)
+              .join('\n')
+          : language.None
+      }`,
       fields: [
         {
           name: lan.fields.channels.name,
@@ -109,24 +123,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       ],
     },
   ];
-
-  ch.channelRuleCalc(Number(settings?.rules), language).forEach((rule, i) => {
-    const key = Object.values(language.channelRules).find((v) => v === rule);
-    if (!key) return;
-
-    const emote =
-      ch.stringEmotes.numbers[String((i % 5) + 1) as keyof typeof ch.stringEmotes.numbers];
-
-    embeds[0].fields?.push({
-      name: `${emote} ${rule}`,
-      value: `${lan.amount}: ${
-        typeof settings?.[key as keyof typeof settings] === 'string'
-          ? settings[key as keyof typeof settings]
-          : language.None
-      }`,
-      inline: true,
-    });
-  });
 
   return embeds;
 };
@@ -161,7 +157,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -170,7 +165,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -179,7 +173,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -188,7 +181,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -197,7 +189,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
     ],
   },
@@ -211,7 +202,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -220,7 +210,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -229,7 +218,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -238,7 +226,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -247,7 +234,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
     ],
   },
@@ -261,7 +247,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -270,7 +255,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -279,7 +263,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -288,7 +271,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((4 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -297,7 +279,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((5 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
     ],
   },
@@ -311,7 +292,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((1 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -320,7 +300,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((2 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
       buttonParsers.specific(
         language,
@@ -329,7 +308,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
         undefined,
-        ch.objectEmotes.numbers[String((3 % 5) + 1) as keyof typeof ch.stringEmotes.numbers],
       ),
     ],
   },

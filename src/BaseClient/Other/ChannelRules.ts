@@ -1,4 +1,5 @@
 import Discord from 'discord.js';
+import type * as DBT from '../../Typings/DataBaseTypings';
 
 // eslint-disable-next-line no-shadow
 export declare enum ActivityFlags {
@@ -47,7 +48,11 @@ export default class ChannelRules extends Discord.BitField<keyof typeof Activity
     HasMostMentions: 1 << 17,
   };
 
-  constructor(bits: number) {
+  constructor(s: DBT.levelingruleschannels) {
+    const bits = Object.values(s)
+      .filter((_, i) => i > 2)
+      .map((v, i) => (v ? 2 ** i : 0))
+      .reduce((partialSum, a) => partialSum + a, 0);
     super(bits);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
