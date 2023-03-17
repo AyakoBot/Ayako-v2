@@ -31,7 +31,6 @@ export default (guild: Discord.Guild) => {
   ch.cache.channelBans.cache.delete(guild.id);
   ch.cache.disboardBumpReminders.cache.get(guild.id)?.cancel();
   ch.cache.disboardBumpReminders.cache.delete(guild.id);
-  ch.cache.verificationCodes.cache.delete(guild.id);
   ch.cache.giveaways.cache.delete(guild.id);
   ch.cache.invites.cache.delete(guild.id);
   ch.cache.webhooks.cache.delete(guild.id);

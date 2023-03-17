@@ -139,3 +139,49 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     ],
   },
 ];
+
+export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
+  _oldSettings,
+  newSettings,
+  changedSettings,
+) => {
+  switch (changedSettings) {
+    case 'startchannel': {
+      if (!newSettings?.startchannel) return;
+      const channel = await ch.getChannel.guildTextChannel(newSettings.startchannel);
+      if (!channel) return;
+
+      const language = await ch.languageSelector(channel.guildId);
+
+      channel.send({
+        embeds: [
+          {
+            author: {
+              name: language.verification.title,
+              icon_url: ch.objectEmotes.tickWithBackground.link,
+            },
+            description: language.verification.startchannelmessage,
+            color: ch.colorSelector(channel.guild.members.me),
+          },
+        ],
+        components: [
+          {
+            type: Discord.ComponentType.ActionRow,
+            components: [
+              {
+                type: Discord.ComponentType.Button,
+                custom_id: 'verification/verify',
+                label: language.verification.verify,
+                style: Discord.ButtonStyle.Primary,
+              },
+            ],
+          },
+        ],
+      });
+      return;
+    }
+    default: {
+      return;
+    }
+  }
+};

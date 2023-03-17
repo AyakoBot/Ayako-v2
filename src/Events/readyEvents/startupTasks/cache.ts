@@ -6,7 +6,8 @@ import type DBT from '../../../Typings/DataBaseTypings.js';
 
 export default () => {
   client.guilds.cache.forEach(async (guild) => {
-    guild.members.fetch().catch(() => undefined);
+    await guild.members.fetch().catch(() => undefined);
+
     const language = await ch.languageSelector(guild.id);
 
     const invites = await guild.invites.fetch();

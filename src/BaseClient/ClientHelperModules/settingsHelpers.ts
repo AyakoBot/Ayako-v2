@@ -300,7 +300,7 @@ const postUpdate = async (
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
 
-  settingsFile.postChange?.(oldSetting, newSetting, changedSetting, uniquetimestamp);
+  settingsFile.postChange?.(oldSetting, newSetting, changedSetting as never, uniquetimestamp);
 };
 
 const changeHelpers = {

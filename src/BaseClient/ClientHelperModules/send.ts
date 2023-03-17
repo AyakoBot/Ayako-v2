@@ -7,12 +7,6 @@ interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embed
 }
 
 async function send(
-  channels: Discord.TextBasedChannel,
-  payload: MessageCreateOptions,
-  command?: CT.Command,
-  timeout?: number,
-): Promise<Discord.Message | null | void>;
-async function send(
   channels: Discord.TextBasedChannel[],
   payload: MessageCreateOptions,
   command?: CT.Command,
@@ -30,6 +24,12 @@ async function send(
   command?: CT.Command,
   timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
+async function send(
+  channels: Discord.TextBasedChannel,
+  payload: MessageCreateOptions,
+  command?: CT.Command,
+  timeout?: number,
+): Promise<Discord.Message | null | void>;
 async function send(
   channels:
     | Discord.TextBasedChannel

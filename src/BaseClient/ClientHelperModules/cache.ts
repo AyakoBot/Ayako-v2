@@ -82,11 +82,6 @@ const cache: {
     delete: (guildId: string) => void;
     cache: Map<string, Jobs.Job>;
   };
-  verificationCodes: {
-    set: (code: string, guildId: string, userId: string) => void;
-    delete: (guildId: string, userId: string) => void;
-    cache: Map<string, Map<string, string>>;
-  };
   giveaways: {
     set: (job: Jobs.Job, guildId: string, channelId: string, msgId: string) => void;
     delete: (guildId: string, channelId: string, msgId: string) => void;
@@ -467,23 +462,6 @@ const cache: {
       const cached = cache.disboardBumpReminders.cache.get(guildId);
       cached?.cancel();
       cache.disboardBumpReminders.cache.delete(guildId);
-    },
-    cache: new Map(),
-  },
-  verificationCodes: {
-    set: (code, guildId, userId) => {
-      if (!cache.verificationCodes.cache.get(guildId)) {
-        cache.verificationCodes.cache.set(guildId, new Map());
-      }
-
-      cache.verificationCodes.cache?.get(guildId)?.set(userId, code);
-    },
-    delete: (guildId, userId) => {
-      if (cache.verificationCodes.cache.get(guildId)?.size === 1) {
-        cache.verificationCodes.cache.delete(guildId);
-      } else {
-        cache.verificationCodes.cache.get(guildId)?.delete(userId);
-      }
     },
     cache: new Map(),
   },

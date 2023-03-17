@@ -25,7 +25,7 @@ const None = 'None';
 
 const multiplier = {
   name: 'Multiplier',
-  desc: 'Multiplier to multiply the awared XP per Message with',
+  desc: 'Multiplier to multiply the awarded XP per Message with',
 };
 
 const getUser = (user: CT.bEvalUser | Discord.User | CT.bEvalUser) =>
@@ -1087,9 +1087,7 @@ export default {
   verification: {
     title: `${client.user?.username} Verification`,
     verify: 'Verify',
-    checkDMs: 'Verification Started, please Check our DMs',
-    startchannelmessage:
-      'Please **open your DMs** so I can DM you a verification Captcha.\nAfter you opened them, press the Button below to re-/start Verification!.',
+    startchannelmessage: 'Press the Button below to re-/start Verification!.',
     description: (guild: Discord.Guild) =>
       `<a:AMtoiletspin:709805618030182510> **Welcome to \`${guild.name}\`!**`,
     finishDesc: '**Thank you for verifying!**\nVerification Finished!',
@@ -1098,21 +1096,17 @@ export default {
     hintmsg:
       'Type out the traced colored Characters from left to right ➡️\nIgnore all gray decoy Characters\nIgnore Character Cases (upper & lower case)\nThe captcha contains 5 digits',
     kickReason: `${client.user?.username} Verification | Unverified for too long`,
-    openDMs: (user: CT.bEvalUser | Discord.User) =>
-      `<@${user.id}> **Please open your DM's** in order to verify as human. Then press the Button above to re-/start Verification.\n**You can close your DM's afterwards**.`,
     wrongInput: (solution: string) =>
-      `That was wrong... Are you a robot?.\nThe solution was \`${solution}\`\nI added a new Image to the Embed above, try again!`,
-    timeError: (channel: Discord.Channel) =>
-      `Time ran out for this Verification\nPlease go to <#${channel.id}> and press the \`Verify\` Botton to re-/start verification`,
+      `That was wrong... Are you a robot?\nThe solution was \`${solution}\`\nPlease try again`,
     alreadyVerified: 'You are already verified',
     log: {
-      start: (user: CT.bEvalUser | Discord.User) =>
-        `User <@${user.id}> /\`${user.username}#${user.discriminator}\` / \`${user.id}\`\nstarted Verification`,
-      end: (user: CT.bEvalUser | Discord.User) =>
-        `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nfinished Verification`,
+      start: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}started Verification`,
+      end: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}finished Verification`,
+      started: 'Verification Started',
+      finished: 'Verification Finished',
     },
-    error:
-      'An error occured while verifying! I have reported this to the Devs. Please re-try verifying',
+    hint: 'Hint',
+    enterCode: 'Enter Code',
   },
   time: {
     seconds: 'Second(s)',

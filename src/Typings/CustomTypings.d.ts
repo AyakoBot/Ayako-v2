@@ -128,8 +128,13 @@ type SettingsTable<T extends keyof TableNamesMap> = {
 };
 
 export interface AutoCompleteFile {
-  default: (cmd: Discord.AutocompleteInteraction | Discord.ButtonInteraction) => Promise<{ name: string; value: string }[]>;
+  default: (
+    cmd: Discord.AutocompleteInteraction | Discord.ButtonInteraction,
+  ) => Promise<{ name: string; value: string }[]>;
 }
+
+type SettingsNames = Language['slashCommands']['settings']['categories'];
+type FieldName<T extends keyof SettingsNames> = keyof SettingsNames[T]['fields'];
 
 export interface SettingsFile<T extends keyof TableNamesMap> {
   getEmbeds: <K extends keyof TableNamesMap>(
@@ -159,7 +164,7 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
   postChange?: (
     oldSetting: TableNamesMap[T] | null,
     newSetting: TableNamesMap[T] | null,
-    changedSetting: keyof FieldName<T>,
+    changedSetting: FieldName<T>,
     uniquetimestamp?: number,
   ) => Promise<void>;
 }
