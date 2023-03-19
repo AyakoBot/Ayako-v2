@@ -89,8 +89,6 @@ const runJob = async (guild: Discord.Guild) => {
     ? [...new Set([...hasRoles, ...memberCache.addRoles])]
     : [...hasRoles];
 
-  console.log(mergedRoles);
-
   const roles = mergedRoles.filter((r) => {
     const role = typeof r === 'string' ? guild.roles.cache.get(r) : r;
     if (!role) return false;
@@ -106,8 +104,6 @@ const runJob = async (guild: Discord.Guild) => {
 
     return true;
   });
-
-  console.log(roles);
 
   if (!roles.length) return endJob(memberCaches);
 
