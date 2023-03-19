@@ -27,7 +27,7 @@ export default async (msg: Discord.Message) => {
           {
             type: Discord.ComponentType.Button,
             style: Discord.ButtonStyle.Link,
-            label: 'Take me to the winner',
+            label: 'Where?',
             url: `discord://-/users/${msg.author.id}`,
           },
         ],
