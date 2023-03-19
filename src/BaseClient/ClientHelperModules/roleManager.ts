@@ -1,19 +1,17 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 
-const MemberCaches: {
+type MemberCaches = {
   member: Discord.GuildMember;
   addRoles?: string[];
   removeRoles?: string[];
   prio: number;
   reason: string;
   added: number;
-}[] = [];
+}[];
 
-const GuildCache: Map<
-  string,
-  { job: Jobs.Job; members: typeof MemberCaches; guild: Discord.Guild }
-> = new Map();
+const GuildCache: Map<string, { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }> =
+  new Map();
 
 const roleManager = {
   add: async (member: Discord.GuildMember, roles: string[], reason: string, prio = 2) => {
@@ -45,7 +43,8 @@ const handleRoleUpdate = async (
     return;
   }
 
-  const existingEntry = MemberCaches[MemberCaches.findIndex((c) => c.member.id === member.id)];
+  const existingEntry =
+    roleGuild.members[roleGuild.members.findIndex((c) => c.member.id === member.id)];
   if (existingEntry) {
     existingEntry[type] = existingEntry[type]?.length
       ? [...new Set([...(existingEntry[type] as string[]), ...roles])]
@@ -54,17 +53,13 @@ const handleRoleUpdate = async (
     return;
   }
 
-  MemberCaches.push({ member, [type]: roles, prio, reason, added: Date.now() });
+  roleGuild.members.push({ member, [type]: roles, prio, reason, added: Date.now() });
 };
 
 export default roleManager;
 
 const runJob = async (guild: Discord.Guild) => {
-  const endJob = (memberCaches: {
-    job: Jobs.Job;
-    members: typeof MemberCaches;
-    guild: Discord.Guild;
-  }) => {
+  const endJob = (memberCaches: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
     const index = memberCaches.members.findIndex((m) => m.member.id === memberCache.member.id);
     memberCaches.members.splice(index, 1);
 
@@ -85,29 +80,40 @@ const runJob = async (guild: Discord.Guild) => {
   const prioFilter = memberCaches?.members.filter((m) => m.prio === highestPrio);
   const dateFilter = prioFilter.sort((a, b) => b.added - a.added);
   const memberCache = dateFilter[0];
-  const roles = memberCache.addRoles?.length
-    ? [...memberCache.member.roles.cache.map((r) => r), ...memberCache.addRoles]
-    : memberCache.member.roles.cache.map((r) => r);
 
   const clientHighestRole = me?.roles.highest;
   if (!clientHighestRole) return endJob(memberCaches);
 
-  const editedRoles = roles.filter((r) => {
-    const role = typeof r === 'string' ? memberCaches.guild.roles.cache.get(r) : r;
+  const hasRoles = memberCache.member.roles.cache.map((r) => r.id);
+  const mergedRoles = memberCache.addRoles?.length
+    ? [...new Set([...hasRoles, ...memberCache.addRoles])]
+    : [...hasRoles];
 
+  console.log(mergedRoles);
+
+  const roles = mergedRoles.filter((r) => {
+    const role = typeof r === 'string' ? guild.roles.cache.get(r) : r;
     if (!role) return false;
+
     if (role.id === guild.id) return false;
-    if (memberCache.removeRoles?.includes(typeof r === 'string' ? r : r.id)) return false;
-    if (clientHighestRole.position < role.position) return false;
+    if (memberCache.removeRoles?.includes(role.id)) return false;
+    if (
+      clientHighestRole.position < role.position &&
+      !memberCache.member.roles.cache.has(role.id)
+    ) {
+      return false;
+    }
 
     return true;
   });
 
-  if (!editedRoles.length) return endJob(memberCaches);
+  console.log(roles);
+
+  if (!roles.length) return endJob(memberCaches);
 
   memberCache.member
     .edit({
-      roles: editedRoles,
+      roles,
     })
     .catch(console.error);
 
