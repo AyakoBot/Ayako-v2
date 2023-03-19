@@ -107,8 +107,8 @@ async function send(
 
   const sentMessage = await channel.send(payload).catch((err) => {
     // eslint-disable-next-line no-console
-    console.log(payload.files);
-    console.log('send err', err);
+    console.log(payload);
+    throw new Error(`Send Error: ${err}`);
   });
 
   return sentMessage;
