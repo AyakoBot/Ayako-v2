@@ -174,7 +174,7 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
-          .setName('disboard')
+          .setName('disboard-reminders')
           .setDescription('Have a Bump reminder remind your Members to bump your Server'),
       )
       .addSubcommand(
