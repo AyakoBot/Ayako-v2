@@ -3,6 +3,7 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings.js';
+import type CT from '../../../Typings/CustomTypings';
 
 export default () => {
   client.guilds.cache.forEach(async (guild) => {
@@ -68,8 +69,6 @@ export default () => {
     const giveawayCollectTimeoutFunction = (_: unknown) => null; // TODO: import from resolver
     claimTimeouts?.forEach((t) => giveawayCollectTimeoutFunction(t));
 
-    const modBaseEvent = (await import('../../modBaseEvent.js')).default;
-
     const mutes = await ch
       .query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id])
       .then((r: DBT.punish_tempmutes[] | null) => r || null);
@@ -82,7 +81,7 @@ export default () => {
             : client.user;
           if (!target) return;
 
-          modBaseEvent({
+          const modOptions: CT.ModBaseEventOptions = {
             executor: m.executorid
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
@@ -97,7 +96,9 @@ export default () => {
             guild,
             type: 'muteRemove',
             duration: Number(m.duration),
-          });
+          };
+
+          client.emit('modBaseEvent', modOptions);
         }),
         guild.id,
         m.userid,
@@ -116,7 +117,7 @@ export default () => {
             : client.user;
           if (!target) return;
 
-          modBaseEvent({
+          const modOptions: CT.ModBaseEventOptions = {
             executor: m.executorid
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
@@ -131,7 +132,9 @@ export default () => {
             guild,
             type: 'banRemove',
             duration: Number(m.duration),
-          });
+          };
+
+          client.emit('modBaseEvent', modOptions);
         }),
         guild.id,
         m.userid,
@@ -150,7 +153,7 @@ export default () => {
             : client.user;
           if (!target) return;
 
-          modBaseEvent({
+          const modOptions: CT.ModBaseEventOptions = {
             executor: m.executorid
               ? await ch.getUser(m.executorid).catch(() => undefined)
               : undefined,
@@ -165,7 +168,9 @@ export default () => {
             guild,
             type: 'channelbanRemove',
             duration: Number(m.duration),
-          });
+          };
+
+          client.emit('modBaseEvent', modOptions);
         }),
         guild.id,
         m.userid,

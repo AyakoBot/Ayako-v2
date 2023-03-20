@@ -21,6 +21,7 @@ export type antispam = {
   forcedisabled?: boolean;
   guildid: string;
   active: boolean;
+  usestrike: boolean;
 
   msgthreshold: string;
   dupemsgthreshold: string;
@@ -35,6 +36,7 @@ export type antispam = {
 export type antivirus = {
   guildid: string;
   active: boolean;
+  usestrike: boolean;
 
   minimizetof: boolean;
   minimize?: string;
@@ -74,6 +76,7 @@ export type autoroles = {
 export type blacklist = {
   guildid: string;
   active: boolean;
+  usestrike: boolean;
 
   words?: string[];
 

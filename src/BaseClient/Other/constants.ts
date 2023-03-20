@@ -252,6 +252,7 @@ export default {
           dupemsgthreshold: 'number',
           timeout: 'number',
           deletespam: 'boolean',
+          usestrike: 'boolean',
         },
         'anti-virus': {
           minimize: 'number',
@@ -260,6 +261,7 @@ export default {
           linklogchannels: 'channels',
           minimizetof: 'boolean',
           deletetof: 'boolean',
+          usestrike: 'boolean',
         },
         leveling: {
           xppermsg: 'number',
@@ -403,6 +405,7 @@ export default {
           wlroleid: 'roles',
           wluserid: 'users',
           words: 'strings',
+          usestrike: 'boolean',
         },
         'auto-punish': {
           duration: 'duration',

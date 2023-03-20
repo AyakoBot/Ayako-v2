@@ -31,23 +31,19 @@ export interface ModBaseEventOptions {
   guild: Discord.Guild | undefined;
   type:
     | 'banAdd'
-    | 'softbanAdd'
     | 'tempbanAdd'
-    | 'tempchannelbanAdd'
-    | 'channelbanAdd'
-    | 'channelbanRemove'
     | 'banRemove'
-    | 'kickAdd'
+    | 'softbanAdd'
     | 'roleAdd'
     | 'roleRemove'
-    | 'muteRemove'
+    | 'kickAdd'
     | 'tempmuteAdd'
+    | 'muteRemove'
+    | 'channelbanAdd'
+    | 'tempchannelbanAdd'
+    | 'channelbanRemove'
     | 'warnAdd';
   duration?: number;
-  m?: Discord.Message;
-  doDBonly?: boolean;
-  source?: string;
-  forceFinish?: boolean;
   channel?: Discord.GuildChannel;
   role?: Discord.Role;
 }
@@ -123,29 +119,24 @@ type TableNamesMap = {
   'vote-rewards': DBT.voterewards;
 };
 
-type SettingsTable<T extends keyof TableNamesMap> = {
-  [K in T]: { guildid: string } & TableNamesMap[K];
-};
-
 export interface AutoCompleteFile {
   default: (
     cmd: Discord.AutocompleteInteraction | Discord.ButtonInteraction,
   ) => Promise<{ name: string; value: string }[]>;
 }
 
-type SettingsNames = Language['slashCommands']['settings']['categories'];
-type FieldName<T extends keyof SettingsNames> = keyof SettingsNames[T]['fields'];
+type FieldName<T extends keyof TableNamesMap> = keyof TableNamesMap[T]['fields'];
 
-export interface SettingsFile<T extends keyof TableNamesMap> {
-  getEmbeds: <K extends keyof TableNamesMap>(
+export interface SettingsFile<K extends keyof TableNamesMap> {
+  getEmbeds: (
     embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
-    settings: TableNamesMap[T] | null,
+    settings: TableNamesMap[K],
     language: Language,
-    lan: Language['slashCommands']['settings']['categories'][T],
+    lan: Language['slashCommands']['settings']['categories'][K],
   ) => Discord.APIEmbed[] | Promise<Discord.APIEmbed[]>;
   getComponents: (
     buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
-    settings: TableNamesMap[T] | null,
+    settings: TableNamesMap[K],
     language: Language,
   ) =>
     | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
@@ -153,18 +144,18 @@ export interface SettingsFile<T extends keyof TableNamesMap> {
   showAll?: (
     cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
     language: Language,
-    lan: Language['slashCommands']['settings']['categories'][T],
+    lan: Language['slashCommands']['settings']['categories'][K],
   ) => Promise<void>;
   showID?: (
     cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
     ID: string,
     language: Language,
-    lan: Language['slashCommands']['settings']['categories'][T],
+    lan: Language['slashCommands']['settings']['categories'][K],
   ) => Promise<void>;
   postChange?: (
-    oldSetting: TableNamesMap[T] | null,
-    newSetting: TableNamesMap[T] | null,
-    changedSetting: FieldName<T>,
+    oldSetting: TableNamesMap[K],
+    newSetting: TableNamesMap[K],
+    changedSetting: FieldName<K>,
     uniquetimestamp?: number,
   ) => Promise<void>;
 }

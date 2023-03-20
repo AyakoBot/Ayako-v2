@@ -17,18 +17,11 @@ export default async () => {
   });
 
   Jobs.scheduleJob('*/1 */1 */1 * *', async () => {
-    (await import('./startupTasks/nitroCycle.js')).default();
-
     if (client.user?.id === ch.mainID) (await import('./websiteFetcher.js')).default();
-    if (new Date().getHours() === 0) {
-      (await import('../messageEvents/messageCreate/antispam.js')).resetData();
-      (await import('../messageEvents/messageCreate/blacklist.js')).resetData();
-      // (await import('../antivirusEvents/antivirusHandler.js')).resetData();
-    }
   });
 
   Jobs.scheduleJob('*/1 * * * *', async () => {
-    (await import('./presence.js')).default();
+    (await import('./timedFiles/presence.js')).default();
     (await import('./verification.js')).default();
   });
 
@@ -39,5 +32,4 @@ export default async () => {
   (await import('./startupTasks/slashCommands.js')).default();
   (await import('./startupTasks/cache.js')).default();
   (await import('./startupTasks/voteHandle.js')).default();
-  (await import('./startupTasks/separators.js')).default();
 };

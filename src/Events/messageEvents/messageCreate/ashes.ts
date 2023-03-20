@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (msg: Discord.Message) => {
   rolePing(msg);
@@ -33,25 +34,16 @@ const banHandler = async (msg: Discord.Message) => {
     if (!msg.guildId) return;
     if (!client.user?.id) return;
 
-    if (isUnban) {
-      (await import('../../modBaseEvent.js')).default({
-        target: user,
-        executor: executor || (await ch.getUser(client.user.id)),
-        reason,
-        msg,
-        guild: msg.guild,
-        type: 'banRemove',
-      });
-    } else {
-      (await import('../../modBaseEvent.js')).default({
-        target: user,
-        executor: executor || (await ch.getUser(client.user.id)),
-        reason,
-        msg,
-        guild: msg.guild,
-        type: 'banAdd',
-      });
-    }
+    const modOptions: CT.ModBaseEventOptions = {
+      target: user,
+      executor: executor || (await ch.getUser(client.user.id)),
+      reason,
+      msg,
+      guild: msg.guild,
+      type: isUnban ? 'banRemove' : 'banAdd',
+    };
+
+    client.emit('modBaseEvent', modOptions);
   });
 };
 

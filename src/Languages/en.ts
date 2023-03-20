@@ -20,6 +20,11 @@ const punishmentFields = {
   },
 };
 
+const usestrike = {
+  name: 'Use Strike-System',
+  desc: 'Whether to use the Strike-Sytem or not',
+};
+
 const none = 'none';
 const None = 'None';
 
@@ -1350,6 +1355,7 @@ export default {
               name: 'Delete Spam',
               desc: 'Whether to Delete Spammed Messages',
             },
+            usestrike,
           },
         },
         'anti-virus': {
@@ -1379,6 +1385,7 @@ export default {
               name: 'Links Log-Channels',
               desc: 'Where to Log posted Links',
             },
+            usestrike,
           },
         },
         'anti-virus-punishments': {
@@ -1468,6 +1475,7 @@ export default {
               name: 'Words / Phrases',
               desc: 'Words or Phrases that should be filtered (Separate by #)',
             },
+            usestrike,
           },
         },
         'blacklist-punishments': {

@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import type DBT from '../../../Typings/DataBaseTypings';
+import type CT from '../../../Typings/CustomTypings';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 
@@ -61,8 +62,6 @@ export default async (guild: Discord.Guild) => {
   const giveawayCollectTimeoutFunction = (_: unknown) => null; // TODO: import from resolver
   claimTimeouts?.forEach((t) => giveawayCollectTimeoutFunction(t));
 
-  const modBaseEvent = (await import('../../modBaseEvent.js')).default;
-
   const mutes = await ch
     .query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.punish_tempmutes[] | null) => r || null);
@@ -73,7 +72,7 @@ export default async (guild: Discord.Guild) => {
         const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
-        modBaseEvent({
+        const modOptions: CT.ModBaseEventOptions = {
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.None,
@@ -84,7 +83,9 @@ export default async (guild: Discord.Guild) => {
           guild,
           type: 'muteRemove',
           duration: Number(m.duration),
-        });
+        };
+
+        client.emit('modBaseEvent', modOptions);
       }),
       guild.id,
       m.userid,
@@ -101,7 +102,7 @@ export default async (guild: Discord.Guild) => {
         const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
-        modBaseEvent({
+        const modOptions: CT.ModBaseEventOptions = {
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.None,
@@ -112,7 +113,9 @@ export default async (guild: Discord.Guild) => {
           guild,
           type: 'banRemove',
           duration: Number(m.duration),
-        });
+        };
+
+        client.emit('modBaseEvent', modOptions);
       }),
       guild.id,
       m.userid,
@@ -129,7 +132,7 @@ export default async (guild: Discord.Guild) => {
         const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
         if (!target) return;
 
-        modBaseEvent({
+        const modOptions: CT.ModBaseEventOptions = {
           executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
           target,
           reason: m.reason ?? language.None,
@@ -140,7 +143,9 @@ export default async (guild: Discord.Guild) => {
           guild,
           type: 'channelbanRemove',
           duration: Number(m.duration),
-        });
+        };
+
+        client.emit('modBaseEvent', modOptions);
       }),
       guild.id,
       m.userid,

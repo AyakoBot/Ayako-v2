@@ -1,6 +1,6 @@
-import * as ch from '../../BaseClient/ClientHelper.js';
-import client from '../../BaseClient/Client.js';
-import type DBT from '../../Typings/DataBaseTypings';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
+import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
   const random = Math.floor(Math.random() * 3);
