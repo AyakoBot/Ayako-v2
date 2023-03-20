@@ -194,6 +194,8 @@ export default {
       emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
     getTime: (time: number) =>
       `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
+    msgurl: (g: string, c: string | undefined, m: string) =>
+      `https://discord.com/channels/${g}/${c ? c : '@me'}/${m}`,
     ytURL: 'https://www.youtube.com/@AyakoBot',
   },
   customembeds: {
@@ -470,6 +472,27 @@ export default {
           rewardcurrency: 'number',
           rewardroles: 'roles',
         },
+        'reaction-role-settings': {
+          onlyone: 'boolean',
+          anyroles: 'roles',
+          msgid: 'message',
+        },
+        'button-role-settings': {
+          onlyone: 'boolean',
+          anyroles: 'roles',
+          msgid: 'message',
+        },
+        'button-roles': {
+          emote: 'emote',
+          text: 'string',
+          roles: 'roles',
+          linkedid: 'settinglink',
+        },
+        'reaction-roles': {
+          emote: 'emote',
+          roles: 'roles',
+          linkedid: 'settinglink',
+        },
       },
       tableNames: {
         'anti-spam': 'antispam',
@@ -491,7 +514,6 @@ export default {
         welcome: 'welcome',
         leveling: 'leveling',
         nitro: 'nitrosettings',
-        'reaction-roles': 'rrsettings',
         'delete-commands': 'deletecommands',
         suggestions: 'suggestionsettings',
         logs: 'logchannels',
@@ -501,8 +523,10 @@ export default {
         'level-roles': 'levelingroles',
         'rule-channels': 'levelingruleschannels',
         'nitro-roles': 'nitroroles',
-        'reaction-button-settings': 'rrbuttons',
-        'reaction-role-settings': 'rrreactions',
+        'button-roles': 'buttonroles',
+        'reaction-roles': 'reactionroles',
+        'reaction-role-settings': 'reactionrolesettings',
+        'button-role-settings': 'buttonrolesettings',
         vote: 'votesettings',
         'vote-rewards': 'voterewards',
       },

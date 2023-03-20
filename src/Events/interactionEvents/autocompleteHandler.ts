@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import glob from 'glob';
+import type * as CT from '../../Typings/CustomTypings';
 
 export default async (cmd: Discord.Interaction) => {
   if (!cmd.isAutocomplete()) return;
@@ -33,7 +34,7 @@ export default async (cmd: Discord.Interaction) => {
   const command = files.find((f) => f.endsWith(`/${path()}.js`));
   if (!command) return;
 
-  const responses = await (await import(command)).default(cmd);
+  const responses = await ((await import(command)) as CT.AutoCompleteFile).default(cmd);
 
-  cmd.respond(responses);
+  cmd.respond(responses ?? []);
 };

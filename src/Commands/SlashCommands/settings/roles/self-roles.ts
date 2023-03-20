@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as DBT from '../../../../Typings/DataBaseTypings';
 import type * as CT from '../../../../Typings/CustomTypings';
 
 const name = 'self-roles';
@@ -31,7 +30,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
       `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
       [parseInt(ID, 36)],
     )
-    .then(async (r: DBT.selfroles[] | null) =>
+    .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
       r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
     );
 
@@ -60,7 +59,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
       cmd.guild?.id,
     ])
-    .then((r: DBT.selfroles[] | null) => r || null);
+    .then((r: CT.TableNamesMap[typeof name][] | null) => r || null);
 
   const fields = settings?.map((s) => ({
     name: `${lan.fields.name.name}: \`${s.name ?? language.None}\``,

@@ -286,28 +286,51 @@ export type roleseparator = {
   roles?: string[];
 };
 
-// TODO
-export type rrreactions = {
+export type buttonroles = {
   uniquetimestamp: string;
-  active: boolean;
   guildid: string;
+  active: boolean;
 
-  emoteid: string;
+  emote: string;
+  text: string;
+
   roles?: string[];
-  messagelink: string;
+  linkedid?: string;
 };
 
-// TODO
-export type rrsettings = {
+export type reactionroles = {
+  uniquetimestamp: string;
   guildid: string;
+  active: boolean;
+
+  emote: string;
+
+  roles?: string[];
+  linkedid?: string;
+};
+
+export type reactionrolesettings = {
   uniquetimestamp: string;
   active: boolean;
 
-  messagelink: string;
-  name: string;
-
-  onlyone?: boolean;
+  onlyone: boolean;
   anyroles?: string[];
+
+  guildid: string;
+  msgid?: string;
+  channelid?: string;
+};
+
+export type buttonrolesettings = {
+  uniquetimestamp: string;
+  active: boolean;
+
+  onlyone: boolean;
+  anyroles?: string[];
+
+  guildid: string;
+  msgid?: string;
+  channelid?: string;
 };
 
 export type selfroles = {

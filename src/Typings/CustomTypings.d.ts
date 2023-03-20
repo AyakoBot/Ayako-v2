@@ -117,12 +117,16 @@ type TableNamesMap = {
   'nitro-roles': DBT.nitroroles;
   vote: DBT.votesettings;
   'vote-rewards': DBT.voterewards;
+  'reaction-role-settings': DBT.reactionrolesettings;
+  'button-role-settings': DBT.buttonrolesettings;
+  'reaction-roles': DBT.reactionroles;
+  'button-roles': DBT.buttonroles;
 };
 
 export interface AutoCompleteFile {
   default: (
-    cmd: Discord.AutocompleteInteraction | Discord.ButtonInteraction,
-  ) => Promise<{ name: string; value: string }[]>;
+    cmd: Discord.AutocompleteInteraction,
+  ) => Promise<{ name: string; value: string }[] | undefined>;
 }
 
 type FieldName<T extends keyof TableNamesMap> = keyof TableNamesMap[T]['fields'];

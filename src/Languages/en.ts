@@ -25,6 +25,11 @@ const usestrike = {
   desc: 'Whether to use the Strike-Sytem or not',
 };
 
+const linkedid = {
+  name: 'Linked ID',
+  desc: 'The linked Setting',
+};
+
 const none = 'none';
 const None = 'None';
 
@@ -1326,10 +1331,7 @@ export default {
               name: 'Reward Roles',
               desc: 'Roles Rewarded (will be removed when the User can Vote again)',
             },
-            linkedid: {
-              name: 'Linked ID',
-              desc: 'The linked Setting',
-            },
+            linkedid,
           },
         },
         'anti-spam-punishments': {
@@ -1965,22 +1967,70 @@ export default {
             },
           },
         },
+        'button-role-settings': {
+          name: 'Button Settings',
+          fields: {
+            messagelink: {
+              name: 'Message',
+              desc: 'The Message these Settings apply to',
+            },
+            onlyone: {
+              name: 'Only One',
+              desc: 'Whether only one Role can be taken',
+            },
+            anyroles: {
+              name: 'Any Roles',
+              desc: 'Roles given to the Member once any of the Roles were taken',
+            },
+          },
+        },
+        'reaction-role-settings': {
+          name: 'Reaction Settings',
+          fields: {
+            messagelink: {
+              name: 'Message',
+              desc: 'The Message these Settings apply to',
+            },
+            onlyone: {
+              name: 'Only One',
+              desc: 'Whether only one Role can be taken',
+            },
+            anyroles: {
+              name: 'Any Roles',
+              desc: 'Roles given to the Member once any of the Roles were taken',
+            },
+          },
+        },
         'reaction-roles': {
           name: 'Reaction Roles',
           fields: {
-            todo: {
-              name: 'todo',
-              desc: 'todo',
+            emote: {
+              name: 'Emote',
+              desc: 'The Emote of this Reaction',
             },
+            roles: {
+              name: 'Roles',
+              desc: 'The Roles given to the Member once reacted',
+            },
+            linkedid,
           },
         },
         'button-roles': {
           name: 'Button Roles',
           fields: {
-            todo: {
-              name: 'todo',
-              desc: 'todo',
+            emote: {
+              name: 'Emote',
+              desc: 'The Emote of this Button',
             },
+            text: {
+              name: 'Text',
+              desc: 'The Text of this Button',
+            },
+            roles: {
+              name: 'Roles',
+              desc: 'The Roles given to the Member once reacted',
+            },
+            linkedid,
           },
         },
         'delete-commands': {

@@ -54,8 +54,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   if (!settingsFile) return;
 
   const linkedSetting = (await import(settingsFile)) as CT.AutoCompleteFile;
-  const responses = await linkedSetting.default(cmd);
-  const options = responses.map((r) => ({
+  const responses = await linkedSetting.default(cmd as unknown as Discord.AutocompleteInteraction);
+  const options = responses?.map((r) => ({
     label: r.name,
     value: r.value,
   }));
@@ -79,8 +79,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
             settingName,
             'settinglink',
             {
-              options: options.length ? options : [{ label: '-', value: '-' }],
-              disabled: !options.length,
+              options: options?.length ? options : [{ label: '-', value: '-' }],
+              disabled: !options?.length,
             },
             uniquetimestamp,
           ),

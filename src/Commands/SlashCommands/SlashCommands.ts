@@ -153,34 +153,12 @@ const settings = new Discord.SlashCommandBuilder()
   )
   .addSubcommandGroup(
     new Discord.SlashCommandSubcommandGroupBuilder()
-      .setName('automation')
-      .setDescription(`Everything about ${client.user?.username}'s Automation`)
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('delete-commands')
-          .setDescription(`Make ${client.user?.username} delete Commands and/or Replies`)
-          .addStringOption(IDSelector),
-      )
+      .setName('roles')
+      .setDescription(`Everything about ${client.user?.username}'s Role Management`)
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
           .setName('auto-roles')
           .setDescription('Assign Roles to Users and Bots when joining'),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('cooldowns')
-          .setDescription(`Assign custom defined Cooldowns to Commands of ${client.user?.username}`)
-          .addStringOption(IDSelector),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('disboard-reminders')
-          .setDescription('Have a Bump reminder remind your Members to bump your Server'),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('logs')
-          .setDescription('Log Changes to any Part of your Server'),
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
@@ -201,6 +179,58 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
+          .setName('reaction-role-settings')
+          .setDescription('Let Members pick their own Roles through Reactions')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('reaction-roles')
+          .setDescription('Here you define the Reactions and their associated Roles')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('buttom-role-settings')
+          .setDescription('Let Members pick their own Roles through Buttons')
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('button-roles')
+          .setDescription('Here you define the Buttons and their associated Roles')
+          .addStringOption(IDSelector),
+      ),
+  )
+
+  .addSubcommandGroup(
+    new Discord.SlashCommandSubcommandGroupBuilder()
+      .setName('automation')
+      .setDescription(`Everything about ${client.user?.username}'s Automation`)
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('delete-commands')
+          .setDescription(`Make ${client.user?.username} delete Commands and/or Replies`)
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('cooldowns')
+          .setDescription(`Assign custom defined Cooldowns to Commands of ${client.user?.username}`)
+          .addStringOption(IDSelector),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('disboard-reminders')
+          .setDescription('Have a Bump reminder remind your Members to bump your Server'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
+          .setName('logs')
+          .setDescription('Log Changes to any Part of your Server'),
+      )
+      .addSubcommand(
+        new Discord.SlashCommandSubcommandBuilder()
           .setName('suggestions')
           .setDescription('Let your Members help you decide through a suggestions Channel'),
       )
@@ -214,18 +244,6 @@ const settings = new Discord.SlashCommandBuilder()
           .setName('welcome')
           .setDescription('Greet joining Users with a welcome Message'),
       )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('reaction-roles')
-          .setDescription('Let Members pick their own Roles through Reactions')
-          .addStringOption(IDSelector),
-      )
-      .addSubcommand(
-        new Discord.SlashCommandSubcommandBuilder()
-          .setName('button-roles')
-          .setDescription('Let Members pick their own Roles through Buttons')
-          .addStringOption(IDSelector),
-      ),
   )
   .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()

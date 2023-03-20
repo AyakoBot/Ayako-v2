@@ -6,10 +6,10 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   const settings = (
     await ch
       .query(
-        `SELECT * FROM ${ch.constants.commands.settings.tableNames['reaction-roles']} WHERE guildid = $1;`,
+        `SELECT * FROM ${ch.constants.commands.settings.tableNames['button-role-settings']} WHERE guildid = $1;`,
         [cmd.guildId],
       )
-      .then((r: DBT.reactionroles[] | null) => r)
+      .then((r: DBT.buttonrolesettings[] | null) => r)
   )?.filter((s) => {
     const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 
@@ -17,14 +17,14 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   });
 
   const language = await ch.languageSelector(cmd.guildId);
-  const lan = language.slashCommands.settings.categories['reaction-roles'];
+  const lan = language.slashCommands.settings.categories['button-role-settings'];
 
   if (!settings) return [];
 
   return settings?.map((s) => ({
-    name: `${lan.fields.linkedid.name}: ${Number(s.linkedid).toString(36)} - ${
-      lan.fields.emote.name
-    }: ${s.emote ? s.emote.split(/:/g)[1] : language.None}`,
+    name: `${lan.fields.messagelink.name}: ${
+      s.msgid ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid) : language.None
+    }`,
     value: Number(s.uniquetimestamp).toString(36),
   }));
 };

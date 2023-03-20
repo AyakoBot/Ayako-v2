@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import log from './log.js';
-import reactionRoles from './reactionRoles.js';
 
 export default async (reaction: Discord.MessageReaction, user: Discord.User) => {
   if (!reaction.message.guild) return;
@@ -13,5 +12,4 @@ export default async (reaction: Discord.MessageReaction, user: Discord.User) => 
   if (!r?.count && r) r.count = 1;
 
   log(reaction, user, msg);
-  reactionRoles(reaction, user, msg);
 };
