@@ -379,7 +379,7 @@ export default {
           vanity: 'string',
         },
         'disboard-reminders': {
-          repeatreminder: 'minutes',
+          repeatreminder: 'duration',
           channelid: 'channel',
           roles: 'roles',
           users: 'users',
@@ -389,8 +389,8 @@ export default {
         'delete-commands': {
           deletecommand: 'boolean',
           deletereply: 'boolean',
-          deletetimeout: 'number',
-          commands: 'command',
+          deletetimeout: 'duration',
+          command: 'command',
           wlchannelid: 'channels',
           activechannelid: 'channels',
         },
@@ -416,7 +416,7 @@ export default {
           addroles: 'roles',
           removeroles: 'roles',
           confirmationreq: 'boolean',
-          punishmentawaittime: 'number',
+          punishmentawaittime: 'duration',
         },
         'auto-roles': {
           botroleid: 'roles',

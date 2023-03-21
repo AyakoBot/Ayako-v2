@@ -125,19 +125,19 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     components: [
       buttonParsers.specific(
         language,
-        settings?.channelid,
-        'channelid',
-        name,
-        undefined,
-        'channel',
-      ),
-      buttonParsers.specific(
-        language,
-        settings?.approverroleid,
-        'approverroleid',
+        settings?.novoteroles,
+        'novoteroles',
         name,
         undefined,
         'role',
+      ),
+      buttonParsers.specific(
+        language,
+        settings?.novoteusers,
+        'novoteusers',
+        name,
+        undefined,
+        'user',
       ),
       buttonParsers.specific(
         language,

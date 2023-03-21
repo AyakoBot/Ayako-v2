@@ -1459,7 +1459,7 @@ export default {
               desc: 'Whether to ask for Confirmation before proceeding with a Punishment',
             },
             punishmentawaittime: {
-              name: 'Confimation await Time (in Seconds)',
+              name: 'Confimation await Time',
               desc: 'How long to wait for Human confirmation before the Punishment is aborted',
             },
           },
@@ -1572,7 +1572,7 @@ export default {
               desc: 'The Channel to send BUMP Reminders in',
             },
             repeatreminder: {
-              name: 'Repeat-Reminder Timeout (in Seconds)',
+              name: 'Repeat-Reminder Timeout',
               desc: 'If no-one has bumped another Reminder will be sent after this Timeout',
             },
             roles: {
@@ -1680,7 +1680,7 @@ export default {
               desc: 'Roles banned from Voting on Suggestions',
             },
             novoteusers: {
-              name: 'Vote-Banner Users',
+              name: 'Vote-Banned Users',
               desc: 'User banned from Voting on Suggestions',
             },
             approverroleid: {

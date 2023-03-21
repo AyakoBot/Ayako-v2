@@ -61,7 +61,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       },
       {
         name: lan.fields.repeatreminder.name,
-        value: embedParsers.time(Number(settings?.repeatreminder), language),
+        value: embedParsers.time(Number(settings?.repeatreminder) * 1000, language),
         inline: true,
       },
       {
@@ -72,12 +72,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       {
         name: lan.fields.roles.name,
         value: embedParsers.roles(settings?.roles, language),
-        inline: true,
+        inline: false,
       },
       {
         name: lan.fields.users.name,
         value: embedParsers.users(settings?.users, language),
-        inline: true,
+        inline: false,
       },
     ],
   },

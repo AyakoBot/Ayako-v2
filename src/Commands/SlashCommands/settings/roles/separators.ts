@@ -125,7 +125,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     embeds[0].fields?.push({
       name: lan.fields.roles.name,
       value: embedParsers.roles(settings?.roles, language),
-      inline: true,
+      inline: false,
     });
   }
 
