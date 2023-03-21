@@ -43,6 +43,16 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         inline: false,
       },
       {
+        name: lan.fields.usestrike.name,
+        value: embedParsers.boolean(settings?.usestrike, language),
+        inline: true,
+      },
+      {
+        name: '\u200b',
+        value: '\u200b',
+        inline: false,
+      },
+      {
         name: language.slashCommands.settings.wlchannel,
         value: embedParsers.channels(settings?.wlchannelid, language),
         inline: false,
@@ -68,7 +78,10 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
   {
     type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+    components: [
+      buttonParsers.global(language, !!settings?.active, 'active', name, undefined),
+      buttonParsers.boolean(language, settings?.usestrike, 'usestrike', name, undefined),
+    ],
   },
   {
     type: Discord.ComponentType.ActionRow,
