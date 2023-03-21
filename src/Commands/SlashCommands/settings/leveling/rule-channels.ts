@@ -96,6 +96,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => {
   const embeds: Discord.APIEmbed[] = [
     {
+      footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
       author: embedParsers.author(language, lan),
       description: `${
         settings

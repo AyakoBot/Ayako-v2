@@ -191,7 +191,7 @@ const settings = new Discord.SlashCommandBuilder()
       )
       .addSubcommand(
         new Discord.SlashCommandSubcommandBuilder()
-          .setName('buttom-role-settings')
+          .setName('button-role-settings')
           .setDescription('Let Members pick their own Roles through Buttons')
           .addStringOption(IDSelector),
       )

@@ -98,6 +98,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   lan,
 ) => [
   {
+    footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
     author: embedParsers.author(language, lan),
     fields: [
       {
