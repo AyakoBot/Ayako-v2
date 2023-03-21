@@ -105,12 +105,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       {
         name: lan.fields.linkedid.name,
         value: settings.linkedid ? Number(settings.linkedid).toString(36) : language.None,
-        inline: false,
+        inline: true,
       },
       {
         name: lan.fields.emote.name,
-        value: settings.emote ?? language.none,
-        inline: false,
+        value: settings.emote ?? language.None,
+        inline: true,
       },
       {
         name: lan.fields.roles.name,
