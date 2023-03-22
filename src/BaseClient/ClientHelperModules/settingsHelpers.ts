@@ -304,7 +304,7 @@ const postUpdate = async (
 };
 
 const changeHelpers = {
-  changeEmbed: <T extends keyof SettingsNames>(
+  changeEmbed: async <T extends keyof SettingsNames>(
     language: CT.Language,
     lan: CT.Language['slashCommands']['settings']['categories'][T],
     fieldName: string,
@@ -317,18 +317,22 @@ const changeHelpers = {
       | 'mention'
       | 'punishment'
       | 'language'
-      | 'settinglink',
-  ): Discord.APIEmbed => ({
+      | 'settinglink'
+      | 'embed',
+  ): Promise<Discord.APIEmbed> => ({
     author: {
       name: language.slashCommands.settings.authorType(lan.name),
       icon_url: objectEmotes.settings.link,
     },
     title: language.slashCommands.settings.previouslySet,
     description: `${
-      (Array.isArray(values) ? values : [values])
-        .map((v) => (v ? getMention(language, type, v) : null))
-        .filter((v): v is string => !!v)
-        .join(', ') || language.None
+      (
+        await Promise.all(
+          (Array.isArray(values) ? values : [values])
+            .map((v) => (v ? getMention(language, type, v) : null))
+            .filter((v): v is Promise<string> => !!v),
+        )
+      ).join(', ') || language.None
     }`,
     fields: [
       {
@@ -625,7 +629,7 @@ const getPlaceholder = (
   }
 };
 
-const getMention = (
+const getMention = async (
   language: CT.Language,
   type:
     | 'rolemode'
@@ -635,9 +639,10 @@ const getMention = (
     | 'mention'
     | 'punishment'
     | 'language'
-    | 'settinglink',
+    | 'settinglink'
+    | 'embed',
   value: string,
-) => {
+): Promise<string> => {
   switch (type) {
     case 'channel': {
       return `<#${value}>`;
@@ -656,6 +661,11 @@ const getMention = (
     }
     case 'rolemode': {
       return language.rolemodes[value as keyof typeof language.rolemodes];
+    }
+    case 'embed': {
+      return query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [value]).then(
+        (r: DBT.customembeds[] | null) => (r ? r[0].name : '-'),
+      );
     }
     default: {
       return value;

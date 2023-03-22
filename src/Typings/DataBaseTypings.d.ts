@@ -12,7 +12,7 @@ export type afk = {
 };
 
 export type customembeds = {
-  name?: string;
+  name: string;
   guildid: string;
   uniquetimestamp: string;
 

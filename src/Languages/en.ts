@@ -3079,4 +3079,5 @@ export default {
   Mentionable: 'Mentionable',
   Done: 'Done',
   None,
+  Create: 'Create',
 };

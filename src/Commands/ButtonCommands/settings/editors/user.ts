@@ -33,7 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
   cmd.update({
     embeds: [
-      ch.settingsHelpers.changeHelpers.changeEmbed(
+      await ch.settingsHelpers.changeHelpers.changeEmbed(
         language,
         lan,
         fieldName,

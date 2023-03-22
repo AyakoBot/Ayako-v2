@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings';
+import type * as DBT from '../../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const fieldName = args.shift();
@@ -31,6 +32,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const language = await ch.languageSelector(cmd.guildId);
   const lan = language.slashCommands.settings.categories[settingName];
 
+  const embeds = await ch
+    .query(`SELECT * FROM customembeds WHERE guildid = $1;`, [cmd.guildId])
+    .then((r: DBT.customembeds[] | null) => r ?? null);
+
   cmd.update({
     embeds: [
       await ch.settingsHelpers.changeHelpers.changeEmbed(
@@ -38,20 +43,37 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
         lan,
         fieldName,
         currentSetting?.[fieldName as keyof typeof currentSetting],
-        'role',
+        'embed',
       ),
     ],
     components: [
       {
         type: Discord.ComponentType.ActionRow,
         components: [
-          ch.settingsHelpers.changeHelpers.changeSelectGlobal(
-            language,
-            'role',
+          ch.settingsHelpers.changeHelpers.changeSelect(
             fieldName,
             settingName,
+            'embed',
+            {
+              options: embeds?.map((e) => ({
+                label: e.name,
+                value: e.uniquetimestamp,
+              })) ?? [{ label: '-', value: '-' }],
+              disabled: !embeds?.length,
+            },
             uniquetimestamp,
           ),
+        ],
+      },
+      {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+          {
+            type: Discord.ComponentType.Button,
+            style: Discord.ButtonStyle.Primary,
+            label: language.Create,
+            custom_id: 'embedbuilder',
+          }
         ],
       },
       {
@@ -61,7 +83,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
           ch.settingsHelpers.changeHelpers.done(
             settingName,
             fieldName,
-            'role',
+            'embed',
             language,
             Number(uniquetimestamp),
           ),
