@@ -41,7 +41,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         name: lan.authorMember(user),
       },
       image: hasAvatar ? { url: member.displayAvatarURL({ size: 4096 }) } : undefined,
-      description: hasAvatar ? language.None : undefined,
+      description: hasAvatar ? undefined : language.None,
       color: ch.colorSelector(cmd.guild?.members.me),
     });
   }
