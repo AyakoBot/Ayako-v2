@@ -28,7 +28,11 @@ export default async (
 };
 
 export const cooldownHandler = async (
-  msg: Discord.Message | Discord.Interaction,
+  msg:
+    | Discord.Message
+    | Discord.ButtonInteraction
+    | Discord.CommandInteraction
+    | Discord.AnySelectMenuInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {
@@ -88,7 +92,11 @@ export const cooldownHandler = async (
 };
 
 export const deleteCommandHandler = async (
-  msg: Discord.Message | Discord.Interaction,
+  msg:
+    | Discord.Message
+    | Discord.ButtonInteraction
+    | Discord.CommandInteraction
+    | Discord.AnySelectMenuInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {

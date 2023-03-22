@@ -5,7 +5,7 @@ import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (
-  msg: Discord.Interaction,
+  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction,
   content: string,
   language: CT.Language,
   m?: Discord.Message,
@@ -22,5 +22,5 @@ export default (
 
   if (m && m.editable) return m.edit({ embeds: [embed] }).catch(() => null);
 
-  return reply(msg, { embeds: [embed] });
+  return reply(cmd, { embeds: [embed], ephemeral: true });
 };
