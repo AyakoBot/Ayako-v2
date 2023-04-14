@@ -198,3 +198,31 @@ type FailedTopGGResponse = { error: string };
 export type TopGGResponse<T extends boolean> = T extends true
   ? SuccessfulTopGGResponse
   : FailedTopGGResponse;
+
+export type TokenResponse = {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+};
+
+export type RawUser = {
+  id: string;
+  username: string;
+  global_name: null;
+  display_name: null;
+  avatar: string;
+  discriminator: string;
+  public_flags: number;
+  flags: number;
+  banner: string;
+  banner_color: null;
+  accent_color: null;
+  locale: string;
+  mfa_enabled: boolean;
+  premium_type: number;
+  avatar_decoration: string;
+  email: string;
+  verified: boolean;
+};
