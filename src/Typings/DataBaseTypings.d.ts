@@ -250,6 +250,7 @@ export type users = {
   socialstype?: string[];
   lastfetch: string;
   email?: string;
+  token?: string;
 };
 
 export interface giveawaycollecttime {
@@ -298,13 +299,6 @@ export type stats = {
   antispam: boolean;
   verbosity: boolean;
   heartbeat: string;
-};
-
-export type tokens = {
-  userid: string;
-  accesstoken: string;
-  refreshtoken: string;
-  expiresin: string;
 };
 
 export type reviews = {
