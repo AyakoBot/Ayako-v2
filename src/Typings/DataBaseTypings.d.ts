@@ -243,7 +243,13 @@ export type suggestionvotes = {
 
 export type users = {
   userid: string;
-  votereminders?: boolean;
+  votereminders: boolean;
+  username: string;
+  avatar: string;
+  socials?: string[];
+  socialstype?: string[];
+  lastfetch: string;
+  email?: string;
 };
 
 export interface giveawaycollecttime {
@@ -292,4 +298,41 @@ export type stats = {
   antispam: boolean;
   verbosity: boolean;
   heartbeat: string;
+};
+
+export type tokens = {
+  userid: string;
+  accesstoken: string;
+  refreshtoken: string;
+  expiresin: string;
+};
+
+export type reviews = {
+  userid: string;
+  score: string;
+  username: string;
+  avatar?: string;
+  content: string;
+};
+
+export type art = {
+  userid: string;
+  created: string;
+  url: string;
+  type: string;
+  verified: boolean;
+};
+
+export type guilds = {
+  guildid: string;
+  name: string;
+  icon?: string;
+  banner?: string;
+  invite?: string;
+  membercount: string;
+};
+
+export type contributers = {
+  userid: string;
+  roles?: string[];
 };
