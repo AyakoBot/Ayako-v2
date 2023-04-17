@@ -445,3 +445,20 @@ export interface voterewards {
   rewardroles?: string[];
   linkedid?: string;
 }
+
+export type appealsettings = {
+  guildid: string;
+  active: boolean;
+
+  channelid?: string;
+  blusers?: string[];
+};
+
+export type appealquestions = {
+  guildid: string;
+  uniquetimestamp: string;
+  active: boolean;
+
+  question?: string;
+  answertype?: 'paragraph' | 'short' | 'number' | 'boolean' | 'multiple choice' | 'single choice';
+}
