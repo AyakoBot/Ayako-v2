@@ -4,6 +4,7 @@ import client from '../../../BaseClient/Client.js';
 import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
+  return;
   if (!client.guilds.cache.get('108176345204264960')) return;
 
   const participants = await ch

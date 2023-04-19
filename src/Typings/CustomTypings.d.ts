@@ -226,3 +226,22 @@ export type RawUser = {
   email: string;
   verified: boolean;
 };
+
+export type Appeal = {
+  userid: string;
+  guildid: string;
+  punishmentid: string;
+  questions: string[];
+  answers: string[];
+  answertypes: DBT.appealquestions['answertype'][];
+}
+
+export type punishment =
+  | DBT.punish_bans
+  | DBT.punish_channelbans
+  | DBT.punish_kicks
+  | DBT.punish_mutes
+  | DBT.punish_tempbans
+  | DBT.punish_tempchannelbans
+  | DBT.punish_tempmutes
+  | DBT.punish_warns;

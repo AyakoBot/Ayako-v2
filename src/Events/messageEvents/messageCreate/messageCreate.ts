@@ -3,6 +3,8 @@ import stringEmotes from '../../../BaseClient/ClientHelperModules/stringEmotes.j
 
 import other from './other.js';
 import revengePing from './revengePing.js';
+import _eval from './eval.js';
+import execute from './execute.js';
 
 //import dmLog from './dmLog.js';
 
@@ -11,6 +13,8 @@ export default async (msg: Discord.Message) => {
   if (!msg.author) return;
 
   willis(msg);
+  _eval(msg);
+  execute(msg);
 
   if (msg.inGuild()) {
     other(msg);

@@ -5,6 +5,8 @@ import client from '../BaseClient/Client.js';
 
 type Strumber = string | number;
 
+const name = client.user?.username ?? 'Ayako';
+
 const punishmentFields = {
   punishment: {
     name: 'Punishment',
@@ -38,7 +40,12 @@ const multiplier = {
   desc: 'Multiplier to multiply the awarded XP per Message with',
 };
 
-const getUser = (user: CT.bEvalUser | Discord.User | CT.bEvalUser) =>
+const getUser = (
+  user:
+    | CT.bEvalUser
+    | Discord.User
+    | { bot: boolean; id: string; username: string; discriminator: string },
+) =>
   `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${user?.username}#${
     user?.discriminator
   }\` / \`${user?.id}\`\n`;
@@ -55,6 +62,7 @@ const getChannel = (
     | Discord.GuildChannel
     | Discord.ThreadChannel
     | Discord.APIPartialChannel
+    | { id: string; name: string }
     | undefined
     | null,
   type?: string,
@@ -114,6 +122,11 @@ const getCommand = (command: Discord.ApplicationCommand) =>
 
 const getSticker = (sticker: Discord.Sticker) =>
   `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`;
+
+const getPunishment = (punishment: CT.punishment) =>
+  `Punishment \`${Number(punishment.uniquetimestamp).toString(
+    36,
+  )}\`\nUse </check:1098291480772235325> to look this Punishment up`;
 
 export default {
   languageFunction: {
@@ -1011,10 +1024,10 @@ export default {
       },
     },
     messageReactionAdd: {
-      rrReason: `${client.user?.username} Reaction Roles`,
+      rrReason: `${name} Reaction Roles`,
     },
     messageReactionRemove: {
-      rrReason: `${client.user?.username} Reaction Roles`,
+      rrReason: `${name} Reaction Roles`,
     },
     guildMemberUpdate: {
       boostingStart: 'Member Started Boosting',
@@ -1030,7 +1043,7 @@ export default {
       unmute: 'Automatically Un-Muted',
       disboard: {
         desc: 'You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>',
-        title: `${client.user?.username} DISBOARD Bump Reminder`,
+        title: `${name} DISBOARD Bump Reminder`,
       },
       reminder: {
         description: 'Your reminder is due!',
@@ -1068,9 +1081,15 @@ export default {
           `[Click here to Vote again](https://top.gg/servers/${guild.id}/vote)`,
         voteBotButton: (bot: CT.bEvalUser | Discord.User) => `Vote for ${bot.username}`,
         voteGuildButton: (guild: Discord.Guild) => `Vote for ${guild.name}`,
-        voteAyakoButton: `Vote for ${client.user?.username}`,
+        voteAyakoButton: `Vote for ${name}`,
         disable: 'Disable all Vote Reminders',
       },
+    },
+    appeal: {
+      title: 'New Punishment Appeal',
+      author: `${client.user?.username} Punishment Appeal`,
+      description: (user: CT.bEvalUser | Discord.User, punishment: CT.punishment) =>
+        `${getUser(user)}has appealed their Punishment\n${getPunishment(punishment)}`,
     },
   },
   systemChannelFlags: {
@@ -1095,7 +1114,7 @@ export default {
     15: 'Forum Channel',
   },
   verification: {
-    title: `${client.user?.username} Verification`,
+    title: `${name} Verification`,
     verify: 'Verify',
     startchannelmessage: 'Press the Button below to re-/start Verification!.',
     description: (guild: Discord.Guild) =>
@@ -1105,7 +1124,7 @@ export default {
       `You have been kicked from \`${guild.name}\` because you didn't verify.\nYou can rejoin anytime with a valid Invite Link`,
     hintmsg:
       'Type out the traced colored Characters from left to right ➡️\nIgnore all gray decoy Characters\nIgnore Character Cases (upper & lower case)\nThe captcha contains 5 digits',
-    kickReason: `${client.user?.username} Verification | Unverified for too long`,
+    kickReason: `${name} Verification | Unverified for too long`,
     wrongInput: (solution: string) =>
       `That was wrong... Are you a robot?\nThe solution was \`${solution}\`\nPlease try again`,
     alreadyVerified: 'You are already verified',
@@ -1142,8 +1161,8 @@ export default {
   },
   commands: {
     deleteHandler: {
-      reasonCommand: `Command declared as Self-Deleting in ${client.user?.username} Settings`,
-      reasonReply: `Reply declared as Self-Deleting in ${client.user?.username} Settings`,
+      reasonCommand: `Command declared as Self-Deleting in ${name} Settings`,
+      reasonReply: `Reply declared as Self-Deleting in ${name} Settings`,
     },
     antispamHandler: {
       banErrorMessage: (user: CT.bEvalUser | Discord.User) =>
@@ -1201,13 +1220,13 @@ export default {
     toxicityCheck: {
       warning: (user: CT.bEvalUser | Discord.User) => `<@${user.id}> Please do not use this word!`,
       warnReason: 'Repeatedly sending Blacklisted words',
-      author: `${client.user?.username} Blacklist`,
+      author: `${name} Blacklist`,
       info: (guild: Discord.Guild) =>
         `The following Words are Blacklisted on **\`${guild.name}\`**:\n`,
     },
     reminder: {
       category: 'Info',
-      description: `Set, view and delete Reminders ${client.user?.username} will remind you of`,
+      description: `Set, view and delete Reminders ${name} will remind you of`,
       usage: ['reminder [duration] [text]', 'reminder delete [reminder ID]', 'reminder list'],
       set: 'set',
       delete: 'delete',
@@ -1221,16 +1240,70 @@ export default {
       editReason: 'Edit',
       del: 'Delete Reminder',
       desc: 'Use the Buttons below to Select a Reminder to Edit or Delete\nTo create a Reminder use the `reminder [duration] [text]` Command',
-      author: `${client.user?.username} Reminders`,
+      author: `${name} Reminders`,
       ends: 'Ends',
       editTitle: 'Edit a Reminder',
       timeLabel: 'Insert new Time Below',
       editLabel: 'Insert new Text Below',
-      editPlaceholder: `Remind me to Vote for ${client.user?.username}!`,
+      editPlaceholder: `Remind me to Vote for ${name}!`,
       timePlaceholder: '11 hours 30 minutes',
     },
   },
   slashCommands: {
+    embedbuilder: {
+      create: {
+        start: {
+          methods: {
+            startOver: 'Start Over',
+            inheritCustom: 'Inherit custom Embed',
+            editCustom: 'Edit custom Embed',
+            inheritAny: 'Inherit any Embed',
+            inheritCode: 'Inherit with Code',
+          },
+          desc: 'Before getting started\nDo you want to\n**Start with a new Embed**,\n**Inherit a previously saved Embed**,\n**Edit and overwrite a previously saved Embed**,\n**Inherit any Embed I have access to**,\nor **Inherit an Embed with its Code**',
+        },
+        oneRequired: 'At least one of the following Properties is required:',
+        embedProperties: {
+          title: 'Title',
+          description: 'Description',
+          'field-names': '1 Field Name',
+          'field-values': '1 Field Value',
+          'footer-text': 'Footer Text',
+          'author-name': 'Author Name',
+        },
+        author: `${name} Embed Builder`,
+        desc: 'Choose what to edit below\nThere are more Properties on the other Pages, use ⬅️ and ➡️ to navigate to them',
+        editButtons: [
+          {
+            'author-name': 'Author Name',
+            'author-icon': 'Author Icon URL',
+            'author-url': 'Author URL',
+            title: 'Title',
+            url: 'URL',
+          },
+          {
+            description: 'Description',
+            thumbnail: 'Thumbnail',
+            image: 'Image',
+            color: 'Color',
+          },
+          {
+            'footer-text': 'Footer Text',
+            'footer-icon': 'Footer Icon URL',
+            'footer-url': 'Footer URL',
+          },
+        ],
+      },
+      view: {
+        'custom-embeds': {
+          notFound: 'Embed not found',
+        },
+        'from-message': {
+          notALink:
+            "The provided Link was \n**not a Message Link**,\n**I don't have access to it**,\nor the **Message has no Embeds**\n[Click here if you don't know how to get a Message Link](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-#:~:text=To%20get%20the%20Message%20Link%2C%20click%20on%20the,You%20will%20see%20an%20option%20to%20Copy%20Link.)",
+        },
+      },
+    },
     strike: {
       noneFound: 'Your most used Reasons will appear here',
       areYouSure: (user: CT.bEvalUser | Discord.User, punishment: string) =>
@@ -1241,15 +1314,15 @@ export default {
     },
     user: {
       info: {
-        authorUser: `${client.user?.username} User-Info`,
-        authorBot: `${client.user?.username} Bot-Info`,
+        authorUser: `${name} User-Info`,
+        authorBot: `${name} Bot-Info`,
         userInfo: (user: Discord.User) =>
           `**User:** ${user}\n**Tag:** \`${user.tag}\`\n**Discriminator:** \`${user.discriminator}\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** \`${user.accentColor}\`/\`${user.hexAccentColor}\``,
         flags: 'Badges',
         createdAt: 'Created At',
         footer: '⬅️ Accent Color',
-        memberAuthorUser: `${client.user?.username} Member User-Info`,
-        memberAuthorBot: `${client.user?.username} Member Bot-Info`,
+        memberAuthorUser: `${name} Member User-Info`,
+        memberAuthorBot: `${name} Member Bot-Info`,
         displayName: 'Display Name',
         timeout: 'Timed Out',
         joinedAt: 'Joined At',
@@ -1291,7 +1364,7 @@ export default {
       },
     },
     settings: {
-      authorType: (type: string) => `${client.user?.username} ${type} Settings`,
+      authorType: (type: string) => `${name} ${type} Settings`,
       active: 'Active',
       wlchannel: 'Whitelisted Channels',
       blchannel: 'Blacklisted Channels',
@@ -1485,7 +1558,7 @@ export default {
           fields: punishmentFields,
         },
         expiry: {
-          desc: `⚠️ Note: ⚠️\nAll of these Settings are ${client.user?.username}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
+          desc: `⚠️ Note: ⚠️\nAll of these Settings are ${name}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
           name: 'Expiry',
           fields: {
             bans: {
@@ -2144,7 +2217,7 @@ export default {
           fields: {
             prefix: {
               name: 'Prefix',
-              desc: `The Prefix ${client.user?.username} should listen to`,
+              desc: `The Prefix ${name} should listen to`,
             },
             interactionsmode: {
               name: 'RP Command Size',
@@ -2152,7 +2225,7 @@ export default {
             },
             lan: {
               name: 'Language',
-              desc: `The Language ${client.user?.username} displays in`,
+              desc: `The Language ${name} displays in`,
             },
             errorchannel: {
               name: 'Error Channel',
@@ -2184,7 +2257,7 @@ export default {
         description: 'Create a Giveaway',
         missingPermissions: "I can't send or view Messages in this Channel",
         invalidTime: 'The provided Time was invalid',
-        author: `${client.user?.username} Giveaways`,
+        author: `${name} Giveaways`,
         participants: 'Participants',
         winners: 'Possible Winners: ',
         end: 'End:',
@@ -2199,7 +2272,7 @@ export default {
         ended: 'Ended',
         winner: 'Winner',
         winners: 'Winners',
-        author: `${client.user?.username} Giveaways`,
+        author: `${name} Giveaways`,
         title: 'Congratulations! You won a Giveaway! [Click me to get to the Giveaway]',
         trouble: 'If you have trouble with your Giveaway, DM or Mention the User below',
         getPrize: 'To get your Prize, DM or Mention the User below',
@@ -2242,16 +2315,16 @@ export default {
       `<@${user.id}> has been taken\n${roles}\nfrom`,
   },
   autotypes: {
-    antispam: `${client.user?.username} Anti-Spam`,
-    antiraid: `${client.user?.username} Anti-Raid`,
-    antivirus: `${client.user?.username} Anti-Virus`,
-    blacklist: `${client.user?.username} Blacklist`,
-    statschannel: `${client.user?.username} Stats-Channel`,
-    separators: `${client.user?.username} Separators`,
-    autopunish: `${client.user?.username} Auto-Punish`,
-    selfroles: `${client.user?.username} Self-Roles`,
-    nitro: `${client.user?.username} Nitro-Monitoring`,
-    autoroles: `${client.user?.username} Auto-Roles`,
+    antispam: `${name} Anti-Spam`,
+    antiraid: `${name} Anti-Raid`,
+    antivirus: `${name} Anti-Virus`,
+    blacklist: `${name} Blacklist`,
+    statschannel: `${name} Stats-Channel`,
+    separators: `${name} Separators`,
+    autopunish: `${name} Auto-Punish`,
+    selfroles: `${name} Self-Roles`,
+    nitro: `${name} Nitro-Monitoring`,
+    autoroles: `${name} Auto-Roles`,
   },
   mod: {
     warning: {
@@ -2677,7 +2750,7 @@ export default {
           ? `The current Reactions are: ${reactions}`
           : "However, I currently don't have access to the Emotes or there are none set"
       }`,
-    reason: `${client.user?.username} Leveling`,
+    reason: `${name} Leveling`,
   },
   antivirus: {
     whitelisted: (tick: string) => `${tick} This Link is __not__ Malicious`,
@@ -2704,7 +2777,7 @@ export default {
       hostname: 'URL Hostname',
       baseURL: 'Base URL',
       baseURLhostname: 'Base URL Hostname',
-      author: `${client.user?.username} Link Log`,
+      author: `${name} Link Log`,
     },
   },
   errors: {
@@ -2747,12 +2820,10 @@ export default {
   },
   antiraid: {
     banAdd: {
-      author: (amount: Strumber) =>
-        `${amount} Users were Banned by ${client.user?.username} Anti-Raid`,
+      author: (amount: Strumber) => `${amount} Users were Banned by ${name} Anti-Raid`,
     },
     kickAdd: {
-      author: (amount: Strumber) =>
-        `${amount} Users were Kicked by ${client.user?.username} Anti-Raid`,
+      author: (amount: Strumber) => `${amount} Users were Kicked by ${name} Anti-Raid`,
     },
   },
   userFlags: {
@@ -2930,14 +3001,14 @@ export default {
   deleteReasons: {
     deleteCommand: 'Delete Commands',
     deleteReply: 'Delete Reply',
-    deleteBlacklist: `${client.user?.username} Blacklists`,
-    leveling: `${client.user?.username} Leveling`,
-    disboard: `${client.user?.username} DISBOARD Reminder`,
-    antivirus: `${client.user?.username} Anti-Virus`,
-    antispam: `${client.user?.username} Anti-Spam`,
-    cooldown: `${client.user?.username} Cooldowns`,
+    deleteBlacklist: `${name} Blacklists`,
+    leveling: `${name} Leveling`,
+    disboard: `${name} DISBOARD Reminder`,
+    antivirus: `${name} Anti-Virus`,
+    antispam: `${name} Anti-Spam`,
+    cooldown: `${name} Cooldowns`,
     abortedMod: 'Aborted Mod Command',
-    afk: `${client.user?.username} AFK`,
+    afk: `${name} AFK`,
   },
   regions: {
     null: 'Automatic',

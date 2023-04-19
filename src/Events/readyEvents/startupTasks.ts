@@ -31,5 +31,6 @@ export default async () => {
 
   (await import('./startupTasks/slashCommands.js')).default();
   (await import('./startupTasks/cache.js')).default();
-  (await import('./startupTasks/voteHandle.js')).default();
+  (await import('./startupTasks/voteHandler.js')).default();
+  (await import('./startupTasks/appealHandler.js')).default();
 };
