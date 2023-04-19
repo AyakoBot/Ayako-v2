@@ -330,3 +330,11 @@ export type contributers = {
   userid: string;
   roles?: string[];
 };
+
+export type appeals = {
+  userid: string;
+  guildid: string;
+  questions?: string[];
+  answers?: string[];
+  questiontypes?: string[];
+};
