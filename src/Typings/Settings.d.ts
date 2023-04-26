@@ -462,4 +462,5 @@ export type appealquestions = {
   question?: string;
   answertype?: 'paragraph' | 'short' | 'number' | 'boolean' | 'multiple choice' | 'single choice';
   required: boolean;
-}
+  options?: string[];
+};

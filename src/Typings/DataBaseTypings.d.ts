@@ -337,4 +337,5 @@ export type appeals = {
   questions?: string[];
   answers?: string[];
   questiontypes?: string[];
+  punishmentid: string;
 };
