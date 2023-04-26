@@ -4,8 +4,6 @@ import * as CT from '../../../Typings/CustomTypings';
 import * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (appeal: CT.Appeal) => {
-  console.log(appeal);
-
   const settings = await ch
     .query(`SELECT * FROM appealsettings WHERE guildid = $1 AND active = true;`, [appeal.guildid])
     .then((r: DBT.appealsettings[] | null) => (r ? r[0] : null));
@@ -16,16 +14,16 @@ export default async (appeal: CT.Appeal) => {
   const punishment: CT.punishment | null = await ch
     .query(
       `WITH user_punishments AS (
-    SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'ban' as type FROM punish_bans WHERE uniquetimestamp = $1
-    UNION ALL
-    SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'channelban' as type FROM punish_channelbans WHERE uniquetimestamp = $1
-    UNION ALL
-    SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1
-    UNION ALL
-    SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1
-    UNION ALL
-    SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1  
-  ) SELECT * FROM user_punishments;`,
+        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'ban' as type FROM punish_bans WHERE uniquetimestamp = $1
+        UNION ALL
+        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'channelban' as type FROM punish_channelbans WHERE uniquetimestamp = $1
+        UNION ALL
+        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1
+        UNION ALL
+        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1
+        UNION ALL
+        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1  
+      ) SELECT * FROM user_punishments;`,
       [appeal.punishmentid],
     )
     .then((r: CT.punishment[] | null) => (r ? r[0] : null));

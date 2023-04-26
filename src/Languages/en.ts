@@ -1086,8 +1086,8 @@ export default {
       },
     },
     appeal: {
-      title: 'New Punishment Appeal',
-      author: `${client.user?.username} Punishment Appeal`,
+      title: 'New Appeal',
+      author: `${client.user?.username} Punishment Appeal System`,
       description: (user: CT.bEvalUser | Discord.User, punishment: CT.punishment) =>
         `${getUser(user)}has appealed their Punishment\n${getPunishment(punishment)}`,
     },
