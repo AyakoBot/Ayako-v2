@@ -1,10 +1,10 @@
 import io from 'socket.io-client';
-import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 import auth from '../../../auth.json' assert { type: 'json' };
+import appealCreate from '../../appealEvents/apealCreate/appealCreate.js';
 
 export default async () => {
-  const socket = io('https://ayakobot.com', {
+  const socket = io('https://api.ayakobot.com', {
     transports: ['websocket'],
     auth: {
       reason: 'appeal',
@@ -12,5 +12,7 @@ export default async () => {
     },
   });
 
-  socket.on('appeal', async (appeal: CT.Appeal) => client.emit('appealCreate', appeal));
+  socket.on('appeal', async (appeal: CT.Appeal) => {
+    appealCreate(appeal);
+  });
 };

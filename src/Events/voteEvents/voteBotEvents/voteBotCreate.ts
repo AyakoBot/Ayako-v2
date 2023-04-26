@@ -8,8 +8,8 @@ import type CT from '../../../Typings/CustomTypings';
 export default async (
   vote: CT.TopGGBotVote,
   guild: Discord.Guild,
-  user: Discord.User,
-  member: Discord.GuildMember,
+  user: Discord.User | CT.bEvalUser,
+  member: Discord.GuildMember | undefined,
 ) => {
   const settings = await getSettings(guild);
   if (!settings) return;
@@ -21,10 +21,10 @@ export default async (
   const bot = await ch.getUser(vote.bot).catch(() => undefined);
   if (!bot) return;
 
-  const language = await ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(guild.id);
 
   if (!allRewards?.length) {
-    doAnnouncement(settings, member, bot, language);
+    doAnnouncement(settings, user, bot, language);
     return;
   }
 
@@ -42,7 +42,7 @@ export default async (
     };
 
     const roles = () => {
-      if (!member.manageable) return;
+      if (!member?.manageable) return;
       if (!r.rewardroles?.length) return;
 
       ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
@@ -91,7 +91,9 @@ export default async (
   Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
 };
 
-export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember) => {
+export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember | undefined) => {
+  if (!member) return 1;
+
   const doesntHave = rewards
     .filter((r) => r.rewardroles?.length)
     .sort((a, b) => Number(a.tier) - Number(b.tier))
@@ -109,7 +111,7 @@ export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember)
 
 export const doAnnouncement = async (
   settings: DBT.votesettings,
-  member: Discord.GuildMember,
+  user: Discord.User | CT.bEvalUser,
   voted: Discord.User | CT.bEvalUser | Discord.Guild,
   language: CT.Language,
   rewards?: DBT.voterewards[],
@@ -154,7 +156,7 @@ export const doAnnouncement = async (
 
   ch.send(channel, {
     content: `${
-      'username' in voted ? lan.bot(member.user, voted) : lan.guild(member.user, voted)
+      'username' in voted ? lan.bot(user, voted) : lan.guild(user, voted)
     }${rewardText}`,
   });
 };

@@ -8,8 +8,8 @@ import { doAnnouncement, getSettings, getTier, endVote } from '../voteBotEvents/
 export default async (
   vote: CT.TopGGGuildVote,
   guild: Discord.Guild,
-  user: Discord.User,
-  member: Discord.GuildMember,
+  user: Discord.User | CT.bEvalUser,
+  member: Discord.GuildMember | undefined,
 ) => {
   const settings = await getSettings(guild);
   if (!settings) return;
@@ -18,10 +18,10 @@ export default async (
     .query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id])
     .then((r: DBT.voterewards[] | null) => r ?? null);
 
-  const language = await ch.languageSelector(member.guild.id);
+  const language = await ch.languageSelector(guild.id);
 
   if (!allRewards?.length) {
-    doAnnouncement(settings, member, guild, language);
+    doAnnouncement(settings, user, guild, language);
     return;
   }
 
@@ -39,7 +39,7 @@ export default async (
     };
 
     const roles = () => {
-      if (!member.manageable) return;
+      if (!member?.manageable) return;
       if (!r.rewardroles?.length) return;
 
       ch.roleManager.add(member, r.rewardroles, language.events.vote.guildReason(guild), 1);

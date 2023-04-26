@@ -9,6 +9,9 @@ export default async () => {
     willis();
   });
 
+  (await import('./startupTasks/voteHandler.js')).default();
+  (await import('./startupTasks/appealHandler.js')).default();
+
   if (ch.mainID !== client.user?.id) return;
 
   (await import('./antivirusBlocklistCacher')).default();
@@ -31,6 +34,4 @@ export default async () => {
 
   (await import('./startupTasks/slashCommands.js')).default();
   (await import('./startupTasks/cache.js')).default();
-  (await import('./startupTasks/voteHandler.js')).default();
-  (await import('./startupTasks/appealHandler.js')).default();
 };

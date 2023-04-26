@@ -4,9 +4,11 @@ import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
 import type DBT from '../../../Typings/DataBaseTypings.js';
 import auth from '../../../auth.json' assert { type: 'json' };
+import voteBotCreate from '../../voteEvents/voteBotEvents/voteBotCreate.js';
+import voteGuildCreate from '../../voteEvents/voteGuildEvents/voteGuildCreate.js';
 
 export default async () => {
-  const socket = io('https://ayakobot.com', {
+  const socket = io('https://api.ayakobot.com', {
     transports: ['websocket'],
     auth: {
       reason: 'topgg',
@@ -28,7 +30,7 @@ export default async () => {
 
     const member = await guild.members.fetch(vote.user).catch(() => undefined);
 
-    if ('bot' in vote) client.emit('voteBotCreate', vote, guild, user, member);
-    if ('guild' in vote) client.emit('voteGuildCreate', vote, guild, user, member);
+    if ('bot' in vote) voteBotCreate(vote, guild, user, member);
+    if ('guild' in vote) voteGuildCreate(vote, guild, user, member);
   });
 };
