@@ -2,12 +2,12 @@ import Jobs from 'node-schedule';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
 
-import willis from './startupTasks/willis.js';
+// import willis from './startupTasks/willis.js';
 
 export default async () => {
-  Jobs.scheduleJob('0 13 15 * *', () => {
-    willis();
-  });
+  // Jobs.scheduleJob('0 13 15 * *', () => {
+  //  willis();
+  // });
 
   (await import('./startupTasks/voteHandler.js')).default();
   (await import('./startupTasks/appealHandler.js')).default();

@@ -3,7 +3,7 @@ import type CT from '../../Typings/CustomTypings';
 import * as replyMsg from './replyMsg.js';
 
 const sendMessage = (
-  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction,
+  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction | Discord.ModalSubmitInteraction,
   payload: Discord.InteractionReplyOptions,
 ) => {
   if ('respond' in cmd) {
@@ -23,7 +23,7 @@ const sendMessage = (
 };
 
 export default async (
-  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction,
+  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction | Discord.ModalSubmitInteraction,
   payload: Discord.InteractionReplyOptions,
   command?: CT.Command,
 ) => {

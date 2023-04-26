@@ -1,3 +1,4 @@
+/*
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
@@ -68,3 +69,4 @@ const tellWill = async (user: Discord.User) => {
     })
     .catch(() => false);
 };
+*/

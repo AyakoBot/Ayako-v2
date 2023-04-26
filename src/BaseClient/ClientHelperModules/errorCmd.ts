@@ -5,7 +5,7 @@ import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default (
-  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction,
+  cmd: Discord.ButtonInteraction | Discord.CommandInteraction | Discord.AnySelectMenuInteraction | Discord.ModalSubmitInteraction,
   content: string,
   language: CT.Language,
   m?: Discord.Message,

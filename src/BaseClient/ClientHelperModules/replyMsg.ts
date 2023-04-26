@@ -32,7 +32,8 @@ export const cooldownHandler = async (
     | Discord.Message
     | Discord.ButtonInteraction
     | Discord.CommandInteraction
-    | Discord.AnySelectMenuInteraction,
+    | Discord.AnySelectMenuInteraction
+    | Discord.ModalSubmitInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {
@@ -96,7 +97,8 @@ export const deleteCommandHandler = async (
     | Discord.Message
     | Discord.ButtonInteraction
     | Discord.CommandInteraction
-    | Discord.AnySelectMenuInteraction,
+    | Discord.AnySelectMenuInteraction
+    | Discord.ModalSubmitInteraction,
   sentMessage: Discord.Message | Discord.InteractionResponse,
   command: CT.Command,
 ) => {
