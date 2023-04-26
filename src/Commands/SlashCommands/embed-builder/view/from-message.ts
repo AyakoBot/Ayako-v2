@@ -44,6 +44,9 @@ export default async (cmd: Discord.CommandInteraction) => {
 
   const embedCode = JSON.stringify(response, null, 2);
   const attachment = ch.txtFileWriter(embedCode);
+  
+  if (!attachment) return;
+
   ch.replyCmd(cmd, {
     ephemeral: true,
     files: [attachment],
