@@ -151,7 +151,7 @@ export default {
   folderOpen: { name: '📂' },
   file: { name: '📄' },
   info: { name: 'ℹ' },
-  warning: { name: '⚠', link: 'https://ayakobot.com/cdn/Ayako_Assets/Warning.png' },
+  warning: { name: '⚠', link: 'https://cdn.ayakobot.com/Ayako_Assets/Warning.png' },
 
   settings: {
     name: 'Settings',
