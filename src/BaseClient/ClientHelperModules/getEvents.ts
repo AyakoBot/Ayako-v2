@@ -69,8 +69,6 @@ export const gatewayEvents = [
   'voiceStateDeletes',
   'voiceStateUpdate',
   'voiceStateUpdates',
-  'voteBotCreate',
-  'voteGuildCreate',
   'webhooksCreate',
   'webhooksDelete',
   'webhooksUpdate',
