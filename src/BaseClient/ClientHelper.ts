@@ -64,6 +64,7 @@ import cache from './ClientHelperModules/cache.js';
 import constants from './Other/constants.js';
 import neko from './NekoClient.js';
 import getRandom from './ClientHelperModules/getRandom.js';
+import getColor from './ClientHelperModules/getColor.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -134,4 +135,5 @@ export {
   channelQueue,
   channelTimeout,
   getRandom,
+  getColor,
 };
