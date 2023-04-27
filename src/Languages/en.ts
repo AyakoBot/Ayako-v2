@@ -1294,8 +1294,7 @@ export default {
     embedProperties: {
      title: 'Title',
      description: 'Description',
-     'field-names': '1 Field Name',
-     'field-values': '1 Field Value',
+     'fields': '1 Field Name or Value',
      'footer-text': 'Footer Text',
      'author-name': 'Author Name',
     },
