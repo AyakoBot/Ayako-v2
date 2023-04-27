@@ -2,12 +2,17 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
- cmd: Discord.ButtonInteraction | Discord.ModalMessageModalSubmitInteraction,
+ cmd:
+  | Discord.ButtonInteraction
+  | Discord.ModalMessageModalSubmitInteraction
+  | Discord.StringSelectMenuInteraction,
  _: string[],
  embed?: Discord.APIEmbed,
+ selectedField?: number | null,
 ) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
+ let canFinish = true;
 
  if (
   embed &&
@@ -20,7 +25,6 @@ export default async (
  ) {
   embed.color = undefined;
   embed.description = undefined;
-  embed.fields = undefined;
   embed.thumbnail = undefined;
  }
 
@@ -41,6 +45,24 @@ export default async (
     .filter((a): a is string => !!a)
     .join(', ')}`,
   };
+
+  canFinish = false;
+ }
+
+ const options: Discord.SelectMenuComponentOptionData[] = embed.fields?.length
+  ? embed.fields?.map((_, i) => ({
+     label: lan.start['field-nr'](i),
+     value: String(i),
+     default: i === selectedField,
+    }))
+  : [];
+
+ if (options.length < 25) {
+  options.push({
+   label: lan.start.createButtons.addField,
+   value: 'create',
+   emoji: ch.objectEmotes.plusBG,
+  });
  }
 
  cmd.update({
@@ -56,86 +78,17 @@ export default async (
     type: Discord.ComponentType.ActionRow,
     components: [
      {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['author-name'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/string_author-name',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['author-icon'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/img_author-icon',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['author-url'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/link_author-url',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['thumbnail'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/img_thumbnail',
-     },
-    ],
-   },
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['title'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/string_title',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['url'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/link_url',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['description'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/string_description',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['image'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/img_image',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['color'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/hex_color',
-     },
-    ],
-   },
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['footer-text'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/string_footer-text',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['footer-icon'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/img_footer-icon',
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['timestamp'],
-      style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/timestamp_timestamp',
+      type: Discord.ComponentType.StringSelect,
+      placeholder: lan.start.selectPlaceholder,
+      maxValues: 1,
+      minValues: 1,
+      customId: 'embed-builder/create/select',
+      options: Object.entries(lan.start.createButtons.selectMenu).map(([k, v]) => ({
+       label: v,
+       value: `${
+        ch.constants.customembeds.type[k as keyof typeof ch.constants.customembeds.type]
+       }_${k}`,
+      })),
      },
     ],
    },
@@ -147,14 +100,8 @@ export default async (
       placeholder: lan.start.fieldPlaceholder,
       maxValues: 1,
       minValues: 1,
-      customId: 'embed-builder/create/field/select',
-      options: [
-       {
-        label: lan.start.createButtons.addField,
-        value: 'create',
-        emoji: ch.objectEmotes.plusBG,
-       },
-      ],
+      customId: 'embed-builder/create/fields',
+      options,
      },
     ],
    },
@@ -163,38 +110,57 @@ export default async (
     components: [
      {
       type: Discord.ComponentType.Button,
-      label: lan.start.selectedField('None'),
-      style: Discord.ButtonStyle.Primary,
-      customId: 'null',
-      disabled: true,
-     },
-     {
-      type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['field-names'],
+      label: lan.start.createButtons.fieldButtons['field-name'],
       style: Discord.ButtonStyle.Secondary,
       customId: 'embed-builder/create/string_field-name',
-      disabled: true,
+      disabled: typeof selectedField !== 'number',
      },
      {
       type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['field-values'],
+      label: lan.start.createButtons.fieldButtons['field-value'],
       style: Discord.ButtonStyle.Secondary,
       customId: 'embed-builder/create/string_field-value',
-      disabled: true,
+      disabled: typeof selectedField !== 'number',
      },
      {
       type: Discord.ComponentType.Button,
-      label: lan.start.createButtons['field-inline'],
+      label: lan.start.createButtons.fieldButtons['field-inline'],
       style: Discord.ButtonStyle.Secondary,
-      customId: 'embed-builder/create/boolean_field-inline',
-      disabled: true,
+      customId: 'embed-builder/create/boolean',
+      disabled: typeof selectedField !== 'number',
      },
      {
       type: Discord.ComponentType.Button,
       label: lan.start.createButtons.removeField,
       style: Discord.ButtonStyle.Danger,
       customId: 'embed-builder/create/delete',
-      disabled: true,
+      disabled: typeof selectedField !== 'number',
+     },
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      label: lan.start.createButtons.save,
+      style: Discord.ButtonStyle.Success,
+      customId: 'embed-builder/save',
+      disabled: !canFinish,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      label: lan.start.createButtons.send,
+      style: Discord.ButtonStyle.Success,
+      customId: 'embed-builder/send',
+      disabled: !canFinish,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      label: lan.start.createButtons.edit,
+      style: Discord.ButtonStyle.Success,
+      customId: 'embed-builder/edit',
+      disabled: !canFinish,
      },
     ],
    },

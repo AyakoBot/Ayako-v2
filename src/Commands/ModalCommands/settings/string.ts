@@ -7,7 +7,6 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   if (!cmd.isFromMessage()) return;
 
   const language = await ch.languageSelector(cmd.guildId);
-
   const field = cmd.fields.fields.last();
   if (!field) {
     ch.errorCmd(cmd, language.errors.numNaN, language);

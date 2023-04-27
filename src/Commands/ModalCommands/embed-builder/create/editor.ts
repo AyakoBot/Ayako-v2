@@ -24,6 +24,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const language = await ch.languageSelector(cmd.guildId);
  const newValue = cmd.fields.getTextInputValue('input') || undefined;
  const lan = language.slashCommands.embedbuilder.create.start;
+ const selectedField = getSelectedField(cmd);
 
  let error: { errors: [{ errors: { expected: string }[] }[]] } | Error | null = null;
  try {
@@ -123,13 +124,13 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   case 'field-name': {
    if (!embed.data.fields?.length) return;
    const { fields } = embed.data;
-   fields[fields.length - 1].name = newValue || '\u200b';
+   fields[Number(selectedField)].name = newValue || '\u200b';
    break;
   }
   case 'field-value': {
    if (!embed.data.fields?.length) return;
    const { fields } = embed.data;
-   fields[fields.length - 1].value = newValue || '\u200b';
+   fields[Number(selectedField)].value = newValue || '\u200b';
    break;
   }
   case 'timestamp': {
@@ -231,5 +232,15 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   }
  }
 
- startOver(cmd, args, embed.data);
+ startOver(cmd, args, embed.data, selectedField ? Number(selectedField) : null);
 };
+
+export const getSelectedField = (
+ cmd:
+  | Discord.ModalMessageModalSubmitInteraction
+  | Discord.StringSelectMenuInteraction
+  | Discord.ButtonInteraction,
+) =>
+ (cmd.message.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
+  (o) => o.default,
+ )?.value;
