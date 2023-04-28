@@ -1223,12 +1223,20 @@ export default {
  },
  slashCommands: {
   embedbuilder: {
+   inherit: {
+    title: 'Embed Code',
+    label: 'Past your Embed Code below',
+    placeholder0: 'Embed Code can be split into all displayed Fields',
+    placeholder1: 'Please do not escape the Code',
+    placeholder2: `${name} will merge the code of all Fields together`,
+    placeholder3: 'Properly escaping the Code will cause Errors',
+    placeholder4: 'Also Embeds have a maximum of 6000 Characters, so you probably wont ever fill this one',
+   },
    create: {
     start: {
      methods: {
       startOver: 'Start Over',
-      selectSaved: 'Inherit saved Embed',
-      inheritAny: 'Inherit any Embed',
+      selectSaved: 'Select saved Embed',
       inheritCode: 'Inherit with Code',
       inheritCustom: 'Inherit custom Embed',
       deleteCustom: 'Delete custom Embed',

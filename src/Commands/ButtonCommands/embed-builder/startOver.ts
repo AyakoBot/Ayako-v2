@@ -130,21 +130,24 @@ export default async (
       label: lan.start.createButtons.save,
       style: Discord.ButtonStyle.Success,
       customId: 'embed-builder/save',
-      disabled: !canFinish,
+      disabled:
+       !canFinish || !cmd.memberPermissions?.has(Discord.PermissionsBitField.Flags.ManageGuild),
      },
      {
       type: Discord.ComponentType.Button,
       label: lan.start.createButtons.send,
       style: Discord.ButtonStyle.Success,
       customId: 'embed-builder/send',
-      disabled: !canFinish,
+      disabled:
+       !canFinish || !cmd.memberPermissions?.has(Discord.PermissionsBitField.Flags.ManageGuild),
      },
      {
       type: Discord.ComponentType.Button,
       label: lan.start.createButtons.edit,
       style: Discord.ButtonStyle.Success,
       customId: 'embed-builder/edit',
-      disabled: !canFinish,
+      disabled:
+       !canFinish || !cmd.memberPermissions?.has(Discord.PermissionsBitField.Flags.ManageGuild),
      },
     ],
    },
