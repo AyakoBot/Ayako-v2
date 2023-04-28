@@ -12,7 +12,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
 
  cmd.showModal({
   title,
-  customId: `embed-builder/create/editor_${args[0]}`,
+  customId: `embed-builder/editor_${args[0]}`,
   components: [
    {
     type: Discord.ComponentType.ActionRow,

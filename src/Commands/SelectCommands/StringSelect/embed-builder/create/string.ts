@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
-import { getSelectedField } from '../../../../ModalCommands/embed-builder/create/editor.js';
+import { getSelectedField } from '../../../../ModalCommands/embed-builder/editor.js';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
@@ -17,7 +17,7 @@ export default async (
 
  cmd.showModal({
   title,
-  customId: `embed-builder/create/editor_${args[0]}`,
+  customId: `embed-builder/editor_${args[0]}`,
   components: [
    {
     type: Discord.ComponentType.ActionRow,
