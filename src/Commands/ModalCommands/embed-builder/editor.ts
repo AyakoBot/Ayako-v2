@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
-import startOver from '../../../../Commands/ButtonCommands/embed-builder/startOver.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import startOver from '../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
