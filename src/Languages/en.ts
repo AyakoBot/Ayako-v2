@@ -1294,7 +1294,7 @@ export default {
     embedProperties: {
      title: 'Title',
      description: 'Description',
-     'fields': '1 Field Name or Value',
+     fields: '1 Field Name or Value',
      'footer-text': 'Footer Text',
      'author-name': 'Author Name',
     },
@@ -1330,6 +1330,23 @@ export default {
      notALink:
       "The provided Link was \n**not a Message Link**,\n**I don't have access to it**,\nor the **Message has no Embeds**\n[Click here if you don't know how to get a Message Link](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-#:~:text=To%20get%20the%20Message%20Link%2C%20click%20on%20the,You%20will%20see%20an%20option%20to%20Copy%20Link.)",
     },
+   },
+   edit: {
+    title: 'Edit a Message',
+    label: 'Insert a Message Link',
+    edited: 'Message successfully edited',
+    noMessageFound: 'Message not found or not within the Server',
+    noChannelFound: 'Channel not found or not within the Server',
+    view: 'Get me there',
+   },
+   send: {
+    placeholder: 'Select one or more channels',
+    sent: 'Embed successfully sent',
+   },
+   save: {
+    title: 'Enter a Name',
+    label: 'Choose a Name that relates to this Embed',
+    saved: 'Embed successfully saved',
    },
   },
   strike: {
