@@ -15,35 +15,16 @@ export default async (
  let canFinish = true;
 
  if (
-  embed &&
-  (embed?.description === lan.desc || embed.thumbnail?.url === ch.objectEmotes.warning.link) &&
-  (embed.title ||
-   embed.author?.name ||
-   embed.description ||
-   embed.footer?.text ||
-   embed.fields?.length)
- ) {
-  embed.color = undefined;
-  embed.description = undefined;
-  embed.thumbnail = undefined;
- }
-
- if (
   !embed?.description &&
+  !embed?.fields?.length &&
   !embed?.title &&
-  !embed?.author?.name &&
   !embed?.footer?.text &&
-  !embed?.fields?.length
+  !embed?.image?.url &&
+  !embed?.thumbnail?.url &&
+  !embed?.author?.name
  ) {
   embed = {
-   color: ch.constants.colors.danger,
-   thumbnail: {
-    url: ch.objectEmotes.warning.link,
-   },
-   description: `${lan.oneRequired}\n${ch.constants.customembeds.needsOneOf
-    .map((n) => lan.embedProperties[n as keyof typeof lan.embedProperties])
-    .filter((a): a is string => !!a)
-    .join(', ')}`,
+   description: lan.yourEmbed,
   };
 
   canFinish = false;
@@ -70,7 +51,10 @@ export default async (
    embed,
    {
     color: ch.colorSelector(cmd.guild?.members.me),
-    description: lan.desc,
+    description: `${lan.desc}\n\n${lan.oneRequired}\n${ch.constants.customembeds.needsOneOf
+     .map((n) => lan.embedProperties[n as keyof typeof lan.embedProperties])
+     .filter((a): a is string => !!a)
+     .join(', ')}`,
    },
   ],
   components: [

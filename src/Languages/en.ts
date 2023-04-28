@@ -1227,10 +1227,11 @@ export default {
     start: {
      methods: {
       startOver: 'Start Over',
-      inheritCustom: 'Inherit custom Embed',
-      editCustom: 'Edit custom Embed',
+      selectSaved: 'Inherit saved Embed',
       inheritAny: 'Inherit any Embed',
       inheritCode: 'Inherit with Code',
+      inheritCustom: 'Inherit custom Embed',
+      deleteCustom: 'Delete custom Embed',
      },
      desc:
       'Before getting started\nDo you want to\n**Start with a new Embed**,\n**Inherit a previously saved Embed**,\n**Edit and overwrite a previously saved Embed**,\n**Inherit any Embed I have access to**,\nor **Inherit an Embed with its Code**',
@@ -1290,6 +1291,7 @@ export default {
      fieldPlaceholder: 'Select or create a Field',
      fieldSelection: 'Field Selection:',
     },
+    yourEmbed: 'This is your Embed',
     oneRequired: 'At least one of the following Properties is required:',
     embedProperties: {
      title: 'Title',
