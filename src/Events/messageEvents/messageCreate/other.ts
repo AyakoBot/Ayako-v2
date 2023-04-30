@@ -137,30 +137,5 @@ const amMessageCheck = (msg: Discord.Message) => {
     });
   };
 
-  const linkCheck = () => {
-    if (msg.channelId !== '298954459172700181') return;
-    if (
-      !msg.content.toLocaleLowerCase().includes('http://') &&
-      !msg.content.toLocaleLowerCase().includes('https://')
-    ) {
-      return;
-    }
-
-    if (msg.member?.roles.cache.has('334832484581769217')) return;
-    if (msg.member?.roles.cache.has('606164114691194900')) return;
-
-    msg.delete();
-
-    ch.send(msg.channel, {
-      content: `${msg.author} You are not allowed to post links yet. \`Needed level: Cookie [20]\`\n Please use <#298954962699026432> and <#348601610244587531> instead.`,
-    }).then((m) => {
-      if (Array.isArray(m)) return;
-      jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-        if (m) m.delete().catch(() => null);
-      });
-    });
-  };
-
   levelUp();
-  linkCheck();
 };
