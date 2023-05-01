@@ -149,7 +149,6 @@ export type leveling = {
   rolemode: boolean;
 
   lvlupmode?: string;
-  // saved as ID
   lvlupemotes?: string[];
   lvlupdeltimeout?: string;
   embed?: string;

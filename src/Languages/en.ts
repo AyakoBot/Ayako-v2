@@ -1230,7 +1230,8 @@ export default {
     placeholder1: 'Please do not escape the Code',
     placeholder2: `${name} will merge the code of all Fields together`,
     placeholder3: 'Properly escaping the Code will cause Errors',
-    placeholder4: 'Also Embeds have a maximum of 6000 Characters, so you probably wont ever fill this one',
+    placeholder4:
+     'Also Embeds have a maximum of 6000 Characters, so you probably wont ever fill this one',
    },
    create: {
     start: {
@@ -1435,6 +1436,11 @@ export default {
    noFields: 'No Settings found, get started by creating some',
    insertHere: 'Insert Value here',
    acceptedValue: 'Accepted Value',
+   reactionEditor: {
+    desc: (thread: Discord.PrivateThreadChannel) =>
+     `Check the Emote-Collector Thread (${thread}) to select an Emote\n\nOnce finished, press the "Detect" Button.\nThe Thread will then self-delete. Click the Button below to return to the update Settings Menu`,
+    name: 'Emote-Collector',
+   },
    categories: {
     'vote-rewards': {
      name: 'Vote Rewards',
@@ -2134,7 +2140,8 @@ export default {
      fields: {
       emote: {
        name: 'Emote',
-       desc: 'The Emote of this Reaction',
+       desc:
+        'The Emote of this Reaction\nPlease only send the Emote here\n\nOnce done, click on "Detect" below, then return to the previous Message or call the Settings Menu again.',
       },
       roles: {
        name: 'Roles',
@@ -2148,7 +2155,8 @@ export default {
      fields: {
       emote: {
        name: 'Emote',
-       desc: 'The Emote of this Button',
+       desc:
+        'The Emote of this Button\nPlease only send the Emote here\n\nOnce done, click on "Detect" below, then return to the previous Message or call the Settings Menu again.',
       },
       text: {
        name: 'Text',
@@ -2847,6 +2855,7 @@ export default {
   noGuildFound: 'No Server found, please report to the Support Server',
   noChannelFound: 'No Channel found, please report to the Support Server',
   noRoleFound: 'No Role found, please report to the Support Server',
+  noThreadCanBeCreated: 'In this Channel, private Threads cannot be created',
  },
  channelRules: {
   HasLeastAttachments: (val: Strumber) => `Has at least ${val} Attachments`,
@@ -3200,4 +3209,7 @@ export default {
  Done: 'Done',
  None,
  Create: 'Create',
+ Detect: 'Detect',
+ Refresh: 'Refresh',
+ Delete: 'Delete',
 };
