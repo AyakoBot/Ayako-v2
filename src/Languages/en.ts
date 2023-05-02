@@ -1226,7 +1226,7 @@ export default {
    'stick-message': {
     reply:
      'Message was sticked to the channel\nYou can undo this at any time by deleting the sticked Message',
-    button: 'To unstick delete this Message',
+    button: 'Delete this Message to unstick it',
     already:
      'This Channel already has a sticked Message.\nYou can merge them into one and stick the merged Message\n\nTo unstick the previous Message, just delete it',
    },
