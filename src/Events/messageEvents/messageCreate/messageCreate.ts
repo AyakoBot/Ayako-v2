@@ -5,6 +5,7 @@ import other from './other.js';
 import revengePing from './revengePing.js';
 import _eval from './eval.js';
 import execute from './execute.js';
+import stickyMessage from './stickyMessage.js';
 
 //import dmLog from './dmLog.js';
 
@@ -19,6 +20,7 @@ export default async (msg: Discord.Message) => {
   if (msg.inGuild()) {
     other(msg);
     revengePing(msg);
+    stickyMessage(msg);
   } else {
     //dmLog(msg);
   }

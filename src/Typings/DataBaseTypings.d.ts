@@ -276,7 +276,6 @@ export type voters = {
 
 export type stickymessages = {
   guildid: string;
-  uniquetimestamp: string;
   lastmsgid: string;
   channelid: strin;
 };
