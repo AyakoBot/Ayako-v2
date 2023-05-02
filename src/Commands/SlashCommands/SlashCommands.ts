@@ -326,4 +326,15 @@ const stickMessage = new Discord.ContextMenuCommandBuilder()
  .setDefaultMemberPermissions(Discord.PermissionsBitField.Flags.ManageMessages)
  .setType(Discord.ApplicationCommandType.Message);
 
-export default { public: { settings, user, embedbuilder, check, stickMessage } };
+const stp = new Discord.SlashCommandBuilder()
+ .setName('stp')
+ .setDescription('String Replace Test')
+ .setDMPermission(true)
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('string')
+   .setDescription('The String to replace')
+   .setRequired(true),
+ );
+
+export default { public: { settings, user, embedbuilder, check, stickMessage, stp } };

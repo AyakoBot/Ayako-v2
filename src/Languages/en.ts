@@ -1233,6 +1233,11 @@ export default {
   },
  },
  slashCommands: {
+  stp: {
+   button: 'Click here to view all invokable Properties',
+   warn: 'You can only invoke children marked as "Properties"',
+   desc: `{{cmd.guild.name}}\n{{cmd.user.username}}\n{{cmd.channel.name}}`,
+  },
   embedbuilder: {
    inherit: {
     title: 'Embed Code',
@@ -1327,6 +1332,7 @@ export default {
     fields: [
      'This Part is used in Leveling Settings\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message',
      'This Part is used in Welcome Settings\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember',
+     'You can use </stp:1103033240320745595> to test the `{{msg}}` Templates',
     ],
     editButtons: [
      {
@@ -3229,4 +3235,5 @@ export default {
  Detect: 'Detect',
  Refresh: 'Refresh',
  Delete: 'Delete',
+ Examples: 'Examples',
 };
