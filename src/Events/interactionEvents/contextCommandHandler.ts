@@ -1,20 +1,23 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import glob from 'glob';
 
 export default async (cmd: Discord.Interaction) => {
-  if (!cmd.isMessageContextMenuCommand()) return;
+ if (!cmd.isMessageContextMenuCommand()) return;
 
-  const files: string[] = await new Promise((resolve) => {
-    glob(`${process.cwd()}/Commands/ContextCommands/**/*`, (err, res) => {
-      if (err) throw err;
-      resolve(res);
-    });
+ const files: string[] = await new Promise((resolve) => {
+  glob(`${process.cwd()}/Commands/ContextCommands/**/*`, (err, res) => {
+   if (err) throw err;
+   resolve(res);
   });
+ });
 
-  const command = files.find((f) =>
-    f.endsWith(`/${cmd.commandName.replace(/\s+/g, '').toLowerCase()}.js`),
-  );
-  if (!command) return;
+ const path = `/${Discord.ApplicationCommandType[cmd.commandType].toLowerCase()}/${cmd.commandName
+  .replace(/\s+/g, '-')
+  .toLowerCase()}`;
+ console.log(path);
 
-  (await import(command)).default(cmd);
+ const command = files.find((f) => f.endsWith(`${path}.js`));
+ if (!command) return;
+
+ (await import(command)).default(cmd);
 };
