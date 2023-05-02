@@ -55,6 +55,7 @@ export default async (
      .map((n) => lan.embedProperties[n as keyof typeof lan.embedProperties])
      .filter((a): a is string => !!a)
      .join(', ')}`,
+    fields: lan.fields.map((f) => ({ name: '\u200b', value: `${lan.quick}\n${f}` })),
    },
   ],
   components: [

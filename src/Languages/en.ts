@@ -1322,7 +1322,12 @@ export default {
     },
     author: `${name} Embed Builder`,
     desc:
-     'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)',
+     'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)\n\nSupported String Replacements',
+    quick: 'Quick Help',
+    fields: [
+     'This Part is used in Leveling Settings\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message',
+     'This Part is used in Welcome Settings\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember',
+    ],
     editButtons: [
      {
       'author-name': 'Author Name',
@@ -1900,7 +1905,8 @@ export default {
       },
       embed: {
        name: 'Welcome Embed',
-       desc: 'The Welcome Embed to use',
+       desc:
+        'The Welcome Embed to use\nYou can create one using </embed-builder create:1088143287635943485>',
       },
       pingroles: {
        name: 'Ping Roles',
