@@ -11,7 +11,7 @@ export default async (cmd: Discord.Interaction) => {
   });
  });
 
- const path = `/${Discord.ApplicationCommandType[cmd.commandType].toLowerCase()}/${cmd.commandName
+ const path = `/${Discord.ApplicationCommandType[cmd.commandType]}/${cmd.commandName
   .replace(/\s+/g, '-')
   .toLowerCase()}`;
  console.log(path);
