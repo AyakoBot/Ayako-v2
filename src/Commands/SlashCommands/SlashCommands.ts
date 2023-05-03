@@ -259,68 +259,45 @@ const info = new Discord.SlashCommandBuilder()
  .setName('info')
  .setDescription('Display Information about anything on Discord')
  .setDMPermission(true)
- .addSubcommandGroup(
-  new Discord.SlashCommandSubcommandGroupBuilder()
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Display Information about a User')
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('info')
-     .setDescription('Display Information about you or any other User')
-     .addUserOption(User)
-     .addStringOption(SearchUsername),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('avatar')
-     .setDescription('Display the Avatar of a User and Member')
-     .addUserOption(User)
-     .addStringOption(SearchUsername),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('banner')
-     .setDescription('Display the Banner of a User and Member')
-     .addUserOption(User)
-     .addStringOption(SearchUsername),
-   ),
+   .addUserOption(User.setName('user-mention').setRequired(true))
+   .addStringOption(SearchUsername),
  )
- .addSubcommandGroup(
-  new Discord.SlashCommandSubcommandGroupBuilder()
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('server')
    .setDescription('Display Information about a Server')
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('info')
-     .setDescription('Display Information about the current Server')
-     .addStringOption(IDSelector),
+   .addStringOption(IDSelector)
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setAutocomplete(true)
+     .setDescription('The ID of the Server')
+     .setRequired(false)
+     .setName('server-id'),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('server-name')
+     .setDescription(
+      `Name of the Server (Searches across all of ${client.user?.username}'s Servers)`,
+     )
+     .setRequired(false)
+     .setMinLength(2)
+     .setAutocomplete(true),
    ),
  )
- .addSubcommandGroup(
-  new Discord.SlashCommandSubcommandGroupBuilder()
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('channel')
    .setDescription('Display Information about a Channel')
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('info')
-     .setDescription('Display Information about the current Channel')
-     .addStringOption(
-      new Discord.SlashCommandStringOption()
-       .setAutocomplete(true)
-       .setDescription('The ID of the Server')
-       .setRequired(false)
-       .setName('id'),
-     )
-     .addStringOption(
-      new Discord.SlashCommandStringOption()
-       .setName('server-name')
-       .setDescription(
-        `Name of the Server (Searches across all of ${client.user?.username}'s Servers)`,
-       )
-       .setRequired(false)
-       .setMinLength(2)
-       .setAutocomplete(true),
-     ),
+   .addChannelOption(
+    new Discord.SlashCommandChannelOption()
+     .setName('channel-mention')
+     .setDescription('The Channel you want to get Information about')
+     .setRequired(true),
    ),
  );
 
