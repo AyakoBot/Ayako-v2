@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const userID = cmd.options.get('user-name', false)?.value as string | null;

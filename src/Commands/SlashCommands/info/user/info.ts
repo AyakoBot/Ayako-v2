@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings';
-import client from '../../../BaseClient/Client.js';
-import auth from '../../../auth.json' assert { type: 'json' };
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../../Typings/CustomTypings';
+import client from '../../../../BaseClient/Client.js';
+import auth from '../../../../auth.json' assert { type: 'json' };
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
   const userID = cmd.options.get('user-name', false)?.value as string | null;
