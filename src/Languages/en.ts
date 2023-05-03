@@ -1485,7 +1485,7 @@ export default {
       },
       rewardcurrency: {
        name: 'Reward Currency',
-       desc: 'Amount of Currency Rewarded',
+       desc: 'Amount of Currency rewarded',
       },
       rewardroles: {
        name: 'Reward Roles',
@@ -1687,6 +1687,28 @@ export default {
       warnstime: {
        name: 'Warns-Expire Time',
        desc: 'Time before Warns expire',
+      },
+     },
+    },
+    'role-rewards': {
+     name: 'Reward-Roles',
+     fields: {
+      roles: {
+       name: 'Roles',
+       desc: 'The Roles that allow the Users to be rewarded',
+      },
+      customrole: {
+       name: 'Custom Role',
+       desc: 'Whether Users can create their own Roles or not',
+      },
+      xpmultiplier: multiplier,
+      currency: {
+       name: 'Currency',
+       desc: 'Amount of Currency rewarded',
+      },
+      roleposition: {
+       name: 'Role Position',
+       desc: 'The Role under which the custom Roles will be created',
       },
      },
     },

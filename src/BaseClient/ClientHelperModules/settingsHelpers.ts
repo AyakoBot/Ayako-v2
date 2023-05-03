@@ -436,14 +436,11 @@ const changeHelpers = {
     components: [
      {
       type: Discord.ComponentType.TextInput,
-      style: Discord.TextInputStyle.Paragraph,
-      label: language.slashCommands.settings.acceptedValue,
-      custom_id: '-',
-      value: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc,
-      max_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
-       .length,
-      min_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
-       .length,
+      style: short ? Discord.TextInputStyle.Short : Discord.TextInputStyle.Paragraph,
+      label: language.slashCommands.settings.insertHere,
+      value:
+       (type === 'duration' && current ? String(ms(Number(current) * 1000)) : current) ?? undefined,
+      custom_id: fieldName,
      },
     ],
    },
@@ -452,11 +449,14 @@ const changeHelpers = {
     components: [
      {
       type: Discord.ComponentType.TextInput,
-      style: short ? Discord.TextInputStyle.Short : Discord.TextInputStyle.Paragraph,
-      label: language.slashCommands.settings.insertHere,
-      value:
-       (type === 'duration' && current ? String(ms(Number(current) * 1000)) : current) ?? undefined,
-      custom_id: fieldName,
+      style: Discord.TextInputStyle.Paragraph,
+      label: language.slashCommands.settings.acceptedValue,
+      custom_id: '-',
+      value: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc,
+      max_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
+       .length,
+      min_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
+       .length,
      },
     ],
    },

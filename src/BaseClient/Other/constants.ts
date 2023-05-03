@@ -222,6 +222,15 @@ export default {
   settings: {
    basicSettings: ['vote', 'leveling', 'nitro'],
    types: {
+    'role-rewards': {
+     roles: 'roles',
+     customrole: 'boolean',
+     roleposition: 'position',
+     xpmultiplier: 'number',
+     currency: 'number',
+     blroles: 'roles',
+     blusers: 'users',
+    },
     'anti-raid': {
      punishment: 'punishment',
      posttof: 'boolean',
@@ -515,6 +524,7 @@ export default {
     'button-role-settings': 'buttonrolesettings',
     vote: 'votesettings',
     'vote-rewards': 'voterewards',
+    'role-rewards': 'rolerewards',
    },
   },
  },

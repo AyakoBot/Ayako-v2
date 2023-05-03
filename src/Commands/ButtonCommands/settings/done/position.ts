@@ -1,54 +1,25 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import glob from 'glob';
-import ms from 'ms';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import type * as CT from '../../../../Typings/CustomTypings';
 
-export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
-  if (!cmd.isFromMessage()) return;
-
-  const language = await ch.languageSelector(cmd.guildId);
-
-  const field = cmd.fields.fields.first();
-  if (!field) {
-    ch.errorCmd(cmd, language.errors.numNaN, language);
-    return;
-  }
-
+export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   const settingName = args.shift() as keyof CT.TableNamesMap;
   if (!settingName) return;
+
+  const fieldName = args.shift();
+  if (!fieldName) return;
 
   const tableName = ch.constants.commands.settings.tableNames[
     settingName as keyof typeof ch.constants.commands.settings.tableNames
   ] as keyof CT.TableNamesMap;
   type SettingsType = CT.TableNamesMap[typeof tableName];
 
-  const fieldName = field.customId;
-
-  const verify = (): Promise<{ value?: number; error?: Error }> =>
-    new Promise((res) => {
-      try {
-        ms(field.value);
-        return res({ value: ch.getDuration(field.value) / 1000 });
-      } catch (e) {
-        return res({ error: e as Error });
-      }
-    });
-  const { value: newSetting, error } = await verify();
-
-  console.log(newSetting);
-
-  if (error) {
-    ch.errorCmd(cmd, error.message, language);
-    return;
-  }
-
   const getUniquetimestamp = () => {
     const arg = args.shift();
     if (arg) return Number(arg);
     return undefined;
   };
-
   const uniquetimestamp = getUniquetimestamp();
 
   const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
@@ -58,11 +29,17 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     uniquetimestamp,
   )) as SettingsType;
 
+  const roleText = cmd.message.embeds[0].description?.split(/,\s/g);
+  const roleID = roleText
+    ?.map((c) => c.replace(/\D/g, '') || undefined)
+    .filter((c): c is string => !!c)?.[0];
+   const role = roleID ? cmd.guild?.roles.cache.get(roleID) : undefined;
+
   const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
     tableName,
     fieldName,
     cmd.guildId,
-    newSetting,
+    role?.position,
     uniquetimestamp,
   )) as SettingsType;
 
@@ -93,6 +70,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   if (!file) return;
 
   const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
+  const language = await ch.languageSelector(cmd.guildId);
 
   cmd.update({
     embeds: await settingsFile.getEmbeds(

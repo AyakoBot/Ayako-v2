@@ -69,7 +69,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     },
     {
      name: lan.fields.xpmultiplier.name,
-     value: embedParsers.number(settings?.xpmultiplier, language),
+     value: embedParsers.number(settings?.xpmultiplier ?? 1, language),
      inline: true,
     },
     {

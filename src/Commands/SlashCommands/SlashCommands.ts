@@ -155,6 +155,12 @@ const settings = new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${client.user?.username}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('role-rewards')
+     .setDescription('Give Rewards to Members for achieving a Role')
+     .addStringOption(IDSelector),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('auto-roles')
      .setDescription('Assign Roles to Users and Bots when joining'),
    )
