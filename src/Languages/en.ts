@@ -1444,6 +1444,7 @@ export default {
    },
   },
   settings: {
+   tutorial: 'There are Tutorials available for this Setting',
    authorType: (type: string) => `${name} ${type} Settings`,
    active: 'Active',
    wlchannel: 'Whitelisted Channels',

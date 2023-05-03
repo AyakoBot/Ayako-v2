@@ -5,182 +5,173 @@ import type * as CT from '../../../../Typings/CustomTypings';
 const name = 'verification';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
-  if (!cmd.inGuild()) return;
+ if (!cmd.inGuild()) return;
 
-  const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.settings.categories[name];
-  const { embedParsers, buttonParsers } = ch.settingsHelpers;
-  const settings = await ch
-    .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
-      cmd.guild?.id,
-    ])
-    .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-      r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
-    );
+ const language = await ch.languageSelector(cmd.guild?.id);
+ const lan = language.slashCommands.settings.categories[name];
+ const { embedParsers, buttonParsers } = ch.settingsHelpers;
+ const settings = await ch
+  .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
+   cmd.guild?.id,
+  ])
+  .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
+   r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+  );
 
-  cmd.reply({
-    embeds: await getEmbeds(embedParsers, settings, language, lan),
-    components: await getComponents(buttonParsers, settings, language),
-    ephemeral: true,
-  });
+ cmd.reply({
+  embeds: await getEmbeds(embedParsers, settings, language, lan),
+  components: await getComponents(buttonParsers, settings, language),
+  ephemeral: true,
+ });
 };
 
 export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
-  embedParsers,
-  settings,
-  language,
-  lan,
+ embedParsers,
+ settings,
+ language,
+ lan,
 ) => [
-  {
-    author: embedParsers.author(language, lan),
-    fields: [
-      {
-        name: language.slashCommands.settings.active,
-        value: embedParsers.boolean(settings?.active, language),
-        inline: false,
-      },
-      {
-        name: lan.fields.selfstart.name,
-        value: embedParsers.boolean(settings?.selfstart, language),
-        inline: true,
-      },
-      {
-        name: lan.fields.startchannel.name,
-        value: embedParsers.channel(settings?.startchannel, language),
-        inline: true,
-      },
-      {
-        name: lan.fields.logchannel.name,
-        value: embedParsers.channel(settings?.logchannel, language),
-        inline: true,
-      },
-      {
-        name: lan.fields.pendingrole.name,
-        value: embedParsers.role(settings?.pendingrole, language),
-        inline: true,
-      },
-      {
-        name: lan.fields.finishedrole.name,
-        value: embedParsers.role(settings?.finishedrole, language),
-        inline: false,
-      },
-      {
-        name: '\u200b',
-        value: '\u200b',
-        inline: false,
-      },
-      {
-        name: lan.fields.kicktof.name,
-        value: embedParsers.boolean(settings?.kicktof, language),
-        inline: false,
-      },
-      {
-        name: lan.fields.kickafter.name,
-        value: embedParsers.time(Number(settings?.kickafter), language),
-        inline: false,
-      },
-    ],
-  },
+ {
+  author: embedParsers.author(language, lan),
+  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
+   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
+      name as keyof typeof ch.constants.tutorials
+     ].map((t) => `[${t.name}](${t.link})`)}`
+   : undefined,
+  fields: [
+   {
+    name: language.slashCommands.settings.active,
+    value: embedParsers.boolean(settings?.active, language),
+    inline: false,
+   },
+   {
+    name: lan.fields.selfstart.name,
+    value: embedParsers.boolean(settings?.selfstart, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.startchannel.name,
+    value: embedParsers.channel(settings?.startchannel, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.logchannel.name,
+    value: embedParsers.channel(settings?.logchannel, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.pendingrole.name,
+    value: embedParsers.role(settings?.pendingrole, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.finishedrole.name,
+    value: embedParsers.role(settings?.finishedrole, language),
+    inline: false,
+   },
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
+   {
+    name: lan.fields.kicktof.name,
+    value: embedParsers.boolean(settings?.kicktof, language),
+    inline: false,
+   },
+   {
+    name: lan.fields.kickafter.name,
+    value: embedParsers.time(Number(settings?.kickafter), language),
+    inline: false,
+   },
+  ],
+ },
 ];
 
 export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
-  buttonParsers,
-  settings,
-  language,
+ buttonParsers,
+ settings,
+ language,
 ) => [
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.boolean(language, settings?.selfstart, 'selfstart', name, undefined),
-      buttonParsers.specific(
-        language,
-        settings?.startchannel,
-        'startchannel',
-        name,
-        undefined,
-        'channel',
-      ),
-      buttonParsers.specific(
-        language,
-        settings?.logchannel,
-        'logchannel',
-        name,
-        undefined,
-        'channel',
-      ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.specific(
-        language,
-        settings?.pendingrole,
-        'pendingrole',
-        name,
-        undefined,
-        'role',
-      ),
-      buttonParsers.specific(
-        language,
-        settings?.finishedrole,
-        'finishedrole',
-        name,
-        undefined,
-        'role',
-      ),
-      buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name, undefined),
-      buttonParsers.specific(language, settings?.kickafter, 'kickafter', name, undefined),
-    ],
-  },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(language, settings?.selfstart, 'selfstart', name, undefined),
+   buttonParsers.specific(
+    language,
+    settings?.startchannel,
+    'startchannel',
+    name,
+    undefined,
+    'channel',
+   ),
+   buttonParsers.specific(language, settings?.logchannel, 'logchannel', name, undefined, 'channel'),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.specific(language, settings?.pendingrole, 'pendingrole', name, undefined, 'role'),
+   buttonParsers.specific(
+    language,
+    settings?.finishedrole,
+    'finishedrole',
+    name,
+    undefined,
+    'role',
+   ),
+   buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name, undefined),
+   buttonParsers.specific(language, settings?.kickafter, 'kickafter', name, undefined),
+  ],
+ },
 ];
 
 export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
-  _oldSettings,
-  newSettings,
-  changedSettings,
+ _oldSettings,
+ newSettings,
+ changedSettings,
 ) => {
-  switch (changedSettings) {
-    case 'startchannel': {
-      if (!newSettings?.startchannel) return;
-      const channel = await ch.getChannel.guildTextChannel(newSettings.startchannel);
-      if (!channel) return;
+ switch (changedSettings) {
+  case 'startchannel': {
+   if (!newSettings?.startchannel) return;
+   const channel = await ch.getChannel.guildTextChannel(newSettings.startchannel);
+   if (!channel) return;
 
-      const language = await ch.languageSelector(channel.guildId);
+   const language = await ch.languageSelector(channel.guildId);
 
-      channel.send({
-        embeds: [
-          {
-            author: {
-              name: language.verification.title,
-              icon_url: ch.objectEmotes.tickWithBackground.link,
-            },
-            description: language.verification.startchannelmessage,
-            color: ch.colorSelector(channel.guild.members.me),
-          },
-        ],
-        components: [
-          {
-            type: Discord.ComponentType.ActionRow,
-            components: [
-              {
-                type: Discord.ComponentType.Button,
-                custom_id: 'verification/verify',
-                label: language.verification.verify,
-                style: Discord.ButtonStyle.Primary,
-              },
-            ],
-          },
-        ],
-      });
-      return;
-    }
-    default: {
-      return;
-    }
+   channel.send({
+    embeds: [
+     {
+      author: {
+       name: language.verification.title,
+       icon_url: ch.objectEmotes.tickWithBackground.link,
+      },
+      description: language.verification.startchannelmessage,
+      color: ch.colorSelector(channel.guild.members.me),
+     },
+    ],
+    components: [
+     {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+       {
+        type: Discord.ComponentType.Button,
+        custom_id: 'verification/verify',
+        label: language.verification.verify,
+        style: Discord.ButtonStyle.Primary,
+       },
+      ],
+     },
+    ],
+   });
+   return;
   }
+  default: {
+   return;
+  }
+ }
 };

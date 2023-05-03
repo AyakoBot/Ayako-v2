@@ -96,6 +96,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  const embeds: Discord.APIEmbed[] = [
   {
    author: embedParsers.author(language, lan),
+   description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
+       name as keyof typeof ch.constants.tutorials
+      ].map((t) => `[${t.name}](${t.link})`)}`
+    : undefined,
    fields: [
     {
      name: language.slashCommands.settings.active,

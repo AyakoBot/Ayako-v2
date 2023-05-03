@@ -10,7 +10,6 @@ import query from './query.js';
 import constants from '../Other/constants.js';
 import regexes from './regexes.js';
 import client from '../Client.js';
-import language from 'Commands/ButtonCommands/settings/done/language';
 
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
