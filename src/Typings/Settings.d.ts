@@ -105,14 +105,14 @@ export type deletecommands = {
   guildid: string;
   active: boolean;
 
-  command: string;
+  command?: string;
   deletetimeout?: string;
 
-  deletecommand: boolean;
-  deletereply: boolean;
+  deletecommand?: boolean;
+  deletereply?: boolean;
 
-  wlchannelid: string[];
-  activechannelid: string[];
+  wlchannelid?: string[];
+  activechannelid?: string[];
 };
 
 export type disboard = {
@@ -122,11 +122,11 @@ export type disboard = {
   msgid?: string;
   active: boolean;
 
-  deletereply: boolean;
+  deletereply?: boolean;
   channelid?: string;
 
-  repeatenabled: boolean;
-  repeatreminder: string;
+  repeatenabled?: boolean;
+  repeatreminder?: string;
 
   roles?: string[];
   users?: string[];

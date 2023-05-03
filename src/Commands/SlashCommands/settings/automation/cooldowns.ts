@@ -106,7 +106,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.command.name,
-    value: settings?.command ?? language.None,
+    value: embedParsers.command(settings?.command, language),
     inline: true,
    },
    {
