@@ -1,23 +1,28 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
-export default async (cmd: Discord.CommandInteraction) => {
- if (!cmd.inGuild()) return;
- if (!cmd.inCachedGuild()) return;
+export const cooldown = 0;
+export const name = 'stp';
+export const takesFirstArg = true;
+export const aliases = [];
+export const thisGuildOnly = [];
+export const perm = 0n;
+export const dmOnly = false;
+export const type = 'other';
 
- const language = await ch.languageSelector(cmd.guild?.id);
- const lan = language.slashCommands.stp;
- const string = cmd.options.get('string', true).value as string;
-
- let returned: string | null = null;
+export default async (msg: Discord.Message, args: string[]) => {
+ let returned;
 
  try {
-  returned = ch.stp(string, { cmd });
+  returned = ch.stp(args.join(' '), { msg });
  } catch (e) {
   returned = (e as Error).message;
  }
 
- ch.replyCmd(cmd, {
+ const language = await ch.languageSelector(msg.guildId);
+ const lan = language.slashCommands.stp;
+
+ ch.replyMsg(msg, {
   embeds: [
    {
     description: returned,
@@ -25,13 +30,12 @@ export default async (cmd: Discord.CommandInteraction) => {
      {
       name: '\u200b',
       value: `${language.Examples}: ${ch.util.makeCodeBlock(
-       '{{cmd.guild.name}}\n{{cmd.user.username}}\n{{cmd.channel.name}}',
+       '{{msg.guild.name}}\n{{msg.user.username}}\n{{msg.channel.name}}',
       )}`,
      },
     ],
    },
   ],
-  ephemeral: true,
   components: [
    {
     type: Discord.ComponentType.ActionRow,
@@ -50,7 +54,7 @@ export default async (cmd: Discord.CommandInteraction) => {
     components: [
      {
       type: Discord.ComponentType.Button,
-      url: 'https://discord.js.org/#/docs/discord.js/main/class/CommandInteraction',
+      url: 'https://discord.js.org/#/docs/discord.js/main/class/Message',
       label: lan.button,
       style: Discord.ButtonStyle.Link,
      },

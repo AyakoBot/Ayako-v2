@@ -9,6 +9,7 @@ import ms from 'ms';
 import query from './query.js';
 import constants from '../Other/constants.js';
 import regexes from './regexes.js';
+import client from '../Client.js';
 
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
@@ -53,6 +54,14 @@ const embedParsers = {
   (val?.match(regexes.emojiTester)?.length
    ? val
    : `<${`${val?.startsWith(':') ? '' : ':'}${val}`}>`) ?? language.None,
+ command: (val: string | undefined, language: CT.Language) => {
+  if (!val) return language.None;
+
+  const isID = val?.replace(/\D+/g, '').length === val?.length;
+  const cmd = isID ? client.application?.commands.cache.get(val) : undefined;
+  if (cmd) return `</${cmd.name}:${cmd.id}>`;
+  return `\`${val}\``;
+ },
 };
 
 const back = <T extends keyof SettingsNames>(
@@ -319,7 +328,8 @@ const changeHelpers = {
    | 'language'
    | 'settinglink'
    | 'embed'
-   | 'emote',
+   | 'emote'
+   | 'commands',
  ): Promise<Discord.APIEmbed> => ({
   author: {
    name: language.slashCommands.settings.authorType(lan.name),
@@ -638,7 +648,8 @@ const getMention = async (
   | 'language'
   | 'settinglink'
   | 'embed'
-  | 'emote',
+  | 'emote'
+  | 'commands',
  value: string,
 ): Promise<string> => {
  switch (type) {
@@ -667,6 +678,12 @@ const getMention = async (
   }
   case 'emote': {
    return `<${`${value.startsWith(':') ? '' : ':'}${value}`}>`;
+  }
+  case 'commands': {
+   const cmd = client.application?.commands.cache.get(value);
+
+   if (!cmd) return `\`${value}\``;
+   return `</${cmd?.name}:${cmd?.id}>`;
   }
   default: {
    return value;

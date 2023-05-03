@@ -182,25 +182,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     components: [
       buttonParsers.specific(
         language,
-        settings?.name,
-        'name',
-        name,
-        Number(settings?.uniquetimestamp),
-      ),
-      buttonParsers.boolean(
-        language,
-        settings?.onlyone,
-        'onlyone',
-        name,
-        Number(settings?.uniquetimestamp),
-      ),
-    ],
-  },
-  {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-      buttonParsers.specific(
-        language,
         settings?.roles,
         'roles',
         name,

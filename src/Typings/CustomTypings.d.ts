@@ -8,9 +8,9 @@ export interface Command {
   cooldown: number;
   name: string;
   takesFirstArg: boolean;
-  aliases?: string[];
+  aliases: string[];
   thisGuildOnly: string[];
-  perm?: 0 | bigint;
+  perm: 0 | bigint;
   dmOnly: boolean;
   dmAllowed: boolean;
   type: 'mod' | 'other' | 'owner';

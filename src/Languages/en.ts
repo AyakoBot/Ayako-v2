@@ -1232,11 +1232,13 @@ export default {
    },
   },
  },
+ stringCommands: {
+  stp: {},
+ },
  slashCommands: {
   stp: {
    button: 'Click here to view all invokable Properties',
    warn: 'You can only invoke children marked as "Properties"',
-   desc: `{{cmd.guild.name}}\n{{cmd.user.username}}\n{{cmd.channel.name}}`,
   },
   embedbuilder: {
    inherit: {

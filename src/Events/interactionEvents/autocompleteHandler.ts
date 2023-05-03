@@ -29,7 +29,7 @@ export default async (cmd: Discord.Interaction) => {
   return pathArgs.join('/');
  };
 
- console.log(1, path());
+ console.log(path());
 
  const command = files.find((f) => f.endsWith(`/${path()}.js`));
  if (!command) return;
