@@ -363,14 +363,14 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     if (removedToggles.length) {
       embed.fields?.push({
         name: lan.togglesNameRemoved,
-        value: removedToggles.map((t) => lan.toggles[t]).join(', '),
+        value: removedToggles.map((t) => language.features[t]).join(', '),
       });
     }
 
     if (addedToggles.length) {
       embed.fields?.push({
         name: lan.togglesNameAdded,
-        value: addedToggles.map((t) => lan.toggles[t]).join(', '),
+        value: addedToggles.map((t) => language.features[t]).join(', '),
       });
     }
   }

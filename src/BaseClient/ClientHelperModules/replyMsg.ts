@@ -109,8 +109,8 @@ export const deleteCommandHandler = async (
 
   const applyingSettings = settings
     .map((s) => {
-      if (s.wlchannelid.includes(String(msg.channelId))) return null;
-      if (s.activechannelid.includes(String(msg.channelId))) return s;
+      if (s.wlchannelid?.includes(String(msg.channelId))) return null;
+      if (s.activechannelid?.includes(String(msg.channelId))) return s;
       if (!s.activechannelid?.length) return s;
 
       return null;
