@@ -64,6 +64,9 @@ import constants from './Other/constants.js';
 import neko from './NekoClient.js';
 import getRandom from './ClientHelperModules/getRandom.js';
 import getColor from './ClientHelperModules/getColor.js';
+import findServerByName from './ClientHelperModules/findServerByName.js';
+import getAllBans from './ClientHelperModules/getAllBans.js';
+import splitByThousand from './ClientHelperModules/splitByThousands.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -134,4 +137,7 @@ export {
  channelTimeout,
  getRandom,
  getColor,
+ findServerByName,
+ getAllBans,
+ splitByThousand,
 };
