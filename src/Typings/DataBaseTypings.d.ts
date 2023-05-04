@@ -5,336 +5,341 @@ export const Res = QueryResultBase;
 
 // Tables
 export type afk = {
-  userid: string;
-  guildid: string;
-  text: string;
-  since: string;
+ userid: string;
+ guildid: string;
+ text: string;
+ since: string;
 };
 
 export type customembeds = {
-  name: string;
-  guildid: string;
-  uniquetimestamp: string;
+ name: string;
+ guildid: string;
+ uniquetimestamp: string;
 
-  color?: string;
-  title?: string;
-  url?: string;
-  authorname?: string;
-  authoricon_url?: string;
-  authorurl?: string;
-  description?: string;
-  thumbnail?: string;
-  fieldnames?: string[];
-  fieldvalues?: string[];
-  fieldinlines?: boolean[];
-  image?: string;
-  timestamp?: string;
-  footertext?: string;
-  footericon_url?: string;
+ color?: string;
+ title?: string;
+ url?: string;
+ authorname?: string;
+ authoricon_url?: string;
+ authorurl?: string;
+ description?: string;
+ thumbnail?: string;
+ fieldnames?: string[];
+ fieldvalues?: string[];
+ fieldinlines?: boolean[];
+ image?: string;
+ timestamp?: string;
+ footertext?: string;
+ footericon_url?: string;
 };
 
 export type giveaways = {
-  guildid: string;
-  msgid: string;
-  description: string;
-  winnercount: string;
-  endtime: string;
-  reqrole?: string;
-  actualprize?: string;
-  host: string;
-  ended: boolean;
-  channelid: string;
-  participants?: string[];
-  collecttime?: number;
+ guildid: string;
+ msgid: string;
+ description: string;
+ winnercount: string;
+ endtime: string;
+ reqrole?: string;
+ actualprize?: string;
+ host: string;
+ ended: boolean;
+ channelid: string;
+ participants?: string[];
+ collecttime?: number;
 };
 
 export type level = {
-  userid: string;
-  guildid: string | '1';
-  type: 'guild' | 'global';
-  xp: string;
-  level?: string;
+ userid: string;
+ guildid: string | '1';
+ type: 'guild' | 'global';
+ xp: string;
+ level?: string;
 };
 
 export type policy_guilds = {
-  guildid: string;
+ guildid: string;
 };
 
 export type policy_users = {
-  userid: string;
+ userid: string;
 };
 
 export type BasicPunishmentsTable = {
-  guildid: string;
-  uniquetimestamp: string;
-  active: boolean;
+ guildid: string;
+ uniquetimestamp: string;
+ active: boolean;
 
-  punishment:
-    | 'warn'
-    | 'ban'
-    | 'verbal'
-    | 'kick'
-    | 'tempmute'
-    | 'tempban'
-    | 'channelban'
-    | 'tempchannelban';
-  warnamount: string;
-  duration: string;
+ punishment:
+  | 'warn'
+  | 'ban'
+  | 'verbal'
+  | 'kick'
+  | 'tempmute'
+  | 'tempban'
+  | 'channelban'
+  | 'tempchannelban';
+ warnamount: string;
+ duration: string;
 };
 
 export type punish_bans = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration?: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration?: string;
 };
 
 export type punish_channelbans = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration?: string;
-  banchannelid: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration?: string;
+ banchannelid: string;
 };
 
 export type punish_kicks = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
 };
 
 export type punish_mutes = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration?: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration?: string;
 };
 
 export type punish_tempbans = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration: string;
 };
 
 export type punish_tempchannelbans = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration: string;
-  banchannelid: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration: string;
+ banchannelid: string;
 };
 
 export type punish_tempmutes = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
-  duration: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
+ duration: string;
 };
 
 export type punish_warns = {
-  guildid: string;
-  userid: string;
-  reason?: string;
-  uniquetimestamp: string;
-  channelid: string;
-  channelname: string;
-  executorid: string;
-  executorname: string;
-  msgid: string;
+ guildid: string;
+ userid: string;
+ reason?: string;
+ uniquetimestamp: string;
+ channelid: string;
+ channelname: string;
+ executorid: string;
+ executorname: string;
+ msgid: string;
 };
 
 export type reminders = {
-  userid: string;
-  channelid: string;
-  reason: string;
-  uniquetimestamp: string;
-  endtime: string;
-  msgid: string;
+ userid: string;
+ channelid: string;
+ reason: string;
+ uniquetimestamp: string;
+ endtime: string;
+ msgid: string;
 };
 
 export type roleseparatorsettings = {
-  guildid: string;
-  stillrunning: boolean;
-  channelid?: string;
-  messageid?: string;
-  duration?: string;
-  startat?: string;
-  index?: string;
-  length?: string;
+ guildid: string;
+ stillrunning: boolean;
+ channelid?: string;
+ messageid?: string;
+ duration?: string;
+ startat?: string;
+ index?: string;
+ length?: string;
 };
 
 // TODO
 export type rrbuttons = {
-  uniquetimestamp: string;
-  guildid: string;
-  active: boolean;
+ uniquetimestamp: string;
+ guildid: string;
+ active: boolean;
 
-  roles?: string[];
-  emoteid?: string;
-  buttontext?: string;
-  messagelink: string;
+ roles?: string[];
+ emoteid?: string;
+ buttontext?: string;
+ messagelink: string;
 };
 
 export type stickypermmembers = {
-  userid: string;
-  guildid: string;
-  channelid: string;
-  denybits?: bigint;
-  allowbits?: bigint;
+ userid: string;
+ guildid: string;
+ channelid: string;
+ denybits?: bigint;
+ allowbits?: bigint;
 };
 
 export type stickyrolemembers = {
-  userid: string;
-  guildid: string;
-  roles: string[];
+ userid: string;
+ guildid: string;
+ roles: string[];
 };
 
 export type suggestionvotes = {
-  guildid: string;
-  msgid: string;
-  authorid: string;
-  downvoted?: string[];
-  upvoted?: string[];
-  ended?: boolean;
+ guildid: string;
+ msgid: string;
+ authorid: string;
+ downvoted?: string[];
+ upvoted?: string[];
+ ended?: boolean;
 };
 
 export type users = {
-  userid: string;
-  votereminders: boolean;
-  username: string;
-  avatar: string;
-  socials?: string[];
-  socialstype?: string[];
-  lastfetch: string;
-  email?: string;
-  token?: string;
+ userid: string;
+ votereminders: boolean;
+ username: string;
+ avatar: string;
+ socials?: string[];
+ socialstype?: string[];
+ lastfetch: string;
+ email?: string;
+ token?: string;
 };
 
 export interface giveawaycollecttime {
-  userid: string;
-  prize: string;
-  msgid: string;
-  endtime: number;
-  guildid: string;
+ userid: string;
+ prize: string;
+ msgid: string;
+ endtime: number;
+ guildid: string;
 }
 
 export type voters = {
-  userid: string;
-  removetime: string;
-  voted: string;
-  votetype: 'guild' | 'bot';
-  tier: string;
+ userid: string;
+ removetime: string;
+ voted: string;
+ votetype: 'guild' | 'bot';
+ tier: string;
 
-  rewardroles?: string[];
-  rewardxp?: string;
-  rewardcurrency?: number;
-  rewardxpmultiplier?: number;
+ rewardroles?: string[];
+ rewardxp?: string;
+ rewardcurrency?: number;
+ rewardxpmultiplier?: number;
 };
 
 export type stickymessages = {
-  guildid: string;
-  lastmsgid: string;
-  channelid: strin;
+ guildid: string;
+ lastmsgid: string;
+ channelid: strin;
 };
 
 export type nitrousers = {
-  guildid: string;
-  userid: string;
-  booststart: string;
-  boostend?: string;
-  days?: number;
+ guildid: string;
+ userid: string;
+ booststart: string;
+ boostend?: string;
+ days?: number;
 };
 
 export type stats = {
-  usercount: string;
-  guildcount: string;
-  channelcount: string;
-  rolecount: string;
-  allusers: string;
-  willis?: string[];
-  antispam: boolean;
-  verbosity: boolean;
-  heartbeat: string;
+ usercount: string;
+ guildcount: string;
+ channelcount: string;
+ rolecount: string;
+ allusers: string;
+ willis?: string[];
+ antispam: boolean;
+ verbosity: boolean;
+ heartbeat: string;
 };
 
 export type reviews = {
-  userid: string;
-  score: string;
-  username: string;
-  avatar?: string;
-  content: string;
+ userid: string;
+ score: string;
+ username: string;
+ avatar?: string;
+ content: string;
 };
 
 export type art = {
-  userid: string;
-  created: string;
-  url: string;
-  type: string;
-  verified: boolean;
+ userid: string;
+ created: string;
+ url: string;
+ type: string;
+ verified: boolean;
 };
 
 export type guilds = {
-  guildid: string;
-  name: string;
-  icon?: string;
-  banner?: string;
-  invite?: string;
-  membercount: string;
+ guildid: string;
+ name: string;
+ icon?: string;
+ banner?: string;
+ invite?: string;
+ membercount: string;
 };
 
 export type contributers = {
-  userid: string;
-  roles?: string[];
+ userid: string;
+ roles?: string[];
 };
 
 export type appeals = {
-  userid: string;
-  guildid: string;
-  questions?: string[];
-  answers?: string[];
-  questiontypes?: string[];
-  punishmentid: string;
+ userid: string;
+ guildid: string;
+ questions?: string[];
+ answers?: string[];
+ questiontypes?: string[];
+ punishmentid: string;
+};
+
+export type filterscraper = {
+ keyword: string;
+ filtertype: string;
 };
