@@ -6,292 +6,292 @@ import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
-  const userID = cmd.options.get('user-name', false)?.value as string | null;
-  const language = await ch.languageSelector(cmd.guild?.id);
-  const lan = language.slashCommands.user.info;
+ const userID = cmd.options.get('user-name', false)?.value as string | null;
+ const language = await ch.languageSelector(cmd.guild?.id);
+ const lan = language.slashCommands.info.user;
 
-  if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
-    ch.errorCmd(cmd, language.errors.userNotFound, language);
-    return;
-  }
+ if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
+  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  return;
+ }
 
-  const user =
-    cmd.options.getUser('user', false) ??
-    (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
-    cmd.user;
+ const user =
+  cmd.options.getUser('user', false) ??
+  (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
+  cmd.user;
 
-  if (!user) {
-    ch.errorCmd(cmd, language.errors.userNotFound, language);
-    return;
-  }
+ if (!user) {
+  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  return;
+ }
 
-  const flags = await user.fetchFlags(true);
-  if (user.bot && !flags.has(65536)) flags.add(2048);
+ const flags = await user.fetchFlags(true);
+ if (user.bot && !flags.has(65536)) flags.add(2048);
 
-  let botInfo: { info: string; description: string } | null = null;
-  if (user.bot) botInfo = await getBotInfo(user, language);
+ let botInfo: { info: string; description: string } | null = null;
+ if (user.bot) botInfo = await getBotInfo(user, language);
 
-  const userflags = ch.userFlagsCalc(flags.bitfield, language, true);
-  await getBoosting(userflags, user, language);
+ const userflags = ch.userFlagsCalc(flags.bitfield, language, true);
+ await getBoosting(userflags, user, language);
 
-  if (
-    new URL(user.displayAvatarURL({ size: 4096 })).pathname.endsWith('.gif') ||
-    user.bannerURL({ size: 4096 })
-  ) {
-    flags.add(4096);
-  }
+ if (
+  new URL(user.displayAvatarURL({ size: 4096 })).pathname.endsWith('.gif') ||
+  user.bannerURL({ size: 4096 })
+ ) {
+  flags.add(4096);
+ }
 
-  const banner = user.bannerURL({ size: 4096 });
+ const banner = user.bannerURL({ size: 4096 });
 
-  const userInfo: Discord.APIEmbed = {
-    author: {
-      name: user.bot ? lan.authorBot : lan.authorUser,
-    },
-    thumbnail: {
-      url: user.displayAvatarURL({ size: 4096 }),
-    },
-    image: banner
-      ? {
-          url: banner,
-        }
-      : undefined,
-    color: user.accentColor ?? undefined,
-    description: `${lan.userInfo(user)}${botInfo ? `\n${botInfo.info}` : ''}`,
-    fields: [],
-  };
-  const embeds = [userInfo];
-  const member = await cmd.guild?.members.fetch(user.id)?.catch(() => undefined);
-  const components = getComponents(member, user, language, cmd.guild);
+ const userInfo: Discord.APIEmbed = {
+  author: {
+   name: user.bot ? lan.authorBot : lan.authorUser,
+  },
+  thumbnail: {
+   url: user.displayAvatarURL({ size: 4096 }),
+  },
+  image: banner
+   ? {
+      url: banner,
+     }
+   : undefined,
+  color: user.accentColor ?? undefined,
+  description: `${lan.userInfo(user)}${botInfo ? `\n${botInfo.info}` : ''}`,
+  fields: [],
+ };
+ const embeds = [userInfo];
+ const member = await cmd.guild?.members.fetch(user.id)?.catch(() => undefined);
+ const components = getComponents(member, user, language, cmd.guild);
 
-  if (botInfo && botInfo.description) {
-    userInfo.fields?.push({ name: language.Description, value: botInfo.description });
-  }
+ if (botInfo && botInfo.description) {
+  userInfo.fields?.push({ name: language.Description, value: botInfo.description });
+ }
 
-  if (userflags.length) {
-    userInfo.fields?.push({
-      name: lan.flags,
-      value: userflags.join('\n'),
-      inline: false,
-    });
-  }
-
+ if (userflags.length) {
   userInfo.fields?.push({
-    name: `${ch.stringEmotes.plusBG} ${lan.createdAt}`,
-    value: `${ch.constants.standard.getTime(user.createdTimestamp)}\n\`${ch.moment(
-      Date.now() - user.createdTimestamp,
-      language,
-    )}\``,
+   name: lan.flags,
+   value: userflags.join('\n'),
+   inline: false,
   });
+ }
 
-  if (user.accentColor) userInfo.footer = { text: lan.footer };
-  if (member) getMemberEmbed(embeds, member, user, language);
+ userInfo.fields?.push({
+  name: `${ch.stringEmotes.plusBG} ${lan.createdAt}`,
+  value: `${ch.constants.standard.getTime(user.createdTimestamp)}\n\`${ch.moment(
+   Date.now() - user.createdTimestamp,
+   language,
+  )}\``,
+ });
 
-  cmd.reply({
-    components,
-    embeds,
-    ephemeral: true,
-  });
+ if (user.accentColor) userInfo.footer = { text: lan.footer };
+ if (member) getMemberEmbed(embeds, member, user, language);
+
+ cmd.reply({
+  components,
+  embeds,
+  ephemeral: true,
+ });
 };
 
 const getMemberEmbed = (
-  embeds: Discord.APIEmbed[],
-  member: Discord.GuildMember,
-  user: Discord.User,
-  language: CT.Language,
+ embeds: Discord.APIEmbed[],
+ member: Discord.GuildMember,
+ user: Discord.User,
+ language: CT.Language,
 ) => {
-  const lan = language.slashCommands.user.info;
+ const lan = language.slashCommands.info.user;
 
-  const memberEmbed: Discord.APIEmbed = {
-    author: {
-      name: user.bot ? lan.memberAuthorBot : lan.memberAuthorUser,
-    },
-    fields: [
-      {
-        name: lan.displayName,
-        value: ch.util.makeInlineCode(member.displayName),
-        inline: false,
-      },
-      {
-        name: lan.timeout,
-        value: `${
-          member.communicationDisabledUntil && member.isCommunicationDisabled()
-            ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
-                lan.communicationDisabledUntil
-              } ${ch.constants.standard.getTime(member.communicationDisabledUntilTimestamp)}`
-            : `${ch.stringEmotes.crossWithBackground} ${language.No}`
-        }`,
-        inline: false,
-      },
-      {
-        name: `${ch.stringEmotes.plusBG} ${lan.joinedAt}`,
-        value: `${ch.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
-      },
-      {
-        name: `${getBoostEmote(member)} ${lan.boosting}`,
-        value: `${
-          member.premiumSinceTimestamp
-            ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
-                lan.boostingSince
-              } ${ch.constants.standard.getTime(member.premiumSinceTimestamp)}`
-            : `${ch.stringEmotes.crossWithBackground} ${language.No}`
-        }`,
-      },
-    ],
-  };
+ const memberEmbed: Discord.APIEmbed = {
+  author: {
+   name: user.bot ? lan.memberAuthorBot : lan.memberAuthorUser,
+  },
+  fields: [
+   {
+    name: lan.displayName,
+    value: ch.util.makeInlineCode(member.displayName),
+    inline: false,
+   },
+   {
+    name: lan.timeout,
+    value: `${
+     member.communicationDisabledUntil && member.isCommunicationDisabled()
+      ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
+         lan.communicationDisabledUntil
+        } ${ch.constants.standard.getTime(member.communicationDisabledUntilTimestamp)}`
+      : `${ch.stringEmotes.crossWithBackground} ${language.No}`
+    }`,
+    inline: false,
+   },
+   {
+    name: `${ch.stringEmotes.plusBG} ${lan.joinedAt}`,
+    value: `${ch.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
+   },
+   {
+    name: `${getBoostEmote(member)} ${lan.boosting}`,
+    value: `${
+     member.premiumSinceTimestamp
+      ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
+         lan.boostingSince
+        } ${ch.constants.standard.getTime(member.premiumSinceTimestamp)}`
+      : `${ch.stringEmotes.crossWithBackground} ${language.No}`
+    }`,
+   },
+  ],
+ };
 
-  if (member.displayAvatarURL({ size: 4096 }) !== user.displayAvatarURL({ size: 4096 })) {
-    memberEmbed.thumbnail = { url: member.displayAvatarURL({ size: 4096 }) };
-  }
+ if (member.displayAvatarURL({ size: 4096 }) !== user.displayAvatarURL({ size: 4096 })) {
+  memberEmbed.thumbnail = { url: member.displayAvatarURL({ size: 4096 }) };
+ }
 
-  embeds.push(memberEmbed);
+ embeds.push(memberEmbed);
 };
 
 const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
-  const res = await fetch(`https://top.gg/api/bots/${bot.id}`, {
-    headers: { Authorization: auth.topGGtoken },
-  })
-    .then(
-      (r) => r.json() as Promise<CT.TopGGResponse<true> | CT.TopGGResponse<false>> | Promise<null>,
-    )
-    .catch(() => {});
+ const res = await fetch(`https://top.gg/api/bots/${bot.id}`, {
+  headers: { Authorization: auth.topGGtoken },
+ })
+  .then(
+   (r) => r.json() as Promise<CT.TopGGResponse<true> | CT.TopGGResponse<false>> | Promise<null>,
+  )
+  .catch(() => {});
 
-  if (!res || 'error' in res) return null;
-  return { info: language.slashCommands.user.info.botInfo(res), description: res.shortdesc };
+ if (!res || 'error' in res) return null;
+ return { info: language.slashCommands.info.user.botInfo(res), description: res.shortdesc };
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
-  const guilds = user.client.guilds.cache.filter((g) => g.members.cache.has(user.id));
+ const guilds = user.client.guilds.cache.filter((g) => g.members.cache.has(user.id));
 
-  const premiums = guilds
-    .map((guild) => {
-      const member = guild.members.cache.get(user.id);
+ const premiums = guilds
+  .map((guild) => {
+   const member = guild.members.cache.get(user.id);
 
-      if (member?.premiumSinceTimestamp) return member.premiumSinceTimestamp;
-      return null;
-    })
-    .filter((r): r is number => !!r);
+   if (member?.premiumSinceTimestamp) return member.premiumSinceTimestamp;
+   return null;
+  })
+  .filter((r): r is number => !!r);
 
-  if (!premiums.length) return;
+ if (!premiums.length) return;
 
-  const longestPrem = Math.min(...premiums);
-  const boostFlags = new Discord.BitField();
-  const time = Math.abs(longestPrem - Date.now());
-  const month = 2629743000;
+ const longestPrem = Math.min(...premiums);
+ const boostFlags = new Discord.BitField();
+ const time = Math.abs(longestPrem - Date.now());
+ const month = 2629743000;
 
-  if (time < month * 2) boostFlags.add(1);
-  else if (time < month * 3) boostFlags.add(2);
-  else if (time < month * 6) boostFlags.add(4);
-  else if (time < month * 9) boostFlags.add(8);
-  else if (time < month * 12) boostFlags.add(16);
-  else if (time < month * 15) boostFlags.add(32);
-  else if (time < month * 18) boostFlags.add(64);
-  else if (time < month * 24) boostFlags.add(128);
-  else boostFlags.add(256);
+ if (time < month * 2) boostFlags.add(1);
+ else if (time < month * 3) boostFlags.add(2);
+ else if (time < month * 6) boostFlags.add(4);
+ else if (time < month * 9) boostFlags.add(8);
+ else if (time < month * 12) boostFlags.add(16);
+ else if (time < month * 15) boostFlags.add(32);
+ else if (time < month * 18) boostFlags.add(64);
+ else if (time < month * 24) boostFlags.add(128);
+ else boostFlags.add(256);
 
-  const translatedBoostFlags = await ch.memberBoostCalc(boostFlags.bitfield, language, true);
-  flags.push(...translatedBoostFlags);
+ const translatedBoostFlags = await ch.memberBoostCalc(boostFlags.bitfield, language, true);
+ flags.push(...translatedBoostFlags);
 };
 
 const getBoostEmote = (member: Discord.GuildMember) => {
-  if (!member.premiumSinceTimestamp) return '';
-  const time = Math.abs(member.premiumSinceTimestamp - Date.now());
-  const month = 2629743000;
+ if (!member.premiumSinceTimestamp) return '';
+ const time = Math.abs(member.premiumSinceTimestamp - Date.now());
+ const month = 2629743000;
 
-  if (time < month * 2) return ch.stringEmotes.userFlags.Boost1;
-  if (time < month * 3) return ch.stringEmotes.userFlags.Boost2;
-  if (time < month * 6) return ch.stringEmotes.userFlags.Boost3;
-  if (time < month * 9) return ch.stringEmotes.userFlags.Boost6;
-  if (time < month * 12) return ch.stringEmotes.userFlags.Boost9;
-  if (time < month * 15) return ch.stringEmotes.userFlags.Boost12;
-  if (time < month * 18) return ch.stringEmotes.userFlags.Boost15;
-  if (time < month * 24) return ch.stringEmotes.userFlags.Boost18;
-  return ch.stringEmotes.userFlags.Boost24;
+ if (time < month * 2) return ch.stringEmotes.userFlags.Boost1;
+ if (time < month * 3) return ch.stringEmotes.userFlags.Boost2;
+ if (time < month * 6) return ch.stringEmotes.userFlags.Boost3;
+ if (time < month * 9) return ch.stringEmotes.userFlags.Boost6;
+ if (time < month * 12) return ch.stringEmotes.userFlags.Boost9;
+ if (time < month * 15) return ch.stringEmotes.userFlags.Boost12;
+ if (time < month * 18) return ch.stringEmotes.userFlags.Boost15;
+ if (time < month * 24) return ch.stringEmotes.userFlags.Boost18;
+ return ch.stringEmotes.userFlags.Boost24;
 };
 
 const getComponents = (
-  member: Discord.GuildMember | undefined,
-  user: Discord.User,
-  language: CT.Language,
-  guild: Discord.Guild | null,
+ member: Discord.GuildMember | undefined,
+ user: Discord.User,
+ language: CT.Language,
+ guild: Discord.Guild | null,
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent | Discord.APISelectMenuComponent>[] => {
-  const lan = language.slashCommands.user.info;
+ const lan = language.slashCommands.info.user;
 
-  const linkButtons: Discord.APIButtonComponent[] = [
-    {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Link,
-      label: lan.desktop,
-      url: `discord://-/users/${user.id}`,
-    },
-    {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Link,
-      label: lan.browser,
-      url: `https://discord.com/users/${user.id}`,
-    },
-    {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Link,
-      label: lan.mobile,
-      url: `https://discord.com/users/${user.id}`,
-    },
-  ];
+ const linkButtons: Discord.APIButtonComponent[] = [
+  {
+   type: Discord.ComponentType.Button,
+   style: Discord.ButtonStyle.Link,
+   label: lan.desktop,
+   url: `discord://-/users/${user.id}`,
+  },
+  {
+   type: Discord.ComponentType.Button,
+   style: Discord.ButtonStyle.Link,
+   label: lan.browser,
+   url: `https://discord.com/users/${user.id}`,
+  },
+  {
+   type: Discord.ComponentType.Button,
+   style: Discord.ButtonStyle.Link,
+   label: lan.mobile,
+   url: `https://discord.com/users/${user.id}`,
+  },
+ ];
 
-  if (member && guild) {
-    return [
-      {
-        type: Discord.ComponentType.ActionRow,
-        components: [
-          {
-            type: Discord.ComponentType.Button,
-            disabled: member.roles.cache.size <= 1,
-            style: Discord.ButtonStyle.Secondary,
-            custom_id: `user-info/roles_${user.id}`,
-            label: lan.viewRoles,
-          },
-          {
-            type: Discord.ComponentType.Button,
-            style: Discord.ButtonStyle.Secondary,
-            custom_id: `user-info/basicPerms_${user.id}`,
-            label: lan.viewBasicPermissions,
-          },
-        ],
-      },
-      {
-        type: Discord.ComponentType.ActionRow,
-        components: [
-          {
-            type: Discord.ComponentType.ChannelSelect,
-            custom_id: `user-info/perms_${user.id}`,
-            placeholder: lan.viewChannelPermissions,
-            max_values: 1,
-            min_values: 1,
-            channel_types: [
-              Discord.ChannelType.AnnouncementThread,
-              Discord.ChannelType.GuildAnnouncement,
-              Discord.ChannelType.GuildCategory,
-              Discord.ChannelType.GuildDirectory,
-              Discord.ChannelType.GuildForum,
-              Discord.ChannelType.GuildStageVoice,
-              Discord.ChannelType.GuildText,
-              Discord.ChannelType.GuildVoice,
-              Discord.ChannelType.PrivateThread,
-              Discord.ChannelType.PublicThread,
-            ],
-          },
-        ],
-      },
-      {
-        type: Discord.ComponentType.ActionRow,
-        components: linkButtons,
-      },
-    ];
-  }
-
+ if (member && guild) {
   return [
-    {
-      type: Discord.ComponentType.ActionRow,
-      components: linkButtons,
-    },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      disabled: member.roles.cache.size <= 1,
+      style: Discord.ButtonStyle.Secondary,
+      custom_id: `user-info/roles_${user.id}`,
+      label: lan.viewRoles,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      style: Discord.ButtonStyle.Secondary,
+      custom_id: `user-info/basicPerms_${user.id}`,
+      label: lan.viewBasicPermissions,
+     },
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.ChannelSelect,
+      custom_id: `user-info/perms_${user.id}`,
+      placeholder: lan.viewChannelPermissions,
+      max_values: 1,
+      min_values: 1,
+      channel_types: [
+       Discord.ChannelType.AnnouncementThread,
+       Discord.ChannelType.GuildAnnouncement,
+       Discord.ChannelType.GuildCategory,
+       Discord.ChannelType.GuildDirectory,
+       Discord.ChannelType.GuildForum,
+       Discord.ChannelType.GuildStageVoice,
+       Discord.ChannelType.GuildText,
+       Discord.ChannelType.GuildVoice,
+       Discord.ChannelType.PrivateThread,
+       Discord.ChannelType.PublicThread,
+      ],
+     },
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: linkButtons,
+   },
   ];
+ }
+
+ return [
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: linkButtons,
+  },
+ ];
 };

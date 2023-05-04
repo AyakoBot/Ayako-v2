@@ -270,10 +270,8 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('server')
    .setDescription('Display Information about a Server')
-   .addStringOption(IDSelector)
    .addStringOption(
     new Discord.SlashCommandStringOption()
-     .setAutocomplete(true)
      .setDescription('The ID of the Server')
      .setRequired(false)
      .setName('server-id'),
@@ -285,8 +283,15 @@ const info = new Discord.SlashCommandBuilder()
       `Name of the Server (Searches across all of ${client.user?.username}'s Servers)`,
      )
      .setRequired(false)
-     .setMinLength(2)
+     .setMinLength(1)
      .setAutocomplete(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('server-invite')
+     .setDescription('Invite to the Server')
+     .setRequired(false)
+     .setMinLength(1),
    ),
  )
  .addSubcommand(
