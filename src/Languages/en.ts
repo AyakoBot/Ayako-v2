@@ -54,6 +54,11 @@ const multiplier = {
  desc: 'Multiplier to multiply the awarded XP per Message with',
 };
 
+const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
+ `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
+  tag.moderated ? ` / ${ch.stringEmotes.userFlags.DiscordEmployee} Managed` : ''
+ }`;
+
 const getUser = (
  user:
   | CT.bEvalUser
@@ -144,6 +149,7 @@ const getPunishment = (punishment: CT.punishment) =>
 
 export default {
  languageFunction: {
+  getForumTag,
   getGuild,
   getChannel,
   getUser,
@@ -158,6 +164,8 @@ export default {
   getScheduledEvent,
   getWebhook,
   getCommand,
+  getPunishment,
+  getSticker,
  },
  events: {
   logs: {
@@ -341,7 +349,7 @@ export default {
     privacyLevelName: 'Privacy Level',
     privacyLevel: {
      1: 'Public',
-     2: 'Guild Only',
+     2: 'Server Only',
     },
     entityTypeName: 'Entity Type',
     entityType: {
@@ -868,6 +876,11 @@ export default {
      Pinned: 'Pinned to Top of Forum',
      RequireTag: 'Requires a Tag',
     },
+    privacyLevelName: 'Privacy Level',
+    privacyLevel: {
+     1: 'Public',
+     2: 'Server Only',
+    },
     bitrate: 'Bitrate',
     nsfw: 'NSFW',
     permissions: 'Permissions',
@@ -892,6 +905,10 @@ export default {
     addedPermissionOverwrite: 'Added Permission Overwrite',
     removedPermissionOverwrite: 'Removed Permission Overwrite',
     changedPermissionOverwrite: 'Changed Permission Overwrite',
+    availableTags: 'Available Tags',
+    moderated: 'Moderated',
+    defaultReactionEmoji: 'Default Reaction Emoji',
+    defaultThreadRateLimitPerUser: 'Default Thread Rate Limit per User',
    },
    userUpdate: {
     name: 'User updated',
@@ -1209,9 +1226,7 @@ export default {
    },
   },
  },
- stringCommands: {
-  stp: {},
- },
+ stringCommands: {},
  slashCommands: {
   stp: {
    button: 'Click here to view all invokable Properties',
@@ -1370,6 +1385,9 @@ export default {
     'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
   },
   info: {
+   basic: '__Basic Info__',
+   stats: '__Statistics__',
+   otherInfo: '__Other Info__',
    user: {
     authorUser: `${name} User-Info`,
     authorBot: `${name} Bot-Info`,
@@ -1413,16 +1431,12 @@ export default {
    },
    server: {
     author: `${name} Server-Info`,
-    infoTitle: '__Basic Info__',
-    statsTitle: '__Statistics__',
-    otherInfoTitle: '__Other Info__',
     info: {
      acronym: 'Acronym',
      widgetChannel: 'Widget Channel',
      description: 'Description',
     },
     stats: {
-     created: 'Created',
      members: 'Members',
      bots: 'Bots',
      channels: 'Channels',
@@ -1438,7 +1452,14 @@ export default {
      maxStageVideoChannelUsers: 'Max. Stage Video Channel Users',
     },
     inviteGuild: `${name} is not Part of this Server, therefore only limited Information is available`,
-    otherInfo: {},
+   },
+   channel: {
+    author: `${name} Channel-Info`,
+    stageInstanceName: 'Stage Instance',
+    scheduledEvent: {
+     author: `${name} Event-Info`,
+     userCount: 'User Count',
+    },
    },
   },
   settings: {
@@ -2889,6 +2910,7 @@ export default {
   userNotFound: 'The Mentioned User could not be found',
   serverNotFound: 'The Mentioned Server could not be found',
   inviteNotFound: 'The Mentioned Invite could not be found',
+  channelNotFound: 'The Mentioned Channel could not be found',
   numTooLarge: 'Number too large',
   numNaN: 'Not a Number',
   guildCommand: 'This Command is only available in Servers',
@@ -3268,6 +3290,24 @@ export default {
   stack: 'Stack',
   replace: 'Replace',
  },
+ defaultAutoArchiveDurationName: 'Default Auto-Archive Duration',
+ defaultAutoArchiveDuration: {
+  1440: '1 Day',
+  4320: '3 Days',
+  60: '1 Hour',
+  10080: '1 Week',
+ },
+ defaultForumLayoutName: 'Forum Layout Type',
+ defaultForumLayout: {
+  2: 'Gallery View',
+  1: 'List View',
+  0: 'Not Set',
+ },
+ defaultSortOrderName: 'Default Sort Order',
+ defaultSortOrder: {
+  0: 'Latest Activity',
+  1: 'Newest First',
+ },
  Scopes: 'Scopes',
  Result: 'Result',
  stagePrivacyLevels: ['Public', 'Server Only'],
@@ -3336,4 +3376,7 @@ export default {
  Refresh: 'Refresh',
  Delete: 'Delete',
  Examples: 'Examples',
+ Redacted: 'Redacted',
+ Threads: 'Threads',
+ Topic: 'Topic',
 };

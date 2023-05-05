@@ -99,7 +99,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
      color: chEval.colorSelector(isInviteGuild ? undefined : g.members.me),
      fields: [
       {
-       name: lan.infoTitle,
+       name: language.slashCommands.info.basic,
        value: [
         {
          name: chEval.util.makeBold(language.name),
@@ -163,10 +163,10 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        inline: false,
       },
       {
-       name: lan.statsTitle,
+       name: language.slashCommands.info.stats,
        value: [
         {
-         name: chEval.util.makeBold(lan.stats.created),
+         name: chEval.util.makeBold(language.createdAt),
          value: chEval.constants.standard.getTime(g.createdTimestamp),
         },
         ...(isInviteGuild
@@ -239,7 +239,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        inline: false,
       },
       {
-       name: lan.otherInfoTitle,
+       name: language.slashCommands.info.otherInfo,
        value: [
         ...(isInviteGuild
          ? []
