@@ -246,13 +246,13 @@ const getComponents = (
       type: Discord.ComponentType.Button,
       disabled: member.roles.cache.size <= 1,
       style: Discord.ButtonStyle.Secondary,
-      custom_id: `user-info/roles_${user.id}`,
+      custom_id: `info/roles_${user.id}`,
       label: lan.viewRoles,
      },
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
-      custom_id: `user-info/basicPerms_${user.id}`,
+      custom_id: `info/basicPerms_${user.id}`,
       label: lan.viewBasicPermissions,
      },
     ],
@@ -262,7 +262,7 @@ const getComponents = (
     components: [
      {
       type: Discord.ComponentType.ChannelSelect,
-      custom_id: `user-info/perms_${user.id}`,
+      custom_id: `info/perms_${user.id}`,
       placeholder: lan.viewChannelPermissions,
       max_values: 1,
       min_values: 1,
