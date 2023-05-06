@@ -2,12 +2,16 @@ import type * as Discord from 'discord.js';
 import type CT from '../Typings/CustomTypings';
 import * as ch from '../BaseClient/ClientHelper.js';
 import client from '../BaseClient/Client.js';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import packageJSON from '../../package.json' assert { type: 'json' };
 
 type Strumber = string | number;
 
 const name = client.user?.username ?? 'Ayako';
 
 const time = {
+ milliseconds: 'Millisecond(s)',
  seconds: 'Second(s)',
  minutes: 'Minute(s)',
  hours: 'Hour(s)',
@@ -1227,6 +1231,10 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  ping: {
+   lastHeartbeat: 'Last Heartbeat',
+   responseTime: 'Response Time',
+  },
   stp: {
    button: 'Click here to view all invokable Properties',
    warn: 'You can only invoke children marked as "Properties"',
@@ -1391,6 +1399,25 @@ export default {
     author: `${name} Info`,
     shards: 'Shards',
     uptime: 'Uptime',
+    CPU: 'CPU',
+    OS: 'Operating System',
+    memory: 'Memory',
+    free: 'Free',
+    total: 'Total',
+    base: `Ayako ${
+     client.user?.id === ch.mainID ? '' : '(The Base of this Bot)'
+    } is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)\n\nIt is currently in Version ${ch.util.makeInlineCode(
+     packageJSON.version,
+    )} and is being developed and maintained by <@318453143476371456> (@Lars_und_so).
+    A Full-Time IT Specialist for Application Development
+    View [Credits](https://ayakobot.com/credits) for more Information
+    Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot)
+    For more Information, visit [AyakoBot.com](https://ayakobot.com/)
+    Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials
+    
+    Ayako started as a small Moderation Bot for the large Discord Server [Animekos](https://discord.gg/animekos) in 2019.
+    Its success is owed to <@267835618032222209> (@Victoria) who first gave this Bot a chance on her Server,
+    and <@244126983489978368> (@PandaFish) who first taught me how to code [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)`,
    },
    user: {
     authorUser: `${name} User-Info`,
@@ -3334,7 +3361,7 @@ export default {
  small: 'Small',
  joinedAt: 'Joined At',
  createdAt: 'Created At',
- roles: 'Roles',
+ roles: 'roles',
  large: 'Large',
  loading: 'Loading',
  Enabled: 'Enabled',
@@ -3383,4 +3410,5 @@ export default {
  Redacted: 'Redacted',
  Threads: 'Threads',
  Topic: 'Topic',
+ Servers: 'Servers',
 };

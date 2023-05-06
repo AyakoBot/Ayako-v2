@@ -1,10 +1,16 @@
 import * as os from 'os';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as DBT from '../../../Typings/DataBaseTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.bot;
+ const pingLan = language.slashCommands.ping;
+
+ const stats = await ch
+  .query(`SELECT * FROM stats;`)
+  .then((r: DBT.stats[] | null) => r?.[0] ?? null);
 
  ch.replyCmd(cmd, {
   embeds: [
@@ -12,18 +18,70 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     author: {
      name: lan.author,
     },
-    description: [
+    color: ch.colorSelector(cmd.guild?.members.me),
+    description: `${[
+     ...(stats
+      ? [
+         {
+          name: `${pingLan.lastHeartbeat}:`,
+          value: ch.util.makeInlineCode(`${stats.heartbeat} ${language.time.milliseconds}`),
+         },
+         {
+          name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.guildcount)))} ${
+           language.Servers
+          }`,
+          value: '',
+         },
+         {
+          name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.channelcount)))} ${
+           language.Channels
+          }`,
+          value: '',
+         },
+         {
+          name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.rolecount)))} ${
+           language.Roles
+          }`,
+          value: '',
+         },
+         {
+          name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.allusers)))} ${
+           language.Users
+          }`,
+          value: '',
+         },
+        ]
+      : []),
+
      {
-      name: lan.shards,
-      value: `${cmd.client.shard?.ids.length ?? 1}`,
+      name: `${ch.util.makeInlineCode(String(cmd.client.shard?.ids.length ?? 1))} ${lan.shards}`,
+      value: '',
      },
      {
-      name: lan.uptime,
-      value: `${ch.moment(process.uptime(), language)} - ${ch.constants.standard.getTime(
-       Math.round(process.uptime()),
+      name: `${lan.uptime}:`,
+      value: `${ch.util.makeInlineCode(ch.moment(Math.round(process.uptime() * 1000), language))}`,
+     },
+     {
+      name: `${lan.CPU}:`,
+      value: `${ch.util.makeInlineCode(os.cpus()[0].model)} / \`${
+       Math.round(os.cpus()[0].speed / 100) / 10
+      }GHz\``,
+     },
+     {
+      name: `${lan.OS}:`,
+      value: `${ch.util.makeInlineCode(`${os.type()} ${os.arch()}`)}`,
+     },
+     {
+      name: `${lan.memory}:`,
+      value: `${ch.util.makeInlineCode(
+       `${lan.free}: ${ch.splitByThousand(Math.round(os.freemem() / 1000000000))}GB`,
+      )} / ${ch.util.makeInlineCode(
+       `${lan.total}: ${ch.splitByThousand(Math.round(os.totalmem() / 1000000000))}GB`,
       )}`,
      },
-    ],
+    ]
+     .map(({ name, value }) => `${ch.util.makeBold(name)} ${value}`)
+     .join('\n')}\n\n${lan.base}`,
    },
   ],
  });
