@@ -9,7 +9,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  const messageLink = cmd.fields.getTextInputValue('message');
  const [, , , , , channelId, messageId] = messageLink.split('/');
 
- const guild = cmd.guild;
+ const { guild } = cmd;
  if (!guild) return;
 
  const language = await ch.languageSelector(guild.id);

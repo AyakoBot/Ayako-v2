@@ -72,7 +72,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    const language = await chEval.languageSelector(g.id);
    const lan = language.slashCommands.info.server;
    const eventLan = language.events.logs.guild;
-   let owner: Discord.GuildMember | undefined = undefined;
+   let owner: Discord.GuildMember | undefined;
    const isInviteGuild = !('members' in g);
 
    if (!isInviteGuild) {

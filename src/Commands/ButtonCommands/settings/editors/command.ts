@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
+import glob from 'glob';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings';
 import client from '../../../../BaseClient/Client.js';
-import glob from 'glob';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();

@@ -3,6 +3,6 @@ import verification from './verification.js';
 import log from './log.js';
 
 export default async (member: Discord.GuildMember) => {
-  log(member);
-  verification(member);
+ log(member);
+ verification(member);
 };

@@ -2,75 +2,75 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
-  if (!cmd.inGuild()) return;
+ if (!cmd.inGuild()) return;
 
-  const member = await cmd.guild?.members.fetch(args.shift() ?? cmd.user.id).catch(() => undefined);
-  const language = await ch.languageSelector(cmd.guildId);
+ const member = await cmd.guild?.members.fetch(args.shift() ?? cmd.user.id).catch(() => undefined);
+ const language = await ch.languageSelector(cmd.guildId);
 
-  if (!member) {
-    ch.errorCmd(cmd, language.errors.memberNotFound, language);
-    return;
-  }
+ if (!member) {
+  ch.errorCmd(cmd, language.errors.memberNotFound, language);
+  return;
+ }
 
-  const allPerms = new Discord.PermissionsBitField(Discord.PermissionsBitField.All).toArray();
-  const allowedBits: bigint[] = [];
-  const deniedBits: bigint[] = [];
+ const allPerms = new Discord.PermissionsBitField(Discord.PermissionsBitField.All).toArray();
+ const allowedBits: bigint[] = [];
+ const deniedBits: bigint[] = [];
 
-  allPerms.forEach((_, i) => {
-    const p = Object.entries(member.permissions.serialize())[i] as [
-      Discord.PermissionsString,
-      boolean,
-    ];
-
-    if (p[1]) allowedBits.push(new Discord.PermissionsBitField(p[0]).bitfield);
-    if (!p[1]) deniedBits.push(new Discord.PermissionsBitField(p[0]).bitfield);
-  });
-
-  const categories: Discord.Collection<string | bigint, (string | null)[]> =
-    new Discord.Collection();
-
-  const categoryBits = [
-    [1879573680n, language.permissions.categories.GENERAL],
-    [1099712954375n, language.permissions.categories.MEMBER],
-    [534723950656n, language.permissions.categories.TEXT],
-    [554116842240n, language.permissions.categories.VOICE],
-    [4294967296n, language.permissions.categories.STAGE],
-    [8589934592n, language.permissions.categories.EVENTS],
-    [8n, language.permissions.categories.ADVANCED],
+ allPerms.forEach((_, i) => {
+  const p = Object.entries(member.permissions.serialize())[i] as [
+   Discord.PermissionsString,
+   boolean,
   ];
 
-  categoryBits.forEach(([bit, name]) => {
-    categories.set(name, [
-      ...new Set([
-        ...allowedBits
-          .map((perm) =>
-            new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-              ? `${ch.stringEmotes.enabled} ${ch.permCalc(perm, language, true)}`
-              : null,
-          )
-          .filter((r) => !!r),
-        ...deniedBits
-          .map((perm) =>
-            new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-              ? `${ch.stringEmotes.disabled} ${ch.permCalc(perm, language, true)}`
-              : null,
-          )
-          .filter((r) => !!r),
-      ]),
-    ]);
-  });
+  if (p[1]) allowedBits.push(new Discord.PermissionsBitField(p[0]).bitfield);
+  if (!p[1]) deniedBits.push(new Discord.PermissionsBitField(p[0]).bitfield);
+ });
 
-  const embed: Discord.APIEmbed = {
-    fields: [],
-    color: ch.constants.colors.ephemeral,
-  };
+ const categories: Discord.Collection<string | bigint, (string | null)[]> =
+  new Discord.Collection();
 
-  categories.forEach((perms, name) => {
-    embed.fields?.push({ name: `${name}`, value: ` ${perms.join('\n')}\u200b`, inline: false });
-  });
+ const categoryBits = [
+  [1879573680n, language.permissions.categories.GENERAL],
+  [1099712954375n, language.permissions.categories.MEMBER],
+  [534723950656n, language.permissions.categories.TEXT],
+  [554116842240n, language.permissions.categories.VOICE],
+  [4294967296n, language.permissions.categories.STAGE],
+  [8589934592n, language.permissions.categories.EVENTS],
+  [8n, language.permissions.categories.ADVANCED],
+ ];
 
-  cmd.reply({
-    embeds: [embed],
-    ephemeral: true,
-  });
+ categoryBits.forEach(([bit, name]) => {
+  categories.set(name, [
+   ...new Set([
+    ...allowedBits
+     .map((perm) =>
+      new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
+       ? `${ch.stringEmotes.enabled} ${ch.permCalc(perm, language, true)}`
+       : null,
+     )
+     .filter((r) => !!r),
+    ...deniedBits
+     .map((perm) =>
+      new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
+       ? `${ch.stringEmotes.disabled} ${ch.permCalc(perm, language, true)}`
+       : null,
+     )
+     .filter((r) => !!r),
+   ]),
+  ]);
+ });
+
+ const embed: Discord.APIEmbed = {
+  fields: [],
+  color: ch.constants.colors.ephemeral,
+ };
+
+ categories.forEach((perms, name) => {
+  embed.fields?.push({ name: `${name}`, value: ` ${perms.join('\n')}\u200b`, inline: false });
+ });
+
+ cmd.reply({
+  embeds: [embed],
+  ephemeral: true,
+ });
 };

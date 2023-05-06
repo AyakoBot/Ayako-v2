@@ -1,11 +1,11 @@
 import * as Discord from 'discord.js';
 import glob from 'glob';
+import ms from 'ms';
 import type * as DBT from '../../Typings/DataBaseTypings';
 import type * as CT from '../../Typings/CustomTypings';
 import stringEmotes from './stringEmotes.js';
 import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
-import ms from 'ms';
 import query from './query.js';
 import constants from '../Other/constants.js';
 import regexes from './regexes.js';
@@ -136,7 +136,7 @@ const buttonParsers = {
     string
    >
   ).name,
-  style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+  style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
   custom_id: `settings/editors/settinglink_${String(
    name,
   )}_${settingName}_${linkName}_${uniquetimestamp}`,
@@ -159,7 +159,7 @@ const buttonParsers = {
      name
     ] as Record<'name', string>
    ).name,
-   style: !!setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
     name,
    )}_${settingName}_${uniquetimestamp}`,
@@ -190,7 +190,7 @@ const buttonParsers = {
  previous: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
-  enabled: boolean = false,
+  enabled = false,
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   label: language.slashCommands.settings.previous,
@@ -202,8 +202,8 @@ const buttonParsers = {
  next: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
-  enabled: boolean = false,
   uniquetimestamp: number | undefined,
+  enabled = false,
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   label: language.slashCommands.settings.next,
@@ -245,7 +245,7 @@ const multiRowHelpers = {
     type: Discord.ComponentType.ActionRow,
     components: [
      buttonParsers.previous(language, name),
-     buttonParsers.next(language, name, true, undefined),
+     buttonParsers.next(language, name, undefined, true),
     ],
    });
   }
@@ -275,6 +275,7 @@ export const updateLog = (
  uniquetimestamp: number | undefined,
 ) => {
  postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+ // eslint-disable-next-line no-console
  console.log(oldSetting, newSetting, changedSetting, uniquetimestamp);
 };
 
@@ -493,7 +494,7 @@ const changeHelpers = {
   (uniquetimestamp
    ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [uniquetimestamp])
    : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId])
-  ).then((r: any[] | null) => {
+  ).then((r: unknown[] | null) => {
    if (!r) return runSetup(guildId, tableName);
 
    return r ? r[0] : null;
@@ -502,18 +503,18 @@ const changeHelpers = {
   tableName: keyof SettingsNames,
   fieldName: string,
   guildId: string | null,
-  newSetting: any,
+  newSetting: unknown,
   uniquetimestamp: number | undefined,
  ) =>
   uniquetimestamp
    ? query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`, [
       newSetting ?? null,
       uniquetimestamp,
-     ]).then((r: any[] | null) => (r ? r[0] : null))
+     ]).then((r: unknown[] | null) => (r ? r[0] : null))
    : query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`, [
       newSetting ?? null,
       guildId,
-     ]).then((r: any[] | null) => (r ? r[0] : null)),
+     ]).then((r: unknown[] | null) => (r ? r[0] : null)),
 };
 
 const runSetup = async <T extends keyof CT.TableNamesMap>(
@@ -527,7 +528,7 @@ const runSetup = async <T extends keyof CT.TableNamesMap>(
    ]
   } (guildid) VALUES ($1) RETURNING *;`,
   [guildid],
- ).then((r: any[] | null) => (r ? r[0] : null));
+ ).then((r: unknown[] | null) => (r ? r[0] : null));
 
 export default {
  embedParsers,

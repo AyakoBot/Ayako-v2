@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    cmd.guild?.id,
   ])
   .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
   );
 
  cmd.reply({
@@ -168,10 +168,10 @@ export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
      },
     ],
    });
-   return;
+   break;
   }
   default: {
-   return;
+   break;
   }
  }
 };

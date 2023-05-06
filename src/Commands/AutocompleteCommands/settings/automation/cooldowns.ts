@@ -7,7 +7,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
   await ch
    .query(
-    `SELECT * FROM ${ch.constants.commands.settings.tableNames['cooldowns']} WHERE guildid = $1;`,
+    `SELECT * FROM ${ch.constants.commands.settings.tableNames.cooldowns} WHERE guildid = $1;`,
     [cmd.guildId],
    )
    .then((r: DBT.cooldowns[] | null) => r)
@@ -18,7 +18,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  });
 
  const language = await ch.languageSelector(cmd.guildId);
- const lan = language.slashCommands.settings.categories['cooldowns'];
+ const lan = language.slashCommands.settings.categories.cooldowns;
 
  if (!settings) return [];
 

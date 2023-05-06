@@ -2,10 +2,10 @@ import type * as Discord from 'discord.js';
 import log from './log.js';
 
 export default async (
-  oldStage: Discord.StageInstance | undefined,
-  stage: Discord.StageInstance,
+ oldStage: Discord.StageInstance | undefined,
+ stage: Discord.StageInstance,
 ) => {
-  if (!oldStage) return;
+ if (!oldStage) return;
 
-  log(oldStage, stage);
+ log(oldStage, stage);
 };

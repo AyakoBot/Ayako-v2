@@ -31,7 +31,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
    [parseInt(ID, 36)],
   )
   .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
   );
 
  if (cmd.isButton()) {
@@ -63,9 +63,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
-  value: `${lan.fields.roles.name}: ${
-   s.roles ? s.roles.length : language.None
-  }`,
+  value: `${lan.fields.roles.name}: ${s.roles ? s.roles.length : language.None}`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -174,7 +172,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'roles',
     name,
     Number(settings?.uniquetimestamp),
-    'role'
+    'role',
    ),
    buttonParsers.boolean(
     language,

@@ -4,17 +4,17 @@ import constants from '../Other/constants.js';
 import reply from './replyCmd.js';
 
 export default (interaction: Discord.ButtonInteraction, language: CT.Language) =>
-  reply(interaction, {
-    embeds: [
-      {
-        author: {
-          name: language.error,
-          icon_url: constants.standard.error,
-          url: constants.standard.invite,
-        },
-        color: constants.colors.danger,
-        description: language.errors.notYours,
-      },
-    ],
-    ephemeral: true,
-  });
+ reply(interaction, {
+  embeds: [
+   {
+    author: {
+     name: language.error,
+     icon_url: constants.standard.error,
+     url: constants.standard.invite,
+    },
+    color: constants.colors.danger,
+    description: language.errors.notYours,
+   },
+  ],
+  ephemeral: true,
+ });

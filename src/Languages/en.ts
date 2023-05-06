@@ -15,8 +15,8 @@ const time = {
  weeks: 'Week(s)',
  months: 'Month(s)',
  years: 'Year(s)',
- timeAgo: (time: string) => `${time} ago`,
- timeIn: (time: string) => `in ${time}`,
+ timeAgo: (t: string) => `${t} ago`,
+ timeIn: (t: string) => `in ${t}`,
 };
 
 const punishmentFields = {
@@ -1120,7 +1120,7 @@ export default {
   punishmentIn: 'Punished in',
   punishmentBy: 'Punished by',
   end: 'Punishment End',
-  endedAt: (time: string) => `Punishment ended ${time}`,
+  endedAt: (t: string) => `Punishment ended ${t}`,
   duration: 'Punishment Duration',
   pardonedBy: 'Pardoned by',
  },
@@ -1140,7 +1140,7 @@ export default {
    description:
     'Display a AFK text whenever someone pings you.\nAutomatically deleted if you send a Message 1 Minute after creating your AFK',
    usage: ['afk (text)'],
-   footer: (userId: string, time: Strumber) => `<@${userId}> is AFK since ${time}`,
+   footer: (userID: string, t: Strumber) => `<@${userID}> is AFK since ${t}`,
    updatedTo: (user: CT.bEvalUser | Discord.User, text: string) =>
     `**<@${user.id}>'s AFK updated to:**\n${text}`,
    updated: (user: CT.bEvalUser | Discord.User) => `**<@${user.id}>'s AFK updated**`,
@@ -1161,7 +1161,7 @@ export default {
   },
   afkHandler: {
    deletedAfk: "I've deleted your AFK",
-   footer: (time: Strumber) => `Welcome back! You have been AFK for ${time}`,
+   footer: (t: Strumber) => `Welcome back! You have been AFK for ${t}`,
    setAfk: 'User went AFK',
    delAfk: 'User returned from being AFK',
    forceDelAfk: (user: CT.bEvalUser | Discord.User, reason: string) =>
@@ -1169,11 +1169,10 @@ export default {
   },
   commandHandler: {
    GuildOnly: 'This Command is not made for DMs, please try again in a Server',
-   pleaseWait: (time: Strumber) => `Please wait ${time} before re-using this Command`,
+   pleaseWait: (t: Strumber) => `Please wait ${t} before re-using this Command`,
    CategoryDisabled: (category: string) =>
     `Category \`${category}\` was disabled by the Server Administration`,
-   CommandDisabled: (name: string) =>
-    `Command \`${name}\` was disabled by the Server Administration`,
+   CommandDisabled: (n: string) => `Command \`${n}\` was disabled by the Server Administration`,
    creatorOnly: 'Only my Creator can use this Command (`Lars_und_so#0666`)',
    ownerOnly: 'Only the Owner of this Server can use this Command',
    missingPermissions: "You don't have enough Permissions to use this Command",
@@ -1196,8 +1195,8 @@ export default {
    set: 'set',
    delete: 'delete',
    list: 'list',
-   created: (id: Strumber, time: Strumber) =>
-    `Successfully created Reminder with ID \`${id}\`\nReminder End: ${time}`,
+   created: (id: Strumber, t: Strumber) =>
+    `Successfully created Reminder with ID \`${id}\`\nReminder End: ${t}`,
    invalidTime: 'The given Time was not valid',
    noReason: 'Please provide a Reason to Remind you of',
    reminderEnded: (reason: string) => `__Your Reminder has ended:__\n${reason}`,
@@ -1388,6 +1387,11 @@ export default {
    basic: '__Basic Info__',
    stats: '__Statistics__',
    otherInfo: '__Other Info__',
+   bot: {
+    author: `${name} Info`,
+    shards: 'Shards',
+    uptime: 'Uptime',
+   },
    user: {
     authorUser: `${name} User-Info`,
     authorBot: `${name} Bot-Info`,
@@ -2413,7 +2417,7 @@ export default {
     button: 'Get to Giveaway',
     manuallyEnded: 'Manually Ended Giveaway',
     clickButton: 'Click the Button below to claim your Prize',
-    limitedTime: (inTime: string, time: string) => `Your prize expires ${inTime} (${time})`,
+    limitedTime: (inTime: string, t: string) => `Your prize expires ${inTime} (${t})`,
     timeRanOut:
      'You can no longer claim your Prize since you took too long to claim it\nI will now re-roll the Giveaway',
    },

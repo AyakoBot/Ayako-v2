@@ -11,22 +11,22 @@ process.on('promiseRejectionHandledWarning', (error: string) => console.error(er
 process.on('experimentalWarning', (error: string) => console.error(error));
 
 events.forEach(async (path) => {
-  const eventName = path.replace('.js', '').split(/\/+/).pop();
-  if (!eventName) return;
+ const eventName = path.replace('.js', '').split(/\/+/).pop();
+ if (!eventName) return;
 
-  const eventHandler = (await import('./Events/baseEventHandler.js')).default;
+ const eventHandler = (await import('./Events/baseEventHandler.js')).default;
 
-  if (eventName === 'ready') client.once(eventName, (...args) => eventHandler(eventName, args));
-  else client.on(eventName, (...args) => eventHandler(eventName, args));
+ if (eventName === 'ready') client.once(eventName, (...args) => eventHandler(eventName, args));
+ else client.on(eventName, (...args) => eventHandler(eventName, args));
 });
 
 client.on('debug', (info) => {
-  if (info.includes('Heartbeat')) return;
+ if (info.includes('Heartbeat')) return;
 
-  // eslint-disable-next-line no-console
-  console.log(info);
+ // eslint-disable-next-line no-console
+ console.log(info);
 });
 
 client.on('warn', (info) => {
-  console.log(info);
+ console.log(info);
 });

@@ -6,22 +6,20 @@ import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
 export default async (
-  guild: Discord.Guild,
-  {
-    lan,
-    language,
-  }: {
-    language: CT.Language;
-    lan: { author: string; loading?: string };
-  },
-): Promise<Discord.APIEmbed> => {
-  return {
-    author: {
-      name: lan.author,
-      icon_url: objectEmotes.loading.link,
-      url: constants.standard.invite,
-    },
-    color: colorSelector(guild.members.me ?? undefined),
-    description: `${stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
-  };
-};
+ guild: Discord.Guild,
+ {
+  lan,
+  language,
+ }: {
+  language: CT.Language;
+  lan: { author: string; loading?: string };
+ },
+): Promise<Discord.APIEmbed> => ({
+ author: {
+  name: lan.author,
+  icon_url: objectEmotes.loading.link,
+  url: constants.standard.invite,
+ },
+ color: colorSelector(guild.members.me ?? undefined),
+ description: `${stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
+});

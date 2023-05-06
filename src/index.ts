@@ -11,7 +11,7 @@ console.log(`
 `);
 
 const manager = new Discord.ShardingManager('./bot.js', {
-  token: auth.token,
+ token: auth.token,
 });
 
 manager.on('shardCreate', (shard) => console.log(`[Shard Manager] Launched Shard ${shard.id}`));
@@ -26,12 +26,12 @@ await manager.spawn();
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
-  const parts = msg.trim().split(/\s+/);
-  const code = parts.join(' ');
+ const parts = msg.trim().split(/\s+/);
+ const code = parts.join(' ');
 
-  if (!code.startsWith('restart')) return;
+ if (!code.startsWith('restart')) return;
 
-  const shardID = code.split(/\s+/)[1];
-  if (!shardID) manager.respawnAll();
-  else manager.shards.get(Number(shardID))?.respawn();
+ const shardID = code.split(/\s+/)[1];
+ if (!shardID) manager.respawnAll();
+ else manager.shards.get(Number(shardID))?.respawn();
 });

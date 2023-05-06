@@ -8,29 +8,29 @@ import voteBotCreate from '../../voteEvents/voteBotEvents/voteBotCreate.js';
 import voteGuildCreate from '../../voteEvents/voteGuildEvents/voteGuildCreate.js';
 
 export default async () => {
-  const socket = io('https://api.ayakobot.com', {
-    transports: ['websocket'],
-    auth: {
-      reason: 'topgg',
-      code: auth.socketToken,
-    },
-  });
+ const socket = io('https://api.ayakobot.com', {
+  transports: ['websocket'],
+  auth: {
+   reason: 'topgg',
+   code: auth.socketToken,
+  },
+ });
 
-  socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
-    const row = await ch
-      .query(`SELECT guildid FROM votesettings WHERE token = $1;`, [vote.authorization])
-      .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
-    if (!row) return;
+ socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
+  const row = await ch
+   .query(`SELECT guildid FROM votesettings WHERE token = $1;`, [vote.authorization])
+   .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
+  if (!row) return;
 
-    const guild = client.guilds.cache.get(row.guildid);
-    if (!guild) return;
+  const guild = client.guilds.cache.get(row.guildid);
+  if (!guild) return;
 
-    const user = await ch.getUser(vote.user).catch(() => undefined);
-    if (!user) return;
+  const user = await ch.getUser(vote.user).catch(() => undefined);
+  if (!user) return;
 
-    const member = await guild.members.fetch(vote.user).catch(() => undefined);
+  const member = await guild.members.fetch(vote.user).catch(() => undefined);
 
-    if ('bot' in vote) voteBotCreate(vote, guild, user, member);
-    if ('guild' in vote) voteGuildCreate(vote, guild, user, member);
-  });
+  if ('bot' in vote) voteBotCreate(vote, guild, user, member);
+  if ('guild' in vote) voteGuildCreate(vote, guild, user, member);
+ });
 };

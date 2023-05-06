@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- const channel = cmd.channel;
+ const { channel } = cmd;
  if (!channel) return;
 
  if (

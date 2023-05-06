@@ -8,6 +8,7 @@ export default async (guild: Discord.Guild) => {
 
  let wasntThousand = false;
  while (wasntThousand === false) {
+  // eslint-disable-next-line no-await-in-loop
   const fetched = await fetchBans(bans[bans.length - 1]?.user.id);
   if (!fetched) {
    wasntThousand = true;

@@ -153,7 +153,7 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
   .then(
    (r) => r.json() as Promise<CT.TopGGResponse<true> | CT.TopGGResponse<false>> | Promise<null>,
   )
-  .catch(() => {});
+  .catch(() => undefined);
 
  if (!res || 'error' in res) return null;
  return { info: language.slashCommands.info.user.botInfo(res), description: res.shortdesc };

@@ -31,7 +31,7 @@ export default async (
  }
 
  const options: Discord.SelectMenuComponentOptionData[] = embed.fields?.length
-  ? embed.fields?.map((_, i) => ({
+  ? embed.fields?.map((_1, i) => ({
      label: lan.start['field-nr'](i),
      value: String(i),
      default: i === selectedField,

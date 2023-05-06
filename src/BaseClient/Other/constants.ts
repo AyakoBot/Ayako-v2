@@ -190,7 +190,7 @@ export default {
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
   msgurl: (g: string, c: string | undefined, m: string) =>
-   `https://discord.com/channels/${g}/${c ? c : '@me'}/${m}`,
+   `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
  },
  customembeds: {

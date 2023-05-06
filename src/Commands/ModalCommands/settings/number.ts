@@ -14,8 +14,6 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- console.log(field);
-
  const settingName = args.shift() as keyof CT.TableNamesMap;
  if (!settingName) return;
 

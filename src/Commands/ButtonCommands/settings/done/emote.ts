@@ -43,14 +43,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const emote = emoteContent.match(ch.regexes.emojiTester)?.length
   ? { identifier: emoteContent.trim() }
   : (
-     await client.shard?.broadcastEval(
-      (c, context) => {
-       const emote = c.emojis.cache.get(context);
-       if (!emote) return null;
-       return emote;
-      },
-      { context: emoteID },
-     )
+     await client.shard?.broadcastEval((c, context) => c.emojis.cache.get(context) ?? null, {
+      context: emoteID,
+     })
     )?.find((e): e is Discord.Emoji => !!e);
 
  const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(

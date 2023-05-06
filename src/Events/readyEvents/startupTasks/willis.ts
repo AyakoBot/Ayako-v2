@@ -52,7 +52,9 @@ const tellWill = async (user: Discord.User) => {
   const will = await client.users.fetch('108176076261314560').catch(() => undefined);
   will
     ?.send({
-      content: `The new Winner of your $50 Giftcard Giveaway is ${user} / \`${user.tag}\` / \`${user.id}\``,
+      content: `The new Winner of your $50 Giftcard Giveaway is ${
+       user
+      } / \`${user.tag}\` / \`${user.id}\``,
       components: [
         {
           type: Discord.ComponentType.ActionRow,

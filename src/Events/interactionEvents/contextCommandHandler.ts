@@ -14,6 +14,7 @@ export default async (cmd: Discord.Interaction) => {
  const path = `/${Discord.ApplicationCommandType[cmd.commandType]}/${cmd.commandName
   .replace(/\s+/g, '-')
   .toLowerCase()}`;
+ // eslint-disable-next-line no-console
  console.log(path);
 
  const command = files.find((f) => f.endsWith(`${path}.js`));

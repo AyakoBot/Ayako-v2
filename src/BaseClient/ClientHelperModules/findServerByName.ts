@@ -3,10 +3,9 @@ export default async (name: string) => {
 
  const response = (
   await client.shard?.broadcastEval(
-   (cl, { name }) =>
-    cl.guilds.cache.filter((g) => g.name.toLowerCase().includes(name.toLowerCase())),
+   (cl, { n }) => cl.guilds.cache.filter((g) => g.name.toLowerCase().includes(n.toLowerCase())),
    {
-    context: { name },
+    context: { n: name },
    },
   )
  )?.flat();

@@ -173,14 +173,6 @@ export type levelingmultichannels = {
  multiplier: string;
 };
 
-export type levelingmultiroles = {
- guildid: string;
- uniquetimestamp: string;
-
- roles?: string[];
- multiplier: string;
-};
-
 export type levelingroles = {
  guildid: string;
  uniquetimestamp: string;

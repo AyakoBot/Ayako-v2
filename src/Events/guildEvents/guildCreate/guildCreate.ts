@@ -3,6 +3,6 @@ import log from './log.js';
 import cache from './cache.js';
 
 export default async (guild: Discord.Guild) => {
-  log(guild);
-  cache(guild);
+ log(guild);
+ cache(guild);
 };

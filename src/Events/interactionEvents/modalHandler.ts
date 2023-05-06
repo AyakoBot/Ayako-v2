@@ -2,21 +2,22 @@ import type * as Discord from 'discord.js';
 import glob from 'glob';
 
 export default async (cmd: Discord.Interaction) => {
-  if (!cmd.isModalSubmit()) return;
+ if (!cmd.isModalSubmit()) return;
 
-  const files: string[] = await new Promise((resolve) => {
-    glob(`${process.cwd()}/Commands/ModalCommands/**/*`, (err, res) => {
-      if (err) throw err;
-      resolve(res);
-    });
+ const files: string[] = await new Promise((resolve) => {
+  glob(`${process.cwd()}/Commands/ModalCommands/**/*`, (err, res) => {
+   if (err) throw err;
+   resolve(res);
   });
+ });
 
-  const args = cmd.customId.split(/_+/g);
-  const path = args.shift();
-  console.log(path);
+ const args = cmd.customId.split(/_+/g);
+ const path = args.shift();
+ // eslint-disable-next-line no-console
+ console.log(path);
 
-  const command = files.find((f) => f.endsWith(`/${path}.js`));
-  if (!command) return;
+ const command = files.find((f) => f.endsWith(`/${path}.js`));
+ if (!command) return;
 
-  (await import(command)).default(cmd, args);
+ (await import(command)).default(cmd, args);
 };

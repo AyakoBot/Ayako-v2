@@ -7,10 +7,10 @@ import selectHandler from './selectHandler.js';
 import autocompleteHandler from './autocompleteHandler.js';
 
 export default async (cmd: Discord.Interaction) => {
-  commandHandler(cmd);
-  buttonHandler(cmd);
-  modalHandler(cmd);
-  contextCommandHandler(cmd);
-  selectHandler(cmd);
-  autocompleteHandler(cmd);
+ commandHandler(cmd);
+ buttonHandler(cmd);
+ modalHandler(cmd);
+ contextCommandHandler(cmd);
+ selectHandler(cmd);
+ autocompleteHandler(cmd);
 };

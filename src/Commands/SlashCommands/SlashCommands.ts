@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import client from '../../BaseClient/Client.js';
 
 // Pre-defined values
+const name = client.user?.username;
 
 const IDSelector = new Discord.SlashCommandStringOption()
  .setAutocomplete(true)
@@ -11,7 +12,7 @@ const IDSelector = new Discord.SlashCommandStringOption()
 
 const SearchUsername = new Discord.SlashCommandStringOption()
  .setName('user-name')
- .setDescription(`Username of the User (Searches across all of ${client.user?.username}'s Servers)`)
+ .setDescription(`Username of the User (Searches across all of ${name}'s Servers)`)
  .setRequired(false)
  .setMinLength(2)
  .setAutocomplete(true);
@@ -26,12 +27,12 @@ const User = new Discord.SlashCommandUserOption()
 const settings = new Discord.SlashCommandBuilder()
  .setName('settings')
  .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
- .setDescription(`Manage ${client.user?.username}'s Settings`)
+ .setDescription(`Manage ${name}'s Settings`)
  .setDMPermission(false)
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('moderation')
-   .setDescription(`Everything about ${client.user?.username}'s Moderation`)
+   .setDescription(`Everything about ${name}'s Moderation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('anti-spam')
@@ -85,7 +86,7 @@ const settings = new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('leveling')
-   .setDescription(`Everything about ${client.user?.username}'s Leveling`)
+   .setDescription(`Everything about ${name}'s Leveling`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
@@ -119,7 +120,7 @@ const settings = new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('nitro')
-   .setDescription(`Everything about ${client.user?.username}'s Nitro-Rewards`)
+   .setDescription(`Everything about ${name}'s Nitro-Rewards`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
@@ -152,7 +153,7 @@ const settings = new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('roles')
-   .setDescription(`Everything about ${client.user?.username}'s Role Management`)
+   .setDescription(`Everything about ${name}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('role-rewards')
@@ -210,17 +211,17 @@ const settings = new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('automation')
-   .setDescription(`Everything about ${client.user?.username}'s Automation`)
+   .setDescription(`Everything about ${name}'s Automation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('delete-commands')
-     .setDescription(`Make ${client.user?.username} delete Commands and/or Replies`)
+     .setDescription(`Make ${name} delete Commands and/or Replies`)
      .addStringOption(IDSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('cooldowns')
-     .setDescription(`Assign custom defined Cooldowns to Commands of ${client.user?.username}`)
+     .setDescription(`Assign custom defined Cooldowns to Commands of ${name}`)
      .addStringOption(IDSelector),
    )
    .addSubcommand(
@@ -252,7 +253,7 @@ const settings = new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('basic')
-   .setDescription(`Basic Settings to modify ${client.user?.username}'s behaviour`),
+   .setDescription(`Basic Settings to modify ${name}'s behaviour`),
  );
 
 const info = new Discord.SlashCommandBuilder()
@@ -279,9 +280,7 @@ const info = new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('server-name')
-     .setDescription(
-      `Name of the Server (Searches across all of ${client.user?.username}'s Servers)`,
-     )
+     .setDescription(`Name of the Server (Searches across all of ${name}'s Servers)`)
      .setRequired(false)
      .setMinLength(1)
      .setAutocomplete(true),
@@ -304,6 +303,11 @@ const info = new Discord.SlashCommandBuilder()
      .setDescription('The Channel you want to get Information about')
      .setRequired(true),
    ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('bot')
+   .setDescription(`Display Information about a ${name}`),
  );
 
 const embedbuilder = new Discord.SlashCommandBuilder()

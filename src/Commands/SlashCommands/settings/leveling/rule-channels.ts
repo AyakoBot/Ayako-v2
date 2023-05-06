@@ -32,7 +32,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
    [parseInt(ID, 36)],
   )
   .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : await ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
+   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
   );
 
  if (cmd.isButton()) {

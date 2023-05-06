@@ -285,8 +285,8 @@ const cache: {
    const cached = cache.pins.cache.get(guildId)?.get(channelId)?.get(id);
    if (cached) return cached;
 
-   const ch = await import('../ClientHelper.js');
-   const fetched = await (await ch.getChannel.guildTextChannel(channelId))?.messages.fetchPinned();
+   const getChannel = await import('./getChannel.js');
+   const fetched = await (await getChannel.guildTextChannel(channelId))?.messages.fetchPinned();
    fetched?.forEach((f) => cache.pins.set(f));
 
    return fetched?.find((f) => f.id === id);

@@ -3,7 +3,7 @@ import type * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const value = cmd.options.get('user-name', false)?.value as string;
- if (value?.length < 3) return;
+ if (value?.length < 3) return [];
 
  const possibleUsers = await ch.findUserByName(value);
 

@@ -2,5 +2,5 @@ import type * as Discord from 'discord.js';
 import log from './log.js';
 
 export default async (sticker: Discord.Sticker) => {
-  log(sticker);
+ log(sticker);
 };

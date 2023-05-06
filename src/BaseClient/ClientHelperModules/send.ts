@@ -107,7 +107,7 @@ async function send(
 
   const sentMessage = await channel.send(payload).catch((err) => {
     // eslint-disable-next-line no-console
-    console.log(payload);
+    console.log(JSON.stringify(payload));
     throw new Error(`Send Error: ${err}`);
   });
 
