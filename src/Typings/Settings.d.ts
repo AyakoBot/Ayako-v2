@@ -407,7 +407,7 @@ export type levelingmultiroles = {
  guildid: string;
 
  roles?: string[];
- multiplier?: number;
+ multiplier?: string;
 };
 
 export interface votesettings {
