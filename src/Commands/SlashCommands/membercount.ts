@@ -11,7 +11,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    name: lan.author,
   },
   color: ch.colorSelector(cmd.guild?.members.me),
-  description: `${language.Members} ${cmd.guild?.memberCount}`,
+  description: `${language.Members} ${ch.util.makeInlineCode(
+   ch.splitByThousand(cmd.guild?.memberCount ?? 0),
+  )}`,
  };
 
  ch.replyCmd(cmd, {

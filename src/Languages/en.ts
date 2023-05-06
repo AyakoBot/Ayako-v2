@@ -1392,7 +1392,7 @@ export default {
     'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
   },
   membercount: {
-   author: `${name} Member-Count Stats`,
+   author: `${name} Member-Count`,
   },
   info: {
    basic: '__Basic Info__',
