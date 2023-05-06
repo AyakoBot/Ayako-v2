@@ -377,4 +377,11 @@ const membercount = new Discord.SlashCommandBuilder()
  .setDescription('Display the Membercount of a Server')
  .setDMPermission(false);
 
-export default { public: { settings, info, embedbuilder, check, stickMessage, stp, membercount } };
+const ping = new Discord.SlashCommandBuilder()
+ .setName('ping')
+ .setDescription(`Display the ${name}'s Ping`)
+ .setDMPermission(true);
+
+export default {
+ public: { settings, info, embedbuilder, check, stickMessage, stp, membercount, ping },
+};

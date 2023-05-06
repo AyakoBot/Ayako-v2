@@ -1231,10 +1231,6 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
-  ping: {
-   lastHeartbeat: 'Last Heartbeat',
-   responseTime: 'Response Time',
-  },
   stp: {
    button: 'Click here to view all invokable Properties',
    warn: 'You can only invoke children marked as "Properties"',
@@ -1393,6 +1389,10 @@ export default {
   },
   membercount: {
    author: `${name} Member-Count`,
+  },
+  ping: {
+   author: `${name} Ping`,
+   lastHeartbeat: 'Last Heartbeat',
   },
   info: {
    basic: '__Basic Info__',
