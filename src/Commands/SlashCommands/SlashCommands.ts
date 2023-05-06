@@ -372,4 +372,9 @@ const stp = new Discord.SlashCommandBuilder()
    .setRequired(true),
  );
 
-export default { public: { settings, info, embedbuilder, check, stickMessage, stp } };
+const membercount = new Discord.SlashCommandBuilder()
+ .setName('membercount')
+ .setDescription('Display the Membercount of a Server & some Stats')
+ .setDMPermission(false);
+
+export default { public: { settings, info, embedbuilder, check, stickMessage, stp, membercount } };

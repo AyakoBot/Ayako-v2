@@ -1391,6 +1391,9 @@ export default {
    notEnabled:
     'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
   },
+  membercount: {
+   author: `${name} Member-Count Stats`,
+  },
   info: {
    basic: '__Basic Info__',
    stats: '__Statistics__',
@@ -3382,6 +3385,7 @@ export default {
  Removed: 'Removed',
  Changed: 'Changed',
  Member: 'Member',
+ Members: 'Members',
  Role: 'Role',
  Roles: 'Roles',
  Tier: 'Tier',
