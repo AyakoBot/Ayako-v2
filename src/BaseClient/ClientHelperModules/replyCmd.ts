@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings';
 import * as replyMsg from './replyMsg.js';
+import constants from '../Other/constants.js';
 
 const sendMessage = (
  cmd:
@@ -10,11 +11,14 @@ const sendMessage = (
   | Discord.ModalSubmitInteraction,
  payload: Discord.InteractionReplyOptions,
 ) => {
- if ('respond' in cmd) {
-  return undefined;
- }
+ if ('respond' in cmd) return undefined;
 
  payload.ephemeral = true;
+ payload.embeds?.forEach((embed) => {
+  if ('author' in embed && !embed.author?.url && embed.author?.name) {
+   embed.author = { ...embed.author, url: constants.standard.invite };
+  }
+ });
 
  if ('reply' in cmd && cmd.isRepliable()) {
   return cmd.reply(payload).catch((err) => {
