@@ -98,9 +98,8 @@ async function send(
  }
 
  payload.embeds?.forEach((p) => {
-  p.fields?.forEach((p) => {
-   p.value?.length > 1024 ? console.log(p) : null;
-  });
+  // eslint-disable-next-line no-console
+  p.fields?.forEach((pa) => (pa.value?.length > 1024 ? console.log(p) : null));
  });
 
  const sentMessage = await channel.send(payload).catch((err) => {
