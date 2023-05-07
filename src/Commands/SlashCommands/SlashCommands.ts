@@ -19,7 +19,7 @@ const SearchUsername = new Discord.SlashCommandStringOption()
 
 const User = new Discord.SlashCommandUserOption()
  .setName('user')
- .setDescription('The User to display the Banner of')
+ .setDescription('The User')
  .setRequired(false);
 
 // Commands
@@ -264,7 +264,7 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Display Information about a User')
-   .addUserOption(User.setName('user-mention').setRequired(true))
+   .addUserOption(User.setName('user-mention'))
    .addStringOption(SearchUsername),
  )
  .addSubcommand(

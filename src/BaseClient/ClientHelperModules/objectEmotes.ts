@@ -4,6 +4,7 @@ export default {
   { name: 'AMayakopeek', id: '924071140257841162', animated: false },
  ],
  userFlags: {
+  ActiveDeveloper: { name: 'ActiveDeveloper', id: '1104687316271910983', animated: false },
   DiscordEmployee: { name: 'DiscordStaff', id: '945409713661706292', animated: false },
   PartneredServerOwner: {
    name: 'PartneredServerOwner',

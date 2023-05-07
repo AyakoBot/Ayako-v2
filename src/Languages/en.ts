@@ -3001,7 +3001,7 @@ export default {
   Hypesquad: 'Hype Squad Events Member',
   HypesquadEvents: 'Hype Squad Events Member',
   HypeSquadEventsMember: 'Hype Squad Events Member',
-  BughunterLevel1: 'Bug Hunter Level 1',
+  BugHunterLevel1: 'Bug Hunter Level 1',
   HypeSquadOnlineHouse1: 'House of Bravery Member',
   HouseBravery: 'House of Bravery Member',
   HypeSquadOnlineHouse2: 'House of Brilliance Member',
@@ -3014,7 +3014,7 @@ export default {
    'User is a [Team](https://discord.com/developers/docs/topics/teams "Click to find out what a Team is")',
   TeamUser:
    'User is a [Team](https://discord.com/developers/docs/topics/teams "Click to find out what a Team is")',
-  BughunterLevel2: 'Bug Hunter Level 2',
+  BugHunterLevel2: 'Bug Hunter Level 2',
   VerifiedBot: 'Verified Bot',
   VerifiedDeveloper: 'Early Verified Bot Developer',
   CertifiedModerator: 'Certified Moderator',

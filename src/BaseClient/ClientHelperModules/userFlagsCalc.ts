@@ -26,7 +26,7 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(8n)) {
   flags.push(
-   `${emotes ? stringEmotes.userFlags.BughunterLevel1 : ''} ${lan.userFlags.BughunterLevel1}`,
+   `${emotes ? stringEmotes.userFlags.BugHunterLevel1 : ''} ${lan.userFlags.BugHunterLevel1}`,
   );
  }
  if (bitField.has(64n)) {
@@ -56,7 +56,7 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(16384n)) {
   flags.push(
-   `${emotes ? stringEmotes.userFlags.BughunterLevel2 : ''} ${lan.userFlags.BughunterLevel2}`,
+   `${emotes ? stringEmotes.userFlags.BugHunterLevel2 : ''} ${lan.userFlags.BugHunterLevel2}`,
   );
  }
  if (bitField.has(65536n)) {
@@ -78,6 +78,17 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(524288n)) {
   flags.push(`${lan.userFlags.BotHTTPInteractions}`);
+ }
+ if (bitField.has(1048576n)) {
+  flags.push(`${lan.userFlags.Spammer}`);
+ }
+ if (bitField.has(4194304n)) {
+  flags.push(
+   `${emotes ? stringEmotes.userFlags.ActiveDeveloper : ''} ${lan.userFlags.ActiveDeveloper}`,
+  );
+ }
+ if (bitField.has(17592186044416n)) {
+  flags.push(`${lan.userFlags.Quarantined}`);
  }
 
  return flags;
