@@ -1404,7 +1404,9 @@ export default {
    role: {
     author: `${name} Role-Info`,
     position: 'Position',
-    members: 'Membercount'
+    membercount: 'Membercount',
+    tooManyMembers: 'Too many Members to display',
+    noMembers: 'No Members with this Role',
    },
    badges: {
     author: `${name} Badge-Info`,
