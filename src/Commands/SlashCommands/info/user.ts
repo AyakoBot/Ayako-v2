@@ -16,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const user =
-  cmd.options.getUser('user', false) ??
+  cmd.options.getUser('user-mention', false) ??
   (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
   cmd.user;
 
