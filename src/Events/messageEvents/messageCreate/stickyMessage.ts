@@ -3,7 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (msg: Discord.Message) => {
- if (!msg.inCachedGuild()) return;
+ if (!msg.inGuild()) return;
  if (msg.author?.bot) return;
 
  const stickyMessage = await ch

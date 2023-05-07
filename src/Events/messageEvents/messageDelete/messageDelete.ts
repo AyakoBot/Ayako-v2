@@ -3,7 +3,7 @@ import log from './log.js';
 import cache from './cache.js';
 
 export default async (msg: Discord.Message) => {
- if (!msg.inCachedGuild()) return;
+ if (!msg.inGuild()) return;
 
  log(msg);
  cache(msg);

@@ -3,7 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import type CT from '../../../Typings/CustomTypings';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
- if (!msg.inCachedGuild()) return;
+ if (!msg.inGuild()) return;
 
  const channels = await ch.getLogChannels('messageevents', msg.guild);
  if (!channels) return;

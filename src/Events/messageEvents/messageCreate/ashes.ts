@@ -11,7 +11,7 @@ export default async (msg: Discord.Message) => {
 const banHandler = async (msg: Discord.Message) => {
  if (msg.author.id !== '868115102681956404') return;
  if (msg.channelId !== '757879586439823440') return;
- if (!msg.inCachedGuild()) return;
+ if (!msg.inGuild()) return;
  if (!msg.content.includes('@Known-Scammers ping:')) return;
 
  const isUnban = msg.content.includes('REMOVAL FROM LIST');

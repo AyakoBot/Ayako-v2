@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (typing: Discord.Typing) => {
- if (!typing.inCachedGuild()) return;
+ if (!typing.inGuild()) return;
 
  const channels = await ch.getLogChannels('typingevents', typing.guild);
  if (!channels) return;

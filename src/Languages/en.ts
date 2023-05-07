@@ -495,6 +495,9 @@ export default {
     unicodeEmoji: 'Unicode Emoji',
     icon: 'Icon',
     iconRemoved: 'Icon Removed',
+    subscriptionListingId: 'Subscription Listing ID',
+    availableForPurchase: 'Available for Purchase',
+    guildConnections: 'Requires Connection',
    },
    reaction: {
     descAdded: (emoji: Discord.Emoji, user: CT.bEvalUser | Discord.User, msg: Discord.Message) =>
@@ -1400,6 +1403,8 @@ export default {
    otherInfo: '__Other Info__',
    role: {
     author: `${name} Role-Info`,
+    position: 'Position',
+    members: 'Membercount'
    },
    badges: {
     author: `${name} Badge-Info`,
