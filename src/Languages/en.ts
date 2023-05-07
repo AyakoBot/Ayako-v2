@@ -1407,6 +1407,7 @@ export default {
     membercount: 'Membercount',
     tooManyMembers: 'Too many Members to display',
     noMembers: 'No Members with this Role',
+    viewChannelPermissions: 'View Channel Permissions',
    },
    badges: {
     author: `${name} Badge-Info`,

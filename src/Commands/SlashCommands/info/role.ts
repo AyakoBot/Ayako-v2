@@ -118,6 +118,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      },
     ],
    },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.ChannelSelect,
+      custom_id: `info/perms_${role.id}_role`,
+      placeholder: lan.viewChannelPermissions,
+      max_values: 1,
+      min_values: 1,
+     },
+    ],
+   },
   ],
  });
 };

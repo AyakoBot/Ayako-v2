@@ -262,22 +262,10 @@ const getComponents = (
     components: [
      {
       type: Discord.ComponentType.ChannelSelect,
-      custom_id: `info/perms_${user.id}`,
+      custom_id: `info/perms_${user.id}_user`,
       placeholder: lan.viewChannelPermissions,
       max_values: 1,
       min_values: 1,
-      channel_types: [
-       Discord.ChannelType.AnnouncementThread,
-       Discord.ChannelType.GuildAnnouncement,
-       Discord.ChannelType.GuildCategory,
-       Discord.ChannelType.GuildDirectory,
-       Discord.ChannelType.GuildForum,
-       Discord.ChannelType.GuildStageVoice,
-       Discord.ChannelType.GuildText,
-       Discord.ChannelType.GuildVoice,
-       Discord.ChannelType.PrivateThread,
-       Discord.ChannelType.PublicThread,
-      ],
      },
     ],
    },

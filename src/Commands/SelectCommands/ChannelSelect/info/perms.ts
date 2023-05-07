@@ -5,18 +5,26 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
  if (!cmd.inCachedGuild()) return;
 
  const channelID = cmd.values[0];
- const member = await cmd.guild?.members.fetch(args.shift() ?? cmd.user.id).catch(() => undefined);
+ const ID = args.shift() as string;
+ const isUser = args.shift() === 'user';
+ const check = isUser
+  ? await cmd.guild?.members.fetch(ID).catch(() => undefined)
+  : cmd.guild.roles.cache.get(ID);
  const language = await ch.languageSelector(cmd.guildId);
 
- if (!member) {
-  ch.errorCmd(cmd, language.errors.memberNotFound, language);
+ if (!check) {
+  ch.errorCmd(
+   cmd,
+   isUser ? language.errors.memberNotFound : language.errors.roleNotFound,
+   language,
+  );
   return;
  }
 
  const channel = cmd.guild?.channels.cache.get(channelID);
  if (!channel) return;
 
- const permissions = channel.permissionsFor(member);
+ const permissions = channel.permissionsFor(check);
  let categoryBits = [
   [1879573680n, language.permissions.categories.GENERAL],
   [1099712954375n, language.permissions.categories.MEMBER],
