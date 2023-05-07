@@ -308,6 +308,11 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('bot')
    .setDescription(`Display Information about a ${name}`),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('badges')
+   .setDescription('Display Information about the Discord Badges Members of this Server have'),
  );
 
 const embedbuilder = new Discord.SlashCommandBuilder()

@@ -72,6 +72,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       value: `${ch.util.makeInlineCode(`${os.type()} ${os.arch()}`)}`,
      },
      {
+      name: `${lan.OSruntime}:`,
+      value: `${ch.constants.standard.getTime(Date.now() - os.uptime() * 1000)}`,
+     },
+     {
       name: `${lan.memory}:`,
       value: `${ch.util.makeInlineCode(
        `${lan.free}: ${ch.splitByThousand(Math.round(os.freemem() / 1000000000))}GB`,

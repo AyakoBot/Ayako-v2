@@ -1398,12 +1398,16 @@ export default {
    basic: '__Basic Info__',
    stats: '__Statistics__',
    otherInfo: '__Other Info__',
+   badges: {
+    author: `${name} Badge-Info`,
+   },
    bot: {
     author: `${name} Info`,
     shards: 'Shards',
     uptime: 'Uptime',
     CPU: 'CPU',
     OS: 'Operating System',
+    OSruntime: 'OS Runtime',
     memory: 'Memory',
     free: 'Free',
     total: 'Total',
