@@ -262,8 +262,6 @@ const getMembers = async (
    }[]
  | undefined
 > => {
- await guild.members.fetch().catch(() => undefined);
-
  const highestRole = guild.roles.cache.map((o) => o).sort((a, b) => b.position - a.position)[0];
  const clientHighestRole = guild.members.me?.roles.highest;
  if (!clientHighestRole) return undefined;
