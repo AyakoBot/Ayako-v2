@@ -3,7 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const member = await cmd.guild?.members.fetch(cmd.user.id).catch(() => undefined);
  if (!member) return;

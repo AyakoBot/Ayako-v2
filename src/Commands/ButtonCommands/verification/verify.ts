@@ -5,7 +5,7 @@ import type * as DBT from '../../../Typings/DataBaseTypings';
 import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const verification = await ch
   .query(`SELECT * FROM verification WHERE guildid = $1 AND active = true;`, [cmd.guildId])

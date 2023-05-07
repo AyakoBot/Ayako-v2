@@ -30,7 +30,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const channel = await cmd.channel?.fetch().catch(() => undefined);
  if (!channel) return;

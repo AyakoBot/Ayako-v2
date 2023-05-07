@@ -5,7 +5,7 @@ import type * as CT from '../../../../Typings/CustomTypings';
 const name = 'verification';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];

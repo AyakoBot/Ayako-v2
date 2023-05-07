@@ -17,7 +17,7 @@ export default async (msg: Discord.Message) => {
  _eval(msg);
  execute(msg);
 
- if (msg.inGuild()) {
+ if (msg.inCachedGuild()) {
   other(msg);
   revengePing(msg);
   stickyMessage(msg);

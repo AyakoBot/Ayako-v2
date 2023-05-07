@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[]) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const channelID = cmd.values[0];
  const member = await cmd.guild?.members.fetch(args.shift() ?? cmd.user.id).catch(() => undefined);

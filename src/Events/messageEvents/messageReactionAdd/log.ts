@@ -6,7 +6,7 @@ export default async (
  user: Discord.User,
  msg: Discord.Message,
 ) => {
- if (!msg.inGuild()) return;
+ if (!msg.inCachedGuild()) return;
 
  const channels = await ch.getLogChannels('reactionevents', msg.guild);
  if (!channels) return;

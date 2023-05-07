@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
  if (!cmd.inCachedGuild()) return;
 
  const res = await ch.query(

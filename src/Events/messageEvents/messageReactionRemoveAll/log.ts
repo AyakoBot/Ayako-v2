@@ -5,7 +5,7 @@ export default async (
  msg: Discord.Message,
  reactions: Discord.Collection<string | Discord.Snowflake, Discord.MessageReaction>,
 ) => {
- if (!msg.inGuild()) return;
+ if (!msg.inCachedGuild()) return;
 
  const channels = await ch.getLogChannels('reactionevents', msg.guild);
  if (!channels) return;

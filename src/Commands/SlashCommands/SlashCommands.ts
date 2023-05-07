@@ -306,6 +306,17 @@ const info = new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('role')
+   .setDescription('Display Information about a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role-mention')
+     .setDescription('The Role you want to get Information about')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('bot')
    .setDescription(`Display Information about a ${name}`),
  )

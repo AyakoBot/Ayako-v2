@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.membercount;
 

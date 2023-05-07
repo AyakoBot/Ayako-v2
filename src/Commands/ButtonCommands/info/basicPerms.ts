@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
- if (!cmd.inGuild()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const member = await cmd.guild?.members.fetch(args.shift() ?? cmd.user.id).catch(() => undefined);
  const language = await ch.languageSelector(cmd.guildId);

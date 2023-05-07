@@ -1398,6 +1398,9 @@ export default {
    basic: '__Basic Info__',
    stats: '__Statistics__',
    otherInfo: '__Other Info__',
+   role: {
+    author: `${name} Role-Info`,
+   },
    badges: {
     author: `${name} Badge-Info`,
    },
