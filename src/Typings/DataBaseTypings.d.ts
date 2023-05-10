@@ -251,6 +251,7 @@ export type users = {
  lastfetch: string;
  email?: string;
  token?: string;
+ expires?: string;
 };
 
 export interface giveawaycollecttime {
