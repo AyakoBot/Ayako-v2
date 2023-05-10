@@ -250,7 +250,7 @@ export type users = {
  socialstype?: string[];
  lastfetch: string;
  email?: string;
- token?: string;
+ refreshtoken?: string;
  expires?: string;
  accesstoken?: string;
 };
