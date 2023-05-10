@@ -252,6 +252,7 @@ export type users = {
  email?: string;
  token?: string;
  expires?: string;
+ accesstoken?: string;
 };
 
 export interface giveawaycollecttime {
