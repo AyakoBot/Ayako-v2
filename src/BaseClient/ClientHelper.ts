@@ -1,10 +1,6 @@
 import type * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
 
-/* eslint-disable max-len */
-/* eslint-disable no-multi-spaces */
-/* eslint-disable prettier/prettier */
-
 import send from './ClientHelperModules/send.js';
 import replyMsg from './ClientHelperModules/replyMsg.js';
 import replyCmd from './ClientHelperModules/replyCmd.js';
@@ -67,6 +63,9 @@ import getColor from './ClientHelperModules/getColor.js';
 import findServerByName from './ClientHelperModules/findServerByName.js';
 import getAllBans from './ClientHelperModules/getAllBans.js';
 import splitByThousand from './ClientHelperModules/splitByThousands.js';
+import getAccessToken from './ClientHelperModules/getAccessToken.js';
+import interactionHelpers from './ClientHelperModules/interactionHelpers.js';
+import getGif from './ClientHelperModules/getGif.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -140,4 +139,7 @@ export {
  findServerByName,
  getAllBans,
  splitByThousand,
+ getAccessToken,
+ interactionHelpers,
+ getGif,
 };

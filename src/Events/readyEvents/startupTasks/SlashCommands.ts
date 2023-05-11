@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../BaseClient/Client.js';
+import client from '../../../BaseClient/Client.js';
 
 // Pre-defined values
 const name = client.user?.username;
@@ -398,6 +398,11 @@ const ping = new Discord.SlashCommandBuilder()
  .setDescription(`Display the ${name}'s Ping`)
  .setDMPermission(true);
 
+const rp = new Discord.SlashCommandBuilder()
+ .setName('rp')
+ .setDescription('Roleplay Command Manager')
+ .setDMPermission(false);
+
 export default {
- public: { settings, info, embedbuilder, check, stickMessage, stp, membercount, ping },
+ public: { settings, info, embedbuilder, check, stickMessage, stp, membercount, ping, rp },
 };

@@ -13,7 +13,8 @@ const sendMessage = (
 ) => {
  if ('respond' in cmd) return undefined;
 
- payload.ephemeral = true;
+ if (payload.ephemeral !== false) payload.ephemeral = true;
+
  payload.embeds?.forEach((embed) => {
   if ('author' in embed && !embed.author?.url && embed.author?.name) {
    embed.author = { ...embed.author, url: constants.standard.invite };

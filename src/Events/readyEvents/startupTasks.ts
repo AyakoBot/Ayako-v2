@@ -32,6 +32,6 @@ export default async () => {
   (await import('./timedFiles/timedManager.js')).default();
  });
 
- (await import('./startupTasks/slashCommands.js')).default();
+ (await import('./startupTasks/slashCommandInitializer.js')).default();
  (await import('./startupTasks/cache.js')).default();
 };

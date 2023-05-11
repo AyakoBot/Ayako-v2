@@ -16,7 +16,7 @@ export default async () => {
  });
 
  (await import('./startupTasks/cache.js')).default();
- (await import('./startupTasks/slashCommands.js')).default();
+ (await import('./startupTasks/slashCommandInitializer.js')).default();
  (await import('./startupTasks.js')).default();
 
  if (ch.mainID !== client.user?.id) return;

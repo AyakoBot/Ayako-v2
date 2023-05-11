@@ -135,9 +135,12 @@ export type disboard = {
 export type guildsettings = {
  guildid: string;
  prefix?: string;
+ // false is large, true is small
  interactionsmode: boolean;
  lan: string;
  errorchannel?: string;
+ voterole: string;
+ enabledrp?: boolean;
 };
 
 export type leveling = {

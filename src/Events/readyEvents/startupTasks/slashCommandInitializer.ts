@@ -1,4 +1,4 @@
-import commands from '../../../Commands/SlashCommands/SlashCommands.js';
+import commands from './SlashCommands.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async () => {

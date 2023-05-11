@@ -1234,6 +1234,408 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  interactions: {
+   ayaya: {
+    self: 'Ayaya!!',
+    noOne: 'Ayaya!!',
+    others: "ayaya's at",
+    buttons: [],
+   },
+   baka: {
+    self: 'thinks they themself are a Baka??',
+    noOne: 'thinks everyone in Chat is a Baka!',
+    one: ['thinks', 'is a Baka!'],
+    many: ['thinks', 'are Bakas!'],
+    buttons: ['Bonk', 'Hit', 'No you!'],
+   },
+   bath: {
+    self: 'bathes themself, they are so clean',
+    noOne: 'is bathing and blowing bubbles 🫧',
+    others: 'bathes with',
+    request: 'wants to bathe with you!',
+    buttons: ['Accept and bathe', 'Reject and pat', 'Reject and bonk'],
+   },
+   bite: {
+    self: 'bites themself, how did they get that way?',
+    others: 'bites',
+    buttons: ['Revenge!', 'Pat', 'Bonk'],
+   },
+   blush: {
+    self: 'blushes because of their own actions, what a sub~',
+    noOne: 'blushes',
+    others: 'blushes at',
+    button: ['Pat', 'Tickle!', 'Kiss', 'Boop the hekk outta em'],
+   },
+   bonk: {
+    self: "bonks themself, at least I didn't have to do it",
+    others: 'bonks',
+    button: ['Pat', 'Tickle!', 'Kiss'],
+   },
+   bored: {
+    self: 'is bored',
+    noOne: 'is bored',
+    others: 'is bored because of',
+    button: ['Bonk', 'Tickle'],
+   },
+   comfy: {
+    self: 'is comfy',
+    noOne: 'is comfy',
+    others: 'makes themself comfy with',
+    request: 'wants to get comfy with you!',
+    button: ['Accept and Cuddle', 'Reject and Pat'],
+   },
+   cry: {
+    self: 'cries at themself, how sad',
+    noOne: 'cries <:AMayakocry:924071113586253884>',
+    others: 'cries at',
+    button: ['Pat', 'Comfort', 'Hold'],
+   },
+   cuddle: {
+    self: 'cuddles themself, how does that even work',
+    others: 'cuddles with',
+    request: 'wants to cuddle with you!',
+    button: ['Accept and Cuddle', 'Reject and Pat'],
+   },
+   dance: {
+    self: 'dances with themself, be proud of who you are!',
+    noOne: 'dances',
+    others: 'dances with',
+    request: 'wants to dance with you!',
+    button: ['Accept and Dance', 'Reject and Pat'],
+   },
+   facepalm: {
+    self: 'facepalms at their own actions, how unexpected',
+    noOne: 'facepalms',
+    others: 'facepalms at',
+   },
+   feed: {
+    self: "feeds themself, wait.. isn't that just eating?",
+    others: 'feeds',
+   },
+   fluff: {
+    self: 'fluffs their tail, how cute~',
+    many: ['fluffs', 'tail'],
+    one: ['fluffs', 'tails'],
+    request: 'wants to fluff your tail!',
+    buttons: ['Embrace', 'Hide'],
+   },
+   handshake: {
+    self: 'shakes themself, wait what',
+    many: ['shakes', "'s hand"],
+    one: ['shakes', "'s hand"],
+    request: 'wants to shake your hand!',
+    buttons: ['🤝'],
+   },
+   happy: {
+    self: "is happy because of themself, that's nice",
+    noOne: 'is happy',
+    others: 'is happy because of',
+    buttons: ['Pat', 'Hug'],
+   },
+   highfive: {
+    self: 'highfives themself, someone left them hanging >~>',
+    others: 'highfives',
+    request: 'holds their hand up, waiting for a high-five!',
+    buttons: ['High-five!'],
+   },
+   holdhands: {
+    self: "holds their own hand, try holding someone else's next time",
+    others: ['holds', "'s hand"],
+    request: 'wants to hold your hand!',
+    buttons: ['Hold Hands~!'],
+   },
+   comfort: {
+    self: "shhh, It's alright. Everything will be fine",
+    others: 'comforts',
+    buttons: ['Cry', 'Snuggle'],
+   },
+   hold: {
+    self: 'holds themself very very tight. They are so lonely',
+    others: ['holds', 'very tight'],
+    buttons: ['Cry', 'Nuzzle'],
+   },
+   hug: {
+    self: 'hugs themself, that looks quite sad...',
+    others: 'hugs',
+    buttons: ['Hug back!'],
+   },
+   kidnap: {
+    self: "kidnaps themself, I don't think it works that way",
+    others: 'kidnaps',
+    buttons: ['Run away!'],
+   },
+   kith: {
+    self: 'kithes themself, they are in great danger.',
+    others: 'kithes',
+    request: 'wants to kith you~! >~<',
+    buttons: ['Kith back~', 'Bonk'],
+   },
+   pash: {
+    self: 'pashes themself, classic aussie',
+    others: 'pashes',
+    request: 'wants to pash you~! >~<',
+    buttons: ['Accept and Pash~', 'Bonk'],
+   },
+   smooch: {
+    self: 'smooches themself, please get help',
+    others: 'smooches',
+    request: 'wants to smooch you~! >~<',
+    buttons: ['Accept and Smooch~', 'Bonk'],
+   },
+   kiss: {
+    self: 'kisses themself, how do you even do that??',
+    others: 'kisses',
+    request: 'wants to kiss you~! >~<',
+    buttons: ['Accept and kiss~!', 'Bonk'],
+   },
+   laugh: {
+    self: 'laughs at themself, something must be funny',
+    noOne: 'laughs',
+    others: 'laughs at',
+    buttons: ['Peck', 'Bonk'],
+   },
+   lewd: {
+    self: 'lewds themself, get a room!!',
+    noOne: 'is lewd!!',
+    others: 'lewds',
+    buttons: ['Run away', 'No you!', 'Hide'],
+   },
+   lick: {
+    self: "licks themself, at least you don't need a shower now, I guess...",
+    others: 'licks',
+    buttons: ['Lick back!', 'Bonk', 'Blush'],
+   },
+   pickup: {
+    self: 'picks themself up, but how..?',
+    others: ['picks', 'up'],
+    buttons: ['Bite', 'Embrace the Moment'],
+   },
+   lift: {
+    self: 'lifts themself up, how the hecc???',
+    others: ['lifts', 'up'],
+    buttons: ['Bite', 'Embrace the Moment'],
+   },
+   lurk: {
+    self: 'lurks in Chat <:AMayakopeek:924071140257841162>',
+    noOne: 'lurks in Chat <:AMayakopeek:924071140257841162>',
+    others: 'lurks at',
+    buttons: ['Pat', 'Hug'],
+   },
+   nam: {
+    self: 'get nammed on, I guess',
+    others: 'nams on',
+    buttons: ['Nam back!'],
+   },
+   nom: {
+    self: 'noms on themself. I mean if you have no one else to nom, why not?',
+    others: 'noms on',
+    buttons: ['Nom back!'],
+   },
+   nuzzle: {
+    self: 'nuzzles into themself, probably to find out if they should take a shower',
+    others: 'nuzzles into',
+    request: 'wants to nuzzle into you!',
+    buttons: ['Accept and nuzzle~', 'Reject and bonk'],
+   },
+   mew: {
+    self: 'Mew =^_^=',
+    noOne: 'Mew =^_^=',
+    others: ['mews at', '=^_^='],
+    buttons: ['Pat them!', 'Woof!'],
+   },
+   nya: {
+    self: 'Nya~ :3',
+    noOne: 'Nya~ :3',
+    others: ['nyas at', ':3'],
+    buttons: ['Pat them!', 'Woof!'],
+   },
+   pat: {
+    self: 'pats themself, what an odd thing to do',
+    others: 'pats',
+    buttons: ['Blush~', 'Embrace the Moment'],
+   },
+   peck: {
+    self: "pecks themself, you physically can't do that...",
+    others: 'pecks',
+    buttons: ['Blush~', 'Peck back!'],
+   },
+   peek: {
+    self: 'peeks into Chat <:AMayakopeek:924071140257841162>',
+    noOne: 'peeks into Chat <:AMayakopeek:924071140257841162>',
+    others: 'peeks at',
+    buttons: ['Pat', 'Lurk together'],
+   },
+   boop: {
+    self: 'boops themself, how cute',
+    others: 'boops',
+    buttons: ['Pat'],
+   },
+   poke: {
+    self: 'pokes themself, how cute',
+    others: 'pokes',
+    buttons: ['Pat', 'Kiss~', 'Hug'],
+   },
+   pout: {
+    self: "pouts at themself, guess they shouldn't have said that",
+    noOne: 'pouts *Hmpf!*',
+    others: 'pouts at',
+    buttons: ['Pat'],
+   },
+   quack: {
+    self: 'quacks around',
+    noOne: '**QUACK!!**',
+    others: 'quacks at',
+    buttons: ['Pat', 'Quack back!'],
+   },
+   run: {
+    self: 'runs from themself, how did they get here?',
+    noOne: 'runs from Chat',
+    others: 'runs from',
+   },
+   scream: {
+    self: 'screams at themself, they should get some help',
+    noOne: 'screams.. just screams...',
+    others: 'screams at',
+    buttons: ['Shake em back to reality'],
+   },
+   shake: {
+    self: 'is shaking. They must be cold.. or on caffeine',
+    others: 'shakes',
+    buttons: ['SCREAM', 'Cry'],
+   },
+   shrug: {
+    self: 'shrugs at themself? Weird',
+    noOne: 'shrugs',
+    others: 'shrugs at',
+   },
+   sigh: {
+    self: '*sigh*',
+    others: 'sighs at',
+   },
+   sleep: {
+    self: 'sleeps alone tonight >~>',
+    noOne: 'sleeps',
+    others: 'sleeps with',
+    request: 'wants to sleep together with you!',
+    buttons: ['Sleep together~'],
+   },
+   smile: {
+    self: 'smiles at themself, how nice',
+    noOne: 'smiles >^<',
+    others: 'smiles at',
+    buttons: ['Be happy together!'],
+   },
+   smug: {
+    self: 'smugs at themself, they probably did something dirty...',
+    noOne: 'smugs at Chat',
+    others: 'smugs at',
+    buttons: ['Poke'],
+   },
+   snuggle: {
+    self: "snuggles with themself, try snuggling someone else maybe, you wouldn't look that lonely",
+    others: 'snuggles with',
+    request: 'wants to snuggle you!',
+    buttons: ['Accept and Snuggle'],
+   },
+   stare: {
+    self: 'stares at themself, they are staring at themself!!',
+    others: 'stares at',
+    buttons: ['Stare back'],
+   },
+   wag: {
+    self: 'wags their tail at themself, adorable~',
+    noOne: 'wags their tail at Chat',
+    others: 'wags their tail at',
+    buttons: ['Fluff em!'],
+   },
+   lapsleep: {
+    self: 'sleeps on their own lap, it seems they are quite agile',
+    others: ['sleeps on', "'s lap"],
+    request: 'wants to sleep on your lap!',
+    button: ['Allow and get comfy~'],
+   },
+   thighsleep: {
+    self: 'sleeps on their own thighs, it seems they are quite agile',
+    others: ['sleeps on', "'s thighs"],
+    request: 'wants to sleep on your thighs!',
+    button: ['Allow and get comfy~'],
+   },
+   think: {
+    self: 'thinks about themself, must be a thinker',
+    noOne: 'is thinking',
+    others: 'thinks about',
+   },
+   thumbsup: {
+    self: 'agrees with themself',
+    noOne: 'agrees with Chat',
+    others: 'agrees with',
+    button: ['🤝'],
+   },
+   tickle: {
+    self: 'tickles themself, being able to tickle yourself is very rare',
+    others: 'tickles',
+    button: ['Scream', 'Run'],
+   },
+   wave: {
+    self: 'waves at Chat <:AMayakowave:924071188957913108>',
+    noOne: 'waves at Chat <:AMayakowave:924071188957913108>',
+    others: 'waves at',
+    button: ['Wave back', 'Boop'],
+   },
+   wink: {
+    self: 'winks at themself, for some reason..',
+    noOne: 'winks at Chat c;',
+    others: 'winks at',
+   },
+   yeet: {
+    self: 'yeets themself, at least they are gone now',
+    others: 'yeets',
+   },
+   yawn: {
+    self: 'yawns at themself, sounds like someone needs a nap~',
+    noOne: 'yawns',
+    others: 'yawns at',
+    button: ['Cuddle', 'Boop'],
+   },
+   woof: {
+    self: 'Woof~ :3',
+    noOne: 'Woof~ :3',
+    others: ['woofs at', ':3'],
+    button: ['Pat', 'Nya~'],
+   },
+   kick: {
+    self: 'kicks themself, why though?',
+    others: ['kicks', 'out of chat'],
+    button: ['Cry'],
+   },
+   nod: {
+    self: 'yep yep~',
+    noOne: 'agrees with Chat',
+    others: 'agrees with',
+    button: ['🤝'],
+   },
+   nope: {
+    self: 'uuuuuuuh nope-',
+    noOne: 'nopes the heck away',
+    others: 'disagrees with',
+   },
+  },
+  rp: {
+   author: `${name} Roleplay Command Manager`,
+   desc: `
+    ${name} supports a wide variety of Roleplay Commands.
+
+    **This Command serves as a Base-Command for all Roleplay-Commands.**
+    Editing the Permissions of this Command will affect all Roleplay-Commands.
+    To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
+
+    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button "RP Slash-Commands".
+    __You don't need to lock this Command for certain Roles__, the Button below can only be used by Server Managers.
+    `,
+   button: 'RP Slash-Commands',
+   notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
+   delay: 'This Operation might take a while to finish, please be patient',
+  },
   stp: {
    button: 'Click here to view all invokable Properties',
    warn: 'You can only invoke children marked as "Properties"',
@@ -2955,6 +3357,7 @@ export default {
   },
  },
  errors: {
+  noUserMentioned: 'You need to mention a User',
   userNotExist: 'The Mentioned User does not exist',
   userNotFound: 'The Mentioned User could not be found',
   serverNotFound: 'The Mentioned Server could not be found',
@@ -3430,4 +3833,7 @@ export default {
  Threads: 'Threads',
  Topic: 'Topic',
  Servers: 'Servers',
+ Commands: 'Commands',
+ login: 'Log-In',
+ and: 'and',
 };
