@@ -207,7 +207,6 @@ const settings = new Discord.SlashCommandBuilder()
      .addStringOption(IDSelector),
    ),
  )
-
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('automation')
@@ -254,6 +253,11 @@ const settings = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('basic')
    .setDescription(`Basic Settings to modify ${name}'s behaviour`),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('logs')
+   .setDescription('Log all kinds of Discord Events into a Channel'),
  );
 
 const info = new Discord.SlashCommandBuilder()
