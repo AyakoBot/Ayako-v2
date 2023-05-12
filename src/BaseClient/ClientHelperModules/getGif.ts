@@ -258,8 +258,8 @@ const getGif = async (
    const purrBot = Object.entries(PurrBot.SFW).find(([key]) => key === gifName);
    if (!purrBot) return '';
 
-   if (gifName === 'neko') return purrBot[1](imgType);
-   return purrBot[1]();
+   if (gifName === 'neko') return (await purrBot[1](imgType)).link;
+   return (await purrBot[1]()).link;
   }
   case 'neko': {
    return (await neko.fetchRandom(gifName as NekoGifNames)).results[0].url;

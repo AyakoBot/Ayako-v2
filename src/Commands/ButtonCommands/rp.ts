@@ -63,7 +63,7 @@ const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
    }
 
    if (c.users) {
-    new Array(9).fill(null).forEach((_, i) => {
+    new Array(3).fill(null).forEach((_, i) => {
      command.addUserOption(
       new Discord.SlashCommandUserOption()
        .setDescription(`Another User to interact with`)
