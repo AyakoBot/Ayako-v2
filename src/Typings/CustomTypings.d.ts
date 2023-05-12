@@ -122,6 +122,7 @@ type TableNamesMap = {
  'reaction-roles': DBT.reactionroles;
  'button-roles': DBT.buttonroles;
  'role-rewards': DBT.rolerewards;
+ logchannels: DBT.logchannels;
 };
 
 export interface AutoCompleteFile {

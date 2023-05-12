@@ -232,6 +232,7 @@ export type logchannels = {
  modlog: string[];
  reactionevents: string[];
  memberevents: string[];
+ auditlogevents: string[];
 };
 
 export type expiry = {
