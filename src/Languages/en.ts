@@ -941,16 +941,17 @@ export default {
     ruleTriggerTypeName: 'Rule Trigger Type',
     ruleTriggerType: {
      1: 'Keyword Filter',
-     2: 'Harmful Link Filter',
      3: 'Spam Filter',
      4: 'Keyword Preset Filter',
      5: 'Mention Spam Filter',
+     6: 'Profile Filter',
     },
     actionTypeName: 'Action Type',
     actionType: {
      1: 'Block Message',
      2: 'Send Alert Message',
      3: 'Timeout',
+     4: 'Block Profile Update or Server Interaction',
     },
     alert: 'Alert sent',
     timeout: 'User timed-out',
