@@ -220,6 +220,7 @@ export default {
  },
  commands: {
   interactions: [
+   { name: 'awoo', desc: 'Awooo~!!', users: true, reqUser: false, buttons: ['pat', 'awoo'] },
    { name: 'ayaya', desc: 'AYAYA !!!', users: true, reqUser: false, buttons: [] },
    {
     name: 'baka',

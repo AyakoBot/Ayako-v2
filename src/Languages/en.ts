@@ -1236,6 +1236,12 @@ export default {
  stringCommands: {},
  slashCommands: {
   interactions: {
+   awoo: {
+    self: 'Awoo!!',
+    noOne: 'Awoo!!',
+    others: "awoo's at",
+    buttons: ['pat', 'Awoo together!'],
+   },
    ayaya: {
     self: 'Ayaya!!',
     noOne: 'Ayaya!!',

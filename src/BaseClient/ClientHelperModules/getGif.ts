@@ -1,5 +1,6 @@
 import { NB_CATEGORIES as NekoGifNames } from 'nekos-best.js';
-import getPurrAPIFetch, { GifName as PurrGifNames } from '../Other/purrAPIFetcher.js';
+import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
+import PurrBot from 'purr-image';
 import neko from '../NekoClient.js';
 
 const hardcodedGifs = {
@@ -22,25 +23,6 @@ const hardcodedGifs = {
   'https://c.tenor.com/ACcFJyql1VoAAAAC/hayasaka-ai-kaguya-sama.gif',
   'https://c.tenor.com/WKPCniX30KMAAAAd/funami-yui-anime.gif',
  ],
- bonk: [
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289436987555950/tenor_-_2020-07-24T203041.175.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289443014770789/tenor_-_2020-07-24T203032.745.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289447116537936/tenor_-_2020-07-24T203049.272.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289454842445944/tenor_-_2020-07-24T203046.597.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289455844884510/tenor_-_2020-07-24T203052.337.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289456545333289/tenor_-_2020-07-24T203043.765.gif',
-  'https://cdn.discordapp.com/attachments/726252103302905907/736289456990060624/tenor_-_2020-07-24T203058.934.gif',
-  'https://c.tenor.com/vepufc4d-0QAAAAC/boobs-bonk.gif',
-  'https://c.tenor.com/C54Ci_zhn-AAAAAC/bang-dream-bandori.gif',
-  'https://c.tenor.com/E6njrpISBV4AAAAC/bonk-hit.gif',
-  'https://c.tenor.com/N3ZdP-hTVHYAAAAC/anime-anime-bonk.gif',
-  'https://c.tenor.com/d1slOLImNHYAAAAC/anime-couple.gif',
-  'https://c.tenor.com/FJsjk_9b_XgAAAAC/anime-hit.gif',
-  'https://c.tenor.com/tf2de2mbRgwAAAAC/touka-kirishima-tokyo-ghoul.gif',
-  'https://c.tenor.com/JS0ZB_b3kjoAAAAC/sugiura-ayano-funami-yui.gif',
-  'https://c.tenor.com/EiFGi9dZXSAAAAAC/toradora-taiga.gif',
-  'https://c.tenor.com/mXwNLMSQRN8AAAAC/yuru-yuri-chinatsu-yoshikawa.gif',
- ],
  handshake: [
   'https://c.tenor.com/0tgfyrFJc24AAAAd/nakanohito-genome-jikkyouchuu-the-ones-within.gif',
   'https://c.tenor.com/rvHfRNhBTEAAAAAd/polt-polt-kobold.gif',
@@ -50,22 +32,6 @@ const hardcodedGifs = {
   'https://c.tenor.com/4yWFhsgqzfEAAAAC/anime-handshake.gif',
   'https://c.tenor.com/y3Xt8P99CzMAAAAC/handshake-yu-narukami.gif',
   'https://c.tenor.com/rmklzHMYy80AAAAC/nichijou-anime.gif',
- ],
- handhold: [
-  'https://cdn.weeb.sh/images/Sky0l65WM.gif',
-  'https://cdn.weeb.sh/images/BkiRKrLBz.gif',
-  'https://cdn.weeb.sh/images/rJx5xa9bf.gif',
-  'https://cdn.weeb.sh/images/BJzLMTcbf.gif',
-  'https://cdn.weeb.sh/images/HJqpxp5bf.gif',
-  'https://cdn.weeb.sh/images/rJ2IfTq-f.gif',
-  'https://cdn.weeb.sh/images/B1rpeTqZf.gif',
-  'https://cdn.weeb.sh/images/rJX0eac-z.gif',
-  'https://cdn.weeb.sh/images/H1urgT5-f.gif',
-  'https://cdn.weeb.sh/images/HkGuxacbf.gif',
-  'https://cdn.weeb.sh/images/rJ2IfTq-f.gif',
-  'https://cdn.weeb.sh/images/B1jKga5Zz.gif',
-  'https://cdn.weeb.sh/images/Hk5_ga5bG.gif',
-  'https://cdn.discordapp.com/attachments/298955020232032258/452638956517982208/holdhands-rk5SMpq-M.gif',
  ],
  kidnap: [
   'https://c.tenor.com/6oV95jWO_6gAAAAC/loli-steals-loli.gif',
@@ -105,15 +71,6 @@ const hardcodedGifs = {
   'https://imgur.com/UOT1Pqx.gif',
   'https://imgur.com/098SPQo.gif',
   'https://imgur.com/aaPl4M8.gif',
- ],
- nom: [
-  'https://images-ext-2.discordapp.net/external/hMN0jfdNLYH_JmIltn50v_kbxbVPmg7LEycbgz7AuX8/%3Fitemid%3D15735907/https/media1.tenor.com/images/5878c0995fcf89352ff13189ee61f303/tenor.gif',
-  'https://imgur.com/RPCWKtc.gif',
-  'https://imgur.com/esMJKkK.gif',
-  'https://images-ext-1.discordapp.net/external/QXlArNhRqGqvKQVQdmMDLzzM0bo1UnBfw502sW-rgOQ/https/cdn.weeb.sh/images/H1hige7sZ.gif',
-  'https://i.imgur.com/q3A4HL2.gif',
-  'https://cdn.weeb.sh/images/HJmbWxmiZ.gif',
-  'https://imgur.com/v0b2A3w.gif',
  ],
  nuzzle: [
   'https://cdn.discordapp.com/attachments/760152457799401532/958828511899041912/anime-anime-hug_1.gif',
@@ -287,30 +244,28 @@ const hardcodedGifs = {
   'https://c.tenor.com/YDV4jEpOF1oAAAAC/nadeshiko-yawn.gif',
   'https://c.tenor.com/1UjVG4tHsPQAAAAC/lucky-star-yawn.gif',
  ],
- yeet: [
-  'https://imgur.com/r7PSg14.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845812664844288/jenko-jenki.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845813155581972/nanatsu-no-taizai-seven-deadly-sins.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845813482729532/yami-throw-asta-yami-throw.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845814132858941/yeet-anime.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845814460006420/yeet-anime_1.gif',
-  'https://cdn.discordapp.com/attachments/760152457799401532/958845815235969094/yeet.gif',
- ],
 };
 
 const getRandom = (arr: string[]) => arr[Math.ceil(Math.random() * (arr.length - 1))];
 
 const getGif = async (
  gifName: string,
- type: ('purr' | 'neko' | 'hardcoded')[],
+ type: ('purr' | 'neko' | 'hardcoded' | 'waifu')[],
  imgType: 'gif' | 'img' = 'gif',
 ) => {
  switch (type[Math.ceil(Math.random() * (type.length - 1))]) {
   case 'purr': {
-   return getPurrAPIFetch(gifName as PurrGifNames, imgType);
+   const purrBot = Object.entries(PurrBot.SFW).find(([key]) => key === gifName);
+   if (!purrBot) return '';
+
+   if (gifName === 'neko') return purrBot[1](imgType);
+   return purrBot[1]();
   }
   case 'neko': {
    return (await neko.fetchRandom(gifName as NekoGifNames)).results[0].url;
+  }
+  case 'waifu': {
+   return WaifuPics(gifName as WaifuGifNames);
   }
   case 'hardcoded': {
    return getRandom(hardcodedGifs[gifName as keyof typeof hardcodedGifs]);
@@ -322,79 +277,96 @@ const getGif = async (
 };
 
 export default [
+ { triggers: ['awoo'], gifs: async () => getGif('awoo', ['waifu']) },
  { triggers: ['bath'], gifs: async () => getGif('bath', ['hardcoded']) },
  { triggers: ['ayaya'], gifs: async () => getGif('ayaya', ['hardcoded']) },
  { triggers: ['baka'], gifs: async () => getGif('baka', ['neko']) },
- { triggers: ['bite'], gifs: async () => getGif('bite', ['neko', 'purr']) },
- { triggers: ['blush'], gifs: async () => getGif('blush', ['neko', 'purr']) },
- { triggers: ['bonk'], gifs: async () => getGif('bonk', ['hardcoded']) },
+ { triggers: ['bite'], gifs: async () => getGif('bite', ['neko', 'purr', 'waifu']) },
+ { triggers: ['blush'], gifs: async () => getGif('blush', ['neko', 'purr', 'waifu']) },
+ { triggers: ['bonk'], gifs: async () => getGif('bonk', ['waifu']) },
  { triggers: ['bored'], gifs: async () => getGif('bored', ['neko']) },
  { triggers: ['comfy'], gifs: async () => getGif('comfy', ['purr']) },
- { triggers: ['cry'], gifs: async () => getGif('cry', ['neko', 'purr']) },
- { triggers: ['cuddle'], gifs: async () => getGif('cuddle', ['neko', 'purr']) },
- { triggers: ['dance'], gifs: async () => getGif('dance', ['neko', 'purr']) },
+ { triggers: ['cry'], gifs: async () => getGif('cry', ['neko', 'purr', 'waifu']) },
+ { triggers: ['cuddle'], gifs: async () => getGif('cuddle', ['neko', 'purr', 'waifu']) },
+ { triggers: ['dance'], gifs: async () => getGif('dance', ['neko', 'purr', 'waifu']) },
  { triggers: ['facepalm'], gifs: async () => getGif('facepalm', ['neko']) },
  { triggers: ['feed'], gifs: async () => getGif('feed', ['neko', 'purr']) },
  { triggers: ['fluff'], gifs: async () => getGif('fluff', ['purr']) },
  { triggers: ['fluff'], gifs: async () => getGif('fluff', ['purr']) },
  { triggers: ['handshake'], gifs: async () => getGif('handshake', ['hardcoded']) },
- { triggers: ['happy'], gifs: async () => getGif('happy', ['neko']) },
- { triggers: ['highfive'], gifs: async () => getGif('highfive', ['neko']) },
+ { triggers: ['happy'], gifs: async () => getGif('happy', ['neko', 'waifu']) },
+ { triggers: ['highfive'], gifs: async () => getGif('highfive', ['neko', 'waifu']) },
  {
   triggers: ['handhold', 'holdhands'],
-  gifs: async () => getGif('handhold', ['hardcoded', 'neko']),
+  gifs: async () => getGif('handhold', ['hardcoded', 'neko', 'waifu']),
  },
- { triggers: ['hug', 'comfort', 'hold'], gifs: async () => getGif('hug', ['neko', 'purr']) },
+ {
+  triggers: ['hug', 'comfort', 'hold'],
+  gifs: async () => getGif('hug', ['neko', 'purr', 'waifu']),
+ },
  { triggers: ['kidnap'], gifs: async () => getGif('kidnap', ['hardcoded']) },
  { triggers: ['laugh'], gifs: async () => getGif('laugh', ['neko']) },
  { triggers: ['lewd'], gifs: async () => getGif('lewd', ['hardcoded']) },
- { triggers: ['lick'], gifs: async () => getGif('lick', ['purr']) },
+ { triggers: ['lick'], gifs: async () => getGif('lick', ['purr', 'waifu']) },
  { triggers: ['lift'], gifs: async () => getGif('lift', ['hardcoded']) },
  { triggers: ['lurk'], gifs: async () => getGif('lurk', ['hardcoded']) },
- { triggers: ['nom', 'nam'], gifs: async () => getGif('nom', ['hardcoded']) },
+ { triggers: ['nom', 'nam'], gifs: async () => getGif('nom', ['waifu']) },
  { triggers: ['nuzzle', 'snuggle'], gifs: async () => getGif('nuzzle', ['hardcoded']) },
  { triggers: ['nya', 'mew'], gifs: async () => getGif('nya', ['hardcoded']) },
- { triggers: ['pat'], gifs: async () => getGif('pat', ['neko', 'purr']) },
+ { triggers: ['pat'], gifs: async () => getGif('pat', ['neko', 'purr', 'waifu']) },
  { triggers: ['peck'], gifs: async () => getGif('peck', ['hardcoded']) },
  { triggers: ['peek'], gifs: async () => getGif('peek', ['hardcoded']) },
- { triggers: ['poke', 'boop'], gifs: async () => getGif('poke', ['neko', 'purr']) },
+ { triggers: ['poke', 'boop'], gifs: async () => getGif('poke', ['neko', 'purr', 'waifu']) },
  { triggers: ['pout', 'hmpf', 'hmph'], gifs: async () => getGif('pout', ['neko']) },
  { triggers: ['quack'], gifs: async () => getGif('quack', ['hardcoded']) },
  { triggers: ['run'], gifs: async () => getGif('run', ['hardcoded']) },
  { triggers: ['scream'], gifs: async () => getGif('scream', ['hardcoded']) },
  { triggers: ['shake'], gifs: async () => getGif('shake', ['hardcoded']) },
  { triggers: ['shrug'], gifs: async () => getGif('shrug', ['neko']) },
- { triggers: ['slap', 'hit', 'punch'], gifs: async () => getGif('slap', ['neko', 'purr']) },
+ {
+  triggers: ['slap', 'hit', 'punch'],
+  gifs: async () => getGif('slap', ['neko', 'purr', 'waifu']),
+ },
  { triggers: ['slap', 'hit', 'punch'], gifs: async () => getGif('punch', ['neko']) },
  { triggers: ['sleep'], gifs: async () => getGif('sleep', ['neko']) },
- { triggers: ['smile'], gifs: async () => getGif('smile', ['neko', 'purr']) },
- { triggers: ['smug'], gifs: async () => getGif('smug', ['neko', 'purr']) },
+ { triggers: ['smile'], gifs: async () => getGif('smile', ['neko', 'purr', 'waifu']) },
+ { triggers: ['smug'], gifs: async () => getGif('smug', ['neko', 'purr', 'waifu']) },
  { triggers: ['stare'], gifs: async () => getGif('stare', ['neko']) },
  { triggers: ['tail', 'wag', 'tailwag'], gifs: async () => getGif('tail', ['purr']) },
  { triggers: ['thighsleep', 'lapsleep'], gifs: async () => getGif('thighsleep', ['hardcoded']) },
  { triggers: ['think'], gifs: async () => getGif('think', ['neko']) },
  { triggers: ['thumbsup'], gifs: async () => getGif('thumbsup', ['neko']) },
  { triggers: ['tickle'], gifs: async () => getGif('tickle', ['neko', 'purr']) },
- { triggers: ['wave'], gifs: async () => getGif('wave', ['neko']) },
- { triggers: ['wink'], gifs: async () => getGif('wink', ['neko']) },
- { triggers: ['yeet'], gifs: async () => getGif('yeet', ['hardcoded', 'neko']) },
+ { triggers: ['wave'], gifs: async () => getGif('wave', ['neko', 'waifu']) },
+ { triggers: ['wink'], gifs: async () => getGif('wink', ['neko', 'waifu']) },
+ { triggers: ['yeet'], gifs: async () => getGif('yeet', ['neko', 'waifu']) },
  { triggers: ['yawn'], gifs: async () => getGif('yawn', ['hardcoded']) },
  { triggers: ['woof'], gifs: async () => getGif('woof', ['hardcoded']) },
- { triggers: ['kiss', 'kith', 'smooch'], gifs: async () => getGif('kiss', ['neko', 'purr']) },
+ {
+  triggers: ['kiss', 'kith', 'smooch'],
+  gifs: async () => getGif('kiss', ['neko', 'purr', 'waifu']),
+ },
  { triggers: ['kitsune'], gifs: async () => getGif('kiss', ['neko']) },
  { triggers: ['shoot'], gifs: async () => getGif('shoot', ['neko']) },
- { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko']) },
+ { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko', 'waifu']) },
  { triggers: ['husbando'], gifs: async () => getGif('husbando', ['neko']) },
  { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr']) },
  { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr'], 'img') },
  { triggers: ['holo'], gifs: async () => getGif('eevee', ['purr'], 'img') },
  { triggers: ['icon'], gifs: async () => getGif('icon', ['purr'], 'img') },
  { triggers: ['kitsune'], gifs: async () => getGif('kitsune', ['purr'], 'img') },
- { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'neko']) },
- { triggers: ['neko'], gifs: async () => getGif('neko', ['purr'], 'img') },
+ { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'neko', 'waifu']) },
+ { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'waifu'], 'img') },
  { triggers: ['okami'], gifs: async () => getGif('okami', ['purr'], 'img') },
  { triggers: ['senko'], gifs: async () => getGif('senko', ['purr'], 'img') },
  { triggers: ['shiro'], gifs: async () => getGif('shiro', ['purr'], 'img') },
  { triggers: ['nod'], gifs: async () => getGif('nod', ['neko']) },
  { triggers: ['nope'], gifs: async () => getGif('nope', ['neko']) },
+ { triggers: ['shinobu'], gifs: async () => getGif('shinobu', ['waifu']) },
+ { triggers: ['megumin'], gifs: async () => getGif('megumin', ['waifu']) },
+ { triggers: ['bully'], gifs: async () => getGif('bully', ['waifu']) },
+ { triggers: ['glomp'], gifs: async () => getGif('glomp', ['waifu']) },
+ { triggers: ['kill'], gifs: async () => getGif('kill', ['waifu']) },
+ { triggers: ['kick'], gifs: async () => getGif('kick', ['neko', 'waifu']) },
+ { triggers: ['cringe'], gifs: async () => getGif('cringe', ['waifu']) },
 ];
