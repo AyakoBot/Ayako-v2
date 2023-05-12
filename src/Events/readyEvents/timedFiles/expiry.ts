@@ -74,9 +74,7 @@ const logExpire = async (
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 
- const channels = await ch
-  .query('SELECT modevents FROM logchannels WHERE guildid = $1;', [guild.id])
-  .then((r: DBT.logchannels[] | null) => (r ? r[0].modlog : null));
+ const channels = await ch.getLogChannels('modlog', guild);
  if (!channels) return;
 
  await Promise.all(rows.map((p) => guild.members.fetch(p.userid).catch(() => null)));

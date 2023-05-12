@@ -2369,6 +2369,91 @@ export default {
       },
      },
     },
+    logchannels: {
+     name: 'Log Channels',
+     fields: {
+      applicationevents: {
+       name: 'Application Events',
+       desc: 'The Channel to send Application Events in',
+      },
+      automodevents: {
+       name: 'AutoMod Events',
+       desc: 'The Channel to send AutoMod Events in',
+      },
+      channelevents: {
+       name: 'Channel Events',
+       desc: 'The Channel to send Channel Events in',
+      },
+      emojievents: {
+       name: 'Emoji Events',
+       desc: 'The Channel to send Emoji Events in',
+      },
+      guildevents: {
+       name: 'Guild Events',
+       desc: 'The Channel to send Guild Events in',
+      },
+      scheduledeventevents: {
+       name: 'Scheduled Event Events',
+       desc: 'The Channel to send Scheduled Event Events in',
+      },
+      inviteevents: {
+       name: 'Invite Events',
+       desc: 'The Channel to send Invite Events in',
+      },
+      messageevents: {
+       name: 'Message Events',
+       desc: 'The Channel to send Message Events in',
+      },
+      roleevents: {
+       name: 'Role Events',
+       desc: 'The Channel to send Role Events in',
+      },
+      stageevents: {
+       name: 'Stage Events',
+       desc: 'The Channel to send Stage Events in',
+      },
+      stickerevents: {
+       name: 'Sticker Events',
+       desc: 'The Channel to send Sticker Events in',
+      },
+      typingevents: {
+       name: 'Typing Events',
+       desc: 'The Channel to send Typing Events in',
+      },
+      userevents: {
+       name: 'User Events',
+       desc: 'The Channel to send User Events in',
+      },
+      voiceevents: {
+       name: 'Voice Events',
+       desc: 'The Channel to send Voice Events in',
+      },
+      webhookevents: {
+       name: 'Webhook Events',
+       desc: 'The Channel to send Webhook Events in',
+      },
+      settingslog: {
+       name: 'Settings Log',
+       desc: 'The Channel to send Settings Logs in',
+      },
+      modlog: {
+       name: 'Mod Log',
+       desc: 'The Channel to send Mod Logs in',
+      },
+      reactionevents: {
+       name: 'Reaction Events',
+       desc: 'The Channel to send Reaction Events in',
+      },
+      memberevents: {
+       name: 'Member Events',
+       desc: 'The Channel to send Member Events in',
+      },
+      auditlogevents: {
+       name: 'Audit Log Events',
+       desc: 'The Channel to send Audit Log Events in',
+      },
+     },
+    },
     verification: {
      name: 'Verification',
      fields: {
