@@ -1275,7 +1275,7 @@ export default {
    bonk: {
     self: "bonks themself, at least I didn't have to do it",
     others: 'bonks',
-    buttons: ['Pat them!', 'Tickle fight!', 'Kiss them!'],
+    buttons: ['Bonk them! >:(', 'Hit them!', 'Cry ;-;'],
    },
    bored: {
     self: 'is bored',
