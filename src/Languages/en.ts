@@ -1625,7 +1625,13 @@ export default {
     others: 'disagrees with',
    },
   },
+  img: {
+   madeBy: 'Made by:',
+   viewArtist: 'View Artist',
+   viewOriginal: 'View Original',
+  },
   rp: {
+   gifSrc: 'Gif Source Anime:',
    author: `${name} Roleplay Command Manager`,
    desc: `
     ${name} supports a wide variety of Roleplay Commands.

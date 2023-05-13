@@ -1,6 +1,11 @@
+import * as Discord from 'discord.js';
 import * as Neko from 'nekos-best.js';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
-import PurrBot from 'purr-image';
+import PurrBot from 'purrbot-api';
+import languageSelector from './languageSelector.js';
+import colorSelector from './colorSelector.js';
+import replyCmd from './replyCmd.js';
+import objectEmotes from './objectEmotes.js';
 
 const neko = new Neko.Client();
 
@@ -258,27 +263,35 @@ const hardcodedGifs = {
 
 const getRandom = (arr: string[]) => arr[Math.ceil(Math.random() * (arr.length - 1))];
 
-const getGif = async (
+export type ReturnType<T extends 'gif' | 'img'> = {
+ img: { artist?: string; source?: string; url: string; artistUrl?: string };
+ gif: { anime_name?: string; url: string };
+}[T];
+
+const getGif = async <T extends 'gif' | 'img'>(
  gifName: string,
  type: ('purr' | 'neko' | 'hardcoded' | 'waifu')[],
- imgType: 'gif' | 'img' = 'gif',
-) => {
+): Promise<ReturnType<T>> => {
  switch (type[Math.ceil(Math.random() * (type.length - 1))]) {
   case 'purr': {
-   const purrBot = Object.entries(PurrBot.SFW).find(([key]) => key === gifName);
-   if (!purrBot) return '';
-
-   if (gifName === 'neko') return (await purrBot[1](imgType)).link;
-   return (await purrBot[1]()).link;
+   const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
+   return {
+    url: await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
+     functionToCall as 'gif' | 'img',
+    ),
+   };
   }
   case 'neko': {
-   return (await neko.fetch(gifName as Neko.NbCategories, 1)).results[0].url;
+   const res = (await neko.fetch(gifName as Neko.NbCategories, 1)).results[0];
+   return 'anime_name' in res
+    ? { url: res.url, anime_name: res.anime_name }
+    : { url: res.url, artist: res.artist_name, source: res.source_url, artistUrl: res.artist_href };
   }
   case 'waifu': {
-   return WaifuPics(gifName as WaifuGifNames);
+   return { url: await WaifuPics(gifName as WaifuGifNames) };
   }
   case 'hardcoded': {
-   return getRandom(hardcodedGifs[gifName as keyof typeof hardcodedGifs]);
+   return { url: getRandom(hardcodedGifs[gifName as keyof typeof hardcodedGifs]) };
   }
   default: {
    throw new Error('Invalid type');
@@ -286,7 +299,7 @@ const getGif = async (
  }
 };
 
-export default [
+const gifSelection = [
  { triggers: ['awoo'], gifs: async () => getGif('awoo', ['waifu']) },
  { triggers: ['bath'], gifs: async () => getGif('bath', ['hardcoded']) },
  { triggers: ['ayaya'], gifs: async () => getGif('ayaya', ['hardcoded']) },
@@ -301,7 +314,6 @@ export default [
  { triggers: ['dance'], gifs: async () => getGif('dance', ['neko', 'purr', 'waifu']) },
  { triggers: ['facepalm'], gifs: async () => getGif('facepalm', ['neko']) },
  { triggers: ['feed'], gifs: async () => getGif('feed', ['neko', 'purr']) },
- { triggers: ['fluff'], gifs: async () => getGif('fluff', ['purr']) },
  { triggers: ['fluff'], gifs: async () => getGif('fluff', ['purr']) },
  { triggers: ['handshake'], gifs: async () => getGif('handshake', ['hardcoded']) },
  { triggers: ['happy'], gifs: async () => getGif('happy', ['neko', 'waifu']) },
@@ -356,26 +368,98 @@ export default [
   triggers: ['kiss', 'kith', 'smooch'],
   gifs: async () => getGif('kiss', ['neko', 'purr', 'waifu']),
  },
- { triggers: ['kitsune'], gifs: async () => getGif('kiss', ['neko']) },
  { triggers: ['shoot'], gifs: async () => getGif('shoot', ['neko']) },
- { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko', 'waifu'], 'img') },
+ { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko', 'waifu']) },
  { triggers: ['husbando'], gifs: async () => getGif('husbando', ['neko']) },
  { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr']) },
- { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr'], 'img') },
- { triggers: ['holo'], gifs: async () => getGif('eevee', ['purr'], 'img') },
- { triggers: ['icon'], gifs: async () => getGif('icon', ['purr'], 'img') },
- { triggers: ['kitsune'], gifs: async () => getGif('kitsune', ['purr', 'neko'], 'img') },
+ { triggers: ['holo'], gifs: async () => getGif('holo', ['purr']) },
+ { triggers: ['icon'], gifs: async () => getGif('icon', ['purr']) },
+ { triggers: ['kitsune'], gifs: async () => getGif('kitsune', ['purr', 'neko']) },
  { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'neko', 'waifu']) },
- { triggers: ['okami'], gifs: async () => getGif('okami', ['purr'], 'img') },
- { triggers: ['senko'], gifs: async () => getGif('senko', ['purr'], 'img') },
- { triggers: ['shiro'], gifs: async () => getGif('shiro', ['purr'], 'img') },
+ { triggers: ['okami'], gifs: async () => getGif('okami', ['purr']) },
+ { triggers: ['senko'], gifs: async () => getGif('senko', ['purr']) },
+ { triggers: ['shiro'], gifs: async () => getGif('shiro', ['purr']) },
  { triggers: ['nod'], gifs: async () => getGif('nod', ['neko']) },
  { triggers: ['nope'], gifs: async () => getGif('nope', ['neko']) },
  { triggers: ['shinobu'], gifs: async () => getGif('shinobu', ['waifu']) },
  { triggers: ['megumin'], gifs: async () => getGif('megumin', ['waifu']) },
  { triggers: ['bully'], gifs: async () => getGif('bully', ['waifu']) },
- { triggers: ['glomp'], gifs: async () => getGif('glomp', ['waifu']) },
+ { triggers: ['snuggle', 'cuddle'], gifs: async () => getGif('glomp', ['waifu']) },
  { triggers: ['kill'], gifs: async () => getGif('kill', ['waifu']) },
  { triggers: ['kick'], gifs: async () => getGif('kick', ['neko', 'waifu']) },
  { triggers: ['cringe'], gifs: async () => getGif('cringe', ['waifu']) },
 ];
+
+export default gifSelection;
+
+export const imageGetter = async (
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+) => {
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+
+ const commandName =
+  cmd instanceof Discord.ChatInputCommandInteraction
+   ? cmd.options.data.find((c) => c.type === Discord.ApplicationCommandOptionType.Subcommand)?.name
+   : cmd.customId.split(/\//g)[1];
+ if (!commandName) return;
+
+ const imgGetter = gifSelection.find((g) => g.triggers.includes(commandName));
+ const img = (await imgGetter?.gifs()) as ReturnType<'img'>;
+ const language = await languageSelector(cmd.guildId);
+ const lan = language.slashCommands.img;
+
+ const payload: Discord.InteractionReplyOptions | Discord.InteractionUpdateOptions = {
+  embeds: [
+   {
+    image: {
+     url: img.url,
+    },
+    color: colorSelector(cmd.guild?.members.me),
+    author: img.artist
+     ? {
+        name: lan.madeBy,
+       }
+     : undefined,
+    title: img.artist as string,
+    url: img.source as string,
+   },
+  ],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      label: language.Refresh,
+      custom_id: `images/${commandName}`,
+      style: Discord.ButtonStyle.Primary,
+      emoji: objectEmotes.refresh,
+     } as Discord.APIButtonComponent,
+    ],
+   } as Discord.APIActionRowComponent<Discord.APIButtonComponent>,
+   img.source
+    ? ({
+       type: Discord.ComponentType.ActionRow,
+       components: [
+        {
+         type: Discord.ComponentType.Button,
+         label: lan.viewArtist,
+         style: Discord.ButtonStyle.Link,
+         url: img.artistUrl as string,
+        } as Discord.APIButtonComponent,
+        {
+         type: Discord.ComponentType.Button,
+         label: lan.viewOriginal,
+         style: Discord.ButtonStyle.Link,
+         url: img.source as string,
+        } as Discord.APIButtonComponent,
+       ],
+      } as Discord.APIActionRowComponent<Discord.APIButtonComponent>)
+    : undefined,
+  ].filter((c): c is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!c),
+ };
+
+ if (cmd instanceof Discord.ChatInputCommandInteraction) {
+  replyCmd(cmd, payload as Discord.InteractionReplyOptions);
+ } else cmd.update(payload as Discord.InteractionUpdateOptions);
+};

@@ -399,4 +399,5 @@ export default {
   animated: false,
   link: 'https://cdn.discordapp.com/emojis/1073254214995816489.png',
  },
+ refresh: { name: '🔃' },
 };

@@ -57,7 +57,6 @@ import stringEmotes from './ClientHelperModules/stringEmotes.js';
 import reactionEmotes from './ClientHelperModules/reactionEmotes.js';
 import cache from './ClientHelperModules/cache.js';
 import constants from './Other/constants.js';
-import neko from './NekoClient.js';
 import getRandom from './ClientHelperModules/getRandom.js';
 import getColor from './ClientHelperModules/getColor.js';
 import findServerByName from './ClientHelperModules/findServerByName.js';
@@ -130,7 +129,6 @@ export {
  reactionEmotes,
  cache,
  constants,
- neko,
  mainID,
  channelQueue,
  channelTimeout,

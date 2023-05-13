@@ -10,6 +10,7 @@ import colorSelector from './colorSelector.js';
 import languageSelector from './languageSelector.js';
 import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
+import type { ReturnType } from './getGif.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
@@ -39,7 +40,7 @@ const reply = async (
 
  const gifCallers = getGif.filter((c) => c.triggers.includes(commandName));
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
- const gif = (await gifCaller.gifs()) as string;
+ const gif = (await gifCaller.gifs()) as ReturnType<'gif'>;
 
  const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId]).then(
   (r: DBT.guildsettings[] | null) => r?.[0]?.interactionsmode ?? null,
@@ -51,9 +52,12 @@ const reply = async (
  const embed: Discord.APIEmbed = {
   color: colorSelector(cmd.guild.members.me),
   description: `${desc}  ${otherText}${text.length ? `\n"${text}"` : ''}`,
+  footer: gif.anime_name
+   ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
+   : undefined,
  };
- if (setting) embed.thumbnail = { url: gif };
- else embed.image = { url: gif };
+ if (setting) embed.thumbnail = { url: gif.url };
+ else embed.image = { url: gif.url };
 
  const replyUsers =
   cmd instanceof Discord.ButtonInteraction
@@ -203,20 +207,22 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
  lan: CT.Language['slashCommands']['interactions'][T],
 ): Discord.MessageReplyOptions | Discord.InteractionReplyOptions => ({
  embeds: [embed],
- components:
+ components: [
   con.buttons?.length && replyUsers.length && !isAtEmbedLimit
-   ? [
-      {
-       type: Discord.ComponentType.ActionRow,
-       components: con.buttons?.map((b, i) => ({
-        type: Discord.ComponentType.Button,
-        label: 'buttons' in lan ? lan.buttons[i] : b,
-        customId: `${b}_${replyUsers.join('_')}`,
-        style: Discord.ButtonStyle.Secondary,
-       })),
-      },
-     ]
-   : [],
+   ? ({
+      type: Discord.ComponentType.ActionRow,
+      components: con.buttons?.map(
+       (b, i) =>
+        ({
+         type: Discord.ComponentType.Button,
+         label: 'buttons' in lan ? lan.buttons[i] : b,
+         custom_id: `${b}_${replyUsers.join('_')}`,
+         style: Discord.ButtonStyle.Secondary,
+        } as Discord.APIButtonComponent),
+      ),
+     } as Discord.APIActionRowComponent<Discord.APIButtonComponent>)
+   : undefined,
+ ].filter((b): b is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!b),
 });
 
 const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
