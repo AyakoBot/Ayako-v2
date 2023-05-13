@@ -1,7 +1,8 @@
-import { NB_CATEGORIES as NekoGifNames } from 'nekos-best.js';
+import * as Neko from 'nekos-best.js';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
 import PurrBot from 'purr-image';
-import neko from '../NekoClient.js';
+
+const neko = new Neko.Client();
 
 const hardcodedGifs = {
  ayaya: [
@@ -244,6 +245,15 @@ const hardcodedGifs = {
   'https://c.tenor.com/YDV4jEpOF1oAAAAC/nadeshiko-yawn.gif',
   'https://c.tenor.com/1UjVG4tHsPQAAAAC/lucky-star-yawn.gif',
  ],
+ nom: [
+  'https://images-ext-2.discordapp.net/external/hMN0jfdNLYH_JmIltn50v_kbxbVPmg7LEycbgz7AuX8/%3Fitemid%3D15735907/https/media1.tenor.com/images/5878c0995fcf89352ff13189ee61f303/tenor.gif',
+  'https://imgur.com/RPCWKtc.gif',
+  'https://imgur.com/esMJKkK.gif',
+  'https://images-ext-1.discordapp.net/external/QXlArNhRqGqvKQVQdmMDLzzM0bo1UnBfw502sW-rgOQ/https/cdn.weeb.sh/images/H1hige7sZ.gif',
+  'https://i.imgur.com/q3A4HL2.gif',
+  'https://cdn.weeb.sh/images/HJmbWxmiZ.gif',
+  'https://imgur.com/v0b2A3w.gif',
+ ],
 };
 
 const getRandom = (arr: string[]) => arr[Math.ceil(Math.random() * (arr.length - 1))];
@@ -262,7 +272,7 @@ const getGif = async (
    return (await purrBot[1]()).link;
   }
   case 'neko': {
-   return (await neko.fetchRandom(gifName as NekoGifNames)).results[0].url;
+   return (await neko.fetch(gifName as Neko.NbCategories, 1)).results[0].url;
   }
   case 'waifu': {
    return WaifuPics(gifName as WaifuGifNames);
@@ -298,7 +308,7 @@ export default [
  { triggers: ['highfive'], gifs: async () => getGif('highfive', ['neko', 'waifu']) },
  {
   triggers: ['handhold', 'holdhands'],
-  gifs: async () => getGif('handhold', ['hardcoded', 'neko', 'waifu']),
+  gifs: async () => getGif('handhold', ['neko', 'waifu']),
  },
  {
   triggers: ['hug', 'comfort', 'hold'],
@@ -310,7 +320,7 @@ export default [
  { triggers: ['lick'], gifs: async () => getGif('lick', ['purr', 'waifu']) },
  { triggers: ['lift'], gifs: async () => getGif('lift', ['hardcoded']) },
  { triggers: ['lurk'], gifs: async () => getGif('lurk', ['hardcoded']) },
- { triggers: ['nom', 'nam'], gifs: async () => getGif('nom', ['waifu']) },
+ { triggers: ['nom', 'nam'], gifs: async () => getGif('nom', ['hardcoded']) },
  { triggers: ['nuzzle', 'snuggle'], gifs: async () => getGif('nuzzle', ['hardcoded']) },
  { triggers: ['nya', 'mew'], gifs: async () => getGif('nya', ['hardcoded']) },
  { triggers: ['pat'], gifs: async () => getGif('pat', ['neko', 'purr', 'waifu']) },
@@ -348,15 +358,14 @@ export default [
  },
  { triggers: ['kitsune'], gifs: async () => getGif('kiss', ['neko']) },
  { triggers: ['shoot'], gifs: async () => getGif('shoot', ['neko']) },
- { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko', 'waifu']) },
+ { triggers: ['waifu'], gifs: async () => getGif('waifu', ['neko', 'waifu'], 'img') },
  { triggers: ['husbando'], gifs: async () => getGif('husbando', ['neko']) },
  { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr']) },
  { triggers: ['eevee'], gifs: async () => getGif('eevee', ['purr'], 'img') },
  { triggers: ['holo'], gifs: async () => getGif('eevee', ['purr'], 'img') },
  { triggers: ['icon'], gifs: async () => getGif('icon', ['purr'], 'img') },
- { triggers: ['kitsune'], gifs: async () => getGif('kitsune', ['purr'], 'img') },
+ { triggers: ['kitsune'], gifs: async () => getGif('kitsune', ['purr', 'neko'], 'img') },
  { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'neko', 'waifu']) },
- { triggers: ['neko'], gifs: async () => getGif('neko', ['purr', 'waifu'], 'img') },
  { triggers: ['okami'], gifs: async () => getGif('okami', ['purr'], 'img') },
  { triggers: ['senko'], gifs: async () => getGif('senko', ['purr'], 'img') },
  { triggers: ['shiro'], gifs: async () => getGif('shiro', ['purr'], 'img') },
