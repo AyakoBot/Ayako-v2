@@ -7,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.role;
  const eventLan = language.events.logs.role;
- const role = cmd.options.getRole('role-mention', true);
+ const role = cmd.options.getRole('role', true);
 
  const embed: Discord.APIEmbed = {
   author: {

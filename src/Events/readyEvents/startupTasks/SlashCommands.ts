@@ -303,7 +303,7 @@ const info = new Discord.SlashCommandBuilder()
    .setDescription('Display Information about a Channel')
    .addChannelOption(
     new Discord.SlashCommandChannelOption()
-     .setName('channel-mention')
+     .setName('channel')
      .setDescription('The Channel you want to get Information about')
      .setRequired(true),
    ),
@@ -314,7 +314,7 @@ const info = new Discord.SlashCommandBuilder()
    .setDescription('Display Information about a Role')
    .addRoleOption(
     new Discord.SlashCommandRoleOption()
-     .setName('role-mention')
+     .setName('role')
      .setDescription('The Role you want to get Information about')
      .setRequired(true),
    ),
@@ -472,6 +472,116 @@ const images = new Discord.SlashCommandBuilder()
    .setDescription('Get a random Shiro Image'),
  );
 
+const roles = new Discord.SlashCommandBuilder()
+ .setName('roles')
+ .setDescription('Everything about Roles')
+ .setDMPermission(false)
+ .setDefaultMemberPermissions(Discord.PermissionsBitField.Flags.ManageRoles)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('create')
+   .setDescription('Create a new Role')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('name')
+     .setDescription('The Name of the new Role')
+     .setMaxLength(100)
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('color')
+     .setDescription('The Color of the new Role (Hex Code)')
+     .setMaxLength(6)
+     .setRequired(false),
+   )
+   .addAttachmentOption(
+    new Discord.SlashCommandAttachmentOption()
+     .setName('icon')
+     .setDescription('The Icon of the new Role')
+     .setRequired(false),
+   )
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('position-role')
+     .setDescription('The Role to put this Role under')
+     .setRequired(false),
+   )
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('permission-role')
+     .setDescription('The Role to copy the Permissions from')
+     .setRequired(false),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('delete')
+   .setDescription('Delete a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role to delete')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('info')
+   .setDescription('View Information about a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role to view the Information of')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('members')
+   .setDescription('List all Members of a Roles')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role to view the Members of')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('give')
+   .setDescription('Give a Role to a User')
+   .addUserOption(
+    new Discord.SlashCommandUserOption()
+     .setName('user')
+     .setDescription('The User to give the Role to')
+     .setRequired(true),
+   )
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role to give to the User')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('take')
+   .setDescription('Take a Role from a User')
+   .addUserOption(
+    new Discord.SlashCommandUserOption()
+     .setName('user')
+     .setDescription('The User to remove the Role from')
+     .setRequired(true),
+   )
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role to remove from the User')
+     .setRequired(true),
+   ),
+ );
+
 export default {
  public: {
   settings,
@@ -484,5 +594,6 @@ export default {
   ping,
   rp,
   images,
+  roles,
  },
 };

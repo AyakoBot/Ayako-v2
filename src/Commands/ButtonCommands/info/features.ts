@@ -4,7 +4,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const inviteOrID = args.shift() as string;
- const isInviteGuild = Boolean(args.shift() as string);
+ const isInviteGuild = (args.shift() as string) === 'true';
  const language = await ch.languageSelector(cmd.guildId);
  const invite = isInviteGuild
   ? await client.fetchInvite(inviteOrID).catch(() => undefined)

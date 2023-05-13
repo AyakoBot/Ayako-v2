@@ -1235,6 +1235,25 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  roles: {
+   create: (role: Discord.Role) => `Successfully created Role ${role}`,
+   delete: {
+    areYouSure: (role: Discord.Role) => `Are you sure you want to delete the Role ${role}?`,
+    deleted: (role: Discord.Role) => `Successfully deleted ${getRole(role)}`,
+   },
+   give: {
+    administrator:
+     'This Role has Dangerous Permissions.\nPlease give it manually in the Roles Tab of your Server',
+    alreadyHas: (role: Discord.Role, user: Discord.User) => `${user} already has ${role}`,
+    given: (role: Discord.Role, user: Discord.User) => `Successfully given ${role} to ${user}`,
+   },
+   take: {
+    administrator:
+     'This Role has Dangerous Permissions.\nPlease take it manually in the Roles Tab of your Server',
+    doesntHave: (role: Discord.Role, user: Discord.User) => `${user} doesn't have ${role}`,
+    taken: (role: Discord.Role, user: Discord.User) => `Successfully taken ${role} from ${user}`,
+   },
+  },
   interactions: {
    awoo: {
     self: 'Awoo!!',
@@ -3467,6 +3486,7 @@ export default {
   sendMessage: 'I cannot send Messages in this Channel',
   lackingAccess: (emotes: string) => `I'm lacking access to these emotes: ${emotes}`,
   channelNotManageable: "I'm lacking Permissions to edit that Channel",
+  roleNotManageable: "I'm lacking Permissions to manage that Role",
   roleNotFound: 'Role not Found',
   notYours: "You can't interact with someone elses Messages",
   time: 'Time ran out',
@@ -3474,6 +3494,7 @@ export default {
   noChannelFound: 'No Channel found, please report to the Support Server',
   noRoleFound: 'No Role found, please report to the Support Server',
   noThreadCanBeCreated: 'In this Channel, private Threads cannot be created',
+  cantManage: "You can't manage this Member",
  },
  channelRules: {
   HasLeastAttachments: (val: Strumber) => `Has at least ${val} Attachments`,

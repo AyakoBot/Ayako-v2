@@ -4,7 +4,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const channel = cmd.options.getChannel('channel-mention', true);
+ const channel = cmd.options.getChannel('channel', true);
  const language = await ch.languageSelector(cmd.guildId);
 
  if (!channel) {

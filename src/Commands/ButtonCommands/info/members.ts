@@ -2,7 +2,10 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export default async (
+ cmd: Discord.ButtonInteraction | Discord.ChatInputCommandInteraction,
+ args: string[],
+) => {
  if (!cmd.inCachedGuild()) return;
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.role;
