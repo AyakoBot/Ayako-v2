@@ -15,7 +15,7 @@
   "moment": "^2.29.4",
   "moment-duration-format": "^2.3.2",
   "nanoid": "^4.0.0",
-  "nekos-best.js": "^5.3.1",
+  "nekos-best.js": "^6.2.1",
   "node-fetch": "^3.2.10",
   "node-schedule": "^2.1.0",
   "os": "^0.1.2",
