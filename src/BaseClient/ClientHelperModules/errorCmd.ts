@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import reply from './replyCmd.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
@@ -12,7 +12,12 @@ export default (
   | Discord.ModalSubmitInteraction,
  content: string,
  language: CT.Language,
- m?: Discord.Message,
+ m?:
+  | Discord.ButtonInteraction
+  | Discord.CommandInteraction
+  | Discord.AnySelectMenuInteraction
+  | Discord.ModalSubmitInteraction
+  | Discord.Message,
 ) => {
  const embed: Discord.APIEmbed = {
   author: {
@@ -24,7 +29,13 @@ export default (
   description: content,
  };
 
- if (m && m.editable) return m.edit({ embeds: [embed] }).catch(() => null);
+ if (m && m instanceof Discord.Message && m.editable) {
+  return m.edit({ embeds: [embed] }).catch(() => null);
+ }
+
+ if (m && 'update' in m) {
+  return m.update({ embeds: [embed], components: [] }).catch(() => null);
+ }
 
  return reply(cmd, { embeds: [embed], ephemeral: true });
 };
