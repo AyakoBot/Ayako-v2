@@ -31,18 +31,31 @@ export default async (msg: Discord.Message) => {
   if (evaled.length > 2000) {
    ch.replyMsg(msg, { content: 'Too long, check console' });
    console.log(evaled);
-  } else if (clean(evaled) !== 'undefined') {
+   return;
+  }
+  if (clean(evaled) !== 'undefined') {
    ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`q\n${clean(evaled)}`)}` });
-  } else msg.react(ch.objectEmotes.cross.id);
+   console.log(evaled);
+   return;
+  }
+
+  msg.react(ch.objectEmotes.cross.id);
  } catch (err) {
   if (JSON.stringify(err as Error).length > 2000) {
    ch.replyMsg(msg, { content: 'Too long, check console' });
    console.log(err);
-  } else if (clean(JSON.stringify(err)) !== 'undefined') {
+   return;
+  }
+
+  if (clean(JSON.stringify(err)) !== 'undefined') {
    ch.replyMsg(msg, {
-    content: `\`ERROR\` \n${ch.util.makeCodeBlock(`q\n${clean(JSON.stringify(err, null, 12))}`)}\n`,
+    content: `\`ERROR\` \n${ch.util.makeCodeBlock(`q\n${clean((err as Error).message)}`)}\n`,
    });
-  } else msg.react(ch.objectEmotes.cross.id);
+   console.log(err);
+   return;
+  }
+
+  msg.react(ch.objectEmotes.cross.id);
  }
 };
 
