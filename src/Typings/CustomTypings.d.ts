@@ -247,3 +247,24 @@ export type punishment =
  | DBT.punish_tempchannelbans
  | DBT.punish_tempmutes
  | DBT.punish_warns;
+
+export type Onboarding = {
+ guildId: Discord.Snowflake;
+ defaultChannelIds: Discord.Snowflake[];
+ enabled: boolean;
+ prompts: {
+  id: Discord.Snowflake;
+  type: 0 | 1; // MULTIPLE_CHOICE | DROPDOWN
+  options: {
+   id: Discord.Snowflake;
+   channelIds: Discord.Snowflake[];
+   roleIds: Discord.Snowflake[];
+   title: string;
+   description?: string;
+  }[];
+  title: string;
+  singleSelect: boolean;
+  required: boolean;
+  inOnboarding: boolean;
+ }[];
+};
