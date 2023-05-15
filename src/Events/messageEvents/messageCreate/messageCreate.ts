@@ -21,6 +21,7 @@ export default async (msg: Discord.Message) => {
   other(msg);
   revengePing(msg);
   stickyMessage(msg);
+  eventDel(msg);
  } else {
   // dmLog(msg);
  }
@@ -34,4 +35,12 @@ const willis = (msg: Discord.Message) => {
  }
 
  msg.delete();
+};
+
+const eventDel = (msg: Discord.Message) => {
+ if (msg.author?.id !== '1105195321732116530') return;
+
+ setTimeout(() => {
+  if (msg) msg.delete();
+ }, 20000);
 };
