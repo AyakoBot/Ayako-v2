@@ -1,5 +1,8 @@
 import type * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
+import fetch from 'node-fetch';
+import type * as CT from '../../Typings/CustomTypings';
+import auth from '../../auth.json' assert { type: 'json' };
 
 const cache: {
  // Discord Cache
@@ -51,6 +54,12 @@ const cache: {
   set: (guildId: string, inviteGuild: Discord.InviteGuild) => void;
   delete: (guildId: string) => void;
   cache: Map<string, Discord.InviteGuild>;
+ };
+ onboarding: {
+  get: (guildId: string) => Promise<CT.Onboarding | undefined>;
+  set: (guildId: string, onboarding: CT.Onboarding) => void;
+  delete: (guildId: string) => void;
+  cache: Map<string, CT.Onboarding>;
  };
 
  // Cache
@@ -333,6 +342,70 @@ const cache: {
   set: (id, guild) => cache.inviteGuilds.cache.set(id, guild),
   delete: (id) => {
    cache.inviteGuilds.cache.delete(id);
+  },
+  cache: new Map(),
+ },
+ onboarding: {
+  get: async (id) => {
+   const cached = cache.onboarding.cache.get(id);
+   if (cached) return cached;
+
+   const response = await fetch(`https://discord.com/api/v10/guilds/${id}/onboarding`, {
+    headers: {
+     Authorization: `Bot ${auth.token}`,
+    },
+   });
+   if (!response.ok) return undefined;
+   const res = (await response.json()) as {
+    guild_id: string;
+    default_channel_ids: string[];
+    enabled: boolean;
+    prompts: {
+     id: string;
+     type: 0 | 1;
+     options: {
+      id: string;
+      channel_ids: string[];
+      role_ids: string[];
+      title: string;
+      description?: string;
+     }[];
+     title: string;
+     single_select: boolean;
+     required: boolean;
+     in_onboarding: boolean;
+    }[];
+   };
+
+   const onboarding: CT.Onboarding = {
+    guildId: res.guild_id,
+    defaultChannelIds: res.default_channel_ids,
+    enabled: res.enabled,
+    prompts: res.prompts.map((p) => ({
+     id: p.id,
+     type: p.type,
+     options: p.options.map((o) => ({
+      id: o.id,
+      channelIds: o.channel_ids,
+      roleIds: o.role_ids,
+      title: o.title,
+      description: o.description,
+     })),
+     title: p.title,
+     singleSelect: p.single_select,
+     required: p.required,
+     inOnboarding: p.in_onboarding,
+    })),
+   };
+
+   cache.onboarding.set(id, onboarding);
+   return onboarding;
+  },
+  set: (id, onboarding) => {
+   cache.onboarding.cache.set(id, onboarding);
+  },
+  delete: (id) => {
+   cache.onboarding.cache.delete(id);
   },
   cache: new Map(),
  },
