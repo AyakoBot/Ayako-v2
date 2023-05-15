@@ -22,32 +22,6 @@ export interface Command {
  ) => void | Promise<void>;
 }
 
-export interface ModBaseEventOptions {
- executor: Discord.User | bEvalUser | undefined;
- target: Discord.User | bEvalUser;
- reason: string;
- msg?: Discord.Message;
- cmd?: Discord.GuildInteraction;
- guild: Discord.Guild | undefined;
- type:
-  | 'banAdd'
-  | 'tempbanAdd'
-  | 'banRemove'
-  | 'softbanAdd'
-  | 'roleAdd'
-  | 'roleRemove'
-  | 'kickAdd'
-  | 'tempmuteAdd'
-  | 'muteRemove'
-  | 'channelbanAdd'
-  | 'tempchannelbanAdd'
-  | 'channelbanRemove'
-  | 'warnAdd';
- duration?: number;
- channel?: Discord.GuildChannel;
- role?: Discord.Role;
-}
-
 export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
 
 export interface TopGGBotVote {

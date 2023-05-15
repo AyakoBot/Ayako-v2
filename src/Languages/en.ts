@@ -1124,7 +1124,7 @@ export default {
  expire: {
   punishmentIssue: 'Punishment was issued at',
   punishmentOf: (target: Discord.User | CT.bEvalUser) =>
-   `A Punishment of ${target.username}#${target.discriminator} has expired`,
+   `A Punishment of ${target.tag} has expired`,
   punishmentIn: 'Punished in',
   punishmentBy: 'Punished by',
   end: 'Punishment End',
@@ -3025,409 +3025,108 @@ export default {
  mod: {
   warning: {
    text:
-    'You just issued a **Moderation Command** on a User with a **Mod Role**. \nDo you want to **proceed** or **abort**.',
+    'You just issued a **Moderation Command** on a User with a **Mod Role**.\nAre you sure you want to **proceed**!',
    proceed: 'Proceed',
-   abort: 'Abort',
   },
-  tempmuteAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Temp-Muted`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Temp-Muted by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   activeMute: `Joined with an active Mute`,
-   activeMuteError:
-    "This User joined with an active Mute.\nHowever I wasn't able to Mute them.\nMissing Permissions",
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Temp-Muted on \`${args.guild?.name ?? 'unknown Guild'}\``,
+  logs: {
+   roleAdd: {
+    author: 'Role given to User',
+    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
+     `${getRole(options.role)}was given to\n${getUser(target)}by\n${getUser(executor)}`,
    },
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `Member <@${args.target.id}> is already Temp-Muted`,
-   exeNoPerms: "You can't Temp-Mute this Member",
-   meNoPerms: "I can't Temp-Mute this Member `Missing Permissions`",
-   success: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> was Temp-Muted`,
-   loading: 'Temp-Muting User...',
-   error: "I wasn't able to Temp-Mute this User!",
-   noMember: 'This User is not a Member of this Server',
-   selfPunish: "You can't Temp-Mute yourself",
-   mePunish: "I won't Temp-Mute myself",
-   permissionError: "I don't have enough Permissions to Temp-Mute this User",
+   roleRemove: {
+    author: 'Role removed from User',
+    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
+     `${getRole(options.role)}was removed from\n${getUser(target)}by\n${getUser(executor)}`,
+   },
+   tempmuteAdd: {
+    author: 'User Muted',
+    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
+     `${getUser(target)}was Muted by\n${getUser(executor)}for\n${options.time}`,
+   },
+   muteRemove: {
+    author: 'User Un-Muted',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Un-Muted by\n${getUser(executor)}`,
+   },
+   banAdd: {
+    author: 'User Banned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Banned by\n${getUser(executor)}`,
+   },
+   softBanAdd: {
+    author: 'User Soft-Banned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was soft-Banned by\n${getUser(executor)}`,
+   },
+   tempBanAdd: {
+    author: 'User Temp-Banned',
+    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
+     `${getUser(target)}was Temp-Banned by\n${getUser(executor)}for\n${options.time}`,
+   },
+   channelBanAdd: {
+    author: 'User Channel-Banned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Channel-Banned by\n${getUser(executor)}`,
+   },
+   tempchannelbanAdd: {
+    author: 'User Temp-Channel-Banned',
+    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
+     `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}for\n${options.time}`,
+   },
+   channelBanRemove: {
+    author: 'User Channel-Un-Banned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}`,
+   },
+   banRemove: {
+    author: 'User Un-Banned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Un-Banned by\n${getUser(executor)}`,
+   },
+   kickAdd: {
+    author: 'User Kicked',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Kicked by\n${getUser(executor)}`,
+   },
+   warnAdd: {
+    author: 'User Warned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Warned by\n${getUser(executor)}`,
+   },
+   softWarnAdd: {
+    author: 'User Soft-Warned',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `${getUser(target)}was Soft-Warned by\n${getUser(executor)}`,
+   },
   },
-  muteRemove: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Un-Muted`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Un-Muted by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Un-Muted on \`${args.guild?.name ?? 'unknown Guild'}\``,
+  execution: {
+   roleAdd: {
+    dm: (options: { role: Discord.Role }) => `${getRole(options.role)}has been added to your Roles`,
+    meNoPerms: "I can't add Roles to Users",
+    youNoPerms: "You can't add Roles to Users",
+    error: 'I failed to add this Role to the User',
+    alreadyApplied: (target: Discord.User, options: { role: Discord.Role }) =>
+     `${getUser(target)}already has the Role ${getRole(options.role)}`,
+    success: (target: Discord.User, options: { role: Discord.Role }) =>
+     `${options.role} was added to ${target}`,
+    loading: 'Adding Role to User...',
+    self: "You can't add Roles to yourself",
+    me: "I won't add Roles to myself",
    },
-   exeNoPerms: "You can't Un-Mute this Member",
-   alreadyApplied: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> isn't muted`,
-   success: (args: CT.ModBaseEventOptions) => `Member <@${args.target.id}> was Un-Mute`,
-   loading: 'Un-Muting User...',
-   error: "I wasn't able to Un-Mute this User!",
-   noMember: 'This User is not a Member of this Server',
-   mePunish: "I can't Un-Mute myself",
-   selfPunish: "You can't Un-Mute yourself",
-   permissionError: "I don't have enough Permissions to Un-Mute this User",
-  },
-  banAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Banned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Banned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
+   roleRemove: {
+    dm: (options: { role: Discord.Role }) =>
+     `${getRole(options.role)}has been removed from your Roles`,
+    meNoPerms: "I can't remove Roles from Users",
+    youNoPerms: "You can't remove Roles from Users",
+    error: 'I failed to remove this Role from the User',
+    alreadyApplied: (target: Discord.User, options: { role: Discord.Role }) =>
+     `${getUser(target)}doesn't have the Role ${getRole(options.role)}`,
+    success: (target: Discord.User, options: { role: Discord.Role }) =>
+     `${options.role} was remremove from ${target}`,
+    loading: 'Removing Role from User...',
+    me: "I won't remove Roles from myself",
    },
-   exeNoPerms: "You can't Ban this User",
-   permissionError: "I don't have enough Permissions to Ban this User",
-   error: "I wasn't able to Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> is already Banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Banned`,
-   loading: 'Banning User...',
-   selfPunish: "You can't Ban yourself",
-   mePunish: "I won't Ban myself",
-  },
-  roleAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} has been added to ${args.role?.name}`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nhas been added to\nRole ${args.role} / \`${args.role?.name}\` / \`${
-     args.role?.id
-    }\`\nby\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been added to \`${args.role?.name}\` on \`${args.guild?.name ?? 'unknwon Guild'}\``,
-   },
-   exeNoPerms: "You can't add this User to Roles",
-   permissionError: "I don't have enough Permissions to add Roles to this User",
-   error: "I wasn't able to add this User to Roles!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> already has Role ${args.role} added`,
-   success: (args: CT.ModBaseEventOptions) => `<@${args.target.id}> added to Role ${args.role}`,
-   loading: 'Adding User to Role...',
-   selfPunish: "You can't add yourself to Roles",
-   mePunish: "I won't add myself to Roles",
-  },
-  roleRemove: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} has been removed from ${args.role?.name}`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nhas been removed from\nRole ${args.role} / \`${args.role?.name}\` / \`${
-     args.role?.id
-    }\`\nby\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been removed from \`${args.role?.name}\` on \`${
-      args.guild?.name ?? 'unknown Guild'
-     }\``,
-   },
-   exeNoPerms: "You can't remove this User from Roles",
-   permissionError: "I don't have enough Permissions to remove this User from Roles",
-   error: "I wasn't able to remove this User from Roles!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> doesn't have Role ${args.role} added`,
-   success: (args: CT.ModBaseEventOptions) => `<@${args.target.id}> removed from Role ${args.role}`,
-   loading: 'Removing User from Role...',
-   selfPunish: "You can't remove yourself from Roles",
-   mePunish: "I won't remove myself from Roles",
-  },
-  softbanAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Soft-Banned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Soft-Banned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Soft-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Soft-Ban this User",
-   permissionError: "I don't have enough Permissions to Soft-Ban this User",
-   error: "I wasn't able to Soft-Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> is already banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Soft-Banned`,
-   loading: 'Soft-Banning User...',
-   selfPunish: "You can't Soft-Ban yourself",
-   mePunish: "I won't Soft-Ban myself",
-   unbanReason: 'Soft-Ban',
-  },
-  tempbanAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Temp-Banned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Temp-Banned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Temp-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Temp-Ban this User",
-   permissionError: "I don't have enough Permissions to Temp-Ban this User",
-   error: "I wasn't able to Temp-Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> is already Temp-Banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Temp-Banned`,
-   loading: 'Temp-Banning User...',
-   selfPunish: "You can't Temp-Ban yourself",
-   mePunish: "I won't Temp-Ban myself",
-  },
-  channelbanAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Channel-Banned from ${
-     args.channel?.name ?? 'an unknown Channel'
-    }`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas was Channel-Banned from\n${
-     args.channel
-      ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
-      : 'unkown Channel'
-    }\nby\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Channel-Banned in \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Channel-Ban this User",
-   permissionError: "I don't have enough Permissions to Channel-Ban this User",
-   error: "I wasn't able to Channel-Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> is already Channel-Banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Channel-Banned`,
-   loading: 'Channel-Banning User...',
-   selfPunish: "You can't Channel-Ban yourself",
-   mePunish: "I won't Channel-Ban myself",
-  },
-  tempchannelbanAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Temp-Channel-Banned from ${
-     args.channel?.name ?? 'unkown Channel'
-    }`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas was Temp-Channel-Banned from\n${
-     args.channel
-      ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
-      : 'unkown Channel'
-    }\nby\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Temp-Channel-Banned in \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Temp-Channel-Ban this User",
-   permissionError: "I don't have enough Permissions to Temp-Channel-Ban this User",
-   error: "I wasn't able to Temp-Channel-Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> is already Channel-Banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Temp-Channel-Banned`,
-   loading: 'Temp-Channel-Banning User...',
-   selfPunish: "You can't Temp-Channel-Ban yourself",
-   mePunish: "I won't Temp-Channel-Ban myself",
-  },
-  channelbanRemove: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Channel-Unbanned from ${
-     args.channel?.name ?? 'unkown Channel'
-    }`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Channel-Unbanned from\n${
-     args.channel
-      ? `Channel <#${args.channel.id}> / \`${args.channel.name}\` / \`${args.channel.id}\``
-      : 'unkown Channel'
-    }\nby\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Channel-Unbanned in \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Channel-Unbanned this User",
-   permissionError: "I don't have enough Permissions to Channel-Unbanned this User",
-   error: "I wasn't able to Channel-Unbanned this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> isn't Channel-Banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Channel-Unbanned`,
-   loading: 'Channel-Unbanning User...',
-   selfPunish: "You can't Channel-Unban yourself",
-   mePunish: "I won't Channel-Unban myself",
-  },
-  banRemove: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Un-Banned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Un-Banned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Un-Banned from \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Un-Ban this User",
-   permissionError: "I don't have enough Permissions to Un-Ban this User",
-   error: "I wasn't able to Un-Ban this User!",
-   alreadyApplied: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> isn't banned`,
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Un-Banned`,
-   loading: 'Un-Banning User...',
-   selfPunish: "You can't Un-Ban yourself",
-   mePunish: "I won't Un-Ban myself",
-  },
-  kickAdd: {
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Kicked`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Kicked by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Kicked from \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   exeNoPerms: "You can't Kick this Member",
-   alreadyApplied: (args: CT.ModBaseEventOptions) =>
-    `User <@${args.target.id}> is not a Member of this Server`,
-   permissionError: "I don't have enough Permissions to Kick this Member",
-   error: "I wasn't able to Kick this Member!",
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Kicked`,
-   loading: 'Kicking User...',
-   selfPunish: "You can't Kick yourself",
-   mePunish: "I won't Kick myself",
-  },
-  warnAdd: {
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Warned on the Server \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Warned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Warned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   exeNoPerms: "You can't Warn this Member",
-   antispam: '**Please stop Spamming**',
-   antivirus: '**Please do not post Malicious Links**',
-   blacklist: '**Please do not send Blacklisted Words**\nCheck your DMs for a List of them',
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Warned`,
-   loading: 'Warning User...',
-   selfPunish: "You can't Warn yourself",
-   mePunish: "I won't Warn myself",
-  },
-  softwarnAdd: {
-   dm: {
-    author: (args: CT.ModBaseEventOptions) =>
-     `You have been Soft-Warned on the Server \`${args.guild?.name ?? 'unknown Guild'}\``,
-   },
-   footer: (args: CT.ModBaseEventOptions) =>
-    `Executor ID ${args.executor?.id ?? 'unknown'}\nTarget ID ${args.target.id}`,
-   author: (args: CT.ModBaseEventOptions) =>
-    `${args.target.username}#${args.target.discriminator} was Soft-Warned`,
-   description: (args: CT.ModBaseEventOptions) =>
-    `Target<@${args.target.id}>/ \`${args.target.username}#${args.target.discriminator}\` / \`${
-     args.target.id
-    }\`\nwas Soft-Warned by\n${
-     args.executor
-      ? `Executor <@${args.executor.id}> / \`${args.executor.username}#${args.executor.discriminator}\` / \`${args.executor.id}\``
-      : 'unknown Executor'
-    }`,
-   exeNoPerms: "You can't Soft-Warn this Member",
-   success: (args: CT.ModBaseEventOptions) => `User <@${args.target.id}> was Soft-Warned`,
-   loading: 'Soft-Warning User...',
-   selfPunish: "You can't Soft-Warn yourself",
-   mePunish: "I won't Soft-Warn myself",
   },
  },
  leveling: {

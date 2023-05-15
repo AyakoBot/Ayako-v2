@@ -6,6 +6,14 @@ const punishment = {
  duration: 'duration',
 };
 
+const colors = {
+ danger: 16711680,
+ success: 65280,
+ ephemeral: 3092790,
+ loading: 16776960,
+ base: 11599616,
+};
+
 export default {
  events: {
   logs: {
@@ -163,14 +171,8 @@ export default {
   muteRemove: 'danger',
   tempmuteAdd: 'danger',
   warnAdd: 'danger',
- },
- colors: {
-  danger: 16711680,
-  success: 65280,
-  ephemeral: 3092790,
-  loading: 16776960,
-  base: 11599616,
- },
+ } as Record<string, keyof typeof colors>,
+ colors,
  standard: {
   prefix: 't!',
   invite:
