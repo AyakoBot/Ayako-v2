@@ -3,9 +3,9 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 // TODO
 
-export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
+export default async (_: Discord.GuildMember, member: Discord.GuildMember) => {
  if (member.guild.id !== '298954459172700181') return;
- if (!oldMember.pending || member.pending) return;
+ if (member.pending) return;
 
  if (member.user.avatarURL()?.startsWith('a_')) {
   end(member);
