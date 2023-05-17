@@ -242,3 +242,51 @@ export type Onboarding = {
   inOnboarding: boolean;
  }[];
 };
+
+export type ModTypes =
+ | 'roleAdd'
+ | 'roleRemove'
+ | 'tempMuteAdd'
+ | 'muteRemove'
+ | 'banAdd'
+ | 'softBanAdd'
+ | 'tempBanAdd'
+ | 'channelBanAdd'
+ | 'tempChannelBanAdd'
+ | 'channelBanRemove'
+ | 'banRemove'
+ | 'kickAdd'
+ | 'warnAdd'
+ | 'softWarnAdd';
+
+type BaseOptions = {
+ reason: string;
+ forceFinish: boolean;
+ dbOnly: boolean;
+ guild: Discord.Guild;
+ target?: Discord.User;
+};
+
+type Channel = { channel: Discord.GuildChannel };
+type Role = { role: Discord.Role };
+type Temp = { duration: number };
+type Empty = NonNullable<unknown>;
+
+type SpecificOptions = {
+ roleAdd: Role;
+ roleRemove: Role;
+ tempMuteAdd: Temp;
+ muteRemove: Empty;
+ banAdd: Empty;
+ softBanAdd: Empty;
+ tempBanAdd: Temp;
+ channelBanAdd: Channel;
+ tempChannelBanAdd: Channel & Temp;
+ channelBanRemove: Channel;
+ banRemove: Empty;
+ kickAdd: Empty;
+ warnAdd: Empty;
+ softWarnAdd: Empty;
+};
+
+export type ModOptions<T extends CT.ModTypes> = BaseOptions & SpecificOptions[T];

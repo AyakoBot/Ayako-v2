@@ -1,27 +1,30 @@
 import * as Discord from 'discord.js';
-import * as ch from '../ClientHelper.js';
 import type * as CT from '../../Typings/CustomTypings.js';
+import getLogChannels from './getLogChannels.js';
+import languageSelector from './languageSelector.js';
+import constants from '../Other/constants.js';
+import send from './send.js';
 
 export default async (
  guild: Discord.Guild,
- type: keyof CT.Language['mod']['logs'],
+ type: CT.ModTypes,
  target: Discord.User,
  executor: Discord.User,
  options: { role?: Discord.Role; reason?: string },
 ): Promise<void> => {
- const logchannels = await ch.getLogChannels('modlog', guild);
+ const logchannels = await getLogChannels('modlog', guild);
  if (!logchannels?.length) return;
 
- const language = await ch.languageSelector(guild.id);
- const lan = language.mod.logs[type];
+ const language = await languageSelector(guild.id);
+ const lan = language.mod.logs[type as keyof typeof language.mod.logs];
 
  const embed: Discord.APIEmbed = {
   author: {
    name: lan.author,
   },
   description: lan.description(target, executor, options as never),
-  color: ch.constants.colors[ch.constants.modColors[type]],
-  timestamp: String(Date.now()),
+  color: constants.colors[constants.modColors[type]],
+  timestamp: new Date().toISOString(),
   fields: [
    options.reason
     ? {
@@ -32,5 +35,5 @@ export default async (
   ].filter((f): f is Discord.APIEmbedField => !!f),
  };
 
- ch.send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, undefined, 10000);
+ send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, undefined, 10000);
 };

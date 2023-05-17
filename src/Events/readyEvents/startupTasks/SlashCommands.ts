@@ -562,6 +562,12 @@ const roles = new Discord.SlashCommandBuilder()
      .setName('role')
      .setDescription('The Role to give to the User')
      .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('reason')
+     .setDescription('The Reason for giving the Role')
+     .setRequired(false),
    ),
  )
  .addSubcommand(
@@ -579,6 +585,12 @@ const roles = new Discord.SlashCommandBuilder()
      .setName('role')
      .setDescription('The Role to remove from the User')
      .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('reason')
+     .setDescription('The Reason for giving the Role')
+     .setRequired(false),
    ),
  );
 
