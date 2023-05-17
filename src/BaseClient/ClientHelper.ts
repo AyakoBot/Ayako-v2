@@ -66,6 +66,7 @@ import getAccessToken from './ClientHelperModules/getAccessToken.js';
 import interactionHelpers from './ClientHelperModules/interactionHelpers.js';
 import getGif from './ClientHelperModules/getGif.js';
 import log from './ClientHelperModules/log.js';
+import mod from './ClientHelperModules/mod.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -142,4 +143,5 @@ export {
  interactionHelpers,
  getGif,
  log,
+ mod,
 };
