@@ -197,7 +197,10 @@ const getComponents = (
 ];
 
 const mapper = (u: (Discord.User | string | CT.bEvalUser)[]) =>
- u.map((m) => `<@${typeof m !== 'string' ? m.id : m}>`).join(', ');
+ u
+  .map((m) => `<@${typeof m !== 'string' ? m.id : m}>`)
+  .filter((a, _, arr) => !arr.includes(a))
+  .join(', ');
 
 const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']>(
  embed: Discord.APIEmbed,
