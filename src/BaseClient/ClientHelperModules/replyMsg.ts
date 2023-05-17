@@ -64,8 +64,8 @@ export const cooldownHandler = async (
 
  if (!('react' in sentMessage)) return;
 
- const reaction = await sentMessage.react(emote).catch(() => null);
- if (reaction === null) return;
+ const reaction = await sentMessage.react(emote).catch(() => undefined);
+ if (reaction === undefined) return;
  const reactions = [emote];
 
  if (emote === '⌛') {
@@ -73,8 +73,8 @@ export const cooldownHandler = async (
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
 
   jobs.scheduleJob(new Date(Date.now() + (Number(r.cooldown) - 60000)), async () => {
-   const secondReaction = await sentMessage.react(emote).catch(() => null);
-   if (secondReaction === null) return;
+   const secondReaction = await sentMessage.react(emote).catch(() => undefined);
+   if (secondReaction === undefined) return;
 
    reactions.push(emote);
   });
@@ -87,7 +87,7 @@ export const cooldownHandler = async (
    sentMessage.reactions.cache
     .get(react)
     ?.users.remove(client.user?.id)
-    .catch(() => null);
+    .catch(() => undefined);
   });
  });
 };
@@ -109,11 +109,11 @@ export const deleteCommandHandler = async (
 
  const applyingSettings = settings
   .map((s) => {
-   if (s.wlchannelid?.includes(String(msg.channelId))) return null;
+   if (s.wlchannelid?.includes(String(msg.channelId))) return undefined;
    if (s.activechannelid?.includes(String(msg.channelId))) return s;
    if (!s.activechannelid?.length) return s;
 
-   return null;
+   return undefined;
   })
   .filter((s): s is DBT.deletecommands => !!s);
  if (!applyingSettings.length) return;
@@ -122,8 +122,8 @@ export const deleteCommandHandler = async (
  if (!s.deletetimeout) return;
 
  scheduleJob(Date.now() + Number(s.deletetimeout), () => {
-  if (s.deletereply && 'delete' in sentMessage) sentMessage.delete().catch(() => null);
-  if (s.deletecommand && msg.channelId && 'delete' in msg) msg.delete().catch(() => null);
+  if (s.deletereply && 'delete' in sentMessage) sentMessage.delete().catch(() => undefined);
+  if (s.deletecommand && msg.channelId && 'delete' in msg) msg.delete().catch(() => undefined);
  });
 };
 

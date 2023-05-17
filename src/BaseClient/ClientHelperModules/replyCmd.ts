@@ -44,7 +44,7 @@ export default async (
  if (!cmd.guild) return undefined;
 
  const sentMessage = await sendMessage(cmd, payload);
- if (!sentMessage) return null;
+ if (!sentMessage) return undefined;
 
  if (command) {
   replyMsg.cooldownHandler(cmd, sentMessage, command);

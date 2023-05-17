@@ -12,12 +12,7 @@ export default (
   | Discord.ModalSubmitInteraction,
  content: string,
  language: CT.Language,
- m?:
-  | Discord.ButtonInteraction
-  | Discord.CommandInteraction
-  | Discord.AnySelectMenuInteraction
-  | Discord.ModalSubmitInteraction
-  | Discord.Message,
+ m?: Discord.InteractionResponse | Discord.Message,
 ) => {
  const embed: Discord.APIEmbed = {
   author: {
@@ -29,12 +24,11 @@ export default (
   description: content,
  };
 
- if (m && m instanceof Discord.Message && m.editable) {
-  return m.edit({ embeds: [embed] }).catch(() => null);
- }
-
- if (m && 'update' in m) {
-  return m.update({ embeds: [embed], components: [] }).catch(() => null);
+ if (
+  (m && m instanceof Discord.Message && m.editable) ||
+  m instanceof Discord.InteractionResponse
+ ) {
+  return m.edit({ embeds: [embed] }).catch(() => undefined);
  }
 
  return reply(cmd, { embeds: [embed], ephemeral: true });
