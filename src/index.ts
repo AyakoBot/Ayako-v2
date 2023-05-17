@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as Discord from 'discord.js';
 import readline from 'readline';
 import auth from './auth.json' assert { type: 'json' };

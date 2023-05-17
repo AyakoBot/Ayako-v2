@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 
