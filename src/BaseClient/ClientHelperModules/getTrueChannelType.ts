@@ -48,8 +48,6 @@ export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.
   case Discord.ChannelType.GuildStageVoice: {
    return 'Stage';
   }
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   case Discord.ChannelType.GuildDirectory: {
    return 'Directory';
   }
