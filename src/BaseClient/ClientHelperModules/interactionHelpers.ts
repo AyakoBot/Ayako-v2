@@ -11,12 +11,12 @@ import languageSelector from './languageSelector.js';
 import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
 import type { ReturnType } from './getGif.js';
+import { getPrefix } from '../../Events/messageEvents/messageCreate/commandHandler.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
 const reply = async (
  cmd: Discord.ChatInputCommandInteraction | Discord.Message | Discord.ButtonInteraction,
- args: string[],
 ) => {
  if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
@@ -24,7 +24,7 @@ const reply = async (
  const parse = async () => {
   if (cmd instanceof Discord.ChatInputCommandInteraction) return parsers.cmdParser(cmd);
   if (cmd instanceof Discord.ButtonInteraction) return parsers.buttonParser(cmd);
-  return parsers.msgParser(cmd, args);
+  return parsers.msgParser(cmd);
  };
 
  const { author, users, text, otherText, commandName } = await parse();
@@ -82,7 +82,9 @@ const reply = async (
   cmd instanceof Discord.ButtonInteraction &&
   !replyUsers.length &&
   'request' in
-   language.slashCommands.interactions[cmd.message.interaction?.commandName as InteractionKeys]
+   language.slashCommands.interactions[
+    (cmd.message.interaction?.commandName ?? (await getCommandName(cmd.message))) as InteractionKeys
+   ]
  ) {
   embedsBefore.shift();
  }
@@ -131,19 +133,26 @@ export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- reply(cmd, args);
+ reply(cmd);
 };
 
 const parsers = {
- msgParser: (msg: Discord.Message, args: string[]) => ({
+ msgParser: async (msg: Discord.Message) => ({
   author: msg.author,
   users: msg.mentions.users.map((o) => o),
   text: msg.content
-   .split(/\s+/g)
+   .slice(Number((await getPrefix(msg))?.length))
+   .trim()
+   .split(/(\s|\n)+/g)
    .filter((w) => !w.startsWith('<@') || !w.endsWith('>'))
+   .filter((_, i) => i !== 0)
    .join(' '),
   otherText: '',
-  commandName: args.shift() as string,
+  commandName: msg.content
+   .slice(Number((await getPrefix(msg))?.length))
+   .trim()
+   .split(/(\s|\n)+/g)
+   .shift() as string,
  }),
  cmdParser: (cmd: Discord.ChatInputCommandInteraction) => ({
   author: cmd.user,
@@ -172,7 +181,9 @@ const parsers = {
  }),
  buttonParser: async (cmd: Discord.ButtonInteraction<'cached'>) => ({
   author: cmd.user,
-  users: [cmd.message.interaction?.user as Discord.User],
+  users: [
+   (cmd.message.interaction?.user as Discord.User) ?? (await cmd.message.fetchReference()).author,
+  ].filter((u) => !!u),
   text: '',
   otherText: '',
   commandName: cmd.customId.split('_')[0],
@@ -269,4 +280,13 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  }
 
  return null;
+};
+
+const getCommandName = async (msg: Discord.Message) => {
+ const reference = await msg.fetchReference();
+ return reference.content
+  .slice(Number((await getPrefix(reference))?.length))
+  .trim()
+  .split(/(\s|\n)+/g)
+  .shift();
 };
