@@ -21,18 +21,16 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- const commands = await cmd.guild.commands.fetch();
- commands.forEach((c) => c.delete());
-
+ await cmd.guild.commands.set([]);
  rp(cmd, [], true);
 };
 
 const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
  const commands = await cmd.guild.commands.fetch();
 
- ch.constants.commands.interactions
+ const registerCommands = ch.constants.commands.interactions
   .filter((c) => !commands.find((existing) => existing.name === c.name))
-  .forEach((c) => {
+  .map((c) => {
    const command = new Discord.SlashCommandBuilder().setName(c.name).setDescription(c.desc);
 
    if (c.users) {
@@ -73,8 +71,10 @@ const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
     });
    }
 
-   cmd.guild.commands.create(command);
+   return command;
   });
+
+ await cmd.guild.commands.set(registerCommands);
 
  rp(cmd, [], true);
 };
