@@ -6,6 +6,7 @@ import revengePing from './revengePing.js';
 import _eval from './eval.js';
 import execute from './execute.js';
 import stickyMessage from './stickyMessage.js';
+import commandHandler from './commandHandler.js';
 
 // import dmLog from './dmLog.js';
 
@@ -16,6 +17,7 @@ export default async (msg: Discord.Message) => {
  willis(msg);
  _eval(msg);
  execute(msg);
+ commandHandler(msg);
 
  if (msg.inGuild()) {
   other(msg);

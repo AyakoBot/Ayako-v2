@@ -1133,6 +1133,10 @@ export default {
   pardonedBy: 'Pardoned by',
  },
  commands: {
+  noArgs: {
+   content: 'No Arguments provided',
+   button: 'Show Usage',
+  },
   deleteHandler: {
    reasonCommand: `Command declared as Self-Deleting in ${name} Settings`,
    reasonReply: `Reply declared as Self-Deleting in ${name} Settings`,

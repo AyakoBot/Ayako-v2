@@ -6,19 +6,22 @@ export type Language = typeof import('../Languages/en.js').default;
 
 export interface Command {
  cooldown: number;
- name: string;
  takesFirstArg: boolean;
- aliases: string[];
  thisGuildOnly: string[];
- perm: 0 | bigint;
  dmOnly: boolean;
  dmAllowed: boolean;
  type: 'mod' | 'other' | 'owner';
  default: (
   msg: Discord.Message,
-  command: Command,
   args?: string[],
-  object?: Record<string, unknown>,
+  {
+   language,
+   command,
+  }: {
+   language: Language;
+   command: Command;
+   prefix: string;
+  },
  ) => void | Promise<void>;
 }
 
