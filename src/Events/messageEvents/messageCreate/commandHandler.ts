@@ -23,7 +23,7 @@ const dmCommand = async (msg: Discord.Message) => {
  const args = msg.content
   .slice(prefix.length)
   .trim()
-  .split(/(\s|\n)+/g);
+  .split(/\s+|\n+/g);
 
  const command = await getComand(args.shift()?.toLowerCase() as string);
  if (!command) return;
@@ -40,7 +40,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  const args = msg.content
   .slice(prefix.length)
   .trim()
-  .split(/(\s|\n)+/g);
+  .split(/\s+|\n+/g);
 
  const commandName = args.shift()?.toLowerCase();
  if (!commandName) return;
@@ -111,11 +111,10 @@ const getComand = async (commandName: string) => {
   });
  });
 
- // eslint-disable-next-line no-console
- console.log(commandName);
-
  const path = files.find((f) => f.endsWith(`/${commandName}.js`));
  if (!path) return undefined;
+ // eslint-disable-next-line no-console
+ console.log(commandName);
 
  return (await import(path)) as CT.Command;
 };
