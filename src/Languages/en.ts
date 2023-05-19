@@ -58,6 +58,13 @@ const multiplier = {
  desc: 'Multiplier to multiply the awarded XP per Message with',
 };
 
+const holdhands = {
+ self: "holds their own hand, try holding someone else's next time",
+ others: 'holds hands with',
+ request: 'wants to hold your hand!',
+ buttons: ['Hold Hands~!'],
+};
+
 const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
  `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
   tag.moderated ? ` / ${ch.stringEmotes.userFlags.DiscordEmployee} Managed` : ''
@@ -1366,12 +1373,8 @@ export default {
     request: 'holds their hand up, waiting for a high-five!',
     buttons: ['High-five!'],
    },
-   holdhands: {
-    self: "holds their own hand, try holding someone else's next time",
-    others: 'holds hands with',
-    request: 'wants to hold your hand!',
-    buttons: ['Hold Hands~!'],
-   },
+   holdhands,
+   handhold: holdhands,
    comfort: {
     self: "shhh, It's alright. Everything will be fine",
     others: 'comforts',
@@ -1662,11 +1665,13 @@ export default {
     **This Command serves as a Base-Command for all Roleplay-Commands.**
     Editing the Permissions of this Command will affect all Roleplay-Commands.
     To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
+    After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
 
     Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button "RP Slash-Commands".
-    __You don't need to lock this Command for certain Roles__, the Button below can only be used by Server Managers.
+    __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
     `,
    button: 'RP Slash-Commands',
+   sync: 'Sync Permissions',
    notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
    delay: 'This Operation might take a while to finish, please be patient',
   },

@@ -312,7 +312,7 @@ export default {
     desc: 'Hold hands with someone',
     users: true,
     reqUser: true,
-    buttons: ['cry', 'snuggle'],
+    buttons: ['holdhands'],
    },
    {
     name: 'comfort',
