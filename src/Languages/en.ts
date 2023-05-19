@@ -1323,7 +1323,7 @@ export default {
     self: 'cuddles themself, how does that even work',
     others: 'cuddles with',
     request: 'wants to cuddle with you!',
-    buttons: ['Accept and cuddle them', 'Reject and pat them'],
+    buttons: ['Cuddle them', 'Pat them'],
    },
    dance: {
     self: 'dances with themself, be proud of who you are!',
@@ -1396,25 +1396,25 @@ export default {
     self: 'kithes themself, they are in great danger.',
     others: 'kithes with',
     request: 'wants to kith you~! >~<',
-    buttons: ['Accept and kith~', 'Bonk em'],
+    buttons: ['Kith~', 'Bonk em'],
    },
    pash: {
     self: 'pashes themself, classic aussie',
     others: 'pashes with',
     request: 'wants to pash you~! >~<',
-    buttons: ['Accept and pash~', 'Bonk em'],
+    buttons: ['Pash~', 'Bonk em'],
    },
    smooch: {
     self: 'smooches themself, please get help',
     others: 'smooches with',
     request: 'wants to smooch you~! >~<',
-    buttons: ['Accept and smooch~', 'Bonk em'],
+    buttons: ['Smooch~', 'Bonk em'],
    },
    kiss: {
     self: 'kisses themself, how do you even do that??',
     others: 'kisses with',
     request: 'wants to kiss you~! >~<',
-    buttons: ['Accept and kiss~!', 'Bonk em'],
+    buttons: ['Kiss~!', 'Bonk em'],
    },
    laugh: {
     self: 'laughs at themself, something must be funny',
@@ -1463,7 +1463,7 @@ export default {
     self: 'nuzzles into themself, probably to find out if they should take a shower',
     others: 'nuzzles into',
     request: 'wants to nuzzle into you!',
-    buttons: ['Accept and nuzzle~', 'Reject and bonk òwó'],
+    buttons: ['Nuzzle together~', 'Reject and bonk òwó'],
    },
    mew: {
     self: 'Mew =^_^=',
@@ -1563,7 +1563,7 @@ export default {
     self: "snuggles with themself, try snuggling someone else maybe, you wouldn't look that lonely",
     others: 'snuggles with',
     request: 'wants to snuggle you!',
-    buttons: ['Accept and snuggle together~'],
+    buttons: ['Snuggle together~'],
    },
    stare: {
     self: 'stares at themself, they are staring at themself!!',
