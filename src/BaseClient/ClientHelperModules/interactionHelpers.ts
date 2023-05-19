@@ -143,15 +143,15 @@ const parsers = {
   text: msg.content
    .slice(Number((await getPrefix(msg))?.length))
    .trim()
-   .split(/(\s|\n)+/g)
-   .filter((w) => !w.startsWith('<@') || !w.endsWith('>'))
+   .split(/\s+|\n+/g)
+   .filter((w) => (!w.startsWith('<@') || !w.endsWith('>')) && !!w.length)
    .filter((_, i) => i !== 0)
    .join(' '),
   otherText: '',
   commandName: msg.content
    .slice(Number((await getPrefix(msg))?.length))
    .trim()
-   .split(/(\s|\n)+/g)
+   .split(/\s+|\n+/g)
    .shift() as string,
  }),
  cmdParser: (cmd: Discord.ChatInputCommandInteraction) => ({
@@ -287,6 +287,6 @@ const getCommandName = async (msg: Discord.Message) => {
  return reference.content
   .slice(Number((await getPrefix(reference))?.length))
   .trim()
-  .split(/(\s|\n)+/g)
+  .split(/\s+|\n+/g)
   .shift();
 };
