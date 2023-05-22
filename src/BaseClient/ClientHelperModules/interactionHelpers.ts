@@ -31,8 +31,8 @@ const reply = async (
 
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
-
  const desc = getDesc(author, users, language, lan, cmd);
+
  if (!desc) {
   if (cmd instanceof Discord.Message) errorMsg(cmd, language.errors.noUserMentioned, language);
   return;
