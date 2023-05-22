@@ -394,6 +394,7 @@ export default {
    { name: 'shrug', desc: 'Shrug', users: true, reqUser: false, buttons: [] },
    { name: 'sigh', desc: 'Sigh', users: true, reqUser: false, buttons: [] },
    { name: 'sleep', desc: 'Sleep', users: true, reqUser: false, buttons: ['sleep'] },
+   { name: 'eep', desc: 'eep', users: true, reqUser: false, buttons: ['eep'] },
    { name: 'smile', desc: 'Smile', users: true, reqUser: false, buttons: ['happy'] },
    { name: 'smug', desc: 'Smug', users: true, reqUser: false, buttons: ['poke'] },
    { name: 'snuggle', desc: 'Snuggle someone', users: true, reqUser: true, buttons: ['snuggle'] },
