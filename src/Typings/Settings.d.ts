@@ -141,6 +141,7 @@ export type guildsettings = {
  errorchannel?: string;
  voterole: string;
  enabledrp?: boolean;
+ rpenableruns: string;
 };
 
 export type leveling = {

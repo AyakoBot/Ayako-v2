@@ -1550,6 +1550,13 @@ export default {
     request: 'wants to sleep together with you!',
     buttons: ['Sleep together~'],
    },
+   eep: {
+    self: 'eeps alone tonight >~>',
+    noOne: 'eeps',
+    others: 'eeps with',
+    request: 'wants to eep together with you!',
+    buttons: ['eep together~'],
+   },
    smile: {
     self: 'smiles at themself, how nice',
     noOne: 'smiles >^<',
@@ -1657,6 +1664,9 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
+   apiLimit: 'API Limit',
+   apiLimitVal: (amount: number) =>
+    `Due to Discord API Limitations, you can only enable the \`RP Slash-Command\` 2x per Day\n__You have used it ${amount}x today__`,
    gifSrc: 'Gif Source Anime:',
    author: `${name} Roleplay Command Manager`,
    desc: `
@@ -1667,13 +1677,15 @@ export default {
     To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
     After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
 
-    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button "RP Slash-Commands".
+    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Slash-Commands\`.
     __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
     `,
    button: 'RP Slash-Commands',
    sync: 'Sync Permissions',
    notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
    delay: 'This Operation might take a while to finish, please be patient',
+   syncing: 'Syncing Permissions...',
+   synced: 'Synced',
   },
   stp: {
    button: 'Click here to view all invokable Properties',
@@ -3319,6 +3331,7 @@ export default {
   },
  },
  errors: {
+  notLoggedIn: 'You need to Log-In again',
   noUserMentioned: 'You need to mention a User',
   userNotExist: 'The Mentioned User does not exist',
   userNotFound: 'The Mentioned User could not be found',

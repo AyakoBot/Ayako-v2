@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
-import * as DBT from '../../Typings/DataBaseTypings';
-import rp from '../SlashCommands/rp.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as DBT from '../../../Typings/DataBaseTypings.js';
+import rp from '../../SlashCommands/rp.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -16,13 +16,14 @@ export default async (cmd: Discord.ButtonInteraction) => {
   [cmd.guildId, settings],
  );
 
- if (!settings) deleteAll(cmd);
- else create(cmd);
+ if (!settings) await deleteAll(cmd);
+ else await create(cmd);
+
+ rp(cmd, [], true);
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
  await cmd.guild.commands.set([]);
- rp(cmd, [], true);
 };
 
 const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
@@ -76,5 +77,8 @@ const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
 
  await cmd.guild.commands.set(registerCommands);
 
- rp(cmd, [], true);
+ await ch.query(
+  `UPDATE guildsettings SET rpenableruns = guildsettings.rpenableruns + 1 WHERE guildid = $1;`,
+  [cmd.guildId],
+ );
 };

@@ -5,16 +5,16 @@ import * as DBT from '../../Typings/DataBaseTypings.js';
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  _: string[],
- isReplied?: boolean,
+ isReplied = false,
 ) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- const currentSetting = await ch
+ const guildsettings = await ch
   .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId])
-  .then((r: DBT.guildsettings[] | null) => r?.[0].enabledrp);
+  .then((r: DBT.guildsettings[] | null) => r?.[0]);
 
  const payload: Discord.InteractionReplyOptions = {
   embeds: [
@@ -24,6 +24,12 @@ export default async (
     },
     description: `${lan.desc}`,
     color: ch.colorSelector(cmd.guild.members.me),
+    fields: [
+     {
+      name: lan.apiLimit,
+      value: lan.apiLimitVal(Number(guildsettings?.rpenableruns ?? 0) ?? 0),
+     },
+    ],
    },
   ],
   components: [
@@ -33,10 +39,22 @@ export default async (
      {
       type: Discord.ComponentType.Button,
       label: lan.button,
-      style: currentSetting ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger,
-      customId: 'rp',
-      emoji: currentSetting ? ch.objectEmotes.enabled : ch.objectEmotes.disabled,
-      disabled: !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild),
+      style: guildsettings?.enabledrp ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger,
+      customId: 'rp/toggle',
+      emoji: guildsettings?.enabledrp ? ch.objectEmotes.enabled : ch.objectEmotes.disabled,
+      disabled:
+       !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild) ||
+       Number(guildsettings?.rpenableruns) === 2,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      label: lan.sync,
+      style: Discord.ButtonStyle.Secondary,
+      customId: 'rp/sync',
+      emoji: ch.objectEmotes.refresh,
+      disabled:
+       !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild) ||
+       !guildsettings?.enabledrp,
      },
      {
       type: Discord.ComponentType.Button,
@@ -51,11 +69,6 @@ export default async (
 
  if (isReplied) {
   if (!cmd.isMessageComponent()) return;
-  await cmd.update(payload as Discord.InteractionUpdateOptions);
-
-  cmd.followUp({
-   content: lan.delay,
-   ephemeral: true,
-  });
+  cmd.update(payload as Discord.InteractionUpdateOptions);
  } else ch.replyCmd(cmd, payload);
 };
