@@ -6,6 +6,7 @@ export const Res = QueryResultBase;
 
 export interface DBTables {
  Punishment: Punishment;
+ unknown: unknown;
 
  afk: afk;
  customembeds: customembeds;
