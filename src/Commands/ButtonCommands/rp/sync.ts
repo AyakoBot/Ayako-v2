@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import * as DBT from '../../../Typings/DataBaseTypings.js';
+import { getComponents } from '../../SlashCommands/rp.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -39,6 +40,17 @@ export default async (cmd: Discord.ButtonInteraction) => {
   }),
  );
 
+ const guildsettings = await ch
+  .query(`UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2 RETURNING *;`, [
+   Date.now(),
+   cmd.guildId,
+  ])
+  .then((r: DBT.guildsettings[] | null) => r?.[0]);
+
+ await cmd.update({
+  components: getComponents(language, lan, cmd, guildsettings),
+ });
+
  const embed: Discord.APIEmbed = {
   color: ch.constants.colors.loading,
   author: {
@@ -47,7 +59,8 @@ export default async (cmd: Discord.ButtonInteraction) => {
   },
  };
 
- const message = await ch.replyCmd(cmd, {
+ const message = await cmd.followUp({
+  ephemeral: true,
   embeds: [embed],
  });
 
