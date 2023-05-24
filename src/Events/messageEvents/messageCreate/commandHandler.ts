@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import glob from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
-import * as DBT from '../../../Typings/DataBaseTypings';
 import type * as CT from '../../../Typings/CustomTypings';
 import languageSelector from '../../../BaseClient/ClientHelperModules/languageSelector.js';
 import constants from '../../../BaseClient/Other/constants.js';
@@ -88,9 +87,14 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 export const getPrefix = async (msg: Discord.Message) => {
  if (!msg.inGuild()) return constants.standard.prefix;
 
- const customPrefix = await query(`SELECT prefix FROM guildsettings WHERE guildid = $1;`, [
-  msg.guildId,
- ]).then((res: DBT.guildsettings[] | null) => res?.[0]?.prefix);
+ const customPrefix = await query(
+  `SELECT prefix FROM guildsettings WHERE guildid = $1;`,
+  [msg.guildId],
+  {
+   returnType: 'guildsettings',
+   asArray: false,
+  },
+ ).then((r) => r?.prefix);
 
  if (customPrefix && msg.content.toLowerCase().startsWith(customPrefix?.toLowerCase())) {
   return customPrefix;
