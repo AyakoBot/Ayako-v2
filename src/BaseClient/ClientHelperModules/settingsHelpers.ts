@@ -493,12 +493,18 @@ const changeHelpers = {
   uniquetimestamp: number | undefined,
  ) =>
   (uniquetimestamp
-   ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [uniquetimestamp])
-   : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId])
-  ).then((r: unknown[] | null) => {
+   ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [uniquetimestamp], {
+      asArray: false,
+      returnType: 'unknown',
+     })
+   : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId], {
+      asArray: false,
+      returnType: 'unknown',
+     })
+  ).then((r) => {
    if (!r) return runSetup(guildId, tableName);
 
-   return r ? r[0] : null;
+   return r ?? null;
   }),
  getAndInsert: (
   tableName: keyof SettingsNames,
@@ -508,14 +514,16 @@ const changeHelpers = {
   uniquetimestamp: number | undefined,
  ) =>
   uniquetimestamp
-   ? query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`, [
-      newSetting ?? null,
-      uniquetimestamp,
-     ]).then((r: unknown[] | null) => (r ? r[0] : null))
-   : query(`UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`, [
-      newSetting ?? null,
-      guildId,
-     ]).then((r: unknown[] | null) => (r ? r[0] : null)),
+   ? query(
+      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`,
+      [newSetting ?? null, uniquetimestamp],
+      { asArray: false, returnType: 'unknown' },
+     )
+   : query(
+      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`,
+      [newSetting ?? null, guildId],
+      { asArray: false, returnType: 'unknown' },
+     ),
 };
 
 const runSetup = async <T extends keyof CT.TableNamesMap>(
@@ -529,7 +537,8 @@ const runSetup = async <T extends keyof CT.TableNamesMap>(
    ]
   } (guildid) VALUES ($1) RETURNING *;`,
   [guildid],
- ).then((r: unknown[] | null) => (r ? r[0] : null));
+  { returnType: 'unknown', asArray: false },
+ );
 
 export default {
  embedParsers,
