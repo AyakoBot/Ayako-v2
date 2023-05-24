@@ -1,5 +1,4 @@
 import query from './query.js';
-import type DBT from '../../Typings/DataBaseTypings';
 import type CT from '../../Typings/CustomTypings';
 
 export default async (guildID: bigint | undefined | null | string): Promise<CT.Language> => {
@@ -9,9 +8,10 @@ export default async (guildID: bigint | undefined | null | string): Promise<CT.L
   return language;
  }
 
- const lan = await query('SELECT lan FROM guildsettings WHERE guildid = $1;', [
-  String(guildID),
- ]).then((r: DBT.guildsettings[] | null) => (r ? r[0].lan : null));
+ const lan = await query('SELECT lan FROM guildsettings WHERE guildid = $1;', [String(guildID)], {
+  returnType: 'guildsettings',
+  asArray: false,
+ }).then((r) => r?.lan);
 
  const { default: language } = await import(`../../Languages/${lan || 'en'}.js`);
  return language;

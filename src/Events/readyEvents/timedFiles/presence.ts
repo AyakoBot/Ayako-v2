@@ -1,12 +1,14 @@
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
  const random = Math.floor(Math.random() * 3);
  const users = await ch
-  .query(`SELECT allusers FROM stats;`)
-  .then((r: DBT.stats[] | null) => (r ? r[0].allusers : null));
+  .query(`SELECT allusers FROM stats;`, undefined, {
+   returnType: 'stats',
+   asArray: false,
+  })
+  .then((r) => r?.allusers);
 
  const activities: { name: string; type: number; url?: string }[] = [];
 

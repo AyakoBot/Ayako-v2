@@ -1664,9 +1664,6 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
-   apiLimit: 'API Limit',
-   apiLimitVal: (amount: number) =>
-    `Due to Discord API Limitations, you can only enable the \`RP Slash-Command\` 2x per Day\n__You have used it ${amount}x today__`,
    gifSrc: 'Gif Source Anime:',
    author: `${name} Roleplay Command Manager`,
    desc: `
@@ -1680,6 +1677,16 @@ export default {
     Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Slash-Commands\`.
     __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
     `,
+   fields: (t: string, used: number) => [
+    {
+     name: 'Permission Syncing can only be used __once__ per Hour',
+     value: `Last time you've used it was ${t}`,
+    },
+    {
+     name: 'RP Slash-Commands can only be enabled __twice__ per Day',
+     value: `You have used it ${used}x today`,
+    },
+   ],
    button: 'RP Slash-Commands',
    sync: 'Sync Permissions',
    notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
@@ -3813,4 +3820,5 @@ export default {
  Commands: 'Commands',
  login: 'Log-In',
  and: 'and',
+ Never: 'Never',
 };

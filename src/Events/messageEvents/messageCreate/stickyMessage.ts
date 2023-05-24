@@ -1,17 +1,18 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
  if (msg.author?.bot) return;
 
- const stickyMessage = await ch
-  .query(`SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`, [
-   msg.guildId,
-   msg.channelId,
-  ])
-  .then((r: DBT.stickymessages[] | null) => (r ? r[0] : null));
+ const stickyMessage = await ch.query(
+  `SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`,
+  [msg.guildId, msg.channelId],
+  {
+   returnType: 'stickymessages',
+   asArray: false,
+  },
+ );
 
  if (!stickyMessage) return;
 

@@ -14,9 +14,10 @@ export default async (
  const settings = await getSettings(guild);
  if (!settings) return;
 
- const allRewards = await ch
-  .query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.voterewards[] | null) => r ?? null);
+ const allRewards = await ch.query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id], {
+  returnType: 'voterewards',
+  asArray: true,
+ });
 
  const bot = await ch.getUser(vote.bot).catch(() => undefined);
  if (!bot) return;
@@ -160,19 +161,21 @@ export const doAnnouncement = async (
 };
 
 export const getSettings = async (guild: Discord.Guild) =>
- ch
-  .query(`SELECT * FROM votesettings WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.votesettings[] | null) => (r ? r[0] : null));
+ ch.query(`SELECT * FROM votesettings WHERE guildid = $1;`, [guild.id], {
+  returnType: 'votesettings',
+  asArray: false,
+ });
 
 export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Discord.Guild) => {
  const now = Date.now();
- const savedRewards = await ch
-  .query(`SELECT * FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
-   vote.user,
-   'bot' in vote ? vote.bot : vote.guild,
-   now,
-  ])
-  .then((r: DBT.voters[] | null) => r ?? null);
+ const savedRewards = await ch.query(
+  `SELECT * FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`,
+  [vote.user, 'bot' in vote ? vote.bot : vote.guild, now],
+  {
+   returnType: 'voters',
+   asArray: true,
+  },
+ );
  if (!savedRewards) return;
 
  await ch.query(`DELETE FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
@@ -201,9 +204,10 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
   1,
  );
 
- const userSettings = await ch
-  .query(`SELECT * FROM users WHERE userid = $1;`, [member.user.id])
-  .then((r: DBT.users[] | null) => (r ? r[0] : null));
+ const userSettings = await ch.query(`SELECT * FROM users WHERE userid = $1;`, [member.user.id], {
+  returnType: 'users',
+  asArray: false,
+ });
  if (userSettings && !userSettings.votereminders) return;
 
  const voted =

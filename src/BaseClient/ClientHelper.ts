@@ -34,7 +34,6 @@ import roleManager from './ClientHelperModules/roleManager.js';
 import getEmote from './ClientHelperModules/getEmote.js';
 import getAudit from './ClientHelperModules/getAudit.js';
 import DataBase from './DataBase.js';
-import getEmbed from './ClientHelperModules/getEmbed.js';
 import getJumpLink from './ClientHelperModules/getJumpLink.js';
 import getLogChannels from './ClientHelperModules/getLogChannels.js';
 import mergeLogging from './ClientHelperModules/mergeLogging.js';
@@ -62,7 +61,6 @@ import getColor from './ClientHelperModules/getColor.js';
 import findServerByName from './ClientHelperModules/findServerByName.js';
 import getAllBans from './ClientHelperModules/getAllBans.js';
 import splitByThousand from './ClientHelperModules/splitByThousands.js';
-import getAccessToken from './ClientHelperModules/getAccessToken.js';
 import interactionHelpers from './ClientHelperModules/interactionHelpers.js';
 import getGif from './ClientHelperModules/getGif.js';
 import log from './ClientHelperModules/log.js';
@@ -110,7 +108,6 @@ export {
  getEmote,
  getAudit,
  DataBase,
- getEmbed,
  getJumpLink,
  getLogChannels,
  mergeLogging,
@@ -141,7 +138,6 @@ export {
  findServerByName,
  getAllBans,
  splitByThousand,
- getAccessToken,
  interactionHelpers,
  getGif,
  log,

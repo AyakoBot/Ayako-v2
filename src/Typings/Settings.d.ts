@@ -142,6 +142,7 @@ export type guildsettings = {
  voterole: string;
  enabledrp?: boolean;
  rpenableruns: string;
+ lastrpsyncrun?: string;
 };
 
 export type leveling = {

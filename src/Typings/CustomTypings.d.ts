@@ -215,16 +215,6 @@ export type Appeal = {
  answertypes: DBT.appealquestions['answertype'][];
 };
 
-export type punishment =
- | DBT.punish_bans
- | DBT.punish_channelbans
- | DBT.punish_kicks
- | DBT.punish_mutes
- | DBT.punish_tempbans
- | DBT.punish_tempchannelbans
- | DBT.punish_tempmutes
- | DBT.punish_warns;
-
 export type Onboarding = {
  guildId: Discord.Snowflake;
  defaultChannelIds: Discord.Snowflake[];

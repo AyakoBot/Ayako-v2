@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
@@ -54,17 +53,23 @@ export default async (guild: Discord.Guild) => {
 
  await guild.autoModerationRules.fetch().catch(() => undefined);
 
- const claimTimeouts = await ch
-  .query(`SELECT * FROM giveawaycollecttime WHERE guildId = $1;`, [String(guild.id)])
-  .then((r: DBT.giveawaycollecttime[] | null) => r || null);
+ const claimTimeouts = await ch.query(
+  `SELECT * FROM giveawaycollecttime WHERE guildId = $1;`,
+  [String(guild.id)],
+  {
+   returnType: 'giveawaycollecttime',
+   asArray: true,
+  },
+ );
 
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  const giveawayCollectTimeoutFunction = (_: unknown) => null; // TODO: import from resolver
  claimTimeouts?.forEach((t) => giveawayCollectTimeoutFunction(t));
 
- const mutes = await ch
-  .query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.punish_tempmutes[] | null) => r || null);
+ const mutes = await ch.query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id], {
+  returnType: 'punish_tempmutes',
+  asArray: true,
+ });
  mutes?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
@@ -92,9 +97,10 @@ export default async (guild: Discord.Guild) => {
   );
  });
 
- const bans = await ch
-  .query(`SELECT * FROM punish_tempbans WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.punish_tempbans[] | null) => r || null);
+ const bans = await ch.query(`SELECT * FROM punish_tempbans WHERE guildid = $1;`, [guild.id], {
+  returnType: 'punish_tempbans',
+  asArray: true,
+ });
  bans?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
@@ -122,9 +128,14 @@ export default async (guild: Discord.Guild) => {
   );
  });
 
- const channelBans = await ch
-  .query(`SELECT * FROM punish_tempchannelbans WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.punish_tempchannelbans[] | null) => r || null);
+ const channelBans = await ch.query(
+  `SELECT * FROM punish_tempchannelbans WHERE guildid = $1;`,
+  [guild.id],
+  {
+   returnType: 'punish_tempchannelbans',
+   asArray: true,
+  },
+ );
  channelBans?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
@@ -155,16 +166,26 @@ export default async (guild: Discord.Guild) => {
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  const disboard = (_: unknown) => null; // TODO: import disboard handler
 
- const disboardBumpReminders = await ch
-  .query(`SELECT * FROM disboard WHERE guildid = $1;`, [String(guild.id)])
-  .then((r: DBT.disboard[] | null) => (r ? r[0] : null));
+ const disboardBumpReminders = await ch.query(
+  `SELECT * FROM disboard WHERE guildid = $1;`,
+  [String(guild.id)],
+  {
+   returnType: 'disboard',
+   asArray: false,
+  },
+ );
  if (disboardBumpReminders) disboard(disboardBumpReminders);
 
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  const giveawayEnd = (_: unknown) => null; // TODO: import giveaway handler
 
- const giveaways = await ch
-  .query(`SELECT * FROM giveaways WHERE guildid = $1;`, [String(guild.id)])
-  .then((r: DBT.giveaways[] | null) => r || null);
+ const giveaways = await ch.query(
+  `SELECT * FROM giveaways WHERE guildid = $1;`,
+  [String(guild.id)],
+  {
+   returnType: 'disboard',
+   asArray: true,
+  },
+ );
  giveaways?.forEach((g) => giveawayEnd(g));
 };

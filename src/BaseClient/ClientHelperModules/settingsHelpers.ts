@@ -45,9 +45,10 @@ const embedParsers = {
  embed: async (val: string | undefined, language: CT.Language) =>
   val
    ? (
-      await query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [val]).then(
-       (r: DBT.customembeds[] | null) => (r ? r[0] : null),
-      )
+      await query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [val], {
+       returnType: 'customembeds',
+       asArray: false,
+      })
      )?.name ?? language.None
    : language.None,
  emote: (val: string | undefined, language: CT.Language) =>
@@ -673,9 +674,10 @@ const getMention = async (
    return language.rolemodes[value as keyof typeof language.rolemodes];
   }
   case 'embed': {
-   return query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [value]).then(
-    (r: DBT.customembeds[] | null) => (r ? r[0].name : '-'),
-   );
+   return query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [value], {
+    returnType: 'customembeds',
+    asArray: false,
+   }).then((r) => r?.name ?? '?');
   }
   case 'emote': {
    return `<${`${value.startsWith(':') ? '' : ':'}${value}`}>`;

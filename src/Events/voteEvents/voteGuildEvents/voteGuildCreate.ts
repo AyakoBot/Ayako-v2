@@ -1,7 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type DBT from '../../../Typings/DataBaseTypings';
 import type CT from '../../../Typings/CustomTypings';
 import { doAnnouncement, getSettings, getTier, endVote } from '../voteBotEvents/voteBotCreate.js';
 
@@ -14,9 +13,10 @@ export default async (
  const settings = await getSettings(guild);
  if (!settings) return;
 
- const allRewards = await ch
-  .query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id])
-  .then((r: DBT.voterewards[] | null) => r ?? null);
+ const allRewards = await ch.query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id], {
+  returnType: 'voterewards',
+  asArray: true,
+ });
 
  const language = await ch.languageSelector(guild.id);
 

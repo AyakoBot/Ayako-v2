@@ -9,8 +9,12 @@ export default async () => {
   if (!client.guilds.cache.get('108176345204264960')) return;
 
   const participants = await ch
-    .query(`SELECT willis FROM stats;`)
-    .then((r: DBT.stats[] | null) => r?.[0] ?? null);
+    .query(`SELECT willis FROM stats;`, undefined,
+   {
+    returnType: 'stats',
+    asArray: false,
+   }
+   )
   if (!participants?.willis) return;
 
   const winnerID = participants.willis[ch.getRandom(0, participants.willis.length)];

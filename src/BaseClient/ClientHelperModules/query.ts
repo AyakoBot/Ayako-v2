@@ -1,8 +1,35 @@
 import pool from '../DataBase.js';
+import type * as DBT from '../../Typings/DataBaseTypings';
 
-export default async (string: string, args?: unknown[], debug?: boolean) => {
+function query<T extends keyof DBT.DBTables>(
+ string: string,
+ args?: unknown[],
+ options?: {
+  debug?: false;
+  returnType: T;
+  asArray: true;
+ },
+): Promise<DBT.DBTables[T][] | undefined>;
+function query<T extends keyof DBT.DBTables>(
+ string: string,
+ args?: unknown[],
+ options?: {
+  debug?: false;
+  returnType: T;
+  asArray: false;
+ },
+): Promise<DBT.DBTables[T] | undefined>;
+async function query<T extends keyof DBT.DBTables>(
+ string: string,
+ args?: unknown[],
+ options?: {
+  debug?: false;
+  returnType: T;
+  asArray: boolean;
+ },
+): Promise<DBT.DBTables[T] | DBT.DBTables[T][] | undefined> {
  // eslint-disable-next-line no-console
- if (debug) console.log(string, args);
+ if (options?.debug) console.log(string, args);
 
  const res = await pool.query(string, args).catch((err) => {
   // eslint-disable-next-line no-console
@@ -11,9 +38,12 @@ export default async (string: string, args?: unknown[], debug?: boolean) => {
  });
 
  // eslint-disable-next-line no-console
- if (debug) console.log(res);
+ if (options?.debug) console.log(res);
 
- if (!res || !res.rowCount) return null;
+ if (!res || !res.rowCount) return undefined;
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
- return res.rows;
-};
+ if (options?.asArray) return res.rows;
+ return res.rows[0];
+}
+
+export default query;

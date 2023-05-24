@@ -4,11 +4,14 @@ import client from '../../../BaseClient/Client.js';
 import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async () => {
- const settingsRows = await ch
-  .query(
-   `SELECT * FROM expiry WHERE warns = true AND warnstime IS NOT NULL OR mutes = true AND mutestime IS NOT NULL OR kicks = true AND kickstime IS NOT NULL OR channelbans = true AND channelbanstime IS NOT NULL OR bans = true AND banstime IS NOT NULL;`,
-  )
-  .then((r: DBT.expiry[] | null) => r || null);
+ const settingsRows = await ch.query(
+  `SELECT * FROM expiry WHERE warns = true AND warnstime IS NOT NULL OR mutes = true AND mutestime IS NOT NULL OR kicks = true AND kickstime IS NOT NULL OR channelbans = true AND channelbanstime IS NOT NULL OR bans = true AND banstime IS NOT NULL;`,
+  undefined,
+  {
+   returnType: 'expiry',
+   asArray: true,
+  },
+ );
 
  if (!settingsRows) return;
 
@@ -37,18 +40,14 @@ export default async () => {
 };
 
 const expire = async (row: { expire: string; guildid: string }, tableName: string) => {
- const tableRows = (await ch
-  .query(`SELECT * FROM ${tableName} WHERE guildid = $1 AND uniquetimestamp < $2;`, [
-   row.guildid,
-   Math.abs(Date.now() - Number(row.expire)),
-  ])
-  .then((r) => r || null)) as unknown as
-  | DBT.punish_warns[]
-  | DBT.punish_mutes[]
-  | DBT.punish_kicks[]
-  | DBT.punish_bans[]
-  | DBT.punish_channelbans[]
-  | null;
+ const tableRows = await ch.query(
+  `SELECT * FROM ${tableName} WHERE guildid = $1 AND uniquetimestamp < $2;`,
+  [row.guildid, Math.abs(Date.now() - Number(row.expire))],
+  {
+   returnType: 'Punishment',
+   asArray: true,
+  },
+ );
 
  if (!tableRows) return;
 
@@ -62,15 +61,7 @@ const expire = async (row: { expire: string; guildid: string }, tableName: strin
  logExpire(tableRows, row.guildid);
 };
 
-const logExpire = async (
- rows:
-  | DBT.punish_warns[]
-  | DBT.punish_mutes[]
-  | DBT.punish_kicks[]
-  | DBT.punish_bans[]
-  | DBT.punish_channelbans[],
- guildid: string,
-) => {
+const logExpire = async (rows: DBT.Punishment[], guildid: string) => {
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 

@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as DBT from '../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -20,9 +19,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- const currentParticipants = await ch
-  .query(`SELECT willis FROM stats;`)
-  .then((r: DBT.stats[] | null) => (r ? r[0] : null));
+ const currentParticipants = await ch.query(`SELECT willis FROM stats;`, undefined, {
+  returnType: 'stats',
+  asArray: false,
+ });
 
  if (currentParticipants?.willis?.includes(cmd.user.id)) {
   cmd.reply({

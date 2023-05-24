@@ -79,13 +79,21 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
   const stillrunning = await ch
-   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [member.guild.id])
-   .then((r: DBT.roleseparatorsettings[] | null) => (r ? r[0].stillrunning : null));
+   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [member.guild.id], {
+    returnType: 'roleseparatorsettings',
+    asArray: false,
+   })
+   .then((r) => r?.stillrunning);
   if (stillrunning) return;
 
-  const roleseparatorRows = await ch
-   .query('SELECT * FROM roleseparator WHERE active = true AND guildid = $1;', [member.guild.id])
-   .then((r: DBT.roleseparator[] | null) => r || null);
+  const roleseparatorRows = await ch.query(
+   'SELECT * FROM roleseparator WHERE active = true AND guildid = $1;',
+   [member.guild.id],
+   {
+    returnType: 'roleseparator',
+    asArray: false,
+   },
+  );
   if (!roleseparatorRows) return;
 
   const map = new Map();
@@ -124,9 +132,14 @@ export const oneTimeRunner = async (
  if (!msg.guild) return;
  const language = await ch.languageSelector(msg.guild.id);
 
- const roleseparatorRows = await ch
-  .query('SELECT * FROM roleseparator WHERE active = true AND guildid = $1;', [msg.guild.id])
-  .then((r: DBT.roleseparator[] | null) => r || undefined);
+ const roleseparatorRows = await ch.query(
+  'SELECT * FROM roleseparator WHERE active = true AND guildid = $1;',
+  [msg.guild.id],
+  {
+   returnType: 'roleseparator',
+   asArray: true,
+  },
+ );
  if (!roleseparatorRows) return;
 
  let membersWithRoles:
@@ -141,8 +154,11 @@ export const oneTimeRunner = async (
 
  if (
   (await ch
-   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [msg.guild.id])
-   .then((r: DBT.roleseparatorsettings[] | null) => (r ? r[0].stillrunning : undefined))) &&
+   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [msg.guild.id], {
+    returnType: 'roleseparatorsettings',
+    asArray: false,
+   })
+   .then((r) => r?.stillrunning)) &&
   msg.author.id !== client.user?.id
  ) {
   membersWithRoles = true;

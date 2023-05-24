@@ -1,12 +1,16 @@
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
-import type DBT from '../../Typings/DataBaseTypings';
 import { kick } from '../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {
- const verificationRows = await ch
-  .query('SELECT * FROM verification WHERE active = true AND kicktof = true;')
-  .then((r: DBT.verification[] | null) => r || null);
+ const verificationRows = await ch.query(
+  'SELECT * FROM verification WHERE active = true AND kicktof = true;',
+  undefined,
+  {
+   returnType: 'verification',
+   asArray: true,
+  },
+ );
  if (!verificationRows) return;
 
  verificationRows.forEach(async (r) => {

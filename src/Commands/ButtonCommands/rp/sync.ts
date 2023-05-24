@@ -1,15 +1,15 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import { getComponents } from '../../SlashCommands/rp.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const user = await ch
-  .query(`SELECT * FROM users WHERE userid = $1;`, [cmd.user.id])
-  .then((r: DBT.users[] | null) => r?.[0]);
+ const user = await ch.query(`SELECT * FROM users WHERE userid = $1;`, [cmd.user.id], {
+  returnType: 'users',
+  asArray: false,
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.rp;
@@ -40,12 +40,14 @@ export default async (cmd: Discord.ButtonInteraction) => {
   }),
  );
 
- const guildsettings = await ch
-  .query(`UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2 RETURNING *;`, [
-   Date.now(),
-   cmd.guildId,
-  ])
-  .then((r: DBT.guildsettings[] | null) => r?.[0]);
+ const guildsettings = await ch.query(
+  `UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2 RETURNING *;`,
+  [Date.now(), cmd.guildId],
+  {
+   returnType: 'guildsettings',
+   asArray: false,
+  },
+ );
 
  await cmd.update({
   components: getComponents(language, lan, cmd, guildsettings),

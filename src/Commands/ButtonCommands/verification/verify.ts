@@ -7,9 +7,14 @@ import type * as CT from '../../../Typings/CustomTypings';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const verification = await ch
-  .query(`SELECT * FROM verification WHERE guildid = $1 AND active = true;`, [cmd.guildId])
-  .then((r: DBT.verification[] | null) => (r ? r[0] : null));
+ const verification = await ch.query(
+  `SELECT * FROM verification WHERE guildid = $1 AND active = true;`,
+  [cmd.guildId],
+  {
+   returnType: 'verification',
+   asArray: false,
+  },
+ );
  if (!verification) return;
 
  const language = await ch.languageSelector(cmd.guildId);

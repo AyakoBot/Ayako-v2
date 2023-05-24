@@ -5,12 +5,14 @@ import type * as DBT from '../../../Typings/DataBaseTypings';
 import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (member: Discord.GuildMember) => {
- const verification = await ch
-  .query(
-   `SELECT * FROM verification WHERE guildid = $1 AND active = true AND pendingrole IS NOT NULL;`,
-   [member.guild.id],
-  )
-  .then((r: DBT.verification[] | null) => (r ? r[0] : null));
+ const verification = await ch.query(
+  `SELECT * FROM verification WHERE guildid = $1 AND active = true AND pendingrole IS NOT NULL;`,
+  [member.guild.id],
+  {
+   returnType: 'verification',
+   asArray: false,
+  },
+ );
  if (!verification) return;
 
  const language = await ch.languageSelector(member.guild.id);

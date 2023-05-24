@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings';
-import type * as DBT from '../../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
@@ -32,9 +31,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
- const embeds = await ch
-  .query(`SELECT * FROM customembeds WHERE guildid = $1;`, [cmd.guildId])
-  .then((r: DBT.customembeds[] | null) => r ?? null);
+ const embeds = await ch.query(`SELECT * FROM customembeds WHERE guildid = $1;`, [cmd.guildId], {
+  returnType: 'customembeds',
+  asArray: true,
+ });
 
  cmd.update({
   embeds: [

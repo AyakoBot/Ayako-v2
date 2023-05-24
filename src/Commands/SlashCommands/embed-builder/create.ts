@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type DBT from '../../../Typings/DataBaseTypings';
 
 export default async (cmd: Discord.CommandInteraction) => {
  buildEmbed(cmd);
@@ -100,5 +99,8 @@ const getOptions = async (
  cmd: Discord.CommandInteraction | Discord.ButtonInteraction | Discord.StringSelectMenuInteraction,
 ) =>
  ch
-  .query('SELECT * FROM customembeds WHERE guildid = $1;', [cmd.guildId])
-  .then((r: DBT.customembeds[] | null) => r ?? []);
+  .query('SELECT * FROM customembeds WHERE guildid = $1;', [cmd.guildId], {
+   returnType: 'customembeds',
+   asArray: true,
+  })
+  .then((r) => r ?? []);

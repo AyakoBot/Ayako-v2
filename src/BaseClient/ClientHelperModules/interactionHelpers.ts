@@ -4,7 +4,6 @@ import getGif from './getGif.js';
 import replyMsg from './replyMsg.js';
 import replyCmd from './replyCmd.js';
 import query from './query.js';
-import type DBT from '../../Typings/DataBaseTypings.js';
 import type CT from '../../Typings/CustomTypings.js';
 import colorSelector from './colorSelector.js';
 import languageSelector from './languageSelector.js';
@@ -42,9 +41,10 @@ const reply = async (
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
  const gif = (await gifCaller.gifs()) as ReturnType<'gif'>;
 
- const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId]).then(
-  (r: DBT.guildsettings[] | null) => r?.[0]?.interactionsmode ?? null,
- );
+ const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
+  returnType: 'guildsettings',
+  asArray: false,
+ }).then((r) => r?.interactionsmode);
 
  const con = constants.commands.interactions.find((c) => c.name === commandName);
  if (!con) return;

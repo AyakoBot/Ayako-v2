@@ -1,16 +1,16 @@
 import * as os from 'os';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
 
- const stats = await ch
-  .query(`SELECT * FROM stats;`)
-  .then((r: DBT.stats[] | null) => r?.[0] ?? null);
+ const stats = await ch.query(`SELECT * FROM stats;`, undefined, {
+  returnType: 'stats',
+  asArray: false,
+ });
 
  ch.replyCmd(cmd, {
   embeds: [

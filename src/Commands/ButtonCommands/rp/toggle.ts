@@ -1,14 +1,16 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import rp from '../../SlashCommands/rp.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const settings = !(await ch
-  .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId])
-  .then((r: DBT.guildsettings[] | null) => r?.[0].enabledrp));
+  .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
+   returnType: 'guildsettings',
+   asArray: false,
+  })
+  .then((r) => r?.enabledrp));
 
  ch.query(
   `INSERT INTO guildsettings (guildid, enabledrp) VALUES ($1, $2) 

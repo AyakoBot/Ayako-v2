@@ -13,9 +13,14 @@ export default async (
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- const guildsettings = await ch
-  .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId])
-  .then((r: DBT.guildsettings[] | null) => r?.[0]);
+ const guildsettings = await ch.query(
+  `SELECT * FROM guildsettings WHERE guildid = $1;`,
+  [cmd.guildId],
+  {
+   returnType: 'guildsettings',
+   asArray: false,
+  },
+ );
 
  const payload: Discord.InteractionReplyOptions = {
   embeds: [

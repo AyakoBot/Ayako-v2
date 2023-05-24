@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import type * as CT from '../../Typings/CustomTypings';
-import type * as DBT from '../../Typings/DataBaseTypings';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
 import stringEmotes from './stringEmotes.js';
@@ -177,20 +176,7 @@ const doDB = <T extends CT.ModTypes>(
     extraSelectArgs ? `${extraSelectArgs.map((arg, i) => `AND ${arg} = $${i + 3}`).join('')}` : ''
    }`,
    selectArray,
-  ).then(
-   (
-    r:
-     | (
-        | DBT.punish_warns
-        | DBT.punish_channelbans
-        | DBT.punish_kicks
-        | DBT.punish_tempbans
-        | DBT.punish_tempchannelbans
-        | DBT.punish_tempmutes
-        | DBT.punish_tempmutes
-       )[]
-     | null,
-   ) => r?.[0],
+   { returnType: 'Punishment', asArray: false },
   );
 
   if (punishRow) {

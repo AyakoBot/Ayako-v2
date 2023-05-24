@@ -1,7 +1,82 @@
 import type { QueryResultBase } from 'pg';
+import * as SettingsTypes from './Settings';
 
 export * from './Settings';
 export const Res = QueryResultBase;
+
+export interface DBTables {
+ Punishment: Punishment;
+
+ afk: afk;
+ customembeds: customembeds;
+ giveaways: giveaways;
+ level: level;
+ policy_guilds: policy_guilds;
+ policy_users: policy_users;
+ punish_bans: punish_bans;
+ punish_kicks: punish_kicks;
+ punish_mutes: punish_mutes;
+ punish_tempbans: punish_tempbans;
+ punish_tempmutes: punish_tempmutes;
+ punish_warns: punish_warns;
+ punish_tempchannelbans: punish_tempchannelbans;
+ reminders: reminders;
+ roleseparatorsettings: roleseparatorsettings;
+ rrbuttons: rrbuttons;
+ stickypermmembers: stickypermmembers;
+ stickyrolemembers: stickyrolemembers;
+ suggestionvotes: suggestionvotes;
+ users: users;
+ giveawaycollecttime: giveawaycollecttime;
+ voters: voters;
+ stickymessages: stickymessages;
+ nitrousers: nitrousers;
+ stats: stats;
+ reviews: reviews;
+ art: art;
+ guilds: guilds;
+ contributers: contributers;
+ appeals: appeals;
+ filterscraper: filterscraper;
+ antiraid: SettingsTypes.antiraid;
+ antispam: SettingsTypes.antispam;
+ antivirus: SettingsTypes.antivirus;
+ autopunish: SettingsTypes.autopunish;
+ autoroles: SettingsTypes.autoroles;
+ blacklist: SettingsTypes.blacklist;
+ cooldowns: SettingsTypes.cooldowns;
+ deletecommands: SettingsTypes.deletecommands;
+ disboard: SettingsTypes.disboard;
+ guildsettings: SettingsTypes.guildsettings;
+ leveling: SettingsTypes.leveling;
+ levelingmultichannels: SettingsTypes.levelingmultichannels;
+ levelingroles: SettingsTypes.levelingroles;
+ levelingruleschannels: SettingsTypes.levelingruleschannels;
+ logchannels: SettingsTypes.logchannels;
+ expiry: SettingsTypes.expiry;
+ nitroroles: SettingsTypes.nitroroles;
+ nitrosettings: SettingsTypes.nitrosettings;
+ roleseparator: SettingsTypes.roleseparator;
+ buttonroles: SettingsTypes.buttonroles;
+ reactionroles: SettingsTypes.reactionroles;
+ reactionrolesettings: SettingsTypes.reactionrolesettings;
+ buttonrolesettings: SettingsTypes.buttonrolesettings;
+ selfroles: SettingsTypes.selfroles;
+ statschannel: SettingsTypes.statschannel;
+ sticky: SettingsTypes.sticky;
+ suggestionsettings: SettingsTypes.suggestionsettings;
+ verification: SettingsTypes.verification;
+ welcome: SettingsTypes.welcome;
+ levelingmultiroles: SettingsTypes.levelingmultiroles;
+ votesettings: SettingsTypes.votesettings;
+ punishments_blacklist: SettingsTypes.punishments_blacklist;
+ punishments_antispam: SettingsTypes.punishments_antispam;
+ punishments_antivirus: SettingsTypes.punishments_antivirus;
+ voterewards: SettingsTypes.voterewards;
+ appealsettings: SettingsTypes.appealsettings;
+ appealquestions: SettingsTypes.appealquestions;
+ rolerewards: SettingsTypes.rolerewards;
+}
 
 // Tables
 export type afk = {
@@ -82,7 +157,7 @@ export type BasicPunishmentsTable = {
  duration: string;
 };
 
-export type punish_bans = {
+export interface Punishment {
  guildid: string;
  userid: string;
  reason?: string;
@@ -92,99 +167,20 @@ export type punish_bans = {
  executorid: string;
  executorname: string;
  msgid: string;
+}
+
+interface TempPunishment extends Punishment {
  duration?: string;
-};
+}
 
-export type punish_channelbans = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
- duration?: string;
- banchannelid: string;
-};
-
-export type punish_kicks = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
-};
-
-export type punish_mutes = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
- duration?: string;
-};
-
-export type punish_tempbans = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
- duration: string;
-};
-
-export type punish_tempchannelbans = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
- duration: string;
- banchannelid: string;
-};
-
-export type punish_tempmutes = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
- duration: string;
-};
-
-export type punish_warns = {
- guildid: string;
- userid: string;
- reason?: string;
- uniquetimestamp: string;
- channelid: string;
- channelname: string;
- executorid: string;
- executorname: string;
- msgid: string;
-};
+export type punish_kicks = Punishments;
+export type punish_mutes = TempPunishment;
+export type punish_tempbans = TempPunishment;
+export type punish_bans = TempPunishment;
+export type punish_tempmutes = TempPunishment;
+export type punish_warns = Punishment;
+export type punish_channelbans = TempPunishment & { banchannelid: string };
+export type punish_tempchannelbans = TempPunishment & { banchannelid: string };
 
 export type reminders = {
  userid: string;
