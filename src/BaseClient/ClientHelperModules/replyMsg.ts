@@ -6,9 +6,10 @@ import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from './objectEmotes.js';
 
 export default async (
- msg: Discord.Message | Discord.Message | Discord.Message,
+ msg: Discord.Message,
  payload: Discord.MessagePayload | Discord.MessageReplyOptions,
  command?: CT.Command,
+ commandName?: string,
 ) => {
  if (!msg) return undefined;
 
@@ -19,9 +20,9 @@ export default async (
 
  if (!sentMessage) return undefined;
 
- if (msg.guild && command) {
-  cooldownHandler(msg as Discord.Message, sentMessage, command);
-  deleteCommandHandler(msg as Discord.Message, sentMessage, command);
+ if (msg.guild && command && commandName) {
+  cooldownHandler(msg, sentMessage, command, commandName);
+  deleteCommandHandler(msg, sentMessage, commandName);
  }
 
  return sentMessage;
@@ -36,13 +37,14 @@ export const cooldownHandler = async (
   | Discord.ModalSubmitInteraction,
  sentMessage: Discord.Message | Discord.InteractionResponse,
  command: CT.Command,
+ commandName: string,
 ) => {
  if (!command.cooldown) return;
  if (!msg.guild) return;
 
  const authorId = 'author' in msg ? msg.author.id : msg.user.id;
 
- const r = await getCooldownRow(msg.guild, command);
+ const r = await getCooldownRow(msg.guild, command, commandName);
  if (!r) return;
  if (!authorId) return;
  if (r.wluserid?.includes(String(authorId))) return;
@@ -100,11 +102,11 @@ export const deleteCommandHandler = async (
   | Discord.AnySelectMenuInteraction
   | Discord.ModalSubmitInteraction,
  sentMessage: Discord.Message | Discord.InteractionResponse,
- command: CT.Command,
+ commandName: string,
 ) => {
  if (!msg.guild) return;
 
- const settings = await getDeleteSettings(msg.guild, command.name);
+ const settings = await getDeleteSettings(msg.guild, commandName);
  if (!settings) return;
 
  const applyingSettings = settings
@@ -128,13 +130,21 @@ export const deleteCommandHandler = async (
 };
 
 const getDeleteSettings = async (guild: Discord.Guild, commandName: string) =>
- query(`SELECT * FROM deletecommands WHERE active = true AND guildid = $1 AND command = $2;`, [
-  String(guild.id),
-  commandName,
- ]).then((r: DBT.deletecommands[] | null) => r);
+ query(
+  `SELECT * FROM deletecommands WHERE active = true AND guildid = $1 AND command = $2;`,
+  [String(guild.id), commandName],
+  {
+   returnType: 'deletecommands',
+   asArray: true,
+  },
+ );
 
-const getCooldownRow = (guild: Discord.Guild, command: CT.Command) =>
+const getCooldownRow = (guild: Discord.Guild, command: CT.Command, commandName: string) =>
  query(
   `SELECT * FROM cooldowns WHERE guildid = $1 AND active = true AND command = $2 and cooldown = $3;`,
-  [String(guild.id), command.name, command.cooldown],
- ).then((r: DBT.cooldowns[] | null) => (r ? r[0] : null));
+  [String(guild.id), commandName, command.cooldown],
+  {
+   returnType: 'cooldowns',
+   asArray: false,
+  },
+ );

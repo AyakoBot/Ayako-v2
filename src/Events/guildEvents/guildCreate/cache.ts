@@ -77,20 +77,22 @@ export default async (guild: Discord.Guild) => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 
-    const modOptions: CT.ModBaseEventOptions = {
-     executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
-     target,
-     reason: m.reason ?? language.None,
-     msg:
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
-       : undefined,
-     guild,
-     type: 'muteRemove',
-     duration: Number(m.duration),
-    };
-
-    client.emit('modBaseEvent', modOptions);
+    ch.mod(
+     m.msgid && m.channelid
+      ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
+         .fetch(m.msgid)
+         .catch(() => undefined)
+      : undefined,
+     'muteRemove',
+     {
+      executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
+      target,
+      reason: m.reason ?? language.None,
+      guild,
+      forceFinish: true,
+      dbOnly: false,
+     },
+    );
    }),
    guild.id,
    m.userid,
@@ -108,20 +110,22 @@ export default async (guild: Discord.Guild) => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 
-    const modOptions: CT.ModBaseEventOptions = {
-     executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
-     target,
-     reason: m.reason ?? language.None,
-     msg:
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
-       : undefined,
-     guild,
-     type: 'banRemove',
-     duration: Number(m.duration),
-    };
-
-    client.emit('modBaseEvent', modOptions);
+    ch.mod(
+     m.msgid && m.channelid
+      ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
+         .fetch(m.msgid)
+         .catch(() => undefined)
+      : undefined,
+     'banRemove',
+     {
+      executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
+      target,
+      reason: m.reason ?? language.None,
+      guild,
+      forceFinish: true,
+      dbOnly: false,
+     },
+    );
    }),
    guild.id,
    m.userid,
@@ -143,20 +147,22 @@ export default async (guild: Discord.Guild) => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 
-    const modOptions: CT.ModBaseEventOptions = {
-     executor: m.executorid ? await ch.getUser(m.executorid) : undefined,
-     target,
-     reason: m.reason ?? language.None,
-     msg:
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages.fetch(m.msgid)
-       : undefined,
-     guild,
-     type: 'channelbanRemove',
-     duration: Number(m.duration),
-    };
-
-    client.emit('modBaseEvent', modOptions);
+    ch.mod(
+     m.msgid && m.channelid
+      ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
+         .fetch(m.msgid)
+         .catch(() => undefined)
+      : undefined,
+     'banRemove',
+     {
+      executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
+      target,
+      reason: m.reason ?? language.None,
+      guild,
+      forceFinish: true,
+      dbOnly: false,
+     },
+    );
    }),
    guild.id,
    m.userid,

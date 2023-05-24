@@ -8,6 +8,7 @@ import replyMsg from './replyMsg.js';
 import replyCmd from './replyCmd.js';
 import errorCmd from './errorCmd.js';
 import errorMsg from './errorMsg.js';
+import emitError from './error.js';
 import send from './send.js';
 import client from '../Client.js';
 import cache from './cache.js';
@@ -17,39 +18,60 @@ import query from './query.js';
 type CmdType = Discord.ChatInputCommandInteraction<'cached'> | Discord.Message;
 
 const run = async <T extends CT.ModTypes>(
- cmd: Discord.ChatInputCommandInteraction | Discord.Message,
+ cmd: Discord.ChatInputCommandInteraction | Discord.Message | undefined,
  type: T,
  options: CT.ModOptions<T>,
 ) => {
- if (!cmd.inGuild()) return;
- if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
+ if (cmd) {
+  if (!cmd.inGuild()) return;
+  if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
+ }
 
- const language = await languageSelector(cmd.guildId);
+ const language = await languageSelector(options.guild.id);
  const lan = language.mod.execution[type];
 
- const target =
-  options.target ??
-  (cmd instanceof Discord.Message ? cmd.mentions.users.first() : cmd.options.getUser('user', true));
+ const target = options.target
+  ? await client.users.fetch(options.target.id).catch(() => undefined)
+  : undefined ??
+    (cmd instanceof Discord.Message
+     ? cmd.mentions.users.first()
+     : cmd?.options.getUser('user', true));
+ if (!target) {
+  emitError(options.guild, new Error('Target not found'));
+  return;
+ }
+
  const targetMember =
-  cmd instanceof Discord.Message ? cmd.mentions.members.first() : cmd.options.getMember('user');
- const executor = cmd instanceof Discord.Message ? cmd.author : cmd.user;
+  cmd instanceof Discord.Message
+   ? cmd.mentions.members.first()
+   : cmd?.options.getMember('user') ??
+     (await options.guild.members.fetch(target).catch(() => undefined));
+
+ const executor = options.executor
+  ? await client.users.fetch(options.executor.id).catch(() => undefined)
+  : undefined ?? (cmd instanceof Discord.Message ? cmd.author : cmd?.user);
+ if (!executor) {
+  emitError(options.guild, new Error('Executor not found'));
+  return;
+ }
+
+ const executorMember = cmd?.member ?? options.guild.members.cache.get(executor.id);
 
  if (options.dbOnly) {
   doDB(cmd, type, options, executor, target);
   return;
  }
 
- const executorMember = cmd.member;
  if (!executorMember) return;
 
  if (!target) {
   if (cmd instanceof Discord.Message) errorMsg(cmd, language.errors.noUserMentioned, language);
-  else errorCmd(cmd, language.errors.noUserMentioned, language);
+  else if (cmd) errorCmd(cmd, language.errors.noUserMentioned, language);
   return;
  }
 
  const message = await loadingEmbed(language, cmd);
- if (!options.forceFinish) {
+ if (!options.forceFinish && cmd) {
   if (!message) return;
 
   const isSelfPunish = target.id === executor.id;
@@ -94,7 +116,7 @@ const run = async <T extends CT.ModTypes>(
  const dm = await doDM(target, type, lan, options);
 
  const actionOrError = await doAction(cmd, type, options, targetMember, target, executor, language);
- if (!actionOrError || 'message' in (actionOrError as Discord.DiscordAPIError)) {
+ if (cmd && (!actionOrError || 'message' in (actionOrError as Discord.DiscordAPIError))) {
   if (dm?.deletable) dm.delete().catch(() => undefined);
   await error(
    cmd,
@@ -108,7 +130,7 @@ const run = async <T extends CT.ModTypes>(
  doDB(cmd, type, options, executor, target, message);
  log(options.guild, type, target, executor, options);
 
- if (message instanceof Discord.Message) {
+ if (message instanceof Discord.Message && cmd) {
   message?.edit({
    embeds: [
     new Discord.EmbedBuilder(message.embeds[0].data).setDescription(
@@ -116,7 +138,7 @@ const run = async <T extends CT.ModTypes>(
     ).data,
    ],
   });
- } else {
+ } else if (cmd) {
   message?.delete().catch(() => undefined);
   send(
    { guildId: options.guild.id, id: cmd.channelId },
@@ -152,20 +174,20 @@ const additionalChecks = async <T extends CT.ModTypes>(
 };
 
 const doDB = <T extends CT.ModTypes>(
- cmd: CmdType,
+ cmd: CmdType | undefined,
  type: T,
  options: CT.ModOptions<T>,
- executor?: Discord.User,
- target?: Discord.User,
+ executor: Discord.User,
+ target: Discord.User,
  message?: Discord.Message | Discord.InteractionResponse | undefined,
 ) => {
  const getAndDeleteRow = async (
   table: string,
   insertTable: string,
-  extraSelectArgs?: string[],
-  extraArgs?: string[],
-  extraInsertArgNames?: string[],
-  extraInsertArgs?: string[],
+  extraSelectArgs?: unknown[],
+  extraArgs?: unknown[],
+  extraInsertArgNames?: unknown[],
+  extraInsertArgs?: unknown[],
  ) => {
   const selectArray = extraArgs
    ? [target?.id, options.guild.id, ...extraArgs]
@@ -235,15 +257,15 @@ const doDB = <T extends CT.ModTypes>(
   return null;
  };
 
- const insertRow = (table: string, extraArgNames?: string[], extraArgs?: string[]) => {
+ const insertRow = (table: string, extraArgNames?: unknown[], extraArgs?: unknown[]) => {
   const insertArgs = extraArgs
    ? [
       options.guild.id,
       target?.id,
       options.reason,
       Date.now(),
-      cmd.channelId,
-      (cmd.channel as Discord.GuildBasedChannel | null)?.name,
+      cmd?.channelId,
+      (cmd?.channel as Discord.GuildBasedChannel | null)?.name,
       executor?.id,
       executor?.tag,
       message?.id,
@@ -254,8 +276,8 @@ const doDB = <T extends CT.ModTypes>(
       target?.id,
       options.reason,
       Date.now(),
-      cmd.channelId,
-      (cmd.channel as Discord.GuildBasedChannel | null)?.name,
+      cmd?.channelId,
+      (cmd?.channel as Discord.GuildBasedChannel | null)?.name,
       executor?.id,
       executor?.tag,
       message?.id,
@@ -292,7 +314,7 @@ const doDB = <T extends CT.ModTypes>(
   }
   case 'channelBanAdd': {
    const opts = options as CT.ModOptions<'channelBanAdd'>;
-   insertRow('punish_channelbans', ['banchannelid'], [opts.channel.id]);
+   insertRow('punish_channelbans', ['banchannelid'], [opts.channel?.id]);
    break;
   }
   case 'tempChannelBanAdd': {
@@ -300,7 +322,7 @@ const doDB = <T extends CT.ModTypes>(
    insertRow(
     'punish_tempchannelbans',
     ['banchannelid', 'duration'],
-    [opts.channel.id, String(opts.duration)],
+    [opts.channel?.id, String(opts.duration)],
    );
    break;
   }
@@ -310,9 +332,9 @@ const doDB = <T extends CT.ModTypes>(
     'punish_tempchannelbans',
     'punish_channelbans',
     ['banchannelid'],
-    [opts.channel.id],
+    [opts.channel?.id],
     ['banchannelid', 'duration'],
-    [opts.channel.id],
+    [opts.channel?.id],
    );
    break;
   }
@@ -337,7 +359,7 @@ const doDB = <T extends CT.ModTypes>(
 export default run;
 
 const doAction = async <T extends CT.ModTypes>(
- cmd: Discord.Message | Discord.ChatInputCommandInteraction,
+ cmd: CmdType | undefined,
  type: T,
  options: CT.ModOptions<T>,
  targetMember: Discord.GuildMember | undefined | null,
@@ -350,14 +372,14 @@ const doAction = async <T extends CT.ModTypes>(
  switch (type) {
   case 'muteRemove': {
    return targetMember
-    ?.timeout(null, `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.timeout(null, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'tempMuteAdd': {
    const opts = options as CT.ModOptions<'tempMuteAdd'>;
 
    const timeout = await targetMember
-    ?.timeout(opts.duration, `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.timeout(opts.duration, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
     .catch((err: Discord.DiscordAPIError) => err);
 
    if (!(timeout instanceof Discord.GuildMember)) return timeout;
@@ -385,7 +407,7 @@ const doAction = async <T extends CT.ModTypes>(
    return options.guild.bans
     .create(target.id, {
      deleteMessageSeconds,
-     reason: `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+     reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
     })
     .catch((err: Discord.DiscordAPIError) => err);
   }
@@ -397,7 +419,7 @@ const doAction = async <T extends CT.ModTypes>(
    const ban = await options.guild.bans
     .create(target.id, {
      deleteMessageSeconds,
-     reason: `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+     reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
     })
     .catch((err: Discord.DiscordAPIError) => err);
 
@@ -411,7 +433,7 @@ const doAction = async <T extends CT.ModTypes>(
 
    if (type === 'softBanAdd') {
     return options.guild.bans
-     .remove(target.id, `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+     .remove(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
      .catch((err: Discord.DiscordAPIError) => err);
    }
 
@@ -436,22 +458,22 @@ const doAction = async <T extends CT.ModTypes>(
   case 'channelBanAdd': {
    const opts = options as CT.ModOptions<'tempChannelBanAdd' | 'channelBanAdd'>;
 
-   if (!opts.channel.permissionOverwrites.cache.has(target.id)) {
-    const permUpdate = await opts.channel.permissionOverwrites
+   if (!opts.channel?.permissionOverwrites.cache.has(target.id)) {
+    const permUpdate = await opts.channel?.permissionOverwrites
      .create(
       target.id,
       {},
       {
-       reason: `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+       reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
        type: 1,
       },
      )
      .catch((err: Discord.DiscordAPIError) => err);
 
-    if (!('id' in permUpdate)) return permUpdate;
+    if (permUpdate && !('id' in permUpdate)) return permUpdate;
    }
 
-   const permUpdate = await opts.channel.permissionOverwrites
+   const permUpdate = await opts.channel?.permissionOverwrites
     .edit(
      target.id,
      {
@@ -462,7 +484,7 @@ const doAction = async <T extends CT.ModTypes>(
       AddReactions: false,
      },
      {
-      reason: `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+      reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
       type: 1,
      },
     )
@@ -483,7 +505,7 @@ const doAction = async <T extends CT.ModTypes>(
        }),
      ),
      options.guild.id,
-     opts.channel.id,
+     opts.channel?.id as string,
      target.id,
     );
    }
@@ -493,7 +515,7 @@ const doAction = async <T extends CT.ModTypes>(
   case 'channelBanRemove': {
    const opts = options as CT.ModOptions<'channelBanRemove'>;
 
-   const permUpdate = await opts.channel.permissionOverwrites
+   const permUpdate = await opts.channel?.permissionOverwrites
     .edit(
      target.id,
      {
@@ -504,20 +526,20 @@ const doAction = async <T extends CT.ModTypes>(
       AddReactions: null,
      },
      {
-      reason: `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+      reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
       type: 1,
      },
     )
     .catch((err: Discord.DiscordAPIError) => err);
 
-   if (!('id' in permUpdate)) return permUpdate;
+   if (permUpdate && !('id' in permUpdate)) return permUpdate;
 
    if (
-    permUpdate.permissionOverwrites.cache.get(target.id)?.deny.bitfield === 0n &&
-    permUpdate.permissionOverwrites.cache.get(target.id)?.allow.bitfield === 0n
+    permUpdate?.permissionOverwrites.cache.get(target.id)?.deny.bitfield === 0n &&
+    permUpdate?.permissionOverwrites.cache.get(target.id)?.allow.bitfield === 0n
    ) {
-    return opts.channel.permissionOverwrites
-     .delete(target.id, `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    return opts.channel?.permissionOverwrites
+     .delete(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
      .catch((err: Discord.DiscordAPIError) => err);
    }
 
@@ -525,12 +547,12 @@ const doAction = async <T extends CT.ModTypes>(
   }
   case 'banRemove': {
    return options.guild.bans
-    .remove(target.id, `${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    .remove(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'kickAdd': {
    return targetMember
-    ?.kick(`${executor.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.kick(`${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'roleAdd': {
@@ -557,7 +579,9 @@ const doDM = async <T extends CT.ModTypes>(
  lan: CT.Language['mod']['execution'][T],
  options: CT.ModOptions<T>,
 ) => {
- const dm = await target.createDM();
+ const dm = await target.createDM().catch(() => undefined);
+ if (!dm) return undefined;
+
  return send(dm, {
   embeds: [
    {
@@ -658,7 +682,7 @@ const checkPunishable = <T extends CT.ModTypes>(
    const opts = options as CT.ModOptions<
     'channelBanRemove' | 'tempChannelBanAdd' | 'channelBanAdd'
    >;
-   if (opts.channel.manageable && targetMember) return true;
+   if (opts.channel?.manageable && targetMember) return true;
    break;
   }
   case 'banRemove': {
@@ -700,13 +724,13 @@ const roleCheck = async <T extends CT.ModTypes>(
  return false;
 };
 
-const loadingEmbed = async (language: CT.Language, cmd: CmdType) => {
+const loadingEmbed = async (language: CT.Language, cmd: CmdType | undefined) => {
  const embed: Discord.APIEmbed = {
   color: constants.colors.loading,
   description: `${stringEmotes.loading} ${language.loading}...`,
  };
 
- if (!cmd.channel) return undefined;
+ if (!cmd?.channel) return undefined;
 
  if (cmd instanceof Discord.Message) return replyMsg(cmd, { embeds: [embed] });
  return replyCmd(cmd, { embeds: [embed] });

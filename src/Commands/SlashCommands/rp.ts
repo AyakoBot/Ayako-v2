@@ -21,7 +21,6 @@ export default async (
    asArray: false,
   },
  );
-
  const payload: Discord.InteractionReplyOptions = {
   embeds: [
    {

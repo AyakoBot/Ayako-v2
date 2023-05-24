@@ -257,10 +257,11 @@ type BaseOptions = {
  forceFinish: boolean;
  dbOnly: boolean;
  guild: Discord.Guild;
- target?: Discord.User;
+ target?: Discord.User | bEvalUser;
+ executor?: Discord.User | bEvalUser;
 };
 
-type Channel = { channel: Discord.GuildChannel };
+type Channel = { channel: Discord.GuildChannel | undefined };
 type Role = { role: Discord.Role };
 type Temp = { duration: number };
 type Empty = NonNullable<unknown>;
