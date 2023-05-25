@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import type CT from '../Typings/CustomTypings';
+import type DBT from '../Typings/DataBaseTypings';
 import * as ch from '../BaseClient/ClientHelper.js';
 import client from '../BaseClient/Client.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -153,7 +154,7 @@ const getCommand = (command: Discord.ApplicationCommand) =>
 const getSticker = (sticker: Discord.Sticker) =>
  `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`;
 
-const getPunishment = (punishment: CT.punishment) =>
+const getPunishment = (punishment: DBT.Punishment) =>
  `Punishment \`${Number(punishment.uniquetimestamp).toString(
   36,
  )}\`\nUse </check:1098291480772235325> to look this Punishment up`;
@@ -1078,7 +1079,7 @@ export default {
   appeal: {
    title: 'New Appeal',
    author: `${client.user?.username} Punishment Appeal System`,
-   description: (user: CT.bEvalUser | Discord.User, punishment: CT.punishment) =>
+   description: (user: CT.bEvalUser | Discord.User, punishment: DBT.Punishment) =>
     `${getUser(user)}has appealed their Punishment\n${getPunishment(punishment)}`,
   },
  },
@@ -1861,6 +1862,9 @@ export default {
    basic: '__Basic Info__',
    stats: '__Statistics__',
    otherInfo: '__Other Info__',
+   servers: {
+    noneFound: 'No Servers found',
+   },
    role: {
     author: `${name} Role-Info`,
     position: 'Position',
@@ -3821,4 +3825,5 @@ export default {
  login: 'Log-In',
  and: 'and',
  Never: 'Never',
+ Join: 'Join',
 };

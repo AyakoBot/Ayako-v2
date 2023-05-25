@@ -273,6 +273,11 @@ const info = new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('servers')
+   .setDescription(`Display Information about ${name}'s Servers`),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('server')
    .setDescription('Display Information about a Server')
    .addStringOption(
