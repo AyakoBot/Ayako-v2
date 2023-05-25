@@ -1,3 +1,4 @@
+import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import glob from 'glob';
 import client from '../../../BaseClient/Client.js';
@@ -54,7 +55,11 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  const language = await languageSelector(msg.guildId);
  const canRunCommand = await checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
-  errorMsg(msg, language.permissions.error.you, language);
+  const m = await errorMsg(msg, language.permissions.error.you, language);
+  Jobs.scheduleJob(Date.now() + 10000, () => {
+   if (m?.deletable) m.delete().catch(() => undefined);
+   if (msg.deletable) msg.delete().catch(() => undefined);
+  });
   return;
  }
 
@@ -134,7 +139,7 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
 
  if (!perms?.size) return true;
  const commandPerms = perms.get(slashCommand.id);
- if (!commandPerms) return true;
+ if (!commandPerms?.length) return true;
 
  const userPermission = commandPerms.find(
   (p) => p.type === Discord.ApplicationCommandPermissionType.User && p.id === msg.author.id,
@@ -149,7 +154,7 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
  const allChannelPermission = channelPermissions.find((p) => p.id === msg.guildId);
 
  if (channelPermission && !channelPermission.permission) return false;
- if (allChannelPermission && !allChannelPermission.permission && !channelPermission?.permission) {
+ if (allChannelPermission && allChannelPermission.permission && !channelPermission?.permission) {
   return false;
  }
 

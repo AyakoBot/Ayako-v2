@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import { getComponents } from '../../SlashCommands/rp.js';
@@ -66,7 +67,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   embeds: [embed],
  });
 
- const interval = setInterval(() => {
+ const job = Jobs.scheduleJob('*/10 * * * * *', () => {
   embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
 
   if (promises.length === resolved.length) {
@@ -76,10 +77,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
     icon_url: ch.objectEmotes.tick.link,
    };
    embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
-   clearInterval(interval);
+   job.cancel();
   }
 
-  if (message) message.edit({ embeds: [embed] });
-  else clearInterval(interval);
- }, 5000);
+  if (message) cmd.editReply({ embeds: [embed], message });
+  else job.cancel();
+ });
 };

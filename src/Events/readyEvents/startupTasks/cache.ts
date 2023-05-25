@@ -5,6 +5,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
+  guild.commands.fetch().catch(() => undefined);
   await guild.members.fetch().catch(() => undefined);
 
   const language = await ch.languageSelector(guild.id);
