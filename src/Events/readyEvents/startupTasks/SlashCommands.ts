@@ -274,7 +274,7 @@ const info = new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('servers')
-   .setDescription(`Display Information about ${name}'s Servers`),
+   .setDescription(`Display all servers ${name} is part of`),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
