@@ -2959,6 +2959,10 @@ export default {
        name: 'Error Channel',
        desc: 'The Channel to post Error Messages in',
       },
+      ptreminderenabled: {
+       name: 'Privacy & Terms Reminder',
+       desc: 'Whethr the Privacy and Terms Reminder is enabled or not',
+      },
      },
     },
     'nitro-roles': {

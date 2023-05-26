@@ -619,6 +619,7 @@ export default {
      lan: 'language',
      errorchannel: 'channel',
      vanity: 'string',
+     ptreminderenabled: 'boolean',
     },
     'disboard-reminders': {
      repeatreminder: 'duration',

@@ -63,7 +63,7 @@ export interface bEvalUser {
  bannerURL?: string;
 }
 
-type TableNamesMap = {
+export type TableNamesMap = {
  'anti-spam': DBT.antispam;
  'anti-spam-punishments': DBT.punishments;
  'anti-virus-punishments': DBT.punishments;

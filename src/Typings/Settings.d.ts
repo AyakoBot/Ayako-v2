@@ -143,6 +143,7 @@ export type guildsettings = {
  enabledrp?: boolean;
  rpenableruns: string;
  lastrpsyncrun?: string;
+ ptreminderenabled: boolean;
 };
 
 export type leveling = {

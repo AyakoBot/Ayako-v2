@@ -12,8 +12,6 @@ export interface DBTables {
  customembeds: customembeds;
  giveaways: giveaways;
  level: level;
- policy_guilds: policy_guilds;
- policy_users: policy_users;
  punish_bans: punish_bans;
  punish_kicks: punish_kicks;
  punish_mutes: punish_mutes;
@@ -132,14 +130,6 @@ export type level = {
  level?: string;
 };
 
-export type policy_guilds = {
- guildid: string;
-};
-
-export type policy_users = {
- userid: string;
-};
-
 export type BasicPunishmentsTable = {
  guildid: string;
  uniquetimestamp: string;
@@ -250,6 +240,7 @@ export type users = {
  refreshtoken?: string;
  expires?: string;
  accesstoken?: string;
+ ptremindersent: boolean;
 };
 
 export interface giveawaycollecttime {
