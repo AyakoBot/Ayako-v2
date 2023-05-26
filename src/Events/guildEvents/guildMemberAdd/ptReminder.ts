@@ -14,6 +14,12 @@ export default async (member: Discord.GuildMember) => {
  );
  if (!guildsettings?.ptreminderenabled) return;
 
+ const user = await ch.query(`SELECT ptremindersent FROM users WHERE userid = $1;`, [member.id], {
+  returnType: 'users',
+  asArray: false,
+ });
+ if (user?.ptremindersent) return;
+
  const embed: Discord.APIEmbed = {
   author: {
    name: "Hi! I don't think we've met before",
