@@ -334,6 +334,7 @@ export default {
     buttons: ['smooch', 'bonk'],
    },
    { name: 'kiss', desc: 'Kiss someone', users: true, reqUser: true, buttons: ['kiss', 'bonk'] },
+   { name: 'mwah', desc: 'Mwah someone', users: true, reqUser: true, buttons: ['mwah', 'bonk'] },
    { name: 'laugh', desc: 'Laugh', users: true, reqUser: false, buttons: ['peck', 'bonk'] },
    {
     name: 'lewd',
