@@ -81,7 +81,7 @@ export interface DBTables {
 export type afk = {
  userid: string;
  guildid: string;
- text: string;
+ text?: string;
  since: string;
 };
 

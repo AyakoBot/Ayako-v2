@@ -66,8 +66,14 @@ export default async (member: Discord.GuildMember) => {
  const dmChannel = await member.user.createDM().catch(() => undefined);
  if (!dmChannel) return;
 
- const dm = await dmChannel.send({ embeds: [embed] }).catch(() => undefined);
+ const dm = await dmChannel
+  .send({ embeds: [embed], content: 'Ayako Terms and Privacy Notice' })
+  .catch(() => undefined);
  if (!dm) return;
+
+ dm.edit({
+  content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
+ });
 
  ch.query(
   `INSERT INTO users (userid, username, avatar, lastfetch, ptremindersent) VALUE ($1, $2, $3, $4, true) 

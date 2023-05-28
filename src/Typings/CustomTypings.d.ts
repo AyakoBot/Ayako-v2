@@ -17,6 +17,7 @@ export interface Command {
   {
    language,
    command,
+   prefix,
   }: {
    language: Language;
    command: Command;

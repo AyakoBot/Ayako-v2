@@ -123,7 +123,7 @@ export const deleteCommandHandler = async (
  const s = applyingSettings.sort((a, b) => Number(b.deletetimeout) - Number(a.deletetimeout))[0];
  if (!s.deletetimeout) return;
 
- scheduleJob(Date.now() + Number(s.deletetimeout), () => {
+ scheduleJob(new Date(Date.now() + Number(s.deletetimeout)), () => {
   if (s.deletereply && 'delete' in sentMessage) sentMessage.delete().catch(() => undefined);
   if (s.deletecommand && msg.channelId && 'delete' in msg) msg.delete().catch(() => undefined);
  });

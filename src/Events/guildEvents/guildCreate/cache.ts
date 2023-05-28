@@ -72,7 +72,7 @@ export default async (guild: Discord.Guild) => {
  mutes?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
-   Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+   Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 
@@ -105,7 +105,7 @@ export default async (guild: Discord.Guild) => {
  bans?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
-   Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+   Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 
@@ -142,7 +142,7 @@ export default async (guild: Discord.Guild) => {
  channelBans?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
-   Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+   Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
     const target = m.userid ? (await ch.getUser(m.userid)) ?? client.user : client.user;
     if (!target) return;
 

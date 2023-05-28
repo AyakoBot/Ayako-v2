@@ -56,7 +56,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  const canRunCommand = await checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
-  Jobs.scheduleJob(Date.now() + 10000, () => {
+  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
    if (m?.deletable) m.delete().catch(() => undefined);
    if (msg.deletable) msg.delete().catch(() => undefined);
   });

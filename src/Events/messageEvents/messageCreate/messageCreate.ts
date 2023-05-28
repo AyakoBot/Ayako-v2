@@ -7,6 +7,7 @@ import _eval from './eval.js';
 import execute from './execute.js';
 import stickyMessage from './stickyMessage.js';
 import commandHandler from './commandHandler.js';
+import afk from './afk.js';
 
 // import dmLog from './dmLog.js';
 
@@ -23,6 +24,7 @@ export default async (msg: Discord.Message) => {
   other(msg);
   revengePing(msg);
   stickyMessage(msg);
+  afk(msg);
   // eventDel(msg);
  } else {
   // dmLog(msg);

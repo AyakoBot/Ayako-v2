@@ -1145,94 +1145,6 @@ export default {
    content: 'No Arguments provided',
    button: 'Show Usage',
   },
-  deleteHandler: {
-   reasonCommand: `Command declared as Self-Deleting in ${name} Settings`,
-   reasonReply: `Reply declared as Self-Deleting in ${name} Settings`,
-  },
-  antispamHandler: {
-   banErrorMessage: (user: CT.bEvalUser | Discord.User) =>
-    `I was unable to ban <@${user.id}>. \`Insufficient Permissions\``,
-   kickErrorMessage: (user: CT.bEvalUser | Discord.User) =>
-    `I was unable to kick <@${user.id}>. \`Insufficient Permissions\``,
-  },
-  afk: {
-   category: 'Chat',
-   description:
-    'Display a AFK text whenever someone pings you.\nAutomatically deleted if you send a Message 1 Minute after creating your AFK',
-   usage: ['afk (text)'],
-   footer: (userID: string, t: Strumber) => `<@${userID}> is AFK since ${t}`,
-   updatedTo: (user: CT.bEvalUser | Discord.User, text: string) =>
-    `**<@${user.id}>'s AFK updated to:**\n${text}`,
-   updated: (user: CT.bEvalUser | Discord.User) => `**<@${user.id}>'s AFK updated**`,
-   noLinks: '**You may not set Links as AFK.**',
-   set: (user: CT.bEvalUser | Discord.User) => `**<@${user.id}>'s AFK set**`,
-   setTo: (user: CT.bEvalUser | Discord.User, text: string) =>
-    `**<@${user.id}>'s AFK set to:**\n${text}`,
-  },
-  antiraidHandler: {
-   debugMessage: {
-    author: 'Join Threshold Breached!',
-    description: 'The join Threshold was breached',
-    below: 'Every join within the last 20 Seconds:',
-    file: 'Every join within the last 20 Seconds can be found in the File attached',
-    printIDs: 'Print User IDs',
-    massban: 'Massban Users',
-   },
-  },
-  afkHandler: {
-   deletedAfk: "I've deleted your AFK",
-   footer: (t: Strumber) => `Welcome back! You have been AFK for ${t}`,
-   setAfk: 'User went AFK',
-   delAfk: 'User returned from being AFK',
-   forceDelAfk: (user: CT.bEvalUser | Discord.User, reason: string) =>
-    `User's AFK was forcefully deleted by ${user.username}#${user.discriminator} | ${reason}`,
-  },
-  commandHandler: {
-   GuildOnly: 'This Command is not made for DMs, please try again in a Server',
-   pleaseWait: (t: Strumber) => `Please wait ${t} before re-using this Command`,
-   CategoryDisabled: (category: string) =>
-    `Category \`${category}\` was disabled by the Server Administration`,
-   CommandDisabled: (n: string) => `Command \`${n}\` was disabled by the Server Administration`,
-   creatorOnly: 'Only my Creator can use this Command (`Lars_und_so#0666`)',
-   ownerOnly: 'Only the Owner of this Server can use this Command',
-   missingPermissions: "You don't have enough Permissions to use this Command",
-   verifyMessage:
-    'You just issued a **moderation command** by **editing your Message**. \nDo you want to **proceed or abort**.',
-   DMonly: 'This Command is not made for Servers, please try again in DMs',
-   modRoleError: 'One of your Roles does not allow you to use this Command',
-  },
-  toxicityCheck: {
-   warning: (user: CT.bEvalUser | Discord.User) => `<@${user.id}> Please do not use this word!`,
-   warnReason: 'Repeatedly sending Blacklisted words',
-   author: `${name} Blacklist`,
-   info: (guild: Discord.Guild) =>
-    `The following Words are Blacklisted on **\`${guild.name}\`**:\n`,
-  },
-  reminder: {
-   category: 'Info',
-   description: `Set, view and delete Reminders ${name} will remind you of`,
-   usage: ['reminder [duration] [text]', 'reminder delete [reminder ID]', 'reminder list'],
-   set: 'set',
-   delete: 'delete',
-   list: 'list',
-   created: (id: Strumber, t: Strumber) =>
-    `Successfully created Reminder with ID \`${id}\`\nReminder End: ${t}`,
-   invalidTime: 'The given Time was not valid',
-   noReason: 'Please provide a Reason to Remind you of',
-   reminderEnded: (reason: string) => `__Your Reminder has ended:__\n${reason}`,
-   placeholder: 'Select a Reminder to Edit/Delete',
-   editReason: 'Edit',
-   del: 'Delete Reminder',
-   desc:
-    'Use the Buttons below to Select a Reminder to Edit or Delete\nTo create a Reminder use the `reminder [duration] [text]` Command',
-   author: `${name} Reminders`,
-   ends: 'Ends',
-   editTitle: 'Edit a Reminder',
-   timeLabel: 'Insert new Time Below',
-   editLabel: 'Insert new Text Below',
-   editPlaceholder: `Remind me to Vote for ${name}!`,
-   timePlaceholder: '11 hours 30 minutes',
-  },
  },
  contextCommands: {
   message: {
@@ -1247,6 +1159,15 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  afk: {
+   set: (user: string) => `<@${user}> went AFK`,
+   updated: 'AFK updated',
+   removed: (t: string) => `Welcome Back!\nYou've been AFK since ${t}`,
+   setReason: 'User went AFK',
+   removeReason: 'User returned from AFK',
+   isAFK: (user: string, since: string, text?: string) =>
+    `<@${user}> is AFK since ${since}${text ? `\n${text}` : ''}`,
+  },
   roles: {
    create: (role: Discord.Role) => `Successfully created Role ${role}`,
    delete: {
@@ -1420,6 +1341,12 @@ export default {
     request: 'wants to kiss you~! >~<',
     buttons: ['Kiss~!', 'Bonk em'],
    },
+   mwah: {
+    self: 'kisses themself, how do you even do that??',
+    others: 'kisses with',
+    request: 'wants to mwah you~! >~<',
+    buttons: ['Enjoy the mwah~', 'Bonk em'],
+   },
    laugh: {
     self: 'laughs at themself, something must be funny',
     noOne: 'laughs',
@@ -1440,12 +1367,12 @@ export default {
    pickup: {
     self: 'picks themself up, but how..?',
     others: ['picks', 'up'],
-    buttons: ['Bite them!', 'Embrace the Moment~'],
+    buttons: ['Bite them!', 'Enjoy getting carried around~'],
    },
    lift: {
     self: 'lifts themself up, how the hecc???',
     others: ['lifts', 'up'],
-    buttons: ['Bite them!', 'Embrace the Moment~'],
+    buttons: ['Bite them!', 'Enjoy getting carried around~'],
    },
    lurk: {
     self: 'lurks in Chat <:AMayakopeek:924071140257841162>',
@@ -1484,7 +1411,7 @@ export default {
    pat: {
     self: 'pats themself, what an odd thing to do',
     others: 'pats',
-    buttons: ['Blush~ #~#', 'Embrace the Moment'],
+    buttons: ['Blush~ #~#', 'Enjoy the pats <3'],
    },
    peck: {
     self: "pecks themself, you physically can't do that...",

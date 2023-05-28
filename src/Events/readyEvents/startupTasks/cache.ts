@@ -80,7 +80,7 @@ export default () => {
   mutes?.forEach((m) => {
    const time = Number(m.uniquetimestamp) + Number(m.duration);
    ch.cache.mutes.set(
-    Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
      const target = m.userid ? await ch.getUser(m.userid).catch(() => undefined) : undefined;
      if (!target) {
       ch.error(guild, new Error('Could not find user to initialize muteRemove event.'));
@@ -116,7 +116,7 @@ export default () => {
   bans?.forEach((m) => {
    const time = Number(m.uniquetimestamp) + Number(m.duration);
    ch.cache.mutes.set(
-    Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
      const target = m.userid
       ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
       : client.user;
@@ -155,7 +155,7 @@ export default () => {
   channelBans?.forEach((m) => {
    const time = Number(m.uniquetimestamp) + Number(m.duration);
    ch.cache.mutes.set(
-    Jobs.scheduleJob(Date.now() < time ? 1000 : time, async () => {
+    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
      const target = m.userid
       ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
       : client.user;
