@@ -113,7 +113,7 @@ const run = async <T extends CT.ModTypes>(
   }
  }
 
- const dm = await doDM(target, type, lan, options);
+ const dm = await doDM(target, type, lan, options, language);
 
  const actionOrError = await doAction(cmd, type, options, targetMember, target, executor, language);
  if (cmd && (!actionOrError || 'message' in (actionOrError as Discord.DiscordAPIError))) {
@@ -578,6 +578,7 @@ const doDM = async <T extends CT.ModTypes>(
  type: T,
  lan: CT.Language['mod']['execution'][T],
  options: CT.ModOptions<T>,
+ language: CT.Language,
 ) => {
  const dm = await target.createDM().catch(() => undefined);
  if (!dm) return undefined;
@@ -587,10 +588,8 @@ const doDM = async <T extends CT.ModTypes>(
    {
     color: constants.colors[constants.modColors[type]],
     timestamp: new Date().toISOString(),
-    author: {
-     name: lan.dm(options as never),
-    },
-    description: options.reason ?? undefined,
+    description: lan.dm(options as never),
+    fields: options.reason ? [{ name: language.reason, value: options.reason }] : [],
    },
   ],
  });
