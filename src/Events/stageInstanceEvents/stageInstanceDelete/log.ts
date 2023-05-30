@@ -25,6 +25,7 @@ export default async (stage: Discord.StageInstance) => {
    ? lan.descDeleteStageAudit(stage.channel, language.channelTypes[stage.channel.type], auditUser)
    : lan.descDeleteStage(stage.channel, language.channelTypes[stage.channel.type]),
   fields: [],
+  timestamp: new Date().toISOString(),
  };
 
  if (stage.guildScheduledEvent) {

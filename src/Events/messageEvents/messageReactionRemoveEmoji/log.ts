@@ -22,6 +22,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message) =
   description: lan.descRemoveEmoji(msg, reaction.emoji),
   color: ch.constants.colors.danger,
   fields: [],
+  timestamp: new Date().toISOString(),
  };
 
  if (reaction.emoji.url) {

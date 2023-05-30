@@ -25,6 +25,7 @@ export default async (
    : lan.descDeleteBulk(msgs.size, channel),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  await ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] });

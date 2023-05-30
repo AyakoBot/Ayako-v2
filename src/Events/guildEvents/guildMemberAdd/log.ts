@@ -25,6 +25,7 @@ export default async (member: Discord.GuildMember) => {
   description,
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const usedInvite = await getUsedInvite(member.guild, member.user);

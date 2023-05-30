@@ -21,6 +21,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   color: ch.constants.colors.loading,
   fields: [],
   description: auditUser ? lan.descUpdateAudit(role, auditUser) : lan.descUpdate(role),
+  timestamp: new Date().toISOString(),
  };
 
  const embeds = [embed];

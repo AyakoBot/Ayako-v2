@@ -38,6 +38,7 @@ export default async (
       channel,
       language.channelTypes[channel.type],
      ),
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

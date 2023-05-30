@@ -29,6 +29,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
   color: ch.constants.colors.danger,
   fields: [],
+  timestamp: new Date().toISOString(),
  };
 
  if (execution.ruleTriggerType) {

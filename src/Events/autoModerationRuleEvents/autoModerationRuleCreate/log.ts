@@ -19,6 +19,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   description: lan.descCreate(user, rule),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  if (rule.triggerMetadata) {

@@ -22,6 +22,7 @@ export default async (sticker: Discord.Sticker) => {
   description: auditUser ? lan.descDeleteAudit(sticker, auditUser) : lan.descDelete(sticker),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  const attachment = (await ch.fileURL2Buffer([sticker.url]))?.[0];

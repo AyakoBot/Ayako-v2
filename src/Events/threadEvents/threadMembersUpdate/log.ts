@@ -21,6 +21,7 @@ export default async (
   },
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  if (added?.size) {

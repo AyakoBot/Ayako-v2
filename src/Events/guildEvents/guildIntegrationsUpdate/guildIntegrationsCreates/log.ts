@@ -21,6 +21,7 @@ export default async (integration: Discord.Integration) => {
    : lan.descCreate(integration),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const flagsText = [

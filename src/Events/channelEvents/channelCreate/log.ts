@@ -47,6 +47,7 @@ export default async (
    : lan.descCreate(channel, language.channelTypes[channel.type]),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const embeds = [embed];

@@ -21,6 +21,7 @@ export default async (role: Discord.Role) => {
   description: auditUser ? lan.descDeleteAudit(auditUser, role) : lan.descDelete(role),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  if (role.icon) {

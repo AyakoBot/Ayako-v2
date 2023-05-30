@@ -20,6 +20,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   description: auditUser ? lan.descGuildUpdateAudit(auditUser) : lan.descGuildUpdate(),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild.id);

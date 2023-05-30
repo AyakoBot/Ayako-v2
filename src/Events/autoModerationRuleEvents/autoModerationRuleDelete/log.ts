@@ -19,6 +19,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   description: lan.descDelete(user, rule),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  if (rule.triggerMetadata) {

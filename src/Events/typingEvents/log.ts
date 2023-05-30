@@ -19,6 +19,7 @@ export default async (typing: Discord.Typing) => {
   description: lan.descTyping(user, typing.channel, language.channelTypes[typing.channel.type]),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  ch.send({ id: channels, guildId: typing.guild.id }, { embeds: [embed], files }, undefined, 10000);

@@ -22,6 +22,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
    : lan.descUpdate(integration),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

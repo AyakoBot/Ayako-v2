@@ -24,6 +24,7 @@ export default async (msg: Discord.Message) => {
   description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  embeds.push(embed);

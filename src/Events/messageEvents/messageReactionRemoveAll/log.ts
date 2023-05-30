@@ -24,6 +24,7 @@ export default async (
   description: lan.descRemovedAll(msg),
   color: ch.constants.colors.danger,
   fields: [],
+  timestamp: new Date().toISOString(),
  };
 
  if (reactions.size) {

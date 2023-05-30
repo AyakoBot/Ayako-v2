@@ -25,6 +25,7 @@ export default async (
   description: lan.descRemoved(reaction.emoji, user, msg),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  embeds.push(embed);

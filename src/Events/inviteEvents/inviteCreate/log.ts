@@ -19,6 +19,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   description: auditUser ? lan.descCreateAudit(auditUser, invite) : lan.descCreate(invite),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const flagsText = [invite.temporary ? lan.temporary : null]

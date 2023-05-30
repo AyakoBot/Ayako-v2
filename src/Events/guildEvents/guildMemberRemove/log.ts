@@ -34,6 +34,7 @@ export default async (member: Discord.GuildMember) => {
    },
   ],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  if (member.joinedAt) {

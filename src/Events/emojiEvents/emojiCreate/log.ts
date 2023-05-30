@@ -20,6 +20,7 @@ export default async (emote: Discord.GuildEmoji) => {
   description: auditUser ? lan.descEmojiCreateAudit(auditUser, emote) : lan.descEmojiCreate(emote),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const attachment = (await ch.fileURL2Buffer([emote.url]))?.[0];

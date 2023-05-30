@@ -28,6 +28,7 @@ export default async (integration: Discord.Integration) => {
   description,
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  if (integration) {

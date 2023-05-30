@@ -23,6 +23,7 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   description: auditUser ? lan.descUpdateAudit(sticker, auditUser) : lan.descUpdate(sticker),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

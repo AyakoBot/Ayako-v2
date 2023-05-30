@@ -25,5 +25,6 @@ export default async (guild: Discord.Guild) => {
     ],
    },
   ],
+  timestamp: new Date().toISOString(),
  });
 };

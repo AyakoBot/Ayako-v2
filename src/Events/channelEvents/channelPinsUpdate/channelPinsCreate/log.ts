@@ -38,6 +38,7 @@ export default async (
    : lan.descPinCreate(msg, language.channelTypes[msg.channel.type]),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, undefined, 10000);

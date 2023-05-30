@@ -22,6 +22,7 @@ export default async (sticker: Discord.Sticker) => {
   description: auditUser ? lan.descCreateAudit(sticker, auditUser) : lan.descCreate(sticker),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  const attachment = (await ch.fileURL2Buffer([sticker.url]))?.[0];

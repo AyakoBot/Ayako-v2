@@ -35,6 +35,7 @@ export default async (
       channel,
       language.channelTypes[channel.type],
      ),
+  timestamp: new Date().toISOString(),
  };
 
  if (webhook.sourceGuild) {

@@ -26,6 +26,7 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
    ? lan.descUpdateStageAudit(stage.channel, language.channelTypes[stage.channel.type], auditUser)
    : lan.descUpdateStage(stage.channel, language.channelTypes[stage.channel.type]),
   fields: [],
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

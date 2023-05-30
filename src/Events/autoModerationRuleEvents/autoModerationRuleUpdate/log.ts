@@ -23,6 +23,7 @@ export default async (
   description: lan.descUpdate(user, rule),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

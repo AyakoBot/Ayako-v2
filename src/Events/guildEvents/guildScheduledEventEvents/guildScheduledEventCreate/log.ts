@@ -46,6 +46,7 @@ export default async (event: Discord.GuildScheduledEvent) => {
   color: ch.constants.colors.success,
   fields: [],
   description,
+  timestamp: new Date().toISOString(),
  };
 
  if (event.image) {

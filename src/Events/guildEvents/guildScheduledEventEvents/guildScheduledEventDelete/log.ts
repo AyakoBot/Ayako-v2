@@ -49,6 +49,7 @@ export default async (
   color: ch.constants.colors.danger,
   fields: [],
   description,
+  timestamp: new Date().toISOString(),
  };
 
  if (event.image) {

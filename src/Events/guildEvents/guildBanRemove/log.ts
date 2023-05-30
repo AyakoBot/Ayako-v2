@@ -19,6 +19,7 @@ export default async (ban: Discord.GuildBan) => {
   description: auditUser ? lan.descUnbanAudit(ban.user, auditUser) : lan.descUnban(ban.user),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  ch.send({ id: channels, guildId: ban.guild.id }, { embeds: [embed] }, undefined, 10000);

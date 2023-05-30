@@ -25,6 +25,7 @@ export default async (state: Discord.VoiceState, member: Discord.GuildMember) =>
    state.channel,
    language.channelTypes[state.channel.type],
   ),
+  timestamp: new Date().toISOString(),
  };
 
  const flagsText = [

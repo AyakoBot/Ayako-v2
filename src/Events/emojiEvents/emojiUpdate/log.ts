@@ -20,6 +20,7 @@ export default async (oldEmote: Discord.GuildEmoji, emote: Discord.GuildEmoji) =
   description: auditUser ? lan.descEmojiUpdateAudit(auditUser, emote) : lan.descEmojiUpdate(emote),
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>

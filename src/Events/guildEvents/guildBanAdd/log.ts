@@ -21,6 +21,7 @@ export default async (ban: Discord.GuildBan) => {
   description: auditUser ? lan.descBanAudit(ban.user, auditUser) : lan.descBan(ban.user),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  if (ban && ban.reason) embed.fields?.push({ name: language.reason, value: ban.reason });

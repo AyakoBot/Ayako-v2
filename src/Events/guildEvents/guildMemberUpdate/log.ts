@@ -27,6 +27,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   description,
   fields: [],
   color: ch.constants.colors.loading,
+  timestamp: new Date().toISOString(),
  };
 
  const files: Discord.AttachmentPayload[] = [];

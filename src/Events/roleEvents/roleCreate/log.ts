@@ -21,6 +21,7 @@ export default async (role: Discord.Role) => {
   description: auditUser ? lan.descCreateAudit(auditUser, role) : lan.descCreate(role),
   fields: [],
   color: ch.constants.colors.success,
+  timestamp: new Date().toISOString(),
  };
 
  if (role.icon) {

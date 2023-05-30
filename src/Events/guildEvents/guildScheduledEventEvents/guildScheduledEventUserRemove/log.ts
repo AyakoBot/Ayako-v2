@@ -28,6 +28,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
   description: channel
    ? lan.descUserRemoveChannel(user, event, channel, language.channelTypes[channel.type])
    : lan.descUserRemove(user, event),
+  timestamp: new Date().toISOString(),
  };
 
  ch.send({ id: channels, guildId: event.guild.id }, { embeds: [embed], files }, undefined, 10000);

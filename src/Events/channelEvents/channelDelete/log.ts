@@ -46,6 +46,7 @@ export default async (
    : lan.descDelete(channel, language.channelTypes[channel.type]),
   fields: [],
   color: ch.constants.colors.danger,
+  timestamp: new Date().toISOString(),
  };
 
  const embeds = [embed];
