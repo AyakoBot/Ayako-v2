@@ -929,8 +929,10 @@ export default {
     name: 'User updated',
     desc: (user: CT.bEvalUser | Discord.User) => `${getUser(user)}has updated`,
     avatar: 'Avatar',
+    banner: 'Banner',
     flags: 'Badges',
     discriminator: 'Tag',
+    bannerRemoved: 'Banner Removed',
     username: 'Username',
    },
    automodActionExecution: {
@@ -1160,7 +1162,7 @@ export default {
  stringCommands: {},
  slashCommands: {
   afk: {
-   set: (user: string) => `<@${user}> went AFK`,
+   set: (user: Discord.User) => `\`${user.tag}\` went AFK`,
    updated: 'AFK updated',
    removed: (t: string) => `Welcome Back!\nYou've been AFK since ${t}`,
    setReason: 'User went AFK',

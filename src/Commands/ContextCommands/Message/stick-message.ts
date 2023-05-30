@@ -3,17 +3,17 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- if (!cmd.inCachedGuild()) return;
 
  const res = await ch.query(
-  `INSERT INTO stickymessages (guildid, lastmsgid, channelid) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING;`,
+  `INSERT INTO stickymessages (guildid, lastmsgid, channelid) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURN *;`,
   [cmd.guildId, cmd.targetId, cmd.channelId],
+  { returnType: 'stickymessages', asArray: false },
  );
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.contextCommands.message['stick-message'];
 
  ch.replyCmd(cmd, {
-  content: res ? lan.reply : lan.already,
+  content: res?.lastmsgid === cmd.targetId ? lan.reply : lan.already,
  });
 };

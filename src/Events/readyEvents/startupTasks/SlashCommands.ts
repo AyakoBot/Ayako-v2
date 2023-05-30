@@ -610,15 +610,6 @@ const afk = new Discord.SlashCommandBuilder()
    .setRequired(false),
  );
 
-const help = new Discord.SlashCommandBuilder()
- .setName('help')
- .setDescription('Get Help about the Bot')
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('basic')
-   .setDescription('Show the basic Help Embed'),
- );
-
 export default {
  public: {
   settings,

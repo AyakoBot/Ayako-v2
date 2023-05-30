@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
@@ -29,32 +30,39 @@ export default async (msg: Discord.Message) => {
  const language = await ch.languageSelector(msg.guildId);
  const lan = language.contextCommands.message['stick-message'];
 
- const m = await ch.send(msg.channel, {
-  content: message.content,
-  embeds: message.embeds.map((e) => e.data),
-  files: message.attachments.map((a) => a),
-  components: [
-   {
-    type: Discord.ComponentType.ActionRow,
+ ch.cache.stickyTimeouts.delete(msg.channelId);
+
+ ch.cache.stickyTimeouts.set(
+  msg.channelId,
+  Jobs.scheduleJob(new Date(Date.now() + 60000), async () => {
+   const m = await ch.send(msg.channel, {
+    content: message.content,
+    embeds: message.embeds.map((e) => e.data),
+    files: message.attachments.map((a) => a),
     components: [
      {
-      label: lan.button,
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Secondary,
-      disabled: true,
-      customId: String(Math.random() * Date.now()),
+      type: Discord.ComponentType.ActionRow,
+      components: [
+       {
+        label: lan.button,
+        type: Discord.ComponentType.Button,
+        style: Discord.ButtonStyle.Secondary,
+        disabled: true,
+        customId: String(Math.random() * Date.now()),
+       },
+      ],
      },
     ],
-   },
-  ],
- });
+   });
 
- if (!m) return;
- if (message.deletable) message.delete().catch(() => undefined);
+   if (!m) return;
+   if (message.deletable) message.delete().catch(() => undefined);
 
- ch.query(`UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND channelid = $3;`, [
-  m.id,
-  msg.guildId,
-  msg.channelId,
- ]);
+   ch.query(`UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND channelid = $3;`, [
+    m.id,
+    msg.guildId,
+    msg.channelId,
+   ]);
+  }),
+ );
 };

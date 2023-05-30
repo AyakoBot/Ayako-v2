@@ -26,7 +26,7 @@ export interface Command {
  ) => void | Promise<void>;
 }
 
-export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon';
+export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon' | 'image';
 
 export interface TopGGBotVote {
  bot: string;

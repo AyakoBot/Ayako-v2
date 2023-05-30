@@ -34,6 +34,12 @@ export default (
    };
    break;
   }
+  case 'image': {
+   embed.image = {
+    url: `attachment://${after}`,
+   };
+   break;
+  }
   default: {
    throw new Error(`Unsupported Type "${type}"`);
   }

@@ -98,6 +98,11 @@ const cache: {
   delete: (guildId: string, channelId: string, msgId: string) => void;
   cache: Map<string, Map<string, Map<string, Jobs.Job>>>;
  };
+ stickyTimeouts: {
+  set: (channelId: string, job: Jobs.Job) => void;
+  delete: (channelId: string) => void;
+  cache: Map<string, Jobs.Job>;
+ };
 } = {
  invites: {
   get: async (code, channelId, guildId) => {
@@ -571,6 +576,20 @@ const cache: {
    } else {
     cache.giveaways.cache.get(guildId)?.get(channelId)?.delete(msgId);
    }
+  },
+  cache: new Map(),
+ },
+ stickyTimeouts: {
+  set: (channelId, job) => {
+   const cached = cache.stickyTimeouts.cache.get(channelId);
+   cached?.cancel();
+
+   cache.stickyTimeouts.cache.set(channelId, job);
+  },
+  delete: (channelId) => {
+   const cached = cache.stickyTimeouts.cache.get(channelId);
+   cached?.cancel();
+   cache.stickyTimeouts.cache.delete(channelId);
   },
   cache: new Map(),
  },
