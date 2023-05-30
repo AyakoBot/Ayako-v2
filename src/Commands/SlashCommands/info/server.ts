@@ -9,7 +9,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const inviteArgs = enteredInvite?.split(/\/+/g) ?? [];
  const invite = inviteArgs.length
-  ? await client.fetchInvite(inviteArgs[inviteArgs.length - 1], {}).catch(() => undefined)
+  ? await client.fetchInvite(inviteArgs.at(-1) as string, {}).catch(() => undefined)
   : undefined;
  const isInviteGuild = invite?.guild ? !('members' in invite.guild) : false;
 

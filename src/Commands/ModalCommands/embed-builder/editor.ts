@@ -115,7 +115,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
  if (error) {
   const { errors } = error.errors[0][1];
-  ch.errorCmd(cmd, errors[errors.length - 1].expected, language);
+  ch.errorCmd(cmd, errors.at(-1)?.expected as string, language);
   return;
  }
 

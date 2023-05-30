@@ -6,7 +6,7 @@ export default (rawEmbed: Discord.APIEmbed, options: ((string | any)[] | (string
  const embeds = [rawEmbed];
 
  options.forEach((option) => {
-  const embedToUse = embeds[embeds.length - 1];
+  const embedToUse = embeds.at(-1) as Discord.APIEmbed;
 
   const embed: Discord.APIEmbed = {
    fields: [],
