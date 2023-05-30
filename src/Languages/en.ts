@@ -1272,8 +1272,8 @@ export default {
    },
    fluff: {
     self: 'fluffs their tail, how cute~',
-    many: ['fluffs', 'tail'],
-    one: ['fluffs', 'tails'],
+    many: ['fluffs', 'tails'],
+    one: ['fluffs', 'tail'],
     buttons: ['Embrace the fluffs~', 'Hide away >~>'],
    },
    handshake: {
@@ -1315,7 +1315,7 @@ export default {
    kidnap: {
     self: "kidnaps themself, I don't think it works that way",
     others: 'kidnaps',
-    buttons: ['Run away!'],
+    buttons: ['Be stolen c:', 'Run away!'],
    },
    kith: {
     self: 'kithes themself, they are in great danger.',
@@ -1367,12 +1367,12 @@ export default {
    pickup: {
     self: 'picks themself up, but how..?',
     others: ['picks', 'up'],
-    buttons: ['Bite them!', 'Enjoy getting carried around~'],
+    buttons: ['Enjoy getting carried around~', 'Bite them!'],
    },
    lift: {
     self: 'lifts themself up, how the hecc???',
     others: ['lifts', 'up'],
-    buttons: ['Bite them!', 'Enjoy getting carried around~'],
+    buttons: ['Enjoy getting carried around~', 'Bite them!'],
    },
    lurk: {
     self: 'lurks in Chat <:AMayakopeek:924071140257841162>',

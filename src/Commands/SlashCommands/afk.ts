@@ -19,17 +19,33 @@ export default async (
   { returnType: 'afk', asArray: false },
  );
 
- const embed: Discord.APIEmbed = {
-  color: ch.constants.colors.loading,
-  description: afk ? lan.updated : lan.set(author.id),
- };
+ if (cmd instanceof Discord.ChatInputCommandInteraction) {
+  text = cmd.options.getString('reason', false) ?? undefined;
+ }
+
+ const embeds: Discord.APIEmbed[] = text
+  ? [
+     {
+      color: ch.constants.colors.loading,
+      description: text,
+     },
+    ]
+  : [];
 
  if (cmd instanceof Discord.ChatInputCommandInteraction && !afk) {
-  await ch.replyCmd(cmd, { embeds: [embed], ephemeral: false });
+  await ch.replyCmd(cmd, {
+   embeds,
+   ephemeral: false,
+   content: afk ? lan.updated : lan.set(author.id),
+  });
  } else if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  await ch.replyCmd(cmd, { embeds: [embed], ephemeral: true });
+  await ch.replyCmd(cmd, {
+   embeds,
+   ephemeral: true,
+   content: afk ? lan.updated : lan.set(author.id),
+  });
  } else {
-  await ch.send(cmd.channel, { embeds: [embed] });
+  await ch.send(cmd.channel, { embeds, content: afk ? lan.updated : lan.set(author.id) });
   if (cmd.deletable) cmd.delete();
  }
 
@@ -39,10 +55,6 @@ export default async (
   Number(cmd.member?.displayName.length) <= 26
  ) {
   await cmd.member?.setNickname(`${cmd.member?.displayName} [AFK]`, lan.setReason);
- }
-
- if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  text = cmd.options.getString('reason', false) ?? undefined;
  }
 
  await ch.query(

@@ -260,7 +260,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
 
   return `${author} ${Array.isArray(lan.others) ? lan.others[0] : lan.others} ${
    lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
-  }${Array.isArray(lan.others) ? lan.others[1] : ''}`;
+  }${Array.isArray(lan.others) ? ` ${lan.others[1]}` : ''}`;
  }
 
  if (users.length === 1 && 'one' in lan) {
@@ -268,7 +268,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
 
   return `${author} ${Array.isArray(lan.one) ? lan.one[0] : lan.one} ${
    lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
-  }${Array.isArray(lan.one) ? lan.one[1] : ''}`;
+  }${Array.isArray(lan.one) ? ` ${lan.one[1]}` : ''}`;
  }
 
  if (users.length > 1 && 'many' in lan) {
@@ -276,7 +276,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
 
   return `${author} ${Array.isArray(lan.many) ? lan.many[0] : lan.many} ${
    lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
-  }${Array.isArray(lan.many) ? lan.many[1] : ''}`;
+  }${Array.isArray(lan.many) ? ` ${lan.many[1]}` : ''}`;
  }
 
  return null;
