@@ -10,7 +10,10 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
  if (!settingName) return;
 
  const language = await ch.languageSelector(cmd.guildId);
- const lan = language.slashCommands.settings.categories[settingName];
+ const lan =
+  language.slashCommands.settings.categories[
+   settingName as keyof typeof language.slashCommands.settings.categories
+  ];
 
  cmd.update({
   embeds: [
