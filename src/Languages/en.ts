@@ -1150,7 +1150,8 @@ export default {
  },
  contextCommands: {
   message: {
-   'stick-message': {
+   'Stick Message': {
+    desc: 'Stick a Message to the Channel',
     reply:
      'Message was sticked to the channel\nYou can undo this at any time by deleting the sticked Message',
     button: 'Delete this Message to unstick it',
@@ -1158,9 +1159,28 @@ export default {
      'This Channel already has a sticked Message.\nYou can merge them into one and stick the merged Message\n\nTo unstick the previous Message, just delete it',
    },
   },
+  user: {
+   TODO: {
+    desc: 'TODO',
+   },
+  },
  },
  stringCommands: {},
  slashCommands: {
+  help: {
+   title: 'Slash, Context and Prefix Commands',
+   categories: {
+    moderation: 'Moderation',
+    info: 'Info',
+    utility: 'Utility',
+    fun: 'Fun',
+    settings: 'Settings',
+   },
+   parentCommands: 'The Parent-Commands in this Category are:',
+   subCommandGroups: 'The Sub-Command-Groups in this Category are:',
+   footer: 'A "?" in the Option Name means that the Option is optional',
+   selectPlaceholder: 'Select a Category to view',
+  },
   afk: {
    set: (user: Discord.User) => `\`${user.tag}\` went AFK`,
    updated: 'AFK updated',

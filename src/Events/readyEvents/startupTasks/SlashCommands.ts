@@ -128,7 +128,7 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('nitro-roles')
+     .setName('boost-roles')
      .setDescription(`Reward Members for continuously boosting your Server`)
      .addStringOption(IDSelector),
    ),
@@ -227,11 +227,6 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('disboard-reminders')
      .setDescription('Have a Bump reminder remind your Members to bump your Server'),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('logs')
-     .setDescription('Log Changes to any Part of your Server'),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -610,13 +605,43 @@ const afk = new Discord.SlashCommandBuilder()
    .setRequired(false),
  );
 
+const help = new Discord.SlashCommandBuilder()
+ .setName('help')
+ .setDescription('Get Help for the Bot')
+ .setDMPermission(true)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('list')
+   .setDescription('See a list of all Commands and Categories'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('moderation')
+   .setDescription('Help for the Moderation Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('info')
+   .setDescription('Help for the Info Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('utility')
+   .setDescription('Help for the Utility Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('fun')
+   .setDescription('Help for the Fun Commands'),
+ );
+
 export default {
  public: {
   settings,
   info,
-  embedbuilder,
+  'embed-builder': embedbuilder,
   check,
-  stickMessage,
+  'Stick Message': stickMessage,
   stp,
   membercount,
   ping,
@@ -624,5 +649,80 @@ export default {
   images,
   roles,
   afk,
+  help,
+ },
+ categories: {
+  'settings_moderation_anti-spam': 'moderation',
+  'settings_moderation_anti-spam-punishments': 'moderation',
+  'settings_moderation_anti-virus': 'moderation',
+  'settings_moderation_anti-virus-punishments': 'moderation',
+  'settings_moderation_anti-raid': 'moderation',
+  'settings_moderation_auto-punish': 'moderation',
+  settings_moderation_blacklist: 'moderation',
+  'settings_moderation_blacklist-punishments': 'moderation',
+  settings_moderation_expiry: 'moderation',
+  settings_leveling_basic: 'utility',
+  'settings_leveling_multi-channels': 'utility',
+  'settings_leveling_multi-roles': 'utility',
+  'settings_leveling_level-roles': 'utility',
+  'settings_leveling_rule-channels': 'utility',
+  settings_nitro_basic: 'utility',
+  'settings_nitro_booster-roles': 'utility',
+  settings_vote_basic: 'utility',
+  'settings_vote_vote-rewards': 'utility',
+  'settings_roles_role-rewards': 'utility',
+  'settings_roles_auto-roles': 'utility',
+  'settings_roles_self-roles': 'utility',
+  settings_roles_separators: 'utility',
+  settings_roles_sticky: 'utility',
+  'settings_roles_reaction-role-settings': 'utility',
+  'settings_roles_reaction-roles': 'utility',
+  'settings_roles_button-role-settings': 'utility',
+  'settings_roles_button-roles': 'utility',
+  'settings_automation_delete-commands': 'utility',
+  settings_automation_cooldowns: 'utility',
+  'settings_automation_disboard-reminders': 'utility',
+  settings_automation_suggestions: 'utility',
+  settings_automation_verification: 'utility',
+  settings_automation_welcome: 'utility',
+  settings_basic: 'utility',
+  settings_logs: 'info',
+  info_user: 'info',
+  info_servers: 'info',
+  info_server: 'info',
+  info_channel: 'info',
+  info_role: 'info',
+  info_bot: 'info',
+  info_badges: 'info',
+  'embed-builder_view_custom-embeds': 'utility',
+  'embed-builder_view_from-message': 'utility',
+  'embed-builder_create': 'utility',
+  check: 'moderation',
+  'Stick Message': 'utility',
+  stp: 'utility',
+  membercount: 'info',
+  ping: 'info',
+  rp: 'fun',
+  images_neko: 'fun',
+  images_husbando: 'fun',
+  images_kitsune: 'fun',
+  images_waifu: 'fun',
+  images_shinobu: 'fun',
+  images_megumin: 'fun',
+  images_eevee: 'fun',
+  images_holo: 'fun',
+  images_icon: 'fun',
+  images_okami: 'fun',
+  images_senko: 'fun',
+  images_shiro: 'fun',
+  roles_create: 'utility',
+  roles_delete: 'utility',
+  roles_info: 'info',
+  roles_members: 'info',
+  roles_give: 'moderation',
+  roles_take: 'moderation',
+  afk: 'utility',
+  help_list: 'info',
+  help_moderation: 'info',
  },
 };

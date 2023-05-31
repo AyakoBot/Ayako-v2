@@ -702,7 +702,7 @@ export default {
      hasleastmentions: 'number',
      hasmostmentions: 'number',
     },
-    'nitro-roles': {
+    'booster-roles': {
      roles: 'roles',
      days: 'number',
     },
@@ -772,7 +772,7 @@ export default {
     'multi-roles': 'levelingmultiroles',
     'level-roles': 'levelingroles',
     'rule-channels': 'levelingruleschannels',
-    'nitro-roles': 'nitroroles',
+    'booster-roles': 'nitroroles',
     'button-roles': 'buttonroles',
     'reaction-roles': 'reactionroles',
     'reaction-role-settings': 'reactionrolesettings',
