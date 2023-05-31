@@ -1,5 +1,5 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import type * as CT from '../../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (

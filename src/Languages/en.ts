@@ -2711,7 +2711,7 @@ export default {
       },
       rolemode: {
        name: 'Role Mode',
-       desc: 'Whether to Stack or Replace Nitro-Roles',
+       desc: 'Whether to Stack or Replace Booster-Roles',
       },
      },
     },
@@ -2914,7 +2914,7 @@ export default {
       },
      },
     },
-    'nitro-roles': {
+    'booster-roles': {
      name: 'Nitro Roles',
      fields: {
       roles: {
