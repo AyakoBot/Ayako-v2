@@ -221,6 +221,10 @@ export default {
   ],
  },
  commands: {
+  help: {
+   'Stick Message':
+    'Stick a Message to a Channel. The sticked Message will be re-posted with a Delay of 1 Minute after another Message is sent\nUn-Stick the Message by deleting it.',
+  },
   interactions: [
    { name: 'awoo', desc: 'Awooo~!!', users: true, reqUser: false, buttons: ['pat', 'awoo'] },
    { name: 'ayaya', desc: 'AYAYA !!!', users: true, reqUser: false, buttons: [] },

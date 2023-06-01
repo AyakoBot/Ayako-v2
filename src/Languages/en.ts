@@ -1180,6 +1180,7 @@ export default {
    subCommandGroups: 'The Sub-Command-Groups in this Category are:',
    footer: 'A "?" in the Option Name means that the Option is optional',
    selectPlaceholder: 'Select a Category to view',
+   author: 'Help for Commands, Sub-Command-Groups, Sub-Commands, and their Arguments',
   },
   afk: {
    set: (user: Discord.User) => `\`${user.tag}\` went AFK`,
@@ -3015,22 +3016,22 @@ export default {
   },
   logs: {
    roleAdd: {
-    author: 'Role given to User',
+    author: 'Role given to Member',
     description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
      `${getRole(options.role)}was given to\n${getUser(target)}by\n${getUser(executor)}`,
    },
    roleRemove: {
-    author: 'Role removed from User',
+    author: 'Role removed from Member',
     description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
      `${getRole(options.role)}was removed from\n${getUser(target)}by\n${getUser(executor)}`,
    },
    tempmuteAdd: {
-    author: 'User Muted',
+    author: 'Member Muted',
     description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
      `${getUser(target)}was Muted by\n${getUser(executor)}for\n${options.time}`,
    },
    muteRemove: {
-    author: 'User Un-Muted',
+    author: 'Member Un-Muted',
     description: (target: Discord.User, executor: Discord.User) =>
      `${getUser(target)}was Un-Muted by\n${getUser(executor)}`,
    },
@@ -3050,17 +3051,17 @@ export default {
      `${getUser(target)}was Temp-Banned by\n${getUser(executor)}for\n${options.time}`,
    },
    channelBanAdd: {
-    author: 'User Channel-Banned',
+    author: 'Member Channel-Banned',
     description: (target: Discord.User, executor: Discord.User) =>
      `${getUser(target)}was Channel-Banned by\n${getUser(executor)}`,
    },
    tempChannelbanAdd: {
-    author: 'User Temp-Channel-Banned',
+    author: 'Member Temp-Channel-Banned',
     description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
      `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}for\n${options.time}`,
    },
    channelBanRemove: {
-    author: 'User Channel-Un-Banned',
+    author: 'Member Channel-Un-Banned',
     description: (target: Discord.User, executor: Discord.User) =>
      `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}`,
    },
@@ -3070,7 +3071,7 @@ export default {
      `${getUser(target)}was Un-Banned by\n${getUser(executor)}`,
    },
    kickAdd: {
-    author: 'User Kicked',
+    author: 'Member Kicked',
     description: (target: Discord.User, executor: Discord.User) =>
      `${getUser(target)}was Kicked by\n${getUser(executor)}`,
    },
@@ -3319,6 +3320,7 @@ export default {
   noRoleFound: 'No Role found, please report to the Support Server',
   noThreadCanBeCreated: 'In this Channel, private Threads cannot be created',
   cantManage: "You can't manage this Member",
+  commandNotFound: 'Command not found',
  },
  channelRules: {
   HasLeastAttachments: (val: Strumber) => `Has at least ${val} Attachments`,

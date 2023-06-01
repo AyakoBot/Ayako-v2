@@ -633,6 +633,18 @@ const help = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('fun')
    .setDescription('Help for the Fun Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('command')
+   .setDescription('See Help for a specific Command')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('command')
+     .setDescription('The Command to see Help for')
+     .setRequired(true)
+     .setAutocomplete(true),
+   ),
  );
 
 export default {
