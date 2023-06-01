@@ -148,11 +148,13 @@ const parsers = {
    .filter((_, i) => i !== 0)
    .join(' '),
   otherText: '',
-  commandName: msg.content
-   .slice(Number((await getPrefix(msg))?.length))
-   .trim()
-   .split(/\s+|\n+/g)
-   .shift() as string,
+  commandName: (
+   msg.content
+    .slice(Number((await getPrefix(msg))?.length))
+    .trim()
+    .split(/\s+|\n+/g)
+    .shift() as string
+  ).toLowerCase(),
  }),
  cmdParser: (cmd: Discord.ChatInputCommandInteraction) => ({
   author: cmd.user,
@@ -177,7 +179,7 @@ const parsers = {
     ).specialOptions.map((o) => cmd.options.getString(o.name, false) ?? ''),
    )
    .flat(1),
-  commandName: cmd.commandName,
+  commandName: cmd.commandName.toLowerCase(),
  }),
  buttonParser: async (cmd: Discord.ButtonInteraction<'cached'>) => ({
   author: cmd.user,
@@ -186,7 +188,7 @@ const parsers = {
   ].filter((u) => !!u),
   text: '',
   otherText: '',
-  commandName: cmd.customId.split('_')[0],
+  commandName: cmd.customId.split('_')[0].toLowerCase(),
  }),
 };
 
