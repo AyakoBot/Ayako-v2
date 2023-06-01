@@ -51,7 +51,9 @@ const reply = async (
 
  const embed: Discord.APIEmbed = {
   color: colorSelector(cmd.guild.members.me),
-  url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}`,
+  url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
+   cmd instanceof Discord.ButtonInteraction
+  )}`,
   description: `${desc}  ${otherText}${text.length ? `\n"${text}"` : ''}`,
   footer: gif.anime_name
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
@@ -96,21 +98,29 @@ const reply = async (
  if (cmd instanceof Discord.ButtonInteraction) {
   embedsBefore.forEach((e) => {
    const { data } = e;
-   payload.embeds?.unshift(data);
+   payload.embeds?.push(data);
   });
 
   const newUsers = cmd.message.content
    .split(/\s+/g)
    .filter((arg) => arg.startsWith('<@') && arg.endsWith('>'))
    .map((arg) => arg.replace(/\D+/g, ''))
-   .filter((arg) => !!arg.length)
-   .filter((id) => id !== author.id);
+   .filter(
+    (arg) =>
+     !!arg.length &&
+     arg !== author.id &&
+     arg !== new URL(cmd.message.embeds[0].url ?? 'https://ayakobot.com').searchParams.get('exec'),
+   );
 
   const lastUser = newUsers.length > 1 ? users.pop() : undefined;
   payload.content = lastUser
    ? `${mapper(newUsers)} ${language.and} ${lastUser}`
    : `${mapper(newUsers)}`;
   if (!lastUser && !newUsers.length) payload.content = '';
+
+  (payload.embeds as Discord.APIEmbed[]).sort(
+   (a, b) => Number(b.url?.includes('true')) - Number(a.url?.includes('true')),
+  );
 
   cmd.update(payload as Discord.InteractionUpdateOptions);
   return;
