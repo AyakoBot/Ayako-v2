@@ -5,6 +5,8 @@ import type * as CT from '../../../Typings/CustomTypings';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 
+const month = 2629743000;
+
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const userID = cmd.options.get('user-name', false)?.value as string | null;
  const language = await ch.languageSelector(cmd.guild?.id);
@@ -160,23 +162,19 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
- const guilds = user.client.guilds.cache.filter((g) => g.members.cache.has(user.id));
+ const boostTimes = user.client.shard
+  ? (
+     await user.client.shard.broadcastEval(
+      (cl, { memberId }) =>
+       cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
+      { context: { memberId: user.id } },
+     )
+    ).flat()
+  : [];
 
- const premiums = guilds
-  .map((guild) => {
-   const member = guild.members.cache.get(user.id);
-
-   if (member?.premiumSinceTimestamp) return member.premiumSinceTimestamp;
-   return null;
-  })
-  .filter((r): r is number => !!r);
-
- if (!premiums.length) return;
-
- const longestPrem = Math.min(...premiums);
+ const longestPrem = Math.min(...boostTimes);
  const boostFlags = new Discord.BitField();
  const time = Math.abs(longestPrem - Date.now());
- const month = 2629743000;
 
  if (time < month * 2) boostFlags.add(1);
  else if (time < month * 3) boostFlags.add(2);
@@ -195,7 +193,6 @@ const getBoosting = async (flags: string[], user: Discord.User, language: CT.Lan
 const getBoostEmote = (member: Discord.GuildMember) => {
  if (!member.premiumSinceTimestamp) return '';
  const time = Math.abs(member.premiumSinceTimestamp - Date.now());
- const month = 2629743000;
 
  if (time < month * 2) return ch.stringEmotes.userFlags.Boost1;
  if (time < month * 3) return ch.stringEmotes.userFlags.Boost2;

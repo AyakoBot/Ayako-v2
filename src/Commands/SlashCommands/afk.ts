@@ -52,7 +52,8 @@ export default async (
  if (
   cmd.member?.manageable &&
   cmd.guild.members.me?.permissions.has(134217728n) &&
-  Number(cmd.member?.displayName.length) <= 26
+  Number(cmd.member?.displayName.length) <= 26 &&
+  !cmd.member?.displayName.endsWith(' [AFK]')
  ) {
   await cmd.member?.setNickname(`${cmd.member?.displayName} [AFK]`, lan.setReason);
  }

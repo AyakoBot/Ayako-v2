@@ -412,14 +412,14 @@ export default {
     desc: "Sleep on someone's lap",
     users: true,
     reqUser: true,
-    buttons: ['comfy'],
+    buttons: ['lapsleep'],
    },
    {
     name: 'thighsleep',
     desc: "Sleep on someone's lap",
     users: true,
     reqUser: true,
-    buttons: ['comfy'],
+    buttons: ['thighsleep'],
    },
    { name: 'think', desc: 'Think', users: true, reqUser: false, buttons: [] },
    {
