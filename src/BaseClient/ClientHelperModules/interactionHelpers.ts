@@ -51,6 +51,7 @@ const reply = async (
 
  const embed: Discord.APIEmbed = {
   color: colorSelector(cmd.guild.members.me),
+  url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}`,
   description: `${desc}  ${otherText}${text.length ? `\n"${text}"` : ''}`,
   footer: gif.anime_name
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
@@ -83,7 +84,10 @@ const reply = async (
   !replyUsers.length &&
   'request' in
    language.slashCommands.interactions[
-    (cmd.message.interaction?.commandName ?? (await getCommandName(cmd.message))) as InteractionKeys
+    (cmd.message.interaction?.commandName ??
+     new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
+      'cmd',
+     )) as InteractionKeys
    ]
  ) {
   embedsBefore.shift();
@@ -184,7 +188,11 @@ const parsers = {
  buttonParser: async (cmd: Discord.ButtonInteraction<'cached'>) => ({
   author: cmd.user,
   users: [
-   (cmd.message.interaction?.user as Discord.User) ?? (await cmd.message.fetchReference()).author,
+   (cmd.message.interaction?.user as Discord.User) ??
+    (await cmd.client.users.fetch(
+     new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('exec') ??
+      cmd.client.user.id,
+    )),
   ].filter((u) => !!u),
   text: '',
   otherText: '',
@@ -282,13 +290,4 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  }
 
  return null;
-};
-
-const getCommandName = async (msg: Discord.Message) => {
- const reference = await msg.fetchReference();
- return reference.content
-  .slice(Number((await getPrefix(reference))?.length))
-  .trim()
-  .split(/\s+|\n+/g)
-  .shift();
 };
