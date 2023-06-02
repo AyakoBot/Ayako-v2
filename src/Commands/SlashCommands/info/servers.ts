@@ -42,22 +42,11 @@ const getServers = async (language: CT.Language) =>
   ?.flat()
   .sort((a, b) => b.count - a.count);
 
-const getContent = (servers: { content: string; count: number }[]) => {
- const content = servers?.length ? servers.map((s) => s.content) : [];
-
- const chunkContent: string[][] = [[]];
- let lastI = 0;
-
- while (content.length) {
-  while (chunkContent.join('\n').length < 3900 && content.length) {
-   chunkContent[lastI].push(content.shift() as string);
-  }
-  lastI += 1;
-  chunkContent[lastI] = [];
- }
-
- return chunkContent.map((c) => c.join('\n')).filter((c) => c.length);
-};
+const getContent = (servers: { content: string; count: number }[]) =>
+ ch
+  .getChunks(servers?.length ? servers.map((s) => s.content) : [], 4096)
+  .map((c) => c.join('\n'))
+  .filter((c) => c.length);
 
 const getPayload = (
  content: string[],

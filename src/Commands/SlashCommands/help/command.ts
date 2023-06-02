@@ -45,17 +45,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   },
  ];
 
- const fieldChunks: string[][] = [[]];
- let lastI = 0;
- while (fields.length) {
-  while (fieldChunks[lastI].length + Number(fields.at(0)?.length) < 4096) {
-   fieldChunks[lastI].push(fields.shift() as string);
-  }
-  lastI += 1;
-  fieldChunks.push([]);
- }
-
- fieldChunks
+ ch
+  .getChunks(fields, 4096)
   .filter((c) => c.length)
   .forEach((c) => {
    embeds.push({
