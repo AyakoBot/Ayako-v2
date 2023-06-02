@@ -191,7 +191,7 @@ const getEmotePayloads = async (
         ? [
            {
             name: lan.emojis.roles,
-            value: emoji.roles.cache.map((r) => language.languageFunction.getRole(r)).join('\n'),
+            value: emoji.roles.cache.map((r) => language.languageFunction.getRole(r)).join(''),
            },
           ]
         : undefined,
