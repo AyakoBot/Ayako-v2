@@ -137,6 +137,7 @@ export default async (
          c as keyof typeof language.slashCommands.help.categories
         ],
        value: c,
+       default: c === type,
       })),
      },
     ],

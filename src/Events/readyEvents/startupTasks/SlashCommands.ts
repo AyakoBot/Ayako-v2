@@ -128,7 +128,7 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('boost-roles')
+     .setName('booster-roles')
      .setDescription(`Reward Members for continuously boosting your Server`)
      .addStringOption(IDSelector),
    ),
