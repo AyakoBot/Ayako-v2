@@ -660,8 +660,9 @@ const help = new Discord.SlashCommandBuilder()
 
 const emoji = new Discord.SlashCommandBuilder()
  .setName('emojis')
- .setDMPermission(true)
+ .setDMPermission(false)
  .setDescription('Detailed Information and Utilities about Emojis')
+ .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('info')
@@ -671,6 +672,71 @@ const emoji = new Discord.SlashCommandBuilder()
      .setName('emoji')
      .setDescription('The Emoji to get Information about')
      .setRequired(false),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('create')
+   .setDescription('Create a new Emoji')
+   .addAttachmentOption(
+    new Discord.SlashCommandAttachmentOption()
+     .setName('emoji')
+     .setDescription('The Emoji to create')
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('name')
+     .setDescription('The Name of the Emoji')
+     .setMaxLength(32)
+     .setMinLength(2)
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('delete')
+   .setDescription('Delete an Emoji')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('emoji')
+     .setDescription('The Emoji to delete')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommandGroup(
+  new Discord.SlashCommandSubcommandGroupBuilder()
+   .setName('edit')
+   .setDescription('Edit an Emoji')
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('name')
+     .setDescription('Edit an Emoji')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('emoji')
+       .setDescription('The Emoji to edit')
+       .setRequired(true),
+     )
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('name')
+       .setDescription('The new Name of the Emoji')
+       .setMaxLength(32)
+       .setMinLength(2)
+       .setRequired(true),
+     ),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('roles')
+     .setDescription('Edit the Roles that can use an Emoji')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('emoji')
+       .setDescription('The Emoji to edit')
+       .setRequired(true),
+     ),
    ),
  );
 
@@ -734,6 +800,7 @@ export default {
   info_role: 'info',
   info_bot: 'info',
   info_badges: 'info',
+  info_emoji: 'info',
   'embed-builder_view_custom-embeds': 'utility',
   'embed-builder_view_from-message': 'utility',
   'embed-builder_create': 'utility',
@@ -764,5 +831,10 @@ export default {
   afk: 'utility',
   help_list: 'info',
   help_moderation: 'info',
+  emoji_info: 'info',
+  emoji_create: 'utility',
+  emoji_delete: 'utility',
+  emoji_edit_name: 'utility',
+  emoji_edit_roles: 'utility',
  },
 };

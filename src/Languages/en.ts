@@ -1813,6 +1813,16 @@ export default {
    author: `${name} Ping`,
    lastHeartbeat: 'Last Heartbeat',
   },
+  emojis: {
+   createReason: (user: Discord.User) => `Emoji created by ${user.tag}`,
+   deleteReason: (user: Discord.User) => `Emoji deleted by ${user.tag}`,
+   editReason: (user: Discord.User) => `Emoji edited by ${user.tag}`,
+   created: (e: Discord.GuildEmoji) => `Successfully created ${getEmote(e)}`,
+   deleted: (e: Discord.GuildEmoji) => `Successfully deleted ${getEmote(e)}`,
+   edited: (e: Discord.GuildEmoji) => `Successfully edited ${getEmote(e)}`,
+   explain: 'The Roles listed above can use this Emoji',
+   placeholder: 'Select 1 or more Roles',
+  },
   info: {
    basic: '__Basic Info__',
    stats: '__Statistics__',
