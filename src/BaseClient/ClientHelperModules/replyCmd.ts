@@ -39,16 +39,16 @@ export default async (
   | Discord.ModalSubmitInteraction,
  payload: Discord.InteractionReplyOptions,
  command?: CT.Command,
+ commandName?: string,
 ) => {
  if (!cmd) return undefined;
- if (!cmd.guild) return undefined;
 
  const sentMessage = await sendMessage(cmd, payload);
  if (!sentMessage) return undefined;
 
- if (command) {
-  replyMsg.cooldownHandler(cmd, sentMessage, command);
-  replyMsg.deleteCommandHandler(cmd, sentMessage, command);
+ if (command && commandName) {
+  replyMsg.cooldownHandler(cmd, sentMessage, command, commandName);
+  replyMsg.deleteCommandHandler(cmd, sentMessage, commandName);
  }
 
  return sentMessage;

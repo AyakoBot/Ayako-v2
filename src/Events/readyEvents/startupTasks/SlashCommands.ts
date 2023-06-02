@@ -328,6 +328,17 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('badges')
    .setDescription('Display Information about the Discord Badges Members of this Server have'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('emoji')
+   .setDescription('Display Information about an Emoji')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('emoji')
+     .setDescription('The Emoji you want to get Information about')
+     .setRequired(false),
+   ),
  );
 
 const embedbuilder = new Discord.SlashCommandBuilder()
@@ -647,6 +658,22 @@ const help = new Discord.SlashCommandBuilder()
    ),
  );
 
+const emoji = new Discord.SlashCommandBuilder()
+ .setName('emojis')
+ .setDMPermission(true)
+ .setDescription('Detailed Information and Utilities about Emojis')
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('info')
+   .setDescription('Information about many Emojis of the Server, or a specific Emoji')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('emoji')
+     .setDescription('The Emoji to get Information about')
+     .setRequired(false),
+   ),
+ );
+
 export default {
  public: {
   settings,
@@ -662,6 +689,7 @@ export default {
   roles,
   afk,
   help,
+  emoji,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
