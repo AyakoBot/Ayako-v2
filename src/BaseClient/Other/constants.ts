@@ -187,6 +187,8 @@ export default {
   error: 'https://cdn.ayakobot.com/Ayako_Assets/Warning.png',
   appURL: (user: Discord.User) => `discord://-/users/${user.id}`,
   userURL: (user: Discord.User) => `https://discord.com/users/${user.id}`,
+  emoteURL: (emote: Discord.GuildEmoji) =>
+   `https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? 'gif' : 'png'}?size=4096`,
   getEmote: (emoji: Discord.Emoji) =>
    emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
   getTime: (time: number) =>

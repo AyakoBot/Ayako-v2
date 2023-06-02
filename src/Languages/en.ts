@@ -107,8 +107,8 @@ const getChannel = (
   : `Unknown Channel\n`;
 
 const getEmote = (emoji: Discord.Emoji) =>
- `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? none}\` / \`${
-  emoji.id ?? none
+ `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? None}\` / \`${
+  emoji.id ?? None
  }\`\n`;
 
 const getInviteDetails = (
@@ -146,7 +146,11 @@ const getWebhook = (webhook: Discord.Webhook, type?: string) =>
  `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\`\n`;
 
 const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
- `Server \`${guild.name}\` / \`${guild.id}\`\n`;
+ `Server \`${guild.name}\` / \`${guild.id}\`${
+  'vanityURLCode' in guild && guild.vanityURLCode
+   ? ` / [Join](https://discord.gg/${guild.vanityURLCode})`
+   : ''
+ }\n`;
 
 const getCommand = (command: Discord.ApplicationCommand) =>
  `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`;
@@ -1816,6 +1820,14 @@ export default {
    servers: {
     noneFound: 'No Servers found',
    },
+   emojis: {
+    author: `${name} Emoji-Info`,
+    animated: 'Animated',
+    uploader: 'Uploader',
+    available: 'Available',
+    managed: 'Managed',
+    roles: 'Roles that can use this Emoji',
+   },
    role: {
     author: `${name} Role-Info`,
     position: 'Position',
@@ -3297,6 +3309,7 @@ export default {
   },
  },
  errors: {
+  emoteNotFound: 'The Mentioned Emote could not be found',
   notLoggedIn: 'You need to Log-In again',
   noUserMentioned: 'You need to mention a User',
   userNotExist: 'The Mentioned User does not exist',
@@ -3782,4 +3795,5 @@ export default {
  and: 'and',
  Never: 'Never',
  Join: 'Join',
+ Server: 'Server',
 };
