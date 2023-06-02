@@ -1181,6 +1181,7 @@ export default {
    footer: 'A "?" in the Option Name means that the Option is optional',
    selectPlaceholder: 'Select a Category to view',
    author: 'Help for Commands, Sub-Command-Groups, Sub-Commands, and their Arguments',
+   clickMe: 'Click me to join the Support Server',
   },
   afk: {
    set: (user: Discord.User) => `\`${user.tag}\` went AFK`,

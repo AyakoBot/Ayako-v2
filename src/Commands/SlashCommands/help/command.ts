@@ -31,6 +31,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    author: {
     name: lan.author,
    },
+   title: lan.clickMe,
+   url: ch.constants.standard.support,
    description: `# ${ch.util.makeInlineCode(command?.name ?? '')}${
     ch.constants.commands.help[command?.name as keyof typeof ch.constants.commands.help] ??
     command?.description
