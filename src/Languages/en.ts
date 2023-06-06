@@ -3319,6 +3319,7 @@ export default {
   },
  },
  errors: {
+  invalidEmote: 'Invalid Emote',
   emoteNotFound: 'The Mentioned Emote could not be found',
   notLoggedIn: 'You need to Log-In again',
   noUserMentioned: 'You need to mention a User',

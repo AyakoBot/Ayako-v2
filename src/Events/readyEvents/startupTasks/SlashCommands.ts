@@ -22,6 +22,13 @@ const User = new Discord.SlashCommandUserOption()
  .setDescription('The User')
  .setRequired(false);
 
+const EmojiName = new Discord.SlashCommandStringOption()
+ .setName('name')
+ .setDescription('The Name of the Emoji')
+ .setMaxLength(32)
+ .setMinLength(2)
+ .setRequired(true);
+
 // Commands
 
 const settings = new Discord.SlashCommandBuilder()
@@ -674,23 +681,46 @@ const emoji = new Discord.SlashCommandBuilder()
      .setRequired(false),
    ),
  )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
+ .addSubcommandGroup(
+  new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('create')
    .setDescription('Create a new Emoji')
-   .addAttachmentOption(
-    new Discord.SlashCommandAttachmentOption()
-     .setName('emoji')
-     .setDescription('The Emoji to create')
-     .setRequired(true),
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('from-url')
+     .setDescription('Create an Emoji from a URL')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('url')
+       .setDescription('The URL to create the Emoji from')
+       .setRequired(true),
+     )
+     .addStringOption(EmojiName),
    )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('name')
-     .setDescription('The Name of the Emoji')
-     .setMaxLength(32)
-     .setMinLength(2)
-     .setRequired(true),
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('from-file')
+     .setDescription('Create an Emoji from a File')
+
+     .addAttachmentOption(
+      new Discord.SlashCommandAttachmentOption()
+       .setName('file')
+       .setDescription('The File to create the Emoji from')
+       .setRequired(true),
+     )
+     .addStringOption(EmojiName),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('from-emoji')
+     .setDescription('Create an Emoji from another Emoji')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('emoji')
+       .setDescription('The Emoji to create the Emoji from')
+       .setRequired(true),
+     )
+     .addStringOption(EmojiName),
    ),
  )
  .addSubcommand(
@@ -832,7 +862,9 @@ export default {
   help_list: 'info',
   help_moderation: 'info',
   emoji_info: 'info',
-  emoji_create: 'utility',
+  'emoji_create_from-url': 'utility',
+  'emoji_create_from-file': 'utility',
+  'emoji_create_from-emoji': 'utility',
   emoji_delete: 'utility',
   emoji_edit_name: 'utility',
   emoji_edit_roles: 'utility',
