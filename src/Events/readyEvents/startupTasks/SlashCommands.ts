@@ -22,12 +22,27 @@ const User = new Discord.SlashCommandUserOption()
  .setDescription('The User')
  .setRequired(false);
 
+const Target = User.setName('target').setDescription('The Target');
+const Executor = User.setName('executor').setDescription('The Executor');
+
 const EmojiName = new Discord.SlashCommandStringOption()
  .setName('name')
  .setDescription('The Name of the Emoji')
  .setMaxLength(32)
  .setMinLength(2)
  .setRequired(true);
+
+const Dates = new Discord.SlashCommandStringOption()
+ .setName('date')
+ .setDescription('The Date (D/M/YY or DD/MM/YYYY)')
+ .setMinLength(6)
+ .setMaxLength(10)
+ .setRequired(true);
+
+const Reason = new Discord.SlashCommandStringOption()
+ .setName('reason')
+ .setDescription('The Reason')
+ .setRequired(false);
 
 // Commands
 
@@ -770,6 +785,74 @@ const emoji = new Discord.SlashCommandBuilder()
    ),
  );
 
+const pardon = new Discord.SlashCommandBuilder()
+ .setName('pardon')
+ .setDescription('Pardon a Punishment from a User')
+ .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
+ .setDMPermission(false)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('one')
+   .setDescription('Pardon a specific Punishment from a User')
+   .addUserOption(Target)
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('id')
+     .setDescription('The ID of the Punishment to Pardon')
+     .setRequired(true)
+     .setMinLength(9)
+     .setMaxLength(9),
+   )
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('before')
+   .setDescription('Pardon all Punishment from a User before a specific Date')
+   .addUserOption(Target)
+   .addStringOption(Dates)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('after')
+   .setDescription('Pardon all Punishment from a User after a specific Date')
+   .addUserOption(Target)
+   .addStringOption(Dates)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('between')
+   .setDescription('Pardon all Punishment from a User between 2 specific Dates')
+   .addUserOption(Target)
+   .addStringOption(Dates.setName('date-1'))
+   .addStringOption(Dates.setName('date-2'))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('by')
+   .setDescription('Pardon all Punishment from a User executed by a specific User')
+   .addUserOption(Executor)
+   .addUserOption(Target)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('all-by')
+   .setDescription('Pardon all Punishment executed by a specific User')
+   .addUserOption(Executor)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('all-on')
+   .setDescription('Pardon all Punishment from a User')
+   .addUserOption(Target)
+   .addStringOption(Reason),
+ );
+
 export default {
  public: {
   settings,
@@ -786,6 +869,7 @@ export default {
   afk,
   help,
   emoji,
+  pardon,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -868,5 +952,12 @@ export default {
   emoji_delete: 'utility',
   emoji_edit_name: 'utility',
   emoji_edit_roles: 'utility',
+  pardon_one: 'moderation',
+  pardon_before: 'moderation',
+  pardon_after: 'moderation',
+  pardon_between: 'moderation',
+  pardon_by: 'moderation',
+  'pardon_all-by': 'moderation',
+  'pardon_all-on': 'moderation',
  },
 };

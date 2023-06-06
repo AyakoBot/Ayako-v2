@@ -160,7 +160,7 @@ export interface Punishment {
  msgid: string;
 }
 
-interface TempPunishment extends Punishment {
+export interface TempPunishment extends Punishment {
  duration?: string;
 }
 

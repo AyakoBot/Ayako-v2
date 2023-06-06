@@ -33,7 +33,6 @@ export default async (
       }
     : undefined,
   ].filter((f): f is Discord.APIEmbedField => !!f),
-  timestamp: new Date().toISOString(),
  };
 
  send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, undefined, 10000);

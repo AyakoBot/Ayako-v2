@@ -1171,6 +1171,22 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  pardon: {
+   author: 'Punishment Pardoned',
+   target: 'Target',
+   executor: 'Executor',
+   punishedIn: 'Punished in',
+   punishedAt: 'Punished at',
+   duration: 'Duration',
+   endedAt: 'Ended at',
+   pardoned: (id: string, targetID: string) =>
+    `Punishment with ID \`${id}\` was pardoned from <@${targetID}>`,
+   pardonedMany: (ids: string, targetID: string) =>
+    `Punishments with IDs ${ids} were pardoned from <@${targetID}>`,
+   pardonedManyBy: (ids: string, targetID: string) =>
+    `Punishments with IDs ${ids} executed by <@${targetID}> were pardoned`,
+   pardonReason: 'Pardon Reason',
+  },
   help: {
    title: 'Slash, Context and Prefix Commands',
    categories: {
@@ -3319,6 +3335,8 @@ export default {
   },
  },
  errors: {
+  inputNoMatch: 'Input did not match validation Regex',
+  punishmentNotFound: 'The Mentioned Punishment could not be found',
   invalidEmote: 'Invalid Emote',
   emoteNotFound: 'The Mentioned Emote could not be found',
   notLoggedIn: 'You need to Log-In again',

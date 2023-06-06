@@ -69,6 +69,7 @@ import refreshToken from './ClientHelperModules/refreshToken.js';
 import error from './ClientHelperModules/error.js';
 import helperHelpers from './ClientHelperModules/helperHelpers.js';
 import getChunks from './ClientHelperModules/getChunks.js';
+import getPunishment from './ClientHelperModules/getPunishment.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -77,6 +78,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ getPunishment,
  getChunks,
  send,
  replyMsg,
