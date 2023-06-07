@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const user = cmd.options.getUser('target', true);
  const rawID = cmd.options.getString('id', true);
- const id = Number.parseInt(rawID, 16);
+ const id = Number.parseInt(rawID, 36);
  const punishment = await ch.getPunishment(id);
  const reason = cmd.options.getString('reason', false) ?? language.noReasonProvided;
 

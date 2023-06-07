@@ -4,6 +4,7 @@ import type * as CT from '../../Typings/CustomTypings';
 
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const files: string[] = await new Promise((resolve) => {
   glob(`${process.cwd()}/Commands/AutocompleteCommands/**/*`, (err, res) => {

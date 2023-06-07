@@ -22,21 +22,21 @@ const User = new Discord.SlashCommandUserOption()
  .setDescription('The User')
  .setRequired(false);
 
-const Target = User.setName('target').setDescription('The Target');
-const Executor = User.setName('executor').setDescription('The Executor');
+const Target = new Discord.SlashCommandUserOption()
+ .setName('target')
+ .setDescription('The Target')
+ .setRequired(true);
+
+const Executor = new Discord.SlashCommandUserOption()
+ .setName('executor')
+ .setDescription('The Executor')
+ .setRequired(true);
 
 const EmojiName = new Discord.SlashCommandStringOption()
  .setName('name')
  .setDescription('The Name of the Emoji')
  .setMaxLength(32)
  .setMinLength(2)
- .setRequired(true);
-
-const Dates = new Discord.SlashCommandStringOption()
- .setName('date')
- .setDescription('The Date (D/M/YY or DD/MM/YYYY)')
- .setMinLength(6)
- .setMaxLength(10)
  .setRequired(true);
 
 const Reason = new Discord.SlashCommandStringOption()
@@ -797,11 +797,40 @@ const pardon = new Discord.SlashCommandBuilder()
    .addUserOption(Target)
    .addStringOption(
     new Discord.SlashCommandStringOption()
+     .setName('type')
+     .setDescription('The Type of the Punishment')
+     .setRequired(true)
+     .setChoices(
+      {
+       name: 'Ban',
+       value: 'ban',
+      },
+      {
+       name: 'Mute',
+       value: 'mute',
+      },
+      {
+       name: 'Kick',
+       value: 'kick',
+      },
+      {
+       name: 'Warn',
+       value: 'warn',
+      },
+      {
+       name: 'Channel-Ban',
+       value: 'channelban',
+      },
+     ),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
      .setName('id')
      .setDescription('The ID of the Punishment to Pardon')
      .setRequired(true)
-     .setMinLength(9)
-     .setMaxLength(9),
+     .setMinLength(8)
+     .setMaxLength(8)
+     .setAutocomplete(true),
    )
    .addStringOption(Reason),
  )
@@ -810,7 +839,14 @@ const pardon = new Discord.SlashCommandBuilder()
    .setName('before')
    .setDescription('Pardon all Punishment from a User before a specific Date')
    .addUserOption(Target)
-   .addStringOption(Dates)
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('date')
+     .setDescription('The Date (D/M/YY or DD/MM/YYYY)')
+     .setMinLength(6)
+     .setMaxLength(10)
+     .setRequired(true),
+   )
    .addStringOption(Reason),
  )
  .addSubcommand(
@@ -818,7 +854,14 @@ const pardon = new Discord.SlashCommandBuilder()
    .setName('after')
    .setDescription('Pardon all Punishment from a User after a specific Date')
    .addUserOption(Target)
-   .addStringOption(Dates)
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('date')
+     .setDescription('The Date (D/M/YY or DD/MM/YYYY)')
+     .setMinLength(6)
+     .setMaxLength(10)
+     .setRequired(true),
+   )
    .addStringOption(Reason),
  )
  .addSubcommand(
@@ -826,8 +869,22 @@ const pardon = new Discord.SlashCommandBuilder()
    .setName('between')
    .setDescription('Pardon all Punishment from a User between 2 specific Dates')
    .addUserOption(Target)
-   .addStringOption(Dates.setName('date-1'))
-   .addStringOption(Dates.setName('date-2'))
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('date-1')
+     .setDescription('The first Date (D/M/YY or DD/MM/YYYY)')
+     .setMinLength(6)
+     .setMaxLength(10)
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('date-2')
+     .setDescription('The second Date (D/M/YY or DD/MM/YYYY)')
+     .setMinLength(6)
+     .setMaxLength(10)
+     .setRequired(true),
+   )
    .addStringOption(Reason),
  )
  .addSubcommand(

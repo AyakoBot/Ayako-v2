@@ -10,19 +10,29 @@ type Returned = DBT.TempPunishment & {
 
 function f(id: number): Promise<Returned | null>;
 function f(id: number, identType: 'between', ident: number): Promise<Returned[] | null>;
-function f(id: string, identType: 'by', ident: string): Promise<Returned[] | null>;
+function f(id: string, identType: 'by', ident: 'string'): Promise<Returned[] | null>;
+function f(
+ id: string,
+ identType: 'with-type',
+ ident: Parameters<typeof getWithType>[1],
+): Promise<DBT.TempPunishment[] | null>;
 function f(id: string, identType: 'all-by' | 'all-on'): Promise<Returned[] | null>;
 function f(id: number, identType: 'after' | 'before'): Promise<Returned[] | null>;
 async function f(
  id: number | string,
- identType?: 'after' | 'before' | 'between' | 'by' | 'all-on' | 'all-by',
+ identType?: 'after' | 'before' | 'between' | 'by' | 'all-on' | 'all-by' | 'with-type',
  ident?: string | number,
-): Promise<Returned | Returned[] | null> {
+): Promise<Returned | Returned[] | DBT.TempPunishment[] | null> {
  let where = '';
  const args: (string | number)[] = [];
  let asArray = true;
 
  switch (identType) {
+  case 'with-type': {
+   return getWithType(id as string, ident as Parameters<typeof getWithType>[1]) as Promise<
+    DBT.TempPunishment[] | null
+   >;
+  }
   case 'all-on': {
    where = 'userid = $1';
    args.push(id);
@@ -62,15 +72,15 @@ async function f(
 
  return query(
   `WITH user_punishments AS (
-       SELECT ${returnFields}, 'punish_bans' as type, duration FROM punish_bans WHERE 
+       SELECT ${returnFields}, 'punish_bans' as type FROM punish_bans WHERE ${where} 
        UNION ALL
-       SELECT ${returnFields}, 'punish_channelbans' as type, null as duration FROM punish_channelbans WHERE ${where}
+       SELECT ${returnFields}, 'punish_channelbans' as type FROM punish_channelbans WHERE ${where}
        UNION ALL
-       SELECT ${returnFields}, 'punish_kicks' as type, null as duration FROM punish_kicks WHERE ${where}
+       SELECT ${returnFields}, 'punish_kicks' as type FROM punish_kicks WHERE ${where}
        UNION ALL
-       SELECT ${returnFields}, 'punish_mutes' as type, duration FROM punish_mutes WHERE ${where}
+       SELECT ${returnFields}, 'punish_mutes' as type FROM punish_mutes WHERE ${where}
        UNION ALL
-       SELECT ${returnFields}, 'punish_warns' as type, null as duration FROM punish_warns WHERE ${where} 
+       SELECT ${returnFields}, 'punish_warns' as type FROM punish_warns WHERE ${where} 
      ) SELECT * FROM user_punishments;`,
   args,
   { returnType: 'unknown', asArray: asArray as never },
@@ -78,3 +88,41 @@ async function f(
 }
 
 export default f;
+
+const getWithType = (id: string, type: 'warn' | 'mute' | 'ban' | 'channelban' | 'kick') => {
+ switch (type) {
+  case 'warn': {
+   return query(`SELECT * FROM punish_warns WHERE userid = $1;`, [id], {
+    returnType: 'unknown',
+    asArray: true,
+   });
+  }
+  case 'mute': {
+   return query(`SELECT * FROM punish_mutes WHERE userid = $1;`, [id], {
+    returnType: 'unknown',
+    asArray: true,
+   });
+  }
+  case 'ban': {
+   return query(`SELECT * FROM punish_bans WHERE userid = $1;`, [id], {
+    returnType: 'unknown',
+    asArray: true,
+   });
+  }
+  case 'channelban': {
+   return query(`SELECT * FROM punish_channelbans WHERE userid = $1;`, [id], {
+    returnType: 'unknown',
+    asArray: true,
+   });
+  }
+  case 'kick': {
+   return query(`SELECT * FROM punish_kicks WHERE userid = $1;`, [id], {
+    returnType: 'unknown',
+    asArray: true,
+   });
+  }
+  default: {
+   throw new Error('Unkown type');
+  }
+ }
+};

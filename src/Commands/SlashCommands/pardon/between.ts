@@ -43,7 +43,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  ch.replyCmd(cmd, {
   content: lan.pardonedMany(
-   punishments.map((p) => `\`${Number(p.uniquetimestamp).toString(16)}\``).join(', '),
+   punishments.map((p) => `\`${Number(p.uniquetimestamp).toString(36)}\``).join(', '),
    user.id,
   ),
  });
