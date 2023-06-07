@@ -29,10 +29,12 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
   .query(
    `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
    [parseInt(ID, 36)],
+   {
+    returnType: 'roleseparator',
+    asArray: false,
+   },
   )
-  .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
-  );
+  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
 
  if (cmd.isButton()) {
   cmd.update({
@@ -55,11 +57,11 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  lan,
 ) => {
  const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch
-  .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
-   cmd.guild?.id,
-  ])
-  .then((r: CT.TableNamesMap[typeof name][] | null) => r || null);
+ const settings = await ch.query(
+  `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
+  [cmd.guild?.id],
+  { returnType: 'roleseparator', asArray: true },
+ );
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,

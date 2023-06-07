@@ -19,6 +19,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   error = e;
  });
 
- if (error) ch.errorCmd(cmd, (error as Error).message, language, cmd);
+ if (error) ch.errorCmd(cmd, (error as Error).message, language);
  else cmd.update({ content: lan.deleted(role as Discord.Role) });
 };

@@ -1186,6 +1186,8 @@ export default {
    pardonedManyBy: (ids: string, targetID: string) =>
     `Punishments with IDs ${ids} executed by <@${targetID}> were pardoned`,
    pardonReason: 'Pardon Reason',
+   username: 'Username at execution Time',
+   channel: 'Channel Name at execution Time',
   },
   help: {
    title: 'Slash, Context and Prefix Commands',

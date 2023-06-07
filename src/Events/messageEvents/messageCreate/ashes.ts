@@ -34,16 +34,16 @@ const banHandler = async (msg: Discord.Message) => {
   if (!msg.guildId) return;
   if (!client.user?.id) return;
 
-  const modOptions: CT.ModBaseEventOptions = {
+  const modOptions: CT.ModOptions<'banRemove'> = {
    target: user,
    executor: executor || (await ch.getUser(client.user.id)),
    reason,
-   msg,
    guild: msg.guild,
-   type: isUnban ? 'banRemove' : 'banAdd',
+   forceFinish: true,
+   dbOnly: false,
   };
 
-  client.emit('modBaseEvent', modOptions);
+  ch.mod(undefined, isUnban ? 'banRemove' : 'banAdd', modOptions);
  });
 };
 

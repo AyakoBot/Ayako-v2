@@ -4,7 +4,7 @@ import type * as CT from '../../../../Typings/CustomTypings.js';
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
   await ch.query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames['nitro-roles']} WHERE guildid = $1;`,
+   `SELECT * FROM ${ch.constants.commands.settings.tableNames['booster-roles']} WHERE guildid = $1;`,
    [cmd.guildId],
    { returnType: 'nitroroles', asArray: true },
   )
@@ -15,7 +15,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  });
 
  const language = await ch.languageSelector(cmd.guildId);
- const lan = language.slashCommands.settings.categories['nitro-roles'];
+ const lan = language.slashCommands.settings.categories['booster-roles'];
 
  if (!settings) return [];
 

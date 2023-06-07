@@ -92,7 +92,7 @@ export type TableNamesMap = {
  'multi-roles': DBT.levelingmultiroles;
  'level-roles': DBT.levelingroles;
  'rule-channels': DBT.levelingruleschannels;
- 'nitro-roles': DBT.nitroroles;
+ 'booster-roles': DBT.nitroroles;
  vote: DBT.votesettings;
  'vote-rewards': DBT.voterewards;
  'reaction-role-settings': DBT.reactionrolesettings;

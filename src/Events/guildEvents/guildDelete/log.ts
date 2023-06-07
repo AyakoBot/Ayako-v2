@@ -23,8 +23,8 @@ export default async (guild: Discord.Guild | undefined) => {
      { name: 'Membercount', value: String(guild?.memberCount) || 'Unknown/Uncached' },
      { name: 'Guild Owner ID', value: String(guild?.ownerId) || 'Unknown/Uncached' },
     ],
+    timestamp: new Date().toISOString(),
    },
   ],
-  timestamp: new Date().toISOString(),
  });
 };

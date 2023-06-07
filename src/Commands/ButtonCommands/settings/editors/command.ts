@@ -41,8 +41,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     description: language.commandTypes.slashCommands,
    })) ?? []),
   ...(await getStringCommands()).map((c) => ({
-   label: c.name,
-   value: c.name,
+   label: c,
+   value: c,
    description: language.commandTypes.textCommands,
   })),
  ];
@@ -89,7 +89,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  });
 };
 
-const getStringCommands = async (): Promise<CT.Command[]> => {
+const getStringCommands = async (): Promise<string[]> => {
  const files: string[] = await new Promise((resolve) => {
   glob(`${process.cwd()}/Commands/StringCommands/**/*`, (err, res) => {
    if (err) throw err;
@@ -97,5 +97,7 @@ const getStringCommands = async (): Promise<CT.Command[]> => {
   });
  });
 
- return Promise.all(files.filter((f) => f.endsWith('.js')).map((f) => import(f)));
+ return files
+  .filter((f) => f.endsWith('.js'))
+  .map((f) => f.split('/').pop()?.slice(0, -3) as string);
 };

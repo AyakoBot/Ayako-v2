@@ -11,12 +11,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
  const settings = await ch
-  .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
-   cmd.guild?.id,
-  ])
-  .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
-  );
+  .query(
+   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
+   [cmd.guild?.id],
+   {
+    returnType: 'autoroles',
+    asArray: false,
+   },
+  )
+  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
 
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan),

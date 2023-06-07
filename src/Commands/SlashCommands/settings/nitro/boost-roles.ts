@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../../Typings/CustomTypings.js';
 
-const name = 'nitro-roles';
+const name = 'booster-roles';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;

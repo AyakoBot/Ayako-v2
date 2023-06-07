@@ -54,7 +54,7 @@ export const log = async (
       name: lan.author,
      },
      color: ch.constants.colors.success,
-     description: `${ch.util.makeBold(language.reason)}:\n\n${punishment.reason}`,
+     description: `${ch.util.makeBold(language.reason)}:\n${punishment.reason}`,
      fields: [
       {
        name: lan.target,
@@ -67,7 +67,7 @@ export const log = async (
        name: lan.executor,
        value: `${language.languageFunction.getUser(
         (await ch.getUser(punishment.executorid)) as CT.bEvalUser,
-       )} - \`${punishment.executorname}\``,
+       )} - ${lan.channel}: \`${punishment.executorname}\``,
        inline: false,
       },
       {
@@ -76,13 +76,13 @@ export const log = async (
         cmd.guild.channels.cache.get(punishment.channelid)
          ? language.languageFunction.getChannel(cmd.guild.channels.cache.get(punishment.channelid))
          : ch.util.makeInlineCode(punishment.channelid)
-       } - \`${punishment.executorname}\``,
+       } - ${lan.username}: \`${punishment.executorname}\``,
        inline: false,
       },
       {
        name: lan.punishedAt,
        value: `${ch.constants.standard.getTime(Number(punishment.uniquetimestamp))}\n${ch.moment(
-        Number(punishment.uniquetimestamp),
+        Math.abs(Number(punishment.uniquetimestamp) - Date.now()),
         language,
        )}`,
        inline: false,
@@ -102,8 +102,8 @@ export const log = async (
         'duration' in punishment && punishment.duration
          ? `${ch.constants.standard.getTime(
             Number(punishment.uniquetimestamp) + Number(punishment.duration),
-           )}\n${ch.moment(Number(punishment.uniquetimestamp), language)}`
-         : language.None,
+           )}\n${ch.moment(Math.abs(Number(punishment.uniquetimestamp) - Date.now()), language)}`
+         : '-',
        inline: false,
       },
      ],
@@ -123,6 +123,7 @@ export const log = async (
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Link,
        url: ch.constants.standard.msgurl(cmd.guildId, punishment.channelid, punishment.msgid),
+       label: language.Message,
       },
      ],
     },

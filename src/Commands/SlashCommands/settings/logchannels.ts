@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings';
+import type * as CT from '../../../Typings/CustomTypings.js';
 
 const name = 'logchannels';
 
@@ -11,12 +11,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
  const settings = await ch
-  .query(`SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`, [
-   cmd.guild?.id,
-  ])
-  .then(async (r: CT.TableNamesMap[typeof name][] | null) =>
-   r ? r[0] : ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name),
-  );
+  .query(
+   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
+   [cmd.guild?.id],
+   {
+    returnType: 'logchannels',
+    asArray: false,
+   },
+  )
+  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
+
  const lan = language.slashCommands.settings.categories[name];
 
  cmd.reply({

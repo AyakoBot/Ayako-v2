@@ -1,6 +1,5 @@
-import * as Discord from "discord.js";
+// import * as Discord from "discord.js";
 
+// export default async (Discord.GuildAuditLogsEntry) => {
 
-export default async (Discord.GuildAuditLogsEntry) => {
- 
-}
+// }

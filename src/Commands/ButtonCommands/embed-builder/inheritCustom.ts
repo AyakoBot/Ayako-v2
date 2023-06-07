@@ -7,7 +7,14 @@ export default async (cmd: Discord.ButtonInteraction) => {
  const selectedOption = getSelectedField(cmd)?.value;
  if (!selectedOption) return;
 
- const dbEmbed = await ch.getEmbed(Number(selectedOption));
+ const dbEmbed = await ch.query(
+  `SELECT * FROM customembeds WHERE uniquetimestamp = $1;`,
+  [selectedOption],
+  {
+   returnType: 'customembeds',
+   asArray: false,
+  },
+ );
  if (!dbEmbed) return;
 
  const embed = ch.getDiscordEmbed(dbEmbed);
