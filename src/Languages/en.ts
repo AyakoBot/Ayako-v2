@@ -1171,6 +1171,11 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  slowmode: {
+   deleted: (channel: Discord.GuildChannel) => `Slomode of Channel ${channel} deleted`,
+   success: (channel: Discord.GuildChannel, t: string) =>
+    `Slowmode of Channel ${channel} set to \`${t}\``,
+  },
   pardon: {
    author: 'Punishment Pardoned',
    target: 'Target',
@@ -3365,6 +3370,7 @@ export default {
   noRoleFound: 'No Role found, please report to the Support Server',
   noThreadCanBeCreated: 'In this Channel, private Threads cannot be created',
   cantManage: "You can't manage this Member",
+  cantManageChannel: "I can't manage this Channel",
   commandNotFound: 'Command not found',
  },
  channelRules: {

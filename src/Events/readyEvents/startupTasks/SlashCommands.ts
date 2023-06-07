@@ -910,6 +910,35 @@ const pardon = new Discord.SlashCommandBuilder()
    .addStringOption(Reason),
  );
 
+const slowmode = new Discord.SlashCommandBuilder()
+ .setName('slowmode')
+ .setDescription('Set the Slowmode of a Channel')
+ .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageChannels)
+ .setDMPermission(false)
+ .addChannelOption(
+  new Discord.SlashCommandChannelOption()
+   .setName('channel')
+   .setDescription('The Channel to set the Slowmode in')
+   .setRequired(true)
+   .addChannelTypes(
+    Discord.ChannelType.GuildAnnouncement,
+    Discord.ChannelType.GuildText,
+    Discord.ChannelType.GuildVoice,
+    Discord.ChannelType.GuildStageVoice,
+    Discord.ChannelType.PublicThread,
+    Discord.ChannelType.PrivateThread,
+    Discord.ChannelType.AnnouncementThread,
+   ),
+ )
+ .addNumberOption(
+  new Discord.SlashCommandNumberOption()
+   .setName('time')
+   .setDescription('The Slowmode in Seconds')
+   .setRequired(true)
+   .setMaxValue(21600),
+ )
+ .addStringOption(Reason);
+
 export default {
  public: {
   settings,
@@ -927,6 +956,7 @@ export default {
   help,
   emoji,
   pardon,
+  slowmode,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1016,5 +1046,6 @@ export default {
   pardon_by: 'moderation',
   'pardon_all-by': 'moderation',
   'pardon_all-on': 'moderation',
+  slowmode: 'utility',
  },
 };
