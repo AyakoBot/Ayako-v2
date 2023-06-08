@@ -2,6 +2,9 @@ import * as Discord from 'discord.js';
 import glob from 'glob';
 import type * as CT from '../../Typings/CustomTypings';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
  if (!cmd.inCachedGuild()) return;
@@ -30,8 +33,7 @@ export default async (cmd: Discord.Interaction) => {
   return pathArgs.join('/');
  };
 
- // eslint-disable-next-line no-console
- console.log(path());
+ log(path());
 
  const command = files.find((f) => f.endsWith(`/${path()}.js`));
  if (!command) return;

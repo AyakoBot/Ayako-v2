@@ -2,17 +2,18 @@ import * as Jobs from 'node-schedule';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async () => {
- // eslint-disable-next-line no-console
- console.log(
+ log(
   `| Logged in\n| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${
    client.user?.id
   }\n| Login at ${new Date(Date.now()).toLocaleString()}`,
  );
 
  Jobs.scheduleJob('*/10 * * * *', () => {
-  // eslint-disable-next-line no-console
-  console.log(`=> Current Date: ${new Date().toLocaleString()}`);
+  log(`=> Current Date: ${new Date().toLocaleString()}`);
  });
 
  (await import('./startupTasks/cache.js')).default();

@@ -1,6 +1,9 @@
 import type * as Discord from 'discord.js';
 import glob from 'glob';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAnySelectMenu()) return;
 
@@ -37,8 +40,9 @@ export default async (cmd: Discord.Interaction) => {
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();
  const command = files.find((f) => f.endsWith(`/${path}.js`));
- // eslint-disable-next-line no-console
- console.log(path);
+
+ log(path);
+
  if (!command) return;
 
  (await import(command)).default(cmd, args);

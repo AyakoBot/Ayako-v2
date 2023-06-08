@@ -1,6 +1,9 @@
 import pool from '../DataBase.js';
 import type * as DBT from '../../Typings/DataBaseTypings';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 function query<T extends keyof DBT.DBTables>(
  string: string,
  args?: unknown[],
@@ -28,17 +31,14 @@ async function query<T extends keyof DBT.DBTables>(
   asArray: boolean;
  },
 ): Promise<DBT.DBTables[T] | DBT.DBTables[T][] | undefined> {
- // eslint-disable-next-line no-console
- if (options?.debug) console.log(string, args);
+ if (options?.debug) log(string, args);
 
  const res = await pool.query(string, args).catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error(string, args);
+  log(string, args);
   throw new Error(err);
  });
 
- // eslint-disable-next-line no-console
- if (options?.debug) console.log(res);
+ if (options?.debug) log(res);
 
  if (!res || !res.rowCount) return undefined;
  // eslint-disable-next-line @typescript-eslint/no-explicit-any

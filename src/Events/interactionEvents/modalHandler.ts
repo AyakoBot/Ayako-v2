@@ -1,6 +1,9 @@
 import type * as Discord from 'discord.js';
 import glob from 'glob';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isModalSubmit()) return;
 
@@ -13,8 +16,8 @@ export default async (cmd: Discord.Interaction) => {
 
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();
- // eslint-disable-next-line no-console
- console.log(path);
+
+ log(path);
 
  const command = files.find((f) => f.endsWith(`/${path}.js`));
  if (!command) return;

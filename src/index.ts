@@ -3,8 +3,11 @@ import * as Discord from 'discord.js';
 import readline from 'readline';
 import auth from './auth.json' assert { type: 'json' };
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 console.clear();
-console.log(`
+log(`
 +++++++++++++++ Welcome to Ayako +++++++++++++++
 +      Restart all Shards with "restart"       +
 +  Restart one Shard with "restart [Shard ID]" +
@@ -15,7 +18,7 @@ const manager = new Discord.ShardingManager('./bot.js', {
  token: auth.token,
 });
 
-manager.on('shardCreate', (shard) => console.log(`[Shard Manager] Launched Shard ${shard.id}`));
+manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));
 
 process.setMaxListeners(4);
 process.on('unhandledRejection', async (error: string) => console.error(error));

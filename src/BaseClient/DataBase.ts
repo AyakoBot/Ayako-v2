@@ -10,20 +10,23 @@ const DataBase = new pg.Pool({
  port: 5432,
 });
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 DataBase.query('SELECT NOW() as now;', (err) => {
  if (err) {
-  console.log("| Couldn't connect to DataBase", err.stack);
+  log("| Couldn't connect to DataBase", err.stack);
  } else {
-  console.log('| Established Connection to DataBase');
+  log('| Established Connection to DataBase');
  }
 });
 
 DataBase.connect((err) => {
- if (err) console.log('Error while logging into DataBase', err.stack);
+ if (err) log('Error while logging into DataBase', err.stack);
 });
 
 DataBase.on('error', (err) => {
- console.log('Unexpected error on idle pool client', err);
+ log('Unexpected error on idle pool client', err);
 });
 
 export default DataBase;

@@ -40,12 +40,3 @@ const willis = (msg: Discord.Message) => {
 
  msg.delete();
 };
-
-// const eventDel = (msg: Discord.Message) => {
-//  if (msg.author?.id !== '1105195321732116530') return;
-//  if (msg.channelId !== '298954459172700181') return;
-
-//  setTimeout(() => {
-//   if (msg) msg.delete();
-//  }, 20000);
-// };

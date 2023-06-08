@@ -11,6 +11,9 @@ import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
 import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.js';
 import query from '../../../BaseClient/ClientHelperModules/query.js';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (msg: Discord.Message) => {
  if (!msg.content) return;
 
@@ -122,8 +125,8 @@ const getComand = async (commandName: string) => {
 
  const path = files.find((f) => f.endsWith(`/${commandName}.js`));
  if (!path) return undefined;
- // eslint-disable-next-line no-console
- console.log(commandName);
+
+ log(commandName);
 
  return (await import(path)) as CT.Command;
 };

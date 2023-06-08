@@ -11,6 +11,9 @@ import constants from '../Other/constants.js';
 import regexes from './regexes.js';
 import client from '../Client.js';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
 type BLWLType = 'blchannelid' | 'blroleid' | 'bluserid' | 'wlchannelid' | 'wlroleid' | 'wluserid';
@@ -276,8 +279,7 @@ export const updateLog = (
  uniquetimestamp: number | undefined,
 ) => {
  postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
- // eslint-disable-next-line no-console
- console.log(oldSetting, newSetting, changedSetting, uniquetimestamp);
+ log(oldSetting, newSetting, changedSetting, uniquetimestamp);
 };
 
 const postUpdate = async (

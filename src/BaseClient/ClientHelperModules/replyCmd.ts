@@ -3,6 +3,9 @@ import type CT from '../../Typings/CustomTypings';
 import * as replyMsg from './replyMsg.js';
 import constants from '../Other/constants.js';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 const sendMessage = (
  cmd:
   | Discord.ButtonInteraction
@@ -23,8 +26,7 @@ const sendMessage = (
 
  if ('reply' in cmd && cmd.isRepliable()) {
   return cmd.reply(payload).catch((err) => {
-   // eslint-disable-next-line no-console
-   console.log('cmd reply err', err);
+   log('cmd reply err', err);
   });
  }
 

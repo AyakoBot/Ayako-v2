@@ -2,6 +2,9 @@ import type * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
 }
@@ -98,13 +101,11 @@ async function send(
  }
 
  payload.embeds?.forEach((p) => {
-  // eslint-disable-next-line no-console
-  p.fields?.forEach((pa) => (pa.value?.length > 1024 ? console.log(p) : null));
+  p.fields?.forEach((pa) => (pa.value?.length > 1024 ? log(p) : null));
  });
 
  const sentMessage = await channel.send(payload).catch((err) => {
-  // eslint-disable-next-line no-console
-  console.log(JSON.stringify(payload));
+  log(JSON.stringify(payload));
   throw new Error(`Send Error: ${err}`);
  });
 

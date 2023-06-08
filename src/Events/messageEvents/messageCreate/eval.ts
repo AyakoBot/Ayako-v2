@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -15,6 +14,9 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const reg = new RegExp(auth.token, 'g');
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (msg: Discord.Message) => {
  if (msg.author.id !== auth.ownerID) return;
  if (!msg.content.startsWith('eval')) return;
@@ -30,12 +32,12 @@ export default async (msg: Discord.Message) => {
 
   if (evaled.length > 2000) {
    ch.replyMsg(msg, { content: 'Too long, check console' });
-   console.log(evaled);
+   log(evaled);
    return;
   }
   if (clean(evaled) !== 'undefined') {
    ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`q\n${clean(evaled)}`)}` });
-   console.log(evaled);
+   log(evaled);
    return;
   }
 
@@ -43,7 +45,7 @@ export default async (msg: Discord.Message) => {
  } catch (err) {
   if (JSON.stringify(err as Error).length > 2000) {
    ch.replyMsg(msg, { content: 'Too long, check console' });
-   console.log(err);
+   log(err);
    return;
   }
 
@@ -51,7 +53,7 @@ export default async (msg: Discord.Message) => {
    ch.replyMsg(msg, {
     content: `\`ERROR\` \n${ch.util.makeCodeBlock(`q\n${clean((err as Error).message)}`)}\n`,
    });
-   console.log(err);
+   log(err);
    return;
   }
 

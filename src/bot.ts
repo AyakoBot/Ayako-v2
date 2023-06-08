@@ -21,13 +21,15 @@ events.forEach(async (path) => {
  else client.on(eventName, (...args) => eventHandler(eventName, args));
 });
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 client.on('debug', (info) => {
  if (info.includes('Heartbeat')) return;
 
- // eslint-disable-next-line no-console
- console.log(info);
+ log(info);
 });
 
 client.on('warn', (info) => {
- console.log(info);
+ log(info);
 });

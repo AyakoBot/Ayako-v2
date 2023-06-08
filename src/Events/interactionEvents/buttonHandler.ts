@@ -1,6 +1,9 @@
 import type * as Discord from 'discord.js';
 import glob from 'glob';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isButton()) return;
 
@@ -11,8 +14,7 @@ export default async (cmd: Discord.Interaction) => {
   });
  });
 
- // eslint-disable-next-line no-console
- console.log(cmd.customId);
+ log(cmd.customId);
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();
 

@@ -1,4 +1,6 @@
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default (info: Error) => {
- // eslint-disable-next-line no-console
- console.log(info);
+ log(info);
 };

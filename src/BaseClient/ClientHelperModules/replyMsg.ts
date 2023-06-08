@@ -5,6 +5,9 @@ import type CT from '../../Typings/CustomTypings';
 import type DBT from '../../Typings/DataBaseTypings';
 import objectEmotes from './objectEmotes.js';
 
+// eslint-disable-next-line no-console
+const { log } = console;
+
 export default async (
  msg: Discord.Message,
  payload: Discord.MessagePayload | Discord.MessageReplyOptions,
@@ -14,8 +17,7 @@ export default async (
  if (!msg) return undefined;
 
  const sentMessage = await msg.reply(payload).catch((err) => {
-  // eslint-disable-next-line no-console
-  console.log('msg reply err', err);
+  log('msg reply err', err);
  });
 
  if (!sentMessage) return undefined;
