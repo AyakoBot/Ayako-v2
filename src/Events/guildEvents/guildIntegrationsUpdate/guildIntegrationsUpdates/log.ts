@@ -3,6 +3,13 @@ import type CT from '../../../../Typings/CustomTypings';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (oldIntegration: Discord.Integration, integration: Discord.Integration) => {
+ if (
+  JSON.stringify(oldIntegration.scopes.sort((a, b) => a.localeCompare(b))) ===
+  JSON.stringify(integration.scopes.sort((a, b) => a.localeCompare(b)))
+ ) {
+  return;
+ }
+
  const channels = await ch.getLogChannels('guildevents', integration.guild);
  if (!channels) return;
 
@@ -112,11 +119,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   );
  }
 
- if (!embed.fields?.length) {
-  // eslint-disable-next-line no-console
-  console.log(oldIntegration, integration);
-  return;
- }
+ if (!embed.fields?.length) return;
 
  ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, undefined, 10000);
 };
