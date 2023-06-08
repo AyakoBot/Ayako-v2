@@ -78,11 +78,8 @@ export type blacklist = {
  active: boolean;
  usestrike: boolean;
 
- words?: string[];
-
- wlchannelid?: string[];
- wlroleid?: string[];
- wluserid?: string[];
+ repostenabled: boolean;
+ repostroles?: string[];
 };
 
 export type cooldowns = {

@@ -42,10 +42,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
        name as keyof typeof ch.constants.tutorials
       ].map((t) => `[${t.name}](${t.link})`)}`
     : ''
-  }\n\n${
-   settings?.words?.length
-    ? `${lan.fields.words.name} ${ch.util.makeCodeBlock(settings.words.join(' # '))}`
-    : language.None
   }`,
   fields: [
    {
@@ -64,18 +60,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: language.slashCommands.settings.wlchannel,
-    value: embedParsers.channels(settings?.wlchannelid, language),
+    name: lan.fields.repostenabled.name,
+    value: embedParsers.boolean(settings?.repostenabled, language),
     inline: false,
    },
    {
-    name: language.slashCommands.settings.wlrole,
-    value: embedParsers.roles(settings?.wlroleid, language),
-    inline: false,
-   },
-   {
-    name: language.slashCommands.settings.wluser,
-    value: embedParsers.users(settings?.wluserid, language),
+    name: lan.fields.repostroles.name,
+    value: embedParsers.roles(settings?.repostroles, language),
     inline: false,
    },
   ],
@@ -96,14 +87,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  },
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.specific(language, settings?.words, 'words', name, undefined)],
- },
- {
-  type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name, undefined),
-   buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name, undefined),
-   buttonParsers.global(language, settings?.wluserid, 'wluserid', name, undefined),
+   buttonParsers.boolean(language, settings?.repostenabled, 'repostenabled', name, undefined),
+   buttonParsers.specific(language, settings?.repostroles, 'repostroles', name, undefined, 'role'),
   ],
  },
 ];

@@ -1020,19 +1020,8 @@ export default {
     actions: 'Actions',
    },
   },
-  messageReactionAdd: {
-   rrReason: `${name} Reaction Roles`,
-  },
-  messageReactionRemove: {
-   rrReason: `${name} Reaction Roles`,
-  },
-  guildMemberUpdate: {
-   boostingStart: 'Member Started Boosting',
-   boostingEnd: 'Member Stopped Boosting',
-   descriptionBoostingStart: (user: CT.bEvalUser | Discord.User) =>
-    `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas started Boosting the Server`,
-   descriptionBoostingEnd: (user: CT.bEvalUser | Discord.User) =>
-    `User <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\`\nhas stopped Boosting the Server`,
+  blacklist: {
+   censoredMessageReposter: 'Censored Message Reposter',
   },
   ready: {
    channelunban: 'Automatically Channel-Unbanned',
@@ -1527,14 +1516,14 @@ export default {
     noOne: 'sleeps',
     others: 'sleeps with',
     request: 'wants to sleep together with you!',
-    buttons: ['Sleep together~'],
+    buttons: ['Sleep together~', 'Nope away'],
    },
    eep: {
     self: 'eeps alone tonight >~>',
     noOne: 'eeps',
     others: 'eeps with',
     request: 'wants to eep together with you!',
-    buttons: ['eep together~'],
+    buttons: ['eep together~', 'Nope away'],
    },
    smile: {
     self: 'smiles at themself, how nice',
@@ -2153,12 +2142,6 @@ export default {
      },
     },
     blacklist: {
-     action: {
-      author: 'Blacklisted Word used',
-      field: 'You used following Words',
-      desc: (words: string) =>
-       `Please refrain from using any of the following Words\nThis __includes__ not blacklisted Variations of following Words\n*Server Staff may punish more strictly for bypassing the Blacklist*\n${words}`,
-     },
      name: 'Blacklist',
      fields: {
       words: {
@@ -2166,6 +2149,14 @@ export default {
        desc: 'Words or Phrases that should be filtered (Separate by #)',
       },
       usestrike,
+      repostenabled: {
+       name: 'Repost censored Message',
+       desc: 'Whether to Repost the Message with censoring',
+      },
+      repostroles: {
+       name: 'Repost Roles',
+       desc: 'Users with one of these Roles will have their censored Message Reposted',
+      },
      },
     },
     'blacklist-punishments': {

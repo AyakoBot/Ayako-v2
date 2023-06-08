@@ -3,6 +3,12 @@ export default {
   { name: '🆙' },
   { name: 'AMayakopeek', id: '924071140257841162', animated: false },
  ],
+ blobstop: {
+  name: 'AMblobstop',
+  id: '366035581387407362',
+  animated: false,
+  link: 'https://cdn.discordapp.com/emojis/366035581387407362.png',
+ },
  userFlags: {
   ActiveDeveloper: { name: 'ActiveDeveloper', id: '1104687316271910983', animated: false },
   DiscordEmployee: { name: 'DiscordStaff', id: '945409713661706292', animated: false },

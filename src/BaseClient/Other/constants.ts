@@ -235,7 +235,7 @@ export default {
     desc: 'Call someone a baka',
     users: true,
     reqUser: true,
-    buttons: ['bonk', 'hit'],
+    buttons: ['bonk'],
    },
    {
     name: 'bath',
@@ -263,7 +263,7 @@ export default {
     desc: 'Bonk someone',
     users: true,
     reqUser: true,
-    buttons: ['bonk', 'hit', 'cry'],
+    buttons: ['bonk', 'cry'],
    },
    {
     name: 'bored',
@@ -406,8 +406,8 @@ export default {
    { name: 'shake', desc: 'Shake someone', users: true, reqUser: true, buttons: ['scream', 'cry'] },
    { name: 'shrug', desc: 'Shrug', users: true, reqUser: false, buttons: [] },
    { name: 'sigh', desc: 'Sigh', users: true, reqUser: false, buttons: [] },
-   { name: 'sleep', desc: 'Sleep', users: true, reqUser: false, buttons: ['sleep'] },
-   { name: 'eep', desc: 'eep', users: true, reqUser: false, buttons: ['eep'] },
+   { name: 'sleep', desc: 'Sleep', users: true, reqUser: false, buttons: ['sleep', 'nope'] },
+   { name: 'eep', desc: 'eep', users: true, reqUser: false, buttons: ['eep', 'nope'] },
    { name: 'smile', desc: 'Smile', users: true, reqUser: false, buttons: ['happy'] },
    { name: 'smug', desc: 'Smug', users: true, reqUser: false, buttons: ['poke'] },
    { name: 'snuggle', desc: 'Snuggle someone', users: true, reqUser: true, buttons: ['snuggle'] },
@@ -659,11 +659,9 @@ export default {
      activechannelid: 'channels',
     },
     blacklist: {
-     wlchannelid: 'channels',
-     wlroleid: 'roles',
-     wluserid: 'users',
-     words: 'strings',
      usestrike: 'boolean',
+     repostenabled: 'boolean',
+     repostroles: 'roles',
     },
     'auto-punish': {
      duration: 'duration',
