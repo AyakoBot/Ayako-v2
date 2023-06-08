@@ -70,9 +70,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
     )
   : [];
 
- let content = String(msg.content)
-  .replace(msg.matchedContent ?? '', '[...]')
-  .replace(msg.matchedKeyword ?? '', '[...]');
+ let content = String(msg.content);
 
  presetKeywords?.forEach((p) => {
   content = content.replace(new RegExp(p.keyword, 'g'), '[...]');
@@ -103,6 +101,11 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
  });
 
  if (msg.content === content) return undefined;
+
+ content = content
+  .replace(msg.matchedContent ?? '', '[...]')
+  .replace(msg.matchedKeyword ?? '', '[...]');
+
  return content;
 };
 
