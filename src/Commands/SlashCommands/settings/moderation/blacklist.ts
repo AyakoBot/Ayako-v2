@@ -22,7 +22,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
 
  cmd.reply({
-  embeds: await getEmbeds(embedParsers, settings, language, lan),
+  embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
   ephemeral: true,
  });
@@ -33,6 +33,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  settings,
  language,
  lan,
+ guild,
 ) => [
  {
   author: embedParsers.author(language, lan),
@@ -69,6 +70,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.roles(settings?.repostroles, language),
     inline: false,
    },
+   {
+    name: lan.fields.repostrules.name,
+    value: embedParsers.rules(settings?.repostrules, language, guild as Discord.Guild),
+    inline: false,
+   },
   ],
  },
 ];
@@ -90,6 +96,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.boolean(language, settings?.repostenabled, 'repostenabled', name, undefined),
    buttonParsers.specific(language, settings?.repostroles, 'repostroles', name, undefined, 'role'),
+   buttonParsers.specific(language, settings?.repostrules, 'repostrules', name, undefined, 'role'),
   ],
  },
 ];

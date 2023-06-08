@@ -34,7 +34,7 @@ const reposter = async (
  const webhook = await getWebhook(msg, lan);
  if (!webhook) return;
 
- const content = await getContent(msg);
+ const content = await getContent(msg, settings);
  if (!content) return;
 
  webhook.send({
@@ -45,8 +45,11 @@ const reposter = async (
  });
 };
 
-const getContent = async (msg: Discord.AutoModerationActionExecution) => {
- const rules = msg.guild.autoModerationRules.cache.map((r) => r);
+const getContent = async (msg: Discord.AutoModerationActionExecution, settings: DBT.blacklist) => {
+ const rules = msg.guild.autoModerationRules.cache
+  .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
+  .filter((r) => (settings.repostrules?.length ? settings.repostrules?.includes(r.id) : true))
+  .map((r) => r);
  if (!rules.length) return undefined;
 
  const presetRule = rules.find(
@@ -99,6 +102,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution) => {
    });
  });
 
+ if (msg.content === content) return undefined;
  return content;
 };
 

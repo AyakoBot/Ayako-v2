@@ -2144,18 +2144,19 @@ export default {
     blacklist: {
      name: 'Blacklist',
      fields: {
-      words: {
-       name: 'Words / Phrases',
-       desc: 'Words or Phrases that should be filtered (Separate by #)',
-      },
       usestrike,
       repostenabled: {
        name: 'Repost censored Message',
        desc: 'Whether to Repost the Message with censoring',
       },
       repostroles: {
-       name: 'Repost Roles',
-       desc: 'Users with one of these Roles will have their censored Message Reposted',
+       name: 'Repost-Roles',
+       desc: 'Users with one of these Roles will have their censored Message reposted',
+      },
+      repostrules: {
+       name: 'Repost-Rules',
+       desc:
+        'Rules that will have a censored Message reposted. If none are selected, all Rules will have their censored Message reposted',
       },
      },
     },

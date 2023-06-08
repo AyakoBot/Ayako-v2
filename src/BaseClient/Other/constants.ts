@@ -662,6 +662,7 @@ export default {
      usestrike: 'boolean',
      repostenabled: 'boolean',
      repostroles: 'roles',
+     repostrules: 'automodrules',
     },
     'auto-punish': {
      duration: 'duration',

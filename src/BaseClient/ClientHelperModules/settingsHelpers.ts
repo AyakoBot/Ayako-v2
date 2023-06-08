@@ -38,6 +38,10 @@ const embedParsers = {
   val?.length ? `<#${val}>` : language.None,
  role: (val: string | undefined, language: CT.Language) =>
   val?.length ? `<@&${val}>` : language.None,
+ rules: (val: string[] | undefined, language: CT.Language, guild: Discord.Guild) =>
+  val && val.length
+   ? val.map((v) => `\`${guild.autoModerationRules.cache.get(v)?.name ?? v}\``).join(', ')
+   : language.None,
  user: (val: string | undefined, language: CT.Language) =>
   val?.length ? `<@${val}>` : language.None,
  number: (val: string | number | undefined, language: CT.Language) =>
@@ -333,7 +337,8 @@ const changeHelpers = {
    | 'settinglink'
    | 'embed'
    | 'emote'
-   | 'commands',
+   | 'commands'
+   | 'automodrules',
  ): Promise<Discord.APIEmbed> => ({
   author: {
    name: language.slashCommands.settings.authorType(lan.name),
@@ -409,15 +414,17 @@ const changeHelpers = {
   uniquetimestamp: number | undefined,
  ) => {
   const menu: Discord.APIStringSelectComponent = {
-   min_values: options.min_values ?? 0,
-   max_values: options.max_values ?? 1,
+   min_values: options.min_values || 1,
+   max_values: options.max_values || 1,
    custom_id: `settings/${type}_${fieldName}_${settingName}${
     uniquetimestamp ? `_${uniquetimestamp}` : ''
    }`,
    type: Discord.ComponentType.StringSelect,
-   options: options.options,
+   options: (options.options.length ? options.options : [{ label: '-', value: '-' }]) ?? [
+    { label: '-', value: '-' },
+   ],
    placeholder: options.placeholder,
-   disabled: options.disabled,
+   disabled: options.disabled || !options.options.length,
   };
 
   return menu;
@@ -662,7 +669,8 @@ const getMention = async (
   | 'settinglink'
   | 'embed'
   | 'emote'
-  | 'commands',
+  | 'commands'
+  | 'automodrules',
  value: string,
 ): Promise<string> => {
  switch (type) {

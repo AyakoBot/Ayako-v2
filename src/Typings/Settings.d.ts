@@ -80,6 +80,7 @@ export type blacklist = {
 
  repostenabled: boolean;
  repostroles?: string[];
+ repostrules?: string[];
 };
 
 export type cooldowns = {
