@@ -153,7 +153,11 @@ export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
 const parsers = {
  msgParser: async (msg: Discord.Message) => ({
   author: msg.author,
-  users: msg.mentions.users.map((o) => o),
+  users: msg.mentions.users.size
+   ? msg.mentions.users.map((o) => o)
+   : [(await msg.fetchReference().catch(() => undefined))?.author].filter(
+      (u): u is Discord.User => !!u,
+     ),
   text: msg.content
    .slice(Number((await getPrefix(msg))?.length))
    .trim()
