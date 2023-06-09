@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import clone from 'lodash.clonedeep';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyMsg from './replyMsg.js';
@@ -11,13 +12,20 @@ import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
 import type { ReturnType } from './getGif.js';
 import { getPrefix } from '../../Events/messageEvents/messageCreate/commandHandler.js';
+import getUser from './getUser.js';
+import getChunks from './getChunks.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
 const reply = async (
- cmd: Discord.ChatInputCommandInteraction | Discord.Message | Discord.ButtonInteraction,
+ cmd:
+  | Omit<Discord.ChatInputCommandInteraction, 'guild' | 'client'>
+  | Omit<Discord.Message, 'guild' | 'client'>
+  | Omit<Discord.ButtonInteraction, 'guild' | 'client'>,
+ guild: Discord.Guild | null,
 ) => {
  if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
+ if (!guild) return;
  if (!cmd.inGuild()) return;
 
  const parse = async () => {
@@ -33,7 +41,16 @@ const reply = async (
  const desc = getDesc(author, users, language, lan, cmd);
 
  if (!desc) {
-  if (cmd instanceof Discord.Message) errorMsg(cmd, language.errors.noUserMentioned, language);
+  if (cmd instanceof Discord.Message) {
+   const realCmd = (
+    guild.channels.cache.get(
+     (cmd as Discord.Message).channelId,
+    ) as unknown as Discord.TextBasedChannel
+   ).messages.cache.get((cmd as Discord.Message).id);
+   if (!realCmd) return;
+
+   errorMsg(realCmd, language.errors.noUserMentioned, language);
+  }
   return;
  }
 
@@ -50,7 +67,7 @@ const reply = async (
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
-  color: colorSelector(cmd.guild.members.me),
+  color: colorSelector(guild.members.me),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,
@@ -131,8 +148,16 @@ const reply = async (
   lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
  }`;
 
- if (cmd instanceof Discord.Message) replyMsg(cmd, payload);
- else replyCmd(cmd, { ...payload, ephemeral: false });
+ if (cmd instanceof Discord.Message) {
+  const realCmd = (
+   guild.channels.cache.get(
+    (cmd as Discord.Message).channelId,
+   ) as unknown as Discord.TextBasedChannel
+  ).messages.cache.get((cmd as Discord.Message).id);
+  if (!realCmd) return;
+
+  replyMsg(realCmd, payload);
+ } else replyCmd(cmd, { ...payload, ephemeral: false });
 };
 
 export default reply;
@@ -147,17 +172,13 @@ export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- reply(cmd);
+ reply(cmd, cmd.guild);
 };
 
 const parsers = {
- msgParser: async (msg: Discord.Message) => ({
+ msgParser: async (msg: Discord.Message<true>) => ({
   author: msg.author,
-  users: msg.mentions.users.size
-   ? msg.mentions.users.map((o) => o)
-   : [(await msg.fetchReference().catch(() => undefined))?.author].filter(
-      (u): u is Discord.User => !!u,
-     ),
+  users: await parseMsgUsers(msg),
   text: msg.content
    .slice(Number((await getPrefix(msg))?.length))
    .trim()
@@ -304,4 +325,47 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  }
 
  return null;
+};
+
+const parseMsgUsers = async (msg: Discord.Message<true>) => {
+ const client = (await import('../Client.js')).default as Discord.Client;
+
+ const mentionedUsers = msg.mentions.users.size
+  ? msg.mentions.users
+     .map((o) => o)
+     .filter((u): u is Discord.User => !!u && u.id !== client.user?.id)
+  : undefined;
+
+ if (mentionedUsers?.length) {
+  if (mentionedUsers.length < 5) return mentionedUsers;
+
+  const mentionChunks = getChunks(mentionedUsers, 4);
+
+  const messages = new Array(mentionChunks.length)
+   .fill(null)
+   .map(() => clone(msg)) as Discord.Message[];
+
+  mentionChunks.forEach((c, i) => {
+   if (i === 0) return;
+
+   messages[i].mentions.users = new Discord.Collection(c.map((u) => [u.id, u]));
+   reply(messages[i], msg.guild);
+  });
+
+  return mentionChunks[0];
+ }
+
+ const reference = await msg.fetchReference().catch(() => undefined);
+ if (!reference) return [];
+
+ if (reference.author.id !== client.user?.id) return [reference.author];
+
+ const embed = reference.embeds.find((e) =>
+  e.url ? new URL(e.url).searchParams.get('initial') === 'true' : false,
+ );
+ if (!embed) return [];
+
+ const url = new URL(embed.url as string);
+ const executorId = url.searchParams.get('exec') as string;
+ return [await getUser(executorId)].filter((u): u is CT.bEvalUser => !!u);
 };

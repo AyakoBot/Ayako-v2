@@ -46,7 +46,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  ];
 
  ch
-  .getChunks(fields, 4096)
+  .getStringChunks(fields, 4096)
   .filter((c) => c.length)
   .forEach((c) => {
    embeds.push({

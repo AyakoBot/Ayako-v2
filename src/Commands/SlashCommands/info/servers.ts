@@ -44,7 +44,7 @@ const getServers = async (language: CT.Language) =>
 
 const getContent = (servers: { content: string; count: number }[]) =>
  ch
-  .getChunks(servers?.length ? servers.map((s) => s.content) : [], 4096)
+  .getStringChunks(servers?.length ? servers.map((s) => s.content) : [], 4096)
   .map((c) => c.join('\n'))
   .filter((c) => c.length);
 

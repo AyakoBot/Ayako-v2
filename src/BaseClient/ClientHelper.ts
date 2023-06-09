@@ -68,6 +68,7 @@ import mod from './ClientHelperModules/mod.js';
 import refreshToken from './ClientHelperModules/refreshToken.js';
 import error from './ClientHelperModules/error.js';
 import helperHelpers from './ClientHelperModules/helperHelpers.js';
+import getStringChunks from './ClientHelperModules/getStringChunks.js';
 import getChunks from './ClientHelperModules/getChunks.js';
 import getPunishment from './ClientHelperModules/getPunishment.js';
 
@@ -78,8 +79,9 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
- getPunishment,
  getChunks,
+ getPunishment,
+ getStringChunks,
  send,
  replyMsg,
  replyCmd,

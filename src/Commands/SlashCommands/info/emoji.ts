@@ -51,7 +51,7 @@ const getEmotesPayload = (
  lan: CT.Language['slashCommands']['info'],
  page = 1,
 ): Discord.InteractionReplyOptions => {
- const chunks = ch.getChunks(
+ const chunks = ch.getStringChunks(
   emotes.map(
    (e) =>
     `${ch.constants.standard.getEmote(e)} / \`${e.name ?? language.None}\` / \`${
