@@ -18,7 +18,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const user =
-  cmd.options.getUser('user-mention', false) ??
+  cmd.options.getUser('user', false) ??
   (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
   cmd.user;
 
@@ -162,17 +162,22 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
- const boostTimes = user.client.shard
-  ? (
-     await user.client.shard.broadcastEval(
-      (cl, { memberId }) =>
-       cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
-      { context: { memberId: user.id } },
-     )
-    ).flat()
-  : [];
+ const boostTimes = (
+  user.client.shard
+   ? (
+      await user.client.shard.broadcastEval(
+       (cl, { memberId }) =>
+        cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
+       { context: { memberId: user.id } },
+      )
+     ).flat()
+   : []
+ ).filter((t) => !!t);
 
+ if (!boostTimes.length) return;
  const longestPrem = Math.min(...boostTimes);
+ if (!longestPrem) return;
+
  const boostFlags = new Discord.BitField();
  const time = Math.abs(longestPrem - Date.now());
 
