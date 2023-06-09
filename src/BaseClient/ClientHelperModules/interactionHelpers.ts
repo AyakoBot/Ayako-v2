@@ -1,3 +1,4 @@
+import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import clone from 'lodash.clonedeep';
 import constants from '../Other/constants.js';
@@ -38,9 +39,10 @@ const reply = async (
 
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
+ const con = constants.commands.interactions.find((c) => c.name === commandName);
  const desc = getDesc(author, users, language, lan, cmd);
 
- if (!desc) {
+ if (!desc || (con?.reqUser && !users.length)) {
   if (cmd instanceof Discord.Message) {
    const realCmd = (
     guild.channels.cache.get(
@@ -49,7 +51,13 @@ const reply = async (
    ).messages.cache.get((cmd as Discord.Message).id);
    if (!realCmd) return;
 
-   errorMsg(realCmd, language.errors.noUserMentioned, language);
+   const m = await errorMsg(realCmd, language.errors.noUserMentioned, language);
+   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+    if (m?.deletable) m.delete();
+    if ('deletable' in cmd && (cmd as Discord.Message<true>).deletable && 'delete' in cmd) {
+     (cmd as Discord.Message<true>).delete();
+    }
+   });
   }
   return;
  }
@@ -63,7 +71,6 @@ const reply = async (
   asArray: false,
  }).then((r) => r?.interactionsmode);
 
- const con = constants.commands.interactions.find((c) => c.name === commandName);
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
