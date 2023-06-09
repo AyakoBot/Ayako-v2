@@ -5,7 +5,7 @@ export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const res = await ch.query(
-  `INSERT INTO stickymessages (guildid, lastmsgid, channelid) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURN *;`,
+  `INSERT INTO stickymessages (guildid, lastmsgid, channelid) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING RETURNING *;`,
   [cmd.guildId, cmd.targetId, cmd.channelId],
   { returnType: 'stickymessages', asArray: false },
  );
