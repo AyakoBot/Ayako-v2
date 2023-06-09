@@ -31,7 +31,8 @@
   "esModuleInterop": true,
   "sourceRoot": "./src/",
   "forceConsistentCasingInFileNames": true,
-  "skipLibCheck": true
+  "skipLibCheck": true,
+  "allowSyntheticDefaultImports": true
  },
  "exclude": ["node_modules", "dist"]
 }
