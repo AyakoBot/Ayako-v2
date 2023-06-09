@@ -285,7 +285,7 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Display Information about a User')
-   .addUserOption(User.setName('user-mention'))
+   .addUserOption(User)
    .addStringOption(SearchUsername),
  )
  .addSubcommand(
@@ -801,26 +801,11 @@ const pardon = new Discord.SlashCommandBuilder()
      .setDescription('The Type of the Punishment')
      .setRequired(true)
      .setChoices(
-      {
-       name: 'Ban',
-       value: 'ban',
-      },
-      {
-       name: 'Mute',
-       value: 'mute',
-      },
-      {
-       name: 'Kick',
-       value: 'kick',
-      },
-      {
-       name: 'Warn',
-       value: 'warn',
-      },
-      {
-       name: 'Channel-Ban',
-       value: 'channelban',
-      },
+      { name: 'Ban', value: 'ban' },
+      { name: 'Mute', value: 'mute' },
+      { name: 'Kick', value: 'kick' },
+      { name: 'Warn', value: 'warn' },
+      { name: 'Channel-Ban', value: 'channelban' },
      ),
    )
    .addStringOption(
@@ -939,8 +924,33 @@ const slowmode = new Discord.SlashCommandBuilder()
  )
  .addStringOption(Reason);
 
+const user = new Discord.SlashCommandBuilder()
+ .setName('user')
+ .setDMPermission(true)
+ .setDescription('Get Information about a User')
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('info')
+   .setDescription('Get Information about a User')
+   .addUserOption(User)
+   .addStringOption(SearchUsername),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('avatar')
+   .setDescription('Get the Avatar of a User')
+   .addUserOption(User),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('banner')
+   .setDescription('Get the Banner of a User')
+   .addUserOption(User),
+ );
+
 export default {
  public: {
+  user,
   settings,
   info,
   'embed-builder': embedbuilder,
@@ -1047,5 +1057,8 @@ export default {
   'pardon_all-by': 'moderation',
   'pardon_all-on': 'moderation',
   slowmode: 'utility',
+  user_info: 'info',
+  user_avatar: 'utility',
+  user_banner: 'utility',
  },
 };
