@@ -2,6 +2,8 @@ import * as Jobs from 'node-schedule';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
 
+import willisDiabloCounter from './startupTasks/willisDiabloCounter.js';
+
 // eslint-disable-next-line no-console
 const { log } = console;
 
@@ -12,10 +14,11 @@ export default async () => {
   }\n| Login at ${new Date(Date.now()).toLocaleString()}`,
  );
 
- Jobs.scheduleJob('*/10 * * * *', () => {
+ Jobs.scheduleJob('*/10 * * * *', async () => {
   log(`=> Current Date: ${new Date().toLocaleString()}`);
  });
 
+ willisDiabloCounter();
  (await import('./startupTasks/cache.js')).default();
  (await import('./startupTasks/slashCommandInitializer.js')).default();
  (await import('./startupTasks.js')).default();
