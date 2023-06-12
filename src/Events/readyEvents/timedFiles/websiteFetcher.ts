@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { AutoPoster } from 'topgg-autoposter';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import auth from '../../../auth.json';
+import auth from '../../../auth.json' assert { type: 'json' };
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 

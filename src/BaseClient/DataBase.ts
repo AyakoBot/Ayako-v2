@@ -17,5 +17,9 @@ const DataBase = new DB(
 );
 
 await DataBase.init();
+await DataBase.redis.flushAll();
+
+const { log } = console;
+log('[Redis DB] Flushed');
 
 export default DataBase;
