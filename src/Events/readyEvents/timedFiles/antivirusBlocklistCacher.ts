@@ -1,7 +1,7 @@
 import fs from 'fs';
 import type * as Discord from 'discord.js';
-import sources from '../../BaseClient/Other/blockListSources.js';
-import * as ch from '../../BaseClient/ClientHelper';
+import sources from '../../../BaseClient/Other/blockListSources.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
  const responses = (await ch.fileURL2Buffer(sources.antivirus))

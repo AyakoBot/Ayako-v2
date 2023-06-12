@@ -1,6 +1,6 @@
-import * as ch from '../../BaseClient/ClientHelper.js';
-import client from '../../BaseClient/Client.js';
-import { kick } from '../guildEvents/guildMemberAdd/verification.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
+import { kick } from '../../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {
  const verificationRows = await ch.query(
