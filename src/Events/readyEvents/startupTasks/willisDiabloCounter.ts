@@ -34,7 +34,7 @@ const sendMessage = () => {
 };
 
 export default async () => {
- Jobs.scheduleJob('*/1 * * * *', () => {
+ Jobs.scheduleJob('0 * * * * *', () => {
   helltideConnection.send('0');
   sendMessage();
  });

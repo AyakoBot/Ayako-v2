@@ -19,8 +19,14 @@ const client = new Discord.Client({
  ],
  failIfNotExists: false,
  presence: {
-  status: 'dnd',
+  status: Discord.PresenceUpdateStatus.Idle,
   afk: false,
+  activities: [
+   {
+    name: 'start-up tasks...',
+    type: Discord.ActivityType.Listening,
+   },
+  ],
  },
  intents: [
   Discord.IntentsBitField.Flags.Guilds,

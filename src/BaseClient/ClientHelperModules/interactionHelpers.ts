@@ -3,8 +3,8 @@ import * as Discord from 'discord.js';
 import clone from 'lodash.clonedeep';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
-import replyMsg from './replyMsg.js';
 import replyCmd from './replyCmd.js';
+import send from './send.js';
 import query from './query.js';
 import type CT from '../../Typings/CustomTypings.js';
 import colorSelector from './colorSelector.js';
@@ -163,7 +163,12 @@ const reply = async (
   ).messages.cache.get((cmd as Discord.Message).id);
   if (!realCmd) return;
 
-  replyMsg(realCmd, payload);
+  if ((realCmd as Discord.Message<true>).deletable) (realCmd as Discord.Message<true>).delete();
+  const content = String(payload.content);
+  delete payload.content;
+
+  const m = await send(realCmd.channel, payload as never);
+  if (m?.editable) m.edit({ content });
  } else replyCmd(cmd, { ...payload, ephemeral: false });
 };
 

@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 
@@ -10,30 +11,39 @@ export default async () => {
   })
   .then((r) => r?.allusers);
 
- const activities: { name: string; type: number; url?: string }[] = [];
+ const activities: Discord.ActivitiesOptions[] = [];
 
  switch (random) {
   case 1: {
    activities.push({
-    name: `${client.guilds.cache.size} Servers | v1.6- | Default Prefix: ${ch.constants.standard.prefix}`,
-    type: 5,
+    name: `${ch.splitByThousand(client.guilds.cache.size)} Servers | v1.6- | Default Prefix: ${
+     ch.constants.standard.prefix
+    }`,
+    type: Discord.ActivityType.Competing,
    });
    break;
   }
   case 2: {
    activities.push({
-    name: `${users} Users | v1.6- | ${ch.constants.standard.prefix}invite`,
-    type: 3,
+    name: `with ${ch.splitByThousand(Number(users))} Users | v1.6- | ${
+     ch.constants.standard.prefix
+    }invite`,
+    type: Discord.ActivityType.Playing,
    });
    break;
   }
   default: {
    activities.push({
-    type: 1,
-    url: 'https://www.twitch.tv/lars_und_so_',
     name: `Development | v1.6- | Default Prefix: ${ch.constants.standard.prefix}`,
+    type: Discord.ActivityType.Watching,
    });
    break;
   }
  }
+
+ client.user?.setPresence({
+  afk: false,
+  activities,
+  status: Discord.PresenceUpdateStatus.Online,
+ });
 };

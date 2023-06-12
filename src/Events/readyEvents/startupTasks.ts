@@ -22,17 +22,17 @@ export default async () => {
  slashCommandInitializer();
  antivirusBlocklistCacher();
 
- Jobs.scheduleJob('0 0 0 */1 * *', async () => {
+ Jobs.scheduleJob('0 0 0 * * *', async () => {
   animekosInviteStats();
   rpToggleUses();
  });
 
- Jobs.scheduleJob('*/1 * * * *', async () => {
+ Jobs.scheduleJob('0 * * * * *', async () => {
   presence();
   verification();
  });
 
- Jobs.scheduleJob('*/30 * * * *', async () => antivirusBlocklistCacher());
+ Jobs.scheduleJob('0 */30 * * *', async () => antivirusBlocklistCacher());
  Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
 
  if (client.user?.id !== ch.mainID) return;
@@ -50,9 +50,9 @@ const animekosInviteStats = async () => {
  if (!invites) return;
 
  const inviteTxt = ch.txtFileWriter(
-  invites
+  `${invites
    .map((i) => (Number(i.uses) > 9 ? `${i.code} ${i.uses}` : null))
-   .filter((i): i is string => !!i),
+   .filter((i): i is string => !!i)}\n${guild.memberCount}`,
  );
  if (!inviteTxt) return;
 
