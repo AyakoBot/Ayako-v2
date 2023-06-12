@@ -39,7 +39,7 @@ const reposter = async (
 
  webhook.send({
   username: msg.member?.displayName,
-  avatarURL: msg.member?.user.displayAvatarURL(),
+  avatarURL: msg.member?.displayAvatarURL() ?? msg.member?.user.displayAvatarURL(),
   content,
   threadId: (msg.channel?.isThread() ? msg.channelId : undefined) ?? undefined,
  });
