@@ -70,21 +70,21 @@ async function f(
   }
  }
 
- return query(
-  `WITH user_punishments AS (
-       SELECT ${returnFields}, 'punish_bans' as type FROM punish_bans WHERE ${where} 
-       UNION ALL
-       SELECT ${returnFields}, 'punish_channelbans' as type FROM punish_channelbans WHERE ${where}
-       UNION ALL
-       SELECT ${returnFields}, 'punish_kicks' as type FROM punish_kicks WHERE ${where}
-       UNION ALL
-       SELECT ${returnFields}, 'punish_mutes' as type FROM punish_mutes WHERE ${where}
-       UNION ALL
-       SELECT ${returnFields}, 'punish_warns' as type FROM punish_warns WHERE ${where} 
-     ) SELECT * FROM user_punishments;`,
-  args,
-  { returnType: 'unknown', asArray: asArray as never },
- ) as unknown as Returned;
+ return Promise.all(
+  [
+   `SELECT ${returnFields}, 'punish_bans' as type FROM punish_bans ${where};`,
+   `SELECT ${returnFields}, 'punish_channelbans' as type FROM punish_channelbans ${where};`,
+   `SELECT ${returnFields}, 'punish_kicks' as type FROM punish_kicks ${where};`,
+   `SELECT ${returnFields}, 'punish_mutes' as type FROM punish_mutes ${where};`,
+   `SELECT ${returnFields}, 'punish_warns' as type FROM punish_warns ${where};`,
+  ].map((q) => query(q, args, { returnType: 'Punishment', asArray: true })),
+ ).then((r) => {
+  const res = r.flat();
+  if (asArray) {
+   return res.filter((p): p is Returned => !!p);
+  }
+  return (res[0] as Returned) || null;
+ });
 }
 
 export default f;

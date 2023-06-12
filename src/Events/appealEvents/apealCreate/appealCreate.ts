@@ -16,21 +16,18 @@ export default async (appeal: CT.Appeal) => {
  if (!settings.channelid) return;
  if (settings.blusers?.includes(appeal.userid)) return;
 
- const punishment = await ch.query(
-  `WITH user_punishments AS (
-        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'ban' as type FROM punish_bans WHERE uniquetimestamp = $1
-        UNION ALL
-        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'channelban' as type FROM punish_channelbans WHERE uniquetimestamp = $1
-        UNION ALL
-        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1
-        UNION ALL
-        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1
-        UNION ALL
-        SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1  
-      ) SELECT * FROM user_punishments;`,
-  [appeal.punishmentid],
-  { returnType: 'Punishment', asArray: false },
- );
+ const punishment = (
+  await Promise.all(
+   [
+    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'ban' as type FROM punish_bans WHERE uniquetimestamp = $1;`,
+    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'channelban' as type FROM punish_channelbans WHERE uniquetimestamp = $1;`,
+    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1;`,
+    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1;`,
+    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1;`,
+   ].map((q) => ch.query(q, [appeal.punishmentid], { returnType: 'Punishment', asArray: false })),
+  )
+ )[0];
+
  if (!punishment) return;
 
  const guild = client.guilds.cache.get(appeal.guildid);

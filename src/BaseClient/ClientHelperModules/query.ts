@@ -33,17 +33,17 @@ async function query<T extends keyof DBT.DBTables>(
 ): Promise<DBT.DBTables[T] | DBT.DBTables[T][] | undefined> {
  if (options?.debug) log(string, args);
 
- const res = await pool.query(string, args).catch((err) => {
+ const res = await pool.query(string, args as (string | number | boolean | null)[]).catch((err) => {
   log(string, args);
   throw new Error(err);
  });
 
  if (options?.debug) log(res);
 
- if (!res || !res.rowCount) return undefined;
+ if (!res || !res.length) return undefined;
  // eslint-disable-next-line @typescript-eslint/no-explicit-any
- if (options?.asArray) return res.rows;
- return res.rows[0];
+ if (options?.asArray) return res;
+ return res[0];
 }
 
 export default query;
