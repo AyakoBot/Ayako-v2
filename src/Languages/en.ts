@@ -1160,6 +1160,10 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  vote: {
+   desc: 'Vote for Ayako',
+   content: 'You can vote for me on [here](https://top.gg/bot/650691698409734151/vote)',
+  },
   slowmode: {
    deleted: (channel: Discord.GuildChannel) => `Slomode of Channel ${channel} deleted`,
    success: (channel: Discord.GuildChannel, t: string) =>

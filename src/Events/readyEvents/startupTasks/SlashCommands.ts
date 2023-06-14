@@ -948,6 +948,11 @@ const user = new Discord.SlashCommandBuilder()
    .addUserOption(User),
  );
 
+const vote = new Discord.SlashCommandBuilder()
+ .setName('vote')
+ .setDescription('Vote for the Bot')
+ .setDMPermission(true);
+
 export default {
  public: {
   user,
@@ -967,6 +972,7 @@ export default {
   emoji,
   pardon,
   slowmode,
+  vote,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1060,5 +1066,6 @@ export default {
   user_info: 'info',
   user_avatar: 'utility',
   user_banner: 'utility',
+  vote: 'info',
  },
 };

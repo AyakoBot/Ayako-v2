@@ -3,7 +3,6 @@ import client from '../../BaseClient/Client.js';
 
 import startupTasks from './startupTasks.js';
 
-// eslint-disable-next-line no-console
 const { log } = console;
 
 export default async () => {
