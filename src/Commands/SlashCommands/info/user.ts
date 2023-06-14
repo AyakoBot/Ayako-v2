@@ -8,6 +8,8 @@ import auth from '../../../auth.json' assert { type: 'json' };
 const month = 2629743000;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+
  const userID = cmd.options.get('user-name', false)?.value as string | null;
  const language = await ch.languageSelector(cmd.guild?.id);
  const lan = language.slashCommands.info.user;

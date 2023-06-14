@@ -5,7 +5,8 @@ import glob from 'glob';
 const { log } = console;
 
 export default async (cmd: Discord.Interaction) => {
- if (!cmd.isChatInputCommand() && !cmd.isCommand()) return;
+ if (!cmd.isChatInputCommand()) return;
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
  const files: string[] = await new Promise((resolve) => {
   glob(`${process.cwd()}/Commands/SlashCommands/**/*`, (err, res) => {

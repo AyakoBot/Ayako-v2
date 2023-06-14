@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+
  const rawUser = cmd.options.getUser('user', false) || cmd.user;
 
  const language = await ch.languageSelector(cmd.guildId);

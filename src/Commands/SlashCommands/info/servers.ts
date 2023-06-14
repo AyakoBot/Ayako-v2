@@ -7,7 +7,7 @@ export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  page = 1,
 ) => {
- if (!cmd.inCachedGuild()) return;
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
  const servers = await getServers(language);
@@ -51,12 +51,12 @@ const getContent = (servers: { content: string; count: number }[]) =>
 const getPayload = (
  content: string[],
  language: CT.Language,
- guild: Discord.Guild,
+ guild?: Discord.Guild | undefined | null,
  page = 1,
 ): Discord.InteractionReplyOptions | Discord.InteractionUpdateOptions => ({
  embeds: [
   {
-   color: ch.colorSelector(guild.members.me),
+   color: ch.colorSelector(guild?.members.me),
    description: content[page - 1],
   },
  ],

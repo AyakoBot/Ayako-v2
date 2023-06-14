@@ -3,6 +3,8 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+
  const enteredID = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;
  const enteredInvite = cmd.options.get('server-invite', false)?.value as string | null;
