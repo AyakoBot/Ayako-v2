@@ -3,6 +3,12 @@ export default {
   { name: '🆙' },
   { name: 'AMayakopeek', id: '924071140257841162', animated: false },
  ],
+ ayakoLove: {
+  link: 'https://cdn.discordapp.com/emojis/874102206176034826.png',
+  name: 'AMayakoLove',
+  id: '874102206176034826',
+  animated: false,
+ },
  blobstop: {
   name: 'AMblobstop',
   id: '366035581387407362',
