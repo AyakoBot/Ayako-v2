@@ -22,7 +22,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      description: user.avatar ? undefined : language.None,
      color: ch.colorSelector(cmd.guild?.members.me),
     },
-    member
+    member && member.avatar
      ? {
         image: member.avatar
          ? {
