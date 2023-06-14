@@ -48,7 +48,7 @@ export default async (msg: Discord.Message) => {
         type: Discord.ComponentType.Button,
         style: Discord.ButtonStyle.Secondary,
         disabled: true,
-        customId: String(Math.random() * Date.now()),
+        customId: '-',
        },
       ],
      },
