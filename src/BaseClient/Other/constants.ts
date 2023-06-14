@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import type * as CT from '../../Typings/CustomTypings.js';
 
 const punishment = {
  warnamount: 'number',
@@ -196,6 +197,8 @@ export default {
   msgurl: (g: string, c: string | undefined, m: string) =>
    `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
+  user: (u: Discord.User | CT.bEvalUser) =>
+   `${u.discriminator === '0000' ? u.username : `${u.username}#${u.discriminator}`}`,
  },
  customembeds: {
   type: {

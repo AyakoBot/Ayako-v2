@@ -23,7 +23,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const res = await channel
-  .setRateLimitPerUser(time, `${cmd.user.tag} | ${reason ?? language.noReasonProvided}`)
+  .setRateLimitPerUser(
+   time,
+   `${ch.constants.standard.user(cmd.user)} | ${reason ?? language.noReasonProvided}`,
+  )
   .catch((err) => err as Discord.DiscordAPIError);
 
  if ('message' in res) {

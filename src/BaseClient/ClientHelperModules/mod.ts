@@ -266,8 +266,8 @@ const doDB = <T extends CT.ModTypes>(
       Date.now(),
       cmd?.channelId,
       (cmd?.channel as Discord.GuildBasedChannel | null)?.name,
-      executor?.id,
-      executor?.tag,
+      executor.id,
+      constants.standard.user(executor),
       message?.id,
       ...extraArgs,
      ]
@@ -278,8 +278,8 @@ const doDB = <T extends CT.ModTypes>(
       Date.now(),
       cmd?.channelId,
       (cmd?.channel as Discord.GuildBasedChannel | null)?.name,
-      executor?.id,
-      executor?.tag,
+      executor.id,
+      constants.standard.user(executor),
       message?.id,
      ];
 
@@ -372,14 +372,20 @@ const doAction = async <T extends CT.ModTypes>(
  switch (type) {
   case 'muteRemove': {
    return targetMember
-    ?.timeout(null, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.timeout(
+     null,
+     `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
+    )
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'tempMuteAdd': {
    const opts = options as CT.ModOptions<'tempMuteAdd'>;
 
    const timeout = await targetMember
-    ?.timeout(opts.duration, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.timeout(
+     opts.duration,
+     `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
+    )
     .catch((err: Discord.DiscordAPIError) => err);
 
    if (!(timeout instanceof Discord.GuildMember)) return timeout;
@@ -407,7 +413,7 @@ const doAction = async <T extends CT.ModTypes>(
    return options.guild.bans
     .create(target.id, {
      deleteMessageSeconds,
-     reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+     reason: `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
     })
     .catch((err: Discord.DiscordAPIError) => err);
   }
@@ -419,7 +425,7 @@ const doAction = async <T extends CT.ModTypes>(
    const ban = await options.guild.bans
     .create(target.id, {
      deleteMessageSeconds,
-     reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+     reason: `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
     })
     .catch((err: Discord.DiscordAPIError) => err);
 
@@ -433,7 +439,10 @@ const doAction = async <T extends CT.ModTypes>(
 
    if (type === 'softBanAdd') {
     return options.guild.bans
-     .remove(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+     .remove(
+      target.id,
+      `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
+     )
      .catch((err: Discord.DiscordAPIError) => err);
    }
 
@@ -464,7 +473,9 @@ const doAction = async <T extends CT.ModTypes>(
       target.id,
       {},
       {
-       reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+       reason: `${constants.standard.user(executor)} ${
+        options.reason ? `| ${options.reason}` : ''
+       }`,
        type: 1,
       },
      )
@@ -484,7 +495,7 @@ const doAction = async <T extends CT.ModTypes>(
       AddReactions: false,
      },
      {
-      reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+      reason: `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
       type: 1,
      },
     )
@@ -526,7 +537,7 @@ const doAction = async <T extends CT.ModTypes>(
       AddReactions: null,
      },
      {
-      reason: `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`,
+      reason: `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
       type: 1,
      },
     )
@@ -539,7 +550,10 @@ const doAction = async <T extends CT.ModTypes>(
     permUpdate?.permissionOverwrites.cache.get(target.id)?.allow.bitfield === 0n
    ) {
     return opts.channel?.permissionOverwrites
-     .delete(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+     .delete(
+      target.id,
+      `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
+     )
      .catch((err: Discord.DiscordAPIError) => err);
    }
 
@@ -547,12 +561,15 @@ const doAction = async <T extends CT.ModTypes>(
   }
   case 'banRemove': {
    return options.guild.bans
-    .remove(target.id, `${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    .remove(
+     target.id,
+     `${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`,
+    )
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'kickAdd': {
    return targetMember
-    ?.kick(`${executor?.tag} ${options.reason ? `| ${options.reason}` : ''}`)
+    ?.kick(`${constants.standard.user(executor)} ${options.reason ? `| ${options.reason}` : ''}`)
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'roleAdd': {

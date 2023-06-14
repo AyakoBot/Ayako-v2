@@ -13,7 +13,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   embeds: [
    {
     author: {
-     name: user.tag,
+     name: ch.constants.standard.user(user),
     },
     image: user.banner
      ? {

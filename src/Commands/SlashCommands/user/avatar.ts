@@ -14,7 +14,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    [
     {
      author: {
-      name: user.tag,
+      name: ch.constants.standard.user(user),
      },
      image: user.avatar
       ? {
