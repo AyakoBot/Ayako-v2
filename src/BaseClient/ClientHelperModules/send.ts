@@ -9,8 +9,14 @@ interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embed
  embeds?: Discord.APIEmbed[];
 }
 
+type ChannelTypes =
+ | Discord.TextChannel
+ | Discord.TextBasedChannel
+ | Discord.BaseGuildTextChannel
+ | Discord.BaseGuildVoiceChannel;
+
 async function send(
- channels: Discord.TextBasedChannel[],
+ channels: ChannelTypes[],
  payload: MessageCreateOptions,
  command?: CT.Command,
  timeout?: number,
@@ -28,15 +34,15 @@ async function send(
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
- channels: Discord.TextBasedChannel,
+ channels: ChannelTypes,
  payload: MessageCreateOptions,
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
 async function send(
  channels:
-  | Discord.TextBasedChannel
-  | Discord.TextBasedChannel[]
+  | ChannelTypes
+  | ChannelTypes[]
   | { id: string[]; guildId: string }
   | { id: string; guildId: string },
  payload: MessageCreateOptions,
@@ -53,12 +59,7 @@ async function send(
  if (Array.isArray(channels.id)) {
   const sentMessages = await Promise.all(
    channels.id.map((id) =>
-    send(
-     { id, guildId: (channels as Discord.GuildTextBasedChannel).guildId },
-     payload,
-     command,
-     timeout,
-    ),
+    send({ id, guildId: (channels as Discord.TextChannel).guildId }, payload, command, timeout),
    ),
   );
   return sentMessages;
