@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import query from './query.js';
 import * as getChannel from './getChannel.js';
 import objectEmotes from './objectEmotes.js';
+import languageSelector from './languageSelector.js';
+import constants from '../Other/constants.js';
 
 export default async (guild: Discord.Guild, err: Error) => {
  const errorchannel = await query(
@@ -14,6 +16,8 @@ export default async (guild: Discord.Guild, err: Error) => {
  const channel = await getChannel.guildTextChannel(errorchannel);
  if (!channel) return;
 
+ const language = await languageSelector(guild.id);
+
  channel.send({
   embeds: [
    {
@@ -25,7 +29,11 @@ export default async (guild: Discord.Guild, err: Error) => {
       value: `\`\`\`${err.stack?.replace(/file:\/\/\/root\/Bots\/Ayako-v1.6\/dist/g, '')}\`\`\``,
      },
     ],
-    title: 'Error',
+    author: {
+     name: 'Error',
+    },
+    title: language.errors.contactSupport,
+    url: constants.standard.support,
     thumbnail: {
      url: objectEmotes.warning.link,
     },
