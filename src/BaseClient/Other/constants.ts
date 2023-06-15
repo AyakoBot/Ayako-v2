@@ -198,7 +198,7 @@ export default {
    `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
   user: (u: Discord.User | CT.bEvalUser) =>
-   `${u.discriminator === '0000' ? u.username : `${u.username}#${u.discriminator}`}`,
+   `${u.discriminator === '0' ? u.username : `${u.username}#${u.discriminator}`}`,
  },
  customembeds: {
   type: {

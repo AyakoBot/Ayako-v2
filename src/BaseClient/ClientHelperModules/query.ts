@@ -8,7 +8,7 @@ function query<T extends keyof DBT.DBTables>(
  string: string,
  args?: unknown[],
  options?: {
-  debug?: false;
+  debug?: boolean;
   returnType: T;
   asArray: true;
  },
@@ -17,7 +17,7 @@ function query<T extends keyof DBT.DBTables>(
  string: string,
  args?: unknown[],
  options?: {
-  debug?: false;
+  debug?: boolean;
   returnType: T;
   asArray: false;
  },
@@ -26,7 +26,7 @@ async function query<T extends keyof DBT.DBTables>(
  string: string,
  args?: unknown[],
  options?: {
-  debug?: false;
+  debug?: boolean;
   returnType: T;
   asArray: boolean;
  },
