@@ -1,8 +1,6 @@
 import type * as Discord from 'discord.js';
 
 export default (array: string[] | string, source?: string, name = String(Date.now())) => {
- if (!array.length) return undefined;
-
  let content = '';
  const split = '\n';
 
