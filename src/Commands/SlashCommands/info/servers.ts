@@ -78,7 +78,7 @@ const getPayload = (
      label: language.slashCommands.settings.next,
      customId: `info/servers_${page + 1}`,
      emoji: ch.objectEmotes.forth,
-     disabled: page + 1 === content.length,
+     disabled: page === content.length,
     },
    ],
   },
