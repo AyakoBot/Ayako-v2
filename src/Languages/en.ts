@@ -1059,7 +1059,7 @@ export default {
    reminder: {
     name: 'You can vote again!',
     descBot: (bot: CT.bEvalUser | Discord.User) =>
-     `Your Vote time-out for \`${bot.tag}\` has ended`,
+     `Your Vote time-out for \`${ch.constants.standard.user(bot)}\` has ended`,
     descGuild: (guild: Discord.Guild) => `Your Vote time-out for \`${guild.name}\` has ended`,
     voteBot: (bot: CT.bEvalUser | Discord.User) =>
      `[Click here to Vote again](https://top.gg/bot/${bot.id}/vote)`,
@@ -1127,7 +1127,7 @@ export default {
  expire: {
   punishmentIssue: 'Punishment was issued at',
   punishmentOf: (target: Discord.User | CT.bEvalUser) =>
-   `A Punishment of ${target.tag} has expired`,
+   `A Punishment of ${ch.constants.standard.user(target)} has expired`,
   punishmentIn: 'Punished in',
   punishmentBy: 'Punished by',
   end: 'Punishment End',
@@ -1204,7 +1204,7 @@ export default {
    clickMe: 'Click me to join the Support Server',
   },
   afk: {
-   set: (user: Discord.User) => `\`${user.tag}\` went AFK`,
+   set: (user: Discord.User) => `\`${ch.constants.standard.user(user)}\` went AFK`,
    updated: 'AFK updated',
    removed: (t: string) => `Welcome Back!\nYou've been AFK since ${t}`,
    setReason: 'User went AFK',
@@ -1830,9 +1830,9 @@ export default {
    lastHeartbeat: 'Last Heartbeat',
   },
   emojis: {
-   createReason: (user: Discord.User) => `Emoji created by ${user.tag}`,
-   deleteReason: (user: Discord.User) => `Emoji deleted by ${user.tag}`,
-   editReason: (user: Discord.User) => `Emoji edited by ${user.tag}`,
+   createReason: (user: Discord.User) => `Emoji created by ${ch.constants.standard.user(user)}`,
+   deleteReason: (user: Discord.User) => `Emoji deleted by ${ch.constants.standard.user(user)}`,
+   editReason: (user: Discord.User) => `Emoji edited by ${ch.constants.standard.user(user)}`,
    created: (e: Discord.GuildEmoji) => `Successfully created ${getEmote(e)}`,
    deleted: (e: Discord.GuildEmoji) => `Successfully deleted ${getEmote(e)}`,
    edited: (e: Discord.GuildEmoji) => `Successfully edited ${getEmote(e)}`,
@@ -1894,7 +1894,7 @@ export default {
     authorUser: `${name} User-Info`,
     authorBot: `${name} Bot-Info`,
     userInfo: (user: Discord.User) =>
-     `**User:** ${user}\n**Tag:** \`${user.tag}\`\n**Discriminator:** \`${
+     `**User:** ${user}\n**Tag:** \`${ch.constants.standard.user(user)}\`\n**Discriminator:** \`${
       user.discriminator
      }\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** ${
       user.accentColor ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\`` : None
@@ -2973,9 +2973,6 @@ export default {
    },
   },
   giveaway: {
-   description: 'Create a Giveaway',
-   usage: ['giveaway'],
-   category: 'Giveaway',
    noneFound: 'No Giveaways found',
    create: {
     description: 'Create a Giveaway',
@@ -2983,12 +2980,12 @@ export default {
     invalidTime: 'The provided Time was invalid',
     author: `${name} Giveaways`,
     participants: 'Participants',
-    winners: 'Possible Winners: ',
-    end: 'End:',
-    host: 'Giveaway Host',
+    winners: (n: number) => `Possible Winners: ${n}`,
+    end: (e: string) => `End: ${e}`,
+    host: (u: Discord.User) => `Giveaway Host: ${ch.constants.standard.user(u)}`,
     roleRequire: 'Required Role to enter this Giveaway',
     participate: 'Participate',
-    sent: (channel: Discord.Channel) => `Giveaway started in <#${channel.id}>`,
+    sent: (channel: Discord.Channel) => `Giveaway started in ${channel}`,
     error: 'Failed to create Giveaway',
    },
    end: {
@@ -3355,7 +3352,6 @@ export default {
   memberNotFound: 'Member not found',
   notAvailableAPI: 'This Command is not yet available due to Discord API limitations',
   sendMessage: 'I cannot send Messages in this Channel',
-  lackingAccess: (emotes: string) => `I'm lacking access to these emotes: ${emotes}`,
   channelNotManageable: "I'm lacking Permissions to edit that Channel",
   roleNotManageable: "I'm lacking Permissions to manage that Role",
   roleNotFound: 'Role not Found',
@@ -3368,6 +3364,7 @@ export default {
   cantManage: "You can't manage this Member",
   cantManageChannel: "I can't manage this Channel",
   commandNotFound: 'Command not found',
+  timeInPast: 'Time is in the past',
  },
  channelRules: {
   HasLeastAttachments: (val: Strumber) => `Has at least ${val} Attachments`,
