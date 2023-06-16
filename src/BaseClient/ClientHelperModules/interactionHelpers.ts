@@ -125,20 +125,12 @@ const reply = async (
    payload.embeds?.push(data);
   });
 
-  const newUsers = cmd.message.content
-   .split(/\s+/g)
-   .filter((arg) => arg.startsWith('<@') && arg.endsWith('>'))
-   .map((arg) => arg.replace(/\D+/g, ''))
-   .filter(
-    (arg) =>
-     !!arg.length &&
-     arg !== author.id &&
-     arg !== new URL(cmd.message.embeds[0].url ?? 'https://ayakobot.com').searchParams.get('exec'),
-   );
+  const newUsers = cmd.customId.split('_').filter((u) => u !== author.id);
+  newUsers.shift();
 
-  const lastUser = newUsers.length > 1 ? users.pop() : undefined;
+  const lastUser = newUsers.length > 1 ? newUsers.pop() : undefined;
   payload.content = lastUser
-   ? `${mapper(newUsers)} ${language.and} ${lastUser}`
+   ? `${mapper(newUsers)} ${language.and} <@${lastUser}>`
    : `${mapper(newUsers)}`;
   if (!lastUser && !newUsers.length) payload.content = '';
 
