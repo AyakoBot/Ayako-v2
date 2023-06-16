@@ -257,7 +257,7 @@ const getComponents = (
    .filter((c): c is Discord.ButtonComponent => c.type === Discord.ComponentType.Button)
    .map((c) => ({
     label: c.label as string,
-    custom_id: `rp/${c.customId?.split(/_+/g)[0]}_${replyUsers.join('_')}`,
+    custom_id: `${c.customId?.split(/_+/g)[0]}_${replyUsers.join('_')}`,
     style: Discord.ButtonStyle.Secondary,
     type: c.type,
    })),
