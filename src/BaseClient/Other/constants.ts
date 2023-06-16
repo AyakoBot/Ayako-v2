@@ -197,7 +197,7 @@ export default {
   msgurl: (g: string, c: string | undefined, m: string) =>
    `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
-  user: (u: Discord.User | CT.bEvalUser) =>
+  user: (u: Discord.User | CT.bEvalUser | { discriminator: string; username: string }) =>
    `${u.discriminator === '0' ? u.username : `${u.username}#${u.discriminator}`}`,
  },
  customembeds: {

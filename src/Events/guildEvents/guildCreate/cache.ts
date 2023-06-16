@@ -2,6 +2,7 @@ import type * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
 
 export default async (guild: Discord.Guild) => {
  guild.members.fetch();
@@ -53,22 +54,32 @@ export default async (guild: Discord.Guild) => {
  await guild.autoModerationRules.fetch().catch(() => undefined);
 
  const claimTimeouts = await ch.query(
-  `SELECT * FROM giveawaycollecttime WHERE guildId = $1;`,
-  [String(guild.id)],
+  `SELECT * FROM giveawaycollection WHERE guildId = $1;`,
+  [guild.id],
   {
-   returnType: 'giveawaycollecttime',
+   returnType: 'giveawaycollection',
    asArray: true,
   },
  );
 
- // eslint-disable-next-line @typescript-eslint/no-unused-vars
- const giveawayCollectTimeoutFunction = (_: unknown) => null; // TODO: import from resolver
- claimTimeouts?.forEach((t) => giveawayCollectTimeoutFunction(t));
+ claimTimeouts?.forEach((t) => {
+  ch.cache.giveawayClaimTimeout.set(
+   Jobs.scheduleJob(
+    new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
+    () => {
+     giveawayCollectTimeExpired(t.msgid, t.guildid);
+    },
+   ),
+   t.guildid,
+   t.msgid,
+  );
+ });
 
  const mutes = await ch.query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id], {
   returnType: 'punish_tempmutes',
   asArray: true,
  });
+
  mutes?.forEach((m) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration);
   ch.cache.mutes.set(
@@ -173,7 +184,7 @@ export default async (guild: Discord.Guild) => {
 
  const disboardBumpReminders = await ch.query(
   `SELECT * FROM disboard WHERE guildid = $1;`,
-  [String(guild.id)],
+  [guild.id],
   {
    returnType: 'disboard',
    asArray: false,
@@ -181,16 +192,26 @@ export default async (guild: Discord.Guild) => {
  );
  if (disboardBumpReminders) disboard(disboardBumpReminders);
 
- // eslint-disable-next-line @typescript-eslint/no-unused-vars
- const giveawayEnd = (_: unknown) => null; // TODO: import giveaway handler
-
  const giveaways = await ch.query(
-  `SELECT * FROM giveaways WHERE guildid = $1;`,
-  [String(guild.id)],
+  `SELECT * FROM giveaways WHERE guildid = $1 AND ended = false AND claimingdone = false;`,
+  [guild.id],
   {
-   returnType: 'disboard',
+   returnType: 'giveaways',
    asArray: true,
   },
  );
- giveaways?.forEach((g) => giveawayEnd(g));
+
+ giveaways?.forEach((g) => {
+  ch.cache.giveaways.set(
+   Jobs.scheduleJob(
+    new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
+    () => {
+     end(g);
+    },
+   ),
+   g.guildid,
+   g.channelid,
+   g.msgid,
+  );
+ });
 };

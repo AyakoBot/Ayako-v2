@@ -5,7 +5,7 @@ import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings';
 
-export default async (
+export default (
  guild: Discord.Guild,
  {
   lan,
@@ -14,7 +14,7 @@ export default async (
   language: CT.Language;
   lan: { author: string; loading?: string };
  },
-): Promise<Discord.APIEmbed> => ({
+): Discord.APIEmbed => ({
  author: {
   name: lan.author,
   icon_url: objectEmotes.loading.link,

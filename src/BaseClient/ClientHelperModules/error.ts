@@ -31,12 +31,10 @@ export default async (guild: Discord.Guild, err: Error) => {
     ],
     author: {
      name: 'Error',
+     icon_url: objectEmotes.warning.link,
     },
     title: language.errors.contactSupport,
     url: constants.standard.support,
-    thumbnail: {
-     url: objectEmotes.warning.link,
-    },
    },
   ],
  });

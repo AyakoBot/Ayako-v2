@@ -26,7 +26,7 @@ export interface DBTables {
  stickyrolemembers: stickyrolemembers;
  suggestionvotes: suggestionvotes;
  users: users;
- giveawaycollecttime: giveawaycollecttime;
+ giveawaycollection: giveawaycollection;
  voters: voters;
  stickymessages: stickymessages;
  nitrousers: nitrousers;
@@ -110,16 +110,19 @@ export type customembeds = {
 export type giveaways = {
  guildid: string;
  msgid: string;
- description: string;
  winnercount: string;
  endtime: string;
- reqrole?: string;
- actualprize?: string;
  host: string;
  ended: boolean;
  channelid: string;
- participants?: string[];
+ participants: string[];
+ reqrole?: string;
+ actualprize?: string;
+ description: string;
  collecttime?: number;
+ failreroll?: boolean;
+ claimingdone: boolean;
+ winners: string[];
 };
 
 export type level = {
@@ -243,12 +246,11 @@ export type users = {
  ptremindersent: boolean;
 };
 
-export interface giveawaycollecttime {
- userid: string;
- prize: string;
+export interface giveawaycollection {
  msgid: string;
- endtime: number;
  guildid: string;
+ endtime: string;
+ replymsgid: string;
 }
 
 export type voters = {

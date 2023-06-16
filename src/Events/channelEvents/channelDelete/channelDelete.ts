@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import log from './log.js';
-import stickymessage from './stickymessage.js';
+import cache from './cache.js';
 
 export default async (channel: Discord.Channel) => {
  if (channel.type === Discord.ChannelType.DM) return;
@@ -14,5 +14,5 @@ export default async (channel: Discord.Channel) => {
  }
 
  log(channel);
- stickymessage(channel);
+ cache(channel);
 };

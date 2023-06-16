@@ -64,8 +64,8 @@ const cache: {
 
  // Cache
  giveawayClaimTimeout: {
-  set: (job: Jobs.Job, guildId: string, userId: string) => void;
-  delete: (guildId: string, userId: string) => void;
+  set: (job: Jobs.Job, guildId: string, msgId: string) => void;
+  delete: (guildId: string, msgId: string) => void;
   cache: Map<string, Map<string, Jobs.Job>>;
  };
  mutes: {
@@ -416,23 +416,23 @@ const cache: {
  },
 
  giveawayClaimTimeout: {
-  set: (job, guildId, userId) => {
-   const cached = cache.giveawayClaimTimeout.cache.get(guildId)?.get(userId);
+  set: (job, guildId, msgId) => {
+   const cached = cache.giveawayClaimTimeout.cache.get(guildId)?.get(msgId);
    cached?.cancel();
 
    if (!cache.giveawayClaimTimeout.cache.get(guildId)) {
     cache.giveawayClaimTimeout.cache.set(guildId, new Map());
    }
-   cache.giveawayClaimTimeout.cache.get(guildId)?.set(userId, job);
+   cache.giveawayClaimTimeout.cache.get(guildId)?.set(msgId, job);
   },
-  delete: (guildId, userId) => {
-   const cached = cache.giveawayClaimTimeout.cache.get(guildId)?.get(userId);
+  delete: (guildId, msgId) => {
+   const cached = cache.giveawayClaimTimeout.cache.get(guildId)?.get(msgId);
    cached?.cancel();
 
    if (cache.giveawayClaimTimeout.cache.get(guildId)?.size === 1) {
     cache.giveawayClaimTimeout.cache.delete(guildId);
    } else {
-    cache.giveawayClaimTimeout.cache.get(guildId)?.delete(userId);
+    cache.giveawayClaimTimeout.cache.get(guildId)?.delete(msgId);
    }
   },
   cache: new Map(),

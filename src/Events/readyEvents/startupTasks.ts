@@ -52,7 +52,8 @@ const animekosInviteStats = async () => {
  const inviteTxt = ch.txtFileWriter(
   `${invites
    .map((i) => (Number(i.uses) > 9 ? `${i.code} ${i.uses}` : null))
-   .filter((i): i is string => !!i)}\n${guild.memberCount}`,
+   .filter((i): i is string => !!i)
+   .join('\n')}\n${guild.memberCount}`,
  );
  if (!inviteTxt) return;
 

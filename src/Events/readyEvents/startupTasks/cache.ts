@@ -1,7 +1,8 @@
 import * as Jobs from 'node-schedule';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -40,7 +41,7 @@ export default () => {
    pins?.forEach((pin) => ch.cache.pins.set(pin));
   });
 
-  if (guild.features.includes('WELCOME_SCREEN_ENABLED')) {
+  if (guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
    const welcomeScreen = await guild.fetchWelcomeScreen().catch(() => undefined);
    if (welcomeScreen) ch.cache.welcomeScreens.set(welcomeScreen);
   }
@@ -61,17 +62,26 @@ export default () => {
   await guild.autoModerationRules.fetch().catch(() => undefined);
 
   const claimTimeouts = await ch.query(
-   `SELECT * FROM giveawaycollecttime WHERE guildId = $1;`,
+   `SELECT * FROM giveawaycollection WHERE guildId = $1;`,
    [guild.id],
    {
-    returnType: 'giveawaycollecttime',
+    returnType: 'giveawaycollection',
     asArray: true,
    },
   );
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const giveawayCollectTimeoutFunction = (_: unknown) => null; // TODO: import from resolver
-  claimTimeouts?.forEach((t) => giveawayCollectTimeoutFunction(t));
+  claimTimeouts?.forEach((t) => {
+   ch.cache.giveawayClaimTimeout.set(
+    Jobs.scheduleJob(
+     new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
+     () => {
+      giveawayCollectTimeExpired(t.msgid, t.guildid);
+     },
+    ),
+    t.guildid,
+    t.msgid,
+   );
+  });
 
   const mutes = await ch.query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id], {
    returnType: 'punish_tempmutes',
@@ -197,17 +207,27 @@ export default () => {
   );
   if (disboardBumpReminders) disboard(disboardBumpReminders);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const giveawayEnd = (_: unknown) => null; // TODO: import giveaway handler
-
   const giveaways = await ch.query(
-   `SELECT * FROM giveaways WHERE guildid = $1;`,
-   [String(guild.id)],
+   `SELECT * FROM giveaways WHERE guildid = $1 AND ended = false AND claimingdone = false;`,
+   [guild.id],
    {
     returnType: 'giveaways',
     asArray: true,
    },
   );
-  giveaways?.forEach((g) => giveawayEnd(g));
+
+  giveaways?.forEach((g) => {
+   ch.cache.giveaways.set(
+    Jobs.scheduleJob(
+     new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
+     () => {
+      end(g);
+     },
+    ),
+    g.guildid,
+    g.channelid,
+    g.msgid,
+   );
+  });
  });
 };

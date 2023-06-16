@@ -77,9 +77,9 @@ const getUser = (
   | Discord.User
   | { bot: boolean; id: string; username: string; discriminator: string },
 ) =>
- `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${user?.username}#${user?.discriminator}\` / \`${
-  user?.id
- }\`\n`;
+ `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${
+  user ? ch.constants.standard.user(user) : Unknown
+ }\` / \`${user?.id}\`\n`;
 
 const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
  `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
@@ -1679,7 +1679,7 @@ export default {
     placeholder2: `${name} will merge the code of all Fields together`,
     placeholder3: 'Properly escaping the Code will cause Errors',
     placeholder4:
-     'Also Embeds have a maximum of 6000 Characters, so you probably wont ever fill this one',
+     "Also Embeds have a maximum Length of 6000 Characters, so you probably won't ever need this one",
    },
    create: {
     start: {
@@ -1759,7 +1759,7 @@ export default {
     },
     author: `${name} Embed Builder`,
     desc:
-     'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)\n\nSupported String Replacements',
+     'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)',
     quick: 'Quick Help',
     fields: [
      'This Part is used in Leveling Settings\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message',
@@ -2973,8 +2973,23 @@ export default {
    },
   },
   giveaway: {
-   noneFound: 'No Giveaways found',
+   notFoundOrEnded: 'Giveaway not found or already ended',
+   notFound: 'Giveaway not found',
+   list: {
+    noGiveaways: 'No Giveaways found',
+    end: 'End',
+    winnercount: 'Winner Count',
+    claimingdone: 'Claiming done',
+    notEnabled: 'Not enabled',
+    host: 'Host',
+    reqrole: 'Required Role',
+    collecttime: 'Collect Timeout',
+    failreroll: 'Re-roll if not collected',
+    prize: 'Prize',
+   },
    create: {
+    collectTimeTooShort:
+     'The Collect Timeout is too short, should be longer than or equal to  1 Hour',
     description: 'Create a Giveaway',
     missingPermissions: "I can't send or view Messages in this Channel",
     invalidTime: 'The provided Time was invalid',
@@ -2989,35 +3004,38 @@ export default {
     error: 'Failed to create Giveaway',
    },
    end: {
-    description: 'End a Giveaway manually',
     ended: 'Ended',
     winner: 'Winner',
     winners: 'Winners',
-    author: `${name} Giveaways`,
-    title: 'Congratulations! You won a Giveaway! [Click me to get to the Giveaway]',
+    title: 'Congratulations! You won a Giveaway!',
     trouble: 'If you have trouble with your Giveaway, DM or Mention the User below',
-    getPrize: 'To get your Prize, DM or Mention the User below',
-    couldntDM: (user: CT.bEvalUser | Discord.User) =>
-     `I was unable to DM <@${user.id}> / \`${user.username}#${user.discriminator}\` / \`${user.id}\``,
+    dmUser: 'To get your Prize, DM or Mention the User below',
     noValidEntries: 'No valid Entries | No Winner picked',
-    checkDMs: 'Check your DMs! | If you had your DMs closed, DM or Mention the User below',
-    button: 'Get to Giveaway',
+    button: 'Go to Giveaway',
     manuallyEnded: 'Manually Ended Giveaway',
-    clickButton: 'Click the Button below to claim your Prize',
+    clickButton: 'Go to the Giveaway and click `Claim` to claim your Prize',
     limitedTime: (inTime: string, t: string) => `Your prize expires ${inTime} (${t})`,
     timeRanOut:
      'You can no longer claim your Prize since you took too long to claim it\nI will now re-roll the Giveaway',
+    until: (t: string) => `Your Prize expires ${t}`,
+    claim: 'Claim',
+    claimingdone: 'Everyone claimed',
+    expired: 'Claiming expired',
+   },
+   claim: {
+    notWinner: 'You are not a Winner of this Giveaway',
    },
    participate: {
     cantEnter: "You don't meet the Requirements to participate in this Giveaway",
     entered: 'You are now participating in this Giveaway',
     left: 'You are no longer participating in this Giveaway',
-    participants: 'Participants',
+    participants: (n: number) => `${n} Participants`,
+    notFound: 'Either the Giveaway ended or it was deleted',
    },
    edit: {
     description: 'Edit a Giveaway',
     invalidTime: 'The given Time was not valid',
-    noChanges: 'No valid changes were made',
+    noChanges: 'No valid Changes were made',
     success: 'Successfully edited Giveaway',
     button: 'Get to Giveaway',
     noOptionsProvided: 'Please provide Options to change',
@@ -3026,6 +3044,9 @@ export default {
     description: 'Re-roll a Giveaway',
     rerolled: 'Successfully re-rolled Giveaway',
     button: 'Get to Giveaway',
+   },
+   cancel: {
+    cancelled: 'Giveaway Cancelled',
    },
   },
  },
@@ -3335,6 +3356,7 @@ export default {
   },
  },
  errors: {
+  contactSupport: "If you see this Message and don't know what to do, contact Support [click me]",
   inputNoMatch: 'Input did not match validation Regex',
   punishmentNotFound: 'The Mentioned Punishment could not be found',
   invalidEmote: 'Invalid Emote',
