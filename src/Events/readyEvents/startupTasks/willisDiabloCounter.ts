@@ -34,7 +34,7 @@ const sendMessage = () => {
 };
 
 export default async () => {
- Jobs.scheduleJob('0 * * * * *', () => {
+ Jobs.scheduleJob('0 0 * * * *', () => {
   helltideConnection.send('0');
   sendMessage();
  });
@@ -63,9 +63,12 @@ const counter = async (endTime: number, startTime: number) => {
  const messages = await c.messages.fetch({ limit: 100 });
  const lastMessage = messages
   .filter((m) => m.author.id === m.client.user.id)
-  .filter((m) => m.createdTimestamp > Date.now() - 1200000);
+  .filter((m) => m.createdTimestamp > Date.now() - 3600000);
 
  if (lastMessage.size) return;
+
+ const msgs = messages.filter((m) => m.author.id === m.client.user.id);
+ msgs.forEach((m) => m.delete().catch(() => null));
 
  c.send({
   embeds: [embed],

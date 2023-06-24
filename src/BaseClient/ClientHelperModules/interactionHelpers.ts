@@ -64,7 +64,7 @@ const reply = async (
 
  const gifCallers = getGif.filter((c) => c.triggers.includes(commandName));
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
- const gif = (await gifCaller.gifs()) as ReturnType<'gif'>;
+ const gif = (await gifCaller.gifs().catch(() => undefined)) as ReturnType<'gif'> | undefined;
 
  const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
   returnType: 'guildsettings',
@@ -79,12 +79,12 @@ const reply = async (
    cmd instanceof Discord.ButtonInteraction
   )}`,
   description: `${desc}  ${otherText}${text.length ? `\n"${text}"` : ''}`,
-  footer: gif.anime_name
+  footer: gif?.anime_name
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
    : undefined,
  };
- if (setting) embed.thumbnail = { url: gif.url };
- else embed.image = { url: gif.url };
+ if (setting && gif) embed.thumbnail = { url: gif.url };
+ else if (gif) embed.image = { url: gif.url };
 
  const replyUsers =
   cmd instanceof Discord.ButtonInteraction

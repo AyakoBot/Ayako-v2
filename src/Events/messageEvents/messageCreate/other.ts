@@ -8,6 +8,7 @@ export default async (msg: Discord.Message) => {
 
  gvMessageCheck(msg);
  amMessageCheck(msg);
+ amInproperStaffPingIdiot(msg);
 
  if (
   (msg.channelId === '554487212276842534' || msg.channelId === '791390835916537906') &&
@@ -142,4 +143,33 @@ const amMessageCheck = (msg: Discord.Message) => {
  };
 
  levelUp();
+};
+
+const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
+ if (msg.guildId !== '298954459172700181') return;
+
+ const roleMembers = msg.guild?.roles.cache.get('809261905855643668')?.members.map((m) => m.id);
+ if (roleMembers?.includes(msg.author.id)) return;
+ if (!roleMembers) return;
+ if (!msg.mentions.members?.hasAny(...roleMembers)) return;
+
+ const oldMessages = await msg.channel.messages.fetch({ limit: 100 });
+ const authors = (oldMessages as Discord.Collection<string, Discord.Message<boolean>>).map(
+  (m) => m.author.id,
+ );
+
+ const mentionedStaff = msg.mentions.members.filter((m) => roleMembers.includes(m.id));
+ if (mentionedStaff.hasAny(...authors)) return;
+
+ const m = await msg.reply({
+  content:
+   '## If you see any rule violation, please be sure to mention the Staff Role, not a single Staff Member.',
+  allowedMentions: {
+   repliedUser: true,
+  },
+ });
+
+ jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+  if (m.deletable) m.delete().catch(() => null);
+ });
 };
