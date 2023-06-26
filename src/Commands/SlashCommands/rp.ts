@@ -42,7 +42,7 @@ export default async (
 
  if (isReplied) {
   if (!cmd.isMessageComponent()) return;
-  cmd.update(payload as Discord.InteractionUpdateOptions);
+  await cmd.editReply(payload);
  } else ch.replyCmd(cmd, payload);
 };
 

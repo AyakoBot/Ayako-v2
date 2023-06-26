@@ -5,6 +5,16 @@ import rp from '../../SlashCommands/rp.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
+ const language = await ch.languageSelector(cmd.guildId);
+
+ await cmd.deferUpdate();
+ cmd.editReply({
+  components: [],
+  embeds: [
+   ch.loadingEmbed(cmd.guild, { language, lan: { author: language.slashCommands.rp.author } }),
+  ],
+ });
+
  const settings = !(await ch
   .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
    returnType: 'guildsettings',
