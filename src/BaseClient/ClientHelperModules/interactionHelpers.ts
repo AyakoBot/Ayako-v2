@@ -64,7 +64,7 @@ const reply = async (
 
  const gifCallers = getGif.filter((c) => c.triggers.includes(commandName));
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
- const gif = (await gifCaller.gifs().catch(() => undefined)) as ReturnType<'gif'> | undefined;
+ const gif = (await gifCaller.gifs()) as ReturnType<'gif'> | undefined;
 
  const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
   returnType: 'guildsettings',
@@ -161,7 +161,7 @@ const reply = async (
 
   const m = await send(realCmd.channel, payload as never);
   if (m?.editable) m.edit({ content });
- } else replyCmd(cmd, { ...payload, ephemeral: false });
+ } else replyCmd(cmd, { ...payload, ephemeral: false } as Discord.InteractionReplyOptions);
 };
 
 export default reply;

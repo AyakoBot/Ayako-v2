@@ -3,14 +3,19 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as DBT from '../../../Typings/DataBaseTypings.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => {
+export default async (
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ page = 0,
+) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
 
- const giveaways = await ch.query(`SELECT * FROM giveaways WHERE guildid = $1;`, [cmd.guildId], {
-  returnType: 'giveaways',
-  asArray: true,
- });
+ const giveaways = (
+  await ch.query(`SELECT * FROM giveaways WHERE guildid = $1;`, [cmd.guildId], {
+   returnType: 'giveaways',
+   asArray: true,
+  })
+ )?.sort((a, b) => Number(b.msgid) - Number(a.msgid));
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.list;
@@ -55,7 +60,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     g.collecttime
      ? {
         name: language.slashCommands.giveaway.list.collecttime,
-        value: ch.constants.standard.getTime(Number(g.collecttime)),
+        value: ch.util.makeInlineCode(ch.moment(Number(g.collecttime), language)),
        }
      : undefined,
     {
@@ -69,12 +74,36 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   })),
  };
 
- ch.replyCmd(cmd, { embeds: [embed] });
+ ch.replyCmd(cmd, {
+  embeds: [embed],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: getButtons(page, giveaways ?? []),
+   },
+  ],
+ });
 };
 
 const getClaimingDone = (g: DBT.giveaways, language: CT.Language) => {
  if (!g.collecttime || !g.actualprize) return language.slashCommands.giveaway.list.notEnabled;
-
  if (!g.claimingdone) return ch.stringEmotes.crossWithBackground;
  return ch.stringEmotes.tickWithBackground;
 };
+
+const getButtons = (page: number, giveaways: DBT.giveaways[]): Discord.ButtonComponentData[] => [
+ {
+  type: Discord.ComponentType.Button,
+  emoji: ch.objectEmotes.back,
+  style: Discord.ButtonStyle.Primary,
+  customId: `giveaway/list_${page - 1}`,
+  disabled: page === 0,
+ },
+ {
+  type: Discord.ComponentType.Button,
+  emoji: ch.objectEmotes.forth,
+  style: Discord.ButtonStyle.Primary,
+  customId: `giveaway/list_${page + 1}`,
+  disabled: Math.ceil(giveaways.length / 25) - 1 === page,
+ },
+];

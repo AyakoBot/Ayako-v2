@@ -162,7 +162,7 @@ const additionalChecks = async <T extends CT.ModTypes>(
  switch (type) {
   case 'roleAdd':
   case 'roleRemove': {
-   const opts = options as CT.ModOptions<'roleAdd' | 'roleRemove'>;
+   const opts = options as unknown as CT.ModOptions<'roleAdd' | 'roleRemove'>;
    if (executorMember.roles.highest.position < opts.role.position) return false;
    if (Number(opts.guild.members.me?.roles.highest.position) < opts.role.position) return false;
    return true;
@@ -298,7 +298,7 @@ const doDB = <T extends CT.ModTypes>(
    break;
   }
   case 'tempMuteAdd': {
-   const opts = options as CT.ModOptions<'tempMuteAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempMuteAdd'>;
    insertRow('punish_tempmutes', ['duration'], [String(opts.duration)]);
    break;
   }
@@ -308,17 +308,17 @@ const doDB = <T extends CT.ModTypes>(
    break;
   }
   case 'tempBanAdd': {
-   const opts = options as CT.ModOptions<'tempBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempBanAdd'>;
    insertRow('punish_tempbans', ['duration'], [String(opts.duration)]);
    break;
   }
   case 'channelBanAdd': {
-   const opts = options as CT.ModOptions<'channelBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<'channelBanAdd'>;
    insertRow('punish_channelbans', ['banchannelid'], [opts.channel?.id]);
    break;
   }
   case 'tempChannelBanAdd': {
-   const opts = options as CT.ModOptions<'tempChannelBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempChannelBanAdd'>;
    insertRow(
     'punish_tempchannelbans',
     ['banchannelid', 'duration'],
@@ -327,7 +327,7 @@ const doDB = <T extends CT.ModTypes>(
    break;
   }
   case 'channelBanRemove': {
-   const opts = options as CT.ModOptions<'tempChannelBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempChannelBanAdd'>;
    getAndDeleteRow(
     'punish_tempchannelbans',
     'punish_channelbans',
@@ -379,7 +379,7 @@ const doAction = async <T extends CT.ModTypes>(
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'tempMuteAdd': {
-   const opts = options as CT.ModOptions<'tempMuteAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempMuteAdd'>;
 
    const timeout = await targetMember
     ?.timeout(
@@ -446,7 +446,7 @@ const doAction = async <T extends CT.ModTypes>(
      .catch((err: Discord.DiscordAPIError) => err);
    }
 
-   const opts = options as CT.ModOptions<'tempBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<'tempBanAdd'>;
    cache.bans.set(
     Jobs.scheduleJob(new Date(Date.now() + opts.duration), () =>
      run(cmd, 'banRemove', {
@@ -524,7 +524,7 @@ const doAction = async <T extends CT.ModTypes>(
    return permUpdate;
   }
   case 'channelBanRemove': {
-   const opts = options as CT.ModOptions<'channelBanRemove'>;
+   const opts = options as unknown as CT.ModOptions<'channelBanRemove'>;
 
    const permUpdate = await opts.channel?.permissionOverwrites
     .edit(
@@ -573,13 +573,13 @@ const doAction = async <T extends CT.ModTypes>(
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'roleAdd': {
-   const opts = options as CT.ModOptions<'roleAdd'>;
+   const opts = options as unknown as CT.ModOptions<'roleAdd'>;
    return targetMember?.roles
     .add(opts.role.id, options.reason)
     .catch((err: Discord.DiscordAPIError) => err);
   }
   case 'roleRemove': {
-   const opts = options as CT.ModOptions<'roleRemove'>;
+   const opts = options as unknown as CT.ModOptions<'roleRemove'>;
    return targetMember?.roles
     .remove(opts.role.id, options.reason)
     .catch((err: Discord.DiscordAPIError) => err);
@@ -643,7 +643,7 @@ const checkPunished = async <T extends CT.ModTypes>(
    );
   }
   case 'channelBanRemove': {
-   const opts = options as CT.ModOptions<'channelBanRemove'>;
+   const opts = options as unknown as CT.ModOptions<'channelBanRemove'>;
    const perm = opts.channel?.permissionOverwrites.cache.get(target.id)?.deny;
    return (
     !perm?.has(2048n) ||
@@ -660,11 +660,11 @@ const checkPunished = async <T extends CT.ModTypes>(
    return !options.guild?.members.cache.has(target.id);
   }
   case 'roleAdd': {
-   const opts = options as CT.ModOptions<'roleAdd'>;
+   const opts = options as unknown as CT.ModOptions<'roleAdd'>;
    return targetMember?.roles.cache.has(opts.role.id);
   }
   case 'roleRemove': {
-   const opts = options as CT.ModOptions<'roleRemove'>;
+   const opts = options as unknown as CT.ModOptions<'roleRemove'>;
    return !targetMember?.roles.cache.has(opts.role.id);
   }
   default: {
@@ -713,7 +713,7 @@ const checkPunishable = <T extends CT.ModTypes>(
   }
   case 'roleRemove':
   case 'roleAdd': {
-   const opts = options as CT.ModOptions<'roleAdd' | 'roleRemove'>;
+   const opts = options as unknown as CT.ModOptions<'roleAdd' | 'roleRemove'>;
    if (
     opts.role.rawPosition < Number(options.guild.members.me?.roles.highest.rawPosition) &&
     targetMember?.manageable

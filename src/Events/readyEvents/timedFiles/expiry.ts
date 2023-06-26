@@ -61,7 +61,7 @@ const expire = async (row: { expire: string; guildid: string }, tableName: strin
  logExpire(tableRows, row.guildid);
 };
 
-const logExpire = async (rows: DBT.Punishment[], guildid: string) => {
+const logExpire = async (rows: (DBT.Punishment | DBT.TempPunishment)[], guildid: string) => {
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 

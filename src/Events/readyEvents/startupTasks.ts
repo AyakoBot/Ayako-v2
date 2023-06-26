@@ -46,7 +46,7 @@ const animekosInviteStats = async () => {
  const guild = client.guilds.cache.get('298954459172700181');
  if (!guild) return;
 
- const invites = await guild.invites.fetch();
+ const invites = await ch.getAllInvites(guild);
  if (!invites) return;
 
  const inviteTxt = ch.txtFileWriter(

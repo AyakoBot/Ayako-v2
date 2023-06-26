@@ -5,7 +5,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return [];
  if (!cmd.guild) return [];
 
- const messageID = cmd.options.getString('message-id', true);
+ const entered = cmd.options.getString('message-id', true);
 
  const giveaways = await ch.query(`SELECT * FROM giveaways WHERE guildid = $1;`, [cmd.guildId], {
   returnType: 'giveaways',
@@ -15,7 +15,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!giveaways?.length) return [];
 
  const giveaway = giveaways
-  .filter((g) => (messageID.length ? g.msgid === messageID : true))
+  .filter((g) =>
+   entered.length ? g.msgid.includes(entered) || g.description.includes(entered) : true,
+  )
   .slice(0, 25);
 
  return giveaway.map((g) => ({ name: g.description.slice(0, 100), value: g.msgid }));

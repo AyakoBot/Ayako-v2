@@ -117,7 +117,7 @@ const buttonParsers = {
    label: (
     (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
      name
-    ] as Record<string, string>
+    ] as unknown as Record<string, string>
    ).name,
    style:
     (typeof setting !== 'boolean' && setting?.length) || !!setting
@@ -139,10 +139,9 @@ const buttonParsers = {
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   label: (
-   (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[name] as Record<
-    string,
-    string
-   >
+   (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
+    name
+   ] as unknown as Record<string, string>
   ).name,
   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
   custom_id: `settings/editors/settinglink_${String(
@@ -165,7 +164,7 @@ const buttonParsers = {
    label: (
     (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
      name
-    ] as Record<'name', string>
+    ] as unknown as Record<'name', string>
    ).name,
    style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
@@ -524,12 +523,12 @@ const changeHelpers = {
  ) =>
   uniquetimestamp
    ? query(
-      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2 RETURNING *;`,
+      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2;`,
       [newSetting ?? null, uniquetimestamp],
       { asArray: false, returnType: 'unknown' },
      )
    : query(
-      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2 RETURNING *;`,
+      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2;`,
       [newSetting ?? null, guildId],
       { asArray: false, returnType: 'unknown' },
      ),

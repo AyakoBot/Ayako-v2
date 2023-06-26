@@ -42,7 +42,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  );
 
  const guildsettings = await ch.query(
-  `UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2 RETURNING *;`,
+  `UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2;`,
   [Date.now(), cmd.guildId],
   {
    returnType: 'guildsettings',

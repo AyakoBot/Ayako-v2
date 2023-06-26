@@ -11,10 +11,14 @@ export default () => {
 
   const language = await ch.languageSelector(guild.id);
 
-  const invites = await guild.invites.fetch();
+  const invites = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+   ? await guild.invites.fetch().catch(() => [])
+   : [];
   invites.forEach((i) => ch.cache.invites.set(i, guild.id));
 
-  const vanity = await guild.fetchVanityData().catch(() => undefined);
+  const vanity = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+   ? await guild.fetchVanityData().catch(() => undefined)
+   : undefined;
   if (vanity) {
    const invite = vanity as Discord.Invite;
    invite.channel = (guild.channels.cache.get(guild.id) ??
@@ -28,7 +32,7 @@ export default () => {
    if (c.isThread()) return;
    if (!c.isTextBased()) return;
 
-   const webhooks = await guild.channels.fetchWebhooks(c).catch(() => undefined);
+   const webhooks = await c.fetchWebhooks().catch(() => undefined);
    webhooks?.forEach((w) => {
     ch.cache.webhooks.set(w);
    });
@@ -46,7 +50,9 @@ export default () => {
    if (welcomeScreen) ch.cache.welcomeScreens.set(welcomeScreen);
   }
 
-  const intergrations = await guild.fetchIntegrations();
+  const intergrations = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+   ? await guild.fetchIntegrations()
+   : [];
   intergrations.forEach((i) => {
    ch.cache.integrations.set(i, guild.id);
   });
@@ -59,7 +65,9 @@ export default () => {
    });
   });
 
-  await guild.autoModerationRules.fetch().catch(() => undefined);
+  if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+   await guild.autoModerationRules.fetch().catch(() => undefined);
+  }
 
   const claimTimeouts = await ch.query(
    `SELECT * FROM giveawaycollection WHERE guildId = $1;`,

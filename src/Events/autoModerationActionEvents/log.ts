@@ -46,10 +46,6 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   inline: true,
  });
 
- if ('duration_seconds' in execution.action.metadata) {
-  execution.action.metadata.durationSeconds = execution.action.metadata.duration_seconds as number;
- }
-
  if ([2, 3].includes(execution.action.type)) {
   embed.fields?.push({
    name: execution.action.type === 2 ? lan.alert : lan.timeout,

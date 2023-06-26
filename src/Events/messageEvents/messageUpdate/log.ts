@@ -169,15 +169,15 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   const oldMentions = ch.getDifference(
    oldMsg.mentions.users.map((o) => o),
    msg.mentions.users.map((o) => o),
-  );
+  ) as Discord.User[];
   const newMentions = ch.getDifference(
    msg.mentions.users.map((o) => o),
    oldMsg.mentions.users.map((o) => o),
-  );
+  ) as Discord.User[];
 
   merge(
-   oldMentions.map((i) => `<@${i}>`).join(', '),
-   newMentions.map((i) => `<@${i}>`).join(', '),
+   oldMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.None,
+   newMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.None,
    'string',
    lan.mentionedUsers,
   );
@@ -189,15 +189,15 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   const oldMentions = ch.getDifference(
    oldMsg.mentions.roles.map((o) => o),
    msg.mentions.roles.map((o) => o),
-  );
+  ) as Discord.Role[];
   const newMentions = ch.getDifference(
    msg.mentions.roles.map((o) => o),
    oldMsg.mentions.roles.map((o) => o),
-  );
+  ) as Discord.Role[];
 
   merge(
-   oldMentions.map((i) => `<@&${i}>`).join(', '),
-   newMentions.map((i) => `<@&${i}>`).join(', '),
+   oldMentions.map((i) => `<@&${i.id}>`).join(', '),
+   newMentions.map((i) => `<@&${i.id}>`).join(', '),
    'string',
    lan.mentionedRoles,
   );
@@ -209,25 +209,25 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   const oldMentions = ch.getDifference(
    oldMsg.mentions.channels.map((o) => o),
    msg.mentions.channels.map((o) => o),
-  );
+  ) as Discord.Channel[];
   const newMentions = ch.getDifference(
    msg.mentions.channels.map((o) => o),
    oldMsg.mentions.channels.map((o) => o),
-  );
+  ) as Discord.Channel[];
 
   merge(
-   oldMentions.map((i) => `<#${i}>`).join(', '),
-   newMentions.map((i) => `<#${i}>`).join(', '),
+   oldMentions.map((i) => `<#${i.id}>`).join(', '),
+   newMentions.map((i) => `<#${i.id}>`).join(', '),
    'string',
    lan.mentionedChannels,
   );
  }
 
- if (byAuthor === null) {
-  embed.description = lan.descUpdateMaybe(msg);
- } else if (byAuthor === false) {
-  embed.description = lan.descUpdate(msg);
- } else embed.description = lan.descUpdateAuthor(msg);
+ if (byAuthor === null) embed.description = lan.descUpdateMaybe(msg);
+ else if (byAuthor === false) embed.description = lan.descUpdate(msg);
+ else embed.description = lan.descUpdateAuthor(msg);
+
+ if (!embed.fields?.length) return;
 
  ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, undefined, 10000);
 };

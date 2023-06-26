@@ -103,7 +103,7 @@ export default async (msg: Discord.Message) => {
   });
  }
 
- if (msg.embeds) {
+ if (msg.embeds?.length) {
   const msgEmbeds = ch.txtFileWriter(
    msg.embeds.map((c) => JSON.stringify(c, null, 2)),
    undefined,

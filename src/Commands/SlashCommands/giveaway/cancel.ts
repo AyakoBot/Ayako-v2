@@ -46,7 +46,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const participateButton = getButton(language, giveaway);
 
  msg.edit({
-  embeds: msg.embeds,
+  embeds: [giveawayEmbed],
   components: [
    {
     type: Discord.ComponentType.ActionRow,

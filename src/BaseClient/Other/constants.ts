@@ -266,7 +266,7 @@ export default {
     desc: 'Bonk someone',
     users: true,
     reqUser: true,
-    buttons: ['bonk', 'cry'],
+    buttons: ['bonk', 'hit', 'cry'],
    },
    {
     name: 'bored',
@@ -294,6 +294,7 @@ export default {
     specialOptions: [{ name: 'food', desc: "What you're feeding them" }],
    },
    { name: 'fluff', desc: 'Fluff someone', users: true, reqUser: true, buttons: ['wag', 'lurk'] },
+   { name: 'floof', desc: 'Floof someone', users: true, reqUser: true, buttons: ['wag', 'lurk'] },
    {
     name: 'handshake',
     desc: 'Shake Hands with someone',
@@ -351,6 +352,7 @@ export default {
    { name: 'kiss', desc: 'Kiss someone', users: true, reqUser: true, buttons: ['kiss', 'bonk'] },
    { name: 'mwah', desc: 'Mwah someone', users: true, reqUser: true, buttons: ['mwah', 'bonk'] },
    { name: 'laugh', desc: 'Laugh', users: true, reqUser: false, buttons: ['peck', 'bonk'] },
+   { name: 'lay', desc: 'Lay', users: true, reqUser: false, buttons: ['lay', 'cuddle', 'pat'] },
    {
     name: 'lewd',
     desc: 'Lewd someone',
@@ -385,7 +387,13 @@ export default {
    },
    { name: 'mew', desc: 'Mew =^_^=', users: false, reqUser: false, buttons: ['pat', 'woof'] },
    { name: 'nya', desc: 'Nya! =^_^=', users: false, reqUser: false, buttons: ['pat', 'woof'] },
-   { name: 'pat', desc: 'Headpat time~!', users: true, reqUser: true, buttons: ['blush', 'happy'] },
+   {
+    name: 'pat',
+    desc: 'Headpat time~!',
+    users: true,
+    reqUser: true,
+    buttons: ['blush', 'happy', 'pout'],
+   },
    {
     name: 'peck',
     desc: 'Peck someone on the cheek',

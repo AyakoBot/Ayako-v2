@@ -249,6 +249,7 @@ export default async (
   const getActionContent = (
    array: Discord.AutoModerationRule['actions'],
    channel: (
+    | Discord.StageChannel
     | Discord.PrivateThreadChannel
     | Discord.PublicThreadChannel<boolean>
     | Discord.NewsChannel

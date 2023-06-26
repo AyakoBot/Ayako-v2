@@ -27,7 +27,8 @@ export default async (cmd: Discord.CommandInteraction) => {
     const message = (await channel.messages.fetch(memberID).catch(() => undefined)) as
      | Discord.Message
      | undefined;
-    return message?.embeds;
+
+    return message?.embeds.map((e) => e.data);
    },
    {
     context: { gID, cID, mID },
@@ -35,7 +36,7 @@ export default async (cmd: Discord.CommandInteraction) => {
   )
  )
   ?.flat()
-  .find((e): e is Discord.APIEmbed => !!e);
+  .filter((e): e is Discord.APIEmbed => !!e);
 
  if (!response) {
   ch.errorCmd(cmd, lan.notALink, language);

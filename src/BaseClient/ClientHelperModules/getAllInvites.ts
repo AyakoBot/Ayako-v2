@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import getUser from './getUser.js';
+import client from '../Client.js';
 
 export default async (guild: Discord.Guild) => {
  const me = await guild.members.fetchMe();
@@ -13,7 +14,6 @@ export default async (guild: Discord.Guild) => {
  const vanityUrl = await guild.fetchVanityData();
  if (!vanityUrl) return invites;
 
- const client = (await import('../Client.js')).default;
  const owner = await getUser(guild.ownerId);
 
  invites.push({

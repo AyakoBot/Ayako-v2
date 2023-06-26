@@ -110,7 +110,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
 
  if (error && 'message' in error) {
-  ch.errorCmd(cmd, error.message as string, language);
+  ch.errorCmd(cmd, (error as { message: string }).message, language);
   return;
  }
  if (error) {

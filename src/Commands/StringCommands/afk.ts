@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import afk from '../SlashCommands/afk.js';
 import type * as CT from '../../Typings/CustomTypings.js';
 
@@ -8,6 +9,7 @@ export const dmOnly = false;
 export const dmAllowed = false;
 export const type = 'other';
 
-const cmd: CT.Command['default'] = async (msg, args) => afk(msg, args?.join(' ') ?? undefined);
+const cmd: CT.Command['default'] = async (msg, args) =>
+ afk(msg as Discord.Message<true>, args?.join(' ') ?? undefined);
 
 export default cmd;

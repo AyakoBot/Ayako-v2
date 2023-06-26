@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (
- cmd: Discord.ChatInputCommandInteraction | Discord.Message,
+ cmd: Discord.ChatInputCommandInteraction | Discord.Message<true>,
  text?: string,
 ) => {
  if (cmd instanceof Discord.ChatInputCommandInteraction && !cmd.inCachedGuild()) return;
@@ -45,7 +45,10 @@ export default async (
    content: afk ? lan.updated : lan.set(author),
   });
  } else {
-  await ch.send(cmd.channel, { embeds, content: afk ? lan.updated : lan.set(author) });
+  await ch.send(cmd.channel, {
+   embeds,
+   content: afk ? lan.updated : lan.set(author),
+  });
   if (cmd.deletable) cmd.delete();
  }
 

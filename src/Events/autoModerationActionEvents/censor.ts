@@ -137,6 +137,8 @@ const getWebhook = async (
   ch.cache.webhooks.cache.get(msg.guild.id)?.get(channel.id)?.values() || [],
  );
 
+ console.log(webhooks, msg.channelId);
+
  const webhook =
   webhooks.find((w) => w.name === lan.censoredMessageReposter) ??
   (await channel

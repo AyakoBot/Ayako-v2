@@ -60,7 +60,6 @@ export default async (
   'archived' in channel && channel.archived ? lan.archived : null,
   'locked' in channel && channel.locked ? lan.locked : null,
   'invitable' in channel && channel.invitable ? lan.invitable : null,
-  'newlyCreated' in channel && channel.newlyCreated ? lan.newlyCreated : null,
  ]
   .filter((f): f is string => !!f)
   .map((f) => `\`${f}\``)

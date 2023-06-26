@@ -4,7 +4,6 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
- if (msg.author?.bot) return;
 
  const stickyMessage = await ch.query(
   `SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`,
