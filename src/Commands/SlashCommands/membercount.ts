@@ -14,6 +14,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   description: `${language.Members} ${ch.util.makeInlineCode(
    ch.splitByThousand(cmd.guild?.memberCount ?? 0),
   )}`,
+  fields: [
+   {
+    name: '\u200b',
+    value: lan.field,
+   },
+  ],
  };
 
  ch.replyCmd(cmd, {

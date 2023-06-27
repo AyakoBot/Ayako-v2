@@ -1850,6 +1850,7 @@ export default {
   },
   membercount: {
    author: `${name} Member-Count`,
+   field: 'For more in-depth Statistics, try [Statbot](https://statbot.net/)',
   },
   ping: {
    author: `${name} Ping`,
