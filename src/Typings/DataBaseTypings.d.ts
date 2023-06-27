@@ -251,6 +251,7 @@ export interface giveawaycollection {
  guildid: string;
  endtime: string;
  replymsgid: string;
+ requiredwinners: string[];
 }
 
 export type voters = {

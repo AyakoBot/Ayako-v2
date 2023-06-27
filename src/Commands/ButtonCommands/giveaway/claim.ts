@@ -15,6 +15,12 @@ export default async (cmd: Discord.ButtonInteraction) => {
   },
  );
 
+ const giveawayCollection = await ch.query(
+  `SELECT * FROM giveawaycollection WHERE msgid = $1;`,
+  [cmd.message.id],
+  { returnType: 'giveawaycollection', asArray: false },
+ );
+
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.claim;
 
@@ -30,12 +36,16 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  ch.replyCmd(cmd, { content: giveaway.actualprize });
 
- const newWinners = giveaway.winners.filter((w) => w !== cmd.user.id);
+ if (!giveawayCollection?.requiredwinners?.length) return;
+ const newWinners = giveawayCollection.requiredwinners.filter((w) => w !== cmd.user.id);
 
- ch.query(`UPDATE giveaways SET winners = $1, claimingdone = $3 WHERE msgid = $2;`, [
+ ch.query(`UPDATE giveaways SET claimingdone = $1 WHERE msgid = $2;`, [
+  !newWinners.length,
+  cmd.message.id,
+ ]);
+ ch.query(`UPDATE giveawaycollection SET requiredwinners = $1 WHERE msgid = $2;`, [
   newWinners,
   cmd.message.id,
-  !newWinners.length,
  ]);
 
  const collection = await ch.query(

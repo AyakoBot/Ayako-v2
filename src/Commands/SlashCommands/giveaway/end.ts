@@ -115,12 +115,13 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   const winners = new Array(giveaway.winners.length || Number(giveaway.winnercount))
    .fill(0)
    .map(() => {
-    const random = ch.getRandom(0, Number(giveaway.participants?.length) - 1);
+    const random = ch.getRandom(0, Number(giveaway.participants?.length || 1) - 1);
     const winner = giveaway.participants[random];
     giveaway.participants.splice(giveaway.participants.indexOf(winner), 1);
 
     return winner;
-   });
+   })
+   .filter((w): w is string => !!w);
 
   giveaway.winners = winners;
   ch.query(`UPDATE giveaways SET winners = $1, ended = true WHERE msgid = $2;`, [
@@ -234,8 +235,8 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  }
 
  ch.query(
-  `INSERT INTO giveawaycollection (msgid, endtime, guildid, replymsgid) VALUES ($1, $2, $3, $4) ON CONFLICT (msgid) DO UPDATE SET endtime = $2, replymsgid = $4;`,
-  [giveaway.msgid, collectionEnd, giveaway.guildid, replyMsg.id],
+  `INSERT INTO giveawaycollection (msgid, endtime, guildid, replymsgid, requiredwinners) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (msgid) DO UPDATE SET endtime = $2, replymsgid = $4;`,
+  [giveaway.msgid, collectionEnd, giveaway.guildid, replyMsg.id, giveaway.winners],
  );
 
  ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
@@ -328,12 +329,11 @@ export const getClaimButton = (
  giveaway: DBT.giveaways,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
- style: Discord.ButtonStyle.Primary,
+ style: giveaway.claimingdone ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
  custom_id: 'giveaway/claim',
  label: giveaway.claimingdone
   ? language.slashCommands.giveaway.end.claimingdone
   : language.slashCommands.giveaway.end.claim,
- disabled: giveaway.claimingdone,
 });
 
 export const failReroll = async (giveaway: DBT.giveaways) => {
