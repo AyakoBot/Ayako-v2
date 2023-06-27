@@ -287,6 +287,7 @@ const getGif = async <T extends 'gif' | 'img'>(
 
 const gifSelection = [
  { triggers: ['awoo'], gifs: async () => getGif('awoo', ['waifu']) },
+ { triggers: ['angry'], gifs: async () => getGif('angry', ['purr']) },
  { triggers: ['bath'], gifs: async () => getGif('bath', ['hardcoded']) },
  { triggers: ['ayaya'], gifs: async () => getGif('ayaya', ['hardcoded']) },
  { triggers: ['baka'], gifs: async () => getGif('baka', ['neko']) },
@@ -325,7 +326,7 @@ const gifSelection = [
  { triggers: ['pat'], gifs: async () => getGif('pat', ['neko', 'purr', 'waifu']) },
  { triggers: ['peck'], gifs: async () => getGif('peck', ['hardcoded']) },
  { triggers: ['poke', 'boop'], gifs: async () => getGif('poke', ['neko', 'purr', 'waifu']) },
- { triggers: ['pout', 'hmpf', 'hmph'], gifs: async () => getGif('pout', ['neko']) },
+ { triggers: ['pout', 'hmpf', 'hmph'], gifs: async () => getGif('pout', ['neko', 'purr']) },
  { triggers: ['quack'], gifs: async () => getGif('quack', ['hardcoded']) },
  { triggers: ['run'], gifs: async () => getGif('run', ['hardcoded']) },
  { triggers: ['scream'], gifs: async () => getGif('scream', ['hardcoded']) },

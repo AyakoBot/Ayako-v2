@@ -1246,6 +1246,12 @@ export default {
     others: "awoo's at",
     buttons: ['Pat them!', 'Awoo together!'],
    },
+   angry: {
+    self: 'Grrr!',
+    noOne: 'Grrr!',
+    others: ['is angry at', '>:('],
+    buttons: ['Cry ;-;', 'Run away!'],
+   },
    ayaya: {
     self: 'Ayaya!!',
     noOne: 'Ayaya!!',
@@ -1415,7 +1421,7 @@ export default {
     self: 'is laying around',
     noOne: 'is laying around',
     others: 'lays with',
-    buttons: ['Lay together~', 'Cuddle them ^-^', 'Pat them :3c'],
+    buttons: ['Fluff em good~', 'Cuddle them ^-^', 'Pat them :3c'],
    },
    lewd: {
     self: 'lewds themself, get a room!!',

@@ -232,6 +232,7 @@ export default {
   },
   interactions: [
    { name: 'awoo', desc: 'Awooo~!!', users: true, reqUser: false, buttons: ['pat', 'awoo'] },
+   { name: 'angry', desc: 'Grrrr >:(', users: true, reqUser: false, buttons: ['cry', 'run'] },
    { name: 'ayaya', desc: 'AYAYA !!!', users: true, reqUser: false, buttons: [] },
    {
     name: 'baka',
@@ -352,7 +353,7 @@ export default {
    { name: 'kiss', desc: 'Kiss someone', users: true, reqUser: true, buttons: ['kiss', 'bonk'] },
    { name: 'mwah', desc: 'Mwah someone', users: true, reqUser: true, buttons: ['mwah', 'bonk'] },
    { name: 'laugh', desc: 'Laugh', users: true, reqUser: false, buttons: ['peck', 'bonk'] },
-   { name: 'lay', desc: 'Lay', users: true, reqUser: false, buttons: ['lay', 'cuddle', 'pat'] },
+   { name: 'lay', desc: 'Lay', users: true, reqUser: false, buttons: ['fluff', 'cuddle', 'pat'] },
    {
     name: 'lewd',
     desc: 'Lewd someone',
