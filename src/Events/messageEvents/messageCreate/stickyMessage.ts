@@ -4,6 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
+ if (msg.author.id === msg.client.user.id) return;
 
  const stickyMessage = await ch.query(
   `SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`,
@@ -30,7 +31,6 @@ export default async (msg: Discord.Message) => {
  const lan = language.contextCommands.message['Stick Message'];
 
  ch.cache.stickyTimeouts.delete(msg.channelId);
-
  ch.cache.stickyTimeouts.set(
   msg.channelId,
   Jobs.scheduleJob(new Date(Date.now() + 60000), async () => {
