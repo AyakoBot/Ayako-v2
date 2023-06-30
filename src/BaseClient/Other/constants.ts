@@ -267,7 +267,7 @@ export default {
     desc: 'Bonk someone',
     users: true,
     reqUser: true,
-    buttons: ['bonk', 'hit', 'cry'],
+    buttons: ['bonk', 'cry'],
    },
    {
     name: 'bored',

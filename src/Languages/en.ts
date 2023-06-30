@@ -1262,7 +1262,7 @@ export default {
     noOne: 'thinks everyone in Chat is a Baka!',
     one: ['thinks', 'is a Baka!'],
     many: ['thinks', 'are Bakas!'],
-    buttons: ['Bonk them!', 'Hit them!', 'No you!'],
+    buttons: ['Bonk them!', 'No you!'],
    },
    bath: {
     self: 'bathes themself, they are so clean',
