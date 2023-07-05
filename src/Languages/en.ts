@@ -1222,6 +1222,7 @@ export default {
   },
   roles: {
    create: (role: Discord.Role) => `Successfully created Role ${role}`,
+   edit: (role: Discord.Role) => `Successfully edit Role ${role}`,
    delete: {
     areYouSure: (role: Discord.Role) => `Are you sure you want to delete the Role ${role}?`,
     deleted: (role: Discord.Role) => `Successfully deleted ${getRole(role)}`,
@@ -3413,6 +3414,7 @@ export default {
   noRoleFound: 'No Role found, please report to the Support Server',
   noThreadCanBeCreated: 'In this Channel, private Threads cannot be created',
   cantManage: "You can't manage this Member",
+  cantManageRole: "You can't manage this Role",
   cantManageChannel: "I can't manage this Channel",
   commandNotFound: 'Command not found',
   timeInPast: 'Time is in the past',

@@ -512,6 +512,61 @@ const roles = new Discord.SlashCommandBuilder()
  .setDefaultMemberPermissions(Discord.PermissionsBitField.Flags.ManageRoles)
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit')
+   .setDescription('Edit an existing Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role you want to edit')
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('name')
+     .setDescription('The new Name of the Role')
+     .setMaxLength(100)
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('color')
+     .setDescription('The new Color of the Role (Hex Code)')
+     .setMaxLength(6)
+     .setRequired(false),
+   )
+   .addBooleanOption(
+    new Discord.SlashCommandBooleanOption()
+     .setName('hoist')
+     .setDescription('Whether the Role should be displayed separately')
+     .setRequired(false),
+   )
+   .addAttachmentOption(
+    new Discord.SlashCommandAttachmentOption()
+     .setName('icon')
+     .setDescription('The new Icon of the Role')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-emoji')
+     .setDescription('The new Icon of the Role derived from an Emoji')
+     .setRequired(false),
+   )
+   .addBooleanOption(
+    new Discord.SlashCommandBooleanOption()
+     .setName('mentionable')
+     .setDescription('Whether the Role should be mentionable')
+     .setRequired(false),
+   )
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('position-role')
+     .setDescription('The Role to put this Role below')
+     .setRequired(false),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('create')
    .setDescription('Create a new Role')
    .addStringOption(
@@ -531,7 +586,13 @@ const roles = new Discord.SlashCommandBuilder()
    .addAttachmentOption(
     new Discord.SlashCommandAttachmentOption()
      .setName('icon')
-     .setDescription('The Icon of the new Role')
+     .setDescription('The new Icon of the Role')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-emoji')
+     .setDescription('The new Icon of the Role derived from an Emoji')
      .setRequired(false),
    )
    .addRoleOption(
@@ -1222,6 +1283,7 @@ export default {
   images_senko: 'fun',
   images_shiro: 'fun',
   roles_create: 'utility',
+  roles_edit: 'utility',
   roles_delete: 'utility',
   roles_info: 'info',
   roles_members: 'info',
