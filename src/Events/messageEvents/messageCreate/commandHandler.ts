@@ -10,6 +10,7 @@ import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';
 import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
 import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.js';
 import query from '../../../BaseClient/ClientHelperModules/query.js';
+import error from '../../../BaseClient/ClientHelperModules/error.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -56,6 +57,19 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (command.dmOnly) return;
 
  const language = await languageSelector(msg.guildId);
+
+ const commandIsEnabled = await checkCommandIsEnabled(msg, commandName, command);
+ if (!commandIsEnabled) {
+  const reaction = await msg
+   .react(objectEmotes.cross.id)
+   .catch((e) => e as Discord.DiscordAPIError);
+
+  if ('message' in reaction && typeof reaction.message === 'string') {
+   error(msg.guild, new Error(reaction.message));
+  }
+  return;
+ }
+
  const canRunCommand = await checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
@@ -135,7 +149,9 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
  const slashCommand =
   client.application?.commands.cache.find((c) => c.name === commandName) ??
   msg.guild.commands.cache.find((c) => c.name === commandName);
+
  if (!slashCommand) return true;
+
  const perms = await client.application?.commands.permissions.fetch({
   guild: msg.guild,
  });
@@ -176,5 +192,18 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
   return false;
  }
 
+ return true;
+};
+
+const checkCommandIsEnabled = async (
+ msg: Discord.Message<true>,
+ commandName: string,
+ command: CT.Command,
+) => {
+ const slashCommand =
+  client.application?.commands.cache.find((c) => c.name === commandName) ??
+  msg.guild.commands.cache.find((c) => c.name === commandName);
+
+ if (!slashCommand && command.requiresSlashCommand) return false;
  return true;
 };

@@ -11,6 +11,7 @@ export interface Command {
  dmOnly: boolean;
  dmAllowed: boolean;
  type: 'mod' | 'other' | 'owner';
+ requiresSlashCommand: boolean;
  default: (
   msg: Discord.Message,
   args?: string[],
