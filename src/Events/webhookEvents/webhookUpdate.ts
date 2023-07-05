@@ -41,7 +41,6 @@ export default async (
  if (removed.length) {
   removed.forEach((w) => {
    ch.cache.webhooks.delete(w.id);
-   ch.cache.webhooks.set(w);
 
    client.emit('webhooksDelete', w, channel);
   });
@@ -53,7 +52,6 @@ export default async (
  added.forEach((w) => {
   const switchedChannelWebhook = ch.cache.webhooks.find(w.id);
   if (switchedChannelWebhook) {
-   ch.cache.webhooks.delete(switchedChannelWebhook.id);
    ch.cache.webhooks.set(switchedChannelWebhook);
 
    client.emit('webhooksUpdate', switchedChannelWebhook, w, channel);
