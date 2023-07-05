@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as DiscordCore from '@discordjs/core';
 import auth from '../auth.json' assert { type: 'json' };
 
 const client = new Discord.Client({
@@ -57,4 +58,7 @@ const client = new Discord.Client({
 
 await client.login(auth.token);
 
+const OAuth2Client = new DiscordCore.OAuth2API(client.rest);
+
 export default client;
+export { OAuth2Client };
