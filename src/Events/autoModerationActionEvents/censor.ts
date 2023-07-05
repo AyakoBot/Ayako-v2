@@ -67,7 +67,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
 
  const presetKeywords = presetRule
   ? await ch.query(
-     `SELECT * FROM "filterscraper" WHERE (filtertype IN (${presetRule.triggerMetadata.presets
+     `SELECT * FROM filterscraper WHERE (filtertype IN (${presetRule.triggerMetadata.presets
       .map((_, i) => `$${i + 1}`)
       .join(', ')}));`, // ;`
      presetRule.triggerMetadata.presets,
