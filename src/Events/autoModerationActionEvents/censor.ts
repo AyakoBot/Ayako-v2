@@ -46,7 +46,13 @@ const reposter = async (
 };
 
 const getContent = async (msg: Discord.AutoModerationActionExecution, settings: DBT.blacklist) => {
- const rules = msg.guild.autoModerationRules.cache
+ const rules = (
+  msg.guild.autoModerationRules.cache.size
+   ? msg.guild.autoModerationRules.cache
+   : await msg.guild.autoModerationRules
+      .fetch()
+      .catch(() => new Discord.Collection<string, Discord.AutoModerationRule>())
+ )
   .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
   .filter((r) => (settings.repostrules?.length ? settings.repostrules?.includes(r.id) : true))
   .map((r) => r);
@@ -61,11 +67,14 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
 
  const presetKeywords = presetRule
   ? await ch.query(
-     `SELECT * FROM filterscraper WHERE filtertype in ($1);`,
-     [presetRule.triggerMetadata.presets],
+     `SELECT * FROM "filterscraper" WHERE (filtertype IN (${presetRule.triggerMetadata.presets
+      .map((_, i) => `$${i + 1}`)
+      .join(', ')}));`, // ;`
+     presetRule.triggerMetadata.presets,
      {
       returnType: 'filterscraper',
       asArray: true,
+      debug: true,
      },
     )
   : [];
@@ -103,8 +112,8 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
  if (msg.content === content) return undefined;
 
  content = content
-  .replace(msg.matchedContent ?? '', '[...]')
-  .replace(msg.matchedKeyword ?? '', '[...]');
+  .replace(msg.matchedContent ?? '', msg.matchedContent ? '[...]' : '')
+  .replace(msg.matchedKeyword ?? '', msg.matchedKeyword ? '[...]' : '');
 
  return content;
 };
@@ -133,11 +142,15 @@ const getWebhook = async (
   return undefined;
  }
 
- const webhooks = Array.from(
+ const webhooksArray = Array.from(
   ch.cache.webhooks.cache.get(msg.guild.id)?.get(channel.id)?.values() || [],
  );
 
- console.log(webhooks, msg.channelId);
+ const webhooks = !webhooksArray.length
+  ? (
+     (await channel.fetchWebhooks().catch(() => [])) as Discord.Collection<string, Discord.Webhook>
+    ).map((o) => o)
+  : webhooksArray;
 
  const webhook =
   webhooks.find((w) => w.name === lan.censoredMessageReposter) ??
