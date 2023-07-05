@@ -21,7 +21,7 @@ export default async (channel: Discord.GuildTextBasedChannel | Discord.ForumChan
   (await channel
    .createWebhook({
     name: constants.standard.user(channel.client.user),
-    avatar: channel.client.user.displayAvatarURL(),
+    avatar: channel.client.user.displayAvatarURL({ forceStatic: true, extension: 'png' }),
    })
    .catch((err) => err as Discord.DiscordAPIError));
 
