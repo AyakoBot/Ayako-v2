@@ -3564,6 +3564,7 @@ export default {
   PREMIUM_TIER_3_OVERRIDE: 'Has access to Server Boost Level 3 Features bypassing Server Boosts',
   PREVIEW_ENABLED: 'Can be Previewed before joining',
   RAID_ALERTS_ENABLED: 'Has Raid Alerts enabled',
+  RAID_ALERTS_DISABLED: 'Raid Alerts Disabled',
   RELAY_ENABLED:
    'Shards can connect with multiple Nodes\n>  (Possibly related to Very Large Guilds (500,000+ Members))',
   RESTRICT_SPAM_RISK_GUILDS: 'Is restricted due to suspection of being a Spam Server',
