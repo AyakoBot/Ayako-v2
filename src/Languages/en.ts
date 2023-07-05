@@ -1674,6 +1674,8 @@ export default {
 
     Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Slash-Commands\`.
     __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
+
+    __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.
     `,
    fields: (t: string, used: number) => [
     {
