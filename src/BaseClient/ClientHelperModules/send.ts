@@ -140,7 +140,7 @@ const combineMessages = async (
  }
 
  let channelQueues = guildQueue.get(channel.id);
- if (!ch.channelQueue) {
+ if (!channelQueues) {
   guildQueue.set(channel.id, []);
   channelQueues = guildQueue.get(channel.id);
  }
