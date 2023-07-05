@@ -270,7 +270,8 @@ export type voters = {
 export type stickymessages = {
  guildid: string;
  lastmsgid: string;
- channelid: strin;
+ channelid: string;
+ userid: string;
 };
 
 export type nitrousers = {

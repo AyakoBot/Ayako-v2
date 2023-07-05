@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import * as DBT from '../../Typings/DataBaseTypings.js';
-import * as CT from '../../Typings/CustomTypings.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
@@ -16,22 +15,15 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
  );
  if (!settings) return;
 
- const language = await ch.languageSelector(msg.guild.id);
- const lan = language.events.blacklist;
-
- reposter(msg, settings, lan);
+ reposter(msg, settings);
 };
 
-const reposter = async (
- msg: Discord.AutoModerationActionExecution,
- settings: DBT.blacklist,
- lan: CT.Language['events']['blacklist'],
-) => {
+const reposter = async (msg: Discord.AutoModerationActionExecution, settings: DBT.blacklist) => {
  if (!settings.repostenabled) return;
  if (!settings.repostroles?.some((r) => msg.member?.roles.cache.has(r))) return;
  if (!msg.matchedContent && !msg.matchedKeyword) return;
 
- const webhook = await getWebhook(msg, lan);
+ const webhook = await getWebhook(msg);
  if (!webhook) return;
 
  const content = await getContent(msg, settings);
@@ -118,10 +110,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
  return content;
 };
 
-const getWebhook = async (
- msg: Discord.AutoModerationActionExecution,
- lan: CT.Language['events']['blacklist'],
-) => {
+const getWebhook = async (msg: Discord.AutoModerationActionExecution) => {
  const channelOrThread = await msg.channel?.fetch().catch(() => undefined);
  const channel = channelOrThread?.isThread() ? channelOrThread.parent : channelOrThread;
 
@@ -142,28 +131,5 @@ const getWebhook = async (
   return undefined;
  }
 
- const webhooksArray = Array.from(
-  ch.cache.webhooks.cache.get(msg.guild.id)?.get(channel.id)?.values() || [],
- );
-
- const webhooks = !webhooksArray.length
-  ? (
-     (await channel.fetchWebhooks().catch(() => [])) as Discord.Collection<string, Discord.Webhook>
-    ).map((o) => o)
-  : webhooksArray;
-
- const webhook =
-  webhooks.find((w) => w.name === lan.censoredMessageReposter) ??
-  (await channel
-   .createWebhook({ name: lan.censoredMessageReposter, avatar: ch.objectEmotes.blobstop.link })
-   .catch((err) => err as Discord.DiscordAPIError));
-
- if ('message' in webhook) {
-  ch.error(msg.guild, new Error(webhook.message));
-  return undefined;
- }
-
- ch.cache.webhooks.set(webhook);
-
- return webhook;
+ return ch.getChannelWebhook(channel);
 };
