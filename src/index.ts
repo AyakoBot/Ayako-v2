@@ -11,11 +11,13 @@ log(`
 +++++++++++++++ Welcome to Ayako +++++++++++++++
 +      Restart all Shards with "restart"       +
 +  Restart one Shard with "restart [Shard ID]" +
++    Arguments: "--debug --debug-db --warn"    +
 ++++++++++++++++++++++++++++++++++++++++++++++++
 `);
 
 const manager = new Discord.ShardingManager('./bot.js', {
  token: auth.token,
+ shardArgs: process.argv,
 });
 
 manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));

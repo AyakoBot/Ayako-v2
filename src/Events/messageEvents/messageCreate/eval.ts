@@ -36,7 +36,7 @@ export default async (msg: Discord.Message) => {
    return;
   }
   if (clean(evaled) !== '"undefined"') {
-   ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`q\n${clean(evaled)}`)}` });
+   ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`js\n${clean(evaled)}`)}` });
    log(clean(evaled));
    return;
   }
@@ -51,7 +51,7 @@ export default async (msg: Discord.Message) => {
 
   if (clean(err) !== '"undefined"') {
    ch.replyMsg(msg, {
-    content: `\`ERROR\` \n${ch.util.makeCodeBlock(`q\n${clean((err as Error).message)}`)}\n`,
+    content: `\`ERROR\` \n${ch.util.makeCodeBlock(`js\n${clean((err as Error).message)}`)}\n`,
    });
    log(clean(err));
    return;

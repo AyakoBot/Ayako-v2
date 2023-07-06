@@ -2,6 +2,11 @@
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 
+const processArgs = process.argv;
+if (processArgs.includes('--debug')) console.log('[DEBUG] Debug mode enabled');
+if (processArgs.includes('--debug-db')) console.log('[DEBUG] Debug mode for database enabled');
+if (processArgs.includes('--warn')) console.log('[DEBUG] Warn mode enabled');
+
 const events = await ch.getEvents();
 client.setMaxListeners(events.length);
 
@@ -21,15 +26,12 @@ events.forEach(async (path) => {
  else client.on(eventName, (...args) => eventHandler(eventName, args));
 });
 
-// eslint-disable-next-line no-console
-const { log } = console;
-
-client.on('debug', (info) => {
- if (info.includes('Heartbeat')) return;
-
- log(info);
-});
-
-client.on('warn', (info) => {
- log(info);
-});
+if (processArgs.includes('--debug')) {
+ client.rest.on('rateLimited', (info) => {
+  console.log(
+   `[Ratelimited] ${info.method} ${info.url.replace('https://discord.com/api/v10/', '')} ${
+    info.timeToReset
+   }ms`,
+  );
+ });
+}
