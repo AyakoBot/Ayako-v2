@@ -65,7 +65,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
-  value: `${lan.fields.separator.name}: <@&${s.separator}>`,
+  value: `${lan.fields.separator.name}: ${s.separator ? `<@&${s.separator}>` : language.None} `,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
