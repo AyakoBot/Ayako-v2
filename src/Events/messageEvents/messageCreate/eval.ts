@@ -31,29 +31,29 @@ export default async (msg: Discord.Message) => {
   if (typeof evaled !== 'string') evaled = util.inspect(evaled);
 
   if (evaled.length > 2000) {
-   ch.replyMsg(msg, { content: 'Too long, check console' });
-   log(evaled);
+   ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(evaled))] });
+   log(clean(evaled));
    return;
   }
-  if (clean(evaled) !== 'undefined') {
+  if (clean(evaled) !== '"undefined"') {
    ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`q\n${clean(evaled)}`)}` });
-   log(evaled);
+   log(clean(evaled));
    return;
   }
 
   msg.react(ch.objectEmotes.cross.id);
  } catch (err) {
-  if (JSON.stringify(err as Error).length > 2000) {
-   ch.replyMsg(msg, { content: 'Too long, check console' });
-   log(err);
+  if (clean(err).length > 2000) {
+   ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(err))] });
+   log(clean(err));
    return;
   }
 
-  if (clean(JSON.stringify(err)) !== 'undefined') {
+  if (clean(err) !== '"undefined"') {
    ch.replyMsg(msg, {
     content: `\`ERROR\` \n${ch.util.makeCodeBlock(`q\n${clean((err as Error).message)}`)}\n`,
    });
-   log(err);
+   log(clean(err));
    return;
   }
 
@@ -61,10 +61,10 @@ export default async (msg: Discord.Message) => {
  }
 };
 
-const clean = (text: string) =>
- typeof text === 'string'
-  ? text
-     .replace(/`/g, `\`${String.fromCharCode(8203)}`)
-     .replace(/@/g, `@${String.fromCharCode(8203)}`)
-     .replace(reg, 'TOKEN')
-  : text;
+const clean = (text: unknown) =>
+ JSON.parse(
+  JSON.stringify(text)
+   .replace(/`/g, `\`${String.fromCharCode(8203)}`)
+   .replace(/@/g, `@${String.fromCharCode(8203)}`)
+   .replace(reg, 'TOKEN'),
+ );
