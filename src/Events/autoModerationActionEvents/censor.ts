@@ -66,7 +66,6 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
      {
       returnType: 'filterscraper',
       asArray: true,
-      debug: true,
      },
     )
   : [];
