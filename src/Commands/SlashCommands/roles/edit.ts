@@ -44,7 +44,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    mentionable,
    unicodeEmoji: !emoji || emoji.id ? undefined : emoji.name,
    color: color ? parseInt(color, 16) : undefined,
-   icon: icon?.url ?? (iconEmoji ? Discord.parseEmoji(iconEmoji)?.id : undefined),
+   icon:
+    icon?.url ??
+    (iconEmoji && Discord.parseEmoji(iconEmoji)
+     ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
+     : undefined),
    position: positionRole?.position,
   })
   .catch((e) => e as Discord.DiscordAPIError);

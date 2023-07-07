@@ -33,7 +33,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    name,
    unicodeEmoji: !emoji || emoji.id ? undefined : emoji.name,
    color: color ? parseInt(color, 16) : undefined,
-   icon: icon?.url ?? (iconEmoji ? Discord.parseEmoji(iconEmoji)?.id : undefined),
+   icon:
+    icon?.url ??
+    (iconEmoji && Discord.parseEmoji(iconEmoji)
+     ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
+     : undefined),
    position: positionRole?.position,
    permissions: permissionRole?.permissions,
   })
