@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
@@ -86,7 +86,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  if (execution.matchedKeyword) {
   embed.fields?.push({
    name: lan.matchedKeyword,
-   value: execution.matchedKeyword,
+   value: ch.util.makeInlineCode(Discord.cleanCodeBlockContent(execution.matchedKeyword)),
    inline: false,
   });
  }

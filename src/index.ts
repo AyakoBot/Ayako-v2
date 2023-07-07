@@ -38,6 +38,6 @@ rl.on('line', async (msg: string) => {
  if (!code.startsWith('restart')) return;
 
  const shardID = code.split(/\s+/)[1];
- if (!shardID) manager.respawnAll();
- else manager.shards.get(Number(shardID))?.respawn();
+ if (!shardID) manager.respawnAll({ respawnDelay: 1000 });
+ else manager.shards.get(Number(shardID))?.respawn({ delay: 1000 });
 });
