@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { MessageCreateOptions } from '../../../BaseClient/ClientHelperModules/send.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
@@ -36,20 +37,14 @@ export default async (msg: Discord.Message) => {
   msg.channelId,
   Jobs.scheduleJob(new Date(Date.now() + 60000), async () => {
    const webhook = await ch.getChannelWebhook(msg.channel);
-   if (!webhook) {
-    ch.error(msg.guild, new Error('Webhook to post Message with not found'));
-    return;
-   }
+   if (!webhook) ch.error(msg.guild, new Error('Webhook to post Message with not found'));
 
    const user = msg.client.users.cache.get(stickyMessage.userid);
    if (!user) ch.error(msg.guild, new Error('User to post Message as not found'));
 
-   const m = await webhook.send({
-    username: user?.bot ? user.username : user?.username ?? msg.client.user.username,
-    // TODO: user.globalName or displayName        ^
-    avatarURL: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
+   const payload: Discord.MessageCreateOptions = {
     content: message.content,
-    embeds: message.embeds.map((e) => e.data),
+    embeds: message.embeds.map((e) => e.data) as Discord.APIEmbed[],
     files: message.attachments.map((a) => a),
     components: [
      {
@@ -65,10 +60,19 @@ export default async (msg: Discord.Message) => {
       ],
      },
     ],
-   });
+   };
+
+   const m = webhook
+    ? await webhook.send({
+       username: user?.bot ? user.username : user?.username ?? msg.client.user.username,
+       // TODO: user.globalName or displayName        ^
+       avatarURL: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
+       ...payload,
+      })
+    : await ch.send(msg.channel, payload as MessageCreateOptions);
 
    if (!m) return;
-   if (message.author.id === webhook.id) webhook.deleteMessage(message);
+   if (webhook && message.author.id === webhook.id) webhook.deleteMessage(message);
    else if (message.deletable) message.delete().catch(() => undefined);
 
    ch.query(`UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND channelid = $3;`, [

@@ -273,7 +273,9 @@ export default async (
                language,
               )}\``
           }`
-        : `\n${ch.util.makeCodeBlock(action.metadata?.customMessage || lan.defaultMessage)}`
+        : `\n${lan.warnMessage}\n${ch.util.makeCodeBlock(
+           action.metadata?.customMessage || lan.defaultMessage,
+          )}`
       }`,
     )
     .join('\n');

@@ -5,7 +5,7 @@ import type CT from '../../Typings/CustomTypings';
 // eslint-disable-next-line no-console
 const { log } = console;
 
-interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
+export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
 }
 

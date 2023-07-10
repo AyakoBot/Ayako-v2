@@ -546,7 +546,7 @@ const runSetup = async <T extends keyof CT.TableNamesMap>(
   } (guildid) VALUES ($1) RETURNING *;`,
   [guildid],
   { returnType: 'unknown', asArray: false },
- );
+ ) as never;
 
 export default {
  embedParsers,
