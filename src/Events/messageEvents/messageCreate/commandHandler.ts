@@ -11,6 +11,7 @@ import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
 import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.js';
 import query from '../../../BaseClient/ClientHelperModules/query.js';
 import error from '../../../BaseClient/ClientHelperModules/error.js';
+import cache from '../../../BaseClient/ClientHelperModules/cache.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -71,6 +72,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  }
 
  const canRunCommand = await checkCommandPermissions(msg, commandName);
+
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
@@ -152,12 +154,7 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
 
  if (!slashCommand) return true;
 
- const perms = await client.application?.commands.permissions.fetch({
-  guild: msg.guild,
- });
-
- if (!perms?.size) return true;
- const commandPerms = perms.get(slashCommand.id);
+ const commandPerms = cache.commandPermissions.cache.get(msg.guildId)?.get(slashCommand.id);
  if (!commandPerms?.length) return true;
 
  const userPermission = commandPerms.find(

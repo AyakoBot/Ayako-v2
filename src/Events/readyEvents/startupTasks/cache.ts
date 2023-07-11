@@ -8,13 +8,13 @@ export default () => {
  client.guilds.cache.forEach(async (guild) => {
   guild.commands.fetch().catch(() => undefined);
   await guild.members.fetch().catch(() => undefined);
+  await ch.cache.commandPermissions.get(guild.id, '');
+  await ch.cache.webhooks.get('', '', guild.id);
 
-  const language = await ch.languageSelector(guild.id);
-
-  const invites = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-   ? await guild.invites.fetch().catch(() => [])
-   : [];
-  invites.forEach((i) => ch.cache.invites.set(i, guild.id));
+  if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+   ch.cache.invites.get('', '', guild.id);
+   ch.cache.integrations.get('', guild.id);
+  }
 
   const vanity = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
    ? await guild.fetchVanityData().catch(() => undefined)
@@ -29,16 +29,6 @@ export default () => {
   }
 
   guild.channels.cache.forEach(async (c) => {
-   if (c.isThread()) return;
-   if (!c.isTextBased()) return;
-
-   const webhooks = await c.fetchWebhooks().catch(() => undefined);
-   webhooks?.forEach((w) => {
-    ch.cache.webhooks.set(w);
-   });
-  });
-
-  guild.channels.cache.forEach(async (c) => {
    if (!c.isTextBased()) return;
 
    const pins = await c.messages.fetchPinned().catch(() => undefined);
@@ -46,16 +36,8 @@ export default () => {
   });
 
   if (guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
-   const welcomeScreen = await guild.fetchWelcomeScreen().catch(() => undefined);
-   if (welcomeScreen) ch.cache.welcomeScreens.set(welcomeScreen);
+   ch.cache.welcomeScreens.get(guild.id);
   }
-
-  const intergrations = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-   ? await guild.fetchIntegrations()
-   : [];
-  intergrations.forEach((i) => {
-   ch.cache.integrations.set(i, guild.id);
-  });
 
   const scheduledEvents = await guild.scheduledEvents.fetch().catch(() => undefined);
   scheduledEvents?.forEach(async (event) => {
@@ -91,115 +73,56 @@ export default () => {
    );
   });
 
-  const mutes = await ch.query(`SELECT * FROM punish_tempmutes WHERE guildid = $1;`, [guild.id], {
-   returnType: 'punish_tempmutes',
-   asArray: true,
-  });
-  mutes?.forEach((m) => {
-   const time = Number(m.uniquetimestamp) + Number(m.duration);
-   ch.cache.mutes.set(
-    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
-     const target = m.userid ? await ch.getUser(m.userid).catch(() => undefined) : undefined;
-     if (!target) {
-      ch.error(guild, new Error('Could not find user to initialize muteRemove event.'));
-      return;
-     }
+  const language = await ch.languageSelector(guild.id);
 
-     ch.mod(
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
-          .fetch(m.msgid)
-          .catch(() => undefined)
-       : undefined,
-      'muteRemove',
-      {
-       executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
-       target,
-       reason: m.reason ?? language.None,
-       guild,
-       forceFinish: true,
-       dbOnly: false,
-      },
-     );
-    }),
-    guild.id,
-    m.userid,
-   );
-  });
-
-  const bans = await ch.query(`SELECT * FROM punish_tempbans WHERE guildid = $1;`, [guild.id], {
-   returnType: 'punish_tempbans',
-   asArray: true,
-  });
-  bans?.forEach((m) => {
-   const time = Number(m.uniquetimestamp) + Number(m.duration);
-   ch.cache.mutes.set(
-    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
-     const target = m.userid
-      ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
-      : client.user;
-     if (!target) return;
-
-     ch.mod(
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
-          .fetch(m.msgid)
-          .catch(() => undefined)
-       : undefined,
-      'banRemove',
-      {
-       executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
-       target,
-       reason: m.reason ?? language.None,
-       guild,
-       forceFinish: true,
-       dbOnly: false,
-      },
-     );
-    }),
-    guild.id,
-    m.userid,
-   );
-  });
-
-  const channelBans = await ch.query(
-   `SELECT * FROM punish_tempchannelbans WHERE guildid = $1;`,
-   [guild.id],
-   {
-    returnType: 'punish_tempchannelbans',
+  (
+   [
+    { table: 'punish_mutes', cache: ch.cache.mutes, event: 'muteRemove' },
+    { table: 'punish_tempbans', cache: ch.cache.bans, event: 'banRemove' },
+    { table: 'punish_tempchannelbans', cache: ch.cache.channelBans, event: 'channelBanRemove' },
+   ] as const
+  ).forEach(async (table) => {
+   const punishments = await ch.query(`SELECT * FROM ${table} WHERE guildid = $1;`, [guild.id], {
+    returnType: table.table,
     asArray: true,
-   },
-  );
-  channelBans?.forEach((m) => {
-   const time = Number(m.uniquetimestamp) + Number(m.duration);
-   ch.cache.mutes.set(
-    Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
-     const target = m.userid
-      ? (await ch.getUser(m.userid).catch(() => undefined)) ?? client.user
-      : client.user;
-     if (!target) return;
+   });
 
-     ch.mod(
-      m.msgid && m.channelid
-       ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
-          .fetch(m.msgid)
-          .catch(() => undefined)
-       : undefined,
-      'channelBanRemove',
-      {
-       executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
-       target,
-       reason: m.reason ?? language.None,
-       guild,
-       forceFinish: true,
-       dbOnly: !!guild.channels.cache.get(m.channelid),
-       channel: guild.channels.cache.get(m.channelid) as Discord.GuildChannel,
-      },
-     );
-    }),
-    guild.id,
-    m.userid,
-   );
+   punishments?.forEach((m) => {
+    const time = Number(m.uniquetimestamp) + Number(m.duration);
+    table.cache.set(
+     Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
+      const target = m.userid ? await ch.getUser(m.userid).catch(() => undefined) : undefined;
+      if (!target) {
+       ch.error(guild, new Error(`Could not find user to initialize ${table}Remove event.`));
+       return;
+      }
+
+      ch.mod(
+       m.msgid && m.channelid
+        ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
+           .fetch(m.msgid)
+           .catch(() => undefined)
+        : undefined,
+       table.event,
+       {
+        executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
+        target,
+        reason: m.reason ?? language.None,
+        guild,
+        forceFinish: true,
+        dbOnly: 'banchannelid' in m ? !!guild.channels.cache.get(m.banchannelid) : false,
+        channel:
+         'banchannelid' in m
+          ? (guild.channels.cache.get(m.banchannelid) as Discord.GuildChannel)
+          : undefined,
+       },
+      );
+     }),
+     guild.id,
+     'banchannelid' in m ? m.channelid : m.userid,
+     m.userid,
+    );
+   });
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -215,16 +138,16 @@ export default () => {
   );
   if (disboardBumpReminders) disboard(disboardBumpReminders);
 
-  const giveaways = await ch.query(
-   `SELECT * FROM giveaways WHERE guildid = $1 AND ended = false AND claimingdone = false;`,
-   [guild.id],
-   {
-    returnType: 'giveaways',
-    asArray: true,
-   },
-  );
-
-  giveaways?.forEach((g) => {
+  (
+   await ch.query(
+    `SELECT * FROM giveaways WHERE guildid = $1 AND ended = false AND claimingdone = false;`,
+    [guild.id],
+    {
+     returnType: 'giveaways',
+     asArray: true,
+    },
+   )
+  )?.forEach((g) => {
    ch.cache.giveaways.set(
     Jobs.scheduleJob(
      new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),

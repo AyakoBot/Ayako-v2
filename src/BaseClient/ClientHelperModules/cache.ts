@@ -61,6 +61,19 @@ const cache: {
   delete: (guildId: string) => void;
   cache: Map<string, CT.Onboarding>;
  };
+ commandPermissions: {
+  get: (
+   guildId: string,
+   commandId: string,
+  ) => Promise<Discord.ApplicationCommandPermissions[] | undefined>;
+  set: (
+   guildId: string,
+   commandId: string,
+   permissions: Discord.ApplicationCommandPermissions[],
+  ) => void;
+  delete: (guildId: string, commandId: string) => void;
+  cache: Map<string, Map<string, Discord.ApplicationCommandPermissions[]>>;
+ };
 
  // Cache
  giveawayClaimTimeout: {
@@ -411,6 +424,34 @@ const cache: {
   },
   delete: (id) => {
    cache.onboarding.cache.delete(id);
+  },
+  cache: new Map(),
+ },
+ commandPermissions: {
+  get: async (guildId, commandId) => {
+   const cached = cache.commandPermissions.cache.get(guildId)?.get(commandId);
+   if (cached) return cached;
+
+   const client = (await import('../Client.js')).default;
+   const fetched = await client.application?.commands.permissions.fetch({ guild: guildId });
+
+   cache.commandPermissions.cache.get(guildId)?.clear();
+   fetched?.forEach((f, id) => cache.commandPermissions.set(guildId, id, f));
+
+   return fetched?.find((_, id) => id === commandId);
+  },
+  set: (guildId, commandId, permissions) => {
+   if (!cache.commandPermissions.cache.get(guildId)) {
+    cache.commandPermissions.cache.set(guildId, new Map());
+   }
+   cache.commandPermissions.cache.get(guildId)?.set(commandId, permissions);
+  },
+  delete: (guildId, commandId) => {
+   if (cache.commandPermissions.cache.get(guildId)?.size === 1) {
+    cache.commandPermissions.cache.delete(guildId);
+   } else {
+    cache.commandPermissions.cache.get(guildId)?.delete(commandId);
+   }
   },
   cache: new Map(),
  },

@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import client from '../../BaseClient/Client.js';
 import log from './log.js';
+import cache from './cache.js';
 
 export default async (data: Discord.ApplicationCommandPermissionsUpdateData) => {
  if (!data.guildId) return;
@@ -9,4 +10,5 @@ export default async (data: Discord.ApplicationCommandPermissionsUpdateData) => 
  if (!guild) return;
 
  log(data, guild);
+ cache(data, guild);
 };
