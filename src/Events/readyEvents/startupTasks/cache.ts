@@ -82,10 +82,14 @@ export default () => {
     { table: 'punish_tempchannelbans', cache: ch.cache.channelBans, event: 'channelBanRemove' },
    ] as const
   ).forEach(async (table) => {
-   const punishments = await ch.query(`SELECT * FROM ${table} WHERE guildid = $1;`, [guild.id], {
-    returnType: table.table,
-    asArray: true,
-   });
+   const punishments = await ch.query(
+    `SELECT * FROM ${table.table} WHERE guildid = $1;`,
+    [guild.id],
+    {
+     returnType: table.table,
+     asArray: true,
+    },
+   );
 
    punishments?.forEach((m) => {
     const time = Number(m.uniquetimestamp) + Number(m.duration);
