@@ -51,18 +51,30 @@ export default async (
    lan.triggerTypeName,
   );
  }
- if (
-  rule.triggerMetadata &&
-  oldRule?.triggerMetadata &&
-  rule.triggerMetadata?.mentionTotalLimit !== oldRule?.triggerMetadata?.mentionTotalLimit
- ) {
-  merge(
-   oldRule ? oldRule?.triggerMetadata?.mentionTotalLimit : language.unknown,
-   rule.triggerMetadata?.mentionTotalLimit ?? language.None,
-   'string',
-   lan.mentionTotalLimit,
-  );
+
+ if (rule.triggerMetadata && oldRule?.triggerMetadata) {
+  if (rule.triggerMetadata.mentionTotalLimit !== oldRule.triggerMetadata.mentionTotalLimit) {
+   merge(
+    oldRule.triggerMetadata.mentionTotalLimit,
+    rule.triggerMetadata.mentionTotalLimit,
+    'string',
+    lan.mentionTotalLimit,
+   );
+  }
+
+  if (
+   rule.triggerMetadata.mentionRaidProtectionEnabled !==
+   oldRule?.triggerMetadata.mentionRaidProtectionEnabled
+  ) {
+   merge(
+    oldRule.triggerMetadata.mentionRaidProtectionEnabled,
+    rule.triggerMetadata.mentionRaidProtectionEnabled,
+    'boolean',
+    lan.mentionRaidProtectionEnabled,
+   );
+  }
  }
+
  if (
   oldRule &&
   JSON.stringify(rule.exemptRoles.map((r) => r.id)) !==
