@@ -32,7 +32,7 @@ const client = new Discord.Client({
  intents: [
   Discord.IntentsBitField.Flags.Guilds,
   Discord.IntentsBitField.Flags.GuildMembers,
-  Discord.IntentsBitField.Flags.GuildBans,
+  Discord.IntentsBitField.Flags.GuildModeration,
   Discord.IntentsBitField.Flags.GuildEmojisAndStickers,
   Discord.IntentsBitField.Flags.GuildIntegrations,
   Discord.IntentsBitField.Flags.GuildWebhooks,
