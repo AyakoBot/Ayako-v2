@@ -70,6 +70,7 @@ export type TableNamesMap = {
  'anti-spam-punishments': DBT.punishments;
  'anti-virus-punishments': DBT.punishments;
  'blacklist-punishments': DBT.punishments;
+ 'blacklist-rules': null;
  'anti-raid': DBT.antiraid;
  'anti-virus': DBT.antivirus;
  'auto-punish': DBT.autopunish;
@@ -142,7 +143,7 @@ export interface SettingsFile<K extends keyof TableNamesMap> {
   oldSetting: TableNamesMap[K],
   newSetting: TableNamesMap[K],
   changedSetting: FieldName<K>,
-  uniquetimestamp?: number,
+  uniquetimestamp?: number | string,
  ) => Promise<void>;
 }
 
@@ -295,3 +296,5 @@ export type DePromisify<T> = T extends Promise<infer U> ? U : T;
 export type NeverNull<T, K extends keyof T> = {
  [P in keyof T]: P extends K ? NonNullable<T[P]> : T[P];
 };
+
+export type Argument<F, N extends number> = F extends (...args: infer A) => unknown ? A[N] : never;

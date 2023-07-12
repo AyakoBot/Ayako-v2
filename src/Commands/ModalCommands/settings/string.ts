@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
-import glob from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
+ if (!cmd.inCachedGuild()) return;
  if (!cmd.isFromMessage()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
@@ -55,25 +55,8 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
-
- const file = files.find((f) =>
-  f.endsWith(
-   `/${
-    ch.constants.commands.settings.basicSettings.includes(settingName)
-     ? `${settingName}/basic`
-     : settingName
-   }.js`,
-  ),
- );
- if (!file) return;
-
- const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
+ const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, tableName, cmd.guild);
+ if (!settingsFile) return;
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(

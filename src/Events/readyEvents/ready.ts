@@ -4,8 +4,11 @@ import client from '../../BaseClient/Client.js';
 import startupTasks from './startupTasks.js';
 
 const { log } = console;
+let ready = false;
 
 export default async () => {
+ ready = true;
+
  log(
   `| Logged in\n| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${
    client.user?.id
@@ -18,3 +21,5 @@ export default async () => {
 
  startupTasks();
 };
+
+export const getReady = () => ready;

@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -119,7 +120,7 @@ export default () => {
          'banchannelid' in m
           ? (guild.channels.cache.get(m.banchannelid) as Discord.GuildChannel)
           : undefined,
-       },
+       } as CT.ModOptions<'channelBanRemove' | 'banRemove' | 'muteRemove'>,
       );
      }),
      guild.id,

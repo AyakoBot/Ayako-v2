@@ -10,6 +10,7 @@ import query from './query.js';
 import constants from '../Other/constants.js';
 import regexes from './regexes.js';
 import client from '../Client.js';
+import error from './error.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -176,7 +177,7 @@ const buttonParsers = {
  create: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
- ): Discord.APIButtonComponent => ({
+ ): Discord.APIButtonComponentWithCustomId => ({
   type: Discord.ComponentType.Button,
   label: language.slashCommands.settings.create,
   style: Discord.ButtonStyle.Success,
@@ -279,7 +280,7 @@ export const updateLog = (
  newSetting: typeof DBT.Res,
  changedSetting: string,
  settingName: keyof CT.TableNamesMap,
- uniquetimestamp: number | undefined,
+ uniquetimestamp: number | string | undefined,
 ) => {
  postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
  log(oldSetting, newSetting, changedSetting, uniquetimestamp);
@@ -290,7 +291,7 @@ const postUpdate = async (
  newSetting: typeof DBT.Res,
  changedSetting: string,
  settingName: keyof CT.TableNamesMap,
- uniquetimestamp: number | undefined,
+ uniquetimestamp: number | string | undefined,
 ) => {
  const files: string[] = await new Promise((resolve) => {
   glob(`${process.cwd()}/Commands/SlashCommands/**/*`, (err, res) => {
@@ -548,16 +549,10 @@ const runSetup = async <T extends keyof CT.TableNamesMap>(
   { returnType: 'unknown', asArray: false },
  ) as never;
 
-export default {
- embedParsers,
- buttonParsers,
- multiRowHelpers,
- updateLog,
- changeHelpers,
- runSetup,
-};
-
-const getEmoji = (setting: string | boolean | string[] | undefined, type?: BLWLType | 'active') => {
+export const getEmoji = (
+ setting: string | boolean | string[] | undefined,
+ type?: BLWLType | 'active',
+) => {
  switch (type) {
   case 'blchannelid':
   case 'wlchannelid': {
@@ -586,7 +581,7 @@ const getLabel = (language: CT.Language, type: BLWLType | 'active') => {
  return language.slashCommands.settings.active;
 };
 
-const getStyle = (setting: boolean | string | string[] | undefined) => {
+export const getStyle = (setting: boolean | string | string[] | undefined) => {
  if (typeof setting === 'boolean' || !setting) {
   return setting ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger;
  }
@@ -736,4 +731,43 @@ const getGlobalDesc = (type: BLWLType, language: CT.Language) => {
    return language.unknown;
   }
  }
+};
+
+const getSettingsFile = async <T extends keyof CT.TableNamesMap>(
+ settingName: T,
+ tableName: keyof CT.TableNamesMap,
+ guild: Discord.Guild,
+) => {
+ const files: string[] = await new Promise((resolve) => {
+  glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
+   if (err) throw err;
+   resolve(res);
+  });
+ });
+
+ const file = files.find((f) =>
+  f.endsWith(
+   `/${
+    constants.commands.settings.basicSettings.includes(settingName)
+     ? `${settingName}/basic`
+     : settingName
+   }.js`,
+  ),
+ );
+ if (!file) {
+  error(guild, new Error('No file found for settings'));
+  return undefined;
+ }
+
+ return (await import(file)) as CT.SettingsFile<typeof tableName>;
+};
+
+export default {
+ embedParsers,
+ buttonParsers,
+ multiRowHelpers,
+ updateLog,
+ changeHelpers,
+ runSetup,
+ getSettingsFile,
 };

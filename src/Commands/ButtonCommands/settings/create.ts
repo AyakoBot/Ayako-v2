@@ -1,9 +1,10 @@
 import type * as Discord from 'discord.js';
-import glob from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import type * as CT from '../../../Typings/CustomTypings';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+ if (!cmd.inCachedGuild()) return;
+
  const settingName = args.shift() as keyof CT.TableNamesMap;
  if (!settingName) return;
 
@@ -15,7 +16,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const currentSettings = await ch
   .query(
-   `INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1, $2) RETURNING *;`,
+   `INSERT INTO ${tableName} (guildid, uniquetimestamp) VALUES ($1, $2);`,
    [cmd.guildId, uniquetimestamp],
    {
     returnType: 'unknown',
@@ -24,25 +25,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   )
   .then(<T extends keyof CT.TableNamesMap>(r: unknown) => r as CT.TableNamesMap[T][]);
 
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, tableName, cmd.guild);
+ if (!settingsFile) return;
 
- const file = files.find((f) =>
-  f.endsWith(
-   `/${
-    ch.constants.commands.settings.basicSettings.includes(settingName)
-     ? `${settingName}/basic`
-     : settingName
-   }.js`,
-  ),
- );
- if (!file) return;
-
- const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
  const language = await ch.languageSelector(cmd.guildId);
 
  cmd.update({
