@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
+import { getReady } from './Events/readyEvents/ready.js';
 
 const processArgs = process.argv;
 if (processArgs.includes('--debug')) console.log('[DEBUG] Debug mode enabled');
@@ -35,3 +36,7 @@ if (processArgs.includes('--debug')) {
   );
  });
 }
+
+setTimeout(() => {
+ if (client.readyTimestamp && !getReady()) client.shard?.respawnAll();
+}, 5000);
