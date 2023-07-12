@@ -962,10 +962,10 @@ export default {
     content: 'Content',
     ruleTriggerTypeName: 'Rule Trigger Type',
     ruleTriggerType: {
-     1: 'Keyword Filter',
+     1: 'Keyword Filter', //
      3: 'Spam Filter',
      4: 'Keyword Preset Filter',
-     5: 'Mention Spam Filter',
+     5: 'Mention Spam Filter', //
      6: 'Profile Filter',
     },
     actionTypeName: 'Action Type',
@@ -1002,10 +1002,14 @@ export default {
     },
     allowList: 'Allowed Words',
     mentionTotalLimit: 'Mention Limit',
+    mentionRaidProtectionEnabled: 'Raid Protection Enabled',
     enabled: 'Enabled',
     eventTypeName: 'Event Type',
+    defaultMessage:
+     "This can't be posted because it contains content blocked by this server. This may also be viewed by server owners.",
     eventType: {
      1: 'Message Send',
+     2: 'Member Update',
     },
     triggerTypeName: 'Trigger Type',
     triggerType: {
@@ -1022,10 +1026,12 @@ export default {
      1: 'Block Message',
      2: 'Send Alert Message',
      3: 'Timeout',
+     4: 'Block Profile Update or Server Interaction',
     },
     alertChannel: 'Alert Channel',
     timeoutDuration: 'Timeout Duration',
     actions: 'Actions',
+    warnMessage: 'Warn Message',
    },
   },
   blacklist: {
@@ -1286,7 +1292,7 @@ export default {
    bonk: {
     self: "bonks themself, at least I didn't have to do it",
     others: 'bonks',
-    buttons: ['Bonk them! >:(', 'Hit them!', 'Cry ;-;'],
+    buttons: ['Bonk them! >:(', 'Cry ;-;'],
    },
    bored: {
     self: 'is bored',
@@ -2197,6 +2203,60 @@ export default {
     'blacklist-punishments': {
      name: 'Blacklist Punishments',
      fields: punishmentFields,
+    },
+    'blacklist-rules': {
+     name: 'Blacklist Rules',
+     keyword: 'Keyword Rule',
+     mention: 'Mention Spam Rule',
+     spam: 'Spam Rule',
+     preset: 'Preset Rule',
+     member: 'Member Rule',
+     actionsRequired: 'Requires at least 1 Action',
+     desc: (mF: number, sF: number, kpF: number, msF: number, kF: number) =>
+      `${kF} of 6 Keyword Filters\n${msF} of 1 Mention Spam Filters\n${mF} of 1 Member Filters\n${sF} of 1 Spam Filters\n${kpF} of 1 Preset Filters`,
+     fields: {
+      keywordFilter: {
+       desc:
+        'The Filtered Keywords, seperate with Comma. For more Info visit [Discords FAQ](https://support.discord.com/hc/en-us/articles/4421269296535-AutoMod-FAQ)',
+      },
+      profanity: {
+       desc: 'The Discord provided Profanity Preset',
+      },
+      sexualContent: {
+       desc: 'The Discord provided Sexual-Content Preset',
+      },
+      slurs: {
+       desc: 'The Discord provided Slurs Preset',
+      },
+      allowList: {
+       desc: 'Words that are allowed to bypass the Filter, separated by Comma',
+      },
+      mentionTotalLimit: {
+       desc: 'Amount of Mentions allowed in a Message',
+      },
+      mentionRaidProtection: {
+       desc: 'Whether to enable Mention Raid Protection',
+      },
+      regex: {
+       desc: 'Rust Regexes to Filter Messages',
+      },
+      blockMessage: {
+       desc: 'Whether to block the sent Message',
+      },
+      blockInteractions: {
+       desc: 'Whether to block Server Interactions (or just the Username update',
+      },
+      customMessage: {
+       name: 'Custom Message',
+       desc: 'The Message to send when a the Filter is triggered',
+      },
+      sendAlertMessage: {
+       desc: 'Whether to send an Alert when the Filter is triggered',
+      },
+      alertChannel: {
+       desc: 'The Channel to send the Alert to',
+      },
+     },
     },
     expiry: {
      desc: `⚠️ Note: ⚠️\nAll of these Settings are ${name}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
@@ -3386,6 +3446,8 @@ export default {
   },
  },
  errors: {
+  deprecatedByDiscord:
+   'This Function has been deprecated by Discord, it does not serve any purpopse anymore.\nYou can go ahead and delete it if you wish.',
   contactSupport: "If you see this Message and don't know what to do, contact Support [click me]",
   inputNoMatch: 'Input did not match validation Regex',
   punishmentNotFound: 'The Mentioned Punishment could not be found',
@@ -3396,6 +3458,7 @@ export default {
   userNotExist: 'The Mentioned User does not exist',
   userNotFound: 'The Mentioned User could not be found',
   serverNotFound: 'The Mentioned Server could not be found',
+  automodRuleNotFound: 'The Mentioned Automod Rule could not be found',
   inviteNotFound: 'The Mentioned Invite could not be found',
   channelNotFound: 'The Mentioned Channel could not be found',
   numTooLarge: 'Number too large',
@@ -3886,4 +3949,7 @@ export default {
  Never: 'Never',
  Join: 'Join',
  Server: 'Server',
+ Deprecated: 'Deprecated',
+ Overrides: 'Overrides',
+ Triggers: 'Triggers',
 };

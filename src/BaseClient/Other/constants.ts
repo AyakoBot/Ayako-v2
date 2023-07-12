@@ -693,6 +693,7 @@ export default {
     'anti-spam-punishments': punishment,
     'anti-virus-punishments': punishment,
     'blacklist-punishments': punishment,
+    'blacklist-rules': {},
     'level-roles': {
      level: 'number',
      roles: 'roles',
