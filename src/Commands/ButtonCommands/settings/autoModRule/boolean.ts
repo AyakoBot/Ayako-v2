@@ -28,8 +28,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const oldSetting = getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>);
+
  const language = await ch.languageSelector(cmd.guildId);
- const currentSetting = JSON.parse(JSON.stringify(rule));
  const updatedSetting = await updateRule(rule, fieldName as CT.Argument<typeof updateRule, 1>);
  if (!updatedSetting) return;
  if ('message' in updatedSetting) {
@@ -47,8 +48,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  ch.settingsHelpers.updateLog(
-  currentSetting,
-  { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] },
+  oldSetting,
+  getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>),
   fieldName,
   settingName,
   id,
@@ -74,6 +75,56 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    language.slashCommands.settings.categories['blacklist-rules'],
   ),
  });
+};
+
+const getSetting = (
+ rule: Discord.AutoModerationRule,
+ type:
+  | 'active'
+  | 'profanity'
+  | 'sexualContent'
+  | 'slurs'
+  | 'mentionRaidProtectionEnabled'
+  | 'blockMessage'
+  | 'sendAlertMessage'
+  | 'timeout',
+) => {
+ switch (type) {
+  case 'active':
+   return !!rule.enabled;
+  case 'profanity':
+   return !!rule.triggerMetadata.presets.includes(
+    Discord.AutoModerationRuleKeywordPresetType.Profanity,
+   );
+  case 'sexualContent':
+   return !!rule.triggerMetadata.presets.includes(
+    Discord.AutoModerationRuleKeywordPresetType.SexualContent,
+   );
+  case 'slurs':
+   return !!rule.triggerMetadata.presets.includes(
+    Discord.AutoModerationRuleKeywordPresetType.Slurs,
+   );
+  case 'mentionRaidProtectionEnabled':
+   return !!rule.triggerMetadata.mentionRaidProtectionEnabled;
+  case 'blockMessage':
+   return JSON.parse(
+    JSON.stringify(
+     rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage),
+    ),
+   ) as Discord.AutoModerationAction;
+  case 'sendAlertMessage':
+   return JSON.parse(
+    JSON.stringify(
+     rule.actions.find((a) => a.type === Discord.AutoModerationActionType.SendAlertMessage),
+    ),
+   ) as Discord.AutoModerationAction;
+  case 'timeout':
+   return JSON.parse(
+    JSON.stringify(rule.actions.find((a) => a.type === Discord.AutoModerationActionType.Timeout)),
+   ) as Discord.AutoModerationAction;
+  default:
+   return undefined;
+ }
 };
 
 const updateRule = (

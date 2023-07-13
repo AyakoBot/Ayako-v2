@@ -2216,6 +2216,7 @@ export default {
       `${kF} of 6 Keyword Filters\n${msF} of 1 Mention Spam Filters\n${mF} of 1 Member Filters\n${sF} of 1 Spam Filters\n${kpF} of 1 Preset Filters`,
      fields: {
       keywordFilter: {
+       name: 'Keyword Filter',
        desc:
         'The Filtered Keywords, seperate with Comma. For more Info visit [Discords FAQ](https://support.discord.com/hc/en-us/articles/4421269296535-AutoMod-FAQ)',
       },
@@ -2229,6 +2230,7 @@ export default {
        desc: 'The Discord provided Slurs Preset',
       },
       allowList: {
+       name: 'Allow List',
        desc: 'Words that are allowed to bypass the Filter, separated by Comma',
       },
       mentionTotalLimit: {
@@ -2238,7 +2240,8 @@ export default {
        desc: 'Whether to enable Mention Raid Protection',
       },
       regex: {
-       desc: 'Rust Regexes to Filter Messages',
+       name: 'Regexes',
+       desc: 'Rust Regexes to Filter Messages\nhttps://rustexp.lpil.uk/',
       },
       blockMessage: {
        desc: 'Whether to block the sent Message',
@@ -2248,13 +2251,18 @@ export default {
       },
       customMessage: {
        name: 'Custom Message',
-       desc: 'The Message to send when a the Filter is triggered',
+       desc:
+        'The Message to send when a the Filter is triggered.\nDoes not accept Mentions, Markdown or Emojis',
       },
       sendAlertMessage: {
        desc: 'Whether to send an Alert when the Filter is triggered',
       },
       alertChannel: {
        desc: 'The Channel to send the Alert to',
+      },
+      timeoutDuration: {
+       name: 'Timeout Duration',
+       desc: 'The Duration of the Timeout (Example: 1h 5 minutes 30 s)',
       },
      },
     },

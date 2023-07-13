@@ -1,0 +1,65 @@
+import * as Discord from 'discord.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/CustomTypings.js';
+
+const settingName = 'blacklist-rules';
+
+export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+ if (!cmd.inCachedGuild()) return;
+
+ const fieldName = args.shift() as CT.Argument<typeof getCurrentSetting, 1>;
+ if (!fieldName) {
+  ch.error(cmd.guild, new Error('No field name found'));
+  return;
+ }
+
+ const getID = () => {
+  const arg = args.shift();
+  if (arg) return arg;
+  return undefined;
+ };
+ const id = getID();
+ if (!id) {
+  ch.error(cmd.guild, new Error('No ID found'));
+  return;
+ }
+
+ const rule = cmd.guild.autoModerationRules.cache.get(id);
+ if (!rule) {
+  ch.error(cmd.guild, new Error('Rule not found'));
+  return;
+ }
+
+ const language = await ch.languageSelector(cmd.guildId);
+ const lan = language.slashCommands.settings.categories[settingName];
+
+ cmd.showModal(
+  ch.settingsHelpers.changeHelpers.changeModal(
+   language,
+   lan,
+   settingName,
+   fieldName,
+   'autoModRule/strings',
+   getCurrentSetting(rule, fieldName),
+   false,
+   id,
+  ),
+ );
+};
+
+const getCurrentSetting = (
+ rule: Discord.AutoModerationRule,
+ type: 'keywordFilter' | 'allowList' | 'regex',
+) => {
+ switch (type) {
+  case 'keywordFilter':
+   return rule.triggerMetadata.keywordFilter.join(', ') || undefined;
+  case 'allowList':
+   return rule.triggerMetadata.allowList.join(', ') || undefined;
+  case 'regex':
+   return rule.triggerMetadata.regexPatterns.join(', ') || undefined;
+  default:
+   ch.error(rule.guild, new Error(`Invalid type ${type}`));
+   return undefined;
+ }
+};

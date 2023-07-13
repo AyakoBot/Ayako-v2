@@ -75,7 +75,7 @@ const embedParsers = {
 
 const back = <T extends keyof SettingsNames>(
  name: T,
- uniquetimestamp: number | undefined,
+ uniquetimestamp: number | undefined | string,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Danger,
@@ -369,7 +369,7 @@ const changeHelpers = {
   type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
   fieldName: string,
   settingName: T,
-  uniquetimestamp: number | undefined,
+  uniquetimestamp: number | undefined | string,
  ) => {
   const menu:
    | Discord.APIRoleSelectComponent
@@ -434,10 +434,17 @@ const changeHelpers = {
   lan: CT.Language['slashCommands']['settings']['categories'][T],
   settingName: T,
   fieldName: string,
-  type: 'number' | 'duration' | 'string' | 'strings',
+  type:
+   | 'number'
+   | 'duration'
+   | 'string'
+   | 'strings'
+   | 'autoModRule/string'
+   | 'autoModRule/strings'
+   | 'autoModRule/duration',
   current: string | undefined,
   short: boolean,
-  uniquetimestamp: number | undefined,
+  uniquetimestamp: number | string | undefined,
  ): Discord.APIModalInteractionResponseCallbackData => ({
   title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
   custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
@@ -488,7 +495,7 @@ const changeHelpers = {
   fieldName: string,
   type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | string,
   language: CT.Language,
-  uniquetimestamp: number | undefined,
+  uniquetimestamp: number | undefined | string,
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   style: Discord.ButtonStyle.Success,
@@ -707,7 +714,7 @@ const getMention = async (
  }
 };
 
-const getGlobalDesc = (type: BLWLType, language: CT.Language) => {
+const getGlobalDesc = (type: BLWLType | 'autoModRule/alertChannel', language: CT.Language) => {
  switch (type) {
   case 'blchannelid': {
    return language.slashCommands.settings.blchannel;
@@ -727,7 +734,11 @@ const getGlobalDesc = (type: BLWLType, language: CT.Language) => {
   case 'wluserid': {
    return language.slashCommands.settings.wluser;
   }
+  case 'autoModRule/alertChannel': {
+   return language.events.logs.automodRule.alertChannel;
+  }
   default: {
+   log(new Error(`Unknown Type ${type}`));
    return language.unknown;
   }
  }

@@ -353,7 +353,7 @@ export const getComponents = (
          style: rule.triggerMetadata.keywordFilter
           ? Discord.ButtonStyle.Secondary
           : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/regex_${rule.id}`,
+         custom_id: `settings/autoModRule/strings_regex_${rule.id}`,
         },
        ]
      : []),
@@ -445,14 +445,7 @@ export const getComponents = (
       rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
        ? language.events.logs.automodRule.actionsType[Discord.AutoModerationActionType.BlockMessage]
        : language.events.logs.automodRule.actionsType[4],
-     style: rule.actions.some((r) =>
-      r.type ===
-      (rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
-       ? Discord.AutoModerationActionType.BlockMessage
-       : 4)
-       ? Discord.ButtonStyle.Secondary
-       : Discord.ButtonStyle.Primary,
-     ),
+     style: Discord.ButtonStyle.Secondary,
      custom_id: `settings/autoModRule/boolean_${
       rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
        ? 'blockMessage'
@@ -482,7 +475,7 @@ export const getComponents = (
         },
        ]
      : []),
-    ...(getActionMetadata(rule, 'SendAlertMessage')
+    ...(getActionMetadata(rule, 'SendAlertMessage')?.channelId
      ? [
         {
          type: Discord.ComponentType.Button,
@@ -490,28 +483,24 @@ export const getComponents = (
           language.events.logs.automodRule.actionsType[
            Discord.AutoModerationActionType.SendAlertMessage
           ],
-         style: getActionMetadata(rule, 'SendAlertMessage')
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
+         style: Discord.ButtonStyle.Secondary,
          custom_id: `settings/autoModRule/boolean_sendAlertMessage_${rule.id}`,
-         emoji: getActionMetadata(rule, 'SendAlertMessage') ? ch.objectEmotes.enabled : undefined,
+         emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
+          ? ch.objectEmotes.enabled
+          : undefined,
         },
        ]
      : []),
     {
      type: Discord.ComponentType.Button,
-     label: getActionMetadata(rule, 'SendAlertMessage')
+     label: getActionMetadata(rule, 'SendAlertMessage')?.channelId
       ? language.events.logs.automodRule.alertChannel
       : language.events.logs.automodRule.actionsType[
          Discord.AutoModerationActionType.SendAlertMessage
         ],
-     style: getActionMetadata(rule, 'SendAlertMessage')
-      ? Discord.ButtonStyle.Secondary
-      : Discord.ButtonStyle.Primary,
-     custom_id: getActionMetadata(rule, 'SendAlertMessage')
-      ? `settings/autoModRule/boolean_sendAlertMessage_${rule.id}`
-      : `settings/autoModRule/alertChannel_${rule.id}`,
-     emoji: getActionMetadata(rule, 'SendAlertMessage')
+     style: Discord.ButtonStyle.Secondary,
+     custom_id: `settings/autoModRule/alertChannel_${rule.id}`,
+     emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
       ? ch.objectEmotes.channelTypes[0]
       : ch.objectEmotes.disabled,
     },
@@ -533,9 +522,7 @@ export const getComponents = (
               language.events.logs.automodRule.actionsType[
                Discord.AutoModerationActionType.Timeout
               ],
-             style: rule.exemptRoles.size
-              ? Discord.ButtonStyle.Secondary
-              : Discord.ButtonStyle.Primary,
+             style: Discord.ButtonStyle.Secondary,
              custom_id: `settings/autoModRule/boolean_timeout_${rule.id}`,
              emoji: getActionMetadata(rule, 'Timeout')
               ? ch.objectEmotes.enabled
@@ -548,12 +535,8 @@ export const getComponents = (
          label: getActionMetadata(rule, 'Timeout')
           ? language.events.logs.automodRule.timeoutDuration
           : language.events.logs.automodRule.actionsType[Discord.AutoModerationActionType.Timeout],
-         style: getActionMetadata(rule, 'Timeout')
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: getActionMetadata(rule, 'Timeout')
-          ? `settings/autoModRule/timeoutDuration_${rule.id}`
-          : `settings/autoModRule/boolean_timeout_${rule.id}`,
+         style: Discord.ButtonStyle.Secondary,
+         custom_id: `settings/autoModRule/timeoutDuration_${rule.id}`,
          emoji: getActionMetadata(rule, 'Timeout') ? undefined : ch.objectEmotes.disabled,
         },
        ] as Discord.APIButtonComponentWithCustomId[],
