@@ -24,7 +24,9 @@ export default async (appeal: CT.Appeal) => {
     `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1;`,
     `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1;`,
     `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1;`,
-   ].map((q) => ch.query(q, [appeal.punishmentid], { returnType: 'Punishment', asArray: false })),
+   ].map((q) =>
+    ch.query(q, [Number(appeal.punishmentid)], { returnType: 'Punishment', asArray: false }),
+   ),
   )
  )[0];
 
