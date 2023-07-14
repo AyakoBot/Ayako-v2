@@ -50,14 +50,25 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: settings?.prefix ? `\`${settings?.prefix}\`` : language.None,
     inline: true,
    },
+
+   {
+    name: lan.fields.ptreminderenabled.name,
+    value: embedParsers.boolean(settings?.ptreminderenabled, language),
+    inline: true,
+   },
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
    {
     name: lan.fields.interactionsmode.name,
     value: settings?.interactionsmode ? `${language.small}` : `${language.large}`,
     inline: true,
    },
    {
-    name: lan.fields.ptreminderenabled.name,
-    value: embedParsers.boolean(settings?.ptreminderenabled, language),
+    name: lan.fields.legacyrp.name,
+    value: embedParsers.boolean(settings?.legacyrp, language),
     inline: true,
    },
    {
@@ -90,15 +101,34 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   type: Discord.ComponentType.ActionRow,
   components: [
    buttonParsers.specific(language, settings?.prefix, 'prefix', name, undefined),
-   buttonParsers.specific(
+   buttonParsers.boolean(
     language,
-    settings?.interactionsmode,
-    'interactionsmode',
+    settings?.ptreminderenabled,
+    'ptreminderenabled',
     name,
     undefined,
    ),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(language, settings?.interactionsmode, 'interactionsmode', name, undefined),
+   buttonParsers.boolean(language, settings?.legacyrp, 'legacyrp', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
    buttonParsers.specific(language, settings?.lan, 'lan', name, undefined),
-   buttonParsers.specific(language, settings?.errorchannel, 'errorchannel', name, undefined),
+   buttonParsers.specific(
+    language,
+    settings?.errorchannel,
+    'errorchannel',
+    name,
+    undefined,
+    'channel',
+   ),
   ],
  },
 ];

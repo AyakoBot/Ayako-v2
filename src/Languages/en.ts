@@ -1679,7 +1679,7 @@ export default {
     To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
     After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
 
-    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Slash-Commands\`.
+    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Commands\`.
     __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
 
     __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.
@@ -1690,11 +1690,11 @@ export default {
      value: `Last time you've used it was ${t}`,
     },
     {
-     name: 'RP Slash-Commands can only be enabled __twice__ per Day',
+     name: 'RP Commands can only be enabled __twice__ per Day',
      value: `You have used it ${used}x today`,
     },
    ],
-   button: 'RP Slash-Commands',
+   button: 'RP Commands',
    sync: 'Sync Permissions',
    notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
    delay: 'This Operation might take a while to finish, please be patient',
@@ -3048,6 +3048,10 @@ export default {
       interactionsmode: {
        name: 'RP Command Size',
        desc: 'Whether RP Commands should be large or small',
+      },
+      legacyrp: {
+       name: 'Legacy RP Commands',
+       desc: 'Whether to use Legacy RP Commands',
       },
       lan: {
        name: 'Language',

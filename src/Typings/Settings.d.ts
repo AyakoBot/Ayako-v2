@@ -135,6 +135,7 @@ export type guildsettings = {
  prefix?: string;
  // false is large, true is small
  interactionsmode: boolean;
+ legacyrp: boolean;
  lan: string;
  errorchannel?: string;
  voterole: string;

@@ -641,6 +641,7 @@ export default {
     basic: {
      prefix: 'string',
      interactionsmode: 'boolean',
+     legacyrp: 'boolean',
      lan: 'language',
      errorchannel: 'channel',
      vanity: 'string',

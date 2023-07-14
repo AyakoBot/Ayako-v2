@@ -35,12 +35,16 @@ const reply = async (
   return parsers.msgParser(cmd);
  };
 
- const { author, users, text, otherText, commandName } = await parse();
+ const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
+  returnType: 'guildsettings',
+  asArray: false,
+ });
 
+ const { author, users, text, otherText, commandName } = await parse();
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
  const con = constants.commands.interactions.find((c) => c.name === commandName);
- const desc = getDesc(author, users, language, lan, cmd);
+ const desc = getDesc(author, users, language, lan, cmd, !!setting?.legacyrp);
 
  if (!desc || (con?.reqUser && !users.length)) {
   if (cmd instanceof Discord.Message) {
@@ -66,11 +70,6 @@ const reply = async (
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
  const gif = (await gifCaller.gifs()) as ReturnType<'gif'> | undefined;
 
- const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
-  returnType: 'guildsettings',
-  asArray: false,
- }).then((r) => r?.interactionsmode);
-
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
@@ -83,7 +82,7 @@ const reply = async (
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
    : undefined,
  };
- if (setting && gif) embed.thumbnail = { url: gif.url };
+ if (setting?.interactionsmode && gif) embed.thumbnail = { url: gif.url };
  else if (gif) embed.image = { url: gif.url };
 
  const replyUsers =
@@ -98,7 +97,7 @@ const reply = async (
  if (!replyUsers.length && !(cmd instanceof Discord.ButtonInteraction)) replyUsers.push('everyone');
 
  const isAtEmbedLimit = cmd instanceof Discord.ButtonInteraction && cmd.message.embeds.length > 8;
- const payload = getPayload(embed, con, replyUsers, isAtEmbedLimit, lan);
+ const payload = getPayload(embed, con, replyUsers, isAtEmbedLimit, lan, !!setting?.legacyrp);
  const embedsBefore = cmd instanceof Discord.ButtonInteraction ? [...cmd.message.embeds] : [];
 
  if (replyUsers.length && cmd instanceof Discord.ButtonInteraction && !isAtEmbedLimit) {
@@ -114,7 +113,8 @@ const reply = async (
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
       'cmd',
      )) as InteractionKeys
-   ]
+   ] &&
+  !setting?.legacyrp
  ) {
   embedsBefore.shift();
  }
@@ -268,24 +268,27 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
  replyUsers: string[],
  isAtEmbedLimit: boolean,
  lan: CT.Language['slashCommands']['interactions'][T],
+ legacyrp: boolean,
 ): Discord.MessageReplyOptions | Discord.InteractionReplyOptions => ({
  embeds: [embed],
- components: [
-  con.buttons?.length && replyUsers.length && !isAtEmbedLimit
-   ? ({
-      type: Discord.ComponentType.ActionRow,
-      components: con.buttons?.map(
-       (b, i) =>
-        ({
-         type: Discord.ComponentType.Button,
-         label: 'buttons' in lan ? lan.buttons[i] : b,
-         custom_id: `${b}_${replyUsers.join('_')}`,
-         style: Discord.ButtonStyle.Secondary,
-        } as Discord.APIButtonComponent),
-      ),
-     } as Discord.APIActionRowComponent<Discord.APIButtonComponent>)
-   : undefined,
- ].filter((b): b is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!b),
+ components: legacyrp
+  ? []
+  : [
+     con.buttons?.length && replyUsers.length && !isAtEmbedLimit
+      ? ({
+         type: Discord.ComponentType.ActionRow,
+         components: con.buttons?.map(
+          (b, i) =>
+           ({
+            type: Discord.ComponentType.Button,
+            label: 'buttons' in lan ? lan.buttons[i] : b,
+            custom_id: `${b}_${replyUsers.join('_')}`,
+            style: Discord.ButtonStyle.Secondary,
+           } as Discord.APIButtonComponent),
+         ),
+        } as Discord.APIActionRowComponent<Discord.APIButtonComponent>)
+      : undefined,
+    ].filter((b): b is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!b),
 });
 
 const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
@@ -294,13 +297,14 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  language: CT.Language,
  lan: CT.Language['slashCommands']['interactions'][T],
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction | Discord.Message,
+ legacyrp: boolean,
 ) => {
  const users = [...originalUsers];
 
  if (users.length === 1 && author.id === users[0].id) return `${author} ${lan.self}`;
  if (!users.length && 'noOne' in lan) return `${author} ${lan.noOne}`;
 
- if ('request' in lan && !(cmd instanceof Discord.ButtonInteraction)) {
+ if ('request' in lan && !(cmd instanceof Discord.ButtonInteraction) && !legacyrp) {
   return `${author} ${lan.request}`;
  }
 
