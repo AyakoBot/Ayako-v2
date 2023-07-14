@@ -334,108 +334,127 @@ export const getComponents = (
     },
    ],
   },
-  {
-   type: Discord.ComponentType.ActionRow,
-   components: [
-    ...([Discord.AutoModerationRuleTriggerType.Keyword, 6].includes(rule.triggerType)
-     ? [
-        {
-         type: Discord.ComponentType.Button,
-         label: language.events.logs.automodRule.keywordFilter,
-         style: rule.triggerMetadata.keywordFilter
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/strings_keywordFilter_${rule.id}`,
-        },
-        {
-         type: Discord.ComponentType.Button,
-         label: language.events.logs.automodRule.regexPatterns,
-         style: rule.triggerMetadata.keywordFilter
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/strings_regex_${rule.id}`,
-        },
-       ]
-     : []),
-    ...(rule.triggerType === Discord.AutoModerationRuleTriggerType.KeywordPreset
-     ? [
-        {
-         type: Discord.ComponentType.Button,
-         label:
-          language.events.logs.automodRule.presets[
-           Discord.AutoModerationRuleKeywordPresetType.Profanity
-          ],
-         style: rule.triggerMetadata.presets.includes(
-          Discord.AutoModerationRuleKeywordPresetType.Profanity,
-         )
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/boolean_profanity_${rule.id}`,
-        },
-        {
-         type: Discord.ComponentType.Button,
-         label:
-          language.events.logs.automodRule.presets[
-           Discord.AutoModerationRuleKeywordPresetType.SexualContent
-          ],
-         style: rule.triggerMetadata.presets.includes(
-          Discord.AutoModerationRuleKeywordPresetType.SexualContent,
-         )
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/boolean_sexualContent_${rule.id}`,
-        },
-        {
-         type: Discord.ComponentType.Button,
-         label:
-          language.events.logs.automodRule.presets[
-           Discord.AutoModerationRuleKeywordPresetType.Slurs
-          ],
-         style: rule.triggerMetadata.presets.includes(
-          Discord.AutoModerationRuleKeywordPresetType.Slurs,
-         )
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/boolean_slurs_${rule.id}`,
-        },
-       ]
-     : []),
-    ...([
-     Discord.AutoModerationRuleTriggerType.Keyword,
-     Discord.AutoModerationRuleTriggerType.KeywordPreset,
-     6,
-    ].includes(rule.triggerType)
-     ? [
-        {
-         type: Discord.ComponentType.Button,
-         label: language.events.logs.automodRule.allowList,
-         style: rule.triggerMetadata.allowList
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/strings_allowList_${rule.id}`,
-        },
-       ]
-     : []),
-    ...(rule.triggerType === Discord.AutoModerationRuleTriggerType.MentionSpam
-     ? [
-        {
-         type: Discord.ComponentType.Button,
-         label: language.events.logs.automodRule.mentionTotalLimit,
-         style: Discord.ButtonStyle.Secondary,
-         custom_id: `settings/autoModRule/number_mentionTotalLimit_${rule.id}`,
-        },
-        {
-         type: Discord.ComponentType.Button,
-         label: language.events.logs.automodRule.mentionRaidProtectionEnabled,
-         style: rule.triggerMetadata.mentionRaidProtectionEnabled
-          ? Discord.ButtonStyle.Secondary
-          : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/boolean_mentionRaidProtectionEnabled_${rule.id}`,
-        },
-       ]
-     : []),
-   ] as Discord.APIButtonComponentWithCustomId[],
-  },
+  ...(rule.triggerType !== Discord.AutoModerationRuleTriggerType.Spam
+   ? [
+      {
+       type: Discord.ComponentType.ActionRow,
+       components: [
+        ...([Discord.AutoModerationRuleTriggerType.Keyword, 6].includes(rule.triggerType)
+         ? [
+            {
+             type: Discord.ComponentType.Button,
+             label: language.events.logs.automodRule.keywordFilter,
+             style: rule.triggerMetadata.keywordFilter
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/strings_keywordFilter_${rule.id}`,
+            },
+            {
+             type: Discord.ComponentType.Button,
+             label: language.events.logs.automodRule.regexPatterns,
+             style: rule.triggerMetadata.keywordFilter
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/strings_regex_${rule.id}`,
+            },
+           ]
+         : []),
+        ...(rule.triggerType === Discord.AutoModerationRuleTriggerType.KeywordPreset
+         ? [
+            {
+             type: Discord.ComponentType.Button,
+             label:
+              language.events.logs.automodRule.presets[
+               Discord.AutoModerationRuleKeywordPresetType.Profanity
+              ],
+             style: rule.triggerMetadata.presets.includes(
+              Discord.AutoModerationRuleKeywordPresetType.Profanity,
+             )
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/boolean_profanity_${rule.id}`,
+             disabled:
+              rule.triggerMetadata.presets.length === 1 &&
+              rule.triggerMetadata.presets.includes(
+               Discord.AutoModerationRuleKeywordPresetType.Profanity,
+              ),
+            },
+            {
+             type: Discord.ComponentType.Button,
+             label:
+              language.events.logs.automodRule.presets[
+               Discord.AutoModerationRuleKeywordPresetType.SexualContent
+              ],
+             style: rule.triggerMetadata.presets.includes(
+              Discord.AutoModerationRuleKeywordPresetType.SexualContent,
+             )
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/boolean_sexualContent_${rule.id}`,
+             disabled:
+              rule.triggerMetadata.presets.length === 1 &&
+              rule.triggerMetadata.presets.includes(
+               Discord.AutoModerationRuleKeywordPresetType.SexualContent,
+              ),
+            },
+            {
+             type: Discord.ComponentType.Button,
+             label:
+              language.events.logs.automodRule.presets[
+               Discord.AutoModerationRuleKeywordPresetType.Slurs
+              ],
+             style: rule.triggerMetadata.presets.includes(
+              Discord.AutoModerationRuleKeywordPresetType.Slurs,
+             )
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/boolean_slurs_${rule.id}`,
+             disabled:
+              rule.triggerMetadata.presets.length === 1 &&
+              rule.triggerMetadata.presets.includes(
+               Discord.AutoModerationRuleKeywordPresetType.Slurs,
+              ),
+            },
+           ]
+         : []),
+        ...([
+         Discord.AutoModerationRuleTriggerType.Keyword,
+         Discord.AutoModerationRuleTriggerType.KeywordPreset,
+         6,
+        ].includes(rule.triggerType)
+         ? [
+            {
+             type: Discord.ComponentType.Button,
+             label: language.events.logs.automodRule.allowList,
+             style: rule.triggerMetadata.allowList
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/strings_allowList_${rule.id}`,
+            },
+           ]
+         : []),
+        ...(rule.triggerType === Discord.AutoModerationRuleTriggerType.MentionSpam
+         ? [
+            {
+             type: Discord.ComponentType.Button,
+             label: language.events.logs.automodRule.mentionTotalLimit,
+             style: Discord.ButtonStyle.Secondary,
+             custom_id: `settings/autoModRule/number_mentionTotalLimit_${rule.id}`,
+            },
+            {
+             type: Discord.ComponentType.Button,
+             label: language.events.logs.automodRule.mentionRaidProtectionEnabled,
+             style: rule.triggerMetadata.mentionRaidProtectionEnabled
+              ? Discord.ButtonStyle.Secondary
+              : Discord.ButtonStyle.Primary,
+             custom_id: `settings/autoModRule/boolean_mentionRaidProtectionEnabled_${rule.id}`,
+            },
+           ]
+         : []),
+       ] as Discord.APIButtonComponentWithCustomId[],
+      },
+     ]
+   : []),
   {
    type: Discord.ComponentType.ActionRow,
    components: [
@@ -460,7 +479,16 @@ export const getComponents = (
      )
       ? ch.objectEmotes.enabled
       : ch.objectEmotes.disabled,
-     disabled: rule.eventType !== Discord.AutoModerationRuleEventType.MessageSend,
+     disabled:
+      rule.eventType !== Discord.AutoModerationRuleEventType.MessageSend ||
+      (rule.actions.length === 1 &&
+       !!rule.actions.find(
+        (r) =>
+         r.type ===
+         (rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
+          ? Discord.AutoModerationActionType.BlockMessage
+          : 4),
+       )),
     },
     ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend &&
     getActionMetadata(rule, 'BlockMessage')
@@ -488,6 +516,8 @@ export const getComponents = (
          emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
           ? ch.objectEmotes.enabled
           : undefined,
+         disabled:
+          rule.actions.length === 1 && !!getActionMetadata(rule, 'SendAlertMessage')?.channelId,
         },
        ]
      : []),
@@ -499,7 +529,7 @@ export const getComponents = (
          Discord.AutoModerationActionType.SendAlertMessage
         ],
      style: Discord.ButtonStyle.Secondary,
-     custom_id: `settings/autoModRule/alertChannel_${rule.id}`,
+     custom_id: `settings/autoModRule/channel_${rule.id}`,
      emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
       ? ch.objectEmotes.channelTypes[0]
       : ch.objectEmotes.disabled,
@@ -527,6 +557,7 @@ export const getComponents = (
              emoji: getActionMetadata(rule, 'Timeout')
               ? ch.objectEmotes.enabled
               : ch.objectEmotes.disabled,
+             disabled: rule.actions.length === 1 && !!getActionMetadata(rule, 'Timeout'),
             },
            ]
          : []),
@@ -550,7 +581,7 @@ export const getComponents = (
      type: Discord.ComponentType.Button,
      label: language.events.logs.automodRule.exemptRoles,
      style: rule.exemptRoles.size ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
-     custom_id: `settings/autoModRule/exemptRoles_${rule.id}`,
+     custom_id: `settings/autoModRule/roles_${rule.id}`,
      emoji: ch.objectEmotes.Role,
     },
     ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
@@ -561,7 +592,7 @@ export const getComponents = (
          style: rule.exemptChannels.size
           ? Discord.ButtonStyle.Secondary
           : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/exemptChannels_${rule.id}`,
+         custom_id: `settings/autoModRule/channels_${rule.id}`,
          emoji: ch.objectEmotes.channelTypes[0],
         },
        ]

@@ -4,13 +4,10 @@ import * as SettingsFile from '../../../SlashCommands/settings/moderation/blackl
 
 const settingName = 'blacklist-rules';
 
-const f = async (
- cmd: Discord.ButtonInteraction,
- args: ['keyword' | 'mention' | 'spam' | 'preset' | 'member'],
-) => {
+const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  if (!cmd.inCachedGuild()) return;
 
- const type = args.shift();
+ const type = args.shift() as 'keyword' | 'mention' | 'spam' | 'preset' | 'member' | undefined;
  if (!type) {
   ch.error(cmd.guild, new Error('No type provided'));
   return;
@@ -110,12 +107,9 @@ const getTriggerMetadata = (
     ],
    };
   }
-  case 'member': {
-   return 6 as never;
-  }
   default: {
    return {
-    keywordFilter: ['discord.gg/animekos'],
+    keywordFilter: ['discord.gg/'],
    };
   }
  }

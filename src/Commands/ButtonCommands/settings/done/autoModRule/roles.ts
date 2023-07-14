@@ -24,31 +24,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const oldSetting = rule.actions.find(
-  (a) => a.type === Discord.AutoModerationActionType.SendAlertMessage,
- )?.metadata.channelId;
-
- const channelText = cmd.message.embeds[0].description?.split(/,\s/g);
- const channelID = channelText
-  ?.map((c) => c.replace(/\D/g, '') || undefined)
-  .filter((c): c is string => !!c)?.[0];
-
- const updatedRule = await rule
-  .setActions([
-   ...rule.actions.filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage),
-   ...(channelID
-    ? [
-       {
-        type: Discord.AutoModerationActionType.SendAlertMessage,
-        metadata: {
-         channel: channelID,
-        },
-       },
-      ]
-    : []),
-  ])
-  .catch((e) => e as Discord.DiscordAPIError);
-
+ const oldSetting = structuredClone(rule.exemptRoles.map((o) => o.id));
+ const roleText = cmd.message.embeds[0].description?.split(/,\s/g);
+ const roleIDs =
+  roleText?.map((c) => c.replace(/\D/g, '') || undefined).filter((r): r is string => !!r) ?? [];
+ const updatedRule = await rule.setExemptRoles(roleIDs).catch((e) => e as Discord.DiscordAPIError);
  const language = await ch.languageSelector(cmd.guildId);
 
  if ('message' in updatedRule) {
@@ -56,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- ch.settingsHelpers.updateLog(channelID, oldSetting, 'alertChannel', 'blacklist-rules', id);
+ ch.settingsHelpers.updateLog(roleIDs, oldSetting, 'exemptRoles', 'blacklist-rules', id);
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,

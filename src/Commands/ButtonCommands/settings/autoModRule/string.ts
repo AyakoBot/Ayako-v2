@@ -38,7 +38,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    'autoModRule/string',
    rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)?.metadata
     .customMessage || '',
-   false,
+   true,
    id,
   ),
  );

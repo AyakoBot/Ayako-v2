@@ -445,6 +445,7 @@ const changeHelpers = {
   current: string | undefined,
   short: boolean,
   uniquetimestamp: number | string | undefined,
+  required = true,
  ): Discord.APIModalInteractionResponseCallbackData => ({
   title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
   custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
@@ -459,6 +460,7 @@ const changeHelpers = {
       value:
        (type === 'duration' && current ? String(ms(Number(current) * 1000)) : current) ?? undefined,
       custom_id: fieldName,
+      required,
      },
     ],
    },
@@ -714,7 +716,10 @@ const getMention = async (
  }
 };
 
-const getGlobalDesc = (type: BLWLType | 'autoModRule/alertChannel', language: CT.Language) => {
+const getGlobalDesc = (
+ type: BLWLType | 'autoModRule/channel' | 'autoModRule/channels' | 'autoModRule/roles',
+ language: CT.Language,
+) => {
  switch (type) {
   case 'blchannelid': {
    return language.slashCommands.settings.blchannel;
@@ -734,8 +739,14 @@ const getGlobalDesc = (type: BLWLType | 'autoModRule/alertChannel', language: CT
   case 'wluserid': {
    return language.slashCommands.settings.wluser;
   }
-  case 'autoModRule/alertChannel': {
+  case 'autoModRule/channel': {
    return language.events.logs.automodRule.alertChannel;
+  }
+  case 'autoModRule/roles': {
+   return language.events.logs.automodRule.exemptRoles;
+  }
+  case 'autoModRule/channels': {
+   return language.events.logs.automodRule.exemptChannels;
   }
   default: {
    log(new Error(`Unknown Type ${type}`));

@@ -2218,7 +2218,7 @@ export default {
       keywordFilter: {
        name: 'Keyword Filter',
        desc:
-        'The Filtered Keywords, seperate with Comma. For more Info visit [Discords FAQ](https://support.discord.com/hc/en-us/articles/4421269296535-AutoMod-FAQ)',
+        'The Filtered Keywords, seperate with Comma. For more Info visit https://support.discord.com/hc/en-us/articles/4421269296535-AutoMod-FAQ',
       },
       profanity: {
        desc: 'The Discord provided Profanity Preset',
@@ -2262,7 +2262,15 @@ export default {
       },
       timeoutDuration: {
        name: 'Timeout Duration',
-       desc: 'The Duration of the Timeout (Example: 1h 5 minutes 30 s)',
+       desc: 'The Duration of the Timeout (Example: 1h 5 minutes 30 s)\nMaximum of 4 Weeks',
+      },
+      exemptChannels: {
+       name: 'Exempt Channels',
+       desc: 'Channels that are excluded from the Filter',
+      },
+      exemptRoles: {
+       name: 'Exempt Roles',
+       desc: 'Roles that are excluded from the Filter',
       },
      },
     },

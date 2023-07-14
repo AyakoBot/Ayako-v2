@@ -43,6 +43,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    getCurrentSetting(rule, fieldName),
    false,
    id,
+   fieldName === 'keywordFilter',
   ),
  );
 };

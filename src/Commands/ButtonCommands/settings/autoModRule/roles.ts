@@ -31,10 +31,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    await ch.settingsHelpers.changeHelpers.changeEmbed(
     language,
     lan,
-    'autoModRule/alertChannel',
-    rule.actions.find((r) => r.type === Discord.AutoModerationActionType.SendAlertMessage)?.metadata
-     .channelId || undefined,
-    'channel',
+    'exemptRoles',
+    rule.exemptRoles.map((c) => c.id),
+    'role',
    ),
   ],
   components: [
@@ -43,8 +42,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      ch.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      'channel',
-      'autoModRule/alertChannel',
+      'roles',
+      'autoModRule/roles',
       settingName,
       id,
      ),
@@ -59,13 +58,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       custom_id: `settings/autoModRule/display_${id}`,
       emoji: ch.objectEmotes.back,
      },
-     ch.settingsHelpers.changeHelpers.done(
-      settingName,
-      'channel',
-      'autoModRule/alertChannel',
-      language,
-      id,
-     ),
+     ch.settingsHelpers.changeHelpers.done(settingName, 'role', 'autoModRule/roles', language, id),
     ],
    },
   ],

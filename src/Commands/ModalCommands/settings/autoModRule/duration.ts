@@ -57,20 +57,25 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    .durationSeconds,
  );
 
- const newActions = [
-  ...rule.actions.filter((a) => a.type !== Discord.AutoModerationActionType.Timeout),
-  {
-   type: Discord.AutoModerationActionType.Timeout,
-   metadata: {
-    durationSeconds: Number(newSetting),
-   },
-  },
- ];
-
- console.log(newActions);
-
  const updatedSetting = await rule
-  .setActions(newActions)
+  .setActions([
+   ...rule.actions
+    .filter((a) => a.type !== Discord.AutoModerationActionType.Timeout)
+    .map((a) =>
+     a.type === Discord.AutoModerationActionType.SendAlertMessage
+      ? ({
+         type: Discord.AutoModerationActionType.SendAlertMessage,
+         metadata: { channel: a.metadata.channelId },
+        } as Discord.AutoModerationActionOptions)
+      : a,
+    ),
+   {
+    type: Discord.AutoModerationActionType.Timeout,
+    metadata: {
+     durationSeconds: Number(newSetting),
+    },
+   },
+  ])
   .catch((e) => e as Discord.DiscordAPIError);
 
  if ('message' in updatedSetting) {
@@ -80,7 +85,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  ch.settingsHelpers.updateLog(
   currentSetting,
-  Number(newSetting) / 1000,
+  Number(newSetting),
   'timeoutDuration',
   settingName,
   id,

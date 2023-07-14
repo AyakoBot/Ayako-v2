@@ -107,21 +107,29 @@ const getSetting = (
   case 'mentionRaidProtectionEnabled':
    return !!rule.triggerMetadata.mentionRaidProtectionEnabled;
   case 'blockMessage':
-   return JSON.parse(
-    JSON.stringify(
-     rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage),
-    ),
-   ) as Discord.AutoModerationAction;
+   return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)
+    ? (JSON.parse(
+       JSON.stringify(
+        rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage),
+       ),
+      ) as Discord.AutoModerationAction)
+    : undefined;
   case 'sendAlertMessage':
-   return JSON.parse(
-    JSON.stringify(
-     rule.actions.find((a) => a.type === Discord.AutoModerationActionType.SendAlertMessage),
-    ),
-   ) as Discord.AutoModerationAction;
+   return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.SendAlertMessage)
+    ? (JSON.parse(
+       JSON.stringify(
+        rule.actions.find((a) => a.type === Discord.AutoModerationActionType.SendAlertMessage),
+       ),
+      ) as Discord.AutoModerationAction)
+    : undefined;
   case 'timeout':
-   return JSON.parse(
-    JSON.stringify(rule.actions.find((a) => a.type === Discord.AutoModerationActionType.Timeout)),
-   ) as Discord.AutoModerationAction;
+   return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.Timeout)
+    ? (JSON.parse(
+       JSON.stringify(
+        rule.actions.find((a) => a.type === Discord.AutoModerationActionType.Timeout),
+       ),
+      ) as Discord.AutoModerationAction)
+    : undefined;
   default:
    return undefined;
  }
@@ -193,7 +201,16 @@ const updateRule = (
 
    return rule
     .setActions(
-     rule.actions.filter((a) => a.type !== Discord.AutoModerationActionType.BlockMessage),
+     rule.actions
+      .filter((a) => a.type !== Discord.AutoModerationActionType.BlockMessage)
+      .map((a) =>
+       a.type === Discord.AutoModerationActionType.SendAlertMessage
+        ? ({
+           type: Discord.AutoModerationActionType.SendAlertMessage,
+           metadata: { channel: a.metadata.channelId },
+          } as Discord.AutoModerationActionOptions)
+        : a,
+      ),
     )
     .catch((e) => e as Discord.DiscordAPIError);
   }
@@ -209,7 +226,16 @@ const updateRule = (
 
    return rule
     .setActions(
-     rule.actions.filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage),
+     rule.actions
+      .filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage)
+      .map((a) =>
+       a.type === Discord.AutoModerationActionType.SendAlertMessage
+        ? ({
+           type: Discord.AutoModerationActionType.SendAlertMessage,
+           metadata: { channel: a.metadata.channelId },
+          } as Discord.AutoModerationActionOptions)
+        : a,
+      ),
     )
     .catch((e) => e as Discord.DiscordAPIError);
   }
@@ -222,7 +248,18 @@ const updateRule = (
    }
 
    return rule
-    .setActions(rule.actions.filter((a) => a.type !== Discord.AutoModerationActionType.Timeout))
+    .setActions(
+     rule.actions
+      .filter((a) => a.type !== Discord.AutoModerationActionType.Timeout)
+      .map((a) =>
+       a.type === Discord.AutoModerationActionType.SendAlertMessage
+        ? ({
+           type: Discord.AutoModerationActionType.SendAlertMessage,
+           metadata: { channel: a.metadata.channelId },
+          } as Discord.AutoModerationActionOptions)
+        : a,
+      ),
+    )
     .catch((e) => e as Discord.DiscordAPIError);
   }
   default:

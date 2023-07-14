@@ -38,7 +38,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
 
  const oldSetting = String(getCurrentSetting(rule, fieldName));
- const newSetting = field.value.split(/,\s+/g);
+ const newSetting = field.value.split(/,\s+/g).filter((s) => s.length);
  const updatedSetting = await updateSetting(rule, fieldName, newSetting);
 
  if (!updatedSetting) return;
