@@ -65,6 +65,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       language,
       id,
      ),
+     ch.settingsHelpers.changeHelpers.makeEmpty(
+      settingName,
+      'exemptChannels',
+      'autoModRule/array',
+      language,
+      id,
+     ),
     ],
    },
   ],

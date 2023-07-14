@@ -59,6 +59,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       emoji: ch.objectEmotes.back,
      },
      ch.settingsHelpers.changeHelpers.done(settingName, 'role', 'autoModRule/roles', language, id),
+     ch.settingsHelpers.changeHelpers.makeEmpty(
+      settingName,
+      'exemptRoles',
+      'autoModRule/array',
+      language,
+      id,
+     ),
     ],
    },
   ],

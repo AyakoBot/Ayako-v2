@@ -504,6 +504,18 @@ const changeHelpers = {
   custom_id: `settings/done/${type}_${name}_${fieldName}_${uniquetimestamp}`,
   label: language.Done,
  }),
+ makeEmpty: <T extends keyof SettingsNames>(
+  name: T,
+  fieldName: string,
+  type: 'array' | 'autoModRule/array',
+  language: CT.Language,
+  uniquetimestamp: number | undefined | string,
+ ): Discord.APIButtonComponent => ({
+  type: Discord.ComponentType.Button,
+  style: Discord.ButtonStyle.Secondary,
+  custom_id: `settings/empty/${type}_${name}_${fieldName}_${uniquetimestamp}`,
+  label: language.Empty,
+ }),
  get: (
   tableName: keyof SettingsNames,
   fieldName: string,
