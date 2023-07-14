@@ -22,15 +22,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const language = await ch.languageSelector(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.error(cmd.guild, new Error('Rule not found'));
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
  const oldSetting = getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>);
 
- const language = await ch.languageSelector(cmd.guildId);
  const updatedSetting = await updateRule(rule, fieldName as CT.Argument<typeof updateRule, 1>);
  if (!updatedSetting) return;
  if ('message' in updatedSetting) {

@@ -17,16 +17,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const language = await ch.languageSelector(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.error(cmd.guild, new Error('Rule not found'));
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
+
  const currentSetting = rule.actions.find(
   (a) => a.type === Discord.AutoModerationActionType.Timeout,
  )?.metadata.durationSeconds;
 
- const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
  cmd.showModal(

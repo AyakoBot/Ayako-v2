@@ -32,7 +32,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.error(cmd.guild, new Error('Rule not found'));
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 

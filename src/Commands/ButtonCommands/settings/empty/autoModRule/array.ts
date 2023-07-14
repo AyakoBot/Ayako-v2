@@ -21,9 +21,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const language = await ch.languageSelector(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.error(cmd.guild, new Error('Rule not found'));
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -36,7 +37,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   ? rule.setExemptChannels([])
   : rule.setExemptRoles([])
  ).catch((e) => e as Discord.DiscordAPIError);
- const language = await ch.languageSelector(cmd.guildId);
 
  if ('message' in updatedRule) {
   ch.errorCmd(cmd, updatedRule.message, language);
