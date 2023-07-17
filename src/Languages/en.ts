@@ -1227,6 +1227,24 @@ export default {
     `<@${user}> is AFK since ${since}${text ? `\n${text}` : ''}`,
   },
   roles: {
+   builders: {
+    descReactions:
+     'You can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:1072246330329669726>',
+    descButtons:
+     'You can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:1072246330329669726>',
+    buttons:
+     '`React Here` leads you to the Message to add Reactions on\n`Refresh Command` refreshes Builder to apply your newly added Reactions\n`Reset Reactions` resets the Reactions on the Reaction-Message to only show Reactions current define in the Builder',
+    reactHere: 'React Here',
+    refreshCommand: 'Refresh Selection',
+    resetReactions: 'Reset Reactions',
+    chooseEmoji: 'Choose Emoji',
+    chooseRoles: 'Choose Roles',
+    saveAndExit: 'Save and Exit',
+    couldntReact:
+     "I couldn't add Reactions to this Message\nThis is not required, but make sure your Reaction will not be removed from it",
+    messageNotFromMe:
+     "I can't add Buttons to a Message I didn't send.\nConsider using the </embed-builder create:1088143287635943485> to create a Custom Message through me\nor using Reaction-Roles instead",
+   },
    create: (role: Discord.Role) => `Successfully created Role ${role}`,
    edit: (role: Discord.Role) => `Successfully edit Role ${role}`,
    delete: {
@@ -1469,7 +1487,7 @@ export default {
    },
    nuzzle: {
     self: 'nuzzles into themself, probably to find out if they should take a shower',
-    others: 'nuzzles into',
+    others: ['lets', 'nuzzle into them'],
     request: 'wants to nuzzle into you!',
     buttons: ['Nuzzle together~', 'Reject and bonk òwó'],
    },
@@ -3466,6 +3484,7 @@ export default {
   },
  },
  errors: {
+  messageNotFound: 'The Mentioned Message could not be found',
   deprecatedByDiscord:
    'This Function has been deprecated by Discord, it does not serve any purpopse anymore.\nYou can go ahead and delete it if you wish.',
   contactSupport: "If you see this Message and don't know what to do, contact Support [click me]",
@@ -3973,4 +3992,7 @@ export default {
  Overrides: 'Overrides',
  Triggers: 'Triggers',
  Empty: 'Empty',
+ Label: 'Label',
+ Add: 'Add',
+ Edit: 'Edit',
 };

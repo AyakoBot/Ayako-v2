@@ -44,6 +44,16 @@ const Reason = new Discord.SlashCommandStringOption()
  .setDescription('The Reason')
  .setRequired(false);
 
+export const GuildTextChannelTypes = [
+ Discord.ChannelType.AnnouncementThread,
+ Discord.ChannelType.GuildAnnouncement,
+ Discord.ChannelType.GuildStageVoice,
+ Discord.ChannelType.GuildText,
+ Discord.ChannelType.GuildVoice,
+ Discord.ChannelType.PrivateThread,
+ Discord.ChannelType.PublicThread,
+];
+
 // Commands
 
 const settings = new Discord.SlashCommandBuilder()
@@ -516,6 +526,33 @@ const roles = new Discord.SlashCommandBuilder()
  .setDescription('Everything about Roles')
  .setDMPermission(false)
  .setDefaultMemberPermissions(Discord.PermissionsBitField.Flags.ManageRoles)
+ .addSubcommandGroup(
+  new Discord.SlashCommandSubcommandGroupBuilder()
+   .setName('builders')
+   .setDescription('Different kinds of Role Builders')
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('reaction-roles')
+     .setDescription('Create a Reaction Role Message')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('message')
+       .setDescription('The Message you want to use')
+       .setRequired(true),
+     ),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('button-roles')
+     .setDescription('Create a Button Role Message')
+     .addStringOption(
+      new Discord.SlashCommandStringOption()
+       .setName('message')
+       .setDescription('The Message you want to use')
+       .setRequired(true),
+     ),
+   ),
+ )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('edit')
@@ -972,15 +1009,7 @@ const slowmode = new Discord.SlashCommandBuilder()
    .setName('channel')
    .setDescription('The Channel to set the Slowmode in')
    .setRequired(true)
-   .addChannelTypes(
-    Discord.ChannelType.GuildAnnouncement,
-    Discord.ChannelType.GuildText,
-    Discord.ChannelType.GuildVoice,
-    Discord.ChannelType.GuildStageVoice,
-    Discord.ChannelType.PublicThread,
-    Discord.ChannelType.PrivateThread,
-    Discord.ChannelType.AnnouncementThread,
-   ),
+   .addChannelTypes(...(GuildTextChannelTypes as never[])),
  )
  .addNumberOption(
   new Discord.SlashCommandNumberOption()
@@ -1054,15 +1083,7 @@ const giveaway = new Discord.SlashCommandBuilder()
      .setName('channel')
      .setDescription('The Channel where the Giveaway should be created')
      .setRequired(false)
-     .addChannelTypes(
-      Discord.ChannelType.GuildAnnouncement,
-      Discord.ChannelType.GuildText,
-      Discord.ChannelType.GuildVoice,
-      Discord.ChannelType.GuildStageVoice,
-      Discord.ChannelType.PublicThread,
-      Discord.ChannelType.PrivateThread,
-      Discord.ChannelType.AnnouncementThread,
-     ),
+     .addChannelTypes(...(GuildTextChannelTypes as never[])),
    )
    .addRoleOption(
     new Discord.SlashCommandRoleOption()
@@ -1289,6 +1310,8 @@ export default {
   images_okami: 'fun',
   images_senko: 'fun',
   images_shiro: 'fun',
+  'roles_builders_reaction-roles': 'utility',
+  'roles_builders_button-roles': 'utility',
   roles_create: 'utility',
   roles_edit: 'utility',
   roles_delete: 'utility',

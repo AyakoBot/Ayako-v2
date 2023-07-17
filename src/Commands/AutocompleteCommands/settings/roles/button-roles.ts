@@ -24,7 +24,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
    lan.fields.text.name
   }/${lan.fields.emote.name}: ${s.text ?? language.None}/${[1]
    .map(() => {
-    if (s.emote.match(ch.regexes.emojiTester)?.length) return s.emote;
+    if (s.emote?.match(ch.regexes.emojiTester)?.length) return s.emote;
     if (s.emote) return s.emote.split(/:/g)[1];
     return language.None;
    })

@@ -72,6 +72,7 @@ import getStringChunks from './ClientHelperModules/getStringChunks.js';
 import getChunks from './ClientHelperModules/getChunks.js';
 import getPunishment from './ClientHelperModules/getPunishment.js';
 import getChannelWebhook from './ClientHelperModules/getChannelWebhook.js';
+import getMessage from './ClientHelperModules/getMessage.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -154,4 +155,5 @@ export {
  refreshToken,
  error,
  helperHelpers,
+ getMessage,
 };

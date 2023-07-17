@@ -1,0 +1,151 @@
+import * as Discord from 'discord.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/CustomTypings.js';
+
+export default async (
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ _: [],
+ reply?: Discord.InteractionResponse<true>,
+) => {
+ if (!cmd.inCachedGuild()) return;
+ if (!reply) reply = await cmd.deferReply({ ephemeral: true });
+
+ const language = await ch.languageSelector(cmd.guildId);
+ const lan = language.slashCommands.roles.builders;
+
+ const message = await ch.getMessage(
+  cmd.isChatInputCommand()
+   ? cmd.options.getString('message', true)
+   : (cmd.message.embeds[0].url as string),
+ );
+ if (!message || message.guildId !== cmd.guildId) {
+  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  return;
+ }
+
+ if (message.author.id !== cmd.client.user.id) {
+  ch.errorCmd(cmd, lan.messageNotFromMe, language);
+ }
+
+ const baseSettings = await ch.query(
+  `SELECT * FROM buttonrolesettings WHERE guildid = $1 AND msgid = $2;`,
+  [cmd.guildId, message.id],
+  { returnType: 'buttonrolesettings', asArray: false },
+ );
+
+ const settings = baseSettings
+  ? await ch.query(
+     `SELECT * FROM buttonroles WHERE guildid = $1 AND linkedid = $2;`,
+     [cmd.guildId, baseSettings.uniquetimestamp],
+     {
+      returnType: 'buttonroles',
+      asArray: true,
+     },
+    )
+  : undefined;
+
+ await Promise.all(
+  message.reactions.cache.map((r) => r.users.fetch({ limit: 1 }).catch(() => undefined)),
+ );
+
+ const applyReactions = message.reactions.cache.filter(
+  (r) =>
+   r.count === 1 &&
+   r.users.cache.has(cmd.user.id) &&
+   !settings?.find(
+    (s) => s.emote === (!r.emoji.id ? (r.emoji.name as string) : r.emoji.identifier),
+   ),
+ );
+
+ const options: Discord.SelectMenuComponentOptionData[] = [
+  ...((settings?.map((s) => ({
+   emoji: s.emote,
+   label: language.Edit,
+   value: s.emote ?? s.uniquetimestamp,
+  })) ?? []) as Discord.SelectMenuComponentOptionData[]),
+  ...applyReactions.map((r) => ({
+   emoji: r.emoji.identifier,
+   label: language.Add,
+   value: !r.emoji.id ? (r.emoji.name as string) : r.emoji.identifier,
+  })),
+ ].slice(0, 25);
+
+ const payload = {
+  embeds: [
+   {
+    description: `${lan.descButtons}\n\n${lan.buttons}`,
+    url: message.url,
+    fields: settings
+     ?.filter((s) => !!s.emote)
+     .map((s) => ({
+      name: `${
+       !Discord.parseEmoji(s.emote as string)?.id
+        ? s.emote
+        : `<${s.emote?.startsWith('a:') ? '' : ':'}${s.emote}>`
+      } / ${ch.util.makeInlineCode(s.emote as string)}`,
+      value: s?.roles?.map((r) => `<@&${r}>`).join(', ') ?? language.None,
+     })),
+   },
+  ],
+  components: getComponents(options, lan, message),
+ };
+
+ if (cmd.isChatInputCommand()) cmd.editReply(payload as Discord.InteractionReplyOptions);
+ else {
+  if (reply) reply.delete();
+  cmd.editReply({ ...(payload as Discord.InteractionUpdateOptions), message: cmd.message });
+ }
+};
+
+const getComponents = (
+ options: Discord.SelectMenuComponentOptionData[],
+ lan: CT.Language['slashCommands']['roles']['builders'],
+ message: Discord.Message,
+) => [
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   {
+    type: Discord.ComponentType.StringSelect,
+    customId: 'roles/button-roles',
+    maxValues: 1,
+    minValues: 1,
+    placeholder: lan.chooseEmoji,
+    disabled: !options.length,
+    options: options.length
+     ? options
+     : [
+        {
+         label: '-',
+         value: '-',
+        },
+       ],
+   },
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   {
+    type: Discord.ComponentType.Button,
+    customId: 'roles/button-roles/refresh',
+    label: lan.refreshCommand,
+    style: Discord.ButtonStyle.Secondary,
+    emoji: ch.objectEmotes.refresh,
+   },
+   {
+    type: Discord.ComponentType.Button,
+    label: lan.reactHere,
+    style: Discord.ButtonStyle.Link,
+    url: message.url,
+   },
+   {
+    type: Discord.ComponentType.Button,
+    customId: 'roles/button-roles/resetReactions',
+    label: lan.resetReactions,
+    style: Discord.ButtonStyle.Danger,
+    emoji: ch.objectEmotes.trash,
+   },
+  ],
+ },
+];

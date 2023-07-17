@@ -11,4 +11,6 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (msg: Discord.Message) => {
  if (msg.author.id !== auth.ownerID) return;
  if (!msg.content.startsWith('exe')) return;
+
+ console.log(Discord.parseEmoji('AMayakoPat:1055865566314897408'));
 };

@@ -288,8 +288,8 @@ export type buttonroles = {
  guildid: string;
  active: boolean;
 
- emote: string;
- text: string;
+ emote?: string;
+ text?: string;
 
  roles?: string[];
  linkedid?: string;
