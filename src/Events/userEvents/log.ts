@@ -39,22 +39,22 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  if (user.flags !== oldUser.flags) {
   const flagsBefore = oldUser.flags?.toArray() ?? [];
   const flagsAfter = user.flags?.toArray() ?? [];
-  const removed = ch.getDifference(flagsBefore, flagsAfter) as string[];
-  const added = ch.getDifference(flagsAfter, flagsBefore) as string[];
+  const removed = ch.getDifference(flagsBefore, flagsAfter);
+  const added = ch.getDifference(flagsAfter, flagsBefore);
 
   if (removed.length || added.length) {
    merge(
     added
      .map((r) =>
       flagsBefore.length
-       ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+       ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
        : language.unknown,
      )
      .join(', '),
     removed
      .map((r) =>
       flagsAfter.length
-       ? `\`${language.userFlags[r as keyof typeof language.userFlags]}\``
+       ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
        : language.unknown,
      )
      .join(', '),

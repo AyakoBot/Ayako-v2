@@ -17,7 +17,9 @@ helltideConnection.onmessage = async (e) => {
   return;
  }
 
- const json = JSON.parse(e.data as string);
+ const json = JSON.parse(e.data as string) as {
+  d: { b: { p: string; d: { startTime: string; endTime: string; zone: string } } };
+ };
 
  if (json.d?.b?.p === 'helltide') {
   Jobs.scheduleJob(new Date(Date.now() + 60000), () => {

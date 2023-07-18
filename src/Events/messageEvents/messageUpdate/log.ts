@@ -31,12 +31,12 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   const oldFlags = new Discord.MessageFlagsBitField(oldMsg.flags).toArray();
   const newFlags = new Discord.MessageFlagsBitField(msg.flags).toArray();
 
-  const added = (ch.getDifference(oldFlags, newFlags) as Discord.MessageFlagsString[]).map(
-   (f) => lan.flags[f],
-  );
-  const removed = (ch.getDifference(newFlags, oldFlags) as Discord.MessageFlagsString[]).map(
-   (f) => lan.flags[f],
-  );
+  const added = ch
+   .getDifference(oldFlags, newFlags)
+   .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
+  const removed = ch
+   .getDifference(newFlags, oldFlags)
+   .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
 
   if (added.length || removed.length) merge(added, removed, 'difference', language.Flags);
  }

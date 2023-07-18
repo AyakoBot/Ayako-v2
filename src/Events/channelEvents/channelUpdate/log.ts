@@ -66,13 +66,13 @@ export default async (
      | Discord.AnyThreadChannel => !!c,
    )
    .map((c) => new Discord.ChannelFlagsBitField(c.flags).toArray());
-  const removed = ch.getDifference(oldFlags, newFlags) as ('Pinned' | 'RequireTag')[];
-  const added = ch.getDifference(newFlags, oldFlags) as ('Pinned' | 'RequireTag')[];
+  const removed = ch.getDifference(oldFlags, newFlags);
+  const added = ch.getDifference(newFlags, oldFlags);
 
   if (removed.length || added.length) {
    merge(
-    added.map((r) => lan.flags[r]).join(', '),
-    removed.map((r) => lan.flags[r]).join(', '),
+    added.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
+    removed.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
     'difference',
     language.Flags,
    );

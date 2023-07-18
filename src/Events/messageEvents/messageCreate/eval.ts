@@ -61,7 +61,8 @@ export default async (msg: Discord.Message) => {
  }
 };
 
-const clean = (text: unknown) =>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const clean = (text: unknown): any =>
  JSON.parse(
   JSON.stringify(text)
    .replace(/`/g, `\`${String.fromCharCode(8203)}`)

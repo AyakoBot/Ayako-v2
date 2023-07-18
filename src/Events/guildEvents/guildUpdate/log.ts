@@ -335,26 +335,29 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  }
 
  if (guild.features !== oldGuild.features) {
-  const removedToggles = ch.getDifference(
-   guild.features,
-   oldGuild.features,
-  ) as Discord.GuildFeature[];
-  const addedToggles = ch.getDifference(
-   oldGuild.features,
-   guild.features,
-  ) as Discord.GuildFeature[];
+  const removedToggles = ch.getDifference(guild.features, oldGuild.features);
+  const addedToggles = ch.getDifference(oldGuild.features, guild.features);
 
   if (removedToggles.length) {
    embed.fields?.push({
     name: lan.togglesNameRemoved,
-    value: removedToggles.map((t) => language.features[t]).join(', '),
+    value: removedToggles
+     .map(
+      (t) =>
+       language.features[
+        t as unknown as (typeof Discord.GuildFeature)[keyof typeof Discord.GuildFeature]
+       ],
+     )
+     .join(', '),
    });
   }
 
   if (addedToggles.length) {
    embed.fields?.push({
     name: lan.togglesNameAdded,
-    value: addedToggles.map((t) => language.features[t]).join(', '),
+    value: addedToggles
+     .map((t) => language.features[t as unknown as Discord.GuildFeature])
+     .join(', '),
    });
   }
  }
@@ -362,14 +365,14 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   const oldFlags = new Discord.SystemChannelFlagsBitField(oldGuild.systemChannelFlags).toArray();
   const newFlags = new Discord.SystemChannelFlagsBitField(guild.systemChannelFlags).toArray();
 
-  const addedFlags = ch.getDifference(newFlags, oldFlags) as Discord.SystemChannelFlagsString[];
-  const removedFlags = ch.getDifference(oldFlags, newFlags) as Discord.SystemChannelFlagsString[];
+  const addedFlags = ch.getDifference(newFlags, oldFlags);
+  const removedFlags = ch.getDifference(oldFlags, newFlags);
 
   if (addedFlags.length) {
    embed.fields?.push({
     name: lan.systemChannelFlagsNameRemoved,
     value: addedFlags
-     .map((t) => lan.systemChannelFlags[t as keyof typeof lan.systemChannelFlags])
+     .map((t) => lan.systemChannelFlags[t as unknown as Discord.ChannelFlagsString])
      .join(', '),
    });
   }
@@ -378,7 +381,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
    embed.fields?.push({
     name: lan.systemChannelFlagsNameAdded,
     value: removedFlags
-     .map((t) => lan.systemChannelFlags[t as keyof typeof lan.systemChannelFlags])
+     .map((t) => lan.systemChannelFlags[t as unknown as Discord.SystemChannelFlagsString])
      .join(', '),
    });
   }
