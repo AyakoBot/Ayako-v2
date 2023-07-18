@@ -1,10 +1,13 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import refresh from './refresh.js';
+import { typeWithoutDash } from '../../../SlashCommands/roles/builders/button-roles.js';
 
-// TODO: removes all reactions as of currently, even those in settings
-
-export default async (cmd: Discord.ButtonInteraction, _: [], table?: 'reactionroles') => {
+export default async (
+ cmd: Discord.ButtonInteraction,
+ _: string[],
+ type: 'reaction-roles' | 'button-roles' = 'button-roles',
+) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
@@ -15,25 +18,26 @@ export default async (cmd: Discord.ButtonInteraction, _: [], table?: 'reactionro
  }
 
  const baseSettings = await ch.query(
-  `SELECT * FROM ${
-   table ? 'reactionrolesettings' : 'buttonrolesettings'
-  } WHERE guildid = $1 AND msgid = $2;`,
+  `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
   [cmd.guildId, message.id],
-  { returnType: table ? 'reactionrolesettings' : 'buttonrolesettings', asArray: false },
+  {
+   returnType: type === 'button-roles' ? 'buttonrolesettings' : 'reactionrolesettings',
+   asArray: false,
+  },
  );
 
  const settings = await ch.query(
-  `SELECT * FROM ${table || 'buttonroles'} WHERE guildid = $1 AND linkedid = $2;`,
+  `SELECT * FROM ${typeWithoutDash(type)} WHERE guildid = $1 AND linkedid = $2;`,
   [cmd.guildId, baseSettings?.uniquetimestamp],
   {
-   returnType: table ? 'reactionroles' : 'buttonroles',
+   returnType: type === 'button-roles' ? 'buttonroles' : 'reactionroles',
    asArray: true,
   },
  );
 
  let action: Discord.Message | Discord.DiscordAPIError | Discord.MessageReaction | undefined;
 
- if (table) {
+ if (type === 'reaction-roles') {
   const reactionsToRemove = message.reactions.cache
    .filter((r) => !settings?.find((s) => s.emote === r.emoji.identifier))
    .map((r) => r);
@@ -52,5 +56,5 @@ export default async (cmd: Discord.ButtonInteraction, _: [], table?: 'reactionro
   return;
  }
 
- refresh(cmd);
+ refresh(cmd, [], type);
 };

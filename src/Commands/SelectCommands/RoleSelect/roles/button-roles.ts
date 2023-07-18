@@ -2,11 +2,16 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import { getComponents, findField } from '../../StringSelect/roles/button-roles.js';
 
-export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
+export default async (
+ cmd: Discord.RoleSelectMenuInteraction,
+ args: string[],
+ type: 'button-roles' | 'reaction-roles' = 'button-roles',
+) => {
  if (!cmd.inCachedGuild()) return;
 
+ const emoji = args.join('_');
  const embed = JSON.parse(JSON.stringify(cmd.message.embeds[0].data)) as Discord.APIEmbed;
- const field = findField(args[0], embed.fields);
+ const field = findField(emoji, embed.fields);
 
  if (field) field.value = cmd.roles.map((r) => `<@&${r.id}>`).join(', ');
 
@@ -16,10 +21,11 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
  cmd.update({
   embeds: [embed],
   components: getComponents(
-   args[0],
+   emoji,
    lan,
    language,
    cmd.roles.map((r) => r.id),
+   type,
   ),
  });
 };

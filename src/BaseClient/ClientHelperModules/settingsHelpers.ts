@@ -8,7 +8,6 @@ import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
 import query from './query.js';
 import constants from '../Other/constants.js';
-import regexes from './regexes.js';
 import client from '../Client.js';
 import error from './error.js';
 
@@ -60,9 +59,9 @@ const embedParsers = {
      )?.name ?? language.None
    : language.None,
  emote: (val: string | undefined, language: CT.Language) =>
-  (val?.match(regexes.emojiTester)?.length
-   ? val
-   : `<${`${val?.startsWith(':') ? '' : ':'}${val}`}>`) ?? language.None,
+  val
+   ? `${!Discord.parseEmoji(val)?.id ? val : `<${val.startsWith('a:') ? '' : ':'}${val}>`}`
+   : language.None,
  command: (val: string | undefined, language: CT.Language) => {
   if (!val) return language.None;
 

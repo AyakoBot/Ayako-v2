@@ -1,10 +1,10 @@
-export default <Type>(s: Type[], maxLength: number) => {
- const chunks: Type[][] = [[]];
+export default <T>(s: T[], maxLength: number): T[][] => {
+ const chunks: T[][] = [[]];
  let lastI = 0;
 
  while (s.length) {
   while (chunks[lastI].length < maxLength && s.length) {
-   chunks[lastI].push(s.shift() as Type);
+   chunks[lastI].push(s.shift() as T);
   }
   chunks.push([]);
   lastI += 1;

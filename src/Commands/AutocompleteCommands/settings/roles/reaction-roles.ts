@@ -22,13 +22,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  return settings?.map((s) => ({
   name: `${lan.fields.linkedid.name}: ${Number(s.linkedid).toString(36)} - ${
    lan.fields.emote.name
-  }: ${[1]
-   .map(() => {
-    if (s.emote.match(ch.regexes.emojiTester)?.length) return s.emote;
-    if (s.emote) return s.emote.split(/:/g)[1];
-    return language.None;
-   })
-   .join('')}`,
+  }: ${s.emote ?? language.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

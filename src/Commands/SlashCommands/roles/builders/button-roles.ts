@@ -2,10 +2,15 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
+export const typeWithoutDash = (
+ type: 'button-roles' | 'reaction-roles',
+): 'buttonroles' | 'reactionroles' => (type === 'button-roles' ? 'buttonroles' : 'reactionroles');
+
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  _: [],
  reply?: Discord.InteractionResponse<true>,
+ type: 'button-roles' | 'reaction-roles' = 'button-roles',
 ) => {
  if (!cmd.inCachedGuild()) return;
  if (!reply) reply = await cmd.deferReply({ ephemeral: true });
@@ -28,17 +33,20 @@ export default async (
  }
 
  const baseSettings = await ch.query(
-  `SELECT * FROM buttonrolesettings WHERE guildid = $1 AND msgid = $2;`,
+  `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
   [cmd.guildId, message.id],
-  { returnType: 'buttonrolesettings', asArray: false },
+  {
+   returnType: type === 'button-roles' ? 'buttonrolesettings' : 'reactionrolesettings',
+   asArray: false,
+  },
  );
 
  const settings = baseSettings
   ? await ch.query(
-     `SELECT * FROM buttonroles WHERE guildid = $1 AND linkedid = $2;`,
+     `SELECT * FROM ${typeWithoutDash(type)} WHERE guildid = $1 AND linkedid = $2;`,
      [cmd.guildId, baseSettings.uniquetimestamp],
      {
-      returnType: 'buttonroles',
+      returnType: typeWithoutDash(type),
       asArray: true,
      },
     )
@@ -73,7 +81,9 @@ export default async (
  const payload = {
   embeds: [
    {
-    description: `${lan.descButtons}\n\n${lan.buttons}`,
+    description: `${type === 'button-roles' ? lan.descButtons : lan.descReactions}\n\n${
+     lan.buttons
+    }`,
     url: message.url,
     fields: settings
      ?.filter((s) => !!s.emote)
@@ -87,7 +97,7 @@ export default async (
      })),
    },
   ],
-  components: getComponents(options, lan, message),
+  components: getComponents(options, lan, message, type),
  };
 
  if (cmd.isChatInputCommand()) cmd.editReply(payload as Discord.InteractionReplyOptions);
@@ -101,13 +111,14 @@ const getComponents = (
  options: Discord.SelectMenuComponentOptionData[],
  lan: CT.Language['slashCommands']['roles']['builders'],
  message: Discord.Message,
+ type: 'button-roles' | 'reaction-roles',
 ) => [
  {
   type: Discord.ComponentType.ActionRow,
   components: [
    {
     type: Discord.ComponentType.StringSelect,
-    customId: 'roles/button-roles',
+    customId: `roles/${type}`,
     maxValues: 1,
     minValues: 1,
     placeholder: lan.chooseEmoji,
@@ -128,7 +139,7 @@ const getComponents = (
   components: [
    {
     type: Discord.ComponentType.Button,
-    customId: 'roles/button-roles/refresh',
+    customId: `roles/${type}/refresh`,
     label: lan.refreshCommand,
     style: Discord.ButtonStyle.Secondary,
     emoji: ch.objectEmotes.refresh,
@@ -141,7 +152,7 @@ const getComponents = (
    },
    {
     type: Discord.ComponentType.Button,
-    customId: 'roles/button-roles/resetReactions',
+    customId: `roles/${type}/resetReactions`,
     label: lan.resetReactions,
     style: Discord.ButtonStyle.Danger,
     emoji: ch.objectEmotes.trash,
