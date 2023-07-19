@@ -10,7 +10,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.inCachedGuild()) return;
 
  const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/AutocompleteCommands/**/*`, (err, res) => {
+  glob(`${process.cwd()}/Commands/**/*`, (err, res) => {
    if (err) throw err;
    resolve(res);
   });
@@ -35,7 +35,7 @@ export default async (cmd: Discord.Interaction) => {
 
  log(path());
 
- const command = files.find((f) => f.endsWith(`/${path()}.js`));
+ const command = files.find((f) => f.endsWith(`/AutocompleteCommands/${path()}.js`));
  if (!command) return;
 
  const responses = await ((await import(command)) as CT.AutoCompleteFile).default(cmd);

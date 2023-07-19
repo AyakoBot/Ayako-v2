@@ -31,7 +31,7 @@ export default async (cmd: Discord.Interaction) => {
  };
 
  const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SelectCommands/${getType()}Select/**/*`, (err, res) => {
+  glob(`${process.cwd()}/Commands/SelectCommands/**/*`, (err, res) => {
    if (err) throw err;
    resolve(res);
   });
@@ -39,7 +39,7 @@ export default async (cmd: Discord.Interaction) => {
 
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();
- const command = files.find((f) => f.endsWith(`/${path}.js`));
+ const command = files.find((f) => f.endsWith(`/${getType()}Select/${path}.js`));
 
  log(path);
 

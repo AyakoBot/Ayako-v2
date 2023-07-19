@@ -8,7 +8,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isMessageContextMenuCommand()) return;
 
  const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/ContextCommands/**/*`, (err, res) => {
+  glob(`${process.cwd()}/Commands/**/*`, (err, res) => {
    if (err) throw err;
    resolve(res);
   });
@@ -20,7 +20,7 @@ export default async (cmd: Discord.Interaction) => {
 
  log(path);
 
- const command = files.find((f) => f.endsWith(`${path}.js`));
+ const command = files.find((f) => f.endsWith(`/ContextCommands/${path}.js`));
  if (!command) return;
 
  (await import(command)).default(cmd);
