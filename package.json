@@ -29,6 +29,7 @@
     "socket.io-client": "^4.7.1",
     "string-similarity": "^4.0.4",
     "topgg-autoposter": "^2.0.1",
+    "typescript": "^5.1.6",
     "valid-url": "^1.0.9",
     "waifu-pics-api": "^1.0.5",
     "ws": "^8.13.0"
