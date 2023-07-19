@@ -1221,6 +1221,11 @@ export default {
     utility: 'Utility',
     fun: 'Fun',
     settings: 'Settings',
+    roles: 'Roles',
+    vote: 'Vote',
+    nitro: 'Nitro',
+    automation: 'Automation',
+    leveling: 'Leveling',
    },
    parentCommands: 'The Parent-Commands in this Category are:',
    subCommandGroups: 'The Sub-Command-Groups in this Category are:',
@@ -1240,9 +1245,9 @@ export default {
   },
   roles: {
    builders: {
-    descReactions: `You can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
+    descReactions: `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
     descButtons:
-     'You can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine',
+     'React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine',
     buttons:
      '`React Here` leads you to the Message to add Reactions on\n`Refresh Command` refreshes Builder to apply your newly added Reactions\n`Reset Reactions` resets the Reactions on the Reaction-Message to only show Reactions current define in the Builder',
     reactHere: 'React Here',

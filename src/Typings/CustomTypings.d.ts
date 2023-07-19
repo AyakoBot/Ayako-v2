@@ -289,7 +289,16 @@ type SpecificOptions = {
 
 export type ModOptions<T extends CT.ModTypes> = BaseOptions & SpecificOptions[T];
 
-export type CommandCategories = 'info' | 'utility' | 'moderation' | 'fun';
+export type CommandCategories =
+ | 'info'
+ | 'utility'
+ | 'moderation'
+ | 'fun'
+ | 'nitro'
+ | 'roles'
+ | 'vote'
+ | 'automation'
+ | 'leveling';
 
 export type DePromisify<T> = T extends Promise<infer U> ? U : T;
 

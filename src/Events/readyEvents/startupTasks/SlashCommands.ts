@@ -753,6 +753,18 @@ const help = new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('command')
+   .setDescription('See Help for a specific Command')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('command')
+     .setDescription('The Command to see Help for')
+     .setRequired(true)
+     .setAutocomplete(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('moderation')
    .setDescription('Help for the Moderation Commands'),
  )
@@ -768,20 +780,33 @@ const help = new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
-   .setName('fun')
-   .setDescription('Help for the Fun Commands'),
+   .setName('leveling')
+   .setDescription('Help for the Leveling Commands'),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
-   .setName('command')
-   .setDescription('See Help for a specific Command')
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('command')
-     .setDescription('The Command to see Help for')
-     .setRequired(true)
-     .setAutocomplete(true),
-   ),
+   .setName('nitro')
+   .setDescription('Help for the Nitro Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('vote')
+   .setDescription('Help for the Vote Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('roles')
+   .setDescription('Help for the Role Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('automation')
+   .setDescription('Help for the Automation Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('fun')
+   .setDescription('Help for the Fun Commands'),
  );
 
 const emoji = new Discord.SlashCommandBuilder()
@@ -1255,30 +1280,30 @@ export default {
   'settings_moderation_blacklist-punishments': 'moderation',
   'settings_moderation_blacklist-rules': 'moderation',
   settings_moderation_expiry: 'moderation',
-  settings_leveling_basic: 'utility',
-  'settings_leveling_multi-channels': 'utility',
-  'settings_leveling_multi-roles': 'utility',
-  'settings_leveling_level-roles': 'utility',
-  'settings_leveling_rule-channels': 'utility',
-  settings_nitro_basic: 'utility',
-  'settings_nitro_booster-roles': 'utility',
-  settings_vote_basic: 'utility',
-  'settings_vote_vote-rewards': 'utility',
-  'settings_roles_role-rewards': 'utility',
-  'settings_roles_auto-roles': 'utility',
-  'settings_roles_self-roles': 'utility',
-  settings_roles_separators: 'utility',
-  settings_roles_sticky: 'utility',
-  'settings_roles_reaction-role-settings': 'utility',
-  'settings_roles_reaction-roles': 'utility',
-  'settings_roles_button-role-settings': 'utility',
-  'settings_roles_button-roles': 'utility',
-  'settings_automation_delete-commands': 'utility',
-  settings_automation_cooldowns: 'utility',
-  'settings_automation_disboard-reminders': 'utility',
-  settings_automation_suggestions: 'utility',
-  settings_automation_verification: 'utility',
-  settings_automation_welcome: 'utility',
+  settings_leveling_basic: 'leveling',
+  'settings_leveling_multi-channels': 'leveling',
+  'settings_leveling_multi-roles': 'leveling',
+  'settings_leveling_level-roles': 'leveling',
+  'settings_leveling_rule-channels': 'leveling',
+  settings_nitro_basic: 'nitro',
+  'settings_nitro_booster-roles': 'nitro',
+  settings_vote_basic: 'vote',
+  'settings_vote_vote-rewards': 'vote',
+  'settings_roles_role-rewards': 'roles',
+  'settings_roles_auto-roles': 'roles',
+  'settings_roles_self-roles': 'roles',
+  settings_roles_separators: 'roles',
+  settings_roles_sticky: 'roles',
+  'settings_roles_reaction-role-settings': 'roles',
+  'settings_roles_reaction-roles': 'roles',
+  'settings_roles_button-role-settings': 'roles',
+  'settings_roles_button-roles': 'roles',
+  'settings_automation_delete-commands': 'automation',
+  settings_automation_cooldowns: 'automation',
+  'settings_automation_disboard-reminders': 'automation',
+  settings_automation_suggestions: 'automation',
+  settings_automation_verification: 'automation',
+  settings_automation_welcome: 'automation',
   settings_basic: 'utility',
   settings_logs: 'info',
   info_user: 'info',

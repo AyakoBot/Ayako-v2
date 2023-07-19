@@ -132,10 +132,7 @@ export default async (
       customId: 'help/select',
       placeholder: language.slashCommands.help.selectPlaceholder,
       options: [...new Set(Object.values(SlashCommands.categories))].map((c) => ({
-       label:
-        language.slashCommands.help.categories[
-         c as keyof typeof language.slashCommands.help.categories
-        ],
+       label: language.slashCommands.help.categories[c as CT.CommandCategories],
        value: c,
        default: c === type,
       })),
