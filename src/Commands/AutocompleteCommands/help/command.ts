@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import StringSimilarity from 'string-similarity';
-import type * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const value = cmd.options.getString('command', true);

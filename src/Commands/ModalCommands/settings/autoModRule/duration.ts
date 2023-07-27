@@ -93,7 +93,6 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,
-  settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;

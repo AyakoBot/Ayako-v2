@@ -1,6 +1,6 @@
 import Discord from 'discord.js';
 import stringEmotes from './stringEmotes.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default async (bits: number, lan: CT.Language, emotes = false) => {
  if (!bits) return [];

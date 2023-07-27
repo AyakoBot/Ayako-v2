@@ -1,8 +1,8 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -10,18 +10,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.guild) return;
 
  const messageID = cmd.options.getString('message-id', true);
-
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
-
- const giveaway = await ch.query(
-  `SELECT * FROM giveaways WHERE msgid = $1 AND ended = false;`,
-  [messageID],
-  {
-   returnType: 'giveaways',
-   asArray: false,
-  },
- );
+ const giveaway = await ch.DataBase.giveaways.findUnique({
+  where: { msgid: messageID, ended: false },
+ });
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
   ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
@@ -33,7 +26,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  ch.replyCmd(cmd, { content: lan.manuallyEnded });
 };
 
-export const end = async (g: DBT.giveaways) => {
+export const end = async (g: Prisma.giveaways) => {
  client.shard?.broadcastEval(
   async (cl, { giveaway }) => {
    const guild = cl.guilds.cache.get(giveaway.guildid);
@@ -51,7 +44,7 @@ export const end = async (g: DBT.giveaways) => {
  );
 };
 
-export const getGiveawayEmbed = async (language: CT.Language, giveaway: DBT.giveaways) => {
+export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.giveaways) => {
  const host = await client.users.fetch(giveaway.host).catch(() => undefined);
 
  return {
@@ -88,9 +81,8 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: DBT.give
 };
 
 export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) => {
- const giveaway = await ch.query(`SELECT * FROM giveaways WHERE msgid = $1;`, [msgID], {
-  returnType: 'giveaways',
-  asArray: false,
+ const giveaway = await ch.DataBase.giveaways.findUnique({
+  where: { msgid: msgID },
  });
 
  if (!giveaway) {
@@ -124,10 +116,14 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    .filter((w): w is string => !!w);
 
   giveaway.winners = winners;
-  ch.query(`UPDATE giveaways SET winners = $1, ended = true WHERE msgid = $2;`, [
-   winners,
-   giveaway.msgid,
-  ]);
+
+  ch.DataBase.giveaways.update({
+   where: { msgid: giveaway.msgid },
+   data: {
+    winners,
+    ended: true,
+   },
+  });
 
   embed.fields.push({
    name:
@@ -215,14 +211,9 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  if (!giveaway.collecttime) return;
  if (!giveaway.actualprize) return;
 
- const collection = await ch.query(
-  `SELECT * FROM giveawaycollection WHERE msgid = $1;`,
-  [giveaway.msgid],
-  {
-   returnType: 'giveawaycollection',
-   asArray: false,
-  },
- );
+ const collection = await ch.DataBase.giveawaycollection.findUnique({
+  where: { msgid: giveaway.msgid },
+ });
 
  if (collection) {
   const oldReplyMsg = await getMessage({
@@ -234,10 +225,20 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   if (oldReplyMsg && oldReplyMsg.deletable) oldReplyMsg.delete().catch(() => undefined);
  }
 
- ch.query(
-  `INSERT INTO giveawaycollection (msgid, endtime, guildid, replymsgid, requiredwinners) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (msgid) DO UPDATE SET endtime = $2, replymsgid = $4;`,
-  [giveaway.msgid, collectionEnd, giveaway.guildid, replyMsg.id, giveaway.winners],
- );
+ ch.DataBase.giveawaycollection.upsert({
+  where: { msgid: giveaway.msgid },
+  create: {
+   msgid: giveaway.msgid,
+   endtime: collectionEnd,
+   guildid: giveaway.guildid,
+   replymsgid: replyMsg.id,
+   requiredwinners: giveaway.winners,
+  },
+  update: {
+   endtime: collectionEnd,
+   replymsgid: replyMsg.id,
+  },
+ });
 
  ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
 
@@ -257,9 +258,8 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
    if (!guild) return;
 
    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
-   const giveaway = await chEval.query(`SELECT * FROM giveaways WHERE msgid = $1;`, [mID], {
-    returnType: 'giveaways',
-    asArray: false,
+   const giveaway = await chEval.DataBase.giveaways.findUnique({
+    where: { msgid: mID },
    });
 
    if (!giveaway) {
@@ -314,7 +314,7 @@ export const getMessage = async (giveaway: {
 
 export const getButton = (
  language: CT.Language,
- giveaway: DBT.giveaways,
+ giveaway: Prisma.giveaways,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Primary,
@@ -326,7 +326,7 @@ export const getButton = (
 
 export const getClaimButton = (
  language: CT.Language,
- giveaway: DBT.giveaways,
+ giveaway: Prisma.giveaways,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: giveaway.claimingdone ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
@@ -336,15 +336,10 @@ export const getClaimButton = (
   : language.slashCommands.giveaway.end.claim,
 });
 
-export const failReroll = async (giveaway: DBT.giveaways) => {
- const collection = await ch.query(
-  `SELECT * FROM giveawaycollection WHERE msgid = $1;`,
-  [giveaway.msgid],
-  {
-   returnType: 'giveawaycollection',
-   asArray: false,
-  },
- );
+export const failReroll = async (giveaway: Prisma.giveaways) => {
+ const collection = await ch.DataBase.giveawaycollection.findUnique({
+  where: { msgid: giveaway.msgid },
+ });
 
  if (collection) {
   const oldReplyMsg = await getMessage({
@@ -375,6 +370,12 @@ export const failReroll = async (giveaway: DBT.giveaways) => {
   ],
  });
 
- ch.query(`DELETE FROM giveawaycollection WHERE msgid = $1;`, [giveaway.msgid]);
- ch.query(`UPDATE giveaways SET claimingdone = true WHERE msgid = $1;`, [giveaway.msgid]);
+ ch.DataBase.giveawaycollection.delete({
+  where: { msgid: giveaway.msgid },
+ });
+
+ ch.DataBase.giveaways.update({
+  where: { msgid: giveaway.msgid },
+  data: { claimingdone: true },
+ });
 };

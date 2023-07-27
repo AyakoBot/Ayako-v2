@@ -1,14 +1,18 @@
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import refresh from './refresh.js';
 import { findField } from '../../../SelectCommands/StringSelect/roles/button-roles.js';
-import * as DBT from '../../../../Typings/DataBaseTypings.js';
-import { typeWithoutDash } from '../../../SlashCommands/roles/builders/button-roles.js';
+import {
+ Type,
+ getBaseSettings,
+ getSpecificSettings,
+} from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
  args: string[],
- type: 'reaction-roles' | 'button-roles' = 'button-roles',
+ type: Type = 'button-roles',
 ) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -20,70 +24,104 @@ export default async (
   return;
  }
 
- const settings =
-  (await ch.query(
-   `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
-   [cmd.guildId, message.id],
-   {
-    returnType: type === 'reaction-roles' ? 'reactionrolesettings' : 'buttonrolesettings',
-    asArray: false,
-   },
-  )) ??
-  (await ch.query(
-   `INSERT INTO ${typeWithoutDash(type)}ettings 
-   (uniquetimestamp, active, onlyone, guildid, msgid, channelid) 
-   VALUES ($1, true, false, $2, $3, $4) 
-   RETURNING *;`,
-   [Date.now(), cmd.guildId, message.id, message.channelId],
-   {
-    returnType: type === 'reaction-roles' ? 'reactionrolesettings' : 'buttonrolesettings',
-    asArray: false,
-   },
-  ));
+ const baseSettings =
+  (await getBaseSettings(type, cmd.guildId, message.id)) ??
+  (type === 'reaction-roles'
+   ? await ch.DataBase.reactionrolesettings.create({
+      data: {
+       uniquetimestamp: Date.now(),
+       active: true,
+       onlyone: false,
+       guildid: cmd.guildId,
+       msgid: message.id,
+       channelid: message.channelId,
+      },
+     })
+   : await ch.DataBase.buttonrolesettings.create({
+      data: {
+       uniquetimestamp: Date.now(),
+       active: true,
+       onlyone: false,
+       guildid: cmd.guildId,
+       msgid: message.id,
+       channelid: message.channelId,
+      },
+     }));
 
- if (!settings) {
+ if (!baseSettings) {
   ch.error(cmd.guild, new Error('Failed to create settings'));
   return;
  }
 
- const buttonSettings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)} WHERE emote = $1 AND linkedid = $2;`,
-  [emoji, settings.uniquetimestamp],
-  {
-   returnType: typeWithoutDash(type),
-   asArray: false,
-  },
- );
+ const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
 
  const field = findField(emoji, cmd.message.embeds[0].fields);
  const roles = field?.value.split(/,\s+/g).map((r) => r.replace(/\D+/g, '')) ?? [];
- if (buttonSettings) {
-  await ch.query(
-   `UPDATE ${typeWithoutDash(
-    type,
-   )} SET active = true, roles = $1 WHERE emote = $2 AND linkedid = $3 RETURNING *;`,
-   [roles, emoji, settings.uniquetimestamp],
-   { returnType: typeWithoutDash(type), asArray: false },
-  );
+ if (settings.length) {
+  if (type === 'reaction-roles') {
+   await ch.DataBase.reactionroles.updateMany({
+    where: {
+     linkedid: baseSettings.uniquetimestamp.toString(),
+     emote: emoji,
+    },
+    data: {
+     active: true,
+     roles,
+    },
+   });
+  } else {
+   await ch.DataBase.buttonroles.updateMany({
+    where: {
+     linkedid: baseSettings.uniquetimestamp.toString(),
+     emote: emoji,
+    },
+    data: {
+     active: true,
+     roles,
+    },
+   });
+  }
+ } else if (type === 'reaction-roles') {
+  await ch.DataBase.reactionroles.create({
+   data: {
+    uniquetimestamp: Date.now(),
+    guildid: cmd.guildId,
+    active: true,
+    emote: emoji,
+    roles,
+    linkedid: baseSettings.uniquetimestamp.toString(),
+   },
+  });
  } else {
-  await ch.query(
-   `INSERT INTO ${typeWithoutDash(type)} (uniquetimestamp, guildid, active, emote, roles, linkedid)
-   VALUES ($1, $2, true, $3, $4, $5);`,
-   [Date.now(), cmd.guildId, emoji, roles, settings.uniquetimestamp],
-   { returnType: typeWithoutDash(type), asArray: false },
-  );
+  await ch.DataBase.buttonroles.create({
+   data: {
+    uniquetimestamp: Date.now(),
+    guildid: cmd.guildId,
+    active: true,
+    emote: emoji,
+    roles,
+    linkedid: baseSettings.uniquetimestamp.toString(),
+   },
+  });
  }
 
- const allSettings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)} WHERE linkedid = $1;`,
-  [settings.uniquetimestamp],
-  { returnType: typeWithoutDash(type), asArray: true },
- );
+ const allSettings =
+  type === 'reaction-roles'
+   ? await ch.DataBase.reactionroles.findMany({
+      where: {
+       linkedid: baseSettings.uniquetimestamp.toString(),
+      },
+     })
+   : await ch.DataBase.buttonroles.findMany({
+      where: {
+       linkedid: baseSettings.uniquetimestamp.toString(),
+      },
+     });
 
  const action =
   type === 'button-roles'
-   ? await putComponents(allSettings as DBT.buttonroles[], message)
-   : await putReactions(allSettings as DBT.reactionroles[], message);
+   ? await putComponents(allSettings as Prisma.buttonroles[], message)
+   : await putReactions(allSettings as Prisma.reactionroles[], message);
 
  if (type === 'button-roles') {
   await message.reactions.cache
@@ -103,17 +141,17 @@ export default async (
 };
 
 export const putComponents = async (
- allSettings: DBT.buttonroles[] | undefined,
+ allSettings: Prisma.buttonroles[] | undefined,
  message: Discord.Message,
 ) => {
  const chunks = allSettings
   ? ch.getChunks(
      allSettings.map(
       (s): Discord.APIButtonComponentWithCustomId => ({
-       label: s.text,
+       label: s.text || undefined,
        emoji: {
         id: s.emote?.split(/:/g)[1] ?? undefined,
-        name: s.emote?.split(/:/g)[0] ?? s.emote,
+        name: s.emote?.split(/:/g)[0] ?? s.emote ?? undefined,
         animated: s.emote?.startsWith('a:') ?? false,
        },
        custom_id: `roles/button-roles/takeRole_${s.uniquetimestamp}`,
@@ -138,7 +176,7 @@ export const putComponents = async (
 };
 
 const putReactions = async (
- allSettings: DBT.reactionroles[] | undefined,
+ allSettings: Prisma.reactionroles[] | undefined,
  message: Discord.Message,
 ) => {
  if (!allSettings) return message.reactions.removeAll().catch((e) => e as Discord.DiscordAPIError);
@@ -146,14 +184,14 @@ const putReactions = async (
  const firstSetting = allSettings.find(
   (s) =>
    !message.reactions.cache.get(
-    (s?.emote.includes(':') ? s.emote.split(/:/g)[1] : s?.emote) as string,
+    (s?.emote?.includes(':') ? s.emote?.split(/:/g)[1] : s?.emote) as string,
    )?.me,
  );
 
  const action = await message.reactions.cache
   .get(
-   firstSetting?.emote.includes(':')
-    ? firstSetting.emote.split(/:/g)[1]
+   firstSetting?.emote?.includes(':')
+    ? firstSetting.emote?.split(/:/g)[1]
     : (firstSetting?.emote as string),
   )
   ?.react()
@@ -162,7 +200,7 @@ const putReactions = async (
  if (action && 'message' in action && typeof action.message === 'string') return action;
 
  allSettings.forEach((s) => {
-  message.react(s.emote.includes(':') ? s.emote.split(/:/g)[1] : (s.emote as string));
+  message.react(s.emote?.includes(':') ? s.emote?.split(/:/g)[1] : (s.emote as string));
  });
 
  return message;

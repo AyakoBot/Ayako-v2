@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import constants from '../Other/constants.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default (msg: Discord.Message, language: CT.Language) => {
  const embed: Discord.APIEmbed = {

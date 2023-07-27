@@ -1,5 +1,5 @@
 import auth from '../../auth.json' assert { type: 'json' };
-import query from './query.js';
+import DataBase from '../DataBase.js';
 import * as Client from '../Client.js';
 
 export default async (refreshtoken: string) => {
@@ -10,11 +10,13 @@ export default async (refreshtoken: string) => {
   refresh_token: refreshtoken,
  });
 
- query(`UPDATE users SET accesstoken = $1, expires = $3 WHERE refreshtoken = $2;`, [
-  res.access_token,
-  refreshtoken,
-  res.expires_in * 1000 + Date.now(),
- ]);
+ DataBase.users.updateMany({
+  where: { refreshtoken },
+  data: {
+   accesstoken: res.access_token,
+   expires: res.expires_in * 1000 + Date.now(),
+  },
+ });
 
  return res.access_token;
 };

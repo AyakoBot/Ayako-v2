@@ -9,12 +9,7 @@ const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/65069169840973
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
 
 export default async () => {
- let allusers = await ch
-  .query('SELECT allusers FROM stats;', undefined, {
-   returnType: 'stats',
-   asArray: false,
-  })
-  .then((r) => Number(r?.allusers));
+ let allusers = await ch.DataBase.stats.findFirst().then((r) => Number(r?.allusers));
 
  if (!allusers) {
   const userSize = (await client.shard?.broadcastEval((c) =>

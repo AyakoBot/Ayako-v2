@@ -1,21 +1,21 @@
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (
- cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
  page = 0,
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
 
- const giveaways = (
-  await ch.query(`SELECT * FROM giveaways WHERE guildid = $1;`, [cmd.guildId], {
-   returnType: 'giveaways',
-   asArray: true,
-  })
- )?.sort((a, b) => Number(b.msgid) - Number(a.msgid));
+ const giveaways = await ch.DataBase.giveaways.findMany({
+  where: { guildid: cmd.guildId },
+  orderBy: {
+   msgid: 'desc',
+  },
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.list;
@@ -85,13 +85,13 @@ export default async (
  });
 };
 
-const getClaimingDone = (g: DBT.giveaways, language: CT.Language) => {
+const getClaimingDone = (g: Prisma.giveaways, language: CT.Language) => {
  if (!g.collecttime || !g.actualprize) return language.slashCommands.giveaway.list.notEnabled;
  if (!g.claimingdone) return ch.stringEmotes.crossWithBackground;
  return ch.stringEmotes.tickWithBackground;
 };
 
-const getButtons = (page: number, giveaways: DBT.giveaways[]): Discord.ButtonComponentData[] => [
+const getButtons = (page: number, giveaways: Prisma.giveaways[]): Discord.ButtonComponentData[] => [
  {
   type: Discord.ComponentType.Button,
   emoji: ch.objectEmotes.back,

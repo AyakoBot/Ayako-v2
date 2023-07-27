@@ -1,18 +1,17 @@
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as DBT from '../../../Typings/DataBaseTypings';
-import type * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (member: Discord.GuildMember) => {
- const verification = await ch.query(
-  `SELECT * FROM verification WHERE guildid = $1 AND active = true AND pendingrole IS NOT NULL;`,
-  [member.guild.id],
-  {
-   returnType: 'verification',
-   asArray: false,
+ const verification = await ch.DataBase.verification.findUnique({
+  where: {
+   guildid: member.guild.id,
+   active: true,
+   pendingrole: { not: null },
   },
- );
+ });
  if (!verification) return;
 
  const language = await ch.languageSelector(member.guild.id);
@@ -23,7 +22,7 @@ export default async (member: Discord.GuildMember) => {
 
 const preverified = async (
  member: Discord.GuildMember,
- verification: DBT.verification,
+ verification: Prisma.verification,
  language: CT.Language,
 ) => {
  if (!verification.pendingrole) return;
@@ -32,7 +31,7 @@ const preverified = async (
 
 const prepKick = async (
  member: Discord.GuildMember,
- verification: DBT.verification,
+ verification: Prisma.verification,
  language: CT.Language,
 ) => {
  if (!verification.kicktof) return;
@@ -45,7 +44,7 @@ const prepKick = async (
 
 export const kick = async (
  member: Discord.GuildMember,
- verification: DBT.verification,
+ verification: Prisma.verification,
  language: CT.Language,
 ) => {
  if (!verification.finishedrole) return;

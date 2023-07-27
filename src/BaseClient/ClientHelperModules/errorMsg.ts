@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import reply from './replyMsg.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default (
  msg: Discord.Message | Discord.Message | Discord.Message,

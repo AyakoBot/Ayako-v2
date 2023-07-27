@@ -4,7 +4,6 @@ import type Jobs from 'node-schedule';
 import send from './ClientHelperModules/send.js';
 import replyMsg from './ClientHelperModules/replyMsg.js';
 import replyCmd from './ClientHelperModules/replyCmd.js';
-import query from './ClientHelperModules/query.js';
 import stp from './ClientHelperModules/stp.js';
 import regexes from './ClientHelperModules/regexes.js';
 import fileURL2Buffer from './ClientHelperModules/fileURL2Buffer.js';
@@ -88,7 +87,6 @@ export {
  send,
  replyMsg,
  replyCmd,
- query,
  stp,
  regexes,
  fileURL2Buffer,

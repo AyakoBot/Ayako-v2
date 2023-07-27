@@ -8,16 +8,14 @@ export default async (
  if (cmd instanceof Discord.ChatInputCommandInteraction && !cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
  if (!cmd.channel) return;
- const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
 
+ const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.afk;
 
- const afk = await ch.query(
-  `SELECT * FROM afk WHERE userid = $1 AND guildid = $2;`,
-  [author.id, cmd.guildId],
-  { returnType: 'afk', asArray: false },
- );
+ const afk = await ch.DataBase.afk.findUnique({
+  where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
+ });
 
  if (cmd instanceof Discord.ChatInputCommandInteraction) {
   text = cmd.options.getString('reason', false) ?? undefined;
@@ -61,10 +59,17 @@ export default async (
   await cmd.member?.setNickname(`${cmd.member?.displayName} [AFK]`, lan.setReason);
  }
 
- await ch.query(
-  `INSERT INTO afk (userid, guildid, text, since) VALUES ($1, $2, $3, $4) 
-   ON CONFLICT (userid, guildid) DO 
-   UPDATE SET text = $3, since = $4;`,
-  [author.id, cmd.guildId, text, Date.now()],
- );
+ ch.DataBase.afk.upsert({
+  where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
+  create: {
+   userid: author.id,
+   guildid: cmd.guildId,
+   text,
+   since: Date.now(),
+  },
+  update: {
+   text,
+   since: Date.now(),
+  },
+ });
 };

@@ -49,10 +49,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const collectTime = claimTimeout ? Math.abs(ch.getDuration(claimTimeout)) : null;
- // if (collectTime && collectTime < 3600000) {
- //  ch.errorCmd(cmd, lan.collectTimeTooShort, language);
- //  return;
- // }
+ if (collectTime && collectTime < 3600000) {
+  ch.errorCmd(cmd, lan.collectTimeTooShort, language);
+  return;
+ }
+
  const msg = await ch
   .send(channel, {
    embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
@@ -64,29 +65,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const giveaway = await ch.query(
-  `INSERT INTO giveaways 
-  (guildid, msgid, description, winnercount, endtime, reqrole, actualprize, host, channelid, collecttime, failreroll)
-  VALUES 
-  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`,
-  [
-   cmd.guildId,
-   msg.id,
-   prizeDesc,
-   winners,
-   endTime,
-   role?.id,
-   prize,
-   host.id,
-   channel.id,
-   collectTime,
-   claimFailReroll ?? false,
-  ],
-  {
-   returnType: 'giveaways',
-   asArray: false,
+ const giveaway = await ch.DataBase.giveaways.create({
+  data: {
+   guildid: cmd.guild.id,
+   msgid: msg.id,
+   description: prizeDesc,
+   winnercount: winners,
+   endtime: endTime,
+   reqrole: role?.id,
+   actualprize: prize,
+   host: host.id,
+   channelid: channel.id,
+   collecttime: collectTime,
+   failreroll: claimFailReroll ?? false,
   },
- );
+ });
 
  if (!giveaway) {
   ch.errorCmd(cmd, language.Unknown, language);

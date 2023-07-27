@@ -19,9 +19,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- const currentParticipants = await ch.query(`SELECT willis FROM stats;`, undefined, {
-  returnType: 'stats',
-  asArray: false,
+ const currentParticipants = await ch.DataBase.stats.findFirst({
+  where: {},
+  select: { willis: true },
  });
 
  if (currentParticipants?.willis?.includes(cmd.user.id)) {
@@ -34,9 +34,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
  }
 
  if (!currentParticipants?.willis) {
-  ch.query(`UPDATE stats SET willis = $1;`, [[cmd.user.id]]);
+  ch.DataBase.stats.updateMany({ data: { willis: [cmd.user.id] } });
  } else {
-  ch.query(`UPDATE stats SET willis = $1;`, [[cmd.user.id, ...currentParticipants.willis]]);
+  ch.DataBase.stats.updateMany({ data: { willis: [...currentParticipants.willis, cmd.user.id] } });
  }
 
  cmd.reply({

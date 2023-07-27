@@ -1,18 +1,18 @@
 import type * as Discord from 'discord.js';
-import type DBT from '../../Typings/DataBaseTypings';
+import Prisma from '@prisma/client';
 
-export default (DBembed: DBT.customembeds): Discord.APIEmbed => ({
+export default (DBembed: Prisma.customembeds): Discord.APIEmbed => ({
  color: typeof DBembed.color === 'number' ? Number(DBembed.color) : undefined,
- title: DBembed.title,
- url: DBembed.url,
+ title: DBembed.title ?? undefined,
+ url: DBembed.url ?? undefined,
  author: DBembed.authorname
   ? {
-     name: DBembed.authorname,
-     icon_url: DBembed.authoricon_url,
-     url: DBembed.authorurl,
+     name: DBembed.authorname ?? undefined,
+     icon_url: DBembed.authoriconurl ?? undefined,
+     url: DBembed.authorurl ?? undefined,
     }
   : undefined,
- description: DBembed.description,
+ description: DBembed.description ?? undefined,
  thumbnail: DBembed.thumbnail
   ? {
      url: DBembed.thumbnail,
@@ -33,8 +33,8 @@ export default (DBembed: DBT.customembeds): Discord.APIEmbed => ({
  timestamp: DBembed.timestamp || undefined,
  footer: DBembed.footertext
   ? {
-     text: DBembed.footertext,
-     icon_url: DBembed.footericon_url,
+     text: DBembed.footertext ?? undefined,
+     icon_url: DBembed.footericonurl ?? undefined,
     }
   : undefined,
 });

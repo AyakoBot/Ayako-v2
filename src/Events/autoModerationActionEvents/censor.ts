@@ -1,24 +1,19 @@
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import * as DBT from '../../Typings/DataBaseTypings.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
 
- const settings = await ch.query(
-  `SELECT * FROM blacklist WHERE guildid = $1 AND active = true;`,
-  [msg.guild.id],
-  {
-   returnType: 'blacklist',
-   asArray: false,
-  },
- );
+ const settings = await ch.DataBase.blacklist.findUnique({
+  where: { guildid: msg.guild.id },
+ });
  if (!settings) return;
 
  reposter(msg, settings);
 };
 
-const reposter = async (msg: Discord.AutoModerationActionExecution, settings: DBT.blacklist) => {
+const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.blacklist) => {
  if (!settings.repostenabled) return;
  if (!settings.repostroles?.some((r) => msg.member?.roles.cache.has(r))) return;
  if (!msg.matchedContent && !msg.matchedKeyword) return;
@@ -37,7 +32,10 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: DB
  });
 };
 
-const getContent = async (msg: Discord.AutoModerationActionExecution, settings: DBT.blacklist) => {
+const getContent = async (
+ msg: Discord.AutoModerationActionExecution,
+ settings: Prisma.blacklist,
+) => {
  const rules = (
   msg.guild.autoModerationRules.cache.size
    ? msg.guild.autoModerationRules.cache
@@ -58,16 +56,9 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
  );
 
  const presetKeywords = presetRule
-  ? await ch.query(
-     `SELECT * FROM filterscraper WHERE (filtertype IN (${presetRule.triggerMetadata.presets
-      .map((_, i) => `$${i + 1}`)
-      .join(', ')}));`, // ;`
-     presetRule.triggerMetadata.presets,
-     {
-      returnType: 'filterscraper',
-      asArray: true,
-     },
-    )
+  ? await ch.DataBase.filterscraper.findMany({
+     where: { filtertype: { in: presetRule.triggerMetadata.presets } },
+    })
   : [];
 
  let content = String(msg.content);

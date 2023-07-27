@@ -1,4 +1,4 @@
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default async (id: string) => {
  const client = (await import('../Client.js')).default;

@@ -1,10 +1,11 @@
 import * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (oldRole: Discord.Role, role: Discord.Role) => {
  if (oldRole.position !== role.position) return;
  if (oldRole.rawPosition !== role.rawPosition) return;
+
  const channels = await ch.getLogChannels('roleevents', role.guild);
  if (!channels) return;
 

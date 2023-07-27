@@ -4,3 +4,4 @@ node_modules
 /dist
 src/auth.json
 src/Bot/BaseClient/Other/cache-proxy
+.env

@@ -3,14 +3,9 @@ import client from '../../../BaseClient/Client.js';
 import { kick } from '../../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {
- const verificationRows = await ch.query(
-  'SELECT * FROM verification WHERE active = true AND kicktof = true;',
-  undefined,
-  {
-   returnType: 'verification',
-   asArray: true,
-  },
- );
+ const verificationRows = await ch.DataBase.verification.findMany({
+  where: { active: true, kicktof: true },
+ });
  if (!verificationRows) return;
 
  verificationRows.forEach(async (r) => {

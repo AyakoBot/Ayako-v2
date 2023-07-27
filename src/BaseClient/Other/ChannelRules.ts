@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import type * as DBT from '../../Typings/DataBaseTypings';
+import Prisma from '@prisma/client';
 
 // eslint-disable-next-line no-shadow
 export declare enum ActivityFlags {
@@ -48,7 +48,7 @@ export default class ChannelRules extends Discord.BitField<keyof typeof Activity
   HasMostMentions: 1 << 17,
  };
 
- constructor(s: DBT.levelingruleschannels) {
+ constructor(s: Prisma.levelingruleschannels) {
   const bits = Object.values(s)
    .filter((_, i) => i > 2)
    .map((v, i) => (v ? 2 ** i : 0))

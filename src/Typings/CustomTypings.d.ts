@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../BaseClient/ClientHelper.js';
-import * as DBT from './DataBaseTypings';
+import Prisma from '@prisma/client';
+import type * as ch from '../BaseClient/ClientHelper.js';
 
 export type Language = typeof import('../Languages/en.js').default;
 
@@ -66,43 +66,42 @@ export interface bEvalUser {
 }
 
 export type TableNamesMap = {
- 'anti-spam': DBT.antispam;
- 'anti-spam-punishments': DBT.punishments;
- 'anti-virus-punishments': DBT.punishments;
- 'blacklist-punishments': DBT.punishments;
+ 'anti-spam': Prisma.antispam;
+ 'anti-spam-punishments': Prisma.punishments;
+ 'anti-virus-punishments': Prisma.punishments;
+ 'blacklist-punishments': Prisma.punishments;
  'blacklist-rules': null;
- 'anti-raid': DBT.antiraid;
- 'anti-virus': DBT.antivirus;
- 'auto-punish': DBT.autopunish;
- blacklist: DBT.blacklist;
- 'auto-roles': DBT.autoroles;
- cooldowns: DBT.cooldowns;
- expiry: DBT.expiry;
- 'disboard-reminders': DBT.disboard;
- 'self-roles': DBT.selfroles;
- separators: DBT.roleseparator;
- sticky: DBT.sticky;
- verification: DBT.verification;
- welcome: DBT.welcome;
- leveling: DBT.leveling;
- nitro: DBT.nitrosettings;
- 'delete-commands': DBT.deletecommands;
- suggestions: DBT.suggestionsettings;
- logs: DBT.logchannels;
- basic: DBT.guildsettings;
- 'multi-channels': DBT.levelingmultichannels;
- 'multi-roles': DBT.levelingmultiroles;
- 'level-roles': DBT.levelingroles;
- 'rule-channels': DBT.levelingruleschannels;
- 'booster-roles': DBT.nitroroles;
- vote: DBT.votesettings;
- 'vote-rewards': DBT.voterewards;
- 'reaction-role-settings': DBT.reactionrolesettings;
- 'button-role-settings': DBT.buttonrolesettings;
- 'reaction-roles': DBT.reactionroles;
- 'button-roles': DBT.buttonroles;
- 'role-rewards': DBT.rolerewards;
- logchannels: DBT.logchannels;
+ 'anti-raid': Prisma.antiraid;
+ 'anti-virus': Prisma.antivirus;
+ 'auto-punish': Prisma.autopunish;
+ blacklist: Prisma.blacklist;
+ 'auto-roles': Prisma.autoroles;
+ cooldowns: Prisma.cooldowns;
+ expiry: Prisma.expiry;
+ 'disboard-reminders': Prisma.disboard;
+ 'self-roles': Prisma.selfroles;
+ separators: Prisma.roleseparator;
+ sticky: Prisma.sticky;
+ verification: Prisma.verification;
+ welcome: Prisma.welcome;
+ leveling: Prisma.leveling;
+ nitro: Prisma.nitrosettings;
+ suggestions: Prisma.suggestionsettings;
+ logs: Prisma.logchannels;
+ basic: Prisma.guildsettings;
+ 'multi-channels': Prisma.levelingmultichannels;
+ 'multi-roles': Prisma.levelingmultiroles;
+ 'level-roles': Prisma.levelingroles;
+ 'rule-channels': Prisma.levelingruleschannels;
+ 'booster-roles': Prisma.nitroroles;
+ vote: Prisma.votesettings;
+ 'vote-rewards': Prisma.voterewards;
+ 'reaction-role-settings': Prisma.reactionrolesettings;
+ 'button-role-settings': Prisma.buttonrolesettings;
+ 'reaction-roles': Prisma.reactionroles;
+ 'button-roles': Prisma.buttonroles;
+ 'role-rewards': Prisma.rolerewards;
+ logchannels: Prisma.logchannels;
 };
 
 export interface AutoCompleteFile {
@@ -129,12 +128,12 @@ export interface SettingsFile<K extends keyof TableNamesMap> {
   | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
   | Promise<Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]>;
  showAll?: (
-  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
   language: Language,
   lan: Language['slashCommands']['settings']['categories'][K],
  ) => Promise<void>;
  showID?: (
-  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
   ID: string,
   language: Language,
   lan: Language['slashCommands']['settings']['categories'][K],
@@ -216,7 +215,7 @@ export type Appeal = {
  punishmentid: string;
  questions: string[];
  answers: string[];
- answertypes: DBT.appealquestions['answertype'][];
+ answertypes: Prisma.appealquestions['answertype'][];
 };
 
 export type Onboarding = {
@@ -287,7 +286,7 @@ type SpecificOptions = {
  softWarnAdd: Empty;
 };
 
-export type ModOptions<T extends CT.ModTypes> = BaseOptions & SpecificOptions[T];
+export type ModOptions<T extends ModTypes> = BaseOptions & SpecificOptions[T];
 
 export type CommandCategories =
  | 'info'

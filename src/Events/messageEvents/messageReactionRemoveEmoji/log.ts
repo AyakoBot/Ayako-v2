@@ -4,7 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (reaction: Discord.MessageReaction, msg: Discord.Message) => {
  if (!msg.inGuild()) return;
 
- const channels = await ch.getLogChannels('reactionevents', msg.guild);
+ const channels = await ch.getLogChannels('messageevents', msg.guild);
  if (!channels) return;
 
  const language = await ch.languageSelector(msg.guildId);

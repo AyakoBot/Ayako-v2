@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import glob from 'glob';
-import type * as CT from '../../Typings/CustomTypings';
+import * as CT from '../../Typings/CustomTypings.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;

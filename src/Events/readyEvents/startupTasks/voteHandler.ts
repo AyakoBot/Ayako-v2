@@ -16,25 +16,24 @@ export default async () => {
  });
 
  socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
-  const row = await ch.query(
-   `SELECT guildid FROM votesettings WHERE token = $1;`,
-   [vote.authorization],
-   {
-    returnType: 'votesettings',
-    asArray: false,
+  const rows = await ch.DataBase.votesettings.findMany({
+   where: {
+    token: vote.authorization,
    },
-  );
-  if (!row) return;
+  });
+  if (!rows.length) return;
 
-  const guild = client.guilds.cache.get(row.guildid);
-  if (!guild) return;
+  rows.forEach(async (row) => {
+   const guild = client.guilds.cache.get(row.guildid);
+   if (!guild) return;
 
-  const user = await ch.getUser(vote.user).catch(() => undefined);
-  if (!user) return;
+   const user = await ch.getUser(vote.user).catch(() => undefined);
+   if (!user) return;
 
-  const member = await guild.members.fetch(vote.user).catch(() => undefined);
+   const member = await guild.members.fetch(vote.user).catch(() => undefined);
 
-  if ('bot' in vote) voteBotCreate(vote, guild, user, member);
-  if ('guild' in vote) voteGuildCreate(vote, guild, user, member);
+   if ('bot' in vote) voteBotCreate(vote, guild, user, member, row);
+   if ('guild' in vote) voteGuildCreate(vote, guild, user, member, row);
+  });
  });
 };

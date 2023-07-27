@@ -3,13 +3,13 @@ import * as Discord from 'discord.js';
 import glob from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
-import type * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 import languageSelector from '../../../BaseClient/ClientHelperModules/languageSelector.js';
 import constants from '../../../BaseClient/Other/constants.js';
 import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';
 import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
 import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.js';
-import query from '../../../BaseClient/ClientHelperModules/query.js';
+import DataBase from '../../../BaseClient/DataBase.js';
 import error from '../../../BaseClient/ClientHelperModules/error.js';
 import cache from '../../../BaseClient/ClientHelperModules/cache.js';
 
@@ -111,14 +111,13 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 export const getPrefix = async (msg: Discord.Message) => {
  if (!msg.inGuild()) return constants.standard.prefix;
 
- const customPrefix = await query(
-  `SELECT prefix FROM guildsettings WHERE guildid = $1;`,
-  [msg.guildId],
-  {
-   returnType: 'guildsettings',
-   asArray: false,
-  },
- ).then((r) => r?.prefix);
+ const customPrefix = await DataBase.guildsettings
+  .findUnique({
+   where: {
+    guildid: msg.guildId,
+   },
+  })
+  .then((r) => r?.prefix);
 
  if (customPrefix && msg.content.toLowerCase().startsWith(customPrefix?.toLowerCase())) {
   return customPrefix;

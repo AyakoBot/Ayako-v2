@@ -8,14 +8,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const messageID = cmd.options.getString('message-id', true);
 
- const giveaway = await ch.query(
-  `SELECT * FROM giveaways WHERE msgid = $1 AND ended = false;`,
-  [messageID],
-  {
-   returnType: 'giveaways',
-   asArray: false,
-  },
- );
+ const giveaway = await ch.DataBase.giveaways.findUnique({
+  where: { msgid: messageID },
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.cancel;
@@ -54,7 +49,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    },
   ],
  });
- ch.query(`UPDATE giveaways SET ended = true WHERE msgid = $1;`, [messageID]);
+
+ ch.DataBase.giveaways.update({ where: { msgid: messageID }, data: { ended: true } });
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
 
  ch.replyCmd(cmd, {

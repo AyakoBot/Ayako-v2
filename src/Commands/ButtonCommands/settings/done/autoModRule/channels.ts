@@ -42,7 +42,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,
-  settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import * as DBT from '../../Typings/DataBaseTypings';
-import * as CT from '../../Typings/CustomTypings';
+import * as CT from '../../Typings/CustomTypings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -13,14 +12,10 @@ export default async (
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- const guildsettings = await ch.query(
-  `SELECT * FROM guildsettings WHERE guildid = $1;`,
-  [cmd.guildId],
-  {
-   returnType: 'guildsettings',
-   asArray: false,
-  },
- );
+ const guildsettings = await ch.DataBase.guildsettings.findUnique({
+  where: { guildid: cmd.guildId },
+ });
+
  const payload: Discord.InteractionReplyOptions = {
   embeds: [
    {
@@ -50,7 +45,7 @@ export const getComponents = (
  language: CT.Language,
  lan: CT.Language['slashCommands']['rp'],
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
- guildsettings?: DBT.guildsettings,
+ guildsettings?: CT.DePromisify<ReturnType<(typeof ch)['DataBase']['guildsettings']['findUnique']>>,
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent>[] => [
  {
   type: Discord.ComponentType.ActionRow,

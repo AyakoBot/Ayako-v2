@@ -1,14 +1,10 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames['rule-channels']} WHERE guildid = $1;`,
-   [cmd.guildId],
-   { returnType: 'levelingruleschannels', asArray: true },
-  )
+  await ch.DataBase.levelingruleschannels.findMany({ where: { guildid: cmd.guildId } })
  )?.filter((s) => {
   const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 

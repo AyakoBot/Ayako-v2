@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default async (cmd: Discord.CommandInteraction) => {
- buildEmbed(cmd);
-};
-
 export const buildEmbed = async (
- cmd: Discord.CommandInteraction | Discord.ButtonInteraction | Discord.StringSelectMenuInteraction,
+ cmd:
+  | Discord.CommandInteraction<'cached'>
+  | Discord.ButtonInteraction<'cached'>
+  | Discord.StringSelectMenuInteraction<'cached'>,
  selectedOption?: string,
 ) => {
  const language = await ch.languageSelector(cmd.guildId);
@@ -54,7 +53,7 @@ export const buildEmbed = async (
        ? options.map((o) => ({
           label: o.name,
           value: o.uniquetimestamp,
-          default: o.uniquetimestamp === selectedOption,
+          default: o.uniquetimestamp.toString() === selectedOption,
          }))
        : [
           {
@@ -95,12 +94,16 @@ export const buildEmbed = async (
  } else ch.replyCmd(cmd, { ...payload, ephemeral: true } as Discord.InteractionReplyOptions);
 };
 
+export default buildEmbed;
+
 const getOptions = async (
- cmd: Discord.CommandInteraction | Discord.ButtonInteraction | Discord.StringSelectMenuInteraction,
+ cmd:
+  | Discord.CommandInteraction<'cached'>
+  | Discord.ButtonInteraction<'cached'>
+  | Discord.StringSelectMenuInteraction<'cached'>,
 ) =>
- ch
-  .query('SELECT * FROM customembeds WHERE guildid = $1;', [cmd.guildId], {
-   returnType: 'customembeds',
-   asArray: true,
+ ch.DataBase.customembeds
+  .findMany({
+   where: { guildid: cmd.guildId },
   })
   .then((r) => r ?? []);

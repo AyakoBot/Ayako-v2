@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import type Jobs from 'node-schedule';
 import fetch from 'node-fetch';
-import type * as CT from '../../Typings/CustomTypings';
+import * as CT from '../../Typings/CustomTypings.js';
 import auth from '../../auth.json' assert { type: 'json' };
 
 const cache: {

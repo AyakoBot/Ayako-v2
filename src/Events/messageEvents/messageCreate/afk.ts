@@ -2,7 +2,7 @@ import Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import { getPrefix } from './commandHandler.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -39,10 +39,14 @@ const self = async (
   if (m?.deletable) m.delete();
  });
 
- await ch.query(`DELETE FROM afk WHERE guildid = $1 AND userid = $2;`, [
-  msg.guildId,
-  msg.author.id,
- ]);
+ await ch.DataBase.afk.delete({
+  where: {
+   userid_guildid: {
+    guildid: msg.guildId,
+    userid: msg.author.id,
+   },
+  },
+ });
 
  deleteNick(language, msg.member);
 };
@@ -78,7 +82,7 @@ const mention = async (
     description: language.slashCommands.afk.isAFK(
      a.userid,
      ch.constants.standard.getTime(Number(a.since)),
-     a.text,
+     a.text ?? undefined,
     ),
    };
   })
@@ -94,7 +98,11 @@ const mention = async (
 };
 
 const getAFK = (guildID: string, userID: string) =>
- ch.query(`SELECT * FROM afk WHERE guildid = $1 AND userid = $2;`, [guildID, userID], {
-  returnType: 'afk',
-  asArray: false,
+ ch.DataBase.afk.findUnique({
+  where: {
+   userid_guildid: {
+    guildid: guildID,
+    userid: userID,
+   },
+  },
  });

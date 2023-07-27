@@ -15,18 +15,18 @@ export default async (cmd: Discord.ButtonInteraction) => {
   ],
  });
 
- const settings = !(await ch
-  .query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
-   returnType: 'guildsettings',
-   asArray: false,
+ const settings = !(await ch.DataBase.guildsettings
+  .findUnique({
+   where: { guildid: cmd.guildId },
+   select: { enabledrp: true },
   })
   .then((r) => r?.enabledrp));
 
- ch.query(
-  `INSERT INTO guildsettings (guildid, enabledrp) VALUES ($1, $2) 
-   ON CONFLICT (guildid) DO UPDATE SET enabledrp = $2;`,
-  [cmd.guildId, settings],
- );
+ ch.DataBase.guildsettings.upsert({
+  where: { guildid: cmd.guildId },
+  create: { guildid: cmd.guildId, enabledrp: settings },
+  update: { enabledrp: settings },
+ });
 
  if (!settings) await deleteAll(cmd);
  else await create(cmd);
@@ -89,8 +89,12 @@ const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
 
  await cmd.guild.commands.set(registerCommands);
 
- await ch.query(
-  `UPDATE guildsettings SET rpenableruns = guildsettings.rpenableruns + 1 WHERE guildid = $1;`,
-  [cmd.guildId],
- );
+ await ch.DataBase.guildsettings.update({
+  where: { guildid: cmd.guildId },
+  data: {
+   rpenableruns: {
+    increment: 1,
+   },
+  },
+ });
 };

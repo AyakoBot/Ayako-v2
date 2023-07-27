@@ -1,20 +1,15 @@
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import { CaptchaGenerator } from 'captcha-canvas';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as DBT from '../../../Typings/DataBaseTypings';
-import type * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 
-export default async (cmd: Discord.ButtonInteraction) => {
+export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
 
- const verification = await ch.query(
-  `SELECT * FROM verification WHERE guildid = $1 AND active = true;`,
-  [cmd.guildId],
-  {
-   returnType: 'verification',
-   asArray: false,
-  },
- );
+ const verification = await ch.DataBase.verification.findUnique({
+  where: { guildid: cmd.guildId, active: true },
+ });
  if (!verification) return;
 
  const language = await ch.languageSelector(cmd.guildId);
@@ -27,7 +22,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
 const isVerified = async (
  cmd: Discord.ButtonInteraction,
- verification: DBT.verification,
+ verification: Prisma.verification,
  language: CT.Language,
 ) => {
  if (!verification.finishedrole) return false;
@@ -57,7 +52,7 @@ const isVerified = async (
 
 const log = async (
  cmd: Discord.ButtonInteraction,
- verification: DBT.verification,
+ verification: Prisma.verification,
  language: CT.Language,
 ) => {
  if (!verification.logchannel) return;

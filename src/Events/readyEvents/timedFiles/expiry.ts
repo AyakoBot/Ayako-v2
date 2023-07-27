@@ -1,17 +1,36 @@
 import type * as Discord from 'discord.js';
+import { Prisma } from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import type DBT from '../../../Typings/DataBaseTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 
 export default async () => {
- const settingsRows = await ch.query(
-  `SELECT * FROM expiry WHERE warns = true AND warnstime IS NOT NULL OR mutes = true AND mutestime IS NOT NULL OR kicks = true AND kickstime IS NOT NULL OR channelbans = true AND channelbanstime IS NOT NULL OR bans = true AND banstime IS NOT NULL;`,
-  undefined,
-  {
-   returnType: 'expiry',
-   asArray: true,
+ const settingsRows = await ch.DataBase.expiry.findMany({
+  where: {
+   OR: [
+    {
+     warns: true,
+     warnstime: { not: null },
+    },
+    {
+     mutes: true,
+     mutestime: { not: null },
+    },
+    {
+     kicks: true,
+     kickstime: { not: null },
+    },
+    {
+     bans: true,
+     banstime: { not: null },
+    },
+    {
+     channelbans: true,
+     channelbanstime: { not: null },
+    },
+   ],
   },
- );
+ });
 
  if (!settingsRows) return;
 
@@ -39,29 +58,74 @@ export default async () => {
  });
 };
 
-const expire = async (row: { expire: string; guildid: string }, tableName: string) => {
- const tableRows = await ch.query(
-  `SELECT * FROM ${tableName} WHERE guildid = $1 AND uniquetimestamp < $2;`,
-  [row.guildid, Math.abs(Date.now() - Number(row.expire))],
-  {
-   returnType: 'Punishment',
-   asArray: true,
+type TableName =
+ | 'punish_warns'
+ | 'punish_mutes'
+ | 'punish_kicks'
+ | 'punish_bans'
+ | 'punish_channelbans';
+
+const findTable = {
+ punish_warns: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_warns']['findMany'], 0>) =>
+  ch.DataBase.punish_warns.findMany(findWhere),
+ punish_mutes: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_mutes']['findMany'], 0>) =>
+  ch.DataBase.punish_mutes.findMany(findWhere),
+ punish_kicks: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_kicks']['findMany'], 0>) =>
+  ch.DataBase.punish_kicks.findMany(findWhere),
+ punish_bans: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_bans']['findMany'], 0>) =>
+  ch.DataBase.punish_bans.findMany(findWhere),
+ punish_channelbans: (
+  findWhere: CT.Argument<(typeof ch)['DataBase']['punish_channelbans']['findMany'], 0>,
+ ) => ch.DataBase.punish_channelbans.findMany(findWhere),
+};
+
+const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableName: TableName) => {
+ const findWhere = {
+  where: {
+   guildid: row.guildid,
+   uniquetimestamp: { lt: Math.abs(Date.now() - Number(row.expire)) },
   },
- );
+ };
+
+ const tableRows = await findTable[tableName](findWhere);
 
  if (!tableRows) return;
 
  tableRows.forEach((r) => {
-  ch.query(`DELETE FROM ${tableName} WHERE uniquetimestamp = $1 AND guildid = $2;`, [
-   r.uniquetimestamp,
-   r.guildid,
-  ]);
+  const deleteWhere = {
+   where: {
+    guildid: r.guildid,
+    uniquetimestamp: r.uniquetimestamp,
+   },
+  };
+
+  const deleteTable = {
+   punish_warns: () => ch.DataBase.punish_warns.deleteMany(deleteWhere),
+   punish_mutes: () => ch.DataBase.punish_mutes.deleteMany(deleteWhere),
+   punish_kicks: () => ch.DataBase.punish_kicks.deleteMany(deleteWhere),
+   punish_bans: () => ch.DataBase.punish_bans.deleteMany(deleteWhere),
+   punish_channelbans: () => ch.DataBase.punish_channelbans.deleteMany(deleteWhere),
+  };
+  deleteTable[tableName]();
  });
 
- logExpire(tableRows, row.guildid);
+ logExpire<TableName>(tableRows, row.guildid);
 };
 
-const logExpire = async (rows: (DBT.Punishment | DBT.TempPunishment)[], guildid: string) => {
+const logExpire = async <T extends TableName>(
+ rows: T extends 'punish_warns'
+  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_warns']['findMany']>>
+  : T extends 'punish_mutes'
+  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_mutes']['findMany']>>
+  : T extends 'punish_kicks'
+  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_kicks']['findMany']>>
+  : T extends 'punish_bans'
+  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_bans']['findMany']>>
+  : T extends 'punish_channelbans'
+  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_channelbans']['findMany']>>
+  : never,
+ guildid: string,
+) => {
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 
@@ -91,7 +155,10 @@ const logExpire = async (rows: (DBT.Punishment | DBT.TempPunishment)[], guildid:
    fields: [
     {
      name: lan.punishmentIssue,
-     value: `<t:${p.uniquetimestamp.slice(0, -3)}:F> (<t:${p.uniquetimestamp.slice(0, -3)}:R>)`,
+     value: `<t:${String(p.uniquetimestamp).slice(0, -3)}:F> (<t:${String(p.uniquetimestamp).slice(
+      0,
+      -3,
+     )}:R>)`,
      inline: false,
     },
     {

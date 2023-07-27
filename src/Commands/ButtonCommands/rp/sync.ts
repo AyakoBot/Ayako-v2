@@ -7,11 +7,7 @@ import { getComponents } from '../../SlashCommands/rp.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const user = await ch.query(`SELECT * FROM users WHERE userid = $1;`, [cmd.user.id], {
-  returnType: 'users',
-  asArray: false,
- });
-
+ const user = await ch.DataBase.users.findUnique({ where: { userid: cmd.user.id } });
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.rp;
 
@@ -41,14 +37,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
   }),
  );
 
- const guildsettings = await ch.query(
-  `UPDATE guildsettings SET lastrpsyncrun = $1 WHERE guildid = $2;`,
-  [Date.now(), cmd.guildId],
-  {
-   returnType: 'guildsettings',
-   asArray: false,
-  },
- );
+ const guildsettings = await ch.DataBase.guildsettings.update({
+  where: { guildid: cmd.guildId },
+  data: { lastrpsyncrun: Date.now() },
+ });
 
  await cmd.update({
   components: getComponents(language, lan, cmd, guildsettings),

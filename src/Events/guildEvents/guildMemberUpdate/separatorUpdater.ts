@@ -1,6 +1,6 @@
 import { parentPort } from 'worker_threads';
 import * as Discord from 'discord.js';
-import type DBT from '../../../Typings/DataBaseTypings';
+import Prisma from '@prisma/client';
 
 interface Data {
  roles: string[];
@@ -8,7 +8,7 @@ interface Data {
  userid: string;
  guildroles: Map<string, Discord.Role>;
  highest: Discord.Role;
- res: DBT.roleseparator[];
+ res: Prisma.roleseparator[];
 }
 
 parentPort?.on('message', (data: Data) => {
@@ -24,7 +24,7 @@ const start = async (data: Data) => {
  const takeThese: string[] = [];
 
  rows.forEach(async (row) => {
-  const separator = guildroles.get(row.separator);
+  const separator = row.separator ? guildroles.get(row.separator) : undefined;
   if (!separator) {
    parentPort?.postMessage(['NO_SEP', null, [row.separator]]);
    return;
@@ -48,7 +48,7 @@ const start = async (data: Data) => {
 };
 
 const handleVarying = (
- row: DBT.roleseparator,
+ row: Prisma.roleseparator,
  guildroles: Discord.Collection<string, Discord.Role>,
  sep: Discord.Role,
  highestRole: Discord.Role,
@@ -90,7 +90,7 @@ const handleVarying = (
 };
 
 const handleNonVarying = (
- row: DBT.roleseparator,
+ row: Prisma.roleseparator,
  roles: string[],
  sep: Discord.Role,
  giveThese: string[],

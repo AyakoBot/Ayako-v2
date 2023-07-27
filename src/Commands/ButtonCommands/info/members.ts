@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (
  cmd: Discord.ButtonInteraction | Discord.ChatInputCommandInteraction,

@@ -9,8 +9,10 @@ export default (msg: Discord.Message) => {
   ch.cache.giveaways.delete(msg.guildId, msg.channelId, msg.id);
   ch.cache.giveawayClaimTimeout.delete(msg.guildId, msg.id);
 
-  ch.query(`DELETE FROM giveaways WHERE msgid = $1;`, [msg.id]);
-  ch.query(`DELETE FROM giveawaycollection WHERE msgid = $1;`, [msg.id]);
-  ch.query(`DELETE FROM stickymessages WHERE lastmsgid = $1;`, [msg.id]);
+  ch.DataBase.giveawaycollection.delete({ where: { msgid: msg.id } });
+  ch.DataBase.giveawaycollection.delete({ where: { msgid: msg.id } });
+  ch.DataBase.stickymessages.delete({
+   where: { lastmsgid: msg.id, channelid: msg.channel.id },
+  });
  });
 };

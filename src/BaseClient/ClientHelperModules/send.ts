@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;

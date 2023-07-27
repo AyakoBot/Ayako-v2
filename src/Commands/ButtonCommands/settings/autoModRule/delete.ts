@@ -1,15 +1,11 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 
 const settingName = 'blacklist-rules';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
-
- const tableName = ch.constants.commands.settings.tableNames[
-  settingName as keyof typeof ch.constants.commands.settings.tableNames
- ] as keyof CT.TableNamesMap;
 
  const id = args.shift();
  if (!id) {
@@ -29,14 +25,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, tableName, cmd.guild);
+ const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) {
   ch.error(cmd.guild, new Error('SettingsFile not found'));
   return;
  }
 
- const lan = language.slashCommands.settings.categories[settingName];
+ const lan =
+  language.slashCommands.settings.categories[
+   settingName as keyof CT.Language['slashCommands']['settings']['categories']
+  ];
 
  ch.settingsHelpers.updateLog(oldSettings, {}, '*', settingName, id);
- settingsFile.showAll?.(cmd, language, lan);
+ settingsFile.showAll?.(cmd, language, lan as never);
 };

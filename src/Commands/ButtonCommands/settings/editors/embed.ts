@@ -1,18 +1,18 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+ if (!cmd.inCachedGuild()) return;
+
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.TableNamesMap;
+ const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
 
- const tableName = ch.constants.commands.settings.tableNames[
-  settingName as keyof typeof ch.constants.commands.settings.tableNames
- ] as keyof CT.TableNamesMap;
- type SettingsType = CT.TableNamesMap[typeof tableName];
+
+ 
 
  const getUniquetimestamp = () => {
   const arg = args.shift();
@@ -22,25 +22,19 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const uniquetimestamp = getUniquetimestamp();
 
  const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
-  tableName,
-  fieldName,
+  settingName,
   cmd.guildId,
   uniquetimestamp,
- )) as SettingsType;
+ ));
 
  const language = await ch.languageSelector(cmd.guildId);
- const lan = language.slashCommands.settings.categories[settingName];
-
- const embeds = await ch.query(`SELECT * FROM customembeds WHERE guildid = $1;`, [cmd.guildId], {
-  returnType: 'customembeds',
-  asArray: true,
- });
+ const embeds = await ch.DataBase.customembeds.findMany({ where: { guildid: cmd.guildId } });
 
  cmd.update({
   embeds: [
    await ch.settingsHelpers.changeHelpers.changeEmbed(
     language,
-    lan,
+    settingName,
     fieldName,
     currentSetting?.[fieldName as keyof typeof currentSetting],
     'embed',
@@ -55,10 +49,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       settingName,
       'embed',
       {
-       options: embeds?.map((e) => ({
-        label: e.name,
-        value: e.uniquetimestamp,
-       })) ?? [{ label: '-', value: '-' }],
+       options: embeds.length
+        ? embeds.map((e) => ({
+           label: e.name,
+           value: e.uniquetimestamp.toString(),
+          }))
+        : [{ label: '-', value: '-' }],
        disabled: !embeds?.length,
       },
       uniquetimestamp,

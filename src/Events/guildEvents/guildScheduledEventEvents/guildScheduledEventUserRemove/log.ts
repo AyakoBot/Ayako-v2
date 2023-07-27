@@ -1,10 +1,12 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 
 export default async (event: Discord.GuildScheduledEvent, user: Discord.User) => {
- if (!event.guild) return;
+ const guild = event.guild ?? (event.guildId ? client.guilds.cache.get(event.guildId) : undefined);
+ if (!guild) return;
 
- const channels = await ch.getLogChannels('scheduledeventevents', event.guild);
+ const channels = await ch.getLogChannels('scheduledeventevents', guild);
  if (!channels) return;
 
  const channel =
@@ -13,7 +15,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
    ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
      (await ch.getChannel.guildVoiceChannel(event.channelId))
    : undefined);
- const language = await ch.languageSelector(event.guild.id);
+ const language = await ch.languageSelector(guild.id);
  const lan = language.events.logs.scheduledEvent;
  const con = ch.constants.events.logs.guild;
  const files: Discord.AttachmentPayload[] = [];
@@ -31,5 +33,5 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: event.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, undefined, 10000);
 };

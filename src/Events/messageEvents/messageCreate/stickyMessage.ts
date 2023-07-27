@@ -8,24 +8,22 @@ export default async (msg: Discord.Message) => {
  if (msg.author.id === msg.client.user.id) return;
  if (msg.author.discriminator === '0000' && msg.author.bot) return;
 
- const stickyMessage = await ch.query(
-  `SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`,
-  [msg.guildId, msg.channelId],
-  {
-   returnType: 'stickymessages',
-   asArray: false,
+ const stickyMessage = await ch.DataBase.stickymessages.findUnique({
+  where: {
+   guildid: msg.guildId,
+   channelid: msg.channelId,
   },
- );
+ });
 
  if (!stickyMessage) return;
 
  const message = await msg.channel.messages.fetch(stickyMessage.lastmsgid).catch(() => undefined);
 
  if (!message) {
-  ch.query(`DELETE FROM stickymessages WHERE guildid = $1 AND channelid = $2;`, [
-   msg.guildId,
-   msg.channelId,
-  ]);
+  ch.DataBase.stickymessages.delete({
+   where: { guildid: msg.guildId, channelid: msg.channelId },
+  });
+
   return;
  }
 
@@ -75,11 +73,15 @@ export default async (msg: Discord.Message) => {
    if (webhook && message.author.id === webhook.id) webhook.deleteMessage(message);
    else if (message.deletable) message.delete().catch(() => undefined);
 
-   ch.query(`UPDATE stickymessages SET lastmsgid = $1 WHERE guildid = $2 AND channelid = $3;`, [
-    m.id,
-    msg.guildId,
-    msg.channelId,
-   ]);
+   ch.DataBase.stickymessages.update({
+    where: {
+     guildid: msg.guildId,
+     channelid: msg.channelId,
+    },
+    data: {
+     lastmsgid: m.id,
+    },
+   });
   }),
  );
 };

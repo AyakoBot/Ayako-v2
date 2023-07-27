@@ -1,5 +1,5 @@
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const value = cmd.options.get('user-name', false)?.value as string;

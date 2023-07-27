@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import type * as CT from '../../Typings/CustomTypings';
+import * as CT from '../../Typings/CustomTypings.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
 import stringEmotes from './stringEmotes.js';
@@ -13,7 +13,7 @@ import send from './send.js';
 import client from '../Client.js';
 import cache from './cache.js';
 import log from './log.js';
-import query from './query.js';
+import DataBase from '../DataBase.js';
 
 type CmdType = Discord.ChatInputCommandInteraction<'cached'> | Discord.Message;
 
@@ -193,19 +193,62 @@ const doDB = <T extends CT.ModTypes>(
    ? [target?.id, options.guild.id, ...extraArgs]
    : [target?.id, options.guild.id];
 
-  const punishRow = await query(
-   `SELECT * FROM ${table} WHERE userid = $1 AND guildid = $2 ${
-    extraSelectArgs ? `${extraSelectArgs.map((arg, i) => `AND ${arg} = $${i + 3}`).join('')}` : ''
-   }`,
-   selectArray,
-   { returnType: 'Punishment', asArray: false },
-  );
+  const selectObject: { where: { [key: string]: unknown } } = {
+   where: {
+    userid: target?.id,
+    guildid: options.guild.id,
+   },
+  };
+
+  if (extraSelectArgs) {
+   extraSelectArgs.forEach((arg, i) => {
+    selectObject.where[arg as string] = selectArray[i];
+   });
+  }
+
+  const punishRow = await (() => {
+   switch (table) {
+    case 'punish_tempmutes': {
+     return DataBase.punish_tempmutes.findFirst(selectObject);
+    }
+    case 'punish_tempchannelbans': {
+     return DataBase.punish_tempchannelbans.findFirst(selectObject);
+    }
+    case 'punish_tempbans': {
+     return DataBase.punish_tempbans.findFirst(selectObject);
+    }
+    default: {
+     throw new Error(`Invalid table ${table}`);
+    }
+   }
+  })();
 
   if (punishRow) {
-   await query(
-    `DELETE FROM ${table} WHERE userid = $1 AND guildid = $2 AND uniquetimestamp = $3;`,
-    [target?.id, options.guild.id, punishRow.uniquetimestamp],
-   ); // js
+   const deleteObject = {
+    where: {
+     userid: target?.id,
+     guildid: options.guild.id,
+     uniquetimestamp: punishRow.uniquetimestamp,
+    },
+   };
+
+   switch (table) {
+    case 'punish_tempmutes': {
+     DataBase.punish_tempmutes.delete(deleteObject);
+     break;
+    }
+    case 'punish_tempchannelbans': {
+     DataBase.punish_tempchannelbans.delete(deleteObject);
+     break;
+    }
+    case 'punish_tempbans': {
+     DataBase.punish_tempbans.delete(deleteObject);
+     break;
+    }
+    default: {
+     throw new Error(`Invalid table ${table}`);
+    }
+   }
 
    const insertArgs = extraInsertArgs
     ? [
@@ -245,13 +288,32 @@ const doDB = <T extends CT.ModTypes>(
     insertArgs.push(...(cloneArr?.map((arg) => punishRow[arg as never]) ?? []));
    }
 
-   await query(
-    `INSERT INTO ${insertTable} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
-     extraInsertArgNames ? `, ${extraInsertArgNames.join(', ')}` : ''
-    }) VALUES
-    (${insertArgs ? `${insertArgs.map((_, i) => `$${i + 1}`).join(', ')}` : ''});`,
-    insertArgs,
-   );
+   const createObject: { data: { [key: string]: unknown } } = {
+    data: {},
+   };
+
+   extraInsertArgNames?.forEach((arg, i) => {
+    createObject.data[arg as never] = insertArgs[i];
+   });
+
+   switch (insertTable) {
+    case 'punish_mutes': {
+     DataBase.punish_mutes.create(createObject as never);
+     break;
+    }
+    case 'punish_channelbans': {
+     DataBase.punish_channelbans.create(createObject as never);
+     break;
+    }
+    case 'punish_bans': {
+     DataBase.punish_bans.create(createObject as never);
+     break;
+    }
+    default: {
+     throw new Error(`Invalid table ${table}`);
+    }
+   }
+
    return punishRow;
   }
   return null;
@@ -283,13 +345,47 @@ const doDB = <T extends CT.ModTypes>(
       message?.id,
      ];
 
-  query(
-   `INSERT INTO ${table} (guildid, userid, reason, uniquetimestamp, channelid, channelname, executorid, executorname, msgid${
-    extraArgNames ? `, ${extraArgNames.join(', ')}` : '' // `
-   }) VALUES (
-      ${insertArgs ? `${insertArgs.map((_, i) => `$${i + 1}`).join(', ')}` : ''});`,
-   insertArgs,
-  );
+  const createObject: { data: { [key: string]: unknown } } = {
+   data: {},
+  };
+
+  extraArgNames?.forEach((arg, i) => {
+   createObject.data[arg as never] = insertArgs[i];
+  });
+
+  switch (table) {
+   case 'punish_tempmutes': {
+    DataBase.punish_tempmutes.create(createObject as never);
+    break;
+   }
+   case 'punish_bans': {
+    DataBase.punish_bans.create(createObject as never);
+    break;
+   }
+   case 'punish_tempbans': {
+    DataBase.punish_tempbans.create(createObject as never);
+    break;
+   }
+   case 'punish_channelbans': {
+    DataBase.punish_channelbans.create(createObject as never);
+    break;
+   }
+   case 'punish_tempchannelbans': {
+    DataBase.punish_tempchannelbans.create(createObject as never);
+    break;
+   }
+   case 'punish_kicks': {
+    DataBase.punish_kicks.create(createObject as never);
+    break;
+   }
+   case 'punish_warns': {
+    DataBase.punish_warns.create(createObject as never);
+    break;
+   }
+   default: {
+    throw new Error(`Invalid table ${table}`);
+   }
+  }
  };
 
  switch (type) {

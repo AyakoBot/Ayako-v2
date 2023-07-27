@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import reply from './replyCmd.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default (
  cmd:

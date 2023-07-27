@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -13,13 +13,8 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const settingName = args.shift() as keyof CT.TableNamesMap;
+ const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
-
- const tableName = ch.constants.commands.settings.tableNames[
-  settingName as keyof typeof ch.constants.commands.settings.tableNames
- ] as keyof CT.TableNamesMap;
- type SettingsType = CT.TableNamesMap[typeof tableName];
 
  const fieldName = field.customId;
  const newSetting = field.value;
@@ -32,20 +27,19 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
-  tableName,
-  fieldName,
+ const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+  settingName,
   cmd.guildId,
   uniquetimestamp,
- )) as SettingsType;
+ );
 
- const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
-  tableName,
+ const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
+  settingName,
   fieldName,
   cmd.guildId,
   newSetting,
   uniquetimestamp,
- )) as SettingsType;
+ );
 
  ch.settingsHelpers.updateLog(
   currentSetting,
@@ -55,7 +49,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, tableName, cmd.guild);
+ const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
  cmd.update({

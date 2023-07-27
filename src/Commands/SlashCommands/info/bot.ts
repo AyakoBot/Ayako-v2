@@ -8,11 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
-
- const stats = await ch.query(`SELECT * FROM stats;`, undefined, {
-  returnType: 'stats',
-  asArray: false,
- });
+ const stats = await ch.DataBase.stats.findFirst();
 
  ch.replyCmd(cmd, {
   embeds: [

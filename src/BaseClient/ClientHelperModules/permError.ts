@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 
 export default async (

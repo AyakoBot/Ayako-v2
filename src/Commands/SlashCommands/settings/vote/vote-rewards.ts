@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
+import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
 
 const name = 'vote-rewards';
 
@@ -25,16 +26,19 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  lan,
 ) => {
  const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch
-  .query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
-   [parseInt(ID, 36)],
-   {
-    returnType: 'voterewards',
-    asArray: false,
-   },
-  )
-  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+  .findUnique({
+   where: { uniquetimestamp: parseInt(ID, 36) },
+  })
+  .then(
+   (r) =>
+    r ??
+    (ch.settingsHelpers.setup(
+     name,
+     cmd.guildId,
+     ID ? parseInt(ID, 36) : Date.now(),
+    ) as unknown as CT.TableNamesMap[typeof name]),
+  );
 
  if (cmd.isButton()) {
   cmd.update({
@@ -57,16 +61,11 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  lan,
 ) => {
  const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.query(
-  `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
-  [cmd.guild?.id],
-  {
-   returnType: 'voterewards',
-   asArray: true,
-  },
- );
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]].findMany({
+  where: { guildid: cmd.guildId },
+ });
 
- const fields = settings?.map((s) => ({
+ const fields = settings.map((s) => ({
   name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${lan.fields.linkedid.name}: ${
    s?.linkedid ? Number(s.linkedid).toString(36) : language.None
   }`,
@@ -109,40 +108,40 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    fields: [
     {
      name: language.slashCommands.settings.active,
-     value: embedParsers.boolean(settings?.active, language),
+     value: embedParsers.boolean(settings.active, language),
      inline: false,
     },
     {
      name: lan.fields.tier.name,
-     value: embedParsers.number(settings?.tier, language),
+     value: embedParsers.number(settings.tier, language),
      inline: true,
     },
     {
      name: lan.fields.linkedid.name,
      value: embedParsers.string(
-      settings?.linkedid ? Number(settings.linkedid).toString(36) : language.None,
+      settings.linkedid ? Number(settings.linkedid).toString(36) : language.None,
       language,
      ),
      inline: false,
     },
     {
      name: lan.fields.rewardxp.name,
-     value: embedParsers.number(settings?.rewardxp, language),
+     value: embedParsers.number(settings.rewardxp, language),
      inline: true,
     },
     {
      name: lan.fields.rewardxpmultiplier.name,
-     value: embedParsers.number(settings?.rewardxpmultiplier, language),
+     value: embedParsers.number(settings.rewardxpmultiplier, language),
      inline: true,
     },
     {
      name: lan.fields.rewardcurrency.name,
-     value: embedParsers.number(settings?.rewardcurrency, language),
+     value: embedParsers.number(settings.rewardcurrency, language),
      inline: true,
     },
     {
      name: lan.fields.rewardroles.name,
-     value: embedParsers.roles(settings?.rewardroles, language),
+     value: embedParsers.roles(settings.rewardroles, language),
      inline: false,
     },
    ],
@@ -161,41 +160,35 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   type: Discord.ComponentType.ActionRow,
   components: [
    buttonParsers.back(name, undefined),
-   buttonParsers.global(language, !!settings?.active, 'active', name, undefined),
-   buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
+   buttonParsers.global(language, !!settings.active, 'active', name, undefined),
+   buttonParsers.delete(language, name, Number(settings.uniquetimestamp)),
   ],
  },
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(
-    language,
-    settings?.tier,
-    'tier',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
+   buttonParsers.specific(language, settings.tier, 'tier', name, Number(settings.uniquetimestamp)),
    buttonParsers.setting(
     language,
-    Number(settings?.linkedid).toString(36) || undefined,
+    Number(settings.linkedid).toString(36) || null,
     'linkedid',
     name,
     'vote',
-    Number(settings?.uniquetimestamp),
+    Number(settings.uniquetimestamp),
    ),
    buttonParsers.specific(
     language,
-    settings?.rewardxp,
+    settings.rewardxp,
     'rewardxp',
     name,
-    Number(settings?.uniquetimestamp),
+    Number(settings.uniquetimestamp),
    ),
    buttonParsers.specific(
     language,
-    settings?.rewardxpmultiplier,
+    settings.rewardxpmultiplier,
     'rewardxpmultiplier',
     name,
-    Number(settings?.uniquetimestamp),
+    Number(settings.uniquetimestamp),
    ),
   ],
  },
@@ -204,17 +197,17 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.specific(
     language,
-    settings?.rewardcurrency,
+    settings.rewardcurrency,
     'rewardcurrency',
     name,
-    Number(settings?.uniquetimestamp),
+    Number(settings.uniquetimestamp),
    ),
    buttonParsers.specific(
     language,
-    settings?.rewardroles,
+    settings.rewardroles,
     'rewardroles',
     name,
-    Number(settings?.uniquetimestamp),
+    Number(settings.uniquetimestamp),
     'role',
    ),
   ],

@@ -6,25 +6,18 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
 
- const giveaway = await ch.query(
-  `SELECT * FROM giveaways WHERE msgid = $1 ended = false;`,
-  [cmd.message.id],
-  {
-   returnType: 'giveaways',
-   asArray: false,
-  },
- );
+ const giveaway = await ch.DataBase.giveaways.findUnique({
+  where: { msgid: cmd.message.id, ended: false },
+ });
 
- const giveawayCollection = await ch.query(
-  `SELECT * FROM giveawaycollection WHERE msgid = $1;`,
-  [cmd.message.id],
-  { returnType: 'giveawaycollection', asArray: false },
- );
+ const giveawayCollection = await ch.DataBase.giveawaycollection.findUnique({
+  where: { msgid: cmd.message.id },
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.giveaway.claim;
 
- if (!giveaway) {
+ if (!giveaway || !giveaway.actualprize) {
   ch.errorCmd(cmd, language.slashCommands.giveaway.notFound, language);
   return;
  }
@@ -39,26 +32,22 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!giveawayCollection?.requiredwinners?.length) return;
  const newWinners = giveawayCollection.requiredwinners.filter((w) => w !== cmd.user.id);
 
- ch.query(`UPDATE giveaways SET claimingdone = $1 WHERE msgid = $2;`, [
-  !newWinners.length,
-  cmd.message.id,
- ]);
- ch.query(`UPDATE giveawaycollection SET requiredwinners = $1 WHERE msgid = $2;`, [
-  newWinners,
-  cmd.message.id,
- ]);
+ ch.DataBase.giveaways.update({
+  where: { msgid: cmd.message.id },
+  data: { claimingdone: !newWinners.length },
+ });
 
- const collection = await ch.query(
-  `SELECT * FROM giveawaycollection WHERE msgid = $1;`,
-  [cmd.message.id],
-  {
-   returnType: 'giveawaycollection',
-   asArray: false,
-  },
- );
+ ch.DataBase.giveawaycollection.update({
+  where: { msgid: cmd.message.id },
+  data: { requiredwinners: newWinners },
+ });
+
+ const collection = await ch.DataBase.giveawaycollection.findUnique({
+  where: { msgid: cmd.message.id },
+ });
 
  if (newWinners.length) return;
- ch.query(`DELETE FROM giveawaycollection WHERE msgid = $1;`, [cmd.message.id]);
+ ch.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } });
  ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
  giveaway.claimingdone = true;
 

@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-shadow
 import { Worker } from 'worker_threads';
 import jobs from 'node-schedule';
+import Prisma from '@prisma/client';
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import type DBT from '../../../Typings/DataBaseTypings';
 
 const UpdateWorker = new Worker(
  `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
@@ -20,7 +20,14 @@ UpdateWorker.on(
  ]) => {
   switch (text) {
    case 'NO_SEP': {
-    ch.query('UPDATE roleseparator SET active = false WHERE separator = $1;', [roleData[0]]);
+    ch.DataBase.roleseparator.updateMany({
+     where: {
+      separator: roleData[0],
+     },
+     data: {
+      active: false,
+     },
+    });
     break;
    }
    case 'TAKE': {
@@ -78,22 +85,19 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
  jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
-  const stillrunning = await ch
-   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [member.guild.id], {
-    returnType: 'roleseparatorsettings',
-    asArray: false,
-   })
-   .then((r) => r?.stillrunning);
+  const stillrunning = await ch.DataBase.roleseparatorsettings.findFirst({
+   where: {
+    guildid: member.guild.id,
+   },
+  });
   if (stillrunning) return;
 
-  const roleseparatorRows = await ch.query(
-   'SELECT * FROM roleseparator WHERE active = true AND guildid = $1;',
-   [member.guild.id],
-   {
-    returnType: 'roleseparator',
-    asArray: false,
+  const roleseparatorRows = await ch.DataBase.roleseparator.findFirst({
+   where: {
+    active: true,
+    guildid: member.guild.id,
    },
-  );
+  });
   if (!roleseparatorRows) return;
 
   const map = new Map();
@@ -132,14 +136,12 @@ export const oneTimeRunner = async (
  if (!msg.guild) return;
  const language = await ch.languageSelector(msg.guild.id);
 
- const roleseparatorRows = await ch.query(
-  'SELECT * FROM roleseparator WHERE active = true AND guildid = $1;',
-  [msg.guild.id],
-  {
-   returnType: 'roleseparator',
-   asArray: true,
+ const roleseparatorRows = await ch.DataBase.roleseparator.findMany({
+  where: {
+   active: true,
+   guildid: msg.guild.id,
   },
- );
+ });
  if (!roleseparatorRows) return;
 
  let membersWithRoles:
@@ -153,20 +155,25 @@ export const oneTimeRunner = async (
   | undefined;
 
  if (
-  (await ch
-   .query('SELECT stillrunning FROM roleseparatorsettings WHERE guildid = $1;', [msg.guild.id], {
-    returnType: 'roleseparatorsettings',
-    asArray: false,
+  (await ch.DataBase.roleseparatorsettings
+   .findFirst({
+    where: {
+     guildid: msg.guild.id,
+    },
    })
    .then((r) => r?.stillrunning)) &&
   msg.author.id !== client.user?.id
  ) {
   membersWithRoles = true;
  } else {
-  ch.query('UPDATE roleseparatorsettings SET stillrunning = $2 WHERE guildid = $1;', [
-   msg.guild.id,
-   true,
-  ]);
+  ch.DataBase.roleseparatorsettings.update({
+   where: {
+    guildid: msg.guild.id,
+   },
+   data: {
+    stillrunning: true,
+   },
+  });
   membersWithRoles = await getMembers(msg.guild, roleseparatorRows);
  }
 
@@ -233,17 +240,20 @@ export const oneTimeRunner = async (
   );
 
   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-  ch.query(
-   'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4, channelid = $5, messageid = $6 WHERE guildid = $2;',
-   [
-    true,
-    msg.guild.id,
-    Math.floor(Date.now() / 1000) + membersWithRoles.length * 4,
-    Date.now(),
-    msg.channel.id,
-    m.id,
-   ],
-  );
+
+  ch.DataBase.roleseparatorsettings.update({
+   where: {
+    guildid: msg.guild.id,
+   },
+   data: {
+    stillrunning: true,
+    duration: membersWithRoles.length * 4,
+    startat: Date.now(),
+    channelid: msg.channel.id,
+    messageid: m.id,
+   },
+  });
+
   assinger(msg, m, membersWithRoles, embed, lastTime);
  }
 };
@@ -265,7 +275,7 @@ type PassObject = {
 
 const getMembers = async (
  guild: Discord.Guild,
- roleseparatorRows: DBT.roleseparator[],
+ roleseparatorRows: Prisma.roleseparator[],
 ): Promise<
  | {
     id: string;
@@ -315,6 +325,8 @@ const getMembers = async (
  });
 
  roleseparatorRows.forEach((r) => {
+  if (!r.separator) return;
+
   const separator = guild.roles.cache.get(r.separator);
   if (!separator) return;
 
@@ -404,10 +416,17 @@ const assinger = async (
 
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-  ch.query(
-   'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4 WHERE guildid = $2;',
-   [false, msg.guild.id, null, null],
-  );
+
+  ch.DataBase.roleseparatorsettings.update({
+   where: {
+    guildid: msg.guild.id,
+   },
+   data: {
+    stillrunning: false,
+    duration: null,
+    startat: null,
+   },
+  });
 
   return;
  }
@@ -438,10 +457,16 @@ const assinger = async (
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
      m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-     ch.query(
-      'UPDATE roleseparatorsettings SET stillrunning = $1, duration = $3, startat = $4 WHERE guildid = $2;',
-      [false, msg.guild?.id, undefined, undefined],
-     );
+     ch.DataBase.roleseparatorsettings.update({
+      where: {
+       guildid: msg.guild?.id,
+      },
+      data: {
+       stillrunning: false,
+       duration: null,
+       startat: null,
+      },
+     });
 
      return;
     }
@@ -451,11 +476,15 @@ const assinger = async (
      return;
     }
 
-    ch.query('UPDATE roleseparatorsettings SET index = $1, length = $3 WHERE guildid = $2;', [
-     index,
-     msg.guild?.id,
-     membersWithRoles.length - 1,
-    ]);
+    ch.DataBase.roleseparatorsettings.update({
+     where: {
+      guildid: msg.guild?.id,
+     },
+     data: {
+      index,
+      length: membersWithRoles.length - 1,
+     },
+    });
    }),
   );
  });

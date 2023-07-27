@@ -22,7 +22,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   }
  >();
 
- const customPrefix = cmd.guildId ? await getCustomPrefix(cmd.guildId) : undefined;
+ const settings = cmd.guildId
+  ? await ch.DataBase.guildsettings.findUnique({ where: { guildid: cmd.guildId } })
+  : undefined;
 
  Object.entries(SlashCommands.categories).forEach(([key, category]) => {
   if (!commands.has(category)) commands.set(category, { categoryName: category, commands: [] });
@@ -37,7 +39,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     `${!key.match(/\s|[A-Z]/g) ? `</${key.replace(/_/g, ' ')}:${command?.id}>` : key} ${
      stringCommand
       ? ch.util.makeInlineCode(
-         `${customPrefix?.prefix ?? ch.constants.standard.prefix}${stringCommand.name}`,
+         `${settings?.prefix ?? ch.constants.standard.prefix}${stringCommand.name}`,
         )
       : ''
     }`,
@@ -68,10 +70,4 @@ const getCommand = (
    if (err) throw err;
    resolve(res);
   });
- });
-
-export const getCustomPrefix = (guildID: string) =>
- ch.query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [guildID], {
-  returnType: 'guildsettings',
-  asArray: false,
  });

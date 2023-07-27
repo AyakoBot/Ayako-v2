@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import type * as CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/CustomTypings.js';
 import getLogChannels from './getLogChannels.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
@@ -13,7 +13,7 @@ export default async (
  options: { role?: Discord.Role; reason?: string },
 ): Promise<void> => {
  const logchannels = await getLogChannels('modlog', guild);
- if (!logchannels?.length) return;
+ if (!logchannels) return;
 
  const language = await languageSelector(guild.id);
  const lan = language.mod.logs[type as keyof typeof language.mod.logs];

@@ -3,7 +3,7 @@ import colorSelector from './colorSelector.js';
 import stringEmotes from './stringEmotes.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default (
  guild: Discord.Guild,

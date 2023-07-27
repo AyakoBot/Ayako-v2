@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
+import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
 
 const name = 'cooldowns';
 
@@ -25,16 +26,19 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  lan,
 ) => {
  const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch
-  .query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE uniquetimestamp = $1;`,
-   [parseInt(ID, 36)],
-   {
-    returnType: 'cooldowns',
-    asArray: false,
-   },
-  )
-  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+  .findUnique({
+   where: { uniquetimestamp: parseInt(ID, 36) },
+  })
+  .then(
+   (r) =>
+    r ??
+    (ch.settingsHelpers.setup(
+     name,
+     cmd.guildId,
+     ID ? parseInt(ID, 36) : Date.now(),
+    ) as unknown as CT.TableNamesMap[typeof name]),
+  );
 
  if (cmd.isButton()) {
   cmd.update({
@@ -57,14 +61,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  lan,
 ) => {
  const { embedParsers, multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.query(
-  `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
-  [cmd.guild?.id],
-  {
-   returnType: 'cooldowns',
-   asArray: true,
-  },
- );
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]].findMany({
+  where: { guildid: cmd.guildId },
+ });
 
  const fields = settings?.map((s) => ({
   name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${

@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => {
  if (!sticker.guild) return;

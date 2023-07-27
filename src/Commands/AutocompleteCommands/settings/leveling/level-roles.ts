@@ -1,13 +1,9 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames['level-roles']} WHERE guildid = $1;`,
-   [cmd.guildId],
-   { returnType: 'levelingroles', asArray: true },
-  )
+  await ch.DataBase.levelingroles.findMany({ where: { guildid: cmd.guildId } })
  )?.filter((s) => {
   const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 

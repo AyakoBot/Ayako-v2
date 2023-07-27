@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 import { getStyle, getEmoji } from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
 
 const name = 'blacklist-rules';

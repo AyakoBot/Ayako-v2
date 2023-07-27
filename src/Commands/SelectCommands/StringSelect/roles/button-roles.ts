@@ -1,31 +1,29 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
-import { typeWithoutDash } from '../../../SlashCommands/roles/builders/button-roles.js';
+import type { Type } from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction,
  _: string[],
- type: 'button-roles' | 'reaction-roles' = 'button-roles',
+ type: Type = 'button-roles',
 ) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.roles.builders;
+ const where = { where: { uniquetimestamp: cmd.values[0] } };
+
+ const getValue = () =>
+  type === 'button-roles'
+   ? ch.DataBase.buttonroles.findUnique(where).then((s) => s?.emote)
+   : ch.DataBase.reactionroles.findUnique(where).then((s) => s?.emote);
 
  const value =
   cmd.values[0].includes(':') || !Discord.parseEmoji(cmd.values[0])?.id
    ? cmd.values[0]
-   : await ch
-      .query(
-       `SELECT * FROM ${typeWithoutDash(type)} WHERE uniquetimestamp = $1;`,
-       [cmd.values[0]],
-       {
-        returnType: typeWithoutDash(type),
-        asArray: false,
-       },
-      )
-      .then((s) => s?.emote);
+   : await getValue();
+
  if (!value) {
   ch.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
@@ -47,8 +45,6 @@ export default async (
       },
      ]),
  ];
-
- console.log(cmd.values);
 
  cmd.update({
   embeds: [embed],

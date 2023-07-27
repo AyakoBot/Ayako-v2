@@ -1,19 +1,19 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 import client from '../../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
- const settingName = args.shift() as keyof CT.TableNamesMap;
+ if (!cmd.inCachedGuild()) return;
+
+ const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const tableName = ch.constants.commands.settings.tableNames[
-  settingName as keyof typeof ch.constants.commands.settings.tableNames
- ] as keyof CT.TableNamesMap;
- type SettingsType = CT.TableNamesMap[typeof tableName];
+
+ 
 
  const getUniquetimestamp = () => {
   const arg = args.shift();
@@ -23,11 +23,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const uniquetimestamp = getUniquetimestamp();
 
  const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
-  tableName,
-  fieldName,
+  settingName,
   cmd.guildId,
   uniquetimestamp,
- )) as SettingsType;
+ ));
 
  const lastMessage = await cmd.channel?.messages.fetch({ limit: 1 }).catch(() => undefined);
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
@@ -49,12 +48,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     )?.find((e): e is Discord.Emoji => !!e);
 
  const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
-  tableName,
+  settingName,
   fieldName,
   cmd.guildId,
   emote?.identifier,
   uniquetimestamp,
- )) as SettingsType;
+ ));
 
  ch.settingsHelpers.updateLog(
   currentSetting,

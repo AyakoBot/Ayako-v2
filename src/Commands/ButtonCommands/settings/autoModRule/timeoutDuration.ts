@@ -28,12 +28,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   (a) => a.type === Discord.AutoModerationActionType.Timeout,
  )?.metadata.durationSeconds;
 
- const lan = language.slashCommands.settings.categories[settingName];
-
  cmd.showModal(
   ch.settingsHelpers.changeHelpers.changeModal(
    language,
-   lan,
    settingName,
    'timeoutDuration',
    'autoModRule/duration',

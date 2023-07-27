@@ -11,7 +11,8 @@ log(`
 +++++++++++++++ Welcome to Ayako +++++++++++++++
 +      Restart all Shards with "restart"       +
 +  Restart one Shard with "restart [Shard ID]" +
-+    Arguments: "--debug --debug-db --warn"    +
++                  Arguments:                  +
++ "--debug --debug-db --warn --debug-queries"  +
 ++++++++++++++++++++++++++++++++++++++++++++++++
 `);
 
@@ -22,11 +23,16 @@ const manager = new Discord.ShardingManager('./bot.js', {
 
 manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));
 
-process.setMaxListeners(4);
+process.setMaxListeners(5);
 process.on('unhandledRejection', async (error: string) => console.error(error));
 process.on('uncaughtException', async (error: string) => console.error(error));
 process.on('promiseRejectionHandledWarning', (error: string) => console.error(error));
 process.on('experimentalWarning', (error: string) => console.error(error));
+process.on('SIGINT', () => {
+ manager.broadcastEval((cl) => cl.emit('SIGINT'));
+ log('[SIGINT]: Gracefully shutting down...');
+ process.exit(0);
+});
 
 await manager.spawn();
 

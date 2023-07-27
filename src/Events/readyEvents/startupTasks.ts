@@ -39,8 +39,11 @@ export default async () => {
  Jobs.scheduleJob('*/1 */1 */1 * *', async () => websiteFetcher());
 };
 
-const rpToggleUses = async () =>
- ch.query(`UPDATE guildsettings SET rpenableruns = 0 WHERE rpenableruns != 0;`);
+const rpToggleUses = () =>
+ ch.DataBase.guildsettings.updateMany({
+  where: { rpenableruns: { not: 0 } },
+  data: { rpenableruns: 0 },
+ });
 
 const animekosInviteStats = async () => {
  const guild = client.guilds.cache.get('298954459172700181');

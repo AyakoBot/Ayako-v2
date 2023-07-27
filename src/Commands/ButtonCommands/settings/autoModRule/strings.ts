@@ -31,12 +31,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const lan = language.slashCommands.settings.categories[settingName];
-
  cmd.showModal(
   ch.settingsHelpers.changeHelpers.changeModal(
    language,
-   lan,
    settingName,
    fieldName,
    'autoModRule/strings',

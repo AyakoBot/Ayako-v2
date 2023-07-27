@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 import reply from './replyCmd.js';
 

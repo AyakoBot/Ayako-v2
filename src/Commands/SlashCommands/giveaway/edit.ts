@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import { getGiveawayEmbed, end, getMessage } from './end.js';
 import { endTimeIsValid } from './create.js';
 
@@ -21,11 +21,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- await ch.query(`SELECT * FROM giveaways WHERE msgid = $1 AND ended = false;`, [messageID], {
-  returnType: 'giveaways',
-  asArray: false,
- });
-
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
   ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
   return;
@@ -39,7 +34,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
  ch.cache.giveaways.set(
-  Jobs.scheduleJob(new Date(giveaway.endtime), () => {
+  Jobs.scheduleJob(new Date(giveaway.endtime.toNumber()), () => {
    end(giveaway);
   }),
   giveaway.guildid,
@@ -78,70 +73,62 @@ const update = async (
   return undefined;
  }
 
- let lastReturnedGiveaway: DBT.giveaways | undefined;
+ let lastReturnedGiveaway: Prisma.giveaways | undefined;
 
  if (prizeDesc) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET prize = $1 WHERE msgid = $2;`,
-   [prizeDesc, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { description: prizeDesc },
+  });
  }
 
  if (endTime && endTimeIsValid(endTime, cmd, language)) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET endtime = $1 WHERE msgid = $2;`,
-   [endTime, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { endtime: endTime },
+  });
  }
 
  if (winners) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET winnercount = $1 WHERE msgid = $2;`,
-   [winners, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { winnercount: winners },
+  });
  }
 
  if (role) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET reqrole = $1 WHERE msgid = $2;`,
-   [role.id, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { reqrole: role.id },
+  });
  }
 
  if (host) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET host = $1 WHERE msgid = $2;`,
-   [host.id, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { host: host.id },
+  });
  }
 
  if (prize) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET description = $1 WHERE msgid = $2;`,
-   [prize, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { actualprize: prize },
+  });
  }
 
  if (claimingTimeout) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET collecttime = $1 WHERE msgid = $2;`,
-   [Math.abs(ch.getDuration(claimingTimeout)), messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { collecttime: Math.abs(ch.getDuration(claimingTimeout)) },
+  });
  }
 
  if (claimFailReroll) {
-  lastReturnedGiveaway = await ch.query(
-   `UPDATE giveaways SET failreroll = $1 WHERE msgid = $2;`,
-   [claimFailReroll, messageID],
-   { returnType: 'giveaways', asArray: false },
-  );
+  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+   where: { msgid: messageID },
+   data: { failreroll: claimFailReroll },
+  });
  }
 
  return lastReturnedGiveaway;

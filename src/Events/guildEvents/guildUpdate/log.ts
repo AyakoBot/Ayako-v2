@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  const channels = await ch.getLogChannels('guildevents', guild);

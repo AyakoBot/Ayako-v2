@@ -4,16 +4,20 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- await ch.query(
-  `INSERT INTO stickymessages (guildid, lastmsgid, channelid, userid) VALUES ($1, $2, $3, $4) ON CONFLICT (channelid) DO NOTHING;`,
-  [cmd.guildId, cmd.targetId, cmd.channelId, cmd.user.id],
- );
+ await ch.DataBase.stickymessages.upsert({
+  where: { channelid: cmd.channelId },
+  create: {
+   guildid: cmd.guildId,
+   lastmsgid: cmd.targetId,
+   channelid: cmd.channelId,
+   userid: cmd.user.id,
+  },
+  update: {},
+ });
 
- const res = await ch.query(
-  `SELECT * FROM stickymessages WHERE guildid = $1 AND channelid = $2;`,
-  [cmd.guildId, cmd.channelId],
-  { returnType: 'stickymessages', asArray: false },
- );
+ const res = await ch.DataBase.stickymessages.findUnique({
+  where: { channelid: cmd.channelId },
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.contextCommands.message['Stick Message'];

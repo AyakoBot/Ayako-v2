@@ -4,19 +4,15 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (member: Discord.GuildMember) => {
  if (member.client.user.id !== ch.mainID) return;
 
- const guildsettings = await ch.query(
-  `SELECT * FROM guildsettings WHERE guildid = $1;`,
-  [member.guild.id],
-  {
-   returnType: 'guildsettings',
-   asArray: false,
-  },
- );
+ const guildsettings = await ch.DataBase.guildsettings.findUnique({
+  where: { guildid: member.guild.id },
+ });
  if (!guildsettings?.ptreminderenabled) return;
 
- const user = await ch.query(`SELECT ptremindersent FROM users WHERE userid = $1;`, [member.id], {
-  returnType: 'users',
-  asArray: false,
+ const user = await ch.DataBase.users.findUnique({
+  where: {
+   userid: member.id,
+  },
  });
  if (user?.ptremindersent) return;
 
@@ -75,10 +71,20 @@ export default async (member: Discord.GuildMember) => {
   content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
  });
 
- ch.query(
-  `INSERT INTO users (userid, username, avatar, lastfetch, ptremindersent) VALUE ($1, $2, $3, $4, true) 
- ON CONFLICT (userid) DO 
- UPDATE SET username = $2, avatar = $3, lastfetch = $4, ptremindersent = true;`,
-  [member.user.id, member.user.username, member.user.avatarURL(), Date.now()],
- );
+ ch.DataBase.users.upsert({
+  where: { userid: member.id },
+  update: {
+   ptremindersent: true,
+   lastfetch: Date.now(),
+   avatar: member.user.displayAvatarURL(),
+   username: member.user.username,
+  },
+  create: {
+   userid: member.id,
+   ptremindersent: true,
+   lastfetch: Date.now(),
+   avatar: member.user.displayAvatarURL(),
+   username: member.user.username,
+  },
+ });
 };

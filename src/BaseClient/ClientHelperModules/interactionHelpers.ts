@@ -5,7 +5,7 @@ import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyCmd from './replyCmd.js';
 import send from './send.js';
-import query from './query.js';
+import DataBase from '../DataBase.js';
 import type CT from '../../Typings/CustomTypings.js';
 import colorSelector from './colorSelector.js';
 import languageSelector from './languageSelector.js';
@@ -35,11 +35,9 @@ const reply = async (
   return parsers.msgParser(cmd);
  };
 
- const setting = await query(`SELECT * FROM guildsettings WHERE guildid = $1;`, [cmd.guildId], {
-  returnType: 'guildsettings',
-  asArray: false,
+ const setting = await DataBase.guildsettings.findUnique({
+  where: { guildid: guild.id },
  });
-
  const { author, users, text, otherText, commandName } = await parse();
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];

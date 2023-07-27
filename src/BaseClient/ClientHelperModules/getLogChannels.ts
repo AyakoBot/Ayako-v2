@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import query from './query.js';
+import DataBase from '../DataBase.js';
 
 export default async (
  columnName:
@@ -23,8 +23,4 @@ export default async (
   | 'reactionevents'
   | 'memberevents',
  guild: Discord.Guild,
-) =>
- query(`SELECT ${columnName} FROM logchannels WHERE guildid = $1 LIMIT 1;`, [guild.id], {
-  returnType: 'logchannels',
-  asArray: false,
- }).then((r) => r?.[columnName]);
+) => DataBase.logchannels.findUnique({ where: { guildid: guild.id } }).then((r) => r?.[columnName]);

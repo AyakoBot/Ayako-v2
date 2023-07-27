@@ -1,14 +1,10 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 import client from '../../../../BaseClient/Client.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames.cooldowns} WHERE guildid = $1;`,
-   [cmd.guildId],
-   { returnType: 'cooldowns', asArray: true },
-  )
+  await ch.DataBase.cooldowns.findMany({ where: { guildid: cmd.guildId } })
  )?.filter((s) => {
   const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
 

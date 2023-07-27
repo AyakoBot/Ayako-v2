@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
+import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
 
 const name = 'basic';
 
@@ -10,16 +11,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guild?.id);
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
- const settings = await ch
-  .query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
-   [cmd.guild?.id],
-   {
-    returnType: 'guildsettings',
-    asArray: false,
-   },
-  )
-  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+  .findUnique({
+   where: { guildid: cmd.guildId },
+  })
+  .then(
+   (r) =>
+    r ??
+    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+     data: { guildid: cmd.guildId },
+    }),
+  );
+
  const lan = language.slashCommands.settings.categories[name];
 
  cmd.reply({

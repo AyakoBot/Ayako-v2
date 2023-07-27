@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 import * as replyMsg from './replyMsg.js';
 import constants from '../Other/constants.js';
 
@@ -48,10 +48,7 @@ export default async (
  const sentMessage = await sendMessage(cmd, payload);
  if (!sentMessage) return undefined;
 
- if (command && commandName) {
-  replyMsg.cooldownHandler(cmd, sentMessage, command, commandName);
-  replyMsg.deleteCommandHandler(cmd, sentMessage, commandName);
- }
+ if (command && commandName) replyMsg.cooldownHandler(cmd, sentMessage, command, commandName);
 
  return sentMessage;
 };

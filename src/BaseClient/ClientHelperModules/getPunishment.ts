@@ -1,11 +1,14 @@
-import query from './query.js';
-import * as DBT from '../../Typings/DataBaseTypings.js';
+import Prisma from '@prisma/client';
+import DataBase from '../DataBase.js';
 
-const returnFields =
- 'guildid, reason, channelname, channelid, uniquetimestamp, userid, executorid, executorname, msgid';
-
-type Returned = DBT.TempPunishment & {
- type: 'punish_bans' | 'punish_channlebans' | 'punish_kicks' | 'punish_mutes' | 'punish_warns';
+export type Returned = (
+ | Prisma.punish_bans
+ | Prisma.punish_channelbans
+ | Prisma.punish_kicks
+ | Prisma.punish_mutes
+ | Prisma.punish_warns
+) & {
+ type: 'punish_bans' | 'punish_channelbans' | 'punish_kicks' | 'punish_mutes' | 'punish_warns';
 };
 
 function f(id: number): Promise<Returned | null>;
@@ -15,70 +18,63 @@ function f(
  id: string,
  identType: 'with-type',
  ident: Parameters<typeof getWithType>[1],
-): Promise<DBT.TempPunishment[] | null>;
+): Promise<Returned[] | null>;
 function f(id: string, identType: 'all-by' | 'all-on'): Promise<Returned[] | null>;
 function f(id: number, identType: 'after' | 'before'): Promise<Returned[] | null>;
 async function f(
  id: number | string,
  identType?: 'after' | 'before' | 'between' | 'by' | 'all-on' | 'all-by' | 'with-type',
  ident?: string | number,
-): Promise<Returned | Returned[] | DBT.TempPunishment[] | null> {
- let where = '';
- const args: (string | number)[] = [];
+): Promise<Returned | Returned[] | Returned[] | null> {
  let asArray = true;
 
- switch (identType) {
-  case 'with-type': {
-   return getWithType(id as string, ident as Parameters<typeof getWithType>[1]) as Promise<
-    DBT.TempPunishment[] | null
-   >;
-  }
-  case 'all-on': {
-   where = 'userid = $1';
-   args.push(id);
-   break;
-  }
-  case 'by': {
-   where = 'userid = $1 AND executorid = $2';
-   args.push(id, ident as string);
-   break;
-  }
-  case 'all-by': {
-   where = 'executorid = $1';
-   args.push(id);
-   break;
-  }
-  case 'between': {
-   where = 'uniquetimestamp BETWEEN $1 AND $2';
-   args.push(id, ident as number);
-   break;
-  }
-  case 'before': {
-   where = 'uniquetimestamp < $1';
-   args.push(id);
-   break;
-  }
-  case 'after': {
-   where = 'uniquetimestamp > $1';
-   args.push(id);
-   break;
-  }
-  default: {
-   where = 'uniquetimestamp = $1';
-   args.push(id);
-   asArray = false;
-  }
+ if (identType === 'with-type') {
+  return getWithType(id as string, ident as Parameters<typeof getWithType>[1]) as ReturnType<
+   typeof f
+  >;
  }
 
- return Promise.all(
-  [
-   `SELECT ${returnFields}, 'punish_bans' as type FROM punish_bans ${where};`,
-   `SELECT ${returnFields}, 'punish_channelbans' as type FROM punish_channelbans ${where};`,
-   `SELECT ${returnFields}, 'punish_kicks' as type FROM punish_kicks ${where};`,
-   `SELECT ${returnFields}, 'punish_mutes' as type FROM punish_mutes ${where};`,
-   `SELECT ${returnFields}, 'punish_warns' as type FROM punish_warns ${where};`,
-  ].map((q) => query(q, args, { returnType: 'Punishment', asArray: true })),
- ).then((r) => {
+ const where = (() => {
+  switch (identType) {
+   case 'all-on': {
+    return { where: { userid: String(id) } };
+   }
+   case 'by': {
+    return { where: { userid: String(id), executorid: String(ident) } };
+   }
+   case 'all-by': {
+    return { where: { executorid: String(id) } };
+   }
+   case 'between': {
+    return {
+     where: {
+      uniquetimestamp: {
+       lt: String([id, ident].sort((a, b) => Number(b) - Number(a))[0]),
+       gt: String([id, ident].sort((a, b) => Number(a) - Number(b))[0]),
+      },
+     },
+    };
+   }
+   case 'before': {
+    return { where: { uniquetimestamp: { lt: String(id) } } };
+   }
+   case 'after': {
+    return { where: { uniquetimestamp: { gt: String(id) } } };
+   }
+   default: {
+    asArray = false;
+    return { where: { uniquetimestamp: String(id) } };
+   }
+  }
+ })();
+
+ return Promise.all([
+  DataBase.punish_bans.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+  DataBase.punish_channelbans.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+  DataBase.punish_kicks.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+  DataBase.punish_mutes.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+  DataBase.punish_warns.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+ ]).then((r) => {
   const res = r.flat();
   if (asArray) {
    return res.filter((p): p is Returned => !!p);
@@ -92,34 +88,19 @@ export default f;
 const getWithType = (id: string, type: 'warn' | 'mute' | 'ban' | 'channelban' | 'kick') => {
  switch (type) {
   case 'warn': {
-   return query(`SELECT * FROM punish_warns WHERE userid = $1;`, [id], {
-    returnType: 'unknown',
-    asArray: true,
-   });
+   return DataBase.punish_warns.findMany({ where: { userid: id } });
   }
   case 'mute': {
-   return query(`SELECT * FROM punish_mutes WHERE userid = $1;`, [id], {
-    returnType: 'unknown',
-    asArray: true,
-   });
+   return DataBase.punish_mutes.findMany({ where: { userid: id } });
   }
   case 'ban': {
-   return query(`SELECT * FROM punish_bans WHERE userid = $1;`, [id], {
-    returnType: 'unknown',
-    asArray: true,
-   });
+   return DataBase.punish_bans.findMany({ where: { userid: id } });
   }
   case 'channelban': {
-   return query(`SELECT * FROM punish_channelbans WHERE userid = $1;`, [id], {
-    returnType: 'unknown',
-    asArray: true,
-   });
+   return DataBase.punish_channelbans.findMany({ where: { userid: id } });
   }
   case 'kick': {
-   return query(`SELECT * FROM punish_kicks WHERE userid = $1;`, [id], {
-    returnType: 'unknown',
-    asArray: true,
-   });
+   return DataBase.punish_kicks.findMany({ where: { userid: id } });
   }
   default: {
    throw new Error('Unkown type');

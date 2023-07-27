@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
 export default (bits: bigint, lan: CT.Language, isntRole = false) => {
  const bitField = new Discord.PermissionsBitField(bits);

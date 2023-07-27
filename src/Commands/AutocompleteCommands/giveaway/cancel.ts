@@ -1,5 +1,5 @@
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return [];
@@ -7,10 +7,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  const entered = cmd.options.getString('message-id', true);
 
- const giveaways = await ch.query(`SELECT * FROM giveaways WHERE guildid = $1;`, [cmd.guildId], {
-  returnType: 'giveaways',
-  asArray: true,
- });
+ const giveaways = await ch.DataBase.giveaways.findMany({ where: { guildid: cmd.guildId } });
 
  if (!giveaways?.length) return [];
 

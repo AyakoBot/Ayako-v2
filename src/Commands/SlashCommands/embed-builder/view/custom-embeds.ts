@@ -3,14 +3,10 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
  const value = cmd.options.get('embed', true).value as string;
- const embedData = await ch.query(
-  `SELECT * FROM customembeds WHERE uniquetimestamp = $1 AND guildid = $2;`,
-  [value, cmd.guildId],
-  {
-   returnType: 'customembeds',
-   asArray: false,
-  },
- );
+
+ const embedData = await ch.DataBase.customembeds.findUnique({
+  where: { uniquetimestamp: value },
+ });
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.view['custom-embeds'];

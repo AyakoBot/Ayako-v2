@@ -3,6 +3,7 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
+ if (!cmd.inCachedGuild()) return;
 
  const captcha = args.shift() as string;
  const value = cmd.fields.getTextInputValue('-');
@@ -19,14 +20,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const settings = await ch.query(
-  `SELECT * FROM verification WHERE guildid = $1 AND active = true;`,
-  [cmd.guildId],
-  {
-   returnType: 'verification',
-   asArray: false,
-  },
- );
+ const settings = await ch.DataBase.verification.findUnique({
+  where: { guildid: cmd.guildId, active: true },
+ });
  if (!settings) return;
 
  const pendingRole = settings.pendingrole ? cmd.guild?.roles.cache.get(settings.pendingrole) : null;

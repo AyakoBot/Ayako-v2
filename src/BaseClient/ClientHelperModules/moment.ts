@@ -1,6 +1,6 @@
 import moment from 'moment';
 import 'moment-duration-format';
-import type * as CT from '../../Typings/CustomTypings';
+import * as CT from '../../Typings/CustomTypings.js';
 
 export default (duration: number, language: CT.Language) =>
  !duration

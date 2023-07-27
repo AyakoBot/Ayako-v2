@@ -1,36 +1,29 @@
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import * as CT from '../../../Typings/CustomTypings';
-import * as DBT from '../../../Typings/DataBaseTypings';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (appeal: CT.Appeal) => {
- const settings = await ch.query(
-  `SELECT * FROM appealsettings WHERE guildid = $1 AND active = true;`,
-  [appeal.guildid],
-  {
-   returnType: 'appealsettings',
-   asArray: false,
-  },
- );
+ const settings = await ch.DataBase.appealsettings.findUnique({
+  where: { guildid: appeal.guildid, active: true },
+ });
  if (!settings) return;
  if (!settings.channelid) return;
  if (settings.blusers?.includes(appeal.userid)) return;
 
+ const where = { where: { uniquetimestamp: appeal.punishmentid } };
+
  const punishment = (
-  await Promise.all(
-   [
-    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'ban' as type FROM punish_bans WHERE uniquetimestamp = $1;`,
-    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'channelban' as type FROM punish_channelbans WHERE uniquetimestamp = $1;`,
-    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'kick' as type FROM punish_kicks WHERE uniquetimestamp = $1;`,
-    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'mute' as type FROM punish_mutes WHERE uniquetimestamp = $1;`,
-    `SELECT guildid, reason, channelname, channelid, uniquetimestamp, 'warn' as type FROM punish_warns WHERE uniquetimestamp = $1;`,
-   ].map((q) =>
-    ch.query(q, [Number(appeal.punishmentid)], { returnType: 'Punishment', asArray: false }),
-   ),
-  )
+  await Promise.all([
+   ch.DataBase.punish_bans.findUnique(where).then((p) => ({ ...p, type: 'ban' })),
+   ch.DataBase.punish_channelbans.findUnique(where).then((p) => ({ ...p, type: 'channelban' })),
+   ch.DataBase.punish_kicks.findUnique(where).then((p) => ({ ...p, type: 'kick' })),
+   ch.DataBase.punish_mutes.findUnique(where).then((p) => ({ ...p, type: 'mute' })),
+   ch.DataBase.punish_warns.findUnique(where).then((p) => ({ ...p, type: 'warn' })),
+  ])
  )[0];
 
- if (!punishment) return;
+ if (!punishment || !punishment.uniquetimestamp) return;
 
  const guild = client.guilds.cache.get(appeal.guildid);
  if (!guild) return;
@@ -46,7 +39,7 @@ export default async (appeal: CT.Appeal) => {
 
  const embed = {
   title: lan.title,
-  description: lan.description(user, punishment),
+  description: lan.description(user, punishment.uniquetimestamp),
   color: ch.colorSelector(guild.members.me),
   fields: appeal.questions.map((q, i) => {
    const answer = appeal.answers[i];
@@ -67,7 +60,7 @@ export default async (appeal: CT.Appeal) => {
  ch.send(channel, { embeds: [embed] });
 };
 
-const getDisplayAnswer = (answer: string, answertype: DBT.appealquestions['answertype']) => {
+const getDisplayAnswer = (answer: string, answertype: Prisma.appealquestions['answertype']) => {
  switch (answertype) {
   case 'number':
    return answer;
@@ -76,12 +69,12 @@ const getDisplayAnswer = (answer: string, answertype: DBT.appealquestions['answe
    return Boolean(answer)
     ? ch.stringEmotes.tickWithBackground
     : ch.stringEmotes.crossWithBackground;
-  case 'multiple choice':
+  case 'multiple_choice':
    return `\`${answer
     .split(',')
     .map((a) => a.trim())
     .join('`, `')}\``;
-  case 'single choice':
+  case 'single_choice':
    return `\`${answer}\``;
   default:
    return answer;

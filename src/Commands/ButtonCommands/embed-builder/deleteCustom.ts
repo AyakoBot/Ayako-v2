@@ -3,10 +3,11 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import { buildEmbed } from '../../SlashCommands/embed-builder/create.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
+ if (!cmd.inCachedGuild()) return;
  const selectedOption = getSelectedField(cmd)?.value;
  if (!selectedOption) return;
 
- await ch.query(`DELETE FROM customembeds WHERE uniquetimestamp = $1;`, [selectedOption]);
+ await ch.DataBase.customembeds.delete({ where: { uniquetimestamp: selectedOption } });
 
  buildEmbed(cmd);
 };

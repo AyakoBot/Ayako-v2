@@ -54,10 +54,8 @@
   "object-curly-newline": "off",
   "lines-between-class-members": "off",
   "import/no-extraneous-dependencies": "off",
-  "no-shadow": [
-   "error",
-   { "builtinGlobals": false, "hoist": "functions", "allow": [], "ignoreOnInitialization": false }
-  ],
+  "no-shadow": "off",
+  "@typescript-eslint/no-shadow": "error",
   "no-new": "off",
   "prettier/prettier": [
    "warn",

@@ -4,15 +4,17 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default (channel: Discord.Channel) => {
  if (channel.isDMBased()) return;
 
- const giveaways = ch.cache.giveaways.cache.get(channel.guildId);
+ const giveaways = ch.cache.giveaways.cache.get(channel.guildId)?.get(channel.id);
  if (giveaways) {
-  Array.from(giveaways, ([, g]) => g)
-   .map((g) => g.keys())
-   .forEach((g) => {
-    ch.query(`DELETE FROM giveawaycollection WHERE msgid = $1;`, [g]);
-   });
+  Array.from(giveaways, ([g]) => g).forEach((g) => {
+   ch.DataBase.giveawaycollection.deleteMany({ where: { msgid: g } });
+
+   ch.cache.giveaways.delete(channel.guildId, channel.id, g);
+   ch.cache.giveaways.cache.get(channel.guildId)?.delete(g);
+   ch.cache.giveawayClaimTimeout.delete(channel.guildId, g);
+  });
  }
 
- ch.query(`DELETE FROM giveaways WHERE channelid = $1;`, [channel.id]);
- ch.query(`DELETE FROM stickymessages WHERE channelid = $1;`, [channel.id]);
+ ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } });
+ ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } });
 };

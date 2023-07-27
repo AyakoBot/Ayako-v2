@@ -1,16 +1,15 @@
+import { Prisma } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-export const typeWithoutDash = (
- type: 'button-roles' | 'reaction-roles',
-): 'buttonroles' | 'reactionroles' => (type === 'button-roles' ? 'buttonroles' : 'reactionroles');
+export type Type = 'button-roles' | 'reaction-roles';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  _: [],
  reply?: Discord.InteractionResponse<true>,
- type: 'button-roles' | 'reaction-roles' = 'button-roles',
+ type: Type = 'button-roles',
 ) => {
  if (!cmd.inCachedGuild()) return;
  if (!reply) reply = await cmd.deferReply({ ephemeral: true });
@@ -32,25 +31,13 @@ export default async (
   ch.errorCmd(cmd, lan.messageNotFromMe, language);
  }
 
- const baseSettings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
-  [cmd.guildId, message.id],
-  {
-   returnType: type === 'button-roles' ? 'buttonrolesettings' : 'reactionrolesettings',
-   asArray: false,
-  },
- );
+ const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
+ if (!baseSettings) {
+  ch.errorCmd(cmd, language.errors.settingNotFound, language);
+  return;
+ }
 
- const settings = baseSettings
-  ? await ch.query(
-     `SELECT * FROM ${typeWithoutDash(type)} WHERE guildid = $1 AND linkedid = $2;`,
-     [cmd.guildId, baseSettings.uniquetimestamp],
-     {
-      returnType: typeWithoutDash(type),
-      asArray: true,
-     },
-    )
-  : undefined;
+ const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
 
  await Promise.all(
   message.reactions.cache.map((r) => r.users.fetch({ limit: 1 }).catch(() => undefined)),
@@ -160,3 +147,25 @@ const getComponents = (
   ],
  },
 ];
+
+export const getBaseSettings = (
+ type: 'button-roles' | 'reaction-roles',
+ guildid: string,
+ msgid: string,
+) =>
+ type === 'button-roles'
+  ? ch.DataBase.buttonrolesettings.findFirst({
+     where: { guildid, msgid },
+    })
+  : ch.DataBase.reactionrolesettings.findFirst({
+     where: { guildid, msgid },
+    });
+
+export const getSpecificSettings = (type: Type, guildid: string, linkedid: Prisma.Decimal) =>
+ type === 'button-roles'
+  ? ch.DataBase.buttonroles.findMany({
+     where: { guildid, linkedid: String(linkedid) },
+    })
+  : ch.DataBase.reactionroles.findMany({
+     where: { guildid, linkedid: String(linkedid) },
+    });

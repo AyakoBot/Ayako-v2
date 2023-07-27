@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
+import { Prisma } from '@prisma/client';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
+import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
 
 const name = 'leveling';
 
@@ -10,17 +12,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch
-  .query(
-   `SELECT * FROM ${ch.constants.commands.settings.tableNames[name]} WHERE guildid = $1;`,
-   [cmd.guild?.id],
-   {
-    returnType: 'leveling',
-    asArray: false,
-   },
-  )
-  .then((r) => r ?? ch.settingsHelpers.runSetup<typeof name>(cmd.guildId, name));
-
+ const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+  .findUnique({
+   where: { guildid: cmd.guildId },
+  })
+  .then(
+   (r) =>
+    r ??
+    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+     data: { guildid: cmd.guildId },
+    }),
+  );
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan),
   components: await getComponents(buttonParsers, settings, language),
@@ -29,14 +31,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 const getLevelUpMode = (
- type: string | undefined,
+ type: Prisma.Decimal,
  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
- switch (type) {
-  case '1': {
+ switch (true) {
+  case type.equals(1): {
    return lan.messages;
   }
-  case '2': {
+  case type.equals(2): {
    return lan.reactions;
   }
   default: {
@@ -62,60 +64,60 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    fields: [
     {
      name: language.slashCommands.settings.active,
-     value: embedParsers.boolean(settings?.active, language),
+     value: embedParsers.boolean(settings.active, language),
      inline: false,
     },
     {
      name: lan.fields.xppermsg.name,
-     value: embedParsers.number(settings?.xppermsg, language),
+     value: embedParsers.number(settings.xppermsg, language),
      inline: true,
     },
     {
      name: lan.fields.xpmultiplier.name,
-     value: embedParsers.number(settings?.xpmultiplier ?? 1, language),
+     value: embedParsers.number(settings.xpmultiplier ?? 1, language),
      inline: true,
     },
     {
      name: lan.fields.rolemode.name,
-     value: settings?.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
+     value: settings.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
      inline: true,
     },
     {
      name: lan.fields.lvlupmode.name,
-     value: getLevelUpMode(settings?.lvlupmode, lan),
+     value: getLevelUpMode(settings.lvlupmode, lan),
      inline: true,
     },
    ],
   },
  ];
 
- switch (settings?.lvlupmode) {
-  case '1': {
+ switch (true) {
+  case settings.lvlupmode.equals(1): {
    embeds[0].fields?.push(
     {
      name: lan.fields.embed.name,
-     value: await embedParsers.embed(settings?.embed, language),
+     value: await embedParsers.embed(settings.embed, language),
      inline: true,
     },
     {
      name: lan.fields.lvlupdeltimeout.name,
-     value: embedParsers.time(Number(settings?.lvlupdeltimeout), language),
+     value: embedParsers.time(Number(settings.lvlupdeltimeout), language),
      inline: true,
     },
     {
      name: lan.fields.lvlupchannels.name,
-     value: embedParsers.channels(settings?.lvlupchannels, language),
+     value: embedParsers.channels(settings.lvlupchannels, language),
      inline: false,
     },
    );
 
    break;
   }
-  case '2': {
+  case settings.lvlupmode.equals(2): {
    embeds[0].fields?.push(
     {
      name: lan.fields.lvlupemotes.name,
-     value: settings?.lvlupemotes?.length
+     value: settings.lvlupemotes?.length
       ? (await Promise.all(settings.lvlupemotes.map((e) => ch.getEmote(e))))
          .filter((e): e is Discord.GuildEmoji => !!e)
          .join(', ')
@@ -127,7 +129,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     },
     {
      name: lan.fields.lvlupdeltimeout.name,
-     value: embedParsers.time(Number(settings?.lvlupdeltimeout), language),
+     value: embedParsers.time(Number(settings.lvlupdeltimeout), language),
      inline: true,
     },
    );
@@ -142,44 +144,44 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embeds[0].fields?.push(
   {
    name: lan.fields.ignoreprefixes.name,
-   value: embedParsers.boolean(settings?.ignoreprefixes, language),
+   value: embedParsers.boolean(settings.ignoreprefixes, language),
    inline: true,
   },
   {
    name: lan.fields.prefixes.name,
-   value: settings?.prefixes?.length
+   value: settings.prefixes?.length
     ? settings.prefixes.map((p) => `\`${p}\``).join(', ')
     : language.None,
    inline: true,
   },
   {
    name: language.slashCommands.settings.blchannel,
-   value: embedParsers.channels(settings?.blchannels, language),
+   value: embedParsers.channels(settings.blchannels, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wlchannel,
-   value: embedParsers.channels(settings?.wlchannels, language),
+   value: embedParsers.channels(settings.wlchannels, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.blrole,
-   value: embedParsers.channels(settings?.blroles, language),
+   value: embedParsers.channels(settings.blroles, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wlrole,
-   value: embedParsers.channels(settings?.wlroles, language),
+   value: embedParsers.channels(settings.wlroles, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.bluser,
-   value: embedParsers.channels(settings?.blusers, language),
+   value: embedParsers.channels(settings.blusers, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wluser,
-   value: embedParsers.channels(settings?.wlusers, language),
+   value: embedParsers.channels(settings.wlusers, language),
    inline: false,
   },
  );
@@ -195,50 +197,48 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
   {
    type: Discord.ComponentType.ActionRow,
-   components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+   components: [buttonParsers.global(language, !!settings.active, 'active', name, undefined)],
   },
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.specific(language, settings?.xppermsg, 'xppermsg', name, undefined),
-    buttonParsers.specific(language, settings?.xpmultiplier, 'xpmultiplier', name, undefined),
-    buttonParsers.specific(language, settings?.rolemode, 'rolemode', name, undefined),
+    buttonParsers.specific(language, settings.xppermsg, 'xppermsg', name, undefined),
+    buttonParsers.specific(language, settings.xpmultiplier, 'xpmultiplier', name, undefined),
+    buttonParsers.specific(language, settings.rolemode, 'rolemode', name, undefined),
+   ],
+  },
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: [buttonParsers.specific(language, settings.lvlupmode, 'lvlupmode', name, undefined)],
+  },
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: [
+    buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
+    buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
+    buttonParsers.global(language, settings.blchannels, 'blchannelid', name, undefined),
    ],
   },
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.specific(language, settings?.lvlupmode, 'lvlupmode', name, undefined),
-   ],
-  },
-  {
-   type: Discord.ComponentType.ActionRow,
-   components: [
-    buttonParsers.boolean(language, settings?.ignoreprefixes, 'ignoreprefixes', name, undefined),
-    buttonParsers.specific(language, settings?.prefixes, 'prefixes', name, undefined),
-    buttonParsers.global(language, settings?.blchannels, 'blchannelid', name, undefined),
-   ],
-  },
-  {
-   type: Discord.ComponentType.ActionRow,
-   components: [
-    buttonParsers.global(language, settings?.blroles, 'blroleid', name, undefined),
-    buttonParsers.global(language, settings?.blusers, 'bluserid', name, undefined),
-    buttonParsers.global(language, settings?.wlchannels, 'wlchannelid', name, undefined),
-    buttonParsers.global(language, settings?.wlroles, 'wlroleid', name, undefined),
-    buttonParsers.global(language, settings?.wlusers, 'wluserid', name, undefined),
+    buttonParsers.global(language, settings.blroles, 'blroleid', name, undefined),
+    buttonParsers.global(language, settings.blusers, 'bluserid', name, undefined),
+    buttonParsers.global(language, settings.wlchannels, 'wlchannelid', name, undefined),
+    buttonParsers.global(language, settings.wlroles, 'wlroleid', name, undefined),
+    buttonParsers.global(language, settings.wlusers, 'wluserid', name, undefined),
    ],
   },
  ];
 
- switch (settings?.lvlupmode) {
-  case '1': {
+ switch (true) {
+  case settings.lvlupmode.equals(1): {
    components[2].components.push(
-    buttonParsers.specific(language, settings?.embed, 'embed', name, undefined),
-    buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
+    buttonParsers.specific(language, settings.embed, 'embed', name, undefined),
+    buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
     buttonParsers.specific(
      language,
-     settings?.lvlupchannels,
+     settings.lvlupchannels,
      'lvlupchannels',
      name,
      undefined,
@@ -247,10 +247,10 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    );
    break;
   }
-  case '2': {
+  case settings.lvlupmode.equals(2): {
    components[2].components.push(
-    buttonParsers.specific(language, settings?.lvlupemotes, 'lvlupemotes', name, undefined),
-    buttonParsers.specific(language, settings?.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
+    buttonParsers.specific(language, settings.lvlupemotes, 'lvlupemotes', name, undefined),
+    buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
    );
    break;
   }

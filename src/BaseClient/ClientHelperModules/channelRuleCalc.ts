@@ -1,8 +1,8 @@
+import Prisma from '@prisma/client';
 import ChannelRules from '../Other/ChannelRules.js';
-import type CT from '../../Typings/CustomTypings';
-import type DBT from '../../Typings/DataBaseTypings';
+import type CT from '../../Typings/CustomTypings.js';
 
-export default (s: DBT.levelingruleschannels, lan: CT.Language) => {
+export default (s: Prisma.levelingruleschannels, lan: CT.Language) => {
  const BitField = new ChannelRules(s);
  const Rules = [];
 

@@ -1,5 +1,43 @@
 import type * as Discord from 'discord.js';
-import type * as CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/CustomTypings.js';
+
+export enum TableNamesPrismaTranslation {
+ 'anti-spam' = 'antispam',
+ 'anti-spam-punishments' = 'punishments_antispam',
+ 'anti-virus-punishments' = 'punishments_antivirus',
+ 'blacklist-punishments' = 'punishments_blacklist',
+ 'anti-raid' = 'antiraid',
+ 'anti-virus' = 'antivirus',
+ 'auto-punish' = 'autopunish',
+ blacklist = 'blacklist',
+ 'auto-roles' = 'autoroles',
+ cooldowns = 'cooldowns',
+ expiry = 'expiry',
+ 'disboard-reminders' = 'disboard',
+ 'self-roles' = 'selfroles',
+ separators = 'roleseparator',
+ sticky = 'sticky',
+ verification = 'verification',
+ welcome = 'welcome',
+ leveling = 'leveling',
+ nitro = 'nitrosettings',
+ suggestions = 'suggestionsettings',
+ logs = 'logchannels',
+ basic = 'guildsettings',
+ 'multi-channels' = 'levelingmultichannels',
+ 'multi-roles' = 'levelingmultiroles',
+ 'level-roles' = 'levelingroles',
+ 'rule-channels' = 'levelingruleschannels',
+ 'booster-roles' = 'nitroroles',
+ vote = 'votesettings',
+ 'vote-rewards' = 'voterewards',
+ 'reaction-role-settings' = 'reactionrolesettings',
+ 'button-role-settings' = 'buttonrolesettings',
+ 'reaction-roles' = 'reactionroles',
+ 'button-roles' = 'buttonroles',
+ 'role-rewards' = 'rolerewards',
+ logchannels = 'logchannels',
+}
 
 const punishment = {
  warnamount: 'number',
@@ -194,7 +232,7 @@ export default {
    emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
-  msgurl: (g: string, c: string | undefined, m: string) =>
+  msgurl: (g: string, c: string | undefined | null, m: string) =>
    `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
   user: (u: Discord.User | CT.bEvalUser | { discriminator: string; username: string }) =>
@@ -783,7 +821,6 @@ export default {
     welcome: 'welcome',
     leveling: 'leveling',
     nitro: 'nitrosettings',
-    'delete-commands': 'deletecommands',
     suggestions: 'suggestionsettings',
     logs: 'logchannels',
     basic: 'guildsettings',

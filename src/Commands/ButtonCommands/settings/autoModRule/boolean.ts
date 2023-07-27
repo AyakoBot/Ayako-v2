@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type * as CT from '../../../../Typings/CustomTypings';
+import * as CT from '../../../../Typings/CustomTypings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 
 const settingName = 'blacklist-rules';
@@ -56,7 +56,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
-  settingName,
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;

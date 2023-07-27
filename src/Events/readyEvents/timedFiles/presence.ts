@@ -4,12 +4,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async () => {
  const random = Math.floor(Math.random() * 3);
- const users = await ch
-  .query(`SELECT allusers FROM stats;`, undefined, {
-   returnType: 'stats',
-   asArray: false,
-  })
-  .then((r) => r?.allusers);
+ const users = await ch.DataBase.stats.findFirst().then((r) => r?.allusers);
 
  const activities: Discord.ActivitiesOptions[] = [];
 

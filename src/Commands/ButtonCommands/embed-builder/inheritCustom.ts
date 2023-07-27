@@ -7,14 +7,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
  const selectedOption = getSelectedField(cmd)?.value;
  if (!selectedOption) return;
 
- const dbEmbed = await ch.query(
-  `SELECT * FROM customembeds WHERE uniquetimestamp = $1;`,
-  [selectedOption],
-  {
-   returnType: 'customembeds',
-   asArray: false,
-  },
- );
+ const dbEmbed = await ch.DataBase.customembeds.findUnique({
+  where: { uniquetimestamp: selectedOption },
+ });
  if (!dbEmbed) return;
 
  const embed = ch.getDiscordEmbed(dbEmbed);

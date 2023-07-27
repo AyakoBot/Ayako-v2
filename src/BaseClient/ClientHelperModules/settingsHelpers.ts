@@ -1,15 +1,15 @@
 import * as Discord from 'discord.js';
 import glob from 'glob';
 import ms from 'ms';
-import type * as DBT from '../../Typings/DataBaseTypings';
-import type * as CT from '../../Typings/CustomTypings';
+import { Prisma } from '@prisma/client';
+import * as CT from '../../Typings/CustomTypings.js';
 import stringEmotes from './stringEmotes.js';
 import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
-import query from './query.js';
 import constants from '../Other/constants.js';
 import client from '../Client.js';
 import error from './error.js';
+import DataBase from '../DataBase.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -30,39 +30,32 @@ const embedParsers = {
    : `${stringEmotes.disabled} ${language.Disabled}`,
  channels: (val: string[] | undefined, language: CT.Language) =>
   val?.length ? val.map((c) => `<#${c}>`).join(', ') : language.None,
- roles: (val: string[] | undefined, language: CT.Language) =>
+ roles: (val: string[] | null, language: CT.Language) =>
   val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.None,
- users: (val: string[] | undefined, language: CT.Language) =>
+ users: (val: string[] | null, language: CT.Language) =>
   val?.length ? val.map((c) => `<@${c}>`).join(', ') : language.None,
- channel: (val: string | undefined, language: CT.Language) =>
+ channel: (val: string | null, language: CT.Language) =>
   val?.length ? `<#${val}>` : language.None,
- role: (val: string | undefined, language: CT.Language) =>
-  val?.length ? `<@&${val}>` : language.None,
- rules: (val: string[] | undefined, language: CT.Language, guild: Discord.Guild) =>
+ role: (val: string | null, language: CT.Language) => (val?.length ? `<@&${val}>` : language.None),
+ rules: (val: string[] | null, language: CT.Language, guild: Discord.Guild) =>
   val && val.length
    ? val.map((v) => `\`${guild.autoModerationRules.cache.get(v)?.name ?? v}\``).join(', ')
    : language.None,
- user: (val: string | undefined, language: CT.Language) =>
-  val?.length ? `<@${val}>` : language.None,
- number: (val: string | number | undefined, language: CT.Language) =>
+ user: (val: string | null, language: CT.Language) => (val?.length ? `<@${val}>` : language.None),
+ number: (val: string | number | Prisma.Decimal | null, language: CT.Language) =>
   val ? String(val) : language.None,
- time: (val: number | undefined, language: CT.Language) =>
-  val ? moment(val, language) : language.None,
+ time: (val: number | null, language: CT.Language) => (val ? moment(val, language) : language.None),
  string: (val: string, language: CT.Language) => val ?? language.None,
- embed: async (val: string | undefined, language: CT.Language) =>
+ embed: async (val: Prisma.Decimal | null, language: CT.Language) =>
   val
-   ? (
-      await query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [val], {
-       returnType: 'customembeds',
-       asArray: false,
-      })
-     )?.name ?? language.None
+   ? (await DataBase.customembeds.findUnique({ where: { uniquetimestamp: val } }))?.name ??
+     language.None
    : language.None,
- emote: (val: string | undefined, language: CT.Language) =>
+ emote: (val: string | null, language: CT.Language) =>
   val
    ? `${!Discord.parseEmoji(val)?.id ? val : `<${val.startsWith('a:') ? '' : ':'}${val}>`}`
    : language.None,
- command: (val: string | undefined, language: CT.Language) => {
+ command: (val: string | null, language: CT.Language) => {
   if (!val) return language.None;
 
   const isID = val?.replace(/\D+/g, '').length === val?.length;
@@ -85,7 +78,7 @@ const back = <T extends keyof SettingsNames>(
 const buttonParsers = {
  global: (
   language: CT.Language,
-  setting: boolean | string[] | undefined,
+  setting: boolean | string[] | null,
   type: BLWLType | 'active',
   settingName: string,
   uniquetimestamp: number | undefined,
@@ -98,7 +91,7 @@ const buttonParsers = {
  }),
  specific: <T extends keyof SettingsNames>(
   language: CT.Language,
-  setting: string[] | string | boolean | undefined,
+  setting: string[] | string | boolean | null | Prisma.Decimal,
   name: keyof FieldName<T>,
   settingName: T,
   uniquetimestamp: number | undefined,
@@ -115,12 +108,14 @@ const buttonParsers = {
   return {
    type: Discord.ComponentType.Button,
    label: (
-    (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
-     name
-    ] as unknown as Record<string, string>
+    (
+     language.slashCommands.settings.categories[
+      settingName as keyof CT.Language['slashCommands']['settings']['categories']
+     ].fields as FieldName<T>
+    )[name] as unknown as Record<string, string>
    ).name,
    style:
-    (typeof setting !== 'boolean' && setting?.length) || !!setting
+    (typeof setting !== 'boolean' && setting && String(setting).length) || !!setting
      ? Discord.ButtonStyle.Primary
      : Discord.ButtonStyle.Secondary,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
@@ -131,7 +126,7 @@ const buttonParsers = {
  },
  setting: <T extends keyof SettingsNames>(
   language: CT.Language,
-  setting: string[] | string | boolean | undefined,
+  setting: string[] | string | boolean | null,
   name: keyof FieldName<T>,
   settingName: T,
   linkName: keyof SettingsNames,
@@ -139,9 +134,11 @@ const buttonParsers = {
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
   label: (
-   (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
-    name
-   ] as unknown as Record<string, string>
+   (
+    language.slashCommands.settings.categories[
+     settingName as keyof CT.Language['slashCommands']['settings']['categories']
+    ].fields as FieldName<T>
+   )[name] as unknown as Record<string, string>
   ).name,
   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
   custom_id: `settings/editors/settinglink_${String(
@@ -162,9 +159,11 @@ const buttonParsers = {
   return {
    type: Discord.ComponentType.Button,
    label: (
-    (language.slashCommands.settings.categories[settingName].fields as FieldName<T>)[
-     name
-    ] as unknown as Record<'name', string>
+    (
+     language.slashCommands.settings.categories[
+      settingName as keyof CT.Language['slashCommands']['settings']['categories']
+     ].fields as FieldName<T>
+    )[name] as unknown as Record<'name', string>
    ).name,
    style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
@@ -274,22 +273,22 @@ const multiRowHelpers = {
  ],
 };
 
-export const updateLog = (
- oldSetting: typeof DBT.Res,
- newSetting: typeof DBT.Res,
+export const updateLog = <T extends keyof CT.TableNamesMap>(
+ oldSetting: unknown,
+ newSetting: unknown,
  changedSetting: string,
- settingName: keyof CT.TableNamesMap,
+ settingName: T,
  uniquetimestamp: number | string | undefined,
 ) => {
  postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
  log(oldSetting, newSetting, changedSetting, uniquetimestamp);
 };
 
-const postUpdate = async (
- oldSetting: typeof DBT.Res,
- newSetting: typeof DBT.Res,
+const postUpdate = async <T extends keyof CT.TableNamesMap>(
+ oldSetting: unknown,
+ newSetting: unknown,
  changedSetting: string,
- settingName: keyof CT.TableNamesMap,
+ settingName: T,
  uniquetimestamp: number | string | undefined,
 ) => {
  const files: string[] = await new Promise((resolve) => {
@@ -312,7 +311,7 @@ const postUpdate = async (
 
  const tableName = constants.commands.settings.tableNames[
   settingName as keyof typeof constants.commands.settings.tableNames
- ] as keyof CT.TableNamesMap;
+ ] as keyof CT.Language['slashCommands']['settings']['categories'];
 
  const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
 
@@ -320,9 +319,211 @@ const postUpdate = async (
 };
 
 const changeHelpers = {
+ get: async (
+  tableName: keyof CT.TableNamesMap,
+  guildid: string,
+  uniquetimestamp: number | undefined,
+ ) => {
+  const getDBType = () => {
+   if (uniquetimestamp) {
+    const where = { where: { uniquetimestamp } };
+
+    switch (tableName) {
+     // case 'appeal-questions':
+     //  return DataBase.appealquestions.findUnique(where);
+     case 'vote-rewards':
+      return DataBase.voterewards.findUnique(where);
+     case 'anti-spam-punishments':
+      return DataBase.punishments_antispam.findUnique(where);
+     case 'anti-virus-punishments':
+      return DataBase.punishments_antivirus.findUnique(where);
+     case 'auto-punish':
+      return DataBase.autopunish.findUnique(where);
+     case 'blacklist-punishments':
+      return DataBase.punishments_blacklist.findUnique(where);
+     case 'role-rewards':
+      return DataBase.rolerewards.findUnique(where);
+     case 'cooldowns':
+      return DataBase.cooldowns.findUnique(where);
+     case 'self-roles':
+      return DataBase.selfroles.findUnique(where);
+     case 'separators':
+      return DataBase.roleseparator.findUnique(where);
+     case 'vote':
+      return DataBase.votesettings.findUnique(where);
+     case 'multi-channels':
+      return DataBase.levelingmultichannels.findUnique(where);
+     case 'multi-roles':
+      return DataBase.levelingmultiroles.findUnique(where);
+     case 'level-roles':
+      return DataBase.levelingroles.findUnique(where);
+     case 'rule-channels':
+      return DataBase.levelingruleschannels.findUnique(where);
+     case 'button-role-settings':
+      return DataBase.buttonrolesettings.findUnique(where);
+     case 'reaction-role-settings':
+      return DataBase.reactionrolesettings.findUnique(where);
+     case 'reaction-roles':
+      return DataBase.reactionroles.findUnique(where);
+     case 'button-roles':
+      return DataBase.buttonroles.findUnique(where);
+     case 'booster-roles':
+      return DataBase.nitroroles.findUnique(where);
+     default:
+      throw new Error(`Unsupported Setting ${tableName}`);
+    }
+   } else {
+    const where = { where: { guildid } };
+
+    switch (tableName) {
+     case 'basic':
+      return DataBase.guildsettings.findUnique(where);
+     case 'anti-spam':
+      return DataBase.antispam.findUnique(where);
+     case 'anti-virus':
+      return DataBase.antivirus.findUnique(where);
+     case 'anti-raid':
+      return DataBase.antiraid.findUnique(where);
+     case 'blacklist':
+      return DataBase.blacklist.findUnique(where);
+     case 'expiry':
+      return DataBase.expiry.findUnique(where);
+     case 'auto-roles':
+      return DataBase.autoroles.findUnique(where);
+     case 'disboard-reminders':
+      return DataBase.disboard.findUnique(where);
+     case 'sticky':
+      return DataBase.sticky.findUnique(where);
+     case 'suggestions':
+      return DataBase.suggestionsettings.findUnique(where);
+     case 'logchannels':
+      return DataBase.logchannels.findUnique(where);
+     case 'verification':
+      return DataBase.verification.findUnique(where);
+     case 'leveling':
+      return DataBase.leveling.findUnique(where);
+     case 'welcome':
+      return DataBase.welcome.findUnique(where);
+     case 'nitro':
+      return DataBase.nitrosettings.findUnique(where);
+     // case 'appealsettings':
+     //  DataBase.appealsettings.findUnique(where);
+
+     default:
+      throw new Error(`Unsupported Setting ${tableName}`);
+    }
+   }
+  };
+
+  return getDBType().then((r) => {
+   if (!r) setup(tableName, guildid, uniquetimestamp);
+
+   return r ?? null;
+  });
+ },
+ getAndInsert: (
+  tableName: keyof SettingsNames,
+  fieldName: string,
+  guildid: string,
+  newSetting: unknown,
+  uniquetimestamp: number | undefined,
+ ) => {
+  const getDBType = () => {
+   if (uniquetimestamp) {
+    const where = { where: { uniquetimestamp }, data: { [fieldName]: newSetting } };
+
+    switch (tableName) {
+     // case 'appeal-questions':
+     //  return DataBase.appealquestions.update(where);
+     case 'vote-rewards':
+      return DataBase.voterewards.update(where);
+     case 'anti-spam-punishments':
+      return DataBase.punishments_antispam.update(where);
+     case 'anti-virus-punishments':
+      return DataBase.punishments_antivirus.update(where);
+     case 'auto-punish':
+      return DataBase.autopunish.update(where);
+     case 'blacklist-punishments':
+      return DataBase.punishments_blacklist.update(where);
+     case 'role-rewards':
+      return DataBase.rolerewards.update(where);
+     case 'cooldowns':
+      return DataBase.cooldowns.update(where);
+     case 'self-roles':
+      return DataBase.selfroles.update(where);
+     case 'separators':
+      return DataBase.roleseparator.update(where);
+     case 'vote':
+      return DataBase.votesettings.update(where);
+     case 'multi-channels':
+      return DataBase.levelingmultichannels.update(where);
+     case 'multi-roles':
+      return DataBase.levelingmultiroles.update(where);
+     case 'level-roles':
+      return DataBase.levelingroles.update(where);
+     case 'rule-channels':
+      return DataBase.levelingruleschannels.update(where);
+     case 'button-role-settings':
+      return DataBase.buttonrolesettings.update(where);
+     case 'reaction-role-settings':
+      return DataBase.reactionrolesettings.update(where);
+     case 'reaction-roles':
+      return DataBase.reactionroles.update(where);
+     case 'button-roles':
+      return DataBase.buttonroles.update(where);
+     case 'booster-roles':
+      return DataBase.nitroroles.update(where);
+     default:
+      throw new Error(`Unsupported Setting ${tableName}`);
+    }
+   } else {
+    const where = { where: { guildid }, data: { [fieldName]: newSetting } };
+
+    switch (tableName) {
+     case 'basic':
+      return DataBase.guildsettings.update(where);
+     case 'anti-spam':
+      return DataBase.antispam.update(where);
+     case 'anti-virus':
+      return DataBase.antivirus.update(where);
+     case 'anti-raid':
+      return DataBase.antiraid.update(where);
+     case 'blacklist':
+      return DataBase.blacklist.update(where);
+     case 'expiry':
+      return DataBase.expiry.update(where);
+     case 'auto-roles':
+      return DataBase.autoroles.update(where);
+     case 'disboard-reminders':
+      return DataBase.disboard.update(where);
+     case 'sticky':
+      return DataBase.sticky.update(where);
+     case 'suggestions':
+      return DataBase.suggestionsettings.update(where);
+     case 'logchannels':
+      return DataBase.logchannels.update(where);
+     case 'verification':
+      return DataBase.verification.update(where);
+     case 'leveling':
+      return DataBase.leveling.update(where);
+     case 'welcome':
+      return DataBase.welcome.update(where);
+     case 'nitro':
+      return DataBase.nitrosettings.update(where);
+     // case 'appealsettings':
+     //  DataBase.appealsettings.update(where);
+
+     default:
+      throw new Error(`Unsupported Setting ${tableName}`);
+    }
+   }
+  };
+
+  return getDBType();
+ },
  changeEmbed: async <T extends keyof SettingsNames>(
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories'][T],
+  settingName: T,
   fieldName: string,
   values: string[] | string | undefined,
   type:
@@ -340,7 +541,9 @@ const changeHelpers = {
    | 'automodrules',
  ): Promise<Discord.APIEmbed> => ({
   author: {
-   name: language.slashCommands.settings.authorType(lan.name),
+   name: language.slashCommands.settings.authorType(
+    language.slashCommands.settings.categories[settingName].name,
+   ),
    icon_url: objectEmotes.settings.link,
   },
   title: language.slashCommands.settings.previouslySet,
@@ -357,8 +560,12 @@ const changeHelpers = {
    {
     name: '\u200b',
     value:
-     (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>)?.desc ??
-     getGlobalDesc(fieldName as BLWLType, language),
+     (
+      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+       string,
+       string
+      >
+     )?.desc ?? getGlobalDesc(fieldName as BLWLType, language),
    },
   ],
   color: constants.colors.ephemeral,
@@ -430,7 +637,6 @@ const changeHelpers = {
  },
  changeModal: <T extends keyof SettingsNames>(
   language: CT.Language,
-  lan: CT.Language['slashCommands']['settings']['categories'][T],
   settingName: T,
   fieldName: string,
   type:
@@ -446,7 +652,12 @@ const changeHelpers = {
   uniquetimestamp: number | string | undefined,
   required = true,
  ): Discord.APIModalInteractionResponseCallbackData => ({
-  title: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).name,
+  title: (
+   language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+    string,
+    string
+   >
+  ).name,
   custom_id: `settings/${type}_${settingName}${uniquetimestamp ? `_${uniquetimestamp}` : ''}`,
   components: [
    {
@@ -471,11 +682,24 @@ const changeHelpers = {
       style: Discord.TextInputStyle.Paragraph,
       label: language.slashCommands.settings.acceptedValue,
       custom_id: '-',
-      value: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc,
-      max_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
-       .length,
-      min_length: (lan.fields[fieldName as keyof typeof lan.fields] as Record<string, string>).desc
-       .length,
+      value: (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc,
+      max_length: (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc.length,
+      min_length: (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc.length,
      },
     ],
    },
@@ -515,62 +739,10 @@ const changeHelpers = {
   custom_id: `settings/empty/${type}_${name}_${fieldName}_${uniquetimestamp}`,
   label: language.Empty,
  }),
- get: (
-  tableName: keyof SettingsNames,
-  fieldName: string,
-  guildId: string | null,
-  uniquetimestamp: number | undefined,
- ) =>
-  (uniquetimestamp
-   ? query(`SELECT ${fieldName} FROM ${tableName} WHERE uniquetimestamp = $1;`, [uniquetimestamp], {
-      asArray: false,
-      returnType: 'unknown',
-     })
-   : query(`SELECT ${fieldName} FROM ${tableName} WHERE guildid = $1;`, [guildId], {
-      asArray: false,
-      returnType: 'unknown',
-     })
-  ).then((r) => {
-   if (!r) return runSetup(guildId, tableName);
-
-   return r ?? null;
-  }),
- getAndInsert: (
-  tableName: keyof SettingsNames,
-  fieldName: string,
-  guildId: string | null,
-  newSetting: unknown,
-  uniquetimestamp: number | undefined,
- ) =>
-  uniquetimestamp
-   ? query(
-      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE uniquetimestamp = $2;`,
-      [newSetting ?? null, uniquetimestamp],
-      { asArray: false, returnType: 'unknown' },
-     )
-   : query(
-      `UPDATE ${tableName} SET ${fieldName} = $1 WHERE guildid = $2;`,
-      [newSetting ?? null, guildId],
-      { asArray: false, returnType: 'unknown' },
-     ),
 };
 
-const runSetup = async <T extends keyof CT.TableNamesMap>(
- guildid: string | null,
- tableName: keyof SettingsNames,
-): Promise<CT.TableNamesMap[T]> =>
- query(
-  `INSERT INTO ${
-   constants.commands.settings.tableNames[
-    tableName as keyof typeof constants.commands.settings.tableNames
-   ]
-  } (guildid) VALUES ($1) RETURNING *;`,
-  [guildid],
-  { returnType: 'unknown', asArray: false },
- ) as never;
-
 export const getEmoji = (
- setting: string | boolean | string[] | undefined,
+ setting: string | boolean | string[] | undefined | Prisma.Decimal | null,
  type?: BLWLType | 'active',
 ) => {
  switch (type) {
@@ -601,7 +773,7 @@ const getLabel = (language: CT.Language, type: BLWLType | 'active') => {
  return language.slashCommands.settings.active;
 };
 
-export const getStyle = (setting: boolean | string | string[] | undefined) => {
+export const getStyle = (setting: boolean | string | string[] | null) => {
  if (typeof setting === 'boolean' || !setting) {
   return setting ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger;
  }
@@ -707,10 +879,9 @@ const getMention = async (
    return language.rolemodes[value as keyof typeof language.rolemodes];
   }
   case 'embed': {
-   return query(`SELECT * FROM customembeds WHERE uniquetimestamp = $1;`, [value], {
-    returnType: 'customembeds',
-    asArray: false,
-   }).then((r) => r?.name ?? '?');
+   return DataBase.customembeds
+    .findUnique({ where: { uniquetimestamp: value } })
+    .then((r) => r?.name ?? '?');
   }
   case 'emote': {
    return `<${`${value.startsWith(':') ? '' : ':'}${value}`}>`;
@@ -766,9 +937,10 @@ const getGlobalDesc = (
  }
 };
 
-const getSettingsFile = async <T extends keyof CT.TableNamesMap>(
+const getSettingsFile = async <
+ T extends keyof CT.Language['slashCommands']['settings']['categories'],
+>(
  settingName: T,
- tableName: keyof CT.TableNamesMap,
  guild: Discord.Guild,
 ) => {
  const files: string[] = await new Promise((resolve) => {
@@ -792,7 +964,155 @@ const getSettingsFile = async <T extends keyof CT.TableNamesMap>(
   return undefined;
  }
 
- return (await import(file)) as CT.SettingsFile<typeof tableName>;
+ return (await import(file)) as CT.SettingsFile<typeof settingName>;
+};
+
+const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp?: number) => {
+ const getDBType = () => {
+  if (uniquetimestamp) {
+   const where = { data: { uniquetimestamp, guildid } };
+
+   switch (tableName) {
+    // case 'appeal-questions':
+    //  return DataBase.appealquestions.create(where);
+    case 'vote-rewards':
+     return DataBase.voterewards.create(where);
+    case 'anti-spam-punishments':
+     return DataBase.punishments_antispam.create(where);
+    case 'anti-virus-punishments':
+     return DataBase.punishments_antivirus.create(where);
+    case 'auto-punish':
+     return DataBase.autopunish.create(where);
+    case 'blacklist-punishments':
+     return DataBase.punishments_blacklist.create(where);
+    case 'role-rewards':
+     return DataBase.rolerewards.create(where);
+    case 'cooldowns':
+     return DataBase.cooldowns.create(where);
+    case 'self-roles':
+     return DataBase.selfroles.create(where);
+    case 'separators':
+     return DataBase.roleseparator.create(where);
+    case 'vote':
+     return DataBase.votesettings.create(where);
+    case 'multi-channels':
+     return DataBase.levelingmultichannels.create(where);
+    case 'multi-roles':
+     return DataBase.levelingmultiroles.create(where);
+    case 'level-roles':
+     return DataBase.levelingroles.create(where);
+    case 'rule-channels':
+     return DataBase.levelingruleschannels.create(where);
+    case 'button-role-settings':
+     return DataBase.buttonrolesettings.create(where);
+    case 'reaction-role-settings':
+     return DataBase.reactionrolesettings.create(where);
+    case 'reaction-roles':
+     return DataBase.reactionroles.create(where);
+    case 'button-roles':
+     return DataBase.buttonroles.create(where);
+    case 'booster-roles':
+     return DataBase.nitroroles.create(where);
+    default:
+     throw new Error(`Unsupported Setting ${tableName}`);
+   }
+  } else {
+   const where = { data: { guildid } };
+
+   switch (tableName) {
+    case 'basic':
+     return DataBase.guildsettings.create(where);
+    case 'anti-spam':
+     return DataBase.antispam.create(where);
+    case 'anti-virus':
+     return DataBase.antivirus.create(where);
+    case 'anti-raid':
+     return DataBase.antiraid.create(where);
+    case 'blacklist':
+     return DataBase.blacklist.create(where);
+    case 'expiry':
+     return DataBase.expiry.create(where);
+    case 'auto-roles':
+     return DataBase.autoroles.create(where);
+    case 'disboard-reminders':
+     return DataBase.disboard.create(where);
+    case 'sticky':
+     return DataBase.sticky.create(where);
+    case 'suggestions':
+     return DataBase.suggestionsettings.create(where);
+    case 'logchannels':
+     return DataBase.logchannels.create(where);
+    case 'verification':
+     return DataBase.verification.create(where);
+    case 'leveling':
+     return DataBase.leveling.create(where);
+    case 'welcome':
+     return DataBase.welcome.create(where);
+    case 'nitro':
+     return DataBase.nitrosettings.create(where);
+    // case 'appealsettings':
+    //  DataBase.appealsettings.create(where);
+
+    default:
+     throw new Error(`Unsupported Setting ${tableName}`);
+   }
+  }
+ };
+
+ return getDBType();
+};
+
+const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp: number) => {
+ const getDBType = () => {
+  const where = { where: { uniquetimestamp, guildid } };
+
+  switch (tableName) {
+   // case 'appeal-questions':
+   //  return DataBase.appealquestions.delete(where);
+   case 'vote-rewards':
+    return DataBase.voterewards.delete(where);
+   case 'anti-spam-punishments':
+    return DataBase.punishments_antispam.delete(where);
+   case 'anti-virus-punishments':
+    return DataBase.punishments_antivirus.delete(where);
+   case 'auto-punish':
+    return DataBase.autopunish.delete(where);
+   case 'blacklist-punishments':
+    return DataBase.punishments_blacklist.delete(where);
+   case 'role-rewards':
+    return DataBase.rolerewards.delete(where);
+   case 'cooldowns':
+    return DataBase.cooldowns.delete(where);
+   case 'self-roles':
+    return DataBase.selfroles.delete(where);
+   case 'separators':
+    return DataBase.roleseparator.delete(where);
+   case 'vote':
+    return DataBase.votesettings.delete(where);
+   case 'multi-channels':
+    return DataBase.levelingmultichannels.delete(where);
+   case 'multi-roles':
+    return DataBase.levelingmultiroles.delete(where);
+   case 'level-roles':
+    return DataBase.levelingroles.delete(where);
+   case 'rule-channels':
+    return DataBase.levelingruleschannels.delete(where);
+   case 'button-role-settings':
+    return DataBase.buttonrolesettings.delete(where);
+   case 'reaction-role-settings':
+    return DataBase.reactionrolesettings.delete(where);
+   case 'reaction-roles':
+    return DataBase.reactionroles.delete(where);
+   case 'button-roles':
+    return DataBase.buttonroles.delete(where);
+   case 'booster-roles':
+    return DataBase.nitroroles.delete(where);
+   default:
+    throw new Error(`Unsupported Setting ${tableName}`);
+  }
+ };
+
+ return getDBType();
 };
 
 export default {
@@ -801,6 +1121,7 @@ export default {
  multiRowHelpers,
  updateLog,
  changeHelpers,
- runSetup,
  getSettingsFile,
+ setup,
+ del,
 };

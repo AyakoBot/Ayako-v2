@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import refresh from './refresh.js';
-import { typeWithoutDash } from '../../../SlashCommands/roles/builders/button-roles.js';
+import {
+ Type,
+ getBaseSettings,
+ getSpecificSettings,
+} from '../../../SlashCommands/roles/builders/button-roles.js';
 
-export default async (
- cmd: Discord.ButtonInteraction,
- _: string[],
- type: 'reaction-roles' | 'button-roles' = 'button-roles',
-) => {
+export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
@@ -17,23 +17,13 @@ export default async (
   return;
  }
 
- const baseSettings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
-  [cmd.guildId, message.id],
-  {
-   returnType: type === 'button-roles' ? 'buttonrolesettings' : 'reactionrolesettings',
-   asArray: false,
-  },
- );
+ const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
+ if (!baseSettings) {
+  ch.error(cmd.guild, new Error('Failed to find settings'));
+  return;
+ }
 
- const settings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)} WHERE guildid = $1 AND linkedid = $2;`,
-  [cmd.guildId, baseSettings?.uniquetimestamp],
-  {
-   returnType: type === 'button-roles' ? 'buttonroles' : 'reactionroles',
-   asArray: true,
-  },
- );
+ const settings = await getSpecificSettings(type, cmd.guildId, baseSettings?.uniquetimestamp);
 
  let action: Discord.Message | Discord.DiscordAPIError | Discord.MessageReaction | undefined;
 

@@ -26,8 +26,13 @@ export default async () => {
  const totalguildcount =
   (guildSize as number[] | undefined)?.reduce((acc, count) => acc + count, 0) ?? 0;
 
- ch.query(
-  `UPDATE stats SET usercount = $1, guildcount = $2, channelcount = $3, rolecount = $4, allusers = $5;`,
-  [totalusers, totalguildcount, totalchannelcount, totalrolecount, totalmembers],
- );
+ ch.DataBase.stats.updateMany({
+  data: {
+   usercount: totalusers,
+   guildcount: totalguildcount,
+   channelcount: totalchannelcount,
+   rolecount: totalrolecount,
+   allusers: totalmembers,
+  },
+ });
 };

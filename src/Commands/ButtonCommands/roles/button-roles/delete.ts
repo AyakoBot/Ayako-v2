@@ -1,14 +1,18 @@
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import refresh from './refresh.js';
 import { putComponents } from './save.js';
-import { typeWithoutDash } from '../../../SlashCommands/roles/builders/button-roles.js';
-import * as DBT from '../../../../Typings/DataBaseTypings.js';
+import {
+ Type,
+ getBaseSettings,
+ getSpecificSettings,
+} from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
  args: string[],
- type: 'button-roles' | 'reaction-roles' = 'button-roles',
+ type: Type = 'button-roles',
 ) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -20,34 +24,24 @@ export default async (
   return;
  }
 
- const settings = await ch.query(
-  `SELECT * FROM ${typeWithoutDash(type)}ettings WHERE guildid = $1 AND msgid = $2;`,
-  [cmd.guildId, message.id],
-  {
-   returnType: type === 'button-roles' ? 'buttonrolesettings' : 'reactionrolesettings',
-   asArray: false,
-  },
- );
+ const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
 
- if (settings) {
-  await ch.query(
-   `DELETE FROM ${typeWithoutDash(type)} WHERE emote = $1 AND linkedid = $2;`,
-   [emoji, settings.uniquetimestamp],
-   {
-    returnType: typeWithoutDash(type),
-    asArray: true,
-   },
-  );
+ if (baseSettings) {
+  if (type === 'button-roles') {
+   await ch.DataBase.buttonroles.deleteMany({
+    where: { emote: emoji, linkedid: baseSettings.uniquetimestamp.toString() },
+   });
+  } else {
+   await ch.DataBase.reactionroles.deleteMany({
+    where: { emote: emoji, linkedid: baseSettings.uniquetimestamp.toString() },
+   });
+  }
 
-  const allSettings = await ch.query(
-   `SELECT * FROM ${typeWithoutDash(type)} WHERE linkedid = $1;`,
-   [settings.uniquetimestamp],
-   { returnType: typeWithoutDash(type), asArray: true },
-  );
+  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
 
   const action =
    type === 'button-roles'
-    ? await putComponents(allSettings as DBT.buttonroles[], message)
+    ? await putComponents(settings as Prisma.buttonroles[], message)
     : await removeReactions(emoji, message);
 
   if (action && 'message' in action && typeof action.message === 'string') {

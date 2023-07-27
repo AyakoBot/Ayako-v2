@@ -24,13 +24,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const lan = language.slashCommands.settings.categories[settingName];
 
  cmd.update({
   embeds: [
    await ch.settingsHelpers.changeHelpers.changeEmbed(
     language,
-    lan,
+    settingName,
     'exemptChannels',
     rule.exemptChannels.map((c) => c.id),
     'channel',

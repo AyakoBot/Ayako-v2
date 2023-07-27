@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
-import type CT from '../Typings/CustomTypings';
-import type DBT from '../Typings/DataBaseTypings';
+import { Prisma } from '@prisma/client';
+import type CT from '../Typings/CustomTypings.js';
 import * as ch from '../BaseClient/ClientHelper.js';
 import client from '../BaseClient/Client.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -158,8 +158,8 @@ const getCommand = (command: Discord.ApplicationCommand) =>
 const getSticker = (sticker: Discord.Sticker) =>
  `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`;
 
-const getPunishment = (punishment: DBT.Punishment) =>
- `Punishment \`${Number(punishment.uniquetimestamp).toString(
+const getPunishment = (id: Prisma.Decimal) =>
+ `Punishment \`${Number(id).toString(
   36,
  )}\`\nUse </check:1098291480772235325> to look this Punishment up`;
 
@@ -1100,8 +1100,8 @@ export default {
   appeal: {
    title: 'New Appeal',
    author: `${client.user?.username} Punishment Appeal System`,
-   description: (user: CT.bEvalUser | Discord.User, punishment: DBT.Punishment) =>
-    `${getUser(user)}has appealed their Punishment\n${getPunishment(punishment)}`,
+   description: (user: CT.bEvalUser | Discord.User, id: Prisma.Decimal) =>
+    `${getUser(user)}has appealed their Punishment\n${getPunishment(id)}`,
   },
  },
  systemChannelFlags: {
@@ -1948,18 +1948,19 @@ export default {
     total: 'Total',
     base: `Ayako ${
      client.user?.id === ch.mainID ? '' : '(The Base of this Bot)'
-    } is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)\n\nIt is currently in Version ${ch.util.makeInlineCode(
-     packageJSON.version,
-    )} and is being developed and maintained by <@318453143476371456> (@Lars_und_so).
-    A Full-Time IT Specialist for Application Development
-    View [Credits](https://ayakobot.com/credits) for more Information
-    Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot)
-    For more Information, visit [AyakoBot.com](https://ayakobot.com/)
-    Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials
+    } is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)
     
-    Ayako started as a small Moderation Bot for the large Discord Server [Animekos](https://discord.gg/animekos) in 2019.
-    Its success is owed to <@267835618032222209> (@Victoria) who first gave this Bot a chance on her Server,
-    and <@244126983489978368> (@PandaFish) who first taught me how to code [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)`,
+    It is currently in Version ${ch.util.makeInlineCode(
+     packageJSON.version,
+    )} and is under the shepherding of <@318453143476371456> (@Lars_und_so), a Full-Time IT Specialist for Application Development.
+    View [Credits](https://ayakobot.com/credits) for more Information.
+    Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).
+    For more Information, visit [AyakoBot.com](https://ayakobot.com/).
+    Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.
+
+    Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.
+    We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, 
+    and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation,`,
    },
    user: {
     authorUser: `${name} User-Info`,
@@ -2059,6 +2060,26 @@ export default {
     name: 'Emote-Collector',
    },
    categories: {
+    // 'appeal-questions': {
+    //  name: 'Appeal Questions',
+    //  fields: {
+    //   // TODO
+    //   yes: {
+    //    name: 'to',
+    //    desc: 'do',
+    //   },
+    //  },
+    // },
+    // appealsettings: {
+    //  name: 'Appeals',
+    //  fields: {
+    //   // TODO
+    //   yes: {
+    //    name: 'to',
+    //    desc: 'do',
+    //   },
+    //  },
+    // },
     'vote-rewards': {
      name: 'Vote Rewards',
      fields: {
@@ -2967,112 +2988,6 @@ export default {
       linkedid,
      },
     },
-    'delete-commands': {
-     name: 'Delete-Commands',
-     fields: {
-      deletecommand: {
-       name: 'Delete Command',
-       desc: 'Whether to delete the Command',
-      },
-      deletereply: {
-       name: 'Delete Reply',
-       desc: 'Whether to delete the Command Reply',
-      },
-      deletetimeout: {
-       name: 'Delete Timeout',
-       desc: 'The Timeout until the Reply or Command is deleted',
-      },
-      command: {
-       name: 'Command',
-       desc: 'The Command this Delete-Setting applies to',
-      },
-      activechannelid: {
-       name: 'Active Channel',
-       desc: 'The Channels this Delete-Setting applies to',
-      },
-     },
-    },
-    logs: {
-     name: 'Logs',
-     fields: {
-      applicationevents: {
-       name: 'Application Events',
-       desc: 'The Channel to log Application Events in',
-      },
-      automodevents: {
-       name: 'Auto-Mod Events',
-       desc: 'The Channel to log Auto-Mod Events in',
-      },
-      channelevents: {
-       name: 'Channel Events',
-       desc: 'The Channel to log Channel Events in',
-      },
-      emojievents: {
-       name: 'Emoji Events',
-       desc: 'The Channel to log Emoji Events in',
-      },
-      guildevents: {
-       name: 'Server Events',
-       desc: 'The Channel to log Server Events in',
-      },
-      scheduledeventevents: {
-       name: 'Scheduled Event Events',
-       desc: 'The Channel to log Scheduled Event Events in',
-      },
-      inviteevents: {
-       name: 'Invite Events',
-       desc: 'The Channel to log Invite Events in',
-      },
-      messageevents: {
-       name: 'Message Events',
-       desc: 'The Channel to log Message Events in',
-      },
-      roleevents: {
-       name: 'Role Events',
-       desc: 'The Channel to log Role Events in',
-      },
-      stageevents: {
-       name: 'Stage Events',
-       desc: 'The Channel to log Stage Events in',
-      },
-      stickerevents: {
-       name: 'Sticker Events',
-       desc: 'The Channel to log Sticker Events in',
-      },
-      typingevents: {
-       name: 'Typing Events',
-       desc: 'The Channel to log Typing Events in',
-      },
-      userevents: {
-       name: 'User Events',
-       desc: 'The Channel to log User Events in',
-      },
-      voiceevents: {
-       name: 'Voice Events',
-       desc: 'The Channel to log Voice Events in',
-      },
-      webhookevents: {
-       name: 'Webhook Events',
-       desc: 'The Channel to log Application Events in',
-      },
-      settingslog: {
-       name: 'Settings Log',
-       desc: 'The Channel to log Settings Events in',
-      },
-      modlog: {
-       name: 'Moderation Log',
-       desc: 'The Channel to log Moderation Events in',
-      },
-      reactionevents: {
-       name: 'Reaction Events',
-       desc: 'The Channel to log Reaction Events in',
-      },
-      memberevents: {
-       name: 'Member Events',
-       desc: 'The Channel to log Member Events in',
-      },
-     },
-    },
     basic: {
      name: 'Basic',
      fields: {
@@ -3501,6 +3416,7 @@ export default {
   },
  },
  errors: {
+  settingNotFound: 'The Setting could not be found',
   messageNotFound: 'The Mentioned Message could not be found',
   deprecatedByDiscord:
    'This Function has been deprecated by Discord, it does not serve any purpopse anymore.\nYou can go ahead and delete it if you wish.',

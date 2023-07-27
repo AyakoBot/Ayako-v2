@@ -1,22 +1,21 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import type DBT from '../../../Typings/DataBaseTypings';
-import type CT from '../../../Typings/CustomTypings';
+import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (
  vote: CT.TopGGBotVote,
  guild: Discord.Guild,
  user: Discord.User | CT.bEvalUser,
  member: Discord.GuildMember | undefined,
+ setting: Prisma.votesettings,
 ) => {
- const settings = await getSettings(guild);
- if (!settings) return;
-
- const allRewards = await ch.query(`SELECT * FROM voterewards WHERE guildid = $1;`, [guild.id], {
-  returnType: 'voterewards',
-  asArray: true,
+ const allRewards = await ch.DataBase.voterewards.findMany({
+  where: {
+   guildid: guild.id,
+  },
  });
 
  const bot = await ch.getUser(vote.bot).catch(() => undefined);
@@ -25,7 +24,7 @@ export default async (
  const language = await ch.languageSelector(guild.id);
 
  if (!allRewards?.length) {
-  doAnnouncement(settings, user, bot, language);
+  doAnnouncement(setting, user, bot, language);
   return;
  }
 
@@ -33,66 +32,40 @@ export default async (
  const rewards = allRewards.filter((r) => Number(r.tier) === tier);
 
  rewards.forEach((r) => {
-  const currency = () => {
-   if (!r.rewardcurrency) return;
+  currency(r, user, guild);
+  roles(r, member, bot, language);
+  xp(r, user, guild);
+  xpmultiplier(r, user, guild);
 
-   ch.query(
-    `INSERT INTO balance (userid, guildid, balance) VALUES ($1, $2, $3) ON CONFLICT (userid, guildid) DO UPDATE SET balance = balance + $3;`,
-    [user.id, guild.id, Number(r.rewardcurrency)],
-   );
-  };
-
-  const roles = () => {
-   if (!member?.manageable) return;
-   if (!r.rewardroles?.length) return;
-
-   ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
-  };
-
-  const xp = () => {
-   if (!r.rewardxp) return;
-
-   ch.query(
-    `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
-    [user.id, guild.id, 'guild', Number(r.rewardxp), 0],
-   );
-  };
-
-  const xpmultiplier = () => {
-   if (!r.rewardxpmultiplier) return;
-
-   ch.query(
-    `INSERT INTO level (userid, guildid, type, xp, level) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (userid, guildid, type) DO UPDATE SET xp = xp + $4;`,
-    [user.id, guild.id, 'guild', Number(r.rewardxpmultiplier), 0],
-   );
-  };
-
-  currency();
-  roles();
-  xp();
-  xpmultiplier();
-
-  ch.query(
-   `INSERT INTO voters (userid, removetime, voted, votedtype, tier, rewardroles, rewardxp, rewardcurrency, rewardxpmultiplier) VALUE ($1, $2, $3, $4, $5, $6, $7) 
-      ON CONFLICT(userid, voted) DO UPDATE SET voters.rewardxp + $7, voters.rewardcurrency + $8, voters.rewardxpmultiplier + $9, COALESCE(ARRAY_CAT(voters.rewardroles, $6), $6);`,
-   [
-    user.id,
-    Date.now() + 43200000,
-    vote.bot,
-    'bot',
+  ch.DataBase.voters.upsert({
+   where: { userid_voted: { userid: user.id, voted: vote.bot } },
+   update: {
+    removetime: Date.now() + 43200000,
+    votetype: 'guild',
     tier,
-    r.rewardroles,
-    r.rewardxp,
-    r.rewardcurrency,
-    r.rewardxpmultiplier,
-   ],
-  );
+    rewardroles: { push: r.rewardroles },
+    rewardxp: { increment: Number(r.rewardxp) },
+    rewardcurrency: { increment: Number(r.rewardcurrency) },
+    rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
+   },
+   create: {
+    userid: user.id,
+    removetime: Date.now() + 43200000,
+    voted: vote.bot,
+    votetype: 'guild',
+    tier,
+    rewardroles: r.rewardroles,
+    rewardxp: r.rewardxp,
+    rewardcurrency: r.rewardcurrency,
+    rewardxpmultiplier: r.rewardxpmultiplier,
+   },
+  });
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
 };
 
-export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember | undefined) => {
+export const getTier = (rewards: Prisma.voterewards[], member: Discord.GuildMember | undefined) => {
  if (!member) return 1;
 
  const doesntHave = rewards
@@ -111,11 +84,11 @@ export const getTier = (rewards: DBT.voterewards[], member: Discord.GuildMember 
 };
 
 export const doAnnouncement = async (
- settings: DBT.votesettings,
+ settings: Prisma.votesettings,
  user: Discord.User | CT.bEvalUser,
  voted: Discord.User | CT.bEvalUser | Discord.Guild,
  language: CT.Language,
- rewards?: DBT.voterewards[],
+ rewards?: Prisma.voterewards[],
 ) => {
  if (!settings.announcementchannel) return;
 
@@ -160,29 +133,24 @@ export const doAnnouncement = async (
  });
 };
 
-export const getSettings = async (guild: Discord.Guild) =>
- ch.query(`SELECT * FROM votesettings WHERE guildid = $1;`, [guild.id], {
-  returnType: 'votesettings',
-  asArray: false,
- });
-
 export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Discord.Guild) => {
  const now = Date.now();
- const savedRewards = await ch.query(
-  `SELECT * FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`,
-  [vote.user, 'bot' in vote ? vote.bot : vote.guild, now],
-  {
-   returnType: 'voters',
-   asArray: true,
+ const savedRewards = await ch.DataBase.voters.findMany({
+  where: {
+   userid: vote.user,
+   voted: 'bot' in vote ? vote.bot : vote.guild,
+   removetime: { lt: now },
   },
- );
+ });
  if (!savedRewards) return;
 
- await ch.query(`DELETE FROM voters WHERE userid = $1 AND voted = $2 AND removetime < $3;`, [
-  vote.user,
-  'bot' in vote ? vote.bot : vote.guild,
-  now,
- ]);
+ await ch.DataBase.voters.deleteMany({
+  where: {
+   userid: vote.user,
+   voted: 'bot' in vote ? vote.bot : vote.guild,
+   removetime: { lt: now },
+  },
+ });
 
  const guild = client.guilds.cache.get(g.id);
  if (!guild) return;
@@ -204,10 +172,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
   1,
  );
 
- const userSettings = await ch.query(`SELECT * FROM users WHERE userid = $1;`, [member.user.id], {
-  returnType: 'users',
-  asArray: false,
- });
+ const userSettings = await ch.DataBase.users.findUnique({ where: { userid: member.user.id } });
  if (userSettings && !userSettings.votereminders) return;
 
  const voted =
@@ -270,5 +235,82 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
     ],
    },
   ],
+ });
+};
+
+export const currency = (
+ r: Prisma.voterewards,
+ user: Discord.User | CT.bEvalUser,
+ guild: Discord.Guild,
+) => {
+ if (!r.rewardcurrency) return;
+
+ ch.DataBase.balance.upsert({
+  where: { userid_guildid: { userid: user.id, guildid: guild.id } },
+  update: {
+   balance: { increment: r.rewardcurrency },
+  },
+  create: {
+   userid: user.id,
+   guildid: guild.id,
+   balance: r.rewardcurrency,
+  },
+ });
+};
+
+export const roles = (
+ r: Prisma.voterewards,
+ member: Discord.GuildMember | undefined,
+ bot: Discord.User | CT.bEvalUser,
+ language: CT.Language,
+) => {
+ if (!member?.manageable) return;
+ if (!r.rewardroles?.length) return;
+
+ ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
+};
+
+export const xp = (
+ r: Prisma.voterewards,
+ user: Discord.User | CT.bEvalUser,
+ guild: Discord.Guild,
+) => {
+ if (!r.rewardxp) return;
+
+ ch.DataBase.level.upsert({
+  where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
+  update: {
+   xp: { increment: r.rewardxp },
+  },
+  create: {
+   userid: user.id,
+   guildid: guild.id,
+   type: 'guild',
+   xp: r.rewardxp,
+   level: 0,
+  },
+ });
+};
+
+export const xpmultiplier = (
+ r: Prisma.voterewards,
+ user: Discord.User | CT.bEvalUser,
+ guild: Discord.Guild,
+) => {
+ if (!r.rewardxpmultiplier) return;
+
+ ch.DataBase.level.upsert({
+  where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
+  update: {
+   xp: r.rewardxpmultiplier,
+  },
+  create: {
+   userid: user.id,
+   guildid: guild.id,
+   type: 'guild',
+   xp: 0,
+   multiplier: r.rewardxpmultiplier,
+   level: 0,
+  },
  });
 };

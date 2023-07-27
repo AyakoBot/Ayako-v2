@@ -11,7 +11,7 @@ export default async (
  if (!oldState.channel) return;
  if (!member) return;
 
- const channels = await ch.getLogChannels('voiceevents', state.guild);
+ const channels = await ch.getLogChannels('voiceevents', member.guild);
  if (!channels) return;
 
  const language = await ch.languageSelector(state.guild.id);

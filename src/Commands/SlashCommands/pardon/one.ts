@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as DBT from '../../../Typings/DataBaseTypings.js';
 import * as CT from '../../../Typings/CustomTypings.js';
+import type { Returned } from '../../../BaseClient/ClientHelperModules/getPunishment.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -29,15 +29,34 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
 export const pardon = (
  punishment: NonNullable<CT.DePromisify<ReturnType<typeof ch.getPunishment>>>[number],
-) =>
- ch.query(
-  `DELETE FROM ${punishment.type} WHERE uniquetimestamp = $1 AND guildid = $2 AND userid = $3;`,
-  [punishment.uniquetimestamp, punishment.guildid, punishment.userid],
- );
+) => {
+ const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
+
+ switch (punishment.type) {
+  case 'punish_bans': {
+   return ch.DataBase.punish_bans.deleteMany(where);
+  }
+  case 'punish_channelbans': {
+   return ch.DataBase.punish_channelbans.deleteMany(where);
+  }
+  case 'punish_kicks': {
+   return ch.DataBase.punish_kicks.deleteMany(where);
+  }
+  case 'punish_mutes': {
+   return ch.DataBase.punish_mutes.deleteMany(where);
+  }
+  case 'punish_warns': {
+   return ch.DataBase.punish_warns.deleteMany(where);
+  }
+  default: {
+   return undefined;
+  }
+ }
+};
 
 export const log = async (
  cmd: Discord.ChatInputCommandInteraction<'cached'>,
- punishment: DBT.Punishment | DBT.TempPunishment,
+ punishment: Returned,
  language: CT.Language,
  lan: CT.Language['slashCommands']['pardon'],
  reason: string,

@@ -1,6 +1,6 @@
 import { parentPort, workerData } from 'worker_threads';
 import jobs from 'node-schedule';
-import type DBT from '../../../Typings/DataBaseTypings';
+import Prisma from '@prisma/client';
 
 type PassObject = {
  members: {
@@ -24,7 +24,7 @@ type PassObject = {
 
 start(workerData);
 
-async function start(wd: { obj: PassObject; res: DBT.roleseparator[] }) {
+async function start(wd: { obj: PassObject; res: Prisma.roleseparator[] }) {
  const { res, obj } = wd;
  const membersWithRoles: PassObject['members'] = [];
 

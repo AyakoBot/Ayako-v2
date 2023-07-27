@@ -17,7 +17,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  return punishments?.splice(0, 25).map((c) => ({
   name: Number(c.uniquetimestamp).toString(36),
-  value: c.uniquetimestamp,
+  value: c.uniquetimestamp.toString(),
  }));
 };
 
