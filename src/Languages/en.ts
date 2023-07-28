@@ -1046,6 +1046,12 @@ export default {
     warnMessage: 'Warn Message',
    },
   },
+  guildMemberAdd: {
+   welcome: {
+    embed: 'Welcome {{member}} to {{member.guild.name}}!',
+    test: 'Test Welcome Message',
+   },
+  },
   blacklist: {
    censoredMessageReposter: 'Censored Message Reposter',
   },

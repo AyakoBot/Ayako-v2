@@ -93,8 +93,24 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.specific(language, settings?.channelid, 'channelid', name, undefined, 'channel'),
    buttonParsers.specific(language, settings?.embed, 'embed', name, undefined),
    buttonParsers.boolean(language, settings?.pingjoin, 'pingjoin', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
    buttonParsers.specific(language, settings?.pingroles, 'pingroles', name, undefined, 'role'),
    buttonParsers.specific(language, settings?.pingusers, 'pingusers', name, undefined, 'user'),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   {
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Success,
+    custom_id: 'events/guildMemberAdd_welcome',
+    label: language.events.guildMemberAdd.welcome.test,
+   },
   ],
  },
 ];
