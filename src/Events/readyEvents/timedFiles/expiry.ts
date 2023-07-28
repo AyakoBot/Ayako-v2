@@ -106,7 +106,7 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
    punish_bans: () => ch.DataBase.punish_bans.deleteMany(deleteWhere),
    punish_channelbans: () => ch.DataBase.punish_channelbans.deleteMany(deleteWhere),
   };
-  deleteTable[tableName]();
+  deleteTable[tableName]().then();
  });
 
  logExpire<TableName>(tableRows, row.guildid);

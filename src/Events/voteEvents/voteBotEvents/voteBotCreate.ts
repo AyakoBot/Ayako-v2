@@ -37,29 +37,31 @@ export default async (
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
-  ch.DataBase.voters.upsert({
-   where: { userid_voted: { userid: user.id, voted: vote.bot } },
-   update: {
-    removetime: Date.now() + 43200000,
-    votetype: 'guild',
-    tier,
-    rewardroles: { push: r.rewardroles },
-    rewardxp: { increment: Number(r.rewardxp) },
-    rewardcurrency: { increment: Number(r.rewardcurrency) },
-    rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
-   },
-   create: {
-    userid: user.id,
-    removetime: Date.now() + 43200000,
-    voted: vote.bot,
-    votetype: 'guild',
-    tier,
-    rewardroles: r.rewardroles,
-    rewardxp: r.rewardxp,
-    rewardcurrency: r.rewardcurrency,
-    rewardxpmultiplier: r.rewardxpmultiplier,
-   },
-  });
+  ch.DataBase.voters
+   .upsert({
+    where: { userid_voted: { userid: user.id, voted: vote.bot } },
+    update: {
+     removetime: Date.now() + 43200000,
+     votetype: 'guild',
+     tier,
+     rewardroles: { push: r.rewardroles },
+     rewardxp: { increment: Number(r.rewardxp) },
+     rewardcurrency: { increment: Number(r.rewardcurrency) },
+     rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
+    },
+    create: {
+     userid: user.id,
+     removetime: Date.now() + 43200000,
+     voted: vote.bot,
+     votetype: 'guild',
+     tier,
+     rewardroles: r.rewardroles,
+     rewardxp: r.rewardxp,
+     rewardcurrency: r.rewardcurrency,
+     rewardxpmultiplier: r.rewardxpmultiplier,
+    },
+   })
+   .then();
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
@@ -245,17 +247,19 @@ export const currency = (
 ) => {
  if (!r.rewardcurrency) return;
 
- ch.DataBase.balance.upsert({
-  where: { userid_guildid: { userid: user.id, guildid: guild.id } },
-  update: {
-   balance: { increment: r.rewardcurrency },
-  },
-  create: {
-   userid: user.id,
-   guildid: guild.id,
-   balance: r.rewardcurrency,
-  },
- });
+ ch.DataBase.balance
+  .upsert({
+   where: { userid_guildid: { userid: user.id, guildid: guild.id } },
+   update: {
+    balance: { increment: r.rewardcurrency },
+   },
+   create: {
+    userid: user.id,
+    guildid: guild.id,
+    balance: r.rewardcurrency,
+   },
+  })
+  .then();
 };
 
 export const roles = (
@@ -277,19 +281,21 @@ export const xp = (
 ) => {
  if (!r.rewardxp) return;
 
- ch.DataBase.level.upsert({
-  where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
-  update: {
-   xp: { increment: r.rewardxp },
-  },
-  create: {
-   userid: user.id,
-   guildid: guild.id,
-   type: 'guild',
-   xp: r.rewardxp,
-   level: 0,
-  },
- });
+ ch.DataBase.level
+  .upsert({
+   where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
+   update: {
+    xp: { increment: r.rewardxp },
+   },
+   create: {
+    userid: user.id,
+    guildid: guild.id,
+    type: 'guild',
+    xp: r.rewardxp,
+    level: 0,
+   },
+  })
+  .then();
 };
 
 export const xpmultiplier = (
@@ -299,18 +305,20 @@ export const xpmultiplier = (
 ) => {
  if (!r.rewardxpmultiplier) return;
 
- ch.DataBase.level.upsert({
-  where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
-  update: {
-   xp: r.rewardxpmultiplier,
-  },
-  create: {
-   userid: user.id,
-   guildid: guild.id,
-   type: 'guild',
-   xp: 0,
-   multiplier: r.rewardxpmultiplier,
-   level: 0,
-  },
- });
+ ch.DataBase.level
+  .upsert({
+   where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
+   update: {
+    xp: r.rewardxpmultiplier,
+   },
+   create: {
+    userid: user.id,
+    guildid: guild.id,
+    type: 'guild',
+    xp: 0,
+    multiplier: r.rewardxpmultiplier,
+    level: 0,
+   },
+  })
+  .then();
 };

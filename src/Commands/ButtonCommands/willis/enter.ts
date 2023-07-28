@@ -34,9 +34,11 @@ export default async (cmd: Discord.ButtonInteraction) => {
  }
 
  if (!currentParticipants?.willis) {
-  ch.DataBase.stats.updateMany({ data: { willis: [cmd.user.id] } });
+  ch.DataBase.stats.updateMany({ data: { willis: [cmd.user.id] } }).then();
  } else {
-  ch.DataBase.stats.updateMany({ data: { willis: [...currentParticipants.willis, cmd.user.id] } });
+  ch.DataBase.stats
+   .updateMany({ data: { willis: [...currentParticipants.willis, cmd.user.id] } })
+   .then();
  }
 
  cmd.reply({

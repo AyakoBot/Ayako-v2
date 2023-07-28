@@ -20,14 +20,16 @@ UpdateWorker.on(
  ]) => {
   switch (text) {
    case 'NO_SEP': {
-    ch.DataBase.roleseparator.updateMany({
-     where: {
-      separator: roleData[0],
-     },
-     data: {
-      active: false,
-     },
-    });
+    ch.DataBase.roleseparator
+     .updateMany({
+      where: {
+       separator: roleData[0],
+      },
+      data: {
+       active: false,
+      },
+     })
+     .then();
     break;
    }
    case 'TAKE': {
@@ -166,14 +168,16 @@ export const oneTimeRunner = async (
  ) {
   membersWithRoles = true;
  } else {
-  ch.DataBase.roleseparatorsettings.update({
-   where: {
-    guildid: msg.guild.id,
-   },
-   data: {
-    stillrunning: true,
-   },
-  });
+  ch.DataBase.roleseparatorsettings
+   .update({
+    where: {
+     guildid: msg.guild.id,
+    },
+    data: {
+     stillrunning: true,
+    },
+   })
+   .then();
   membersWithRoles = await getMembers(msg.guild, roleseparatorRows);
  }
 
@@ -241,18 +245,20 @@ export const oneTimeRunner = async (
 
   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
 
-  ch.DataBase.roleseparatorsettings.update({
-   where: {
-    guildid: msg.guild.id,
-   },
-   data: {
-    stillrunning: true,
-    duration: membersWithRoles.length * 4,
-    startat: Date.now(),
-    channelid: msg.channel.id,
-    messageid: m.id,
-   },
-  });
+  ch.DataBase.roleseparatorsettings
+   .update({
+    where: {
+     guildid: msg.guild.id,
+    },
+    data: {
+     stillrunning: true,
+     duration: membersWithRoles.length * 4,
+     startat: Date.now(),
+     channelid: msg.channel.id,
+     messageid: m.id,
+    },
+   })
+   .then();
 
   assinger(msg, m, membersWithRoles, embed, lastTime);
  }
@@ -417,16 +423,18 @@ const assinger = async (
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
 
-  ch.DataBase.roleseparatorsettings.update({
-   where: {
-    guildid: msg.guild.id,
-   },
-   data: {
-    stillrunning: false,
-    duration: null,
-    startat: null,
-   },
-  });
+  ch.DataBase.roleseparatorsettings
+   .update({
+    where: {
+     guildid: msg.guild.id,
+    },
+    data: {
+     stillrunning: false,
+     duration: null,
+     startat: null,
+    },
+   })
+   .then();
 
   return;
  }
@@ -457,16 +465,18 @@ const assinger = async (
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
      m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
-     ch.DataBase.roleseparatorsettings.update({
-      where: {
-       guildid: msg.guild?.id,
-      },
-      data: {
-       stillrunning: false,
-       duration: null,
-       startat: null,
-      },
-     });
+     ch.DataBase.roleseparatorsettings
+      .update({
+       where: {
+        guildid: msg.guild?.id,
+       },
+       data: {
+        stillrunning: false,
+        duration: null,
+        startat: null,
+       },
+      })
+      .then();
 
      return;
     }
@@ -476,15 +486,17 @@ const assinger = async (
      return;
     }
 
-    ch.DataBase.roleseparatorsettings.update({
-     where: {
-      guildid: msg.guild?.id,
-     },
-     data: {
-      index,
-      length: membersWithRoles.length - 1,
-     },
-    });
+    ch.DataBase.roleseparatorsettings
+     .update({
+      where: {
+       guildid: msg.guild?.id,
+      },
+      data: {
+       index,
+       length: membersWithRoles.length - 1,
+      },
+     })
+     .then();
    }),
   );
  });

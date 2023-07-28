@@ -7,7 +7,7 @@ export default (channel: Discord.Channel) => {
  const giveaways = ch.cache.giveaways.cache.get(channel.guildId)?.get(channel.id);
  if (giveaways) {
   Array.from(giveaways, ([g]) => g).forEach((g) => {
-   ch.DataBase.giveawaycollection.deleteMany({ where: { msgid: g } });
+   ch.DataBase.giveawaycollection.deleteMany({ where: { msgid: g } }).then();
 
    ch.cache.giveaways.delete(channel.guildId, channel.id, g);
    ch.cache.giveaways.cache.get(channel.guildId)?.delete(g);
@@ -15,6 +15,6 @@ export default (channel: Discord.Channel) => {
   });
  }
 
- ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } });
- ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } });
+ ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } }).then();
+ ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } }).then();
 };

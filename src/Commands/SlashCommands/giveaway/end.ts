@@ -117,13 +117,15 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
 
   giveaway.winners = winners;
 
-  ch.DataBase.giveaways.update({
-   where: { msgid: giveaway.msgid },
-   data: {
-    winners,
-    ended: true,
-   },
-  });
+  ch.DataBase.giveaways
+   .update({
+    where: { msgid: giveaway.msgid },
+    data: {
+     winners,
+     ended: true,
+    },
+   })
+   .then();
 
   embed.fields.push({
    name:
@@ -225,20 +227,22 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   if (oldReplyMsg && oldReplyMsg.deletable) oldReplyMsg.delete().catch(() => undefined);
  }
 
- ch.DataBase.giveawaycollection.upsert({
-  where: { msgid: giveaway.msgid },
-  create: {
-   msgid: giveaway.msgid,
-   endtime: collectionEnd,
-   guildid: giveaway.guildid,
-   replymsgid: replyMsg.id,
-   requiredwinners: giveaway.winners,
-  },
-  update: {
-   endtime: collectionEnd,
-   replymsgid: replyMsg.id,
-  },
- });
+ ch.DataBase.giveawaycollection
+  .upsert({
+   where: { msgid: giveaway.msgid },
+   create: {
+    msgid: giveaway.msgid,
+    endtime: collectionEnd,
+    guildid: giveaway.guildid,
+    replymsgid: replyMsg.id,
+    requiredwinners: giveaway.winners,
+   },
+   update: {
+    endtime: collectionEnd,
+    replymsgid: replyMsg.id,
+   },
+  })
+  .then();
 
  ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
 
@@ -370,12 +374,16 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
   ],
  });
 
- ch.DataBase.giveawaycollection.delete({
-  where: { msgid: giveaway.msgid },
- });
+ ch.DataBase.giveawaycollection
+  .delete({
+   where: { msgid: giveaway.msgid },
+  })
+  .then();
 
- ch.DataBase.giveaways.update({
-  where: { msgid: giveaway.msgid },
-  data: { claimingdone: true },
- });
+ ch.DataBase.giveaways
+  .update({
+   where: { msgid: giveaway.msgid },
+   data: { claimingdone: true },
+  })
+  .then();
 };

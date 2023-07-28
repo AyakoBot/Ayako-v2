@@ -50,7 +50,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ],
  });
 
- ch.DataBase.giveaways.update({ where: { msgid: messageID }, data: { ended: true } });
+ ch.DataBase.giveaways.update({ where: { msgid: messageID }, data: { ended: true } }).then();
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
 
  ch.replyCmd(cmd, {

@@ -10,13 +10,15 @@ export default async (refreshtoken: string) => {
   refresh_token: refreshtoken,
  });
 
- DataBase.users.updateMany({
-  where: { refreshtoken },
-  data: {
-   accesstoken: res.access_token,
-   expires: res.expires_in * 1000 + Date.now(),
-  },
- });
+ DataBase.users
+  .updateMany({
+   where: { refreshtoken },
+   data: {
+    accesstoken: res.access_token,
+    expires: res.expires_in * 1000 + Date.now(),
+   },
+  })
+  .then();
 
  return res.access_token;
 };

@@ -71,5 +71,5 @@ export default async (
    text,
    since: Date.now(),
   },
- });
+ }).then();
 };

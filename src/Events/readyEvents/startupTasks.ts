@@ -40,10 +40,12 @@ export default async () => {
 };
 
 const rpToggleUses = () =>
- ch.DataBase.guildsettings.updateMany({
-  where: { rpenableruns: { not: 0 } },
-  data: { rpenableruns: 0 },
- });
+ ch.DataBase.guildsettings
+  .updateMany({
+   where: { rpenableruns: { not: 0 } },
+   data: { rpenableruns: 0 },
+  })
+  .then();
 
 const animekosInviteStats = async () => {
  const guild = client.guilds.cache.get('298954459172700181');

@@ -26,7 +26,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   where: { guildid: cmd.guildId },
   create: { guildid: cmd.guildId, enabledrp: settings },
   update: { enabledrp: settings },
- });
+ }).then();
 
  if (!settings) await deleteAll(cmd);
  else await create(cmd);

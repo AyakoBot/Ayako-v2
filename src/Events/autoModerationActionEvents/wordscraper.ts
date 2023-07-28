@@ -8,17 +8,19 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
  if (!msg.autoModerationRule?.triggerMetadata.presets[0]) return;
  if (!msg.matchedKeyword) return;
 
- ch.DataBase.filterscraper.upsert({
-  where: {
-   keyword_filtertype: {
+ ch.DataBase.filterscraper
+  .upsert({
+   where: {
+    keyword_filtertype: {
+     keyword: msg.matchedKeyword,
+     filtertype: msg.autoModerationRule?.triggerMetadata.presets[0],
+    },
+   },
+   update: {},
+   create: {
     keyword: msg.matchedKeyword,
     filtertype: msg.autoModerationRule?.triggerMetadata.presets[0],
    },
-  },
-  update: {},
-  create: {
-   keyword: msg.matchedKeyword,
-   filtertype: msg.autoModerationRule?.triggerMetadata.presets[0],
-  },
- });
+  })
+  .then();
 };

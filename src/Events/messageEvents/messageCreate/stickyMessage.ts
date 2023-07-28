@@ -20,9 +20,11 @@ export default async (msg: Discord.Message) => {
  const message = await msg.channel.messages.fetch(stickyMessage.lastmsgid).catch(() => undefined);
 
  if (!message) {
-  ch.DataBase.stickymessages.delete({
-   where: { guildid: msg.guildId, channelid: msg.channelId },
-  });
+  ch.DataBase.stickymessages
+   .delete({
+    where: { guildid: msg.guildId, channelid: msg.channelId },
+   })
+   .then();
 
   return;
  }
@@ -73,15 +75,17 @@ export default async (msg: Discord.Message) => {
    if (webhook && message.author.id === webhook.id) webhook.deleteMessage(message);
    else if (message.deletable) message.delete().catch(() => undefined);
 
-   ch.DataBase.stickymessages.update({
-    where: {
-     guildid: msg.guildId,
-     channelid: msg.channelId,
-    },
-    data: {
-     lastmsgid: m.id,
-    },
-   });
+   ch.DataBase.stickymessages
+    .update({
+     where: {
+      guildid: msg.guildId,
+      channelid: msg.channelId,
+     },
+     data: {
+      lastmsgid: m.id,
+     },
+    })
+    .then();
   }),
  );
 };

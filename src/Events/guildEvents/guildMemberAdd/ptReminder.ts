@@ -71,20 +71,22 @@ export default async (member: Discord.GuildMember) => {
   content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
  });
 
- ch.DataBase.users.upsert({
-  where: { userid: member.id },
-  update: {
-   ptremindersent: true,
-   lastfetch: Date.now(),
-   avatar: member.user.displayAvatarURL(),
-   username: member.user.username,
-  },
-  create: {
-   userid: member.id,
-   ptremindersent: true,
-   lastfetch: Date.now(),
-   avatar: member.user.displayAvatarURL(),
-   username: member.user.username,
-  },
- });
+ ch.DataBase.users
+  .upsert({
+   where: { userid: member.id },
+   update: {
+    ptremindersent: true,
+    lastfetch: Date.now(),
+    avatar: member.user.displayAvatarURL(),
+    username: member.user.username,
+   },
+   create: {
+    userid: member.id,
+    ptremindersent: true,
+    lastfetch: Date.now(),
+    avatar: member.user.displayAvatarURL(),
+    username: member.user.username,
+   },
+  })
+  .then();
 };

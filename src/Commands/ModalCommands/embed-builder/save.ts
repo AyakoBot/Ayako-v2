@@ -8,28 +8,30 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  const name = cmd.fields.getTextInputValue('name');
  const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data).data;
 
- ch.DataBase.customembeds.create({
-  data: {
-   color: embed.color ? String(embed.color) : null,
-   title: embed.title ?? null,
-   url: embed.url ?? null,
-   authorname: embed.author?.name ?? null,
-   authoriconurl: embed.author?.icon_url ?? null,
-   authorurl: embed.author?.url ?? null,
-   description: embed.description ?? null,
-   thumbnail: embed.thumbnail?.url ?? null,
-   fieldnames: embed.fields?.map((o) => o.name) ?? undefined,
-   fieldvalues: embed.fields?.map((o) => o.value) ?? undefined,
-   fieldinlines: embed.fields?.map((o) => o.inline || false) ?? undefined,
-   image: embed.image?.url ?? null,
-   footertext: embed.footer?.text ?? null,
-   footericonurl: embed.footer?.icon_url ?? null,
-   uniquetimestamp: Date.now(),
-   guildid: cmd.guildId,
-   name,
-   timestamp: embed.timestamp ?? null,
-  },
- });
+ ch.DataBase.customembeds
+  .create({
+   data: {
+    color: embed.color ? String(embed.color) : null,
+    title: embed.title ?? null,
+    url: embed.url ?? null,
+    authorname: embed.author?.name ?? null,
+    authoriconurl: embed.author?.icon_url ?? null,
+    authorurl: embed.author?.url ?? null,
+    description: embed.description ?? null,
+    thumbnail: embed.thumbnail?.url ?? null,
+    fieldnames: embed.fields?.map((o) => o.name) ?? undefined,
+    fieldvalues: embed.fields?.map((o) => o.value) ?? undefined,
+    fieldinlines: embed.fields?.map((o) => o.inline || false) ?? undefined,
+    image: embed.image?.url ?? null,
+    footertext: embed.footer?.text ?? null,
+    footericonurl: embed.footer?.icon_url ?? null,
+    uniquetimestamp: Date.now(),
+    guildid: cmd.guildId,
+    name,
+    timestamp: embed.timestamp ?? null,
+   },
+  })
+  .then();
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.save;

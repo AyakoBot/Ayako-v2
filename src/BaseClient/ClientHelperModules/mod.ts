@@ -234,15 +234,15 @@ const doDB = <T extends CT.ModTypes>(
 
    switch (table) {
     case 'punish_tempmutes': {
-     DataBase.punish_tempmutes.delete(deleteObject);
+     DataBase.punish_tempmutes.delete(deleteObject).then();
      break;
     }
     case 'punish_tempchannelbans': {
-     DataBase.punish_tempchannelbans.delete(deleteObject);
+     DataBase.punish_tempchannelbans.delete(deleteObject).then();
      break;
     }
     case 'punish_tempbans': {
-     DataBase.punish_tempbans.delete(deleteObject);
+     DataBase.punish_tempbans.delete(deleteObject).then();
      break;
     }
     default: {
@@ -298,15 +298,15 @@ const doDB = <T extends CT.ModTypes>(
 
    switch (insertTable) {
     case 'punish_mutes': {
-     DataBase.punish_mutes.create(createObject as never);
+     DataBase.punish_mutes.create(createObject as never).then();
      break;
     }
     case 'punish_channelbans': {
-     DataBase.punish_channelbans.create(createObject as never);
+     DataBase.punish_channelbans.create(createObject as never).then();
      break;
     }
     case 'punish_bans': {
-     DataBase.punish_bans.create(createObject as never);
+     DataBase.punish_bans.create(createObject as never).then();
      break;
     }
     default: {
@@ -355,31 +355,31 @@ const doDB = <T extends CT.ModTypes>(
 
   switch (table) {
    case 'punish_tempmutes': {
-    DataBase.punish_tempmutes.create(createObject as never);
+    DataBase.punish_tempmutes.create(createObject as never).then();
     break;
    }
    case 'punish_bans': {
-    DataBase.punish_bans.create(createObject as never);
+    DataBase.punish_bans.create(createObject as never).then();
     break;
    }
    case 'punish_tempbans': {
-    DataBase.punish_tempbans.create(createObject as never);
+    DataBase.punish_tempbans.create(createObject as never).then();
     break;
    }
    case 'punish_channelbans': {
-    DataBase.punish_channelbans.create(createObject as never);
+    DataBase.punish_channelbans.create(createObject as never).then();
     break;
    }
    case 'punish_tempchannelbans': {
-    DataBase.punish_tempchannelbans.create(createObject as never);
+    DataBase.punish_tempchannelbans.create(createObject as never).then();
     break;
    }
    case 'punish_kicks': {
-    DataBase.punish_kicks.create(createObject as never);
+    DataBase.punish_kicks.create(createObject as never).then();
     break;
    }
    case 'punish_warns': {
-    DataBase.punish_warns.create(createObject as never);
+    DataBase.punish_warns.create(createObject as never).then();
     break;
    }
    default: {

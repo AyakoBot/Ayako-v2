@@ -32,22 +32,26 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!giveawayCollection?.requiredwinners?.length) return;
  const newWinners = giveawayCollection.requiredwinners.filter((w) => w !== cmd.user.id);
 
- ch.DataBase.giveaways.update({
-  where: { msgid: cmd.message.id },
-  data: { claimingdone: !newWinners.length },
- });
+ ch.DataBase.giveaways
+  .update({
+   where: { msgid: cmd.message.id },
+   data: { claimingdone: !newWinners.length },
+  })
+  .then();
 
- ch.DataBase.giveawaycollection.update({
-  where: { msgid: cmd.message.id },
-  data: { requiredwinners: newWinners },
- });
+ ch.DataBase.giveawaycollection
+  .update({
+   where: { msgid: cmd.message.id },
+   data: { requiredwinners: newWinners },
+  })
+  .then();
 
  const collection = await ch.DataBase.giveawaycollection.findUnique({
   where: { msgid: cmd.message.id },
  });
 
  if (newWinners.length) return;
- ch.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } });
+ ch.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } }).then();
  ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
  giveaway.claimingdone = true;
 

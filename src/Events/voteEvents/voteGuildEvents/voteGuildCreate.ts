@@ -40,29 +40,31 @@ export default async (
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
-  ch.DataBase.voters.upsert({
-   where: { userid_voted: { userid: user.id, voted: vote.guild } },
-   update: {
-    removetime: Date.now() + 43200000,
-    votetype: 'guild',
-    tier,
-    rewardroles: { push: r.rewardroles },
-    rewardxp: { increment: Number(r.rewardxp) },
-    rewardcurrency: { increment: Number(r.rewardcurrency) },
-    rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
-   },
-   create: {
-    userid: user.id,
-    removetime: Date.now() + 43200000,
-    voted: vote.guild,
-    votetype: 'guild',
-    tier,
-    rewardroles: r.rewardroles,
-    rewardxp: r.rewardxp,
-    rewardcurrency: r.rewardcurrency,
-    rewardxpmultiplier: r.rewardxpmultiplier,
-   },
-  });
+  ch.DataBase.voters
+   .upsert({
+    where: { userid_voted: { userid: user.id, voted: vote.guild } },
+    update: {
+     removetime: Date.now() + 43200000,
+     votetype: 'guild',
+     tier,
+     rewardroles: { push: r.rewardroles },
+     rewardxp: { increment: Number(r.rewardxp) },
+     rewardcurrency: { increment: Number(r.rewardcurrency) },
+     rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
+    },
+    create: {
+     userid: user.id,
+     removetime: Date.now() + 43200000,
+     voted: vote.guild,
+     votetype: 'guild',
+     tier,
+     rewardroles: r.rewardroles,
+     rewardxp: r.rewardxp,
+     rewardcurrency: r.rewardcurrency,
+     rewardxpmultiplier: r.rewardxpmultiplier,
+    },
+   })
+   .then();
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
