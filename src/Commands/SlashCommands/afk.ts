@@ -59,17 +59,19 @@ export default async (
   await cmd.member?.setNickname(`${cmd.member?.displayName} [AFK]`, lan.setReason);
  }
 
- ch.DataBase.afk.upsert({
-  where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
-  create: {
-   userid: author.id,
-   guildid: cmd.guildId,
-   text,
-   since: Date.now(),
-  },
-  update: {
-   text,
-   since: Date.now(),
-  },
- }).then();
+ ch.DataBase.afk
+  .upsert({
+   where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
+   create: {
+    userid: author.id,
+    guildid: cmd.guildId,
+    text,
+    since: Date.now(),
+   },
+   update: {
+    text,
+    since: Date.now(),
+   },
+  })
+  .then();
 };

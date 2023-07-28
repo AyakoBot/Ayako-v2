@@ -32,6 +32,18 @@ if (process.argv.includes('--debug-db')) {
 const cacheMiddleware: Prisma.Middleware = createPrismaRedisCache(options);
 
 prisma.$use(cacheMiddleware);
+prisma.$use(async (params, next) => {
+ try {
+  const result = await next(params);
+  return result;
+ } catch (error) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+   if (process.argv.includes('--debug-db')) log(`[Prisma] Error: ${error}`);
+   return null;
+  }
+  throw error;
+ }
+});
 
 redis.on('connect', () => log('[Redis] Connecting to Redis...'));
 redis.on('ready', () => log('[Redis] Established Connection to DataBase'));
