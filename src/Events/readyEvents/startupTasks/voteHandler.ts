@@ -1,21 +1,12 @@
-import io from 'socket.io-client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 import voteBotCreate from '../../voteEvents/voteBotEvents/voteBotCreate.js';
 import voteGuildCreate from '../../voteEvents/voteGuildEvents/voteGuildCreate.js';
+import Socket from '../../../BaseClient/Socket.js';
 
 export default async () => {
- const socket = io('https://api.ayakobot.com', {
-  transports: ['websocket'],
-  auth: {
-   reason: 'topgg',
-   code: auth.socketToken,
-  },
- });
-
- socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
+ Socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
   const rows = await ch.DataBase.votesettings.findMany({
    where: {
     token: vote.authorization,
