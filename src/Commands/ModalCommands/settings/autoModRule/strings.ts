@@ -47,7 +47,16 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- ch.settingsHelpers.updateLog(oldSetting, newSetting, fieldName, settingName, id);
+ ch.settingsHelpers.updateLog(
+  { [fieldName]: oldSetting } as never,
+  { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] } as never,
+  fieldName as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  settingName,
+  id,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
+ );
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,

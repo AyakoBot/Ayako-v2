@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import ms from 'ms';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import CT from '../../../../Typings/CustomTypings.js';
 
 const settingName = 'blacklist-rules';
 
@@ -84,11 +85,14 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
 
  ch.settingsHelpers.updateLog(
-  currentSetting,
-  Number(newSetting),
-  'timeoutDuration',
+  { timeoutDuration: currentSetting } as never,
+  { timeoutDuration: updatedSetting?.['timeoutDuration' as keyof typeof updatedSetting] } as never,
+  'timeoutDuration' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
   settingName,
   id,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
  );
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(

@@ -48,11 +48,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  ch.settingsHelpers.updateLog(
-  oldSetting,
-  getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>),
-  fieldName,
+  oldSetting as never,
+  getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>) as never,
+  '*' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
   settingName,
   id,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
  );
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(

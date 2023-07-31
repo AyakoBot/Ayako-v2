@@ -2065,6 +2065,12 @@ export default {
      `Check the Emote-Collector Thread (${thread}) to select an Emote\n\nOnce finished, press the "Detect" Button.\nThe Thread will then self-delete. Click the Button below to return to the update Settings Menu`,
     name: 'Emote-Collector',
    },
+   log: {
+    desc: (field: { name: string }, setting: string) =>
+     `${ch.util.makeInlineCode(field.name)} of Setting ${ch.util.makeInlineCode(setting)} updated`,
+    created: (setting: string) => `New ${setting} Setting created`,
+    deleted: (setting: string) => `${setting} Setting deleted`,
+   },
    categories: {
     // 'appeal-questions': {
     //  name: 'Appeal Questions',
@@ -3940,4 +3946,6 @@ export default {
  Label: 'Label',
  Add: 'Add',
  Edit: 'Edit',
+ Before: 'Before',
+ After: 'After',
 };

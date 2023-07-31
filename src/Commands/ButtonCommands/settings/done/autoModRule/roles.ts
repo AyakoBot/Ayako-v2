@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import * as CT from '../../../../../Typings/CustomTypings.js';
 
 const settingName = 'blacklist-rules';
 
@@ -36,7 +37,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- ch.settingsHelpers.updateLog(roleIDs, oldSetting, 'exemptRoles', 'blacklist-rules', id);
+ ch.settingsHelpers.updateLog(
+  { exemptRoles: oldSetting } as never,
+  { exemptRoles: roleIDs } as never,
+  'exemptRoles' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  settingName,
+  id,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
+ );
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,

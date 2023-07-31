@@ -10,6 +10,9 @@ import constants from '../Other/constants.js';
 import client from '../Client.js';
 import error from './error.js';
 import DataBase from '../DataBase.js';
+import getLogChannels from './getLogChannels.js';
+import send from './send.js';
+import { makeInlineCode } from './util.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -273,21 +276,10 @@ const multiRowHelpers = {
  ],
 };
 
-export const updateLog = <T extends keyof CT.TableNamesMap>(
+const postUpdate = async <T extends keyof SettingsNames>(
  oldSetting: unknown,
  newSetting: unknown,
- changedSetting: string,
- settingName: T,
- uniquetimestamp: number | string | undefined,
-) => {
- postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
- log(oldSetting, newSetting, changedSetting, uniquetimestamp);
-};
-
-const postUpdate = async <T extends keyof CT.TableNamesMap>(
- oldSetting: unknown,
- newSetting: unknown,
- changedSetting: string,
+ changedSetting: keyof FieldName<T>,
  settingName: T,
  uniquetimestamp: number | string | undefined,
 ) => {
@@ -1113,6 +1105,87 @@ const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp
  };
 
  return getDBType();
+};
+
+export const updateLog = async <T extends keyof SettingsNames>(
+ oldSetting: { [key in keyof FieldName<T>]: unknown } | undefined,
+ newSetting: { [key in keyof FieldName<T>]: unknown } | undefined,
+ changedSetting: keyof FieldName<T>,
+ settingName: T,
+ uniquetimestamp: number | string | undefined,
+ guild: Discord.Guild,
+ language: CT.Language,
+ lan: SettingsNames[T],
+) => {
+ postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+
+ const logs = await getLogChannels('settingslog', guild);
+ if (!logs) return;
+
+ const getColor = () => {
+  switch (true) {
+   case !oldSetting: {
+    return constants.colors.success;
+   }
+   case !newSetting: {
+    return constants.colors.danger;
+   }
+   default: {
+    return constants.colors.loading;
+   }
+  }
+ };
+
+ const getFields = (): Discord.APIEmbedField[] => {
+  switch (true) {
+   case !oldSetting: {
+    return [
+     {
+      name: language.slashCommands.settings.create,
+      value: language.slashCommands.settings.log.created(settingName),
+     },
+    ];
+   }
+   case !newSetting: {
+    return [
+     {
+      name: language.slashCommands.settings.delete,
+      value: language.slashCommands.settings.log.deleted(settingName),
+     },
+    ];
+   }
+   default: {
+    const field = lan.fields[changedSetting as keyof typeof lan.fields] as { name: string };
+    return [
+     {
+      name: language.Before,
+      value: `${makeInlineCode(field.name)}:\n${makeInlineCode(
+       oldSetting?.[changedSetting] as string,
+      )}`,
+      inline: false,
+     },
+     {
+      name: language.After,
+      value: `${makeInlineCode(field.name)}:\n${makeInlineCode(
+       newSetting?.[changedSetting] as string,
+      )}`,
+      inline: false,
+     },
+    ];
+   }
+  }
+ };
+
+ const embed: Discord.APIEmbed = {
+  color: getColor(),
+  description: language.slashCommands.settings.log.desc(
+   lan.fields[changedSetting as keyof typeof lan.fields],
+   lan.name,
+  ),
+  fields: getFields(),
+ };
+
+ send({ id: logs, guildId: guild.id }, { embeds: [embed] });
 };
 
 export default {

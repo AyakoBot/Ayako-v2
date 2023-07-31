@@ -11,9 +11,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
 
-
- 
-
  const getUniquetimestamp = () => {
   const arg = args.shift();
   if (arg) return Number(arg);
@@ -21,11 +18,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await ch.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
- ));
+ );
 
  const language = await ch.languageSelector(cmd.guildId);
 

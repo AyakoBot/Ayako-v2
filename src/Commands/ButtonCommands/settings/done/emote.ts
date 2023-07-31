@@ -12,9 +12,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
  if (!fieldName) return;
 
-
- 
-
  const getUniquetimestamp = () => {
   const arg = args.shift();
   if (arg) return Number(arg);
@@ -22,11 +19,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = (await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await ch.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
- ));
+ );
 
  const lastMessage = await cmd.channel?.messages.fetch({ limit: 1 }).catch(() => undefined);
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
@@ -47,19 +44,24 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      })
     )?.find((e): e is Discord.Emoji => !!e);
 
- const updatedSetting = (await ch.settingsHelpers.changeHelpers.getAndInsert(
+ const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
   emote?.identifier,
   uniquetimestamp,
- ));
+ );
+
+ const language = await ch.languageSelector(cmd.guildId);
 
  ch.settingsHelpers.updateLog(
-  currentSetting,
+  { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] },
-  fieldName,
+  fieldName as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
   settingName,
   uniquetimestamp,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
  );
 };

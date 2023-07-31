@@ -36,6 +36,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    settingName as keyof CT.Language['slashCommands']['settings']['categories']
   ];
 
- ch.settingsHelpers.updateLog(oldSettings, {}, '*', settingName, id);
+ ch.settingsHelpers.updateLog(
+  oldSettings as never,
+  undefined,
+  '*' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  settingName,
+  id,
+  cmd.guild,
+  language,
+  language.slashCommands.settings.categories[settingName],
+ );
+
  settingsFile.showAll?.(cmd, language, lan as never);
 };

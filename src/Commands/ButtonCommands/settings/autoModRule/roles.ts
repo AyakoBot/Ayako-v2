@@ -24,7 +24,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
-
  cmd.update({
   embeds: [
    await ch.settingsHelpers.changeHelpers.changeEmbed(
