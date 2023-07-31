@@ -146,11 +146,10 @@ const reply = async (
  }`;
 
  if (cmd instanceof Discord.Message) {
+  const msg = cmd as Discord.Message;
   const realCmd = (
-   guild.channels.cache.get(
-    (cmd as Discord.Message).channelId,
-   ) as unknown as Discord.TextBasedChannel
-  ).messages.cache.get((cmd as Discord.Message).id);
+   guild.channels.cache.get(msg.channelId) as unknown as Discord.TextBasedChannel
+  ).messages.cache.get(msg.id);
   if (!realCmd) return;
 
   if ((realCmd as Discord.Message<true>).deletable) (realCmd as Discord.Message<true>).delete();
@@ -158,6 +157,7 @@ const reply = async (
   delete payload.content;
 
   const m = await send(realCmd.channel, payload as never);
+
   if (m?.editable) m.edit({ content });
  } else replyCmd(cmd, { ...payload, ephemeral: false } as Discord.InteractionReplyOptions);
 };
