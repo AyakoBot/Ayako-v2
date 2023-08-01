@@ -383,7 +383,7 @@ const changeHelpers = {
       return DataBase.sticky.findUnique(where);
      case 'suggestions':
       return DataBase.suggestionsettings.findUnique(where);
-     case 'logchannels':
+     case 'logs':
       return DataBase.logchannels.findUnique(where);
      case 'verification':
       return DataBase.verification.findUnique(where);
@@ -487,7 +487,7 @@ const changeHelpers = {
       return DataBase.sticky.update(where);
      case 'suggestions':
       return DataBase.suggestionsettings.update(where);
-     case 'logchannels':
+     case 'logs':
       return DataBase.logchannels.update(where);
      case 'verification':
       return DataBase.verification.update(where);
@@ -1022,7 +1022,7 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
      return DataBase.sticky.create(where);
     case 'suggestions':
      return DataBase.suggestionsettings.create(where);
-    case 'logchannels':
+    case 'logs':
      return DataBase.logchannels.create(where);
     case 'verification':
      return DataBase.verification.create(where);

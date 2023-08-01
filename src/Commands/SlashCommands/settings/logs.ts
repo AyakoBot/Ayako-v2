@@ -3,7 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
 
-const name = 'logchannels';
+const name = 'logs';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
