@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import { Prisma } from '@prisma/client';
 import type CT from '../Typings/CustomTypings.js';
 import * as ch from '../BaseClient/ClientHelper.js';
@@ -163,6 +163,73 @@ const getPunishment = (id: Prisma.Decimal) =>
   36,
  )}\`\nUse </check:1098291480772235325> to look this Punishment up`;
 
+const getStageInstance = (stageInstance: Discord.StageInstance) =>
+ `Stage Instance \`${stageInstance.topic}\` / \`${stageInstance.id}\`\nin\n${getChannel(
+  stageInstance.channel,
+ )}`;
+
+const auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = {
+ 1: 'Server Update',
+ 10: 'Channel Create',
+ 11: 'Channel Update',
+ 12: 'Channel Delete',
+ 13: 'Permission Overwrite Create',
+ 14: 'Permission Overwrite Update',
+ 15: 'Permission Overwrite Delete',
+ 20: 'Member Kick',
+ 21: 'Member Prune',
+ 22: 'Member Ban Add',
+ 23: 'Member Ban Remove',
+ 24: 'Member Update',
+ 25: 'Member Role Update',
+ 26: 'Member Move',
+ 27: 'Member Disconnect',
+ 28: 'Bot Add',
+ 30: 'Role Create',
+ 31: 'Role Update',
+ 32: 'Role Delete',
+ 40: 'Invite Create',
+ 41: 'Invite Update',
+ 42: 'Invite Delete',
+ 50: 'Webhook Create',
+ 51: 'Webhook Update',
+ 52: 'Webhook Delete',
+ 60: 'Emoji Create',
+ 61: 'Emoji Update',
+ 62: 'Emoji Delete',
+ 72: 'Message Delete',
+ 73: 'Message Bulk Delete',
+ 74: 'Message Pin',
+ 75: 'Message Unpin',
+ 80: 'Integration Create',
+ 81: 'Integration Update',
+ 82: 'Integration Delete',
+ 83: 'Stage Instance Create',
+ 84: 'Stage Instance Update',
+ 85: 'Stage Instance Delete',
+ 90: 'Sticker Create',
+ 91: 'Sticker Update',
+ 92: 'Sticker Delete',
+ 100: 'Scheduled Event Create',
+ 101: 'Scheduled Event Update',
+ 102: 'Scheduled Event Delete',
+ 110: 'Thread Create',
+ 111: 'Thread Update',
+ 112: 'Thread Delete',
+ 121: 'Application Command Permission Update',
+ 140: 'Auto Moderation Rule Create',
+ 141: 'Auto Moderation Rule Update',
+ 142: 'Auto Moderation Rule Delete',
+ 143: 'Auto Moderation Block Message',
+ 144: 'Auto Moderation Flag To Channel',
+ 145: 'Auto Moderation User Communication Disabled',
+ 150: 'Creator Monetization Request Created',
+ 151: 'Creator Monetization Terms Accepted',
+};
+
+const getAuditLog = (audit: Discord.GuildAuditLogsEntry) =>
+ `Audit-Log \`${auditLogAction[audit.action]}\` / \`${audit.id}\`\n`;
+
 export default {
  languageFunction: {
   getForumTag,
@@ -182,6 +249,8 @@ export default {
   getCommand,
   getPunishment,
   getSticker,
+  getStageInstance,
+  getAuditLog,
  },
  events: {
   logs: {
@@ -721,10 +790,97 @@ export default {
      `${getUser(executor)}has updated\n${getUser(user)}`,
     descGuildUpdate: () => `The Server was updated`,
     descGuildUpdateAudit: (executor: Discord.User) => `${getUser(executor)}has updated the Server`,
+    descAuditLogCreate: (audit: Discord.GuildAuditLogsEntry) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }`,
+    descAuditLogCreateGuild: (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getGuild(guild)}`,
+    descAuditLogCreateChannel: (
+     audit: Discord.GuildAuditLogsEntry,
+     channel: Discord.GuildChannel,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getChannel(channel)}`,
+    descAuditLogCreateUser: (
+     audit: Discord.GuildAuditLogsEntry,
+     user: CT.bEvalUser | Discord.User,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getUser(user)}`,
+    descAuditLogCreateRole: (audit: Discord.GuildAuditLogsEntry, role: Discord.Role) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getRole(role)}`,
+    descAuditLogCreateInvite: (audit: Discord.GuildAuditLogsEntry, invite: Discord.Invite) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getInvite(invite)}`,
+    descAuditLogCreateWebhook: (audit: Discord.GuildAuditLogsEntry, webhook: Discord.Webhook) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getWebhook(webhook)}`,
+    descAuditLogCreateEmoji: (audit: Discord.GuildAuditLogsEntry, emoji: Discord.Emoji) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getEmote(emoji)}`,
+    descAuditLogCreateMessage: (audit: Discord.GuildAuditLogsEntry, message: Discord.Message) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getMessage(message)}`,
+    descAuditLogCreateIntegration: (
+     audit: Discord.GuildAuditLogsEntry,
+     integration: Discord.Integration,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getIntegration(integration)}`,
+    descAuditLogCreateStageInstance: (
+     audit: Discord.GuildAuditLogsEntry,
+     stageInstance: Discord.StageInstance,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getStageInstance(stageInstance)}`,
+    descAuditLogCreateSticker: (audit: Discord.GuildAuditLogsEntry, sticker: Discord.Sticker) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getSticker(sticker)}`,
+    descAuditLogCreateThread: (audit: Discord.GuildAuditLogsEntry, thread: Discord.ThreadChannel) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getChannel(thread)}`,
+    descAuditLogCreateGuildScheduledEvent: (
+     audit: Discord.GuildAuditLogsEntry,
+     scheduledEvent: Discord.GuildScheduledEvent,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getScheduledEvent(scheduledEvent)}`,
+    descAuditLogCreateApplicationCommand: (
+     audit: Discord.GuildAuditLogsEntry,
+     applicationCommand: Discord.ApplicationCommand,
+    ) =>
+     `New ${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getCommand(applicationCommand)}`,
+    descAuditLogCreateAutoModerationRule: (
+     audit: Discord.GuildAuditLogsEntry,
+     autoModerationRule: Discord.AutoModerationRule,
+    ) =>
+     `New \n${getAuditLog(audit)} created ${
+      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     }for\n${getAutoModerationRule(autoModerationRule)}`,
+    changes: 'Changes',
     memberJoin: 'Member joined',
     botJoin: 'Bot joined',
     ban: 'User banned',
     unban: 'User un-banned',
+    auditCreate: 'Audit-Log created',
     emojiCreate: 'Emoji created',
     emojiDelete: 'Emoji deleted',
     emojiUpdate: 'Emoji updated',
@@ -3860,6 +4016,7 @@ export default {
   0: 'Latest Activity',
   1: 'Newest First',
  },
+ auditLogAction,
  Scopes: 'Scopes',
  Result: 'Result',
  stagePrivacyLevels: ['Public', 'Server Only'],
@@ -3948,4 +4105,5 @@ export default {
  Edit: 'Edit',
  Before: 'Before',
  After: 'After',
+ Extra: 'Extra',
 };
