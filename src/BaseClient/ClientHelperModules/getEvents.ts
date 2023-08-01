@@ -1,6 +1,9 @@
 import { glob } from 'glob';
+import * as Discord from 'discord.js';
 
-export const gatewayEvents = [
+type EventValues = `${Discord.Events}`;
+
+export const gatewayEvents: (EventValues | string)[] = [
  'applicationCommandPermissionsUpdate',
  'autoModerationActionExecution',
  'autoModerationRuleCreate',
@@ -33,6 +36,7 @@ export const gatewayEvents = [
  'guildScheduledEventUpdate',
  'guildScheduledEventUserAdd',
  'guildScheduledEventUserRemove',
+ 'guildAuditLogEntryCreate',
  'guildUpdate',
  'interactionCreate',
  'inviteCreate',
