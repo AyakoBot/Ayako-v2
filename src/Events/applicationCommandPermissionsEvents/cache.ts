@@ -8,5 +8,9 @@ export default async (
 ) => {
  if (data.applicationId !== client.user?.id) return;
 
- ch.cache.commandPermissions.set(guild.id, data.id, data.permissions);
+ ch.cache.commandPermissions.set(
+  guild.id,
+  data.id,
+  structuredClone(data.permissions) as Discord.ApplicationCommandPermissions[],
+ );
 };

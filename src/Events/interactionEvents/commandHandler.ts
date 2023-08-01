@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -8,12 +8,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isChatInputCommand()) return;
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/**/*`);
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,

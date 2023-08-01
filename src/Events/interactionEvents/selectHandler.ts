@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -30,12 +30,7 @@ export default async (cmd: Discord.Interaction) => {
   }
  };
 
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SelectCommands/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/SelectCommands/**/*`);
 
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();

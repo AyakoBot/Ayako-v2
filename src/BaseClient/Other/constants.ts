@@ -136,6 +136,7 @@ export default {
     update: 'https://cdn.ayakobot.com/Ayako_Assets/Events/StickerUpdate.png',
    },
    guild: {
+    AuditLogCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/AuditLogCreate.png',
     BanCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/BanCreate.png',
     BanRemove: 'https://cdn.ayakobot.com/Ayako_Assets/Events/BanRemove.png',
     GuildCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/GuildCreate.png',

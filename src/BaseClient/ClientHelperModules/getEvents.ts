@@ -1,4 +1,4 @@
-import glob from 'glob';
+import { glob } from 'glob';
 
 export const gatewayEvents = [
  'applicationCommandPermissionsUpdate',
@@ -75,12 +75,7 @@ export const gatewayEvents = [
 ];
 
 export default async (): Promise<typeof gatewayEvents> => {
- const events: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Events/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const events = await glob(`${process.cwd()}/Events/**/*`);
 
  const filteredEvents = events
   .filter((path) => path.endsWith('.js'))

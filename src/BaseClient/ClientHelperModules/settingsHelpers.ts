@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 import ms from 'ms';
 import { Prisma } from '@prisma/client';
 import * as CT from '../../Typings/CustomTypings.js';
@@ -283,12 +283,7 @@ const postUpdate = async <T extends keyof SettingsNames>(
  settingName: T,
  uniquetimestamp: number | string | undefined,
 ) => {
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SlashCommands/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/SlashCommands/**/*`);
 
  const file = files.find((f) =>
   f.endsWith(
@@ -935,12 +930,7 @@ const getSettingsFile = async <
  settingName: T,
  guild: Discord.Guild,
 ) => {
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`);
 
  const file = files.find((f) =>
   f.endsWith(

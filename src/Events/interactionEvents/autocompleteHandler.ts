@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 import * as CT from '../../Typings/CustomTypings.js';
 
 // eslint-disable-next-line no-console
@@ -9,12 +9,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
  if (!cmd.inCachedGuild()) return;
 
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/**/*`);
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,

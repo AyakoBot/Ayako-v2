@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
@@ -31,12 +31,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await ch.languageSelector(cmd.guildId);
 
- const settingsFiles: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/AutocompleteCommands/settings/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const settingsFiles = await glob(`${process.cwd()}/Commands/AutocompleteCommands/settings/**/*`);
 
  const settingsFile = settingsFiles.find((f) =>
   f.endsWith(

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import SlashCommands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
 
@@ -64,10 +64,4 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
 const getCommand = (
  type: 'SlashCommands' | 'StringCommands' | 'ContextCommands',
-): Promise<string[]> =>
- new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/${type}/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+): Promise<string[]> => glob(`${process.cwd()}/Commands/${type}/**/*`);

@@ -1,6 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import glob from 'glob';
+import { glob } from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as CT from '../../../Typings/CustomTypings.js';
@@ -131,12 +131,7 @@ export const getPrefix = async (msg: Discord.Message) => {
 };
 
 const getComand = async (commandName: string) => {
- const files: string[] = await new Promise((resolve) => {
-  glob(`${process.cwd()}/Commands/StringCommands/**/*`, (err, res) => {
-   if (err) throw err;
-   resolve(res);
-  });
- });
+ const files = await glob(`${process.cwd()}/Commands/StringCommands/**/*`);
 
  const path = files.find((f) => f.endsWith(`/${commandName}.js`));
  if (!path) return undefined;

@@ -34,11 +34,11 @@ const getDesc = (
  } = command;
 
  if (rawCommand.subCommandGroup) {
-  c = (c.options?.find((o) => o.name === rawCommand.subCommandGroup) as typeof c) ?? c;
+  c = (c.options?.find((o) => o.name === rawCommand.subCommandGroup) as typeof c | undefined) ?? c;
  }
 
  if (rawCommand.subCommand) {
-  c = (c.options?.find((o) => o.name === rawCommand.subCommand) as typeof c) ?? c;
+  c = (c.options?.find((o) => o.name === rawCommand.subCommand) as typeof c | undefined) ?? c;
  }
 
  return `${c.description}${
