@@ -383,7 +383,6 @@ model logchannels {
   modlog               String[] @db.VarChar
   reactionevents       String[] @db.VarChar
   memberevents         String[] @db.VarChar
-  auditlogevents       String[] @db.VarChar
 }
 
 model nitroroles {
