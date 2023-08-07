@@ -12,7 +12,7 @@ import error from './error.js';
 import DataBase from '../DataBase.js';
 import getLogChannels from './getLogChannels.js';
 import send from './send.js';
-import { makeInlineCode } from './util.js';
+import { makeCodeBlock, makeInlineCode } from './util.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -1126,6 +1126,15 @@ export const updateLog = async <T extends keyof SettingsNames>(
   }
  };
 
+ const field =
+  (lan.fields[changedSetting as keyof typeof lan.fields] as { name: string }) ??
+  ({
+   name:
+    language.slashCommands.settings[
+     changedSetting as keyof CT.Language['slashCommands']['settings']
+    ] ?? lan[changedSetting as keyof typeof lan],
+  } as { name: string });
+
  const getFields = (): Discord.APIEmbedField[] => {
   switch (true) {
    case !oldSetting: {
@@ -1145,18 +1154,17 @@ export const updateLog = async <T extends keyof SettingsNames>(
     ];
    }
    default: {
-    const field = lan.fields[changedSetting as keyof typeof lan.fields] as { name: string };
     return [
      {
       name: language.Before,
-      value: `${makeInlineCode(field.name)}:\n${makeInlineCode(
+      value: `${makeInlineCode(field.name)}:\n${makeCodeBlock(
        oldSetting?.[changedSetting] as string,
       )}`,
       inline: false,
      },
      {
       name: language.After,
-      value: `${makeInlineCode(field.name)}:\n${makeInlineCode(
+      value: `${makeInlineCode(field.name)}:\n${makeCodeBlock(
        newSetting?.[changedSetting] as string,
       )}`,
       inline: false,
@@ -1168,10 +1176,7 @@ export const updateLog = async <T extends keyof SettingsNames>(
 
  const embed: Discord.APIEmbed = {
   color: getColor(),
-  description: language.slashCommands.settings.log.desc(
-   lan.fields[changedSetting as keyof typeof lan.fields],
-   lan.name,
-  ),
+  description: language.slashCommands.settings.log.desc(field.name, lan.name),
   fields: getFields(),
  };
 

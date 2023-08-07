@@ -2312,8 +2312,8 @@ export default {
     name: 'Emote-Collector',
    },
    log: {
-    desc: (field: { name: string }, setting: string) =>
-     `${ch.util.makeInlineCode(field.name)} of Setting ${ch.util.makeInlineCode(setting)} updated`,
+    desc: (n: string, setting: string) =>
+     `${ch.util.makeInlineCode(n)} of Setting ${ch.util.makeInlineCode(setting)} updated`,
     created: (setting: string) => `New ${setting} Setting created`,
     deleted: (setting: string) => `${setting} Setting deleted`,
    },
