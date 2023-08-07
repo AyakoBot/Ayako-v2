@@ -18,6 +18,6 @@ export const getSelectedField = (
   | Discord.StringSelectMenuInteraction
   | Discord.ButtonInteraction,
 ) =>
- (cmd.message.components[2].components[0] as Discord.StringSelectMenuComponent).data.options.find(
+ (cmd.message.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
   (o) => !!o.default,
  );
