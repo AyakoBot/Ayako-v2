@@ -172,4 +172,10 @@ export default {
  book: '<a:AMAyakoBookGIF:1010325150949969930>',
  Member: '<:Member:1073254214995816489>',
  Role: '<:Role:1073251376047587328>',
+ filters: {
+  CommonlyFlaggedWords: '<:CommonlyFlaggedWords:1138081743954518187>',
+  Keyword: '<:Keyword:1138081748576649256>',
+  MentionSpam: '<:MentionSpam:1138081741207240704>',
+  ProfileAndSpam: '<:ProfileAndSpam:1138081752116637838>',
+ },
 };

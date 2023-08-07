@@ -413,4 +413,30 @@ export default {
  },
  refresh: { name: '🔃' },
  question: { name: '❓' },
+ filters: {
+  CommonlyFlaggedWords: {
+   name: 'CommonlyFlaggedWords',
+   id: '1138081743954518187',
+   animated: false,
+   link: 'https://cdn.discordapp.com/emojis/1138081743954518187.png',
+  },
+  Keyword: {
+   name: 'Keyword',
+   id: '1138081748576649256',
+   animated: false,
+   link: 'https://cdn.discordapp.com/emojis/1138081748576649256.png',
+  },
+  MentionSpam: {
+   name: 'MentionSpam',
+   id: '1138081741207240704',
+   animated: false,
+   link: 'https://cdn.discordapp.com/emojis/1138081741207240704.png',
+  },
+  ProfileAndSpam: {
+   name: 'ProfileAndSpam',
+   id: '1138081752116637838',
+   animated: false,
+   link: 'https://cdn.discordapp.com/emojis/1138081752116637838.png',
+  },
+ },
 };
