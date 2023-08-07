@@ -101,7 +101,6 @@ export type TableNamesMap = {
  'reaction-roles': Prisma.reactionroles;
  'button-roles': Prisma.buttonroles;
  'role-rewards': Prisma.rolerewards;
- logchannels: Prisma.logchannels;
 };
 
 export interface AutoCompleteFile {

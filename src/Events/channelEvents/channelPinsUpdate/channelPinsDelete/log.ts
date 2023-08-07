@@ -28,7 +28,7 @@ export default async (
    ? lan.descPinRemoveAudit(auditUser, msg, language.channelTypes[msg.channel.type])
    : lan.descPinRemove(msg, language.channelTypes[msg.channel.type]),
   fields: [],
-  color: ch.constants.colors.success,
+  color: ch.constants.colors.danger,
   timestamp: new Date().toISOString(),
  };
 

@@ -36,7 +36,6 @@ export enum TableNamesPrismaTranslation {
  'reaction-roles' = 'reactionroles',
  'button-roles' = 'buttonroles',
  'role-rewards' = 'rolerewards',
- logchannels = 'logchannels',
 }
 
 const punishment = {
@@ -238,6 +237,18 @@ export default {
   ytURL: 'https://www.youtube.com/@AyakoBot',
   user: (u: Discord.User | CT.bEvalUser | { discriminator: string; username: string }) =>
    `${u.discriminator === '0' ? u.username : `${u.username}#${u.discriminator}`}`,
+  roleIconURL: (role: Discord.Role | { icon: string; id: string }) =>
+   `https://cdn.discordapp.com/role-icons/${role.id}/${role.icon}.png`,
+  scheduledEventImageUrl: (guildId: string, hash: string) =>
+   `https://cdn.discordapp.com/guild-events/${guildId}/${hash}`,
+  discoverySplashURL: (guildId: string, hash: string) =>
+   `https://cdn.discordapp.com/discovery-splashes/${guildId}/${hash}.png`,
+  splashURL: (guildId: string, hash: string) =>
+   `https://cdn.discordapp.com/splashes/${guildId}/${hash}.png`,
+  bannerURL: (guildId: string, hash: string) =>
+   `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
+  webhookAvatarURL: (webhookId: string, hash: string) =>
+   `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
  },
  customembeds: {
   type: {

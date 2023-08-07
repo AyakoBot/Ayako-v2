@@ -7,7 +7,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.guild) return;
 
  const giveaway = await ch.DataBase.giveaways.findUnique({
-  where: { msgid: cmd.message.id, ended: false },
+  where: { msgid: cmd.message.id, ended: true },
  });
 
  const giveawayCollection = await ch.DataBase.giveawaycollection.findUnique({

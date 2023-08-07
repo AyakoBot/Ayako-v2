@@ -40,7 +40,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: `${language.slashCommands.rp.notice}\n${
+  description: `${
    ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
        name as keyof typeof ch.constants.tutorials
@@ -206,14 +206,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     language,
     settings.memberevents,
     'memberevents',
-    name,
-    undefined,
-    'channel',
-   ),
-   buttonParsers.specific(
-    language,
-    settings.auditlogevents,
-    'auditlogevents',
     name,
     undefined,
     'channel',

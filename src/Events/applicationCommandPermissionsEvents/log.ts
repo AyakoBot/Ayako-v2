@@ -25,7 +25,7 @@ export default async (
   },
   color: ch.constants.colors.loading,
   description:
-   audit.target?.id !== application.id
+   audit.targetId !== application.id
     ? lan.descUpdateCommand(application, auditUser, audit.target as Discord.ApplicationCommand)
     : lan.descUpdateAll(application, auditUser),
   fields: [],
