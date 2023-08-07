@@ -29,6 +29,7 @@ export const gatewayEvents: (EventValues | string)[] = [
  'guildIntegrationsUpdate',
  'guildIntegrationsUpdates',
  'guildMemberAdd',
+ 'guildMemberPrune',
  'guildMemberRemove',
  'guildMemberUpdate',
  'guildScheduledEventCreate',

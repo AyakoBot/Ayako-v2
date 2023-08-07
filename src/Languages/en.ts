@@ -128,7 +128,8 @@ const getInvite = (invite: Discord.Invite) =>
 const getIntegration = (integration: Discord.Integration) =>
  `Integration \`${integration.name}\` / \`${integration.id}\`\n`;
 
-const getRole = (role: Discord.Role) => `Role <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`;
+const getRole = (role: Discord.Role | { id: string; name: string }) =>
+ `Role <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`;
 
 const getApplication = (
  application: Discord.Application | Discord.IntegrationApplication | bigint,
@@ -812,7 +813,10 @@ export default {
      `New \n${getAuditLog(audit)} created ${
       audit.executor ? `by\n${getUser(audit.executor)}` : ''
      }for\n${getUser(user)}`,
-    descAuditLogCreateRole: (audit: Discord.GuildAuditLogsEntry, role: Discord.Role) =>
+    descAuditLogCreateRole: (
+     audit: Discord.GuildAuditLogsEntry,
+     role: Discord.Role | { id: string; name: string },
+    ) =>
      `New \n${getAuditLog(audit)} created ${
       audit.executor ? `by\n${getUser(audit.executor)}` : ''
      }for\n${getRole(role)}`,
@@ -875,6 +879,92 @@ export default {
      `New \n${getAuditLog(audit)} created ${
       audit.executor ? `by\n${getUser(audit.executor)}` : ''
      }for\n${getAutoModerationRule(autoModerationRule)}`,
+    descAuditLogCreateAutoModeration: (
+     audit: Discord.GuildAuditLogsEntry,
+     member: Discord.GuildMember,
+     rule: Discord.AutoModerationRule,
+    ) =>
+     `New \n${getAuditLog(audit)} created by\n${getAutoModerationRule(rule)}for\n${getUser(
+      member.user,
+     )}`,
+    descMemberPrune: (executor: Discord.User, amount: number, days: number) =>
+     `${getUser(executor)}pruned \`${amount}\` Members\nfor \`${days}\` Days of inactivity`,
+    auditLogChangeKeys: {
+     $add: 'Added',
+     $remove: 'Removed',
+     nick: 'Nickname',
+     name: 'Name',
+     permissions: 'Permissions',
+     color: 'Color',
+     mentionable: 'Mentionable',
+     hoist: 'Hoisted',
+     icon_hash: 'Icon',
+     mute: 'Server Muted',
+     deaf: 'Server Deafened',
+     communication_disabled_until: 'Timed out until',
+     unicode_emoji: 'Unicode Emoji',
+     tags: 'Related Emoji',
+     description: 'Description',
+     vanity_url_code: 'Vanity URL Code',
+     position: 'Position',
+     topic: 'Topic',
+     code: 'Code',
+     application_id: 'Application',
+     max_uses: 'Max. Uses',
+     uses: 'Uses',
+     id: 'ID',
+     user_limit: 'User Limit',
+     location: 'Location',
+     bitrate: 'Bitrate',
+     permission_overwrites: 'Permission Overwrites',
+     allow: 'Allowed',
+     deny: 'Denied',
+     archived: 'Archived',
+     widget_enabled: 'Widget Enabled',
+     temporary: 'Temporary',
+     nsfw: 'NSFW',
+     locked: 'Locked',
+     enable_emoticons: 'Emoticons Enabled',
+     available: 'Available',
+     enabled: 'Enabled',
+     image_hash: 'Image',
+     avatar_hash: 'Avatar',
+     type: 'Type',
+     owner_id: 'Owner',
+     inviter_id: 'Inviter',
+     region: 'Region',
+     preferred_locale: 'Preferred Locale',
+     afk_channel_id: 'AFK Channel',
+     rules_channel_id: 'Rules Channel',
+     public_updates_channel_id: 'Public Updates Channel',
+     widget_channel_id: 'Widget Channel',
+     safety_alserts_channel_id: 'Safety Alerts Channel',
+     system_channel_id: 'System Channel',
+     channel_id: 'Channel',
+     mfa_level: 'MFA Level',
+     verification_level: 'Verification Level',
+     explicit_content_filter: 'Explicit Content Filter',
+     default_message_notifications: 'Default Message Notifications',
+     prune_delete_days: 'Prune Delete Days',
+     afk_timeout: 'AFK Timeout',
+     rate_limit_per_user: 'Slowmode',
+     max_age: 'Max. Age',
+     auto_archive_duration: 'Auto Archive Duration',
+     default_auto_archive_duration: 'Default Auto Archive Duration',
+     expire_grace_period: 'Expire Grace Period',
+     exempt_roles: 'Exempt Roles',
+     exempt_channels: 'Exempt Channels',
+     expire_behavior: 'Expire Behavior',
+     privacy_level: 'Privacy Level',
+     entity_type: 'Entity Type',
+     status: 'Status',
+     trigger_type: 'Trigger Type',
+     event_type: 'Event Type',
+     format_type: 'Format Type',
+     trigger_metadata: 'Trigger Metadata',
+     actions: 'Actions',
+    },
+    memberPrune: 'Members Pruned',
     changes: 'Changes',
     memberJoin: 'Member joined',
     botJoin: 'Bot joined',
@@ -1130,10 +1220,10 @@ export default {
     content: 'Content',
     ruleTriggerTypeName: 'Rule Trigger Type',
     ruleTriggerType: {
-     1: 'Keyword Filter', //
+     1: 'Keyword Filter',
      3: 'Spam Filter',
      4: 'Keyword Preset Filter',
-     5: 'Mention Spam Filter', //
+     5: 'Mention Spam Filter',
      6: 'Profile Filter',
     },
     actionTypeName: 'Action Type',
@@ -2748,7 +2838,7 @@ export default {
       },
      },
     },
-    logchannels: {
+    logs: {
      name: 'Log Channels',
      fields: {
       applicationevents: {
@@ -2826,10 +2916,6 @@ export default {
       memberevents: {
        name: 'Member Events',
        desc: 'The Channel to send Member Events in',
-      },
-      auditlogevents: {
-       name: 'Audit Log Events',
-       desc: 'The Channel to send Audit Log Events in',
       },
      },
     },

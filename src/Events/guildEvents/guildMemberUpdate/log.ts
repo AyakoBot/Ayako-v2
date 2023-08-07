@@ -100,7 +100,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
    addedRoles.length ? addedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
    removedRoles.length ? removedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
    'difference',
-   language.roles,
+   language.Roles,
   );
  }
  if (!!member.pending !== !!oldMember.pending) {

@@ -1,7 +1,14 @@
 import * as Discord from 'discord.js';
-import log from './log.js';
+import cache from './cache.js';
 
 export default async (entry: Discord.GuildAuditLogsEntry, guild: Discord.Guild) => {
- console.log(entry);
- log(entry, guild);
+ cache(entry, guild);
+
+ switch (entry.action) {
+  case Discord.AuditLogEvent.MemberPrune:
+   guild.client.emit('guildMemberPrune', entry, guild);
+   break;
+  default:
+   break;
+ }
 };
