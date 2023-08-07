@@ -3,6 +3,8 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type CT from '../../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) => {
+ if (!cmd.inCachedGuild()) return;
+
  const fieldName = args.shift();
  if (!fieldName) return;
 
@@ -19,6 +21,7 @@ export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) =>
     fieldName,
     cmd.users.map((c) => c.id),
     'user',
+    cmd.guild,
    ),
   ],
  });

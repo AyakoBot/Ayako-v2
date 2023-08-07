@@ -14,6 +14,20 @@ import getLogChannels from './getLogChannels.js';
 import send from './send.js';
 import { makeCodeBlock, makeInlineCode } from './util.js';
 
+type MentionTypes =
+ | 'rolemode'
+ | 'channel'
+ | 'role'
+ | 'user'
+ | 'mention'
+ | 'punishment'
+ | 'language'
+ | 'settinglink'
+ | 'embed'
+ | 'emote'
+ | 'commands'
+ | 'automodrules';
+
 // eslint-disable-next-line no-console
 const { log } = console;
 
@@ -513,19 +527,8 @@ const changeHelpers = {
   settingName: T,
   fieldName: string,
   values: string[] | string | undefined,
-  type:
-   | 'rolemode'
-   | 'channel'
-   | 'role'
-   | 'user'
-   | 'mention'
-   | 'punishment'
-   | 'language'
-   | 'settinglink'
-   | 'embed'
-   | 'emote'
-   | 'commands'
-   | 'automodrules',
+  type: MentionTypes,
+  guild: Discord.Guild,
  ): Promise<Discord.APIEmbed> => ({
   author: {
    name: language.slashCommands.settings.authorType(
@@ -538,7 +541,7 @@ const changeHelpers = {
    (
     await Promise.all(
      (Array.isArray(values) ? values : [values])
-      .map((v) => (v ? getMention(language, type, v) : null))
+      .map((v) => (v ? getMention(language, type, v, guild) : null))
       .filter((v): v is Promise<string> => !!v),
     )
    ).join(', ') || language.None
@@ -831,21 +834,10 @@ const getPlaceholder = (
 
 const getMention = async (
  language: CT.Language,
- type:
-  | 'rolemode'
-  | 'channel'
-  | 'role'
-  | 'user'
-  | 'mention'
-  | 'punishment'
-  | 'language'
-  | 'settinglink'
-  | 'embed'
-  | 'emote'
-  | 'commands'
-  | 'automodrules',
+ type: MentionTypes,
  value: string,
-): Promise<string> => {
+ guild: Discord.Guild,
+) => {
  switch (type) {
   case 'channel': {
    return `<#${value}>`;
@@ -878,6 +870,11 @@ const getMention = async (
 
    if (!cmd) return `\`${value}\``;
    return `</${cmd?.name}:${cmd?.id}>`;
+  }
+  case 'automodrules': {
+   const rule = (guild as NonNullable<typeof guild>).autoModerationRules.cache.get(value);
+
+   return makeInlineCode(rule?.name ?? value);
   }
   default: {
    return value;

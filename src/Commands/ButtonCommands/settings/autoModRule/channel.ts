@@ -33,6 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     rule.actions.find((r) => r.type === Discord.AutoModerationActionType.SendAlertMessage)?.metadata
      .channelId || undefined,
     'channel',
+    cmd.guild,
    ),
   ],
   components: [

@@ -51,6 +51,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     fieldName,
     currentSetting?.[fieldName as keyof typeof currentSetting],
     'commands',
+    cmd.guild,
    ),
   ],
   components: [

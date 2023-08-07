@@ -32,6 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     'exemptChannels',
     rule.exemptChannels.map((c) => c.id),
     'channel',
+    cmd.guild,
    ),
   ],
   components: [

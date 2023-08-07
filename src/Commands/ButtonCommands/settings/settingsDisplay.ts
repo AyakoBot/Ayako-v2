@@ -49,6 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    settings,
    language,
    language.slashCommands.settings.categories[settingName],
+   cmd.guild,
   ),
   components: await settingsFile.getComponents(
    ch.settingsHelpers.buttonParsers,

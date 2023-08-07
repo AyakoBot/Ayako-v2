@@ -74,7 +74,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.repostrules.name,
-    value: embedParsers.rules(settings?.repostrules, language, guild as Discord.Guild),
+    value: embedParsers.rules(settings?.repostrules, language, guild),
     inline: false,
    },
   ],

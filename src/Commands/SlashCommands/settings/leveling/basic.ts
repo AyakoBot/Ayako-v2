@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     }),
   );
  cmd.reply({
-  embeds: await getEmbeds(embedParsers, settings, language, lan),
+  embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
   ephemeral: true,
  });

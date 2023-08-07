@@ -50,6 +50,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     : cmd.guild.autoModerationRules.cache.map((o) => o)) as never,
    language,
    language.slashCommands.settings.categories[settingName],
+   cmd.guild,
   ),
   components: await settingsFile.getComponents(
    ch.settingsHelpers.buttonParsers,

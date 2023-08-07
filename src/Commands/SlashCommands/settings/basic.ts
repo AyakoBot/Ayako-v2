@@ -26,7 +26,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.settings.categories[name];
 
  cmd.reply({
-  embeds: await getEmbeds(embedParsers, settings, language, lan),
+  embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
   ephemeral: true,
  });

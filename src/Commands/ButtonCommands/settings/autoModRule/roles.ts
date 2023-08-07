@@ -32,6 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     'exemptRoles',
     rule.exemptRoles.map((c) => c.id),
     'role',
+    cmd.guild,
    ),
   ],
   components: [

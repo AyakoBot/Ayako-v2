@@ -117,7 +117,7 @@ export interface SettingsFile<K extends keyof TableNamesMap> {
   settings: TableNamesMap[K],
   language: Language,
   lan: Language['slashCommands']['settings']['categories'][K],
-  guild?: Discord.Guild,
+  guild: Discord.Guild,
  ) => Discord.APIEmbed[] | Promise<Discord.APIEmbed[]>;
  getComponents: (
   buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],

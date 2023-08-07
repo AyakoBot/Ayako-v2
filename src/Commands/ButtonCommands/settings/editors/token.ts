@@ -1,5 +1,5 @@
-import type * as Discord from 'discord.js';
 import crypto from 'crypto';
+import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
@@ -57,6 +57,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    updatedSetting,
    language,
    language.slashCommands.settings.categories[settingName],
+   cmd.guild,
   ),
   components: await settingsFile.getComponents(
    ch.settingsHelpers.buttonParsers,
