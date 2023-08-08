@@ -7,6 +7,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum AutoPunishPunishmentType {
+ warn
+ kick
+ tempmute
+ ban
+ tempban
+ channelban
+ tempchannelban
+}
+
+enum PunishmentType {
+ warn
+ kick
+ tempmute
+ ban
+ tempban
+ channelban
+ tempchannelban
+ strike
+}
+
+enum AnswerType {
+ paragraph
+ short
+ number
+ boolean
+ multiple_choice
+ single_choice
+}
+
+enum LevelType { 
+ guild
+ global
+}
+
+enum LevelUpMode {
+ message
+ react
+ silent
+}
+
+enum VoteType {
+ guild
+ bot
+}
+
+
 model afk {
   userid  String  @db.VarChar
   text    String?
@@ -23,7 +70,7 @@ model antiraid {
   postchannel   String?  @db.VarChar
   pingroles     String[] @db.VarChar
   pingusers     String[] @db.VarChar
-  time          Decimal  @default(15000) @db.Decimal
+  time          Decimal  @default(15) @db.Decimal
   jointhreshold Decimal  @default(10) @db.Decimal
   punishmenttof Boolean  @default(true)
   punishment    PunishmentType   @default(kick)
@@ -46,8 +93,8 @@ model antispam {
 model antivirus {
   guildid         String   @id @db.VarChar
   active          Boolean  @default(false)
-  minimize        Decimal  @default(10000) @db.Decimal
-  delete          Decimal  @default(10000) @db.Decimal
+  minimize        Decimal  @default(10) @db.Decimal
+  delete          Decimal  @default(10) @db.Decimal
   linklogging     Boolean  @default(false)
   linklogchannels String[] @db.VarChar
   minimizetof     Boolean  @default(true)
@@ -55,14 +102,7 @@ model antivirus {
   usestrike       Boolean  @default(false)
 }
 
-enum AnswerType {
- paragraph
- short
- number
- boolean
- multiple_choice
- single_choice
-}
+
 
 model appealquestions {
   guildid         String  @db.VarChar
@@ -102,14 +142,14 @@ model art {
 model autopunish {
   guildid             String   @db.VarChar
   uniquetimestamp     Decimal  @id @db.Decimal
-  duration            Decimal? @default(3600) @db.Decimal
+  duration            Decimal  @default(3600) @db.Decimal
   warnamount          Decimal? @db.Decimal
   active              Boolean  @default(false)
   addroles            String[] @db.VarChar
   removeroles         String[] @db.VarChar
   confirmationreq     Boolean  @default(false)
   punishmentawaittime Decimal  @default(20) @db.Decimal
-  punishment          PunishmentType   @default(warn)
+  punishment          AutoPunishPunishmentType   @default(warn)
 }
 
 model autoroles {
@@ -127,11 +167,20 @@ model balance {
 
   @@id([userid, guildid])
 }
-
 model blacklist {
   active        Boolean  @default(false)
   guildid       String   @id(map: "blacklists_pkey") @db.VarChar
+  blockinvites  Boolean  @default(false)
   repostenabled Boolean  @default(false)
+  inviteswlroleid      String[] @db.VarChar
+  inviteswlchannelid   String[] @db.VarChar
+  invitesaction  PunishmentType   @default(warn)
+  invitesduration Decimal @default(3600) @db.Decimal
+  maxnewlines    Decimal?  @db.Decimal 
+  newlineswlroleid     String[] @db.VarChar
+  newlineswlchannelid  String[] @db.VarChar
+  newlinesaction       PunishmentType   @default(warn)
+  newlinesduration     Decimal @default(3600) @db.Decimal
   repostroles   String[] @db.VarChar
   repostrules   String[] @db.VarChar
 }
@@ -163,7 +212,7 @@ model contributers {
 
 model cooldowns {
   command         String?
-  cooldown        Decimal  @default(10000) @db.Decimal
+  cooldown        Decimal  @default(10) @db.Decimal
   active          Boolean  @default(false)
   wlchannelid     String[] @db.VarChar
   wlroleid        String[] @db.VarChar
@@ -279,10 +328,7 @@ model guildsettings {
   legacyrp          Boolean  @default(false)
 }
 
-enum LevelType {
- guild
- global
-}
+
 
 model level {
   userid  String  @db.VarChar
@@ -295,11 +341,6 @@ model level {
   @@id([userid, guildid, type])
 }
 
-enum LevelUpMode {
- message
- react
- silent
-}
 
 model leveling {
   guildid         String   @id @db.VarChar
@@ -315,7 +356,7 @@ model leveling {
   // true = stack, false = replace
   rolemode        Boolean  @default(true)
   lvlupmode       LevelUpMode  @default(silent)
-  lvlupdeltimeout Decimal  @default(10000) @db.Decimal
+  lvlupdeltimeout Decimal  @default(10) @db.Decimal
   lvlupchannels   String[] @db.VarChar
   lvlupemotes     String[] @default(dbgenerated("'{🆙,AMayakopeek:924071140257841162}'::character varying[]")) @db.VarChar
   embed           Decimal? @db.Decimal
@@ -518,43 +559,6 @@ model punish_warns {
   msgid           String  @db.VarChar
 }
 
-enum PunishmentType {
- warn
- kick
- tempmute
- ban
- tempban
- channelban
- tempchannelban
-}
-
-model punishments_antispam {
-  uniquetimestamp Decimal  @id @db.Decimal
-  guildid         String   @db.VarChar
-  warnamount      Decimal? @db.Decimal
-  punishment      PunishmentType?
-  active          Boolean  @default(false)
-  duration        Decimal  @default(3600) @db.Decimal
-}
-
-model punishments_antivirus {
-  uniquetimestamp Decimal  @id @db.Decimal
-  guildid         String   @db.VarChar
-  warnamount      Decimal? @db.Decimal
-  punishment      PunishmentType?
-  active          Boolean  @default(false)
-  duration        Decimal  @default(3600) @db.Decimal
-}
-
-model punishments_blacklist {
-  uniquetimestamp Decimal  @id(map: "punishments_pkey") @db.Decimal
-  guildid         String   @db.VarChar
-  warnamount      Decimal? @db.Decimal
-  punishment      PunishmentType?
-  active          Boolean  @default(false)
-  duration        Decimal  @default(3600) @db.Decimal
-}
-
 model reactionroles {
   uniquetimestamp Decimal  @id(map: "rrreactions_pkey") @db.Decimal
   emote           String?  @db.VarChar
@@ -733,7 +737,7 @@ model verification {
   pendingrole  String? @db.VarChar
   startchannel String? @db.VarChar
   selfstart    Boolean @default(false)
-  kickafter    Decimal @default(600000) @db.Decimal
+  kickafter    Decimal @default(600) @db.Decimal
   kicktof      Boolean @default(false)
   active       Boolean @default(false)
 }
@@ -750,10 +754,7 @@ model voterewards {
   active             Boolean  @default(false)
 }
 
-enum VoteType {
- guild
- bot
-}
+
 
 model voters {
   userid             String   @db.VarChar

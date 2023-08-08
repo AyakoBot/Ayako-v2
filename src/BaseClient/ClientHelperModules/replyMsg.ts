@@ -59,8 +59,8 @@ export const cooldownHandler = async (
 
  let emote: string;
 
- if (Number(r.cooldown) <= 60000) {
-  const emoteToUse = objectEmotes.timers[Number(r.cooldown) / 1000];
+ if (Number(r.cooldown) <= 60) {
+  const emoteToUse = objectEmotes.timers[Number(r.cooldown)];
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
  } else emote = '⌛';
 
@@ -74,7 +74,7 @@ export const cooldownHandler = async (
   const emoteToUse = objectEmotes.timers[60];
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
 
-  jobs.scheduleJob(new Date(Date.now() + (Number(r.cooldown) - 60000)), async () => {
+  jobs.scheduleJob(new Date(Date.now() + (Number(r.cooldown) * 1000 - 60000)), async () => {
    const secondReaction = await sentMessage.react(emote).catch(() => undefined);
    if (secondReaction === undefined) return;
 
@@ -82,7 +82,7 @@ export const cooldownHandler = async (
   });
  }
 
- jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown)), async () => {
+ jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown) * 1000), async () => {
   const client = (await import('../Client.js')).default;
 
   reactions.forEach((react) => {
