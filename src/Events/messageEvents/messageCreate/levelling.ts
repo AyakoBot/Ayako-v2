@@ -142,7 +142,7 @@ const updateLevels = async (
    levelUp(
     msg,
     { oldXP: level.xp.toNumber(), newXP: xp, newLevel: oldLevel + 1, oldLevel },
-    settings as NonNullable<Prisma.leveling>,
+    settings as Prisma.leveling,
    );
   }
  }
@@ -352,8 +352,9 @@ const checkRules = (msg: Discord.Message<true>, settings: Prisma.levelingrulesch
 const levelUp = async (
  msg: Discord.Message<true>,
  levelData: LevelData,
- setting: Prisma.leveling,
+ setting: Prisma.leveling | null,
 ) => {
+ if (!setting) return;
  const language = await ch.languageSelector(msg.guildId);
 
  switch (setting.lvlupmode) {
