@@ -72,20 +72,8 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('anti-spam-punishments')
-     .setDescription('The Punishments to use in Anti-Spam')
-     .addStringOption(IDSelector),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
      .setName('anti-virus')
      .setDescription('Stop Members from posting harmful Links'),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
-     .setName('anti-virus-punishments')
-     .setDescription('The Punishments to use in Anti-Virus')
-     .addStringOption(IDSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -1265,9 +1253,7 @@ export default {
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
-  'settings_moderation_anti-spam-punishments': 'moderation',
   'settings_moderation_anti-virus': 'moderation',
-  'settings_moderation_anti-virus-punishments': 'moderation',
   'settings_moderation_anti-raid': 'moderation',
   'settings_moderation_auto-punish': 'moderation',
   settings_moderation_blacklist: 'moderation',

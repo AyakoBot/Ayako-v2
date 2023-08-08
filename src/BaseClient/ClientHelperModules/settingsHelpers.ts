@@ -316,7 +316,12 @@ const postUpdate = async <T extends keyof SettingsNames>(
 
  const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
 
- settingsFile.postChange?.(oldSetting, newSetting, changedSetting as never, uniquetimestamp);
+ settingsFile.postChange?.(
+  oldSetting as CT.TableNamesMap[T],
+  newSetting as CT.TableNamesMap[T],
+  changedSetting as never,
+  uniquetimestamp,
+ );
 };
 
 const changeHelpers = {
@@ -334,10 +339,6 @@ const changeHelpers = {
      //  return DataBase.appealquestions.findUnique(where);
      case 'vote-rewards':
       return DataBase.voterewards.findUnique(where);
-     case 'anti-spam-punishments':
-      return DataBase.punishments_antispam.findUnique(where);
-     case 'anti-virus-punishments':
-      return DataBase.punishments_antivirus.findUnique(where);
      case 'auto-punish':
       return DataBase.autopunish.findUnique(where);
      case 'role-rewards':
@@ -436,10 +437,6 @@ const changeHelpers = {
      //  return DataBase.appealquestions.update(where);
      case 'vote-rewards':
       return DataBase.voterewards.update(where);
-     case 'anti-spam-punishments':
-      return DataBase.punishments_antispam.update(where);
-     case 'anti-virus-punishments':
-      return DataBase.punishments_antivirus.update(where);
      case 'auto-punish':
       return DataBase.autopunish.update(where);
      case 'role-rewards':
@@ -952,10 +949,6 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
     //  return DataBase.appealquestions.create(where);
     case 'vote-rewards':
      return DataBase.voterewards.create(where);
-    case 'anti-spam-punishments':
-     return DataBase.punishments_antispam.create(where);
-    case 'anti-virus-punishments':
-     return DataBase.punishments_antivirus.create(where);
     case 'auto-punish':
      return DataBase.autopunish.create(where);
     case 'role-rewards':
@@ -1044,10 +1037,6 @@ const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp
    //  return DataBase.appealquestions.delete(where);
    case 'vote-rewards':
     return DataBase.voterewards.delete(where);
-   case 'anti-spam-punishments':
-    return DataBase.punishments_antispam.delete(where);
-   case 'anti-virus-punishments':
-    return DataBase.punishments_antivirus.delete(where);
    case 'auto-punish':
     return DataBase.autopunish.delete(where);
    case 'role-rewards':

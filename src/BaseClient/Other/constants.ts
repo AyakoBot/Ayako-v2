@@ -3,8 +3,6 @@ import * as CT from '../../Typings/CustomTypings.js';
 
 export enum TableNamesPrismaTranslation {
  'anti-spam' = 'antispam',
- 'anti-spam-punishments' = 'punishments_antispam',
- 'anti-virus-punishments' = 'punishments_antivirus',
  'anti-raid' = 'antiraid',
  'anti-virus' = 'antivirus',
  'auto-punish' = 'autopunish',
@@ -36,12 +34,6 @@ export enum TableNamesPrismaTranslation {
  'button-roles' = 'buttonroles',
  'role-rewards' = 'rolerewards',
 }
-
-const punishment = {
- warnamount: 'number',
- punishment: 'punishment',
- duration: 'duration',
-};
 
 const colors = {
  danger: 16711680,
@@ -727,6 +719,16 @@ export default {
      repostenabled: 'boolean',
      repostroles: 'roles',
      repostrules: 'automodrules',
+     blockinvites: 'boolean',
+     inviteswlchannelid: 'channels',
+     inviteswlroleid: 'roles',
+     maxnewlines: 'number',
+     newlineswlchannelid: 'channels',
+     newlineswlroleid: 'roles',
+     newlinesaction: 'punishment',
+     newlinesduration: 'duration',
+     invitesaction: 'punishment',
+     invitesduration: 'duration',
     },
     'auto-punish': {
      duration: 'duration',
@@ -742,8 +744,6 @@ export default {
      userroleid: 'roles',
      allroleid: 'roles',
     },
-    'anti-spam-punishments': punishment,
-    'anti-virus-punishments': punishment,
     'blacklist-rules': {},
     'level-roles': {
      level: 'number',
@@ -815,8 +815,6 @@ export default {
    },
    tableNames: {
     'anti-spam': 'antispam',
-    'anti-spam-punishments': 'punishments_antispam',
-    'anti-virus-punishments': 'punishments_antivirus',
     'anti-raid': 'antiraid',
     'anti-virus': 'antivirus',
     'auto-punish': 'autopunish',

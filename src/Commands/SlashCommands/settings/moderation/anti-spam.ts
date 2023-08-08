@@ -79,7 +79,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.boolean(settings?.deletespam, language),
     inline: true,
    },
-
    {
     name: language.slashCommands.settings.wlchannel,
     value: embedParsers.channels(settings?.wlchannelid, language),

@@ -10,7 +10,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const currentSettings = await ch.settingsHelpers
   .setup(settingName, cmd.guildId, Date.now())
-  .then(<T extends keyof CT.TableNamesMap>(r: unknown) => r as CT.TableNamesMap[T][]);
+  .then(<T extends keyof CT.TableNamesMap>(r: unknown) => r as CT.TableNamesMap[T]);
 
  const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;

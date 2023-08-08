@@ -67,8 +67,6 @@ export interface bEvalUser {
 
 export type TableNamesMap = {
  'anti-spam': Prisma.antispam;
- 'anti-spam-punishments': Prisma.punishments;
- 'anti-virus-punishments': Prisma.punishments;
  'blacklist-rules': null;
  'anti-raid': Prisma.antiraid;
  'anti-virus': Prisma.antivirus;
@@ -262,7 +260,15 @@ type BaseOptions = {
  executor?: Discord.User | bEvalUser;
 };
 
-type Channel = { channel: Discord.GuildChannel | undefined };
+type Channel = {
+ channel:
+  | Discord.NewsChannel
+  | Discord.StageChannel
+  | Discord.TextChannel
+  | Discord.VoiceChannel
+  | Discord.ForumChannel
+  | undefined;
+};
 type Role = { role: Discord.Role };
 type Temp = { duration: number };
 type Empty = NonNullable<unknown>;

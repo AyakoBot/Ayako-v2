@@ -24,20 +24,21 @@ const time = {
  timeIn: (t: string) => `in ${t}`,
 };
 
-const punishmentFields = {
- punishment: {
-  name: 'Punishment',
-  desc: 'The Punishment Type',
- },
- warnamount: {
-  name: 'Warn Amount',
-  desc: 'The Amount of Warns required for this Punishment',
- },
- duration: {
-  name: 'Duration',
-  desc: 'The Duration of the Punishment (only applies to Temporary Punishments)',
- },
-};
+// TODO: auto-punish ??
+// const punishmentFields = {
+//  punishment: {
+//   name: 'Punishment',
+//   desc: 'The Punishment Type',
+//  },
+//  warnamount: {
+//   name: 'Warn Amount',
+//   desc: 'The Amount of Warns required for this Punishment',
+//  },
+//  duration: {
+//   name: 'Duration',
+//   desc: 'The Duration of the Punishment (only applies to Temporary Punishments)',
+//  },
+// };
 
 const usestrike = {
  name: 'Use Strike-System',
@@ -64,6 +65,11 @@ const holdhands = {
  others: 'holds hands with',
  request: 'wants to hold your hand!',
  buttons: ['Hold Hands~!'],
+};
+
+const punishmentDuration = {
+ name: 'Duration',
+ desc: 'The Duration of the Punishment',
 };
 
 const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
@@ -2365,10 +2371,6 @@ export default {
       linkedid,
      },
     },
-    'anti-spam-punishments': {
-     name: 'Anti-Spam Punishments',
-     fields: punishmentFields,
-    },
     'anti-spam': {
      name: 'Anti-Spam',
      fields: {
@@ -2420,10 +2422,6 @@ export default {
       },
       usestrike,
      },
-    },
-    'anti-virus-punishments': {
-     name: 'Anti-Virus Punishments',
-     fields: punishmentFields,
     },
     'anti-raid': {
      name: 'Anti-Raid',
@@ -2498,7 +2496,10 @@ export default {
     blacklist: {
      name: 'Blacklist',
      fields: {
-      usestrike,
+      blockinvites: {
+       name: 'Block Invites',
+       desc: 'Whether to Block Invites',
+      },
       repostenabled: {
        name: 'Repost censored Message',
        desc: 'Whether to Repost the Message with censoring',
@@ -2512,6 +2513,36 @@ export default {
        desc:
         'Rules that will have a censored Message reposted. If none are selected, all Rules will have their censored Message reposted',
       },
+      maxnewlines: {
+       name: 'Max. Newlines',
+       desc: 'Maximum amount of Newlines allowed in a Message',
+      },
+      inviteswlroleid: {
+       name: 'Invites Whitelisted Roles',
+       desc: 'Users with this Role will be able to post Invites',
+      },
+      inviteswlchannelid: {
+       name: 'Invites Whitelisted Channels',
+       desc: 'Users will be able to post Invites in these Channels',
+      },
+      newlineswlchannelid: {
+       name: 'Newlines Whitelisted Channels',
+       desc: 'Users will be able to bypass the Newlines Rule in these Channels',
+      },
+      newlineswlroleid: {
+       name: 'Newlines Whitelisted Roles',
+       desc: 'Users with this Role will be able to bypass the Newlines Rule',
+      },
+      invitesaction: {
+       name: 'Invites Action',
+       desc: 'The Action to take when a User posts an Invite',
+      },
+      newlinesaction: {
+       name: 'Newlines Action',
+       desc: 'The Action to take when a User posts too many Newlines',
+      },
+      invitesduration: punishmentDuration,
+      newlinesduration: punishmentDuration,
      },
     },
     'blacklist-rules': {
@@ -3641,6 +3672,12 @@ export default {
    }`,
   reason: `${name} Leveling`,
  },
+ blacklist: {
+  reasonNewlines: 'Too many Newlines',
+  warnNewlines: (n: number) =>
+   `You've exceeded the Newlines limit of ${n}.\nPlease send less many Newlines`,
+  reasonInvite: 'Invite posted',
+ },
  antivirus: {
   whitelisted: (tick: string) => `${tick} This Link is __not__ Malicious`,
   checking: 'Link:',
@@ -3985,6 +4022,7 @@ export default {
   kick: 'Kick',
   tempban: 'Temp-Ban',
   ban: 'Ban',
+  strike: 'Strike',
  },
  commandTypes: {
   slashCommands: 'Slash Commands',

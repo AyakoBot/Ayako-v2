@@ -61,9 +61,6 @@ export interface DBTables {
  welcome: Prisma.welcome;
  levelingmultiroles: Prisma.levelingmultiroles;
  votesettings: Prisma.votesettings;
- punishments_blacklist: Prisma.punishments_blacklist;
- punishments_antispam: Prisma.punishments_antispam;
- punishments_antivirus: Prisma.punishments_antivirus;
  voterewards: Prisma.voterewards;
  appealsettings: Prisma.appealsettings;
  appealquestions: Prisma.appealquestions;

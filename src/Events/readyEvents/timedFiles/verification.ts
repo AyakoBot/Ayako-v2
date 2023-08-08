@@ -17,7 +17,7 @@ export default async () => {
   const language = await ch.languageSelector(guild.id);
 
   guild.members.cache
-   .filter((m) => Date.now() - Number(r.kickafter) > Number(m.joinedTimestamp))
+   .filter((m) => Date.now() - Number(r.kickafter) * 1000 > Number(m.joinedTimestamp))
    .forEach((m) => kick(m, r, language));
  });
 };
