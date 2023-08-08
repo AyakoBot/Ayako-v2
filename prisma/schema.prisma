@@ -296,6 +296,12 @@ model level {
   @@id([userid, guildid, type])
 }
 
+enum LevelUpMode {
+ message
+ react
+ silent
+}
+
 model leveling {
   guildid         String   @id @db.VarChar
   active          Boolean  @default(true)
@@ -307,14 +313,16 @@ model leveling {
   wlroles         String[] @db.VarChar
   wlusers         String[] @db.VarChar
   xppermsg        Decimal  @default(25) @db.Decimal
+  // true = stack, false = replace
   rolemode        Boolean  @default(true)
-  lvlupmode       Decimal  @default(0) @db.Decimal
+  lvlupmode       LevelUpMode  @default(silent)
   lvlupdeltimeout Decimal  @default(10000) @db.Decimal
   lvlupchannels   String[] @db.VarChar
   lvlupemotes     String[] @default(dbgenerated("'{🆙,AMayakopeek:924071140257841162}'::character varying[]")) @db.VarChar
   embed           Decimal? @db.Decimal
   ignoreprefixes  Boolean  @default(false)
   prefixes        String[]
+  minwords        Decimal @default(0) @db.Decimal
 }
 
 model levelingmultichannels {
@@ -396,7 +404,8 @@ model nitrosettings {
   guildid     String   @id @db.VarChar
   active      Boolean  @default(false)
   logchannels String[] @db.VarChar
-  rolemode    Boolean? @default(false)
+  // true = stack, false = replace (WARNING: this value was inverted in relation to the old DB)
+  rolemode    Boolean? @default(true)
 }
 
 model nitrousers {

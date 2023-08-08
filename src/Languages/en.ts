@@ -3040,6 +3040,10 @@ export default {
        name: 'Prefixes',
        desc: 'The Prefixes that will tell if the Message should be ignored',
       },
+      minwords: {
+       name: 'Minimum Amount of Words',
+       desc: 'The Minimum Amount of Words required to award XP (measured by Spaces)',
+      },
      },
     },
     'multi-channels': {

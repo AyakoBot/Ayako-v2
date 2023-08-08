@@ -40,6 +40,11 @@ const cache: {
  disboardBumpReminders: DisboardBumpReminders;
  giveaways: Giveaways;
  stickyTimeouts: StickyTimeouts;
+
+ globalLevellingCD: Set<string>;
+ guildLevellingCD: Set<string>;
+ lastMessageGlobal: Map<string, string>;
+ lastMessageGuild: Map<string, string>;
 } = {
  // Discord Cache
  invites,
@@ -62,6 +67,11 @@ const cache: {
  giveaways,
  stickyTimeouts,
  auditLogs,
+
+ globalLevellingCD: new Set(),
+ guildLevellingCD: new Set(),
+ lastMessageGlobal: new Map(),
+ lastMessageGuild: new Map(),
 };
 
 export default cache;

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { Prisma } from '@prisma/client';
+import { LevelUpMode } from '@prisma/client';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
@@ -23,6 +23,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      data: { guildid: cmd.guildId },
     }),
   );
+
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
@@ -31,14 +32,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 const getLevelUpMode = (
- type: Prisma.Decimal,
+ type: LevelUpMode,
  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
  switch (true) {
-  case type.equals(1): {
+  case type === 'message': {
    return lan.messages;
   }
-  case type.equals(2): {
+  case type === 'react': {
    return lan.reactions;
   }
   default: {
@@ -92,7 +93,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  ];
 
  switch (true) {
-  case settings.lvlupmode.equals(1): {
+  case settings.lvlupmode === 'message': {
    embeds[0].fields?.push(
     {
      name: lan.fields.embed.name,
@@ -113,7 +114,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 
    break;
   }
-  case settings.lvlupmode.equals(2): {
+  case settings.lvlupmode === 'react': {
    embeds[0].fields?.push(
     {
      name: lan.fields.lvlupemotes.name,
@@ -152,6 +153,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    value: settings.prefixes?.length
     ? settings.prefixes.map((p) => `\`${p}\``).join(', ')
     : language.None,
+   inline: true,
+  },
+  {
+   name: lan.fields.minwords.name,
+   value: embedParsers.number(settings.minwords, language),
    inline: true,
   },
   {
@@ -216,6 +222,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    components: [
     buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
     buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
+    buttonParsers.specific(language, settings.minwords, 'minwords', name, undefined),
     buttonParsers.global(language, settings.blchannels, 'blchannelid', name, undefined),
    ],
   },
@@ -232,7 +239,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  ];
 
  switch (true) {
-  case settings.lvlupmode.equals(1): {
+  case settings.lvlupmode === 'message': {
    components[2].components.push(
     buttonParsers.specific(language, settings.embed, 'embed', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
@@ -247,7 +254,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    );
    break;
   }
-  case settings.lvlupmode.equals(2): {
+  case settings.lvlupmode === 'react': {
    components[2].components.push(
     buttonParsers.specific(language, settings.lvlupemotes, 'lvlupemotes', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
