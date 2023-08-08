@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default (msg: Discord.Message) => {
+export default (msg: Discord.Message<true>) => {
  if (
   ![
    '534783899331461123',

@@ -8,8 +8,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 type LevelData = { oldXP: number; newXP: number; newLevel: number; oldLevel: number };
 
-export default async (msg: Discord.Message) => {
- if (!msg.inGuild()) return;
+export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;
 
  globalLevelling(msg);
@@ -50,29 +49,29 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  const settings = await checkEnabled(msg);
- if (!settings) return;
+ if (settings && !settings.active) return;
 
- if (Number(msg.content.match(/\s+/g)?.length) < settings.minwords.toNumber()) return;
+ if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords.toNumber())) return;
 
  if (
-  settings.ignoreprefixes &&
-  settings.prefixes.length &&
+  settings?.ignoreprefixes &&
+  settings?.prefixes.length &&
   settings.prefixes.some((w) => msg.content.toLowerCase().startsWith(w.toLowerCase()))
  ) {
   return;
  }
 
- if (!settings.wlusers || !settings.wlusers.includes(msg.author.id)) {
-  if (settings.blusers && settings.blusers.includes(msg.author.id)) return;
-  if (settings.blroles && msg.member?.roles.cache.some((r) => settings.blroles.includes(r.id))) {
+ if (!settings?.wlusers || !settings.wlusers.includes(msg.author.id)) {
+  if (settings?.blusers && settings.blusers.includes(msg.author.id)) return;
+  if (settings?.blroles && msg.member?.roles.cache.some((r) => settings.blroles.includes(r.id))) {
    return;
   }
 
-  if (settings.wlroles || !msg.member?.roles.cache.some((r) => settings.wlroles.includes(r.id))) {
-   if (settings.blchannels && settings.blchannels.includes(msg.channel.id)) return;
+  if (settings?.wlroles || !msg.member?.roles.cache.some((r) => settings?.wlroles.includes(r.id))) {
+   if (settings?.blchannels && settings.blchannels.includes(msg.channel.id)) return;
    if (
-    settings.wlchannels &&
-    settings.wlchannels.length &&
+    settings?.wlchannels &&
+    settings?.wlchannels.length &&
     !settings.wlchannels.includes(msg.channel.id)
    ) {
     return;
@@ -109,7 +108,7 @@ const getRules = async (msg: Discord.Message<true>) => {
 };
 
 const checkEnabled = async (msg: Discord.Message<true>) =>
- ch.DataBase.leveling.findUnique({ where: { guildid: msg.guildId, active: true } });
+ ch.DataBase.leveling.findUnique({ where: { guildid: msg.guildId } });
 
 const updateLevels = async (
  msg: Discord.Message<true>,

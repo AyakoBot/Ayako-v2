@@ -3,8 +3,7 @@ import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import { MessageCreateOptions } from '../../../BaseClient/ClientHelperModules/send.js';
 
-export default async (msg: Discord.Message) => {
- if (!msg.inGuild()) return;
+export default async (msg: Discord.Message<true>) => {
  if (msg.author.id === msg.client.user.id) return;
  if (msg.author.discriminator === '0000' && msg.author.bot) return;
 

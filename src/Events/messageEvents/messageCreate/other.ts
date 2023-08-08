@@ -3,7 +3,7 @@ import jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 
-export default async (msg: Discord.Message) => {
+export default async (msg: Discord.Message<true>) => {
  if (msg.author.discriminator === '0000') return;
 
  gvMessageCheck(msg);
