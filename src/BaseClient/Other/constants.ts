@@ -213,6 +213,7 @@ export default {
  } as Record<string, keyof typeof colors>,
  colors,
  standard: {
+  dmLogChannelID: '825297763822469140',
   prefix: 't!',
   invite:
    'https://discord.com/api/oauth2/authorize?client_id=650691698409734151&permissions=1642787630327&scope=bot%20applications.commands',

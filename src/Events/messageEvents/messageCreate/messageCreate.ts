@@ -10,7 +10,7 @@ import commandHandler from './commandHandler.js';
 import afk from './afk.js';
 import levelling from './levelling.js';
 
-// import dmLog from './dmLog.js';
+import dmLog from './dmLog.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg) return;
@@ -29,7 +29,7 @@ export default async (msg: Discord.Message) => {
   levelling(msg);
   // eventDel(msg);
  } else {
-  // dmLog(msg);
+  dmLog(msg);
  }
 };
 
