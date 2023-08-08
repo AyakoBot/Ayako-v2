@@ -5,7 +5,6 @@ export enum TableNamesPrismaTranslation {
  'anti-spam' = 'antispam',
  'anti-spam-punishments' = 'punishments_antispam',
  'anti-virus-punishments' = 'punishments_antivirus',
- 'blacklist-punishments' = 'punishments_blacklist',
  'anti-raid' = 'antiraid',
  'anti-virus' = 'antivirus',
  'auto-punish' = 'autopunish',
@@ -745,7 +744,6 @@ export default {
     },
     'anti-spam-punishments': punishment,
     'anti-virus-punishments': punishment,
-    'blacklist-punishments': punishment,
     'blacklist-rules': {},
     'level-roles': {
      level: 'number',
@@ -819,7 +817,6 @@ export default {
     'anti-spam': 'antispam',
     'anti-spam-punishments': 'punishments_antispam',
     'anti-virus-punishments': 'punishments_antivirus',
-    'blacklist-punishments': 'punishments_blacklist',
     'anti-raid': 'antiraid',
     'anti-virus': 'antivirus',
     'auto-punish': 'autopunish',

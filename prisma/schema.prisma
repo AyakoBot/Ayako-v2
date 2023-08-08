@@ -131,7 +131,6 @@ model balance {
 model blacklist {
   active        Boolean  @default(false)
   guildid       String   @id(map: "blacklists_pkey") @db.VarChar
-  usestrike     Boolean  @default(false)
   repostenabled Boolean  @default(false)
   repostroles   String[] @db.VarChar
   repostrules   String[] @db.VarChar

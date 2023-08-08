@@ -105,12 +105,6 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('blacklist-punishments')
-     .setDescription('The Punishments to use in Blacklist')
-     .addStringOption(IDSelector),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
      .setName('blacklist-rules')
      .setDescription('The Rules of the Blacklist')
      .addStringOption(IDSelector),
@@ -1277,7 +1271,6 @@ export default {
   'settings_moderation_anti-raid': 'moderation',
   'settings_moderation_auto-punish': 'moderation',
   settings_moderation_blacklist: 'moderation',
-  'settings_moderation_blacklist-punishments': 'moderation',
   'settings_moderation_blacklist-rules': 'moderation',
   settings_moderation_expiry: 'moderation',
   settings_leveling_basic: 'leveling',

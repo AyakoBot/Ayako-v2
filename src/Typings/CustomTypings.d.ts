@@ -69,7 +69,6 @@ export type TableNamesMap = {
  'anti-spam': Prisma.antispam;
  'anti-spam-punishments': Prisma.punishments;
  'anti-virus-punishments': Prisma.punishments;
- 'blacklist-punishments': Prisma.punishments;
  'blacklist-rules': null;
  'anti-raid': Prisma.antiraid;
  'anti-virus': Prisma.antivirus;

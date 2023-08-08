@@ -340,8 +340,6 @@ const changeHelpers = {
       return DataBase.punishments_antivirus.findUnique(where);
      case 'auto-punish':
       return DataBase.autopunish.findUnique(where);
-     case 'blacklist-punishments':
-      return DataBase.punishments_blacklist.findUnique(where);
      case 'role-rewards':
       return DataBase.rolerewards.findUnique(where);
      case 'cooldowns':
@@ -444,8 +442,6 @@ const changeHelpers = {
       return DataBase.punishments_antivirus.update(where);
      case 'auto-punish':
       return DataBase.autopunish.update(where);
-     case 'blacklist-punishments':
-      return DataBase.punishments_blacklist.update(where);
      case 'role-rewards':
       return DataBase.rolerewards.update(where);
      case 'cooldowns':
@@ -962,8 +958,6 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
      return DataBase.punishments_antivirus.create(where);
     case 'auto-punish':
      return DataBase.autopunish.create(where);
-    case 'blacklist-punishments':
-     return DataBase.punishments_blacklist.create(where);
     case 'role-rewards':
      return DataBase.rolerewards.create(where);
     case 'cooldowns':
@@ -1056,8 +1050,6 @@ const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp
     return DataBase.punishments_antivirus.delete(where);
    case 'auto-punish':
     return DataBase.autopunish.delete(where);
-   case 'blacklist-punishments':
-    return DataBase.punishments_blacklist.delete(where);
    case 'role-rewards':
     return DataBase.rolerewards.delete(where);
    case 'cooldowns':

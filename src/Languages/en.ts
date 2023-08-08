@@ -2514,10 +2514,6 @@ export default {
       },
      },
     },
-    'blacklist-punishments': {
-     name: 'Blacklist Punishments',
-     fields: punishmentFields,
-    },
     'blacklist-rules': {
      name: 'Blacklist Rules',
      keyword: 'Keyword Rule',
