@@ -3,7 +3,7 @@ import DataBase from '../DataBase.js';
 import * as Client from '../Client.js';
 
 export default async (refreshtoken: string) => {
- const res = await Client.OAuth2Client.refreshToken({
+ const res = await Client.OAuth2API.refreshToken({
   client_id: Client.default.user?.id as string,
   client_secret: auth.secret,
   grant_type: 'refresh_token',

@@ -58,7 +58,8 @@ const client = new Discord.Client({
 
 await client.login(auth.token);
 
-const OAuth2Client = new DiscordCore.OAuth2API(client.rest);
+const OAuth2API = new DiscordCore.OAuth2API(client.rest);
+const UsersAPI = new DiscordCore.UsersAPI(client.rest);
 
 export default client;
-export { OAuth2Client };
+export { OAuth2API, UsersAPI };
