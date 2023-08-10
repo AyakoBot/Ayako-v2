@@ -178,22 +178,17 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
        ),
       ]
     : []),
-   buttonParsers.specific(
-    language,
-    settings?.inviteswlchannelid,
-    'inviteswlchannelid',
-    name,
-    undefined,
-    'channel',
-   ),
-   buttonParsers.specific(
-    language,
-    settings?.inviteswlroleid,
-    'inviteswlroleid',
-    name,
-    undefined,
-    'role',
-   ),
+   ...(['tempban', 'softban', 'ban'].includes(settings?.invitesaction)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.invitesdeletemessageseconds,
+        'invitesdeletemessageseconds',
+        name,
+        undefined,
+       ),
+      ]
+    : []),
   ],
  },
  {
@@ -212,6 +207,38 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
        ),
       ]
     : []),
+   ...(['tempban', 'softban', 'ban'].includes(settings?.newlinesaction)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.newlinesdeletemessageseconds,
+        'newlinesdeletemessageseconds',
+        name,
+        undefined,
+       ),
+      ]
+    : []),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.specific(
+    language,
+    settings?.inviteswlchannelid,
+    'inviteswlchannelid',
+    name,
+    undefined,
+    'channel',
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.inviteswlroleid,
+    'inviteswlroleid',
+    name,
+    undefined,
+    'role',
+   ),
    buttonParsers.specific(
     language,
     settings?.newlineswlchannelid,
