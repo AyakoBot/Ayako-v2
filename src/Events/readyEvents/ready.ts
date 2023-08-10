@@ -10,9 +10,8 @@ export default async () => {
  ready = true;
 
  log(
-  `| Logged in\n| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${
-   client.user?.id
-  }\n| Login at ${new Date(Date.now()).toLocaleString()}`,
+  `| Logged in\n| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${client.user
+   ?.id}\n| Login at ${new Date(Date.now()).toLocaleString()}`,
  );
 
  Jobs.scheduleJob('*/10 * * * *', async () => {

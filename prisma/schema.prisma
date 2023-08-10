@@ -15,6 +15,7 @@ enum AutoPunishPunishmentType {
  tempban
  channelban
  tempchannelban
+ softban
 }
 
 enum PunishmentType {
@@ -26,6 +27,7 @@ enum PunishmentType {
  channelban
  tempchannelban
  strike
+ softban
 }
 
 enum AnswerType {
@@ -35,6 +37,7 @@ enum AnswerType {
  boolean
  multiple_choice
  single_choice
+ justtext // TODO no answer
 }
 
 enum LevelType { 
@@ -140,16 +143,17 @@ model art {
 }
 
 model autopunish {
-  guildid             String   @db.VarChar
-  uniquetimestamp     Decimal  @id @db.Decimal
-  duration            Decimal  @default(3600) @db.Decimal
-  warnamount          Decimal? @db.Decimal
-  active              Boolean  @default(false)
-  addroles            String[] @db.VarChar
-  removeroles         String[] @db.VarChar
-  confirmationreq     Boolean  @default(false)
-  punishmentawaittime Decimal  @default(20) @db.Decimal
-  punishment          AutoPunishPunishmentType   @default(warn)
+  guildid              String   @db.VarChar
+  uniquetimestamp      Decimal  @id @db.Decimal
+  duration             Decimal  @default(3600) @db.Decimal
+  warnamount           Decimal? @db.Decimal
+  active               Boolean  @default(false)
+  addroles             String[] @db.VarChar
+  removeroles          String[] @db.VarChar
+  confirmationreq      Boolean  @default(false)
+  punishmentawaittime  Decimal  @default(20) @db.Decimal
+  punishment           AutoPunishPunishmentType @default(warn)
+  deletemessageseconds Decimal  @default(604800) @db.Decimal 
 }
 
 model autoroles {
@@ -168,21 +172,23 @@ model balance {
   @@id([userid, guildid])
 }
 model blacklist {
-  active        Boolean  @default(false)
-  guildid       String   @id(map: "blacklists_pkey") @db.VarChar
-  blockinvites  Boolean  @default(false)
-  repostenabled Boolean  @default(false)
-  inviteswlroleid      String[] @db.VarChar
-  inviteswlchannelid   String[] @db.VarChar
-  invitesaction  PunishmentType   @default(warn)
-  invitesduration Decimal @default(3600) @db.Decimal
-  maxnewlines    Decimal?  @db.Decimal 
-  newlineswlroleid     String[] @db.VarChar
-  newlineswlchannelid  String[] @db.VarChar
-  newlinesaction       PunishmentType   @default(warn)
-  newlinesduration     Decimal @default(3600) @db.Decimal
-  repostroles   String[] @db.VarChar
-  repostrules   String[] @db.VarChar
+  active                       Boolean  @default(false)
+  guildid                      String   @id(map: "blacklists_pkey") @db.VarChar
+  blockinvites                 Boolean  @default(false)
+  repostenabled                Boolean  @default(false)
+  inviteswlroleid              String[] @db.VarChar
+  inviteswlchannelid           String[] @db.VarChar
+  invitesaction                PunishmentType @default(warn)
+  invitesduration              Decimal  @default(3600) @db.Decimal
+  invitesdeletemessageseconds  Decimal  @default(604800) @db.Decimal
+  maxnewlines                  Decimal? @db.Decimal 
+  newlineswlroleid             String[] @db.VarChar
+  newlineswlchannelid          String[] @db.VarChar
+  newlinesaction               PunishmentType @default(warn)
+  newlinesduration             Decimal  @default(3600) @db.Decimal
+  newlinesdeletemessageseconds Decimal  @default(604800) @db.Decimal
+  repostroles                  String[] @db.VarChar
+  repostrules                  String[] @db.VarChar
 }
 
 model buttonroles {
@@ -331,11 +337,11 @@ model guildsettings {
 
 
 model level {
-  userid  String  @db.VarChar
-  guildid String  @default(dbgenerated("1")) @db.VarChar
-  type    LevelType
-  xp      Decimal @default(0) @db.Decimal
-  level   Decimal @default(0) @db.Decimal
+  userid     String  @db.VarChar
+  guildid    String  @default(dbgenerated("1")) @db.VarChar
+  type       LevelType
+  xp         Decimal @default(0) @db.Decimal
+  level      Decimal @default(0) @db.Decimal
   multiplier Decimal @default(1) @db.Decimal
 
   @@id([userid, guildid, type])
@@ -754,8 +760,6 @@ model voterewards {
   active             Boolean  @default(false)
 }
 
-
-
 model voters {
   userid             String   @db.VarChar
   removetime         Decimal  @db.Decimal
@@ -788,4 +792,10 @@ model welcome {
   pingroles String[] @db.VarChar
   pingusers String[] @db.VarChar
   pingjoin  Boolean  @default(false)
+}
+
+model deletethreads {
+ guildid    String   @id @db.VarChar
+ channelid  String   @db.VarChar
+ deletetime Decimal  @db.Decimal
 }

@@ -129,11 +129,24 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
      : language.None,
     inline: true,
    },
-   {
-    name: lan.fields.duration.name,
-    value: embedParsers.time(Number(settings?.duration) * 1000, language),
-    inline: true,
-   },
+   ...(['tempmute', 'tempban', 'tempchannelban'].includes(settings.punishment)
+    ? [
+       {
+        name: lan.fields.duration.name,
+        value: embedParsers.time(Number(settings?.duration) * 1000, language),
+        inline: true,
+       },
+      ]
+    : []),
+   ...(['tempban', 'ban', 'softban'].includes(settings.punishment)
+    ? [
+       {
+        name: lan.fields.deletemessageseconds.name,
+        value: embedParsers.time(Number(settings?.deletemessageseconds) * 1000, language),
+        inline: true,
+       },
+      ]
+    : []),
    {
     name: lan.fields.confirmationreq.name,
     value: embedParsers.boolean(settings?.confirmationreq, language),

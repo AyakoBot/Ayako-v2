@@ -16,6 +16,12 @@ type ChannelTypes =
  | Discord.BaseGuildVoiceChannel;
 
 async function send(
+ channels: Discord.User | CT.bEvalUser,
+ payload: MessageCreateOptions,
+ command?: CT.Command,
+ timeout?: number,
+): Promise<(Discord.Message | null | void)[] | null | void>;
+async function send(
  channels: ChannelTypes[],
  payload: MessageCreateOptions,
  command?: CT.Command,
@@ -44,7 +50,9 @@ async function send(
   | ChannelTypes
   | ChannelTypes[]
   | { id: string[]; guildId: string }
-  | { id: string; guildId: string },
+  | { id: string; guildId: string }
+  | Discord.User
+  | CT.bEvalUser,
  payload: MessageCreateOptions,
  command?: CT.Command,
  timeout?: number,
@@ -70,8 +78,7 @@ async function send(
  if (payload.components?.length) timeout = undefined;
  if (payload.content?.length) timeout = undefined;
 
- const client = (await import('../Client.js')).default;
- const channel = !('name' in channels) ? client.channels.cache.get(channels.id) : channels;
+ const channel = await getChannel(channels as CT.Argument<typeof getChannel, 0>);
  if (!channel) return null;
 
  if (!('send' in channel)) return null;
@@ -221,4 +228,20 @@ const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
   }
  });
  return total;
+};
+
+const getChannel = async (
+ channels:
+  | Discord.User
+  | CT.bEvalUser
+  | ChannelTypes
+  | {
+     id: string;
+     guildId: string;
+    },
+) => {
+ const { default: client, UsersAPI } = await import('../Client.js');
+
+ if ('username' in channels) return UsersAPI.createDM(channels.id);
+ return !('name' in channels) ? client.channels.cache.get(channels.id) : channels;
 };

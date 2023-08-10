@@ -249,15 +249,15 @@ export type ModTypes =
  | 'banRemove'
  | 'kickAdd'
  | 'warnAdd'
- | 'softWarnAdd';
+ | 'softWarnAdd'
+ | 'strikeAdd';
 
 type BaseOptions = {
  reason: string;
- forceFinish: boolean;
  dbOnly: boolean;
  guild: Discord.Guild;
- target?: Discord.User | bEvalUser;
- executor?: Discord.User | bEvalUser;
+ target: Discord.User | bEvalUser;
+ executor: Discord.User | bEvalUser;
 };
 
 type Channel = {
@@ -266,21 +266,22 @@ type Channel = {
   | Discord.StageChannel
   | Discord.TextChannel
   | Discord.VoiceChannel
-  | Discord.ForumChannel
-  | undefined;
+  | Discord.ForumChannel;
 };
-type Role = { role: Discord.Role };
+
+type Roles = { roles: Discord.Role[] };
 type Temp = { duration: number };
 type Empty = NonNullable<unknown>;
+type DeleteMessageSeconds = { deleteMessageSeconds: number };
 
 type SpecificOptions = {
- roleAdd: Role;
- roleRemove: Role;
+ roleAdd: Roles;
+ roleRemove: Roles;
  tempMuteAdd: Temp;
  muteRemove: Empty;
- banAdd: Empty;
- softBanAdd: Empty;
- tempBanAdd: Temp;
+ banAdd: DeleteMessageSeconds;
+ softBanAdd: DeleteMessageSeconds;
+ tempBanAdd: Temp & DeleteMessageSeconds;
  channelBanAdd: Channel;
  tempChannelBanAdd: Channel & Temp;
  channelBanRemove: Channel;

@@ -10,11 +10,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
 
  ch.mod(cmd, 'roleAdd', {
-  role,
+  roles: [role],
   target: user,
   reason: reason ?? language.noReasonProvided,
-  forceFinish: false,
   dbOnly: false,
   guild: cmd.guild,
+  executor: cmd.user,
  });
 };

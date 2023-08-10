@@ -5,6 +5,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
 import * as CT from '../../../Typings/CustomTypings.js';
+import { deleteThread } from '../../../BaseClient/ClientHelperModules/mod.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -125,6 +126,24 @@ export const tasks = {
     ),
     t.guildid,
     t.msgid,
+   );
+  });
+ },
+ deleteThreads: async (guild: Discord.Guild) => {
+  if (!guild.rulesChannel) return;
+  const deleteThreads = await ch.DataBase.deletethreads.findMany({
+   where: { guildid: guild.id },
+  });
+  deleteThreads?.forEach((t) => {
+   ch.cache.deleteThreads.set(
+    Jobs.scheduleJob(
+     new Date(Number(t.deletetime) < Date.now() ? Date.now() + 10000 : Number(t.deletetime)),
+     () => {
+      deleteThread(guild, t.channelid);
+     },
+    ),
+    t.guildid,
+    t.channelid,
    );
   });
  },

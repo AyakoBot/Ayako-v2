@@ -32,13 +32,18 @@ const newlines = (
   guild: msg.guild,
   target: msg.author,
   executor: msg.client.user,
-  forceFinish: false,
   dbOnly: false,
  };
 
  switch (settings.newlinesaction) {
   case 'ban':
-   ch.mod(msg, 'banAdd', modOptions);
+   ch.mod(msg, 'banAdd', {
+    ...modOptions,
+    deleteMessageSeconds:
+     Number(settings.newlinesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.newlinesdeletemessageseconds),
+   });
    break;
   case 'channelban':
    ch.mod(msg, 'channelBanAdd', {
@@ -67,10 +72,26 @@ const newlines = (
    ch.mod(msg, 'warnAdd', modOptions);
    break;
   case 'strike':
-   ch.doStrike(msg, msg.author, msg.guild, modOptions);
+   ch.mod(msg, 'strikeAdd', modOptions);
    break;
   case 'tempban':
-   ch.mod(msg, 'tempBanAdd', { ...modOptions, duration: Number(settings.newlinesduration) });
+   ch.mod(msg, 'tempBanAdd', {
+    ...modOptions,
+    duration: Number(settings.newlinesduration),
+    deleteMessageSeconds:
+     Number(settings.newlinesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.newlinesdeletemessageseconds),
+   });
+   break;
+  case 'softban':
+   ch.mod(msg, 'softBanAdd', {
+    ...modOptions,
+    deleteMessageSeconds:
+     Number(settings.newlinesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.newlinesdeletemessageseconds),
+   });
    break;
   default: {
    ch.mod(msg, 'softWarnAdd', {

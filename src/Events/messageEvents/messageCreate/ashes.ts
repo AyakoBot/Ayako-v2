@@ -36,11 +36,10 @@ const banHandler = async (msg: Discord.Message) => {
 
   const modOptions: CT.ModOptions<'banRemove'> = {
    target: user,
-   executor: executor || (await ch.getUser(client.user.id)),
+   executor: executor || client.user,
+   dbOnly: false,
    reason,
    guild: msg.guild,
-   forceFinish: true,
-   dbOnly: false,
   };
 
   ch.mod(undefined, isUnban ? 'banRemove' : 'banAdd', modOptions);

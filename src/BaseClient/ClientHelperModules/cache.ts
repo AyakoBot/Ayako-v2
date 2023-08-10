@@ -17,6 +17,7 @@ import reminders, { Reminders } from './cache/bot/reminders.js';
 import disboardBumpReminders, { DisboardBumpReminders } from './cache/bot/disboardBumpReminders.js';
 import giveaways, { Giveaways } from './cache/bot/giveaways.js';
 import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
+import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
 
 const cache: {
  // Discord Cache
@@ -40,6 +41,7 @@ const cache: {
  disboardBumpReminders: DisboardBumpReminders;
  giveaways: Giveaways;
  stickyTimeouts: StickyTimeouts;
+ deleteThreads: DeleteThreads;
 
  globalLevellingCD: Set<string>;
  guildLevellingCD: Set<string>;
@@ -67,6 +69,7 @@ const cache: {
  giveaways,
  stickyTimeouts,
  auditLogs,
+ deleteThreads,
 
  globalLevellingCD: new Set(),
  guildLevellingCD: new Set(),
