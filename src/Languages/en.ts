@@ -2463,6 +2463,10 @@ export default {
     'auto-punish': {
      name: 'Auto-Punish',
      fields: {
+      deletemessageseconds: {
+       name: 'Delete Messages Time-Span',
+       desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+      },
       warnamount: {
        name: 'Warns Required',
        desc: 'Amount of Warns required before this Punishment applies',
@@ -2542,7 +2546,15 @@ export default {
        desc: 'The Action to take when a User posts too many Newlines',
       },
       invitesduration: punishmentDuration,
+      invitesdeletemessageseconds: {
+       name: 'Invites Delete Messages Time-Span',
+       desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+      },
       newlinesduration: punishmentDuration,
+      newlinesdeletemessageseconds: {
+       name: 'Newlines Delete Messages Time-Span',
+       desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+      },
      },
     },
     'blacklist-rules': {
@@ -3419,240 +3431,265 @@ export default {
     'You just issued a **Moderation Command** on a User with a **Mod Role**.\nAre you sure you want to **proceed**!',
    proceed: 'Proceed',
   },
+  appeal: (guildId: string) =>
+   `You can try to appeal your Punishment [here](https://ayakobot.com/appeals/${guildId})`,
   logs: {
    roleAdd: {
     author: 'Role given to Member',
-    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
-     `${getRole(options.role)}was given to\n${getUser(target)}by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User | CT.bEvalUser,
+     executor: Discord.User | CT.bEvalUser,
+     options: { role: Discord.Role },
+    ) => `${getRole(options.role)}was given to\n${getUser(target)}by\n${getUser(executor)}`,
    },
    roleRemove: {
     author: 'Role removed from Member',
-    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
-     `${getRole(options.role)}was removed from\n${getUser(target)}by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User | CT.bEvalUser,
+     executor: Discord.User | CT.bEvalUser,
+     options: { role: Discord.Role },
+    ) => `${getRole(options.role)}was removed from\n${getUser(target)}by\n${getUser(executor)}`,
    },
    tempmuteAdd: {
     author: 'Member Muted',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Muted by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User | CT.bEvalUser,
+     executor: Discord.User | CT.bEvalUser,
+     options: { time: string },
+    ) => `${getUser(target)}was Muted by\n${getUser(executor)}for\n${options.time}`,
    },
    muteRemove: {
     author: 'Member Un-Muted',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Un-Muted by\n${getUser(executor)}`,
    },
    banAdd: {
     author: 'User Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Banned by\n${getUser(executor)}`,
    },
    softBanAdd: {
     author: 'User Soft-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was soft-Banned by\n${getUser(executor)}`,
    },
    tempBanAdd: {
     author: 'User Temp-Banned',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Temp-Banned by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User | CT.bEvalUser,
+     executor: Discord.User | CT.bEvalUser,
+     options: { time: string },
+    ) => `${getUser(target)}was Temp-Banned by\n${getUser(executor)}for\n${options.time}`,
    },
    channelBanAdd: {
     author: 'Member Channel-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Channel-Banned by\n${getUser(executor)}`,
    },
    tempChannelbanAdd: {
     author: 'Member Temp-Channel-Banned',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User | CT.bEvalUser,
+     executor: Discord.User | CT.bEvalUser,
+     options: { time: string },
+    ) => `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}for\n${options.time}`,
    },
    channelBanRemove: {
     author: 'Member Channel-Un-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}`,
    },
    banRemove: {
     author: 'User Un-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Un-Banned by\n${getUser(executor)}`,
    },
    kickAdd: {
     author: 'Member Kicked',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Kicked by\n${getUser(executor)}`,
    },
    warnAdd: {
     author: 'User Warned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Warned by\n${getUser(executor)}`,
    },
    softWarnAdd: {
     author: 'User Soft-Warned',
-    description: (target: Discord.User, executor: Discord.User) =>
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}was Soft-Warned by\n${getUser(executor)}`,
    },
   },
   execution: {
    roleAdd: {
-    dm: (options: { role: Discord.Role }) => `${getRole(options.role)}has been added to your Roles`,
-    meNoPerms: "I can't add Roles to Users",
-    youNoPerms: "You can't add Roles to Users",
-    error: 'I failed to add this Role to the User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}already has that Role`,
-    success: (target: Discord.User, options: { role: Discord.Role }) =>
-     `${options.role} was added to ${target}`,
+    dm: (options: CT.ModOptions<'roleAdd'>) =>
+     `${options.roles.join(', ')} have been added to your Roles`,
+    meNoPerms: "I can't add Roles to this User",
+    youNoPerms: "You can't add Roles to this User",
+    error: 'I failed to add these Roles to the User',
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}already has these Roles`,
+    success: (target: Discord.User | CT.bEvalUser, options: CT.ModOptions<'roleAdd'>) =>
+     `${options.roles.join(', ')} were added to ${target}`,
     loading: 'Adding Role to User...',
     self: "You can't add Roles to yourself",
     me: "I won't add Roles to myself",
-    additionalChecksFailed: 'This Role is above my or your highest Role',
    },
    roleRemove: {
-    dm: (options: { role: Discord.Role }) =>
-     `${getRole(options.role)}has been removed from your Roles`,
-    meNoPerms: "I can't remove Roles from Users",
-    youNoPerms: "You can't remove Roles from Users",
-    error: 'I failed to remove this Role from the User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}doesn't have that Role`,
-    success: (target: Discord.User, options: { role: Discord.Role }) =>
-     `${options.role} was removed  from ${target}`,
+    dm: (options: CT.ModOptions<'roleRemove'>) =>
+     `${options.roles.join(', ')} have been removed from your Roles`,
+    meNoPerms: "I can't remove Roles from this User",
+    youNoPerms: "You can't remove Roles from this User",
+    error: 'I failed to remove these Roles from the User',
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}doesn't have that Role`,
+    success: (target: Discord.User | CT.bEvalUser, options: CT.ModOptions<'roleRemove'>) =>
+     `${options.roles.join(', ')} were removed from ${target}`,
     loading: 'Removing Role from User...',
     self: "You can't remove Roles from yourself",
     me: "I won't remove Roles from myself",
-    additionalChecksFailed: 'This Role is above my or your highest Role',
    },
    tempMuteAdd: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Muted on ${options.guild.name}`,
-    meNoPerms: "I can't Mute Users",
-    youNoPerms: "You can't Mute Users",
+    dm: () => `You have been Muted`,
+    meNoPerms: "I can't Mute this User",
+    youNoPerms: "You can't Mute this User",
     error: 'I failed to Mute this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Muted`,
-    success: (target: Discord.User) => `${getUser(target)}was Muted`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}is already Muted`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Muted`,
     loading: 'Muting User...',
     self: "You can't Mute yourself",
     me: "I won't Mute myself",
    },
    muteRemove: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Un-Muted on ${options.guild.name}`,
-    meNoPerms: "I can't Un-Mute Users",
-    youNoPerms: "You can't Un-Mute Users",
+    dm: () => `You have been Un-Muted`,
+    meNoPerms: "I can't Un-Mute this User",
+    youNoPerms: "You can't Un-Mute this User",
     error: 'I failed to Un-Mute this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Muted`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Muted`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}isn't Muted`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Un-Muted`,
     loading: 'Un-Muting User...',
     self: "You can't Un-Mute yourself",
     me: "I won't Un-Mute myself",
    },
    banAdd: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Banned from ${options.guild.name}`,
-    meNoPerms: "I can't Ban Users",
-    youNoPerms: "You can't Ban Users",
+    dm: (options: CT.ModOptions<'banAdd'>) => `You have been Banned from ${options.guild.name}`,
+    meNoPerms: "I can't Ban this User",
+    youNoPerms: "You can't Ban this User",
     error: 'I failed to Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}is already Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Banned`,
     loading: 'Banning User...',
     self: "You can't Ban yourself",
     me: "I won't Ban myself",
    },
    softBanAdd: {
-    dm: (options: { guild: Discord.Guild }) =>
+    dm: (options: CT.ModOptions<'softBanAdd'>) =>
      `You have been Soft-Banned from ${options.guild.name}`,
-    meNoPerms: "I can't Soft-Ban Users",
-    youNoPerms: "You can't Soft-Ban Users",
+    meNoPerms: "I can't Soft-Ban this User",
+    youNoPerms: "You can't Soft-Ban this User",
     error: 'I failed to Soft-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Soft-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Soft-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}is already Soft-Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Soft-Banned`,
     loading: 'Soft-Banning User...',
     self: "You can't Soft-Ban yourself",
     me: "I won't Soft-Ban myself",
    },
    tempBanAdd: {
-    dm: (options: { time: string; guild: Discord.Guild }) =>
+    dm: (options: CT.ModOptions<'tempBanAdd'>) =>
      `You have been Temp-Banned from ${options.guild.name}`,
-    meNoPerms: "I can't Temp-Ban Users",
-    youNoPerms: "You can't Temp-Ban Users",
+    meNoPerms: "I can't Temp-Ban this User",
+    youNoPerms: "You can't Temp-Ban this User",
     error: 'I failed to Temp-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Temp-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Temp-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}is already Temp-Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Temp-Banned`,
     loading: 'Temp-Banning User...',
     self: "You can't Temp-Ban yourself",
     me: "I won't Temp-Ban myself",
    },
    channelBanAdd: {
-    dm: (options: { guild: Discord.Guild; channel: Discord.GuildChannel }) =>
-     `You have been Channel-Banned from ${options.channel.name} in ${options.guild.name}`,
-    meNoPerms: "I can't Channel-Ban Users",
-    youNoPerms: "You can't Channel-Ban Users",
+    dm: (options: CT.ModOptions<'channelBanAdd'>) =>
+     `You have been Channel-Banned from ${options.channel.name}`,
+    meNoPerms: "I can't Channel-Ban this User",
+    youNoPerms: "You can't Channel-Ban this User",
     error: 'I failed to Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Channel-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}is already Channel-Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Channel-Banned`,
     loading: 'Channel-Banning User...',
     self: "You can't Channel-Ban yourself",
     me: "I won't Channel-Ban myself",
+    importantChannel: "You can't Channel-Ban Members from the Server's Rules-Channel",
    },
    tempChannelBanAdd: {
-    dm: (options: { time: string; guild: Discord.Guild; channel: Discord.GuildChannel }) =>
-     `You have been Temp-Channel-Banned from ${options.channel.name} in ${options.guild.name}`,
-    meNoPerms: "I can't Temp-Channel-Ban Users",
-    youNoPerms: "You can't Temp-Channel-Ban Users",
+    dm: (options: CT.ModOptions<'tempChannelBanAdd'>) =>
+     `You have been Temp-Channel-Banned from ${options.channel.name}`,
+    meNoPerms: "I can't Temp-Channel-Ban this User",
+    youNoPerms: "You can't Temp-Channel-Ban this User",
     error: 'I failed to Temp-Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Temp-Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Temp-Channel-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}is already Temp-Channel-Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Temp-Channel-Banned`,
     loading: 'Temp-Channel-Banning User...',
     self: "You can't Temp-Channel-Ban yourself",
     me: "I won't Temp-Channel-Ban myself",
    },
    channelBanRemove: {
-    dm: (options: { guild: Discord.Guild; channel: Discord.GuildChannel }) =>
-     `You have been Un-Channel-Banned from ${options.channel.name} in ${options.guild.name}`,
-    meNoPerms: "I can't Un-Channel-Ban Users",
-    youNoPerms: "You can't Un-Channel-Ban Users",
+    dm: (options: CT.ModOptions<'channelBanRemove'>) =>
+     `You have been Un-Channel-Banned from ${options.channel.name}`,
+    meNoPerms: "I can't Un-Channel-Ban this User",
+    youNoPerms: "You can't Un-Channel-Ban this User",
     error: 'I failed to Un-Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Channel-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}isn't Channel-Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Un-Channel-Banned`,
     loading: 'Un-Channel-Banning User...',
     self: "You can't Un-Channel-Ban yourself",
     me: "I won't Un-Channel-Ban myself",
    },
    banRemove: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Un-Banned from ${options.guild.name}`,
-    meNoPerms: "I can't Un-Ban Users",
-    youNoPerms: "You can't Un-Ban Users",
+    dm: (options: CT.ModOptions<'banRemove'>) =>
+     `You have been Un-Banned from ${options.guild.name}`,
+    meNoPerms: "I can't Un-Ban this User",
+    youNoPerms: "You can't Un-Ban this User",
     error: 'I failed to Un-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Banned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}isn't Banned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Un-Banned`,
     loading: 'Un-Banning User...',
     self: "You can't Un-Ban yourself",
     me: "I won't Un-Ban myself",
    },
    kickAdd: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Kicked from ${options.guild.name}`,
-    meNoPerms: "I can't Kick Users",
-    youNoPerms: "You can't Kick Users",
+    dm: (options: CT.ModOptions<'kickAdd'>) => `You have been Kicked from ${options.guild.name}`,
+    meNoPerms: "I can't Kick this User",
+    youNoPerms: "You can't Kick this User",
     error: 'I failed to Kick this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is not a Member`,
-    success: (target: Discord.User) => `${getUser(target)}was Kicked`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}is not a Member`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Kicked`,
     loading: 'Kicking User...',
     self: "You can't Kick yourself",
     me: "I won't Kick myself",
    },
    warnAdd: {
-    dm: (options: { guild: Discord.Guild }) => `You have been Warned in ${options.guild.name}`,
-    meNoPerms: "I can't Warn Users",
-    youNoPerms: "You can't Warn Users",
+    dm: () => `You have been Warned`,
+    meNoPerms: "I can't Warn this User",
+    youNoPerms: "You can't Warn this User",
     error: 'I failed to Warn this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Warned`,
-    success: (target: Discord.User) => `${getUser(target)}was Warned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}is already Warned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Warned`,
     loading: 'Warning User...',
     self: "You can't Warn yourself",
     me: "I won't Warn myself",
    },
    softWarnAdd: {
-    dm: (options: { guild: Discord.Guild; reason: string }) =>
-     `You have been Soft-Warned in ${options.guild.name}\n\n${options.reason}`,
-    meNoPerms: "I can't Soft-Warn Users",
-    youNoPerms: "You can't Soft-Warn Users",
+    dm: () => `You have been Soft-Warned`,
+    meNoPerms: "I can't Soft-Warn this User",
+    youNoPerms: "You can't Soft-Warn this User",
     error: 'I failed to Soft-Warn this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Soft-Warned`,
-    success: (target: Discord.User) => `${getUser(target)}was Soft-Warned`,
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}is already Soft-Warned`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Soft-Warned`,
     loading: 'Soft-Warning User...',
     self: "You can't Soft-Warn yourself",
     me: "I won't Soft-Warn myself",

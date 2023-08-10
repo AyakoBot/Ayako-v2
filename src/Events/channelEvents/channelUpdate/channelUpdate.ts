@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import log from './log.js';
+import cache from './cache.js';
 
 export default async (oldChannel: Discord.Channel | undefined, channel: Discord.Channel) => {
  if (channel.type === Discord.ChannelType.DM) return;
@@ -8,4 +9,5 @@ export default async (oldChannel: Discord.Channel | undefined, channel: Discord.
  if (oldChannel?.type === Discord.ChannelType.GroupDM) return;
 
  log(oldChannel, channel);
+ cache(oldChannel, channel);
 };

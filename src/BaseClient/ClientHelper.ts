@@ -72,7 +72,6 @@ import getChunks from './ClientHelperModules/getChunks.js';
 import getPunishment from './ClientHelperModules/getPunishment.js';
 import getChannelWebhook from './ClientHelperModules/getChannelWebhook.js';
 import getMessage from './ClientHelperModules/getMessage.js';
-import doStrike from './ClientHelperModules/doStrike.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -81,7 +80,6 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
- doStrike,
  getChunks,
  getPunishment,
  getStringChunks,

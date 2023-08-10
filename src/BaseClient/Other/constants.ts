@@ -729,6 +729,8 @@ export default {
      newlinesduration: 'duration',
      invitesaction: 'punishment',
      invitesduration: 'duration',
+     newlinesdeletemessageseconds: 'duration',
+     invitesdeletemessageseconds: 'duration',
     },
     'auto-punish': {
      duration: 'duration',
@@ -738,6 +740,7 @@ export default {
      removeroles: 'roles',
      confirmationreq: 'boolean',
      punishmentawaittime: 'duration',
+     deletemessageseconds: 'duration',
     },
     'auto-roles': {
      botroleid: 'roles',

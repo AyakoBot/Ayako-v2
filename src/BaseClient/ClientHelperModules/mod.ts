@@ -191,7 +191,9 @@ const mod = {
   }
 
   const res = await targetMember
-   .disableCommunicationUntil(Date.now() + options.duration)
+   .disableCommunicationUntil(
+    Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000),
+   )
    .catch((e) => e as Discord.DiscordAPIError);
 
   if ('message' in res) {
@@ -200,9 +202,12 @@ const mod = {
   }
 
   cache.mutes.set(
-   Jobs.scheduleJob(new Date(Date.now() + options.duration), () => {
-    mod.muteRemove(options, language, message, cmd);
-   }),
+   Jobs.scheduleJob(
+    new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
+    () => {
+     mod.muteRemove(options, language, message, cmd);
+    },
+   ),
    options.guild.id,
    options.target.id,
   );
@@ -311,7 +316,7 @@ const mod = {
   if (!res) return res;
 
   cache.bans.set(
-   Jobs.scheduleJob(new Date(Date.now() + options.duration), () => {
+   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), () => {
     mod.banRemove(options, language, message, cmd);
    }),
    options.guild.id,
@@ -534,7 +539,7 @@ const mod = {
   if (!res) return res;
 
   cache.channelBans.set(
-   Jobs.scheduleJob(new Date(Date.now() + options.duration), () => {
+   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), () => {
     mod.channelBanRemove(options, language, message, cmd);
    }),
    options.guild.id,
@@ -794,14 +799,19 @@ const notifyTarget = async <T extends CT.ModTypes>(
 
  const embed = {
   color: constants.colors.danger,
-  description: dm(options as never),
+  description: `${dm(options as never)}${
+   !['roleAdd', 'roleRemove'].includes(type) ? `\n${language.mod.appeal(options.guild.id)}` : ''
+  }`,
   fields: [...(options.reason ? [{ name: language.reason, value: options.reason }] : [])],
   thumbnail: {
    url: objectEmotes.warning.link,
   },
  };
 
- if (!options.guild.rulesChannel) {
+ if (
+  !options.guild.rulesChannel ||
+  ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type)
+ ) {
   send(options.target, { embeds: [embed] });
   return;
  }
