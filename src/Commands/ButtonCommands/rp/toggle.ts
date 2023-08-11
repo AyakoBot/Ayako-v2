@@ -31,7 +31,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   .then();
 
  if (!settings) await deleteAll(cmd);
- else await create(cmd);
+ else await create(cmd.guild);
 
  rp(cmd, [], true);
 };
@@ -40,8 +40,8 @@ const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
  await cmd.guild.commands.set([]);
 };
 
-const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- const commands = await cmd.guild.commands.fetch();
+export const create = async (guild: Discord.Guild) => {
+ const commands = await guild.commands.fetch();
 
  const registerCommands = ch.constants.commands.interactions
   .filter((c) => !commands.find((existing) => existing.name === c.name))
@@ -89,10 +89,10 @@ const create = async (cmd: Discord.ButtonInteraction<'cached'>) => {
    return command;
   });
 
- await cmd.guild.commands.set(registerCommands);
+ await guild.commands.set(registerCommands);
 
  await ch.DataBase.guildsettings.update({
-  where: { guildid: cmd.guildId },
+  where: { guildid: guild.id },
   data: {
    rpenableruns: {
     increment: 1,
