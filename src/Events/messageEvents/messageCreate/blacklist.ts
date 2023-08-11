@@ -230,9 +230,9 @@ const checkForInvite = async (content: string): Promise<boolean> => {
 const fetchWithRedirects = async (url: string, visited: string[] = []): Promise<string[]> => {
  visited.push(url);
 
- const response = await fetch(url, { redirect: 'manual' });
+ const response = await fetch(url, { redirect: 'manual' }).catch(() => undefined);
 
- if (response.status === 301 || response.status === 302) {
+ if (response?.status === 301 || response?.status === 302) {
   const location = response.headers.get('location');
   if (location && !visited.includes(location)) return fetchWithRedirects(location, visited);
  }
