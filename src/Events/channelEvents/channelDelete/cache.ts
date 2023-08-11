@@ -15,6 +15,33 @@ export default (channel: Discord.Channel) => {
   });
  }
 
+ ch.DataBase.reactionrolesettings
+  .findMany({
+   where: { channelid: channel.id },
+  })
+  .then((reactionSettings) => {
+   reactionSettings.forEach((reactionSetting) => {
+    ch.DataBase.reactionroles
+     .deleteMany({ where: { uniquetimestamp: reactionSetting.uniquetimestamp } })
+     .then();
+   });
+  });
+
+ ch.DataBase.buttonrolesettings
+  .findMany({
+   where: { channelid: channel.id },
+  })
+  .then((buttonSettings) => {
+   buttonSettings.forEach((buttonSetting) => {
+    ch.DataBase.buttonroles
+     .deleteMany({ where: { uniquetimestamp: buttonSetting.uniquetimestamp } })
+     .then();
+   });
+  });
+
+ ch.DataBase.buttonrolesettings.deleteMany({ where: { channelid: channel.id } }).then();
+ ch.DataBase.reactionrolesettings.deleteMany({ where: { channelid: channel.id } }).then();
+
  ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } }).then();
  ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } }).then();
 };
