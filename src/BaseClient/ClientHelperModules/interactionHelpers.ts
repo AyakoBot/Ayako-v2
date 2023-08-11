@@ -80,7 +80,7 @@ const reply = async (
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
    : undefined,
  };
- if (setting?.interactionsmode && gif) embed.thumbnail = { url: gif.url };
+ if ((!setting || setting?.interactionsmode) && gif) embed.thumbnail = { url: gif.url };
  else if (gif) embed.image = { url: gif.url };
 
  const replyUsers =
@@ -282,7 +282,7 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
             label: 'buttons' in lan ? lan.buttons[i] : b,
             custom_id: `${b}_${replyUsers.join('_')}`,
             style: Discord.ButtonStyle.Secondary,
-           } as Discord.APIButtonComponent),
+           }) as Discord.APIButtonComponent,
          ),
         } as Discord.APIActionRowComponent<Discord.APIButtonComponent>)
       : undefined,
