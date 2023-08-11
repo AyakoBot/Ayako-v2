@@ -1,16 +1,16 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import fetch from 'node-fetch';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import * as os from 'os';
-
-import * as Discord from 'discord.js';
 import util from 'util';
+import fetch from 'node-fetch';
+import * as Discord from 'discord.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as ch from '../../../BaseClient/ClientHelper.js';
+
+// eslint-disable-next-line no-unused-expressions
+Discord.APIVersion;
+// eslint-disable-next-line no-unused-expressions
+fetch.name;
+// eslint-disable-next-line no-unused-expressions
+os.arch;
 
 const reg = new RegExp(auth.token, 'g');
 

@@ -3523,7 +3523,9 @@ export default {
   execution: {
    roleAdd: {
     dm: (options: CT.ModOptions<'roleAdd'>) =>
-     `${options.roles.join(', ')} have been added to your Roles`,
+     `${options.roles.join(', ')} ${
+      options.roles.length > 1 ? 'have' : 'has'
+     } been added to your Roles`,
     meNoPerms: "I can't add Roles to this User",
     youNoPerms: "You can't add Roles to this User",
     error: 'I failed to add these Roles to the User',
@@ -3537,7 +3539,9 @@ export default {
    },
    roleRemove: {
     dm: (options: CT.ModOptions<'roleRemove'>) =>
-     `${options.roles.join(', ')} have been removed from your Roles`,
+     `${options.roles.join(', ')} ${
+      options.roles.length > 1 ? 'have' : 'has'
+     } been removed from your Roles`,
     meNoPerms: "I can't remove Roles from this User",
     youNoPerms: "You can't remove Roles from this User",
     error: 'I failed to remove these Roles from the User',
@@ -3713,6 +3717,7 @@ export default {
   reasonNewlines: 'Too many Newlines',
   warnNewlines: (n: number) =>
    `You've exceeded the Newlines limit of ${n}.\nPlease send less many Newlines`,
+  warnInvite: `You are not allowed to post Invites`,
   reasonInvite: 'Invite posted',
  },
  antivirus: {

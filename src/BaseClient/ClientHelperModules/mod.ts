@@ -798,14 +798,18 @@ const notifyTarget = async <T extends CT.ModTypes>(
  const { dm } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
  const embed = {
-  color: constants.colors.danger,
+  color: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
+   ? constants.colors.success
+   : constants.colors.danger,
   description: `${dm(options as never)}${
    !['roleAdd', 'roleRemove'].includes(type) ? `\n${language.mod.appeal(options.guild.id)}` : ''
   }`,
   fields: [...(options.reason ? [{ name: language.reason, value: options.reason }] : [])],
-  thumbnail: {
-   url: objectEmotes.warning.link,
-  },
+  thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
+   ? undefined
+   : {
+      url: objectEmotes.warning.link,
+     },
  };
 
  if (

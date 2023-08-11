@@ -1,4 +1,5 @@
 import Prisma from '@prisma/client';
+import fetch from 'node-fetch';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
@@ -8,6 +9,9 @@ export default async (msg: Discord.Message<true>) => {
   where: { guildid: msg.guildId, active: true },
  });
  if (!settings) return;
+
+ if (msg.member?.permissions.has(Discord.PermissionFlagsBits.Administrator)) return;
+ if (msg.author.bot) return;
 
  const language = await ch.languageSelector(msg.guildId);
 
@@ -26,6 +30,7 @@ const newlines = (
 
  const amountOfNewlines = msg.content.split('\n').length - 1;
  if (amountOfNewlines <= Number(settings.maxnewlines)) return;
+ if (msg.deletable) msg.delete().catch(() => undefined);
 
  const modOptions: CT.BaseOptions = {
   reason: language.blacklist.reasonNewlines,
@@ -102,8 +107,135 @@ const newlines = (
  }
 };
 
-const invites = (
+const invites = async (
  msg: Discord.Message<true>,
  settings: Prisma.blacklist,
  language: CT.Language,
-) => {};
+) => {
+ if (!settings.blockinvites) return;
+ if (settings.inviteswlchannelid.includes(msg.channelId)) return;
+ if (settings.inviteswlroleid.some((id) => msg.member?.roles.cache.has(id))) return;
+
+ const hasInvite = await checkForInvite(msg.content);
+ if (!hasInvite) return;
+
+ if (msg.deletable) msg.delete().catch(() => undefined);
+
+ const modOptions: CT.BaseOptions = {
+  reason: language.blacklist.reasonInvite,
+  guild: msg.guild,
+  target: msg.author,
+  executor: msg.client.user,
+  dbOnly: false,
+ };
+
+ switch (settings.invitesaction) {
+  case 'ban':
+   ch.mod(msg, 'banAdd', {
+    ...modOptions,
+    deleteMessageSeconds:
+     Number(settings.invitesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.invitesdeletemessageseconds),
+   });
+   break;
+  case 'channelban':
+   ch.mod(msg, 'channelBanAdd', {
+    ...modOptions,
+    channel: msg.channel.isThread()
+     ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
+     : msg.channel,
+   });
+   break;
+  case 'kick':
+   ch.mod(msg, 'kickAdd', modOptions);
+   break;
+  case 'tempmute':
+   ch.mod(msg, 'tempMuteAdd', { ...modOptions, duration: Number(settings.invitesduration) });
+   break;
+  case 'tempchannelban':
+   ch.mod(msg, 'tempChannelBanAdd', {
+    ...modOptions,
+    duration: Number(settings.invitesduration),
+    channel: msg.channel.isThread()
+     ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
+     : msg.channel,
+   });
+   break;
+  case 'warn':
+   ch.mod(msg, 'warnAdd', modOptions);
+   break;
+  case 'strike':
+   ch.mod(msg, 'strikeAdd', modOptions);
+   break;
+  case 'tempban':
+   ch.mod(msg, 'tempBanAdd', {
+    ...modOptions,
+    duration: Number(settings.invitesduration),
+    deleteMessageSeconds:
+     Number(settings.invitesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.invitesdeletemessageseconds),
+   });
+   break;
+  case 'softban':
+   ch.mod(msg, 'softBanAdd', {
+    ...modOptions,
+    deleteMessageSeconds:
+     Number(settings.invitesdeletemessageseconds) > 604800
+      ? 604800
+      : Number(settings.invitesdeletemessageseconds),
+   });
+   break;
+  default: {
+   ch.mod(msg, 'softWarnAdd', {
+    ...modOptions,
+    reason: language.blacklist.warnInvite,
+   });
+  }
+ }
+};
+
+const getAllTLDs = async () => {
+ const res = await fetch('https://data.iana.org/TLD/tlds-alpha-by-domain.txt').then((r) =>
+  r.text(),
+ );
+
+ const tlds = res
+  .toLowerCase()
+  .split('\n')
+  .filter((s) => !s.startsWith('#'))
+  .filter((s) => s.length);
+
+ return tlds;
+};
+
+const allTLDs = await getAllTLDs();
+
+const checkForInvite = async (content: string): Promise<boolean> => {
+ if (content.match(ch.regexes.inviteTester)) return true;
+ if (!content.match(ch.regexes.urlTester(allTLDs))) return false;
+
+ const args = content.split(/(\s+|\n+)/g);
+ const argsContainingLink = args
+  .filter((a) => a.includes('.'))
+  .filter((arg) => arg.match(ch.regexes.urlTester(allTLDs)));
+
+ const results = await Promise.all(argsContainingLink.map((arg) => fetchWithRedirects(arg)));
+ if (results.some((r) => r.some((url) => url.match(ch.regexes.inviteTester)))) return true;
+
+ return false;
+};
+
+const fetchWithRedirects = async (url: string, visited: string[] = []): Promise<string[]> => {
+ visited.push(url);
+
+ const response = await fetch(url, { redirect: 'manual' });
+
+ if (response.status === 301 || response.status === 302) {
+  const location = response.headers.get('location');
+  if (location && !visited.includes(location)) return fetchWithRedirects(location, visited);
+ }
+
+ return visited;
+};
