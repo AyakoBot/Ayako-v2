@@ -25,9 +25,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const automodruleText = cmd.message.embeds[0].description?.split(/,\s/g);
- const automodruleIDs = automodruleText
-  ?.map((c) => c.replace(/\D/g, '') || undefined)
-  .filter((c): c is string => !!c);
+ const automodruleIDs =
+  automodruleText
+   ?.filter((c) => c.startsWith('`') && c.endsWith('`'))
+   .map((c) => c.slice(1, -1))
+   .map((c) => cmd.guild.autoModerationRules.cache.find((r) => r.name === c)?.id)
+   .filter((c): c is string => !!c) ?? [];
 
  const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
