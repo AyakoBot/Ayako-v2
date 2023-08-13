@@ -3532,7 +3532,7 @@ export default {
     alreadyApplied: (target: Discord.User | CT.bEvalUser) =>
      `${getUser(target)}already has these Roles`,
     success: (target: Discord.User | CT.bEvalUser, options: CT.ModOptions<'roleAdd'>) =>
-     `${options.roles.join(', ')} were added to ${target}`,
+     `${options.roles.join(', ')} ${options.roles.length > 1 ? 'were' : 'was'} added to ${target}`,
     loading: 'Adding Role to User...',
     self: "You can't add Roles to yourself",
     me: "I won't add Roles to myself",
