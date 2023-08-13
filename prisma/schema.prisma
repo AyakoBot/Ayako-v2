@@ -122,7 +122,7 @@ model appealquestions {
   answertype      AnswerType?
   required        Boolean @default(true)
   
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model appeals {
@@ -170,7 +170,7 @@ model autopunish {
   punishment           AutoPunishPunishmentType @default(warn)
   deletemessageseconds Decimal  @default(604800) @db.Decimal 
   
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model autoroles {
@@ -222,7 +222,7 @@ model buttonroles {
   linkedid        String?  @db.VarChar
   guildid         String   @db.VarChar
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model buttonrolesettings {
@@ -234,7 +234,7 @@ model buttonrolesettings {
   anyroles        String[] @db.VarChar
   onlyone         Boolean  @default(false)
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model contributers {
@@ -253,7 +253,7 @@ model cooldowns {
   uniquetimestamp Decimal  @id @db.Decimal
   guildid         String   @db.VarChar
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model customembeds {
@@ -276,7 +276,7 @@ model customembeds {
   name            String
   timestamp       String?
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model disboard {
@@ -422,7 +422,7 @@ model levelingmultichannels {
   multiplier      Decimal  @default(1) @db.Decimal
   uniquetimestamp Decimal  @id(map: "levelingmultiplierchannels_pkey") @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model levelingmultiroles {
@@ -431,7 +431,7 @@ model levelingmultiroles {
   multiplier      Decimal? @db.Decimal
   uniquetimestamp Decimal  @id(map: "levelingmultiplierroles_pkey") @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model levelingroles {
@@ -440,7 +440,7 @@ model levelingroles {
   roles           String[] @db.VarChar
   uniquetimestamp Decimal  @id @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model levelingruleschannels {
@@ -466,7 +466,7 @@ model levelingruleschannels {
   hasleastmentions      Decimal? @db.Decimal
   hasmostmentions       Decimal? @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model logchannels {
@@ -500,7 +500,7 @@ model nitroroles {
   roles           String[] @db.VarChar
   days            Decimal? @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model nitrosettings {
@@ -534,7 +534,7 @@ model punish_bans {
   duration        Decimal? @db.Decimal
   msgid           String   @db.VarChar
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_channelbans {
@@ -550,7 +550,7 @@ model punish_channelbans {
   banchannelid    String   @db.VarChar
   duration        Decimal? @db.Decimal
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_kicks {
@@ -564,7 +564,7 @@ model punish_kicks {
   executorname    String
   msgid           String  @db.VarChar
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_mutes {
@@ -579,7 +579,7 @@ model punish_mutes {
   msgid           String   @db.VarChar
   duration        Decimal? @db.Decimal
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_tempbans {
@@ -594,7 +594,7 @@ model punish_tempbans {
   msgid           String  @db.VarChar
   duration        Decimal @db.Decimal
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_tempchannelbans {
@@ -610,7 +610,7 @@ model punish_tempchannelbans {
   banchannelid    String  @db.VarChar
   duration        Decimal @db.Decimal
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_tempmutes {
@@ -625,7 +625,7 @@ model punish_tempmutes {
   msgid           String  @db.VarChar
   duration        Decimal @db.Decimal
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model punish_warns {
@@ -639,7 +639,7 @@ model punish_warns {
   executorname    String
   msgid           String  @db.VarChar
 
-  @@index([guildid, userid])
+  @@index([guildid, uniquetimestamp, userid])
 }
 
 model reactionroles {
@@ -650,7 +650,7 @@ model reactionroles {
   linkedid        String?  @db.VarChar
   guildid         String   @db.VarChar
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model reactionrolesettings {
@@ -663,7 +663,7 @@ model reactionrolesettings {
   channelid       String?  @db.VarChar
 
   @@unique([guildid, channelid, msgid], map: "guildid,channelid,msgid")
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model reminders {
@@ -674,7 +674,7 @@ model reminders {
   endtime         Decimal @db.Decimal
   msgid           Decimal @db.Decimal
 
-  @@index([userid])
+  @@index([userid, uniquetimestamp])
 }
 
 model reviews {
@@ -699,7 +699,7 @@ model rolerewards {
   blusers         String[] @db.VarChar
   roles           String[] @db.VarChar
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model roleseparator {
@@ -711,7 +711,7 @@ model roleseparator {
   roles           String[] @db.VarChar
   uniquetimestamp Decimal  @id @db.Decimal
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model roleseparatorsettings {
@@ -739,7 +739,7 @@ model selfroles {
   active          Boolean  @default(false)
   name            String   @default("Change me")
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model stats {
@@ -864,7 +864,7 @@ model voterewards {
   rewardxp           Decimal? @db.Decimal
   active             Boolean  @default(false)
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model voters {
@@ -891,7 +891,7 @@ model votesettings {
   active              Boolean @default(false)
   linkedid            String?
 
-  @@index(guildid)
+  @@index([guildid, uniquetimestamp])
 }
 
 model welcome {
