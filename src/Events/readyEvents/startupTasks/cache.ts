@@ -6,6 +6,7 @@ import client from '../../../BaseClient/Client.js';
 import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { deleteThread } from '../../../BaseClient/ClientHelperModules/mod.js';
+import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -15,13 +16,10 @@ export default () => {
 
 export const tasks = {
  disboard: async (guild: Discord.Guild) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const disboard = (_: unknown) => null; // TODO: import disboard handler
-
   const disboardBumpReminders = await ch.DataBase.disboard.findUnique({
    where: { guildid: guild.id },
   });
-  if (disboardBumpReminders) disboard(disboardBumpReminders);
+  if (disboardBumpReminders) bumpReminder(guild, disboardBumpReminders);
  },
  giveaways: async (guild: Discord.Guild) => {
   const giveaways = await ch.DataBase.giveaways.findMany({

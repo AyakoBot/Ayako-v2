@@ -10,6 +10,7 @@ import commandHandler from './commandHandler.js';
 import afk from './afk.js';
 import levelling from './levelling.js';
 import blacklist from './blacklist.js';
+import disboard from './disboard.js';
 
 import dmLog from './dmLog.js';
 
@@ -29,6 +30,7 @@ export default async (msg: Discord.Message) => {
   afk(msg);
   levelling(msg);
   blacklist(msg);
+  disboard(msg);
   // eventDel(msg);
  } else {
   dmLog(msg);
