@@ -153,7 +153,7 @@ model art {
   type     String  @default("full")
   verified Boolean @default(false)
 
-  @@index([created])
+  @@index(created)
 }
 
 
@@ -325,7 +325,7 @@ model giveawaycollection {
   replymsgid      String   @db.VarChar
   requiredwinners String[] @default([]) @db.VarChar
 
-  @@index([msgid])
+  @@index(msgid)
 }
 
 model giveaways {
@@ -345,7 +345,7 @@ model giveaways {
   winners      String[] @default([]) @db.VarChar
   claimingdone Boolean  @default(false)
 
-  @@index([msgid])
+  @@index(msgid)
 }
 
 model guilds {
@@ -684,7 +684,7 @@ model reviews {
   avatar   String?
   content  String
 
-  @@index([userid])
+  @@index(userid)
 }
 
 model rolerewards {
@@ -836,7 +836,7 @@ model users {
   accesstoken    String?
   ptremindersent Boolean  @default(false)
 
-  @@index([userid])
+  @@index(userid)
 }
 
 model verification {
@@ -879,7 +879,7 @@ model voters {
   rewardxpmultiplier Decimal? @db.Decimal
 
   @@id([userid, voted], map: "voterewards_pkey")
-  @@index([userid])
+  @@index(userid)
 }
 
 model votesettings {
