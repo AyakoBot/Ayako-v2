@@ -3434,6 +3434,11 @@ export default {
   appeal: (guildId: string) =>
    `You can try to appeal your Punishment [here](https://ayakobot.com/appeals/${guildId})`,
   logs: {
+   strikeAdd: {
+    author: 'Member striked',
+    description: (target: Discord.User | CT.bEvalUser, executor: Discord.User | CT.bEvalUser) =>
+     `${getUser(target)}was striked by\n${getUser(executor)}`,
+   },
    roleAdd: {
     author: 'Role given to Member',
     description: (
