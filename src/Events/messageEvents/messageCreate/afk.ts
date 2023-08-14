@@ -72,7 +72,9 @@ const mention = async (
  if (commandName === 'unafk') return;
  if (msg.mentions.members.size > 10) return;
 
- const afk = await Promise.all(msg.mentions.members.map((m) => getAFK(m.guild.id, m.id)));
+ const afk = await Promise.all(
+  msg.mentions.members.filter((m) => m.id !== msg.author.id).map((m) => getAFK(m.guild.id, m.id)),
+ );
  const embeds = afk
   .map((a): Discord.APIEmbed | undefined => {
    if (!a) return undefined;
