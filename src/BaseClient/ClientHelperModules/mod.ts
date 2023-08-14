@@ -709,6 +709,8 @@ const startLoading = async (
 ): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> => {
  const fn = cmd instanceof Discord.Message ? replyMsg : replyCmd;
 
+ console.log(type);
+
  return fn(cmd as never, {
   embeds: [
    {
@@ -1026,7 +1028,7 @@ const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTyp
  const language = await languageSelector(options.guild.id);
 
  if (options.dbOnly) {
-  log(options.guild, 'roleAdd', options.target, options.executor, options);
+  log(options.guild, type, options.target, options.executor, options);
   await db(cmd, options, language, type);
   return false;
  }
