@@ -1,6 +1,7 @@
+import readline from 'readline';
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
-import readline from 'readline';
+
 import auth from './auth.json' assert { type: 'json' };
 
 // eslint-disable-next-line no-console
@@ -19,6 +20,7 @@ log(`
 const manager = new Discord.ShardingManager('./bot.js', {
  token: auth.token,
  shardArgs: process.argv,
+ execArgv: ['--experimental-wasm-modules'],
 });
 
 manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));

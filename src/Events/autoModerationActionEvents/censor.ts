@@ -1,12 +1,13 @@
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import { filtered_content as filterContent } from '../../../rust/rust.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
 
  const settings = await ch.DataBase.blacklist.findUnique({
-  where: { guildid: msg.guild.id },
+  where: { guildid: msg.guild.id, active: true },
  });
  if (!settings) return;
 
@@ -15,7 +16,12 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
 
 const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.blacklist) => {
  if (!settings.repostenabled) return;
- if (!settings.repostroles?.some((r) => msg.member?.roles.cache.has(r))) return;
+ if (
+  settings.repostroles.length &&
+  !settings.repostroles?.some((r) => msg.member?.roles.cache.has(r))
+ ) {
+  return;
+ }
  if (!msg.matchedContent && !msg.matchedKeyword) return;
 
  const webhook = await getWebhook(msg);
@@ -71,19 +77,23 @@ const getContent = async (
   if (!r.enabled) return;
 
   if (r.triggerMetadata.regexPatterns) {
-   r.triggerMetadata.regexPatterns.forEach((p) => {
-    content = content.replace(new RegExp(p, 'g'), '[...]');
-   });
+   content = filterContent(r.triggerMetadata.regexPatterns, content);
   }
 
-  const keywords = r.triggerMetadata.keywordFilter.map((k) =>
-   // eslint-disable-next-line no-useless-escape
-   k.replace(/\*/g, '').replace(/[\\\.\+\*\?\^\$\[\]\(\)\{\}\/\'\#\:\!\=\|]/gi, '\\$&'),
-  );
-
-  const matches = content.match(new RegExp(keywords.map((x) => `(\\w*${x}\\w*)`).join('|'), 'gi'));
-
-  matches
+  content
+   .match(
+    new RegExp(
+     r.triggerMetadata.keywordFilter
+      .map((k) =>
+       k
+        .replace(/\*/g, '')
+        .replace(/[\\\\.\\+\\*\\?\\^\\$\\[\]\\(\\)\\{\\}\\/\\'\\#\\:\\!\\=\\|]/gi, '\\$&'),
+      )
+      .map((x) => `(\\w*${x}\\w*)`)
+      .join('|'),
+     'gi',
+    ),
+   )
    ?.filter((f) => f.length)
    ?.forEach((m) => {
     if (r.triggerMetadata.allowList.includes(m)) return;
