@@ -29,7 +29,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
   });
  }
 
- const nextbump = Date.now() + 7200000;
+ const nextbump = Date.now() + 9000000;
 
  ch.DataBase.disboard
   .update({

@@ -709,8 +709,6 @@ const startLoading = async (
 ): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> => {
  const fn = cmd instanceof Discord.Message ? replyMsg : replyCmd;
 
- console.log(type);
-
  return fn(cmd as never, {
   embeds: [
    {

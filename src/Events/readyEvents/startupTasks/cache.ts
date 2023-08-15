@@ -19,7 +19,21 @@ export const tasks = {
   const disboardBumpReminders = await ch.DataBase.disboard.findUnique({
    where: { guildid: guild.id },
   });
-  if (disboardBumpReminders) bumpReminder(guild, disboardBumpReminders);
+  if (disboardBumpReminders) {
+   ch.cache.disboardBumpReminders.set(
+    Jobs.scheduleJob(
+     new Date(
+      Number(disboardBumpReminders.nextbump) < Date.now()
+       ? Date.now() + 10000
+       : Number(disboardBumpReminders.nextbump),
+     ),
+     () => {
+      bumpReminder(guild);
+     },
+    ),
+    disboardBumpReminders.guildid,
+   );
+  }
  },
  giveaways: async (guild: Discord.Guild) => {
   const giveaways = await ch.DataBase.giveaways.findMany({
