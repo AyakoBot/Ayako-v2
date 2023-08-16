@@ -66,16 +66,3 @@ export interface DBTables {
  appealquestions: Prisma.appealquestions;
  rolerewards: Prisma.rolerewards;
 }
-
-export type PunishmentType =
- | 'warn'
- | 'kick'
- | 'tempmute'
- | 'ban'
- | 'tempban'
- | 'channelban'
- | 'tempchannelban';
-
-export type LevelType = 'guild' | 'global';
-
-export type LevelGuild = string | '1';
