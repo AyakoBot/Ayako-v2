@@ -573,6 +573,9 @@ export default {
      minimizetof: 'boolean',
      deletetof: 'boolean',
      usestrike: 'boolean',
+     deletemessageseconds: 'duration',
+     duration: 'duration',
+     action: 'punishment',
     },
     leveling: {
      xppermsg: 'number',

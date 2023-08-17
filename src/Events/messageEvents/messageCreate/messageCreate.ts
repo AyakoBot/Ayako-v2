@@ -11,6 +11,7 @@ import afk from './afk.js';
 import levelling from './levelling.js';
 import blacklist from './blacklist.js';
 import disboard from './disboard.js';
+import antivirus from './antivirus.js';
 
 import dmLog from './dmLog.js';
 
@@ -31,6 +32,7 @@ export default async (msg: Discord.Message) => {
   levelling(msg);
   blacklist(msg);
   disboard(msg);
+  antivirus(msg);
   // eventDel(msg);
  } else {
   dmLog(msg);

@@ -72,6 +72,16 @@ const punishmentDuration = {
  desc: 'The Duration of the Punishment',
 };
 
+const punishmentAction = {
+ name: 'Action',
+ desc: 'The Action to take',
+};
+
+const punishmentDeleteMessageSeconds = {
+ name: 'Delete Messages Time-Span',
+ desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+};
+
 const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
  `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
   tag.moderated ? ` / ${ch.stringEmotes.userFlags.DiscordEmployee} Managed` : ''
@@ -2396,6 +2406,9 @@ export default {
     'anti-virus': {
      name: 'Anti-Virus',
      fields: {
+      action: punishmentAction,
+      duration: punishmentDuration,
+      deletemessageseconds: punishmentDeleteMessageSeconds,
       minimize: {
        name: 'Minimize Timeout (in Seconds)',
        desc: 'Timeout until the Mod-Response is minimized',
@@ -2537,14 +2550,8 @@ export default {
        name: 'Newlines Whitelisted Roles',
        desc: 'Users with this Role will be able to bypass the Newlines Rule',
       },
-      invitesaction: {
-       name: 'Invites Action',
-       desc: 'The Action to take when a User posts an Invite',
-      },
-      newlinesaction: {
-       name: 'Newlines Action',
-       desc: 'The Action to take when a User posts too many Newlines',
-      },
+      invitesaction: punishmentAction,
+      newlinesaction: punishmentAction,
       invitesduration: punishmentDuration,
       invitesdeletemessageseconds: {
        name: 'Invites Delete Messages Time-Span',
@@ -3726,31 +3733,15 @@ export default {
   reasonInvite: 'Invite posted',
  },
  antivirus: {
-  whitelisted: (tick: string) => `${tick} This Link is __not__ Malicious`,
-  checking: 'Link:',
-  VTfail: (cross: string) => `${cross} Failed to analyze Link`,
   malicious: (cross: string) => `${cross} This Link __is__ Malicious`,
-  newLink: (cross: string) => `${cross} Link is __most likely__ Malicious`,
-  notexistent: (url: string) => `The Domain \`${url}\` does not exist (anymore)`,
-  ccscam: (cross: string) =>
-   `${cross} This Link __is__ Malicious\nIt try to gain access to your Credit Card Information`,
-  cfProtected:
-   "The Intent of this Website couldn't be determined\nas it is CloudFlare protected\n**Proceed with Caution**",
-  timedOut:
-   "The Operation timed out, after 180 Seconds without response.\nThe Intent of this Website couldn't be determined\n**Proceed with Caution**",
   log: {
    value: (msg: Discord.Message) =>
     `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
      msg.author.id
-    }\`\nposted this Link in\nChannel <#${msg.channel.id}> / \`${
+    }\`\nposted at least 1 Link in\nChannel <#${msg.channel.id}> / \`${
      'name' in msg.channel ? msg.channel.name : 'Unknown'
     }\` / \`${msg.channel.id}\``,
-   href: 'Hyperlink Reference',
-   url: 'URL',
-   hostname: 'URL Hostname',
-   baseURL: 'Base URL',
-   baseURLhostname: 'Base URL Hostname',
-   author: `${name} Link Log`,
+   name: 'Links with Redirects',
   },
  },
  errors: {

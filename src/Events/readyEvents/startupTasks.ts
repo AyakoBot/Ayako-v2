@@ -22,9 +22,15 @@ export default async () => {
  slashCommandInitializer();
  antivirusBlocklistCacher();
 
+ ch.cache.fishFish.start();
+ ch.cache.sinkingYachts.start();
+ ch.cache.urlTLDs.start();
+
  Jobs.scheduleJob('0 0 0 * * *', async () => {
   animekosInviteStats();
   rpToggleUses();
+  ch.cache.sinkingYachts.start();
+  ch.cache.urlTLDs.start();
  });
 
  Jobs.scheduleJob('0 * * * * *', async () => {

@@ -99,16 +99,15 @@ model antispam {
 }
 
 model antivirus {
-  guildid         String   @id @db.VarChar
-  active          Boolean  @default(false)
-  minimize        Decimal  @default(10) @db.Decimal
-  delete          Decimal  @default(10) @db.Decimal
-  linklogging     Boolean  @default(false)
-  linklogchannels String[] @db.VarChar
-  minimizetof     Boolean  @default(true)
-  deletetof       Boolean  @default(false)
-  usestrike       Boolean  @default(false)
-  
+  guildid              String   @id @db.VarChar
+  active               Boolean  @default(false)
+  linklogging          Boolean  @default(false)
+  linklogchannels      String[] @db.VarChar
+  usestrike            Boolean  @default(false)
+  action               PunishmentType @default(warn)
+  duration             Decimal  @default(3600) @db.Decimal
+  deletemessageseconds Decimal  @default(604800) @db.Decimal
+
   @@index(guildid)
 }
 

@@ -18,6 +18,9 @@ import disboardBumpReminders, { DisboardBumpReminders } from './cache/bot/disboa
 import giveaways, { Giveaways } from './cache/bot/giveaways.js';
 import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
+import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
+import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
+import fishFish, { FishFish } from './cache/urls/fishFish.js';
 
 const cache: {
  // Discord Cache
@@ -42,6 +45,11 @@ const cache: {
  giveaways: Giveaways;
  stickyTimeouts: StickyTimeouts;
  deleteThreads: DeleteThreads;
+
+ // URLs
+ urlTLDs: UrlTLDs;
+ sinkingYachts: SinkingYachts;
+ fishFish: FishFish;
 
  globalLevellingCD: Set<string>;
  guildLevellingCD: Set<string>;
@@ -70,6 +78,11 @@ const cache: {
  stickyTimeouts,
  auditLogs,
  deleteThreads,
+
+ // URLs
+ urlTLDs,
+ sinkingYachts,
+ fishFish,
 
  globalLevellingCD: new Set(),
  guildLevellingCD: new Set(),

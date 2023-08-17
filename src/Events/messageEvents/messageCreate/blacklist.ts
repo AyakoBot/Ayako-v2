@@ -1,5 +1,4 @@
 import Prisma from '@prisma/client';
-import fetch from 'node-fetch';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
@@ -196,46 +195,17 @@ const invites = async (
  }
 };
 
-const getAllTLDs = async () => {
- const res = await fetch('https://data.iana.org/TLD/tlds-alpha-by-domain.txt').then((r) =>
-  r.text(),
- );
-
- const tlds = res
-  .toLowerCase()
-  .split('\n')
-  .filter((s) => !s.startsWith('#'))
-  .filter((s) => s.length);
-
- return tlds;
-};
-
-const allTLDs = await getAllTLDs();
-
 const checkForInvite = async (content: string): Promise<boolean> => {
  if (content.match(ch.regexes.inviteTester)) return true;
- if (!content.match(ch.regexes.urlTester(allTLDs))) return false;
+ if (!content.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray()))) return false;
 
  const args = content.split(/(\s+|\n+)/g);
  const argsContainingLink = args
   .filter((a) => a.includes('.'))
-  .filter((arg) => arg.match(ch.regexes.urlTester(allTLDs)));
+  .filter((arg) => arg.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray())));
 
- const results = await Promise.all(argsContainingLink.map((arg) => fetchWithRedirects(arg)));
+ const results = await Promise.all(argsContainingLink.map((arg) => ch.fetchWithRedirects(arg)));
  if (results.some((r) => r.some((url) => url.match(ch.regexes.inviteTester)))) return true;
 
  return false;
-};
-
-const fetchWithRedirects = async (url: string, visited: string[] = []): Promise<string[]> => {
- visited.push(url);
-
- const response = await fetch(url, { redirect: 'manual' }).catch(() => undefined);
-
- if (response?.status === 301 || response?.status === 302) {
-  const location = response.headers.get('location');
-  if (location && !visited.includes(location)) return fetchWithRedirects(location, visited);
- }
-
- return visited;
 };

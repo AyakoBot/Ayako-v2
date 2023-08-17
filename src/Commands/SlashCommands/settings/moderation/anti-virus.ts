@@ -52,39 +52,33 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.usestrike.name,
     value: embedParsers.boolean(settings?.usestrike, language),
-    inline: true,
-   },
-   {
-    name: '\u200b',
-    value: '\u200b',
     inline: false,
    },
    {
-    name: lan.fields.minimizetof.name,
-    value: embedParsers.boolean(settings?.minimizetof, language),
+    name: lan.fields.action.name,
+    value: settings?.action
+     ? language.punishments[settings?.action as keyof typeof language.punishments]
+     : language.None,
     inline: true,
    },
-   {
-    name: lan.fields.minimize.name,
-    value: embedParsers.number(settings?.minimize, language),
-    inline: true,
-   },
-   {
-    name: '\u200b',
-    value: '\u200b',
-    inline: false,
-   },
-   {
-    name: lan.fields.deletetof.name,
-    value: embedParsers.boolean(settings?.deletetof, language),
-    inline: true,
-   },
-   {
-    name: lan.fields.delete.name,
-    value: embedParsers.number(settings?.delete, language),
-    inline: true,
-   },
-
+   ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
+    ? [
+       {
+        name: lan.fields.duration.name,
+        value: embedParsers.time(Number(settings?.duration) * 1000, language),
+        inline: true,
+       },
+      ]
+    : []),
+   ...(['ban', 'softban', 'tempban'].includes(settings?.action)
+    ? [
+       {
+        name: lan.fields.deletemessageseconds.name,
+        value: embedParsers.time(Number(settings?.deletemessageseconds) * 1000, language),
+        inline: true,
+       },
+      ]
+    : []),
    {
     name: lan.fields.linklogging.name,
     value: embedParsers.boolean(settings?.linklogging, language),
@@ -114,10 +108,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.boolean(language, settings?.deletetof, 'deletetof', name, undefined),
-   buttonParsers.specific(language, settings?.delete, 'delete', name, undefined),
-   buttonParsers.boolean(language, settings?.minimizetof, 'minimizetof', name, undefined),
-   buttonParsers.specific(language, settings?.minimize, 'minimize', name, undefined),
+   buttonParsers.specific(language, settings?.action, 'action', name, undefined),
+   ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
+    ? [buttonParsers.specific(language, settings?.duration, 'duration', name, undefined)]
+    : []),
+   ...(['tempban', 'softban', 'ban'].includes(settings?.action)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.deletemessageseconds,
+        'deletemessageseconds',
+        name,
+        undefined,
+       ),
+      ]
+    : []),
   ],
  },
  {
