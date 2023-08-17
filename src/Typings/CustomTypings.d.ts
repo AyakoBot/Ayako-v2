@@ -71,7 +71,7 @@ export type TableNamesMap = {
  'anti-raid': Prisma.antiraid;
  'anti-virus': Prisma.antivirus;
  'auto-punish': Prisma.autopunish;
- blacklist: Prisma.blacklist;
+ censor: Prisma.censor;
  'auto-roles': Prisma.autoroles;
  cooldowns: Prisma.cooldowns;
  expiry: Prisma.expiry;
@@ -98,6 +98,8 @@ export type TableNamesMap = {
  'reaction-roles': Prisma.reactionroles;
  'button-roles': Prisma.buttonroles;
  'role-rewards': Prisma.rolerewards;
+ invites: Prisma.invites;
+ newlines: Prisma.newlines;
 };
 
 export interface AutoCompleteFile {

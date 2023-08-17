@@ -706,10 +706,7 @@ const startLoading = async (
  cmd: CmdType,
  language: CT.Language,
  type: CT.ModTypes,
-): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> => {
- const fn = cmd instanceof Discord.Message ? replyMsg : replyCmd;
-
- return fn(cmd as never, {
+): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> =>  (cmd instanceof Discord.Message ? replyMsg : replyCmd)(cmd as never, {
   embeds: [
    {
     color: constants.colors.loading,
@@ -720,7 +717,6 @@ const startLoading = async (
    },
   ],
  });
-};
 
 const checkExeCanManage = async (
  target: Discord.GuildMember,

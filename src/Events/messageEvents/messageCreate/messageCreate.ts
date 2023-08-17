@@ -9,7 +9,8 @@ import stickyMessage from './stickyMessage.js';
 import commandHandler from './commandHandler.js';
 import afk from './afk.js';
 import levelling from './levelling.js';
-import blacklist from './blacklist.js';
+import invites from './invites.js';
+import newlines from './newlines.js';
 import disboard from './disboard.js';
 import antivirus from './antivirus.js';
 
@@ -30,10 +31,10 @@ export default async (msg: Discord.Message) => {
   stickyMessage(msg);
   afk(msg);
   levelling(msg);
-  blacklist(msg);
+  invites(msg);
+  newlines(msg);
   disboard(msg);
   antivirus(msg);
-  // eventDel(msg);
  } else {
   dmLog(msg);
  }

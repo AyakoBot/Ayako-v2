@@ -6,7 +6,7 @@ import * as CT from '../../Typings/CustomTypings.js';
 import stringEmotes from './stringEmotes.js';
 import objectEmotes from './objectEmotes.js';
 import moment from './moment.js';
-import constants from '../Other/constants.js';
+import constants, { TableNamesPrismaTranslation } from '../Other/constants.js';
 import client from '../Client.js';
 import error from './error.js';
 import DataBase from '../DataBase.js';
@@ -310,8 +310,8 @@ const postUpdate = async <T extends keyof SettingsNames>(
  );
  if (!file) return;
 
- const tableName = constants.commands.settings.tableNames[
-  settingName as keyof typeof constants.commands.settings.tableNames
+ const tableName = TableNamesPrismaTranslation[
+  settingName as keyof typeof TableNamesPrismaTranslation
  ] as keyof CT.Language['slashCommands']['settings']['categories'];
 
  const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
@@ -384,8 +384,12 @@ const changeHelpers = {
       return DataBase.antivirus.findUnique(where);
      case 'anti-raid':
       return DataBase.antiraid.findUnique(where);
-     case 'blacklist':
-      return DataBase.blacklist.findUnique(where);
+     case 'censor':
+      return DataBase.censor.findUnique(where);
+     case 'newlines':
+      return DataBase.newlines.findUnique(where);
+     case 'invites':
+      return DataBase.invites.findUnique(where);
      case 'expiry':
       return DataBase.expiry.findUnique(where);
      case 'auto-roles':
@@ -482,8 +486,12 @@ const changeHelpers = {
       return DataBase.antivirus.update(where);
      case 'anti-raid':
       return DataBase.antiraid.update(where);
-     case 'blacklist':
-      return DataBase.blacklist.update(where);
+     case 'censor':
+      return DataBase.censor.update(where);
+     case 'newlines':
+      return DataBase.newlines.update(where);
+     case 'invites':
+      return DataBase.invites.update(where);
      case 'expiry':
       return DataBase.expiry.update(where);
      case 'auto-roles':
@@ -994,8 +1002,12 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
      return DataBase.antivirus.create(where);
     case 'anti-raid':
      return DataBase.antiraid.create(where);
-    case 'blacklist':
-     return DataBase.blacklist.create(where);
+    case 'censor':
+     return DataBase.censor.create(where);
+    case 'newlines':
+     return DataBase.newlines.create(where);
+    case 'invites':
+     return DataBase.invites.create(where);
     case 'expiry':
      return DataBase.expiry.create(where);
     case 'auto-roles':

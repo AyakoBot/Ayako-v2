@@ -6,7 +6,7 @@ import { filtered_content as filterContent } from '../../../rust/rust.js';
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
 
- const settings = await ch.DataBase.blacklist.findUnique({
+ const settings = await ch.DataBase.censor.findUnique({
   where: { guildid: msg.guild.id, active: true },
  });
  if (!settings) return;
@@ -14,8 +14,7 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
  reposter(msg, settings);
 };
 
-const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.blacklist) => {
- if (!settings.repostenabled) return;
+const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.censor) => {
  if (
   settings.repostroles.length &&
   !settings.repostroles?.some((r) => msg.member?.roles.cache.has(r))
@@ -38,10 +37,7 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Pr
  });
 };
 
-const getContent = async (
- msg: Discord.AutoModerationActionExecution,
- settings: Prisma.blacklist,
-) => {
+const getContent = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.censor) => {
  const rules = (
   msg.guild.autoModerationRules.cache.size
    ? msg.guild.autoModerationRules.cache

@@ -1314,7 +1314,7 @@ export default {
     test: 'Test Welcome Message',
    },
   },
-  blacklist: {
+  censor: {
    censoredMessageReposter: 'Censored Message Reposter',
   },
   ready: {
@@ -2510,17 +2510,17 @@ export default {
       },
      },
     },
-    blacklist: {
-     name: 'Blacklist',
+    invites: {
+     name: 'Invites',
      fields: {
-      blockinvites: {
-       name: 'Block Invites',
-       desc: 'Whether to Block Invites',
-      },
-      repostenabled: {
-       name: 'Repost censored Message',
-       desc: 'Whether to Repost the Message with censoring',
-      },
+      action: punishmentAction,
+      duration: punishmentDuration,
+      deletemessageseconds: punishmentDeleteMessageSeconds,
+     },
+    },
+    censor: {
+     name: 'Censor',
+     fields: {
       repostroles: {
        name: 'Repost-Roles',
        desc: 'Users with one of these Roles will have their censored Message reposted',
@@ -2530,38 +2530,18 @@ export default {
        desc:
         'Rules that will have a censored Message reposted. If none are selected, all Rules will have their censored Message reposted',
       },
+     },
+    },
+    newlines: {
+     name: 'Newlines',
+     fields: {
       maxnewlines: {
        name: 'Max. Newlines',
        desc: 'Maximum amount of Newlines allowed in a Message',
       },
-      inviteswlroleid: {
-       name: 'Invites Whitelisted Roles',
-       desc: 'Users with this Role will be able to post Invites',
-      },
-      inviteswlchannelid: {
-       name: 'Invites Whitelisted Channels',
-       desc: 'Users will be able to post Invites in these Channels',
-      },
-      newlineswlchannelid: {
-       name: 'Newlines Whitelisted Channels',
-       desc: 'Users will be able to bypass the Newlines Rule in these Channels',
-      },
-      newlineswlroleid: {
-       name: 'Newlines Whitelisted Roles',
-       desc: 'Users with this Role will be able to bypass the Newlines Rule',
-      },
-      invitesaction: punishmentAction,
-      newlinesaction: punishmentAction,
-      invitesduration: punishmentDuration,
-      invitesdeletemessageseconds: {
-       name: 'Invites Delete Messages Time-Span',
-       desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
-      },
-      newlinesduration: punishmentDuration,
-      newlinesdeletemessageseconds: {
-       name: 'Newlines Delete Messages Time-Span',
-       desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
-      },
+      action: punishmentAction,
+      duration: punishmentDuration,
+      deletemessageseconds: punishmentDeleteMessageSeconds,
      },
     },
     'blacklist-rules': {
@@ -3533,6 +3513,17 @@ export default {
    },
   },
   execution: {
+   strikeAdd: {
+    dm: () => `You have been Striked`,
+    meNoPerms: "I can't Strike this User",
+    youNoPerms: "You can't Strike this User",
+    error: 'I failed to Strike this User',
+    alreadyApplied: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}isn't Striked`,
+    success: (target: Discord.User | CT.bEvalUser) => `${getUser(target)}was Striked`,
+    loading: 'Striking User...',
+    self: "You can't Strike yourself",
+    me: "I won't Strike myself",
+   },
    roleAdd: {
     dm: (options: CT.ModOptions<'roleAdd'>) =>
      `${options.roles.join(', ')} ${
@@ -3725,7 +3716,7 @@ export default {
    }`,
   reason: `${name} Leveling`,
  },
- blacklist: {
+ censor: {
   reasonNewlines: 'Too many Newlines',
   warnNewlines: (n: number) =>
    `You've exceeded the Newlines limit of ${n}.\nPlease send less many Newlines`,

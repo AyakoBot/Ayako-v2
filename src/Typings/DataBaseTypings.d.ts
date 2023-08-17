@@ -37,7 +37,7 @@ export interface DBTables {
  antivirus: Prisma.antivirus;
  autopunish: Prisma.autopunish;
  autoroles: Prisma.autoroles;
- blacklist: Prisma.blacklist;
+ censor: Prisma.censor;
  cooldowns: Prisma.cooldowns;
  disboard: Prisma.disboard;
  guildsettings: Prisma.guildsettings;
@@ -65,4 +65,6 @@ export interface DBTables {
  appealsettings: Prisma.appealsettings;
  appealquestions: Prisma.appealquestions;
  rolerewards: Prisma.rolerewards;
+ invites: Prisma.invites;
+ newlines: Prisma.newlines;
 }

@@ -190,24 +190,36 @@ model balance {
   @@id([userid, guildid])
   @@index([userid, guildid])
 }
-model blacklist {
-  active                       Boolean  @default(false)
-  guildid                      String   @id(map: "blacklists_pkey") @db.VarChar
-  blockinvites                 Boolean  @default(false)
-  repostenabled                Boolean  @default(false)
-  inviteswlroleid              String[] @db.VarChar
-  inviteswlchannelid           String[] @db.VarChar
-  invitesaction                PunishmentType @default(warn)
-  invitesduration              Decimal  @default(3600) @db.Decimal
-  invitesdeletemessageseconds  Decimal  @default(604800) @db.Decimal
-  maxnewlines                  Decimal? @db.Decimal 
-  newlineswlroleid             String[] @db.VarChar
-  newlineswlchannelid          String[] @db.VarChar
-  newlinesaction               PunishmentType @default(warn)
-  newlinesduration             Decimal  @default(3600) @db.Decimal
-  newlinesdeletemessageseconds Decimal  @default(604800) @db.Decimal
-  repostroles                  String[] @db.VarChar
-  repostrules                  String[] @db.VarChar
+model censor {
+  active  Boolean  @default(false)
+  guildid String   @id(map: "censor_pkey") @db.VarChar
+  repostroles   String[] @db.VarChar
+  repostrules   String[] @db.VarChar
+
+  @@index(guildid)
+}
+
+model newlines {
+  active               Boolean  @default(false)
+  guildid              String   @id(map: "newlines_pkey") @db.VarChar
+  maxnewlines          Decimal? @db.Decimal 
+  wlroleid             String[] @db.VarChar
+  wlchannelid          String[] @db.VarChar
+  action               PunishmentType @default(warn)
+  duration             Decimal  @default(3600) @db.Decimal
+  deletemessageseconds Decimal  @default(604800) @db.Decimal
+
+  @@index(guildid)
+}
+
+model invites {
+  active               Boolean  @default(false)
+  guildid              String   @id(map: "invites_pkey") @db.VarChar
+  wlroleid             String[] @db.VarChar
+  wlchannelid          String[] @db.VarChar
+  action               PunishmentType @default(warn)
+  duration             Decimal  @default(3600) @db.Decimal
+  deletemessageseconds Decimal  @default(604800) @db.Decimal
 
   @@index(guildid)
 }

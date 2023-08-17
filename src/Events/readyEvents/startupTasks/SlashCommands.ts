@@ -88,8 +88,13 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('blacklist')
-     .setDescription('Stop Members from using specific Words or Phrases'),
+     .setName('newlines')
+     .setDescription('Limit the Amount of Newlines a Message can contain'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('invites')
+     .setDescription('Stop Members from sending Invites'),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -231,6 +236,11 @@ const settings = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('automation')
    .setDescription(`Everything about ${name}'s Automation`)
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('censor')
+     .setDescription('Repost Messages that contain Blacklisted Words'),
+   )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('delete-commands')
@@ -1256,7 +1266,8 @@ export default {
   'settings_moderation_anti-virus': 'moderation',
   'settings_moderation_anti-raid': 'moderation',
   'settings_moderation_auto-punish': 'moderation',
-  settings_moderation_blacklist: 'moderation',
+  settings_moderation_newlines: 'moderation',
+  settings_moderation_invites: 'moderation',
   'settings_moderation_blacklist-rules': 'moderation',
   settings_moderation_expiry: 'moderation',
   settings_leveling_basic: 'leveling',
@@ -1282,6 +1293,7 @@ export default {
   'settings_automation_disboard-reminders': 'automation',
   settings_automation_suggestions: 'automation',
   settings_automation_verification: 'automation',
+  settings_automation_censor: 'automation',
   settings_automation_welcome: 'automation',
   settings_basic: 'utility',
   settings_logs: 'info',
