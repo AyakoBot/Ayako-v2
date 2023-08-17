@@ -706,7 +706,8 @@ const startLoading = async (
  cmd: CmdType,
  language: CT.Language,
  type: CT.ModTypes,
-): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> =>  (cmd instanceof Discord.Message ? replyMsg : replyCmd)(cmd as never, {
+): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> =>
+ (cmd instanceof Discord.Message ? replyMsg : replyCmd)(cmd as never, {
   embeds: [
    {
     color: constants.colors.loading,
