@@ -3,6 +3,8 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (msg: Discord.Message<true>) => {
+ if (msg.author.bot) return;
+
  const settings = await ch.DataBase.newlines.findUnique({
   where: { guildid: msg.guildId, active: true },
  });
