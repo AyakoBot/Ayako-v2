@@ -4,6 +4,7 @@ import separator from './separator.js';
 import welcome from '../guildMemberAdd/welcome.js';
 import cache from './cache.js';
 import autoroles from '../guildMemberAdd/autoroles.js';
+import verification from '../guildMemberAdd/verification.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
@@ -13,5 +14,6 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  if (oldMember.pending && !member.pending) {
   welcome(member);
   autoroles(member);
+  verification(member);
  }
 };

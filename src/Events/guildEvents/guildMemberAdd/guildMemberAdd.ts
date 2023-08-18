@@ -7,11 +7,11 @@ import autoRoles from './autoroles.js';
 
 export default async (member: Discord.GuildMember) => {
  log(member);
- verification(member);
  ptReminder(member);
  welcome(member);
 
  if (!member.guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
   autoRoles(member);
+  verification(member);
  }
 };
