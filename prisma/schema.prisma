@@ -291,7 +291,7 @@ model customembeds {
 }
 
 model disboard {
-  guildid        String   @id(map: "guildsettings_pkey") @db.VarChar
+  guildid        String   @id(map: "disboard_pkey") @db.VarChar
   active         Boolean  @default(false)
   nextbump       Decimal? @db.Decimal
   channelid      String?  @db.VarChar
@@ -371,7 +371,7 @@ model guilds {
 }
 
 model guildsettings {
-  guildid           String   @id(map: "guildsettings_pkey1") @db.VarChar
+  guildid           String   @id(map: "guildsettings_pkey") @db.VarChar
   prefix            String?
   // false is large, true is small
   interactionsmode  Boolean  @default(true)
