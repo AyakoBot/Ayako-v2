@@ -73,6 +73,7 @@ import getPunishment from './ClientHelperModules/getPunishment.js';
 import getChannelWebhook from './ClientHelperModules/getChannelWebhook.js';
 import getMessage from './ClientHelperModules/getMessage.js';
 import fetchWithRedirects from './ClientHelperModules/fetchWithRedirects.js';
+import requestHandler from './ClientHelperModules/requestHandler.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -81,6 +82,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ requestHandler,
  fetchWithRedirects,
  getChunks,
  getPunishment,
