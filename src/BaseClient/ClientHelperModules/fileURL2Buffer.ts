@@ -7,7 +7,7 @@ import getNameAndFileType from './getNameAndFileType.js';
 export default async (
  urls: (string | null)[],
  names?: string[],
-): Promise<(Discord.AttachmentPayload | null)[]> =>
+): Promise<Discord.AttachmentPayload[]> =>
  (
   await Promise.all(
    urls.map((url) =>
@@ -32,4 +32,4 @@ export default async (
     name: fileName,
    };
   })
-  .filter((r) => !!r);
+  .filter((r): r is { attachment: Buffer; name: string | undefined } => !!r);

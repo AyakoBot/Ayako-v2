@@ -3299,6 +3299,11 @@ export default {
        name: 'Privacy & Terms Reminder',
        desc: 'Whethr the Privacy and Terms Reminder is enabled or not',
       },
+      token: {
+       name: 'Token',
+       desc:
+        'The Token of your Custom Bot\nPlease make sure to insert `https://api.ayakobot.com/custom` as your Bots "Interactions Endpoint URL" in the Developer Portal',
+      },
      },
     },
     'booster-roles': {

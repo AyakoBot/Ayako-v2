@@ -694,6 +694,7 @@ export default {
      errorchannel: 'channel',
      vanity: 'string',
      ptreminderenabled: 'boolean',
+     token: 'string',
     },
     'disboard-reminders': {
      repeatreminder: 'duration',

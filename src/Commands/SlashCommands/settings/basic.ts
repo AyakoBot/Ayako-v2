@@ -91,6 +91,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.channel(settings?.errorchannel, language),
     inline: true,
    },
+   {
+    name: lan.fields.token.name,
+    value: settings.token
+     ? ch.util.makeInlineCode(`${'*'.repeat(settings.token.length - 5)}${settings.token.slice(-3)}`)
+     : language.None,
+   },
   ],
  },
 ];
@@ -132,6 +138,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     undefined,
     'channel',
    ),
+   buttonParsers.specific(language, settings?.token, 'token', name, undefined),
   ],
  },
 ];

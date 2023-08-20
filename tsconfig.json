@@ -1,8 +1,9 @@
 {
  "compilerOptions": {
+  "types": ["node"],
   "target": "ESNEXT",
   "module": "ESNEXT",
-  "lib": ["ESNext", "WebWorker"],
+  "lib": ["ESNext", "WebWorker", "ES6", "DOM"],
   "allowJs": false,
   "declaration": false,
   "declarationMap": false,
@@ -27,7 +28,7 @@
   "noFallthroughCasesInSwitch": true,
   "moduleResolution": "node",
   "baseUrl": "./src/",
-  "typeRoots": [],
+  "typeRoots": ["node_modules/@types"],
   "esModuleInterop": true,
   "sourceRoot": "./src/",
   "forceConsistentCasingInFileNames": true,

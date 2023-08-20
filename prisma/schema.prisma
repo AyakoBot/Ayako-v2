@@ -383,6 +383,7 @@ model guildsettings {
   lastrpsyncrun     Decimal? @db.Decimal
   ptreminderenabled Boolean  @default(true)
   legacyrp          Boolean  @default(false)
+  token             String?  @db.VarChar
 
   @@index(guildid)
 }
