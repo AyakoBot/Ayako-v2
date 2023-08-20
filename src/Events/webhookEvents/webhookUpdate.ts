@@ -35,7 +35,7 @@ export default async (
   ch.cache.webhooks.delete(w.id);
   ch.cache.webhooks.set(w);
 
-  client.emit('webhooksUpdate', before, after, channel);
+  client.emit('webhooksUpdate' as never, before, after, channel);
  });
 
  if (removed.length) {
@@ -54,7 +54,7 @@ export default async (
   if (switchedChannelWebhook) {
    ch.cache.webhooks.set(switchedChannelWebhook);
 
-   client.emit('webhooksUpdate', switchedChannelWebhook, w, channel);
+   client.emit('webhooksUpdate' as never, switchedChannelWebhook, w, channel);
    return;
   }
 

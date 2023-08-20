@@ -6,7 +6,7 @@ import constants from '../Other/constants.js';
 // eslint-disable-next-line no-console
 const { log } = console;
 
-const sendMessage = (
+const replyCmd = (
  cmd:
   | Discord.ButtonInteraction
   | Discord.CommandInteraction
@@ -45,7 +45,7 @@ export default async (
 ) => {
  if (!cmd) return undefined;
 
- const sentMessage = await sendMessage(cmd, payload);
+ const sentMessage = await replyCmd(cmd, payload);
  if (!sentMessage) return undefined;
 
  if (command && commandName) replyMsg.cooldownHandler(cmd, sentMessage, command, commandName);

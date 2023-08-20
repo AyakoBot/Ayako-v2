@@ -240,8 +240,8 @@ const getChannel = async (
      guildId: string;
     },
 ) => {
- const { default: client, UsersAPI } = await import('../Client.js');
+ const { default: client, API } = await import('../Client.js');
 
- if ('username' in channels) return UsersAPI.createDM(channels.id);
+ if ('username' in channels) return API.users.createDM(channels.id);
  return !('name' in channels) ? client.channels.cache.get(channels.id) : channels;
 };
