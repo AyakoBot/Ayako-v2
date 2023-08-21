@@ -21,7 +21,6 @@ import errorMsg from './ClientHelperModules/errorMsg.js';
 import errorCmd from './ClientHelperModules/errorCmd.js';
 import permError from './ClientHelperModules/permError.js';
 import notYours from './ClientHelperModules/notYours.js';
-import collectorEnd from './ClientHelperModules/collectorEnd.js';
 import colorSelector from './ClientHelperModules/colorSelector.js';
 import loadingEmbed from './ClientHelperModules/loadingEmbed.js';
 import arrayEquals from './ClientHelperModules/arrayEquals.js';
@@ -74,6 +73,7 @@ import getChannelWebhook from './ClientHelperModules/getChannelWebhook.js';
 import getMessage from './ClientHelperModules/getMessage.js';
 import fetchWithRedirects from './ClientHelperModules/fetchWithRedirects.js';
 import requestHandler from './ClientHelperModules/requestHandler.js';
+import getBotIdFromToken from './ClientHelperModules/getBotIdFromToken.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -82,6 +82,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ getBotIdFromToken,
  requestHandler,
  fetchWithRedirects,
  getChunks,
@@ -108,7 +109,6 @@ export {
  errorCmd,
  permError,
  notYours,
- collectorEnd,
  colorSelector,
  loadingEmbed,
  arrayEquals,
