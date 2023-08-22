@@ -1,22 +1,6 @@
 import fetch from 'node-fetch';
-import io from 'socket.io-client';
 import * as Jobs from 'node-schedule';
 import auth from '../../../../auth.json' assert { type: 'json' };
-
-const initSocket = () => {
- const socket = io('wss://api.fishfish.gg/v1/stream', {
-  auth: {
-   authorization: self.sessionToken,
-  },
- });
-
- socket.on('message', (args: { type: 'add' | 'delete'; domains: string[] }) => {
-  console.log(args);
-
-  const fn = args.type === 'add' ? self.cache.add : self.cache.delete;
-  args.domains.forEach((d) => fn(d));
- });
-};
 
 export interface FishFish {
  refreshJob: Jobs.Job | null;
@@ -45,20 +29,16 @@ const self: FishFish = {
    self.start();
   });
 
-  initSocket();
+  const res = await fetch(`https://api.fishfish.gg/v1/domains?full=false`, {
+   headers: {
+    auth: self.sessionToken,
+   },
+  });
+  if (!res.ok) throw new Error('Failed to fetch FishFish API');
 
-  setTimeout(async () => {
-   const res = await fetch(`https://api.fishfish.gg/v1/domains?full=false`, {
-    headers: {
-     auth: self.sessionToken,
-    },
-   });
-   if (!res.ok) throw new Error('Failed to fetch FishFish API');
-
-   self.cache = new Set();
-   const data = (await res.json()) as string[];
-   data.forEach((d) => self.cache.add(d));
-  }, 20000);
+  self.cache = new Set();
+  const data = (await res.json()) as string[];
+  data.forEach((d) => self.cache.add(d));
  },
  toArray: () => [...self.cache],
  cache: new Set(),
