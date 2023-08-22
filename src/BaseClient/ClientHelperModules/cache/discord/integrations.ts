@@ -1,7 +1,8 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 export interface Integrations {
- get: (integrationId: string, guildId: string) => Promise<Discord.Integration | undefined>;
+ get: (integrationId: string, guild: Discord.Guild) => Promise<Discord.Integration | undefined>;
  set: (integration: Discord.Integration, guildId: string) => void;
  find: (integrationId: string) => Discord.Integration | undefined;
  delete: (integrationId: string, guildId: string) => void;
@@ -9,15 +10,16 @@ export interface Integrations {
 }
 
 const self: Integrations = {
- get: async (id, guildId) => {
-  const cached = self.cache.get(guildId)?.get(id);
+ get: async (id, guild) => {
+  const cached = self.cache.get(guild.id)?.get(id);
   if (cached) return cached;
 
-  const client = (await import('../../../Client.js')).default;
-  const fetched = await client.guilds.cache.get(guildId)?.fetchIntegrations();
-  fetched?.forEach((f) => self.set(f, guildId));
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const fetched = await requestHandler.guilds.getIntegrations(guild);
+  fetched?.forEach((f) => self.set(new Classes.Integration(guild.client, f, guild), guild.id));
 
-  return fetched?.find((f) => f.id === id);
+  return self.cache.get(guild.id)?.get(id);
  },
  set: (integration, guildId) => {
   if (!self.cache.get(guildId)) {

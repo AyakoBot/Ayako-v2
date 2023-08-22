@@ -1,10 +1,11 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 export interface Webhooks {
  get: (
   webhookId: string,
   channelId: string,
-  guildId: string,
+  guild: Discord.Guild,
  ) => Promise<Discord.Webhook | undefined>;
  set: (webhook: Discord.Webhook) => void;
  find: (webhookId: string) => Discord.Webhook | undefined;
@@ -13,15 +14,16 @@ export interface Webhooks {
 }
 
 const self: Webhooks = {
- get: async (id, channelId, guildId) => {
-  const cached = self.cache.get(guildId)?.get(channelId)?.get(id);
+ get: async (id, channelId, guild) => {
+  const cached = self.cache.get(guild.id)?.get(channelId)?.get(id);
   if (cached) return cached;
 
-  const client = (await import('../../../Client.js')).default;
-  const fetched = await client.guilds.cache.get(guildId)?.fetchWebhooks();
-  fetched?.forEach((f) => self.set(f));
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const fetched = await requestHandler.guilds.getWebhooks(guild);
+  fetched?.forEach((f) => self.set(new Classes.Webhook(guild.client, f)));
 
-  return fetched?.find((f) => f.id === id);
+  return self.cache.get(guild.id)?.get(channelId)?.get(id);
  },
  set: (webhook) => {
   if (!self.cache.get(webhook.guildId)) {

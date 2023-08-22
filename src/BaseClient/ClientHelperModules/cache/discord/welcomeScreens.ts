@@ -1,23 +1,27 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 export interface WelcomeScreens {
- get: (guildId: string) => Promise<Discord.WelcomeScreen | undefined>;
+ get: (guild: Discord.Guild) => Promise<Discord.WelcomeScreen | undefined>;
  set: (welcomeScreen: Discord.WelcomeScreen) => void;
  delete: (guildId: string) => void;
  cache: Map<string, Discord.WelcomeScreen>;
 }
 
 const self: WelcomeScreens = {
- get: async (guildId) => {
-  const cached = self.cache.get(guildId);
+ get: async (guild) => {
+  const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  const client = (await import('../../../Client.js')).default;
-  const fetched = await client.guilds.cache.get(guildId)?.fetchWelcomeScreen();
-  if (!fetched) return undefined;
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const fetched = await requestHandler.guilds.getWelcomeScreen(guild);
 
-  self.set(fetched);
-  return fetched;
+  if (!fetched) return undefined;
+  const welcomeScreen = new Classes.WelcomeScreen(guild, fetched);
+
+  self.set(welcomeScreen);
+  return self.cache.get(guild.id);
  },
  set: (screen: Discord.WelcomeScreen) => {
   self.cache.set(screen.guild.id, screen);

@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 type ActionType = Discord.GuildAuditLogsEntry<
  Discord.AuditLogEvent,
@@ -27,11 +28,16 @@ const self: AuditLogs = {
   const cached = self.cache.get(guild.id)?.get(type);
   if (cached) return [...cached.values()];
 
-  const fetched = await guild.fetchAuditLogs({ type, limit: 100 });
-  if (!fetched) return undefined;
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const fetched = await requestHandler.guilds.getAuditLogs(guild, {
+   action_type: type,
+   limit: 100,
+  });
 
-  fetched.entries.forEach((entry) => self.set(guild.id, entry));
-  return fetched.entries.map((o) => o);
+  const auditLog = fetched ? new Classes.GuildAuditLogs(guild, fetched) : undefined;
+  auditLog?.entries.forEach((entry) => self.set(guild.id, entry));
+  return auditLog?.entries.map((o) => o);
  },
  set: (guildId, entry) => {
   if (!self.cache.get(guildId)) self.cache.set(guildId, new Map());

@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 export interface Onboarding {
  get: (guild: Discord.Guild) => Promise<Discord.GuildOnboarding | undefined>;
@@ -12,10 +13,13 @@ const self: Onboarding = {
   const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  const onboarding = await guild.fetchOnboarding();
-  self.set(guild.id, onboarding);
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const onboarding = await requestHandler.guilds.getOnboarding(guild);
+  if (!onboarding) return undefined;
 
-  return onboarding;
+  self.set(guild.id, new Classes.GuildOnboarding(guild.client, onboarding));
+  return self.cache.get(guild.id);
  },
 
  set: (id, onboarding) => {

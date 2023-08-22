@@ -1,7 +1,8 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import * as Classes from '../../../Other/classes.js';
 
 export interface Invites {
- get: (code: string, channelId: string, guildId: string) => Promise<number | undefined>;
+ get: (code: string, channelId: string, guild: Discord.Guild) => Promise<number | undefined>;
  set: (invite: Discord.Invite, guildId: string) => void;
  find: (code: string) => number | undefined;
  delete: (code: string, guildId: string, channelId: string) => void;
@@ -9,17 +10,19 @@ export interface Invites {
 }
 
 const self: Invites = {
- get: async (code, channelId, guildId) => {
-  const cached = self.cache.get(guildId)?.get(channelId)?.get(code);
+ get: async (code, channelId, guild) => {
+  const cached = self.cache.get(guild.id)?.get(channelId)?.get(code);
   if (cached) return cached;
 
-  self.cache.get(guildId)?.clear();
+  // eslint-disable-next-line import/no-cycle
+  const requestHandler = (await import('../../requestHandler.js')).request;
+  const fetched = await requestHandler.guilds.getInvites(guild);
 
-  const client = (await import('../../../Client.js')).default;
-  const fetched = await client.guilds.cache.get(guildId)?.invites.fetch();
   fetched?.forEach((f) => {
-   self.set(f, guildId);
+   self.set(new Classes.Invite(guild.client, f), guild.id);
   });
+
+  self.cache.get(guild.id)?.clear();
 
   return Number(fetched?.find((f) => f.code === code));
  },
