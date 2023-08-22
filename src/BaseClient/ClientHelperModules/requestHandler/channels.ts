@@ -19,7 +19,12 @@ export default {
   payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
  ) =>
   (guild ? cache.apis.get(guild.id) ?? API : API).channels
-   .createMessage(channelId, payload)
+   .createMessage(channelId, {
+    ...payload,
+    message_reference: payload.message_reference
+     ? { ...payload.message_reference, fail_if_not_exists: false }
+     : undefined,
+   })
    .catch((e) => {
     if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;

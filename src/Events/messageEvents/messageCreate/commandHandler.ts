@@ -94,7 +94,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
       {
        type: Discord.ComponentType.Button,
        label: lan.button,
-       customId: `help/commands_${commandName}`,
+       custom_id: `help/commands_${commandName}`,
        style: Discord.ButtonStyle.Success,
        emoji: objectEmotes.question,
       },

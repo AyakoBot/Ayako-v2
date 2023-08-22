@@ -92,7 +92,7 @@ const mention = async (
 
  if (!embeds.length) return;
 
- const m = await ch.replyMsg(msg, { embeds, allowedMentions: { repliedUser: true } });
+ const m = await ch.replyMsg(msg, { embeds, allowed_mentions: { replied_user: true } });
 
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
   if (m?.deletable) m.delete();

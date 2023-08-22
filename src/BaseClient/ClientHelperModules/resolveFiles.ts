@@ -3,7 +3,7 @@ import Stream from 'node:stream';
 import { basename, DataResolver } from 'discord.js';
 
 export default (
- files: (Discord.AttachmentPayload | Discord.BufferResolvable | Stream)[],
+ files: (Discord.AttachmentPayload | Discord.BufferResolvable | Stream | Discord.Attachment)[],
 ): Promise<Discord.RawFile[]> => Promise.all(files?.map((file) => resolveFile(file)) ?? []);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

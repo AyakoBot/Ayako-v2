@@ -70,5 +70,5 @@ const rolePing = (msg: Discord.Message) => {
 
  if (!content) return;
 
- ch.replyMsg(msg, { content, allowedMentions: { roles: [role] } });
+ ch.replyMsg(msg, { content, allowed_mentions: { roles: [role] } });
 };

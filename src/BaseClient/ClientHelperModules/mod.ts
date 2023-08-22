@@ -847,7 +847,7 @@ const notifyTarget = async <T extends CT.ModTypes>(
  await send(thread, {
   embeds: [embed],
   content: `<@${options.target.id}>`,
-  allowedMentions: {
+  allowed_mentions: {
    users: [options.target.id],
   },
  });

@@ -16,6 +16,6 @@ export default (msg: Discord.Message<true>) => {
 
  ch.replyMsg(msg, {
   content: `<@${msg.author.id}>`,
-  allowedMentions: { users: [msg.author.id] },
+  allowed_mentions: { users: [msg.author.id] },
  });
 };

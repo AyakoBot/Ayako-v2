@@ -3,6 +3,7 @@ import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
+import resolveFiles from './resolveFiles.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -19,31 +20,31 @@ type ChannelTypes =
 
 async function send(
  channels: Discord.User | CT.bEvalUser,
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: ChannelTypes[],
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: { id: string; guildId: string },
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
 async function send(
  channels: { id: string[]; guildId: string },
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: ChannelTypes,
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
@@ -55,7 +56,7 @@ async function send(
   | { id: string; guildId: string }
   | Discord.User
   | CT.bEvalUser,
- payload: MessageCreateOptions,
+ payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | (Discord.Message | null | void)[] | null | void> {
@@ -117,7 +118,7 @@ async function send(
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
-  payload as Discord.RESTPostAPIChannelMessageJSONBody,
+  { ...payload, files: payload.files ? await resolveFiles(payload.files) : undefined },
  );
  if ('message' in sentMessage) return null;
 

@@ -28,7 +28,7 @@ export default async (member: Discord.GuildMember) => {
  ch.send(channel, {
   embeds: [embed],
   content,
-  allowedMentions: {
+  allowed_mentions: {
    users: [...settings.pingusers, settings.pingjoin ? member.id : undefined].filter(
     (r): r is string => !!r,
    ),

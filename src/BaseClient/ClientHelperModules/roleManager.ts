@@ -1,5 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import { request } from './requestHandler.js';
 
 type MemberCaches = {
  member: Discord.GuildMember;
@@ -113,11 +114,14 @@ const runJob = async (guild: Discord.Guild) => {
   return;
  }
 
- memberCache.member
-  .edit({
+ request.guilds.editMember(
+  memberCache.member.guild,
+  memberCache.member.id,
+  {
    roles,
-  })
-  .catch(() => undefined);
+  },
+  memberCache.reason,
+ );
 
  endJob(memberCaches);
 };
