@@ -1,12 +1,14 @@
 import * as Discord from 'discord.js';
 import error from '../error.js';
 import { API } from '../../Client.js';
+// eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
 
 export default {
  get: (guild: Discord.Guild, webhookId: string, token?: string) =>
   (cache.apis.get(guild.id) ?? API).webhooks.get(webhookId, { token }).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
   }),
  edit: (
   guild: Discord.Guild,
@@ -16,10 +18,12 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks.edit(webhookId, body, data).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
   }),
  delete: (guild: Discord.Guild, webhookId: string, data?: { token?: string; reason?: string }) =>
   (cache.apis.get(guild.id) ?? API).webhooks.delete(webhookId, data).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
   }),
  execute: (
   guild: Discord.Guild,
@@ -33,6 +37,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks.execute(webhookId, token, body).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
   }),
  executeSlack: (
   guild: Discord.Guild,
@@ -45,6 +50,7 @@ export default {
    .executeSlack(webhookId, token, body, query)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e;
    }),
  executeGitHub: (
   guild: Discord.Guild,
@@ -57,6 +63,7 @@ export default {
    .executeGitHub(webhookId, token, body, query)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e;
    }),
  getMessage: (
   guild: Discord.Guild,
@@ -69,6 +76,7 @@ export default {
    .getMessage(webhookId, token, messageId, query)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e;
    }),
  editMessage: (
   guild: Discord.Guild,
@@ -84,6 +92,7 @@ export default {
    .editMessage(webhookId, token, messageId, body)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e;
    }),
  deleteMessage: (
   guild: Discord.Guild,
@@ -96,5 +105,6 @@ export default {
    .deleteMessage(webhookId, token, messageId, query)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e;
    }),
 };

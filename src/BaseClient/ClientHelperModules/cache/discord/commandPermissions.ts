@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import DataBase from '../../../DataBase.js';
 import getBotIdFromToken from '../../getBotIdFromToken.js';
+import error from '../../error.js';
 
 export interface CommandPermissions {
  get: (
@@ -30,6 +31,10 @@ const self: CommandPermissions = {
    guild,
    guildSettings?.token ? getBotIdFromToken(guildSettings.token) : guild.client.user.id,
   );
+  if ('message' in fetched) {
+   error(guild, new Error('Couldnt get Command Permissions'));
+   return undefined;
+  }
 
   self.cache.get(guild.id)?.clear();
   fetched?.map((f) =>

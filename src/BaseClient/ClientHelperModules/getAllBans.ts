@@ -1,8 +1,9 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import { request } from './requestHandler.js';
+import * as Classes from '../Other/classes.js';
 
 export default async (guild: Discord.Guild) => {
- const fetchBans = (after?: string) =>
-  guild.bans.fetch({ limit: 1000, after }).catch(() => undefined);
+ const fetchBans = (after?: string) => request.guilds.getMemberBans(guild, { limit: 1000, after });
 
  const bans: Discord.GuildBan[] = [];
 
@@ -10,14 +11,14 @@ export default async (guild: Discord.Guild) => {
  while (wasntThousand === false) {
   // eslint-disable-next-line no-await-in-loop
   const fetched = await fetchBans(bans.at(-1)?.user.id);
-  if (!fetched) {
+  if ('message' in fetched) {
    wasntThousand = true;
    return [];
   }
 
-  if (fetched?.size !== 1000) wasntThousand = true;
+  if (fetched?.length !== 1000) wasntThousand = true;
 
-  bans.push(...fetched.map((b) => b));
+  bans.push(...fetched.map((b) => new Classes.GuildBan(guild.client, b, guild)));
  }
 
  return bans;

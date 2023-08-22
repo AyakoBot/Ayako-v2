@@ -3,13 +3,16 @@ import reply from './replyMsg.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
+import { request } from './requestHandler.js';
+import * as Classes from '../Other/classes.js';
+import error from './error.js';
 
-export default (
- msg: Discord.Message | Discord.Message | Discord.Message,
+export default async <T extends Discord.Message<boolean>>(
+ msg: T,
  content: string,
  language: CT.Language,
- m?: Discord.Message,
-) => {
+ m?: Discord.Message<true>,
+): Promise<T | undefined> => {
  const embed: Discord.APIEmbed = {
   author: {
    name: language.error,
@@ -20,7 +23,15 @@ export default (
   description: content,
  };
 
- if (m && m.editable) return m.edit({ embeds: [embed] }).catch(() => null);
+ if (m && m.editable) {
+  const ms = await request.channels.editMsg(m, { embeds: [embed] });
+  if ('message' in ms) {
+   if (msg.inGuild()) error(msg.guild, new Error(`Couldnt get Guild Webhooks`));
+   return undefined;
+  }
+
+  return new Classes.Message(msg.client, ms) as T;
+ }
 
  return reply(msg, { embeds: [embed] });
 };

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 export interface Integrations {
  get: (integrationId: string, guild: Discord.Guild) => Promise<Discord.Integration | undefined>;
@@ -17,6 +18,11 @@ const self: Integrations = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getIntegrations(guild);
+  if ('message' in fetched) {
+   error(guild, new Error('Couldnt get Guild Integrations'));
+   return undefined;
+  }
+
   fetched?.forEach((f) => self.set(new Classes.Integration(guild.client, f, guild), guild.id));
 
   return self.cache.get(guild.id)?.get(id);

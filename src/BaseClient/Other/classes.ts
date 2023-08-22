@@ -76,3 +76,10 @@ export class WelcomeScreen extends Discord.WelcomeScreen {
   super(guild, data);
  }
 }
+
+// @ts-ignore
+export class ThreadChannel extends Discord.ThreadChannel {
+ constructor(guild: Discord.Guild, data: RawData.RawThreadChannelData) {
+  super(guild, data);
+ }
+}

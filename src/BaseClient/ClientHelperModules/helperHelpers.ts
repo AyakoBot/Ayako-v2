@@ -114,7 +114,7 @@ export default async (
 
  const language = await languageSelector(cmd.guildId);
 
- const payload: Discord.InteractionReplyOptions | Discord.InteractionUpdateOptions = {
+ const payload: CT.UsualMessagePayload = {
   embeds: getEmbeds(
    cmd,
    language,
@@ -129,7 +129,7 @@ export default async (
     components: [
      {
       type: Discord.ComponentType.StringSelect,
-      customId: 'help/select',
+      custom_id: 'help/select',
       placeholder: language.slashCommands.help.selectPlaceholder,
       options: [...new Set(Object.values(SlashCommands.categories))].map((c) => ({
        label: language.slashCommands.help.categories[c as CT.CommandCategories],
@@ -143,8 +143,8 @@ export default async (
  };
 
  if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  replyCmd(cmd, payload as Discord.InteractionReplyOptions);
- } else cmd.update(payload as Discord.InteractionUpdateOptions);
+  replyCmd(cmd, payload);
+ } else cmd.update(payload);
 };
 
 const getEmbeds = (

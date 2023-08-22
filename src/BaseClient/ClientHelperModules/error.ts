@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import DataBase from '../DataBase.js';
-import * as getChannel from './getChannel.js';
 import objectEmotes from './objectEmotes.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
@@ -14,7 +13,8 @@ export default async (guild: Discord.Guild, err: Error) => {
   .then((r) => r?.errorchannel);
  if (!errorchannel) return;
 
- const channel = await getChannel.guildTextChannel(errorchannel);
+ const { guildTextChannel } = await import('./getChannel.js');
+ const channel = await guildTextChannel(errorchannel);
  if (!channel) return;
 
  const language = await languageSelector(guild.id);

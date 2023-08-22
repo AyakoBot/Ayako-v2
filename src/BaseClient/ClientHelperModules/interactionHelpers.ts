@@ -20,9 +20,9 @@ type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
 const reply = async (
  cmd:
-  | Omit<Discord.ChatInputCommandInteraction, 'guild' | 'client'>
-  | Omit<Discord.Message, 'guild' | 'client'>
-  | Omit<Discord.ButtonInteraction, 'guild' | 'client'>,
+  | Omit<Discord.ChatInputCommandInteraction<'cached'>, 'guild' | 'client'>
+  | Omit<Discord.Message<true>, 'guild' | 'client'>
+  | Omit<Discord.ButtonInteraction<'cached'>, 'guild' | 'client'>,
  guild: Discord.Guild | null,
 ) => {
  if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
@@ -267,7 +267,7 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
  isAtEmbedLimit: boolean,
  lan: CT.Language['slashCommands']['interactions'][T],
  legacyrp: boolean,
-): Discord.MessageReplyOptions | Discord.InteractionReplyOptions => ({
+): CT.UsualMessagePayload => ({
  embeds: [embed],
  components: legacyrp
   ? []
@@ -355,12 +355,11 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
    if (i === 0) return;
 
    messages[i].mentions.users = new Discord.Collection(c.map((u) => [u.id, u]));
-   reply(messages[i], msg.guild);
+   reply(messages[i] as Parameters<typeof reply>[0], msg.guild);
   });
 
   return mentionChunks[0];
  }
-
  const reference = await msg.fetchReference().catch(() => undefined);
  if (!reference) return [];
 

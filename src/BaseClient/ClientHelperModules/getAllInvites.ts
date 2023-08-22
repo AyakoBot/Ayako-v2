@@ -1,9 +1,13 @@
 import * as Discord from 'discord.js';
 import getUser from './getUser.js';
-import client from '../Client.js';
+import * as Classes from '../Other/classes.js';
+import { request } from './requestHandler.js';
 
 export default async (guild: Discord.Guild) => {
- const me = await guild.members.fetchMe();
+ const currentMember = await request.users.getCurrentMember(guild);
+ if ('message' in currentMember) return undefined;
+
+ const me = currentMember ? new Classes.GuildMember(guild.client, currentMember, guild) : undefined;
  if (!new Discord.PermissionsBitField(me?.permissions).has(32n)) return null;
 
  const invites = guild.invites.cache.map((i) => i);
@@ -13,11 +17,12 @@ export default async (guild: Discord.Guild) => {
 
  const vanityUrl = await guild.fetchVanityData();
  if (!vanityUrl) return invites;
+ if (!vanityUrl.code) return invites;
 
  const owner = await getUser(guild.ownerId);
 
  invites.push({
-  client,
+  client: guild.client,
   channel: null,
   channelId: null,
   code: guild.vanityURLCode,

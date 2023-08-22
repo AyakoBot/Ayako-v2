@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 export interface WelcomeScreens {
  get: (guild: Discord.Guild) => Promise<Discord.WelcomeScreen | undefined>;
@@ -16,8 +17,11 @@ const self: WelcomeScreens = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getWelcomeScreen(guild);
+  if ('message' in fetched) {
+   error(guild, new Error(`Couldnt get Welcome Screen`));
+   return undefined;
+  }
 
-  if (!fetched) return undefined;
   const welcomeScreen = new Classes.WelcomeScreen(guild, fetched);
 
   self.set(welcomeScreen);

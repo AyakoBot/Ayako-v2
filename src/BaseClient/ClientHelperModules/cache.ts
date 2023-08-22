@@ -1,5 +1,6 @@
 import * as DiscordCore from '@discordjs/core';
 
+// eslint-disable-next-line import/no-cycle
 import auditLogs, { AuditLogs } from './cache/discord/auditLogs.js';
 import commandPermissions, { CommandPermissions } from './cache/discord/commandPermissions.js';
 import integrations, { Integrations } from './cache/discord/integrations.js';

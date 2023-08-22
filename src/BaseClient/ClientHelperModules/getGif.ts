@@ -276,7 +276,7 @@ const gifSelection = [
 export default gifSelection;
 
 export const imageGetter = async (
- cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
@@ -291,7 +291,7 @@ export const imageGetter = async (
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.img;
 
- const payload: Discord.InteractionReplyOptions | Discord.InteractionUpdateOptions = {
+ const payload = {
   embeds: [
    {
     image: {
@@ -342,7 +342,6 @@ export const imageGetter = async (
   ].filter((c): c is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!c),
  };
 
- if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  replyCmd(cmd, payload as Discord.InteractionReplyOptions);
- } else cmd.update(payload as Discord.InteractionUpdateOptions);
+ if (cmd instanceof Discord.ChatInputCommandInteraction) replyCmd(cmd, payload);
+ else cmd.update(payload);
 };

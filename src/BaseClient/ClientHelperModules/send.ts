@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
+import { request } from './requestHandler.js';
+import * as Classes from '../Other/classes.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -112,12 +114,14 @@ async function send(
   p.fields?.forEach((pa) => (pa.value?.length > 1024 ? log(p) : null));
  });
 
- const sentMessage = await channel.send(payload).catch((err) => {
-  log(JSON.stringify(payload));
-  throw new Error(`Send Error: ${err}`);
- });
+ const sentMessage = await request.channels.sendMessage(
+  'guild' in channel ? channel.guild : undefined,
+  channel.id,
+  payload as Discord.RESTPostAPIChannelMessageJSONBody,
+ );
+ if ('message' in sentMessage) return null;
 
- return sentMessage;
+ return new Classes.Message(channel.client, sentMessage);
 }
 
 export default send;

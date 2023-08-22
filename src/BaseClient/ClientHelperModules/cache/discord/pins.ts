@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 export interface Pins {
  get: (
@@ -21,6 +22,11 @@ const self: Pins = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.channels.getPins(guild, channelId);
+  if ('message' in fetched) {
+   error(guild, new Error(`Couldnt get Channel Pins of ${channelId}`));
+   return undefined;
+  }
+
   fetched?.forEach((f) => self.set(new Classes.Message(guild.client, f)));
 
   return self.cache.get(guild.id)?.get(channelId)?.get(id);

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 export interface Webhooks {
  get: (
@@ -21,6 +22,11 @@ const self: Webhooks = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getWebhooks(guild);
+  if ('message' in fetched) {
+   error(guild, new Error(`Couldnt get Guild Webhooks`));
+   return undefined;
+  }
+
   fetched?.forEach((f) => self.set(new Classes.Webhook(guild.client, f)));
 
   return self.cache.get(guild.id)?.get(channelId)?.get(id);

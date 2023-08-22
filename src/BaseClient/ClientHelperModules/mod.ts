@@ -16,12 +16,12 @@ import objectEmotes from './objectEmotes.js';
 import errorCmd from './errorCmd.js';
 import errorMsg from './errorMsg.js';
 import error from './error.js';
+import { request } from './requestHandler.js';
+import { ThreadChannel, GuildMember } from '../Other/classes.js';
+import getBotIdFromToken from './getBotIdFromToken.js';
 
 type CmdType = Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true> | undefined;
-type ResponseMessage = Discord.Message<boolean> | Discord.InteractionResponse<boolean> | undefined;
-
-// TODO
-// autopunish duration on ban type is deleteMessageSeconds
+type ResponseMessage = Discord.Message<true> | undefined;
 
 export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.ModOptions<T>) => {
  const basicsResponse = await runBasics1(options, cmd, type);
@@ -190,11 +190,16 @@ const mod = {
    return false;
   }
 
-  const res = await targetMember
-   .disableCommunicationUntil(
-    Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000),
-   )
-   .catch((e) => e as Discord.DiscordAPIError);
+  const res = await request.guilds.editMember(
+   options.guild,
+   targetMember.id,
+   {
+    communication_disabled_until: new Date(
+     Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000),
+    ).toISOString(),
+   },
+   options.reason,
+  );
 
   if ('message' in res) {
    err(cmd, res, language, message, options.guild);
@@ -238,9 +243,9 @@ const mod = {
    return false;
   }
 
-  const res = await targetMember
-   .disableCommunicationUntil(null)
-   .catch((e) => e as Discord.DiscordAPIError);
+  const res = await request.guilds.editMember(options.guild, targetMember.id, {
+   communication_disabled_until: null,
+  });
 
   if ('message' in res) {
    err(cmd, res, language, message, options.guild);
@@ -272,14 +277,16 @@ const mod = {
    return false;
   }
 
-  const res = await options.guild.bans
-   .create(options.target.id, {
-    reason: options.reason,
-    deleteMessageSeconds: options.deleteMessageSeconds,
-   })
-   .catch((e) => e as Discord.DiscordAPIError);
+  const res = await request.guilds.banUser(
+   options.guild,
+   options.target.id,
+   {
+    delete_message_seconds: options.deleteMessageSeconds,
+   },
+   options.reason,
+  );
 
-  if (typeof res !== 'string' && 'message' in res) {
+  if (typeof res !== 'undefined' && 'message' in res) {
    err(cmd, res, language, message, options.guild);
    return false;
   }
@@ -293,16 +300,10 @@ const mod = {
   cmd: CmdType,
  ) => {
   const res = await mod.banAdd(options, language, message, cmd);
-  if (!res) return res;
+  if (!res) return false;
 
-  const res2 = await options.guild.bans
-   .remove(options.target.id, options.reason)
-   .catch((e) => e as Discord.DiscordAPIError);
-
-  if (res2 && 'message' in res2) {
-   err(cmd, res2, language, message, options.guild);
-   return false;
-  }
+  const res2 = await mod.banRemove(options, language, message, cmd);
+  if (!res2) return false;
 
   return true;
  },
@@ -345,10 +346,7 @@ const mod = {
    return false;
   }
 
-  const res = await options.guild.bans
-   .remove(options.target.id, options.reason)
-   .catch((e) => e as Discord.DiscordAPIError);
-
+  const res = await request.guilds.unbanUser(options.guild, options.target.id, options.reason);
   if (res && 'message' in res) {
    err(cmd, res, language, message, options.guild);
    return false;
@@ -374,12 +372,9 @@ const mod = {
    return false;
   }
 
-  const res = await options.guild.bans
-   .remove(options.target.id, options.reason)
-   .catch((e) => e as Discord.DiscordAPIError);
-
-  if (res && 'message' in res) {
-   err(cmd, res, language, message, options.guild);
+  const res = await request.guilds.removeMember(options.guild, options.target.id);
+  if ((res as Discord.DiscordAPIError).message) {
+   err(cmd, res as Discord.DiscordAPIError, language, message, options.guild);
    return false;
   }
 
@@ -396,7 +391,9 @@ const mod = {
   const type = 'channelBanAdd';
 
   if (options.channel.id === options.guild.rulesChannelId) {
-   message?.edit({
+   if (!message) return false;
+
+   request.channels.editMsg(message, {
     embeds: [
      {
       color: constants.colors.danger,
@@ -438,22 +435,24 @@ const mod = {
    return false;
   }
 
-  const newPerms = {
-   SendMessages: false,
-   SendMessagesInThreads: false,
-   ViewChannel: false,
-   AddReactions: false,
-   Connect: false,
-  };
+  const newPerms = new Discord.PermissionsBitField([
+   Discord.PermissionsBitField.Flags.SendMessages,
+   Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+   Discord.PermissionsBitField.Flags.ViewChannel,
+   Discord.PermissionsBitField.Flags.AddReactions,
+   Discord.PermissionsBitField.Flags.Connect,
+  ]);
 
-  const res = perm
-   ? await perm.edit(newPerms, options.reason).catch((e) => e as Discord.DiscordAPIError)
-   : await options.channel.permissionOverwrites
-      .create(options.target.id, newPerms, {
-       reason: options.reason,
-       type: Discord.OverwriteType.Member,
-      })
-      .catch((e) => e as Discord.DiscordAPIError);
+  const res = await request.channels.editPermissionOverwrite(
+   options.channel,
+   options.target.id,
+   {
+    type: Discord.OverwriteType.Member,
+    deny: (perm ? perm.deny.add(newPerms.bitfield) : newPerms).bitfield.toString(),
+    allow: perm ? perm.allow.remove(newPerms.bitfield).bitfield.toString() : '0',
+   },
+   options.reason,
+  );
 
   if (res && 'message' in res) {
    err(cmd, res, language, message, options.guild);
@@ -499,34 +498,43 @@ const mod = {
    return false;
   }
 
-  const newPerms = {
-   SendMessages: null,
-   SendMessagesInThreads: null,
-   ViewChannel: null,
-   AddReactions: null,
-   Connect: null,
-  };
+  const newPerms = new Discord.PermissionsBitField([
+   Discord.PermissionsBitField.Flags.SendMessages,
+   Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+   Discord.PermissionsBitField.Flags.ViewChannel,
+   Discord.PermissionsBitField.Flags.AddReactions,
+   Discord.PermissionsBitField.Flags.Connect,
+  ]);
 
-  const res = await perm.edit(newPerms, options.reason).catch((e) => e as Discord.DiscordAPIError);
+  if (perm.deny.remove(newPerms).bitfield === 0n && perm.allow.bitfield === 0n) {
+   const res = await request.channels.editPermissionOverwrite(
+    options.channel,
+    options.target.id,
+    {
+     type: Discord.OverwriteType.Member,
+     deny: perm.deny.remove(newPerms).bitfield.toString(),
+     allow: perm.allow.bitfield.toString(),
+    },
+    options.reason,
+   );
 
-  if (res && 'message' in res) {
-   err(cmd, res, language, message, options.guild);
-   return false;
-  }
+   if (res && 'message' in res) {
+    err(cmd, res, language, message, options.guild);
+    return false;
+   }
+  } else {
+   const res = await request.channels.deletePermissionOverwrite(
+    options.channel,
+    options.target.id,
+    options.reason,
+   );
 
-  if (
-   options.channel.permissionOverwrites.cache.get(options.target.id)?.deny.bitfield === 0n &&
-   options.channel.permissionOverwrites.cache.get(options.target.id)?.allow.bitfield === 0n
-  ) {
-   const res2 = await options.channel.permissionOverwrites
-    .delete(options.target.id, options.reason)
-    .catch((e) => e as Discord.DiscordAPIError);
-
-   if (res2 && 'message' in res2) {
-    err(cmd, res2, language, message, options.guild);
+   if (res && 'message' in res) {
+    err(cmd, res, language, message, options.guild);
     return false;
    }
   }
+
   return true;
  },
  tempChannelBanAdd: async (
@@ -686,7 +694,9 @@ const permissionError = async (
  language: CT.Language,
  type: CT.ModTypes,
 ): Promise<boolean> => {
- message?.edit({
+ if (!message) return false;
+
+ const payload = {
   embeds: [
    {
     color: constants.colors.danger,
@@ -697,7 +707,9 @@ const permissionError = async (
     description: language.mod.execution[type as keyof CT.Language['mod']['execution']].meNoPerms,
    },
   ],
- });
+ };
+
+ request.channels.editMsg(message, payload);
 
  return false;
 };
@@ -706,8 +718,10 @@ const startLoading = async (
  cmd: CmdType,
  language: CT.Language,
  type: CT.ModTypes,
-): Promise<ReturnType<typeof replyMsg | typeof replyCmd>> =>
- (cmd instanceof Discord.Message ? replyMsg : replyCmd)(cmd as never, {
+): Promise<ResponseMessage> => {
+ if (!cmd) return undefined;
+
+ const payload = {
   embeds: [
    {
     color: constants.colors.loading,
@@ -717,7 +731,13 @@ const startLoading = async (
     },
    },
   ],
- });
+ };
+
+ if (cmd instanceof Discord.Message) {
+  return replyMsg(cmd, payload);
+ }
+ return replyCmd(cmd, { ...payload, fetchReply: true });
+};
 
 const checkExeCanManage = async (
  target: Discord.GuildMember,
@@ -727,8 +747,9 @@ const checkExeCanManage = async (
  type: CT.ModTypes,
 ): Promise<boolean> => {
  if (target.roles.highest.position < executor.roles.highest.position) return true;
+ if (!message) return false;
 
- message?.edit({
+ request.channels.editMsg(message, {
   embeds: [
    {
     color: constants.colors.danger,
@@ -750,7 +771,9 @@ const actionAlreadyApplied = async (
  language: CT.Language,
  type: CT.ModTypes,
 ) => {
- message?.edit({
+ if (!message) return;
+
+ request.channels.editMsg(message, {
   embeds: [
    {
     color: constants.colors.danger,
@@ -767,22 +790,15 @@ const declareSuccess = async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
  type: T,
 ) => {
+ if (!message) return;
+
  const { success } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
  const embed = {
   color: constants.colors.success,
   description: success(options.target, options as never),
  };
 
- if (message instanceof Discord.InteractionResponse) {
-  message?.delete().catch(() => undefined);
-
-  if (!message.interaction.channel) return;
-  send(message.interaction.channel, { embeds: [embed] });
-
-  return;
- }
-
- message?.edit({
+ request.channels.editMsg(message, {
   embeds: [embed],
  });
 };
@@ -817,15 +833,17 @@ const notifyTarget = async <T extends CT.ModTypes>(
   return;
  }
 
- const thread = await options.guild.rulesChannel.threads.create({
+ const rawThread = await request.channels.createThread(options.guild.rulesChannel, {
   type: Discord.ChannelType.PrivateThread,
   invitable: false,
-  reason: options.reason,
   name: stringEmotes.warning,
  });
- if (!thread) return;
 
- await thread.members.add(options.target.id).catch(() => undefined);
+ if ('message' in rawThread) return;
+
+ const thread = new ThreadChannel(options.guild, rawThread);
+
+ await request.threads.addMember(options.guild, thread.id, options.target.id);
  await send(thread, {
   embeds: [embed],
   content: `<@${options.target.id}>`,
@@ -833,7 +851,7 @@ const notifyTarget = async <T extends CT.ModTypes>(
    users: [options.target.id],
   },
  });
- await thread.setLocked(true).catch(() => undefined);
+ await request.channels.edit(thread, { locked: true });
 
  cache.deleteThreads.set(
   Jobs.scheduleJob(new Date(Date.now() + (thread.autoArchiveDuration ?? 60) * 60 * 1000), () => {
@@ -856,10 +874,9 @@ export const deleteThread = async (guild: Discord.Guild, threadId: string) => {
   .then();
 
  if (!guild.rulesChannel) return;
- const thread = await guild.rulesChannel.threads.fetch(threadId).catch(() => undefined);
- if (!thread) return;
-
- thread.delete().catch(() => undefined);
+ const rawThread = await request.channels.get(guild, threadId);
+ if ('message' in rawThread) return;
+ request.channels.delete(guild, rawThread.id);
 };
 
 const db = async <T extends CT.ModTypes>(
@@ -940,10 +957,11 @@ const isSelf = (
  type: CT.ModTypes,
 ) => {
  if (executor.id !== target.id) return false;
+ if (!message) return true;
 
  const { self } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
- message?.edit({
+ request.channels.editMsg(message, {
   embeds: [
    {
     color: constants.colors.danger,
@@ -959,18 +977,26 @@ const isSelf = (
  return true;
 };
 
-const isMe = (
+const isMe = async (
  client: Discord.User,
- target: Discord.User | CT.bEvalUser,
  message: ResponseMessage,
  language: CT.Language,
+ options: CT.BaseOptions,
  type: CT.ModTypes,
 ) => {
- if (target.id !== client.id) return false;
+ const tokenSettings = await DataBase.guildsettings.findUnique({
+  where: { guildid: options.guild.id, token: { not: null } },
+ });
+ if (
+  options.target.id !== (tokenSettings?.token ? getBotIdFromToken(tokenSettings.token) : client.id)
+ ) {
+  return false;
+ }
+ if (!message) return true;
 
  const { me } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
- message?.edit({
+ request.channels.editMsg(message, {
   embeds: [
    {
     color: constants.colors.danger,
@@ -992,10 +1018,8 @@ const getMembers = async (
  message: ResponseMessage,
  type: CT.ModTypes,
 ) => {
- const executorMember = await options.guild.members
-  .fetch(options.executor.id)
-  .catch(() => undefined);
- if (!executorMember) return undefined;
+ const executorMember = await request.guilds.getMember(options.guild, options.executor.id);
+ if ('message' in executorMember) return undefined;
 
  const targetMember = await options.guild.members.fetch(options.target.id).catch(() => undefined);
  if (!targetMember) {
@@ -1012,7 +1036,15 @@ const getMembers = async (
   return undefined;
  }
 
- if (!(await checkExeCanManage(targetMember, executorMember, message, language, type))) {
+ if (
+  !(await checkExeCanManage(
+   targetMember,
+   new GuildMember(options.guild.client, executorMember, options.guild),
+   message,
+   language,
+   type,
+  ))
+ ) {
   return undefined;
  }
 
@@ -1030,7 +1062,7 @@ const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTyp
 
  const message = await startLoading(cmd, language, type);
 
- if (isMe(options.guild.client.user, options.target, message, language, type)) return false;
+ if (await isMe(options.guild.client.user, message, language, options, type)) return false;
  if (isSelf(options.executor, options.target, message, language, type)) return false;
 
  return { message, language };
@@ -1057,7 +1089,7 @@ const err = (
  guild: Discord.Guild,
 ) => {
  if (cmd instanceof Discord.Message) {
-  errorMsg(cmd, errs.message, language, message as Discord.Message);
+  errorMsg(cmd, errs.message, language, message as Discord.Message<true>);
   return;
  }
 

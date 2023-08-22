@@ -7,12 +7,12 @@ import DataBase from '../DataBase.js';
 // eslint-disable-next-line no-console
 const { log } = console;
 
-export default async (
- msg: Discord.Message,
+export default async <T extends Discord.Message<boolean>>(
+ msg: T,
  payload: Discord.MessagePayload | Discord.MessageReplyOptions,
  command?: CT.Command,
  commandName?: string,
-) => {
+): Promise<T | undefined> => {
  if (!msg) return undefined;
 
  const sentMessage = await msg.reply(payload).catch((err) => {
@@ -25,7 +25,7 @@ export default async (
   cooldownHandler(msg, sentMessage, command, commandName);
  }
 
- return sentMessage;
+ return sentMessage as T;
 };
 
 export const cooldownHandler = async (

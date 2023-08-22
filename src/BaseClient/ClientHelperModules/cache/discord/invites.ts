@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 export interface Invites {
  get: (code: string, channelId: string, guild: Discord.Guild) => Promise<number | undefined>;
@@ -17,6 +18,10 @@ const self: Invites = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getInvites(guild);
+  if ('message' in fetched) {
+   error(guild, new Error('Couldnt get Invites'));
+   return undefined;
+  }
 
   fetched?.forEach((f) => {
    self.set(new Classes.Invite(guild.client, f), guild.id);

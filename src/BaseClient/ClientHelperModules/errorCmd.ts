@@ -12,7 +12,7 @@ export default (
   | Discord.ModalSubmitInteraction,
  content: string,
  language: CT.Language,
- m?: Discord.InteractionResponse | Discord.Message,
+ m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
  const embed: Discord.APIEmbed = {
   author: {
