@@ -32,7 +32,6 @@ import roleManager from './ClientHelperModules/roleManager.js';
 import getEmote from './ClientHelperModules/getEmote.js';
 import getAudit from './ClientHelperModules/getAudit.js';
 import DataBase from './DataBase.js';
-import getJumpLink from './ClientHelperModules/getJumpLink.js';
 import getLogChannels from './ClientHelperModules/getLogChannels.js';
 import mergeLogging from './ClientHelperModules/mergeLogging.js';
 import getTrueChannelType from './ClientHelperModules/getTrueChannelType.js';
@@ -74,6 +73,7 @@ import getMessage from './ClientHelperModules/getMessage.js';
 import fetchWithRedirects from './ClientHelperModules/fetchWithRedirects.js';
 import requestHandler from './ClientHelperModules/requestHandler.js';
 import getBotIdFromToken from './ClientHelperModules/getBotIdFromToken.js';
+import resolveFiles from './ClientHelperModules/resolveFiles.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -82,6 +82,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ resolveFiles,
  getBotIdFromToken,
  requestHandler,
  fetchWithRedirects,
@@ -120,7 +121,6 @@ export {
  getEmote,
  getAudit,
  DataBase,
- getJumpLink,
  getLogChannels,
  mergeLogging,
  getTrueChannelType,

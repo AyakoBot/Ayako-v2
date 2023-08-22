@@ -226,8 +226,8 @@ export default {
    emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
-  msgurl: (g: string, c: string | undefined | null, m: string) =>
-   `https://discord.com/channels/${g}/${c ?? '@me'}/${m}`,
+  msgurl: (g: string | undefined | null, c: string, m: string) =>
+   `https://discord.com/channels/${g ?? '@me'}/${c}/${m}`,
   ytURL: 'https://www.youtube.com/@AyakoBot',
   user: (u: Discord.User | CT.bEvalUser | { discriminator: string; username: string }) =>
    `${u.discriminator === '0' ? u.username : `${u.username}#${u.discriminator}`}`,

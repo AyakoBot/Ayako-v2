@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       type: Discord.ComponentType.Button,
       label: language.Yes,
       style: Discord.ButtonStyle.Danger,
-      customId: `roles/delete_${role.id}`,
+      custom_id: `roles/delete_${role.id}`,
       emoji: ch.objectEmotes.warning,
      },
     ],

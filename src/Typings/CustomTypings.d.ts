@@ -313,3 +313,12 @@ export type NeverNull<T, K extends keyof T> = {
 };
 
 export type Argument<F, N extends number> = F extends (...args: infer A) => unknown ? A[N] : never;
+
+export type UsualMessagePayload = {
+ embeds?: Discord.APIEmbed[];
+ content?: string;
+ components?: Discord.APIActionRowComponent<
+  Discord.APIButtonComponent | Discord.APISelectMenuComponent
+ >[];
+ ephemeral?: boolean;
+};

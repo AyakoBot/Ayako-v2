@@ -38,7 +38,7 @@ export default async (cmd: Discord.CommandInteraction) => {
     components: [
      {
       type: Discord.ComponentType.Button,
-      customId: String(Date.now()),
+      custom_id: String(Date.now()),
       label: lan.warn,
       style: Discord.ButtonStyle.Danger,
       disabled: true,

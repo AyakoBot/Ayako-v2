@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => {
+export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const channel = cmd.options.getChannel('channel', true, [
   Discord.ChannelType.GuildAnnouncement,
   Discord.ChannelType.GuildText,

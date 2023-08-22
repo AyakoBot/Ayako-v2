@@ -7,6 +7,7 @@ import cache from './startupTasks/cache.js';
 import slashCommandInitializer from './startupTasks/slashCommandInitializer.js';
 import voteHandler from './startupTasks/voteHandler.js';
 import appealHandler from './startupTasks/appealHandler.js';
+import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
@@ -21,10 +22,11 @@ export default async () => {
  cache();
  slashCommandInitializer();
  antivirusBlocklistCacher();
+ customAPIsHandler();
 
- ch.cache.fishFish.start();
- ch.cache.sinkingYachts.start();
- ch.cache.urlTLDs.start();
+ // ch.cache.fishFish.start();
+ // ch.cache.sinkingYachts.start();
+ // ch.cache.urlTLDs.start();
 
  Jobs.scheduleJob('0 0 0 * * *', async () => {
   animekosInviteStats();

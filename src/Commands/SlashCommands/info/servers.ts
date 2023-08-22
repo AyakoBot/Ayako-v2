@@ -20,7 +20,7 @@ export default async (
  const payload = getPayload(content, language, cmd.guild, page);
 
  if (cmd.isButton()) cmd.update(payload as Discord.InteractionUpdateOptions).catch(() => undefined);
- else ch.replyCmd(cmd, payload as Discord.InteractionReplyOptions);
+ else ch.replyCmd(cmd, payload);
 };
 
 const getServers = async (language: CT.Language) =>
@@ -53,13 +53,13 @@ const getPayload = (
  language: CT.Language,
  guild?: Discord.Guild | undefined | null,
  page = 1,
-): Discord.InteractionReplyOptions | Discord.InteractionUpdateOptions => ({
+): CT.UsualMessagePayload => ({
  embeds: [
   {
    color: ch.colorSelector(guild?.members.me),
    description: content[page - 1],
   },
- ],
+ ] as Discord.APIEmbed[],
  components: [
   {
    type: Discord.ComponentType.ActionRow,
@@ -68,7 +68,7 @@ const getPayload = (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Primary,
      label: language.slashCommands.settings.previous,
-     customId: `info/servers_${page === 1 ? 1 : page - 1}`,
+     custom_id: `info/servers_${page === 1 ? 1 : page - 1}`,
      emoji: ch.objectEmotes.back,
      disabled: page === 1,
     },
@@ -76,7 +76,7 @@ const getPayload = (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Primary,
      label: language.slashCommands.settings.next,
-     customId: `info/servers_${page + 1}`,
+     custom_id: `info/servers_${page + 1}`,
      emoji: ch.objectEmotes.forth,
      disabled: page === content.length,
     },

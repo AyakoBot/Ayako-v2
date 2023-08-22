@@ -53,11 +53,11 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     execution.action.type === 2
      ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
         language.Message
-       }](${ch.getJumpLink({
-        guildId: execution.guild.id,
-        channelId: execution.action.metadata.channelId ?? '',
-        id: execution.alertSystemMessageId ?? '',
-       })})`
+       }](${ch.constants.standard.msgurl(
+        execution.guild.id,
+        execution.action.metadata.channelId ?? '',
+        execution.alertSystemMessageId ?? '',
+       )})`
      : `${language.duration} \`${ch.moment(
         execution.action.metadata.durationSeconds
          ? Number(execution.action.metadata.durationSeconds) * 1000

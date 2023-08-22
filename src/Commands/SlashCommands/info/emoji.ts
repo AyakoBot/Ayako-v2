@@ -50,7 +50,7 @@ const getEmotesPayload = (
  language: CT.Language,
  lan: CT.Language['slashCommands']['info'],
  page = 1,
-): Discord.InteractionReplyOptions => {
+): CT.UsualMessagePayload => {
  const chunks = ch.getStringChunks(
   emotes.map(
    (e) =>

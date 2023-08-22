@@ -23,7 +23,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   timestamp: new Date().toISOString(),
  };
 
- const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild.id);
+ const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild);
  const newWelcomeScreen = await guild.fetchWelcomeScreen();
  if (newWelcomeScreen) ch.cache.welcomeScreens.set(newWelcomeScreen);
 

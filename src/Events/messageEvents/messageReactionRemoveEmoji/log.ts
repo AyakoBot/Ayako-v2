@@ -17,7 +17,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message) =
   author: {
    name: lan.nameRemoveEmoji,
    icon_url: con.remove,
-   url: ch.getJumpLink(msg),
+   url: ch.constants.standard.msgurl(msg.guildId, msg.channelId, msg.id),
   },
   description: lan.descRemoveEmoji(msg, reaction.emoji),
   color: ch.constants.colors.danger,

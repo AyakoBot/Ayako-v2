@@ -56,7 +56,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       type: Discord.ComponentType.Button,
       label: language.featuresName,
       style: Discord.ButtonStyle.Secondary,
-      customId: `info/features_${isInviteGuild ? invite?.code : serverID}_${isInviteGuild}`,
+      custom_id: `info/features_${isInviteGuild ? invite?.code : serverID}_${isInviteGuild}`,
      },
     ],
    },

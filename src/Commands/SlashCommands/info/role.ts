@@ -114,7 +114,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       type: Discord.ComponentType.Button,
       label: language.Members,
       style: Discord.ButtonStyle.Secondary,
-      customId: `info/members_${role.id}`,
+      custom_id: `info/members_${role.id}`,
      },
     ],
    },

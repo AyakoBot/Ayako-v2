@@ -68,7 +68,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   value: `${lan.fields.messagelink.name}: ${
-   s.msgid ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid) : language.None
+   s.guildid && s.channelid && s.msgid
+    ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
+    : language.None
   }`,
  }));
 
@@ -113,9 +115,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.messagelink.name,
-    value: settings.msgid
-     ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
-     : language.None,
+    value:
+     settings.guildid && settings.channelid && settings.msgid
+      ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
+      : language.None,
     inline: true,
    },
    {

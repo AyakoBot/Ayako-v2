@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export const buildEmbed = async (
  cmd:
@@ -12,7 +13,7 @@ export const buildEmbed = async (
  const lan = language.slashCommands.embedbuilder.create;
  const options = await getOptions(cmd);
 
- const payload = {
+ const payload: CT.UsualMessagePayload = {
   embeds: [
    {
     author: {
@@ -28,13 +29,13 @@ export const buildEmbed = async (
     components: [
      {
       label: lan.start.methods.startOver,
-      customId: 'embed-builder/startOver',
+      custom_id: 'embed-builder/startOver',
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Primary,
      },
      {
       label: lan.start.methods.inheritCode,
-      customId: 'embed-builder/inheritCode',
+      custom_id: 'embed-builder/inheritCode',
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Primary,
      },
@@ -45,14 +46,14 @@ export const buildEmbed = async (
     components: [
      {
       type: Discord.ComponentType.StringSelect,
-      customId: 'embed-builder/select',
-      minValues: 1,
-      maxValues: 1,
+      custom_id: 'embed-builder/select',
+      min_values: 1,
+      max_values: 1,
       placeholder: lan.start.methods.selectSaved,
       options: options.length
        ? options.map((o) => ({
           label: o.name,
-          value: o.uniquetimestamp,
+          value: o.uniquetimestamp.toString(),
           default: o.uniquetimestamp.toString() === selectedOption,
          }))
        : [
@@ -70,14 +71,14 @@ export const buildEmbed = async (
     components: [
      {
       label: lan.start.methods.inheritCustom,
-      customId: 'embed-builder/inheritCustom',
+      custom_id: 'embed-builder/inheritCustom',
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Primary,
       disabled: !selectedOption,
      },
      {
       label: lan.start.methods.deleteCustom,
-      customId: 'embed-builder/deleteCustom',
+      custom_id: 'embed-builder/deleteCustom',
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Danger,
       disabled:
@@ -91,7 +92,7 @@ export const buildEmbed = async (
 
  if (cmd.isStringSelectMenu() || cmd.isButton()) {
   cmd.update(payload as Discord.InteractionUpdateOptions);
- } else ch.replyCmd(cmd, { ...payload, ephemeral: true } as Discord.InteractionReplyOptions);
+ } else ch.replyCmd(cmd, { ...payload, ephemeral: true });
 };
 
 export default buildEmbed;

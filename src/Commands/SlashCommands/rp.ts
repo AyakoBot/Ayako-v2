@@ -16,7 +16,7 @@ export default async (
   where: { guildid: cmd.guildId },
  });
 
- const payload: Discord.InteractionReplyOptions = {
+ const payload = {
   embeds: [
    {
     author: {

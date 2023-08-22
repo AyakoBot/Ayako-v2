@@ -91,19 +91,19 @@ const getClaimingDone = (g: Prisma.giveaways, language: CT.Language) => {
  return ch.stringEmotes.tickWithBackground;
 };
 
-const getButtons = (page: number, giveaways: Prisma.giveaways[]): Discord.ButtonComponentData[] => [
+const getButtons = (page: number, giveaways: Prisma.giveaways[]): Discord.APIButtonComponent[] => [
  {
   type: Discord.ComponentType.Button,
   emoji: ch.objectEmotes.back,
   style: Discord.ButtonStyle.Primary,
-  customId: `giveaway/list_${page - 1}`,
+  custom_id: `giveaway/list_${page - 1}`,
   disabled: page === 0,
  },
  {
   type: Discord.ComponentType.Button,
   emoji: ch.objectEmotes.forth,
   style: Discord.ButtonStyle.Primary,
-  customId: `giveaway/list_${page + 1}`,
+  custom_id: `giveaway/list_${page + 1}`,
   disabled: Math.ceil(giveaways.length / 25) - 1 === page,
  },
 ];

@@ -101,7 +101,11 @@ const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
  `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
 
 const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
- `[This Message](${ch.getJumpLink(msg)})\n`;
+ `[This Message](${ch.constants.standard.msgurl(
+  msg.guildId,
+  msg.channelId,
+  'id' in msg ? msg.id : msg.messageId ?? '',
+ )})\n`;
 
 const getChannel = (
  channel:

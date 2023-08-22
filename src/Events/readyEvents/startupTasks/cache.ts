@@ -175,7 +175,7 @@ export const tasks = {
  },
  welcomeScreen: async (guild: Discord.Guild) => {
   if (guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
-   ch.cache.welcomeScreens.get(guild.id);
+   ch.cache.welcomeScreens.get(guild);
   }
  },
  pins: async (guild: Discord.Guild) => {
@@ -188,7 +188,7 @@ export const tasks = {
  },
  invites: async (guild: Discord.Guild) => {
   if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
-   ch.cache.invites.get('', '', guild.id);
+   ch.cache.invites.get('', '', guild);
   }
 
   const vanity = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
@@ -205,7 +205,7 @@ export const tasks = {
  },
  integrations: async (guild: Discord.Guild) => {
   if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
-   ch.cache.integrations.get('', guild.id);
+   ch.cache.integrations.get('', guild);
   }
  },
  commands: async (guild: Discord.Guild) => {
@@ -215,9 +215,9 @@ export const tasks = {
   guild.members.fetch().catch(() => undefined);
  },
  commandPermissions: async (guild: Discord.Guild) => {
-  await ch.cache.commandPermissions.get(guild.id, '');
+  await ch.cache.commandPermissions.get(guild, '');
  },
  webhooks: async (guild: Discord.Guild) => {
-  await ch.cache.webhooks.get('', '', guild.id);
+  await ch.cache.webhooks.get('', '', guild);
  },
 };
