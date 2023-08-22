@@ -3,6 +3,7 @@ import * as DiscordCore from '@discordjs/core';
 import error from '../error.js';
 import { API } from '../../Client.js';
 import * as CT from '../../../Typings/CustomTypings';
+// eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
 
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
@@ -13,13 +14,14 @@ interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJS
 
 export default {
  sendMessage: (
-  channel: Discord.GuildTextBasedChannel,
+  guild: Discord.Guild | undefined | null,
+  channelId: string,
   payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
  ) =>
-  (cache.apis.get(channel.guild.id) ?? API).channels
-   .createMessage(channel.id, payload)
+  (guild ? cache.apis.get(guild.id) ?? API : API).channels
+   .createMessage(channelId, payload)
    .catch((e) => {
-    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
    }),
  replyMsg: (
   message: Discord.Message<true>,
@@ -133,9 +135,9 @@ export default {
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    }),
- getPins: (channel: Discord.GuildTextBasedChannel) =>
-  API.channels.getPins(channel.id).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+ getPins: (guild: Discord.Guild, channelId: string) =>
+  API.channels.getPins(channelId).catch((e) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
   }),
  unpin: (message: Discord.Message<true>) =>
   (cache.apis.get(message.guild.id) ?? API).channels
@@ -194,9 +196,9 @@ export default {
   API.channels.getJoinedPrivateArchivedThreads(channel.id, query).catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
   }),
- getWebhooks: (channel: Discord.GuildTextBasedChannel) =>
-  API.channels.getWebhooks(channel.id).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+ getWebhooks: (guild: Discord.Guild, channelId: string) =>
+  API.channels.getWebhooks(channelId).catch((e) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
   }),
  editPermissionOverwrite: (
   channel: Discord.GuildChannel,
@@ -215,4 +217,16 @@ export default {
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    }),
+ createWebhook: (
+  guild: Discord.Guild,
+  channelId: string,
+  body: Discord.RESTPostAPIChannelWebhookJSONBody,
+ ) =>
+  (cache.apis.get(guild.id) ?? API).channels.createWebhook(channelId, body).catch((e) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+  }),
+ getMessage: (guild: Discord.Guild, channelId: string, messageId: string) =>
+  (cache.apis.get(guild.id) ?? API).channels.getMessage(channelId, messageId).catch((e) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+  }),
 };

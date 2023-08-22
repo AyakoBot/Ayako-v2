@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
+// eslint-disable-next-line import/no-cycle
 import error from '../error.js';
 import { API } from '../../Client.js';
+// eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
 
 export default {
