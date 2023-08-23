@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/CustomTypings.js';
+
 import languageSelector from './languageSelector.js';
 import log from './log.js';
-
 import db from './mod/db.js';
 import mod from './mod/mod.js';
 import declareSuccess from './mod/declareSuccess.js';

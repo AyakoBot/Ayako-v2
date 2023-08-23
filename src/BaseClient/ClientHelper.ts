@@ -74,6 +74,8 @@ import fetchWithRedirects from './ClientHelperModules/fetchWithRedirects.js';
 import requestHandler from './ClientHelperModules/requestHandler.js';
 import getBotIdFromToken from './ClientHelperModules/getBotIdFromToken.js';
 import resolveFiles from './ClientHelperModules/resolveFiles.js';
+import getCustomBot from './ClientHelperModules/getCustomBot.js';
+import isModeratable from './ClientHelperModules/isModeratable.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -82,6 +84,8 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ isModeratable,
+ getCustomBot,
  resolveFiles,
  getBotIdFromToken,
  requestHandler,

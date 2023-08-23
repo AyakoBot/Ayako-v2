@@ -4,6 +4,12 @@ import * as replyMsg from './replyMsg.js';
 import constants from '../Other/constants.js';
 import error from './error.js';
 
+type ReturnType<T extends boolean | undefined, K extends Discord.CacheType> = T extends true
+ ? K extends 'cached'
+   ? Discord.InteractionResponse<true> | undefined
+   : Discord.InteractionResponse<false> | undefined
+ : undefined;
+
 const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheType>(
  cmd:
   | Discord.ButtonInteraction<K>
@@ -13,13 +19,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  payload: Discord.InteractionReplyOptions & {
   fetchReply?: T;
  },
-): Promise<
- T extends true
-  ? K extends 'cached'
-    ? Discord.Message<true> | undefined
-    : Discord.Message<false> | undefined
-  : void
-> => {
+): Promise<ReturnType<T, K>> => {
  if ('respond' in cmd) return Promise.resolve(undefined);
 
  if (payload.ephemeral === false) payload.flags = undefined;
@@ -33,13 +33,12 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  });
 
  if ('reply' in cmd && cmd.isRepliable()) {
-  return cmd
-   .reply({ ...payload, fetchReply: true })
-   .then(() => undefined)
-   .catch((e) => {
-    if (cmd.guild) error(cmd.guild, e);
-    return undefined;
-   });
+  const m = await cmd.reply(payload).catch((e) => {
+   if (cmd.guild) error(cmd.guild, e);
+   return undefined;
+  });
+  if (typeof m === 'undefined') return m;
+  return m as ReturnType<T, K>;
  }
 
  throw new Error('Unrepliable Interaction');
@@ -56,13 +55,7 @@ export default async <T extends boolean | undefined, K extends Discord.CacheType
  },
  command?: CT.Command,
  commandName?: string,
-): Promise<
- T extends true
-  ? K extends 'cached'
-    ? Discord.Message<true> | undefined
-    : Discord.Message<false> | undefined
-  : void
-> => {
+): Promise<ReturnType<T, K>> => {
  if (!cmd) return undefined;
 
  const sentMessage = await replyCmd(cmd, payload);
