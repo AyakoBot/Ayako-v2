@@ -128,8 +128,8 @@ const updateLevels = async (
    .map((m) => Math.floor(ch.getRandom(baseXP, baseXP + 10)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
  );
- const oldLevel = level.level.toNumber();
- const xp = newXP + level.xp.toNumber();
+ const oldLevel = Number(level.level);
+ const xp = newXP + Number(level.xp);
  const neededXP =
   (5 / 6) * (oldLevel + 1) * (2 * (oldLevel + 1) * (oldLevel + 1) + 27 * (oldLevel + 1) + 91);
 
@@ -141,7 +141,7 @@ const updateLevels = async (
   if (level) {
    levelUp(
     msg,
-    { oldXP: level.xp.toNumber(), newXP: xp, newLevel: oldLevel + 1, oldLevel },
+    { oldXP: Number(level.xp), newXP: xp, newLevel: oldLevel + 1, oldLevel },
     settings as Prisma.leveling,
    );
   }
@@ -207,7 +207,7 @@ const getRoleMultiplier = async (msg: Discord.Message<true>) => {
  if (!mps.length) return 1;
 
  const mp = mps.filter((r) => msg.member?.roles.cache.some((r2) => r.roles.includes(r2.id)));
- return mp.length ? mp.reduce((a, b) => a + Number(b.multiplier?.toNumber()), 0) / mp.length : 1;
+ return mp.length ? mp.reduce((a, b) => a + Number(b.multiplier), 0) / mp.length : 1;
 };
 
 const getChannelMultiplier = async (msg: Discord.Message<true>) => {
@@ -219,7 +219,7 @@ const getChannelMultiplier = async (msg: Discord.Message<true>) => {
  if (!mps.length) return 1;
 
  const mp = mps.filter((r) => r.channels.includes(msg.channel.id));
- return mp.length ? mp.reduce((a, b) => a + Number(b.multiplier?.toNumber()), 0) / mp.length : 1;
+ return mp.length ? mp.reduce((a, b) => a + Number(b.multiplier), 0) / mp.length : 1;
 };
 
 const checkRules = (msg: Discord.Message<true>, settings: Prisma.levelingruleschannels[]) => {
@@ -391,7 +391,7 @@ const roleAssign = async (
  switch (rolemode) {
   case true: {
    roles
-    .filter((r) => Number(r.level?.toNumber()) <= newLevel)
+    .filter((r) => Number(r.level) <= newLevel)
     .forEach((r) => {
      const roleMap = r.roles
       .map((roleId) => {
@@ -407,14 +407,14 @@ const roleAssign = async (
   }
   default: {
    roles
-    .filter((r) => Number(r.level?.toNumber()) <= newLevel)
+    .filter((r) => Number(r.level) <= newLevel)
     .forEach((r) => {
      const remr: string[] = [];
      const addr: string[] = [];
 
      r.roles?.forEach((roleId) => {
       if (
-       Number(r.level?.toNumber()) < newLevel &&
+       Number(r.level) < newLevel &&
        msg.member?.roles.cache.has(roleId) &&
        msg.guild.roles.cache.get(roleId)
       ) {
@@ -422,7 +422,7 @@ const roleAssign = async (
       }
 
       if (
-       Number(r.level?.toNumber()) === newLevel &&
+       Number(r.level) === newLevel &&
        !msg.member?.roles.cache.has(roleId) &&
        msg.guild.roles.cache.get(roleId)
       ) {

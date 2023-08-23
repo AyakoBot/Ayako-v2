@@ -5,7 +5,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
 import * as CT from '../../../Typings/CustomTypings.js';
-import { deleteThread } from '../../../BaseClient/ClientHelperModules/mod.js';
+import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 
 export default () => {
