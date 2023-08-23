@@ -2,6 +2,30 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
+
+const getAPIRule = (rule: Discord.AutoModerationRule) => ({
+ enabled: rule.enabled,
+ trigger_metadata: {
+  keyword_filter: rule.triggerMetadata.keywordFilter,
+  regex_patterns: rule.triggerMetadata.regexPatterns,
+  presets: rule.triggerMetadata.presets,
+  allow_list: rule.triggerMetadata.allowList,
+  mention_total_limit: rule.triggerMetadata.mentionTotalLimit ?? undefined,
+  mention_raid_protection_enabled: rule.triggerMetadata.mentionRaidProtectionEnabled,
+ },
+ actions:
+  rule.actions?.map((a) => ({
+   type: a.type,
+   metadata: {
+    duration_seconds: a.metadata.durationSeconds ?? undefined,
+    channel_id: a.metadata.channelId ?? undefined,
+    custom_message: a.metadata.customMessage ?? undefined,
+   },
+  })) ?? undefined,
+ exempt_roles: rule.exemptRoles?.map((r) => r.id),
+ exempt_channels: rule.exemptChannels?.map((c) => c.id),
+});
 
 const settingName = 'blacklist-rules';
 
@@ -137,7 +161,7 @@ const getSetting = (
  }
 };
 
-const updateRule = (
+const updateRule = async (
  rule: Discord.AutoModerationRule,
  type:
   | 'active'
@@ -148,24 +172,39 @@ const updateRule = (
   | 'blockMessage'
   | 'sendAlertMessage'
   | 'timeout',
-): Promise<Discord.DiscordAPIError | Discord.AutoModerationRule> | undefined => {
+) => {
  switch (type) {
-  case 'active':
-   return rule.setEnabled(!rule.enabled).catch((e) => e as Discord.DiscordAPIError);
-  case 'profanity':
-   return rule
-    .setPresets(
-     rule.triggerMetadata.presets.includes(Discord.AutoModerationRuleKeywordPresetType.Profanity)
+  case 'active': {
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    enabled: !rule.enabled,
+   });
+
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
+  }
+  case 'profanity': {
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    trigger_metadata: getAPIRule(rule) && {
+     presets: rule.triggerMetadata.presets.includes(
+      Discord.AutoModerationRuleKeywordPresetType.Profanity,
+     )
       ? rule.triggerMetadata.presets.filter(
          (o) => o !== Discord.AutoModerationRuleKeywordPresetType.Profanity,
         )
       : [...rule.triggerMetadata.presets, Discord.AutoModerationRuleKeywordPresetType.Profanity],
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
-  case 'sexualContent':
-   return rule
-    .setPresets(
-     rule.triggerMetadata.presets.includes(
+    },
+   });
+
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
+  }
+  case 'sexualContent': {
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    trigger_metadata: getAPIRule(rule) && {
+     presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.SexualContent,
      )
       ? rule.triggerMetadata.presets.filter(
@@ -175,94 +214,72 @@ const updateRule = (
          ...rule.triggerMetadata.presets,
          Discord.AutoModerationRuleKeywordPresetType.SexualContent,
         ],
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
-  case 'slurs':
-   return rule
-    .setPresets(
-     rule.triggerMetadata.presets.includes(Discord.AutoModerationRuleKeywordPresetType.Slurs)
+    },
+   });
+
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
+  }
+  case 'slurs': {
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    trigger_metadata: getAPIRule(rule) && {
+     presets: rule.triggerMetadata.presets.includes(
+      Discord.AutoModerationRuleKeywordPresetType.Slurs,
+     )
       ? rule.triggerMetadata.presets.filter(
          (o) => o !== Discord.AutoModerationRuleKeywordPresetType.Slurs,
         )
       : [...rule.triggerMetadata.presets, Discord.AutoModerationRuleKeywordPresetType.Slurs],
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
-  case 'mentionRaidProtectionEnabled':
-   return rule
-    .setMentionRaidProtectionEnabled(!rule.triggerMetadata.mentionRaidProtectionEnabled)
-    .catch((e) => e as Discord.DiscordAPIError);
+    },
+   });
+
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
+  }
+  case 'mentionRaidProtectionEnabled': {
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    trigger_metadata: getAPIRule(rule) && {
+     mention_raid_protection_enabled: !rule.triggerMetadata.mentionRaidProtectionEnabled,
+    },
+   });
+
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
+  }
   case 'blockMessage': {
-   const index = rule.actions.findIndex(
-    (a) => a.type === Discord.AutoModerationActionType.BlockMessage,
-   );
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    actions: getAPIRule(rule).actions.filter(
+     (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
+    ),
+   });
 
-   if (index === -1) {
-    ch.error(rule.guild, new Error('Enable "Block Message" Button pressed'));
-    return undefined;
-   }
-
-   return rule
-    .setActions(
-     rule.actions
-      .filter((a) => a.type !== Discord.AutoModerationActionType.BlockMessage)
-      .map((a) =>
-       a.type === Discord.AutoModerationActionType.SendAlertMessage
-        ? ({
-           type: Discord.AutoModerationActionType.SendAlertMessage,
-           metadata: { channel: a.metadata.channelId },
-          } as Discord.AutoModerationActionOptions)
-        : a,
-      ),
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
   }
   case 'sendAlertMessage': {
-   const index = rule.actions.findIndex(
-    (a) => a.type === Discord.AutoModerationActionType.SendAlertMessage,
-   );
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    actions: getAPIRule(rule).actions.filter(
+     (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
+    ),
+   });
 
-   if (index === -1) {
-    ch.error(rule.guild, new Error('Enable "Send Alert Message" Button pressed'));
-    return undefined;
-   }
-
-   return rule
-    .setActions(
-     rule.actions
-      .filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage)
-      .map((a) =>
-       a.type === Discord.AutoModerationActionType.SendAlertMessage
-        ? ({
-           type: Discord.AutoModerationActionType.SendAlertMessage,
-           metadata: { channel: a.metadata.channelId },
-          } as Discord.AutoModerationActionOptions)
-        : a,
-      ),
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
   }
   case 'timeout': {
-   const index = rule.actions.findIndex((a) => a.type === Discord.AutoModerationActionType.Timeout);
+   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    ...getAPIRule(rule),
+    actions: getAPIRule(rule).actions.filter(
+     (a) => a.type !== Discord.AutoModerationActionType.Timeout,
+    ),
+   });
 
-   if (index === -1) {
-    ch.error(rule.guild, new Error('Enable "Timeout" Button pressed'));
-    return undefined;
-   }
-
-   return rule
-    .setActions(
-     rule.actions
-      .filter((a) => a.type !== Discord.AutoModerationActionType.Timeout)
-      .map((a) =>
-       a.type === Discord.AutoModerationActionType.SendAlertMessage
-        ? ({
-           type: Discord.AutoModerationActionType.SendAlertMessage,
-           metadata: { channel: a.metadata.channelId },
-          } as Discord.AutoModerationActionOptions)
-        : a,
-      ),
-    )
-    .catch((e) => e as Discord.DiscordAPIError);
+   if ('message' in res) return res;
+   return new AutoModerationRule(rule.client, res, rule.guild);
   }
   default:
    return undefined;

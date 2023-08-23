@@ -14,11 +14,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- let error: Error | null = null;
- await role.delete().catch((e) => {
-  error = e;
- });
-
- if (error) ch.errorCmd(cmd, (error as Error).message, language);
+ const res = await ch.request.guilds.deleteRole(cmd.guild, role.id);
+ if (typeof res !== 'undefined') ch.errorCmd(cmd, res.message, language);
  else cmd.update({ content: lan.deleted(role as Discord.Role) });
 };

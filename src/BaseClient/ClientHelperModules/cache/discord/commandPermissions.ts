@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import DataBase from '../../../DataBase.js';
-import getBotIdFromToken from '../../getBotIdFromToken.js';
+import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import error from '../../error.js';
 
 export interface CommandPermissions {
@@ -24,12 +23,9 @@ const self: CommandPermissions = {
 
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
-  const guildSettings = await DataBase.guildsettings.findUnique({
-   where: { guildid: guild.id, token: { not: null } },
-  });
   const fetched = await requestHandler.commands.getGuildCommandsPermissions(
    guild,
-   guildSettings?.token ? getBotIdFromToken(guildSettings.token) : guild.client.user.id,
+   await getBotIdFromGuild(guild),
   );
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Command Permissions'));

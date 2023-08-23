@@ -3,9 +3,11 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { getGiveawayEmbed } from '../../SlashCommands/giveaway/end.js';
+import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+ if (!cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
 
  const giveaway = await ch.DataBase.giveaways.findUnique({
@@ -65,15 +67,17 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const edit = async (
- cmd: Discord.ButtonInteraction,
+ cmd: Discord.ButtonInteraction<'cached'>,
  language: CT.Language,
  giveaway: Prisma.giveaways,
 ) => {
- const msg = await cmd.message.fetch().catch((err) => err as Discord.DiscordAPIError);
- if ('message' in msg) {
-  ch.error(cmd.guild as Discord.Guild, msg);
+ const rawMsg = await request.channels.getMessage(cmd.guild, cmd.channelId, cmd.message.id);
+ if ('message' in rawMsg) {
+  ch.error(cmd.guild as Discord.Guild, rawMsg);
   return;
  }
+
+ const msg = new Message(cmd.client, rawMsg) as Discord.Message<true>;
 
  if (!msg.editable) {
   ch.error(cmd.guild as Discord.Guild, new Error('Cannot edit Message'));
@@ -84,10 +88,10 @@ const edit = async (
   !msg.flags.has(Discord.MessageFlags.Crossposted) ||
   msg.channel.type !== Discord.ChannelType.GuildAnnouncement
  ) {
-  msg.edit({ embeds: [await getGiveawayEmbed(language, giveaway)] });
+  request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
   return;
  }
 
  if (Number(msg.editedTimestamp) > Date.now() - 1800000) return;
- msg.edit({ embeds: [await getGiveawayEmbed(language, giveaway)] });
+ request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
 };

@@ -28,13 +28,22 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- const perms = await rpCmd.permissions.fetch({ guild: cmd.guild }).catch(() => []);
-
+ const perms = (await ch.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
  const resolved: boolean[] = [];
  const promises = (await cmd.guild.commands.fetch()).map((c) =>
-  c.permissions.set({ permissions: perms, token: user.accesstoken as string }).then(() => {
-   resolved.push(true);
-  }),
+  ch.request.commands
+   .editGuildCommandPermissions(
+    c.guild as Discord.Guild,
+    user.accesstoken as string,
+    c.applicationId,
+    c.id,
+    {
+     permissions: perms,
+    },
+   )
+   .then(() => {
+    resolved.push(true);
+   }),
  );
 
  const guildsettings = await ch.DataBase.guildsettings.update({

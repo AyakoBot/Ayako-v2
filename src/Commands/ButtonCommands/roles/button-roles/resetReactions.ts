@@ -6,12 +6,16 @@ import {
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
+import { request } from '../../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.languageSelector(cmd.guildId);
- const message = await ch.getMessage(cmd.message.embeds[0].url as string);
+ const message = (await ch.getMessage(
+  cmd.message.embeds[0].url as string,
+ )) as Discord.Message<true>;
+
  if (!message || message.guildId !== cmd.guildId) {
   ch.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
@@ -25,7 +29,7 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
 
  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings?.uniquetimestamp);
 
- let action: Discord.Message | Discord.DiscordAPIError | Discord.MessageReaction | undefined;
+ let action: Discord.Message | Discord.DiscordAPIError | void | undefined;
 
  if (type === 'reaction-roles') {
   const reactionsToRemove = message.reactions.cache
@@ -33,13 +37,15 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
    .map((r) => r);
 
   const firstEmoji = reactionsToRemove.shift();
-  action = await firstEmoji?.remove().catch((e) => e as Discord.DiscordAPIError);
+  action = firstEmoji
+   ? await request.channels.deleteAllReactionsOfEmoji(message, firstEmoji?.emoji.identifier)
+   : undefined;
   if (action && 'message' in action && typeof action.message !== 'string') {
-   reactionsToRemove.forEach((r) => r.remove());
+   reactionsToRemove.forEach((r) =>
+    request.channels.deleteAllReactionsOfEmoji(message, r.emoji.identifier),
+   );
   }
- } else {
-  action = await message.reactions.removeAll().catch((e) => e as Discord.DiscordAPIError);
- }
+ } else action = await request.channels.deleteAllReactions(message);
 
  if (action && 'message' in action && typeof action.message === 'string') {
   ch.errorCmd(cmd, action.message, language);

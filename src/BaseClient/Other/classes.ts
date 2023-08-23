@@ -83,3 +83,14 @@ export class ThreadChannel extends Discord.ThreadChannel {
   super(guild, data);
  }
 }
+
+// @ts-ignore
+export class AutoModerationRule extends Discord.AutoModerationRule {
+ constructor(
+  client: Discord.Client<true>,
+  data: Discord.APIAutoModerationRule,
+  guild: Discord.Guild,
+ ) {
+  super(client, data, guild);
+ }
+}

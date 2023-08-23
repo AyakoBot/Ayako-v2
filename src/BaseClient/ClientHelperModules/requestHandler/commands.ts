@@ -68,7 +68,7 @@ export default {
  getGuildCommands: (
   guild: Discord.Guild,
   appId: string,
-  query: Discord.RESTGetAPIApplicationGuildCommandsQuery,
+  query?: Discord.RESTGetAPIApplicationGuildCommandsQuery,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
    .getGuildCommands(appId, guild.id, query)

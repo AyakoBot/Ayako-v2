@@ -8,6 +8,7 @@ import {
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
+import { request } from '../../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -18,7 +19,10 @@ export default async (
 
  const emoji = args.join('_');
  const language = await ch.languageSelector(cmd.guildId);
- const message = await ch.getMessage(cmd.message.embeds[0].url as string);
+ const message = (await ch.getMessage(
+  cmd.message.embeds[0].url as string,
+ )) as Discord.Message<true>;
+
  if (!message || message.guildId !== cmd.guildId) {
   ch.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
@@ -53,8 +57,11 @@ export default async (
  refresh(cmd, [], type);
 };
 
-const removeReactions = async (emoji: string, message: Discord.Message) =>
- message.reactions.cache
-  .get((emoji.includes(':') ? emoji.split(/:/g)[1] : emoji) as string)
-  ?.remove()
-  .catch((e) => e as Discord.DiscordAPIError);
+const removeReactions = (emoji: string, message: Discord.Message<true>) => {
+ const reaction = message.reactions.cache.get(
+  (emoji.includes(':') ? emoji.split(/:/g)[1] : emoji) as string,
+ );
+
+ if (!reaction) return undefined;
+ return request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
+};

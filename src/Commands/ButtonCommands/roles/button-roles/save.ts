@@ -18,7 +18,10 @@ export default async (
 
  const emoji = args.join('_');
  const language = await ch.languageSelector(cmd.guildId);
- const message = await ch.getMessage(cmd.message.embeds[0].url as string);
+ const message = (await ch.getMessage(
+  cmd.message.embeds[0].url as string,
+ )) as Discord.Message<true>;
+
  if (!message || message.guildId !== cmd.guildId) {
   ch.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
@@ -54,9 +57,9 @@ export default async (
  }
 
  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
-
  const field = findField(emoji, cmd.message.embeds[0].fields);
  const roles = field?.value.split(/,\s+/g).map((r) => r.replace(/\D+/g, '')) ?? [];
+
  if (settings.length) {
   if (type === 'reaction-roles') {
    await ch.DataBase.reactionroles.updateMany({
@@ -124,10 +127,10 @@ export default async (
    : await putReactions(allSettings as Prisma.reactionroles[], message);
 
  if (type === 'button-roles') {
-  await message.reactions.cache
-   .get(emoji.includes(':') ? emoji.split(/:/g)[1] : emoji)
-   ?.remove()
-   .catch(() => undefined);
+  const reaction = message.reactions.cache.get(emoji.includes(':') ? emoji.split(/:/g)[1] : emoji);
+  if (reaction) {
+   await ch.request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
+  }
  }
 
  const lan = language.slashCommands.roles.builders;
@@ -142,7 +145,7 @@ export default async (
 
 export const putComponents = async (
  allSettings: Prisma.buttonroles[] | undefined,
- message: Discord.Message,
+ message: Discord.Message<true>,
 ) => {
  const chunks = allSettings
   ? ch.getChunks(
@@ -163,23 +166,21 @@ export const putComponents = async (
     )
   : [];
 
- const action = await message
-  .edit({
-   components: chunks.map((c) => ({
-    type: Discord.ComponentType.ActionRow,
-    components: c,
-   })),
-  })
-  .catch((e) => e as Discord.DiscordAPIError);
+ const action = await ch.request.channels.editMsg(message, {
+  components: chunks.map((c) => ({
+   type: Discord.ComponentType.ActionRow,
+   components: c,
+  })),
+ });
 
  return action;
 };
 
 const putReactions = async (
  allSettings: Prisma.reactionroles[] | undefined,
- message: Discord.Message,
+ message: Discord.Message<true>,
 ) => {
- if (!allSettings) return message.reactions.removeAll().catch((e) => e as Discord.DiscordAPIError);
+ if (!allSettings) return ch.request.channels.deleteAllReactions(message);
 
  const firstSetting = allSettings.find(
   (s) =>
@@ -188,19 +189,26 @@ const putReactions = async (
    )?.me,
  );
 
- const action = await message.reactions.cache
-  .get(
-   firstSetting?.emote?.includes(':')
-    ? firstSetting.emote?.split(/:/g)[1]
-    : (firstSetting?.emote as string),
-  )
-  ?.react()
-  .catch((e) => e as Discord.DiscordAPIError);
-
+ const reaction = message.reactions.cache.get(
+  firstSetting?.emote?.includes(':')
+   ? firstSetting.emote?.split(/:/g)[1]
+   : (firstSetting?.emote as string),
+ );
+ const action = reaction
+  ? await ch.request.channels.addReaction(message, reaction.emoji.identifier)
+  : undefined;
  if (action && 'message' in action && typeof action.message === 'string') return action;
 
  allSettings.forEach((s) => {
-  message.react(s.emote?.includes(':') ? s.emote?.split(/:/g)[1] : (s.emote as string));
+  const emoji = Discord.resolvePartialEmoji(
+   s.emote?.includes(':') ? s.emote?.split(/:/g)[1] : (s.emote as string),
+  );
+  if (!emoji) return;
+
+  ch.request.channels.addReaction(
+   message,
+   emoji.id ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}` : (emoji.name as string),
+  );
  });
 
  return message;

@@ -2,10 +2,9 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 import type * as ModTypes from '../mod.js';
-import DataBase from '../../DataBase.js';
 import constants from '../../Other/constants.js';
 import objectEmotes from '../objectEmotes.js';
-import getBotIdFromToken from '../getBotIdFromToken.js';
+import { guild as getBotIdFromGuild } from '../getBotIdFrom.js';
 import { request } from '../requestHandler.js';
 
 export default async (
@@ -16,12 +15,7 @@ export default async (
  options: CT.BaseOptions,
  type: CT.ModTypes,
 ) => {
- const tokenSettings = await DataBase.guildsettings.findUnique({
-  where: { guildid: options.guild.id, token: { not: null } },
- });
- if (
-  options.target.id !== (tokenSettings?.token ? getBotIdFromToken(tokenSettings.token) : client.id)
- ) {
+ if (options.target.id !== (cmd?.inGuild() ? await getBotIdFromGuild(cmd.guild) : client.id)) {
   return false;
  }
  if (!message) return true;

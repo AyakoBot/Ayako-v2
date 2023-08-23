@@ -71,8 +71,11 @@ import getPunishment from './ClientHelperModules/getPunishment.js';
 import getChannelWebhook from './ClientHelperModules/getChannelWebhook.js';
 import getMessage from './ClientHelperModules/getMessage.js';
 import fetchWithRedirects from './ClientHelperModules/fetchWithRedirects.js';
-import requestHandler from './ClientHelperModules/requestHandler.js';
-import getBotIdFromToken from './ClientHelperModules/getBotIdFromToken.js';
+import requestHandler, { request } from './ClientHelperModules/requestHandler.js';
+import {
+ token as getBotIdFromToken,
+ guild as getBotIdFromGuild,
+} from './ClientHelperModules/getBotIdFrom.js';
 import resolveFiles from './ClientHelperModules/resolveFiles.js';
 import getCustomBot from './ClientHelperModules/getCustomBot.js';
 import isModeratable from './ClientHelperModules/isModeratable.js';
@@ -84,10 +87,12 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ request,
  isModeratable,
  getCustomBot,
  resolveFiles,
  getBotIdFromToken,
+ getBotIdFromGuild,
  requestHandler,
  fetchWithRedirects,
  getChunks,
