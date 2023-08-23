@@ -14,6 +14,9 @@ import getStrike from './getStrike.js';
 import err from './err.js';
 import constants from '../../Other/constants.js';
 import objectEmotes from '../objectEmotes.js';
+import getCustomBot from '../getCustomBot.js';
+import isManageable from '../isManageable.js';
+import isModeratable from '../isModeratable.js';
 
 const mod = {
  roleAdd: async (
@@ -33,13 +36,12 @@ const mod = {
    return false;
   }
 
-  options.roles = options.roles.filter(
-   (r) => r.position < Number(options.guild.members.me?.roles.highest.position),
-  );
+  const me = await getCustomBot(options.guild);
+  options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
-   !options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !targetMember.manageable ||
+   me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
+   isManageable(targetMember, me) ||
    !options.roles.length
   ) {
    permissionError(cmd, message, language, type);
@@ -72,13 +74,12 @@ const mod = {
    return false;
   }
 
-  options.roles = options.roles.filter(
-   (r) => r.position < Number(options.guild.members.me?.roles.highest.position),
-  );
+  const me = await getCustomBot(options.guild);
+  options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
-   !options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !targetMember.manageable ||
+   me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
+   isManageable(targetMember, me) ||
    !options.roles.length
   ) {
    permissionError(cmd, message, language, type);
@@ -106,7 +107,8 @@ const mod = {
   if (!memberResponse) return false;
   const { targetMember } = memberResponse;
 
-  if (!targetMember.moderatable) {
+  const me = await getCustomBot(options.guild);
+  if (!isModeratable(me, targetMember)) {
    permissionError(cmd, message, language, type);
    return false;
   }
@@ -159,7 +161,8 @@ const mod = {
   if (!memberResponse) return false;
   const { targetMember } = memberResponse;
 
-  if (!targetMember.moderatable) {
+  const me = await getCustomBot(options.guild);
+  if (!isModeratable(me, targetMember)) {
    permissionError(cmd, message, language, type);
    return false;
   }
@@ -189,10 +192,10 @@ const mod = {
   const type = 'banAdd';
 
   const memberRes = await getMembers(cmd, options, language, message, type);
-
+  const me = await getCustomBot(options.guild);
   if (
-   (memberRes && !memberRes.targetMember.moderatable) ||
-   !options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.BanMembers)
+   (memberRes && !isModeratable(me, memberRes.targetMember)) ||
+   !me.permissions.has(Discord.PermissionFlagsBits.BanMembers)
   ) {
    permissionError(cmd, message, language, type);
    return false;
@@ -262,7 +265,8 @@ const mod = {
 
   cache.bans.delete(options.guild.id, options.target.id);
 
-  if (!options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.BanMembers)) {
+  const me = await getCustomBot(options.guild);
+  if (!me.permissions.has(Discord.PermissionFlagsBits.BanMembers)) {
    permissionError(cmd, message, language, type);
    return false;
   }
@@ -288,7 +292,8 @@ const mod = {
  ) => {
   const type = 'kickAdd';
 
-  if (!options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.KickMembers)) {
+  const me = await getCustomBot(options.guild);
+  if (!me.permissions.has(Discord.PermissionFlagsBits.KickMembers)) {
    permissionError(cmd, message, language, type);
    return false;
   }
@@ -340,11 +345,10 @@ const mod = {
   const memberResponse = await getMembers(cmd, options, language, message, type);
   if (!memberResponse) return false;
 
+  const me = await getCustomBot(options.guild);
   if (
-   !options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
-   !options.channel
-    .permissionsFor(options.guild.members.me)
-    .has(Discord.PermissionFlagsBits.ManageChannels)
+   !me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
+   !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)
   ) {
    permissionError(cmd, message, language, type);
    return false;
@@ -403,11 +407,10 @@ const mod = {
   const memberResponse = await getMembers(cmd, options, language, message, type);
   if (!memberResponse) return false;
 
+  const me = await getCustomBot(options.guild);
   if (
-   !options.guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
-   !options.channel
-    .permissionsFor(options.guild.members.me)
-    .has(Discord.PermissionFlagsBits.ManageChannels)
+   !me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
+   !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)
   ) {
    permissionError(cmd, message, language, type);
    return false;
