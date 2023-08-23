@@ -11,7 +11,6 @@ interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJS
   files?: Discord.RawFile[];
  };
 }
-
 export default {
  sendMessage: (
   guild: Discord.Guild | undefined | null,
@@ -60,27 +59,77 @@ export default {
   message: Discord.Message<true>,
   emoji: string,
   query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,
- ) =>
-  (cache.apis.get(message.guild.id) ?? API).channels
-   .getMessageReactions(message.channel.id, message.id, emoji, query)
+ ) => {
+  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+  if (!resolvedEmoji) {
+   return new Discord.DiscordjsTypeError(
+    Discord.DiscordjsErrorCodes.EmojiType,
+    'emoji',
+    'EmojiIdentifierResolvable',
+   ) as Discord.DiscordAPIError;
+  }
+
+  return (cache.apis.get(message.guild.id) ?? API).channels
+   .getMessageReactions(
+    message.channel.id,
+    message.id,
+    resolvedEmoji.id
+     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+     : (resolvedEmoji.name as string),
+    query,
+   )
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
-   }),
- deleteOwnReaction: (message: Discord.Message<true>, emoji: string) =>
-  (cache.apis.get(message.guild.id) ?? API).channels
-   .deleteOwnMessageReaction(message.channel.id, message.id, emoji)
+   });
+ },
+ deleteOwnReaction: (message: Discord.Message<true>, emoji: string) => {
+  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+  if (!resolvedEmoji) {
+   return new Discord.DiscordjsTypeError(
+    Discord.DiscordjsErrorCodes.EmojiType,
+    'emoji',
+    'EmojiIdentifierResolvable',
+   ) as Discord.DiscordAPIError;
+  }
+
+  return (cache.apis.get(message.guild.id) ?? API).channels
+   .deleteOwnMessageReaction(
+    message.channel.id,
+    message.id,
+    resolvedEmoji.id
+     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+     : (resolvedEmoji.name as string),
+   )
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
-   }),
- deleteUserReaction: (message: Discord.Message<true>, userId: string, emoji: string) =>
-  (cache.apis.get(message.guild.id) ?? API).channels
-   .deleteUserMessageReaction(message.channel.id, message.id, emoji, userId)
+   });
+ },
+ deleteUserReaction: (message: Discord.Message<true>, userId: string, emoji: string) => {
+  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+  if (!resolvedEmoji) {
+   return new Discord.DiscordjsTypeError(
+    Discord.DiscordjsErrorCodes.EmojiType,
+    'emoji',
+    'EmojiIdentifierResolvable',
+   ) as Discord.DiscordAPIError;
+  }
+
+  return (cache.apis.get(message.guild.id) ?? API).channels
+   .deleteUserMessageReaction(
+    message.channel.id,
+    message.id,
+    resolvedEmoji.id
+     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+     : (resolvedEmoji.name as string),
+    userId,
+   )
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
-   }),
+   });
+ },
  deleteAllReactions: (message: Discord.Message<true>) =>
   (cache.apis.get(message.guild.id) ?? API).channels
    .deleteAllMessageReactions(message.channel.id, message.id)
@@ -88,20 +137,52 @@ export default {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- deleteAllReactionsOfEmoji: (message: Discord.Message<true>, emoji: string) =>
-  (cache.apis.get(message.guild.id) ?? API).channels
-   .deleteAllMessageReactionsForEmoji(message.channel.id, message.id, emoji)
+ deleteAllReactionsOfEmoji: (message: Discord.Message<true>, emoji: string) => {
+  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+  if (!resolvedEmoji) {
+   return new Discord.DiscordjsTypeError(
+    Discord.DiscordjsErrorCodes.EmojiType,
+    'emoji',
+    'EmojiIdentifierResolvable',
+   ) as Discord.DiscordAPIError;
+  }
+
+  return (cache.apis.get(message.guild.id) ?? API).channels
+   .deleteAllMessageReactionsForEmoji(
+    message.channel.id,
+    message.id,
+    resolvedEmoji.id
+     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+     : (resolvedEmoji.name as string),
+   )
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
-   }),
- addReaction: (message: Discord.Message<true>, emoji: string) =>
-  (cache.apis.get(message.guild.id) ?? API).channels
-   .addMessageReaction(message.channel.id, message.id, emoji)
+   });
+ },
+ addReaction: (message: Discord.Message<true>, emoji: string) => {
+  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+  if (!resolvedEmoji) {
+   return new Discord.DiscordjsTypeError(
+    Discord.DiscordjsErrorCodes.EmojiType,
+    'emoji',
+    'EmojiIdentifierResolvable',
+   ) as Discord.DiscordAPIError;
+  }
+
+  return (cache.apis.get(message.guild.id) ?? API).channels
+   .addMessageReaction(
+    message.channel.id,
+    message.id,
+    resolvedEmoji.id
+     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+     : (resolvedEmoji.name as string),
+   )
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
-   }),
+   });
+ },
  edit: (
   channel: Discord.GuildChannel | Discord.ThreadChannel,
   body: Discord.RESTPatchAPIChannelJSONBody,
