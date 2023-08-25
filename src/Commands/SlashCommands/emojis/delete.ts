@@ -15,14 +15,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const res = await emoji
-  .delete(lan.deleteReason(cmd.user))
-  .catch((err) => err as Discord.DiscordAPIError);
+ const res = await ch.request.guilds.deleteEmoji(cmd.guild, emoji.id, lan.deleteReason(cmd.user));
 
- if (res instanceof Discord.GuildEmoji) {
-  ch.replyCmd(cmd, { content: lan.deleted(res) });
+ if (res && 'message' in res) {
+  ch.errorCmd(cmd, res.message, language);
   return;
  }
 
- ch.errorCmd(cmd, res.message, language);
+ ch.replyCmd(cmd, { content: lan.deleted(emoji) });
 };

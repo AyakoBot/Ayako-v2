@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { end, getGiveawayEmbed, getButton } from './end.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -54,21 +55,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const msg = await ch
-  .send(channel, {
-   embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
-  })
-  .catch((err) => err as Discord.DiscordAPIError);
+ const rawMsg = await ch.request.channels.sendMessage(cmd.guild, channel.id, {
+  embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
+ });
 
- if (!msg || 'message' in msg) {
-  ch.errorCmd(cmd, msg?.message ?? language.Unknown, language);
+ if ('message' in rawMsg) {
+  ch.errorCmd(cmd, rawMsg.message ?? language.Unknown, language);
   return;
  }
 
  const giveaway = await ch.DataBase.giveaways.create({
   data: {
    guildid: cmd.guild.id,
-   msgid: msg.id,
+   msgid: rawMsg.id,
    description: prizeDesc,
    winnercount: winners,
    endtime: endTime,
@@ -81,23 +80,23 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   },
  });
 
+ const msg = new Message(cmd.client, rawMsg) as Discord.Message<true>;
+
  if (!giveaway) {
   ch.errorCmd(cmd, language.Unknown, language);
-  if (msg.deletable) msg.delete().catch(() => undefined);
+  if (msg.deletable) ch.request.channels.deleteMessage(msg);
   return;
  }
 
- await msg
-  .edit({
-   embeds: [await getGiveawayEmbed(language, giveaway)],
-   components: [
-    {
-     type: Discord.ComponentType.ActionRow,
-     components: [getButton(language, giveaway)],
-    },
-   ],
-  })
-  .catch((err) => err as Discord.DiscordAPIError);
+ await ch.request.channels.editMsg(msg, {
+  embeds: [await getGiveawayEmbed(language, giveaway)],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [getButton(language, giveaway)],
+   },
+  ],
+ });
 
  ch.replyCmd(cmd, {
   content: lan.sent(channel),
@@ -118,7 +117,7 @@ const canSendMessage = async (
  cmd: CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>,
  language: CT.Language,
 ) => {
- const me = cmd.guild.members.me ?? (await cmd.guild.members.fetchMe().catch(() => undefined));
+ const me = await ch.getCustomBot(cmd.guild);
  if (!me) {
   ch.error(cmd.guild, new Error('Cannot find self in guild'));
   return false;

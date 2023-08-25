@@ -29,7 +29,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- msg.edit({ embeds: [await getGiveawayEmbed(language, giveaway)] });
+ const res = await ch.request.channels.editMsg(msg, {
+  embeds: [await getGiveawayEmbed(language, giveaway)],
+ });
+
+ if ('message' in res) {
+  ch.errorCmd(cmd, res.message, language);
+  return;
+ }
+
  ch.replyCmd(cmd, { content: lan.success });
 
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);

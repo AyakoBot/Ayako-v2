@@ -26,21 +26,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const msg = await channel.messages
-  .fetch(giveaway.msgid)
-  .catch((err) => err as Discord.DiscordAPIError);
- if ('message' in msg) {
-  ch.errorCmd(cmd, msg.message, language);
-  return;
- }
-
  const giveawayEmbed = await getGiveawayEmbed(language, giveaway);
  giveawayEmbed.title = lan.cancelled;
  giveaway.ended = true;
-
  const participateButton = getButton(language, giveaway);
 
- msg.edit({
+ const editRes = await ch.request.channels.editMessage(cmd.guild, channel.id, giveaway.msgid, {
   embeds: [giveawayEmbed],
   components: [
    {
@@ -49,6 +40,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    },
   ],
  });
+
+ if ('message' in editRes) {
+  ch.errorCmd(cmd, editRes.message, language);
+  return;
+ }
 
  ch.DataBase.giveaways.update({ where: { msgid: messageID }, data: { ended: true } }).then();
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);

@@ -4,6 +4,7 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import client from '../../../BaseClient/Client.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -141,7 +142,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- await msg.edit({
+ await ch.request.channels.editMsg(msg, {
   embeds: [embed],
   components: [
    {
@@ -224,7 +225,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    msgid: collection.replymsgid,
   });
 
-  if (oldReplyMsg && oldReplyMsg.deletable) oldReplyMsg.delete().catch(() => undefined);
+  if (oldReplyMsg && oldReplyMsg.deletable) ch.request.channels.deleteMessage(oldReplyMsg);
  }
 
  ch.DataBase.giveawaycollection
@@ -305,15 +306,13 @@ export const getMessage = async (giveaway: {
   return undefined;
  }
 
- const msg = await channel.messages
-  .fetch(giveaway.msgid)
-  .catch((err) => err as Discord.DiscordAPIError);
- if ('message' in msg) {
-  ch.error(guild, msg);
+ const rawMsg = await ch.request.channels.getMessage(guild, channel.id, giveaway.msgid);
+ if ('message' in rawMsg) {
+  ch.error(guild, rawMsg);
   return undefined;
  }
 
- return msg;
+ return new Message(channel.client, rawMsg) as Discord.Message<true>;
 };
 
 export const getButton = (
@@ -363,7 +362,7 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
  claimButton.label = language.slashCommands.giveaway.end.expired;
  claimButton.disabled = true;
 
- await msg.edit({
+ await ch.request.channels.editMsg(msg, {
   components: [
    {
     type: Discord.ComponentType.ActionRow,
