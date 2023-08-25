@@ -5,7 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!cmd.isFromMessage()) return;
 
- const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data);
+ const embed = cmd.message.embeds[0].data;
  const messageLink = cmd.fields.getTextInputValue('message');
  const [, , , , , channelId, messageId] = messageLink.split('/');
 
@@ -21,13 +21,14 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   return;
  }
 
- const message = await channel.messages.fetch(messageId);
- if (!message) {
+ const message = await ch.request.channels.getMessage(guild, channel.id, messageId);
+ if ('message' in message) {
   noMessageFound(cmd, lan);
   return;
  }
 
- message.edit({ embeds: [embed] });
+ ch.request.channels.editMessage(guild, channel.id, message.id, { embeds: [embed] });
+
  cmd.reply({
   content: lan.edited,
   ephemeral: true,

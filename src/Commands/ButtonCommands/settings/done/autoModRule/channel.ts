@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import * as CT from '../../../../../Typings/CustomTypings.js';
+import { getAPIRule } from '../../autoModRule/boolean.js';
+import { AutoModerationRule } from '../../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -35,33 +37,26 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c)?.[0];
 
- const updatedRule = await rule
-  .setActions([
-   ...rule.actions
-    .filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage)
-    .map((a) =>
-     a.type === Discord.AutoModerationActionType.SendAlertMessage
-      ? ({
-         type: Discord.AutoModerationActionType.SendAlertMessage,
-         metadata: { channel: a.metadata.channelId },
-        } as Discord.AutoModerationActionOptions)
-      : a,
-    ),
+ const updateRes = await ch.request.guilds.editAutoModerationRule(cmd.guild, rule.id, {
+  actions: [
+   ...getAPIRule(rule).actions.filter(
+    (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
+   ),
    ...(channelID
     ? [
        {
         type: Discord.AutoModerationActionType.SendAlertMessage,
         metadata: {
-         channel: channelID,
+         channel_id: channelID,
         },
        },
       ]
     : []),
-  ])
-  .catch((e) => e as Discord.DiscordAPIError);
+  ] as Discord.APIAutoModerationAction[],
+ });
 
- if ('message' in updatedRule) {
-  ch.errorCmd(cmd, updatedRule.message, language);
+ if ('message' in updateRes) {
+  ch.errorCmd(cmd, updateRes.message, language);
   return;
  }
 
@@ -81,6 +76,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;
+
+ const updatedRule = new AutoModerationRule(cmd.client, updateRes, cmd.guild);
 
  cmd.update({
   embeds: settingsFile.getEmbeds(

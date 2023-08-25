@@ -21,7 +21,7 @@ export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
 };
 
 const isVerified = async (
- cmd: Discord.ButtonInteraction,
+ cmd: Discord.ButtonInteraction<'cached'>,
  verification: Prisma.verification,
  language: CT.Language,
 ) => {
@@ -32,17 +32,27 @@ const isVerified = async (
 
  const sendReply = () =>
   ch.replyCmd(cmd, { content: language.verification.alreadyVerified, ephemeral: true });
- const member = await cmd.guild?.members.fetch(cmd.user.id).catch(() => undefined);
- if (!member) {
+ if (!cmd.member) {
   sendReply();
   return true;
  }
 
- if (member.roles.cache.has(verification.finishedrole)) {
+ if (
+  ('cache' in cmd.member.roles && cmd.member.roles.cache.has(verification.finishedrole)) ||
+  (Array.isArray(cmd.member.roles) && cmd.member.roles.includes(verification.finishedrole))
+ ) {
   sendReply();
 
-  if (verification.pendingrole && member.roles.cache.has(verification.pendingrole)) {
-   ch.roleManager.remove(member, [verification.pendingrole], language.verification.log.finished);
+  if (
+   verification.pendingrole &&
+   (('cache' in cmd.member.roles && cmd.member.roles.cache.has(verification.pendingrole)) ||
+    (Array.isArray(cmd.member.roles) && cmd.member.roles.includes(verification.pendingrole)))
+  ) {
+   ch.roleManager.remove(
+    cmd.member,
+    [verification.pendingrole],
+    language.verification.log.finished,
+   );
   }
   return true;
  }

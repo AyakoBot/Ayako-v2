@@ -94,3 +94,10 @@ export class AutoModerationRule extends Discord.AutoModerationRule {
   super(client, data, guild);
  }
 }
+
+// @ts-ignore
+export class GuildEmoji extends Discord.GuildEmoji {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildEmojiData, guild: Discord.Guild) {
+  super(client, data, guild);
+ }
+}

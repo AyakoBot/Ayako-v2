@@ -16,7 +16,7 @@ export default async (cmd: Discord.CommandInteraction) => {
 
  const response = (
   await client.shard?.broadcastEval(
-   async (cl, { gID: guildID, cID: channelID, mID: memberID }) => {
+   async (cl, { gID: guildID, cID: channelID, mID: messageID }) => {
     const guild = cl.guilds.cache.get(guildID);
     if (!guild) return undefined;
 
@@ -24,11 +24,10 @@ export default async (cmd: Discord.CommandInteraction) => {
     if (!channel) return undefined;
     if (!('messages' in channel)) return undefined;
 
-    const message = (await channel.messages.fetch(memberID).catch(() => undefined)) as
-     | Discord.Message
-     | undefined;
+    const message = await ch.request.channels.getMessage(guild, channelID, messageID);
+    if ('message' in message) return undefined;
 
-    return message?.embeds.map((e) => e.data);
+    return message?.embeds.map((e) => e);
    },
    {
     context: { gID, cID, mID },

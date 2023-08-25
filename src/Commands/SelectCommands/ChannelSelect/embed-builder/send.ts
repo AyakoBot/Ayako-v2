@@ -12,6 +12,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction) => {
  await ch.send(channels, {
   embeds: [new Discord.EmbedBuilder(cmd.message.embeds[0].data).data],
  });
+
  cmd.reply({
   content: lan.sent,
   ephemeral: true,

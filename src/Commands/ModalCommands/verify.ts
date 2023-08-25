@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
-export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
+export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: string[]) => {
  if (!cmd.isFromMessage()) return;
  if (!cmd.inCachedGuild()) return;
 
@@ -30,15 +30,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   ? cmd.guild?.roles.cache.get(settings.finishedrole)
   : null;
 
- const member = await cmd.guild?.members.fetch(cmd.user.id).catch(() => undefined);
- if (!member) return;
-
  if (pendingRole) {
-  ch.roleManager.remove(member, [pendingRole.id], language.verification.log.finished, 1);
+  ch.roleManager.remove(cmd.member, [pendingRole.id], language.verification.log.finished, 1);
  }
 
  if (verifiedRole) {
-  ch.roleManager.add(member, [verifiedRole.id], language.verification.log.finished, 1);
+  ch.roleManager.add(cmd.member, [verifiedRole.id], language.verification.log.finished, 1);
  }
 
  cmd.update({

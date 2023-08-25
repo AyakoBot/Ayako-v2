@@ -4,7 +4,7 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
-const getAPIRule = (rule: Discord.AutoModerationRule) => ({
+export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  enabled: rule.enabled,
  trigger_metadata: {
   keyword_filter: rule.triggerMetadata.keywordFilter,
@@ -176,7 +176,6 @@ const updateRule = async (
  switch (type) {
   case 'active': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     enabled: !rule.enabled,
    });
 
@@ -185,7 +184,6 @@ const updateRule = async (
   }
   case 'profanity': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.Profanity,
@@ -202,7 +200,6 @@ const updateRule = async (
   }
   case 'sexualContent': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.SexualContent,
@@ -222,7 +219,6 @@ const updateRule = async (
   }
   case 'slurs': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.Slurs,
@@ -239,7 +235,6 @@ const updateRule = async (
   }
   case 'mentionRaidProtectionEnabled': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     trigger_metadata: getAPIRule(rule) && {
      mention_raid_protection_enabled: !rule.triggerMetadata.mentionRaidProtectionEnabled,
     },
@@ -250,7 +245,6 @@ const updateRule = async (
   }
   case 'blockMessage': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
     ),
@@ -261,7 +255,6 @@ const updateRule = async (
   }
   case 'sendAlertMessage': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
     ),
@@ -272,7 +265,6 @@ const updateRule = async (
   }
   case 'timeout': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    ...getAPIRule(rule),
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.Timeout,
     ),

@@ -4,12 +4,9 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const member = await cmd.guild?.members.fetch(cmd.user.id).catch(() => undefined);
- if (!member) return;
-
  if (
-  !member.roles.cache.has('1068238827644276847') &&
-  !member.roles.cache.has('1077663004402925568')
+  !cmd.member.roles.cache.has('1068238827644276847') &&
+  !cmd.member.roles.cache.has('1077663004402925568')
  ) {
   cmd.reply({
    content: 'You need a higher level to enter!\nCheck <#1041356702227890196> for more info',

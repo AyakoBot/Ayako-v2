@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
+import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
+import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -39,13 +41,14 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const oldSetting = String(getCurrentSetting(rule, fieldName));
  const newSetting = field.value.split(/,\s+/g).filter((s) => s.length);
- const updatedSetting = await updateSetting(rule, fieldName, newSetting);
+ const updateRes = await updateSetting(rule, fieldName, newSetting);
 
- if (!updatedSetting) return;
- if ('message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting.message, language);
+ if (!updateRes || 'message' in updateRes) {
+  ch.errorCmd(cmd, updateRes?.message || '', language);
   return;
  }
+
+ const updatedSetting = new AutoModerationRule(rule.client, updateRes, rule.guild);
 
  ch.settingsHelpers.updateLog(
   { [fieldName]: oldSetting } as never,
@@ -86,11 +89,17 @@ const updateSetting = (
 ) => {
  switch (type) {
   case 'allowList':
-   return rule.setAllowList(newSetting).catch((e) => e as Discord.DiscordAPIError);
+   return ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, allow_list: newSetting },
+   });
   case 'regex':
-   return rule.setRegexPatterns(newSetting).catch((e) => e as Discord.DiscordAPIError);
+   return ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, regex_patterns: newSetting },
+   });
   case 'keywordFilter':
-   return rule.setKeywordFilter(newSetting).catch((e) => e as Discord.DiscordAPIError);
+   return ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, keyword_filter: newSetting },
+   });
   default: {
    ch.error(rule.guild, new Error(`Invalid type ${type}`));
    return undefined;

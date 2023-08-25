@@ -15,13 +15,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await ch.languageSelector(cmd.guildId);
  const oldSettings = JSON.parse(JSON.stringify(cmd.guild.autoModerationRules.cache.get(id)));
- const error = await cmd.guild.autoModerationRules.cache
-  .get(id)
-  ?.delete()
-  .catch((e) => e as Discord.DiscordAPIError);
+ const res = await ch.request.guilds.deleteAutoModerationRule(cmd.guild, id, cmd.user.username);
 
- if (error) {
-  ch.errorCmd(cmd, error.message, language);
+ if (typeof res !== 'undefined') {
+  ch.errorCmd(cmd, res.message, language);
   return;
  }
 

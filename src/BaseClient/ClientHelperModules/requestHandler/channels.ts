@@ -55,6 +55,18 @@ export default {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
+ editMessage: (
+  guild: Discord.Guild,
+  channelId: string,
+  messageId: string,
+  payload: CT.Argument<DiscordCore.ChannelsAPI['editMessage'], 2>,
+ ) =>
+  (cache.apis.get(guild.id) ?? API).channels
+   .editMessage(channelId, messageId, payload)
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getReactions: (
   message: Discord.Message<true>,
   emoji: string,

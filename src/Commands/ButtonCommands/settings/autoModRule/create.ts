@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -16,25 +17,35 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
- const rule = await cmd.guild?.autoModerationRules.create({
-  name: lan[type],
-  eventType: getEventType(type),
-  triggerType: getTriggerType(type),
-  triggerMetadata: getTriggerMetadata(type),
-  actions: [
-   {
-    type: type === 'member' ? (4 as never) : Discord.AutoModerationActionType.BlockMessage,
-   },
-  ],
-  enabled: false,
-  reason: cmd.user.username,
- });
+ const rawResponse = await ch.request.guilds.createAutoModerationRule(
+  cmd.guild,
+  {
+   name: lan[type],
+   event_type: getEventType(type),
+   trigger_type: getTriggerType(type),
+   trigger_metadata: getTriggerMetadata(type),
+   actions: [
+    {
+     type: type === 'member' ? (4 as never) : Discord.AutoModerationActionType.BlockMessage,
+    },
+   ],
+   enabled: false,
+  },
+  cmd.user.username,
+ );
+
+ if ('message' in rawResponse) {
+  ch.errorCmd(cmd, rawResponse.message, language);
+  return;
+ }
 
  const settingsFile = (await ch.settingsHelpers.getSettingsFile(
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;
+
+ const rule = new AutoModerationRule(cmd.client, rawResponse, cmd.guild);
 
  cmd.update({
   embeds: settingsFile.getEmbeds(
@@ -86,12 +97,12 @@ const getTriggerType = (type: 'keyword' | 'mention' | 'spam' | 'preset' | 'membe
 
 const getTriggerMetadata = (
  type: 'keyword' | 'mention' | 'spam' | 'preset' | 'member',
-): Discord.AutoModerationTriggerMetadataOptions | undefined => {
+): Discord.APIAutoModerationRuleTriggerMetadata | undefined => {
  switch (type) {
   case 'mention': {
    return {
-    mentionTotalLimit: 20,
-    mentionRaidProtectionEnabled: true,
+    mention_total_limit: 20,
+    mention_raid_protection_enabled: true,
    };
   }
   case 'spam': {
@@ -108,7 +119,7 @@ const getTriggerMetadata = (
   }
   default: {
    return {
-    keywordFilter: ['discord.gg/'],
+    keyword_filter: ['discord.gg/'],
    };
   }
  }

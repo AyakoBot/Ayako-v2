@@ -3,6 +3,8 @@ import ms from 'ms';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import CT from '../../../../Typings/CustomTypings.js';
+import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
+import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -58,35 +60,28 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    .durationSeconds,
  );
 
- const updatedSetting = await rule
-  .setActions([
-   ...rule.actions
-    .filter((a) => a.type !== Discord.AutoModerationActionType.Timeout)
-    .map((a) =>
-     a.type === Discord.AutoModerationActionType.SendAlertMessage
-      ? ({
-         type: Discord.AutoModerationActionType.SendAlertMessage,
-         metadata: { channel: a.metadata.channelId },
-        } as Discord.AutoModerationActionOptions)
-      : a,
-    ),
+ const updateRes = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+  actions: [
+   ...getAPIRule(rule).actions.filter((a) => a.type !== Discord.AutoModerationActionType.Timeout),
    {
     type: Discord.AutoModerationActionType.Timeout,
     metadata: {
-     durationSeconds: Number(newSetting),
+     duration_seconds: Number(newSetting),
     },
    },
-  ])
-  .catch((e) => e as Discord.DiscordAPIError);
+  ],
+ });
 
- if ('message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting.message, language);
+ if ('message' in updateRes) {
+  ch.errorCmd(cmd, updateRes.message, language);
   return;
  }
 
+ const updatedRule = new AutoModerationRule(rule.client, updateRes, rule.guild);
+
  ch.settingsHelpers.updateLog(
   { timeoutDuration: currentSetting } as never,
-  { timeoutDuration: updatedSetting?.['timeoutDuration' as keyof typeof updatedSetting] } as never,
+  { timeoutDuration: updatedRule?.['timeoutDuration' as keyof typeof updatedRule] } as never,
   'timeoutDuration' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
   settingName,
   id,
@@ -104,12 +99,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  cmd.update({
   embeds: settingsFile.getEmbeds(
    ch.settingsHelpers.embedParsers,
-   updatedSetting,
+   updatedRule,
    language,
    language.slashCommands.settings.categories[settingName],
   ),
   components: settingsFile.getComponents(
-   updatedSetting,
+   updatedRule,
    language,
    language.slashCommands.settings.categories[settingName],
   ),

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import { GuildEmoji } from '../../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -15,18 +16,29 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const res = await cmd.guild.emojis
-  .create({
-   name,
-   attachment: ch.constants.standard.emoteURL(emoji as Discord.Emoji),
-   reason: lan.createReason(cmd.user),
-  })
-  .catch((err) => err as Discord.DiscordAPIError);
-
- if (res instanceof Discord.GuildEmoji) {
-  ch.replyCmd(cmd, { content: lan.created(res) });
+ const image = await Discord.DataResolver.resolveImage(
+  ch.constants.standard.emoteURL(emoji as Discord.Emoji),
+ );
+ if (!image) {
+  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.languageSelector(cmd.guildId));
   return;
  }
 
- ch.errorCmd(cmd, res.message, language);
+ const res = await ch.request.guilds.createEmoji(
+  cmd.guild,
+  {
+   name,
+   image,
+  },
+  lan.createReason(cmd.user),
+ );
+
+ if ('message' in res) {
+  ch.errorCmd(cmd, res.message, language);
+  return;
+ }
+
+ const createdEmote = new GuildEmoji(cmd.client, res, cmd.guild);
+
+ ch.replyCmd(cmd, { content: lan.created(createdEmote) });
 };

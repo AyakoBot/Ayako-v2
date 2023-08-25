@@ -2,6 +2,8 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import CT from '../../../../Typings/CustomTypings.js';
+import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
+import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -37,32 +39,26 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const updatedSetting = await rule
-  .setActions([
-   ...rule.actions
-    .filter((a) => a.type !== Discord.AutoModerationActionType.BlockMessage)
-    .map((a) =>
-     a.type === Discord.AutoModerationActionType.SendAlertMessage
-      ? ({
-         type: Discord.AutoModerationActionType.SendAlertMessage,
-         metadata: { channel: a.metadata.channelId },
-        } as Discord.AutoModerationActionOptions)
-      : a,
-    ),
+ const updateRes = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+  actions: [
+   ...getAPIRule(rule).actions.filter(
+    (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
+   ),
    {
     type: Discord.AutoModerationActionType.BlockMessage,
     metadata: {
-     customMessage: newSetting,
+     custom_message: newSetting,
     },
    },
-  ])
-  .catch((e) => e as Discord.DiscordAPIError);
+  ],
+ });
 
- if (!updatedSetting) return;
- if ('message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting.message, language);
+ if ('message' in updateRes) {
+  ch.errorCmd(cmd, updateRes.message, language);
   return;
  }
+
+ const updatedSetting = new AutoModerationRule(rule.client, updateRes, rule.guild);
 
  ch.settingsHelpers.updateLog(
   {
