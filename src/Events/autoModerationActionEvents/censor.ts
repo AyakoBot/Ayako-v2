@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import { filtered_content as filterContent } from '../../../rust/rust.js';
+import { AutoModerationRule } from '../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
@@ -24,30 +25,37 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Pr
  if (!msg.matchedContent && !msg.matchedKeyword) return;
 
  const webhook = await getWebhook(msg);
- if (!webhook) return;
+ if (!webhook || !webhook.token) return;
 
  const content = await getContent(msg, settings);
  if (!content) return;
 
- webhook.send({
+ ch.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
   username: msg.member?.displayName,
-  avatarURL: msg.member?.displayAvatarURL() ?? msg.member?.user.displayAvatarURL(),
+  avatar_url: msg.member?.displayAvatarURL() ?? msg.member?.user.displayAvatarURL(),
   content,
-  threadId: (msg.channel?.isThread() ? msg.channelId : undefined) ?? undefined,
+  thread_id: (msg.channel?.isThread() ? msg.channelId : undefined) ?? undefined,
  });
 };
 
 const getContent = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.censor) => {
  const rules = (
   msg.guild.autoModerationRules.cache.size
-   ? msg.guild.autoModerationRules.cache
-   : await msg.guild.autoModerationRules
-      .fetch()
-      .catch(() => new Discord.Collection<string, Discord.AutoModerationRule>())
+   ? msg.guild.autoModerationRules.cache.map((r) => r)
+   : await ch.request.guilds
+      .getAutoModerationRules(msg.guild)
+      .then((r) =>
+       'message' in r
+        ? []
+        : r.map((rule) => new AutoModerationRule(msg.guild.client, rule, msg.guild)),
+      )
+      .catch(() => [])
  )
+  .flat()
+  .filter((r): r is Discord.AutoModerationRule => !!r)
   .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
-  .filter((r) => (settings.repostrules?.length ? settings.repostrules?.includes(r.id) : true))
-  .map((r) => r);
+  .filter((r) => (settings.repostrules?.length ? settings.repostrules?.includes(r.id) : true));
+
  if (!rules.length) return undefined;
 
  const presetRule = rules.find(
@@ -107,25 +115,35 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
 };
 
 const getWebhook = async (msg: Discord.AutoModerationActionExecution) => {
- const channelOrThread = await msg.channel?.fetch().catch(() => undefined);
- const channel = channelOrThread?.isThread() ? channelOrThread.parent : channelOrThread;
+ const channelOrThread = msg.channelId
+  ? await ch.request.channels
+     .get(msg.guild, msg.channelId)
+     .then((r) => ('message' in r ? undefined : r))
+  : undefined;
+ const isThread = channelOrThread
+  ? [
+     Discord.ChannelType.PublicThread,
+     Discord.ChannelType.PrivateThread,
+     Discord.ChannelType.AnnouncementThread,
+    ].includes(channelOrThread?.type)
+  : false;
+
+ const channel =
+  isThread && channelOrThread
+   ? msg.guild.channels.cache.get((channelOrThread as Discord.APIThreadChannel).parent_id as string)
+   : channelOrThread;
 
  if (!channel) {
   ch.error(msg.guild, new Error("Channel not found or can't fetched"));
   return undefined;
  }
 
- if (!('createWebhook' in channel)) {
-  ch.error(msg.guild, new Error('createWebhook does not exist on Channel'));
-  return undefined;
- }
-
  if (
-  !msg.guild.members.me?.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageWebhooks)
+  !msg.guild.members.me?.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageWebhooks)
  ) {
   ch.error(msg.guild, new Error('Insufficent Permissions to manage Webhooks'));
   return undefined;
  }
 
- return ch.getChannelWebhook(channel);
+ return ch.getChannelWebhook(channel.id);
 };

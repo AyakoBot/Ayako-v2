@@ -12,8 +12,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   Discord.ChannelType.AnnouncementThread,
  ]);
  const time = cmd.options.getNumber('time', true);
- const reason = cmd.options.getString('reason', false);
-
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.slowmode;
 
@@ -22,12 +20,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   return;
  }
 
- const res = await channel
-  .setRateLimitPerUser(
-   time,
-   `${ch.constants.standard.user(cmd.user)} | ${reason ?? language.noReasonProvided}`,
-  )
-  .catch((err) => err as Discord.DiscordAPIError);
+ const res = await ch.request.channels.edit(channel, {
+  rate_limit_per_user: time,
+ });
 
  if ('message' in res) {
   ch.errorCmd(cmd, res.message, language);

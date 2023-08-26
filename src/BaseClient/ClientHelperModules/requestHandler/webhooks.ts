@@ -32,13 +32,14 @@ export default {
   body: Discord.RESTPostAPIWebhookWithTokenJSONBody &
    Discord.RESTPostAPIWebhookWithTokenQuery & {
     files?: Discord.RawFile[];
-    wait: true;
    },
  ) =>
-  (cache.apis.get(guild.id) ?? API).webhooks.execute(webhookId, token, body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).webhooks
+   .execute(webhookId, token, { ...body, wait: true })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  executeSlack: (
   guild: Discord.Guild,
   webhookId: string,

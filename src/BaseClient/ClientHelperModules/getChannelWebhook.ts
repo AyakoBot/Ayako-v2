@@ -3,35 +3,59 @@ import cache from './cache.js';
 import constants from '../Other/constants.js';
 import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
+import { guildTextChannel } from './getChannel.js';
 
-export default async (channel: Discord.GuildTextBasedChannel | Discord.ForumChannel) => {
+export default async (
+ rawChannel: Discord.GuildTextBasedChannel | Discord.ForumChannel | string,
+) => {
+ let channel =
+  typeof rawChannel === 'string'
+   ? ((await guildTextChannel(rawChannel)) as Discord.GuildTextBasedChannel | undefined)
+   : rawChannel;
+
+ if (!channel) return undefined;
  if (channel.isThread()) channel = channel.parent as NonNullable<typeof channel.parent>;
+ if (!channel) return undefined;
 
  const webhooksArray = Array.from(
   cache.webhooks.cache.get(channel.guild.id)?.get(channel.id)?.values() || [],
  );
 
- const fetchWebhooks = async () => {
-  const w = await request.channels.getWebhooks(channel.guild, channel.id);
+ const fetchWebhooks = async (
+  c:
+   | Discord.NewsChannel
+   | Discord.StageChannel
+   | Discord.TextChannel
+   | Discord.VoiceChannel
+   | Discord.ForumChannel,
+ ) => {
+  const w = await request.channels.getWebhooks(c.guild, c.id);
   if ('message' in w) return [];
 
-  return w.map((webh) => new Classes.Webhook(channel.guild.client, webh));
+  return w.map((webh) => new Classes.Webhook(c.guild.client, webh));
  };
 
- const createWebhook = async () => {
-  const w = await request.channels.createWebhook(channel.guild, channel.id, {
-   name: constants.standard.user(channel.client.user),
-   avatar: channel.client.user.displayAvatarURL({ forceStatic: true, extension: 'png' }),
+ const createWebhook = async (
+  c:
+   | Discord.NewsChannel
+   | Discord.StageChannel
+   | Discord.TextChannel
+   | Discord.VoiceChannel
+   | Discord.ForumChannel,
+ ) => {
+  const w = await request.channels.createWebhook(c.guild, c.id, {
+   name: constants.standard.user(c.client.user),
+   avatar: c.client.user.displayAvatarURL({ forceStatic: true, extension: 'png' }),
   });
   if ('message' in w) return undefined;
 
-  return new Classes.Webhook(channel.guild.client, w);
+  return new Classes.Webhook(c.guild.client, w);
  };
 
- const webhooks = !webhooksArray.length ? await fetchWebhooks() : webhooksArray;
+ const webhooks = !webhooksArray.length ? await fetchWebhooks(channel) : webhooksArray;
 
  const webhook =
-  webhooks.find((w) => w.owner?.id === channel.client.user.id) ?? (await createWebhook());
+  webhooks.find((w) => w.owner?.id === channel?.client.user.id) ?? (await createWebhook(channel));
  if (!webhook) return undefined;
 
  cache.webhooks.set(webhook);

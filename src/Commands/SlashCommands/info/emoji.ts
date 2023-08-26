@@ -176,7 +176,7 @@ const getEmotePayloads = async (
            value: language.languageFunction.getGuild(emoji.guild),
           }
         : undefined,
-       'author' in emoji && (await emoji.fetchAuthor().catch(() => undefined))
+       'author' in emoji && emoji.author
         ? {
            name: `${chEval.util.makeBold(lan.emojis.uploader)}:\n`,
            value: language.languageFunction.getUser(emoji.author as Discord.User),

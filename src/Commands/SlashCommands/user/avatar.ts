@@ -6,7 +6,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const user = cmd.options.getUser('user', false) || cmd.user;
  const member = cmd.guild?.members.cache.get(user.id);
-
  const language = await ch.languageSelector(cmd.guildId);
 
  ch.replyCmd(cmd, {

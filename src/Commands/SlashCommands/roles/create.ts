@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { Role } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -28,20 +29,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
 
- const role = await cmd.guild.roles
-  .create({
+ const role = await ch.request.guilds.createRole(
+  cmd.guild,
+  {
    name,
-   unicodeEmoji: !emoji || emoji.id ? undefined : emoji.name,
+   unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: color ? parseInt(color, 16) : undefined,
    icon:
     icon?.url ??
     (iconEmoji && Discord.parseEmoji(iconEmoji)
      ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
      : undefined),
-   position: positionRole?.position,
-   permissions: permissionRole?.permissions,
-  })
-  .catch((e) => e as Discord.DiscordAPIError);
+   permissions: permissionRole?.permissions.bitfield.toString(),
+  },
+  cmd.user.username,
+ );
 
  if ('message' in role) {
   ch.errorCmd(
@@ -49,5 +51,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
    language,
   );
- } else ch.replyCmd(cmd, { content: lan.create(role as Discord.Role) });
+  return;
+ }
+
+ ch.replyCmd(cmd, { content: lan.create(new Role(cmd.client, role, cmd.guild)) });
+
+ if (positionRole) {
+  await ch.request.guilds.setRolePositions(cmd.guild, [
+   {
+    position: positionRole.rawPosition,
+    id: role.id,
+   },
+  ]);
+ }
 };

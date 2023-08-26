@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import { AutoModerationRule, Message } from '../../BaseClient/Other/classes.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
  const channels = await ch.getLogChannels('automodevents', execution.guild);
@@ -8,14 +9,22 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  const user = await ch.getUser(execution.userId);
  if (!user) return;
 
- const rule = (await execution.guild.autoModerationRules.fetch())?.get(execution.ruleId);
+ const rule = await ch.request.guilds
+  .getAutoModerationRule(execution.guild, execution.ruleId)
+  ?.then((r) =>
+   'message' in r ? undefined : new AutoModerationRule(execution.guild.client, r, execution.guild),
+  );
  if (!rule) return;
 
  const channel = execution.channelId
   ? await ch.getChannel.guildTextChannel(execution.channelId)
   : undefined;
  const msg =
-  execution.messageId && channel ? await channel.messages.fetch(execution.messageId) : undefined;
+  execution.messageId && channel
+   ? await ch.request.channels
+      .getMessage(rule.guild, channel.id, execution.messageId)
+      .then((r) => ('message' in r ? undefined : new Message(execution.guild.client, r)))
+   : undefined;
  const language = await ch.languageSelector(execution.guild.id);
  const lan = language.events.logs.automodActionExecution;
 

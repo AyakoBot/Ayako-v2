@@ -37,21 +37,38 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
 
- const editedRole = await role
-  .edit({
-   name,
-   hoist,
-   mentionable,
-   unicodeEmoji: !emoji || emoji.id ? undefined : emoji.name,
-   color: color ? parseInt(color, 16) : undefined,
-   icon:
-    icon?.url ??
-    (iconEmoji && Discord.parseEmoji(iconEmoji)
-     ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
-     : undefined),
-   position: positionRole?.position,
-  })
-  .catch((e) => e as Discord.DiscordAPIError);
+ const editPositionRes = positionRole
+  ? await ch.request.guilds.setRolePositions(cmd.guild, [
+     {
+      position: positionRole.position,
+      id: role.id,
+     },
+    ])
+  : undefined;
+
+ if (editPositionRes && 'message' in editPositionRes) {
+  ch.errorCmd(
+   cmd,
+   editPositionRes.message.includes('ENOENT')
+    ? language.errors.emoteNotFound
+    : editPositionRes.message,
+   language,
+  );
+  return;
+ }
+
+ const editedRole = await ch.request.guilds.editRole(cmd.guild, role.id, {
+  name,
+  hoist,
+  mentionable,
+  unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
+  color: color ? parseInt(color, 16) : undefined,
+  icon:
+   icon?.url ??
+   (iconEmoji && Discord.parseEmoji(iconEmoji)
+    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
+    : undefined),
+ });
 
  if ('message' in editedRole) {
   ch.errorCmd(

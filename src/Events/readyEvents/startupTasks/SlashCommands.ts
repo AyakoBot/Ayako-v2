@@ -1034,8 +1034,7 @@ const slowmode = new Discord.SlashCommandBuilder()
    .setDescription('The Slowmode in Seconds')
    .setRequired(true)
    .setMaxValue(21600),
- )
- .addStringOption(Reason);
+ );
 
 const user = new Discord.SlashCommandBuilder()
  .setName('user')

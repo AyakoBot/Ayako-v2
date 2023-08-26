@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (
- cmd: Discord.ChatInputCommandInteraction | Discord.Message<true>,
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true>,
  text?: string,
 ) => {
  if (cmd instanceof Discord.ChatInputCommandInteraction && !cmd.inCachedGuild()) return;
@@ -56,7 +56,12 @@ export default async (
   Number(cmd.member?.displayName.length) <= 26 &&
   !cmd.member?.displayName.endsWith(' [AFK]')
  ) {
-  await cmd.member?.setNickname(`${cmd.member?.displayName} [AFK]`, lan.setReason);
+  await ch.request.guilds.editMember(
+   cmd.guild,
+   cmd.member.id,
+   { nick: `${cmd.member.displayName} [AFK]` },
+   lan.setReason,
+  );
  }
 
  ch.DataBase.afk

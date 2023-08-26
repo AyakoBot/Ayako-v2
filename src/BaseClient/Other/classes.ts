@@ -101,3 +101,21 @@ export class GuildEmoji extends Discord.GuildEmoji {
   super(client, data, guild);
  }
 }
+
+// @ts-ignore
+export class Role extends Discord.Role {
+ constructor(client: Discord.Client<true>, data: RawData.RawRoleData, guild: Discord.Guild) {
+  super(client, data, guild);
+ }
+}
+
+// @ts-ignore
+export class GuildChannel extends Discord.GuildChannel {
+ constructor(
+  guild: Discord.Guild,
+  channel: RawData.RawGuildChannelData,
+  client: Discord.Client<true>,
+ ) {
+  super(guild, channel, client);
+ }
+}
