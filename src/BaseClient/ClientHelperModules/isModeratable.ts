@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import isManageable from './isManageable';
+import isManageable from './isManageable.js';
 
 export default (executor: Discord.GuildMember, target: Discord.GuildMember) =>
  !target.permissions.has(Discord.PermissionFlagsBits.Administrator) &&
