@@ -1,11 +1,16 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { Ban } from '../../../BaseClient/Other/classes.js';
 
 export default async (ban: Discord.GuildBan) => {
  const channels = await ch.getLogChannels('guildevents', ban.guild);
  if (!channels) return;
 
- if (ban.partial) await ban.fetch();
+ if (ban.partial) {
+  ban = await ch.request.guilds
+   .getMemberBan(ban.guild, ban.user.id)
+   .then((b) => ('message' in b ? ban : new Ban(ban.client, b, ban.guild)));
+ }
 
  const language = await ch.languageSelector(ban.guild.id);
  const lan = language.events.logs.guild;

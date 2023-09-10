@@ -36,7 +36,7 @@ const self = async (
 
  const m = await ch.send(msg.channel, { embeds: [embed] });
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m?.deletable) m.delete();
+  if (m?.deletable) ch.request.channels.deleteMessage(m as Discord.Message<true>);
  });
 
  await ch.DataBase.afk.delete({
@@ -56,12 +56,14 @@ const deleteNick = (language: CT.Language, member?: Discord.GuildMember | null) 
  if (!member.nickname || !member.nickname.endsWith(' [AFK]')) return;
  if (!member.guild.members.me?.permissions.has(134217728n) || !member.manageable) return;
 
- member
-  .setNickname(
-   member.displayName.slice(0, member.displayName.length - 6),
-   language.slashCommands.afk.removeReason,
-  )
-  .catch(() => undefined);
+ ch.request.guilds.editMember(
+  member.guild,
+  member.id,
+  {
+   nick: member.displayName.slice(0, member.displayName.length - 6),
+  },
+  language.slashCommands.afk.removeReason,
+ );
 };
 
 const mention = async (
@@ -95,7 +97,7 @@ const mention = async (
  const m = await ch.replyMsg(msg, { embeds, allowed_mentions: { replied_user: true } });
 
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m?.deletable) m.delete();
+  if (m?.deletable) ch.request.channels.deleteMessage(m);
  });
 };
 

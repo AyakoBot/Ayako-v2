@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as Classes from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -78,9 +79,13 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    const isInviteGuild = !('members' in g);
 
    if (!isInviteGuild) {
-    await g.autoModerationRules.fetch().catch(() => undefined);
-    await g.fetchVanityData().catch(() => undefined);
-    owner = await g.fetchOwner().catch(() => undefined);
+    await chEval.request.guilds.getAutoModerationRules(g);
+    await chEval.request.guilds.getVanityURL(g);
+
+    const classes: typeof Classes = await import(`${process.cwd()}/BaseClient/Other/classes.js`);
+    owner = await chEval.request.guilds
+     .getMember(g, g.ownerId)
+     .then((u) => ('message' in u ? undefined : new classes.GuildMember(c, u, g)));
    }
 
    return [

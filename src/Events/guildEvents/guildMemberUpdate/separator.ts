@@ -130,7 +130,7 @@ export const oneTimeRunner = async (
       | Discord.PublicThreadChannel
       | Discord.VoiceChannel;
     },
- m: Discord.Message,
+ m: Discord.Message<true>,
  embed: Discord.APIEmbed,
  button?: Discord.ButtonInteraction,
  lastTime?: boolean,
@@ -195,12 +195,12 @@ export const oneTimeRunner = async (
   if (!membersWithRoles) {
    embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
-   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
+   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
   } else {
    embed.description =
     language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning;
 
-   m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
+   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
   }
  } else {
   membersWithRoles.forEach((mem) => {
@@ -395,7 +395,7 @@ const assinger = async (
       | Discord.PublicThreadChannel
       | Discord.VoiceChannel;
     },
- m: Discord.Message,
+ m: Discord.Message<true>,
  membersWithRoles: {
   id: string;
   roles: {
@@ -421,7 +421,7 @@ const assinger = async (
   };
 
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
-  m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
+  ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
 
   ch.DataBase.roleseparatorsettings
    .update({
@@ -464,7 +464,7 @@ const assinger = async (
      embed.description =
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
-     m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
+     ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
      ch.DataBase.roleseparatorsettings
       .update({
        where: {

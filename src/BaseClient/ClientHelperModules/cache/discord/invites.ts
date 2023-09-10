@@ -3,11 +3,15 @@ import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Invites {
- get: (code: string, channelId: string, guild: Discord.Guild) => Promise<number | undefined>;
+ get: (
+  code: string,
+  channelId: string,
+  guild: Discord.Guild,
+ ) => Promise<Discord.Invite | undefined>;
  set: (invite: Discord.Invite, guildId: string) => void;
- find: (code: string) => number | undefined;
+ find: (code: string) => Discord.Invite | undefined;
  delete: (code: string, guildId: string, channelId: string) => void;
- cache: Map<string, Map<string, Map<string, number>>>;
+ cache: Map<string, Map<string, Map<string, Discord.Invite>>>;
 }
 
 const self: Invites = {
@@ -29,7 +33,7 @@ const self: Invites = {
 
   self.cache.get(guild.id)?.clear();
 
-  return Number(fetched?.find((f) => f.code === code));
+  return self.cache.get(guild.id)?.get(channelId)?.get(code);
  },
  set: (invite, guildId) => {
   if (!invite.channelId) {
@@ -46,7 +50,7 @@ const self: Invites = {
    self.cache.get(guildId)?.set(invite.channelId, new Map());
   }
 
-  self.cache.get(guildId)?.get(invite.channelId)?.set(invite.code, Number(invite.uses));
+  self.cache.get(guildId)?.get(invite.channelId)?.set(invite.code, invite);
  },
  find: (code) =>
   Array.from(self.cache, ([, g]) => g)

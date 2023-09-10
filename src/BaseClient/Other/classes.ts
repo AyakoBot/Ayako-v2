@@ -119,3 +119,17 @@ export class GuildChannel extends Discord.GuildChannel {
   super(guild, channel, client);
  }
 }
+
+// @ts-ignore
+export class User extends Discord.User {
+ constructor(client: Discord.Client<true>, data: RawData.RawUserData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class Ban extends Discord.GuildBan {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildBanData, guild: Discord.Guild) {
+  super(client, data, guild);
+ }
+}

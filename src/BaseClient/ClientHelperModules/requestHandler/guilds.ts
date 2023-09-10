@@ -60,8 +60,8 @@ export default {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
- getMemberBan: (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getMemberBans(guild.id, query).catch((e) => {
+ getMemberBan: (guild: Discord.Guild, userId: string) =>
+  (cache.apis.get(guild.id) ?? API).guilds.getMemberBan(guild.id, userId).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),

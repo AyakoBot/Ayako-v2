@@ -4,6 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
+import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 const month = 2629743000;
 
@@ -64,7 +65,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   fields: [],
  };
  const embeds = [userInfo];
- const member = await cmd.guild?.members.fetch(user.id)?.catch(() => undefined);
+ const member = cmd.guild
+  ? await ch.request.guilds
+     .getMember(cmd.guild, user.id)
+     .then((m) =>
+      'message' in m ? undefined : new GuildMember(cmd.client, m, cmd.guild as Discord.Guild),
+     )
+  : undefined;
  const components = getComponents(member, user, language, cmd.guild);
 
  if (botInfo && botInfo.description) {

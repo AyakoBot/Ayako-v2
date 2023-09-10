@@ -62,9 +62,10 @@ export default async (member: Discord.GuildMember) => {
  const dmChannel = await member.user.createDM().catch(() => undefined);
  if (!dmChannel) return;
 
- const dm = await dmChannel
-  .send({ embeds: [embed], content: 'Ayako Terms and Privacy Notice' })
-  .catch(() => undefined);
+ const dm = await ch.send(dmChannel, {
+  embeds: [embed],
+  content: 'Ayako Terms and Privacy Notice',
+ });
  if (!dm) return;
 
  dm.edit({

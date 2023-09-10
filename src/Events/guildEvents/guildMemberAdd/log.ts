@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { Invite } from '../../../BaseClient/Other/classes.js';
 
 export default async (member: Discord.GuildMember) => {
  const channels = await ch.getLogChannels('memberevents', member.guild);
@@ -58,7 +59,11 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
  const oldInvites = Array.from(ch.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
   Array.from(i, ([c, i2]) => ({ uses: i2, code: c })),
  ).flat();
- const newInvites = await guild.invites.fetch();
+ const newInvites = await ch.request.guilds
+  .getInvites(guild)
+  .then((invites) =>
+   'message' in invites ? undefined : invites.map((i) => new Invite(guild.client, i)),
+  );
  if (!newInvites) return undefined;
 
  newInvites.forEach((i) => ch.cache.invites.set(i, guild.id));
@@ -73,30 +78,30 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
   .filter((i): i is Discord.Invite => !!i)[0];
  if (inv) return inv;
 
- const vanity = (await guild.fetchVanityData().catch(() => undefined)) as
-  | {
-     inviter: Discord.User | undefined;
-     inviterId: string;
-     guild: Discord.Guild;
-     code: string | null;
-     uses: number;
-     channel: Discord.NonThreadGuildBasedChannel | null;
-     channelId: string | null;
-    }
-  | undefined;
+ const vanity = await ch.request.guilds.getVanityURL(guild);
 
- if (vanity) {
-  vanity.inviter = (await ch.getUser(guild.ownerId).catch(() => undefined)) as Discord.User;
-  vanity.inviterId = guild.ownerId;
-  vanity.guild = guild;
-  vanity.channel = (guild.channels.cache.get(guild.id) ??
-   guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
-  vanity.channelId = vanity.channel?.id;
+ if (!('message' in vanity)) {
+  ch.cache.invites.set(
+   {
+    inviter: (await ch.getUser(guild.ownerId).catch(() => undefined)) as Discord.User,
+    inviterId: guild.ownerId,
+    channel: (guild.channels.cache.get(guild.id) ??
+     guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel,
+    guild,
+    channelId: (
+     (guild.channels.cache.get(guild.id) ??
+      guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel
+    ).id,
+    code: vanity.code as string,
+    createdTimestamp: guild.createdTimestamp,
+    uses: vanity.uses,
+   } as Discord.Invite,
+   guild.id,
+  );
  }
 
- const cachedVanity = oldInvites.find((i) => i.code === vanity?.code);
- ch.cache.invites.set(vanity as Discord.Invite, guild.id);
- if (Number(cachedVanity?.uses) < Number(vanity?.uses)) return vanity as Discord.Invite;
-
+ const parsedVanity = vanity.code ? ch.cache.invites.find(vanity.code as string) : undefined;
+ const changedVanity = oldInvites.find((i) => i.code === vanity?.code);
+ if (Number(changedVanity?.uses) < Number(parsedVanity)) return parsedVanity;
  return true;
 };

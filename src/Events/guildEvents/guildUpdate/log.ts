@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import type CT from '../../../Typings/CustomTypings.js';
+import { WelcomeScreen } from '../../../BaseClient/Other/classes.js';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  const channels = await ch.getLogChannels('guildevents', guild);
@@ -24,7 +25,9 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  };
 
  const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild);
- const newWelcomeScreen = await guild.fetchWelcomeScreen();
+ const newWelcomeScreen = await ch.request.guilds
+  .getWelcomeScreen(guild)
+  .then((w) => ('message' in w ? undefined : new WelcomeScreen(guild, w)));
  if (newWelcomeScreen) ch.cache.welcomeScreens.set(newWelcomeScreen);
 
  const files: Discord.AttachmentPayload[] = [];

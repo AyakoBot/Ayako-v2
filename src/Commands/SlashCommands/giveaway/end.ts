@@ -351,7 +351,7 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
    msgid: collection.replymsgid,
   });
 
-  if (oldReplyMsg && oldReplyMsg.deletable) oldReplyMsg.delete().catch(() => undefined);
+  if (oldReplyMsg && oldReplyMsg.deletable) ch.request.channels.deleteMessage(oldReplyMsg);
  }
 
  const msg = await getMessage(giveaway);
