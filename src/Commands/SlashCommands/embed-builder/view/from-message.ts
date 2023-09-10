@@ -24,7 +24,8 @@ export default async (cmd: Discord.CommandInteraction) => {
     if (!channel) return undefined;
     if (!('messages' in channel)) return undefined;
 
-    const message = await ch.request.channels.getMessage(guild, channelID, messageID);
+    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+    const message = await chEval.request.channels.getMessage(guild, channelID, messageID);
     if ('message' in message) return undefined;
 
     return message?.embeds.map((e) => e);
