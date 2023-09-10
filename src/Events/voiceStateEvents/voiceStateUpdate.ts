@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import client from '../../BaseClient/Client.js';
+import voiceStateCreates from './voiceStateCreates/voiceStateCreates.js';
+import voiceStateDeletes from './voiceStateDeletes/voiceStateDeletes.js';
+import voiceStateUpdates from './voiceStateUpdates/voiceStateUpdates.js';
 
 interface RealState extends Omit<Discord.VoiceState, 'channel' | 'member'> {
  channel?: Discord.VoiceChannel;
@@ -19,27 +21,24 @@ export default async (oldState: RealState, state: RealState) => {
  }
 
  if (!oldState.channelId) {
-  client.emit(
-   'voiceStateCreates',
-   state,
+  voiceStateCreates(
+   state as Discord.VoiceState,
    await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
   );
   return;
  }
 
  if (!state.channelId) {
-  client.emit(
-   'voiceStateDeletes',
-   oldState,
+  voiceStateDeletes(
+   oldState as Discord.VoiceState,
    await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
   );
   return;
  }
 
- client.emit(
-  'voiceStateUpdates',
-  oldState,
-  state,
+ voiceStateUpdates(
+  oldState as Discord.VoiceState,
+  state as Discord.VoiceState,
   await state.guild.members.fetch(state.id ?? oldState.id).catch(() => undefined),
  );
 };

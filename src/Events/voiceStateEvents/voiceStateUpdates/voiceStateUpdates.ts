@@ -4,7 +4,7 @@ import log from './log.js';
 export default async (
  oldState: Discord.VoiceState,
  state: Discord.VoiceState,
- member: Discord.GuildMember,
+ member?: Discord.GuildMember,
 ) => {
  log(oldState, state, member);
 };

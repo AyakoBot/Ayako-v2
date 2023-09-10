@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
+import messageDelete from '../messageDelete/messageDelete.js';
 
 export default async (
  msgs: Discord.Collection<Discord.Snowflake, Discord.Message>,
@@ -30,5 +30,5 @@ export default async (
 
  await ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] });
 
- msgs.forEach((m) => client.emit('messageDelete', m));
+ msgs.forEach((m) => messageDelete(m));
 };

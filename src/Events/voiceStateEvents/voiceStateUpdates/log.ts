@@ -5,7 +5,7 @@ import type CT from '../../../Typings/CustomTypings.js';
 export default async (
  oldState: Discord.VoiceState,
  state: Discord.VoiceState,
- member: Discord.GuildMember,
+ member?: Discord.GuildMember,
 ) => {
  if (!state.channel) return;
  if (!oldState.channel) return;

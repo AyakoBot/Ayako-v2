@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default async (state: Discord.VoiceState, member: Discord.GuildMember) => {
+export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
  if (!state.channel) return;
  if (!member) return;
 

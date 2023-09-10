@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
+import guildIntegrationsUpdates from './guildIntegrationsUpdates/guildIntegrationsUpdates.js';
+import guildIntegrationsDeletes from './guildIntegrationsDeletes/guildIntegrationsDeletes.js';
+import guildIntegrationsCreates from './guildIntegrationsCreates/guildIntegrationsCreates.js';
 
 export default async (guild: Discord.Guild) => {
  const cached = ch.cache.integrations.cache.get(guild.id);
@@ -19,17 +21,16 @@ export default async (guild: Discord.Guild) => {
  ) as unknown as Discord.Integration[];
 
  if (added.length) {
-  added.forEach(async (add) => client.emit('guildIntegrationsCreates', add));
+  added.forEach(async (add) => guildIntegrationsCreates(add));
  }
 
  if (removed.length) {
-  removed.forEach(async (remove) => client.emit('guildIntegrationsDeletes', remove));
+  removed.forEach(async (remove) => guildIntegrationsDeletes(remove));
  }
 
  if (changed.length) {
   changed.forEach(async (change) =>
-   client.emit(
-    'guildIntegrationsUpdates',
+   guildIntegrationsUpdates(
     cached.get(change.id) as Discord.Integration,
     fetched.get(change.id) as Discord.Integration,
    ),
