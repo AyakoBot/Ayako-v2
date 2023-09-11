@@ -2,20 +2,21 @@ import * as Discord from 'discord.js';
 import getUser from './getUser.js';
 import * as Classes from '../Other/classes.js';
 import { request } from './requestHandler.js';
+import { guild as getBotIdFromGuild } from './getBotIdFrom.js';
 
 export default async (guild: Discord.Guild) => {
- const currentMember = await request.users.getCurrentMember(guild);
+ const currentMember = await request.guilds.getMember(guild, await getBotIdFromGuild(guild));
  if ('message' in currentMember) return undefined;
 
  const me = currentMember ? new Classes.GuildMember(guild.client, currentMember, guild) : undefined;
  if (!new Discord.PermissionsBitField(me?.permissions).has(32n)) return null;
 
- const invites = guild.invites.cache.map((i) => i);
+ // TODO: change to request handler
+ const invites = await guild.invites.fetch().then((i) => i.map((o) => o));
  if (!invites) return null;
-
  if (!guild.vanityURLCode) return invites;
 
- const vanityUrl = await guild.fetchVanityData();
+ const vanityUrl = await request.guilds.getVanityURL(guild);
  if (!vanityUrl) return invites;
  if (!vanityUrl.code) return invites;
 
@@ -43,7 +44,7 @@ export default async (guild: Discord.Guild) => {
   targetType: null,
   temporary: false,
   url: `https://discord.gg/${guild.vanityURLCode}`,
-  uses: vanityUrl.uses,
+  uses: 'message' in vanityUrl ? 0 : vanityUrl.uses,
   delete: (reason?: string) => {
    throw new Error(`Function not implemented. Reason: ${reason}`);
   },

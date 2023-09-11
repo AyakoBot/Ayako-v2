@@ -30,11 +30,6 @@ export default {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
- getCurrentMember: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).users.getGuildMember(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
  editCurrentGuildMember: (guild: Discord.Guild, data: Discord.RESTPatchAPIGuildMemberJSONBody) =>
   (cache.apis.get(guild.id) ?? API).users.editCurrentGuildMember(guild.id, data).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
