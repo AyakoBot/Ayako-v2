@@ -10,7 +10,7 @@ export default async () => {
    const eventName = path.replace('.js', '').split(/\/+/).pop();
 
    if (!eventName) return false;
-   if (!Object.values(Discord.Events).find(eventName as never)) return false;
+   if (!Object.values(Discord.Events).includes(eventName as never)) return false;
    return true;
   });
 
