@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.discriminator === '0000') return;
@@ -17,19 +18,19 @@ export default async (msg: Discord.Message<true>) => {
   !msg.member?.roles.cache.has('776248679363248168') &&
   msg.author.id !== client.user?.id
  ) {
-  msg.delete().catch(() => null);
+  ch.request.channels.deleteMessage(msg);
  }
 
  const pin = () => {
   if (msg.channel.id !== '1060213963205394552') return;
   setTimeout(() => {
-   if (!msg.pinned) msg.delete().catch(() => null);
+   if (!msg.pinned) ch.request.channels.deleteMessage(msg);
   }, 5000);
  };
  pin();
 };
 
-const gvMessageCheck = (msg: Discord.Message) => {
+const gvMessageCheck = (msg: Discord.Message<true>) => {
  if (!msg.member) return;
  if (!new Discord.PermissionsBitField(msg.member.permissions)?.has(32n)) return;
  if (msg.guildId !== '366219406776336385') return;
@@ -37,7 +38,7 @@ const gvMessageCheck = (msg: Discord.Message) => {
 
  const inviteCheck = () => {
   if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
-  msg.delete().catch(() => null);
+  ch.request.channels.deleteMessage(msg);
 
   ch
    .send(msg.channel, {
@@ -46,7 +47,7 @@ const gvMessageCheck = (msg: Discord.Message) => {
    .then((m) => {
     if (Array.isArray(m)) return;
     jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-     if (m) m.delete().catch(() => null);
+     if (m) ch.request.channels.deleteMessage(m as Discord.Message<true>);
     });
    });
  };
@@ -68,7 +69,7 @@ const gvMessageCheck = (msg: Discord.Message) => {
    return;
   }
 
-  msg.delete().catch(() => null);
+  ch.request.channels.deleteMessage(msg);
 
   ch
    .send(msg.channel, {
@@ -77,7 +78,7 @@ const gvMessageCheck = (msg: Discord.Message) => {
    .then((m) => {
     if (Array.isArray(m)) return;
     jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-     if (m) m.delete().catch(() => null);
+     if (m) ch.request.channels.deleteMessage(m as Discord.Message<true>);
     });
    });
  };
@@ -86,17 +87,17 @@ const gvMessageCheck = (msg: Discord.Message) => {
  linkCheck();
 };
 
-const amMessageCheck = (msg: Discord.Message) => {
+const amMessageCheck = (msg: Discord.Message<true>) => {
  const staffPing = async () => {
   if (!msg.content.includes('<@&809261905855643668>')) return;
   await msg.guild?.members.fetch();
 
-  msg.channel.send({
+  ch.send(msg.channel, {
    content: msg.guild?.roles.cache
     .get('809261905855643668')
     ?.members.map((m) => `<@${m.id}>`)
     .join(', '),
-   allowedMentions: {
+   allowed_mentions: {
     users: msg.guild?.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
    },
   });
@@ -107,23 +108,23 @@ const amMessageCheck = (msg: Discord.Message) => {
   if (msg.channel.id !== '763132467041140737') return;
   if (msg.author.bot) return;
 
-  const messages = await msg.channel.messages.fetch({ limit: 100 });
-  const messagesFromSameAuthor = (messages as Discord.Collection<string, Discord.Message>).filter(
-   (m) => m.author.id === msg.author.id,
-  );
+  const messages = await ch.request.channels
+   .getMessages(msg.channel as Discord.GuildTextBasedChannel, { limit: 100 })
+   .then((msgs) => ('message' in msgs ? undefined : msgs.map((m) => new Message(msg.client, m))));
+  const messagesFromSameAuthor = messages?.filter((m) => m.author.id === msg.author.id);
 
-  if (messagesFromSameAuthor.size > 1) {
-   const reply = await msg.reply({
+  if (Number(messagesFromSameAuthor?.length) > 1) {
+   const reply = (await ch.replyMsg(msg, {
     content:
      '__We appreciate your enthusiasm, but you have already sent an introduction!__\nIf you want to refresh your intro, please wait a little longer before posting again\nYou have 20 Seconds before your intro is deleted. **Copy and Save it for later.**',
-    allowedMentions: {
-     repliedUser: true,
+    allowed_mentions: {
+     replied_user: true,
     },
-   });
+   })) as Discord.Message<true>;
 
    setTimeout(() => {
-    msg.delete();
-    reply.delete();
+    ch.request.channels.deleteMessage(msg);
+    ch.request.channels.deleteMessage(reply);
    }, 20000);
   }
  };
@@ -138,7 +139,7 @@ const amMessageCheck = (msg: Discord.Message) => {
   if (Number(msg.content?.split(/ +/)[4].replace(/!/g, '')) > 39) return;
 
   jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-   msg.delete().catch(() => null);
+   ch.request.channels.deleteMessage(msg);
   });
  };
 
@@ -161,15 +162,15 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
  const mentionedStaff = msg.mentions.members.filter((m) => roleMembers.includes(m.id));
  if (mentionedStaff.hasAny(...authors)) return;
 
- const m = await msg.reply({
+ const m = (await ch.replyMsg(msg, {
   content:
    '## If you see any rule violation, please be sure to mention the Staff Role, not a single Staff Member.',
-  allowedMentions: {
-   repliedUser: true,
+  allowed_mentions: {
+   replied_user: true,
   },
- });
+ })) as Discord.Message<true>;
 
  jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m.deletable) m.delete().catch(() => null);
+  if (m?.deletable) ch.request.channels.deleteMessage(m);
  });
 };

@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.id === msg.client.user.id) return;
@@ -16,7 +17,9 @@ export default async (msg: Discord.Message<true>) => {
 
  if (!stickyMessage) return;
 
- const message = await msg.channel.messages.fetch(stickyMessage.lastmsgid).catch(() => undefined);
+ const message = await ch.request.channels
+  .getMessage(msg.guild, msg.channel.id, stickyMessage.lastmsgid)
+  .then((m) => ('message' in m ? undefined : new Message(msg.client, m)));
 
  if (!message) {
   ch.DataBase.stickymessages
@@ -61,17 +64,24 @@ export default async (msg: Discord.Message<true>) => {
     ],
    };
 
-   const m = webhook
-    ? await webhook.send({
-       username: user?.bot ? user.username : user?.displayName ?? msg.client.user.username,
-       avatarURL: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
-       ...payload,
-      })
-    : await ch.send(msg.channel, payload);
+   const m =
+    webhook && webhook.token
+     ? await ch.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
+        username: user?.bot ? user.username : user?.displayName ?? msg.client.user.username,
+        avatar_url: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
+        ...(payload as Omit<CT.UsualMessagePayload, 'files'>),
+       })
+     : await ch.send(msg.channel, payload);
 
    if (!m) return;
-   if (webhook && message.author.id === webhook.id) webhook.deleteMessage(message);
-   else if (message.deletable) message.delete().catch(() => undefined);
+   if ('message' in m) {
+    ch.error(msg.guild, new Error(m.message));
+    return;
+   }
+
+   if (webhook && message.author.id === webhook.id && webhook.token) {
+    ch.request.webhooks.deleteMessage(msg.guild, webhook.id, webhook.token, message.id);
+   } else if (message.deletable) ch.request.channels.deleteMessage(message);
 
    ch.DataBase.stickymessages
     .update({

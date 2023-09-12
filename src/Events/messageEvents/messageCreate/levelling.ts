@@ -453,10 +453,12 @@ const doReact = async (
 
  if (newLevel === 1) infoEmbed(msg, reactions, language);
 
- await Promise.all(reactions.map((e) => msg.react(e).catch(() => undefined)));
+ await Promise.all(reactions.map((e) => ch.request.channels.addReaction(msg, e)));
 
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  msg.reactions.cache.forEach((r) => r.users.remove(msg.client.user).catch(() => undefined));
+  msg.reactions.cache.forEach((r) =>
+   ch.request.channels.deleteOwnReaction(msg, r.emoji.identifier),
+  );
  });
 };
 
@@ -483,7 +485,7 @@ const infoEmbed = async (
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 30000), () => {
-  if (m?.deletable) m.delete().catch(() => undefined);
+  if (m?.deletable) ch.request.channels.deleteMessage(m);
  });
 };
 
@@ -534,7 +536,7 @@ const send = async (
    guildId: msg.guildId,
   },
   { embeds: [embed] },
- )) as Discord.Message | Discord.Message[] | undefined;
+ )) as Discord.Message<true> | Discord.Message<true>[] | undefined;
 
  if (!setting.lvlupdeltimeout) return;
 
@@ -547,12 +549,12 @@ const send = async (
   () => {
    if (Array.isArray(messages)) {
     messages?.forEach((m) => {
-     if (m?.deletable) m.delete().catch(() => undefined);
+     if (m?.deletable) ch.request.channels.deleteMessage(m);
     });
     return;
    }
 
-   if (messages?.deletable) messages.delete().catch(() => undefined);
+   if (messages?.deletable) ch.request.channels.deleteMessage(messages);
   },
  );
 };

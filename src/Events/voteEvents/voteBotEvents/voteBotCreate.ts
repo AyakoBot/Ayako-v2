@@ -4,6 +4,7 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
+import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 export default async (
  vote: CT.TopGGBotVote,
@@ -157,7 +158,9 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
  const guild = client.guilds.cache.get(g.id);
  if (!guild) return;
 
- const member = await guild.members.fetch(vote.user).catch(() => undefined);
+ const member = await ch.request.guilds
+  .getMember(guild, vote.user)
+  .then((m) => ('message' in m ? undefined : new GuildMember(guild.client, m, guild)));
  if (!member) return;
 
  const language = await ch.languageSelector(guild.id);
@@ -181,26 +184,23 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
   'bot' in vote ? await ch.getUser(vote.bot).catch(() => undefined) : client.guilds.cache.get(g.id);
  if (!voted) return;
 
- const dm = await member.user.createDM().catch(() => undefined);
- if (!dm) return;
-
- const embed: Discord.APIEmbed = {
-  author: {
-   name: lan.reminder.name,
-   icon_url: ch.objectEmotes.userFlags.EarlySupporter.link,
-  },
-  color: ch.constants.colors.base,
-  description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
-  fields: [
+ ch.send(member, {
+  embeds: [
    {
-    name: '\u200b',
-    value: 'username' in voted ? lan.reminder.voteBot(voted) : lan.reminder.voteGuild(voted),
+    author: {
+     name: lan.reminder.name,
+     icon_url: ch.objectEmotes.userFlags.EarlySupporter.link,
+    },
+    color: ch.constants.colors.base,
+    description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
+    fields: [
+     {
+      name: '\u200b',
+      value: 'username' in voted ? lan.reminder.voteBot(voted) : lan.reminder.voteGuild(voted),
+     },
+    ],
    },
   ],
- };
-
- dm.send({
-  embeds: [embed],
   components: [
    {
     type: Discord.ComponentType.ActionRow,

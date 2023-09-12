@@ -2,12 +2,12 @@ import Jobs from 'node-schedule';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
 
-import willisDiabloCounter from './startupTasks/willisDiabloCounter.js';
 import cache from './startupTasks/cache.js';
 import slashCommandInitializer from './startupTasks/slashCommandInitializer.js';
 import voteHandler from './startupTasks/voteHandler.js';
 import appealHandler from './startupTasks/appealHandler.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
+import customBotCommands from './startupTasks/customBotCommands.js';
 
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
@@ -18,15 +18,17 @@ import timedManager from './timedFiles/timedManager.js';
 export default async () => {
  voteHandler();
  appealHandler();
- willisDiabloCounter();
  cache();
  slashCommandInitializer();
  antivirusBlocklistCacher();
  customAPIsHandler();
+ customBotCommands();
 
- // ch.cache.fishFish.start();
- // ch.cache.sinkingYachts.start();
- // ch.cache.urlTLDs.start();
+ if (client.user?.id === ch.mainID) {
+  ch.cache.fishFish.start();
+  ch.cache.sinkingYachts.start();
+  ch.cache.urlTLDs.start();
+ }
 
  Jobs.scheduleJob('0 0 0 * * *', async () => {
   animekosInviteStats();

@@ -41,7 +41,12 @@ export default async (msg: Discord.Message) => {
    return;
   }
 
-  msg.react(ch.objectEmotes.cross.id);
+  if (msg.inGuild()) {
+   ch.request.channels.addReaction(
+    msg,
+    `${ch.objectEmotes.cross.name}:${ch.objectEmotes.cross.id}`,
+   );
+  } else msg.react(ch.objectEmotes.cross.id);
  } catch (err) {
   if (clean(err).length > 2000) {
    ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(err))] });
@@ -57,7 +62,12 @@ export default async (msg: Discord.Message) => {
    return;
   }
 
-  msg.react(ch.objectEmotes.cross.id);
+  if (msg.inGuild()) {
+   ch.request.channels.addReaction(
+    msg,
+    `${ch.objectEmotes.cross.name}:${ch.objectEmotes.cross.id}`,
+   );
+  } else msg.react(ch.objectEmotes.cross.id);
  }
 };
 

@@ -4,6 +4,7 @@ import type CT from '../../../Typings/CustomTypings.js';
 import voteBotCreate from '../../voteEvents/voteBotEvents/voteBotCreate.js';
 import voteGuildCreate from '../../voteEvents/voteGuildEvents/voteGuildCreate.js';
 import Socket from '../../../BaseClient/Socket.js';
+import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 export default async () => {
  Socket.on('topgg', async (vote: CT.TopGGBotVote | CT.TopGGGuildVote) => {
@@ -21,7 +22,9 @@ export default async () => {
    const user = await ch.getUser(vote.user).catch(() => undefined);
    if (!user) return;
 
-   const member = await guild.members.fetch(vote.user).catch(() => undefined);
+   const member = await ch.request.guilds
+    .getMember(guild, vote.user)
+    .then((m) => ('message' in m ? undefined : new GuildMember(guild.client, m, guild)));
 
    if ('bot' in vote) voteBotCreate(vote, guild, user, member, row);
    if ('guild' in vote) voteGuildCreate(vote, guild, user, member, row);

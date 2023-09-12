@@ -6,11 +6,15 @@ export default async (
  data: Discord.ApplicationCommandPermissionsUpdateData,
  guild: Discord.Guild,
 ) => {
- if (data.applicationId !== client.user?.id) return;
+ const cache = () => {
+  ch.cache.commandPermissions.set(
+   guild.id,
+   data.id,
+   structuredClone(data.permissions) as Discord.ApplicationCommandPermissions[],
+  );
+ };
 
- ch.cache.commandPermissions.set(
-  guild.id,
-  data.id,
-  structuredClone(data.permissions) as Discord.ApplicationCommandPermissions[],
- );
+ const customBot = await ch.getBotIdFromGuild(guild);
+ if (customBot) cache();
+ else if (data.applicationId === client.user?.id) cache();
 };

@@ -7,6 +7,7 @@ import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands
 import * as CT from '../../../Typings/CustomTypings.js';
 import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
+import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -93,9 +94,9 @@ export const tasks = {
 
       ch.mod(
        m.msgid && m.channelid
-        ? await (await ch.getChannel.guildTextChannel(m.channelid))?.messages
-           .fetch(m.msgid)
-           .catch(() => undefined)
+        ? await ch.request.channels
+           .getMessage(guild, m.channelid, m.msgid)
+           .then((s) => ('message' in s ? undefined : new Message(guild.client, s)))
         : undefined,
        table.event,
        {
@@ -161,13 +162,13 @@ export const tasks = {
  },
  autoModRules: async (guild: Discord.Guild) => {
   if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
-   await guild.autoModerationRules.fetch().catch(() => undefined);
+   await ch.request.guilds.getAutoModerationRules(guild);
   }
  },
  scheduledEvents: async (guild: Discord.Guild) => {
   const scheduledEvents = await guild.scheduledEvents.fetch().catch(() => undefined);
   scheduledEvents?.forEach(async (event) => {
-   const users = await event.fetchSubscribers().catch(() => undefined);
+   const users = await ch.fetchAllEventSubscribers(event);
    users?.forEach((u) => {
     ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
    });
@@ -182,7 +183,9 @@ export const tasks = {
   guild.channels.cache.forEach(async (c) => {
    if (!c.isTextBased()) return;
 
-   const pins = await c.messages.fetchPinned().catch(() => undefined);
+   const pins = await ch.request.channels
+    .getPins(guild, c.id)
+    .then((ps) => ('message' in ps ? undefined : ps.map((p) => new Message(guild.client, p))));
    pins?.forEach((pin) => ch.cache.pins.set(pin));
   });
  },
@@ -192,9 +195,9 @@ export const tasks = {
   }
 
   const vanity = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-   ? await guild.fetchVanityData().catch(() => undefined)
+   ? await ch.request.guilds.getVanityURL(guild)
    : undefined;
-  if (vanity) {
+  if (vanity && !('message' in vanity)) {
    const invite = vanity as Discord.Invite;
    invite.channel = (guild.channels.cache.get(guild.id) ??
     guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
@@ -209,10 +212,10 @@ export const tasks = {
   }
  },
  commands: async (guild: Discord.Guild) => {
-  guild.commands.fetch().catch(() => undefined);
+  ch.request.commands.getGuildCommands(guild, await ch.getBotIdFromGuild(guild));
  },
  members: async (guild: Discord.Guild) => {
-  guild.members.fetch().catch(() => undefined);
+  ch.fetchAllGuildMembers(guild);
  },
  commandPermissions: async (guild: Discord.Guild) => {
   await ch.cache.commandPermissions.get(guild, '');

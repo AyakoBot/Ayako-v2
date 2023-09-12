@@ -12,6 +12,7 @@ import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.j
 import DataBase from '../../../BaseClient/DataBase.js';
 import error from '../../../BaseClient/ClientHelperModules/error.js';
 import cache from '../../../BaseClient/ClientHelperModules/cache.js';
+import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -61,13 +62,12 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
  const commandIsEnabled = await checkCommandIsEnabled(msg, commandName, command);
  if (!commandIsEnabled) {
-  const reaction = await msg
-   .react(objectEmotes.cross.id)
-   .catch((e) => e as Discord.DiscordAPIError);
+  const reaction = await request.channels.addReaction(
+   msg,
+   `${objectEmotes.cross.name}:${objectEmotes.cross.id}`,
+  );
 
-  if ('message' in reaction && typeof reaction.message === 'string') {
-   error(msg.guild, new Error(reaction.message));
-  }
+  if (typeof reaction !== 'undefined') error(msg.guild, new Error(reaction.message));
   return;
  }
 
@@ -76,8 +76,8 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-   if (m?.deletable) m.delete().catch(() => undefined);
-   if (msg.deletable) msg.delete().catch(() => undefined);
+   if (m?.deletable) request.channels.deleteMessage(m);
+   if (msg.deletable) request.channels.deleteMessage(msg);
   });
   return;
  }
@@ -143,6 +143,7 @@ const getComand = async (commandName: string) => {
 
 const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: string) => {
  const slashCommand =
+  cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
   msg.guild.commands.cache.find((c) => c.name === commandName);
 
@@ -192,6 +193,7 @@ const checkCommandIsEnabled = async (
  command: CT.Command,
 ) => {
  const slashCommand =
+  cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
   msg.guild.commands.cache.find((c) => c.name === commandName);
 

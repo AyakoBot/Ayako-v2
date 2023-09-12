@@ -19,7 +19,7 @@ type ChannelTypes =
  | Discord.BaseGuildVoiceChannel;
 
 async function send(
- channels: Discord.User | CT.bEvalUser,
+ channels: Discord.User | CT.bEvalUser | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
@@ -55,7 +55,8 @@ async function send(
   | { id: string[]; guildId: string }
   | { id: string; guildId: string }
   | Discord.User
-  | CT.bEvalUser,
+  | CT.bEvalUser
+  | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,

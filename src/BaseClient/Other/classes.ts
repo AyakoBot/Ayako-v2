@@ -43,7 +43,7 @@ export class Webhook extends Discord.Webhook {
 }
 
 // @ts-ignore
-export class Message extends Discord.Message {
+export class Message extends Discord.Message<true> {
  constructor(client: Discord.Client<true>, data: RawData.RawMessageData) {
   super(client, data);
  }
