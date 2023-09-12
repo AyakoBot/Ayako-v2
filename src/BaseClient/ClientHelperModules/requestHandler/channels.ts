@@ -5,6 +5,7 @@ import { API } from '../../Client.js';
 import * as CT from '../../../Typings/CustomTypings';
 // eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
+import * as Classes from '../../Other/classes.js';
 
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
  message: Discord.RESTPostAPIGuildForumThreadsJSONBody['message'] & {
@@ -16,6 +17,7 @@ export default {
   guild: Discord.Guild | undefined | null,
   channelId: string,
   payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
+  client: Discord.Client,
  ) =>
   (guild ? cache.apis.get(guild.id) ?? API : API).channels
    .createMessage(channelId, {
@@ -24,6 +26,7 @@ export default {
      ? { ...payload.message_reference, fail_if_not_exists: false }
      : undefined,
    })
+   .then((m) => new Classes.Message(client, m))
    .catch((e) => {
     if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -41,6 +44,7 @@ export default {
      guild_id: message.guildId,
     },
    })
+   .then((m) => new Classes.Message(message.client, m))
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -51,6 +55,7 @@ export default {
  ) =>
   (cache.apis.get(message.guild.id) ?? API).channels
    .editMessage(message.channel.id, message.id, payload)
+   .then((m) => new Classes.Message(message.client, m))
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -63,6 +68,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).channels
    .editMessage(channelId, messageId, payload)
+   .then((m) => new Classes.Message(guild.client, m))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -90,6 +96,7 @@ export default {
      : (resolvedEmoji.name as string),
     query,
    )
+   .then((users) => users.map((u) => new Classes.User(message.client, u)))
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -199,28 +206,48 @@ export default {
   channel: Discord.GuildChannel | Discord.ThreadChannel,
   body: Discord.RESTPatchAPIChannelJSONBody,
  ) =>
-  (cache.apis.get(channel.guild.id) ?? API).channels.edit(channel.id, body).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(channel.guild.id) ?? API).channels
+   .edit(channel.id, body)
+   .then((c) => Classes.Channel(channel.client, c, channel.guild))
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  get: (guild: Discord.Guild, id: string) =>
-  API.channels.get(id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (guild ? cache.apis.get(guild.id) ?? API : API).channels
+   .get(id)
+   .then((c) => {
+    const parsed = Classes.Channel(guild.client, c, guild);
+    guild.channels.cache.set(id, parsed as Discord.GuildBasedChannel);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  delete: (guild: Discord.Guild, channelId: string) =>
-  (cache.apis.get(guild.id) ?? API).channels.delete(channelId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).channels
+   .delete(channelId)
+   .then((c) => Classes.Channel(guild.client, c, guild))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getMessages: (
   channel: Discord.GuildTextBasedChannel,
   query?: Discord.RESTGetAPIChannelMessagesQuery,
  ) =>
-  API.channels.getMessages(channel.id, query).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getMessages(channel.id, query)
+   .then((msgs) => {
+    const parsed = msgs.map((m) => new Classes.Message(channel.client, m));
+    parsed.forEach((p) => channel.messages.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  showTyping: (channel: Discord.GuildTextBasedChannel) =>
   (cache.apis.get(channel.guild.id) ?? API).channels.showTyping(channel.id).catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
@@ -249,15 +276,23 @@ export default {
  crosspostMessage: (message: Discord.Message<true>) =>
   (cache.apis.get(message.guild.id) ?? API).channels
    .crosspostMessage(message.channelId, message.id)
+   .then((m) => new Classes.Message(message.client, m))
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getPins: (guild: Discord.Guild, channelId: string) =>
-  API.channels.getPins(channelId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+ getPins: (channel: Discord.GuildTextBasedChannel) =>
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getPins(channel.id)
+   .then((msgs) => {
+    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));
+    parsed.forEach((msg) => channel.messages.cache.set(msg.id, msg));
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  unpin: (message: Discord.Message<true>) =>
   (cache.apis.get(message.guild.id) ?? API).channels
    .unpinMessage(message.channelId, message.id)
@@ -268,6 +303,7 @@ export default {
  followAnnouncements: (channel: Discord.GuildTextBasedChannel, followedChannelId: string) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .followAnnouncements(channel.id, followedChannelId)
+   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -279,15 +315,23 @@ export default {
  ) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .createInvite(channel.id, body, { reason })
+   .then((i) => new Classes.Invite(channel.client, i))
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
  getInvites: (channel: Discord.GuildChannel) =>
-  API.channels.getInvites(channel.id).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getInvites(channel.id)
+   .then((invites) => {
+    const parsed = invites.map((i) => new Classes.Invite(channel.client, i));
+    parsed.forEach((i) => channel.guild.invites.cache.set(i.code, i));
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createThread: (
   channel: Discord.GuildTextBasedChannel,
   body: Discord.RESTPostAPIChannelThreadsJSONBody,
@@ -295,6 +339,7 @@ export default {
  ) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .createThread(channel.id, body, messageId)
+   .then((t) => Classes.Channel(channel.client, t, channel.guild))
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -302,32 +347,60 @@ export default {
  createForumThread: (channel: Discord.ForumChannel, body: StartForumThreadOptions) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .createForumThread(channel.id, body)
+   .then((t) => Classes.Channel(channel.client, t, channel.guild))
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
  getArchivedThreads: (
-  channel: Discord.GuildTextBasedChannel,
+  channel: Discord.NewsChannel | Discord.TextChannel | Discord.ForumChannel,
   status: 'private' | 'public',
   query: Discord.RESTGetAPIChannelThreadsArchivedQuery,
  ) =>
-  API.channels.getArchivedThreads(channel.id, status, query).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getArchivedThreads(channel.id, status, query)
+   .then((res) => {
+    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
+    parsed.forEach((t) =>
+     channel.threads.cache.set(
+      t.id,
+      t as Discord.ThreadChannel<false> & Discord.ThreadChannel<true>,
+     ),
+    );
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getJoinedPrivateArchivedThreads: (
-  channel: Discord.GuildTextBasedChannel,
+  channel: Discord.NewsChannel | Discord.TextChannel | Discord.ForumChannel,
   query: Discord.RESTGetAPIChannelThreadsArchivedQuery,
  ) =>
-  API.channels.getJoinedPrivateArchivedThreads(channel.id, query).catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
- getWebhooks: (guild: Discord.Guild, channelId: string) =>
-  API.channels.getWebhooks(channelId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getJoinedPrivateArchivedThreads(channel.id, query)
+   .then((res) => {
+    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
+    parsed.forEach((t) =>
+     channel.threads.cache.set(
+      t.id,
+      t as Discord.ThreadChannel<false> & Discord.ThreadChannel<true>,
+     ),
+    );
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
+ getWebhooks: (channel: Discord.GuildTextBasedChannel) =>
+  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+   .getWebhooks(channel.id)
+   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(channel.client, w)))
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editPermissionOverwrite: (
   channel: Discord.GuildChannel,
   overwriteId: string,
@@ -352,13 +425,23 @@ export default {
   channelId: string,
   body: Discord.RESTPostAPIChannelWebhookJSONBody,
  ) =>
-  (cache.apis.get(guild.id) ?? API).channels.createWebhook(channelId, body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
- getMessage: (guild: Discord.Guild, channelId: string, messageId: string) =>
-  (cache.apis.get(guild.id) ?? API).channels.getMessage(channelId, messageId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).channels
+   .createWebhook(channelId, body)
+   .then((w) => new Classes.Webhook(guild.client, w))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
+ getMessage: (channel: Discord.GuildTextBasedChannel, messageId: string) =>
+  (cache.apis.get(channel.guild.id) ?? API).channels
+   .getMessage(channel.id, messageId)
+   .then((m) => {
+    const parsed = new Classes.Message(channel.guild.client, m);
+    channel.messages.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
 };

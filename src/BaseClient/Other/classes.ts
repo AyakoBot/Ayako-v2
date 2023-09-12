@@ -133,3 +133,156 @@ export class Ban extends Discord.GuildBan {
   super(client, data, guild);
  }
 }
+
+// @ts-ignore
+export class ApplicationCommand extends Discord.ApplicationCommand {
+ constructor(
+  client: Discord.Client<true>,
+  data: RawData.RawApplicationCommandData,
+  guild?: Discord.Guild,
+  guildId?: Discord.Snowflake,
+ ) {
+  super(client, data, guild, guildId);
+ }
+}
+
+export const Channel = <T extends Discord.ChannelType>(
+ client: Discord.Client,
+ c: Discord.APIChannel | Discord.APIThreadChannel,
+ guild: Discord.Guild,
+): T extends 0
+ ? Discord.TextChannel
+ : T extends 1
+ ? Discord.DMChannel
+ : T extends 2
+ ? Discord.BaseGuildVoiceChannel
+ : T extends 4
+ ? Discord.CategoryChannel
+ : T extends 5
+ ? Discord.NewsChannel
+ : T extends 10
+ ? Discord.ThreadChannel
+ : T extends 11
+ ? Discord.ThreadChannel
+ : T extends 12
+ ? Discord.ThreadChannel
+ : T extends 13
+ ? Discord.StageChannel
+ : T extends 15
+ ? Discord.ForumChannel
+ : never => {
+ switch (c.type) {
+  case Discord.ChannelType.GuildText: {
+   // @ts-ignore
+   return new Discord.TextChannel(guild, c, client);
+  }
+  case Discord.ChannelType.DM: {
+   // @ts-ignore
+   return new Discord.DMChannel(client, c);
+  }
+  case Discord.ChannelType.GuildVoice: {
+   // @ts-ignore
+   return new Discord.VoiceChannel(guild, c);
+  }
+  case Discord.ChannelType.GuildCategory: {
+   // @ts-ignore
+   return new Discord.CategoryChannel(guild, c, client);
+  }
+  case Discord.ChannelType.GuildAnnouncement: {
+   // @ts-ignore
+   return new Discord.NewsChannel(guild, c, client);
+  }
+  case Discord.ChannelType.AnnouncementThread:
+  case Discord.ChannelType.PublicThread:
+  case Discord.ChannelType.PrivateThread: {
+   // @ts-ignore
+   return new Discord.ThreadChannel(guild, c, client);
+  }
+  case Discord.ChannelType.GuildStageVoice: {
+   // @ts-ignore
+   return new Discord.StageChannel(guild, c);
+  }
+  case Discord.ChannelType.GuildForum: {
+   // @ts-ignore
+   return new Discord.ForumChannel(guild, c, client);
+  }
+  default: {
+   // @ts-ignore
+   throw new Error(`Unknown Channel Type ${Discord.ChannelType[c.type]}`);
+  }
+ }
+};
+
+// @ts-ignore
+export class GuildPreview extends Discord.GuildPreview {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildPreviewData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class Guild extends Discord.Guild {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class VoiceRegion extends Discord.VoiceRegion {
+ constructor(data: RawData.RawVoiceRegionData) {
+  super(data);
+ }
+}
+
+// @ts-ignore
+export class Widget extends Discord.Widget {
+ constructor(client: Discord.Client<true>, data: RawData.RawWidgetData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class GuildScheduledEvent extends Discord.GuildScheduledEvent {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildScheduledEventData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class GuildTemplate extends Discord.GuildTemplate {
+ constructor(client: Discord.Client<true>, data: RawData.RawGuildTemplateData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class Sticker extends Discord.Sticker {
+ constructor(client: Discord.Client<true>, data: RawData.RawStickerData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class StageInstance extends Discord.StageInstance {
+ constructor(
+  client: Discord.Client<true>,
+  data: RawData.RawStageInstanceData,
+  channel: Discord.StageChannel,
+ ) {
+  super(client, data, channel);
+ }
+}
+
+// @ts-ignore
+export class ThreadMember extends Discord.ThreadMember {
+ constructor(thread: Discord.ThreadChannel, data: RawData.RawThreadMemberData) {
+  super(thread, data);
+ }
+}
+
+// @ts-ignore
+export class ClientUser extends Discord.ClientUser {
+ constructor(client: Discord.Client<true>, data: RawData.RawUserData) {
+  super(client, data);
+ }
+}

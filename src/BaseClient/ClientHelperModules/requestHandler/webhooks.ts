@@ -3,23 +3,30 @@ import error from '../error.js';
 import { API } from '../../Client.js';
 // eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
+import * as Classes from '../../Other/classes.js';
 
 export default {
  get: (guild: Discord.Guild, webhookId: string, token?: string) =>
-  (cache.apis.get(guild.id) ?? API).webhooks.get(webhookId, { token }).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).webhooks
+   .get(webhookId, { token })
+   .then((w) => new Classes.Webhook(guild.client, w))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  edit: (
   guild: Discord.Guild,
   webhookId: string,
   body: Discord.RESTPatchAPIWebhookJSONBody,
   data?: { token?: string; reason?: string },
  ) =>
-  (cache.apis.get(guild.id) ?? API).webhooks.edit(webhookId, body, data).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).webhooks
+   .edit(webhookId, body, data)
+   .then((w) => new Classes.Webhook(guild.client, w))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  delete: (guild: Discord.Guild, webhookId: string, data?: { token?: string; reason?: string }) =>
   (cache.apis.get(guild.id) ?? API).webhooks.delete(webhookId, data).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -36,6 +43,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks
    .execute(webhookId, token, { ...body, wait: true })
+   .then((m) => new Classes.Message(guild.client, m))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -75,6 +83,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks
    .getMessage(webhookId, token, messageId, query)
+   .then((m) => new Classes.Message(guild.client, m))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e;
@@ -91,6 +100,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks
    .editMessage(webhookId, token, messageId, body)
+   .then((m) => new Classes.Message(guild.client, m))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e;

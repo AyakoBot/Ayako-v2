@@ -3,6 +3,7 @@ import error from '../error.js';
 import { API } from '../../Client.js';
 // eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
+import * as Classes from '../../Other/classes.js';
 
 export default {
  getNitroStickers: (guild: Discord.Guild) =>
@@ -11,8 +12,15 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  get: (guild: Discord.Guild, stickerId: string) =>
-  (cache.apis.get(guild.id) ?? API).stickers.get(stickerId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).stickers
+   .get(stickerId)
+   .then((s) => {
+    const parsed = new Classes.Sticker(guild.client, s);
+    guild.stickers.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
 };

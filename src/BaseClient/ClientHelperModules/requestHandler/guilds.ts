@@ -3,47 +3,74 @@ import error from '../error.js';
 import { API } from '../../Client.js';
 // eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
+import * as Classes from '../../Other/classes.js';
 
 export default {
  getPreview: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getPreview(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getPreview(guild.id)
+   .then((p) => new Classes.GuildPreview(guild.client, p))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  create: (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONBody) =>
-  (cache.apis.get(guild.id) ?? API).guilds.create(body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .create(body)
+   .then((g) => new Classes.Guild(guild.client, g))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  edit: (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBody) =>
-  (cache.apis.get(guild.id) ?? API).guilds.edit(guild.id, body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .edit(guild.id, body)
+   .then((g) => new Classes.Guild(guild.client, g))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  delete: (guild: Discord.Guild) =>
   (cache.apis.get(guild.id) ?? API).guilds.delete(guild.id).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
  getMembers: (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getMembers(guild.id, query).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getMembers(guild.id, query)
+   .then((members) => {
+    const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));
+    parsed.forEach((p) => guild.members.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getChannels: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getChannels(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getChannels(guild.id)
+   .then((channels) => {
+    const parsed = channels.map((c) => Classes.Channel(guild.client, c, guild));
+    parsed.forEach((c) => guild.channels.cache.set(c.id, c as Discord.GuildBasedChannel));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createChannel: (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIGuildChannelJSONBody,
   reason?: string,
  ) =>
-  (cache.apis.get(guild.id) ?? API).guilds.createChannel(guild.id, body, { reason }).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .createChannel(guild.id, body, { reason })
+   .then((c) => Classes.Channel(guild.client, c, guild))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  setChannelPositions: (
   guild: Discord.Guild,
   body: Discord.RESTPatchAPIGuildChannelPositionsJSONBody,
@@ -56,15 +83,35 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getActiveThreads: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getActiveThreads(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getActiveThreads(guild.id)
+   .then((threads) => {
+    const parsed = threads.threads.map((t) => Classes.Channel<10>(guild.client, t, guild));
+    parsed.forEach(
+     (p) =>
+      p.parent?.threads.cache.set(
+       p.id,
+       p as Discord.ThreadChannel<false> & Discord.ThreadChannel<true>,
+      ),
+    );
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getMemberBan: (guild: Discord.Guild, userId: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getMemberBan(guild.id, userId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getMemberBan(guild.id, userId)
+   .then((b) => {
+    const parsed = new Classes.GuildBan(guild.client, b, guild);
+    guild.bans.cache.set(parsed.user.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  banUser: (
   guild: Discord.Guild,
   userId: string,
@@ -83,15 +130,25 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  getRoles: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getRoles(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getRoles(guild.id)
+   .then((roles) => {
+    const parsed = roles.map((r) => new Classes.Role(guild.client, r, guild));
+    parsed.forEach((p) => guild.roles.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createRole: (guild: Discord.Guild, body: Discord.RESTPostAPIGuildRoleJSONBody, reason?: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.createRole(guild.id, body, { reason }).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .createRole(guild.id, body, { reason })
+   .then((r) => new Classes.Role(guild.client, r, guild))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  setRolePositions: (
   guild: Discord.Guild,
   body: Discord.RESTPatchAPIGuildRolePositionsJSONBody,
@@ -99,6 +156,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .setRolePositions(guild.id, body, { reason })
+   .then((roles) => roles.map((r) => new Classes.Role(guild.client, r, guild)))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -111,6 +169,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editRole(guild.id, roleId, body, { reason })
+   .then((r) => new Classes.Role(guild.client, r, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -140,20 +199,33 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  getVoiceRegions: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getVoiceRegions(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getVoiceRegions(guild.id)
+   .then((voiceRegions) => voiceRegions.map((vR) => new Classes.VoiceRegion(vR)))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getInvites: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getInvites(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getInvites(guild.id)
+   .then((invites) => {
+    const parsed = invites.map((i) => new Classes.Invite(guild.client, i));
+    parsed.forEach((p) => guild.invites.cache.set(p.code, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getIntegrations: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getIntegrations(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getIntegrations(guild.id)
+   .then((integrations) => integrations.map((i) => new Classes.Integration(guild.client, i, guild)))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  deleteIntegration: (guild: Discord.Guild, integrationId: string, reason?: string) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .deleteIntegration(guild.id, integrationId, { reason })
@@ -162,10 +234,13 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getWidgetSettings: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getWidgetSettings(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getWidgetSettings(guild.id)
+   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editWidgetSettings: (
   guild: Discord.Guild,
   body: Discord.RESTPatchAPIGuildWidgetSettingsJSONBody,
@@ -173,30 +248,76 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editWidgetSettings(guild.id, body, { reason })
+   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
  getWidget: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getWidget(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getWidget(guild.id)
+   .then((w) => new Classes.Widget(guild.client, w))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getVanityURL: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getVanityURL(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getVanityURL(guild.id)
+   .then(async (v) =>
+    v.code
+     ? new Classes.Invite(guild.client, {
+        code: v.code,
+        guild: {
+         id: guild.id,
+         name: guild.name,
+         splash: guild.splash,
+         banner: guild.banner,
+         icon: guild.icon,
+         vanity_url_code: v.code,
+         description: guild.description,
+         features: guild.features as Discord.APIGuild['features'],
+         verification_level: guild.verificationLevel,
+         nsfw_level: guild.nsfwLevel,
+         premium_subscription_count: guild.premiumSubscriptionCount ?? undefined,
+        },
+        channel: guild.rulesChannel
+         ? {
+            id: guild.rulesChannel.id,
+            name: guild.rulesChannel.name,
+            type: guild.rulesChannel.type,
+           }
+         : null,
+        inviter: await (cache.apis.get(guild.id) ?? API).users
+         .get(guild.ownerId)
+         .catch(() => undefined),
+        approximate_presence_count: guild.approximatePresenceCount ?? undefined,
+        approximate_member_count: guild.approximateMemberCount ?? undefined,
+        uses: v.uses,
+        max_uses: 0,
+        max_age: 0,
+        temporary: false,
+        created_at: guild.createdAt.toISOString(),
+       })
+     : undefined,
+   )
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getWidgetImage: (guild: Discord.Guild, style?: Discord.GuildWidgetStyle) =>
   (cache.apis.get(guild.id) ?? API).guilds.getWidgetImage(guild.id, style).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
  getWelcomeScreen: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getWelcomeScreen(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getWelcomeScreen(guild.id)
+   .then((w) => new Classes.WelcomeScreen(guild, w))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editWelcomeScreen: (
   guild: Discord.Guild,
   body: Discord.RESTPatchAPIGuildWelcomeScreenJSONBody,
@@ -204,6 +325,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editWelcomeScreen(guild.id, body, { reason })
+   .then((w) => new Classes.WelcomeScreen(guild, w))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -221,24 +343,41 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getEmojis: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getEmojis(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getEmojis(guild.id)
+   .then((emojis) => {
+    const parsed = emojis.map((e) => new Classes.GuildEmoji(guild.client, e, guild));
+    parsed.forEach((e) => guild.emojis.cache.set(e.id, e));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getEmoji: (guild: Discord.Guild, emojiId: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getEmoji(guild.id, emojiId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getEmoji(guild.id, emojiId)
+   .then((e) => {
+    const parsed = new Classes.GuildEmoji(guild.client, e, guild);
+    guild.emojis.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createEmoji: (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIGuildEmojiJSONBody,
   reason?: string,
  ) =>
-  (cache.apis.get(guild.id) ?? API).guilds.createEmoji(guild.id, body, { reason }).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .createEmoji(guild.id, body, { reason })
+   .then((e) => new Classes.GuildEmoji(guild.client, e, guild))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editEmoji: (
   guild: Discord.Guild,
   emojiId: string,
@@ -247,6 +386,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editEmoji(guild.id, emojiId, body, { reason })
+   .then((e) => new Classes.GuildEmoji(guild.client, e, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -257,10 +397,17 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  getScheduledEvents: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getScheduledEvents(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getScheduledEvents(guild.id)
+   .then((events) => {
+    const parsed = events.map((e) => new Classes.GuildScheduledEvent(guild.client, e));
+    parsed.forEach((p) => guild.scheduledEvents.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createScheduledEvent: (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIGuildScheduledEventJSONBody,
@@ -268,6 +415,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .createScheduledEvent(guild.id, body, { reason })
+   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -279,6 +427,11 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .getScheduledEvent(guild.id, eventId, query)
+   .then((e) => {
+    const parsed = new Classes.GuildScheduledEvent(guild.client, e);
+    guild.scheduledEvents.cache.set(parsed.id, parsed);
+    return parsed;
+   })
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -291,6 +444,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editScheduledEvent(guild.id, eventId, body, { reason })
+   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -309,44 +463,78 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .getScheduledEventUsers(guild.id, eventId, query)
+   .then((users) => {
+    const parsed = users.map((u) => ({
+     user: new Classes.User(guild.client, u.user),
+     member: u.member ? new Classes.GuildMember(guild.client, u.member, guild) : undefined,
+    }));
+    parsed.forEach((p) => {
+     guild.client.users.cache.set(p.user.id, p.user);
+     if (p.member) guild.members.cache.set(p.member.id, p.member);
+    });
+    return parsed;
+   })
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
  getTemplates: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getTemplates(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getTemplates(guild.id)
+   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  syncTemplate: (guild: Discord.Guild, templateCode: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.syncTemplate(guild.id, templateCode).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .syncTemplate(guild.id, templateCode)
+   .then((t) => new Classes.GuildTemplate(guild.client, t))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editTemplate: (
   guild: Discord.Guild,
   templateCode: string,
   body: Discord.RESTPatchAPIGuildTemplateJSONBody,
  ) =>
-  (cache.apis.get(guild.id) ?? API).guilds.editTemplate(guild.id, templateCode, body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .editTemplate(guild.id, templateCode, body)
+   .then((t) => new Classes.GuildTemplate(guild.client, t))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  deleteTemplate: (guild: Discord.Guild, templateCode: string) =>
   (cache.apis.get(guild.id) ?? API).guilds.deleteTemplate(guild.id, templateCode).catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
  getStickers: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getStickers(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getStickers(guild.id)
+   .then((stickers) => {
+    const parsed = stickers.map((s) => new Classes.Sticker(guild.client, s));
+    parsed.forEach((s) => guild.stickers.cache.set(s.id, s));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getSticker: (guild: Discord.Guild, stickerId: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getSticker(guild.id, stickerId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getSticker(guild.id, stickerId)
+   .then((s) => {
+    const parsed = new Classes.Sticker(guild.client, s);
+    guild.stickers.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createSticker: (
   guild: Discord.Guild,
   body: Omit<Discord.RESTPostAPIGuildStickerFormDataBody, 'file'> & {
@@ -354,10 +542,13 @@ export default {
   },
   reason?: string,
  ) =>
-  (cache.apis.get(guild.id) ?? API).guilds.createSticker(guild.id, body, { reason }).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .createSticker(guild.id, body, { reason })
+   .then((s) => new Classes.Sticker(guild.client, s))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editSticker: (
   guild: Discord.Guild,
   stickerId: string,
@@ -366,6 +557,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editSticker(guild.id, stickerId, body, { reason })
+   .then((s) => new Classes.Sticker(guild.client, s))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -378,20 +570,37 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getAuditLogs: (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getAuditLogs(guild.id, query).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getAuditLogs(guild.id, query)
+   .then((a) => new Classes.GuildAuditLogs(guild, a))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getAutoModerationRules: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getAutoModerationRules(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getAutoModerationRules(guild.id)
+   .then((rules) => {
+    const parsed = rules.map((r) => new Classes.AutoModerationRule(guild.client, r, guild));
+    parsed.forEach((p) => guild.autoModerationRules.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getAutoModerationRule: (guild: Discord.Guild, ruleId: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getAutoModerationRule(guild.id, ruleId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getAutoModerationRule(guild.id, ruleId)
+   .then((r) => {
+    const parsed = new Classes.AutoModerationRule(guild.client, r, guild);
+    guild.autoModerationRules.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createAutoModerationRule: (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIAutoModerationRuleJSONBody,
@@ -399,6 +608,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .createAutoModerationRule(guild.id, body, { reason })
+   .then((r) => new Classes.AutoModerationRule(guild.client, r, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -411,6 +621,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editAutoModerationRule(guild.id, ruleId, body, { reason })
+   .then((r) => new Classes.AutoModerationRule(guild.client, r, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -423,15 +634,29 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getMember: (guild: Discord.Guild, userId: string) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getMember(guild.id, userId).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getMember(guild.id, userId)
+   .then((m) => {
+    const parsed = new Classes.GuildMember(guild.client, m, guild);
+    guild.members.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  searchForMembers: (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
-  (cache.apis.get(guild.id) ?? API).guilds.searchForMembers(guild.id, query).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .searchForMembers(guild.id, query)
+   .then((members) => {
+    const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));
+    parsed.forEach((p) => guild.members.cache.set(p.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  editMember: (
   guild: Discord.Guild,
   userId: string,
@@ -440,6 +665,7 @@ export default {
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .editMember(guild.id, userId, body, { reason })
+   .then((m) => new Classes.GuildMember(guild.client, m, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -464,15 +690,21 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getTemplate: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getTemplate(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getTemplate(guild.id)
+   .then((t) => new Classes.GuildTemplate(guild.client, t))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  createTemplate: (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTemplatesJSONBody) =>
-  (cache.apis.get(guild.id) ?? API).guilds.createTemplate(guild.id, body).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .createTemplate(guild.id, body)
+   .then((t) => new Classes.GuildTemplate(guild.client, t))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  setVoiceState: (
   guild: Discord.Guild,
   body?: Discord.RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
@@ -482,18 +714,31 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  getOnboarding: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getOnboarding(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getOnboarding(guild.id)
+   .then((o) => new Classes.GuildOnboarding(guild.client, o))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getWebhooks: (guild: Discord.Guild) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getWebhooks(guild.id).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getWebhooks(guild.id)
+   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
  getMemberBans: (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) =>
-  (cache.apis.get(guild.id) ?? API).guilds.getMemberBans(guild.id, query).catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  }),
+  (cache.apis.get(guild.id) ?? API).guilds
+   .getMemberBans(guild.id, query)
+   .then((bans) => {
+    const parsed = bans.map((b) => new Classes.GuildBan(guild.client, b, guild));
+    parsed.forEach((p) => guild.bans.cache.set(p.user.id, p));
+    return parsed;
+   })
+   .catch((e) => {
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    return e as Discord.DiscordAPIError;
+   }),
 };
