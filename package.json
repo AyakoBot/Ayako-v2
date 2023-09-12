@@ -1,9 +1,6 @@
 {
   "type": "module",
   "version": "1.6.53",
-  "overrides": {
-    "discord-api-types": "0.37.20"
-  },
   "dependencies": {
     "@discordjs/core": "^1.0.1",
     "@discordjs/rest": "^2.0.1",
