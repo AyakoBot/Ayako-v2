@@ -20,12 +20,12 @@ export default async (cmd: Discord.CommandInteraction) => {
     const guild = cl.guilds.cache.get(guildID);
     if (!guild) return undefined;
 
-    const channel = cl.channels.cache.get(channelID) as Discord.Channel;
+    const channel = cl.channels.cache.get(channelID) as Discord.GuildTextBasedChannel;
     if (!channel) return undefined;
     if (!('messages' in channel)) return undefined;
 
     const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
-    const message = await chEval.request.channels.getMessage(guild, channelID, messageID);
+    const message = await chEval.request.channels.getMessage(channel, messageID);
     if ('message' in message) return undefined;
 
     return message?.embeds.map((e) => e);

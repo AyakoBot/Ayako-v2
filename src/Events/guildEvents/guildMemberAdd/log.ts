@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { Invite } from '../../../BaseClient/Other/classes.js';
 
 export default async (member: Discord.GuildMember) => {
  const channels = await ch.getLogChannels('memberevents', member.guild);
@@ -61,9 +60,7 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
  ).flat();
  const newInvites = await ch.request.guilds
   .getInvites(guild)
-  .then((invites) =>
-   'message' in invites ? undefined : invites.map((i) => new Invite(guild.client, i)),
-  );
+  .then((invites) => ('message' in invites ? undefined : invites.map((i) => i)));
  if (!newInvites) return undefined;
 
  newInvites.forEach((i) => ch.cache.invites.set(i, guild.id));
@@ -79,25 +76,10 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
  if (inv) return inv;
 
  const vanity = await ch.request.guilds.getVanityURL(guild);
+ if (!vanity) return undefined;
 
  if (!('message' in vanity)) {
-  ch.cache.invites.set(
-   {
-    inviter: (await ch.getUser(guild.ownerId).catch(() => undefined)) as Discord.User,
-    inviterId: guild.ownerId,
-    channel: (guild.channels.cache.get(guild.id) ??
-     guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel,
-    guild,
-    channelId: (
-     (guild.channels.cache.get(guild.id) ??
-      guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel
-    ).id,
-    code: vanity.code as string,
-    createdTimestamp: guild.createdTimestamp,
-    uses: vanity.uses,
-   } as Discord.Invite,
-   guild.id,
-  );
+  ch.cache.invites.set(vanity, guild.id);
  }
 
  const parsedVanity = vanity.code ? ch.cache.invites.find(vanity.code as string) : undefined;

@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import { filtered_content as filterContent } from '../../../rust/rust.js';
-import { AutoModerationRule } from '../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;
@@ -44,11 +43,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
    ? msg.guild.autoModerationRules.cache.map((r) => r)
    : await ch.request.guilds
       .getAutoModerationRules(msg.guild)
-      .then((r) =>
-       'message' in r
-        ? []
-        : r.map((rule) => new AutoModerationRule(msg.guild.client, rule, msg.guild)),
-      )
+      .then((r) => ('message' in r ? [] : r))
       .catch(() => [])
  )
   .flat()
@@ -130,7 +125,7 @@ const getWebhook = async (msg: Discord.AutoModerationActionExecution) => {
 
  const channel =
   isThread && channelOrThread
-   ? msg.guild.channels.cache.get((channelOrThread as Discord.APIThreadChannel).parent_id as string)
+   ? msg.guild.channels.cache.get((channelOrThread as Discord.ThreadChannel).parentId as string)
    : channelOrThread;
 
  if (!channel) {

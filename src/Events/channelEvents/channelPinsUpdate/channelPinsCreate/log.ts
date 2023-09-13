@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import { Message } from '../../../../BaseClient/Other/classes.js';
 
 export default async (
  msg: Discord.Message,
@@ -17,7 +16,7 @@ export default async (
 
  const last100 = await ch.request.channels
   .getMessages(channel, { limit: 100 })
-  .then((ms) => ('message' in ms ? undefined : ms.map((m) => new Message(channel.client, m))));
+  .then((ms) => ('message' in ms ? undefined : ms));
  const language = await ch.languageSelector(channel.guild.id);
  const lan = language.events.logs.channel;
  const con = ch.constants.events.logs.channel;

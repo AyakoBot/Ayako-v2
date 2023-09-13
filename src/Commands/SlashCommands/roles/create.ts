@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { Role } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -54,7 +53,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.create(new Role(cmd.client, role, cmd.guild)) });
+ ch.replyCmd(cmd, { content: lan.create(role) });
 
  if (positionRole) {
   await ch.request.guilds.setRolePositions(cmd.guild, [

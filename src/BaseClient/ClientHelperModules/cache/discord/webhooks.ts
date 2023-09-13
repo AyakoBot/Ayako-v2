@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Webhooks {
@@ -27,9 +26,9 @@ const self: Webhooks = {
    return undefined;
   }
 
-  fetched?.forEach((f) => self.set(new Classes.Webhook(guild.client, f)));
+  fetched?.forEach((f) => self.set(f));
 
-  return self.cache.get(guild.id)?.get(channelId)?.get(id);
+  return fetched.find((f) => f.id === id);
  },
  set: (webhook) => {
   if (!self.cache.get(webhook.guildId)) {

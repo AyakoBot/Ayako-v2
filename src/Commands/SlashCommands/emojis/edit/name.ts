@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import { GuildEmoji } from '../../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -17,19 +16,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const res = await ch.request.guilds.editEmoji(
+ const editedEmote = await ch.request.guilds.editEmoji(
   cmd.guild,
   emoji.id,
   { name },
   lan.editReason(cmd.user),
  );
 
- if ('message' in res) {
-  ch.errorCmd(cmd, res.message, language);
+ if ('message' in editedEmote) {
+  ch.errorCmd(cmd, editedEmote.message, language);
   return;
  }
-
- const editedEmote = new GuildEmoji(cmd.client, res, cmd.guild);
 
  ch.replyCmd(cmd, { content: lan.edited(editedEmote) });
 };

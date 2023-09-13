@@ -4,7 +4,6 @@ import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
-import * as Classes from '../Other/classes.js';
 import error from './error.js';
 
 export default async <T extends Discord.Message<boolean>>(
@@ -30,7 +29,7 @@ export default async <T extends Discord.Message<boolean>>(
    return undefined;
   }
 
-  return new Classes.Message(msg.client, ms) as T;
+  return ms as T;
  }
 
  return reply(msg, { embeds: [embed] });

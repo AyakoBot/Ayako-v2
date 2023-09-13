@@ -4,7 +4,6 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 import { request } from '../requestHandler.js';
 import constants from '../../Other/constants.js';
-import { ThreadChannel } from '../../Other/classes.js';
 import objectEmotes from '../objectEmotes.js';
 import stringEmotes from '../stringEmotes.js';
 import send from '../send.js';
@@ -41,15 +40,13 @@ export default async <T extends CT.ModTypes>(
   return;
  }
 
- const rawThread = await request.channels.createThread(options.guild.rulesChannel, {
+ const thread = await request.channels.createThread(options.guild.rulesChannel, {
   type: Discord.ChannelType.PrivateThread,
   invitable: false,
   name: stringEmotes.warning,
  });
 
- if ('message' in rawThread) return;
-
- const thread = new ThreadChannel(options.guild, rawThread);
+ if ('message' in thread) return;
 
  await request.threads.addMember(options.guild, thread.id, options.target.id);
  await send(thread, {

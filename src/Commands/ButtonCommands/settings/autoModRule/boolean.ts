@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
-import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  enabled: rule.enabled,
@@ -180,7 +179,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'profanity': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -196,7 +195,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'sexualContent': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -215,7 +214,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'slurs': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -231,7 +230,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'mentionRaidProtectionEnabled': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -241,7 +240,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'blockMessage': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -251,7 +250,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'sendAlertMessage': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -261,7 +260,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   case 'timeout': {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
@@ -271,7 +270,7 @@ const updateRule = async (
    });
 
    if ('message' in res) return res;
-   return new AutoModerationRule(rule.client, res, rule.guild);
+   return res;
   }
   default:
    return undefined;

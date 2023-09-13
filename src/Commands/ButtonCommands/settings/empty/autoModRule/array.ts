@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import CT from '../../../../../Typings/CustomTypings.js';
-import { AutoModerationRule } from '../../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -35,7 +34,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    ? rule.exemptChannels.map((o) => o.id)
    : rule.exemptRoles.map((o) => o.id),
  );
- const updateRes = await (fieldName === 'exemptChannels'
+ const updatedRule = await (fieldName === 'exemptChannels'
   ? ch.request.guilds.editAutoModerationRule(
      cmd.guild,
      rule.id,
@@ -50,8 +49,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     )
  ).catch((e) => e as Discord.DiscordAPIError);
 
- if ('message' in updateRes) {
-  ch.errorCmd(cmd, updateRes.message, language);
+ if ('message' in updatedRule) {
+  ch.errorCmd(cmd, updatedRule.message, language);
   return;
  }
 
@@ -71,8 +70,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;
-
- const updatedRule = new AutoModerationRule(cmd.client, updateRes, cmd.guild);
 
  cmd.update({
   embeds: settingsFile.getEmbeds(

@@ -339,7 +339,7 @@ export default {
  ) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .createThread(channel.id, body, messageId)
-   .then((t) => Classes.Channel(channel.client, t, channel.guild))
+   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
    .catch((e) => {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
@@ -393,7 +393,7 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getWebhooks: (channel: Discord.GuildTextBasedChannel) =>
+ getWebhooks: (channel: Discord.GuildTextBasedChannel | Discord.ForumChannel) =>
   (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
    .getWebhooks(channel.id)
    .then((webhooks) => webhooks.map((w) => new Classes.Webhook(channel.client, w)))

@@ -3,7 +3,6 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import guildIntegrationsUpdates from './guildIntegrationsUpdates/guildIntegrationsUpdates.js';
 import guildIntegrationsDeletes from './guildIntegrationsDeletes/guildIntegrationsDeletes.js';
 import guildIntegrationsCreates from './guildIntegrationsCreates/guildIntegrationsCreates.js';
-import { Integration } from '../../../BaseClient/Other/classes.js';
 
 export default async (guild: Discord.Guild) => {
  const cached = ch.cache.integrations.cache.get(guild.id);
@@ -12,7 +11,7 @@ export default async (guild: Discord.Guild) => {
    ch.error(guild, new Error(i.message));
    return undefined;
   }
-  return i.map((int) => new Integration(guild.client, int, guild));
+  return i;
  });
 
  if (!fetched) return;

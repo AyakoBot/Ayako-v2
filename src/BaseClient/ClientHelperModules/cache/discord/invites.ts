@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Invites {
@@ -28,12 +27,12 @@ const self: Invites = {
   }
 
   fetched?.forEach((f) => {
-   self.set(new Classes.Invite(guild.client, f), guild.id);
+   self.set(f, guild.id);
   });
 
   self.cache.get(guild.id)?.clear();
 
-  return self.cache.get(guild.id)?.get(channelId)?.get(code);
+  return fetched.find((f) => f.code === code);
  },
  set: (invite, guildId) => {
   if (!invite.channelId) {

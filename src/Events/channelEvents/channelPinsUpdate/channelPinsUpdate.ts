@@ -2,7 +2,6 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import channelPinsCreate from './channelPinsCreate/channelPinsCreate.js';
 import channelPinsDelete from './channelPinsDelete/channelPinsDelete.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (
  channel:
@@ -15,12 +14,12 @@ export default async (
 ) => {
  if (channel.isDMBased()) return;
 
- const newPins = await ch.request.channels.getPins(channel.guild, channel.id).then((pins) => {
+ const newPins = await ch.request.channels.getPins(channel).then((pins) => {
   if ('message' in pins) {
    ch.error(channel.guild, new Error(pins.message));
    return undefined;
   }
-  return pins.map((p) => new Message(channel.client, p));
+  return pins;
  });
  if (!newPins) return;
 

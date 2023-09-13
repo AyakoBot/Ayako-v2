@@ -21,7 +21,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   return;
  }
 
- const message = await ch.request.channels.getMessage(guild, channel.id, messageId);
+ const message = await ch.request.channels.getMessage(channel, messageId);
  if ('message' in message) {
   noMessageFound(cmd, lan);
   return;

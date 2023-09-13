@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface WelcomeScreens {
@@ -22,10 +21,8 @@ const self: WelcomeScreens = {
    return undefined;
   }
 
-  const welcomeScreen = new Classes.WelcomeScreen(guild, fetched);
-
-  self.set(welcomeScreen);
-  return self.cache.get(guild.id);
+  self.set(fetched);
+  return fetched;
  },
  set: (screen: Discord.WelcomeScreen) => {
   self.cache.set(screen.guild.id, screen);

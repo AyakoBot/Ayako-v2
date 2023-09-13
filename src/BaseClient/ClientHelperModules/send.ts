@@ -2,7 +2,6 @@ import type * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
-import * as Classes from '../Other/classes.js';
 import resolveFiles from './resolveFiles.js';
 
 // eslint-disable-next-line no-console
@@ -120,10 +119,11 @@ async function send(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
   { ...payload, files: payload.files ? await resolveFiles(payload.files) : undefined },
+  channel.client,
  );
  if ('message' in sentMessage) return null;
 
- return new Classes.Message(channel.client, sentMessage);
+ return sentMessage;
 }
 
 export default send;

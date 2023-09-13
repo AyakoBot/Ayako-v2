@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
-import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -17,7 +16,7 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
- const rawResponse = await ch.request.guilds.createAutoModerationRule(
+ const rule = await ch.request.guilds.createAutoModerationRule(
   cmd.guild,
   {
    name: lan[type],
@@ -34,8 +33,8 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
   cmd.user.username,
  );
 
- if ('message' in rawResponse) {
-  ch.errorCmd(cmd, rawResponse.message, language);
+ if ('message' in rule) {
+  ch.errorCmd(cmd, rule.message, language);
   return;
  }
 
@@ -44,8 +43,6 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
   cmd.guild,
  )) as unknown as typeof SettingsFile;
  if (!settingsFile) return;
-
- const rule = new AutoModerationRule(cmd.client, rawResponse, cmd.guild);
 
  cmd.update({
   embeds: settingsFile.getEmbeds(

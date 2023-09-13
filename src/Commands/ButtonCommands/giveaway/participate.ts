@@ -4,7 +4,6 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { getGiveawayEmbed } from '../../SlashCommands/giveaway/end.js';
 import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -71,13 +70,17 @@ const edit = async (
  language: CT.Language,
  giveaway: Prisma.giveaways,
 ) => {
- const rawMsg = await request.channels.getMessage(cmd.guild, cmd.channelId, cmd.message.id);
- if ('message' in rawMsg) {
-  ch.error(cmd.guild as Discord.Guild, rawMsg);
+ const channel = await ch.getChannel.guildTextChannel(cmd.channelId);
+ if (!channel) {
+  ch.error(cmd.guild as Discord.Guild, new Error('Cannot find channel'));
   return;
  }
 
- const msg = new Message(cmd.client, rawMsg) as Discord.Message<true>;
+ const msg = await request.channels.getMessage(channel, cmd.message.id);
+ if ('message' in msg) {
+  ch.error(cmd.guild as Discord.Guild, msg);
+  return;
+ }
 
  if (!msg.editable) {
   ch.error(cmd.guild as Discord.Guild, new Error('Cannot edit Message'));

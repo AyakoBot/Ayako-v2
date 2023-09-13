@@ -2,7 +2,6 @@ import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.discriminator === '0000') return;
@@ -110,7 +109,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
 
   const messages = await ch.request.channels
    .getMessages(msg.channel as Discord.GuildTextBasedChannel, { limit: 100 })
-   .then((msgs) => ('message' in msgs ? undefined : msgs.map((m) => new Message(msg.client, m))));
+   .then((msgs) => ('message' in msgs ? undefined : msgs.map((m) => m)));
   const messagesFromSameAuthor = messages?.filter((m) => m.author.id === msg.author.id);
 
   if (Number(messagesFromSameAuthor?.length) > 1) {

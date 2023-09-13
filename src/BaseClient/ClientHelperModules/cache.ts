@@ -1,5 +1,7 @@
 import * as DiscordCore from '@discordjs/core';
+import * as Discord from 'discord.js';
 
+// eslint-disable-next-line import/no-cycle
 import auditLogs, { AuditLogs } from './cache/discord/auditLogs.js';
 import commandPermissions, { CommandPermissions } from './cache/discord/commandPermissions.js';
 import integrations, { Integrations } from './cache/discord/integrations.js';
@@ -48,7 +50,7 @@ const cache: {
  stickyTimeouts: StickyTimeouts;
  deleteThreads: DeleteThreads;
  apis: Map<string, DiscordCore.API>;
- commands: Map<string, DiscordCore.APIApplicationCommand[]>;
+ commands: Map<string, Discord.ApplicationCommand[]>;
 
  // URLs
  urlTLDs: UrlTLDs;

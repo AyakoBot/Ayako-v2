@@ -2,7 +2,6 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { Message } from 'BaseClient/Other/classes.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author.bot) return;
@@ -22,7 +21,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
 
  ch.request.channels.addReaction(msg, `${ch.objectEmotes.tick.name}:${ch.objectEmotes.tick.id}`);
 
- deleteLastReminder(settings, msg.guild);
+ deleteLastReminder(settings);
 
  if (settings.deletereply && msg.deletable) {
   Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
@@ -63,7 +62,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  if (!settings) return;
  if (!settings.channelid && !settings.tempchannelid) return;
 
- await deleteLastReminder(settings, guild);
+ await deleteLastReminder(settings);
  const language = await ch.languageSelector(guild.id);
 
  const m = await ch.send(
@@ -115,12 +114,16 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  }
 };
 
-const deleteLastReminder = async (settings: Prisma.disboard, guild: Discord.Guild) => {
+const deleteLastReminder = async (settings: Prisma.disboard) => {
  if (!settings.tempchannelid || !settings.msgid) return;
 
- const m = await ch.request.channels
-  .getMessage(guild, settings.tempchannelid, settings.msgid)
-  .then((m) => ('message' in m ? undefined : new Message(guild.client, m)));
+ const channel = await ch.getChannel.guildTextChannel(settings.tempchannelid);
+
+ const m = channel
+  ? await ch.request.channels
+     .getMessage(channel, settings.msgid)
+     .then((ms) => ('message' in ms ? undefined : ms))
+  : undefined;
 
  if (!m?.deletable) return;
  ch.request.channels.deleteMessage(m);

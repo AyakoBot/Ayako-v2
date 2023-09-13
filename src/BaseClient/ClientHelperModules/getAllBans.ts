@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { request } from './requestHandler.js';
-import * as Classes from '../Other/classes.js';
 
 export default async (guild: Discord.Guild) => {
  const fetchBans = (after?: string) => request.guilds.getMemberBans(guild, { limit: 1000, after });
@@ -18,7 +17,7 @@ export default async (guild: Discord.Guild) => {
 
   if (fetched?.length !== 1000) wasntThousand = true;
 
-  bans.push(...fetched.map((b) => new Classes.GuildBan(guild.client, b, guild)));
+  bans.push(...fetched);
  }
 
  return bans;

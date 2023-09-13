@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import cache from './cache.js';
 import constants from '../Other/constants.js';
 import { request } from './requestHandler.js';
-import * as Classes from '../Other/classes.js';
 import { guildTextChannel } from './getChannel.js';
 
 export default async (
@@ -29,10 +28,10 @@ export default async (
    | Discord.VoiceChannel
    | Discord.ForumChannel,
  ) => {
-  const w = await request.channels.getWebhooks(c.guild, c.id);
+  const w = await request.channels.getWebhooks(c);
   if ('message' in w) return [];
 
-  return w.map((webh) => new Classes.Webhook(c.guild.client, webh));
+  return w;
  };
 
  const createWebhook = async (
@@ -49,7 +48,7 @@ export default async (
   });
   if ('message' in w) return undefined;
 
-  return new Classes.Webhook(c.guild.client, w);
+  return w;
  };
 
  const webhooks = !webhooksArray.length ? await fetchWebhooks(channel) : webhooksArray;

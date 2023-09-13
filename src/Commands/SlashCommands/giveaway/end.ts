@@ -4,7 +4,6 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import client from '../../../BaseClient/Client.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -306,13 +305,13 @@ export const getMessage = async (giveaway: {
   return undefined;
  }
 
- const rawMsg = await ch.request.channels.getMessage(guild, channel.id, giveaway.msgid);
- if ('message' in rawMsg) {
-  ch.error(guild, rawMsg);
+ const msg = await ch.request.channels.getMessage(channel, giveaway.msgid);
+ if ('message' in msg) {
+  ch.error(guild, msg);
   return undefined;
  }
 
- return new Message(channel.client, rawMsg) as Discord.Message<true>;
+ return msg;
 };
 
 export const getButton = (

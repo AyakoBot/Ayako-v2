@@ -1,12 +1,10 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Pins {
  get: (
   msgId: string,
-  channelId: string,
-  guild: Discord.Guild,
+  channel: Discord.GuildTextBasedChannel,
  ) => Promise<Discord.Message | undefined>;
  set: (msg: Discord.Message) => void;
  find: (msgId: string) => Discord.Message | undefined;
@@ -15,21 +13,21 @@ export interface Pins {
 }
 
 const self: Pins = {
- get: async (id, channelId, guild) => {
-  const cached = self.cache.get(guild.id)?.get(channelId)?.get(id);
+ get: async (id, channel) => {
+  const cached = self.cache.get(channel.guildId)?.get(channel.id)?.get(id);
   if (cached) return cached;
 
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
-  const fetched = await requestHandler.channels.getPins(guild, channelId);
+  const fetched = await requestHandler.channels.getPins(channel);
   if ('message' in fetched) {
-   error(guild, new Error(`Couldnt get Channel Pins of ${channelId}`));
+   error(channel.guild, new Error(`Couldnt get Channel Pins of ${channel.id}`));
    return undefined;
   }
 
-  fetched?.forEach((f) => self.set(new Classes.Message(guild.client, f)));
+  fetched?.forEach((f) => self.set(f));
 
-  return self.cache.get(guild.id)?.get(channelId)?.get(id);
+  return fetched.find((f) => f.id === id);
  },
  set: (msg) => {
   if (!msg.guildId) return;

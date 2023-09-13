@@ -3,7 +3,6 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
-import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -39,7 +38,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const updateRes = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+ const updatedSetting = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
   actions: [
    ...getAPIRule(rule).actions.filter(
     (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
@@ -53,12 +52,10 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   ],
  });
 
- if ('message' in updateRes) {
-  ch.errorCmd(cmd, updateRes.message, language);
+ if ('message' in updatedSetting) {
+  ch.errorCmd(cmd, updatedSetting.message, language);
   return;
  }
-
- const updatedSetting = new AutoModerationRule(rule.client, updateRes, rule.guild);
 
  ch.settingsHelpers.updateLog(
   {

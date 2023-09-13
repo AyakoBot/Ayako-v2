@@ -3,7 +3,6 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { end, getGiveawayEmbed, getButton } from './end.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -55,19 +54,24 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const rawMsg = await ch.request.channels.sendMessage(cmd.guild, channel.id, {
-  embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
- });
+ const msg = await ch.request.channels.sendMessage(
+  cmd.guild,
+  channel.id,
+  {
+   embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
+  },
+  cmd.client,
+ );
 
- if ('message' in rawMsg) {
-  ch.errorCmd(cmd, rawMsg.message ?? language.Unknown, language);
+ if (!msg || 'message' in msg) {
+  ch.errorCmd(cmd, msg ? msg.message : language.Unknown, language);
   return;
  }
 
  const giveaway = await ch.DataBase.giveaways.create({
   data: {
    guildid: cmd.guild.id,
-   msgid: rawMsg.id,
+   msgid: msg.id,
    description: prizeDesc,
    winnercount: winners,
    endtime: endTime,
@@ -79,8 +83,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    failreroll: claimFailReroll ?? false,
   },
  });
-
- const msg = new Message(cmd.client, rawMsg) as Discord.Message<true>;
 
  if (!giveaway) {
   ch.errorCmd(cmd, language.Unknown, language);

@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.id === msg.client.user.id) return;
@@ -18,8 +17,8 @@ export default async (msg: Discord.Message<true>) => {
  if (!stickyMessage) return;
 
  const message = await ch.request.channels
-  .getMessage(msg.guild, msg.channel.id, stickyMessage.lastmsgid)
-  .then((m) => ('message' in m ? undefined : new Message(msg.client, m)));
+  .getMessage(msg.channel, stickyMessage.lastmsgid)
+  .then((m) => ('message' in m ? undefined : m));
 
  if (!message) {
   ch.DataBase.stickymessages

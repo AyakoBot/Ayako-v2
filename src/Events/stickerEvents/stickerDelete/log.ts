@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { User } from '../../../BaseClient/Other/classes.js';
 
 export default async (sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
@@ -17,7 +16,7 @@ export default async (sticker: Discord.Sticker) => {
   sticker.user ??
   (await ch.request.guilds
    .getSticker(sticker.guild, sticker.id)
-   .then((s) => ('message' in s || !s.user ? undefined : new User(sticker.client, s.user))));
+   .then((s) => ('message' in s || !s.user ? undefined : s.user)));
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {

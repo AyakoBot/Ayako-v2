@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 type ActionType = Discord.GuildAuditLogsEntry<
@@ -40,9 +39,8 @@ const self: AuditLogs = {
    return undefined;
   }
 
-  const auditLog = fetched ? new Classes.GuildAuditLogs(guild, fetched) : undefined;
-  auditLog?.entries.forEach((entry) => self.set(guild.id, entry));
-  return auditLog?.entries.map((o) => o);
+  fetched?.entries.forEach((entry) => self.set(guild.id, entry));
+  return fetched?.entries.map((o) => o);
  },
  set: (guildId, entry) => {
   if (!self.cache.get(guildId)) self.cache.set(guildId, new Map());

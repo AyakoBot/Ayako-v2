@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { User } from '../../../BaseClient/Other/classes.js';
 
 export default async (emote: Discord.GuildEmoji) => {
  const channels = await ch.getLogChannels('emojievents', emote.guild);
@@ -14,7 +13,7 @@ export default async (emote: Discord.GuildEmoji) => {
   emote.author ??
   (await ch.request.guilds
    .getEmoji(emote.guild, emote.id)
-   .then((u) => ('message' in u || !u.user ? undefined : new User(emote.client, u.user)))) ??
+   .then((u) => ('message' in u || !u.author ? undefined : u.author))) ??
   audit?.executor ??
   undefined;
  const files: Discord.AttachmentPayload[] = [];

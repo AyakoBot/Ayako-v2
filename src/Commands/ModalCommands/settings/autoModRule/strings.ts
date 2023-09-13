@@ -3,7 +3,6 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
-import { AutoModerationRule } from '../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -41,14 +40,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const oldSetting = String(getCurrentSetting(rule, fieldName));
  const newSetting = field.value.split(/,\s+/g).filter((s) => s.length);
- const updateRes = await updateSetting(rule, fieldName, newSetting);
+ const updatedSetting = await updateSetting(rule, fieldName, newSetting);
 
- if (!updateRes || 'message' in updateRes) {
-  ch.errorCmd(cmd, updateRes?.message || '', language);
+ if (!updatedSetting || 'message' in updatedSetting) {
+  ch.errorCmd(cmd, updatedSetting?.message || '', language);
   return;
  }
-
- const updatedSetting = new AutoModerationRule(rule.client, updateRes, rule.guild);
 
  ch.settingsHelpers.updateLog(
   { [fieldName]: oldSetting } as never,

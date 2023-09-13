@@ -41,7 +41,7 @@ const self: CommandPermissions = {
    ),
   );
 
-  return self.cache.get(guild.id)?.get(commandId);
+  return fetched?.find((f) => f.id === commandId)?.permissions;
  },
  set: (guildId, commandId, permissions) => {
   if (!self.cache.get(guildId)) self.cache.set(guildId, new Map());

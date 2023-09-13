@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/blacklist-rules.js';
 import * as CT from '../../../../../Typings/CustomTypings.js';
-import { AutoModerationRule } from '../../../../../BaseClient/Other/classes.js';
 
 const settingName = 'blacklist-rules';
 
@@ -32,16 +31,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const channelIDs =
   channelText?.map((c) => c.replace(/\D/g, '') || undefined).filter((c): c is string => !!c) ?? [];
 
- const updateRes = await ch.request.guilds.editAutoModerationRule(cmd.guild, rule.id, {
+ const updatedRule = await ch.request.guilds.editAutoModerationRule(cmd.guild, rule.id, {
   exempt_channels: channelIDs,
  });
 
- if ('message' in updateRes) {
-  ch.errorCmd(cmd, updateRes.message, language);
+ if ('message' in updatedRule) {
+  ch.errorCmd(cmd, updatedRule.message, language);
   return;
  }
-
- const updatedRule = new AutoModerationRule(cmd.client, updateRes, cmd.guild);
 
  ch.settingsHelpers.updateLog(
   { exemptChannels: channelIDs } as never,

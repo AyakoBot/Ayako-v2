@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import { AutoModerationRule, Message } from '../../BaseClient/Other/classes.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
  const channels = await ch.getLogChannels('automodevents', execution.guild);
@@ -11,9 +10,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
 
  const rule = await ch.request.guilds
   .getAutoModerationRule(execution.guild, execution.ruleId)
-  ?.then((r) =>
-   'message' in r ? undefined : new AutoModerationRule(execution.guild.client, r, execution.guild),
-  );
+  ?.then((r) => ('message' in r ? undefined : r));
  if (!rule) return;
 
  const channel = execution.channelId
@@ -22,8 +19,8 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  const msg =
   execution.messageId && channel
    ? await ch.request.channels
-      .getMessage(rule.guild, channel.id, execution.messageId)
-      .then((r) => ('message' in r ? undefined : new Message(execution.guild.client, r)))
+      .getMessage(channel, execution.messageId)
+      .then((r) => ('message' in r ? undefined : r))
    : undefined;
  const language = await ch.languageSelector(execution.guild.id);
  const lan = language.events.logs.automodActionExecution;

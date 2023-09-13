@@ -5,7 +5,6 @@ import objectEmotes from './objectEmotes.js';
 import DataBase from '../DataBase.js';
 import { request } from './requestHandler.js';
 import resolveFiles from './resolveFiles.js';
-import { Message } from '../Other/classes.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -19,28 +18,31 @@ export default async <T extends Discord.Message<boolean>>(
  if (!msg) return undefined;
 
  const sentMessage = await request.channels
-  .sendMessage(msg.guild, msg.channelId, {
-   ...payload,
-   files: payload.files ? await resolveFiles(payload.files) : undefined,
-   message_reference: {
-    message_id: msg.id,
-    channel_id: msg.channelId,
-    guild_id: msg.guildId ?? undefined,
+  .sendMessage(
+   msg.guild,
+   msg.channelId,
+   {
+    ...payload,
+    files: payload.files ? await resolveFiles(payload.files) : undefined,
+    message_reference: {
+     message_id: msg.id,
+     channel_id: msg.channelId,
+     guild_id: msg.guildId ?? undefined,
+    },
    },
-  })
+   msg.client,
+  )
   .catch((err) => {
    log('msg reply err', err);
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;
 
- const parsedMsg = new Message(msg.client, sentMessage);
-
  if (msg.guild && command && commandName) {
-  cooldownHandler(msg, parsedMsg, command, commandName);
+  cooldownHandler(msg, sentMessage, command, commandName);
  }
 
- return parsedMsg as T;
+ return sentMessage as T;
 };
 
 export const cooldownHandler = async (

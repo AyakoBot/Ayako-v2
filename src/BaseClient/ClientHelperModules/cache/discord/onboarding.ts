@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Onboarding {
@@ -16,14 +15,14 @@ const self: Onboarding = {
 
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
-  const onboarding = await requestHandler.guilds.getOnboarding(guild);
-  if ('message' in onboarding) {
+  const fetched = await requestHandler.guilds.getOnboarding(guild);
+  if ('message' in fetched) {
    error(guild, new Error('Couldnt get Onboarding'));
    return undefined;
   }
 
-  self.set(guild.id, new Classes.GuildOnboarding(guild.client, onboarding));
-  return self.cache.get(guild.id);
+  self.set(guild.id, fetched);
+  return fetched;
  },
 
  set: (id, onboarding) => {

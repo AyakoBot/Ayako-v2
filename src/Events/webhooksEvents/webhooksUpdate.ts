@@ -3,18 +3,16 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 import webhooksUpdates from './webhooksUpdates/webhooksUpdates.js';
 import webhooksDeletes from './webhooksDeletes/webhooksDeletes.js';
 import webhooksCreates from './webhooksCreates/webhooksCreates.js';
-import { Webhook } from '../../BaseClient/Other/classes.js';
 
 export default async (
  channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
 ) => {
- const rawNewWebhooks = await ch.request.channels.getWebhooks(channel.guild, channel.id);
- if ('message' in rawNewWebhooks) {
-  ch.error(channel.guild, new Error(rawNewWebhooks.message));
+ const newWebhooks = await ch.request.channels.getWebhooks(channel);
+ if ('message' in newWebhooks) {
+  ch.error(channel.guild, new Error(newWebhooks.message));
   return;
  }
 
- const newWebhooks = rawNewWebhooks.map((w) => new Webhook(channel.client, w));
  const oldWebhooks = [
   ...(ch.cache.webhooks.cache.get(channel.guildId)?.get(channel.id)?.values() ?? []),
  ];

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 
 export interface Integrations {
@@ -23,9 +22,9 @@ const self: Integrations = {
    return undefined;
   }
 
-  fetched?.forEach((f) => self.set(new Classes.Integration(guild.client, f, guild), guild.id));
+  fetched?.forEach((f) => self.set(f, guild.id));
 
-  return self.cache.get(guild.id)?.get(id);
+  return fetched.find((f) => f.id === id);
  },
  set: (integration, guildId) => {
   if (!self.cache.get(guildId)) {

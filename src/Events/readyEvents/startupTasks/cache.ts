@@ -7,7 +7,6 @@ import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands
 import * as CT from '../../../Typings/CustomTypings.js';
 import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
-import { Message } from '../../../BaseClient/Other/classes.js';
 
 export default () => {
  client.guilds.cache.forEach(async (guild) => {
@@ -92,11 +91,13 @@ export const tasks = {
        return;
       }
 
+      const channel = await ch.getChannel.guildTextChannel(m.channelid);
+
       ch.mod(
-       m.msgid && m.channelid
+       m.msgid && channel
         ? await ch.request.channels
-           .getMessage(guild, m.channelid, m.msgid)
-           .then((s) => ('message' in s ? undefined : new Message(guild.client, s)))
+           .getMessage(channel, m.msgid)
+           .then((s) => ('message' in s ? undefined : s))
         : undefined,
        table.event,
        {
@@ -184,8 +185,8 @@ export const tasks = {
    if (!c.isTextBased()) return;
 
    const pins = await ch.request.channels
-    .getPins(guild, c.id)
-    .then((ps) => ('message' in ps ? undefined : ps.map((p) => new Message(guild.client, p))));
+    .getPins(c)
+    .then((ps) => ('message' in ps ? undefined : ps));
    pins?.forEach((pin) => ch.cache.pins.set(pin));
   });
  },
