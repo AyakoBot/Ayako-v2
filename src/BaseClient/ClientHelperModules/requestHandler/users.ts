@@ -5,13 +5,24 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
+const cacheSetter = (
+ cacheItem: unknown,
+ // eslint-disable-next-line @typescript-eslint/ban-types
+ cacheSet: Function | undefined,
+ item: unknown,
+ key?: string,
+) => {
+ if (!cacheSet) return;
+ if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
+};
+
 export default {
  get: (guild: Discord.Guild, userId: string) =>
   (cache.apis.get(guild.id) ?? API).users
    .get(userId)
    .then((u) => {
     const parsed = new Classes.User(guild.client, u);
-    guild.client.users.cache.set(parsed.id, parsed);
+    cacheSetter(guild.client.users.cache.get(parsed.id), guild.client.users.cache.set, parsed);
     return parsed;
    })
    .catch((e) => {

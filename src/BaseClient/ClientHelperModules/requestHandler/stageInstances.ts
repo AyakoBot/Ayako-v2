@@ -5,6 +5,17 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
+const cacheSetter = (
+ cacheItem: unknown,
+ // eslint-disable-next-line @typescript-eslint/ban-types
+ cacheSet: Function | undefined,
+ item: unknown,
+ key?: string,
+) => {
+ if (!cacheSet) return;
+ if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
+};
+
 export default {
  create: (
   channel: Discord.StageChannel,
@@ -23,6 +34,11 @@ export default {
    .get(channel.id)
    .then((s) => {
     const parsed = new Classes.StageInstance(channel.client, s, channel);
+    cacheSetter(
+     channel.guild.stageInstances.cache.get(parsed.id),
+     channel.guild.stageInstances.cache.set,
+     parsed,
+    );
     channel.guild.stageInstances.cache.set(parsed.channelId, parsed);
     return parsed;
    })
