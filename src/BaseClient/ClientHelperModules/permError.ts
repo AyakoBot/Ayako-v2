@@ -4,6 +4,7 @@ import reply from './replyMsg.js';
 import * as util from './util.js';
 import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 export default async (
  msg: Discord.Message,
@@ -15,7 +16,7 @@ export default async (
  if (!msg.guild) return;
  if (typeof bits === 'number') bits = BigInt(bits);
 
- const clientMember = msg.guild?.members.me;
+ const clientMember = await getBotMemberFromGuild(msg.guild);
  const neededPerms = new Discord.PermissionsBitField(
   bitUniques(
    bits,

@@ -156,7 +156,7 @@ export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
        icon_url: ch.objectEmotes.tickWithBackground.link,
       },
       description: language.verification.startchannelmessage,
-      color: ch.colorSelector(channel.guild.members.me),
+      color: ch.colorSelector(await ch.getBotMemberFromGuild(channel.guild)),
      },
     ],
     components: [

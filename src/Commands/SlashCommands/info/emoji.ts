@@ -45,12 +45,12 @@ export default async (
  ch.replyCmd(cmd, payload);
 };
 
-const getEmotesPayload = (
+const getEmotesPayload = async (
  emotes: (Discord.Emoji | Discord.GuildEmoji)[],
  language: CT.Language,
  lan: CT.Language['slashCommands']['info'],
  page = 1,
-): CT.UsualMessagePayload => {
+): Promise<CT.UsualMessagePayload> => {
  const chunks = ch.getStringChunks(
   emotes.map(
    (e) =>
@@ -70,7 +70,9 @@ const getEmotesPayload = (
     },
     description: chunk.join('\n'),
     color: ch.colorSelector(
-     emotes.find((e): e is Discord.GuildEmoji => 'guild' in e)?.guild.members.me,
+     await ch.getBotMemberFromGuild(
+      emotes.find((e): e is Discord.GuildEmoji => 'guild' in e)?.guild,
+     ),
     ),
    },
   ],
@@ -202,6 +204,10 @@ const getEmotePayloads = async (
    return { payload, foundEmoji: e.id && cl.emojis.cache.get(e.id) };
   },
   {
-   context: { guildId: guild?.id, e: { ...emote }, color: guild?.members.me?.displayColor },
+   context: {
+    guildId: guild?.id,
+    e: { ...emote },
+    color: (await ch.getBotMemberFromGuild(guild))?.displayColor,
+   },
   },
  );

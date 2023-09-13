@@ -162,7 +162,9 @@ export const tasks = {
   });
  },
  autoModRules: async (guild: Discord.Guild) => {
-  if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+  if (
+   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+  ) {
    await ch.request.guilds.getAutoModerationRules(guild);
   }
  },
@@ -191,11 +193,15 @@ export const tasks = {
   });
  },
  invites: async (guild: Discord.Guild) => {
-  if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+  if (
+   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+  ) {
    ch.cache.invites.get('', '', guild);
   }
 
-  const vanity = guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+  const vanity = (await ch.getBotMemberFromGuild(guild))?.permissions.has(
+   Discord.PermissionFlagsBits.ManageGuild,
+  )
    ? await ch.request.guilds.getVanityURL(guild)
    : undefined;
   if (vanity && !('message' in vanity)) {
@@ -208,7 +214,9 @@ export const tasks = {
   }
  },
  integrations: async (guild: Discord.Guild) => {
-  if (guild.members.me?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)) {
+  if (
+   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
+  ) {
    ch.cache.integrations.get('', guild);
   }
  },

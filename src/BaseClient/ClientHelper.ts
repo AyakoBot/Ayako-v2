@@ -81,6 +81,7 @@ import getCustomBot from './ClientHelperModules/getCustomBot.js';
 import isModeratable from './ClientHelperModules/isModeratable.js';
 import fetchAllEventSubscribers from './ClientHelperModules/fetchAllEventSubscribers.js';
 import fetchAllGuildMembers from './ClientHelperModules/fetchAllGuildMembers.js';
+import getBotMemberFromGuild from './ClientHelperModules/getBotMemberFromGuild.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -89,6 +90,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ getBotMemberFromGuild,
  fetchAllGuildMembers,
  fetchAllEventSubscribers,
  request,

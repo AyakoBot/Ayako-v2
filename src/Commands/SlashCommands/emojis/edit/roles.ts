@@ -23,7 +23,7 @@ export default async (
 
  const embeds = [
   {
-   color: ch.colorSelector(cmd.guild.members.me),
+   color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
    description: emoji.roles.cache.size
     ? emoji.roles.cache
        .sort((a, b) => b.position - a.position)

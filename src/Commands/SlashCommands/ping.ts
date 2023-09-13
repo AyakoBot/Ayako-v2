@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     description: `**${lan.lastHeartbeat}**: ${ch.util.makeInlineCode(
      String(stats?.heartbeat ?? 0),
     )} ${language.time.milliseconds}`,
-    color: ch.colorSelector(cmd.guild?.members.me),
+    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
     author: { name: lan.author },
    },
   ],

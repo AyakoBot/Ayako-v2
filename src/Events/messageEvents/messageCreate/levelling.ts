@@ -476,7 +476,7 @@ const infoEmbed = async (
  });
 
  const embed: Discord.APIEmbed = {
-  color: ch.colorSelector(msg.guild.members.me),
+  color: ch.colorSelector(await ch.getBotMemberFromGuild(msg.guild)),
   description: language.leveling.description(emotes.join(', ')),
  };
 
@@ -495,11 +495,11 @@ const doEmbed = async (
  levelData: LevelData,
  setting: Prisma.leveling,
 ) => {
- const getDefaultEmbed = () => ({
+ const getDefaultEmbed = async () => ({
   author: {
    name: language.leveling.author(msg),
   },
-  color: ch.colorSelector(msg.guild.members.me),
+  color: ch.colorSelector(await ch.getBotMemberFromGuild(msg.guild)),
  });
 
  const options = [
@@ -511,14 +511,14 @@ const doEmbed = async (
   ['oldXP', levelData.oldXP],
  ];
 
- let embed = !setting.embed ? ch.dynamicToEmbed(getDefaultEmbed(), options) : undefined;
+ let embed = !setting.embed ? ch.dynamicToEmbed(await getDefaultEmbed(), options) : undefined;
  if (setting.embed) {
   const customEmbed = await ch.DataBase.customembeds.findUnique({
    where: { uniquetimestamp: setting.embed },
   });
 
   if (customEmbed) embed = ch.dynamicToEmbed(ch.getDiscordEmbed(customEmbed), options);
-  else embed = ch.dynamicToEmbed(getDefaultEmbed(), options);
+  else embed = ch.dynamicToEmbed(await getDefaultEmbed(), options);
  }
 
  if (!embed) return;

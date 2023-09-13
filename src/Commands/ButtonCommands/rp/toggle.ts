@@ -10,9 +10,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  await cmd.deferUpdate();
  cmd.editReply({
   components: [],
-  embeds: [
-   ch.loadingEmbed(cmd.guild, { language, lan: { author: language.slashCommands.rp.author } }),
-  ],
+  embeds: [ch.loadingEmbed({ language, lan: { author: language.slashCommands.rp.author } })],
  });
 
  const settings = !(await ch.DataBase.guildsettings

@@ -21,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         }
       : undefined,
      description: user.avatar ? undefined : language.None,
-     color: ch.colorSelector(cmd.guild?.members.me),
+     color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
     },
     member && member.avatar
      ? {
@@ -31,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
            }
          : undefined,
         description: member.avatar ? undefined : language.None,
-        color: ch.colorSelector(cmd.guild?.members.me),
+        color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
        }
      : undefined,
    ] as Discord.APIEmbed[]

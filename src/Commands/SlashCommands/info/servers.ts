@@ -17,7 +17,7 @@ export default async (
  }
 
  const content = getContent(servers);
- const payload = getPayload(content, language, cmd.guild, page);
+ const payload = await getPayload(content, language, cmd.guild, page);
 
  if (cmd.isButton()) cmd.update(payload as Discord.InteractionUpdateOptions).catch(() => undefined);
  else ch.replyCmd(cmd, payload);
@@ -48,15 +48,15 @@ const getContent = (servers: { content: string; count: number }[]) =>
   .map((c) => c.join('\n'))
   .filter((c) => c.length);
 
-const getPayload = (
+const getPayload = async (
  content: string[],
  language: CT.Language,
  guild?: Discord.Guild | undefined | null,
  page = 1,
-): CT.UsualMessagePayload => ({
+): Promise<CT.UsualMessagePayload> => ({
  embeds: [
   {
-   color: ch.colorSelector(guild?.members.me),
+   color: ch.colorSelector(await ch.getBotMemberFromGuild(guild)),
    description: content[page - 1],
   },
  ] as Discord.APIEmbed[],

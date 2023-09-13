@@ -295,7 +295,7 @@ const getMembers = async (
  | undefined
 > => {
  const highestRole = guild.roles.cache.map((o) => o).sort((a, b) => b.position - a.position)[0];
- const clientHighestRole = guild.members.me?.roles.highest;
+ const clientHighestRole = (await ch.getBotMemberFromGuild(guild))?.roles.highest;
  if (!clientHighestRole) return undefined;
 
  const obj: PassObject = {

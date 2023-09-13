@@ -13,7 +13,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   author: {
    name: lan.author,
   },
-  color: role.color || ch.colorSelector(cmd.guild?.members.me),
+  color: role.color || ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
   description: [
    {
     name: language.name,

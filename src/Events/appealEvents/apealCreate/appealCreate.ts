@@ -40,7 +40,7 @@ export default async (appeal: CT.Appeal) => {
  const embed = {
   title: lan.title,
   description: lan.description(user, punishment.uniquetimestamp),
-  color: ch.colorSelector(guild.members.me),
+  color: ch.colorSelector(await ch.getBotMemberFromGuild(guild)),
   fields: appeal.questions.map((q, i) => {
    const answer = appeal.answers[i];
    const answertype = appeal.answertypes[i];

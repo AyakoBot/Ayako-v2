@@ -20,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        }
      : undefined,
     description: user.banner ? undefined : language.None,
-    color: ch.colorSelector(cmd.guild?.members.me),
+    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
    },
   ],
  });

@@ -134,7 +134,9 @@ const getWebhook = async (msg: Discord.AutoModerationActionExecution) => {
  }
 
  if (
-  !msg.guild.members.me?.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageWebhooks)
+  !(await ch.getBotMemberFromGuild(msg.guild))
+   ?.permissionsIn(channel.id)
+   .has(Discord.PermissionFlagsBits.ManageWebhooks)
  ) {
   ch.error(msg.guild, new Error('Insufficent Permissions to manage Webhooks'));
   return undefined;

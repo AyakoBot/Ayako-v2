@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     author: {
      name: lan.author,
     },
-    color: ch.colorSelector(cmd.guild?.members.me),
+    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
     description: `${ch.stringEmotes.userFlags.DiscordEmployee} ${ch.util.makeInlineCode(
      `${ch.splitByThousand(
       members.filter((m) => m.user.flags?.has(Discord.UserFlags.Staff)).size,

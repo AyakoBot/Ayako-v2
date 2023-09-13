@@ -6,6 +6,7 @@ import languageSelector from './languageSelector.js';
 import colorSelector from './colorSelector.js';
 import replyCmd from './replyCmd.js';
 import objectEmotes from './objectEmotes.js';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 const neko = new Neko.Client();
 
@@ -297,7 +298,7 @@ export const imageGetter = async (
     image: {
      url: img.url,
     },
-    color: colorSelector(cmd.guild?.members.me),
+    color: colorSelector(await getBotMemberFromGuild(cmd.guild)),
     author: img.artist
      ? {
         name: lan.madeBy,

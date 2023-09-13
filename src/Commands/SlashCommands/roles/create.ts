@@ -14,7 +14,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.roles;
 
- if (Number(positionRole?.rawPosition) >= Number(cmd.guild.members.me?.roles.highest.rawPosition)) {
+ if (
+  Number(positionRole?.rawPosition) >=
+  Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
+ ) {
   ch.errorCmd(cmd, language.errors.roleNotManageable, language);
   return;
  }

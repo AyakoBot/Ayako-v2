@@ -15,6 +15,7 @@ import type { ReturnType } from './getGif.js';
 import { getPrefix } from '../../Events/messageEvents/messageCreate/commandHandler.js';
 import getUser from './getUser.js';
 import getChunks from './getChunks.js';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
@@ -71,7 +72,7 @@ const reply = async (
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
-  color: colorSelector(guild.members.me),
+  color: colorSelector(await getBotMemberFromGuild(guild)),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,

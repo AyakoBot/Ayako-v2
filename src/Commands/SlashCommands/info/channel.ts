@@ -52,7 +52,7 @@ const getEmbed = async (
      author: {
       name: lan.author,
      },
-     color: chEval.colorSelector(g.members.me),
+     color: chEval.colorSelector(await chEval.getBotMemberFromGuild(g)),
      description: `**${language.slashCommands.info.basic}**\n${[
       {
        name: chEval.util.makeBold(language.name),
@@ -222,7 +222,7 @@ const getEmbed = async (
     } as Discord.APIEmbed,
     'children' in c && c.children.cache.size
      ? {
-        color: chEval.colorSelector(g.members.me),
+        color: chEval.colorSelector(await chEval.getBotMemberFromGuild(g)),
         description: c.children.cache
          .map((child) =>
           language.languageFunction.getChannel(child, language.channelTypes[child.type]),
@@ -235,7 +235,7 @@ const getEmbed = async (
         author: {
          name: lan.scheduledEvent.author,
         },
-        color: chEval.colorSelector(g.members.me),
+        color: chEval.colorSelector(await chEval.getBotMemberFromGuild(g)),
         image: {
          url: event.coverImageURL({ size: 4096 }),
         },

@@ -50,7 +50,7 @@ export default async (
   embeds: [
    embed,
    {
-    color: ch.colorSelector(cmd.guild?.members.me),
+    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
     description: `${lan.desc}\n\n${lan.oneRequired}\n${ch.constants.customembeds.needsOneOf
      .map((n) => lan.embedProperties[n as keyof typeof lan.embedProperties])
      .filter((a): a is string => !!a)

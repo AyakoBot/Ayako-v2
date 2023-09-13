@@ -18,8 +18,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.roles;
 
  if (
-  Number(positionRole?.rawPosition) >= Number(cmd.guild.members.me?.roles.highest.rawPosition) ||
-  role.rawPosition >= Number(cmd.guild.members.me?.roles.highest.rawPosition)
+  Number(positionRole?.rawPosition) >=
+   Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition) ||
+  role.rawPosition >= Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
  ) {
   ch.errorCmd(cmd, language.errors.cantManageRole, language);
   return;

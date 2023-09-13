@@ -58,7 +58,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.guild,
   channel.id,
   {
-   embeds: [ch.loadingEmbed(cmd.guild, { language, lan })],
+   embeds: [ch.loadingEmbed({ language, lan })],
   },
   cmd.client,
  );

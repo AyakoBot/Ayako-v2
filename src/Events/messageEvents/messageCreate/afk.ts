@@ -51,10 +51,15 @@ const self = async (
  deleteNick(language, msg.member);
 };
 
-const deleteNick = (language: CT.Language, member?: Discord.GuildMember | null) => {
+const deleteNick = async (language: CT.Language, member?: Discord.GuildMember | null) => {
  if (!member) return;
  if (!member.nickname || !member.nickname.endsWith(' [AFK]')) return;
- if (!member.guild.members.me?.permissions.has(134217728n) || !member.manageable) return;
+ if (
+  !(await ch.getBotMemberFromGuild(member.guild))?.permissions.has(134217728n) ||
+  !member.manageable
+ ) {
+  return;
+ }
 
  ch.request.guilds.editMember(
   member.guild,

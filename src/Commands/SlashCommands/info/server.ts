@@ -101,7 +101,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        g.banner?.startsWith('a_') ? 'gif' : 'png'
       }?size=4096`,
      },
-     color: chEval.colorSelector(isInviteGuild ? undefined : g.members.me),
+     color: chEval.colorSelector(isInviteGuild ? undefined : await chEval.getBotMemberFromGuild(g)),
      fields: [
       {
        name: language.slashCommands.info.basic,
