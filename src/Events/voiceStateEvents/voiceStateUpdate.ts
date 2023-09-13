@@ -3,7 +3,6 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 import voiceStateCreates from './voiceStateCreates/voiceStateCreates.js';
 import voiceStateDeletes from './voiceStateDeletes/voiceStateDeletes.js';
 import voiceStateUpdates from './voiceStateUpdates/voiceStateUpdates.js';
-import { GuildMember } from '../../BaseClient/Other/classes.js';
 
 interface RealState extends Omit<Discord.VoiceState, 'channel' | 'member'> {
  channel?: Discord.VoiceChannel;
@@ -26,7 +25,7 @@ export default async (oldState: RealState, state: RealState) => {
    state as Discord.VoiceState,
    await ch.request.guilds
     .getMember(state.guild, state.id ?? oldState.id)
-    .then((m) => ('message' in m ? undefined : new GuildMember(state.client, m, state.guild))),
+    .then((m) => ('message' in m ? undefined : m)),
   );
   return;
  }
@@ -36,7 +35,7 @@ export default async (oldState: RealState, state: RealState) => {
    oldState as Discord.VoiceState,
    await ch.request.guilds
     .getMember(state.guild, state.id ?? oldState.id)
-    .then((m) => ('message' in m ? undefined : new GuildMember(state.client, m, state.guild))),
+    .then((m) => ('message' in m ? undefined : m)),
   );
   return;
  }
@@ -46,6 +45,6 @@ export default async (oldState: RealState, state: RealState) => {
   state as Discord.VoiceState,
   await ch.request.guilds
    .getMember(state.guild, state.id ?? oldState.id)
-   .then((m) => ('message' in m ? undefined : new GuildMember(state.client, m, state.guild))),
+   .then((m) => ('message' in m ? undefined : m)),
  );
 };

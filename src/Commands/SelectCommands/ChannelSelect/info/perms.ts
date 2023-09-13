@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import { GuildMember } from '../../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -9,9 +8,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
  const ID = args.shift() as string;
  const isUser = args.shift() === 'user';
  const check = isUser
-  ? await ch.request.guilds
-     .getMember(cmd.guild, ID)
-     .then((u) => ('message' in u ? undefined : new GuildMember(cmd.client, u, cmd.guild)))
+  ? await ch.request.guilds.getMember(cmd.guild, ID).then((u) => ('message' in u ? undefined : u))
   : cmd.guild.roles.cache.get(ID);
  const language = await ch.languageSelector(cmd.guildId);
 

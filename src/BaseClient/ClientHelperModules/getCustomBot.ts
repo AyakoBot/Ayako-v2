@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { guild as getBotIdFromGuild } from './getBotIdFrom.js';
 import { request } from './requestHandler.js';
-import { GuildMember } from '../Other/classes.js';
 import error from './error.js';
 
 export default async (guild: Discord.Guild) => {
@@ -12,5 +11,5 @@ export default async (guild: Discord.Guild) => {
   return guild.members.fetchMe();
  }
 
- return new GuildMember(guild.client, rawMember, guild);
+ return rawMember;
 };

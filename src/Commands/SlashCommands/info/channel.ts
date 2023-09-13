@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -37,7 +36,7 @@ const getEmbed = async (
    if (!g) return undefined;
 
    const rawMember = await chEval.request.guilds.getMember(g, mid);
-   const member = 'message' in rawMember ? undefined : new GuildMember(cl, rawMember, g);
+   const member = 'message' in rawMember ? undefined : rawMember;
 
    const c = cl.channels.cache.get(id) as Discord.GuildBasedChannel;
    if (!c) return undefined;

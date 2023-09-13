@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import getUser from './getUser.js';
-import * as Classes from '../Other/classes.js';
 import { request } from './requestHandler.js';
 import { guild as getBotIdFromGuild } from './getBotIdFrom.js';
 
@@ -8,7 +7,7 @@ export default async (guild: Discord.Guild) => {
  const currentMember = await request.guilds.getMember(guild, await getBotIdFromGuild(guild));
  if ('message' in currentMember) return undefined;
 
- const me = currentMember ? new Classes.GuildMember(guild.client, currentMember, guild) : undefined;
+ const me = currentMember ?? undefined;
  if (!new Discord.PermissionsBitField(me?.permissions).has(32n)) return null;
 
  // TODO: change to request handler

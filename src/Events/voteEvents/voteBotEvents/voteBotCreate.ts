@@ -4,7 +4,6 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
-import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 export default async (
  vote: CT.TopGGBotVote,
@@ -160,7 +159,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
 
  const member = await ch.request.guilds
   .getMember(guild, vote.user)
-  .then((m) => ('message' in m ? undefined : new GuildMember(guild.client, m, guild)));
+  .then((m) => ('message' in m ? undefined : m));
  if (!member) return;
 
  const language = await ch.languageSelector(guild.id);

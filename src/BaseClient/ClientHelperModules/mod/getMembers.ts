@@ -5,7 +5,6 @@ import constants from '../../Other/constants.js';
 import objectEmotes from '../objectEmotes.js';
 import checkExeCanManage from './checkExeCanManage.js';
 import type * as ModTypes from '../mod.js';
-import { GuildMember } from '../../Other/classes.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -32,16 +31,7 @@ export default async (
   return undefined;
  }
 
- if (
-  !(await checkExeCanManage(
-   cmd,
-   targetMember,
-   new GuildMember(options.guild.client, executorMember, options.guild),
-   message,
-   language,
-   type,
-  ))
- ) {
+ if (!(await checkExeCanManage(cmd, targetMember, executorMember, message, language, type))) {
   return undefined;
  }
 

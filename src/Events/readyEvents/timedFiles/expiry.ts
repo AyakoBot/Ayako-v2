@@ -3,7 +3,6 @@ import { Prisma } from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import type CT from '../../../Typings/CustomTypings.js';
-import { GuildMember } from '../../../BaseClient/Other/classes.js';
 
 export default async () => {
  const settingsRows = await ch.DataBase.expiry.findMany({
@@ -120,9 +119,7 @@ const logExpire = async <T extends TableName>(
 
  await Promise.all(
   rows.map((p) =>
-   ch.request.guilds
-    .getMember(guild, p.userid)
-    .then((m) => ('message' in m ? undefined : new GuildMember(guild.client, m, guild))),
+   ch.request.guilds.getMember(guild, p.userid).then((m) => ('message' in m ? undefined : m)),
   ),
  );
  await Promise.all(rows.map((p) => ch.getUser(p.userid).catch(() => null)));
