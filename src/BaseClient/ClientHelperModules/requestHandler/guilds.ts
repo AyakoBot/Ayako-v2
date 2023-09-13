@@ -317,7 +317,9 @@ export default {
     return parsed;
    })
    .catch((e) => {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    if (e.message !== 'Missing Access') {
+     error(guild, new Error((e as Discord.DiscordAPIError).message));
+    }
     return e as Discord.DiscordAPIError;
    }),
  getWidgetImage: (guild: Discord.Guild, style?: Discord.GuildWidgetStyle) =>

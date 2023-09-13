@@ -204,14 +204,7 @@ export const tasks = {
   )
    ? await ch.request.guilds.getVanityURL(guild)
    : undefined;
-  if (vanity && !('message' in vanity)) {
-   const invite = vanity as Discord.Invite;
-   invite.channel = (guild.channels.cache.get(guild.id) ??
-    guild.channels.cache.first()) as Discord.NonThreadGuildBasedChannel;
-   invite.channelId = invite.channel?.id;
-
-   ch.cache.invites.set(invite, guild.id);
-  }
+  if (vanity && !('message' in vanity)) ch.cache.invites.set(vanity, guild.id);
  },
  integrations: async (guild: Discord.Guild) => {
   if (
