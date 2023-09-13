@@ -5,17 +5,6 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
-
 export default {
  getNitroStickers: (guild: Discord.Guild) =>
   (cache.apis.get(guild.id) ?? API).stickers.getNitroStickers().catch((e) => {
@@ -27,7 +16,8 @@ export default {
    .get(stickerId)
    .then((s) => {
     const parsed = new Classes.Sticker(guild.client, s);
-    cacheSetter(guild.stickers.cache.get(parsed.id), guild.stickers.cache.set, parsed);
+    if (guild.stickers.cache.get(parsed.id)) return parsed;
+    guild.stickers.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {

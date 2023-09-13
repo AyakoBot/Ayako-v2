@@ -7,17 +7,6 @@ import * as CT from '../../../Typings/CustomTypings';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
-
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
  message: Discord.RESTPostAPIGuildForumThreadsJSONBody['message'] & {
   files?: Discord.RawFile[];
@@ -109,15 +98,19 @@ export default {
    )
    .then((users) => {
     const parsed = users.map((u) => new Classes.User(message.client, u));
-    parsed.forEach((p) =>
-     cacheSetter(
+    parsed.forEach((p) => {
+     if (
       message.reactions.cache
        .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
-       ?.users.cache.get(p.id),
-      message.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')?.users.cache.set,
-      p,
-     ),
-    );
+       ?.users.cache.get(p.id)
+     ) {
+      return;
+     }
+
+     message.reactions.cache
+      .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
+      ?.users.cache.set(p.id, p);
+    });
    })
    .catch((e) => {
     error(message.guild, new Error((e as Discord.DiscordAPIError).message));
@@ -240,7 +233,12 @@ export default {
    .get(id)
    .then((c) => {
     const parsed = Classes.Channel(guild.client, c, guild);
-    cacheSetter(guild.channels.cache.get(parsed.id), guild.channels.cache.set, parsed);
+
+    if (guild.channels.cache.get(parsed.id)) return parsed;
+    if (![Discord.ChannelType.DM, Discord.ChannelType.GroupDM].includes(parsed.type)) {
+     guild.channels.cache.set(parsed.id, parsed as Discord.GuildBasedChannel);
+    }
+
     return parsed;
    })
    .catch((e) => {
@@ -263,9 +261,10 @@ export default {
    .getMessages(channel.id, query)
    .then((msgs) => {
     const parsed = msgs.map((m) => new Classes.Message(channel.client, m));
-    parsed.forEach((p) =>
-     cacheSetter(channel.messages.cache.get(p.id), channel.messages.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (channel.messages.cache.get(p.id)) return;
+     channel.messages.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -310,9 +309,10 @@ export default {
    .getPins(channel.id)
    .then((msgs) => {
     const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));
-    parsed.forEach((p) =>
-     cacheSetter(channel.messages.cache.get(p.id), channel.messages.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (channel.messages.cache.get(p.id)) return;
+     channel.messages.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -351,14 +351,10 @@ export default {
    .getInvites(channel.id)
    .then((invites) => {
     const parsed = invites.map((i) => new Classes.Invite(channel.client, i));
-    parsed.forEach((p) =>
-     cacheSetter(
-      channel.guild.invites.cache.get(p.code),
-      channel.guild.invites.cache.set,
-      p,
-      p.code,
-     ),
-    );
+    parsed.forEach((p) => {
+     if (channel.guild.invites.cache.get(p.code)) return;
+     channel.guild.invites.cache.set(p.code, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -394,9 +390,13 @@ export default {
    .getArchivedThreads(channel.id, status, query)
    .then((res) => {
     const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
-    parsed.forEach((p) =>
-     cacheSetter(channel.threads.cache.get(p.id), channel.threads.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (channel.threads.cache.get(p.id)) return;
+     channel.threads.cache.set(
+      p.id,
+      p as Discord.ThreadChannel<true> & Discord.ThreadChannel<false>,
+     );
+    });
     return parsed;
    })
    .catch((e) => {
@@ -411,9 +411,13 @@ export default {
    .getJoinedPrivateArchivedThreads(channel.id, query)
    .then((res) => {
     const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
-    parsed.forEach((p) =>
-     cacheSetter(channel.threads.cache.get(p.id), channel.threads.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (channel.threads.cache.get(p.id)) return;
+     channel.threads.cache.set(
+      p.id,
+      p as Discord.ThreadChannel<true> & Discord.ThreadChannel<false>,
+     );
+    });
     return parsed;
    })
    .catch((e) => {
@@ -464,7 +468,8 @@ export default {
    .getMessage(channel.id, messageId)
    .then((m) => {
     const parsed = new Classes.Message(channel.guild.client, m);
-    cacheSetter(channel.messages.cache.get(parsed.id), channel.messages.cache.set, parsed);
+    if (channel.messages.cache.get(parsed.id)) return parsed;
+    channel.messages.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {

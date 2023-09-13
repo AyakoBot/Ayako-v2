@@ -5,17 +5,6 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
-
 export default {
  join: (guild: Discord.Guild, threadId: string) =>
   (cache.apis.get(guild.id) ?? API).threads.join(threadId).catch((e) => {
@@ -42,7 +31,8 @@ export default {
    .getMember(thread.id, userId)
    .then((m) => {
     const parsed = new Classes.ThreadMember(thread, m);
-    cacheSetter(thread.members.cache.get(parsed.id), thread.members.cache.set, parsed);
+    if (thread.members.cache.get(parsed.id)) return parsed;
+    thread.members.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -54,7 +44,10 @@ export default {
    .getAllMembers(thread.id)
    .then((members) => {
     const parsed = members.map((m) => new Classes.ThreadMember(thread, m));
-    parsed.forEach((p) => cacheSetter(thread.members.cache.get(p.id), thread.members.cache.set, p));
+    parsed.forEach((p) => {
+     if (thread.members.cache.get(p.id)) return;
+     thread.members.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {

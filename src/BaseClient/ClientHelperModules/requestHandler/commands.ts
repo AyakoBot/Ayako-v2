@@ -6,17 +6,6 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
-
 export default {
  getGlobalCommands: (
   guild: Discord.Guild,
@@ -27,13 +16,10 @@ export default {
    .getGlobalCommands(appId, query)
    .then((cmds) => {
     const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
-    parsed.forEach((p) =>
-     cacheSetter(
-      guild.client.application.commands.cache.get(p.id),
-      guild.client.application.commands.cache.set,
-      p,
-     ),
-    );
+    parsed.forEach((p) => {
+     if (guild.client.application.commands.cache.get(p.id)) return;
+     guild.client.application.commands.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -61,11 +47,8 @@ export default {
    .getGlobalCommand(appId, commandId)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd);
-    cacheSetter(
-     guild.client.application.commands.cache.get(parsed.id),
-     guild.client.application.commands.set,
-     parsed,
-    );
+    if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
+    guild.client.application.commands.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -126,7 +109,10 @@ export default {
     const parsed = cmds.map(
      (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
     );
-    parsed.forEach((p) => cacheSetter(guild.commands.cache.get(p.id), guild.commands.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.commands.cache.get(p.id)) return;
+     guild.commands.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -154,7 +140,8 @@ export default {
    .getGuildCommand(appId, guild.id, commandId)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
-    cacheSetter(guild.commands.cache.get(parsed.id), guild.commands.cache.set, parsed);
+    if (guild.commands.cache.get(parsed.id)) return parsed;
+    guild.commands.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {

@@ -5,17 +5,6 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
-
 export default {
  getPreview: (guild: Discord.Guild) =>
   (cache.apis.get(guild.id) ?? API).guilds
@@ -51,7 +40,10 @@ export default {
    .getMembers(guild.id, query)
    .then((members) => {
     const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));
-    parsed.forEach((p) => cacheSetter(guild.members.cache.get(p.id), guild.members.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.members.cache.get(p.id)) return;
+     guild.members.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -63,7 +55,10 @@ export default {
    .getChannels(guild.id)
    .then((channels) => {
     const parsed = channels.map((c) => Classes.Channel(guild.client, c, guild));
-    parsed.forEach((p) => cacheSetter(guild.channels.cache.get(p.id), guild.channels.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.channels.cache.get(p.id)) return;
+     guild.channels.cache.set(p.id, p as Discord.GuildBasedChannel);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -98,9 +93,13 @@ export default {
    .getActiveThreads(guild.id)
    .then((threads) => {
     const parsed = threads.threads.map((t) => Classes.Channel<10>(guild.client, t, guild));
-    parsed.forEach((p) =>
-     cacheSetter(p.parent?.threads.cache.get(p.id), p.parent?.threads.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (p.parent?.threads.cache.get(p.id)) return;
+     p.parent?.threads.cache.set(
+      p.id,
+      p as Discord.ThreadChannel<true> & Discord.ThreadChannel<false>,
+     );
+    });
     return parsed;
    })
    .catch((e) => {
@@ -112,7 +111,8 @@ export default {
    .getMemberBan(guild.id, userId)
    .then((b) => {
     const parsed = new Classes.GuildBan(guild.client, b, guild);
-    cacheSetter(guild.bans.cache.get(parsed.user.id), guild.bans.cache.set, parsed, parsed.user.id);
+    if (guild.bans.cache.get(parsed.user.id)) return parsed;
+    guild.bans.cache.set(parsed.user.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -141,7 +141,10 @@ export default {
    .getRoles(guild.id)
    .then((roles) => {
     const parsed = roles.map((r) => new Classes.Role(guild.client, r, guild));
-    parsed.forEach((p) => cacheSetter(guild.roles.cache.get(p.id), guild.roles.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.roles.cache.get(p.id)) return;
+     guild.roles.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -218,9 +221,10 @@ export default {
    .getInvites(guild.id)
    .then((invites) => {
     const parsed = invites.map((i) => new Classes.Invite(guild.client, i));
-    parsed.forEach((p) =>
-     cacheSetter(guild.invites.cache.get(p.code), guild.invites.cache.set, p, p.code),
-    );
+    parsed.forEach((p) => {
+     if (guild.invites.cache.get(p.code)) return;
+     guild.invites.cache.set(p.code, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -358,7 +362,10 @@ export default {
    .getEmojis(guild.id)
    .then((emojis) => {
     const parsed = emojis.map((e) => new Classes.GuildEmoji(guild.client, e, guild));
-    parsed.forEach((p) => cacheSetter(guild.emojis.cache.get(p.id), guild.emojis.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.emojis.cache.get(p.id)) return;
+     guild.emojis.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -370,7 +377,8 @@ export default {
    .getEmoji(guild.id, emojiId)
    .then((e) => {
     const parsed = new Classes.GuildEmoji(guild.client, e, guild);
-    cacheSetter(guild.emojis.cache.get(parsed.id), guild.emojis.cache.set, parsed);
+    if (guild.emojis.cache.get(parsed.id)) return parsed;
+    guild.emojis.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -412,9 +420,10 @@ export default {
    .getScheduledEvents(guild.id)
    .then((events) => {
     const parsed = events.map((e) => new Classes.GuildScheduledEvent(guild.client, e));
-    parsed.forEach((p) =>
-     cacheSetter(guild.scheduledEvents.cache.get(p.id), guild.scheduledEvents.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (guild.scheduledEvents.cache.get(p.id)) return;
+     guild.scheduledEvents.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -442,11 +451,8 @@ export default {
    .getScheduledEvent(guild.id, eventId, query)
    .then((e) => {
     const parsed = new Classes.GuildScheduledEvent(guild.client, e);
-    cacheSetter(
-     guild.scheduledEvents.cache.get(parsed.id),
-     guild.scheduledEvents.cache.set,
-     parsed,
-    );
+    if (guild.scheduledEvents.cache.get(parsed.id)) return parsed;
+    guild.scheduledEvents.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -486,14 +492,17 @@ export default {
      member: u.member ? new Classes.GuildMember(guild.client, u.member, guild) : undefined,
     }));
     parsed.forEach((p) => {
-     cacheSetter(guild.client.users.cache.get(p.user.id), guild.client.users.cache.set, p.user);
-     if (p.member) {
-      cacheSetter(
-       guild.client.users.cache.get(p.member.id),
-       guild.client.users.cache.set,
-       p.member,
-      );
-     }
+     const user = () => {
+      if (guild.client.users.cache.get(p.user.id)) return;
+      guild.client.users.cache.set(p.user.id, p.user);
+     };
+     const member = () => {
+      if (!p.member || guild.members.cache.get(p.member.id)) return;
+      guild.members.cache.set(p.member.id, p.member);
+     };
+
+     user();
+     if (p.member) member();
     });
     return parsed;
    })
@@ -539,7 +548,10 @@ export default {
    .getStickers(guild.id)
    .then((stickers) => {
     const parsed = stickers.map((s) => new Classes.Sticker(guild.client, s));
-    parsed.forEach((p) => cacheSetter(guild.stickers.cache.get(p.id), guild.stickers.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.stickers.cache.get(p.id)) return;
+     guild.stickers.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -551,7 +563,8 @@ export default {
    .getSticker(guild.id, stickerId)
    .then((s) => {
     const parsed = new Classes.Sticker(guild.client, s);
-    cacheSetter(guild.stickers.cache.get(parsed.id), guild.stickers.cache.set, parsed);
+    if (guild.stickers.cache.get(parsed.id)) return parsed;
+    guild.stickers.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -605,9 +618,10 @@ export default {
    .getAutoModerationRules(guild.id)
    .then((rules) => {
     const parsed = rules.map((r) => new Classes.AutoModerationRule(guild.client, r, guild));
-    parsed.forEach((p) =>
-     cacheSetter(guild.autoModerationRules.cache.get(p.id), guild.autoModerationRules.cache.set, p),
-    );
+    parsed.forEach((p) => {
+     if (guild.autoModerationRules.cache.get(p.id)) return;
+     guild.autoModerationRules.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -619,11 +633,8 @@ export default {
    .getAutoModerationRule(guild.id, ruleId)
    .then((r) => {
     const parsed = new Classes.AutoModerationRule(guild.client, r, guild);
-    cacheSetter(
-     guild.autoModerationRules.cache.get(parsed.id),
-     guild.autoModerationRules.cache.set,
-     parsed,
-    );
+    if (guild.autoModerationRules.cache.get(parsed.id)) return parsed;
+    guild.autoModerationRules.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -667,7 +678,8 @@ export default {
    .getMember(guild.id, userId)
    .then((m) => {
     const parsed = new Classes.GuildMember(guild.client, m, guild);
-    cacheSetter(guild.members.cache.get(parsed.id), guild.members.cache.set, parsed);
+    if (guild.members.cache.get(parsed.id)) return parsed;
+    guild.members.cache.set(parsed.id, parsed);
     return parsed;
    })
    .catch((e) => {
@@ -679,7 +691,10 @@ export default {
    .searchForMembers(guild.id, query)
    .then((members) => {
     const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));
-    parsed.forEach((p) => cacheSetter(guild.members.cache.get(p.id), guild.members.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.members.cache.get(p.id)) return;
+     guild.members.cache.set(p.id, p);
+    });
     return parsed;
    })
    .catch((e) => {
@@ -763,7 +778,10 @@ export default {
    .getMemberBans(guild.id, query)
    .then((bans) => {
     const parsed = bans.map((b) => new Classes.GuildBan(guild.client, b, guild));
-    parsed.forEach((p) => cacheSetter(guild.bans.cache.get(p.user.id), guild.bans.cache.set, p));
+    parsed.forEach((p) => {
+     if (guild.bans.cache.get(p.user.id)) return;
+     guild.bans.cache.set(p.user.id, p);
+    });
     return parsed;
    })
    .catch((e) => {

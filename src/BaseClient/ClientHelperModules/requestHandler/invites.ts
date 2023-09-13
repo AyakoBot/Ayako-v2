@@ -5,16 +5,7 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-const cacheSetter = (
- cacheItem: unknown,
- // eslint-disable-next-line @typescript-eslint/ban-types
- cacheSet: Function | undefined,
- item: unknown,
- key?: string,
-) => {
- if (!cacheSet) return;
- if (!cacheItem) cacheSet(key ?? (item as { [key: string]: string }).id, item);
-};
+
 
 export default {
  get: (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
@@ -22,7 +13,8 @@ export default {
    .get(code, query)
    .then((i) => {
     const parsed = new Classes.Invite(guild.client, i);
-    cacheSetter(guild.invites.cache.get(parsed.code), guild.invites.cache.set, parsed, parsed.code);
+    if (guild.invites.cache.get(parsed.code)) return parsed;
+    guild.invites.cache.set(parsed.code, parsed);
     return parsed;
    })
    .catch((e) => {
