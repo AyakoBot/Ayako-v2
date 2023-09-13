@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { request } from './requestHandler';
+import { request } from './requestHandler.js';
 
 export default async (guild: Discord.Guild) => {
  const members: Discord.GuildMember[] = [];
