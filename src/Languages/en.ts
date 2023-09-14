@@ -1776,7 +1776,7 @@ export default {
    boop: {
     self: 'boops themself, how cute',
     others: 'boops',
-    buttons: ['Pat them'],
+    buttons: ['Pat them', 'Nom their finger >;3'],
    },
    poke: {
     self: 'pokes themself, how cute',

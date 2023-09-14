@@ -452,7 +452,7 @@ export default {
     buttons: ['blush', 'peck'],
    },
    { name: 'peek', desc: 'Peek into Chat', users: false, reqUser: false, buttons: ['pat', 'lurk'] },
-   { name: 'boop', desc: 'Boop someone', users: true, reqUser: true, buttons: ['pat'] },
+   { name: 'boop', desc: 'Boop someone', users: true, reqUser: true, buttons: ['pat', 'nom'] },
    {
     name: 'poke',
     desc: 'Poke someone',
