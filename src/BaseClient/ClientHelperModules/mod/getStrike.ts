@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 
 import DataBase from '../../DataBase.js';
 import getPunishment from '../getPunishment.js';
 
-export default async (user: Discord.User | CT.bEvalUser, guild: Discord.Guild) => {
+export default async (user: Discord.User, guild: Discord.Guild) => {
  const punishments = await getPunishment(user.id, 'all-on');
  const strikeSettings = await DataBase.autopunish.findMany({
   where: {

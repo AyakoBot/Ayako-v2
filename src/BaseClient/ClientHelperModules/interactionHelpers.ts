@@ -255,7 +255,7 @@ const getComponents = (
  },
 ];
 
-const mapper = (u: (Discord.User | string | CT.bEvalUser)[]) =>
+const mapper = (u: (Discord.User | string)[]) =>
  u
   .map((m) => `<@${typeof m !== 'string' ? m.id : m}>`)
   .filter((a, index, arr) => arr.indexOf(a) === index)
@@ -292,7 +292,7 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
 
 const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  author: Discord.User,
- originalUsers: readonly Discord.User[] | CT.bEvalUser[],
+ originalUsers: readonly Discord.User[],
  language: CT.Language,
  lan: CT.Language['slashCommands']['interactions'][T],
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction | Discord.Message,
@@ -373,5 +373,5 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
 
  const url = new URL(embed.url as string);
  const executorId = url.searchParams.get('exec') as string;
- return [await getUser(executorId)].filter((u): u is CT.bEvalUser => !!u);
+ return [await getUser(executorId)].filter((u): u is Discord.User => !!u);
 };

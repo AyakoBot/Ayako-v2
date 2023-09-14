@@ -8,8 +8,8 @@ import send from './send.js';
 export default async (
  guild: Discord.Guild,
  type: CT.ModTypes,
- target: Discord.User | CT.bEvalUser,
- executor: Discord.User | CT.bEvalUser,
+ target: Discord.User,
+ executor: Discord.User,
  options: { role?: Discord.Role; reason?: string },
 ): Promise<void> => {
  const logchannels = await getLogChannels('modlog', guild);

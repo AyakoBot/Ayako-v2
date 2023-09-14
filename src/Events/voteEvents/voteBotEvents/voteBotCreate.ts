@@ -8,7 +8,7 @@ import type CT from '../../../Typings/CustomTypings.js';
 export default async (
  vote: CT.TopGGBotVote,
  guild: Discord.Guild,
- user: Discord.User | CT.bEvalUser,
+ user: Discord.User,
  member: Discord.GuildMember | undefined,
  setting: Prisma.votesettings,
 ) => {
@@ -87,8 +87,8 @@ export const getTier = (rewards: Prisma.voterewards[], member: Discord.GuildMemb
 
 export const doAnnouncement = async (
  settings: Prisma.votesettings,
- user: Discord.User | CT.bEvalUser,
- voted: Discord.User | CT.bEvalUser | Discord.Guild,
+ user: Discord.User,
+ voted: Discord.User | Discord.Guild,
  language: CT.Language,
  rewards?: Prisma.voterewards[],
 ) => {
@@ -241,7 +241,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
 
 export const currency = (
  r: Prisma.voterewards,
- user: Discord.User | CT.bEvalUser,
+ user: Discord.User,
  guild: Discord.Guild,
 ) => {
  if (!r.rewardcurrency) return;
@@ -264,7 +264,7 @@ export const currency = (
 export const roles = (
  r: Prisma.voterewards,
  member: Discord.GuildMember | undefined,
- bot: Discord.User | CT.bEvalUser,
+ bot: Discord.User,
  language: CT.Language,
 ) => {
  if (!member?.manageable) return;
@@ -275,7 +275,7 @@ export const roles = (
 
 export const xp = (
  r: Prisma.voterewards,
- user: Discord.User | CT.bEvalUser,
+ user: Discord.User,
  guild: Discord.Guild,
 ) => {
  if (!r.rewardxp) return;
@@ -299,7 +299,7 @@ export const xp = (
 
 export const xpmultiplier = (
  r: Prisma.voterewards,
- user: Discord.User | CT.bEvalUser,
+ user: Discord.User,
  guild: Discord.Guild,
 ) => {
  if (!r.rewardxpmultiplier) return;

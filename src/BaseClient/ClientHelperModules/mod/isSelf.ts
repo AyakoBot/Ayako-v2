@@ -8,8 +8,8 @@ import { request } from '../requestHandler.js';
 
 export default (
  cmd: ModTypes.CmdType,
- executor: Discord.User | CT.bEvalUser,
- target: Discord.User | CT.bEvalUser,
+ executor: Discord.User,
+ target: Discord.User,
  message: ModTypes.ResponseMessage,
  language: CT.Language,
  type: CT.ModTypes,

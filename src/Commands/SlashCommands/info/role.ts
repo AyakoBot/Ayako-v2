@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.d';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -59,7 +58,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     ? {
        name: eventLan.managed,
        value: `${language.languageFunction.getUser(
-        (await ch.getUser(role.tags.botId)) as CT.bEvalUser,
+        (await ch.getUser(role.tags.botId)) as Discord.User,
        )}`,
       }
     : undefined,
@@ -67,7 +66,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     ? {
        name: language.Bot,
        value: `${language.languageFunction.getUser(
-        (await ch.getUser(role.tags.integrationId)) as CT.bEvalUser,
+        (await ch.getUser(role.tags.integrationId)) as Discord.User,
        )}`,
       }
     : undefined,

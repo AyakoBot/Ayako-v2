@@ -8,7 +8,7 @@ import constants from '../../Other/constants.js';
 export default async (
  cmd: ModTypes.CmdType,
  message: ModTypes.ResponseMessage,
- target: Discord.User | CT.bEvalUser,
+ target: Discord.User,
  language: CT.Language,
  type: CT.ModTypes,
 ) => {

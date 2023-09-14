@@ -15,7 +15,7 @@ import {
 export default async (
  vote: CT.TopGGGuildVote,
  guild: Discord.Guild,
- user: Discord.User | CT.bEvalUser,
+ user: Discord.User,
  member: Discord.GuildMember | undefined,
  setting: Prisma.votesettings,
 ) => {

@@ -18,7 +18,7 @@ type ChannelTypes =
  | Discord.BaseGuildVoiceChannel;
 
 async function send(
- channels: Discord.User | CT.bEvalUser | Discord.GuildMember,
+ channels: Discord.User | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
@@ -54,7 +54,6 @@ async function send(
   | { id: string[]; guildId: string }
   | { id: string; guildId: string }
   | Discord.User
-  | CT.bEvalUser
   | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
@@ -239,7 +238,6 @@ const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
 const getChannel = async (
  channels:
   | Discord.User
-  | CT.bEvalUser
   | ChannelTypes
   | {
      id: string;

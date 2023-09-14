@@ -46,25 +46,6 @@ export interface TopGGGuildVote {
  authorization: string;
 }
 
-export interface bEvalUser {
- id: string;
- bot: boolean;
- system: boolean;
- flags: number;
- username: string;
- discriminator: string;
- avatar?: string;
- banner?: string;
- accentColor?: string;
- createdTimestamp: number;
- defaultAvatarURL: string;
- hexAccentColor?: string;
- tag: string;
- avatarURL?: string;
- displayAvatarURL: string;
- bannerURL?: string;
-}
-
 export type TableNamesMap = {
  'anti-spam': Prisma.antispam;
  'blacklist-rules': null;

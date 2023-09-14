@@ -1,4 +1,23 @@
-import type CT from '../../Typings/CustomTypings.js';
+import { User } from '../Other/classes.js';
+
+interface bEvalUser {
+ id: string;
+ bot: boolean;
+ system: boolean;
+ flags: number;
+ username: string;
+ discriminator: string;
+ avatar?: string;
+ banner?: string;
+ accentColor?: string;
+ createdTimestamp: number;
+ defaultAvatarURL: string;
+ hexAccentColor?: string;
+ tag: string;
+ avatarURL?: string;
+ displayAvatarURL: string;
+ bannerURL?: string;
+}
 
 export default async (id: string) => {
  const client = (await import('../Client.js')).default;
@@ -9,8 +28,8 @@ export default async (id: string) => {
   })
  )
   ?.flat()
-  .find((u): u is CT.bEvalUser => !!u);
+  .find((u): u is bEvalUser => !!u);
 
- if (response) return response;
+ if (response) return new User(client, response);
  return client.users.fetch(id).catch(() => undefined);
 };
