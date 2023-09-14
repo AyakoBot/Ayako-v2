@@ -464,7 +464,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getMessage: (channel: Discord.GuildTextBasedChannel, messageId: string) =>
+ getMessage: async (channel: Discord.GuildTextBasedChannel, messageId: string) =>
   channel.messages.cache.get(messageId) ??
   (cache.apis.get(channel.guild.id) ?? API).channels
    .getMessage(channel.id, messageId)
