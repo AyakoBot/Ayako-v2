@@ -228,7 +228,7 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- get: (guild: Discord.Guild, id: string) =>
+ get: async (guild: Discord.Guild, id: string) =>
   guild.channels.cache.get(id) ??
   (guild ? cache.apis.get(guild.id) ?? API : API).channels
    .get(id)
@@ -347,7 +347,7 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getInvites: (channel: Discord.GuildChannel) =>
+ getInvites: async (channel: Discord.GuildChannel) =>
   (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
    .getInvites(channel.id)
    .then((invites) => {

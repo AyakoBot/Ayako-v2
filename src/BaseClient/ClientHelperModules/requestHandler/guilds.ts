@@ -106,7 +106,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getMemberBan: (guild: Discord.Guild, userId: string) =>
+ getMemberBan: async (guild: Discord.Guild, userId: string) =>
   guild.bans.cache.get(userId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getMemberBan(guild.id, userId)
@@ -375,7 +375,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getEmoji: (guild: Discord.Guild, emojiId: string) =>
+ getEmoji: async (guild: Discord.Guild, emojiId: string) =>
   guild.emojis.cache.get(emojiId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getEmoji(guild.id, emojiId)
@@ -562,7 +562,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getSticker: (guild: Discord.Guild, stickerId: string) =>
+ getSticker: async (guild: Discord.Guild, stickerId: string) =>
   guild.stickers.cache.get(stickerId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getSticker(guild.id, stickerId)
@@ -633,7 +633,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getAutoModerationRule: (guild: Discord.Guild, ruleId: string) =>
+ getAutoModerationRule: async (guild: Discord.Guild, ruleId: string) =>
   guild.autoModerationRules.cache.get(ruleId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getAutoModerationRule(guild.id, ruleId)
@@ -679,7 +679,7 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getMember: (guild: Discord.Guild, userId: string) =>
+ getMember: async (guild: Discord.Guild, userId: string) =>
   guild.members.cache.get(userId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getMember(guild.id, userId)

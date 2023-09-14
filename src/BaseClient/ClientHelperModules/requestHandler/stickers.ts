@@ -11,7 +11,7 @@ export default {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
- get: (guild: Discord.Guild, stickerId: string) =>
+ get: async (guild: Discord.Guild, stickerId: string) =>
   guild.stickers.cache.get(stickerId) ??
   (cache.apis.get(guild.id) ?? API).stickers
    .get(stickerId)

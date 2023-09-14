@@ -6,7 +6,7 @@ import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
 export default {
- get: (guild: Discord.Guild, userId: string) =>
+ get: async (guild: Discord.Guild, userId: string) =>
   guild.client.users.cache.get(userId) ??
   (cache.apis.get(guild.id) ?? API).users
    .get(userId)
