@@ -16,10 +16,7 @@ export default {
     guild.client.users.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
-    return e as Discord.DiscordAPIError;
-   }),
+   .catch((e) => e as Discord.DiscordAPIError),
  getCurrent: (guild: Discord.Guild) =>
   (cache.apis.get(guild.id) ?? API).users
    .getCurrent()

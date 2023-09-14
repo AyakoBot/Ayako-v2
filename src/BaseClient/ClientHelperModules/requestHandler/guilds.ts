@@ -689,10 +689,7 @@ export default {
     guild.members.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
-    return e as Discord.DiscordAPIError;
-   }),
+   .catch((e) => e as Discord.DiscordAPIError),
  searchForMembers: (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
   (cache.apis.get(guild.id) ?? API).guilds
    .searchForMembers(guild.id, query)
