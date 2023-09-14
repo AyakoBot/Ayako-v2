@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true>,
@@ -8,6 +9,8 @@ export default async (
  if (cmd instanceof Discord.ChatInputCommandInteraction && !cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
  if (!cmd.channel) return;
+
+ if (text) text = await getContent(cmd.guild, text);
 
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
  const language = await ch.languageSelector(cmd.guildId);

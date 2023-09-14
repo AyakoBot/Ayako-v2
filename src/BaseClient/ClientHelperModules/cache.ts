@@ -61,6 +61,7 @@ const cache: {
  guildLevellingCD: Set<string>;
  lastMessageGlobal: Map<string, string>;
  lastMessageGuild: Map<string, string>;
+ afkCD: Map<string, Set<string>>;
 } = {
  // Discord Cache
  invites,
@@ -96,6 +97,7 @@ const cache: {
  guildLevellingCD: new Set(),
  lastMessageGlobal: new Map(),
  lastMessageGuild: new Map(),
+ afkCD: new Map(),
 };
 
 export default cache;

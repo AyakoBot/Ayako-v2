@@ -26,7 +26,7 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Pr
  const webhook = await getWebhook(msg);
  if (!webhook || !webhook.token) return;
 
- const content = await getContent(msg, settings);
+ const content = await getContent(msg.guild, msg.content, settings, msg);
  if (!content) return;
 
  ch.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
@@ -37,19 +37,24 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Pr
  });
 };
 
-const getContent = async (msg: Discord.AutoModerationActionExecution, settings: Prisma.censor) => {
+export const getContent = async (
+ guild: Discord.Guild,
+ rawContent: string,
+ settings?: Prisma.censor,
+ msg?: Discord.AutoModerationActionExecution,
+) => {
  const rules = (
-  msg.guild.autoModerationRules.cache.size
-   ? msg.guild.autoModerationRules.cache.map((r) => r)
+  guild.autoModerationRules.cache.size
+   ? guild.autoModerationRules.cache.map((r) => r)
    : await ch.request.guilds
-      .getAutoModerationRules(msg.guild)
+      .getAutoModerationRules(guild)
       .then((r) => ('message' in r ? [] : r))
       .catch(() => [])
  )
   .flat()
   .filter((r): r is Discord.AutoModerationRule => !!r)
   .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
-  .filter((r) => (settings.repostrules?.length ? settings.repostrules?.includes(r.id) : true));
+  .filter((r) => (settings?.repostrules?.length ? settings.repostrules?.includes(r.id) : true));
 
  if (!rules.length) return undefined;
 
@@ -66,7 +71,7 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
     })
   : [];
 
- let content = String(msg.content);
+ let content = String(rawContent);
 
  presetKeywords?.forEach((p) => {
   content = content.replace(new RegExp(p.keyword, 'g'), '[...]');
@@ -100,11 +105,13 @@ const getContent = async (msg: Discord.AutoModerationActionExecution, settings: 
    });
  });
 
- if (msg.content === content) return undefined;
+ if (rawContent === content) return undefined;
 
- content = content
-  .replace(msg.matchedContent ?? '', msg.matchedContent ? '[...]' : '')
-  .replace(msg.matchedKeyword ?? '', msg.matchedKeyword ? '[...]' : '');
+ content = msg
+  ? content
+     .replace(msg.matchedContent ?? '', msg.matchedContent ? '[...]' : '')
+     .replace(msg.matchedKeyword ?? '', msg.matchedKeyword ? '[...]' : '')
+  : content;
 
  return content;
 };

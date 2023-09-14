@@ -82,9 +82,21 @@ const mention = async (
  const afk = await Promise.all(
   msg.mentions.members.filter((m) => m.id !== msg.author.id).map((m) => getAFK(m.guild.id, m.id)),
  );
+
  const embeds = afk
+  .filter((a) => (a ? ch.cache.afkCD.get(a.guildid)?.has(a.userid) : true))
   .map((a): Discord.APIEmbed | undefined => {
    if (!a) return undefined;
+
+   const afkGuild = ch.cache.afkCD.get(a.guildid);
+   if (!afkGuild) ch.cache.afkCD.set(a.guildid, new Set());
+   ch.cache.afkCD.get(a.guildid)?.add(a.userid);
+
+   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+    ch.cache.afkCD.get(a.guildid)?.delete(a.userid);
+    if (ch.cache.afkCD.get(a.guildid)?.size) return;
+    ch.cache.afkCD.delete(a.guildid);
+   });
 
    return {
     color: ch.constants.colors.loading,
