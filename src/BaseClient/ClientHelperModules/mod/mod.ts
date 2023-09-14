@@ -74,8 +74,8 @@ const mod = {
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
-   me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   isManageable(targetMember, me) ||
+   !me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
+   !isManageable(targetMember, me) ||
    !options.roles.length
   ) {
    permissionError(cmd, message, language, type);
@@ -153,8 +153,8 @@ const mod = {
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
-   me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   isManageable(targetMember, me) ||
+   !me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
+   !isManageable(targetMember, me) ||
    !options.roles.length
   ) {
    permissionError(cmd, message, language, type);
