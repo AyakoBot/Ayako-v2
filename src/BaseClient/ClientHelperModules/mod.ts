@@ -104,7 +104,7 @@ const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTyp
  const language = await languageSelector(options.guild.id);
 
  if (options.dbOnly) {
-  log(options.guild, type, options.target, options.executor, options);
+  log(options.guild, type, options.target, options.executor, options as never);
   await db(cmd, options, language, type);
   return false;
  }
@@ -125,7 +125,7 @@ const runBasics2 = async (
  cmd: CmdType,
 ) => {
  declareSuccess(cmd, message, language, options, type);
- log(options.guild, type, options.target, options.executor, options);
+ log(options.guild, type, options.target, options.executor, options as never);
  await db(cmd, options, language, type);
  notifyTarget(options, language, type);
 };

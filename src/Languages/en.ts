@@ -3403,18 +3403,36 @@ export default {
    },
    roleAdd: {
     author: 'Role given to Member',
-    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
-     `${getRole(options.role)}was given to\n${getUser(target)}by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'roleAdd'>,
+    ) =>
+     `${options.roles.map((r) => getRole(r)).join('')}was given to\n${getUser(target)}by\n${getUser(
+      executor,
+     )}`,
    },
    roleRemove: {
     author: 'Role removed from Member',
-    description: (target: Discord.User, executor: Discord.User, options: { role: Discord.Role }) =>
-     `${getRole(options.role)}was removed from\n${getUser(target)}by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'roleRemove'>,
+    ) =>
+     `${options.roles.map((r) => getRole(r)).join('')}was removed from\n${getUser(
+      target,
+     )}by\n${getUser(executor)}`,
    },
-   tempmuteAdd: {
+   tempMuteAdd: {
     author: 'Member Muted',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Muted by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'tempMuteAdd'>,
+    ) =>
+     `${getUser(target)}was Muted by\n${getUser(executor)}until\n${ch.constants.standard.getTime(
+      options.duration * 1000,
+     )}`,
    },
    muteRemove: {
     author: 'Member Un-Muted',
@@ -3433,23 +3451,47 @@ export default {
    },
    tempBanAdd: {
     author: 'User Temp-Banned',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Temp-Banned by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'tempBanAdd'>,
+    ) =>
+     `${getUser(target)}was Temp-Banned by\n${getUser(
+      executor,
+     )}until\n${ch.constants.standard.getTime(options.duration * 1000)}`,
    },
    channelBanAdd: {
     author: 'Member Channel-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Channel-Banned by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'channelBanAdd'>,
+    ) =>
+     `${getUser(target)}was Channel-Banned by\n${getUser(executor)}from\n${getChannel(
+      options.channel,
+     )}`,
    },
-   tempChannelbanAdd: {
+   tempChannelBanAdd: {
     author: 'Member Temp-Channel-Banned',
-    description: (target: Discord.User, executor: Discord.User, options: { time: string }) =>
-     `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}for\n${options.time}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'tempChannelBanAdd'>,
+    ) =>
+     `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}from\n${getChannel(
+      options.channel,
+     )}until\n${ch.constants.standard.getTime(options.duration * 1000)}`,
    },
    channelBanRemove: {
     author: 'Member Channel-Un-Banned',
-    description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}`,
+    description: (
+     target: Discord.User,
+     executor: Discord.User,
+     options: CT.ModOptions<'channelBanRemove'>,
+    ) =>
+     `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}from\n${getChannel(
+      options.channel,
+     )}`,
    },
    banRemove: {
     author: 'User Un-Banned',

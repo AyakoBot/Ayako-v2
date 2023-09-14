@@ -10,7 +10,10 @@ export default async (
  type: CT.ModTypes,
  target: Discord.User,
  executor: Discord.User,
- options: { role?: Discord.Role; reason?: string },
+ options: CT.ModOptions<CT.ModTypes> & {
+  roles?: Discord.Role[];
+  channel: Discord.GuildBasedChannel;
+ },
 ): Promise<void> => {
  const logchannels = await getLogChannels('modlog', guild);
  if (!logchannels) return;
