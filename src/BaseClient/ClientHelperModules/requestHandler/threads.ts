@@ -27,6 +27,7 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  getMember: (thread: Discord.ThreadChannel, userId: string) =>
+  thread.members.cache.get(userId) ??
   (cache.apis.get(thread.guild.id) ?? API).threads
    .getMember(thread.id, userId)
    .then((m) => {

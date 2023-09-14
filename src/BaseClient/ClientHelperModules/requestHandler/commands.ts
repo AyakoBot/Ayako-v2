@@ -43,6 +43,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getGlobalCommand: (guild: Discord.Guild, appId: string, commandId: string) =>
+  guild.client.application.commands.cache.get(commandId) ??
   (cache.apis.get(guild.id) ?? API).applicationCommands
    .getGlobalCommand(appId, commandId)
    .then((cmd) => {
@@ -136,6 +137,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getGuildCommand: (guild: Discord.Guild, appId: string, commandId: string) =>
+  guild.commands.cache.get(commandId) ??
   (cache.apis.get(guild.id) ?? API).applicationCommands
    .getGuildCommand(appId, guild.id, commandId)
    .then((cmd) => {

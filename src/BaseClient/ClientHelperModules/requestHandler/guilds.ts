@@ -107,6 +107,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getMemberBan: (guild: Discord.Guild, userId: string) =>
+  guild.bans.cache.get(userId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getMemberBan(guild.id, userId)
    .then((b) => {
@@ -375,6 +376,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getEmoji: (guild: Discord.Guild, emojiId: string) =>
+  guild.emojis.cache.get(emojiId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getEmoji(guild.id, emojiId)
    .then((e) => {
@@ -561,6 +563,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getSticker: (guild: Discord.Guild, stickerId: string) =>
+  guild.stickers.cache.get(stickerId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getSticker(guild.id, stickerId)
    .then((s) => {
@@ -631,6 +634,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getAutoModerationRule: (guild: Discord.Guild, ruleId: string) =>
+  guild.autoModerationRules.cache.get(ruleId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getAutoModerationRule(guild.id, ruleId)
    .then((r) => {
@@ -676,6 +680,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getMember: (guild: Discord.Guild, userId: string) =>
+  guild.members.cache.get(userId) ??
   (cache.apis.get(guild.id) ?? API).guilds
    .getMember(guild.id, userId)
    .then((m) => {

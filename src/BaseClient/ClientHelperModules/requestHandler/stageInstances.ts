@@ -19,6 +19,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  get: (channel: Discord.StageChannel) =>
+  channel.guild.stageInstances.cache.find((s) => s.channelId === channel.id) ??
   (cache.apis.get(channel.guild.id) ?? API).stageInstances
    .get(channel.id)
    .then((s) => {

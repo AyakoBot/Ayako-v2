@@ -5,10 +5,9 @@ import { API } from '../../Client.js';
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
 
-
-
 export default {
  get: (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
+  guild.invites.cache.get(code) ??
   (cache.apis.get(guild.id) ?? API).invites
    .get(code, query)
    .then((i) => {

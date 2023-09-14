@@ -229,6 +229,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  get: (guild: Discord.Guild, id: string) =>
+  guild.channels.cache.get(id) ??
   (guild ? cache.apis.get(guild.id) ?? API : API).channels
    .get(id)
    .then((c) => {
@@ -464,6 +465,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  getMessage: (channel: Discord.GuildTextBasedChannel, messageId: string) =>
+  channel.messages.cache.get(messageId) ??
   (cache.apis.get(channel.guild.id) ?? API).channels
    .getMessage(channel.id, messageId)
    .then((m) => {

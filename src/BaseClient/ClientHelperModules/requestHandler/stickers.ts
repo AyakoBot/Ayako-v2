@@ -12,6 +12,7 @@ export default {
    return e as Discord.DiscordAPIError;
   }),
  get: (guild: Discord.Guild, stickerId: string) =>
+  guild.stickers.cache.get(stickerId) ??
   (cache.apis.get(guild.id) ?? API).stickers
    .get(stickerId)
    .then((s) => {
