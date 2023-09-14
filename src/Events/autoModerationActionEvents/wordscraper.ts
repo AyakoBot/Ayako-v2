@@ -4,7 +4,17 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 export default async (msg: Discord.AutoModerationActionExecution) => {
  const presetLength = Number(msg.autoModerationRule?.triggerMetadata.presets.length);
 
- if (presetLength !== 1) return;
+ if (presetLength !== 1) {
+  ch.send(
+   { id: '1024968281465040957', guildId: '669893888856817665' },
+   {
+    content: `${ch.util.makeCodeBlock(msg.matchedKeyword ?? '-')}\n${ch.util.makeCodeBlock(
+     msg.matchedContent ?? '-',
+    )}`,
+   },
+  );
+  return;
+ }
  if (!msg.autoModerationRule?.triggerMetadata.presets[0]) return;
  if (!msg.matchedKeyword) return;
 
