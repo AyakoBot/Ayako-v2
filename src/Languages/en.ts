@@ -1755,7 +1755,7 @@ export default {
     self: 'Nya~ :3',
     noOne: 'Nya~ :3',
     others: ['nyas at', ':3'],
-    buttons: ['Pat them!', 'Woof!'],
+    buttons: ['Pat them!', 'Woof!', 'Nya back~ =w='],
    },
    pat: {
     self: 'pats themself, what an odd thing to do',

@@ -430,7 +430,13 @@ export default {
     buttons: ['nuzzle', 'bonk'],
    },
    { name: 'mew', desc: 'Mew =^_^=', users: false, reqUser: false, buttons: ['pat', 'woof'] },
-   { name: 'nya', desc: 'Nya! =^_^=', users: false, reqUser: false, buttons: ['pat', 'woof'] },
+   {
+    name: 'nya',
+    desc: 'Nya! =^_^=',
+    users: false,
+    reqUser: false,
+    buttons: ['pat', 'woof', 'nya'],
+   },
    {
     name: 'pat',
     desc: 'Headpat time~!',
