@@ -608,19 +608,19 @@ const getAllComponents = (
  const lan = language.slashCommands.settings.categories['blacklist-rules'];
 
  const createKeywordRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
- createKeywordRule.custom_id = 'autoModRule/create_keyword';
+ createKeywordRule.custom_id = 'settings/autoModRule/create_keyword';
  createKeywordRule.label = lan.keyword;
  const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
- createMentionSpamRule.custom_id = 'autoModRule/create_mention';
+ createMentionSpamRule.custom_id = 'settings/autoModRule/create_mention';
  createMentionSpamRule.label = lan.mention;
  const createSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
- createSpamRule.custom_id = 'autoModRule/create_spam';
+ createSpamRule.custom_id = 'settings/autoModRule/create_spam';
  createSpamRule.label = lan.spam;
  const createPresetRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
- createPresetRule.custom_id = 'autoModRule/create_preset';
+ createPresetRule.custom_id = 'settings/autoModRule/create_preset';
  createPresetRule.label = lan.preset;
  const createMemberRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
- createMemberRule.custom_id = 'autoModRule/create_member';
+ createMemberRule.custom_id = 'settings/autoModRule/create_member';
  createMemberRule.label = lan.member;
 
  if (
