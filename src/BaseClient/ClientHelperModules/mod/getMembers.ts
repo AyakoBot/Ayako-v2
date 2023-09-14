@@ -16,8 +16,8 @@ export default async (
  const executorMember = await request.guilds.getMember(options.guild, options.executor.id);
  if ('message' in executorMember) return undefined;
 
- const targetMember = await options.guild.members.fetch(options.target.id).catch(() => undefined);
- if (!targetMember) {
+ const targetMember = await request.guilds.getMember(options.guild, options.target.id);
+ if ('message' in targetMember) {
   message?.edit({
    embeds: [
     {
