@@ -1867,13 +1867,13 @@ export default {
     self: 'sleeps on their own lap, it seems they are quite agile',
     others: ['lets', 'sleep on their lap'],
     request: 'wants to sleep on your lap!',
-    buttons: ['Allow and get comfy~'],
+    buttons: ['Get comfy~'],
    },
    thighsleep: {
     self: 'sleeps on their own thighs, it seems they are quite agile',
     others: ['lets', 'sleep on their thighs'],
     request: 'wants to sleep on your thighs!',
-    buttons: ['Allow and get comfy~'],
+    buttons: ['Get comfy~'],
    },
    think: {
     self: 'thinks about themself, must be a thinker',
