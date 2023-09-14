@@ -3384,6 +3384,8 @@ export default {
   selfroles: `${name} Self-Roles`,
   nitro: `${name} Nitro-Monitoring`,
   autoroles: `${name} Auto-Roles`,
+  stickyroles: `${name} Sticky-Roles`,
+  stickyperms: `${name} Sticky-Channel-Perms`,
  },
  mod: {
   warning: {

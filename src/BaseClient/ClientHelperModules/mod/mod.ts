@@ -17,6 +17,7 @@ import objectEmotes from '../objectEmotes.js';
 import getCustomBot from '../getCustomBot.js';
 import isManageable from '../isManageable.js';
 import isModeratable from '../isModeratable.js';
+import DataBase from '../../DataBase.js';
 
 const mod = {
  roleAdd: async (
@@ -28,7 +29,40 @@ const mod = {
   const type = 'roleAdd';
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+   if (!sticky?.stickyrolesactive) return false;
+
+   const roles = sticky.stickyrolesmode
+    ? options.roles.filter((r) => !sticky.roles.includes(r.id))
+    : options.roles.filter((r) => sticky.roles.includes(r.id));
+   if (!roles.length) return false;
+
+   const stickyRoleSetting = await DataBase.stickyrolemembers.findUnique({
+    where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
+   });
+
+   if (stickyRoleSetting?.roles.filter((r) => roles.find((r1) => r1.id === r)).length) {
+    actionAlreadyApplied(cmd, message, options.target, language, type);
+    return false;
+   }
+
+   DataBase.stickyrolemembers
+    .upsert({
+     where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
+     create: {
+      userid: options.target.id,
+      guildid: options.guild.id,
+      roles: roles.map((r) => r.id),
+     },
+     update: {
+      roles: [...(stickyRoleSetting?.roles ?? []), ...roles.map((r) => r.id)],
+     },
+    })
+    .then();
+
+   return true;
+  }
   const { targetMember } = memberResponse;
 
   if (targetMember.roles.cache.hasAll(...options.roles.map((r) => r.id))) {
@@ -66,7 +100,48 @@ const mod = {
   const type = 'roleRemove';
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+   if (!sticky?.stickyrolesactive) return true;
+
+   const roles = sticky.stickyrolesmode
+    ? options.roles.filter((r) => !sticky.roles.includes(r.id))
+    : options.roles.filter((r) => sticky.roles.includes(r.id));
+   if (!roles.length) return true;
+
+   const stickyRoleSetting = await DataBase.stickyrolemembers.findUnique({
+    where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
+   });
+   if (!stickyRoleSetting) return true;
+
+   if (!stickyRoleSetting.roles.filter((r) => roles.find((r1) => r1.id === r)).length) {
+    actionAlreadyApplied(cmd, message, options.target, language, type);
+    return false;
+   }
+
+   const newRoles = stickyRoleSetting?.roles.filter((r) => !roles.find((r1) => r1.id === r)) ?? [];
+
+   if (!newRoles.length) {
+    DataBase.stickyrolemembers
+     .delete({
+      where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
+     })
+     .then();
+    return true;
+   }
+
+   DataBase.stickyrolemembers
+    .update({
+     where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
+     data: {
+      roles: newRoles,
+     },
+    })
+    .then();
+
+   return true;
+  }
+
   const { targetMember } = memberResponse;
 
   if (!targetMember.roles.cache.hasAny(...options.roles.map((r) => r.id))) {
@@ -104,7 +179,21 @@ const mod = {
   const type = 'tempMuteAdd';
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const punishments = await DataBase.punish_tempmutes.findMany({
+    where: { userid: options.target.id, guildid: options.guild.id },
+   });
+
+   const runningPunishment = punishments?.find(
+    (p) => Number(p.uniquetimestamp) + Number(p.duration) * 1000 > Date.now(),
+   );
+
+   if (runningPunishment) {
+    actionAlreadyApplied(cmd, message, options.target, language, type);
+    return false;
+   }
+   return true;
+  }
   const { targetMember } = memberResponse;
 
   const me = await getCustomBot(options.guild);
@@ -158,7 +247,21 @@ const mod = {
   cache.mutes.delete(options.guild.id, options.target.id);
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const punishments = await DataBase.punish_tempmutes.findMany({
+    where: { userid: options.target.id, guildid: options.guild.id },
+   });
+
+   const runningPunishment = punishments?.find(
+    (p) => Number(p.uniquetimestamp) + Number(p.duration) * 1000 > Date.now(),
+   );
+
+   if (!runningPunishment) {
+    actionAlreadyApplied(cmd, message, options.target, language, type);
+    return false;
+   }
+   return false;
+  }
   const { targetMember } = memberResponse;
 
   const me = await getCustomBot(options.guild);
@@ -343,7 +446,53 @@ const mod = {
   }
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+   if (!sticky?.stickypermsactive) return false;
+
+   const stickyPermSetting = await DataBase.stickypermmembers.findUnique({
+    where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
+   });
+
+   DataBase.stickypermmembers
+    .upsert({
+     where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
+     create: {
+      userid: options.target.id,
+      channelid: options.channel.id,
+      guildid: options.guild.id,
+      allowbits: 0n,
+      denybits: new Discord.PermissionsBitField([
+       Discord.PermissionsBitField.Flags.SendMessages,
+       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+       Discord.PermissionsBitField.Flags.ViewChannel,
+       Discord.PermissionsBitField.Flags.AddReactions,
+       Discord.PermissionsBitField.Flags.Connect,
+      ]).bitfield,
+     },
+     update: {
+      denybits: stickyPermSetting?.denybits
+       ? new Discord.PermissionsBitField(stickyPermSetting.denybits).add([
+          Discord.PermissionsBitField.Flags.SendMessages,
+          Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+          Discord.PermissionsBitField.Flags.ViewChannel,
+          Discord.PermissionsBitField.Flags.AddReactions,
+          Discord.PermissionsBitField.Flags.Connect,
+         ]).bitfield
+       : undefined,
+      allowbits: stickyPermSetting?.allowbits
+       ? new Discord.PermissionsBitField(stickyPermSetting.allowbits).remove([
+          Discord.PermissionsBitField.Flags.SendMessages,
+          Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+          Discord.PermissionsBitField.Flags.ViewChannel,
+          Discord.PermissionsBitField.Flags.AddReactions,
+          Discord.PermissionsBitField.Flags.Connect,
+         ]).bitfield
+       : undefined,
+     },
+    })
+    .then();
+  }
 
   const me = await getCustomBot(options.guild);
   if (
@@ -405,7 +554,53 @@ const mod = {
   cache.channelBans.delete(options.guild.id, options.channel.id, options.target.id);
 
   const memberResponse = await getMembers(cmd, options, language, message, type);
-  if (!memberResponse) return false;
+  if (!memberResponse) {
+   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+   if (!sticky?.stickypermsactive) return true;
+
+   const stickyPermSetting = await DataBase.stickypermmembers.findUnique({
+    where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
+   });
+   if (!stickyPermSetting) return true;
+
+   const newDeny = stickyPermSetting?.denybits
+    ? new Discord.PermissionsBitField(stickyPermSetting.denybits).add([
+       Discord.PermissionsBitField.Flags.SendMessages,
+       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+       Discord.PermissionsBitField.Flags.ViewChannel,
+       Discord.PermissionsBitField.Flags.AddReactions,
+       Discord.PermissionsBitField.Flags.Connect,
+      ]).bitfield
+    : undefined;
+
+   const newAllow = stickyPermSetting?.allowbits
+    ? new Discord.PermissionsBitField(stickyPermSetting.allowbits).remove([
+       Discord.PermissionsBitField.Flags.SendMessages,
+       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+       Discord.PermissionsBitField.Flags.ViewChannel,
+       Discord.PermissionsBitField.Flags.AddReactions,
+       Discord.PermissionsBitField.Flags.Connect,
+      ]).bitfield
+    : undefined;
+
+   if (newDeny === 0n && newAllow === 0n) {
+    DataBase.stickypermmembers.delete({
+     where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
+    });
+    return true;
+   }
+
+   DataBase.stickypermmembers
+    .update({
+     where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
+     data: {
+      denybits: newDeny,
+      allowbits: newAllow,
+     },
+    })
+    .then();
+   return true;
+  }
 
   const me = await getCustomBot(options.guild);
   if (

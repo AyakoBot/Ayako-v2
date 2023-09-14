@@ -769,6 +769,7 @@ model stats {
 model sticky {
   guildid           String   @id(map: "stickyroles_pkey") @db.VarChar
   roles             String[] @db.VarChar
+  // true = list of unsticky roles, false = list of sticky roles
   stickyrolesmode   Boolean  @default(true)
   stickyrolesactive Boolean  @default(false)
   stickypermsactive Boolean  @default(false)

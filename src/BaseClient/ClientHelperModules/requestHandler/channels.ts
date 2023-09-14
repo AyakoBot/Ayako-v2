@@ -218,7 +218,7 @@ export default {
    });
  },
  edit: (
-  channel: Discord.GuildChannel | Discord.ThreadChannel,
+  channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
   body: Discord.RESTPatchAPIChannelJSONBody,
  ) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
@@ -336,7 +336,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  createInvite: (
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildBasedChannel,
   body: Discord.RESTPostAPIChannelInviteJSONBody,
   reason?: string,
  ) =>
@@ -347,7 +347,7 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getInvites: async (channel: Discord.GuildChannel) =>
+ getInvites: async (channel: Discord.GuildBasedChannel) =>
   (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
    .getInvites(channel.id)
    .then((invites) => {
@@ -434,7 +434,7 @@ export default {
     return e as Discord.DiscordAPIError;
    }),
  editPermissionOverwrite: (
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildBasedChannel,
   overwriteId: string,
   body: Discord.RESTPutAPIChannelPermissionJSONBody,
   reason?: string,
@@ -445,7 +445,11 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- deletePermissionOverwrite: (channel: Discord.GuildChannel, overwriteId: string, reason?: string) =>
+ deletePermissionOverwrite: (
+  channel: Discord.GuildBasedChannel,
+  overwriteId: string,
+  reason?: string,
+ ) =>
   (cache.apis.get(channel.guild.id) ?? API).channels
    .deletePermissionOverwrite(channel.id, overwriteId, { reason })
    .catch((e) => {

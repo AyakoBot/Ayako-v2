@@ -5,6 +5,7 @@ import welcome from '../guildMemberAdd/welcome.js';
 import cache from './cache.js';
 import autoroles from '../guildMemberAdd/autoroles.js';
 import verification from '../guildMemberAdd/verification.js';
+import stickyRoles from '../guildMemberAdd/stickyRoles.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
@@ -15,5 +16,6 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   welcome(member);
   autoroles(member);
   verification(member);
+  stickyRoles(member);
  }
 };
