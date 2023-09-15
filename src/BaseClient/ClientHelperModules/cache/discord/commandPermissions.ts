@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import error from '../../error.js';
 
 export interface CommandPermissions {

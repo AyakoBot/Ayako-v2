@@ -4,6 +4,8 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 export default async (msg: Discord.AutoModerationActionExecution) => {
  const presetLength = Number(msg.autoModerationRule?.triggerMetadata.presets.length);
 
+ if (!msg.autoModerationRule?.triggerMetadata.presets[0]) return;
+
  if (presetLength !== 1) {
   ch.send(
    { id: '1024968281465040957', guildId: '669893888856817665' },
@@ -15,7 +17,7 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
   );
   return;
  }
- if (!msg.autoModerationRule?.triggerMetadata.presets[0]) return;
+
  if (!msg.matchedKeyword) return;
 
  ch.DataBase.filterscraper
