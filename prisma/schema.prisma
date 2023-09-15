@@ -382,6 +382,7 @@ model guildsettings {
   legacyrp          Boolean  @default(false)
   token             String?  @db.VarChar
   publickey         String?  @db.Text
+  appid             String?  @db.VarChar
 
   @@index(guildid)
 }
