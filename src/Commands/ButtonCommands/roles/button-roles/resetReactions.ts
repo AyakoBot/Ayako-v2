@@ -6,7 +6,6 @@ import {
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
-import { request } from '../../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
@@ -38,14 +37,14 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
 
   const firstEmoji = reactionsToRemove.shift();
   action = firstEmoji
-   ? await request.channels.deleteAllReactionsOfEmoji(message, firstEmoji?.emoji.identifier)
+   ? await ch.request.channels.deleteAllReactionsOfEmoji(message, firstEmoji?.emoji.identifier)
    : undefined;
   if (action && 'message' in action && typeof action.message !== 'string') {
    reactionsToRemove.forEach((r) =>
-    request.channels.deleteAllReactionsOfEmoji(message, r.emoji.identifier),
+    ch.request.channels.deleteAllReactionsOfEmoji(message, r.emoji.identifier),
    );
   }
- } else action = await request.channels.deleteAllReactions(message);
+ } else action = await ch.request.channels.deleteAllReactions(message);
 
  if (action && 'message' in action && typeof action.message === 'string') {
   ch.errorCmd(cmd, action.message, language);

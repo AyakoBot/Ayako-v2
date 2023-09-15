@@ -3,7 +3,6 @@ import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { getGiveawayEmbed } from '../../SlashCommands/giveaway/end.js';
-import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -76,7 +75,7 @@ const edit = async (
   return;
  }
 
- const msg = await request.channels.getMessage(channel, cmd.message.id);
+ const msg = await ch.request.channels.getMessage(channel, cmd.message.id);
  if ('message' in msg) {
   ch.error(cmd.guild as Discord.Guild, msg);
   return;
@@ -91,10 +90,10 @@ const edit = async (
   !msg.flags.has(Discord.MessageFlags.Crossposted) ||
   msg.channel.type !== Discord.ChannelType.GuildAnnouncement
  ) {
-  request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
+  ch.request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
   return;
  }
 
  if (Number(msg.editedTimestamp) > Date.now() - 1800000) return;
- request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
+ ch.request.channels.editMsg(msg, { embeds: [await getGiveawayEmbed(language, giveaway)] });
 };

@@ -1,7 +1,9 @@
 import * as Discord from 'discord.js';
+import DiscordAPI from 'discord-api-types/v10';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
+import requestHandler from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 const name = 'basic';
 
@@ -142,3 +144,42 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+ _oldSettings,
+ newSettings,
+ changedSetting,
+ guild,
+) => {
+ switch (changedSetting) {
+  case 'token': {
+   if (!newSettings.token) {
+    ch.cache.apis.delete(newSettings.guildid);
+    return;
+   }
+
+   requestHandler(newSettings.token, newSettings.guildid);
+
+   const me = await ch.cache.apis
+    .get(newSettings.guildid)
+    ?.rest.get(`/applications/${ch.getBotIdFromToken(newSettings.token)}`)
+    .then((a) => a as DiscordAPI.APIApplication)
+    .catch((e: Discord.DiscordAPIError) => e);
+
+   if (!me || 'message' in me) {
+    ch.error(guild, new Error(me ? me.message : 'Unknown Application'));
+    return;
+   }
+
+   ch.DataBase.guildsettings
+    .update({
+     where: { guildid: newSettings.guildid },
+     data: { publickey: me.verify_key },
+    })
+    .then();
+   break;
+  }
+  default:
+   break;
+ }
+};

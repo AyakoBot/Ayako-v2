@@ -8,7 +8,6 @@ import {
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
-import { request } from '../../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -63,5 +62,5 @@ const removeReactions = (emoji: string, message: Discord.Message<true>) => {
  );
 
  if (!reaction) return undefined;
- return request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
+ return ch.request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
 };

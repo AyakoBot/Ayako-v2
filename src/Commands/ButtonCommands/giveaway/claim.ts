@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import { getMessage, getClaimButton, getButton } from '../../SlashCommands/giveaway/end.js';
-import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -58,7 +57,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  const giveawayMessage = await getMessage(giveaway);
  if (giveawayMessage) {
-  await request.channels.editMsg(giveawayMessage, {
+  await ch.request.channels.editMsg(giveawayMessage, {
    components: [
     {
      type: Discord.ComponentType.ActionRow,
@@ -77,5 +76,5 @@ export default async (cmd: Discord.ButtonInteraction) => {
   msgid: collection.replymsgid,
   guildid: giveaway.guildid,
  });
- if (msg && msg.deletable) request.channels.deleteMessage(msg);
+ if (msg && msg.deletable) ch.request.channels.deleteMessage(msg);
 };
