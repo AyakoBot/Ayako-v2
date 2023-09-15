@@ -17,10 +17,7 @@ export default async () => {
   const globalCommands = async () => {
    if (!s.token) return;
 
-   const commands = await ch.request.commands.getGlobalCommands(
-    guild,
-    ch.getBotIdFromToken(s.token),
-   );
+   const commands = await ch.request.commands.getGlobalCommands(guild);
 
    if ('message' in commands) {
     ch.error(guild, new Error(commands.message));
@@ -33,10 +30,7 @@ export default async () => {
   const guildCommands = async () => {
    if (!s.token) return;
 
-   const commands = await ch.request.commands.getGuildCommands(
-    guild,
-    ch.getBotIdFromToken(s.token),
-   );
+   const commands = await ch.request.commands.getGuildCommands(guild);
 
    if ('message' in commands) {
     ch.error(guild, new Error(commands.message));

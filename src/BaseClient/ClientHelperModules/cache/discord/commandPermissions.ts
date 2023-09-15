@@ -23,10 +23,7 @@ const self: CommandPermissions = {
 
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
-  const fetched = await requestHandler.commands.getGuildCommandsPermissions(
-   guild,
-   await getBotIdFromGuild(guild),
-  );
+  const fetched = await requestHandler.commands.getGuildCommandsPermissions(guild);
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Command Permissions'));
    return undefined;

@@ -214,7 +214,7 @@ export const tasks = {
   }
  },
  commands: async (guild: Discord.Guild) => {
-  ch.request.commands.getGuildCommands(guild, await ch.getBotIdFromGuild(guild));
+  ch.request.commands.getGuildCommands(guild);
  },
  members: async (guild: Discord.Guild) => {
   ch.fetchAllGuildMembers(guild);

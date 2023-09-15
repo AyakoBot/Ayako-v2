@@ -35,18 +35,11 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- await ch.request.commands.bulkOverwriteGuildCommands(
-  cmd.guild,
-  (await ch.getCustomBot(cmd.guild)).id,
-  [],
- );
+ await ch.request.commands.bulkOverwriteGuildCommands(cmd.guild, []);
 };
 
 export const create = async (guild: Discord.Guild) => {
- const commands = await ch.request.commands.getGuildCommands(
-  guild,
-  (await ch.getCustomBot(guild)).id,
- );
+ const commands = await ch.request.commands.getGuildCommands(guild);
 
  if ('message' in commands) {
   ch.error(guild, new Error(commands.message));

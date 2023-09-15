@@ -5,15 +5,15 @@ import { API } from '../../Client.js';
 // eslint-disable-next-line import/no-cycle
 import cache from '../cache.js';
 import * as Classes from '../../Other/classes.js';
+import { guild as getBotIdFromGuild } from '../getBotIdFrom.js';
 
 export default {
- getGlobalCommands: (
+ getGlobalCommands: async (
   guild: Discord.Guild,
-  appId: string,
   query?: Discord.RESTGetAPIApplicationCommandsQuery,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGlobalCommands(appId, query)
+   .getGlobalCommands(await getBotIdFromGuild(guild), query)
    .then((cmds) => {
     const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
     parsed.forEach((p) => {
@@ -26,13 +26,12 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createGlobalCommand: (
+ createGlobalCommand: async (
   guild: Discord.Guild,
-  appId: string,
   body: Discord.RESTPostAPIApplicationCommandsJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .createGlobalCommand(appId, body)
+   .createGlobalCommand(await getBotIdFromGuild(guild), body)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd);
     guild.client.application.commands.cache.set(cmd.id, parsed);
@@ -42,10 +41,10 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getGlobalCommand: async (guild: Discord.Guild, appId: string, commandId: string) =>
+ getGlobalCommand: async (guild: Discord.Guild, commandId: string) =>
   guild.client.application.commands.cache.get(commandId) ??
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGlobalCommand(appId, commandId)
+   .getGlobalCommand(await getBotIdFromGuild(guild), commandId)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd);
     if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
@@ -56,14 +55,13 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- editGlobalCommand: (
+ editGlobalCommand: async (
   guild: Discord.Guild,
-  appId: string,
   commandId: string,
   body: Discord.RESTPatchAPIApplicationCommandJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .editGlobalCommand(appId, commandId, body)
+   .editGlobalCommand(await getBotIdFromGuild(guild), commandId, body)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd);
     guild.client.application.commands.cache.set(cmd.id, parsed);
@@ -73,9 +71,9 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- deleteGlobalCommand: (guild: Discord.Guild, appId: string, commandId: string) =>
+ deleteGlobalCommand: async (guild: Discord.Guild, commandId: string) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .deleteGlobalCommand(appId, commandId)
+   .deleteGlobalCommand(await getBotIdFromGuild(guild), commandId)
    .then(() => {
     guild.client.application.commands.cache.delete(commandId);
    })
@@ -83,13 +81,12 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- bulkOverwriteGlobalCommands: (
+ bulkOverwriteGlobalCommands: async (
   guild: Discord.Guild,
-  appId: string,
   body: Discord.RESTPutAPIApplicationCommandsJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .bulkOverwriteGlobalCommands(appId, body)
+   .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
    .then((cmds) => {
     const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
     parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
@@ -99,13 +96,12 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getGuildCommands: (
+ getGuildCommands: async (
   guild: Discord.Guild,
-  appId: string,
   query?: Discord.RESTGetAPIApplicationGuildCommandsQuery,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGuildCommands(appId, guild.id, query)
+   .getGuildCommands(await getBotIdFromGuild(guild), guild.id, query)
    .then((cmds) => {
     const parsed = cmds.map(
      (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
@@ -120,13 +116,12 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createGuildCommand: (
+ createGuildCommand: async (
   guild: Discord.Guild,
-  appId: string,
   body: Discord.RESTPostAPIApplicationGuildCommandsJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .createGuildCommand(appId, guild.id, body)
+   .createGuildCommand(await getBotIdFromGuild(guild), guild.id, body)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
     guild.commands.cache.set(cmd.id, parsed);
@@ -136,10 +131,10 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getGuildCommand: async (guild: Discord.Guild, appId: string, commandId: string) =>
+ getGuildCommand: async (guild: Discord.Guild, commandId: string) =>
   guild.commands.cache.get(commandId) ??
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGuildCommand(appId, guild.id, commandId)
+   .getGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
     if (guild.commands.cache.get(parsed.id)) return parsed;
@@ -150,14 +145,13 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- editGuildCommand: (
+ editGuildCommand: async (
   guild: Discord.Guild,
-  appId: string,
   commandId: string,
   body: Discord.RESTPatchAPIApplicationGuildCommandJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .editGuildCommand(appId, guild.id, commandId, body)
+   .editGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId, body)
    .then((cmd) => {
     const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
     guild.commands.cache.set(cmd.id, parsed);
@@ -167,9 +161,9 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- deleteGuildCommand: (guild: Discord.Guild, appId: string, commandId: string) =>
+ deleteGuildCommand: async (guild: Discord.Guild, commandId: string) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .deleteGuildCommand(appId, guild.id, commandId)
+   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
    .then(() => {
     guild.commands.cache.delete(commandId);
    })
@@ -177,13 +171,12 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- bulkOverwriteGuildCommands: (
+ bulkOverwriteGuildCommands: async (
   guild: Discord.Guild,
-  appId: string,
   body: Discord.RESTPutAPIApplicationGuildCommandsJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .bulkOverwriteGuildCommands(appId, guild.id, body)
+   .bulkOverwriteGuildCommands(await getBotIdFromGuild(guild), guild.id, body)
    .then((cmds) => {
     const parsed = cmds.map(
      (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
@@ -195,29 +188,34 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getGuildCommandPermissions: (guild: Discord.Guild, appId: string, commandId: string) =>
+ getGuildCommandPermissions: async (guild: Discord.Guild, commandId: string) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGuildCommandPermissions(appId, guild.id, commandId)
+   .getGuildCommandPermissions(await getBotIdFromGuild(guild), guild.id, commandId)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- getGuildCommandsPermissions: (guild: Discord.Guild, appId: string) =>
+ getGuildCommandsPermissions: async (guild: Discord.Guild) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .getGuildCommandsPermissions(appId, guild.id)
+   .getGuildCommandsPermissions(await getBotIdFromGuild(guild), guild.id)
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- editGuildCommandPermissions: (
+ editGuildCommandPermissions: async (
   guild: Discord.Guild,
   userToken: string,
-  appId: string,
   commandId: string,
   body: Discord.RESTPutAPIApplicationCommandPermissionsJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).applicationCommands
-   .editGuildCommandPermissions(userToken, appId, guild.id, commandId, body)
+   .editGuildCommandPermissions(
+    userToken,
+    await getBotIdFromGuild(guild),
+    guild.id,
+    commandId,
+    body,
+   )
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;

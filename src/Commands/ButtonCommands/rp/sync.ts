@@ -32,15 +32,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
  const resolved: boolean[] = [];
  const promises = (await cmd.guild.commands.fetch()).map((c) =>
   ch.request.commands
-   .editGuildCommandPermissions(
-    c.guild as Discord.Guild,
-    user.accesstoken as string,
-    c.applicationId,
-    c.id,
-    {
-     permissions: perms,
-    },
-   )
+   .editGuildCommandPermissions(c.guild as Discord.Guild, user.accesstoken as string, c.id, {
+    permissions: perms,
+   })
    .then(() => {
     resolved.push(true);
    }),

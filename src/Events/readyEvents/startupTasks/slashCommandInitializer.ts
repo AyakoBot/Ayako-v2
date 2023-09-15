@@ -16,10 +16,9 @@ export default async () => {
 
   await ch.request.commands.bulkOverwriteGlobalCommands(
    guild,
-   ch.getBotIdFromToken(g.token as string),
    createCommands.map((c) => c.toJSON()),
   );
 
-  await ch.request.commands.getGlobalCommands(guild, ch.getBotIdFromToken(g.token as string));
+  await ch.request.commands.getGlobalCommands(guild);
  });
 };
