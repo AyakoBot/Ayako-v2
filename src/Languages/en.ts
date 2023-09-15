@@ -3408,9 +3408,9 @@ export default {
      executor: Discord.User,
      options: CT.ModOptions<'roleAdd'>,
     ) =>
-     `${options.roles.map((r) => getRole(r)).join('')}was given to\n${getUser(target)}by\n${getUser(
-      executor,
-     )}`,
+     `${options.roles.map((r) => getRole(r)).join('')}${
+      options.roles.length > 1 ? 'were' : 'was'
+     } given to\n${getUser(target)}by\n${getUser(executor)}`,
    },
    roleRemove: {
     author: 'Role removed from Member',
@@ -3419,9 +3419,9 @@ export default {
      executor: Discord.User,
      options: CT.ModOptions<'roleRemove'>,
     ) =>
-     `${options.roles.map((r) => getRole(r)).join('')}was removed from\n${getUser(
-      target,
-     )}by\n${getUser(executor)}`,
+     `${options.roles.map((r) => getRole(r)).join('')}${
+      options.roles.length > 1 ? 'were' : 'was'
+     } removed from\n${getUser(target)}by\n${getUser(executor)}`,
    },
    tempMuteAdd: {
     author: 'Member Muted',
@@ -3551,7 +3551,9 @@ export default {
     error: 'I failed to remove these Roles from the User',
     alreadyApplied: (target: Discord.User) => `${getUser(target)}doesn't have that Role`,
     success: (target: Discord.User, options: CT.ModOptions<'roleRemove'>) =>
-     `${options.roles.join(', ')} were removed from ${target}`,
+     `${options.roles.join(', ')} ${
+      options.roles.length > 1 ? 'were' : 'was'
+     } removed from ${target}`,
     loading: 'Removing Role from User...',
     self: "You can't remove Roles from yourself",
     me: "I won't remove Roles from myself",
