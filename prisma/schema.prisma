@@ -8,54 +8,53 @@ datasource db {
 }
 
 enum AutoPunishPunishmentType {
- warn
- kick
- tempmute
- ban
- tempban
- channelban
- tempchannelban
- softban
+  warn
+  kick
+  tempmute
+  ban
+  tempban
+  channelban
+  tempchannelban
+  softban
 }
 
 enum PunishmentType {
- warn
- kick
- tempmute
- ban
- tempban
- channelban
- tempchannelban
- strike
- softban
+  warn
+  kick
+  tempmute
+  ban
+  tempban
+  channelban
+  tempchannelban
+  strike
+  softban
 }
 
 enum AnswerType {
- paragraph
- short
- number
- boolean
- multiple_choice
- single_choice
- justtext // TODO no answer
+  paragraph
+  short
+  number
+  boolean
+  multiple_choice
+  single_choice
+  justtext // TODO no answer
 }
 
-enum LevelType { 
- guild
- global
+enum LevelType {
+  guild
+  global
 }
 
 enum LevelUpMode {
- message
- react
- silent
+  message
+  react
+  silent
 }
 
 enum VoteType {
- guild
- bot
+  guild
+  bot
 }
-
 
 model afk {
   userid  String  @db.VarChar
@@ -68,16 +67,16 @@ model afk {
 }
 
 model antiraid {
-  guildid       String   @id(map: "antiraidsettings_pkey") @db.VarChar
-  active        Boolean  @default(false)
-  posttof       Boolean  @default(false)
-  postchannel   String?  @db.VarChar
-  pingroles     String[] @db.VarChar
-  pingusers     String[] @db.VarChar
-  time          Decimal  @default(15) @db.Decimal
-  jointhreshold Decimal  @default(10) @db.Decimal
-  punishmenttof Boolean  @default(true)
-  punishment    PunishmentType   @default(kick)
+  guildid       String         @id(map: "antiraidsettings_pkey") @db.VarChar
+  active        Boolean        @default(false)
+  posttof       Boolean        @default(false)
+  postchannel   String?        @db.VarChar
+  pingroles     String[]       @db.VarChar
+  pingusers     String[]       @db.VarChar
+  time          Decimal        @default(15) @db.Decimal
+  jointhreshold Decimal        @default(10) @db.Decimal
+  punishmenttof Boolean        @default(true)
+  punishment    PunishmentType @default(kick)
 
   @@index(guildid)
 }
@@ -99,28 +98,26 @@ model antispam {
 }
 
 model antivirus {
-  guildid              String   @id @db.VarChar
-  active               Boolean  @default(false)
-  linklogging          Boolean  @default(false)
-  linklogchannels      String[] @db.VarChar
-  usestrike            Boolean  @default(false)
+  guildid              String         @id @db.VarChar
+  active               Boolean        @default(false)
+  linklogging          Boolean        @default(false)
+  linklogchannels      String[]       @db.VarChar
+  usestrike            Boolean        @default(false)
   action               PunishmentType @default(warn)
-  duration             Decimal  @default(3600) @db.Decimal
-  deletemessageseconds Decimal  @default(604800) @db.Decimal
+  duration             Decimal        @default(3600) @db.Decimal
+  deletemessageseconds Decimal        @default(604800) @db.Decimal
 
   @@index(guildid)
 }
 
-
-
 model appealquestions {
-  guildid         String  @db.VarChar
-  uniquetimestamp Decimal @id @db.Decimal
-  active          Boolean @default(false)
+  guildid         String      @db.VarChar
+  uniquetimestamp Decimal     @id @db.Decimal
+  active          Boolean     @default(false)
   question        String?
   answertype      AnswerType?
-  required        Boolean @default(true)
-  
+  required        Boolean     @default(true)
+
   @@index([guildid, uniquetimestamp])
 }
 
@@ -155,20 +152,19 @@ model art {
   @@index(created)
 }
 
-
 model autopunish {
-  guildid              String   @db.VarChar
-  uniquetimestamp      Decimal  @id @db.Decimal
-  duration             Decimal  @default(3600) @db.Decimal
-  warnamount           Decimal? @db.Decimal
-  active               Boolean  @default(false)
-  addroles             String[] @db.VarChar
-  removeroles          String[] @db.VarChar
-  confirmationreq      Boolean  @default(false)
-  punishmentawaittime  Decimal  @default(20) @db.Decimal
+  guildid              String                   @db.VarChar
+  uniquetimestamp      Decimal                  @id @db.Decimal
+  duration             Decimal                  @default(3600) @db.Decimal
+  warnamount           Decimal?                 @db.Decimal
+  active               Boolean                  @default(false)
+  addroles             String[]                 @db.VarChar
+  removeroles          String[]                 @db.VarChar
+  confirmationreq      Boolean                  @default(false)
+  punishmentawaittime  Decimal                  @default(20) @db.Decimal
   punishment           AutoPunishPunishmentType @default(warn)
-  deletemessageseconds Decimal  @default(604800) @db.Decimal 
-  
+  deletemessageseconds Decimal                  @default(604800) @db.Decimal
+
   @@index([guildid, uniquetimestamp])
 }
 
@@ -190,36 +186,37 @@ model balance {
   @@id([userid, guildid])
   @@index([userid, guildid])
 }
+
 model censor {
-  active  Boolean  @default(false)
-  guildid String   @id(map: "censor_pkey") @db.VarChar
-  repostroles   String[] @db.VarChar
-  repostrules   String[] @db.VarChar
+  active      Boolean  @default(false)
+  guildid     String   @id(map: "censor_pkey") @db.VarChar
+  repostroles String[] @db.VarChar
+  repostrules String[] @db.VarChar
 
   @@index(guildid)
 }
 
 model newlines {
-  active               Boolean  @default(false)
-  guildid              String   @id(map: "newlines_pkey") @db.VarChar
-  maxnewlines          Decimal? @db.Decimal 
-  wlroleid             String[] @db.VarChar
-  wlchannelid          String[] @db.VarChar
+  active               Boolean        @default(false)
+  guildid              String         @id(map: "newlines_pkey") @db.VarChar
+  maxnewlines          Decimal?       @db.Decimal
+  wlroleid             String[]       @db.VarChar
+  wlchannelid          String[]       @db.VarChar
   action               PunishmentType @default(warn)
-  duration             Decimal  @default(3600) @db.Decimal
-  deletemessageseconds Decimal  @default(604800) @db.Decimal
+  duration             Decimal        @default(3600) @db.Decimal
+  deletemessageseconds Decimal        @default(604800) @db.Decimal
 
   @@index(guildid)
 }
 
 model invites {
-  active               Boolean  @default(false)
-  guildid              String   @id(map: "invites_pkey") @db.VarChar
-  wlroleid             String[] @db.VarChar
-  wlchannelid          String[] @db.VarChar
+  active               Boolean        @default(false)
+  guildid              String         @id(map: "invites_pkey") @db.VarChar
+  wlroleid             String[]       @db.VarChar
+  wlchannelid          String[]       @db.VarChar
   action               PunishmentType @default(warn)
-  duration             Decimal  @default(3600) @db.Decimal
-  deletemessageseconds Decimal  @default(604800) @db.Decimal
+  duration             Decimal        @default(3600) @db.Decimal
+  deletemessageseconds Decimal        @default(604800) @db.Decimal
 
   @@index(guildid)
 }
@@ -384,46 +381,44 @@ model guildsettings {
   ptreminderenabled Boolean  @default(true)
   legacyrp          Boolean  @default(false)
   token             String?  @db.VarChar
+  publickey         String?  @db.Text
 
   @@index(guildid)
 }
 
-
-
 model level {
-  userid     String  @db.VarChar
-  guildid    String  @default(dbgenerated("1")) @db.VarChar
+  userid     String    @db.VarChar
+  guildid    String    @default(dbgenerated("1")) @db.VarChar
   type       LevelType
-  xp         Decimal @default(0) @db.Decimal
-  level      Decimal @default(0) @db.Decimal
-  multiplier Decimal @default(1) @db.Decimal
+  xp         Decimal   @default(0) @db.Decimal
+  level      Decimal   @default(0) @db.Decimal
+  multiplier Decimal   @default(1) @db.Decimal
 
   @@id([userid, guildid, type])
   @@index(guildid)
 }
 
-
 model leveling {
-  guildid         String   @id @db.VarChar
-  active          Boolean  @default(true)
-  xpmultiplier    Decimal  @default(1) @db.Decimal
-  blchannels      String[] @db.VarChar
-  blroles         String[] @db.VarChar
-  blusers         String[] @db.VarChar
-  wlchannels      String[] @db.VarChar
-  wlroles         String[] @db.VarChar
-  wlusers         String[] @db.VarChar
-  xppermsg        Decimal  @default(25) @db.Decimal
+  guildid         String      @id @db.VarChar
+  active          Boolean     @default(true)
+  xpmultiplier    Decimal     @default(1) @db.Decimal
+  blchannels      String[]    @db.VarChar
+  blroles         String[]    @db.VarChar
+  blusers         String[]    @db.VarChar
+  wlchannels      String[]    @db.VarChar
+  wlroles         String[]    @db.VarChar
+  wlusers         String[]    @db.VarChar
+  xppermsg        Decimal     @default(25) @db.Decimal
   // true = stack, false = replace
-  rolemode        Boolean  @default(true)
-  lvlupmode       LevelUpMode  @default(silent)
-  lvlupdeltimeout Decimal  @default(10) @db.Decimal
-  lvlupchannels   String[] @db.VarChar
-  lvlupemotes     String[] @default(dbgenerated("'{🆙,AMayakopeek:924071140257841162}'::character varying[]")) @db.VarChar
-  embed           Decimal? @db.Decimal
-  ignoreprefixes  Boolean  @default(false)
+  rolemode        Boolean     @default(true)
+  lvlupmode       LevelUpMode @default(silent)
+  lvlupdeltimeout Decimal     @default(10) @db.Decimal
+  lvlupchannels   String[]    @db.VarChar
+  lvlupemotes     String[]    @default(dbgenerated("'{🆙,AMayakopeek:924071140257841162}'::character varying[]")) @db.VarChar
+  embed           Decimal?    @db.Decimal
+  ignoreprefixes  Boolean     @default(false)
   prefixes        String[]
-  minwords        Decimal @default(0) @db.Decimal
+  minwords        Decimal     @default(0) @db.Decimal
 
   @@index(guildid)
 }
@@ -778,10 +773,10 @@ model sticky {
 }
 
 model stickymessages {
-  guildid   String  @db.VarChar
-  lastmsgid String  @db.VarChar
-  channelid String  @id(map: "primary") @db.VarChar
-  userid    String  @db.VarChar
+  guildid   String @db.VarChar
+  lastmsgid String @db.VarChar
+  channelid String @id(map: "primary") @db.VarChar
+  userid    String @db.VarChar
 
   @@index(guildid)
 }
@@ -920,9 +915,9 @@ model welcome {
 }
 
 model deletethreads {
- guildid    String   @id @db.VarChar
- channelid  String   @db.VarChar
- deletetime Decimal  @db.Decimal
+  guildid    String  @id @db.VarChar
+  channelid  String  @db.VarChar
+  deletetime Decimal @db.Decimal
 
   @@index(guildid)
 }
