@@ -295,6 +295,7 @@ const postUpdate = async <T extends keyof SettingsNames>(
  newSetting: unknown,
  changedSetting: keyof FieldName<T>,
  settingName: T,
+ guild: Discord.Guild,
  uniquetimestamp: number | string | undefined,
 ) => {
  const files = await glob(`${process.cwd()}/Commands/SlashCommands/**/*`);
@@ -320,6 +321,7 @@ const postUpdate = async <T extends keyof SettingsNames>(
   oldSetting as CT.TableNamesMap[T],
   newSetting as CT.TableNamesMap[T],
   changedSetting as never,
+  guild,
   uniquetimestamp,
  );
 };
@@ -1097,7 +1099,7 @@ export const updateLog = async <T extends keyof SettingsNames>(
  language: CT.Language,
  lan: SettingsNames[T],
 ) => {
- postUpdate(oldSetting, newSetting, changedSetting, settingName, uniquetimestamp);
+ postUpdate(oldSetting, newSetting, changedSetting, settingName, guild, uniquetimestamp);
 
  const logs = await getLogChannels('settingslog', guild);
  if (!logs) return;

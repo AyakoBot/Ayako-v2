@@ -89,8 +89,6 @@ export interface AutoCompleteFile {
  ) => Promise<{ name: string; value: string }[] | undefined>;
 }
 
-type FieldName<T extends keyof TableNamesMap> = keyof TableNamesMap[T]['fields'];
-
 export interface SettingsFile<K extends keyof TableNamesMap> {
  getEmbeds: (
   embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
@@ -120,7 +118,8 @@ export interface SettingsFile<K extends keyof TableNamesMap> {
  postChange?: (
   oldSetting: TableNamesMap[K],
   newSetting: TableNamesMap[K],
-  changedSetting: FieldName<K>,
+  changedSetting: keyof TableNamesMap[K],
+  guild: Discord.Guild,
   uniquetimestamp?: number | string,
  ) => Promise<void>;
 }
