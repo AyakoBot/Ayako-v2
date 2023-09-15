@@ -27,7 +27,7 @@ const reposter = async (msg: Discord.AutoModerationActionExecution, settings: Pr
  if (!webhook || !webhook.token) return;
 
  const content = await getContent(msg.guild, msg.content, settings, msg);
- if (!content) return;
+ if (msg.content === content) return;
 
  ch.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
   username: msg.member?.displayName,
@@ -42,6 +42,7 @@ export const getContent = async (
  rawContent: string,
  settings?: Prisma.censor,
  msg?: Discord.AutoModerationActionExecution,
+ channel?: Discord.GuildBasedChannel,
 ) => {
  const rules = (
   guild.autoModerationRules.cache.size
@@ -54,9 +55,14 @@ export const getContent = async (
   .flat()
   .filter((r): r is Discord.AutoModerationRule => !!r)
   .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
-  .filter((r) => (settings?.repostrules?.length ? settings.repostrules?.includes(r.id) : true));
+  .filter((r) => (settings?.repostrules?.length ? settings.repostrules?.includes(r.id) : true))
+  .filter((r) =>
+   channel
+    ? !r.triggerMetadata.allowList.includes(channel.id)
+    : !r.triggerMetadata.allowList.length,
+  );
 
- if (!rules.length) return undefined;
+ if (!rules.length) return rawContent;
 
  const presetRule = rules.find(
   (r) =>
@@ -105,7 +111,7 @@ export const getContent = async (
    });
  });
 
- if (rawContent === content) return undefined;
+ if (rawContent === content) return rawContent;
 
  content = msg
   ? content

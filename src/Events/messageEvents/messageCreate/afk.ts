@@ -1,8 +1,10 @@
 import Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import Prisma from '@prisma/client';
 import { getPrefix } from './commandHandler.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
+import { getContent } from '../../autoModerationActionEvents/censor.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -79,15 +81,25 @@ const mention = async (
  if (commandName === 'unafk') return;
  if (msg.mentions.members.size > 10) return;
 
- const afk = await Promise.all(
-  msg.mentions.members.filter((m) => m.id !== msg.author.id).map((m) => getAFK(m.guild.id, m.id)),
+ const afk = (
+  await Promise.all(
+   msg.mentions.members.filter((m) => m.id !== msg.author.id).map((m) => getAFK(m.guild.id, m.id)),
+  )
+ )
+  .filter((a): a is Prisma.afk => !!a)
+  .filter((a) => !ch.cache.afkCD.get(a.guildid)?.has(a.userid));
+
+ const contents = await Promise.all(
+  afk.map((a) =>
+   a.text ? getContent(msg.guild, a.text, undefined, undefined, msg.channel) : null,
+  ),
  );
+ contents.forEach((c, i) => {
+  afk[i].text = c;
+ });
 
  const embeds = afk
-  .filter((a) => (a ? ch.cache.afkCD.get(a.guildid)?.has(a.userid) : true))
   .map((a): Discord.APIEmbed | undefined => {
-   if (!a) return undefined;
-
    const afkGuild = ch.cache.afkCD.get(a.guildid);
    if (!afkGuild) ch.cache.afkCD.set(a.guildid, new Set());
    ch.cache.afkCD.get(a.guildid)?.add(a.userid);

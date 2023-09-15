@@ -10,8 +10,6 @@ export default async (
  if (!cmd.inGuild()) return;
  if (!cmd.channel) return;
 
- if (text) text = await getContent(cmd.guild, text);
-
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.afk;
@@ -28,7 +26,7 @@ export default async (
   ? [
      {
       color: ch.constants.colors.loading,
-      description: text,
+      description: await getContent(cmd.guild, text, undefined, undefined, cmd.channel),
      },
     ]
   : [];
