@@ -56,11 +56,15 @@ export const getContent = async (
   .filter((r): r is Discord.AutoModerationRule => !!r)
   .filter((r) => r.eventType === Discord.AutoModerationRuleEventType.MessageSend)
   .filter((r) => (settings?.repostrules?.length ? settings.repostrules?.includes(r.id) : true))
-  .filter((r) =>
-   channel
-    ? !r.triggerMetadata.allowList.includes(channel.id)
-    : !r.triggerMetadata.allowList.length,
-  );
+  .filter((r) => {
+   if (!r.exemptChannels.size) return true;
+
+   const includesChannel = channel ? r.exemptChannels.has(channel.id) : false;
+   const includesParent = channel?.parentId ? r.exemptChannels.has(channel.parentId) : false;
+
+   if (includesChannel || includesParent) return false;
+   return true;
+  });
 
  if (!rules.length) return rawContent;
 
