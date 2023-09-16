@@ -70,14 +70,22 @@ export default async (
  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
 };
 
-const roles = (
+const roles = async (
  r: Prisma.voterewards,
  member: Discord.GuildMember | undefined,
  guild: Discord.Guild,
  language: CT.Language,
 ) => {
- if (!member?.manageable) return;
  if (!r.rewardroles?.length) return;
+ if (!member) return;
+
+ const me = await ch.getBotMemberFromGuild(member.guild);
+ if (!me) {
+  ch.error(member.guild, new Error("I can't find myself in this guild!"));
+  return;
+ }
+
+ if (!ch.isManageable(member, me)) return;
 
  ch.roleManager.add(member, r.rewardroles, language.events.vote.guildReason(guild), 1);
 };

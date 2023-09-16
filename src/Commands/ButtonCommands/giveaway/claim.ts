@@ -76,5 +76,6 @@ export default async (cmd: Discord.ButtonInteraction) => {
   msgid: collection.replymsgid,
   guildid: giveaway.guildid,
  });
- if (msg && msg.deletable) ch.request.channels.deleteMessage(msg);
+
+ if (msg && (await ch.isDeleteable(msg))) ch.request.channels.deleteMessage(msg);
 };

@@ -3,8 +3,10 @@ import reply from './replyCmd.js';
 import objectEmotes from './objectEmotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
+import isEditable from './isEditable.js';
+import { request } from './requestHandler.js';
 
-export default (
+export default async (
  cmd:
   | Discord.ButtonInteraction
   | Discord.CommandInteraction
@@ -25,10 +27,11 @@ export default (
  };
 
  if (
-  (m && m instanceof Discord.Message && m.editable) ||
+  (m && m instanceof Discord.Message && (await isEditable(m))) ||
   m instanceof Discord.InteractionResponse
  ) {
-  return m.edit({ embeds: [embed] }).catch(() => undefined);
+  if (m instanceof Discord.InteractionResponse) m.edit({ embeds: [embed] }).catch(() => undefined);
+  else request.channels.editMsg(m, { embeds: [embed] });
  }
 
  return reply(cmd, { embeds: [embed], ephemeral: true });

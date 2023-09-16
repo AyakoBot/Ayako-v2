@@ -5,6 +5,7 @@ import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
 import error from './error.js';
+import isEditable from './isEditable.js';
 
 export default async <T extends Discord.Message<boolean>>(
  msg: T,
@@ -22,7 +23,7 @@ export default async <T extends Discord.Message<boolean>>(
   description: content,
  };
 
- if (m && m.editable) {
+ if (m && (await isEditable(m))) {
   const ms = await request.channels.editMsg(m, { embeds: [embed] });
   if ('message' in ms) {
    if (msg.inGuild()) error(msg.guild, new Error(`Couldnt get Guild Webhooks`));

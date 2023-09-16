@@ -73,6 +73,7 @@ export default async (msg: Discord.Message<true>) => {
      : await ch.send(msg.channel, payload);
 
    if (!m) return;
+
    if ('message' in m) {
     ch.error(msg.guild, new Error(m.message));
     return;
@@ -80,7 +81,7 @@ export default async (msg: Discord.Message<true>) => {
 
    if (webhook && message.author.id === webhook.id && webhook.token) {
     ch.request.webhooks.deleteMessage(msg.guild, webhook.id, webhook.token, message.id);
-   } else if (message.deletable) ch.request.channels.deleteMessage(message);
+   } else if (await ch.isDeleteable(message)) ch.request.channels.deleteMessage(message);
 
    ch.DataBase.stickymessages
     .update({

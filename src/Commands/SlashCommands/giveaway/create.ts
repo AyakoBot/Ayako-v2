@@ -86,7 +86,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (!giveaway) {
   ch.errorCmd(cmd, language.Unknown, language);
-  if (msg.deletable) ch.request.channels.deleteMessage(msg);
+  if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
   return;
  }
 

@@ -13,6 +13,7 @@ import DataBase from '../../../BaseClient/DataBase.js';
 import error from '../../../BaseClient/ClientHelperModules/error.js';
 import cache from '../../../BaseClient/ClientHelperModules/cache.js';
 import { request } from '../../../BaseClient/ClientHelperModules/requestHandler.js';
+import isDeleteable from '../../../BaseClient/ClientHelperModules/isDeleteable.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -75,9 +76,10 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
-  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-   if (m?.deletable) request.channels.deleteMessage(m);
-   if (msg.deletable) request.channels.deleteMessage(msg);
+  Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+   if (!m) return;
+   if (m && (await isDeleteable(m))) request.channels.deleteMessage(m);
+   if (await isDeleteable(msg)) request.channels.deleteMessage(msg);
   });
   return;
  }

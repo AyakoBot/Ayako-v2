@@ -14,8 +14,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const time = cmd.options.getNumber('time', true);
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.slowmode;
+ const me = await ch.getBotMemberFromGuild(cmd.guild);
 
- if (!channel.manageable) {
+ if (!me) {
+  ch.error(cmd.guild, new Error("I can't find myself in this guild!"));
+  return;
+ }
+
+ if (!ch.isManageable(channel, me)) {
   ch.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;
  }

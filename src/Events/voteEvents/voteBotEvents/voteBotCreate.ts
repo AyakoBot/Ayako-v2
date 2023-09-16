@@ -239,11 +239,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
  });
 };
 
-export const currency = (
- r: Prisma.voterewards,
- user: Discord.User,
- guild: Discord.Guild,
-) => {
+export const currency = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardcurrency) return;
 
  ch.DataBase.balance
@@ -261,23 +257,27 @@ export const currency = (
   .then();
 };
 
-export const roles = (
+export const roles = async (
  r: Prisma.voterewards,
  member: Discord.GuildMember | undefined,
  bot: Discord.User,
  language: CT.Language,
 ) => {
- if (!member?.manageable) return;
  if (!r.rewardroles?.length) return;
+ if (!member) return;
+
+ const me = await ch.getBotMemberFromGuild(member.guild);
+ if (!me) {
+  ch.error(member.guild, new Error("I can't find myself in this guild!"));
+  return;
+ }
+
+ if (!ch.isManageable(member, me)) return;
 
  ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
 };
 
-export const xp = (
- r: Prisma.voterewards,
- user: Discord.User,
- guild: Discord.Guild,
-) => {
+export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardxp) return;
 
  ch.DataBase.level
@@ -297,11 +297,7 @@ export const xp = (
   .then();
 };
 
-export const xpmultiplier = (
- r: Prisma.voterewards,
- user: Discord.User,
- guild: Discord.Guild,
-) => {
+export const xpmultiplier = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardxpmultiplier) return;
 
  ch.DataBase.level

@@ -243,7 +243,7 @@ export const oneTimeRunner = async (
    `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
   );
 
-  m.edit({ embeds: [embed], components: [] }).catch(() => undefined);
+  ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
 
   ch.DataBase.roleseparatorsettings
    .update({

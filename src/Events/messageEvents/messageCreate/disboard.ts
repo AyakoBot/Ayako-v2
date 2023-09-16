@@ -23,9 +23,10 @@ const disboardSent = async (msg: Discord.Message<true>) => {
 
  deleteLastReminder(settings);
 
- if (settings.deletereply && msg.deletable) {
-  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
-   if (msg && msg.deletable) ch.request.channels.deleteMessage(msg);
+ if (settings.deletereply) {
+  Jobs.scheduleJob(new Date(Date.now() + 5000), async () => {
+   if (!msg) return;
+   if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
   });
  }
 
@@ -125,6 +126,5 @@ const deleteLastReminder = async (settings: Prisma.disboard) => {
      .then((ms) => ('message' in ms ? undefined : ms))
   : undefined;
 
- if (!m?.deletable) return;
- ch.request.channels.deleteMessage(m);
+ if (m && (await ch.isDeleteable(m))) ch.request.channels.deleteMessage(m);
 };

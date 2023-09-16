@@ -226,7 +226,9 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    msgid: collection.replymsgid,
   });
 
-  if (oldReplyMsg && oldReplyMsg.deletable) ch.request.channels.deleteMessage(oldReplyMsg);
+  if (oldReplyMsg && (await ch.isDeleteable(oldReplyMsg))) {
+   ch.request.channels.deleteMessage(oldReplyMsg);
+  }
  }
 
  ch.DataBase.giveawaycollection
@@ -352,7 +354,8 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
    msgid: collection.replymsgid,
   });
 
-  if (oldReplyMsg && oldReplyMsg.deletable) ch.request.channels.deleteMessage(oldReplyMsg);
+  if (!oldReplyMsg) return;
+  if (await ch.isDeleteable(oldReplyMsg)) ch.request.channels.deleteMessage(oldReplyMsg);
  }
 
  const msg = await getMessage(giveaway);

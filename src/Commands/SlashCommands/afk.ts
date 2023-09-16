@@ -48,11 +48,19 @@ export default async (
    embeds,
    content: afk ? lan.updated : lan.set(author),
   });
-  if (cmd.deletable) cmd.delete();
+
+  if (await ch.isDeleteable(cmd)) ch.request.channels.deleteMessage(cmd);
+ }
+
+ const me = await ch.getBotMemberFromGuild(cmd.guild);
+ if (!me) {
+  ch.error(cmd.guild, new Error("I can't find myself in this guild!"));
+  return;
  }
 
  if (
-  cmd.member?.manageable &&
+  cmd.member &&
+  ch.isManageable(cmd.member, me) &&
   (await ch.getBotMemberFromGuild(cmd.guild))?.permissions.has(134217728n) &&
   Number(cmd.member?.displayName.length) <= 26 &&
   !cmd.member?.displayName.endsWith(' [AFK]')

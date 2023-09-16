@@ -81,7 +81,7 @@ const edit = async (
   return;
  }
 
- if (!msg.editable) {
+ if (!(await ch.isEditable(msg))) {
   ch.error(cmd.guild as Discord.Guild, new Error('Cannot edit Message'));
   return;
  }

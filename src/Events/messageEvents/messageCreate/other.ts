@@ -169,7 +169,8 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
   },
  })) as Discord.Message<true>;
 
- jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m?.deletable) ch.request.channels.deleteMessage(m);
+ jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+  if (!m) return;
+  if (await ch.isDeleteable(m)) ch.request.channels.deleteMessage(m);
  });
 };

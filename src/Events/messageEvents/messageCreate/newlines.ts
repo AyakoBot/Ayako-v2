@@ -16,7 +16,7 @@ export default async (msg: Discord.Message<true>) => {
 
  const amountOfNewlines = msg.content.split('\n').length - 1;
  if (amountOfNewlines <= Number(settings.maxnewlines)) return;
- if (msg.deletable) ch.request.channels.deleteMessage(msg);
+ if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
 
  const language = await ch.languageSelector(msg.guildId);
 

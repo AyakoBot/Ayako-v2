@@ -36,9 +36,10 @@ const self = async (
   description: language.slashCommands.afk.removed(ch.constants.standard.getTime(Number(afk.since))),
  };
 
- const m = await ch.send(msg.channel, { embeds: [embed] });
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m?.deletable) ch.request.channels.deleteMessage(m as Discord.Message<true>);
+ const m = (await ch.send(msg.channel, { embeds: [embed] })) as Discord.Message<true> | undefined;
+ Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+  if (!m) return;
+  if (await ch.isDeleteable(m)) ch.request.channels.deleteMessage(m as Discord.Message<true>);
  });
 
  await ch.DataBase.afk.delete({
@@ -56,12 +57,15 @@ const self = async (
 const deleteNick = async (language: CT.Language, member?: Discord.GuildMember | null) => {
  if (!member) return;
  if (!member.nickname || !member.nickname.endsWith(' [AFK]')) return;
- if (
-  !(await ch.getBotMemberFromGuild(member.guild))?.permissions.has(134217728n) ||
-  !member.manageable
- ) {
+
+ const me = await ch.getBotMemberFromGuild(member.guild);
+ if (!me) {
+  ch.error(member.guild, new Error("I can't find myself in this guild!"));
   return;
  }
+
+ if (!me.permissions.has(Discord.PermissionFlagsBits.ManageNicknames)) return;
+ if (!ch.isManageable(member, me)) return;
 
  ch.request.guilds.editMember(
   member.guild,
@@ -125,8 +129,9 @@ const mention = async (
 
  const m = await ch.replyMsg(msg, { embeds, allowed_mentions: { replied_user: true } });
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  if (m?.deletable) ch.request.channels.deleteMessage(m);
+ Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+  if (!m) return;
+  if (await ch.isDeleteable(m)) ch.request.channels.deleteMessage(m);
  });
 };
 

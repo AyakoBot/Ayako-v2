@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 import { request } from '../requestHandler.js';
@@ -18,7 +19,9 @@ export default async (
 
  const targetMember = await request.guilds.getMember(options.guild, options.target.id);
  if ('message' in targetMember) {
-  message?.edit({
+  if (!message) return undefined;
+
+  const payload = {
    embeds: [
     {
      description: language.errors.memberNotFound,
@@ -26,7 +29,10 @@ export default async (
      author: { name: language.error, icon_url: objectEmotes.warning.link },
     },
    ],
-  });
+  };
+
+  if (message instanceof Discord.Message) request.channels.editMsg(message, payload);
+  else message.edit(payload);
 
   return undefined;
  }

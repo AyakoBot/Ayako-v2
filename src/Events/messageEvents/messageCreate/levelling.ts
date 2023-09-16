@@ -484,8 +484,9 @@ const infoEmbed = async (
   embeds: [embed],
  });
 
- Jobs.scheduleJob(new Date(Date.now() + 30000), () => {
-  if (m?.deletable) ch.request.channels.deleteMessage(m);
+ Jobs.scheduleJob(new Date(Date.now() + 30000), async () => {
+  if (!m) return;
+  if (await ch.isDeleteable(m)) ch.request.channels.deleteMessage(m);
  });
 };
 
@@ -546,15 +547,16 @@ const send = async (
     (setting.lvlupdeltimeout.toNumber() > 5 ? setting.lvlupdeltimeout.toNumber() * 1000 : 5000) *
      100,
   ),
-  () => {
+  async () => {
    if (Array.isArray(messages)) {
-    messages?.forEach((m) => {
-     if (m?.deletable) ch.request.channels.deleteMessage(m);
+    const deleteable = await Promise.all(messages.map((m) => ch.isDeleteable(m)));
+    messages?.forEach((m, i) => {
+     if (deleteable[i]) ch.request.channels.deleteMessage(m);
     });
     return;
    }
 
-   if (messages?.deletable) ch.request.channels.deleteMessage(messages);
+   if (messages && (await ch.isDeleteable(messages))) ch.request.channels.deleteMessage(messages);
   },
  );
 };

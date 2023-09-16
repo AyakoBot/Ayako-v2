@@ -16,6 +16,11 @@ import { getPrefix } from '../../Events/messageEvents/messageCreate/commandHandl
 import getUser from './getUser.js';
 import getChunks from './getChunks.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
+import { request } from './requestHandler.js';
+import isDeleteable from './isDeleteable.js';
+import error from './error.js';
+import * as getChannel from './getChannel.js';
+import isEditable from './isEditable.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
@@ -55,10 +60,14 @@ const reply = async (
    if (!realCmd) return;
 
    const m = await errorMsg(realCmd, language.errors.noUserMentioned, language);
-   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-    if (m?.deletable) m.delete();
-    if ('deletable' in cmd && (cmd as Discord.Message<true>).deletable && 'delete' in cmd) {
-     (cmd as Discord.Message<true>).delete();
+   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+    if (!m) return;
+
+    if (await isDeleteable(m as Discord.Message<true>)) {
+     request.channels.deleteMessage(m as Discord.Message<true>);
+    }
+    if (await isDeleteable(cmd as Discord.Message<true>)) {
+     request.channels.deleteMessage(cmd as Discord.Message<true>);
     }
    });
   }
@@ -148,18 +157,28 @@ const reply = async (
 
  if (cmd instanceof Discord.Message) {
   const msg = cmd as Discord.Message;
-  const realCmd = (
-   guild.channels.cache.get(msg.channelId) as unknown as Discord.TextBasedChannel
-  ).messages.cache.get(msg.id);
-  if (!realCmd) return;
+  const channel = await getChannel
+   .guildTextChannel(msg.channelId)
+   .then((c) => (!c || 'message' in c ? undefined : c));
+  if (!channel) return;
 
-  if ((realCmd as Discord.Message<true>).deletable) (realCmd as Discord.Message<true>).delete();
+  const realCmd = await request.channels.getMessage(channel, msg.id);
+  if (!realCmd || 'message' in realCmd) return;
+
+  const me = await getBotMemberFromGuild(guild);
+  if (!me) {
+   error(guild, new Error('Could not find myself in this guild!'));
+   return;
+  }
+
+  if (await isDeleteable(realCmd as Discord.Message<true>)) {
+   request.channels.deleteMessage(realCmd as Discord.Message<true>);
+  }
   const content = String(payload.content);
   delete payload.content;
 
-  const m = await send(realCmd.channel, payload as never);
-
-  if (m?.editable) m.edit({ content });
+  const m = (await send(channel, payload)) as Discord.Message<true>;
+  if (m && (await isEditable(m))) request.channels.editMsg(m as Discord.Message<true>, { content });
  } else replyCmd(cmd, { ...payload, ephemeral: false } as Discord.InteractionReplyOptions);
 };
 

@@ -42,6 +42,8 @@ import arrayBufferToBuffer from './ClientHelperModules/arrayBufferToBuffer.js';
 import * as getChannel from './ClientHelperModules/getChannel.js';
 import getSerializedChannelPerms from './ClientHelperModules/getSerializedChannelPerms.js';
 import isManageable from './ClientHelperModules/isManageable.js';
+import isDeleteable from './ClientHelperModules/isDeleteable.js';
+import isEditable from './ClientHelperModules/isEditable.js';
 import getEvents from './ClientHelperModules/getEvents.js';
 import getNameAndFileType from './ClientHelperModules/getNameAndFileType.js';
 import getUser from './ClientHelperModules/getUser.js';
@@ -90,6 +92,8 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ isEditable,
+ isDeleteable,
  getBotMemberFromGuild,
  fetchAllGuildMembers,
  fetchAllEventSubscribers,
