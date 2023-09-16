@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 import error from './error.js';
 
 export default async (msg: Discord.Message<true>) => {

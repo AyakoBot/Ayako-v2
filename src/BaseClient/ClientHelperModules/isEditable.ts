@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 export default async (msg: Discord.Message<true>) => {
  const executor = await getBotMemberFromGuild(msg.guild);

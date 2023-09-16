@@ -17,14 +17,18 @@ import presence from './timedFiles/presence.js';
 import timedManager from './timedFiles/timedManager.js';
 
 export default async () => {
+ customAPIsHandler();
+ customBotCommands();
+
  voteHandler();
  appealHandler();
  interactionHandler();
- cache();
  slashCommandInitializer();
  antivirusBlocklistCacher();
- customAPIsHandler();
- customBotCommands();
+
+ Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+  cache();
+ });
 
  if (client.user?.id === ch.mainID) {
   ch.cache.fishFish.start();
