@@ -154,14 +154,14 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  switch (changedSetting) {
   case 'token': {
    if (!newSettings.token) {
-    ch.cache.apis.delete(newSettings.guildid);
+    ch.cache.apis.delete(guild.id);
     return;
    }
 
-   requestHandler(newSettings.token, newSettings.guildid);
+   requestHandler(guild.id, newSettings.token);
 
    const me = await ch.cache.apis
-    .get(newSettings.guildid)
+    .get(guild.id)
     ?.rest.get(`/applications/${ch.getBotIdFromToken(newSettings.token)}`)
     .then((a) => a as DiscordAPI.APIApplication)
     .catch((e: Discord.DiscordAPIError) => e);
@@ -173,8 +173,8 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
    ch.DataBase.guildsettings
     .update({
-     where: { guildid: newSettings.guildid },
-     data: { publickey: me.verify_key },
+     where: { guildid: guild.id },
+     data: { publickey: me.verify_key, appid: me.id },
     })
     .then();
    break;

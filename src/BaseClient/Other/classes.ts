@@ -280,9 +280,85 @@ export class ThreadMember extends Discord.ThreadMember {
  }
 }
 
-// @ts-ignore
 export class ClientUser extends Discord.ClientUser {
  constructor(client: Discord.Client<true>, data: RawData.RawUserData) {
+  super(client, data);
+ }
+}
+
+export class ChatInputCommandInteraction extends Discord.ChatInputCommandInteraction {
+ constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+  super(client, data);
+ }
+}
+
+export class UserContextMenuCommandInteraction extends Discord.UserContextMenuCommandInteraction {
+ constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+  super(client, data);
+ }
+}
+
+// eslint-disable-next-line max-len
+export class MessageContextMenuCommandInteraction extends Discord.MessageContextMenuCommandInteraction {
+ constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+  super(client, data);
+ }
+}
+
+export class AutocompleteInteraction extends Discord.AutocompleteInteraction {
+ constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class ButtonInteraction extends Discord.ButtonInteraction {
+ constructor(client: Discord.Client<true>, data: RawData.RawMessageButtonInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class ChannelSelect extends Discord.ChannelSelectMenuInteraction {
+ constructor(client: Discord.Client<true>, data: Discord.APIMessageChannelSelectInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class MentionableSelect extends Discord.MentionableSelectMenuInteraction {
+ constructor(
+  client: Discord.Client<true>,
+  data: Discord.APIMessageMentionableSelectInteractionData,
+ ) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class RoleSelect extends Discord.RoleSelectMenuInteraction {
+ constructor(client: Discord.Client<true>, data: Discord.APIMessageRoleSelectInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class StringSelect extends Discord.StringSelectMenuInteraction {
+ constructor(client: Discord.Client<true>, data: Discord.APIMessageStringSelectInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class UserSelect extends Discord.UserSelectMenuInteraction {
+ constructor(client: Discord.Client<true>, data: Discord.APIMessageUserSelectInteractionData) {
+  super(client, data);
+ }
+}
+
+// @ts-ignore
+export class ModalSubmit extends Discord.ModalSubmitInteraction {
+ constructor(client: Discord.Client<true>, data: Discord.APIModalSubmitInteraction) {
   super(client, data);
  }
 }
