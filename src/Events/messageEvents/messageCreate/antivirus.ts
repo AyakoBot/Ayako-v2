@@ -55,6 +55,7 @@ export default async (msg: Discord.Message<true>) => {
   );
  }
 
+ if (!url.triggers) return;
  performPunishment(msg, settings, language);
 };
 
