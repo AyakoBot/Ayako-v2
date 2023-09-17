@@ -155,6 +155,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
   case 'token': {
    if (!newSettings.token) {
     ch.cache.apis.delete(guild.id);
+    ch.DataBase.guildsettings.update({
+     where: { guildid: guild.id },
+     data: { publickey: null, appid: null, token: null },
+    });
     return;
    }
 
