@@ -26,7 +26,7 @@ export default async () => {
  slashCommandInitializer();
  antivirusBlocklistCacher();
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+ Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
  });
 
