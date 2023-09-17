@@ -114,7 +114,7 @@ async function send(
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
-  body,
+  { ...body.body, files: body.files },
   channel.client,
  );
  if ('message' in sentMessage) return null;

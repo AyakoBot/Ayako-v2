@@ -26,7 +26,7 @@ export default async <T extends Discord.Message<boolean>>(
   .resolveFiles()) as { body: Discord.RESTPostAPIChannelMessageJSONBody; files: Discord.RawFile[] };
 
  const sentMessage = await request.channels
-  .sendMessage(msg.guild, msg.channelId, body, msg.client)
+  .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
   .catch((err) => {
    log('msg reply err', err);
   });
