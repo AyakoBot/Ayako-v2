@@ -14,14 +14,21 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- edit: (
+ edit: async (
   guild: Discord.Guild,
   webhookId: string,
   body: Discord.RESTPatchAPIWebhookJSONBody,
   data?: { token?: string; reason?: string },
  ) =>
   (cache.apis.get(guild.id) ?? API).webhooks
-   .edit(webhookId, body, data)
+   .edit(
+    webhookId,
+    {
+     ...body,
+     avatar: body.avatar ? await Discord.DataResolver.resolveImage(body.avatar) : body.avatar,
+    },
+    data,
+   )
    .then((w) => new Classes.Webhook(guild.client, w))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));

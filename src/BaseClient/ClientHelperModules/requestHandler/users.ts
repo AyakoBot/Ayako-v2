@@ -35,9 +35,12 @@ export default {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   }),
- edit: (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUserJSONBody) =>
+ edit: async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUserJSONBody) =>
   (cache.apis.get(guild.id) ?? API).users
-   .edit(data)
+   .edit({
+    ...data,
+    avatar: data.avatar ? await Discord.DataResolver.resolveImage(data.avatar) : data.avatar,
+   })
    .then((u) => new Classes.User(guild.client, u))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));

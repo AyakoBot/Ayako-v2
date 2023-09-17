@@ -1,10 +1,9 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import objectEmotes from './objectEmotes.js';
 import DataBase from '../DataBase.js';
 import { request } from './requestHandler.js';
-import resolveFiles from './resolveFiles.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -17,21 +16,17 @@ export default async <T extends Discord.Message<boolean>>(
 ): Promise<T | undefined> => {
  if (!msg) return undefined;
 
+ const body = (await Discord.MessagePayload.create(msg, payload, {
+  reply: {
+   messageReference: msg,
+   failIfNotExists: false,
+  },
+ })
+  .resolveBody()
+  .resolveFiles()) as { body: Discord.RESTPostAPIChannelMessageJSONBody; files: Discord.RawFile[] };
+
  const sentMessage = await request.channels
-  .sendMessage(
-   msg.guild,
-   msg.channelId,
-   {
-    ...payload,
-    files: payload.files ? await resolveFiles(payload.files) : undefined,
-    message_reference: {
-     message_id: msg.id,
-     channel_id: msg.channelId,
-     guild_id: msg.guildId ?? undefined,
-    },
-   },
-   msg.client,
-  )
+  .sendMessage(msg.guild, msg.channelId, body, msg.client)
   .catch((err) => {
    log('msg reply err', err);
   });

@@ -22,9 +22,17 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- edit: (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBody) =>
+ edit: async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBody) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .edit(guild.id, body)
+   .edit(guild.id, {
+    ...body,
+    icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon,
+    splash: body.splash ? await Discord.DataResolver.resolveImage(body.splash) : body.splash,
+    banner: body.banner ? await Discord.DataResolver.resolveImage(body.banner) : body.banner,
+    discovery_splash: body.discovery_splash
+     ? await Discord.DataResolver.resolveImage(body.discovery_splash)
+     : body.discovery_splash,
+   })
    .then((g) => new Classes.Guild(guild.client, g))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -152,9 +160,17 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createRole: (guild: Discord.Guild, body: Discord.RESTPostAPIGuildRoleJSONBody, reason?: string) =>
+ createRole: async (
+  guild: Discord.Guild,
+  body: Discord.RESTPostAPIGuildRoleJSONBody,
+  reason?: string,
+ ) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .createRole(guild.id, body, { reason })
+   .createRole(
+    guild.id,
+    { ...body, icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon },
+    { reason },
+   )
    .then((r) => new Classes.Role(guild.client, r, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -172,14 +188,19 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- editRole: (
+ editRole: async (
   guild: Discord.Guild,
   roleId: string,
   body: Discord.RESTPatchAPIGuildRoleJSONBody,
   reason?: string,
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .editRole(guild.id, roleId, body, { reason })
+   .editRole(
+    guild.id,
+    roleId,
+    { ...body, icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon },
+    { reason },
+   )
    .then((r) => new Classes.Role(guild.client, r, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -389,13 +410,20 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createEmoji: (
+ createEmoji: async (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIGuildEmojiJSONBody,
   reason?: string,
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .createEmoji(guild.id, body, { reason })
+   .createEmoji(
+    guild.id,
+    {
+     ...body,
+     image: (await Discord.DataResolver.resolveImage(body.image)) as string,
+    },
+    { reason },
+   )
    .then((e) => new Classes.GuildEmoji(guild.client, e, guild))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -434,13 +462,20 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createScheduledEvent: (
+ createScheduledEvent: async (
   guild: Discord.Guild,
   body: Discord.RESTPostAPIGuildScheduledEventJSONBody,
   reason?: string,
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .createScheduledEvent(guild.id, body, { reason })
+   .createScheduledEvent(
+    guild.id,
+    {
+     ...body,
+     image: body.image ? await Discord.DataResolver.resolveImage(body.image) : body.image,
+    },
+    { reason },
+   )
    .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
@@ -463,14 +498,22 @@ export default {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- editScheduledEvent: (
+ editScheduledEvent: async (
   guild: Discord.Guild,
   eventId: string,
   body: Discord.RESTPatchAPIGuildScheduledEventJSONBody,
   reason?: string,
  ) =>
   (cache.apis.get(guild.id) ?? API).guilds
-   .editScheduledEvent(guild.id, eventId, body, { reason })
+   .editScheduledEvent(
+    guild.id,
+    eventId,
+    {
+     ...body,
+     image: body.image ? await Discord.DataResolver.resolveImage(body.image) : body.image,
+    },
+    { reason },
+   )
    .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));

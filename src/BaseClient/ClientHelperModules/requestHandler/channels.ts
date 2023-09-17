@@ -16,7 +16,9 @@ export default {
  sendMessage: (
   guild: Discord.Guild | undefined | null,
   channelId: string,
-  payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
+  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
+   files?: Discord.RawFile[];
+  },
   client: Discord.Client,
  ) =>
   (guild ? cache.apis.get(guild.id) ?? API : API).channels
@@ -456,13 +458,16 @@ export default {
     error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    }),
- createWebhook: (
+ createWebhook: async (
   guild: Discord.Guild,
   channelId: string,
   body: Discord.RESTPostAPIChannelWebhookJSONBody,
  ) =>
   (cache.apis.get(guild.id) ?? API).channels
-   .createWebhook(channelId, body)
+   .createWebhook(channelId, {
+    ...body,
+    avatar: body.avatar ? await Discord.DataResolver.resolveImage(body.avatar) : body.avatar,
+   })
    .then((w) => new Classes.Webhook(guild.client, w))
    .catch((e) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));

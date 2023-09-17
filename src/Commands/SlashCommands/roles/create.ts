@@ -30,6 +30,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (Number.isNaN(parseInt(color as string, 16))) color = null;
 
  const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
+ const parsedIcon =
+  icon?.url ??
+  (iconEmoji && Discord.parseEmoji(iconEmoji)
+   ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
+   : undefined);
 
  const role = await ch.request.guilds.createRole(
   cmd.guild,
@@ -38,10 +43,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: color ? parseInt(color, 16) : undefined,
    icon:
-    icon?.url ??
-    (iconEmoji && Discord.parseEmoji(iconEmoji)
-     ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
-     : undefined),
+    parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
+     ? parsedIcon
+     : undefined,
    permissions: permissionRole?.permissions.bitfield.toString(),
   },
   cmd.user.username,

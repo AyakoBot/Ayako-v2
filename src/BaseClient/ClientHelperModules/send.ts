@@ -1,8 +1,7 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
-import resolveFiles from './resolveFiles.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -11,12 +10,6 @@ export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions,
  embeds?: Discord.APIEmbed[];
 }
 
-type ChannelTypes =
- | Discord.TextChannel
- | Discord.TextBasedChannel
- | Discord.BaseGuildTextChannel
- | Discord.BaseGuildVoiceChannel;
-
 async function send(
  channels: Discord.User | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
@@ -24,7 +17,7 @@ async function send(
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
- channels: ChannelTypes[],
+ channels: Discord.TextBasedChannel[],
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
@@ -42,15 +35,15 @@ async function send(
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
- channels: ChannelTypes,
+ channels: Discord.TextBasedChannel,
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
 async function send(
  channels:
-  | ChannelTypes
-  | ChannelTypes[]
+  | Discord.TextBasedChannel
+  | Discord.TextBasedChannel[]
   | { id: string[]; guildId: string }
   | { id: string; guildId: string }
   | Discord.User
@@ -114,10 +107,14 @@ async function send(
   p.fields?.forEach((pa) => (pa.value?.length > 1024 ? log(p) : null));
  });
 
+ const body = (await Discord.MessagePayload.create(channel, payload, {})
+  .resolveBody()
+  .resolveFiles()) as { body: Discord.RESTPostAPIChannelMessageJSONBody; files: Discord.RawFile[] };
+
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
-  { ...payload, files: payload.files ? await resolveFiles(payload.files) : undefined },
+  body,
   channel.client,
  );
  if ('message' in sentMessage) return null;
@@ -238,7 +235,7 @@ const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
 const getChannel = async (
  channels:
   | Discord.User
-  | ChannelTypes
+  | Discord.TextBasedChannel
   | {
      id: string;
      guildId: string;
