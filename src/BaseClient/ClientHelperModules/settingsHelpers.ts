@@ -860,11 +860,6 @@ const getMention = async (
   case 'rolemode': {
    return language.rolemodes[value as keyof typeof language.rolemodes];
   }
-  case 'embed': {
-   return DataBase.customembeds
-    .findUnique({ where: { uniquetimestamp: value } })
-    .then((r) => r?.name ?? '?');
-  }
   case 'emote': {
    return `<${`${value.startsWith(':') ? '' : ':'}${value}`}>`;
   }
