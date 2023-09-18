@@ -544,8 +544,7 @@ const send = async (
  Jobs.scheduleJob(
   new Date(
    Date.now() +
-    (Number(setting.lvlupdeltimeout) > 5 ? Number(setting.lvlupdeltimeout) * 1000 : 5000) *
-     100,
+    (Number(setting.lvlupdeltimeout) > 5 ? Number(setting.lvlupdeltimeout) * 1000 : 5000) * 100,
   ),
   async () => {
    if (Array.isArray(messages)) {
