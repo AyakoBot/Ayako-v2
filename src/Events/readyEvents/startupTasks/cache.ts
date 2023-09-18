@@ -185,11 +185,7 @@ export const tasks = {
  pins: async (guild: Discord.Guild) => {
   guild.channels.cache.forEach(async (c) => {
    if (!c.isTextBased()) return;
-
-   const pins = await ch.request.channels
-    .getPins(c)
-    .then((ps) => ('message' in ps ? undefined : ps));
-   pins?.forEach((pin) => ch.cache.pins.set(pin));
+   ch.cache.pins.get('', c);
   });
  },
  invites: async (guild: Discord.Guild) => {
