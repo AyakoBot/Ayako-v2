@@ -288,7 +288,7 @@ const performPunishment = (
   case 'ban':
    return ch.mod(msg, 'banAdd', {
     ...baseOptions,
-    deleteMessageSeconds: settings.deletemessageseconds.toNumber(),
+    deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'channelban':
    return ch.mod(msg, 'channelBanAdd', {
@@ -302,7 +302,7 @@ const performPunishment = (
   case 'softban':
    return ch.mod(msg, 'softBanAdd', {
     ...baseOptions,
-    deleteMessageSeconds: settings.deletemessageseconds.toNumber(),
+    deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'strike':
    return ch.mod(msg, 'strikeAdd', baseOptions);
@@ -311,8 +311,8 @@ const performPunishment = (
   case 'tempban':
    return ch.mod(msg, 'tempBanAdd', {
     ...baseOptions,
-    deleteMessageSeconds: settings.deletemessageseconds.toNumber(),
-    duration: settings.duration.toNumber(),
+    deleteMessageSeconds: Number(settings.deletemessageseconds),
+    duration: Number(settings.duration),
    });
   case 'tempchannelban':
    return ch.mod(msg, 'tempChannelBanAdd', {
@@ -320,10 +320,10 @@ const performPunishment = (
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
-    duration: settings.duration.toNumber(),
+    duration: Number(settings.duration),
    });
   case 'tempmute':
-   return ch.mod(msg, 'tempMuteAdd', { ...baseOptions, duration: settings.duration.toNumber() });
+   return ch.mod(msg, 'tempMuteAdd', { ...baseOptions, duration: Number(settings.duration) });
   default:
    throw new Error(`Invalid action: ${settings.action}`);
  }

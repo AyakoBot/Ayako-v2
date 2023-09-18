@@ -42,7 +42,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
  ch.cache.giveaways.set(
-  Jobs.scheduleJob(new Date(giveaway.endtime.toNumber()), () => {
+  Jobs.scheduleJob(new Date(Number(giveaway.endtime)), () => {
    end(giveaway);
   }),
   giveaway.guildid,

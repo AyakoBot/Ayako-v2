@@ -704,9 +704,7 @@ const mod = {
      {
       ...options,
       deleteMessageSeconds:
-       strike.deletemessageseconds.toNumber() > 604800
-        ? 604800
-        : strike.deletemessageseconds.toNumber(),
+       Number(strike.deletemessageseconds) > 604800 ? 604800 : Number(strike.deletemessageseconds),
      },
      language,
      message,
@@ -736,7 +734,7 @@ const mod = {
     break;
    case 'tempmute':
     mod.tempMuteAdd(
-     { ...options, duration: strike.duration.toNumber() * 1000 },
+     { ...options, duration: Number(strike.duration) * 1000 },
      language,
      message,
      cmd,
@@ -751,7 +749,7 @@ const mod = {
     mod.tempChannelBanAdd(
      {
       ...options,
-      duration: strike.duration.toNumber() * 1000,
+      duration: Number(strike.duration) * 1000,
       channel: cmd.channel.isThread()
        ? (cmd.channel.parent as NonNullable<typeof cmd.channel.parent>)
        : cmd.channel,
@@ -768,11 +766,9 @@ const mod = {
     mod.tempBanAdd(
      {
       ...options,
-      duration: strike.duration.toNumber() * 1000,
+      duration: Number(strike.duration) * 1000,
       deleteMessageSeconds:
-       strike.deletemessageseconds.toNumber() > 604800
-        ? 604800
-        : strike.deletemessageseconds.toNumber(),
+       Number(strike.deletemessageseconds) > 604800 ? 604800 : Number(strike.deletemessageseconds),
      } as unknown as CT.ModOptions<'tempBanAdd'>,
      language,
      message,
@@ -784,9 +780,7 @@ const mod = {
      {
       ...options,
       deleteMessageSeconds:
-       strike.deletemessageseconds.toNumber() > 604800
-        ? 604800
-        : strike.deletemessageseconds.toNumber(),
+       Number(strike.deletemessageseconds) > 604800 ? 604800 : Number(strike.deletemessageseconds),
      },
      language,
      message,

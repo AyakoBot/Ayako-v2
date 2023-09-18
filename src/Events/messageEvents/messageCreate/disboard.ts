@@ -99,7 +99,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
     msgid: m.id,
     tempchannelid: m.channelId,
     nextbump: settings.repeatenabled
-     ? Date.now() + settings.repeatreminder.toNumber() * 1000
+     ? Date.now() + Number(settings.repeatreminder) * 1000
      : undefined,
    },
   })
@@ -107,7 +107,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
 
  if (settings.repeatenabled) {
   ch.cache.disboardBumpReminders.set(
-   Jobs.scheduleJob(new Date(Date.now() + settings.repeatreminder.toNumber() * 1000), () => {
+   Jobs.scheduleJob(new Date(Date.now() + Number(settings.repeatreminder) * 1000), () => {
     bumpReminder(guild);
    }),
    guild.id,

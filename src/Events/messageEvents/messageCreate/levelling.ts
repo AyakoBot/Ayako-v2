@@ -51,7 +51,7 @@ const levelling = async (msg: Discord.Message<true>) => {
  const settings = await checkEnabled(msg);
  if (settings && !settings.active) return;
 
- if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords.toNumber())) return;
+ if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)) return;
 
  if (
   settings?.ignoreprefixes &&
@@ -87,14 +87,14 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  if (level) {
-  updateLevels(msg, settings, level, settings ? settings.xppermsg.toNumber() - 10 : 15, 'guild', [
-   settings ? settings.xpmultiplier.toNumber() : 1,
+  updateLevels(msg, settings, level, settings ? Number(settings.xppermsg) - 10 : 15, 'guild', [
+   settings ? Number(settings.xpmultiplier) : 1,
   ]);
   return;
  }
 
- insertLevels(msg, 'guild', settings ? settings.xppermsg.toNumber() - 10 : 15, [
-  settings ? settings.xpmultiplier.toNumber() : 1,
+ insertLevels(msg, 'guild', settings ? Number(settings.xppermsg) - 10 : 15, [
+  settings ? Number(settings.xpmultiplier) : 1,
  ]);
 };
 
@@ -544,7 +544,7 @@ const send = async (
  Jobs.scheduleJob(
   new Date(
    Date.now() +
-    (setting.lvlupdeltimeout.toNumber() > 5 ? setting.lvlupdeltimeout.toNumber() * 1000 : 5000) *
+    (Number(setting.lvlupdeltimeout) > 5 ? Number(setting.lvlupdeltimeout) * 1000 : 5000) *
      100,
   ),
   async () => {
