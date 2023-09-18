@@ -19,6 +19,8 @@ const self: Pins = {
   const cached = self.cache.get(channel.guildId)?.get(channel.id)?.get(id);
   if (cached) return cached;
 
+  if (!('lastPinTimestamp' in channel)) return undefined;
+
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const me = await getBotMemberFromGuild(channel.guild);
