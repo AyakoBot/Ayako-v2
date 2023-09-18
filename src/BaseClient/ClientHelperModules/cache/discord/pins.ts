@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
+// eslint-disable-next-line import/no-cycle
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 
 export interface Pins {
  get: (
@@ -19,6 +21,9 @@ const self: Pins = {
 
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
+  const me = await getBotMemberFromGuild(channel.guild);
+  if (!me?.permissionsIn(channel).has(Discord.PermissionFlagsBits.ViewChannel)) return undefined;
+
   const fetched = await requestHandler.channels.getPins(channel);
   if ('message' in fetched) {
    error(channel.guild, new Error(`Couldnt get Channel Pins of ${channel.id}`));
