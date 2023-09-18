@@ -18,7 +18,7 @@ export default async (member: Discord.GuildMember) => {
   : undefined;
 
  const embed: Discord.APIEmbed = rawEmbed
-  ? ch.getDiscordEmbed(rawEmbed)
+  ? ch.makeStp(ch.getDiscordEmbed(rawEmbed), { member })
   : await getDefaultEmbed(member);
 
  const content = `${settings.pingjoin ? member : ''}${
