@@ -848,6 +848,16 @@ model users {
   @@index(userid)
 }
 
+
+model blockedusers {
+ userid        String   @db.VarChar
+ blockeduserid String   @db.VarChar
+ blockedcmd    String[]
+
+ @@index(userid)
+ @@id([userid, blockeduserid])
+}
+
 model verification {
   guildid      String  @id @db.VarChar
   logchannel   String? @db.VarChar

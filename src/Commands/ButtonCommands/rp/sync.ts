@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import { getComponents } from '../../SlashCommands/rp.js';
+import { getComponents } from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;

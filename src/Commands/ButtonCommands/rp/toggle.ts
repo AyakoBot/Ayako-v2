@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import rp from '../../SlashCommands/rp.js';
+import rp from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
