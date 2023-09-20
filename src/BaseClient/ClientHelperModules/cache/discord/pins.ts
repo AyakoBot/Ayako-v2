@@ -24,7 +24,10 @@ const self: Pins = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const me = await getBotMemberFromGuild(channel.guild);
-  if (!me?.permissionsIn(channel).has(Discord.PermissionFlagsBits.ViewChannel)) return undefined;
+  const channelBitfield = me?.permissionsIn(channel);
+  if (channelBitfield && !channelBitfield?.has(Discord.PermissionFlagsBits.ViewChannel)) {
+   return undefined;
+  }
 
   const fetched = await requestHandler.channels.getPins(channel);
   if ('message' in fetched) {
