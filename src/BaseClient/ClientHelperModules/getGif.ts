@@ -249,7 +249,7 @@ const gifSelection = [
  { triggers: ['yawn'], gifs: async () => getGif('yawn', ['neko']) },
  { triggers: ['woof'], gifs: async () => getGif('woof', ['hardcoded']) },
  {
-  triggers: ['kiss', 'kith', 'smooch', 'pash'],
+  triggers: ['kiss', 'kith', 'smooch', 'pash', 'mwah'],
   gifs: async () => getGif('kiss', ['neko', 'purr', 'waifu']),
  },
  { triggers: ['shoot'], gifs: async () => getGif('shoot', ['neko']) },
