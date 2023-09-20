@@ -76,6 +76,14 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
  if (role.hoist !== oldRole.hoist) {
   merge(oldRole.hoist, role.hoist, 'boolean', lan.hoisted);
  }
+ if (role.flags.has(Discord.RoleFlags.InPrompt) !== oldRole.flags.has(Discord.RoleFlags.InPrompt)) {
+  merge(
+   oldRole.flags.has(Discord.RoleFlags.InPrompt),
+   role.flags.has(Discord.RoleFlags.InPrompt),
+   'boolean',
+   lan.inOnboarding,
+  );
+ }
  if (role.mentionable !== oldRole.mentionable) {
   merge(oldRole.mentionable, role.mentionable, 'boolean', lan.mentionable);
  }

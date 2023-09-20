@@ -584,6 +584,7 @@ export default {
     subscriptionListingId: 'Subscription Listing ID',
     availableForPurchase: 'Available for Purchase',
     guildConnections: 'Requires Connection',
+    inOnboarding: 'In Onboarding',
    },
    reaction: {
     descAdded: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>

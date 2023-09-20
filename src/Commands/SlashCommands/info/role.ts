@@ -84,6 +84,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     value: `${ch.settingsHelpers.embedParsers.boolean(role.tags?.availableForPurchase, language)}`,
    },
    {
+    name: eventLan.inOnboarding,
+    value: `${ch.settingsHelpers.embedParsers.boolean(
+     role.flags.has(Discord.RoleFlags.InPrompt),
+     language,
+    )}`,
+   },
+   {
     name: eventLan.guildConnections,
     value: `${ch.settingsHelpers.embedParsers.boolean(role.tags?.guildConnections, language)}`,
    },
