@@ -10,6 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const iconEmoji = cmd.options.getString('icon-emoji', false);
  const positionRole = cmd.options.getRole('position-role', false);
  const permissionRole = cmd.options.getRole('permission-role', false);
+ const iconUrl = cmd.options.getString('icon-url', false);
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.roles;
@@ -29,8 +30,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (Number.isNaN(parseInt(color as string, 16))) color = null;
 
+ if (iconUrl) {
+  try {
+   new URL(iconUrl);
+  } catch (e) {
+   ch.errorCmd(cmd, (e as Error).message, await ch.languageSelector(cmd.guildId));
+   return;
+  }
+ }
+
  const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
  const parsedIcon =
+  iconUrl ??
   icon?.url ??
   (iconEmoji && Discord.parseEmoji(iconEmoji)
    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`

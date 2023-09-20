@@ -587,6 +587,12 @@ const roles = new Discord.SlashCommandBuilder()
      .setDescription('The new Icon of the Role derived from an Emoji')
      .setRequired(false),
    )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-url')
+     .setDescription('The new Icon of the Role derived from a URL')
+     .setRequired(false),
+   )
    .addBooleanOption(
     new Discord.SlashCommandBooleanOption()
      .setName('mentionable')
@@ -628,6 +634,12 @@ const roles = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandStringOption()
      .setName('icon-emoji')
      .setDescription('The new Icon of the Role derived from an Emoji')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-url')
+     .setDescription('The new Icon of the Role derived from a URL')
      .setRequired(false),
    )
    .addRoleOption(

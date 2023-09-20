@@ -13,6 +13,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const iconEmoji = cmd.options.getString('icon-emoji', false) ?? undefined;
  const mentionable = cmd.options.getBoolean('mentionable', false) ?? undefined;
  const positionRole = cmd.options.getRole('position-role', false) ?? undefined;
+ const iconUrl = cmd.options.getString('icon-url', false);
 
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.roles;
@@ -65,6 +66,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
   color: color ? parseInt(color, 16) : undefined,
   icon:
+   iconUrl ??
    icon?.url ??
    (iconEmoji && Discord.parseEmoji(iconEmoji)
     ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
