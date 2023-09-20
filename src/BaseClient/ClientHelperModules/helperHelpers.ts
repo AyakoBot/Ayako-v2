@@ -5,6 +5,7 @@ import * as util from './util.js';
 import replyCmd from './replyCmd.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
+import stringEmotes from './stringEmotes.js';
 
 type Command =
  | {
@@ -25,7 +26,11 @@ type Command =
 
 const getDesc = (
  command: Discord.ApplicationCommand,
- rawCommand: { parentCommand: string; subCommandGroup?: string; subCommand?: string },
+ rawCommand: {
+  parentCommand: string;
+  subCommandGroup?: string;
+  subCommand?: string;
+ },
 ) => {
  let c: {
   options: Discord.ApplicationCommandOption[];
@@ -46,7 +51,7 @@ const getDesc = (
    ? `\n${c.options
       ?.map(
        (o) =>
-        `${util.makeInlineCode(o.name + ('required' in o && o.required ? '?' : ''))}: ${
+        `${util.makeInlineCode(o.name + ('required' in o && o.required ? '' : '?'))}: ${
          o.description
         }`,
       )
@@ -169,13 +174,28 @@ const getEmbeds = (
    const command = fetchedCommands.find((c) => c.name === rawCommand.parentCommand);
    if (!command) return undefined;
 
+   const getCommandMention = () => {
+    switch (command.type) {
+     case Discord.ApplicationCommandType.Message: {
+      return `${stringEmotes.Message} ${rawCommand.parentCommand}`;
+     }
+     case Discord.ApplicationCommandType.User: {
+      return `${stringEmotes.MemberBright} ${rawCommand.parentCommand}`;
+     }
+     case Discord.ApplicationCommandType.ChatInput:
+     default: {
+      return `</${`${rawCommand.parentCommand} ${rawCommand.subCommandGroup ?? ''} ${
+       rawCommand.subCommand ?? ''
+      }`
+       .trim()
+       .replace(/\s+/g, ' ')}:${command.id}>`;
+     }
+    }
+   };
+
    return {
     name: '\u200b',
-    value: `> </${`${rawCommand.parentCommand} ${rawCommand.subCommandGroup ?? ''} ${
-     rawCommand.subCommand ?? ''
-    }`
-     .trim()
-     .replace(/\s+/g, ' ')}:${command.id}>\n${getDesc(command, rawCommand)}`,
+    value: `> ${getCommandMention()}\n${getDesc(command, rawCommand)}`,
     inline: false,
    };
   })

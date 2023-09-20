@@ -178,4 +178,6 @@ export default {
   MentionSpam: '<:MentionSpam:1138081741207240704>',
   ProfileAndSpam: '<:ProfileAndSpam:1138081752116637838>',
  },
+ MemberBright: '<:Member:1154102250566844458>',
+ Message: '<:message:1154101927689330699>',
 };

@@ -439,4 +439,16 @@ export default {
    link: 'https://cdn.discordapp.com/emojis/1138081752116637838.png',
   },
  },
+ Message: {
+  name: 'message',
+  id: '1154101927689330699',
+  aniamted: false,
+  link: 'https://cdn.discordapp.com/emojis/1154101927689330699.png',
+ },
+ MemberBright: {
+  name: 'Member',
+  id: '1154102250566844458',
+  aniamted: false,
+  link: 'https://cdn.discordapp.com/emojis/1154102250566844458.png',
+ },
 };
