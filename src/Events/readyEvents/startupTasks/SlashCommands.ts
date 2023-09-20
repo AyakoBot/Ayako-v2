@@ -445,8 +445,30 @@ const ping = new Discord.SlashCommandBuilder()
 
 const rp = new Discord.SlashCommandBuilder()
  .setName('rp')
- .setDescription('Roleplay Command Manager')
- .setDMPermission(false);
+ .setDescription('Allows Admins to manage RP-Commands and Users to block others')
+ .setDMPermission(false)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('manager')
+   .setDescription('Manage RP-Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('blocked')
+   .setDescription('See Users you currently have blocked'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('block')
+   .setDescription('Block a User from using RP-Commands on you')
+   .addUserOption(User.setRequired(true)),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('unblock')
+   .setDescription('Unblock a User from using RP-Commands on you')
+   .addUserOption(User.setRequired(true)),
+ );
 
 const images = new Discord.SlashCommandBuilder()
  .setName('images')
@@ -1324,7 +1346,10 @@ export default {
   stp: 'utility',
   membercount: 'info',
   ping: 'info',
-  rp: 'fun',
+  'rp-manager': 'fun',
+  'rp-block': 'utility',
+  'rp-unblock': 'utility',
+  'rp-blocked': 'info',
   images_neko: 'fun',
   images_husbando: 'fun',
   images_kitsune: 'fun',

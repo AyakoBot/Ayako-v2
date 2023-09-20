@@ -1943,6 +1943,10 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
+   blocked: (user: Discord.User) => `${getUser(user)}is now blocked from using RP-Commands on you`,
+   blockPlaceholder: 'Select Commands to switch their Block-Status',
+   availableCmds: `Allowed Commands:`,
+   blockedCmds: `Blocked Commands:`,
    gifSrc: 'Gif Source Anime:',
    author: `${name} Roleplay Command Manager`,
    desc: `
