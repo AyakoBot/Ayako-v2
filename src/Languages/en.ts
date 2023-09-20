@@ -701,6 +701,7 @@ export default {
     editedTimestamp: 'Last edited',
     beforeContent: '__Content before__:',
     afterContent: '__Content after__:',
+    isRemix: 'Is Remix',
    },
    invite: {
     descCreateAudit: (user: Discord.User, invite: Discord.Invite) =>

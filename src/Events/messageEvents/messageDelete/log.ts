@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
@@ -148,11 +148,20 @@ export default async (msg: Discord.Message) => {
  }
 
  if (msg.attachments?.size) {
+  const isRemix = msg.attachments.map((a) => a.flags.has(Discord.AttachmentFlags.IsRemix));
+
   const attachments = (await ch.fileURL2Buffer(msg.attachments.map((a) => a.url))).filter(
    (e): e is Discord.AttachmentPayload => !!e,
   );
 
-  if (attachments?.length) files.push(...attachments);
+  if (attachments?.length) {
+   files.push(
+    ...attachments.map((a, i) => ({
+     ...a,
+     description: isRemix[i] ? lan.isRemix : undefined,
+    })),
+   );
+  }
  }
 
  ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
