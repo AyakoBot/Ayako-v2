@@ -3,6 +3,8 @@ import stp from './stp.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default (e: Discord.APIEmbed, r: Record<string, any>): Discord.APIEmbed => ({
+ ...e,
+ color: e.color,
  title: e.title ? stp(e.title, r) : undefined,
  description: e.description ? stp(e.description, r) : undefined,
  footer: e.footer

@@ -183,9 +183,11 @@ export const tasks = {
   }
  },
  pins: async (guild: Discord.Guild) => {
-  guild.channels.cache.forEach(async (c) => {
-   if (!c.isTextBased()) return;
-   ch.cache.pins.get('', c);
+  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+   guild.channels.cache.forEach(async (c) => {
+    if (!c.isTextBased()) return;
+    ch.cache.pins.get('', c);
+   });
   });
  },
  invites: async (guild: Discord.Guild) => {

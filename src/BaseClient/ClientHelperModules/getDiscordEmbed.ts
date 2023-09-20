@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 
 export default (DBembed: Prisma.customembeds): Discord.APIEmbed => ({
- color: typeof DBembed.color === 'number' ? Number(DBembed.color) : undefined,
+ color: Number(DBembed.color),
  title: DBembed.title ?? undefined,
  url: DBembed.url ?? undefined,
  author: DBembed.authorname
