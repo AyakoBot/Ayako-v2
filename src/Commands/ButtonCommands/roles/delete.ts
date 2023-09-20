@@ -14,7 +14,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const me = await ch.getBotMemberFromGuild(cmd.guild);
+ const isManageable = me ? ch.isManageable(role, me) : false;
+ if (!isManageable) {
+  ch.errorCmd(cmd, language.errors.roleNotManageable, language);
+  return;
+ }
+
+ const m = isManageable
+  ? await cmd.update({ content: lan.deleted(role), attachments: [] })
+  : undefined;
+
  const res = await ch.request.guilds.deleteRole(cmd.guild, role.id);
- if (typeof res !== 'undefined') ch.errorCmd(cmd, res.message, language);
- else cmd.update({ content: lan.deleted(role as Discord.Role) });
+ if (typeof res !== 'undefined') ch.errorCmd(cmd, res.message, language, m);
 };
