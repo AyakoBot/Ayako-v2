@@ -643,7 +643,7 @@ const changeHelpers = {
   current: string | undefined,
   short: boolean,
   uniquetimestamp: number | string | undefined,
-  required = true,
+  required?: boolean,
  ): Discord.APIModalInteractionResponseCallbackData => ({
   title: (
    language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
@@ -659,11 +659,13 @@ const changeHelpers = {
      {
       type: Discord.ComponentType.TextInput,
       style: short ? Discord.TextInputStyle.Short : Discord.TextInputStyle.Paragraph,
+      min_length: required ? 1 : 0,
+      max_length: 4000,
       label: language.slashCommands.settings.insertHere,
       value:
        (type === 'duration' && current ? String(ms(Number(current) * 1000)) : current) ?? undefined,
       custom_id: fieldName,
-      required,
+      required: !!required,
      },
     ],
    },
