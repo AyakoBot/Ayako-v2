@@ -1943,6 +1943,7 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
+   notBlocked: (user: Discord.User) => `${getUser(user)}is not blocked from using RP-Commands`,
    unblock: 'Unblock User',
    unblocked: (user: Discord.User) =>
     `${getUser(user)}is no longer blocked from using RP-Commands on you`,

@@ -20,24 +20,23 @@ export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandI
   user = cmd.options.getUser('user', true);
  }
 
- ch.DataBase.blockedusers
-  .delete({
-   where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user.id } },
-  })
-  .then();
+ const unblocked = await ch.DataBase.blockedusers.delete({
+  where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user.id } },
+  select: { userid: true },
+ });
+
+ const payload = {
+  embeds: [],
+  components: [],
+  content: unblocked?.userid
+   ? language.slashCommands.rp.unblocked(user)
+   : language.slashCommands.rp.notBlocked(user),
+ };
 
  if (cmd instanceof Discord.ButtonInteraction) {
-  cmd.update({
-   embeds: [],
-   components: [],
-   content: language.slashCommands.rp.unblocked(user),
-  });
+  cmd.update(payload);
   return;
  }
 
- ch.replyCmd(cmd, {
-  embeds: [],
-  components: [],
-  content: language.slashCommands.rp.unblocked(user),
- });
+ ch.replyCmd(cmd, payload);
 };
