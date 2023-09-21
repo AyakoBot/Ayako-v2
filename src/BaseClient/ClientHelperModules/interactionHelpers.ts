@@ -21,6 +21,7 @@ import isDeleteable from './isDeleteable.js';
 import error from './error.js';
 import * as getChannel from './getChannel.js';
 import isEditable from './isEditable.js';
+import errorCmd from './errorCmd.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
@@ -44,7 +45,23 @@ const reply = async (
  const setting = await DataBase.guildsettings.findUnique({
   where: { guildid: guild.id },
  });
- const { author, users, text, otherText, commandName } = await parse();
+ const { author, users: allUsers, text, otherText, commandName } = await parse();
+ const blockedUsers = await DataBase.blockedusers.findMany({
+  where: {
+   userid: { in: [...allUsers.map((u) => u.id), author.id] },
+   blockeduserid: { in: [...allUsers.map((u) => u.id), author.id] },
+   OR: [
+    {
+     blockedcmd: { has: commandName },
+    },
+    { blockedcmd: { isEmpty: true } },
+   ],
+  },
+ });
+
+ const users = allUsers.filter(
+  (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id),
+ );
  const language = await languageSelector(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
  const con = constants.commands.interactions.find((c) => c.name === commandName);
@@ -59,7 +76,12 @@ const reply = async (
    ).messages.cache.get((cmd as Discord.Message).id);
    if (!realCmd) return;
 
-   const m = await errorMsg(realCmd, language.errors.noUserMentioned, language);
+   const m = await errorMsg(
+    realCmd,
+    allUsers.length ? language.slashCommands.rp.cantRP : language.errors.noUserMentioned,
+    language,
+   );
+
    Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
     if (!m) return;
 
@@ -70,7 +92,7 @@ const reply = async (
      request.channels.deleteMessage(cmd as Discord.Message<true>);
     }
    });
-  }
+  } else errorCmd(cmd, language.slashCommands.rp.cantRP, language);
   return;
  }
 
