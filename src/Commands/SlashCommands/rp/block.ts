@@ -28,7 +28,10 @@ export const respond = async (
 ) => {
  const language = lang ?? (await ch.languageSelector(cmd.guildId));
  const lan = language.slashCommands.rp;
- const commands = ch.constants.commands.interactions.filter((c) => !c.aliasOf);
+ const commands = ch.constants.commands.interactions
+  .filter((c) => c.users)
+  .filter((c) => !c.aliasOf);
+
  const options = ch.getChunks(
   commands.map((c) => ({
    label: c.name,
