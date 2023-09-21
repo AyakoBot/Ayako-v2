@@ -13,7 +13,7 @@ export default async (msg: Discord.Message<true>) => {
  if (settings.wlchannelid.includes(msg.channelId)) return;
  if (settings.wlroleid.some((id) => msg.member?.roles.cache.has(id))) return;
 
- const hasInvite = await checkForInvite(msg.content);
+ const hasInvite = await checkForInvite(msg.content, msg.guild);
  if (!hasInvite) return;
 
  const language = await ch.languageSelector(msg.guildId);
@@ -96,8 +96,14 @@ export default async (msg: Discord.Message<true>) => {
  }
 };
 
-const checkForInvite = async (content: string): Promise<boolean> => {
- if (content.match(ch.regexes.inviteTester)) return true;
+const checkForInvite = async (content: string, guild: Discord.Guild): Promise<boolean> => {
+ const pureMatches = content.match(ch.regexes.inviteTester);
+ if (pureMatches?.length) {
+  const anyIsNotFromGuild = pureMatches.filter(
+   (m) => !guild.invites.cache.has(new URL(m).pathname.slice(1)),
+  );
+  if (anyIsNotFromGuild.length) return true;
+ }
  if (!content.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray()))) return false;
 
  const args = content.split(/(\s+|\n+)/g);
@@ -106,7 +112,17 @@ const checkForInvite = async (content: string): Promise<boolean> => {
   .filter((arg) => arg.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray())));
 
  const results = await Promise.all(argsContainingLink.map((arg) => ch.fetchWithRedirects(arg)));
- if (results.some((r) => r.some((url) => url.match(ch.regexes.inviteTester)))) return true;
+ const fetchedMatches = results
+  .flat()
+  .map((url) => url.match(ch.regexes.inviteTester))
+  .flat()
+  .filter((i): i is string => !!i);
+ if (fetchedMatches?.length) {
+  const anyIsNotFromGuild = fetchedMatches.filter(
+   (m) => !guild.invites.cache.has(new URL(m).pathname.slice(1)),
+  );
+  if (anyIsNotFromGuild.length) return true;
+ }
 
  return false;
 };
