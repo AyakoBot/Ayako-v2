@@ -7,7 +7,7 @@ export default async (msg: Discord.Message<true>) => {
  if (msg.member?.permissions.has(Discord.PermissionFlagsBits.Administrator)) return;
 
  const settings = await ch.DataBase.invites.findUnique({
-  where: { guildid: msg.guildId, active: true },
+  where: { guildid: msg.guildId ?? msg.guild.id, active: true },
  });
  if (!settings) return;
  if (settings.wlchannelid.includes(msg.channelId)) return;
