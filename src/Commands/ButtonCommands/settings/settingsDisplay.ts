@@ -8,8 +8,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
 
- const settings = await ch.settingsHelpers.changeHelpers.get(settingName, cmd.guildId, undefined);
-
  const getUniquetimestamp = () => {
   const arg = args.shift();
   if (arg) return Number(arg);
@@ -42,6 +40,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   );
   return;
  }
+
+ const settings = await ch.settingsHelpers.changeHelpers.get(settingName, cmd.guildId, undefined);
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(
