@@ -17,7 +17,9 @@ export default async (msg: Discord.Message<true>) => {
  if (!hasInvite) return;
 
  const language = await ch.languageSelector(msg.guildId);
- if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
+ if (msg.type !== Discord.MessageType.AutoModerationAction && (await ch.isDeleteable(msg))) {
+  ch.request.channels.deleteMessage(msg);
+ }
 
  const modOptions: CT.BaseOptions = {
   reason: language.censor.reasonInvite,
