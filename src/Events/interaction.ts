@@ -34,22 +34,22 @@ const getParsedInteraction = (i: Discord.APIInteraction) => {
   case Discord.InteractionType.MessageComponent: {
    switch (i.data.component_type) {
     case Discord.ComponentType.Button: {
-     return new Classes.ButtonInteraction(client, i.data);
+     return new Classes.ButtonInteraction(client, i as never);
     }
     case Discord.ComponentType.ChannelSelect: {
-     return new Classes.ChannelSelect(client, i.data);
+     return new Classes.ChannelSelect(client, i as never);
     }
     case Discord.ComponentType.MentionableSelect: {
-     return new Classes.MentionableSelect(client, i.data);
+     return new Classes.MentionableSelect(client, i as never);
     }
     case Discord.ComponentType.RoleSelect: {
-     return new Classes.RoleSelect(client, i.data);
+     return new Classes.RoleSelect(client, i as never);
     }
     case Discord.ComponentType.StringSelect: {
-     return new Classes.StringSelect(client, i.data);
+     return new Classes.StringSelect(client, i as never);
     }
     case Discord.ComponentType.UserSelect: {
-     return new Classes.UserSelect(client, i.data);
+     return new Classes.UserSelect(client, i as never);
     }
     default: {
      throw new Error('Unhandled Message Component Type');
