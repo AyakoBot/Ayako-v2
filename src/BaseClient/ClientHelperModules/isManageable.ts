@@ -11,8 +11,8 @@ export default (
 
 const member = (target: Discord.GuildMember, executor: Discord.GuildMember) => {
  if (
-  !target.permissions.has(Discord.PermissionFlagsBits.ManageRoles, true) ||
-  !target.permissions.has(Discord.PermissionFlagsBits.ModerateMembers, true)
+  !executor.permissions.has(Discord.PermissionFlagsBits.ManageRoles, true) ||
+  !executor.permissions.has(Discord.PermissionFlagsBits.ModerateMembers, true)
  ) {
   return false;
  }
