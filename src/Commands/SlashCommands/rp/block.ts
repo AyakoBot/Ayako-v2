@@ -1,7 +1,9 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
+ if (!cmd.inCachedGuild()) return;
  const user = cmd.options.getUser('user', true);
 
  const blocked = await ch.DataBase.blockedusers.upsert({
@@ -15,22 +17,33 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   select: { blockedcmd: true },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ respond(cmd, user, blocked);
+};
+
+export const respond = async (
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.StringSelectMenuInteraction<'cached'>,
+ user: Discord.User,
+ blocked: { blockedcmd?: string[] },
+ lang?: CT.Language,
+) => {
+ const language = lang ?? (await ch.languageSelector(cmd.guildId));
  const lan = language.slashCommands.rp;
  const commands = ch.constants.commands.interactions.filter((c) => !c.aliasOf);
  const options = ch.getChunks(
   commands.map((c) => ({
    label: c.name,
    value: c.name,
-   description: ch.constants.commands.interactions
-    .filter((c2) => c2.aliasOf === c.name)
-    .map((c2) => c2.name)
-    .join(', '),
+   emoji: blocked.blockedcmd?.includes(c.name) ? ch.objectEmotes.minusBG : ch.objectEmotes.plusBG,
+   description:
+    ch.constants.commands.interactions
+     .filter((c2) => c2.aliasOf === c.name)
+     .map((c2) => c2.name)
+     .join(', ') || undefined,
   })),
   25,
  );
 
- ch.replyCmd(cmd, {
+ const payload = {
   content: lan.blocked(user),
   embeds: [
    {
@@ -47,18 +60,41 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
          .join(', ')
       : language.None
     }`,
+    url: `https://ayakobot.com?user=${user.id}`,
    },
   ],
-  components: options.map((opts, i) => ({
-   type: Discord.ComponentType.ActionRow,
-   components: [
-    {
-     type: Discord.ComponentType.StringSelect,
-     customId: `rp/block_${i}`,
-     placeholder: lan.blockPlaceholder,
-     options: opts,
-    },
-   ],
-  })),
- });
+  components: [
+   ...options.map((opts, i) => ({
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.StringSelect,
+      customId: `rp/block_${i}`,
+      placeholder: lan.blockPlaceholder,
+      options: opts,
+      max_values: opts.length,
+      min_values: 1,
+     },
+    ],
+   })),
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      style: Discord.ButtonStyle.Danger,
+      customId: 'rp/unblock',
+      label: lan.unblock,
+     },
+    ],
+   },
+  ],
+ };
+
+ if (cmd instanceof Discord.ChatInputCommandInteraction) {
+  ch.replyCmd(cmd, payload as Discord.InteractionReplyOptions);
+  return;
+ }
+
+ cmd.update(payload as Discord.InteractionUpdateOptions);
 };

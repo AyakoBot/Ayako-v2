@@ -1943,7 +1943,10 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
-   blocked: (user: Discord.User) => `${getUser(user)}is now blocked from using RP-Commands on you`,
+   unblock: 'Unblock User',
+   unblocked: (user: Discord.User) =>
+    `${getUser(user)}is no longer blocked from using RP-Commands on you`,
+   blocked: (user: Discord.User) => `${getUser(user)}blocked from using RP-Commands on you`,
    blockPlaceholder: 'Select Commands to switch their Block-Status',
    availableCmds: `Allowed Commands:`,
    blockedCmds: `Blocked Commands:`,
