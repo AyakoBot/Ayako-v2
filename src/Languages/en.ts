@@ -1943,6 +1943,7 @@ export default {
    viewOriginal: 'View Original',
   },
   rp: {
+   allBlockedUsers: 'All Users you have blocked',
    cantRP: "You can't use RP-Commands on this Users as either of you has blocked the other.",
    notBlocked: (user: Discord.User) => `${getUser(user)}is not blocked from using RP-Commands`,
    unblock: 'Unblock User',
