@@ -6,7 +6,8 @@ export default async (event: Discord.GuildScheduledEvent) => {
 
  const users: { member: Discord.GuildMember | undefined; user: Discord.User }[] = [];
 
- for (let lastNum = 0; lastNum !== users.length; lastNum = users.length) {
+ const fetches = Math.ceil(Number(event.userCount) / 100);
+ for (let i = 0; i < fetches; i += 1) {
   // eslint-disable-next-line no-await-in-loop
   const u = await request.guilds.getScheduledEventUsers(event.guild, event.id, {
    limit: 100,

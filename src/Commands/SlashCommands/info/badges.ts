@@ -6,7 +6,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.languageSelector(cmd.guildId);
  const lan = language.slashCommands.info.badges;
 
- const members = cmd.guild ? await ch.fetchAllGuildMembers(cmd.guild) : undefined;
+ const members = cmd.guild.members.cache.map((c) => c);
  if (!members) return;
 
  const nitro = members.filter(

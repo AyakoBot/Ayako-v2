@@ -4,7 +4,8 @@ import { request } from './requestHandler.js';
 export default async (guild: Discord.Guild) => {
  const members: Discord.GuildMember[] = [];
 
- for (let lastNum = 0; lastNum !== members.length; lastNum = members.length) {
+ const fetches = Math.ceil(guild.memberCount / 1000);
+ for (let i = 0; i < fetches; i += 1) {
   // eslint-disable-next-line no-await-in-loop
   const u = await request.guilds.getMembers(guild, {
    limit: 1000,
