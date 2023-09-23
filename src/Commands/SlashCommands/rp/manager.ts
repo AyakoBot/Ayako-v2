@@ -23,7 +23,7 @@ export default async (
      name: lan.author,
     },
     description: `${lan.desc}`,
-    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
     fields: lan.fields(
      guildsettings?.lastrpsyncrun
       ? ch.constants.standard.getTime(Number(guildsettings.lastrpsyncrun))

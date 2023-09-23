@@ -56,7 +56,7 @@ const getPayload = async (
 ): Promise<CT.UsualMessagePayload> => ({
  embeds: [
   {
-   color: ch.colorSelector(await ch.getBotMemberFromGuild(guild)),
+   color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
    description: content[page - 1],
   },
  ] as Discord.APIEmbed[],

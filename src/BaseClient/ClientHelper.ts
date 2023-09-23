@@ -21,7 +21,7 @@ import errorMsg from './ClientHelperModules/errorMsg.js';
 import errorCmd from './ClientHelperModules/errorCmd.js';
 import permError from './ClientHelperModules/permError.js';
 import notYours from './ClientHelperModules/notYours.js';
-import colorSelector from './ClientHelperModules/colorSelector.js';
+import getColor from './ClientHelperModules/getColor.js';
 import loadingEmbed from './ClientHelperModules/loadingEmbed.js';
 import arrayEquals from './ClientHelperModules/arrayEquals.js';
 import txtFileLinkToString from './ClientHelperModules/txtFileLinkToString.js';
@@ -55,7 +55,6 @@ import reactionEmotes from './ClientHelperModules/reactionEmotes.js';
 import cache from './ClientHelperModules/cache.js';
 import constants from './Other/constants.js';
 import getRandom from './ClientHelperModules/getRandom.js';
-import getColor from './ClientHelperModules/getColor.js';
 import findServerByName from './ClientHelperModules/findServerByName.js';
 import getAllBans from './ClientHelperModules/getAllBans.js';
 import splitByThousand from './ClientHelperModules/splitByThousands.js';
@@ -128,7 +127,7 @@ export {
  errorCmd,
  permError,
  notYours,
- colorSelector,
+ getColor,
  loadingEmbed,
  arrayEquals,
  txtFileLinkToString,
@@ -163,7 +162,6 @@ export {
  channelQueue,
  channelTimeout,
  getRandom,
- getColor,
  findServerByName,
  getAllBans,
  splitByThousand,

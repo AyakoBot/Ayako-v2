@@ -41,7 +41,7 @@ export default async (appeal: CT.Appeal) => {
  const embed: Discord.APIEmbed = {
   title: lan.title,
   description: lan.description(user, punishment.uniquetimestamp),
-  color: ch.colorSelector(await ch.getBotMemberFromGuild(guild)),
+  color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
   fields: appeal.questions.map((q, i) => {
    const answer = appeal.answers[i];
    const answertype = appeal.answertypes[i];

@@ -7,7 +7,7 @@ import replyCmd from './replyCmd.js';
 import send from './send.js';
 import DataBase from '../DataBase.js';
 import type CT from '../../Typings/CustomTypings.js';
-import colorSelector from './colorSelector.js';
+import getColor from './getColor.js';
 import getLanguage from './getLanguage.js';
 import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
@@ -103,7 +103,7 @@ const reply = async (
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
-  color: colorSelector(await getBotMemberFromGuild(guild)),
+  color: getColor(await getBotMemberFromGuild(guild)),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,

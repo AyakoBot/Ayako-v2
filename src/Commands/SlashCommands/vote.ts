@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      name: lan.desc,
     },
     description: lan.content,
-    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
    },
   ],
  });

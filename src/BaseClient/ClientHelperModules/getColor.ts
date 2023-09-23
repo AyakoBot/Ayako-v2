@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import { findBestMatch } from 'string-similarity';
 import Constants from '../Other/constants.js';
 
@@ -166,9 +167,20 @@ const colors = {
  notquiteblack: 0x23272a,
 };
 
-export default (color: string | number) => {
+export default (color: string | number | Discord.GuildMember | null | undefined): number => {
+ if (!color) return 0xb0ff00;
+
+ if (color instanceof Discord.GuildMember) {
+  if (!color) return Constants.colors.base;
+  if (!color.roles.highest) return Constants.colors.base;
+
+  return color && color.roles.highest.color !== 0
+   ? color.roles.highest.color
+   : Constants.colors.base;
+ }
+
  if (typeof color === 'number') return color;
- if (color.startsWith('#')) return color;
+ if (color.startsWith('#')) return hexToNumber(color);
 
  const allKeys = Object.keys(colors);
  const key = color.toLowerCase().replace(/\s+/g, '');
@@ -177,4 +189,9 @@ export default (color: string | number) => {
 
  const closestColor = findBestMatch(key, allKeys).bestMatch.target;
  return colors[closestColor as keyof typeof colors];
+};
+
+const hexToNumber = (hex: string): number => {
+ const hexWithoutHash = hex.replace('#', '');
+ return parseInt(hexWithoutHash, 16);
 };

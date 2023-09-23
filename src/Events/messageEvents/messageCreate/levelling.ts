@@ -476,7 +476,7 @@ const infoEmbed = async (
  });
 
  const embed: Discord.APIEmbed = {
-  color: ch.colorSelector(await ch.getBotMemberFromGuild(msg.guild)),
+  color: ch.getColor(await ch.getBotMemberFromGuild(msg.guild)),
   description: language.leveling.description(emotes.join(', ')),
  };
 
@@ -496,11 +496,11 @@ const doEmbed = async (
  levelData: LevelData,
  setting: Prisma.leveling,
 ) => {
- const getDefaultEmbed = async () => ({
+ const getDefaultEmbed = async (): Promise<Discord.APIEmbed> => ({
   author: {
    name: language.leveling.author(msg),
   },
-  color: ch.colorSelector(await ch.getBotMemberFromGuild(msg.guild)),
+  color: ch.getColor(await ch.getBotMemberFromGuild(msg.guild)),
  });
 
  const options = [

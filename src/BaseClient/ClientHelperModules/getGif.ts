@@ -3,7 +3,7 @@ import * as Neko from 'nekos-best.js';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
 import PurrBot from 'purrbot-api';
 import getLanguage from './getLanguage.js';
-import colorSelector from './colorSelector.js';
+import getColor from './getColor.js';
 import replyCmd from './replyCmd.js';
 import objectEmotes from './emotes.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
@@ -298,7 +298,7 @@ export const imageGetter = async (
     image: {
      url: img.url,
     },
-    color: colorSelector(await getBotMemberFromGuild(cmd.guild)),
+    color: getColor(await getBotMemberFromGuild(cmd.guild)),
     author: img.artist
      ? {
         name: lan.madeBy,

@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     author: {
      name: lan.author,
     },
-    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
     description: `${ch.constants.standard.getEmote(
      ch.emotes.userFlags.DiscordEmployee,
     )} ${ch.util.makeInlineCode(

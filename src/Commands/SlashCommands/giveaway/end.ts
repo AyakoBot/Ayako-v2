@@ -76,7 +76,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
       icon_url: host.displayAvatarURL(),
      }
    : undefined,
-  color: ch.colorSelector(
+  color: ch.getColor(
    await ch.getBotMemberFromGuild(client.guilds.cache.get(giveaway.guildid)),
   ),
  };

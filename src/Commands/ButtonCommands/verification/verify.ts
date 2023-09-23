@@ -114,7 +114,7 @@ const verify = async (cmd: Discord.ButtonInteraction, language: CT.Language) => 
       value: language.verification.hintmsg,
      },
     ],
-    color: ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
    },
   ],
   files: [file],

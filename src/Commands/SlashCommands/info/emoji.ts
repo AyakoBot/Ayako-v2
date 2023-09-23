@@ -69,7 +69,7 @@ const getEmotesPayload = async (
      name: lan.emojis.author,
     },
     description: chunk.join('\n'),
-    color: ch.colorSelector(
+    color: ch.getColor(
      await ch.getBotMemberFromGuild(
       emotes.find((e): e is Discord.GuildEmoji => 'guild' in e)?.guild,
      ),

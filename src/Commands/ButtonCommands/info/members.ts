@@ -19,7 +19,7 @@ export default async (
     ? []
     : [
        {
-        color: role.color || ch.colorSelector(await ch.getBotMemberFromGuild(cmd.guild)),
+        color: role.color || ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
         description: getDescription(role, language),
         author: {
          name: lan.author,
