@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import DataBase from '../DataBase.js';
-import objectEmotes from './objectEmotes.js';
+import objectEmotes from './emotes.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
 

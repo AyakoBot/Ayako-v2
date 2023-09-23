@@ -140,7 +140,7 @@ export default async (
        .filter(([, a]) => !!a)
        .map(
         (permissionString) =>
-         `${ch.stringEmotes.enabled} \`${
+         `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
           language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )
@@ -150,7 +150,7 @@ export default async (
        .filter(([, a]) => !!a)
        .map(
         (permissionString) =>
-         `${ch.stringEmotes.disabled} \`${
+         `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
           language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )

@@ -1,4 +1,5 @@
 import Prisma from '@prisma/client';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/CustomTypings.js';
@@ -37,7 +38,7 @@ export default async (appeal: CT.Appeal) => {
  const language = await ch.languageSelector(guild.id);
  const lan = language.events.appeal;
 
- const embed = {
+ const embed: Discord.APIEmbed = {
   title: lan.title,
   description: lan.description(user, punishment.uniquetimestamp),
   color: ch.colorSelector(await ch.getBotMemberFromGuild(guild)),
@@ -60,15 +61,18 @@ export default async (appeal: CT.Appeal) => {
  ch.send(channel, { embeds: [embed] });
 };
 
-const getDisplayAnswer = (answer: string, answertype: Prisma.appealquestions['answertype']) => {
+const getDisplayAnswer = (
+ answer: string,
+ answertype: Prisma.appealquestions['answertype'],
+): string => {
  switch (answertype) {
   case 'number':
    return answer;
   case 'boolean':
    // eslint-disable-next-line no-extra-boolean-cast
    return Boolean(answer)
-    ? ch.stringEmotes.tickWithBackground
-    : ch.stringEmotes.crossWithBackground;
+    ? ch.constants.standard.getEmote(ch.emotes.tickWithBackground)
+    : ch.constants.standard.getEmote(ch.emotes.crossWithBackground);
   case 'multiple_choice':
    return `\`${answer
     .split(',')

@@ -8,7 +8,7 @@ import languageSelector from '../../../BaseClient/ClientHelperModules/languageSe
 import constants from '../../../BaseClient/Other/constants.js';
 import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';
 import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
-import objectEmotes from '../../../BaseClient/ClientHelperModules/objectEmotes.js';
+import objectEmotes from '../../../BaseClient/ClientHelperModules/emotes.js';
 import DataBase from '../../../BaseClient/DataBase.js';
 import error from '../../../BaseClient/ClientHelperModules/error.js';
 import cache from '../../../BaseClient/ClientHelperModules/cache.js';

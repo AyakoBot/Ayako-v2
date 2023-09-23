@@ -112,14 +112,14 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
    description: `${changedDenied
     .map(
      (p) =>
-      `${ch.stringEmotes.disabled} \`${
+      `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
        language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
       }\``,
     )
     .join('\n')}\n${changedAllowed
     .map(
      (p) =>
-      `${ch.stringEmotes.enabled} \`${
+      `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
        language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
       }\``,
     )

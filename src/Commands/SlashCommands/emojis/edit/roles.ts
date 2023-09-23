@@ -57,7 +57,7 @@ export default async (
      color: ch.constants.colors.loading,
      author: {
       name: language.loading,
-      icon_url: ch.objectEmotes.loading.link,
+      icon_url: ch.emotes.loading.link,
      },
     },
    ],

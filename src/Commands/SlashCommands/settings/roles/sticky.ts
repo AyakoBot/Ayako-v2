@@ -63,8 +63,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.stickyrolesmode.name,
     value: settings?.stickyrolesmode
-     ? `${ch.stringEmotes.enabled} ${lan.unsticky}`
-     : `${ch.stringEmotes.disabled} ${lan.sticky}`,
+     ? `${ch.constants.standard.getEmote(ch.emotes.enabled)} ${lan.unsticky}`
+     : `${ch.constants.standard.getEmote(ch.emotes.disabled)} ${lan.sticky}`,
     inline: false,
    },
    {

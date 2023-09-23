@@ -69,7 +69,7 @@ const getPayload = async (
      style: Discord.ButtonStyle.Primary,
      label: language.slashCommands.settings.previous,
      custom_id: `info/servers_${page === 1 ? 1 : page - 1}`,
-     emoji: ch.objectEmotes.back,
+     emoji: ch.emotes.back,
      disabled: page === 1,
     },
     {
@@ -77,7 +77,7 @@ const getPayload = async (
      style: Discord.ButtonStyle.Primary,
      label: language.slashCommands.settings.next,
      custom_id: `info/servers_${page + 1}`,
-     emoji: ch.objectEmotes.forth,
+     emoji: ch.emotes.forth,
      disabled: page === content.length,
     },
    ],

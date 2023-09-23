@@ -289,9 +289,9 @@ export default async (
   if (removedPerms.length) typeID = 15;
 
   const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
-   if (denied) return ch.stringEmotes.switch.disable;
-   if (allowed) return ch.stringEmotes.switch.enable;
-   return ch.stringEmotes.switch.neutral;
+   if (denied) return ch.emotes.switch.disabled.map((e) => ch.constants.standard.getEmote(e));
+   if (allowed) return ch.emotes.switch.enabled.map((e) => ch.constants.standard.getEmote(e));
+   return ch.emotes.switch.neutral.map((e) => ch.constants.standard.getEmote(e));
   };
 
   let atLeastOneAdded = false;
@@ -313,7 +313,7 @@ export default async (
 
    addEmbed.fields?.push({
     name: '\u200b',
-    value: `${ch.stringEmotes.plusBG} ${
+    value: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
      p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
     }\n${filterPerms
      .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
@@ -352,7 +352,7 @@ export default async (
 
    changeEmbed.fields?.push({
     name: '\u200b',
-    value: `${ch.stringEmotes.edit} ${
+    value: `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
      p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
     }\n${filteredPerms
      .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
@@ -380,7 +380,7 @@ export default async (
 
    removeEmbed.fields?.push({
     name: '\u200b',
-    value: `${ch.stringEmotes.minusBG} ${
+    value: `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
      p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
     }\n${filterPerms
      .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)

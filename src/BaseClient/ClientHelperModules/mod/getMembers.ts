@@ -3,7 +3,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 import { request } from '../requestHandler.js';
 import constants from '../../Other/constants.js';
-import objectEmotes from '../objectEmotes.js';
+import objectEmotes from '../emotes.js';
 import checkExeCanManage from './checkExeCanManage.js';
 import type * as ModTypes from '../mod.js';
 

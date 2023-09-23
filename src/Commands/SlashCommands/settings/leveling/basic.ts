@@ -122,8 +122,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
       ? (await Promise.all(settings.lvlupemotes.map((e) => ch.getEmote(e))))
          .filter((e): e is Discord.GuildEmoji => !!e)
          .join(', ')
-      : ch.stringEmotes.levelupemotes
-         .map((e) => e.replace(/<:|>|<a:/g, ''))
+      : ch.emotes.levelupemotes
+         .map((e) => ch.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''))
          .map((e) => embedParsers.emote(e, language))
          .join(', '),
      inline: true,

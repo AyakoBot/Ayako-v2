@@ -53,7 +53,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   color: ch.constants.colors.loading,
   author: {
    name: lan.syncing,
-   icon_url: ch.objectEmotes.loading.link,
+   icon_url: ch.emotes.loading.link,
   },
  };
 
@@ -69,7 +69,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
    embed.color = ch.constants.colors.success;
    embed.author = {
     name: lan.synced,
-    icon_url: ch.objectEmotes.tick.link,
+    icon_url: ch.emotes.tick.link,
    };
    embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
    job.cancel();

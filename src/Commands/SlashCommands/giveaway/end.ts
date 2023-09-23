@@ -50,7 +50,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
  return {
   author: {
    name: language.slashCommands.giveaway.create.author,
-   icon_url: ch.objectEmotes.ayakoLove.link,
+   icon_url: ch.emotes.ayakoLove.link,
   },
   description: giveaway.description,
   title: giveaway.participants?.length
@@ -169,7 +169,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    {
     author: {
      name: language.slashCommands.giveaway.create.author,
-     icon_url: ch.objectEmotes.ayakoLove.link,
+     icon_url: ch.emotes.ayakoLove.link,
     },
     title: language.slashCommands.giveaway.end.title,
     color: ch.constants.colors.success,
@@ -326,7 +326,7 @@ export const getButton = (
  style: Discord.ButtonStyle.Primary,
  custom_id: 'giveaway/participate',
  label: language.slashCommands.giveaway.create.participate,
- emoji: ch.objectEmotes.gift,
+ emoji: ch.emotes.gift,
  disabled: giveaway.ended,
 });
 

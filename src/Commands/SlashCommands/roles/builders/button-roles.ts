@@ -129,7 +129,7 @@ const getComponents = (
     customId: `roles/${type}/refresh`,
     label: lan.refreshCommand,
     style: Discord.ButtonStyle.Secondary,
-    emoji: ch.objectEmotes.refresh,
+    emoji: ch.emotes.refresh,
    },
    {
     type: Discord.ComponentType.Button,
@@ -142,7 +142,7 @@ const getComponents = (
     customId: `roles/${type}/resetReactions`,
     label: lan.resetReactions,
     style: Discord.ButtonStyle.Danger,
-    emoji: ch.objectEmotes.trash,
+    emoji: ch.emotes.trash,
    },
   ],
  },

@@ -42,11 +42,8 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.inGuild()) {
-   ch.request.channels.addReaction(
-    msg,
-    `${ch.objectEmotes.cross.name}:${ch.objectEmotes.cross.id}`,
-   );
-  } else msg.react(ch.objectEmotes.cross.id);
+   ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
+  } else msg.react(ch.emotes.cross.id);
  } catch (err) {
   if (clean(err).length > 2000) {
    ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(err))] });
@@ -63,18 +60,15 @@ export default async (msg: Discord.Message) => {
   }
 
   if (msg.inGuild()) {
-   ch.request.channels.addReaction(
-    msg,
-    `${ch.objectEmotes.cross.name}:${ch.objectEmotes.cross.id}`,
-   );
-  } else msg.react(ch.objectEmotes.cross.id);
+   ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
+  } else msg.react(ch.emotes.cross.id);
  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const clean = (text: unknown): any =>
  JSON.parse(
-  JSON.stringify(text)
+  JSON.stringify(text, null, 2)
    .replace(/`/g, `\`${String.fromCharCode(8203)}`)
    .replace(/@/g, `@${String.fromCharCode(8203)}`)
    .replace(reg, 'TOKEN'),

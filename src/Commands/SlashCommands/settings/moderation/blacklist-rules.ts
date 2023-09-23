@@ -66,7 +66,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     : language.None
   }`,
   value: `${
-   r.enabled ? ch.stringEmotes.enabled : ch.stringEmotes.disabled
+   r.enabled ? ch.emotes.enabled : ch.emotes.disabled
   } - ID: ${ch.util.makeInlineCode(r.id)}`,
  }));
 
@@ -316,7 +316,7 @@ export const getComponents = (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Danger,
      custom_id: `settings/autoModRule/display`,
-     emoji: ch.objectEmotes.back,
+     emoji: ch.emotes.back,
     },
     {
      type: Discord.ComponentType.Button,
@@ -330,7 +330,7 @@ export const getComponents = (
      label: language.slashCommands.settings.delete,
      style: Discord.ButtonStyle.Danger,
      custom_id: `settings/autoModRule/delete_${rule.id}`,
-     emoji: ch.objectEmotes.minusBG,
+     emoji: ch.emotes.minusBG,
     },
    ],
   },
@@ -477,8 +477,8 @@ export const getComponents = (
         ? Discord.AutoModerationActionType.BlockMessage
         : 4),
      )
-      ? ch.objectEmotes.enabled
-      : ch.objectEmotes.disabled,
+      ? ch.emotes.enabled
+      : ch.emotes.disabled,
      disabled:
       rule.eventType !== Discord.AutoModerationRuleEventType.MessageSend ||
       (rule.actions.length === 1 &&
@@ -514,7 +514,7 @@ export const getComponents = (
          style: Discord.ButtonStyle.Secondary,
          custom_id: `settings/autoModRule/boolean_sendAlertMessage_${rule.id}`,
          emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
-          ? ch.objectEmotes.enabled
+          ? ch.emotes.enabled
           : undefined,
          disabled:
           rule.actions.length === 1 && !!getActionMetadata(rule, 'SendAlertMessage')?.channelId,
@@ -531,8 +531,8 @@ export const getComponents = (
      style: Discord.ButtonStyle.Secondary,
      custom_id: `settings/autoModRule/channel_${rule.id}`,
      emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
-      ? ch.objectEmotes.channelTypes[0]
-      : ch.objectEmotes.disabled,
+      ? ch.emotes.channelTypes[0]
+      : ch.emotes.disabled,
     },
    ] as Discord.APIButtonComponentWithCustomId[],
   },
@@ -555,8 +555,8 @@ export const getComponents = (
              style: Discord.ButtonStyle.Secondary,
              custom_id: `settings/autoModRule/boolean_timeout_${rule.id}`,
              emoji: getActionMetadata(rule, 'Timeout')
-              ? ch.objectEmotes.enabled
-              : ch.objectEmotes.disabled,
+              ? ch.emotes.enabled
+              : ch.emotes.disabled,
              disabled: rule.actions.length === 1 && !!getActionMetadata(rule, 'Timeout'),
             },
            ]
@@ -568,7 +568,7 @@ export const getComponents = (
           : language.events.logs.automodRule.actionsType[Discord.AutoModerationActionType.Timeout],
          style: Discord.ButtonStyle.Secondary,
          custom_id: `settings/autoModRule/timeoutDuration_${rule.id}`,
-         emoji: getActionMetadata(rule, 'Timeout') ? undefined : ch.objectEmotes.disabled,
+         emoji: getActionMetadata(rule, 'Timeout') ? undefined : ch.emotes.disabled,
         },
        ] as Discord.APIButtonComponentWithCustomId[],
       },
@@ -582,7 +582,7 @@ export const getComponents = (
      label: language.events.logs.automodRule.exemptRoles,
      style: rule.exemptRoles.size ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
      custom_id: `settings/autoModRule/roles_${rule.id}`,
-     emoji: ch.objectEmotes.Role,
+     emoji: ch.emotes.Role,
     },
     ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
      ? [
@@ -593,7 +593,7 @@ export const getComponents = (
           ? Discord.ButtonStyle.Secondary
           : Discord.ButtonStyle.Primary,
          custom_id: `settings/autoModRule/channels_${rule.id}`,
-         emoji: ch.objectEmotes.channelTypes[0],
+         emoji: ch.emotes.channelTypes[0],
         },
        ]
      : []),

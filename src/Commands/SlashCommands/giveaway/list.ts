@@ -27,7 +27,7 @@ export default async (
    value: [
     {
      name: language.slashCommands.giveaway.end.ended,
-     value: g.ended ? ch.stringEmotes.tickWithBackground : ch.stringEmotes.crossWithBackground,
+     value: g.ended ? ch.emotes.tickWithBackground : ch.emotes.crossWithBackground,
     },
     {
      name: language.slashCommands.giveaway.list.end,
@@ -65,7 +65,7 @@ export default async (
      : undefined,
     {
      name: language.slashCommands.giveaway.list.failreroll,
-     value: g.failreroll ? ch.stringEmotes.tickWithBackground : ch.stringEmotes.crossWithBackground,
+     value: g.failreroll ? ch.emotes.tickWithBackground : ch.emotes.crossWithBackground,
     },
    ]
     .filter((v): v is { name: string; value: string } => !!v)
@@ -87,21 +87,21 @@ export default async (
 
 const getClaimingDone = (g: Prisma.giveaways, language: CT.Language) => {
  if (!g.collecttime || !g.actualprize) return language.slashCommands.giveaway.list.notEnabled;
- if (!g.claimingdone) return ch.stringEmotes.crossWithBackground;
- return ch.stringEmotes.tickWithBackground;
+ if (!g.claimingdone) return ch.emotes.crossWithBackground;
+ return ch.emotes.tickWithBackground;
 };
 
 const getButtons = (page: number, giveaways: Prisma.giveaways[]): Discord.APIButtonComponent[] => [
  {
   type: Discord.ComponentType.Button,
-  emoji: ch.objectEmotes.back,
+  emoji: ch.emotes.back,
   style: Discord.ButtonStyle.Primary,
   custom_id: `giveaway/list_${page - 1}`,
   disabled: page === 0,
  },
  {
   type: Discord.ComponentType.Button,
-  emoji: ch.objectEmotes.forth,
+  emoji: ch.emotes.forth,
   style: Discord.ButtonStyle.Primary,
   custom_id: `giveaway/list_${page + 1}`,
   disabled: Math.ceil(giveaways.length / 25) - 1 === page,

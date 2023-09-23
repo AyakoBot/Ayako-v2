@@ -44,14 +44,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     ...allowedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.stringEmotes.enabled} ${ch.permCalc(perm, language, true)}`
+       ? `${ch.constants.standard.getEmote(ch.emotes.enabled)} ${ch.permCalc(perm, language, true)}`
        : null,
      )
      .filter((r) => !!r),
     ...deniedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.stringEmotes.disabled} ${ch.permCalc(perm, language, true)}`
+       ? `${ch.constants.standard.getEmote(ch.emotes.disabled)} ${ch.permCalc(
+          perm,
+          language,
+          true,
+         )}`
        : null,
      )
      .filter((r) => !!r),

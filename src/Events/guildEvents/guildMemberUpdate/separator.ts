@@ -185,7 +185,7 @@ export const oneTimeRunner = async (
   name: language.slashCommands.settings.authorType(
    language.slashCommands.settings.categories.separators.name,
   ),
-  icon_url: ch.objectEmotes.settings.link,
+  icon_url: ch.emotes.settings.link,
   url: ch.constants.standard.invite,
  };
 
@@ -234,7 +234,7 @@ export const oneTimeRunner = async (
    name: language.slashCommands.settings.authorType(
     language.slashCommands.settings.categories.separators.name,
    ),
-   icon_url: ch.objectEmotes.settings.link,
+   icon_url: ch.emotes.settings.link,
    url: ch.constants.standard.invite,
   };
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
@@ -416,7 +416,7 @@ const assinger = async (
    name: language.slashCommands.settings.authorType(
     language.slashCommands.settings.categories.separators.name,
    ),
-   icon_url: ch.objectEmotes.settings.link,
+   icon_url: ch.emotes.settings.link,
    url: ch.constants.standard.invite,
   };
 
@@ -458,7 +458,7 @@ const assinger = async (
       name: language.slashCommands.settings.authorType(
        language.slashCommands.settings.categories.separators.name,
       ),
-      icon_url: ch.objectEmotes.settings.link,
+      icon_url: ch.emotes.settings.link,
       url: ch.constants.standard.invite,
      };
      embed.description =

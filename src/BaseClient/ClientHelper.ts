@@ -50,8 +50,7 @@ import getUser from './ClientHelperModules/getUser.js';
 import findUserByName from './ClientHelperModules/findUserByName.js';
 import settingsHelpers from './ClientHelperModules/settingsHelpers.js';
 import getDuration from './ClientHelperModules/getDuration.js';
-import objectEmotes from './ClientHelperModules/objectEmotes.js';
-import stringEmotes from './ClientHelperModules/stringEmotes.js';
+import emotes from './ClientHelperModules/emotes.js';
 import reactionEmotes from './ClientHelperModules/reactionEmotes.js';
 import cache from './ClientHelperModules/cache.js';
 import constants from './Other/constants.js';
@@ -156,8 +155,7 @@ export {
  findUserByName,
  settingsHelpers,
  getDuration,
- objectEmotes,
- stringEmotes,
+ emotes,
  reactionEmotes,
  cache,
  constants,

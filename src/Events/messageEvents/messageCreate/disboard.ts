@@ -19,7 +19,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
  });
  if (!settings) return;
 
- ch.request.channels.addReaction(msg, `${ch.objectEmotes.tick.name}:${ch.objectEmotes.tick.id}`);
+ ch.request.channels.addReaction(msg, `${ch.emotes.tick.name}:${ch.emotes.tick.id}`);
 
  deleteLastReminder(settings);
 

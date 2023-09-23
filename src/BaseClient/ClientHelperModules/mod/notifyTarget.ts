@@ -4,8 +4,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 import { request } from '../requestHandler.js';
 import constants from '../../Other/constants.js';
-import objectEmotes from '../objectEmotes.js';
-import stringEmotes from '../stringEmotes.js';
+import emotes from '../emotes.js';
 import send from '../send.js';
 import cache from '../cache.js';
 import deleteThread from './deleteThread.js';
@@ -28,7 +27,7 @@ export default async <T extends CT.ModTypes>(
   thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
    ? undefined
    : {
-      url: objectEmotes.warning.link,
+      url: emotes.warning.link,
      },
  };
 
@@ -43,7 +42,7 @@ export default async <T extends CT.ModTypes>(
  const thread = await request.channels.createThread(options.guild.rulesChannel, {
   type: Discord.ChannelType.PrivateThread,
   invitable: false,
-  name: stringEmotes.warning,
+  name: constants.standard.getEmote(emotes.warning),
  });
 
  if ('message' in thread) return;

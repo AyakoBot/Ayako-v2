@@ -120,12 +120,12 @@ export const doAnnouncement = async (
        }
       })
       .filter((r): r is string => !!r)
-      .join(` ${ch.stringEmotes.plusBG} `),
+      .join(` ${ch.constants.standard.getEmote(ch.emotes.plusBG)} `),
     )}${
      currencyRewards?.length
-      ? `${ch.stringEmotes.plusBG} ${currencyRewards
+      ? `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${currencyRewards
          ?.map((r) => Number(r.rewardcurrency))
-         .reduce((b, a) => b + a, 0)} ${ch.stringEmotes.book}`
+         .reduce((b, a) => b + a, 0)} ${ch.constants.standard.getEmote(ch.emotes.book)}`
       : ''
     }`
   : '';
@@ -188,7 +188,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
    {
     author: {
      name: lan.reminder.name,
-     icon_url: ch.objectEmotes.userFlags.EarlySupporter.link,
+     icon_url: ch.emotes.userFlags.EarlySupporter.link,
     },
     color: ch.constants.colors.base,
     description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),

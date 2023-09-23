@@ -5,7 +5,7 @@ import PurrBot from 'purrbot-api';
 import languageSelector from './languageSelector.js';
 import colorSelector from './colorSelector.js';
 import replyCmd from './replyCmd.js';
-import objectEmotes from './objectEmotes.js';
+import objectEmotes from './emotes.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 const neko = new Neko.Client();

@@ -13,7 +13,7 @@ import getMembers from './getMembers.js';
 import getStrike from './getStrike.js';
 import err from './err.js';
 import constants from '../../Other/constants.js';
-import objectEmotes from '../objectEmotes.js';
+import objectEmotes from '../emotes.js';
 import getCustomBot from '../getCustomBot.js';
 import isManageable from '../isManageable.js';
 import isModeratable from '../isModeratable.js';

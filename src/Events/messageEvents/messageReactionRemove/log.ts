@@ -39,8 +39,8 @@ export default async (
       `\`${ch.spaces(`${r.count}`, 5)}\` ${
        (reaction.emoji.id && r.emoji.id && reaction.emoji.id === r.emoji.id) ||
        (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
-        ? ` ${ch.stringEmotes.minusBG}`
-        : ` ${ch.stringEmotes.invis}`
+        ? ` ${ch.constants.standard.getEmote(ch.emotes.minusBG)}`
+        : ` ${ch.constants.standard.getEmote(ch.emotes.invis)}`
       } ${language.languageFunction.getEmote(r.emoji)}`,
     )
     .join(''),

@@ -37,7 +37,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Primary,
       customId: `embed-builder/back`,
-      emoji: ch.stringEmotes.back,
+      emoji: ch.emotes.back,
      },
     ],
    },

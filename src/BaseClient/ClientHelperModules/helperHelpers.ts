@@ -5,7 +5,7 @@ import * as util from './util.js';
 import replyCmd from './replyCmd.js';
 import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
-import stringEmotes from './stringEmotes.js';
+import emotes from './emotes.js';
 
 type Command =
  | {
@@ -177,10 +177,10 @@ const getEmbeds = (
    const getCommandMention = () => {
     switch (command.type) {
      case Discord.ApplicationCommandType.Message: {
-      return `${stringEmotes.Message} ${rawCommand.parentCommand}`;
+      return `${constants.standard.getEmote(emotes.Message)} ${rawCommand.parentCommand}`;
      }
      case Discord.ApplicationCommandType.User: {
-      return `${stringEmotes.MemberBright} ${rawCommand.parentCommand}`;
+      return `${constants.standard.getEmote(emotes.MemberBright)} ${rawCommand.parentCommand}`;
      }
      case Discord.ApplicationCommandType.ChatInput:
      default: {

@@ -28,7 +28,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  const files: Discord.AttachmentPayload[] = [];
  const embed: Discord.APIEmbed = {
   author: {
-   icon_url: ch.objectEmotes.userFlags.DiscordCertifiedModerator.link,
+   icon_url: ch.emotes.userFlags.DiscordCertifiedModerator.link,
    name: lan.name,
    url: msg ? msg.url : undefined,
   },

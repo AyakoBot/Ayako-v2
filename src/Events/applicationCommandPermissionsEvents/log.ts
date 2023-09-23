@@ -51,7 +51,7 @@ export default async (
     };
 
     return `${type() === 5 ? language.unknown : type()} ${
-     permission.permission ? ch.stringEmotes.enabled : ch.stringEmotes.disabled
+     permission.permission ? ch.emotes.enabled : ch.emotes.disabled
     }`;
    })
    .join('\n')}`,

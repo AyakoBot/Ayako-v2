@@ -69,7 +69,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${
    lan.fields.cooldown
   }: \`${embedParsers.time(Number(s.cooldown), language)}\``,
-  value: `${s.active ? ch.stringEmotes.enabled : ch.stringEmotes.disabled} - ID: \`${Number(
+  value: `${s.active ? ch.emotes.enabled : ch.emotes.disabled} - ID: \`${Number(
    s.uniquetimestamp,
   ).toString(36)}\``,
  }));

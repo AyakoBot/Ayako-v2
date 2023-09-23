@@ -109,13 +109,13 @@ export const getComponents = (
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/refresh`,
-    emoji: ch.objectEmotes.back,
+    emoji: ch.emotes.back,
     style: Discord.ButtonStyle.Secondary,
    },
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/save_${emojiIdentifier}`,
-    emoji: ch.objectEmotes.tickWithBackground,
+    emoji: ch.emotes.tickWithBackground,
     style: Discord.ButtonStyle.Success,
     label: lan.saveAndExit,
     disabled: !roles.length,
@@ -123,7 +123,7 @@ export const getComponents = (
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/delete_${emojiIdentifier}`,
-    emoji: ch.objectEmotes.trash,
+    emoji: ch.emotes.trash,
     style: Discord.ButtonStyle.Danger,
     label: language.Delete,
    },

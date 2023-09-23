@@ -84,7 +84,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  userInfo.fields?.push({
-  name: `${ch.stringEmotes.plusBG} ${lan.createdAt}`,
+  name: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${lan.createdAt}`,
   value: `${ch.constants.standard.getTime(user.createdTimestamp)}\n\`${ch.moment(
    Date.now() - user.createdTimestamp,
    language,
@@ -123,25 +123,25 @@ const getMemberEmbed = (
     name: lan.timeout,
     value: `${
      member.communicationDisabledUntil && member.isCommunicationDisabled()
-      ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
+      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.Yes}\n${
          lan.communicationDisabledUntil
         } ${ch.constants.standard.getTime(member.communicationDisabledUntilTimestamp)}`
-      : `${ch.stringEmotes.crossWithBackground} ${language.No}`
+      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.No}`
     }`,
     inline: false,
    },
    {
-    name: `${ch.stringEmotes.plusBG} ${lan.joinedAt}`,
+    name: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${lan.joinedAt}`,
     value: `${ch.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
    },
    {
     name: `${getBoostEmote(member)} ${lan.boosting}`,
     value: `${
      member.premiumSinceTimestamp
-      ? `${ch.stringEmotes.tickWithBackground} ${language.Yes}\n${
+      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.Yes}\n${
          lan.boostingSince
         } ${ch.constants.standard.getTime(member.premiumSinceTimestamp)}`
-      : `${ch.stringEmotes.crossWithBackground} ${language.No}`
+      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.No}`
     }`,
    },
   ],
@@ -205,15 +205,15 @@ const getBoostEmote = (member: Discord.GuildMember) => {
  if (!member.premiumSinceTimestamp) return '';
  const time = Math.abs(member.premiumSinceTimestamp - Date.now());
 
- if (time < month * 2) return ch.stringEmotes.userFlags.Boost1;
- if (time < month * 3) return ch.stringEmotes.userFlags.Boost2;
- if (time < month * 6) return ch.stringEmotes.userFlags.Boost3;
- if (time < month * 9) return ch.stringEmotes.userFlags.Boost6;
- if (time < month * 12) return ch.stringEmotes.userFlags.Boost9;
- if (time < month * 15) return ch.stringEmotes.userFlags.Boost12;
- if (time < month * 18) return ch.stringEmotes.userFlags.Boost15;
- if (time < month * 24) return ch.stringEmotes.userFlags.Boost18;
- return ch.stringEmotes.userFlags.Boost24;
+ if (time < month * 2) return ch.emotes.userFlags.Boost1;
+ if (time < month * 3) return ch.emotes.userFlags.Boost2;
+ if (time < month * 6) return ch.emotes.userFlags.Boost3;
+ if (time < month * 9) return ch.emotes.userFlags.Boost6;
+ if (time < month * 12) return ch.emotes.userFlags.Boost9;
+ if (time < month * 15) return ch.emotes.userFlags.Boost12;
+ if (time < month * 18) return ch.emotes.userFlags.Boost15;
+ if (time < month * 24) return ch.emotes.userFlags.Boost18;
+ return ch.emotes.userFlags.Boost24;
 };
 
 const getComponents = (

@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings.js';
-import stringEmotes from './stringEmotes.js';
+import emotes from './emotes.js';
+import constants from '../Other/constants.js';
 
 export default (
  before: unknown,
@@ -50,5 +51,5 @@ export default (
 
 const boolify = (b: unknown, l: CT.Language) =>
  b
-  ? `${stringEmotes.tickWithBackground} ${l.Enabled}`
-  : `${stringEmotes.crossWithBackground} ${l.Disabled}`;
+  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.Enabled}`
+  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.Disabled}`;

@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
-import stringEmotes from './stringEmotes.js';
-import objectEmotes from './objectEmotes.js';
+import emotes from './emotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
 
@@ -13,9 +12,11 @@ export default ({
 }): Discord.APIEmbed => ({
  author: {
   name: lan.author,
-  icon_url: objectEmotes.loading.link,
+  icon_url: emotes.loading.link,
   url: constants.standard.invite,
  },
  color: constants.colors.loading,
- description: `${stringEmotes.loading} ${lan.loading ? lan.loading : language.loading}`,
+ description: `${constants.standard.getEmote(emotes.loading)} ${
+  lan.loading ? lan.loading : language.loading
+ }`,
 });

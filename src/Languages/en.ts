@@ -84,7 +84,9 @@ const punishmentDeleteMessageSeconds = {
 
 const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
  `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
-  tag.moderated ? ` / ${ch.stringEmotes.userFlags.DiscordEmployee} Managed` : ''
+  tag.moderated
+   ? ` / ${ch.constants.standard.getEmote(ch.emotes.userFlags.DiscordEmployee)} Managed`
+   : ''
  }`;
 
 const getUser = (

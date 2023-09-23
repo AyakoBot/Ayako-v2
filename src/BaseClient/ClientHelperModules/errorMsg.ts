@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import reply from './replyMsg.js';
-import objectEmotes from './objectEmotes.js';
+import objectEmotes from './emotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';

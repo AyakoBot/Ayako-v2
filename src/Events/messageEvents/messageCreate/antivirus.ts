@@ -43,7 +43,9 @@ export default async (msg: Discord.Message<true>) => {
        ...(url.url
         ? [
            {
-            name: language.antivirus.malicious(ch.stringEmotes.crossWithBackground),
+            name: language.antivirus.malicious(
+             ch.constants.standard.getEmote(ch.emotes.crossWithBackground),
+            ),
             value: ch.util.makeInlineCode(url.url),
            },
           ]

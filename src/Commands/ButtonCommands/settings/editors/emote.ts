@@ -35,7 +35,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     {
      author: {
       name: language.error,
-      icon_url: ch.objectEmotes.warning.link,
+      icon_url: ch.emotes.warning.link,
      },
      color: ch.constants.colors.danger,
      description: language.errors.noThreadCanBeCreated,
@@ -78,7 +78,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
       custom_id: 'deleteThread',
-      emoji: ch.objectEmotes.trash,
+      emoji: ch.emotes.trash,
       label: language.Delete,
      },
      {

@@ -56,7 +56,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Danger,
       custom_id: `settings/autoModRule/display_${id}`,
-      emoji: ch.objectEmotes.back,
+      emoji: ch.emotes.back,
      },
      ch.settingsHelpers.changeHelpers.done(
       settingName,

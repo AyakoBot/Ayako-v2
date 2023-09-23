@@ -449,7 +449,7 @@ const doReact = async (
 ) => {
  const reactions = setting.lvlupemotes.length
   ? setting.lvlupemotes
-  : ch.objectEmotes.levelupemotes.map((e) => (!e.id ? e.name : `${e.name}:${e.id}`));
+  : ch.emotes.levelupemotes.map((e) => (!e.id ? e.name : `${e.name}:${e.id}`));
 
  if (newLevel === 1) infoEmbed(msg, reactions, language);
 

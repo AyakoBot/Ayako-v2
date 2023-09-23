@@ -42,7 +42,7 @@ export default async (
   options.push({
    label: lan.start.createButtons.addField,
    value: 'create',
-   emoji: ch.objectEmotes.plusBG,
+   emoji: ch.emotes.plusBG,
   });
  }
 

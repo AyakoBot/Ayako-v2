@@ -3,8 +3,7 @@ import { glob } from 'glob';
 import ms from 'ms';
 import { Prisma } from '@prisma/client';
 import * as CT from '../../Typings/CustomTypings.js';
-import stringEmotes from './stringEmotes.js';
-import objectEmotes from './objectEmotes.js';
+import emotes from './emotes.js';
 import moment from './moment.js';
 import constants, { TableNamesPrismaTranslation } from '../Other/constants.js';
 import client from '../Client.js';
@@ -37,14 +36,14 @@ type BLWLType = 'blchannelid' | 'blroleid' | 'bluserid' | 'wlchannelid' | 'wlrol
 
 const embedParsers = {
  author: <T extends keyof SettingsNames>(language: CT.Language, lan: SettingsNames[T]) => ({
-  icon_url: objectEmotes.settings.link,
+  icon_url: emotes.settings.link,
   name: language.slashCommands.settings.authorType(lan.name),
   url: constants.standard.invite,
  }),
  boolean: (val: boolean | undefined, language: CT.Language) =>
   val
-   ? `${stringEmotes.enabled} ${language.Enabled}`
-   : `${stringEmotes.disabled} ${language.Disabled}`,
+   ? `${constants.standard.getEmote(emotes.enabled)} ${language.Enabled}`
+   : `${constants.standard.getEmote(emotes.disabled)} ${language.Disabled}`,
  channels: (val: string[] | undefined, language: CT.Language) =>
   val?.length ? val.map((c) => `<#${c}>`).join(', ') : language.None,
  roles: (val: string[] | null, language: CT.Language) =>
@@ -89,7 +88,7 @@ const back = <T extends keyof SettingsNames>(
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Danger,
  custom_id: `settings/settingsDisplay_${name}_${uniquetimestamp}`,
- emoji: objectEmotes.back,
+ emoji: emotes.back,
 });
 
 const buttonParsers = {
@@ -161,7 +160,7 @@ const buttonParsers = {
   custom_id: `settings/editors/settinglink_${String(
    name,
   )}_${settingName}_${linkName}_${uniquetimestamp}`,
-  emoji: objectEmotes.settings,
+  emoji: emotes.settings,
  }),
  boolean: <T extends keyof SettingsNames>(
   language: CT.Language,
@@ -186,7 +185,7 @@ const buttonParsers = {
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
     name,
    )}_${settingName}_${uniquetimestamp}`,
-   emoji: setting ? objectEmotes.enabled : objectEmotes.disabled,
+   emoji: setting ? emotes.enabled : emotes.disabled,
   };
  },
  create: <T extends keyof SettingsNames>(
@@ -197,7 +196,7 @@ const buttonParsers = {
   label: language.slashCommands.settings.create,
   style: Discord.ButtonStyle.Success,
   custom_id: `settings/create_${name}`,
-  emoji: objectEmotes.plusBG,
+  emoji: emotes.plusBG,
  }),
  delete: <T extends keyof SettingsNames>(
   language: CT.Language,
@@ -208,7 +207,7 @@ const buttonParsers = {
   label: language.slashCommands.settings.delete,
   style: Discord.ButtonStyle.Danger,
   custom_id: `settings/delete_${name}_${uniquetimestamp}`,
-  emoji: objectEmotes.minusBG,
+  emoji: emotes.minusBG,
  }),
  previous: <T extends keyof SettingsNames>(
   language: CT.Language,
@@ -219,7 +218,7 @@ const buttonParsers = {
   label: language.slashCommands.settings.previous,
   style: Discord.ButtonStyle.Success,
   custom_id: `settings/previous_${name}`,
-  emoji: objectEmotes.back,
+  emoji: emotes.back,
   disabled: !enabled,
  }),
  next: <T extends keyof SettingsNames>(
@@ -232,7 +231,7 @@ const buttonParsers = {
   label: language.slashCommands.settings.next,
   style: Discord.ButtonStyle.Success,
   custom_id: `settings/next_${name}_${uniquetimestamp}`,
-  emoji: objectEmotes.forth,
+  emoji: emotes.forth,
   disabled: !enabled,
  }),
  back,
@@ -537,7 +536,7 @@ const changeHelpers = {
    name: language.slashCommands.settings.authorType(
     language.slashCommands.settings.categories[settingName].name,
    ),
-   icon_url: objectEmotes.settings.link,
+   icon_url: emotes.settings.link,
   },
   title: language.slashCommands.settings.previouslySet,
   description: `${
@@ -707,7 +706,7 @@ const changeHelpers = {
   type: Discord.ComponentType.Button,
   style: Discord.ButtonStyle.Danger,
   custom_id: `settings/modal_${name}_${fieldName}`,
-  emoji: objectEmotes.back,
+  emoji: emotes.back,
  }),
  back,
  done: <T extends keyof SettingsNames>(
@@ -743,18 +742,18 @@ export const getEmoji = (
  switch (type) {
   case 'blchannelid':
   case 'wlchannelid': {
-   return objectEmotes.channelTypes[0];
+   return emotes.channelTypes[0];
   }
   case 'blroleid':
   case 'wlroleid': {
-   return objectEmotes.Role;
+   return emotes.Role;
   }
   case 'bluserid':
   case 'wluserid': {
-   return objectEmotes.Member;
+   return emotes.Member;
   }
   default: {
-   return setting ? objectEmotes.enabled : objectEmotes.disabled;
+   return setting ? emotes.enabled : emotes.disabled;
   }
  }
 };

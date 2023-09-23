@@ -55,7 +55,7 @@ export const getComponents = (
     label: lan.button,
     style: guildsettings?.enabledrp ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger,
     custom_id: 'rp/toggle',
-    emoji: guildsettings?.enabledrp ? ch.objectEmotes.enabled : ch.objectEmotes.disabled,
+    emoji: guildsettings?.enabledrp ? ch.emotes.enabled : ch.emotes.disabled,
     disabled:
      !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild) ||
      Number(guildsettings?.rpenableruns) === 2,
@@ -65,7 +65,7 @@ export const getComponents = (
     label: lan.sync,
     style: Discord.ButtonStyle.Secondary,
     custom_id: 'rp/sync',
-    emoji: ch.objectEmotes.refresh,
+    emoji: ch.emotes.refresh,
     disabled:
      !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild) ||
      !guildsettings?.enabledrp ||

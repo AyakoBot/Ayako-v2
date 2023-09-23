@@ -221,7 +221,7 @@ export default {
   userURL: (user: Discord.User) => `https://discord.com/users/${user.id}`,
   emoteURL: (emote: Discord.Emoji) =>
    `https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? 'gif' : 'png'}?size=4096`,
-  getEmote: (emoji: Discord.Emoji | { name: string; id: string | null; animated: boolean }) =>
+  getEmote: (emoji: Discord.Emoji | { name: string; id?: string; animated?: boolean }) =>
    emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,

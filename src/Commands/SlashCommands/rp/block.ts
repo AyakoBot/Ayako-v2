@@ -36,7 +36,7 @@ export const respond = async (
   commands.map((c) => ({
    label: c.name,
    value: c.name,
-   emoji: blocked.blockedcmd?.includes(c.name) ? ch.objectEmotes.minusBG : ch.objectEmotes.plusBG,
+   emoji: blocked.blockedcmd?.includes(c.name) ? ch.emotes.minusBG : ch.emotes.plusBG,
    description:
     ch.constants.commands.interactions
      .filter((c2) => c2.aliasOf === c.name)
