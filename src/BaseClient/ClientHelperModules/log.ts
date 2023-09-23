@@ -5,15 +5,12 @@ import languageSelector from './languageSelector.js';
 import constants from '../Other/constants.js';
 import send from './send.js';
 
-export default async (
+export default async <T extends CT.ModTypes>(
  guild: Discord.Guild,
- type: CT.ModTypes,
+ type: T,
  target: Discord.User,
  executor: Discord.User,
- options: CT.ModOptions<CT.ModTypes> & {
-  roles?: Discord.Role[];
-  channel: Discord.GuildBasedChannel;
- },
+ options: CT.ModOptions<T>,
 ): Promise<void> => {
  const logchannels = await getLogChannels('modlog', guild);
  if (!logchannels) return;
