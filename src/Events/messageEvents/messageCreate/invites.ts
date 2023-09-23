@@ -4,6 +4,10 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;
+ if (!msg.guildId) {
+  console.log(msg.toJSON());
+  return;
+ }
  if (msg.member?.permissions.has(Discord.PermissionFlagsBits.Administrator)) return;
 
  const settings = await ch.DataBase.invites.findUnique({
