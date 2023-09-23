@@ -1428,6 +1428,13 @@ export default {
  stringCommands: {},
  slashCommands: {
   moderation: {
+   strike: {
+    areYouSure: (user: Discord.User, punishment: string) =>
+     `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
+    confirmAuthor: 'Confirm Strike',
+    notEnabled:
+     'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
+   },
    unafk: {
     notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
     unAfk: (user: Discord.User) => `AFK of\n${getUser(user)}deleted`,
@@ -2140,14 +2147,6 @@ export default {
     label: 'Choose a Name that relates to this Embed',
     saved: 'Embed successfully saved',
    },
-  },
-  strike: {
-   noneFound: 'Your most used Reasons will appear here',
-   areYouSure: (user: Discord.User, punishment: string) =>
-    `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
-   confirmAuthor: 'Confirm Strike',
-   notEnabled:
-    'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
   },
   membercount: {
    author: `${name} Member-Count`,

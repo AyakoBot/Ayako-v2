@@ -687,7 +687,10 @@ const mod = {
   cmd: ModTypes.CmdType,
  ) => {
   const strike = await getStrike(options.target, options.guild);
-  if (!strike) return;
+  if (!strike) {
+   (await import(`../mod.js`)).default(cmd, 'warnAdd', options);
+   return;
+  }
 
   if (!cmd) {
    error(options.guild, new Error('Guild not found'));
