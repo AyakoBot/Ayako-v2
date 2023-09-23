@@ -5,6 +5,15 @@ import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import send from './send.js';
 
+/**
+ * Logs a moderation action in the modlog channel(s) of a guild.
+ * @param guild The guild where the moderation action was performed.
+ * @param type The type of moderation action that was performed.
+ * @param target The user who was targeted by the moderation action.
+ * @param executor The user who executed the moderation action.
+ * @param options Additional options for the moderation action.
+ * @returns A Promise that resolves when the log has been sent.
+ */
 export default async <T extends CT.ModTypes>(
  guild: Discord.Guild,
  type: T,

@@ -6,6 +6,14 @@ import type CT from '../../Typings/CustomTypings.js';
 import isEditable from './isEditable.js';
 import { request } from './requestHandler.js';
 
+/**
+ * Sends an error message to the user in response to an interaction.
+ * @param cmd - The interaction that triggered the error.
+ * @param content - The error message to send.
+ * @param language - The language object containing localized strings.
+ * @param m - Optional existing message to edit instead of sending a new one.
+ * @returns A Promise that resolves to the sent message.
+ */
 export default async (
  cmd:
   | Discord.ButtonInteraction

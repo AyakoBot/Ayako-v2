@@ -1,15 +1,48 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
 
+/**
+ * Represents a cache for Discord invites.
+ */
 export interface Invites {
+ /**
+  * Retrieves an invite from the cache.
+  * @param code - The code of the invite to retrieve.
+  * @param channelId - The ID of the channel where the invite was created.
+  * @param guild - The guild where the invite was created.
+  * @returns A Promise that resolves with the retrieved invite, or undefined if it was not found.
+  */
  get: (
   code: string,
   channelId: string,
   guild: Discord.Guild,
  ) => Promise<Discord.Invite | undefined>;
+
+ /**
+  * Adds an invite to the cache.
+  * @param invite - The invite to add to the cache.
+  * @param guildId - The ID of the guild where the invite was created.
+  */
  set: (invite: Discord.Invite, guildId: string) => void;
+
+ /**
+  * Finds an invite in the cache.
+  * @param code - The code of the invite to find.
+  * @returns The found invite, or undefined if it was not found.
+  */
  find: (code: string) => Discord.Invite | undefined;
+
+ /**
+  * Deletes an invite from the cache.
+  * @param code - The code of the invite to delete.
+  * @param guildId - The ID of the guild where the invite was created.
+  * @param channelId - The ID of the channel where the invite was created.
+  */
  delete: (code: string, guildId: string, channelId: string) => void;
+
+ /**
+  * The cache of invites, organized by guild ID, channel ID, and invite code.
+  */
  cache: Map<string, Map<string, Map<string, Discord.Invite>>>;
 }
 

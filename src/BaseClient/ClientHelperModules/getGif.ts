@@ -144,13 +144,42 @@ const hardcodedGifs = {
  ],
 };
 
+/**
+ * Returns a random element from the given array.
+ * @param arr - The array to get a random element from.
+ * @returns A random element from the given array.
+ */
 const getRandom = (arr: string[]) => arr[Math.ceil(Math.random() * (arr.length - 1))];
 
+/**
+ * The return type of the `getGif` function.
+ * @property img - An object containing information about an image.
+ * @property img.artist - The artist of the image.
+ * @property img.source - The source of the image.
+ * @property img.url - The URL of the image.
+ * @property img.artistUrl - The URL of the artist's page.
+ * @property gif - An object containing information about a GIF.
+ * @property gif.anime_name - The name of the anime the GIF is from.
+ * @property gif.url - The URL of the GIF.
+ */
 export type ReturnType<T extends 'gif' | 'img'> = {
  img: { artist?: string; source?: string; url: string; artistUrl?: string };
  gif: { anime_name?: string; url: string };
 }[T];
 
+/**
+ * Returns a random GIF or image based on the provided parameters.
+ * @param gifName - The name of the GIF to retrieve.
+ * @param type - An array of strings representing the type of GIF to retrieve.
+ * @returns A Promise that resolves to an object containing the URL of the retrieved GIF or image.
+ * The type of the returned object depends on the value of the `T` type parameter.
+ * If `T` is `'gif'`, the returned object will have a `url` property of type `string`.
+ * If `T` is `'img'`, the returned object will have a `url` property of type `string`
+ * and an optional `anime_name`, `artist`, `source`, or `artistUrl` property.
+ * @throws An error if the `type` parameter is invalid.
+ * @typeParam T - A type parameter that determines the type of the returned object.
+ * Must be either `'gif'` or `'img'`.
+ */
 const getGif = async <T extends 'gif' | 'img'>(
  gifName: string,
  type: ('purr' | 'neko' | 'hardcoded' | 'waifu')[],
@@ -182,6 +211,13 @@ const getGif = async <T extends 'gif' | 'img'>(
  }
 };
 
+/**
+ * An array of objects containing trigger words and corresponding functions to retrieve a GIF.
+ * Each object has the following properties:
+ * - triggers: an array of strings representing the trigger words for the GIF.
+ * - gifs: an async function that returns a GIF based on the trigger words.
+ * The function uses the getGif function to retrieve the GIF.
+ */
 const gifSelection = [
  { triggers: ['awoo'], gifs: async () => getGif('awoo', ['waifu']) },
  { triggers: ['angry'], gifs: async () => getGif('angry', ['purr']) },
@@ -276,6 +312,12 @@ const gifSelection = [
 
 export default gifSelection;
 
+/**
+ * Retrieves a GIF image based on the provided command name
+ * and sends it as an embed message with buttons to refresh and view artist/original source.
+ * @param cmd - The chat input command or button interaction that triggered the function.
+ * @returns A Promise that resolves with the sent message.
+ */
 export const imageGetter = async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
 ) => {

@@ -1,3 +1,9 @@
+/**
+ * Compares two arrays for equality.
+ * @param arr1 The first array to compare.
+ * @param arr2 The second array to compare.
+ * @returns True if the arrays are equal, false otherwise.
+ */
 export default (arr1: unknown[], arr2: unknown[]) => {
  if (!arr1 || !arr2) return false;
  if (arr1.length !== arr2.length) return false;

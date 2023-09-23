@@ -40,6 +40,14 @@ async function send(
  command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
+/**
+ * Sends a message to a Discord channel or user.
+ * @param channels - The channel or user to send the message to.
+ * @param payload - The message payload to send.
+ * @param command - The command that triggered the message, if any.
+ * @param timeout - The timeout for the message, if any.
+ * @returns A Promise that resolves to the sent message, an array of sent messages, or null/void.
+ */
 async function send(
  channels:
   | Discord.TextBasedChannel
@@ -124,6 +132,14 @@ async function send(
 
 export default send;
 
+/**
+ * Combines multiple embeds and sends them to a channel.
+ * If the combined embeds exceed the character limit or the maximum number of embeds per message,
+ * the function splits them into multiple messages.
+ * @param channel The channel to send the embeds to.
+ * @param embeds An array of embeds to send.
+ * @param timeout The time in milliseconds before the message times out.
+ */
 const combineMessages = async (
  channel:
   | Discord.AnyThreadChannel<boolean>
@@ -211,6 +227,11 @@ const combineMessages = async (
  );
 };
 
+/**
+ * Calculates the total character length of all strings in an array of Discord API embeds.
+ * @param embeds - An array of Discord API embeds.
+ * @returns The total character length of all strings in the embeds.
+ */
 const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
  let total = 0;
  embeds.forEach((embed) => {
@@ -232,6 +253,11 @@ const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
  return total;
 };
 
+/**
+ * Returns a channel object based on the given input.
+ * @param channels - A Discord user, text-based channel, or an object with an ID and guild ID.
+ * @returns A channel object.
+ */
 const getChannel = async (
  channels:
   | Discord.User

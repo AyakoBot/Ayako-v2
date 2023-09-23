@@ -51,7 +51,6 @@ import findUserByName from './ClientHelperModules/findUserByName.js';
 import settingsHelpers from './ClientHelperModules/settingsHelpers.js';
 import getDuration from './ClientHelperModules/getDuration.js';
 import emotes from './ClientHelperModules/emotes.js';
-import reactionEmotes from './ClientHelperModules/reactionEmotes.js';
 import cache from './ClientHelperModules/cache.js';
 import constants from './Other/constants.js';
 import getRandom from './ClientHelperModules/getRandom.js';
@@ -155,7 +154,6 @@ export {
  settingsHelpers,
  getDuration,
  emotes,
- reactionEmotes,
  cache,
  constants,
  mainID,

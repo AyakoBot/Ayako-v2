@@ -8,23 +8,44 @@ type ActionType = Discord.GuildAuditLogsEntry<
  Discord.AuditLogEvent
 >['action'];
 
+/**
+ * Interface for managing audit logs in a Discord guild.
+ */
 export interface AuditLogs {
+ /**
+  * Retrieves the audit logs for a specific guild and action type.
+  * @param guild - The guild to retrieve audit logs for.
+  * @param type - The type of action to retrieve audit logs for.
+  * @returns A promise that resolves to an array of guild audit log entries,
+  * or undefined if no entries were found.
+  */
  get: (
   guild: Discord.Guild,
   type: ActionType,
  ) => Promise<Discord.GuildAuditLogsEntry[] | undefined>;
+
+ /**
+  * Adds a new audit log entry to the cache for a specific guild.
+  * @param guildId - The ID of the guild to add the audit log entry for.
+  * @param entry - The audit log entry to add to the cache.
+  */
  set: (guildId: string, entry: Discord.GuildAuditLogsEntry) => void;
+
+ /**
+  * Removes all audit log entries of a specific type from the cache for a specific guild.
+  * @param guildId - The ID of the guild to remove the audit log entries from.
+  * @param type - The type of audit log entries to remove.
+  */
  delete: (guildId: string, type: ActionType) => void;
+
+ /**
+  * The cache of audit log entries, organized by guild ID, action type, and entry ID.
+  */
  cache: Map<string, Map<ActionType, Map<string, Discord.GuildAuditLogsEntry>>>;
 }
 
-// eslint-disable-next-line no-promise-executor-return
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
-
 const self: AuditLogs = {
  get: async (guild, type) => {
-  await sleep();
-
   const cached = self.cache.get(guild.id)?.get(type);
   if (cached) return [...cached.values()];
 

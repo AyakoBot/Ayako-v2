@@ -1,6 +1,12 @@
 import * as Discord from 'discord.js';
 import { request } from './requestHandler.js';
 
+/**
+ * Retrieves all the bans for a given guild.
+ * @param guild - The guild to retrieve the bans for.
+ * @returns A promise that resolves to an array of GuildBan objects
+ * representing the bans for the guild.
+ */
 export default async (guild: Discord.Guild) => {
  const fetchBans = (after?: string) => request.guilds.getMemberBans(guild, { limit: 1000, after });
 

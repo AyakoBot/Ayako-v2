@@ -8,6 +8,14 @@ import { request } from './requestHandler.js';
 // eslint-disable-next-line no-console
 const { log } = console;
 
+/**
+ * Sends a reply message to a Discord message.
+ * @param msg The Discord message to reply to.
+ * @param payload The message payload to send.
+ * @param command The command that triggered the reply message.
+ * @param commandName The name of the command that triggered the reply message.
+ * @returns The sent message if successful, otherwise undefined.
+ */
 export default async <T extends Discord.Message<boolean>>(
  msg: T,
  payload: CT.UsualMessagePayload,
@@ -40,6 +48,13 @@ export default async <T extends Discord.Message<boolean>>(
  return sentMessage as T;
 };
 
+/**
+ * Handles the cooldown for a command and removes the reaction after the cooldown is over.
+ * @param msg The message or interaction that triggered the command.
+ * @param sentMessage The message or interaction response that was sent as a reply to the command.
+ * @param command The command object that was triggered.
+ * @param commandName The name of the command that was triggered.
+ */
 export const cooldownHandler = async (
  msg:
   | Discord.Message

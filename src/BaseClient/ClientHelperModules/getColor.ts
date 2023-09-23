@@ -167,6 +167,11 @@ const colors = {
  notquiteblack: 0x23272a,
 };
 
+/**
+ * Returns a number representing the color based on the input.
+ * @param color - A string, number or Discord.GuildMember object representing the color.
+ * @returns A number representing the color.
+ */
 export default (color: string | number | Discord.GuildMember | null | undefined): number => {
  if (!color) return 0xb0ff00;
 

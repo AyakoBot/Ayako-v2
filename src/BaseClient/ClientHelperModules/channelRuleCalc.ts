@@ -2,6 +2,12 @@ import Prisma from '@prisma/client';
 import ChannelRules from '../Other/ChannelRules.js';
 import type CT from '../../Typings/CustomTypings.js';
 
+/**
+ * Calculates the channel rules based on the given bitfield and language.
+ * @param s - The bitfield representing the channel rules.
+ * @param lan - The language object containing the channel rules messages.
+ * @returns An array of channel rules messages based on the given bitfield.
+ */
 export default (s: Prisma.levelingruleschannels, lan: CT.Language) => {
  const BitField = new ChannelRules(s);
  const Rules = [];

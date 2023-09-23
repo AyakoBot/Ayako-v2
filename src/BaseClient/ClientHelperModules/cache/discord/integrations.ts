@@ -1,11 +1,42 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
 
+/**
+ * Represents a collection of integrations for a guild.
+ */
 export interface Integrations {
+ /**
+  * Retrieves an integration by its ID for the specified guild.
+  * @param integrationId The ID of the integration to retrieve.
+  * @param guild The guild to retrieve the integration from.
+  * @returns A promise that resolves with the retrieved integration, or undefined if not found.
+  */
  get: (integrationId: string, guild: Discord.Guild) => Promise<Discord.Integration | undefined>;
+
+ /**
+  * Adds or updates an integration for the specified guild.
+  * @param integration The integration to add or update.
+  * @param guildId The ID of the guild to add or update the integration for.
+  */
  set: (integration: Discord.Integration, guildId: string) => void;
+
+ /**
+  * Finds an integration by its ID.
+  * @param integrationId The ID of the integration to find.
+  * @returns The found integration, or undefined if not found.
+  */
  find: (integrationId: string) => Discord.Integration | undefined;
+
+ /**
+  * Deletes an integration by its ID for the specified guild.
+  * @param integrationId The ID of the integration to delete.
+  * @param guildId The ID of the guild to delete the integration from.
+  */
  delete: (integrationId: string, guildId: string) => void;
+
+ /**
+  * The cache of integrations, keyed by guild ID and then integration ID.
+  */
  cache: Map<string, Map<string, Discord.Integration>>;
 }
 

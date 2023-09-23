@@ -4,6 +4,11 @@ import constants from '../Other/constants.js';
 import { request } from './requestHandler.js';
 import { guildTextChannel } from './getChannel.js';
 
+/**
+ * Retrieves or creates a webhook for the given channel.
+ * @param rawChannel - The channel to retrieve or create the webhook for.
+ * @returns The webhook for the channel, or undefined if it could not be retrieved or created.
+ */
 export default async (
  rawChannel: Discord.GuildTextBasedChannel | Discord.ForumChannel | string,
 ) => {
@@ -20,6 +25,11 @@ export default async (
   cache.webhooks.cache.get(channel.guild.id)?.get(channel.id)?.values() || [],
  );
 
+ /**
+  * Fetches the webhooks for the given channel.
+  * @param c - The channel to fetch the webhooks for.
+  * @returns The webhooks for the channel.
+  */
  const fetchWebhooks = async (
   c:
    | Discord.NewsChannel
@@ -34,6 +44,11 @@ export default async (
   return w;
  };
 
+ /**
+  * Creates a webhook for the given channel.
+  * @param c - The channel to create the webhook for.
+  * @returns The created webhook.
+  */
  const createWebhook = async (
   c:
    | Discord.NewsChannel

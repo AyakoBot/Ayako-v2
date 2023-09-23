@@ -3,6 +3,13 @@ import Emotes from './emotes.js';
 import constants from '../Other/constants.js';
 import type CT from '../../Typings/CustomTypings.js';
 
+/**
+ * Calculates the boost flags for a user based on the given bits.
+ * @param bits The bits representing the user's boost flags.
+ * @param lan The language object containing the localized boost flag names.
+ * @param emotes Whether to include emotes in the output.
+ * @returns An array of strings representing the user's boost flags.
+ */
 export default async (bits: number, lan: CT.Language, emotes = false) => {
  if (!bits) return [];
  const bitField = new Discord.PermissionsBitField(BigInt(bits));

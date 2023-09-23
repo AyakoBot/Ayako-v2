@@ -15,15 +15,42 @@ type MemberCaches = {
 const GuildCache: Map<string, { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }> =
  new Map();
 
+/**
+ * A module for managing roles of a Discord guild member.
+ */
 const roleManager = {
+ /**
+  * Adds roles to a guild member.
+  * @param member - The guild member to add roles to.
+  * @param roles - An array of role IDs to add to the member.
+  * @param reason - The reason for adding the roles.
+  * @param prio - The priority of the role update. Defaults to 2.
+  */
  add: async (member: Discord.GuildMember, roles: string[], reason: string, prio = 2) => {
   handleRoleUpdate(member, roles, reason, prio, 'addRoles');
  },
+
+ /**
+  * Removes roles from a guild member.
+  * @param member - The guild member to remove roles from.
+  * @param roles - An array of role IDs to remove from the member.
+  * @param reason - The reason for removing the roles.
+  * @param prio - The priority of the role update. Defaults to 2.
+  */
  remove: async (member: Discord.GuildMember, roles: string[], reason: string, prio = 2) => {
   handleRoleUpdate(member, roles, reason, prio, 'removeRoles');
  },
 };
 
+/**
+ * Handles updating roles for a guild member.
+ * @param member - The guild member to update roles for.
+ * @param roles - The roles to add or remove.
+ * @param reason - The reason for updating the roles.
+ * @param prio - The priority of the role update.
+ * @param type - The type of role update, either 'addRoles' or 'removeRoles'.
+ * @returns void
+ */
 const handleRoleUpdate = async (
  member: Discord.GuildMember,
  roles: string[],
@@ -60,6 +87,10 @@ const handleRoleUpdate = async (
 
 export default roleManager;
 
+/**
+ * Runs a job to manage roles for a guild.
+ * @param guild - The guild to manage roles for.
+ */
 const runJob = async (guild: Discord.Guild) => {
  const endJob = (memberCaches: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
   const index = memberCaches.members.findIndex((m) => m.member.id === memberCache.member.id);

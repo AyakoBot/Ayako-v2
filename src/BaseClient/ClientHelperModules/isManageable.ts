@@ -1,5 +1,11 @@
 import * as Discord from 'discord.js';
 
+/**
+ * Determines if a target is manageable by an executor.
+ * @param target - The target to check if it's manageable.
+ * @param executor - The executor who will manage the target.
+ * @returns A boolean indicating if the target is manageable by the executor.
+ */
 export default (
  target: Discord.GuildMember | Discord.GuildBasedChannel | Discord.Role,
  executor: Discord.GuildMember,
@@ -9,6 +15,12 @@ export default (
  return channel(target, executor);
 };
 
+/**
+ * Checks if a target member can be managed by an executor member.
+ * @param target - The member to be managed.
+ * @param executor - The member trying to manage the target.
+ * @returns Whether the executor can manage the target.
+ */
 const member = (target: Discord.GuildMember, executor: Discord.GuildMember) => {
  if (
   !executor.permissions.has(Discord.PermissionFlagsBits.ManageRoles, true) ||

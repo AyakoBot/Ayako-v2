@@ -2,10 +2,29 @@ import * as Jobs from 'node-schedule';
 import fetch from 'node-fetch';
 import constants from '../../../Other/constants.js';
 
+/**
+ * Interface for the SinkingYachts cache module.
+ */
 export interface SinkingYachts {
+ /**
+  * The refresh job for the cache.
+  */
  refreshJob: Jobs.Job | null;
+
+ /**
+  * Starts the cache module.
+  */
  start: () => Promise<void>;
+
+ /**
+  * Returns an array of cached URLs.
+  * @returns An array of cached URLs.
+  */
  toArray: () => string[];
+
+ /**
+  * The cache set.
+  */
  cache: Set<string>;
 }
 

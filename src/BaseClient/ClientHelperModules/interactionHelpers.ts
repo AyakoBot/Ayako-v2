@@ -25,6 +25,12 @@ import errorCmd from './errorCmd.js';
 
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
+/**
+ * Replies to a Discord interaction or message with an embed and optional components.
+ * @param cmd The interaction or message to reply to.
+ * @param guild The guild the interaction or message belongs to.
+ * @returns void
+ */
 const reply = async (
  cmd:
   | Omit<Discord.ChatInputCommandInteraction<'cached'>, 'guild' | 'client'>
@@ -206,6 +212,12 @@ const reply = async (
 
 export default reply;
 
+/**
+ * Reacts to a button interaction based on the provided arguments.
+ * @param cmd - The button interaction to react to.
+ * @param args - The arguments to use for reacting to the interaction.
+ * @returns A Promise that resolves when the reaction is complete.
+ */
 export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -219,7 +231,15 @@ export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
  reply(cmd, cmd.guild);
 };
 
+/**
+ * Object containing parsers for different types of interactions.
+ */
 const parsers = {
+ /**
+  * Parses a message interaction.
+  * @param msg The message interaction to parse.
+  * @returns An object containing the parsed data.
+  */
  msgParser: async (msg: Discord.Message<true>) => ({
   author: msg.author,
   users: await parseMsgUsers(msg),
@@ -239,6 +259,12 @@ const parsers = {
     .shift() as string
   ).toLowerCase(),
  }),
+
+ /**
+  * Parses a command interaction.
+  * @param cmd The command interaction to parse.
+  * @returns An object containing the parsed data.
+  */
  cmdParser: (cmd: Discord.ChatInputCommandInteraction) => ({
   author: cmd.user,
   users: [
@@ -264,6 +290,12 @@ const parsers = {
    .flat(1),
   commandName: cmd.commandName.toLowerCase(),
  }),
+
+ /**
+  * Parses a button interaction.
+  * @param cmd The button interaction to parse.
+  * @returns An object containing the parsed data.
+  */
  buttonParser: async (cmd: Discord.ButtonInteraction<'cached'>) => ({
   author: cmd.user,
   users: [
@@ -279,6 +311,13 @@ const parsers = {
  }),
 };
 
+/**
+ * Returns an array of Discord API action row components
+ * for a given button interaction and an array of reply users.
+ * @param cmd - The Discord button interaction.
+ * @param replyUsers - An array of user IDs to include in the custom ID of the returned components.
+ * @returns An array of Discord API action row components.
+ */
 const getComponents = (
  cmd: Discord.ButtonInteraction,
  replyUsers: string[],
@@ -296,12 +335,28 @@ const getComponents = (
  },
 ];
 
+/**
+ * Maps an array of Discord users or user IDs to an array of user mentions.
+ * @param users An array of Discord users or user IDs.
+ * @returns A string containing user mentions separated by commas.
+ */
 const mapper = (u: (Discord.User | string)[]) =>
  u
   .map((m) => `<@${typeof m !== 'string' ? m.id : m}>`)
   .filter((a, index, arr) => arr.indexOf(a) === index)
   .join(', ');
 
+/**
+ * Returns a message payload for a Discord interaction response.
+ * @template T - The type of the interaction language object.
+ * @param {Discord.APIEmbed} embed - The embed to include in the message payload.
+ * @param {(typeof constants.commands.interactions)[number]} con - The interaction constants object.
+ * @param {string[]} replyUsers - The users to reply to.
+ * @param {boolean} isAtEmbedLimit - Whether the embed limit has been reached.
+ * @param {CT.Language['slashCommands']['interactions'][T]} lan - The interaction language object.
+ * @param {boolean} legacyrp - Whether to use legacy reply format.
+ * @returns {CT.UsualMessagePayload} - The message payload for the interaction response.
+ */
 const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']>(
  embed: Discord.APIEmbed,
  con: (typeof constants.commands.interactions)[number],
@@ -331,6 +386,17 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
     ].filter((b): b is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!b),
 });
 
+/**
+ * Returns a string describing the interaction based on the provided parameters.
+ * @template T - The type of the interaction.
+ * @param author - The user who initiated the interaction.
+ * @param originalUsers - An array of users involved in the interaction.
+ * @param language - The language object containing the interaction descriptions.
+ * @param lan - The specific interaction description to use.
+ * @param cmd - The interaction command object.
+ * @param legacyrp - A boolean indicating whether the interaction is using legacy RP.
+ * @returns A string describing the interaction.
+ */
 const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  author: Discord.User,
  originalUsers: readonly Discord.User[],
@@ -375,6 +441,11 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  return null;
 };
 
+/**
+ * Parses mentioned users in a message and returns an array of Discord.User objects.
+ * @param msg The message to parse.
+ * @returns An array of Discord.User objects representing the mentioned users in the message.
+ */
 const parseMsgUsers = async (msg: Discord.Message<true>) => {
  const client = (await import('../Client.js')).default as Discord.Client;
 

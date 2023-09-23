@@ -1,17 +1,44 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
 
+/**
+ * Interface for managing command permissions for a Discord guild.
+ */
 export interface CommandPermissions {
+ /**
+  * Retrieves the command permissions for a given guild and command ID.
+  * @param guild The Discord guild to retrieve permissions for.
+  * @param commandId The ID of the command to retrieve permissions for.
+  * @returns A Promise that resolves to an array of ApplicationCommandPermissions,
+  * or undefined if no permissions are found.
+  */
  get: (
   guild: Discord.Guild,
   commandId: string,
  ) => Promise<Discord.ApplicationCommandPermissions[] | undefined>;
+
+ /**
+  * Sets the command permissions for a given guild and command ID.
+  * @param guildId The ID of the guild to set permissions for.
+  * @param commandId The ID of the command to set permissions for.
+  * @param permissions An array of ApplicationCommandPermissions to set.
+  */
  set: (
   guildId: string,
   commandId: string,
   permissions: Discord.ApplicationCommandPermissions[],
  ) => void;
+
+ /**
+  * Deletes the command permissions for a given guild and command ID.
+  * @param guildId The ID of the guild to delete permissions for.
+  * @param commandId The ID of the command to delete permissions for.
+  */
  delete: (guildId: string, commandId: string) => void;
+
+ /**
+  * A cache of command permissions, keyed by guild ID and then by command ID.
+  */
  cache: Map<string, Map<string, Discord.ApplicationCommandPermissions[]>>;
 }
 

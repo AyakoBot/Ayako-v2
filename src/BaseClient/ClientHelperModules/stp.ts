@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import auth from '../../auth.json' assert { type: 'json' };
 
+/**
+ * Replaces placeholders in a string with values from an object.
+ * @param expression - The string containing placeholders.
+ * @param obj - The object containing values to replace placeholders.
+ * @returns The updated string with placeholders replaced with values.
+ */
 export default (expression: string, obj: Record<string, any>) => {
  const text = (e: string) => {
   const t = e.replace(/{{\s?([^{}\s]*)\s?}}/g, (substring: string, value: string) => {

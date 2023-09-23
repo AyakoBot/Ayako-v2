@@ -1,3 +1,9 @@
+/**
+ * Splits an array into chunks of a specified maximum length.
+ * @param s The array to split into chunks.
+ * @param maxLength The maximum length of each chunk.
+ * @returns An array of arrays, where each inner array contains a chunk of the original array.
+ */
 export default <T>(s: T[], maxLength: number): T[][] => {
  const chunks: T[][] = [[]];
  let lastI = 0;

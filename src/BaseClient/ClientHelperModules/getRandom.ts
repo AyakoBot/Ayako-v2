@@ -1,5 +1,12 @@
 import crypto from 'crypto';
 
+/**
+ * Returns a random integer between the specified minimum and maximum values (inclusive).
+ * @param min - The minimum value of the range.
+ * @param max - The maximum value of the range.
+ * @returns A random integer between the specified minimum and maximum values (inclusive).
+ * @throws An error if too many bytes are needed to generate the random number.
+ */
 export default (min: number, max: number) => {
  const range = max - min + 1;
  const bytesNeeded = Math.ceil(Math.log2(range) / 8);

@@ -1,9 +1,28 @@
 import * as Jobs from 'node-schedule';
 import DataBase from '../../../DataBase.js';
 
+/**
+ * Interface for managing thread deletion jobs in the cache.
+ */
 export interface DeleteThreads {
+ /**
+  * Adds a new thread deletion job to the cache.
+  * @param job - The job to add to the cache.
+  * @param guildId - The ID of the guild the job is associated with.
+  * @param channelId - The ID of the channel the job is associated with.
+  */
  set: (job: Jobs.Job, guildId: string, channelId: string) => void;
+
+ /**
+  * Removes a thread deletion job from the cache.
+  * @param guildId - The ID of the guild the job is associated with.
+  * @param channelIdF - The ID of the channel the job is associated with.
+  */
  delete: (guildId: string, channelIdF: string) => void;
+
+ /**
+  * The cache of thread deletion jobs, organized by guild ID and channel ID.
+  */
  cache: Map<string, Map<string, Jobs.Job>>;
 }
 

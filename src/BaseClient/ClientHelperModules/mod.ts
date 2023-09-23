@@ -17,6 +17,16 @@ export type CmdType =
  | undefined;
 export type ResponseMessage = Discord.InteractionResponse<true> | Discord.Message<true> | undefined;
 
+/**
+ * Runs the specified moderation action based on the given command type,
+ * moderation type, and options.
+ * @template T The type of moderation action to run.
+ * @param {CmdType} cmd The command type.
+ * @param {T} type The moderation type.
+ * @param {CT.ModOptions<T>} options The options for the moderation action.
+ * @returns {Promise<void>} A Promise that resolves when the moderation action has been completed.
+ * @throws {Error} If the given moderation type is unknown.
+ */
 export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.ModOptions<T>) => {
  const basicsResponse = await runBasics1(options, cmd, type);
  if (!basicsResponse) return;
@@ -100,6 +110,14 @@ export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.
  runBasics2(options, message, language, type, cmd);
 };
 
+/**
+ * Runs basic operations for a client helper module.
+ * @param options - The options for the operation.
+ * @param cmd - The command type.
+ * @param type - The module type.
+ * @returns An object containing the message and language,
+ * or false if the operation is not successful.
+ */
 const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTypes) => {
  const language = await getLanguage(options.guild.id);
 
@@ -117,6 +135,14 @@ const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTyp
  return { message, language };
 };
 
+/**
+ * Runs basic operations for a mod command.
+ * @param options - The options for the mod command.
+ * @param message - The response message object.
+ * @param language - The language object.
+ * @param type - The type of mod command.
+ * @param cmd - The command object.
+ */
 const runBasics2 = async (
  options: CT.BaseOptions,
  message: ResponseMessage,

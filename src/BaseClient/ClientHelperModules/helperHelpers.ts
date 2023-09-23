@@ -24,6 +24,13 @@ type Command =
     subCommand?: undefined;
    };
 
+/**
+ * Returns the description of a command along with its options.
+ * @param command - The command to get the description of.
+ * @param rawCommand - An object containing the parent command and any subcommands
+ * or subcommand groups.
+ * @returns The description of the command and its options, if any.
+ */
 const getDesc = (
  command: Discord.ApplicationCommand,
  rawCommand: {
@@ -60,6 +67,13 @@ const getDesc = (
  }`;
 };
 
+/**
+ * Returns the description of a command or subcommand group in the specified language.
+ * @param language - The language to get the description in.
+ * @param command - The name of the command to get the description for.
+ * @param subCommandGroup - Optional. The name of the subcommand group to get the description for.
+ * @returns The description of the command or subcommand group in the specified language.
+ */
 const getDescription = (language: CT.Language, command: string, subCommandGroup?: string) => {
  const cJSON = SlashCommands.public[command as keyof typeof SlashCommands.public].toJSON();
  const c = (() => {
@@ -78,6 +92,13 @@ const getDescription = (language: CT.Language, command: string, subCommandGroup?
  return '';
 };
 
+/**
+ * Helper function to generate a message payload for a slash command
+ * or string select menu interaction.
+ * @param cmd - The slash command or string select menu interaction.
+ * @param type - The command category type.
+ * @returns A message payload containing embeds and components for the interaction.
+ */
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
  type: CT.CommandCategories,
@@ -152,6 +173,22 @@ export default async (
  } else cmd.update(payload);
 };
 
+/**
+ * Returns an array of embeds to be used in a help command response.
+ * @param cmd
+ * - The command interaction that triggered the help command.
+ * @param language
+ * - The language object containing localized strings.
+ * @param commands
+ * - An array of all available commands.
+ * @param uniqueParentCommands
+ * - An array of unique parent commands.
+ * @param uniqueSubCommandGroupsWithSubCommands
+ * - An array of unique subcommand groups with subcommands.
+ * @param type
+ * - The type of command category to display.
+ * @returns An array of embeds to be used in a help command response.
+ */
 const getEmbeds = (
  cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
  language: CT.Language,

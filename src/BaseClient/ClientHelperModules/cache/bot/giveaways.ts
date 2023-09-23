@@ -1,8 +1,29 @@
 import * as Jobs from 'node-schedule';
 
+/**
+ * Interface for managing giveaways in the cache.
+ */
 export interface Giveaways {
+ /**
+  * Sets a job for a giveaway in the cache.
+  * @param job - The job to set.
+  * @param guildId - The ID of the guild where the giveaway is taking place.
+  * @param channelId - The ID of the channel where the giveaway message was sent.
+  * @param msgId - The ID of the giveaway message.
+  */
  set: (job: Jobs.Job, guildId: string, channelId: string, msgId: string) => void;
+
+ /**
+  * Deletes a job for a giveaway from the cache.
+  * @param guildId - The ID of the guild where the giveaway is taking place.
+  * @param channelId - The ID of the channel where the giveaway message was sent.
+  * @param msgId - The ID of the giveaway message.
+  */
  delete: (guildId: string, channelId: string, msgId: string) => void;
+
+ /**
+  * The cache of giveaways, organized by guild ID, channel ID, and message ID.
+  */
  cache: Map<string, Map<string, Map<string, Jobs.Job>>>;
 }
 

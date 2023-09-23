@@ -1,8 +1,27 @@
 import * as Jobs from 'node-schedule';
 
+/**
+ * Interface for managing mutes in the bot's cache.
+ */
 export interface Mutes {
+ /**
+  * Adds a mute job to the cache for the specified guild and user.
+  * @param job - The mute job to add to the cache.
+  * @param guildId - The ID of the guild where the user is being muted.
+  * @param userId - The ID of the user being muted.
+  */
  set: (job: Jobs.Job, guildId: string, userId: string) => void;
+
+ /**
+  * Removes the mute job from the cache for the specified guild and user.
+  * @param guildId - The ID of the guild where the user is being muted.
+  * @param userId - The ID of the user being muted.
+  */
  delete: (guildId: string, userId: string) => void;
+
+ /**
+  * The cache of mute jobs, organized by guild ID and user ID.
+  */
  cache: Map<string, Map<string, Jobs.Job>>;
 }
 

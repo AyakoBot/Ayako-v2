@@ -4,6 +4,12 @@ import type * as Discord from 'discord.js';
 import arrayBufferToBuffer from './arrayBufferToBuffer.js';
 import getNameAndFileType from './getNameAndFileType.js';
 
+/**
+ * Converts an array of file URLs to an array of Discord attachment payloads.
+ * @param urls An array of file URLs to convert.
+ * @param names An optional array of names to use for the attachments.
+ * @returns An array of Discord attachment payloads.
+ */
 export default async (
  urls: (string | null)[],
  names?: string[],

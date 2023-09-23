@@ -1,8 +1,25 @@
 import * as Jobs from 'node-schedule';
 
+/**
+ * Interface for managing bans cache.
+ */
 export interface Bans {
+ /**
+  * Sets a job for a user in a guild.
+  * @param job - The job to set.
+  * @param guildId - The ID of the guild.
+  * @param userId - The ID of the user.
+  */
  set: (job: Jobs.Job, guildId: string, userId: string) => void;
+ /**
+  * Deletes a job for a user in a guild.
+  * @param guildId - The ID of the guild.
+  * @param userId - The ID of the user.
+  */
  delete: (guildId: string, userId: string) => void;
+ /**
+  * The cache of bans.
+  */
  cache: Map<string, Map<string, Jobs.Job>>;
 }
 

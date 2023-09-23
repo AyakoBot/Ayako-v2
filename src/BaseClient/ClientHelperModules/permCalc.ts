@@ -1,6 +1,13 @@
 import Discord from 'discord.js';
 import type CT from '../../Typings/CustomTypings.js';
 
+/**
+ * Calculates the permissions of a user or role based on the given permission bits.
+ * @param bits The permission bits to calculate the permissions from.
+ * @param lan The language object containing the permission strings.
+ * @param isntRole Whether the permission bits belong to a role or a user.
+ * @returns An array of permission strings.
+ */
 export default (bits: bigint, lan: CT.Language, isntRole = false) => {
  const bitField = new Discord.PermissionsBitField(bits);
  const perms = [];

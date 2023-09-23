@@ -1,5 +1,12 @@
 import ms from 'ms';
 
+/**
+ * Calculates the total duration of a given time string.
+ * @param duration - The time string to calculate the duration of.
+ * @param max - The maximum duration allowed. If the calculated duration exceeds this value,
+ * the max value is returned instead.
+ * @returns The total duration in milliseconds.
+ */
 export default (duration: string, max?: number) => {
  const args = duration.split(/\s+/g);
  const mergedDurationArgs: string[] = [];

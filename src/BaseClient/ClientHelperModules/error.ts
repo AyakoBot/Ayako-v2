@@ -4,6 +4,12 @@ import objectEmotes from './emotes.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 
+/**
+ * Sends an error message to the configured error channel of the guild.
+ * @param guild - The guild where the error occurred.
+ * @param err - The error object to be sent.
+ * @returns Promise<void>
+ */
 export default async (guild: Discord.Guild, err: Error) => {
  const errorchannel = await DataBase.guildsettings
   .findUnique({

@@ -6,6 +6,13 @@ import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
+/**
+ * Checks if the bot or user has the required permissions and sends an error message if not.
+ * @param msg - The message object.
+ * @param bits - The required permissions as a bitfield.
+ * @param language - The language object.
+ * @param me - Whether to check the bot's permissions instead of the user's.
+ */
 export default async (
  msg: Discord.Message,
  bits: bigint | number,

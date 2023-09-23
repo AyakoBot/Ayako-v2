@@ -19,6 +19,11 @@ interface bEvalUser {
  bannerURL?: string;
 }
 
+/**
+ * Retrieves a user from the cache or fetches it from the API if not found in cache.
+ * @param id The ID of the user to retrieve.
+ * @returns A Promise that resolves with the User object if found, otherwise undefined.
+ */
 export default async (id: string) => {
  const client = (await import('../Client.js')).default;
 

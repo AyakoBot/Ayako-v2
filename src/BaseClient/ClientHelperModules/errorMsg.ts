@@ -7,6 +7,14 @@ import { request } from './requestHandler.js';
 import error from './error.js';
 import isEditable from './isEditable.js';
 
+/**
+ * Sends an error message to a Discord channel or edits an existing message with the error message.
+ * @param msg - The message object to reply to or edit.
+ * @param content - The content of the error message.
+ * @param language - The language object containing localized strings.
+ * @param m - The message object to edit, if applicable.
+ * @returns The edited message object or undefined if the message couldn't be edited.
+ */
 export default async <T extends Discord.Message<boolean>>(
  msg: T,
  content: string,

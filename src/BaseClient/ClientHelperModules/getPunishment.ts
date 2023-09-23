@@ -21,6 +21,14 @@ function f(
 ): Promise<Returned[] | null>;
 function f(id: string, identType: 'all-by' | 'all-on'): Promise<Returned[] | null>;
 function f(id: number, identType: 'after' | 'before'): Promise<Returned[] | null>;
+/**
+ * Retrieves punishment data from the database based on the given parameters.
+ * @param id - The ID of the user to retrieve punishment data for.
+ * @param identType - The type of identification to use when retrieving punishment data.
+ * @param ident - The identification value to use when retrieving punishment data.
+ * @returns A Promise that resolves to an array of punishment data objects,
+ * a single punishment data object, or null if no punishment data is found.
+ */
 async function f(
  id: number | string,
  identType?: 'after' | 'before' | 'between' | 'by' | 'all-on' | 'all-by' | 'with-type',
@@ -85,6 +93,14 @@ async function f(
 
 export default f;
 
+/**
+ * Returns an array of punishment records of a specific type for a given user ID.
+ * @param id - The user ID to search for.
+ * @param type - The type of punishment to search for.
+ * Must be one of 'warn', 'mute', 'ban', 'channelban', or 'kick'.
+ * @returns An array of punishment records of the specified type for the given user ID.
+ * @throws An error if an unknown type is provided.
+ */
 const getWithType = (id: string, type: 'warn' | 'mute' | 'ban' | 'channelban' | 'kick') => {
  switch (type) {
   case 'warn': {

@@ -1,5 +1,12 @@
 import * as Discord from 'discord.js';
 
+/**
+ * Returns the true type of a Discord channel.
+ * @param channel - The Discord channel to get the type of.
+ * @param guild - The guild the channel belongs to.
+ * @returns The true type of the channel.
+ * @throws An error if the channel type is unknown.
+ */
 export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.Guild) => {
  switch (channel.type) {
   case Discord.ChannelType.GuildText: {

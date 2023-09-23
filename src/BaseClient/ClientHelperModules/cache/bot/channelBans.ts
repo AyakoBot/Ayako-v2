@@ -1,8 +1,29 @@
 import * as Jobs from 'node-schedule';
 
+/**
+ * Interface for managing channel bans cache.
+ */
 export interface ChannelBans {
+ /**
+  * Adds a new channel ban to the cache.
+  * @param job - The job to be added to the cache.
+  * @param guildId - The ID of the guild where the ban occurred.
+  * @param channelId - The ID of the channel where the ban occurred.
+  * @param userId - The ID of the user who was banned.
+  */
  set: (job: Jobs.Job, guildId: string, channelId: string, userId: string) => void;
+
+ /**
+  * Removes a channel ban from the cache.
+  * @param guildId - The ID of the guild where the ban occurred.
+  * @param channelId - The ID of the channel where the ban occurred.
+  * @param userId - The ID of the user who was banned.
+  */
  delete: (guildId: string, channelId: string, userId: string) => void;
+
+ /**
+  * The cache of channel bans, organized by guild ID, channel ID, and user ID.
+  */
  cache: Map<string, Map<string, Map<string, Jobs.Job>>>;
 }
 

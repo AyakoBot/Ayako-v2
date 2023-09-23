@@ -1,6 +1,11 @@
 import * as Discord from 'discord.js';
 import { request } from './requestHandler.js';
 
+/**
+ * Fetches all members of a guild.
+ * @param guild - The guild to fetch members from.
+ * @returns An array of guild members.
+ */
 export default async (guild: Discord.Guild) => {
  const members: Discord.GuildMember[] = [];
 

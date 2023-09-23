@@ -3,6 +3,13 @@ import Emotes from './emotes.js';
 import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 
+/**
+ * Calculates the user flags based on the given bits.
+ * @param bits - The bits to calculate the user flags from.
+ * @param lan - The language object containing the user flags translations.
+ * @param emotes - Whether to include emotes in the user flags or not. Defaults to false.
+ * @returns An array of user flags.
+ */
 export default (bits: number, lan: CT.Language, emotes = false) => {
  if (!bits) return [];
  const bitField = new Discord.PermissionsBitField(BigInt(bits));

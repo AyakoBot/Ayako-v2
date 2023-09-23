@@ -1,3 +1,6 @@
+/**
+ * This module exports various emotes used by the client
+ */
 export default {
  levelupemotes: [
   { name: '🆙' },

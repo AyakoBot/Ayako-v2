@@ -2,11 +2,34 @@ import fetch from 'node-fetch';
 import * as Jobs from 'node-schedule';
 import auth from '../../../../auth.json' assert { type: 'json' };
 
+/**
+ * Interface for the FishFish cache module.
+ */
 export interface FishFish {
+ /**
+  * The refresh job for the cache module.
+  */
  refreshJob: Jobs.Job | null;
+
+ /**
+  * Starts the cache module.
+  */
  start: () => Promise<void>;
+
+ /**
+  * Returns an array of cached URLs.
+  * @returns An array of cached URLs.
+  */
  toArray: () => string[];
+
+ /**
+  * The session token for the cache module.
+  */
  sessionToken: string;
+
+ /**
+  * The set of cached URLs.
+  */
  cache: Set<string>;
 }
 

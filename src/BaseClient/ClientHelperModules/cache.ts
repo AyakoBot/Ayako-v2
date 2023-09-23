@@ -26,6 +26,9 @@ import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
 import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
 import fishFish, { FishFish } from './cache/urls/fishFish.js';
 
+/**
+ * Discord and Cache data stored in the client.
+ */
 const cache: {
  // Discord Cache
  invites: Invites;

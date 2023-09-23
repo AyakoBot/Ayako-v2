@@ -1,6 +1,12 @@
 import type * as Discord from 'discord.js';
 import stp from './stp.js';
 
+/**
+ * Converts a raw Discord embed object to an embed object with dynamic values replaced.
+ * @param rawEmbed The raw Discord embed object to convert.
+ * @param options An array of dynamic values to replace in the embed object.
+ * @returns The converted embed object with dynamic values replaced.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default (rawEmbed: Discord.APIEmbed, options: ((string | any)[] | (string | any)[])[]) => {
  const embeds = [rawEmbed];

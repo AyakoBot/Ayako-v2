@@ -1,6 +1,12 @@
 import * as Discord from 'discord.js';
 import { request } from './requestHandler.js';
 
+/**
+ * Fetches all event subscribers for a given guild scheduled event.
+ * @param event The guild scheduled event to fetch subscribers for.
+ * @returns An array of objects containing the member and user of each subscriber,
+ * along with the ID of the guild scheduled event.
+ */
 export default async (event: Discord.GuildScheduledEvent) => {
  if (!event.guild) return [];
 

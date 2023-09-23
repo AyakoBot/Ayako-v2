@@ -10,6 +10,14 @@ type ReturnType<T extends boolean | undefined, K extends Discord.CacheType> = T 
    : Discord.InteractionResponse<false> | undefined
  : undefined;
 
+/**
+ * Sends a reply to an interaction (button, command, select menu, or modal submit).
+ * @param cmd The interaction to reply to.
+ * @param payload The reply options to send.
+ * @returns If `fetchReply` is `true`, returns the message that was sent.
+ * Otherwise, returns `undefined`.
+ * @throws If the interaction is not repliable.
+ */
 const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheType>(
  cmd:
   | Discord.ButtonInteraction<K>
@@ -44,6 +52,14 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  throw new Error('Unrepliable Interaction');
 };
 
+/**
+ * Sends a reply to a Discord interaction and handles cooldowns if provided.
+ * @param cmd The interaction to reply to.
+ * @param payload The reply options to send.
+ * @param command The command that triggered the interaction.
+ * @param commandName The name of the command that triggered the interaction.
+ * @returns The sent message if `fetchReply` is `true`, otherwise `undefined`.
+ */
 export default async <T extends boolean | undefined, K extends Discord.CacheType>(
  cmd:
   | Discord.ButtonInteraction<K>

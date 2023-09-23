@@ -1,6 +1,11 @@
 import type * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 
+/**
+ * Converts a custom embed object from the database to a Discord API embed object.
+ * @param DBembed - The custom embed object from the database.
+ * @returns The Discord API embed object.
+ */
 export default (DBembed: Prisma.customembeds): Discord.APIEmbed => ({
  color: Number(DBembed.color),
  title: DBembed.title ?? undefined,

@@ -1,3 +1,8 @@
+/**
+ * Converts an ArrayBuffer to a Node.js Buffer.
+ * @param ab The ArrayBuffer to convert.
+ * @returns The converted Buffer.
+ */
 export default (ab: ArrayBuffer) => {
  const buf = Buffer.alloc(ab.byteLength);
  const view = new Uint8Array(ab);

@@ -3,14 +3,43 @@ import error from '../../error.js';
 // eslint-disable-next-line import/no-cycle
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 
+/**
+ * Interface for managing pinned messages in a Discord guild text-based channel.
+ */
 export interface Pins {
+ /**
+  * Retrieves a pinned message by its ID in the specified channel.
+  * @param msgId The ID of the pinned message to retrieve.
+  * @param channel The guild text-based channel where the pinned message is located.
+  * @returns A Promise that resolves with the pinned message, or undefined if not found.
+  */
  get: (
   msgId: string,
   channel: Discord.GuildTextBasedChannel,
  ) => Promise<Discord.Message | undefined>;
+
+ /**
+  * Adds a message to the cache of pinned messages.
+  * @param msg The message to add to the cache.
+  */
  set: (msg: Discord.Message) => void;
+
+ /**
+  * Finds a pinned message by its ID.
+  * @param msgId The ID of the pinned message to find.
+  * @returns The pinned message, or undefined if not found.
+  */
  find: (msgId: string) => Discord.Message | undefined;
+
+ /**
+  * Deletes a pinned message from the cache.
+  * @param msgId The ID of the pinned message to delete.
+  */
  delete: (msgId: string) => void;
+
+ /**
+  * The cache of pinned messages, organized by guild ID, channel ID, and message ID.
+  */
  cache: Map<string, Map<string, Map<string, Discord.Message>>>;
 }
 

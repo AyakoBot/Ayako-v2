@@ -2,6 +2,12 @@ import auth from '../../auth.json' assert { type: 'json' };
 import DataBase from '../DataBase.js';
 import * as Client from '../Client.js';
 
+/**
+ * Refreshes the access token using the provided refresh token
+ * and updates the database with the new access token and expiration time.
+ * @param refreshtoken - The refresh token to use for refreshing the access token.
+ * @returns The new access token.
+ */
 export default async (refreshtoken: string) => {
  const res = await Client.API.oauth2.refreshToken({
   client_id: Client.default.user?.id as string,

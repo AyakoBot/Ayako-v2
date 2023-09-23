@@ -34,43 +34,151 @@ type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
 type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
 type BLWLType = 'blchannelid' | 'blroleid' | 'bluserid' | 'wlchannelid' | 'wlroleid' | 'wluserid';
 
+/**
+ * Object containing various parsers for different types of settings.
+ */
 const embedParsers = {
+ /**
+  * Parser for author type settings.
+  * @param language - The language object containing translations.
+  * @param lan - The name of the author type.
+  * @returns An object containing the author's icon URL, name, and URL.
+  */
  author: <T extends keyof SettingsNames>(language: CT.Language, lan: SettingsNames[T]) => ({
   icon_url: emotes.settings.link,
   name: language.slashCommands.settings.authorType(lan.name),
   url: constants.standard.invite,
  }),
+
+ /**
+  * Parser for boolean type settings.
+  * @param val - The boolean value to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the boolean value.
+  */
  boolean: (val: boolean | undefined, language: CT.Language) =>
   val
    ? `${constants.standard.getEmote(emotes.enabled)} ${language.Enabled}`
    : `${constants.standard.getEmote(emotes.disabled)} ${language.Disabled}`,
+
+ /**
+  * Parser for channels type settings.
+  * @param val - The array of channel IDs to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the channels.
+  */
  channels: (val: string[] | undefined, language: CT.Language) =>
   val?.length ? val.map((c) => `<#${c}>`).join(', ') : language.None,
+
+ /**
+  * Parser for roles type settings.
+  * @param val - The array of role IDs to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the roles.
+  */
  roles: (val: string[] | null, language: CT.Language) =>
   val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.None,
+
+ /**
+  * Parser for users type settings.
+  * @param val - The array of user IDs to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the users.
+  */
  users: (val: string[] | null, language: CT.Language) =>
   val?.length ? val.map((c) => `<@${c}>`).join(', ') : language.None,
+
+ /**
+  * Parser for channel type settings.
+  * @param val - The channel ID to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the channel.
+  */
  channel: (val: string | null, language: CT.Language) =>
   val?.length ? `<#${val}>` : language.None,
+
+ /**
+  * Parser for role type settings.
+  * @param val - The role ID to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the role.
+  */
  role: (val: string | null, language: CT.Language) => (val?.length ? `<@&${val}>` : language.None),
+
+ /**
+  * Parser for rules type settings.
+  * @param val - The array of rule IDs to parse.
+  * @param language - The language object containing translations.
+  * @param guild - The Discord guild object.
+  * @returns A string representation of the rules.
+  */
  rules: (val: string[] | null, language: CT.Language, guild: Discord.Guild) =>
   val && val.length
    ? val.map((v) => `\`${guild.autoModerationRules.cache.get(v)?.name ?? v}\``).join(', ')
    : language.None,
+
+ /**
+  * Parser for user type settings.
+  * @param val - The user ID to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the user.
+  */
  user: (val: string | null, language: CT.Language) => (val?.length ? `<@${val}>` : language.None),
+
+ /**
+  * Parser for number type settings.
+  * @param val - The number value to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the number value.
+  */
  number: (val: string | number | Prisma.Decimal | null, language: CT.Language) =>
   val ? String(val) : language.None,
+
+ /**
+  * Parser for time type settings.
+  * @param val - The timestamp value to parse.
+  * @param language - The language object containing translations.
+  * @returns A moment.js object representing the timestamp value.
+  */
  time: (val: number | null, language: CT.Language) => (val ? moment(val, language) : language.None),
+
+ /**
+  * Parser for string type settings.
+  * @param val - The string value to parse.
+  * @param language - The language object containing translations.
+  * @returns The string value or the "None" string if the value is falsy.
+  */
  string: (val: string, language: CT.Language) => val ?? language.None,
+
+ /**
+  * Parser for embed type settings.
+  * @param val - The unique timestamp of the custom embed to parse.
+  * @param language - The language object containing translations.
+  * @returns The name of the custom embed or the "None" string if the value is falsy.
+  */
  embed: async (val: Prisma.Decimal | null, language: CT.Language) =>
   val
    ? (await DataBase.customembeds.findUnique({ where: { uniquetimestamp: val } }))?.name ??
      language.None
    : language.None,
+
+ /**
+  * Parser for emote type settings.
+  * @param val - The emote string to parse.
+  * @param language - The language object containing translations.
+  * @returns The emote string or the "None" string if the value is falsy.
+  */
  emote: (val: string | null, language: CT.Language) =>
   val
    ? `${!Discord.parseEmoji(val)?.id ? val : `<${val.startsWith('a:') ? '' : ':'}${val}>`}`
    : language.None,
+
+ /**
+  * Parser for command type settings.
+  * @param val - The command ID or name to parse.
+  * @param language - The language object containing translations.
+  * @returns A string representation of the command.
+  */
  command: (val: string | null, language: CT.Language) => {
   if (!val) return language.None;
 
@@ -81,6 +189,13 @@ const embedParsers = {
  },
 };
 
+/**
+ * Returns a Discord API button component with the specified name and unique timestamp.
+ * @template T - The type of the settings name.
+ * @param {T} name - The name of the settings.
+ * @param {number | undefined | string} uniquetimestamp - The unique timestamp of the settings.
+ * @returns {Discord.APIButtonComponent} - The Discord API button component.
+ */
 const back = <T extends keyof SettingsNames>(
  name: T,
  uniquetimestamp: number | undefined | string,
@@ -91,7 +206,26 @@ const back = <T extends keyof SettingsNames>(
  emoji: emotes.back,
 });
 
+/**
+ * This module contains helper functions for creating Discord API button components
+ * used in the settings editor.
+ * @packageDocumentation
+ */
+
+/**
+ * An object containing functions for creating Discord API button components
+ * used in the settings editor.
+ */
 const buttonParsers = {
+ /**
+  * Creates a global button component for the settings editor.
+  * @param language - The language object containing translations.
+  * @param setting - The current value of the setting.
+  * @param type - The type of setting.
+  * @param settingName - The name of the setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @returns A Discord API button component.
+  */
  global: (
   language: CT.Language,
   setting: boolean | string[] | null,
@@ -105,6 +239,18 @@ const buttonParsers = {
   custom_id: `settings/editors/${getGlobalType(type)}_${type}_${settingName}_${uniquetimestamp}`,
   emoji: getEmoji(setting, type),
  }),
+
+ /**
+  * Creates a specific button component for the settings editor.
+  * @param language - The language object containing translations.
+  * @param setting - The current value of the setting.
+  * @param name - The name of the field.
+  * @param settingName - The name of the setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @param type - The type of setting.
+  * @param emoji - The emoji to use for the button component.
+  * @returns A Discord API button component.
+  */
  specific: <T extends keyof SettingsNames>(
   language: CT.Language,
   setting: string[] | string | boolean | null | Prisma.Decimal,
@@ -140,6 +286,17 @@ const buttonParsers = {
    emoji: (type ? getEmoji(setting, `wl${type}id`) : undefined) ?? emoji,
   };
  },
+
+ /**
+  * Creates a setting button component for the settings editor.
+  * @param language - The language object containing translations.
+  * @param setting - The current value of the setting.
+  * @param name - The name of the field.
+  * @param settingName - The name of the setting.
+  * @param linkName - The name of the linked setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @returns A Discord API button component.
+  */
  setting: <T extends keyof SettingsNames>(
   language: CT.Language,
   setting: string[] | string | boolean | null,
@@ -162,6 +319,16 @@ const buttonParsers = {
   )}_${settingName}_${linkName}_${uniquetimestamp}`,
   emoji: emotes.settings,
  }),
+
+ /**
+  * Creates a boolean button component for the settings editor.
+  * @param language - The language object containing translations.
+  * @param setting - The current value of the setting.
+  * @param name - The name of the field.
+  * @param settingName - The name of the setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @returns A Discord API button component.
+  */
  boolean: <T extends keyof SettingsNames>(
   language: CT.Language,
   setting: boolean | undefined,
@@ -188,6 +355,13 @@ const buttonParsers = {
    emoji: setting ? emotes.enabled : emotes.disabled,
   };
  },
+
+ /**
+  * Creates a button component for creating a new setting.
+  * @param language - The language object containing translations.
+  * @param name - The name of the setting.
+  * @returns A Discord API button component with a custom ID.
+  */
  create: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
@@ -198,6 +372,14 @@ const buttonParsers = {
   custom_id: `settings/create_${name}`,
   emoji: emotes.plusBG,
  }),
+
+ /**
+  * Creates a button component for deleting a setting.
+  * @param language - The language object containing translations.
+  * @param name - The name of the setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @returns A Discord API button component.
+  */
  delete: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
@@ -209,6 +391,14 @@ const buttonParsers = {
   custom_id: `settings/delete_${name}_${uniquetimestamp}`,
   emoji: emotes.minusBG,
  }),
+
+ /**
+  * Creates a button component for navigating to the previous page of settings.
+  * @param language - The language object containing translations.
+  * @param name - The name of the setting.
+  * @param enabled - Whether the button should be enabled or disabled.
+  * @returns A Discord API button component.
+  */
  previous: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
@@ -221,6 +411,15 @@ const buttonParsers = {
   emoji: emotes.back,
   disabled: !enabled,
  }),
+
+ /**
+  * Creates a button component for navigating to the next page of settings.
+  * @param language - The language object containing translations.
+  * @param name - The name of the setting.
+  * @param uniquetimestamp - A unique timestamp used to identify the button component.
+  * @param enabled - Whether the button should be enabled or disabled.
+  * @returns A Discord API button component.
+  */
  next: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
@@ -234,10 +433,22 @@ const buttonParsers = {
   emoji: emotes.forth,
   disabled: !enabled,
  }),
+
+ /**
+  * A button component used for navigating back to the previous menu.
+  */
  back,
 };
 
+/**
+ * Helper functions for managing settings-related interactions in the Discord bot client.
+ */
 const multiRowHelpers = {
+ /**
+  * Adds a "no fields found" message to the first embed if it has no fields.
+  * @param embeds - The array of embeds to check.
+  * @param language - The language object containing the message to display.
+  */
  noFields: (embeds: Discord.APIEmbed[], language: CT.Language) => {
   if (!embeds[0].fields?.length) {
    embeds[0].fields?.push({
@@ -247,6 +458,12 @@ const multiRowHelpers = {
    });
   }
  },
+ /**
+  * Generates an array of action row components for a given setting name.
+  * @param language - The language object containing the button text.
+  * @param name - The name of the setting to generate buttons for.
+  * @returns An array of action row components containing a single button.
+  */
  options: <T extends keyof SettingsNames>(
   language: CT.Language,
   name: T,
@@ -256,6 +473,14 @@ const multiRowHelpers = {
    components: [buttonParsers.create(language, name)],
   },
  ],
+ /**
+  * Adds pagination buttons to the beginning of the components array
+  * if the number of fields exceeds 25.
+  * @param embeds - The array of embeds to check.
+  * @param components - The array of action row components to add the pagination buttons to.
+  * @param language - The language object containing the button text.
+  * @param name - The name of the setting being paginated.
+  */
  components: <T extends keyof SettingsNames>(
   embeds: Discord.APIEmbed[],
   components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[],
@@ -272,6 +497,13 @@ const multiRowHelpers = {
    });
   }
  },
+ /**
+  * Generates an array of embeds for a given setting name.
+  * @param fields - The array of fields to add to the embeds.
+  * @param language - The language object containing the author text.
+  * @param lan - The name of the setting being paginated.
+  * @returns An array of APIEmbed objects.
+  */
  embeds: <T extends keyof SettingsNames>(
   fields:
    | {
@@ -289,6 +521,15 @@ const multiRowHelpers = {
  ],
 };
 
+/**
+ * Updates a setting and triggers a post-update action if necessary.
+ * @param oldSetting The old value of the setting.
+ * @param newSetting The new value of the setting.
+ * @param changedSetting The field that was changed.
+ * @param settingName The name of the setting.
+ * @param guild The guild where the setting was changed.
+ * @param uniquetimestamp A unique timestamp to identify the update.
+ */
 const postUpdate = async <T extends keyof SettingsNames>(
  oldSetting: unknown,
  newSetting: unknown,
@@ -735,6 +976,12 @@ const changeHelpers = {
  }),
 };
 
+/**
+ * Returns the corresponding emoji based on the setting and type.
+ * @param setting - The setting to determine the emoji for.
+ * @param type - The type of setting to determine the emoji for.
+ * @returns The corresponding emoji for the setting and type.
+ */
 export const getEmoji = (
  setting: string | boolean | string[] | undefined | Prisma.Decimal | null,
  type?: BLWLType | 'active',
@@ -758,6 +1005,12 @@ export const getEmoji = (
  }
 };
 
+/**
+ * Returns the label for a given type of blacklist/whitelist setting.
+ * @param language - The language object containing the localized strings.
+ * @param type - The type of blacklist/whitelist setting to get the label for.
+ * @returns The label for the given type of blacklist/whitelist setting.
+ */
 const getLabel = (language: CT.Language, type: BLWLType | 'active') => {
  if (type && type !== 'active') {
   return language.slashCommands.settings[
@@ -767,6 +1020,11 @@ const getLabel = (language: CT.Language, type: BLWLType | 'active') => {
  return language.slashCommands.settings.active;
 };
 
+/**
+ * Returns the appropriate Discord button style based on the provided setting.
+ * @param setting - The setting to determine the button style for.
+ * @returns The appropriate Discord button style.
+ */
 export const getStyle = (setting: boolean | string | string[] | null) => {
  if (typeof setting === 'boolean' || !setting) {
   return setting ? Discord.ButtonStyle.Success : Discord.ButtonStyle.Danger;
@@ -774,6 +1032,11 @@ export const getStyle = (setting: boolean | string | string[] | null) => {
  return setting?.length ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger;
 };
 
+/**
+ * Determines the global type based on the provided type.
+ * @param type The type to determine the global type for.
+ * @returns The global type as a string.
+ */
 const getGlobalType = (type: BLWLType | 'active') => {
  switch (true) {
   case type.includes('channel'): {
@@ -791,6 +1054,11 @@ const getGlobalType = (type: BLWLType | 'active') => {
  }
 };
 
+/**
+ * Returns the corresponding Discord ComponentType for the given select type.
+ * @param type - The select type to get the ComponentType for.
+ * @returns The corresponding Discord ComponentType for the given select type.
+ */
 const getChangeSelectType = (
  type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
 ) => {
@@ -813,6 +1081,12 @@ const getChangeSelectType = (
  }
 };
 
+/**
+ * Returns a placeholder string based on the type of mentionable.
+ * @param type - The type of mentionable.
+ * @param language - The language object containing the placeholder strings.
+ * @returns The placeholder string.
+ */
 const getPlaceholder = (
  type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
  language: CT.Language,
@@ -836,6 +1110,14 @@ const getPlaceholder = (
  }
 };
 
+/**
+ * Returns a mention string based on the given type and value.
+ * @param language - The language object containing language strings.
+ * @param type - The type of mention to generate.
+ * @param value - The value to use for the mention.
+ * @param guild - The guild object to use for certain types of mentions.
+ * @returns A mention string based on the given type and value.
+ */
 const getMention = async (
  language: CT.Language,
  type: MentionTypes,
@@ -881,6 +1163,12 @@ const getMention = async (
  }
 };
 
+/**
+ * Returns the description for a given type based on the provided language.
+ * @param type - The type to get the description for.
+ * @param language - The language object containing the descriptions.
+ * @returns The description for the given type.
+ */
 const getGlobalDesc = (
  type: BLWLType | 'autoModRule/channel' | 'autoModRule/channels' | 'autoModRule/roles',
  language: CT.Language,
@@ -920,6 +1208,12 @@ const getGlobalDesc = (
  }
 };
 
+/**
+ * Retrieves the settings file for a given setting name and guild.
+ * @param settingName - The name of the setting to retrieve.
+ * @param guild - The guild to retrieve the setting for.
+ * @returns The settings file for the given setting name, or undefined if no file is found.
+ */
 const getSettingsFile = async <
  T extends keyof CT.Language['slashCommands']['settings']['categories'],
 >(
@@ -945,6 +1239,14 @@ const getSettingsFile = async <
  return (await import(file)) as CT.SettingsFile<typeof settingName>;
 };
 
+/**
+ * Sets up a database query based on the provided table name,
+ *  guild ID, and unique timestamp (optional).
+ * @param tableName - The name of the table to query.
+ * @param guildid - The ID of the guild to query.
+ * @param uniquetimestamp - An optional unique timestamp to include in the query.
+ * @returns A database query object based on the provided parameters.
+ */
 const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp?: number) => {
  const getDBType = () => {
   if (uniquetimestamp) {
@@ -1038,6 +1340,15 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
  return getDBType();
 };
 
+/**
+ * Deletes a row from the specified table in the database
+ * based on the unique timestamp and guild ID.
+ * @param tableName - The name of the table to delete the row from.
+ * @param guildid - The ID of the guild where the row exists.
+ * @param uniquetimestamp - The unique timestamp of the row to delete.
+ * @returns A promise that resolves to the number of rows deleted from the table.
+ * @throws An error if the specified table name is not supported.
+ */
 const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp: number) => {
  const getDBType = () => {
   const where = { where: { uniquetimestamp, guildid } };
@@ -1085,6 +1396,17 @@ const del = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp
  return getDBType();
 };
 
+/**
+ * Updates the settings log with the old and new settings and sends an embed to the log channel.
+ * @param oldSetting - The old setting object.
+ * @param newSetting - The new setting object.
+ * @param changedSetting - The key of the changed setting.
+ * @param settingName - The name of the setting.
+ * @param uniquetimestamp - The unique timestamp.
+ * @param guild - The guild object.
+ * @param language - The language object.
+ * @param lan - The settings language object.
+ */
 export const updateLog = async <T extends keyof SettingsNames>(
  oldSetting: { [key in keyof FieldName<T>]: unknown } | undefined,
  newSetting: { [key in keyof FieldName<T>]: unknown } | undefined,
@@ -1171,6 +1493,25 @@ export const updateLog = async <T extends keyof SettingsNames>(
  send({ id: logs, guildId: guild.id }, { embeds: [embed] });
 };
 
+/**
+ * Helper functions for managing settings.
+ * @property {Object} embedParsers
+ * - Functions for parsing embed settings.
+ * @property {Object} buttonParsers
+ * - Functions for parsing button settings.
+ * @property {Object} multiRowHelpers
+ * - Functions for managing multi-row settings.
+ * @property {Function} updateLog
+ * - Function for updating the settings log.
+ * @property {Object} changeHelpers
+ * - Functions for managing changes to settings.
+ * @property {Function} getSettingsFile
+ * - Function for getting the settings file.
+ * @property {Function} setup
+ * - Function for setting up the settings file.
+ * @property {Function} del
+ * - Function for deleting a setting.
+ */
 export default {
  embedParsers,
  buttonParsers,

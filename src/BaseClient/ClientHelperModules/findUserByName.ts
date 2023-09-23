@@ -1,3 +1,8 @@
+/**
+ * Finds users by their username.
+ * @param name The username to search for.
+ * @returns An array of users whose username includes the given name.
+ */
 export default async (name: string) =>
  (
   await (

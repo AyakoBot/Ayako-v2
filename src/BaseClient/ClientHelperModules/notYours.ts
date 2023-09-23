@@ -3,6 +3,11 @@ import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 import reply from './replyCmd.js';
 
+/**
+ * Sends an error message to the user indicating that the requested resource is not theirs.
+ * @param interaction - The button interaction that triggered the error message.
+ * @param language - An object containing the language strings to use for the error message.
+ */
 export default (interaction: Discord.ButtonInteraction, language: CT.Language) =>
  reply(interaction, {
   embeds: [
