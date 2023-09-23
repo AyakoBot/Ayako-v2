@@ -768,6 +768,14 @@ const afk = new Discord.SlashCommandBuilder()
    .setRequired(false),
  );
 
+const unafk = new Discord.SlashCommandBuilder()
+ .setName('unafk')
+ .setDescription("Force delete someone's AFK status")
+ .setDMPermission(false)
+ .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageMessages)
+ .addUserOption(User.setRequired(true))
+ .addStringOption(Reason);
+
 const help = new Discord.SlashCommandBuilder()
  .setName('help')
  .setDescription('Get Help for the Bot')
@@ -1293,6 +1301,7 @@ export default {
   slowmode,
   vote,
   giveaway,
+  unafk,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1398,5 +1407,6 @@ export default {
   giveaway_cancel: 'utility',
   giveaway_list: 'info',
   giveaway_end: 'utility',
+  unafk: 'moderation',
  },
 };

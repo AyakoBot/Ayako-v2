@@ -232,14 +232,15 @@ export type ModTypes =
  | 'kickAdd'
  | 'warnAdd'
  | 'softWarnAdd'
- | 'strikeAdd';
+ | 'strikeAdd'
+ | 'unAfk';
 
 type BaseOptions = {
  reason: string;
  dbOnly: boolean;
  guild: Discord.Guild;
- target: Discord.User | bEvalUser;
- executor: Discord.User | bEvalUser;
+ target: Discord.User;
+ executor: Discord.User;
 };
 
 type Channel = {
@@ -260,17 +261,13 @@ type SpecificOptions = {
  roleAdd: Roles;
  roleRemove: Roles;
  tempMuteAdd: Temp;
- muteRemove: Empty;
  banAdd: DeleteMessageSeconds;
  softBanAdd: DeleteMessageSeconds;
  tempBanAdd: Temp & DeleteMessageSeconds;
  channelBanAdd: Channel;
  tempChannelBanAdd: Channel & Temp;
  channelBanRemove: Channel;
- banRemove: Empty;
- kickAdd: Empty;
- warnAdd: Empty;
- softWarnAdd: Empty;
+ unAfk: Empty;
 };
 
 export type ModOptions<T extends ModTypes> = BaseOptions & SpecificOptions[T];

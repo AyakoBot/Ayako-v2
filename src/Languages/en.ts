@@ -1425,6 +1425,10 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  unafk: {
+   notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
+   unAfk: (user: Discord.User) => `AFK of\n${getUser(user)}deleted`,
+  },
   vote: {
    desc: 'Vote for Ayako',
    content: 'You can vote for me on [here](https://top.gg/bot/650691698409734151/vote)',
@@ -3450,6 +3454,11 @@ export default {
     author: 'Member Un-Muted',
     description: (target: Discord.User, executor: Discord.User) =>
      `${getUser(target)}was Un-Muted by\n${getUser(executor)}`,
+   },
+   unAfk: {
+    author: 'Member AFK-Status removed',
+    description: (target: Discord.User, executor: Discord.User) =>
+     `AFK-Status of\n${getUser(target)}was removed by\n${getUser(executor)}`,
    },
    banAdd: {
     author: 'User Banned',
