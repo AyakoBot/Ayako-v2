@@ -7,11 +7,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const name = cmd.options.getString('name', true).replace(/[^a-zA-Z0-9_]/g, '');
  const rawEmoji = cmd.options.getString('emoji', true);
  const emoji = Discord.parseEmoji(rawEmoji);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  if (ch.regexes.emojiTester.test(rawEmoji) || !emoji) {
-  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.languageSelector(cmd.guildId));
+  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.getLanguage(cmd.guildId));
   return;
  }
 

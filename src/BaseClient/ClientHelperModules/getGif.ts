@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as Neko from 'nekos-best.js';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
 import PurrBot from 'purrbot-api';
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import colorSelector from './colorSelector.js';
 import replyCmd from './replyCmd.js';
 import objectEmotes from './emotes.js';
@@ -289,7 +289,7 @@ export const imageGetter = async (
 
  const imgGetter = gifSelection.find((g) => g.triggers.includes(commandName));
  const img = (await imgGetter?.gifs()) as ReturnType<'img'>;
- const language = await languageSelector(cmd.guildId);
+ const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.img;
 
  const payload = {

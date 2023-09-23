@@ -8,7 +8,7 @@ const name = 'verification';
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guild?.id);
+ const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
  const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
@@ -146,7 +146,7 @@ export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
    const channel = await ch.getChannel.guildTextChannel(newSettings.startchannel);
    if (!channel) return;
 
-   const language = await ch.languageSelector(channel.guildId);
+   const language = await ch.getLanguage(channel.guildId);
 
    channel.send({
     embeds: [

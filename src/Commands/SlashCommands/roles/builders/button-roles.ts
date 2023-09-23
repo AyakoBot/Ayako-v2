@@ -14,7 +14,7 @@ export default async (
  if (!cmd.inCachedGuild()) return;
  if (!reply) reply = await cmd.deferReply({ ephemeral: true });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.builders;
 
  const message = await ch.getMessage(

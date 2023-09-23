@@ -3,7 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.badges;
 
  const members = cmd.guild.members.cache.map((c) => c);

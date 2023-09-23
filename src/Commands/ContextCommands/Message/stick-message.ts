@@ -19,7 +19,7 @@ export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
   where: { channelid: cmd.channelId },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.contextCommands.message['Stick Message'];
 
  ch.replyCmd(cmd, {

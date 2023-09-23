@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/CustomTypings.js';
 
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import log from './log.js';
 import db from './mod/db.js';
 import mod from './mod/mod.js';
@@ -101,7 +101,7 @@ export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.
 };
 
 const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTypes) => {
- const language = await languageSelector(options.guild.id);
+ const language = await getLanguage(options.guild.id);
 
  if (options.dbOnly) {
   log(options.guild, type, options.target, options.executor, options as never);

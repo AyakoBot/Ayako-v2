@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
 
  let title = lan.createButtons.selectMenu[args[0] as keyof typeof lan.createButtons.selectMenu];

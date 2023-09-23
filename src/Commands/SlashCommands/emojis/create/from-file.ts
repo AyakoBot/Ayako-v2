@@ -7,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const name = cmd.options.getString('name', true).replace(/[^a-zA-Z0-9_]/g, '');
  const img = cmd.options.getAttachment('file', true);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  const createdEmote = await ch.request.guilds.createEmoji(

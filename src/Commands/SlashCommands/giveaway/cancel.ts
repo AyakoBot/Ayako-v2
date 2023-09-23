@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   where: { msgid: messageID },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.cancel;
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {

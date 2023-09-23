@@ -17,7 +17,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  try {
   new Discord.EmbedBuilder(JSON.parse(code) as Discord.APIEmbed);
  } catch (e) {
-  const language = await ch.languageSelector(cmd.guildId);
+  const language = await ch.getLanguage(cmd.guildId);
   ch.errorCmd(cmd, (e as Discord.DiscordjsError).message, language);
   return;
  }

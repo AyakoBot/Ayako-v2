@@ -7,7 +7,7 @@ export default async (sticker: Discord.Sticker) => {
  const channels = await ch.getLogChannels('stickerevents', sticker.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(sticker.guild.id);
+ const language = await ch.getLanguage(sticker.guild.id);
  const lan = language.events.logs.sticker;
  const con = ch.constants.events.logs.sticker;
  const audit = (await ch.getAudit(sticker.guild, 90, sticker.id)) ?? undefined;

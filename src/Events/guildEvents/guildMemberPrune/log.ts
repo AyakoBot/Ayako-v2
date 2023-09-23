@@ -5,7 +5,7 @@ export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) 
  const channels = await ch.getLogChannels('guildevents', guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.logs.guild;
  const con = ch.constants.events.logs.guild;
  const extra = audit.extra as { removed: number; days: number };

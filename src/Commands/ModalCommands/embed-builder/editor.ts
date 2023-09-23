@@ -21,7 +21,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   | 'author-url'
   | 'author-icon'
   | 'author-name';
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const newValue = cmd.fields.getTextInputValue('input') || undefined;
  const lan = language.slashCommands.embedbuilder.create.start;
  const selectedField = getSelectedField(cmd);

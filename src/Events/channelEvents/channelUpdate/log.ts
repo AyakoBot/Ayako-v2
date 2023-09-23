@@ -28,7 +28,7 @@ export default async (
  const channels = await ch.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(channel.guild.id);
+ const language = await ch.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
  const con = ch.constants.events.logs.channel;
  const channelType = `${ch.getTrueChannelType(channel, channel.guild)}Update`;

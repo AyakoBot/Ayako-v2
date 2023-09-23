@@ -6,7 +6,7 @@ export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
  args: string[],
 ) => {
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
  const maxLength = getLength(args[0]);
 

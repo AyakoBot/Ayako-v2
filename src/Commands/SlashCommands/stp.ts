@@ -4,7 +4,7 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.CommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guild?.id);
+ const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.stp;
  const string = cmd.options.get('string', true).value as string;
 

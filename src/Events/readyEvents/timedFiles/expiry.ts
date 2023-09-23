@@ -124,7 +124,7 @@ const logExpire = async <T extends TableName>(
  );
  await Promise.all(rows.map((p) => ch.getUser(p.userid).catch(() => null)));
 
- const language = await ch.languageSelector(guildid);
+ const language = await ch.getLanguage(guildid);
  const lan = language.expire;
 
  const users = await Promise.all(rows.map((r) => ch.getUser(r.userid)));

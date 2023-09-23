@@ -5,7 +5,7 @@ export default async (member: Discord.GuildMember) => {
  const channels = await ch.getLogChannels('memberevents', member.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(member.guild.id);
+ const language = await ch.getLanguage(member.guild.id);
  const lan = language.events.logs.guild;
  const con = ch.constants.events.logs.guild;
 

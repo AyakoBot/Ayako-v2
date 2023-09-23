@@ -14,7 +14,7 @@ export default async (
  const channels = await ch.getLogChannels('voiceevents', member.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(state.guild.id);
+ const language = await ch.getLanguage(state.guild.id);
  const lan = language.events.logs.voiceState;
  const con = ch.constants.events.logs.voiceState;
  const channelType = ch.getTrueChannelType(state.channel, state.guild);

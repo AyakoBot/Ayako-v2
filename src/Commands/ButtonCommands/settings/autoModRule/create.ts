@@ -13,7 +13,7 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
   return;
  }
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
  const rule = await ch.request.guilds.createAutoModerationRule(

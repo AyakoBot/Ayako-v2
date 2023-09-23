@@ -14,7 +14,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   where: { msgid: cmd.message.id },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.claim;
 
  if (!giveaway || !giveaway.actualprize) {

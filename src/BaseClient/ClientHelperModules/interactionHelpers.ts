@@ -8,7 +8,7 @@ import send from './send.js';
 import DataBase from '../DataBase.js';
 import type CT from '../../Typings/CustomTypings.js';
 import colorSelector from './colorSelector.js';
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
 import type { ReturnType } from './getGif.js';
@@ -62,7 +62,7 @@ const reply = async (
  const users = allUsers.filter(
   (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id),
  );
- const language = await languageSelector(cmd.guildId);
+ const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
  const con = constants.commands.interactions.find((c) => c.name === commandName);
  const desc = getDesc(author, users, language, lan, cmd, !!setting?.legacyrp);
@@ -209,7 +209,7 @@ export default reply;
 export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await languageSelector(cmd.guildId);
+ const language = await getLanguage(cmd.guildId);
 
  if (!args.includes(cmd.user.id) && args[0] !== 'everyone') {
   notYours(cmd, language);

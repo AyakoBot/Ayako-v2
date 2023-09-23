@@ -5,7 +5,7 @@ export default async (integration: Discord.Integration) => {
  const channels = await ch.getLogChannels('guildevents', integration.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(integration.guild.id);
+ const language = await ch.getLanguage(integration.guild.id);
  const lan = language.events.logs.integration;
  const con = ch.constants.events.logs.guild;
  const audit = await ch.getAudit(integration.guild, 82, integration.id);

@@ -15,7 +15,7 @@ export default async (
 
  if (field) field.value = cmd.roles.map((r) => `<@&${r.id}>`).join(', ');
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.builders;
 
  cmd.update({

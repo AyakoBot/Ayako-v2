@@ -16,7 +16,7 @@ export default async (msg: Discord.Message<true>) => {
  const hasInvite = await checkForInvite(msg.content, msg.guild);
  if (!hasInvite) return;
 
- const language = await ch.languageSelector(msg.guildId);
+ const language = await ch.getLanguage(msg.guildId);
  if (msg.type !== Discord.MessageType.AutoModerationAction && (await ch.isDeleteable(msg))) {
   ch.request.channels.deleteMessage(msg);
  }

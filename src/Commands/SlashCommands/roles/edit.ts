@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const positionRole = cmd.options.getRole('position-role', false) ?? undefined;
  const iconUrl = cmd.options.getString('icon-url', false);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles;
 
  if (

@@ -11,7 +11,7 @@ export default async (ban: Discord.GuildBan) => {
    .then((b) => ('message' in b ? ban : b));
  }
 
- const language = await ch.languageSelector(ban.guild.id);
+ const language = await ch.getLanguage(ban.guild.id);
  const lan = language.events.logs.guild;
  const con = ch.constants.events.logs.guild;
  const audit = await ch.getAudit(ban.guild, 22, ban.user.id);

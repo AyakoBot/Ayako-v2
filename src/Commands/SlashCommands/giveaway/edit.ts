@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const messageID = cmd.options.getString('message-id', true);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.edit;
 
  const giveaway = await update(messageID, cmd, language);

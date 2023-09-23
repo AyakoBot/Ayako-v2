@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.guild) return;
 
  const messageID = cmd.options.getString('message-id', true);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
  const giveaway = await ch.DataBase.giveaways.findUnique({
   where: { msgid: messageID, ended: false },
@@ -92,7 +92,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   return;
  }
 
- const language = await ch.languageSelector(giveaway.guildid);
+ const language = await ch.getLanguage(giveaway.guildid);
  const embed = await getGiveawayEmbed(language, giveaway);
 
  embed.author.name += ` | ${language.slashCommands.giveaway.end.ended}`;
@@ -361,7 +361,7 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- const language = await ch.languageSelector(giveaway.guildid);
+ const language = await ch.getLanguage(giveaway.guildid);
  const claimButton = getClaimButton(language, giveaway);
  claimButton.label = language.slashCommands.giveaway.end.expired;
  claimButton.disabled = true;

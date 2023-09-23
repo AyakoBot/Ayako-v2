@@ -3,7 +3,7 @@ import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const stats = await ch.DataBase.stats.findFirst();
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.ping;
 
  ch.replyCmd(cmd, {

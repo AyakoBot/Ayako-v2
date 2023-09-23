@@ -5,7 +5,7 @@ import client from '../../../BaseClient/Client.js';
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
  const channel = cmd.options.getChannel('channel', true);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  if (!channel) {
   ch.errorCmd(cmd, language.errors.channelNotFound, language);
@@ -41,7 +41,7 @@ const getEmbed = async (
    const c = cl.channels.cache.get(id) as Discord.GuildBasedChannel;
    if (!c) return undefined;
 
-   const language = await chEval.languageSelector(gid);
+   const language = await chEval.getLanguage(gid);
    const lan = language.slashCommands.info.channel;
    const eventLan = language.events.logs.channel;
    const scheduledEventLan = language.events.logs.scheduledEvent;

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import DataBase from '../DataBase.js';
 import objectEmotes from './emotes.js';
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 
 export default async (guild: Discord.Guild, err: Error) => {
@@ -17,7 +17,7 @@ export default async (guild: Discord.Guild, err: Error) => {
  const channel = await guildTextChannel(errorchannel);
  if (!channel) return;
 
- const language = await languageSelector(guild.id);
+ const language = await getLanguage(guild.id);
 
  channel.send({
   embeds: [

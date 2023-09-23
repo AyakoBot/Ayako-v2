@@ -7,7 +7,7 @@ export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: strin
 
  const captcha = args.shift() as string;
  const value = cmd.fields.getTextInputValue('-');
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  if (value.toLowerCase() !== captcha?.toLowerCase()) {
   cmd.update({

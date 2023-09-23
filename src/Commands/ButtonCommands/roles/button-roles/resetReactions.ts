@@ -10,7 +10,7 @@ import {
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const message = (await ch.getMessage(
   cmd.message.embeds[0].url as string,
  )) as Discord.Message<true>;

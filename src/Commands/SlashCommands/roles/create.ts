@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const permissionRole = cmd.options.getRole('permission-role', false);
  const iconUrl = cmd.options.getString('icon-url', false);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles;
 
  if (
@@ -34,7 +34,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   try {
    new URL(iconUrl);
   } catch (e) {
-   ch.errorCmd(cmd, (e as Error).message, await ch.languageSelector(cmd.guildId));
+   ch.errorCmd(cmd, (e as Error).message, await ch.getLanguage(cmd.guildId));
    return;
   }
  }

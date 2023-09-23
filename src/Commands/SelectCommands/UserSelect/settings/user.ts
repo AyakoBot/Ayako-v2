@@ -11,7 +11,7 @@ export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) =>
  const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
  if (!settingName) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  cmd.update({
   embeds: [

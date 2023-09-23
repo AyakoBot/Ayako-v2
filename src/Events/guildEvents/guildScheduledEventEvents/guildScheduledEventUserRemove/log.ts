@@ -15,7 +15,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
    ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
      (await ch.getChannel.guildVoiceChannel(event.channelId))
    : undefined);
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.logs.scheduledEvent;
  const con = ch.constants.events.logs.guild;
  const files: Discord.AttachmentPayload[] = [];

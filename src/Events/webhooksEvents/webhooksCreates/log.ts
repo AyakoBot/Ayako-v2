@@ -8,7 +8,7 @@ export default async (
  const channels = await ch.getLogChannels('webhookevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(channel.guild.id);
+ const language = await ch.getLanguage(channel.guild.id);
  const lan = language.events.logs.webhook;
  const con = ch.constants.events.logs.webhook;
  const audit = await ch.getAudit(channel.guild, 50, webhook.id);

@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  const channel = await cmd.channel?.fetch().catch(() => undefined);
  if (!channel) return;

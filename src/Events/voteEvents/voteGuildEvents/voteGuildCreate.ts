@@ -24,7 +24,7 @@ export default async (
    guildid: guild.id,
   },
  });
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, guild, language);

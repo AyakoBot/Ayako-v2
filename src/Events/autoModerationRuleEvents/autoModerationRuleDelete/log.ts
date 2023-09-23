@@ -5,7 +5,7 @@ export default async (rule: Discord.AutoModerationRule) => {
  const channels = await ch.getLogChannels('automodevents', rule.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(rule.guild.id);
+ const language = await ch.getLanguage(rule.guild.id);
  const lan = language.events.logs.automodRule;
  const con = ch.constants.events.logs.automodRule;
  const user = await ch.getUser(rule.creatorId);

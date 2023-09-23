@@ -9,7 +9,7 @@ export default async (
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const servers = await getServers(language);
  if (!servers) {
   ch.errorCmd(cmd, language.slashCommands.info.servers.noneFound, language);

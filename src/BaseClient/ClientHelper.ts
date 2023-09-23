@@ -13,7 +13,7 @@ import channelRuleCalc from './ClientHelperModules/channelRuleCalc.js';
 import permCalc from './ClientHelperModules/permCalc.js';
 import getUnix from './ClientHelperModules/getUnix.js';
 import getDifference from './ClientHelperModules/getDifference.js';
-import languageSelector from './ClientHelperModules/languageSelector.js';
+import getLanguage from './ClientHelperModules/getLanguage.js';
 import bitUniques from './ClientHelperModules/bitUniques.js';
 import txtFileWriter from './ClientHelperModules/txtFileWriter.js';
 import * as util from './ClientHelperModules/util.js';
@@ -120,7 +120,7 @@ export {
  permCalc,
  getUnix,
  getDifference,
- languageSelector,
+ getLanguage,
  bitUniques,
  txtFileWriter,
  util,

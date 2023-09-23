@@ -5,7 +5,7 @@ import rp from '../../SlashCommands/rp/manager.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  await cmd.deferUpdate();
  cmd.editReply({

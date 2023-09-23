@@ -5,7 +5,7 @@ export default async (emote: Discord.GuildEmoji) => {
  const channels = await ch.getLogChannels('emojievents', emote.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(emote.guild.id);
+ const language = await ch.getLanguage(emote.guild.id);
  const lan = language.events.logs.guild;
  const con = ch.constants.events.logs.emoji;
  const audit = !emote.author ? await ch.getAudit(emote.guild, 60, emote.id) : undefined;

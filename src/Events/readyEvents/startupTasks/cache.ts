@@ -59,7 +59,7 @@ export const tasks = {
   });
  },
  punishments: async (guild: Discord.Guild) => {
-  const language = await ch.languageSelector(guild.id);
+  const language = await ch.getLanguage(guild.id);
   const where = { where: { guildid: guild.id } };
   const tables = [
    {

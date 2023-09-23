@@ -13,6 +13,6 @@ export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  const res = await ch.request.channels.delete(cmd.guild, cmd.channelId);
  if (!('message' in res)) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  ch.errorCmd(cmd, res.message, language);
 };

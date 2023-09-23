@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
  const check = isUser
   ? await ch.request.guilds.getMember(cmd.guild, ID).then((u) => ('message' in u ? undefined : u))
   : cmd.guild.roles.cache.get(ID);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  if (!check) {
   ch.errorCmd(

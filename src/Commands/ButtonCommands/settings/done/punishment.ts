@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const punishmentID = Object.entries(language.punishments).find(
   (e) => e[1] === cmd.message.embeds[0].description,
  )?.[0];

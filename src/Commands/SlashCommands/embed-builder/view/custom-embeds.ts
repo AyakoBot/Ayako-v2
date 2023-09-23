@@ -8,7 +8,7 @@ export default async (cmd: Discord.CommandInteraction) => {
   where: { uniquetimestamp: value },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.view['custom-embeds'];
 
  if (!embedData) {

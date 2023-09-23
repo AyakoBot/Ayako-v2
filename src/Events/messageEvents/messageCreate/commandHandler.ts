@@ -4,7 +4,7 @@ import { glob } from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as CT from '../../../Typings/CustomTypings.js';
-import languageSelector from '../../../BaseClient/ClientHelperModules/languageSelector.js';
+import getLanguage from '../../../BaseClient/ClientHelperModules/getLanguage.js';
 import constants from '../../../BaseClient/Other/constants.js';
 import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';
 import replyMsg from '../../../BaseClient/ClientHelperModules/replyMsg.js';
@@ -36,7 +36,7 @@ const dmCommand = async (msg: Discord.Message) => {
  if (!command) return;
  if (!command.dmAllowed) return;
 
- const language = await languageSelector(msg.author.id);
+ const language = await getLanguage(msg.author.id);
  command.default(msg, args, { language, command, prefix });
 };
 
@@ -59,7 +59,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (command.type === 'owner' && msg.author.id !== auth.ownerID) return;
  if (command.dmOnly) return;
 
- const language = await languageSelector(msg.guildId);
+ const language = await getLanguage(msg.guildId);
 
  const commandIsEnabled = await checkCommandIsEnabled(msg, commandName, command);
  if (!commandIsEnabled) {

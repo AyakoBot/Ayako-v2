@@ -25,7 +25,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const commandID = cmd.message.embeds[0].description?.includes('/')
   ? client.application?.commands.cache.get(
      cmd.message.embeds[0].description?.replace(/\D+/g, '') as string,

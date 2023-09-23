@@ -8,7 +8,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const user = await ch.DataBase.users.findUnique({ where: { userid: cmd.user.id } });
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
 
  if (!user?.refreshtoken || !user?.accesstoken || !user?.expires) {

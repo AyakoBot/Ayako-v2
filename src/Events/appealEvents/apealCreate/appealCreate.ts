@@ -35,7 +35,7 @@ export default async (appeal: CT.Appeal) => {
  const user = await ch.getUser(appeal.userid).catch(() => undefined);
  if (!user) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.appeal;
 
  const embed: Discord.APIEmbed = {

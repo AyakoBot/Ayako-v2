@@ -9,7 +9,7 @@ export default async (
  const channels = await ch.getLogChannels('channelevents', thread.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(thread.guild.id);
+ const language = await ch.getLanguage(thread.guild.id);
  const lan = language.events.logs.channel;
  const con = ch.constants.events.logs.threadMembers;
  const files: Discord.AttachmentPayload[] = [];

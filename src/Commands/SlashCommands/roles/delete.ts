@@ -6,7 +6,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const role = cmd.options.getRole('role', true);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.delete;
 
  ch.replyCmd(cmd, {

@@ -38,7 +38,7 @@ UpdateWorker.on(
     if (!guild) return;
     const member = guild.members.cache.get(userData.userid);
     if (!member) return;
-    const language = await ch.languageSelector(guild.id);
+    const language = await ch.getLanguage(guild.id);
 
     ch.roleManager.remove(member, roleData, language.autotypes.separators);
     break;
@@ -49,7 +49,7 @@ UpdateWorker.on(
     if (!guild) return;
     const member = guild.members.cache.get(userData.userid);
     if (!member) return;
-    const language = await ch.languageSelector(guild.id);
+    const language = await ch.getLanguage(guild.id);
 
     ch.roleManager.add(member, roleData, language.autotypes.separators);
     break;
@@ -112,7 +112,7 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
    guildroles: map,
    highest: member.guild.roles.cache.map((r) => r).sort((a, b) => b.position - a.position)[0],
    res: roleseparatorRows,
-   language: await ch.languageSelector(member.guild.id),
+   language: await ch.getLanguage(member.guild.id),
   });
  });
 };
@@ -136,7 +136,7 @@ export const oneTimeRunner = async (
  lastTime?: boolean,
 ) => {
  if (!msg.guild) return;
- const language = await ch.languageSelector(msg.guild.id);
+ const language = await ch.getLanguage(msg.guild.id);
 
  const roleseparatorRows = await ch.DataBase.roleseparator.findMany({
   where: {
@@ -409,7 +409,7 @@ const assinger = async (
  lastTime?: boolean,
 ) => {
  if (!msg.guild) return;
- const language = await ch.languageSelector(msg.guild.id);
+ const language = await ch.getLanguage(msg.guild.id);
 
  if (!membersWithRoles?.length) {
   embed.author = {

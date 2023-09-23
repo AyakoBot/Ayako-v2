@@ -10,11 +10,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  try {
   new URL(img);
  } catch (e) {
-  ch.errorCmd(cmd, (e as Error).message, await ch.languageSelector(cmd.guildId));
+  ch.errorCmd(cmd, (e as Error).message, await ch.getLanguage(cmd.guildId));
   return;
  }
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  const createdEmote = await ch.request.guilds.createEmoji(

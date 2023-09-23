@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const embeds = await ch.DataBase.customembeds.findMany({ where: { guildid: cmd.guildId } });
 
  cmd.update({

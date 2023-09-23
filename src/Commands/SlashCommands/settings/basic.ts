@@ -10,7 +10,7 @@ const name = 'basic';
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guild?.id);
+ const language = await ch.getLanguage(cmd.guild?.id);
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
 
  const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]

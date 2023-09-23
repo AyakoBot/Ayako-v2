@@ -23,7 +23,7 @@ const banHandler = async (msg: Discord.Message) => {
  ids.forEach(async (id) => {
   const user = await ch.getUser(id);
   if (!user) {
-   const language = await ch.languageSelector(msg.guildId);
+   const language = await ch.getLanguage(msg.guildId);
    ch.errorMsg(msg, language.errors.userNotFound, language);
    return;
   }

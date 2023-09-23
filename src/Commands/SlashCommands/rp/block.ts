@@ -26,7 +26,7 @@ export const respond = async (
  blocked: { blockedcmd?: string[] },
  lang?: CT.Language,
 ) => {
- const language = lang ?? (await ch.languageSelector(cmd.guildId));
+ const language = lang ?? (await ch.getLanguage(cmd.guildId));
  const lan = language.slashCommands.rp;
  const commands = ch.constants.commands.interactions
   .filter((c) => c.users)

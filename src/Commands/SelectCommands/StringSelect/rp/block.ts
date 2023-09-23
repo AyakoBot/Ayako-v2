@@ -5,7 +5,7 @@ import { respond } from '../../../SlashCommands/rp/block.js';
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const userId = new URL(cmd.message.embeds[0].url || 'https://ayakobot.com').searchParams.get(
   'user',
  );

@@ -11,7 +11,7 @@ export default async (
  const application = await ch.getUser(data.applicationId);
  if (!application) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.logs.application;
  const con = ch.constants.events.logs.guild;
  const audit = await ch.getAudit(guild, 121, data.id);

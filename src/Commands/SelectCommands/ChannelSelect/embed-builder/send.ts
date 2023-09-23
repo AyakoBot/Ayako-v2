@@ -6,7 +6,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction) => {
   await Promise.all(cmd.channels.map((o) => ch.getChannel.guildTextChannel(o.id)))
  ).filter((o): o is Discord.TextChannel => !!o);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.send;
 
  await ch.send(channels, {

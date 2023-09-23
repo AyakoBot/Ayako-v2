@@ -8,7 +8,7 @@ export default async (member: Discord.GuildMember) => {
  if (!settings) return;
 
  const me = await ch.getBotMemberFromGuild(member.guild);
- const language = await ch.languageSelector(member.guild.id);
+ const language = await ch.getLanguage(member.guild.id);
 
  member.guild.channels.cache.forEach(async (channel) => {
   if (!me?.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels)) return;

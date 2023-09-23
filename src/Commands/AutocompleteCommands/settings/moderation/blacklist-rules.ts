@@ -12,7 +12,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  if (!automodRules) return [];
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  return automodRules?.map((r) => ({
   name: `${r.name.slice(0, 100) ?? language.None}`,

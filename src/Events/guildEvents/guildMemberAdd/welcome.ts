@@ -38,7 +38,7 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const getDefaultEmbed = async (member: Discord.GuildMember) => {
- const language = await ch.languageSelector(member.guild.id);
+ const language = await ch.getLanguage(member.guild.id);
 
  return { description: ch.stp(language.events.guildMemberAdd.welcome.embed, { member }) };
 };

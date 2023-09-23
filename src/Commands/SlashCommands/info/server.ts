@@ -8,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const enteredID = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;
  const enteredInvite = cmd.options.get('server-invite', false)?.value as string | null;
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const inviteArgs = enteredInvite?.split(/\/+/g) ?? [];
  const invite = inviteArgs.length
   ? await client.fetchInvite(inviteArgs.at(-1) as string, {}).catch(() => undefined)
@@ -71,7 +71,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    const g = c.guilds.cache.get(id) ?? chEval.cache.inviteGuilds.get(id);
    if (!g) return undefined;
 
-   const language = await chEval.languageSelector(g.id);
+   const language = await chEval.getLanguage(g.id);
    const lan = language.slashCommands.info.server;
    const eventLan = language.events.logs.guild;
    let owner: Discord.GuildMember | undefined;

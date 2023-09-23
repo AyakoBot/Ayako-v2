@@ -11,7 +11,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  if (!settings) return [];
 

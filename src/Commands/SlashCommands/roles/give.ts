@@ -7,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const role = cmd.options.getRole('role', true);
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  ch.mod(cmd, 'roleAdd', {
   roles: [role],

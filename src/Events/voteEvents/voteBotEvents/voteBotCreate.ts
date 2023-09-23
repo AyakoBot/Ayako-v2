@@ -21,7 +21,7 @@ export default async (
  const bot = await ch.getUser(vote.bot).catch(() => undefined);
  if (!bot) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, bot, language);
@@ -162,7 +162,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
   .then((m) => ('message' in m ? undefined : m));
  if (!member) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.vote;
 
  ch.roleManager.remove(

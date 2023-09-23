@@ -10,7 +10,7 @@ export default async (
  embed?: Discord.APIEmbed,
  selectedField?: number | null,
 ) => {
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
  let canFinish = true;
 

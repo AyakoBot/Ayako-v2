@@ -32,7 +32,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const claimTimeout = cmd.options.getString('claiming-timeout', false);
  const claimFailReroll = cmd.options.getBoolean('claim-fail-reroll', false);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.create;
 
  const duration = ch.getDuration(time);

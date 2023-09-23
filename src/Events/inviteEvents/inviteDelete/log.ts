@@ -5,7 +5,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
  const channels = await ch.getLogChannels('inviteevents', guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.logs.invite;
  const con = ch.constants.events.logs.invite;
  const audit = await ch.getAudit(guild, 40, invite.code);

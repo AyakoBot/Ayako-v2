@@ -21,7 +21,7 @@ export default async (msg: Discord.Message<true>) => {
  if (!settings) return;
 
  const url = await run(msg.content);
- const language = await ch.languageSelector(msg.guildId);
+ const language = await ch.getLanguage(msg.guildId);
 
  if (settings.linklogging && settings.linklogchannels.length) {
   ch.send(

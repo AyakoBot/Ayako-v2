@@ -9,7 +9,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
  const channels = await ch.getLogChannels('roleevents', role.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(role.guild.id);
+ const language = await ch.getLanguage(role.guild.id);
  const lan = language.events.logs.role;
  const con = ch.constants.events.logs.role;
  const audit = await ch.getAudit(role.guild, 31, role.id);

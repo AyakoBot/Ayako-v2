@@ -4,7 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  let user: Discord.User | undefined;
 
  if (cmd instanceof Discord.ButtonInteraction) {

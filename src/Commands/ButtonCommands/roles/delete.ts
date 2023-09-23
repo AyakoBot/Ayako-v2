@@ -4,7 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.delete;
 
  const roleId = args.shift() as string;

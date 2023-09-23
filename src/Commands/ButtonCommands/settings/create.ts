@@ -15,7 +15,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(

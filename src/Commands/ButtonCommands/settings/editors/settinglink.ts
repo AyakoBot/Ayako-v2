@@ -29,7 +29,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  const settingsFiles = await glob(`${process.cwd()}/Commands/AutocompleteCommands/settings/**/*`);
 

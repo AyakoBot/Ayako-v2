@@ -33,7 +33,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   })
   .then();
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.save;
 
  cmd.reply({

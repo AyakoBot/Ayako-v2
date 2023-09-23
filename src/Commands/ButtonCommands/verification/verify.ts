@@ -12,7 +12,7 @@ export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  });
  if (!verification) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
 
  if (await isVerified(cmd, verification, language)) return;
 

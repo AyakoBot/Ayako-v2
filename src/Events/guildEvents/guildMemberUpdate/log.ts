@@ -6,7 +6,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  const channels = await ch.getLogChannels('memberevents', member.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(member.guild.id);
+ const language = await ch.getLanguage(member.guild.id);
  const lan = language.events.logs.guild;
  const con = ch.constants.events.logs.guild;
  const audit = member.user.bot ? await ch.getAudit(member.guild, 20, member.user.id) : undefined;

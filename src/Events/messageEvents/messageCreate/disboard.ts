@@ -64,7 +64,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  if (!settings.channelid && !settings.tempchannelid) return;
 
  await deleteLastReminder(settings);
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
 
  const m = await ch.send(
   { id: (settings.channelid ?? settings.tempchannelid) as string, guildId: guild.id },

@@ -24,7 +24,7 @@ export default async (
    ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
      (await ch.getChannel.guildVoiceChannel(event.channelId))
    : undefined);
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.events.logs.scheduledEvent;
  const con = ch.constants.events.logs.guild;
  const audit = await ch.getAudit(guild, 101, event.id);

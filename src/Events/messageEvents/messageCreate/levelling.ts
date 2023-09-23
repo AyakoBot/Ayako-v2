@@ -355,7 +355,7 @@ const levelUp = async (
  setting: Prisma.leveling | null,
 ) => {
  if (!setting) return;
- const language = await ch.languageSelector(msg.guildId);
+ const language = await ch.getLanguage(msg.guildId);
 
  switch (setting.lvlupmode) {
   case 'message': {

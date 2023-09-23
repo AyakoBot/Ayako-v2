@@ -8,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   where: { userid: cmd.user.id },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
  const allCommands = ch.constants.commands.interactions
   .filter((c) => c.users)

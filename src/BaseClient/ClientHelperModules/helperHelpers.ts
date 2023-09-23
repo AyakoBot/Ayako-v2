@@ -3,7 +3,7 @@ import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.j
 import * as CT from '../../Typings/CustomTypings.js';
 import * as util from './util.js';
 import replyCmd from './replyCmd.js';
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import emotes from './emotes.js';
 
@@ -117,7 +117,7 @@ export default async (
    ),
  );
 
- const language = await languageSelector(cmd.guildId);
+ const language = await getLanguage(cmd.guildId);
 
  const payload: CT.UsualMessagePayload = {
   embeds: getEmbeds(

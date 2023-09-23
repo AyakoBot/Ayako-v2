@@ -14,7 +14,7 @@ export default async (msg: Discord.Message<true>) => {
  const commandName = prefix
   ? msg.content.slice(prefix.length).split(/\s+/)[0].toLowerCase()
   : undefined;
- const language = await ch.languageSelector(msg.guildId);
+ const language = await ch.getLanguage(msg.guildId);
 
  self(msg, commandName, language);
  mention(msg, commandName, language);

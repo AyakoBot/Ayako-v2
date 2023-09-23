@@ -14,7 +14,7 @@ export default async (member: Discord.GuildMember) => {
  });
  if (!verification) return;
 
- const language = await ch.languageSelector(member.guild.id);
+ const language = await ch.getLanguage(member.guild.id);
 
  preverified(member, verification, language);
  prepKick(member, verification, language);

@@ -8,7 +8,7 @@ export default async (stage: Discord.StageInstance) => {
  const channels = await ch.getLogChannels('stageevents', stage.guild);
  if (!channels) return;
 
- const language = await ch.languageSelector(stage.guild.id);
+ const language = await ch.getLanguage(stage.guild.id);
  const lan = language.events.logs.channel;
  const con = ch.constants.events.logs.channel;
  const audit = await ch.getAudit(stage.guild, 83, stage.id);

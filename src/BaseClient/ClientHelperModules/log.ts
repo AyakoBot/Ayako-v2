@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/CustomTypings.js';
 import getLogChannels from './getLogChannels.js';
-import languageSelector from './languageSelector.js';
+import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import send from './send.js';
 
@@ -15,7 +15,7 @@ export default async <T extends CT.ModTypes>(
  const logchannels = await getLogChannels('modlog', guild);
  if (!logchannels) return;
 
- const language = await languageSelector(guild.id);
+ const language = await getLanguage(guild.id);
  const lan = language.mod.logs[type as keyof typeof language.mod.logs];
 
  const embed: Discord.APIEmbed = {

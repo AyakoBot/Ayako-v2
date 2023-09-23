@@ -7,7 +7,7 @@ export default async (
  args: string[],
 ) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.role;
 
  const role = cmd.guild.roles.cache.get(args.shift() as string);

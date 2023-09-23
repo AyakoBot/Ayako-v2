@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   Discord.ChannelType.AnnouncementThread,
  ]);
  const time = cmd.options.getNumber('time', true);
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.slowmode;
  const me = await ch.getBotMemberFromGuild(cmd.guild);
 

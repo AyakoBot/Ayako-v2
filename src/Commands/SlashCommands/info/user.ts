@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
  const userID = cmd.options.get('user-name', false)?.value as string | null;
- const language = await ch.languageSelector(cmd.guild?.id);
+ const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.info.user;
 
  if (userID && userID.replace(/\D+/g, '').length !== userID.length) {

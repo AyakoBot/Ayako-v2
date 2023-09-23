@@ -9,7 +9,7 @@ export const buildEmbed = async (
   | Discord.StringSelectMenuInteraction<'cached'>,
  selectedOption?: string,
 ) => {
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
  const options = await getOptions(cmd);
 

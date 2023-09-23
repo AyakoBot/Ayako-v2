@@ -17,7 +17,7 @@ export default async (
  if (!cmd.inCachedGuild()) return;
 
  const emoji = args.join('_');
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const message = (await ch.getMessage(
   cmd.message.embeds[0].url as string,
  )) as Discord.Message<true>;

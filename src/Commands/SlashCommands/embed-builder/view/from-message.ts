@@ -6,7 +6,7 @@ export default async (cmd: Discord.CommandInteraction) => {
  const link = cmd.options.get('message-link', true).value as string;
  const [, , , gID, cID, mID] = link.split(/\/+/g);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.view['from-message'];
 
  if (!gID || !cID || !mID) {

@@ -11,7 +11,7 @@ export default async (
  if (!cmd.channel) return;
 
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.afk;
 
  const afk = await ch.DataBase.afk.findUnique({

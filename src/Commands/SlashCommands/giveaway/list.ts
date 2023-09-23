@@ -17,7 +17,7 @@ export default async (
   },
  });
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.list;
 
  const embed: Discord.APIEmbed = {

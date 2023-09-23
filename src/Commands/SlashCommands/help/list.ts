@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const stringCommandsUnfiltered = await Promise.all(stringCommandFiles.map((f) => import(f)));
  const stringCommands = stringCommandsUnfiltered.filter((c) => !!c.name);
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.help;
  const fetchedCommands = cmd.client.application.commands.cache;
 

@@ -12,7 +12,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  const { guild } = cmd;
  if (!guild) return;
 
- const language = await ch.languageSelector(guild.id);
+ const language = await ch.getLanguage(guild.id);
  const lan = language.slashCommands.embedbuilder.edit;
 
  const channel = await ch.getChannel.guildTextChannel(channelId);

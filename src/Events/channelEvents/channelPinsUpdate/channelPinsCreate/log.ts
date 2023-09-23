@@ -17,7 +17,7 @@ export default async (
  const last100 = await ch.request.channels
   .getMessages(channel, { limit: 100 })
   .then((ms) => ('message' in ms ? undefined : ms));
- const language = await ch.languageSelector(channel.guild.id);
+ const language = await ch.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
  const con = ch.constants.events.logs.channel;
  const audit = await ch.getAudit(channel.guild, 74);

@@ -12,7 +12,7 @@ export default async (
   !(cmd instanceof Discord.ButtonInteraction) &&
   !cmd.options.getString('emoji', false)
  ) {
-  const language = await ch.languageSelector(undefined);
+  const language = await ch.getLanguage(undefined);
 
   ch.errorCmd(cmd, language.errors.guildCommand, language);
   return;
@@ -20,7 +20,7 @@ export default async (
 
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info;
 
  const emoji =
@@ -109,7 +109,7 @@ const getEmotePayloads = async (
    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
 
    const emoji = e.id ? cl.emojis.cache.get(e.id) ?? e : e;
-   const language = await chEval.languageSelector(guildId);
+   const language = await chEval.getLanguage(guildId);
    const lan = language.slashCommands.info;
 
    const payload = {

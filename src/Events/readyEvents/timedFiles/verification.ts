@@ -14,7 +14,7 @@ export default async () => {
   const guild = client.guilds.cache.get(r.guildid);
   if (!guild) return;
 
-  const language = await ch.languageSelector(guild.id);
+  const language = await ch.getLanguage(guild.id);
 
   guild.members.cache
    .filter((m) => Date.now() - Number(r.kickafter) * 1000 > Number(m.joinedTimestamp))

@@ -19,7 +19,7 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
   : undefined;
 
  if (newEmoji && 'message' in newEmoji) {
-  ch.errorCmd(cmd, newEmoji.message, await ch.languageSelector(cmd.guildId));
+  ch.errorCmd(cmd, newEmoji.message, await ch.getLanguage(cmd.guildId));
   return;
  }
 

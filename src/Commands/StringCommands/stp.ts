@@ -19,7 +19,7 @@ export default async (msg: Discord.Message, args: string[]) => {
   returned = (e as Error).message;
  }
 
- const language = await ch.languageSelector(msg.guildId);
+ const language = await ch.getLanguage(msg.guildId);
  const lan = language.slashCommands.stp;
 
  ch.replyMsg(msg, {

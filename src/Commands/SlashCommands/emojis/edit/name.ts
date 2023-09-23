@@ -8,11 +8,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawEmoji = Discord.parseEmoji(cmd.options.getString('emoji', true));
  const emoji = rawEmoji?.id ? cmd.guild.emojis.cache.get(rawEmoji.id) : undefined;
 
- const language = await ch.languageSelector(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.languageSelector(cmd.guildId));
+  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
   return;
  }
 
