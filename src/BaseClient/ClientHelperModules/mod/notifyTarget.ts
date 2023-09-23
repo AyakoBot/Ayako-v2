@@ -20,9 +20,7 @@ export default async <T extends CT.ModTypes>(
   color: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
    ? constants.colors.success
    : constants.colors.danger,
-  description: `${dm(options as never)}${
-   !['roleAdd', 'roleRemove'].includes(type) ? `\n${language.mod.appeal(options.guild.id)}` : ''
-  }`,
+  description: dm(options as never),
   fields: [...(options.reason ? [{ name: language.reason, value: options.reason }] : [])],
   thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
    ? undefined
@@ -31,11 +29,28 @@ export default async <T extends CT.ModTypes>(
      },
  };
 
+ const appeal: Discord.APIActionRowComponent<Discord.APIButtonComponent>[] = [
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: [
+    {
+     type: Discord.ComponentType.Button,
+     style: Discord.ButtonStyle.Link,
+     label: language.mod.appeal,
+     url: `https://ayakobot.com/appeals/${options.guild.id}`,
+    },
+   ],
+  },
+ ];
+
  if (
   !options.guild.rulesChannel ||
   ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type)
  ) {
-  send(options.target, { embeds: [embed] });
+  send(options.target, {
+   embeds: [embed],
+   components: appeal,
+  });
   return;
  }
 
@@ -51,6 +66,7 @@ export default async <T extends CT.ModTypes>(
  await send(thread, {
   embeds: [embed],
   content: `<@${options.target.id}>`,
+  components: appeal,
   allowed_mentions: {
    users: [options.target.id],
   },

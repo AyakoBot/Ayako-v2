@@ -17,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  const language = await ch.getLanguage(cmd.guildId);
- const lan = language.slashCommands.unafk;
+ const lan = language.slashCommands.moderation.unafk;
 
  if (!afk?.userid) {
   ch.errorCmd(cmd, lan.notAfk(user), language);

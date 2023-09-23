@@ -73,10 +73,7 @@ const mod = {
   const me = await getCustomBot(options.guild);
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
-  if (
-   !isManageable(targetMember, me) ||
-   !options.roles.length
-  ) {
+  if (!isManageable(targetMember, me) || !options.roles.length) {
    permissionError(cmd, message, language, type);
    return false;
   }

@@ -1427,9 +1427,11 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
-  unafk: {
-   notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
-   unAfk: (user: Discord.User) => `AFK of\n${getUser(user)}deleted`,
+  moderation: {
+   unafk: {
+    notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
+    unAfk: (user: Discord.User) => `AFK of\n${getUser(user)}deleted`,
+   },
   },
   vote: {
    desc: 'Vote for Ayako',
@@ -3411,8 +3413,7 @@ export default {
     'You just issued a **Moderation Command** on a User with a **Mod Role**.\nAre you sure you want to **proceed**!',
    proceed: 'Proceed',
   },
-  appeal: (guildId: string) =>
-   `You can try to appeal your Punishment [here](https://ayakobot.com/appeals/${guildId})`,
+  appeal: `Appeal`,
   logs: {
    strikeAdd: {
     author: 'Member striked',

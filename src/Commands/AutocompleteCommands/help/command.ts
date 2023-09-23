@@ -13,8 +13,12 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
      .map((r) => cmd.client.application.commands.cache.find((c) => c.name === r.target))
   : cmd.client.application.commands.cache.map((c) => c);
 
- return commands
+ const uniqueCommands = new Discord.Collection<string, Discord.ApplicationCommand>();
+ commands
   .filter((c): c is Discord.ApplicationCommand => !!c)
+  .forEach((c) => uniqueCommands.set(c.name, c));
+
+ return uniqueCommands
   .map((c) => ({
    name: c.name ?? '-',
    value: c.id,
