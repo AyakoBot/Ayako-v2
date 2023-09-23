@@ -67,7 +67,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       members.filter((m) => m.user.flags?.has(Discord.UserFlags.BugHunterLevel2)).length,
      ),
     )} ${language.userFlags.BugHunterLevel2} 
-    ${ch.constants.standard.getEmote(ch.emotes.userFlags.VerifiedBot)} ${ch.util.makeInlineCode(
+    ${ch.constants.standard.getEmote(
+     ch.emotes.userFlags.VerifiedBot[0],
+    )}${ch.constants.standard.getEmote(
+     ch.emotes.userFlags.VerifiedBot[1],
+    )} ${ch.util.makeInlineCode(
      ch.splitByThousand(
       members.filter((m) => m.user.flags?.has(Discord.UserFlags.VerifiedBot)).length,
      ),

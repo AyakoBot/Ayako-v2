@@ -86,9 +86,13 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(65536n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.VerifiedBot) : ''} ${
-    lan.userFlags.VerifiedBot
-   }`,
+   `${
+    emotes
+     ? `${constants.standard.getEmote(
+        Emotes.userFlags.VerifiedBot[0],
+       )}${constants.standard.getEmote(Emotes.userFlags.VerifiedBot[1])}`
+     : ''
+   } ${lan.userFlags.VerifiedBot}`,
   );
  }
  if (bitField.has(131072n)) {
