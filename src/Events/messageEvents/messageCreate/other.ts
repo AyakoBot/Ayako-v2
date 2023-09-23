@@ -89,7 +89,6 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
 const amMessageCheck = (msg: Discord.Message<true>) => {
  const staffPing = async () => {
   if (!msg.content.includes('<@&809261905855643668>')) return;
-  if (msg.guild) await ch.fetchAllGuildMembers(msg.guild);
 
   ch.send(msg.channel, {
    content: msg.guild?.roles.cache
