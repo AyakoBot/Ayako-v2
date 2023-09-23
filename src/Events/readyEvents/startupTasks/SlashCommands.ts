@@ -44,6 +44,16 @@ const Reason = new Discord.SlashCommandStringOption()
  .setDescription('The Reason')
  .setRequired(false);
 
+const Duration = new Discord.SlashCommandStringOption()
+ .setName('duration')
+ .setDescription('The Duration (Example: 4d 30m 12s)')
+ .setRequired(false);
+
+const DeleteMessageDuration = new Discord.SlashCommandStringOption()
+ .setName('delete-message-duration')
+ .setDescription('Since how long ago Messages of this User should be deleted (Example: 1d 2h 5m)')
+ .setRequired(false);
+
 export const GuildTextChannelTypes = [
  Discord.ChannelType.AnnouncementThread,
  Discord.ChannelType.GuildAnnouncement,
@@ -52,7 +62,15 @@ export const GuildTextChannelTypes = [
  Discord.ChannelType.GuildVoice,
  Discord.ChannelType.PrivateThread,
  Discord.ChannelType.PublicThread,
-];
+] as const;
+
+export const AllNonThreadGuildChannelTypes = [
+ Discord.ChannelType.GuildAnnouncement,
+ Discord.ChannelType.GuildStageVoice,
+ Discord.ChannelType.GuildText,
+ Discord.ChannelType.GuildVoice,
+ Discord.ChannelType.GuildForum,
+] as const;
 
 // Commands
 
@@ -768,14 +786,6 @@ const afk = new Discord.SlashCommandBuilder()
    .setRequired(false),
  );
 
-const unafk = new Discord.SlashCommandBuilder()
- .setName('unafk')
- .setDescription("Force delete someone's AFK status")
- .setDMPermission(false)
- .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageMessages)
- .addUserOption(User.setRequired(true))
- .addStringOption(Reason);
-
 const help = new Discord.SlashCommandBuilder()
  .setName('help')
  .setDescription('Get Help for the Bot')
@@ -1068,7 +1078,7 @@ const slowmode = new Discord.SlashCommandBuilder()
    .setName('channel')
    .setDescription('The Channel to set the Slowmode in')
    .setRequired(true)
-   .addChannelTypes(...(GuildTextChannelTypes as never[])),
+   .addChannelTypes(...GuildTextChannelTypes),
  )
  .addNumberOption(
   new Discord.SlashCommandNumberOption()
@@ -1141,7 +1151,7 @@ const giveaway = new Discord.SlashCommandBuilder()
      .setName('channel')
      .setDescription('The Channel where the Giveaway should be created')
      .setRequired(false)
-     .addChannelTypes(...(GuildTextChannelTypes as never[])),
+     .addChannelTypes(...GuildTextChannelTypes),
    )
    .addRoleOption(
     new Discord.SlashCommandRoleOption()
@@ -1280,6 +1290,133 @@ const giveaway = new Discord.SlashCommandBuilder()
    ),
  );
 
+const mod = new Discord.SlashCommandBuilder()
+ .setName('mod')
+ .setDescription('Moderation Commands')
+ .setDMPermission(false)
+ .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('tempmute')
+   .setDescription('Temporarily Mutes a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Duration.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('unmute')
+   .setDescription('Unmutes a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('ban')
+   .setDescription('Bans a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Duration)
+   .addStringOption(Reason)
+   .addStringOption(DeleteMessageDuration),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('soft-ban')
+   .setDescription('Soft-Bans a User (Bans and instantly Un-Bans them)')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason)
+   .addStringOption(DeleteMessageDuration),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('temp-ban')
+   .setDescription('Temporarily Bans a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Duration)
+   .addStringOption(Reason)
+   .addStringOption(DeleteMessageDuration),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('channel-ban')
+   .setDescription('Bans a User from a Channel')
+   .addUserOption(User.setRequired(true))
+   .addChannelOption(
+    new Discord.SlashCommandChannelOption()
+     .setName('channel')
+     .setDescription('The Channel')
+     .addChannelTypes(...AllNonThreadGuildChannelTypes)
+     .setRequired(true),
+   )
+   .addStringOption(Duration)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('temp-channel-ban')
+   .setDescription('Temporarily Bans a User from a Channel')
+   .addUserOption(User.setRequired(true))
+   .addChannelOption(
+    new Discord.SlashCommandChannelOption()
+     .setName('channel')
+     .setDescription('The Channel')
+     .addChannelTypes(...AllNonThreadGuildChannelTypes)
+     .setRequired(true),
+   )
+   .addStringOption(Duration)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('channel-unban')
+   .setDescription('Temporarily Bans a User from a Channel')
+   .addUserOption(User.setRequired(true))
+   .addChannelOption(
+    new Discord.SlashCommandChannelOption()
+     .setName('channel')
+     .setDescription('The Channel')
+     .addChannelTypes(...AllNonThreadGuildChannelTypes)
+     .setRequired(true),
+   )
+   .addStringOption(Duration)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('kick')
+   .setDescription('Kicks a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('warn')
+   .setDescription('Warns a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('softwarn')
+   .setDescription("Soft-Warns a User (Doesn't save the Warn, only notifies the User)")
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('strike')
+   .setDescription(`Strikes a User (Let's ${name} decide what Punishment to apply)`)
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('unafk')
+   .setDescription("Force delete someone's AFK status")
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ );
+
 export default {
  public: {
   user,
@@ -1301,7 +1438,7 @@ export default {
   slowmode,
   vote,
   giveaway,
-  unafk,
+  mod,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1407,6 +1544,18 @@ export default {
   giveaway_cancel: 'utility',
   giveaway_list: 'info',
   giveaway_end: 'utility',
-  unafk: 'moderation',
+  mod_tempmute: 'moderation',
+  mod_unmute: 'moderation',
+  mod_ban: 'moderation',
+  'mod_soft-ban': 'moderation',
+  'mod_temp-ban': 'moderation',
+  'mod_channel-ban': 'moderation',
+  'mod_temp-channel-ban': 'moderation',
+  'mod_channel-unban': 'moderation',
+  mod_kick: 'moderation',
+  mod_warn: 'moderation',
+  mod_softwarn: 'moderation',
+  mod_strike: 'moderation',
+  mod_unafk: 'moderation',
  },
 };

@@ -1,6 +1,6 @@
 import ms from 'ms';
 
-export default (duration: string) => {
+export default (duration: string, max?: number) => {
  const args = duration.split(/\s+/g);
  const mergedDurationArgs: string[] = [];
 
@@ -14,5 +14,10 @@ export default (duration: string) => {
   mergedDurationArgs.push(args[i]);
  }
 
- return mergedDurationArgs.map((arg) => ms(arg)).reduce((partialSum, arg) => partialSum + arg, 0);
+ const result = mergedDurationArgs
+  .map((arg) => ms(arg))
+  .reduce((partialSum, arg) => partialSum + arg, 0);
+
+ if (max && result > max) return max;
+ return result;
 };
