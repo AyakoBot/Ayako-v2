@@ -15,19 +15,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const image = await Discord.DataResolver.resolveImage(
-  ch.constants.standard.emoteURL(emoji as Discord.Emoji),
- );
- if (!image) {
-  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.languageSelector(cmd.guildId));
-  return;
- }
-
  const createdEmote = await ch.request.guilds.createEmoji(
   cmd.guild,
   {
    name,
-   image,
+   image: ch.constants.standard.emoteURL(emoji as Discord.Emoji),
   },
   lan.createReason(cmd.user),
  );
