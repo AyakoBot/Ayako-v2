@@ -58,8 +58,7 @@ const edit = async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBod
   });
 
 /**
- * Deletes the specified guild from the cache.
- * If the guild is not found in the cache, it will be deleted from the API.
+ * Deletes the specified guild.
  * @param guild The guild to delete.
  * @returns A promise that resolves with the deleted guild ID if successful,
  * or rejects with a DiscordAPIError if an error occurs.
