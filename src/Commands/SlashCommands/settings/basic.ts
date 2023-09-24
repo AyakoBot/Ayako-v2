@@ -96,7 +96,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.token.name,
     value: settings.token
-     ? ch.util.makeInlineCode(`${'*'.repeat(settings.token.length - 5)}${settings.token.slice(-3)}`)
+     ? ch.util.makeInlineCode(
+        `${settings.token.split('.')[0]}.${'*'.repeat(
+         settings.token.split('.')[1].length,
+        )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
+       )
      : language.None,
    },
   ],
