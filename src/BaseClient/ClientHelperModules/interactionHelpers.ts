@@ -23,6 +23,8 @@ import * as getChannel from './getChannel.js';
 import isEditable from './isEditable.js';
 import errorCmd from './errorCmd.js';
 
+const cooldown = new Set<string>();
+
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
 /**
@@ -177,6 +179,13 @@ const reply = async (
   if (!setting || setting?.editrpcommands || !cmd.channel) {
    cmd.update(payload as Discord.InteractionUpdateOptions);
   } else {
+   if (cooldown.has(cmd.message.id)) return;
+
+   cooldown.add(cmd.message.id);
+   Jobs.scheduleJob(new Date(Date.now() + 500), () => {
+    cooldown.delete(cmd.message.id);
+   });
+
    if (await isDeleteable(cmd.message)) cmd.message.delete();
    send(cmd.channel, payload);
   }
