@@ -3,9 +3,27 @@ import client from '../BaseClient/Client.js';
 import Socket from '../BaseClient/Socket.js';
 import * as Classes from '../BaseClient/Other/classes.js';
 import interactionCreate from './interactionEvents/interactionCreate.js';
+import * as ch from '../BaseClient/ClientHelper.js';
 
 export default () => {
- Socket.on('interaction', (rawInteraction: Discord.APIInteraction) => {
+ Socket.on('interaction', async (rawInteraction: Discord.APIInteraction) => {
+  if (rawInteraction.guild_id && !ch.cache.apis.get(rawInteraction.guild_id)) {
+   const startOfToken = Buffer.from(rawInteraction.application_id)
+    .toString('base64')
+    .replace(/=+/g, '');
+
+   const guildSettings = await ch.DataBase.guildsettings.findFirst({
+    where: { token: { startsWith: startOfToken } },
+   });
+   if (!guildSettings) return;
+
+   const api = ch.cache.apis.get(guildSettings?.guildid);
+   if (!api) return;
+
+   api.rest.delete(`/users/@me/guilds/${rawInteraction.guild_id}`);
+   return;
+  }
+
   interactionCreate(getParsedInteraction(rawInteraction));
  });
 };
