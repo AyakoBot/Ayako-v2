@@ -1995,7 +1995,7 @@ export default {
    ],
    button: 'RP Commands',
    sync: 'Sync Permissions',
-   notice: `There is an additional Roleplay Management Command called </rp:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
+   notice: `There is an additional Roleplay Management Command called </rp manager:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
    delay: 'This Operation might take a while to finish, please be patient',
    syncing: 'Syncing Permissions...',
    synced: 'Synced',
@@ -3290,7 +3290,7 @@ export default {
       token: {
        name: 'Token',
        desc:
-        'The Token of your Custom Bot\nPlease make sure to insert `https://api.ayakobot.com/custom` as your Bots "Interactions Endpoint URL" in the Developer Portal',
+        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following__:\n- insert `https://api.ayakobot.com/custom` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable **ALL** `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
       },
      },
     },
@@ -4278,4 +4278,5 @@ export default {
  Before: 'Before',
  After: 'After',
  Extra: 'Extra',
+ Invite: 'Invite Custom Bot',
 };

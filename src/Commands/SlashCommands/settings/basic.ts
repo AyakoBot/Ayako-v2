@@ -96,11 +96,14 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.token.name,
     value: settings.token
-     ? ch.util.makeInlineCode(
+     ? `${ch.util.makeInlineCode(
         `${settings.token.split('.')[0]}.${'*'.repeat(
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
-       )
+       )}\n[${language.Invite}](${ch.constants.standard.invite.replace(
+        ch.mainID,
+        ch.getBotIdFromToken(settings.token),
+       )})`
      : language.None,
    },
   ],
@@ -145,6 +148,15 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'channel',
    ),
    buttonParsers.specific(language, settings?.token, 'token', name, undefined),
+   {
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Link,
+    label: language.Invite,
+    disabled: !settings.token,
+    url: settings.token
+     ? ch.constants.standard.invite.replace(ch.mainID, ch.getBotIdFromToken(settings.token))
+     : 'https://ayakobot.com',
+   },
   ],
  },
 ];
@@ -176,6 +188,13 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
    if (!me || 'message' in me) {
     ch.error(guild, new Error(me ? me.message : 'Unknown Application'));
+
+    ch.DataBase.guildsettings
+     .update({
+      where: { guildid: guild.id },
+      data: { token: null },
+     })
+     .then();
     return;
    }
 

@@ -775,7 +775,7 @@ export default {
      errorchannel: 'channel',
      vanity: 'string',
      ptreminderenabled: 'boolean',
-     token: 'string',
+     token: 'bot-token',
     },
     'disboard-reminders': {
      repeatreminder: 'duration',
