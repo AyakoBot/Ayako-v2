@@ -187,6 +187,9 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      where: { guildid: guild.id },
      data: { publickey: null, appid: null, token: null },
     });
+
+    ch.request.commands.getGuildCommands(guild);
+    ch.cache.commandPermissions.get(guild, '');
     return;
    }
 
@@ -244,6 +247,9 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      data: { publickey: me.verify_key, appid: me.id },
     })
     .then();
+
+   ch.request.commands.getGuildCommands(guild);
+   ch.cache.commandPermissions.get(guild, '');
    break;
   }
   default:

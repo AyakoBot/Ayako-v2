@@ -216,9 +216,9 @@ export const tasks = {
   ch.fetchAllGuildMembers(guild);
  },
  commandPermissions: async (guild: Discord.Guild) => {
-  await ch.cache.commandPermissions.get(guild, '');
+  ch.cache.commandPermissions.get(guild, '');
  },
  webhooks: async (guild: Discord.Guild) => {
-  await ch.cache.webhooks.get('', '', guild);
+  ch.cache.webhooks.get('', '', guild);
  },
 };
