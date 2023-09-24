@@ -175,6 +175,34 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     return;
    }
 
+   if (!me.bot_public) {
+    ch.error(
+     guild,
+     new Error('Bot is not public, please make it public so it can use external Emojis'),
+    );
+    return;
+   }
+
+   ch.send(
+    { id: '1024968281465040957', guildId: '669893888856817665' },
+    {
+     content: `New Custom Client`,
+     components: [
+      {
+       type: Discord.ComponentType.ActionRow,
+       components: [
+        {
+         type: Discord.ComponentType.Button,
+         style: Discord.ButtonStyle.Link,
+         label: 'Invite',
+         url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
+        },
+       ],
+      },
+     ],
+    },
+   );
+
    ch.DataBase.guildsettings
     .update({
      where: { guildid: guild.id },
