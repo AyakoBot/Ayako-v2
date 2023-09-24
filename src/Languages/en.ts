@@ -3275,6 +3275,10 @@ export default {
        name: 'Legacy RP Commands',
        desc: 'Whether to use Legacy RP Commands',
       },
+      editrpcommands: {
+       name: 'Edit RP Commands',
+       desc: 'Whether to use Edit or Repost RP Commands upon replying',
+      },
       lan: {
        name: 'Language',
        desc: `The Language ${name} displays in`,

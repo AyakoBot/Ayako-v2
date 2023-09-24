@@ -174,7 +174,12 @@ const reply = async (
    (a, b) => Number(b.url?.includes('true')) - Number(a.url?.includes('true')),
   );
 
-  cmd.update(payload as Discord.InteractionUpdateOptions);
+  if (!setting || setting?.editrpcommands || !cmd.channel) {
+   cmd.update(payload as Discord.InteractionUpdateOptions);
+  } else {
+   if (await isDeleteable(cmd.message)) cmd.message.delete();
+   send(cmd.channel, payload);
+  }
   return;
  }
 

@@ -771,6 +771,7 @@ export default {
      prefix: 'string',
      interactionsmode: 'boolean',
      legacyrp: 'boolean',
+     editrpcommands: 'boolean',
      lan: 'language',
      errorchannel: 'channel',
      vanity: 'string',

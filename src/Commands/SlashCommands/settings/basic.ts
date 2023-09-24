@@ -76,6 +76,15 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.boolean(settings?.legacyrp, language),
     inline: true,
    },
+   ...(!settings?.legacyrp
+    ? [
+       {
+        name: lan.fields.editrpcommands.name,
+        value: embedParsers.boolean(settings?.editrpcommands, language),
+        inline: true,
+       },
+      ]
+    : []),
    {
     name: '\u200b',
     value: '\u200b',
@@ -133,6 +142,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.boolean(language, settings?.interactionsmode, 'interactionsmode', name, undefined),
    buttonParsers.boolean(language, settings?.legacyrp, 'legacyrp', name, undefined),
+   ...(!settings?.legacyrp
+    ? [buttonParsers.boolean(language, settings?.editrpcommands, 'editrpcommands', name, undefined)]
+    : []),
   ],
  },
  {

@@ -372,6 +372,7 @@ model guildsettings {
   prefix            String?
   // false is large, true is small
   interactionsmode  Boolean  @default(true)
+  editrpcommands    Boolean  @default(true)
   lan               String   @default("en")
   errorchannel      String?  @db.VarChar
   voterole          String?  @db.VarChar
