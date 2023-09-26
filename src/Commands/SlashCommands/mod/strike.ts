@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import getStrike from '../../../BaseClient/ClientHelperModules/mod/getStrike.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -28,4 +29,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  };
 
  ch.mod(cmd, 'strikeAdd', modOptions);
+
+ const applyingStrike = await getStrike(user, cmd.guild);
+ const member = cmd.options.getMember('user');
+
+ if (!member) return;
+
+ if (applyingStrike.addroles) {
+  ch.roleManager.add(member, applyingStrike.addroles, language.autotypes.autopunish, 1);
+ }
+
+ if (applyingStrike.removeroles) {
+  ch.roleManager.remove(member, applyingStrike.removeroles, language.autotypes.autopunish, 1);
+ }
 };

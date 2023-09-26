@@ -160,8 +160,6 @@ model autopunish {
   active               Boolean                  @default(false)
   addroles             String[]                 @db.VarChar
   removeroles          String[]                 @db.VarChar
-  confirmationreq      Boolean                  @default(false)
-  punishmentawaittime  Decimal                  @default(20) @db.Decimal
   punishment           AutoPunishPunishmentType @default(warn)
   deletemessageseconds Decimal                  @default(604800) @db.Decimal
 

@@ -2488,14 +2488,6 @@ export default {
        name: 'Remove-Roles',
        desc: 'Roles to Remove from the punished User',
       },
-      confirmationreq: {
-       name: 'Require confirmation',
-       desc: 'Whether to ask for Confirmation before proceeding with a Punishment',
-      },
-      punishmentawaittime: {
-       name: 'Confimation await Time',
-       desc: 'How long to wait for Human confirmation before the Punishment is aborted',
-      },
      },
     },
     invites: {

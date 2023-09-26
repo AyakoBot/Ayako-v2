@@ -827,8 +827,6 @@ export default {
      punishment: 'punishment',
      addroles: 'roles',
      removeroles: 'roles',
-     confirmationreq: 'boolean',
-     punishmentawaittime: 'duration',
      deletemessageseconds: 'duration',
     },
     'auto-roles': {

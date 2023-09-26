@@ -148,16 +148,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       ]
     : []),
    {
-    name: lan.fields.confirmationreq.name,
-    value: embedParsers.boolean(settings?.confirmationreq, language),
-    inline: true,
-   },
-   {
-    name: lan.fields.punishmentawaittime.name,
-    value: embedParsers.time(Number(settings?.punishmentawaittime) * 1000, language),
-    inline: true,
-   },
-   {
     name: lan.fields.addroles.name,
     value: embedParsers.roles(settings?.addroles, language),
     inline: false,
@@ -211,25 +201,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     language,
     settings?.duration,
     'duration',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
-  ],
- },
- {
-  type: Discord.ComponentType.ActionRow,
-  components: [
-   buttonParsers.boolean(
-    language,
-    settings?.confirmationreq,
-    'confirmationreq',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
-   buttonParsers.specific(
-    language,
-    settings?.punishmentawaittime,
-    'punishmentawaittime',
     name,
     Number(settings?.uniquetimestamp),
    ),
