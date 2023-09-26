@@ -15,12 +15,6 @@ export default (array: string[] | string, source?: string, name = String(Date.no
 
  if (Array.isArray(array)) {
   switch (source) {
-   case 'antiraid': {
-    array.forEach((element, i) => {
-     content += `${element}${i % 3 === 2 ? split : ' '}`;
-    });
-    break;
-   }
    default: {
     break;
    }

@@ -95,11 +95,6 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('anti-raid')
-     .setDescription('Automatically detect Raids and punish Raiders'),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
      .setName('auto-punish')
      .setDescription('Help Moderators punish consistently')
      .addStringOption(IDSelector),
@@ -1443,7 +1438,6 @@ export default {
  categories: {
   'settings_moderation_anti-spam': 'moderation',
   'settings_moderation_anti-virus': 'moderation',
-  'settings_moderation_anti-raid': 'moderation',
   'settings_moderation_auto-punish': 'moderation',
   settings_moderation_newlines: 'moderation',
   settings_moderation_invites: 'moderation',

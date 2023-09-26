@@ -49,7 +49,6 @@ export interface TopGGGuildVote {
 export type TableNamesMap = {
  'anti-spam': Prisma.antispam;
  'blacklist-rules': null;
- 'anti-raid': Prisma.antiraid;
  'anti-virus': Prisma.antivirus;
  'auto-punish': Prisma.autopunish;
  censor: Prisma.censor;

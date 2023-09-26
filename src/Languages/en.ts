@@ -2424,43 +2424,6 @@ export default {
       usestrike,
      },
     },
-    'anti-raid': {
-     name: 'Anti-Raid',
-     fields: {
-      punishment: {
-       name: 'Punishment',
-       desc: 'The Punishment Type',
-      },
-      posttof: {
-       name: 'Post',
-       desc: 'Whether to post a Raid Notice',
-      },
-      postchannel: {
-       name: 'Post-Channels',
-       desc: 'Where to Post a Raid Notice',
-      },
-      pingroles: {
-       name: 'Ping Roles',
-       desc: 'Roles to Ping with the Raid Notice',
-      },
-      pingusers: {
-       name: 'Ping Users',
-       desc: 'Users to Ping with the Raid Notice',
-      },
-      time: {
-       name: 'Join-Remember Time',
-       desc: 'Users to Ping with the Raid Notice',
-      },
-      jointhreshold: {
-       name: 'Join Threshold',
-       desc: 'Amount of Joins required before Anti-Raid triggers',
-      },
-      punishmenttof: {
-       name: 'Punish',
-       desc: 'Whether to Punish Raiders',
-      },
-     },
-    },
     'auto-punish': {
      name: 'Auto-Punish',
      fields: {
@@ -3390,7 +3353,6 @@ export default {
  },
  autotypes: {
   antispam: `${name} Anti-Spam`,
-  antiraid: `${name} Anti-Raid`,
   antivirus: `${name} Anti-Virus`,
   blacklist: `${name} Blacklist`,
   statschannel: `${name} Stats-Channel`,
@@ -3808,14 +3770,6 @@ export default {
   HasMostEmotes: (val: Strumber) => `Has at most ${val} Emotes`,
   HasLeastMentions: (val: Strumber) => `Has at least ${val} Mentions`,
   HasMostMentions: (val: Strumber) => `Has at most ${val} Mentions`,
- },
- antiraid: {
-  banAdd: {
-   author: (amount: Strumber) => `${amount} Users were Banned by ${name} Anti-Raid`,
-  },
-  kickAdd: {
-   author: (amount: Strumber) => `${amount} Users were Kicked by ${name} Anti-Raid`,
-  },
  },
  userFlags: {
   Staff: 'Discord Employee',

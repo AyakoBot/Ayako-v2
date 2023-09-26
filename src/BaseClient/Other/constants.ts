@@ -2,7 +2,6 @@ import type * as Discord from 'discord.js';
 
 export enum TableNamesPrismaTranslation {
  'anti-spam' = 'antispam',
- 'anti-raid' = 'antiraid',
  'anti-virus' = 'antivirus',
  'auto-punish' = 'autopunish',
  censor = 'censor',
@@ -627,16 +626,6 @@ export default {
      currency: 'number',
      blroles: 'roles',
      blusers: 'users',
-    },
-    'anti-raid': {
-     punishment: 'punishment',
-     posttof: 'boolean',
-     postchannel: 'channel',
-     pingroles: 'roles',
-     pingusers: 'users',
-     time: 'number',
-     jointhreshold: 'number',
-     punishmenttof: 'boolean',
     },
     'anti-spam': {
      wlchannelid: 'channels',

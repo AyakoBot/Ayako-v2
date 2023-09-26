@@ -624,8 +624,6 @@ const changeHelpers = {
       return DataBase.antispam.findUnique(where);
      case 'anti-virus':
       return DataBase.antivirus.findUnique(where);
-     case 'anti-raid':
-      return DataBase.antiraid.findUnique(where);
      case 'censor':
       return DataBase.censor.findUnique(where);
      case 'newlines':
@@ -726,8 +724,6 @@ const changeHelpers = {
       return DataBase.antispam.update(where);
      case 'anti-virus':
       return DataBase.antivirus.update(where);
-     case 'anti-raid':
-      return DataBase.antiraid.update(where);
      case 'censor':
       return DataBase.censor.update(where);
      case 'newlines':
@@ -1300,8 +1296,6 @@ const setup = (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimesta
      return DataBase.antispam.create(where);
     case 'anti-virus':
      return DataBase.antivirus.create(where);
-    case 'anti-raid':
-     return DataBase.antiraid.create(where);
     case 'censor':
      return DataBase.censor.create(where);
     case 'newlines':

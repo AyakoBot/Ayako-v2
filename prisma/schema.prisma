@@ -66,21 +66,6 @@ model afk {
   @@index([userid, guildid])
 }
 
-model antiraid {
-  guildid       String         @id(map: "antiraidsettings_pkey") @db.VarChar
-  active        Boolean        @default(false)
-  posttof       Boolean        @default(false)
-  postchannel   String?        @db.VarChar
-  pingroles     String[]       @db.VarChar
-  pingusers     String[]       @db.VarChar
-  time          Decimal        @default(15) @db.Decimal
-  jointhreshold Decimal        @default(10) @db.Decimal
-  punishmenttof Boolean        @default(true)
-  punishment    PunishmentType @default(kick)
-
-  @@index(guildid)
-}
-
 model antispam {
   guildid          String   @id(map: "antispamsettings_pkey") @unique(map: "antispamsettings_guildid_key") @db.VarChar
   active           Boolean  @default(false)

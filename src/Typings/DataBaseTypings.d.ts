@@ -32,7 +32,6 @@ export interface DBTables {
  contributers: Prisma.contributers;
  appeals: Prisma.appeals;
  filterscraper: Prisma.filterscraper;
- antiraid: Prisma.antiraid;
  antispam: Prisma.antispam;
  antivirus: Prisma.antivirus;
  autopunish: Prisma.autopunish;
