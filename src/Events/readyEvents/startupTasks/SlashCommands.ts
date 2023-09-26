@@ -1316,6 +1316,13 @@ const mod = new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('unban')
+   .setDescription('Un-Bans a User')
+   .addUserOption(User.setRequired(true))
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('soft-ban')
    .setDescription('Soft-Bans a User (Bans and instantly Un-Bans them)')
    .addUserOption(User.setRequired(true))
@@ -1551,5 +1558,6 @@ export default {
   mod_softwarn: 'moderation',
   mod_strike: 'moderation',
   mod_unafk: 'moderation',
+  mod_unban: 'moderation',
  },
 };
