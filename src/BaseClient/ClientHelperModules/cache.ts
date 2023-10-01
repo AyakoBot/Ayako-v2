@@ -54,6 +54,7 @@ const cache: {
  deleteThreads: DeleteThreads;
  apis: Map<string, DiscordCore.API>;
  commands: Map<string, Discord.ApplicationCommand[]>;
+ punishments: Set<string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -90,6 +91,7 @@ const cache: {
  deleteThreads,
  apis: new Map(),
  commands: new Map(),
+ punishments: new Set(),
 
  // URLs
  urlTLDs,

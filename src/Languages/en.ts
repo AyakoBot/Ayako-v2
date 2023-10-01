@@ -3500,6 +3500,7 @@ export default {
      `${getUser(target)}was Soft-Warned by\n${getUser(executor)}`,
    },
   },
+  alreadyExecuting: 'There currently is a Moderation-Command being executed on this User',
   execution: {
    strikeAdd: {
     dm: () => `You have been Striked`,

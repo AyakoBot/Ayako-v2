@@ -10,6 +10,8 @@ import notifyTarget from './mod/notifyTarget.js';
 import isMe from './mod/isMe.js';
 import isSelf from './mod/isSelf.js';
 import startLoading from './mod/startLoading.js';
+import alreadyExecuting from './mod/alreadyExecuting.js';
+import cache from './cache.js';
 
 export type CmdType =
  | Discord.ChatInputCommandInteraction<'cached'>
@@ -28,8 +30,17 @@ export type ResponseMessage = Discord.InteractionResponse<true> | Discord.Messag
  * @throws {Error} If the given moderation type is unknown.
  */
 export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.ModOptions<T>) => {
+ if (cache.punishments.has(options.target.id)) {
+  await alreadyExecuting(cmd, options.executor, options.guild.client);
+  return;
+ }
+ cache.punishments.add(options.target.id);
+
  const basicsResponse = await runBasics1(options, cmd, type);
- if (!basicsResponse) return;
+ if (!basicsResponse) {
+  cache.punishments.delete(options.target.id);
+  return;
+ }
  const { message, language } = basicsResponse;
 
  const runAction = async () => {
@@ -105,9 +116,13 @@ export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.
   }
  };
 
- if (!(await runAction())) return;
+ if (!(await runAction())) {
+  cache.punishments.delete(options.target.id);
+  return;
+ }
 
  runBasics2(options, message, language, type, cmd);
+ cache.punishments.delete(options.target.id);
 };
 
 /**
