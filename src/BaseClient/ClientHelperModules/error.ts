@@ -29,11 +29,14 @@ export default async (guild: Discord.Guild, err: Error) => {
   embeds: [
    {
     color: 0xff0000,
-    description: err.message,
+    description: `Stack Trace\n\`\`\`${err.stack?.replace(
+     /file:\/\/\/root\/Bots\/Ayako-v1.6\/dist/g,
+     '',
+    )}\`\`\``,
     fields: [
      {
-      name: 'Stack Trace',
-      value: `\`\`\`${err.stack?.replace(/file:\/\/\/root\/Bots\/Ayako-v1.6\/dist/g, '')}\`\`\``,
+      name: 'Message',
+      value: err.message,
      },
     ],
     author: {
