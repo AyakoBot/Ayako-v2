@@ -101,7 +101,8 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
  const pureMatches = content.match(ch.regexes.inviteTester);
  if (pureMatches?.length) {
   const anyIsNotFromGuild = pureMatches.filter(
-   (m) => !guild.invites.cache.has(new URL(m).pathname.slice(1)),
+   (m) =>
+    !guild.invites.cache.has(new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1)),
   );
   if (anyIsNotFromGuild.length) return true;
  }
@@ -120,7 +121,8 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
   .filter((i): i is string => !!i);
  if (fetchedMatches?.length) {
   const anyIsNotFromGuild = fetchedMatches.filter(
-   (m) => !guild.invites.cache.has(new URL(m).pathname.slice(1)),
+   (m) =>
+    !guild.invites.cache.has(new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1)),
   );
   if (anyIsNotFromGuild.length) return true;
  }
