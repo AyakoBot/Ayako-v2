@@ -24,22 +24,6 @@ const time = {
  timeIn: (t: string) => `in ${t}`,
 };
 
-// TODO: auto-punish ??
-// const punishmentFields = {
-//  punishment: {
-//   name: 'Punishment',
-//   desc: 'The Punishment Type',
-//  },
-//  warnamount: {
-//   name: 'Warn Amount',
-//   desc: 'The Amount of Warns required for this Punishment',
-//  },
-//  duration: {
-//   name: 'Duration',
-//   desc: 'The Duration of the Punishment (only applies to Temporary Punishments)',
-//  },
-// };
-
 const usestrike = {
  name: 'Use Strike-System',
  desc: 'Whether to use the Strike-Sytem or not',
@@ -1428,6 +1412,27 @@ export default {
  stringCommands: {},
  slashCommands: {
   moderation: {
+   permissions: {
+    desc:
+     'If you want to limit Moderation-Command Access, you can split the `/mod` Command into several smaller ones using the Buttons below\n\nThese Buttons can only be used by Server Managers',
+    buttons: {
+     strike: 'Strike',
+     warn: 'Warn',
+     ban: 'Ban',
+     'channel-ban': 'Channel-Ban',
+     'channel-unban': 'Channel-Unban',
+     kick: 'Kick',
+     softban: 'Softban',
+     softwarn: 'Softwarn',
+     'temp-ban': 'Temp-Ban',
+     'temp-channel-ban': 'Temp-Channel-Ban',
+     tempmute: 'Tempmute',
+     unafk: 'Un-AFK',
+     unmute: 'Unmute',
+     unban: 'Unban',
+     pardon: 'Pardon',
+    },
+   },
    strike: {
     areYouSure: (user: Discord.User, punishment: string) =>
      `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
