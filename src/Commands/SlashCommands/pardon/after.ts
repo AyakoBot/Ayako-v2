@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
-import before from './before.js';
+import exe from '../mod/pardon/after.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => before(cmd, 'after');
+export default exe;
