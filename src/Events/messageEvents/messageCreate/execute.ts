@@ -11,9 +11,4 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (msg: Discord.Message) => {
  if (msg.author.id !== auth.ownerID) return;
  if (!msg.content.startsWith('exe')) return;
-
-  msg.channel.messages.cache.get('1158173679654535168').components.map((actionRow) => ({ type: actionRow.type, components: actionRow.components.map((c) => ({
-  ...c
-  disabled: true,
-  })) }))
 };
