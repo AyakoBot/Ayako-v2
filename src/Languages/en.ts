@@ -3257,7 +3257,7 @@ export default {
       token: {
        name: 'Token',
        desc:
-        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following__:\n- insert `https://api.ayakobot.com/custom` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable **ALL** `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
+        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following__:\n- insert `https://api.ayakobot.com/custom` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
       },
      },
     },
