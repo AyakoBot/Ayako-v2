@@ -1,4 +1,9 @@
+import separatorControl from './separators.js';
+import expiry from './expiry.js';
+import stats from './stats.js';
+
 export default async () => {
- (await import('./expiry.js')).default();
- (await import('./stats.js')).default();
+ expiry();
+ stats();
+ separatorControl();
 };

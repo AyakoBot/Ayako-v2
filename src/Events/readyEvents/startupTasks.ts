@@ -9,6 +9,7 @@ import appealHandler from './startupTasks/appealHandler.js';
 import interactionHandler from '../interaction.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
+import separators from './startupTasks/separators.js';
 
 import nitroHandler from './timedFiles/nitroHandler.js';
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
@@ -27,6 +28,7 @@ export default async () => {
  slashCommandInitializer();
  antivirusBlocklistCacher();
  nitroHandler();
+ separators();
 
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();

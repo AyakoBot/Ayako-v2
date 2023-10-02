@@ -1,15 +1,15 @@
 // eslint-disable-next-line no-shadow
 import { Worker } from 'worker_threads';
-import jobs from 'node-schedule';
+import Jobs from 'node-schedule';
 import Prisma from '@prisma/client';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
 
 const UpdateWorker = new Worker(
  `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
 );
-export const separatorAssigner: Map<string, jobs.Job[]> = new Map();
+export const separatorAssigner: Map<string, Jobs.Job[]> = new Map();
 
 UpdateWorker.on(
  'message',
@@ -84,7 +84,7 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
  if (isWaiting.has(`${member.id}-${member.guild.id}`)) return;
  isWaiting.add(`${member.id}-${member.guild.id}`);
 
- jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
+ Jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
   const stillrunning = await ch.DataBase.roleseparatorsettings.findFirst({
@@ -118,9 +118,10 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
 };
 
 export const oneTimeRunner = async (
- msg:
-  | Discord.Message
+ m:
+  | Discord.Message<true>
   | {
+     id: string | undefined | null;
      guild: Discord.Guild;
      author: Discord.User;
      channel:
@@ -128,20 +129,21 @@ export const oneTimeRunner = async (
       | Discord.TextChannel
       | Discord.PrivateThreadChannel
       | Discord.PublicThreadChannel
-      | Discord.VoiceChannel;
+      | Discord.VoiceChannel
+      | Discord.StageChannel
+      | undefined;
     },
- m: Discord.Message<true>,
  embed: Discord.APIEmbed,
  button?: Discord.ButtonInteraction,
  lastTime?: boolean,
 ) => {
- if (!msg.guild) return;
- const language = await ch.getLanguage(msg.guild.id);
+ if (!m.guild) return;
+ const language = await ch.getLanguage(m.guild.id);
 
  const roleseparatorRows = await ch.DataBase.roleseparator.findMany({
   where: {
    active: true,
-   guildid: msg.guild.id,
+   guildid: m.guild.id,
   },
  });
  if (!roleseparatorRows) return;
@@ -160,25 +162,25 @@ export const oneTimeRunner = async (
   (await ch.DataBase.roleseparatorsettings
    .findFirst({
     where: {
-     guildid: msg.guild.id,
+     guildid: m.guild.id,
     },
    })
    .then((r) => r?.stillrunning)) &&
-  msg.author.id !== client.user?.id
+  m.author.id !== client.user?.id
  ) {
   membersWithRoles = true;
  } else {
   ch.DataBase.roleseparatorsettings
    .update({
     where: {
-     guildid: msg.guild.id,
+     guildid: m.guild.id,
     },
     data: {
      stillrunning: true,
     },
    })
    .then();
-  membersWithRoles = await getMembers(msg.guild, roleseparatorRows);
+  membersWithRoles = await getMembers(m.guild, roleseparatorRows);
  }
 
  embed.author = {
@@ -195,17 +197,21 @@ export const oneTimeRunner = async (
   if (!membersWithRoles) {
    embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
-   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+   if (m instanceof Discord.Message) {
+    ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+   }
   } else {
    embed.description =
     language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning;
 
-   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+   if (m instanceof Discord.Message) {
+    ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+   }
   }
  } else {
   membersWithRoles.forEach((mem) => {
    const fakeMember = mem;
-   const realMember = msg.guild?.members.cache.get(m.id);
+   const realMember = m.guild?.members.cache.get(mem.id);
 
    if (realMember) {
     if (fakeMember.giveTheseRoles) {
@@ -243,24 +249,26 @@ export const oneTimeRunner = async (
    `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
   );
 
-  ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+  if (m instanceof Discord.Message) {
+   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+  }
 
   ch.DataBase.roleseparatorsettings
    .update({
     where: {
-     guildid: msg.guild.id,
+     guildid: m.guild.id,
     },
     data: {
      stillrunning: true,
      duration: membersWithRoles.length * 4,
      startat: Date.now(),
-     channelid: msg.channel.id,
+     channelid: m.channel?.id,
      messageid: m.id,
     },
    })
    .then();
 
-  assinger(msg, m, membersWithRoles, embed, lastTime);
+  assinger(m, membersWithRoles, embed, lastTime);
  }
 };
 
@@ -384,8 +392,9 @@ const getMembers = async (
 
 const assinger = async (
  msg:
-  | Discord.Message
+  | Discord.Message<true>
   | {
+     id: string | undefined | null;
      guild: Discord.Guild;
      author: Discord.User;
      channel:
@@ -393,9 +402,10 @@ const assinger = async (
       | Discord.TextChannel
       | Discord.PrivateThreadChannel
       | Discord.PublicThreadChannel
-      | Discord.VoiceChannel;
+      | Discord.VoiceChannel
+      | Discord.StageChannel
+      | undefined;
     },
- m: Discord.Message<true>,
  membersWithRoles: {
   id: string;
   roles: {
@@ -421,7 +431,9 @@ const assinger = async (
   };
 
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
-  ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+  if (msg instanceof Discord.Message) {
+   ch.request.channels.editMsg(msg, { embeds: [embed], components: [] });
+  }
 
   ch.DataBase.roleseparatorsettings
    .update({
@@ -445,7 +457,7 @@ const assinger = async (
 
  membersWithRoles.forEach((raw, index) => {
   thisMap.push(
-   jobs.scheduleJob(new Date(Date.now() + index * 3000), async () => {
+   Jobs.scheduleJob(new Date(Date.now() + index * 3000), async () => {
     const member = msg.guild?.members.cache.get(raw.id);
 
     if (member) {
@@ -464,7 +476,10 @@ const assinger = async (
      embed.description =
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
-     ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+     if (msg instanceof Discord.Message) {
+      ch.request.channels.editMsg(msg, { embeds: [embed], components: [] });
+     }
+
      ch.DataBase.roleseparatorsettings
       .update({
        where: {
@@ -482,7 +497,7 @@ const assinger = async (
     }
 
     if (index === membersWithRoles.length - 1) {
-     oneTimeRunner(msg, m, embed, undefined, true);
+     oneTimeRunner(msg, embed, undefined, true);
      return;
     }
 
