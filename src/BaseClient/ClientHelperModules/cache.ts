@@ -55,6 +55,7 @@ const cache: {
  apis: Map<string, DiscordCore.API>;
  commands: Map<string, Discord.ApplicationCommand[]>;
  punishments: Set<string>;
+ antispam: Map<string, Discord.Message<true>[]>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -92,6 +93,7 @@ const cache: {
  apis: new Map(),
  commands: new Map(),
  punishments: new Set(),
+ antispam: new Map(),
 
  // URLs
  urlTLDs,

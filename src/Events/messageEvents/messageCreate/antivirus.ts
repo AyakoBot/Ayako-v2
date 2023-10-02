@@ -58,7 +58,7 @@ export default async (msg: Discord.Message<true>) => {
  }
 
  if (!url.triggers) return;
- performPunishment(msg, settings, language);
+ performPunishment(msg, settings, language, msg);
 };
 
 const run = async (content: string) => {
@@ -273,11 +273,14 @@ const reportFishFish = (u: string) => {
 // https://api.fishfish.gg/v1/docs
 const inFishFish = async (u: string) => ch.cache.fishFish.cache.has(cleanURL(u));
 
-const performPunishment = (
- msg: Discord.Message<true>,
- settings: Prisma.antivirus,
+export const performPunishment = (
+ rawMessage: Discord.Message<true> | undefined,
+ settings: Prisma.antivirus | Prisma.antispam,
  language: CT.Language,
+ additionalData: Discord.Message<true>,
 ) => {
+ const msg = rawMessage ?? additionalData;
+
  const baseOptions = {
   dbOnly: false,
   reason: language.deleteReasons.antivirus,

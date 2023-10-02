@@ -2377,6 +2377,9 @@ export default {
     'anti-spam': {
      name: 'Anti-Spam',
      fields: {
+      action: punishmentAction,
+      duration: punishmentDuration,
+      deletemessageseconds: punishmentDeleteMessageSeconds,
       msgthreshold: {
        name: 'Message Threshold',
        desc: 'Amount of Messages required before Anti-Spam triggers',

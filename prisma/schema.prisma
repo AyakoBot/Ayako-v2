@@ -66,18 +66,21 @@ model afk {
   @@index([userid, guildid])
 }
 
-model antispam {
-  guildid          String   @id(map: "antispamsettings_pkey") @unique(map: "antispamsettings_guildid_key") @db.VarChar
-  active           Boolean  @default(false)
-  wluserid         String[] @db.VarChar
-  wlchannelid      String[] @db.VarChar
-  wlroleid         String[] @db.VarChar
-  forcedisabled    Boolean  @default(false)
-  msgthreshold     Decimal  @default(10) @db.Decimal
-  dupemsgthreshold Decimal  @default(5) @db.Decimal
-  timeout          Decimal  @default(15) @db.Decimal
-  deletespam       Boolean  @default(true)
-  usestrike        Boolean  @default(false)
+model antispam { 
+  guildid              String         @id(map: "antispamsettings_pkey") @unique(map: "antispamsettings_guildid_key") @db.VarChar
+  active               Boolean        @default(false)
+  wluserid             String[]       @db.VarChar
+  wlchannelid          String[]       @db.VarChar
+  wlroleid             String[]       @db.VarChar
+  forcedisabled        Boolean        @default(false)
+  msgthreshold         Decimal        @default(10) @db.Decimal
+  dupemsgthreshold     Decimal        @default(5) @db.Decimal
+  timeout              Decimal        @default(15) @db.Decimal
+  deletespam           Boolean        @default(true)
+  usestrike            Boolean        @default(false)
+  action               PunishmentType @default(warn)
+  duration             Decimal        @default(3600) @db.Decimal
+  deletemessageseconds Decimal        @default(604800) @db.Decimal
 
   @@index(guildid)
 }

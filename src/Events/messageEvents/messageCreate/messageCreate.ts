@@ -12,6 +12,7 @@ import invites from './invites.js';
 import newlines from './newlines.js';
 import disboard from './disboard.js';
 import antivirus from './antivirus.js';
+import antispam from './antispam.js';
 
 import dmLog from './dmLog.js';
 
@@ -33,6 +34,7 @@ export default async (msg: Discord.Message) => {
   newlines(msg);
   disboard(msg);
   antivirus(msg);
+  antispam(msg);
  } else {
   dmLog(msg);
  }

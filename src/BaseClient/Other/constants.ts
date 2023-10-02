@@ -636,6 +636,9 @@ export default {
      timeout: 'number',
      deletespam: 'boolean',
      usestrike: 'boolean',
+     deletemessageseconds: 'duration',
+     duration: 'duration',
+     action: 'punishment',
     },
     'anti-virus': {
      minimize: 'number',
