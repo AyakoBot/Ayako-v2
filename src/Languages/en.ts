@@ -977,7 +977,7 @@ export default {
     communicationDisabledUntil: 'Timed out',
     deaf: 'Server Deafened',
     mute: 'Server Muted',
-    guildUpdate: 'Guild updated',
+    guildUpdate: 'Server updated',
     banner: 'Banner',
     bannerRemoved: 'Banner Removed',
     icon: 'Icon',
@@ -1294,8 +1294,16 @@ export default {
      `If you want to keep your multiplier streak up, ([click and vote](https://top.gg/bot/650691698409734151/vote))\nYour multiplyer is currently ${votegain}x`,
    },
    nitro: {
-    gotRole: (user: Discord.User, role: Discord.Role, days: Strumber) =>
-     `<@${user.id}> has been given the <@&${role.id}> role for boosting longer than ${days} days`,
+    stackRoles: (user: Discord.User, roles: Discord.Role[], days: Strumber) =>
+     `${getUser(user)}has been given\n${roles
+      .map((r) => getRole(r))
+      .join('')}for boosting longer than ${days} days`,
+    replaceRoles: (user: Discord.User, roles: Discord.Role[], days: Strumber) =>
+     `The Booster-Roles of\n${getUser(user)}have been replaced with\n${roles
+      .map((r) => getRole(r))
+      .join('')}for boosting longer than ${days} days`,
+    started: (user: Discord.User) => `${getUser(user)}has started boosting the Server`,
+    stopped: (user: Discord.User) => `${getUser(user)}has stopped boosting the Server`,
    },
   },
   vote: {

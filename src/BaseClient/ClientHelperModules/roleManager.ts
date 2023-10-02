@@ -58,6 +58,8 @@ const handleRoleUpdate = async (
  prio: number,
  type: 'addRoles' | 'removeRoles',
 ) => {
+ if (!roles.length) return;
+
  const me = await getBotMemberFromGuild(member.guild);
  if (!me) return;
 

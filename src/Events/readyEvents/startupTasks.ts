@@ -10,6 +10,7 @@ import interactionHandler from '../interaction.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
 
+import nitroHandler from './timedFiles/nitroHandler.js';
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
 import verification from './timedFiles/verification.js';
@@ -25,6 +26,7 @@ export default async () => {
  interactionHandler();
  slashCommandInitializer();
  antivirusBlocklistCacher();
+ nitroHandler();
 
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
@@ -37,6 +39,7 @@ export default async () => {
  });
 
  Jobs.scheduleJob('0 0 0 * * *', async () => {
+  nitroHandler();
   animekosInviteStats();
   rpToggleUses();
   ch.cache.fishFish.start();

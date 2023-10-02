@@ -7,6 +7,7 @@ import autoRoles from './autoroles.js';
 import checkMuted from './checkMuted.js';
 import stickyRoles from './stickyRoles.js';
 import stickyPerms from './stickyPerms.js';
+import nitro from './nitro.js';
 
 export default async (member: Discord.GuildMember) => {
  log(member);
@@ -14,6 +15,7 @@ export default async (member: Discord.GuildMember) => {
  welcome(member);
  stickyPerms(member);
  checkMuted(member);
+ nitro(member);
 
  if (!member.guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
   autoRoles(member);
