@@ -20,6 +20,23 @@ export default () => {
    const api = ch.cache.apis.get(guildSettings?.guildid);
    if (!api) return;
 
+   await api.interactions
+    .reply(rawInteraction.id, rawInteraction.token, {
+     embeds: [
+      {
+       color: ch.getColor(),
+       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${ch.constants.standard.invite})\nPlease invite the original Bot into your Server instead of this one using [this Invite-URL](${ch.constants.standard.invite})\n\nI will now leave this Server`,
+       author: {
+        icon_url: client.user?.displayAvatarURL(),
+        name: client.user?.username ?? 'Ayako',
+        url: ch.constants.standard.invite,
+       },
+      },
+     ],
+     flags: 64,
+    })
+    .catch(() => undefined);
+
    api.rest.delete(`/users/@me/guilds/${rawInteraction.guild_id}`);
    return;
   }
