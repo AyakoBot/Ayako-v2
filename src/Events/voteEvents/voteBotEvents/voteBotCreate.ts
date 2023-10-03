@@ -50,6 +50,7 @@ export default async (
      rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
     },
     create: {
+     guildid: guild.id,
      userid: user.id,
      removetime: Date.now() + 43200000,
      voted: vote.bot,
@@ -64,7 +65,11 @@ export default async (
    .then();
  });
 
- Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
+ ch.cache.votes.set(
+  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild)),
+  vote.bot,
+  user.id,
+ );
 };
 
 export const getTier = (rewards: Prisma.voterewards[], member: Discord.GuildMember | undefined) => {
@@ -131,14 +136,21 @@ export const doAnnouncement = async (
   : '';
 
  ch.send(channel, {
-  content: `${'username' in voted ? lan.bot(user, voted) : lan.guild(user, voted)}${rewardText}`,
+  content: `${
+   'username' in voted
+    ? lan.bot(user, voted, `https://top.gg/bot/${voted.id}/vote`)
+    : lan.guild(user, voted, `https://top.gg/servers/${voted.id}/vote`)
+  }${rewardText}`,
  });
 };
 
 export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Discord.Guild) => {
+ ch.cache.votes.delete('bot' in vote ? vote.bot : vote.guild, vote.user);
+
  const now = Date.now();
  const savedRewards = await ch.DataBase.voters.findMany({
   where: {
+   guildid: g.id,
    userid: vote.user,
    voted: 'bot' in vote ? vote.bot : vote.guild,
    removetime: { lt: now },
@@ -149,6 +161,7 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
  await ch.DataBase.voters.deleteMany({
   where: {
    userid: vote.user,
+   guildid: g.id,
    voted: 'bot' in vote ? vote.bot : vote.guild,
    removetime: { lt: now },
   },

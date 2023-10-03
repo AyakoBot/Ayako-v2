@@ -19,6 +19,7 @@ import bans, { Bans } from './cache/bot/bans.js';
 import channelBans, { ChannelBans } from './cache/bot/channelBans.js';
 import reminders, { Reminders } from './cache/bot/reminders.js';
 import disboardBumpReminders, { DisboardBumpReminders } from './cache/bot/disboardBumpReminders.js';
+import votes, { Votes } from './cache/bot/votes.js';
 import giveaways, { Giveaways } from './cache/bot/giveaways.js';
 import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
@@ -49,6 +50,7 @@ const cache: {
  channelBans: ChannelBans;
  reminders: Reminders;
  disboardBumpReminders: DisboardBumpReminders;
+ votes: Votes;
  giveaways: Giveaways;
  stickyTimeouts: StickyTimeouts;
  deleteThreads: DeleteThreads;
@@ -86,6 +88,7 @@ const cache: {
  channelBans,
  reminders,
  disboardBumpReminders,
+ votes,
  giveaways,
  stickyTimeouts,
  auditLogs,

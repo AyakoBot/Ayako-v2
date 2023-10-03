@@ -612,7 +612,7 @@ const changeHelpers = {
      case 'booster-roles':
       return DataBase.nitroroles.findUnique(where);
      default:
-      throw new Error(`Unsupported Setting ${tableName}`);
+      throw new Error(`1 Unsupported Setting ${tableName}`);
     }
    } else {
     const where = { where: { guildid } };
@@ -654,7 +654,7 @@ const changeHelpers = {
      //  DataBase.appealsettings.findUnique(where);
 
      default:
-      throw new Error(`Unsupported Setting ${tableName}`);
+      throw new Error(`2 Unsupported Setting ${tableName}`);
     }
    }
   };
@@ -712,7 +712,7 @@ const changeHelpers = {
      case 'booster-roles':
       return DataBase.nitroroles.update(where);
      default:
-      throw new Error(`Unsupported Setting ${tableName}`);
+      throw new Error(`3 Unsupported Setting ${tableName}`);
     }
    } else {
     const where = { where: { guildid }, data: { [fieldName]: newSetting } };
@@ -754,7 +754,7 @@ const changeHelpers = {
      //  DataBase.appealsettings.update(where);
 
      default:
-      throw new Error(`Unsupported Setting ${tableName}`);
+      throw new Error(`4 Unsupported Setting ${tableName}`);
     }
    }
   };

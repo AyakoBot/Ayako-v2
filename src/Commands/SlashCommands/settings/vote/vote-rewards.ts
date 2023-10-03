@@ -99,6 +99,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => {
  const embeds: Discord.APIEmbed[] = [
   {
+   footer: {
+    text: `ID: ${Number(settings.uniquetimestamp).toString(36)}`,
+   },
    author: embedParsers.author(language, lan),
    description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
@@ -160,7 +163,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   type: Discord.ComponentType.ActionRow,
   components: [
    buttonParsers.back(name, undefined),
-   buttonParsers.global(language, !!settings.active, 'active', name, undefined),
+   buttonParsers.global(
+    language,
+    !!settings.active,
+    'active',
+    name,
+    Number(settings.uniquetimestamp),
+   ),
    buttonParsers.delete(language, name, Number(settings.uniquetimestamp)),
   ],
  },

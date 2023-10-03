@@ -1307,10 +1307,10 @@ export default {
    },
   },
   vote: {
-   bot: (user: Discord.User, bot: Discord.User) =>
-    `Thanks to ${user.discriminator} for voting for ${bot.username}!`,
-   guild: (user: Discord.User, guild: Discord.Guild) =>
-    `Thanks to ${user.discriminator} for voting for ${guild.name}!`,
+   bot: (user: Discord.User, bot: Discord.User, link: string) =>
+    `Thanks to **${user.displayName}** for voting for [${bot.username}](${link})!`,
+   guild: (user: Discord.User, guild: Discord.Guild, link: string) =>
+    `Thanks to **${user.displayName}** for voting for [${guild.name}](${link})!`,
    reward: (reward: string) => `\nYou have received ${reward} for the next 12 hours.`,
    xpmultiplier: 'XP Multiplier',
    botReason: (bot: Discord.User) => `Voted for ${bot.username}`,
@@ -2965,7 +2965,8 @@ export default {
     },
     vote: {
      name: 'Vote',
-     desc: 'Announce Votes for your Server or Bot on Top.gg',
+     desc:
+      'Announce Votes for your Server or Bot on Top.gg\nVisit your Servers/Bots Page, click `Edit`, then enter the `Webhooks` Page\nCopy `https://api.ayakobot.com/topggvotes` into the `Webhook URL` Text-Box and the Auto-Generated `Token` from below into the `Authorization` Text-Box',
      linkedId: 'Linked ID',
      fields: {
       token: {

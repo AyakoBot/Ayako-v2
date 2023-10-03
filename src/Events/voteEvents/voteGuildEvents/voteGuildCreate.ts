@@ -53,6 +53,7 @@ export default async (
      rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
     },
     create: {
+     guildid: guild.id,
      userid: user.id,
      removetime: Date.now() + 43200000,
      voted: vote.guild,
@@ -84,8 +85,6 @@ const roles = async (
   ch.error(member.guild, new Error("I can't find myself in this guild!"));
   return;
  }
-
- if (!ch.isManageable(member, me)) return;
 
  ch.roleManager.add(member, r.rewardroles, language.events.vote.guildReason(guild), 1);
 };
