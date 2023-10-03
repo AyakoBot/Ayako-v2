@@ -22,7 +22,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  const m = isManageable
-  ? await cmd.update({ content: lan.deleted(role), attachments: [] })
+  ? await cmd.update({ content: lan.deleted(role), components: [] })
   : undefined;
 
  const res = await ch.request.guilds.deleteRole(cmd.guild, role.id);
