@@ -621,11 +621,13 @@ export default {
     'role-rewards': {
      roles: 'roles',
      customrole: 'boolean',
-     roleposition: 'position',
+     positionrole: 'role',
      xpmultiplier: 'number',
      currency: 'number',
      blroles: 'roles',
      blusers: 'users',
+     cansetcolor: 'boolean',
+     canseticon: 'boolean',
     },
     'anti-spam': {
      wlchannelid: 'channels',

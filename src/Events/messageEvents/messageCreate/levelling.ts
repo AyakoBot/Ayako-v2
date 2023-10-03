@@ -86,9 +86,19 @@ const levelling = async (msg: Discord.Message<true>) => {
   where: { userid_guildid_type: { userid: msg.author.id, guildid: msg.guildId, type: 'guild' } },
  });
 
+ const rewardroles = await ch.DataBase.rolerewards.findMany({
+  where: {
+   guildid: msg.guildId,
+   active: true,
+   xpmultiplier: { not: 1 },
+  },
+ });
+
+ const rewardXPMult = rewardroles.map((r) => Number(r.xpmultiplier)).reduce((a, b) => a + b, 0);
+
  if (level) {
   updateLevels(msg, settings, level, settings ? Number(settings.xppermsg) - 10 : 15, 'guild', [
-   settings ? Number(settings.xpmultiplier) : 1,
+   settings ? Number(settings.xpmultiplier) + rewardXPMult : 1,
   ]);
   return;
  }

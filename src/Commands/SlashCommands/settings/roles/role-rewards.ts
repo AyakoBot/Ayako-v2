@@ -67,7 +67,14 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
-  value: `${lan.fields.roles.name}: ${s.roles ? s.roles.length : language.None}`,
+  value: `${lan.fields.roles.name}: ${
+   s.roles.length
+    ? s.roles
+       .splice(0, 5)
+       .map((r) => `<@&${r}>`)
+       .join(', ')
+    : language.None
+  }`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -97,11 +104,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
-     ].map((t) => `[${t.name}](${t.link})`)}`
-   : undefined,
+  description: `${lan.desc}\n${
+   ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
+       name as keyof typeof ch.constants.tutorials
+      ].map((t) => `[${t.name}](${t.link})`)}`
+    : ''
+  }`,
   author: embedParsers.author(language, lan),
   fields: [
    {
@@ -115,24 +124,53 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
+   {
     name: lan.fields.customrole.name,
     value: embedParsers.boolean(settings?.customrole, language),
     inline: true,
    },
+   ...(settings?.customrole
+    ? [
+       {
+        name: lan.fields.cansetcolor.name,
+        value: embedParsers.boolean(settings?.cansetcolor, language),
+        inline: true,
+       },
+       {
+        name: lan.fields.canseticon.name,
+        value: embedParsers.boolean(settings?.canseticon, language),
+        inline: true,
+       },
+       {
+        name: lan.fields.positionrole.name,
+        value: embedParsers.role(settings?.positionrole, language),
+        inline: true,
+       },
+      ]
+    : []),
    {
-    name: lan.fields.roleposition.name,
-    value: embedParsers.number(settings?.roleposition, language),
-    inline: true,
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
    },
    {
     name: lan.fields.xpmultiplier.name,
     value: embedParsers.number(settings?.xpmultiplier ?? 1, language),
-    inline: false,
+    inline: true,
    },
    {
     name: lan.fields.currency.name,
     value: embedParsers.number(settings?.currency, language),
     inline: true,
+   },
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
    },
    {
     name: language.slashCommands.settings.blrole,
@@ -178,20 +216,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     Number(settings?.uniquetimestamp),
     'role',
    ),
-   buttonParsers.boolean(
-    language,
-    settings?.customrole,
-    'customrole',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
-   buttonParsers.specific(
-    language,
-    settings?.roleposition,
-    'roleposition',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
    buttonParsers.specific(
     language,
     settings?.xpmultiplier,
@@ -206,6 +230,43 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings?.uniquetimestamp),
    ),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(
+    language,
+    settings?.customrole,
+    'customrole',
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
+   ...(settings?.customrole
+    ? [
+       buttonParsers.boolean(
+        language,
+        settings?.cansetcolor,
+        'cansetcolor',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+       buttonParsers.boolean(
+        language,
+        settings?.canseticon,
+        'canseticon',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+       buttonParsers.specific(
+        language,
+        settings?.positionrole,
+        'positionrole',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+      ]
+    : []),
   ],
  },
  {

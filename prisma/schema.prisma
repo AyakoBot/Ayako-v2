@@ -182,6 +182,15 @@ model censor {
   @@index(guildid)
 }
 
+model customroles {
+  guildid String @db.VarChar
+  userid  String @db.VarChar
+  roleid  String @db.VarChar
+
+  @@index([guildid, userid])
+  @@id([guildid, userid])
+}
+
 model newlines {
   active               Boolean        @default(false)
   guildid              String         @id(map: "newlines_pkey") @db.VarChar
@@ -687,12 +696,14 @@ model rolerewards {
   uniquetimestamp Decimal  @id @db.Decimal
   active          Boolean  @default(false)
   customrole      Boolean  @default(false)
-  roleposition    Decimal? @db.Decimal
+  positionrole    String?
   xpmultiplier    Decimal? @db.Decimal
   currency        Decimal? @db.Decimal
   blroles         String[] @db.VarChar
   blusers         String[] @db.VarChar
   roles           String[] @db.VarChar
+  cansetcolor     Boolean  @default(true)
+  canseticon      Boolean  @default(true)
 
   @@index([guildid, uniquetimestamp])
 }

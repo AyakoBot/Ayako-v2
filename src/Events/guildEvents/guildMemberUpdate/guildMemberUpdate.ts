@@ -7,12 +7,14 @@ import autoroles from '../guildMemberAdd/autoroles.js';
 import verification from '../guildMemberAdd/verification.js';
 import stickyRoles from '../guildMemberAdd/stickyRoles.js';
 import nitro from './nitro.js';
+import rewards from './rewards.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
  separator(oldMember, member);
  nitro(oldMember, member);
  cache(oldMember, member);
+ rewards(oldMember, member);
 
  if (oldMember.pending && !member.pending) {
   welcome(member);

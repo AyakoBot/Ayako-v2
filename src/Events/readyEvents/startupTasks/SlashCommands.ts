@@ -1423,6 +1423,49 @@ const mod = new Discord.SlashCommandBuilder()
    ),
  );
 
+const customRole = new Discord.SlashCommandBuilder()
+ .setName('custom-role')
+ .setDMPermission(false)
+ .setDescription('Create a custom Role')
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('name')
+   .setDescription('The Name of your custom Role')
+   .setMaxLength(100)
+   .setRequired(false),
+ )
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('color')
+   .setDescription('The new Color of the Role (Hex Code)')
+   .setMaxLength(6)
+   .setRequired(false),
+ )
+ .addRoleOption(
+  new Discord.SlashCommandRoleOption()
+   .setName('color-role')
+   .setDescription('The Role to copy the Color from')
+   .setRequired(false),
+ )
+ .addAttachmentOption(
+  new Discord.SlashCommandAttachmentOption()
+   .setName('icon')
+   .setDescription('The new Icon of the Role')
+   .setRequired(false),
+ )
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('icon-emoji')
+   .setDescription('The new Icon of the Role derived from an Emoji')
+   .setRequired(false),
+ )
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('icon-url')
+   .setDescription('The new Icon of the Role derived from a URL')
+   .setRequired(false),
+ );
+
 export default {
  public: {
   user,
@@ -1444,6 +1487,7 @@ export default {
   vote,
   giveaway,
   mod,
+  customRole,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1562,5 +1606,6 @@ export default {
   mod_pardon_by: 'moderation',
   'mod_pardon_all-by': 'moderation',
   'mod_pardon_all-on': 'moderation',
+  'custom-role': 'utility',
  },
 };

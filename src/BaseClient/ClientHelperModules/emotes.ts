@@ -107,8 +107,8 @@ export default {
    animated: false,
   },
   VerifiedBot: [
-   { name: 'VerBot1', id: '1155173816188797040', animated: false },
    { name: 'VerBot2', id: '1155173769736884274', animated: false },
+   { name: 'VerBot1', id: '1155173816188797040', animated: false },
   ],
   EarlyVerifiedBotDeveloper: {
    name: 'EarlyVerifiedBotDev',

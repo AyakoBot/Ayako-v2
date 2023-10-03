@@ -40,7 +40,7 @@ const Unknown = 'Unknown';
 const unknown = 'unknown';
 
 const multiplier = {
- name: 'Multiplier',
+ name: 'XP Multiplier',
  desc: 'Multiplier to multiply the awarded XP per Message with',
 };
 
@@ -1266,6 +1266,26 @@ export default {
     warnMessage: 'Warn Message',
    },
   },
+  guildMemberUpdate: {
+   rewards: {
+    memberLeft: 'Custom-Role Owner left the Server',
+    reqLost: 'Custom-Role Owner lost privilege to own this Role',
+    desc: `You meet the Requirements for a reward!`,
+    customRoleName: 'Custom-Role',
+    customRole: (gId: string) =>
+     `Claim a Custom Role using </custom-role:${
+      (ch.cache.commands.get(gId) ?? client.application?.commands.cache.map((c) => c))?.find(
+       (c) => c.name === 'custom-role',
+      )?.id ?? '0'
+     }>\nIf you stop meeting the Requirements the Role will be deleted`,
+    xpName: 'XP',
+    xp: (amount: number) =>
+     `You will get an XP Multiplier of ${amount}x as long as you meet the Requirements`,
+    currencyName: 'Currency',
+    currency: (amount: number) =>
+     `You have received ${amount} ${ch.constants.standard.getEmote(ch.emotes.book)}`,
+   },
+  },
   guildMemberAdd: {
    welcome: {
     embed: 'Welcome {{member}} to {{member.guild.name}}!',
@@ -1511,6 +1531,26 @@ export default {
     `<@${user}> is AFK since ${since}${text ? `\n${text}` : ''}`,
   },
   roles: {
+   customRole: {
+    notEnabled: 'Setting Custom-Roles is not enabled',
+    cantSet: "You don't meet the requirements to set a Custom-Role",
+    edit: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
+     `${getRole(
+      role,
+     )}was created\n\n__Applying limits:__\nCan set Role-Icon ${ch.constants.standard.getEmote(
+      limit.icon ? ch.emotes.enabled : ch.emotes.disabled,
+     )}\nCan set Role-Color ${ch.constants.standard.getEmote(
+      limit.color ? ch.emotes.enabled : ch.emotes.disabled,
+     )}`,
+    create: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
+     `${getRole(
+      role,
+     )}was created\n\n__Applying limits:__\nCan set Role-Icon ${ch.constants.standard.getEmote(
+      limit.icon ? ch.emotes.enabled : ch.emotes.disabled,
+     )}\nCan set Role-Color ${ch.constants.standard.getEmote(
+      limit.color ? ch.emotes.enabled : ch.emotes.disabled,
+     )}`,
+   },
    builders: {
     descReactions: `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
     descButtons:
@@ -2621,7 +2661,17 @@ export default {
     },
     'role-rewards': {
      name: 'Reward-Roles',
+     desc:
+      "No matter how many Custom-Roles a User qualifies for, they can only ever create 1 Custom-Role\nHowever if they qualify for multiple Custom-Roles and one of them allows them to set an Icon and/or Color while the other doesn't, they will be able to set an Icon and/or Color",
      fields: {
+      cansetcolor: {
+       name: 'Can set Color',
+       desc: 'Whether Users can set the Color of their Custom-Roles',
+      },
+      canseticon: {
+       name: 'Can set Icon',
+       desc: 'Whether Users can set the Icon of their Custom-Roles',
+      },
       roles: {
        name: 'Roles',
        desc: 'The Roles that allow the Users to be rewarded',
@@ -2632,12 +2682,12 @@ export default {
       },
       xpmultiplier: multiplier,
       currency: {
-       name: 'Currency',
+       name: 'Currency Reward',
        desc: 'Amount of Currency rewarded',
       },
-      roleposition: {
-       name: 'Role Position',
-       desc: 'The Role under which the custom Roles will be created',
+      positionrole: {
+       name: 'Position Role',
+       desc: 'The Role under which the Custom-Roles will be created',
       },
      },
     },
