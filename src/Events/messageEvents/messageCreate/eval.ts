@@ -4,7 +4,6 @@ import fetch from 'node-fetch';
 import * as Discord from 'discord.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import nitroHandler from '../../readyEvents/timedFiles/nitroHandler.js';
 
 // eslint-disable-next-line no-unused-expressions
 Discord.APIVersion;
@@ -12,8 +11,6 @@ Discord.APIVersion;
 fetch.name;
 // eslint-disable-next-line no-unused-expressions
 os.arch;
-// eslint-disable-next-line no-unused-expressions
-nitroHandler;
 
 const reg = new RegExp(auth.token, 'g');
 
