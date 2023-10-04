@@ -174,12 +174,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: language.slashCommands.settings.blrole,
-    value: embedParsers.channels(settings?.blroles, language),
+    value: embedParsers.channels(settings?.blroleid, language),
     inline: false,
    },
    {
     name: language.slashCommands.settings.bluser,
-    value: embedParsers.users(settings?.blusers, language),
+    value: embedParsers.users(settings?.bluserid, language),
     inline: false,
    },
   ],
@@ -272,8 +272,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, settings?.blroles, 'blroleid', name, undefined),
-   buttonParsers.global(language, settings?.blusers, 'bluserid', name, undefined),
+   buttonParsers.global(language, settings?.blroleid, 'blroleid', name, undefined),
+   buttonParsers.global(language, settings?.bluserid, 'bluserid', name, undefined),
   ],
  },
 ];

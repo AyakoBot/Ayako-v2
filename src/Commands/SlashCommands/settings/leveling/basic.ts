@@ -162,32 +162,32 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
   },
   {
    name: language.slashCommands.settings.blchannel,
-   value: embedParsers.channels(settings.blchannels, language),
+   value: embedParsers.channels(settings.blchannelid, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wlchannel,
-   value: embedParsers.channels(settings.wlchannels, language),
+   value: embedParsers.channels(settings.wlchannelid, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.blrole,
-   value: embedParsers.channels(settings.blroles, language),
+   value: embedParsers.channels(settings.blroleid, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wlrole,
-   value: embedParsers.channels(settings.wlroles, language),
+   value: embedParsers.channels(settings.wlroleid, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.bluser,
-   value: embedParsers.channels(settings.blusers, language),
+   value: embedParsers.channels(settings.bluserid, language),
    inline: false,
   },
   {
    name: language.slashCommands.settings.wluser,
-   value: embedParsers.channels(settings.wlusers, language),
+   value: embedParsers.channels(settings.wluserid, language),
    inline: false,
   },
  );
@@ -223,17 +223,17 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
     buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
     buttonParsers.specific(language, settings.minwords, 'minwords', name, undefined),
-    buttonParsers.global(language, settings.blchannels, 'blchannelid', name, undefined),
+    buttonParsers.global(language, settings.blchannelid, 'blchannelid', name, undefined),
    ],
   },
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.global(language, settings.blroles, 'blroleid', name, undefined),
-    buttonParsers.global(language, settings.blusers, 'bluserid', name, undefined),
-    buttonParsers.global(language, settings.wlchannels, 'wlchannelid', name, undefined),
-    buttonParsers.global(language, settings.wlroles, 'wlroleid', name, undefined),
-    buttonParsers.global(language, settings.wlusers, 'wluserid', name, undefined),
+    buttonParsers.global(language, settings.blroleid, 'blroleid', name, undefined),
+    buttonParsers.global(language, settings.bluserid, 'bluserid', name, undefined),
+    buttonParsers.global(language, settings.wlchannelid, 'wlchannelid', name, undefined),
+    buttonParsers.global(language, settings.wlroleid, 'wlroleid', name, undefined),
+    buttonParsers.global(language, settings.wluserid, 'wluserid', name, undefined),
    ],
   },
  ];

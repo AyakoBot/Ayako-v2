@@ -125,7 +125,7 @@ model appealsettings {
   guildid   String   @id @db.VarChar
   active    Boolean  @default(false)
   channelid String?  @db.VarChar
-  blusers   String[] @db.VarChar
+  bluserid  String[] @db.VarChar
 
   @@index(guildid)
 }
@@ -399,12 +399,12 @@ model leveling {
   guildid         String      @id @db.VarChar
   active          Boolean     @default(true)
   xpmultiplier    Decimal     @default(1) @db.Decimal
-  blchannels      String[]    @db.VarChar
-  blroles         String[]    @db.VarChar
-  blusers         String[]    @db.VarChar
-  wlchannels      String[]    @db.VarChar
-  wlroles         String[]    @db.VarChar
-  wlusers         String[]    @db.VarChar
+  blchannelid     String[]    @db.VarChar
+  blroleid        String[]    @db.VarChar
+  bluserid        String[]    @db.VarChar
+  wlchannelid     String[]    @db.VarChar
+  wlroleid        String[]    @db.VarChar
+  wluserid        String[]    @db.VarChar
   xppermsg        Decimal     @default(25) @db.Decimal
   // true = stack, false = replace
   rolemode        Boolean     @default(true)
@@ -699,8 +699,8 @@ model rolerewards {
   positionrole    String?
   xpmultiplier    Decimal? @db.Decimal
   currency        Decimal? @db.Decimal
-  blroles         String[] @db.VarChar
-  blusers         String[] @db.VarChar
+  blroleid        String[] @db.VarChar
+  bluserid        String[] @db.VarChar
   roles           String[] @db.VarChar
   cansetcolor     Boolean  @default(true)
   canseticon      Boolean  @default(true)
@@ -738,10 +738,10 @@ model selfroles {
   roles           String[] @db.VarChar
   onlyone         Boolean  @default(false)
   uniquetimestamp Decimal  @id @db.Decimal
-  blroles         String[] @db.VarChar
-  blusers         String[] @db.VarChar
-  wlroles         String[] @db.VarChar
-  wlusers         String[] @db.VarChar
+  blroleid        String[] @db.VarChar
+  bluserid        String[] @db.VarChar
+  wlroleid        String[] @db.VarChar
+  wluserid        String[] @db.VarChar
   active          Boolean  @default(false)
   name            String   @default("Change me")
 

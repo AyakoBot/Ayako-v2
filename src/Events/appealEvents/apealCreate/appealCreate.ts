@@ -10,7 +10,7 @@ export default async (appeal: CT.Appeal) => {
  });
  if (!settings) return;
  if (!settings.channelid) return;
- if (settings.blusers?.includes(appeal.userid)) return;
+ if (settings.bluserid?.includes(appeal.userid)) return;
 
  const where = { where: { uniquetimestamp: appeal.punishmentid } };
 

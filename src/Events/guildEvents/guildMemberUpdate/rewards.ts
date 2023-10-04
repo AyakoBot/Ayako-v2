@@ -18,8 +18,8 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   (s) =>
    !s.roles.some((r) => oldMember.roles.cache.has(r)) &&
    s.roles.some((r) => member.roles.cache.has(r)) &&
-   !s.blroles.some((r) => member.roles.cache.has(r)) &&
-   !s.blusers.includes(member.user.id),
+   !s.blroleid.some((r) => member.roles.cache.has(r)) &&
+   !s.bluserid.includes(member.user.id),
  );
  if (!settings.length) return;
 

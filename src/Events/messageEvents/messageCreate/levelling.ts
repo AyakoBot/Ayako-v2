@@ -61,18 +61,21 @@ const levelling = async (msg: Discord.Message<true>) => {
   return;
  }
 
- if (!settings?.wlusers || !settings.wlusers.includes(msg.author.id)) {
-  if (settings?.blusers && settings.blusers.includes(msg.author.id)) return;
-  if (settings?.blroles && msg.member?.roles.cache.some((r) => settings.blroles.includes(r.id))) {
+ if (!settings?.wluserid || !settings.wluserid.includes(msg.author.id)) {
+  if (settings?.bluserid && settings.bluserid.includes(msg.author.id)) return;
+  if (settings?.blroleid && msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))) {
    return;
   }
 
-  if (settings?.wlroles || !msg.member?.roles.cache.some((r) => settings?.wlroles.includes(r.id))) {
-   if (settings?.blchannels && settings.blchannels.includes(msg.channel.id)) return;
+  if (
+   settings?.wlroleid ||
+   !msg.member?.roles.cache.some((r) => settings?.wlroleid.includes(r.id))
+  ) {
+   if (settings?.blchannelid && settings.blchannelid.includes(msg.channel.id)) return;
    if (
-    settings?.wlchannels &&
-    settings?.wlchannels.length &&
-    !settings.wlchannels.includes(msg.channel.id)
+    settings?.wlchannelid &&
+    settings?.wlchannelid.length &&
+    !settings.wlchannelid.includes(msg.channel.id)
    ) {
     return;
    }

@@ -18,8 +18,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const applyingSettings = settings.filter(
   (s) =>
    s.roles.some((r) => cmd.member.roles.cache.has(r)) &&
-   !s.blroles.some((r) => cmd.member.roles.cache.has(r)) &&
-   !s.blusers.includes(cmd.user.id),
+   !s.blroleid.some((r) => cmd.member.roles.cache.has(r)) &&
+   !s.bluserid.includes(cmd.user.id),
  );
 
  if (!applyingSettings.length) {
