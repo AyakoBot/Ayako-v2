@@ -49,6 +49,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  const lan = language.events.guildMemberUpdate.rewards;
  const embed: Discord.APIEmbed = {
   color: ch.constants.colors.success,
+  description: lan.desc(settings.map((s) => s.roles).flat()),
   fields: [
    ...(canCustomRole
     ? [

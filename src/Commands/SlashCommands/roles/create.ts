@@ -43,7 +43,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const parsedIcon =
   iconUrl ??
   icon?.url ??
-  (iconEmoji && Discord.parseEmoji(iconEmoji)
+  (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
    : undefined);
 

@@ -41,12 +41,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const parsedIcon =
   iconUrl ??
   icon?.url ??
-  (iconEmoji && Discord.parseEmoji(iconEmoji)
+  (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
    : undefined);
 
  const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
- const parsedColor = colorRole?.color ?? color ? parseInt(color as string, 16) : undefined;
+ const parsedColor = colorRole?.color || (color ? parseInt(color, 16) : undefined);
 
  if (iconUrl) {
   try {

@@ -1270,7 +1270,10 @@ export default {
    rewards: {
     memberLeft: 'Custom-Role Owner left the Server',
     reqLost: 'Custom-Role Owner lost privilege to own this Role',
-    desc: `You meet the Requirements for a reward!`,
+    desc: (roles: string[]) =>
+     `You meet Requirements for a Reward as you own at least one of the following Roles:\n${roles
+      .map((r) => `<@&${r}>`)
+      .join(', ')}`,
     customRoleName: 'Custom-Role',
     customRole: (gId: string) =>
      `Claim a Custom Role using </custom-role:${
@@ -1533,7 +1536,7 @@ export default {
   roles: {
    customRole: {
     notEnabled: 'Setting Custom-Roles is not enabled',
-    cantSet: "You don't meet the requirements to set a Custom-Role",
+    cantSet: "You don't qualify to set a Custom-Role",
     edit: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
      `${getRole(
       role,
@@ -3316,7 +3319,7 @@ export default {
       token: {
        name: 'Token',
        desc:
-        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following__:\n- insert `https://api.ayakobot.com/custom` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
+        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following AFTER you set your Token here__:\n- insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
       },
      },
     },
