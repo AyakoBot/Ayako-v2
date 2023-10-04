@@ -1442,6 +1442,13 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  selfroles: {
+   notEnabled: 'There are no Self-Roles on this Server',
+   selectCategory: 'Please only select Categories from the Select-Menu',
+   selectOne: 'Select a Role',
+   selectMany: 'Select Roles',
+   removeRole: 'You already have this Role, selecting it again will remove it',
+  },
   moderation: {
    permissions: {
     desc:

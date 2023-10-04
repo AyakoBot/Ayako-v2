@@ -1466,6 +1466,18 @@ const customRole = new Discord.SlashCommandBuilder()
    .setRequired(false),
  );
 
+const selfRoles = new Discord.SlashCommandBuilder()
+ .setName('self-roles')
+ .setDescription('Get yourself some Self-Assignable Roles')
+ .setDMPermission(false)
+ .addStringOption(
+  new Discord.SlashCommandStringOption()
+   .setName('category')
+   .setDescription('The Category of Self-Roles you want to see')
+   .setRequired(true)
+   .setAutocomplete(true),
+ );
+
 export default {
  public: {
   user,
@@ -1488,6 +1500,7 @@ export default {
   giveaway,
   mod,
   customRole,
+  selfRoles,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1607,5 +1620,6 @@ export default {
   'mod_pardon_all-by': 'moderation',
   'mod_pardon_all-on': 'moderation',
   'custom-role': 'utility',
+  'self-roles': 'roles',
  },
 };
