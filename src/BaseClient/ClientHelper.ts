@@ -82,6 +82,7 @@ import fetchAllGuildMembers from './ClientHelperModules/fetchAllGuildMembers.js'
 import getBotMemberFromGuild from './ClientHelperModules/getBotMemberFromGuild.js';
 import makeStp from './ClientHelperModules/makeStp.js';
 import sleep from './ClientHelperModules/sleep.js';
+import fetchMessages from './ClientHelperModules/fetchMessages.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -90,6 +91,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ fetchMessages,
  sleep,
  makeStp,
  isEditable,

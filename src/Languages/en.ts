@@ -1442,6 +1442,11 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  clear: {
+   noMessagesFound: 'No matching Messages found',
+   deleted: (amount: number) =>
+    `I was able to find ${amount} Messages in the last 500 Messages that matched the Requirements\n> *I can only delete Messages younger than 14 Days old*`,
+  },
   selfroles: {
    notEnabled: 'There are no Self-Roles on this Server',
    selectCategory: 'Please only select Categories from the Select-Menu',
@@ -3791,6 +3796,7 @@ export default {
   },
  },
  errors: {
+  cantFetch: "Can't fetch Messages in this Channel",
   settingNotFound: 'The Setting could not be found',
   messageNotFound: 'The Mentioned Message could not be found',
   deprecatedByDiscord:
