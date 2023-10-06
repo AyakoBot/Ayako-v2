@@ -1275,11 +1275,9 @@ export default {
       .map((r) => `<@&${r}>`)
       .join(', ')}`,
     customRoleName: 'Custom-Role',
-    customRole: (gId: string) =>
+    customRole: async (gId: string) =>
      `Claim a Custom Role using </custom-role:${
-      (ch.cache.commands.get(gId) ?? client.application?.commands.cache.map((c) => c))?.find(
-       (c) => c.name === 'custom-role',
-      )?.id ?? '0'
+      (await ch.getCustomCommand(gId, 'custom-role')) ?? '0'
      }>\nIf you stop meeting the Requirements the Role will be deleted`,
     xpName: 'XP',
     xp: (amount: number) =>
@@ -1442,6 +1440,17 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  reminder: {
+   reminderNotExist: "This Reminder doesn't exist",
+   deleted: 'Reminder deleted',
+   created: (reminderID: string) =>
+    `Reminder created\nView your Reminders with </reminder list:${reminderID}>`,
+   edited: 'Reminder edited',
+   desc: (reminderID: string | undefined) =>
+    `To create a Reminder use </reminder create:${reminderID}>\nto edit one, use </reminder edit:${reminderID}>\nand to delete one, use </reminder delete:${reminderID}>`,
+   tooShort: 'The Duration must be at least 10 Seconds',
+   reminderEnded: (userId: string) => `<@${userId}> Your Reminder has ended.`,
+  },
   clear: {
    noMessagesFound: 'No matching Messages found',
    deleted: (amount: number) =>

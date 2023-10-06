@@ -7,10 +7,32 @@ import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands
 import * as CT from '../../../Typings/CustomTypings.js';
 import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
+import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
 
 export default () => {
+ reminder();
+
  client.guilds.cache.forEach(async (guild) => {
   Object.values(tasks).forEach((t) => t(guild));
+ });
+};
+
+const reminder = async () => {
+ const reminders = await ch.DataBase.reminders.findMany({
+  where: {},
+ });
+
+ reminders.forEach((r) => {
+  ch.cache.reminders.set(
+   Jobs.scheduleJob(
+    new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
+    () => {
+     endReminder(r);
+    },
+   ),
+   r.userid,
+   Number(r.endtime),
+  );
  });
 };
 

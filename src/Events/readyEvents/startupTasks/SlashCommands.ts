@@ -61,7 +61,7 @@ const Amount = new Discord.SlashCommandIntegerOption()
  .setMinValue(1)
  .setRequired(true);
 
-const Content = new Discord.SlashCommandStringOption()
+const FilterContent = new Discord.SlashCommandStringOption()
  .setName('content')
  .setDescription('The Content (case-insensitive)')
  .setMinLength(1)
@@ -1537,35 +1537,35 @@ const clear = new Discord.SlashCommandBuilder()
    .setName('match')
    .setDescription('Clear Messages that match the provided Content')
    .addIntegerOption(Amount)
-   .addStringOption(Content),
+   .addStringOption(FilterContent),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('not-match')
    .setDescription("Clear Messages that don't match the provided Content")
    .addIntegerOption(Amount)
-   .addStringOption(Content),
+   .addStringOption(FilterContent),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('starts-with')
    .setDescription('Clear Messages that start with the provided Content')
    .addIntegerOption(Amount)
-   .addStringOption(Content),
+   .addStringOption(FilterContent),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('ends-with')
    .setDescription('Clear Messages that end with the provided Content')
    .addIntegerOption(Amount)
-   .addStringOption(Content),
+   .addStringOption(FilterContent),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('includes')
    .setDescription('Clear Messages that include the provided Content')
    .addIntegerOption(Amount)
-   .addStringOption(Content),
+   .addStringOption(FilterContent),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1640,6 +1640,66 @@ const clear = new Discord.SlashCommandBuilder()
    .addIntegerOption(Amount),
  );
 
+const reminder = new Discord.SlashCommandBuilder()
+ .setName('reminder')
+ .setDescription('Reminder Commands')
+ .setDMPermission(true)
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('create')
+   .setDescription('Create a Reminder')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('duration')
+     .setDescription('The Duration until the Reminder expires (Example: 2d 5h 4s)')
+     .setMinLength(2)
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('content')
+     .setDescription('The Content')
+     .setMinLength(1)
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('list')
+   .setDescription('List all of your Reminders'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit')
+   .setDescription('Edit a Reminder')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('id')
+     .setDescription('The ID of the Reminder')
+     .setRequired(true)
+     .setAutocomplete(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('content')
+     .setDescription('The new Content')
+     .setMinLength(1)
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('delete')
+   .setDescription('Delete a Reminder')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('id')
+     .setDescription('The ID of the Reminder')
+     .setRequired(true)
+     .setAutocomplete(true),
+   ),
+ );
+
 export default {
  public: {
   user,
@@ -1664,6 +1724,7 @@ export default {
   customRole,
   selfRoles,
   clear,
+  reminder,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1804,5 +1865,34 @@ export default {
   clear_text: 'utility',
   clear_humans: 'utility',
   clear_bots: 'utility',
+  reminder_create: 'utility',
+  reminder_list: 'utility',
+  reminder_delete: 'utility',
+  reminder_edit: 'utility',
  },
-};
+ names: [
+  'settings',
+  'info',
+  'embed-builder',
+  'check',
+  'Stick Message',
+  'stp',
+  'membercount',
+  'ping',
+  'rp-manager',
+  'images',
+  'roles',
+  'afk',
+  'help',
+  'emoji',
+  'slowmode',
+  'user',
+  'vote',
+  'giveaway',
+  'mod',
+  'custom-role',
+  'self-roles',
+  'clear',
+  'reminder',
+ ],
+} as const;

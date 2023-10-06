@@ -676,7 +676,6 @@ model reminders {
   reason          String
   uniquetimestamp Decimal @id @db.Decimal
   endtime         Decimal @db.Decimal
-  msgid           Decimal @db.Decimal
 
   @@index([userid, uniquetimestamp])
 }
