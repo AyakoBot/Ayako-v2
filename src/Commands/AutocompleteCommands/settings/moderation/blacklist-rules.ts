@@ -5,7 +5,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const automodRules = cmd.guild?.autoModerationRules.cache
   .map((o) => o)
   ?.filter((r) => {
-   const id = cmd.isAutocomplete() ? String(cmd.options.get('id', false)?.value) : '';
+   const id = String(cmd.options.get('id', false)?.value);
 
    return id ? r.id.includes(id) : true;
   });
