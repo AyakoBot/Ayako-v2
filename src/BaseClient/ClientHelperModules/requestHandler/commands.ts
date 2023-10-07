@@ -22,6 +22,13 @@ const getGlobalCommands = async (
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
    parsed.forEach((p) => {
+    if (cache.apis.get(guild.id)) {
+     if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [p]);
+     else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(p));
+
+     return;
+    }
+
     if (guild.client.application.commands.cache.get(p.id)) return;
     guild.client.application.commands.cache.set(p.id, p);
    });
@@ -47,7 +54,16 @@ const createGlobalCommand = async (
   .createGlobalCommand(await getBotIdFromGuild(guild), body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
-   guild.client.application.commands.cache.set(cmd.id, parsed);
+
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+
+    return parsed;
+   }
+
+   if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
+   guild.client.application.commands.cache.set(parsed.id, parsed);
    return parsed;
   })
   .catch((e) => {
@@ -67,6 +83,13 @@ const getGlobalCommand = async (guild: Discord.Guild, commandId: string) =>
   .getGlobalCommand(await getBotIdFromGuild(guild), commandId)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+
+    return parsed;
+   }
+
    if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
    guild.client.application.commands.cache.set(parsed.id, parsed);
    return parsed;
@@ -92,7 +115,16 @@ const editGlobalCommand = async (
   .editGlobalCommand(await getBotIdFromGuild(guild), commandId, body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
-   guild.client.application.commands.cache.set(cmd.id, parsed);
+
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+
+    return parsed;
+   }
+
+   if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
+   guild.client.application.commands.cache.set(parsed.id, parsed);
    return parsed;
   })
   .catch((e) => {
@@ -112,6 +144,17 @@ const deleteGlobalCommand = async (guild: Discord.Guild, commandId: string) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGlobalCommand(await getBotIdFromGuild(guild), commandId)
   .then(() => {
+   if (cache.apis.get(guild.id)) {
+    cache.commands.set(
+     guild.id,
+     cache.commands.get(guild.id)!.filter((c) => c.id !== commandId),
+    );
+
+    if (cache.commands.get(guild.id)!.length > 0) return;
+    cache.commands.delete(guild.id);
+    return;
+   }
+
    guild.client.application.commands.cache.delete(commandId);
   })
   .catch((e) => {
@@ -133,6 +176,11 @@ const bulkOverwriteGlobalCommands = async (
   .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
+   if (cache.apis.get(guild.id)) {
+    cache.commands.set(guild.id, parsed);
+    return parsed;
+   }
+
    parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
    return parsed;
   })
@@ -158,8 +206,15 @@ const getGuildCommands = async (
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
    );
    parsed.forEach((p) => {
-    if (guild.commands.cache.get(p.id)) return;
-    guild.commands.cache.set(p.id, p);
+    if (cache.apis.get(guild.id)) {
+     if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [p]);
+     else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(p));
+
+     return;
+    }
+
+    if (guild.client.application.commands.cache.get(p.id)) return;
+    guild.client.application.commands.cache.set(p.id, p);
    });
    return parsed;
   })
@@ -182,6 +237,13 @@ const createGuildCommand = async (
   .createGuildCommand(await getBotIdFromGuild(guild), guild.id, body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+
+    return parsed;
+   }
+
    guild.commands.cache.set(cmd.id, parsed);
    return parsed;
   })
@@ -202,8 +264,14 @@ const getGuildCommand = async (guild: Discord.Guild, commandId: string) =>
   .getGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
-   if (guild.commands.cache.get(parsed.id)) return parsed;
-   guild.commands.cache.set(parsed.id, parsed);
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+
+    return parsed;
+   }
+
+   guild.commands.cache.set(cmd.id, parsed);
    return parsed;
   })
   .catch((e) => {
@@ -227,7 +295,21 @@ const editGuildCommand = async (
   .editGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId, body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
-   guild.commands.cache.set(cmd.id, parsed);
+   if (cache.apis.get(guild.id)) {
+    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
+    else {
+     cache.commands.set(
+      guild.id,
+      cache.commands
+       .get(guild.id)!
+       .filter((c) => c.id !== parsed.id)!
+       .concat(parsed),
+     );
+    }
+    return parsed;
+   }
+
+   guild.commands.cache.set(parsed.id, parsed);
    return parsed;
   })
   .catch((e) => {
@@ -246,6 +328,17 @@ const deleteGuildCommand = async (guild: Discord.Guild, commandId: string) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then(() => {
+   if (cache.apis.get(guild.id)) {
+    cache.commands.set(
+     guild.id,
+     cache.commands.get(guild.id)!.filter((c) => c.id !== commandId),
+    );
+
+    if (cache.commands.get(guild.id)!.length > 0) return;
+    cache.commands.delete(guild.id);
+    return;
+   }
+
    guild.commands.cache.delete(commandId);
   })
   .catch((e) => {
@@ -269,7 +362,12 @@ const bulkOverwriteGuildCommands = async (
    const parsed = cmds.map(
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
    );
-   parsed.forEach((p) => guild.commands.cache.set(p.id, p));
+   if (cache.apis.get(guild.id)) {
+    cache.commands.set(guild.id, parsed);
+    return parsed;
+   }
+
+   parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
    return parsed;
   })
   .catch((e) => {
