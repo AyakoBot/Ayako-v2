@@ -98,17 +98,19 @@ export const getContent = async (
    .match(
     new RegExp(
      r.triggerMetadata.keywordFilter
-      .map((k) =>
-       k
-        .replace(/\*/g, '')
-        .replace(/[\\\\.\\+\\*\\?\\^\\$\\[\]\\(\\)\\{\\}\\/\\'\\#\\:\\!\\=\\|]/gi, '\\$&'),
+      .map((k) => k.replace(/[\\\\.\\+\\?\\^\\$\\[\]\\(\\)\\{\\}\\/\\'\\#\\:\\!\\=\\|]/gi, '\\$&'))
+      .map((k) => (k.startsWith('*') ? `\\w*${k.slice(1, k.length)}` : `(\\s|^)${k}`))
+      .map((k) => (k.endsWith('*') ? `${k.slice(0, k.length - 1)}\\w*` : `${k}(\\s|$)`))
+      .map(
+       (k) =>
+        `(${k.startsWith('(\\s|^)') ? '' : '\\w*'}${k}${k.endsWith('(\\s|$)') ? '' : '\\w*'})`,
       )
-      .map((x) => `(\\w*${x}\\w*)`)
       .join('|'),
      'gi',
     ),
    )
-   ?.filter((f) => f.length)
+   ?.filter((m) => m.length)
+   ?.map((m) => m.trim())
    ?.forEach((m) => {
     if (r.triggerMetadata.allowList.includes(m)) return;
     content = content.replace(new RegExp(m, 'g'), '[...]');

@@ -1275,10 +1275,8 @@ export default {
       .map((r) => `<@&${r}>`)
       .join(', ')}`,
     customRoleName: 'Custom-Role',
-    customRole: async (gId: string) =>
-     `Claim a Custom Role using </custom-role:${
-      (await ch.getCustomCommand(gId, 'custom-role')) ?? '0'
-     }>\nIf you stop meeting the Requirements the Role will be deleted`,
+    customRole: (commandId: string) =>
+     `Claim a Custom Role using </custom-role:${commandId}>\nIf you stop meeting the Requirements the Role will be deleted`,
     xpName: 'XP',
     xp: (amount: number) =>
      `You will get an XP Multiplier of ${amount}x as long as you meet the Requirements`,
@@ -1301,7 +1299,7 @@ export default {
    unban: 'Automatically Un-Banned',
    unmute: 'Automatically Un-Muted',
    disboard: {
-    desc: 'You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>',
+    desc: `You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>`,
     title: `${name} DISBOARD Bump Reminder`,
    },
    reminder: {
@@ -1489,8 +1487,8 @@ export default {
     areYouSure: (user: Discord.User, punishment: string) =>
      `You are about to strike **${user}**\nDue to their Amount of Warns, this will ${punishment} them\n**Do you want to proceed?**`,
     confirmAuthor: 'Confirm Strike',
-    notEnabled:
-     'The Strike System is not enabled\nuse </settings auto-moderation:1014159057919156366> `setting: Auto-Punish` to enable it',
+    notEnabled: (cmdId: string) =>
+     `The Strike-System is not enabled\nuse </settings auto-moderation:${cmdId}> to enable it`,
    },
    unafk: {
     notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
@@ -1576,9 +1574,10 @@ export default {
      )}`,
    },
    builders: {
-    descReactions: `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
-    descButtons:
-     'React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:1072246330329669726>\n__Notice:__ Emotes might not display properly below, but they will work just fine',
+    descReactions: (cmdId: string) =>
+     `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:${cmdId}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
+    descButtons: (cmdId: string) =>
+     `React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:${cmdId}>\n__Notice:__ Emotes might not display properly below, but they will work just fine`,
     buttons:
      '`React Here` leads you to the Message to add Reactions on\n`Refresh Command` refreshes Builder to apply your newly added Reactions\n`Reset Reactions` resets the Reactions on the Reaction-Message to only show Reactions current define in the Builder',
     reactHere: 'React Here',
@@ -1589,8 +1588,8 @@ export default {
     saveAndExit: 'Save and Exit',
     couldntReact:
      "I couldn't add Reactions to this Message\nThis is not required, but make sure your Reaction will not be removed from it",
-    messageNotFromMe:
-     "I can't add Buttons to a Message I didn't send.\nConsider using the </embed-builder create:1088143287635943485> to create a Custom Message through me\nor using Reaction-Roles instead",
+    messageNotFromMe: (cmdId: string) =>
+     `I can't add Buttons to a Message I didn't send.\nConsider using the </embed-builder create:${cmdId}> to create a Custom Message through me\nor using Reaction-Roles instead`,
     selectedEmoji: 'Selected Emoji:',
    },
    create: (role: Discord.Role) => `Successfully created Role ${role}`,
@@ -1782,7 +1781,7 @@ export default {
     self: 'kisses themself, how do you even do that??',
     others: 'kisses with',
     request: 'wants to mwah you~! >~<',
-    buttons: ['Enjoy the mwah~', 'Bonk em'],
+    buttons: ['Mwah back~', 'Bonk em'],
    },
    laugh: {
     self: 'laughs at themself, something must be funny',
@@ -1843,7 +1842,13 @@ export default {
     self: 'Mew =^_^=',
     noOne: 'Mew =^_^=',
     others: ['mews at', '=^_^='],
-    buttons: ['Pat them!', 'Woof!'],
+    buttons: ['Mew back~', 'Pat them!', 'Woof!'],
+   },
+   meow: {
+    self: 'Meow =^_^=',
+    noOne: 'Meow =^_^=',
+    others: ['meows at', '=^_^='],
+    buttons: ['Meow back~', 'Pat them!', 'Woof!'],
    },
    nya: {
     self: 'Nya~ :3',
@@ -2072,7 +2077,8 @@ export default {
    ],
    button: 'RP Commands',
    sync: 'Sync Permissions',
-   notice: `There is an additional Roleplay Management Command called </rp manager:1105840632758542407>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
+   notice: (cmdId: string) =>
+    `There is an additional Roleplay-Management-Command called </rp manager:${cmdId}>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
    delay: 'This Operation might take a while to finish, please be patient',
    syncing: 'Syncing Permissions...',
    synced: 'Synced',
@@ -2172,10 +2178,10 @@ export default {
     desc:
      'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)',
     quick: 'Quick Help',
-    fields: [
+    fields: (cmdId: string) => [
      'This Part is used in Leveling Settings\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message',
      'This Part is used in Welcome Settings\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember',
-     'You can use </stp:1103033240320745595> to test the `{{msg}}` Templates',
+     `You can use </stp:${cmdId}> to test the \`{{msg}}\` Templates`,
     ],
     editButtons: [
      {
@@ -2638,7 +2644,8 @@ export default {
      },
     },
     expiry: {
-     desc: `⚠️ Note: ⚠️\nAll of these Settings are ${name}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:1019550801355624478>`,
+     desc: (cmdId: string) =>
+      `⚠️ Note: ⚠️\nAll of these Settings are ${name}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:${cmdId}>`,
      name: 'Expiry',
      fields: {
       bans: {
@@ -3020,8 +3027,7 @@ export default {
       },
       embed: {
        name: 'Welcome Embed',
-       desc:
-        'The Welcome Embed to use\nYou can create one using </embed-builder create:1088143287635943485>',
+       desc: `The Welcome Embed to use\nYou can create one using </embed-builder create:0>`,
       },
       pingroles: {
        name: 'Ping Roles',
@@ -3308,6 +3314,12 @@ export default {
     },
     basic: {
      name: 'Basic',
+     tokenSetDesc: `**It appears you have a custom Bot-Token set**
+     If you want to get rid of double Slash-Commands, remove ${name} from your Server and Invite her back [using this Invite Link](${ch.constants.standard.invite.replace(
+      '%20applications.commands',
+      '',
+     )})
+     __${name} is required to run Custom-Bots__`,
      fields: {
       prefix: {
        name: 'Prefix',
@@ -3339,8 +3351,13 @@ export default {
       },
       token: {
        name: 'Token',
-       desc:
-        "The Token of your Custom Bot\nObtain it on [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n__Please make sure you do the following AFTER you set your Token here__:\n- insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n- enable the `Public Bot` Switch under the `Bot` Section\n- enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n- invite your Bot to your Server using the provided Invite URL",
+       desc: `The Token of your Custom Bot
+        Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)
+        
+        __Please make sure you do the following AFTER you set your Token here__:\n- insert \`https://api.ayakobot.com/interactions\` as your Bots \`Interactions Endpoint URL\` under the \`General Information\` Section\n- enable the \`Public Bot\` Switch under the \`Bot\` Section\n- enable the \`Message Content\` and \`Guild Member\` \`Privileged Gateway Intents\` under the \`Bot\` Section\n- invite your Bot to your Server using the provided Invite URL\n
+        __Notice__
+        If you are removing the Token from this Field and previously re-invited ${name} with the Link that removes her Slash-Commands, 
+        you will have to re-invite her using [this Invite Link](${ch.constants.standard.invite})`,
       },
      },
     },
@@ -4098,7 +4115,6 @@ export default {
    ViewChannel: 'View Channel',
    ViewCreatorMonetizationAnalytics: 'View Creator Monetization Analytics',
    ViewGuildInsights: 'View Guild/Server Insights',
-
    ManageChannel: 'Manage Channel',
    ReadMessages: 'Read Messages',
    ViewChannels: 'View Channels',
@@ -4116,8 +4132,8 @@ export default {
   strike: 'Strike',
  },
  commandTypes: {
-  slashCommands: 'Slash Commands',
-  textCommands: 'Text Commands',
+  slashCommands: 'Slash-Commands',
+  textCommands: 'Text-Commands',
  },
  languages: {
   en: 'English | Finished',
@@ -4205,8 +4221,8 @@ export default {
   'relationshipts.read': 'See Friends',
   'activities.read': 'See Activities',
   'activities.write': 'Create Activities',
-  'application.commands': 'Use Slash Commands',
-  'applicaiton.commands.update': 'Update Slash Commands',
+  'application.commands': 'Use Slash-Commands',
+  'applicaiton.commands.update': 'Update Slash-Commands',
   'application.commands.permissions.update': 'Update Slash Command Permissions',
  },
  rolemodes: {

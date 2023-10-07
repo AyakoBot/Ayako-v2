@@ -9,7 +9,12 @@ import getLanguage from '../getLanguage.js';
 import { request } from '../requestHandler.js';
 import isDeleteable from '../isDeleteable.js';
 
-export default async (cmd: ModTypes.CmdType, executor: Discord.User, client: Discord.Client) => {
+export default async (
+ cmd: ModTypes.CmdType,
+ executor: Discord.User,
+ client: Discord.Client,
+ replyMessage: ModTypes.ResponseMessage,
+) => {
  if (!cmd) return;
  if (executor.id === client.user?.id) return;
 
@@ -24,9 +29,21 @@ export default async (cmd: ModTypes.CmdType, executor: Discord.User, client: Dis
   ],
  };
 
- const reply = await (cmd instanceof Discord.Message
-  ? replyMsg(cmd, payload)
-  : replyCmd(cmd, payload));
+ const updateExistingResponse = () => {
+  if (!replyMessage) return undefined;
+
+  if (replyMessage instanceof Discord.Message) {
+   replyMessage.edit(payload);
+   return replyMessage;
+  }
+
+  (cmd as Discord.ChatInputCommandInteraction).editReply({ ...payload, message: replyMessage.id });
+  return replyMessage;
+ };
+
+ const reply = replyMessage
+  ? updateExistingResponse()
+  : await (cmd instanceof Discord.Message ? replyMsg(cmd, payload) : replyCmd(cmd, payload));
 
  if (!reply) return;
  if (!(reply instanceof Discord.Message)) return;

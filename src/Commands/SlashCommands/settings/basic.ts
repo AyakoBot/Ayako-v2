@@ -4,6 +4,9 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
 import requestHandler from '../../../BaseClient/ClientHelperModules/requestHandler.js';
+import { create } from '../../ButtonCommands/rp/toggle.js';
+import en from '../../../Languages/en.js';
+import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 
 const name = 'basic';
 
@@ -34,7 +37,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -42,7 +45,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: `${language.slashCommands.rp.notice}\n${
+  description: `${settings.token ? lan.tokenSetDesc : ''}\n\n${language.slashCommands.rp.notice(
+   (await ch.getCustomCommand(settings.guildid, 'rp'))?.id ?? '0',
+  )}\n${
    ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
        name as keyof typeof ch.constants.tutorials
@@ -208,8 +213,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      .update({
       where: { guildid: guild.id },
       data: { token: null },
+      select: { enabledrp: true },
      })
      .then();
+
     return;
    }
 
@@ -224,7 +231,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    ch.send(
     { id: '1024968281465040957', guildId: '669893888856817665' },
     {
-     content: `New Custom Client`,
+     content: `New Custom Client <@318453143476371456>`,
+     allowed_mentions: {
+      users: ['318453143476371456'],
+     },
      components: [
       {
        type: Discord.ComponentType.ActionRow,
@@ -241,12 +251,20 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     },
    );
 
-   ch.DataBase.guildsettings
-    .update({
-     where: { guildid: guild.id },
-     data: { publickey: me.verify_key, appid: me.id },
-    })
-    .then();
+   const existingCommands = Object.values(en.slashCommands.moderation.permissions.buttons)
+    .map((e) => guild.commands.cache.find((c) => c.name === e))
+    .filter((c): c is Discord.ApplicationCommand => !!c)
+    .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))
+    .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
+
+   await ch.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
+
+   const settings = await ch.DataBase.guildsettings.update({
+    where: { guildid: guild.id },
+    data: { publickey: me.verify_key, appid: me.id },
+    select: { enabledrp: true },
+   });
+   if (settings.enabledrp) await create(guild);
 
    ch.request.commands.getGuildCommands(guild);
    ch.cache.commandPermissions.get(guild, '');

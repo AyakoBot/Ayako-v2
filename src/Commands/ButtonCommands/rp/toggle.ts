@@ -35,7 +35,12 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- await ch.request.commands.bulkOverwriteGuildCommands(cmd.guild, []);
+ await ch.request.commands.bulkOverwriteGuildCommands(
+  cmd.guild,
+  (ch.cache.commands.get(cmd.guild.id) ?? cmd.guild.commands.cache.map((c) => c))
+   .map((c) => c.toJSON() as Discord.APIApplicationCommand)
+   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
+ );
 };
 
 export const create = async (guild: Discord.Guild) => {
@@ -92,7 +97,12 @@ export const create = async (guild: Discord.Guild) => {
    return command;
   });
 
- await guild.commands.set(registerCommands);
+ await ch.request.commands.bulkOverwriteGuildCommands(guild, [
+  ...registerCommands.map((c) => c.toJSON() as Discord.APIApplicationCommand),
+  ...(ch.cache.commands.get(guild.id) ?? guild.commands.cache.map((c) => c))
+   .map((c) => c.toJSON() as Discord.APIApplicationCommand)
+   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
+ ]);
 
  await ch.DataBase.guildsettings.update({
   where: { guildid: guild.id },

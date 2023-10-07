@@ -11,4 +11,25 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (msg: Discord.Message) => {
  if (msg.author.id !== auth.ownerID) return;
  if (!msg.content.startsWith('exe')) return;
+
+ msg.channel.send({
+  embeds: [
+   {
+    description: ch.constants.standard.getEmote(ch.emotes.disabled),
+   },
+  ],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      label: 'test',
+      customId: 'test',
+      style: Discord.ButtonStyle.Primary,
+     },
+    ],
+   },
+  ],
+ });
 };

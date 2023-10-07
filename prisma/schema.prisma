@@ -754,8 +754,6 @@ model stats {
   rolecount    Decimal  @db.Decimal
   allusers     Decimal  @db.Decimal
   willis       String[]
-  antispam     Boolean
-  verbosity    Boolean
   heartbeat    Decimal  @db.Decimal
 }
 

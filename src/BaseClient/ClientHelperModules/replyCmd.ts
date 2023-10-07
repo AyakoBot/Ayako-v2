@@ -34,11 +34,13 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  else payload.flags = Discord.MessageFlags.Ephemeral;
  delete payload.ephemeral;
 
- payload.embeds?.forEach((embed) => {
-  if ('author' in embed && !embed.author?.url && embed.author?.name) {
-   embed.author = { ...embed.author, url: constants.standard.invite };
-  }
- });
+ payload.embeds
+  ?.filter((e) => !!e)
+  .forEach((embed) => {
+   if ('author' in embed && !embed.author?.url && embed.author?.name) {
+    embed.author = { ...embed.author, url: constants.standard.invite };
+   }
+  });
 
  if ('reply' in cmd && cmd.isRepliable()) {
   const m = await cmd.reply(payload).catch((e) => {

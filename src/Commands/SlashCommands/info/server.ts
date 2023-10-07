@@ -39,9 +39,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const embeds = (await getEmbed(serverID))?.flat();
+ const embeds = (await getEmbed(serverID))?.flat().filter((e) => !!e);
 
- if (!embeds) {
+ if (!embeds?.length) {
   ch.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }

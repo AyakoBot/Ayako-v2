@@ -1,5 +1,6 @@
 import * as os from 'os';
 import util from 'util';
+import waveform from 'waveform-data';
 import fetch from 'node-fetch';
 import * as Discord from 'discord.js';
 import auth from '../../../auth.json' assert { type: 'json' };
@@ -11,6 +12,8 @@ Discord.APIVersion;
 fetch.name;
 // eslint-disable-next-line no-unused-expressions
 os.arch;
+// eslint-disable-next-line no-unused-expressions
+waveform;
 
 const reg = new RegExp(auth.token, 'g');
 

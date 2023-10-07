@@ -1242,7 +1242,7 @@ const mod = new Discord.SlashCommandBuilder()
    .setName('temp-ban')
    .setDescription('Temporarily Bans a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Duration)
+   .addStringOption(Duration.setRequired(true))
    .addStringOption(Reason)
    .addStringOption(DeleteMessageDuration),
  )
@@ -1288,7 +1288,6 @@ const mod = new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(Duration)
    .addStringOption(Reason),
  )
  .addSubcommand(
@@ -1777,10 +1776,10 @@ export default {
   stp: 'utility',
   membercount: 'info',
   ping: 'info',
-  'rp-manager': 'fun',
-  'rp-block': 'utility',
-  'rp-unblock': 'utility',
-  'rp-blocked': 'info',
+  rp_manager: 'fun',
+  rp_block: 'utility',
+  rp_unblock: 'utility',
+  rp_blocked: 'info',
   images_neko: 'fun',
   images_husbando: 'fun',
   images_kitsune: 'fun',
@@ -1879,7 +1878,7 @@ export default {
   'stp',
   'membercount',
   'ping',
-  'rp-manager',
+  'rp',
   'images',
   'roles',
   'afk',

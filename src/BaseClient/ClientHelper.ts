@@ -84,6 +84,7 @@ import makeStp from './ClientHelperModules/makeStp.js';
 import sleep from './ClientHelperModules/sleep.js';
 import fetchMessages from './ClientHelperModules/fetchMessages.js';
 import getCustomCommand from './ClientHelperModules/getCustomCommand.js';
+import disableComponents from './ClientHelperModules/disableComponents.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -92,6 +93,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ disableComponents,
  getCustomCommand,
  fetchMessages,
  sleep,

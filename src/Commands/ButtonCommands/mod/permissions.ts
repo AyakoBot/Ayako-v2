@@ -3,22 +3,20 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import Commands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
 import permissions from '../../SlashCommands/mod/permissions.js';
 
-export default async (
- cmd: Discord.ButtonInteraction,
- args: (
-  | 'ban'
-  | 'strike'
-  | 'channel-ban'
-  | 'kick'
-  | 'soft-ban'
-  | 'temp-ban'
-  | 'temp-channel-ban'
-  | 'tempmute'
-  | 'unban'
-  | 'unmute'
-  | 'warn'
- )[],
-) => {
+type CommandType =
+ | 'ban'
+ | 'strike'
+ | 'channel-ban'
+ | 'kick'
+ | 'soft-ban'
+ | 'temp-ban'
+ | 'temp-channel-ban'
+ | 'tempmute'
+ | 'unban'
+ | 'unmute'
+ | 'warn';
+
+export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const response = await cmd.deferReply({ ephemeral: true });
@@ -46,11 +44,22 @@ export default async (
   return;
  }
 
- const mainCmd = Commands.public.mod.toJSON();
- const cmdData = mainCmd.options?.find((o) => o.name === name);
- if (!cmdData) {
-  ch.error(cmd.guild, new Error('Command-Option not found'));
+ const submitCmdData = registerCmd(name, cmd.guild);
+ if (!submitCmdData) {
+  ch.error(cmd.guild, new Error("Couldn't register Command"));
   return;
+ }
+
+ ch.request.commands.createGuildCommand(cmd.guild, submitCmdData);
+ permissions(cmd, [], response);
+};
+
+export const registerCmd = (commandName: CommandType, guild: Discord.Guild) => {
+ const mainCmd = Commands.public.mod.toJSON();
+ const cmdData = mainCmd.options?.find((o) => o.name === commandName);
+ if (!cmdData) {
+  ch.error(guild, new Error('Command-Option not found'));
+  return undefined;
  }
 
  const submitCmd = new Discord.SlashCommandBuilder()
@@ -59,9 +68,7 @@ export default async (
   .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
   .setDMPermission(false);
 
- if (cmdData.name_localizations) {
-  submitCmd.setNameLocalizations(cmdData.name_localizations);
- }
+ if (cmdData.name_localizations) submitCmd.setNameLocalizations(cmdData.name_localizations);
 
  if (cmdData.description_localizations) {
   submitCmd.setDescriptionLocalizations(cmdData.description_localizations);
@@ -80,6 +87,5 @@ export default async (
   submitCmdData.options = cmdData.options;
  }
 
- await ch.request.commands.createGuildCommand(cmd.guild, submitCmdData);
- permissions(cmd, [], response);
+ return submitCmdData;
 };

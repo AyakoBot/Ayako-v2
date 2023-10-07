@@ -412,19 +412,19 @@ export default {
  Message: {
   name: 'Message',
   id: '1155161274859139202',
-  aniamted: false,
+  animated: false,
   link: 'https://cdn.discordapp.com/emojis/1155161274859139202.png',
  },
  MemberBright: {
   name: 'Member',
   id: '1155161273785397289',
-  aniamted: false,
+  animated: false,
   link: 'https://cdn.discordapp.com/emojis/1155161273785397289.png',
  },
  book: {
   name: 'AMAyakoBookGIF',
   id: '1155535992825073714',
-  aniamted: true,
+  animated: true,
   link: 'https://cdn.discordapp.com/emojis/1155535992825073714.png',
  },
 };

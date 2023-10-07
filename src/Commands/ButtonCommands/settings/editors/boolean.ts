@@ -49,7 +49,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
-
  cmd.update({
   embeds: await settingsFile.getEmbeds(
    ch.settingsHelpers.embedParsers,

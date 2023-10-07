@@ -26,17 +26,23 @@ export type ResponseMessage = Discord.InteractionResponse<true> | Discord.Messag
  * @param {CmdType} cmd The command type.
  * @param {T} type The moderation type.
  * @param {CT.ModOptions<T>} options The options for the moderation action.
+ * @param {ResponseMessage} replyMessage The response message object.
  * @returns {Promise<void>} A Promise that resolves when the moderation action has been completed.
  * @throws {Error} If the given moderation type is unknown.
  */
-export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.ModOptions<T>) => {
+export default async <T extends CT.ModTypes>(
+ cmd: CmdType,
+ type: T,
+ options: CT.ModOptions<T>,
+ replyMessage?: ResponseMessage,
+) => {
  if (cache.punishments.has(options.target.id)) {
-  await alreadyExecuting(cmd, options.executor, options.guild.client);
+  await alreadyExecuting(cmd, options.executor, options.guild.client, replyMessage);
   return;
  }
  cache.punishments.add(options.target.id);
 
- const basicsResponse = await runBasics1(options, cmd, type);
+ const basicsResponse = await runBasics1(options, cmd, type, replyMessage);
  if (!basicsResponse) {
   cache.punishments.delete(options.target.id);
   return;
@@ -126,14 +132,19 @@ export default async <T extends CT.ModTypes>(cmd: CmdType, type: T, options: CT.
 };
 
 /**
- * Runs basic operations for a client helper module.
+ * Runs basic checks and operations for a client helper module.
  * @param options - The options for the operation.
- * @param cmd - The command type.
- * @param type - The module type.
- * @returns An object containing the message and language,
- * or false if the operation is not successful.
+ * @param cmd - The command being executed.
+ * @param type - The type of the module.
+ * @param replyMessage - The message that was replied with.
+ * @returns An object containing the message and language, or false if certain conditions are met.
  */
-const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTypes) => {
+const runBasics1 = async (
+ options: CT.BaseOptions,
+ cmd: CmdType,
+ type: CT.ModTypes,
+ replyMessage: ResponseMessage,
+) => {
  const language = await getLanguage(options.guild.id);
 
  if (options.dbOnly) {
@@ -142,7 +153,7 @@ const runBasics1 = async (options: CT.BaseOptions, cmd: CmdType, type: CT.ModTyp
   return false;
  }
 
- const message = await startLoading(cmd, language, type);
+ const message = replyMessage ?? (await startLoading(cmd, language, type));
 
  if (await isMe(cmd, options.guild.client.user, message, language, options, type)) return false;
  if (isSelf(cmd, options.executor, options.target, message, language, type)) return false;

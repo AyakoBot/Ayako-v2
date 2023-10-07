@@ -142,7 +142,7 @@ const updateLevels = async (
    .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
  );
  const oldLevel = Number(level.level);
- const xp = newXP + Number(level.xp);
+ const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
  const neededXP =
   (5 / 6) * (oldLevel + 1) * (2 * (oldLevel + 1) * (oldLevel + 1) + 27 * (oldLevel + 1) + 91);
 

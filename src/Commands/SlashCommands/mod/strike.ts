@@ -13,7 +13,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guildId);
 
  if (!strike) {
-  ch.errorCmd(cmd, language.slashCommands.moderation.strike.notEnabled, language);
+  ch.errorCmd(
+   cmd,
+   language.slashCommands.moderation.strike.notEnabled(
+    (await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0',
+   ),
+   language,
+  );
   return;
  }
 

@@ -24,8 +24,9 @@ const client = new Discord.Client({
   afk: false,
   activities: [
    {
-    name: 'start-up tasks...',
-    type: Discord.ActivityType.Listening,
+    state: 'Starting up...',
+    name: 'Starting up...',
+    type: Discord.ActivityType.Custom,
    },
   ],
  },

@@ -28,7 +28,11 @@ export default async (
  }
 
  if (message.author.id !== cmd.client.user.id) {
-  ch.errorCmd(cmd, lan.messageNotFromMe, language);
+  ch.errorCmd(
+   cmd,
+   lan.messageNotFromMe((await ch.getCustomCommand(cmd.guildId, 'embed-builder'))?.id ?? '0'),
+   language,
+  );
  }
 
  const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
@@ -68,9 +72,11 @@ export default async (
  const payload = {
   embeds: [
    {
-    description: `${type === 'button-roles' ? lan.descButtons : lan.descReactions}\n\n${
-     lan.buttons
-    }`,
+    description: `${
+     type === 'button-roles'
+      ? lan.descButtons((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
+      : lan.descReactions((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
+    }\n\n${lan.buttons}`,
     url: message.url,
     fields: settings
      ?.filter((s) => !!s.emote)

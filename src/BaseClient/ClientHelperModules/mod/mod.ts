@@ -688,7 +688,8 @@ const mod = {
  ) => {
   const strike = await getStrike(options.target, options.guild);
   if (!strike) {
-   (await import(`../mod.js`)).default(cmd, 'warnAdd', options);
+   cache.punishments.delete(options.target.id);
+   (await import(`../mod.js`)).default(cmd, 'warnAdd', options, message);
    return;
   }
 

@@ -279,7 +279,7 @@ const buttonParsers = {
    style:
     (typeof setting !== 'boolean' && setting && String(setting).length) || !!setting
      ? Discord.ButtonStyle.Primary
-     : Discord.ButtonStyle.Secondary,
+     : Discord.ButtonStyle.Danger,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
     name,
    )}_${settingName}_${uniquetimestamp}`,
@@ -313,7 +313,7 @@ const buttonParsers = {
     ].fields as FieldName<T>
    )[name] as unknown as Record<string, string>
   ).name,
-  style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+  style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
   custom_id: `settings/editors/settinglink_${String(
    name,
   )}_${settingName}_${linkName}_${uniquetimestamp}`,
@@ -348,7 +348,7 @@ const buttonParsers = {
      ].fields as FieldName<T>
     )[name] as unknown as Record<'name', string>
    ).name,
-   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
    custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
     name,
    )}_${settingName}_${uniquetimestamp}`,
@@ -966,7 +966,7 @@ const changeHelpers = {
   uniquetimestamp: number | undefined | string,
  ): Discord.APIButtonComponent => ({
   type: Discord.ComponentType.Button,
-  style: Discord.ButtonStyle.Secondary,
+  style: Discord.ButtonStyle.Danger,
   custom_id: `settings/empty/${type}_${name}_${fieldName}_${uniquetimestamp}`,
   label: language.Empty,
  }),

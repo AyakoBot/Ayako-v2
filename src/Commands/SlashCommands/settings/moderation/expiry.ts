@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -38,11 +38,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
-     ].map((t) => `[${t.name}](${t.link})`)}`
-   : undefined,
+  description: `${lan.desc((await ch.getCustomCommand(settings.guildid, 'check'))?.id ?? '0')}\n${
+   ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
+       name as keyof typeof ch.constants.tutorials
+      ].map((t) => `[${t.name}](${t.link})`)}`
+    : ''
+  }`,
   fields: [
    {
     name: lan.fields.bans.name,

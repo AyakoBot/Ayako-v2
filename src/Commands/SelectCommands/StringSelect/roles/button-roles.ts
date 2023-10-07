@@ -31,7 +31,10 @@ export default async (
 
  const embed = JSON.parse(JSON.stringify(cmd.message.embeds[0].data)) as Discord.APIEmbed;
 
- embed.description = type === 'reaction-roles' ? lan.descReactions : lan.descButtons;
+ embed.description =
+  type === 'reaction-roles'
+   ? lan.descReactions((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
+   : lan.descButtons((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0');
  embed.fields = [
   ...(embed.fields ?? []),
   ...(findField(value, embed.fields)
