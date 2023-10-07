@@ -6,6 +6,7 @@ import replyCmd from './replyCmd.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import emotes from './emotes.js';
+import cache from './cache.js';
 
 type Command =
  | {
@@ -75,7 +76,11 @@ const getDesc = (
  * @returns The description of the command or subcommand group in the specified language.
  */
 const getDescription = (language: CT.Language, command: string, subCommandGroup?: string) => {
- const cJSON = SlashCommands.public[command as keyof typeof SlashCommands.public].toJSON();
+ const cJSON = Object.values(SlashCommands.public)
+  ?.find((c) => c.name === command)
+  ?.toJSON();
+ if (!cJSON) return '';
+
  const c = (() => {
   if (subCommandGroup) return cJSON.options?.find((o) => o.name === subCommandGroup) ?? cJSON;
   return cJSON;
@@ -102,12 +107,13 @@ const getDescription = (language: CT.Language, command: string, subCommandGroup?
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
  type: CT.CommandCategories,
+ selected?: string,
 ) => {
  const rawCommands = Object.entries(SlashCommands.categories)
   .filter(([, val]) => val === type)
   .map(([k]) => k);
  const commandArgs = rawCommands.map((k) => k.split(/_/g));
- const commands = commandArgs
+ const allCommands = commandArgs
   .map((k) => {
    if (k.length === 3) {
     return {
@@ -120,6 +126,15 @@ export default async (
    return { parentCommand: k.at(0) as string };
   })
   .filter((c) => !!c);
+
+ const categories = [...new Set(allCommands.map((c) => c.parentCommand))];
+
+ const commands =
+  categories.length === 1
+   ? allCommands
+   : allCommands.filter((c) =>
+      selected && selected !== 'other' ? c.parentCommand === selected : !c.subCommand,
+     );
 
  const commandsWithSubCommandsOrSubCommandGroups = commands.filter(
   (c) => c.subCommand || c.subCommandGroup,
@@ -150,6 +165,38 @@ export default async (
    type,
   ),
   components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.StringSelect,
+      custom_id: `help/viewCommand_${type}`,
+      placeholder: language.slashCommands.help.selectCommand,
+      disabled: categories.length === 1,
+      options:
+       categories.length === 1
+        ? [{ label: '-', value: '-' }]
+        : allCommands
+           .map((c) => ({
+            parent: c.subCommand ? c.parentCommand : undefined,
+            sub: c.subCommand ?? c.parentCommand,
+           }))
+           .reverse()
+           .filter(
+            (c, i, arr) =>
+             arr.findIndex(
+              (t) => t.parent === c.parent || t.sub === c.sub || t.sub === c.parent,
+             ) === i,
+           )
+           .map((c) => ({
+            label: (c.parent || language.Other) as string,
+            value: c.parent || 'other',
+            default: c.parent === selected || (!selected && !c.parent),
+           }))
+           .sort((a) => (a.value === 'other' ? -1 : 1)),
+     },
+    ],
+   },
    {
     type: Discord.ComponentType.ActionRow,
     components: [
@@ -198,7 +245,9 @@ const getEmbeds = (
  type: CT.CommandCategories,
 ) => {
  const lan = language.slashCommands.help;
- const fetchedCommands = cmd.client.application.commands.cache;
+ const fetchedCommands = cmd.guildId
+  ? cache.commands.get(cmd.guildId) ?? cmd.client.application.commands.cache.map((c) => c)
+  : cmd.client.application.commands.cache.map((c) => c);
 
  const embed: Discord.APIEmbed = {
   color: constants.colors.base,

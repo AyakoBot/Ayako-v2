@@ -1540,6 +1540,7 @@ export default {
    subCommandGroups: 'The Sub-Command-Groups in this Category are:',
    footer: 'A "?" in the Option Name means that the Option is optional',
    selectPlaceholder: 'Select a Category to view',
+   selectCommand: 'Select a Command to view',
    author: 'Help for Commands, Sub-Command-Groups, Sub-Commands, and their Arguments',
    clickMe: 'Click me to join the Support Server',
   },
@@ -4338,4 +4339,5 @@ export default {
  After: 'After',
  Extra: 'Extra',
  Invite: 'Invite Custom Bot',
+ Other: 'Other',
 };
