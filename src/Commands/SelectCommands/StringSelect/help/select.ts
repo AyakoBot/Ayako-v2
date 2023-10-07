@@ -4,5 +4,5 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  const selected = cmd.values[0];
- ch.helperHelpers(cmd, selected as CT.CommandCategories);
+ ch.helpHelpers(cmd, selected as CT.CommandCategories);
 };
