@@ -57,7 +57,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
      ? parsedIcon
      : undefined,
-   permissions: permissionRole?.permissions.bitfield.toString(),
+   permissions: permissionRole
+    ? new Discord.PermissionsBitField(
+       permissionRole?.permissions
+        .toArray()
+        .filter((p) => cmd.member.roles.highest.permissions.toArray().includes(p)),
+      ).bitfield.toString()
+    : undefined,
   },
   cmd.user.username,
  );

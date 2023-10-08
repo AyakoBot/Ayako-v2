@@ -882,12 +882,12 @@ export default {
     'reaction-role-settings': {
      onlyone: 'boolean',
      anyroles: 'roles',
-     msgid: 'message',
+     messagelink: 'message',
     },
     'button-role-settings': {
      onlyone: 'boolean',
      anyroles: 'roles',
-     msgid: 'message',
+     messagelink: 'message',
     },
     'button-roles': {
      emote: 'emote',
