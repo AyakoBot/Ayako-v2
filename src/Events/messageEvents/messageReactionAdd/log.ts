@@ -36,7 +36,7 @@ export default async (
    description: msg.reactions.cache
     .map(
      (r) =>
-      `\`${ch.spaces(`${r.count}`, 5)}\` ${
+      `\`${ch.spaces(`${r.count ?? 1}`, 5)}\` ${
        (reaction.emoji.id && r.emoji.id && reaction.emoji.id === r.emoji.id) ||
        (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
         ? ` ${ch.constants.standard.getEmote(ch.emotes.plusBG)}`

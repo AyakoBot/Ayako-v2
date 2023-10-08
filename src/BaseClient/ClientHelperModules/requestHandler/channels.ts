@@ -149,6 +149,29 @@ const getReactions = (
      return;
     }
 
+    if (
+     resolvedEmoji.id ??
+     (resolvedEmoji.name &&
+      !message.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? ''))
+    ) {
+     message.reactions.cache.set(
+      resolvedEmoji.id ?? resolvedEmoji.name ?? '',
+      new Classes.MessageReaction(
+       message.client,
+       {
+        count: parsed.length,
+        emoji: {
+         id: resolvedEmoji.id ?? null,
+         name: resolvedEmoji.name ?? null,
+         animated: resolvedEmoji.animated,
+        },
+        me: false,
+       },
+       message,
+      ),
+     );
+    }
+
     message.reactions.cache
      .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
      ?.users.cache.set(p.id, p);

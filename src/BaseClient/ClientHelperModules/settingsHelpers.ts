@@ -1461,16 +1461,20 @@ export const updateLog = async <T extends keyof SettingsNames>(
     return [
      {
       name: language.Before,
-      value: `${makeInlineCode(field.name)}:\n${makeCodeBlock(
-       (oldSetting?.[changedSetting] as string) ?? ' ',
-      )}`,
+      value: `${makeInlineCode(field.name)}:\n${
+       oldSetting?.[changedSetting]
+        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
+        : language.None
+      }`,
       inline: false,
      },
      {
       name: language.After,
-      value: `${makeInlineCode(field.name)}:\n${makeCodeBlock(
-       (newSetting?.[changedSetting] as string) ?? ' ',
-      )}`,
+      value: `${makeInlineCode(field.name)}:\n${
+       oldSetting?.[changedSetting]
+        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
+        : language.None
+      }`,
       inline: false,
      },
     ];

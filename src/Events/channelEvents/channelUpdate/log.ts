@@ -289,9 +289,13 @@ export default async (
   if (removedPerms.length) typeID = 15;
 
   const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
-   if (denied) return ch.emotes.switch.disabled.map((e) => ch.constants.standard.getEmote(e));
-   if (allowed) return ch.emotes.switch.enabled.map((e) => ch.constants.standard.getEmote(e));
-   return ch.emotes.switch.neutral.map((e) => ch.constants.standard.getEmote(e));
+   if (denied) {
+    return ch.emotes.switch.disabled.map((e) => ch.constants.standard.getEmote(e)).join('');
+   }
+   if (allowed) {
+    return ch.emotes.switch.enabled.map((e) => ch.constants.standard.getEmote(e)).join('');
+   }
+   return ch.emotes.switch.neutral.map((e) => ch.constants.standard.getEmote(e)).join('');
   };
 
   let atLeastOneAdded = false;

@@ -362,3 +362,14 @@ export class ModalSubmit extends Discord.ModalSubmitInteraction {
   super(client, data);
  }
 }
+
+// @ts-ignore
+export class MessageReaction extends Discord.MessageReaction {
+ constructor(
+  client: Discord.Client<true>,
+  data: RawData.RawMessageReactionData,
+  message: Discord.Message<true>,
+ ) {
+  super(client, data, message);
+ }
+}
