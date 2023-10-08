@@ -16,7 +16,7 @@ export interface DeleteThreads {
  /**
   * Removes a thread deletion job from the cache.
   * @param guildId - The ID of the guild the job is associated with.
-  * @param channelIdF - The ID of the channel the job is associated with.
+  * @param channelId - The ID of the channel the job is associated with.
   */
  delete: (guildId: string, channelIdF: string) => void;
 

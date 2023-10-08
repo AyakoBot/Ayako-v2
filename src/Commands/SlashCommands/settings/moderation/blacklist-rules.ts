@@ -65,9 +65,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
        .join(', ')
     : language.None
   }`,
-  value: `${
-   r.enabled ? ch.emotes.enabled : ch.emotes.disabled
-  } - ID: ${ch.util.makeInlineCode(r.id)}`,
+  value: `${r.enabled ? ch.emotes.enabled : ch.emotes.disabled} - ID: ${ch.util.makeInlineCode(
+   r.id,
+  )}`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -554,9 +554,7 @@ export const getComponents = (
               ],
              style: Discord.ButtonStyle.Secondary,
              custom_id: `settings/autoModRule/boolean_timeout_${rule.id}`,
-             emoji: getActionMetadata(rule, 'Timeout')
-              ? ch.emotes.enabled
-              : ch.emotes.disabled,
+             emoji: getActionMetadata(rule, 'Timeout') ? ch.emotes.enabled : ch.emotes.disabled,
              disabled: rule.actions.length === 1 && !!getActionMetadata(rule, 'Timeout'),
             },
            ]

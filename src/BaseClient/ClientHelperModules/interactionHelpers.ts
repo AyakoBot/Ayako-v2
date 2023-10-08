@@ -186,7 +186,7 @@ const reply = async (
     cooldown.delete(cmd.message.id);
    });
 
-   if (await isDeleteable(cmd.message)) cmd.message.delete();
+   if (await isDeleteable(cmd.message)) request.channels.deleteMessage(cmd.message);
    send(cmd.channel, payload);
   }
   return;

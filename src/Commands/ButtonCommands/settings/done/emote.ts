@@ -27,7 +27,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const lastMessage = await cmd.channel?.messages.fetch({ limit: 1 }).catch(() => undefined);
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
-  cmd.channel?.delete().catch(() => undefined);
+  ch.request.channels.delete(cmd.guild, cmd.channelId);
  }
 
  if (!lastMessage) return;

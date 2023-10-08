@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { findBestMatch } from 'string-similarity';
 import Constants from '../Other/constants.js';
 
-const colors = {
+export const colors = {
  transparent: Constants.colors.ephemeral,
  none: Constants.colors.ephemeral,
  red: Constants.colors.danger,

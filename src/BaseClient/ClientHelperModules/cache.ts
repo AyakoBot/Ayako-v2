@@ -23,6 +23,8 @@ import votes, { Votes } from './cache/bot/votes.js';
 import giveaways, { Giveaways } from './cache/bot/giveaways.js';
 import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
+import deleteSuggestions, { DeleteSuggestions } from './cache/bot/deleteSuggestions.js';
+
 import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
 import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
 import fishFish, { FishFish } from './cache/urls/fishFish.js';
@@ -58,6 +60,7 @@ const cache: {
  commands: Map<string, Discord.ApplicationCommand[]>;
  punishments: Set<string>;
  antispam: Map<string, Discord.Message<true>[]>;
+ deleteSuggestions: DeleteSuggestions;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -97,6 +100,7 @@ const cache: {
  commands: new Map(),
  punishments: new Set(),
  antispam: new Map(),
+ deleteSuggestions,
 
  // URLs
  urlTLDs,

@@ -22,12 +22,7 @@ async function send(
  command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
-async function send(
- channels: { id: string; guildId: string },
- payload: CT.UsualMessagePayload,
- command?: CT.Command,
- timeout?: number,
-): Promise<Discord.Message | null | void>;
+
 async function send(
  channels: { id: string[]; guildId: string },
  payload: CT.UsualMessagePayload,
@@ -36,6 +31,12 @@ async function send(
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: Discord.TextBasedChannel,
+ payload: CT.UsualMessagePayload,
+ command?: CT.Command,
+ timeout?: number,
+): Promise<Discord.Message | null | void>;
+async function send(
+ channels: { id: string; guildId: string },
  payload: CT.UsualMessagePayload,
  command?: CT.Command,
  timeout?: number,
