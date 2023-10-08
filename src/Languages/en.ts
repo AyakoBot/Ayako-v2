@@ -1438,6 +1438,35 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  suggest: {
+   accepted: 'Suggestion accepted',
+   rejected: 'Suggestion rejected',
+   notOwner:
+    "Only the Submitter of the Suggestion and Suggestion-Approvers can use this Button\nOr this Suggestion couldn't be found",
+   banned: (user: Discord.User) => `${getUser(user)}was banned from submitting Suggestions`,
+   cantBan: (cmdId: string) => `**You can't ban this User**
+   Either because Suggestions aren't enabled on this Server
+   because you are lacking the Permissions to
+   or because they are already banned
+
+   Unban Users in </settings automation suggestions:${cmdId}>`,
+   tldr: 'TL;DR',
+   downvotes: 'Downvotes',
+   upvotes: 'Upvotes',
+   anonVote: 'Votes are Anonymous',
+   notFound: 'Suggestion not found or ended',
+   cannotSend: "You can't submit Suggestions",
+   cannotVote: "You can't vote on Suggestions",
+   notEnabled: "Suggestions aren't enabled on this Server",
+   author: `${name} Suggestions`,
+   votes: 'Votes',
+   view: 'View Votes',
+   accept: 'Accept',
+   reject: 'Reject',
+   sent: `Suggestion submitted\nYou can delete it using the ${ch.constants.standard.getEmote(
+    ch.emotes.trash,
+   )} Button on your Suggestion`,
+  },
   reminder: {
    reminderNotExist: "This Reminder doesn't exist",
    deleted: 'Reminder deleted',
@@ -1837,7 +1866,7 @@ export default {
     self: 'nuzzles into themself, probably to find out if they should take a shower',
     others: ['lets', 'nuzzle into them'],
     request: 'wants to nuzzle into you!',
-    buttons: ['Nuzzle together~', 'Reject and bonk òwó'],
+    buttons: ['Nuzzle together~', 'Bonk òwó'],
    },
    mew: {
     self: 'Mew =^_^=',
@@ -2863,6 +2892,22 @@ export default {
     suggestions: {
      name: 'Suggestions',
      fields: {
+      deletedenied: {
+       name: 'Delete Denied Suggestions',
+       desc: 'Whether to delete denied Suggestions',
+      },
+      deleteapproved: {
+       name: 'Delete Approved Suggestions',
+       desc: 'Whether to delete approved Suggestions',
+      },
+      deletedeniedafter: {
+       name: 'Delete Denied Suggestions after',
+       desc: 'How long to wait before deleting denied Suggestions',
+      },
+      deleteapprovedafter: {
+       name: 'Delete Approved Suggestions after',
+       desc: 'How long to wait before deleting approved Suggestions',
+      },
       channelid: {
        name: 'Suggestion Channel',
        desc: 'The Channel to post Suggestions in',

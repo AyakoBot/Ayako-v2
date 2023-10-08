@@ -24,7 +24,16 @@ export default (guild: Discord.Guild) => {
   );
  }
 
+ ch.cache.invites.cache.delete(guild.id);
+ ch.cache.webhooks.cache.delete(guild.id);
+ ch.cache.integrations.cache.delete(guild.id);
  ch.cache.scheduledEventUsers.cache.delete(guild.id);
+ ch.cache.welcomeScreens.delete(guild.id);
+ ch.cache.pins.cache.delete(guild.id);
+ ch.cache.onboarding.delete(guild.id);
+ ch.cache.commandPermissions.cache.delete(guild.id);
+ ch.cache.auditLogs.cache.delete(guild.id);
+
  ch.cache.giveawayClaimTimeout.cache.delete(guild.id);
  ch.cache.mutes.cache.delete(guild.id);
  ch.cache.bans.cache.delete(guild.id);
@@ -32,8 +41,8 @@ export default (guild: Discord.Guild) => {
  ch.cache.disboardBumpReminders.cache.get(guild.id)?.cancel();
  ch.cache.disboardBumpReminders.cache.delete(guild.id);
  ch.cache.giveaways.cache.delete(guild.id);
- ch.cache.invites.cache.delete(guild.id);
- ch.cache.webhooks.cache.delete(guild.id);
- ch.cache.integrations.cache.delete(guild.id);
- ch.cache.welcomeScreens.delete(guild.id);
+ ch.cache.deleteThreads.cache.delete(guild.id);
+ ch.cache.apis.delete(guild.id);
+ ch.cache.commands.delete(guild.id);
+ ch.cache.deleteSuggestions.cache.delete(guild.id);
 };

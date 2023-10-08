@@ -8,6 +8,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
+import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
 
 export default () => {
  reminder();
@@ -37,6 +38,37 @@ const reminder = async () => {
 };
 
 export const tasks = {
+ deleteSuggestions: async (guild: Discord.Guild) => {
+  const settings = await ch.DataBase.suggestionsettings.findUnique({
+   where: {
+    guildid: guild.id,
+    active: true,
+    OR: [{ deleteapproved: true }, { deletedenied: true }],
+   },
+  });
+  if (!settings) return;
+
+  const suggestions = await ch.DataBase.suggestionvotes.findMany({
+   where: { guildid: guild.id },
+  });
+
+  suggestions.forEach((s) => {
+   ch.cache.deleteSuggestions.set(
+    Jobs.scheduleJob(
+     new Date(
+      Date.now() +
+       (s.approved ? Number(settings.deleteapprovedafter) : Number(settings.deletedeniedafter)) *
+        1000,
+     ),
+     async () => {
+      endDeleteSuggestion(s);
+     },
+    ),
+    guild.id,
+    s.msgid,
+   );
+  });
+ },
  disboard: async (guild: Discord.Guild) => {
   const disboardBumpReminders = await ch.DataBase.disboard.findUnique({
    where: { guildid: guild.id },

@@ -698,6 +698,10 @@ export default {
      kicktof: 'boolean',
     },
     suggestions: {
+     deletedenied: 'boolean',
+     deleteapproved: 'boolean',
+     deletedeniedafter: 'duration',
+     deleteapprovedafter: 'duration',
      channelid: 'channel',
      novoteroles: 'roles',
      novoteusers: 'users',

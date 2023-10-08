@@ -798,31 +798,36 @@ model stickyrolemembers {
 }
 
 model suggestionsettings {
-  guildid        String   @id @db.VarChar
-  active         Boolean  @default(false)
-  channelid      String?  @db.VarChar
-  novoteroles    String[] @db.VarChar
-  novoteusers    String[] @db.VarChar
-  approverroleid String[] @db.VarChar
-  anonvote       Boolean  @default(false)
-  nosendroles    String[] @db.VarChar
-  nosendusers    String[] @db.VarChar
-  anonsuggestion Boolean  @default(false)
-  pingroleid     String[] @db.VarChar
-  pinguserid     String[] @db.VarChar
+  guildid             String   @id @db.VarChar
+  active              Boolean  @default(false)
+  channelid           String?  @db.VarChar
+  novoteroles         String[] @db.VarChar
+  novoteusers         String[] @db.VarChar
+  approverroleid      String[] @db.VarChar
+  anonvote            Boolean  @default(false)
+  nosendroles         String[] @db.VarChar
+  nosendusers         String[] @db.VarChar
+  anonsuggestion      Boolean  @default(false)
+  pingroleid          String[] @db.VarChar
+  pinguserid          String[] @db.VarChar
+  deletedenied        Boolean  @default(false)
+  deleteapproved      Boolean  @default(false)
+  deletedeniedafter   Decimal  @db.Decimal @default(86400) 
+  deleteapprovedafter Decimal  @db.Decimal @default(86400)
 
   @@index(guildid)
 }
 
 model suggestionvotes {
   guildid   String   @db.VarChar
+  channelid String   @db.VarChar
   msgid     String   @db.VarChar
   userid    String   @db.VarChar
   downvoted String[] @db.VarChar
   upvoted   String[] @db.VarChar
-  ended     Boolean
+  approved  Boolean  @default(false)
 
-  @@id([msgid, userid])
+  @@id(msgid)
   @@index(guildid)
 }
 

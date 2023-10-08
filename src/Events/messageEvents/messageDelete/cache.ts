@@ -44,4 +44,7 @@ export default (msg: Discord.Message) => {
    })
    .then();
  });
+
+ ch.DataBase.suggestionvotes.delete({ where: { msgid: msg.id } }).then();
+ ch.cache.deleteSuggestions.delete(msg.guildId, msg.id);
 };

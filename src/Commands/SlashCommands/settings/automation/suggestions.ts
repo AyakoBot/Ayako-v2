@@ -75,6 +75,39 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
+    name: lan.fields.deletedenied.name,
+    value: embedParsers.boolean(settings?.deletedenied, language),
+    inline: true,
+   },
+   ...(settings?.deletedenied
+    ? [
+       {
+        name: lan.fields.deletedeniedafter.name,
+        value: embedParsers.time(Number(settings?.deletedeniedafter), language),
+        inline: true,
+       },
+      ]
+    : []),
+   {
+    name: lan.fields.deleteapproved.name,
+    value: embedParsers.boolean(settings?.deleteapproved, language),
+    inline: true,
+   },
+   ...(settings?.deleteapproved
+    ? [
+       {
+        name: lan.fields.deleteapprovedafter.name,
+        value: embedParsers.time(Number(settings?.deleteapproved), language),
+        inline: true,
+       },
+      ]
+    : []),
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
+   {
     name: lan.fields.novoteroles.name,
     value: embedParsers.roles(settings?.novoteroles, language),
     inline: false,
@@ -123,6 +156,37 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.boolean(language, settings?.anonsuggestion, 'anonsuggestion', name, undefined),
   ],
  },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(language, settings?.deletedenied, 'deletedenied', name, undefined),
+   ...(settings?.deletedenied
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.deletedeniedafter,
+        'deletedeniedafter',
+        name,
+        undefined,
+       ),
+      ]
+    : []),
+   buttonParsers.boolean(language, settings?.deleteapproved, 'deleteapproved', name, undefined),
+   ...(settings?.deleteapproved
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.deleteapprovedafter,
+        'deleteapprovedafter',
+        name,
+        undefined,
+        'role',
+       ),
+      ]
+    : []),
+  ],
+ },
+
  {
   type: Discord.ComponentType.ActionRow,
   components: [

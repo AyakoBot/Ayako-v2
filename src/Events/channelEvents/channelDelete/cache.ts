@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default (channel: Discord.Channel) => {
+export default async (channel: Discord.Channel) => {
  if (channel.isDMBased()) return;
 
  const giveaways = ch.cache.giveaways.cache.get(channel.guildId)?.get(channel.id);
@@ -44,4 +44,12 @@ export default (channel: Discord.Channel) => {
 
  ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } }).then();
  ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } }).then();
+
+ const suggestions = await ch.DataBase.suggestionvotes.findMany({
+  where: { channelid: channel.id },
+ });
+ suggestions.forEach((s) => {
+  ch.cache.deleteSuggestions.delete(s.guildid, s.msgid);
+ });
+ ch.DataBase.suggestionvotes.deleteMany({ where: { channelid: channel.id } }).then();
 };
