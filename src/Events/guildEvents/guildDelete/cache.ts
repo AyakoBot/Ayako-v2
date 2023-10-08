@@ -34,15 +34,22 @@ export default (guild: Discord.Guild) => {
  ch.cache.commandPermissions.cache.delete(guild.id);
  ch.cache.auditLogs.cache.delete(guild.id);
 
+ ch.cache.giveawayClaimTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.giveawayClaimTimeout.cache.delete(guild.id);
+ ch.cache.mutes.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.mutes.cache.delete(guild.id);
+ ch.cache.bans.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.bans.cache.delete(guild.id);
+ ch.cache.channelBans.cache.get(guild.id)?.forEach((i) => i.forEach((j) => j.cancel()));
  ch.cache.channelBans.cache.delete(guild.id);
  ch.cache.disboardBumpReminders.cache.get(guild.id)?.cancel();
  ch.cache.disboardBumpReminders.cache.delete(guild.id);
+ ch.cache.giveaways.cache.get(guild.id)?.forEach((i) => i.forEach((j) => j.cancel()));
  ch.cache.giveaways.cache.delete(guild.id);
+ ch.cache.deleteThreads.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.deleteThreads.cache.delete(guild.id);
  ch.cache.apis.delete(guild.id);
  ch.cache.commands.delete(guild.id);
+ ch.cache.deleteSuggestions.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.deleteSuggestions.cache.delete(guild.id);
 };
