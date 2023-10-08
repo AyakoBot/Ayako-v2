@@ -54,29 +54,33 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.boolean(settings?.usestrike, language),
     inline: false,
    },
-   {
-    name: lan.fields.action.name,
-    value: settings?.action
-     ? language.punishments[settings?.action as keyof typeof language.punishments]
-     : language.None,
-    inline: true,
-   },
-   ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
+   ...(!settings.usestrike
     ? [
        {
-        name: lan.fields.duration.name,
-        value: embedParsers.time(Number(settings?.duration) * 1000, language),
+        name: lan.fields.action.name,
+        value: settings?.action
+         ? language.punishments[settings?.action as keyof typeof language.punishments]
+         : language.None,
         inline: true,
        },
-      ]
-    : []),
-   ...(['ban', 'softban', 'tempban'].includes(settings?.action)
-    ? [
-       {
-        name: lan.fields.deletemessageseconds.name,
-        value: embedParsers.time(Number(settings?.deletemessageseconds) * 1000, language),
-        inline: true,
-       },
+       ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
+        ? [
+           {
+            name: lan.fields.duration.name,
+            value: embedParsers.time(Number(settings?.duration) * 1000, language),
+            inline: true,
+           },
+          ]
+        : []),
+       ...(['ban', 'softban', 'tempban'].includes(settings?.action)
+        ? [
+           {
+            name: lan.fields.deletemessageseconds.name,
+            value: embedParsers.time(Number(settings?.deletemessageseconds) * 1000, language),
+            inline: true,
+           },
+          ]
+        : []),
       ]
     : []),
    {
@@ -105,26 +109,30 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.boolean(language, settings?.usestrike, 'usestrike', name, undefined),
   ],
  },
- {
-  type: Discord.ComponentType.ActionRow,
-  components: [
-   buttonParsers.specific(language, settings?.action, 'action', name, undefined),
-   ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
-    ? [buttonParsers.specific(language, settings?.duration, 'duration', name, undefined)]
-    : []),
-   ...(['tempban', 'softban', 'ban'].includes(settings?.action)
-    ? [
-       buttonParsers.specific(
-        language,
-        settings?.deletemessageseconds,
-        'deletemessageseconds',
-        name,
-        undefined,
-       ),
-      ]
-    : []),
-  ],
- },
+ ...(!settings.usestrike
+  ? [
+     {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+       buttonParsers.specific(language, settings?.action, 'action', name, undefined),
+       ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)
+        ? [buttonParsers.specific(language, settings?.duration, 'duration', name, undefined)]
+        : []),
+       ...(['tempban', 'softban', 'ban'].includes(settings?.action)
+        ? [
+           buttonParsers.specific(
+            language,
+            settings?.deletemessageseconds,
+            'deletemessageseconds',
+            name,
+            undefined,
+           ),
+          ]
+        : []),
+      ],
+     } as Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>,
+    ]
+  : []),
  {
   type: Discord.ComponentType.ActionRow,
   components: [

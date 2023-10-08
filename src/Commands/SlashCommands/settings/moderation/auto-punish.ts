@@ -197,13 +197,28 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings?.uniquetimestamp),
    ),
-   buttonParsers.specific(
-    language,
-    settings?.duration,
-    'duration',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
+   ...(['tempmute', 'tempban', 'tempchannelban'].includes(settings.punishment)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.duration,
+        'duration',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+      ]
+    : []),
+   ...(['tempban', 'ban', 'softban'].includes(settings.punishment)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.deletemessageseconds,
+        'deletemessageseconds',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+      ]
+    : []),
   ],
  },
  {
