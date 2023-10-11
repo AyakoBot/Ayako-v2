@@ -3314,10 +3314,6 @@ export default {
        name: 'Message',
        desc: 'The Message these Settings apply to',
       },
-      onlyone: {
-       name: 'Only One',
-       desc: 'Whether only one Role can be taken',
-      },
       anyroles: {
        name: 'Any Roles',
        desc: 'Roles given to the Member once any of the Roles were taken',
@@ -3517,6 +3513,8 @@ export default {
   autoroles: `${name} Auto-Roles`,
   stickyroles: `${name} Sticky-Roles`,
   stickyperms: `${name} Sticky-Channel-Perms`,
+  reactionroles: `${name} Reaction-Roles`,
+  buttonroles: `${name} Button-Roles`,
  },
  mod: {
   warning: {

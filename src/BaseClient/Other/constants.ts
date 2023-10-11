@@ -880,7 +880,6 @@ export default {
      rewardroles: 'roles',
     },
     'reaction-role-settings': {
-     onlyone: 'boolean',
      anyroles: 'roles',
      messagelink: 'message',
     },

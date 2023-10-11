@@ -661,7 +661,6 @@ model reactionrolesettings {
   guildid         String   @db.VarChar
   msgid           String?  @db.VarChar
   uniquetimestamp Decimal  @id(map: "rrsettings_pkey") @db.Decimal
-  onlyone         Boolean  @default(false)
   active          Boolean  @default(false)
   anyroles        String[] @db.VarChar
   channelid       String?  @db.VarChar
