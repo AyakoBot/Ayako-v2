@@ -110,7 +110,7 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('auto-punish')
      .setDescription('Help Moderators punish consistently')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -126,7 +126,7 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('blacklist-rules')
      .setDescription('The Rules of the Blacklist')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -147,25 +147,25 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('multi-channels')
      .setDescription('Increase or decrease XP rewarded by Channel')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('multi-roles')
      .setDescription('Increase or decrease XP rewarded by Role')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('level-roles')
      .setDescription('Reward Activity with Level-Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('rule-channels')
      .setDescription('Apply conditional XP rewarded by Action in a Channel')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    ),
  )
  .addSubcommandGroup(
@@ -181,7 +181,7 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('booster-roles')
      .setDescription(`Reward Members for continuously boosting your Server`)
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    ),
  )
  .addSubcommandGroup(
@@ -192,13 +192,13 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
      .setDescription(`Basic Settings for Voting on Top.gg`)
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('vote-rewards')
      .setDescription(`Reward Members for Voting for your Bot/Server`)
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    ),
  )
  .addSubcommandGroup(
@@ -209,7 +209,7 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('role-rewards')
      .setDescription('Give Rewards to Members for achieving a Role')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -220,13 +220,13 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('self-roles')
      .setDescription('Let Members pick their own Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('separators')
      .setDescription('Separate Roles into Categories using Category Roles / Role Separators')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -237,25 +237,25 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('reaction-role-settings')
      .setDescription('Let Members pick their own Roles through Reactions')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('reaction-roles')
      .setDescription('Here you define the Reactions and their associated Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('button-role-settings')
      .setDescription('Let Members pick their own Roles through Buttons')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('button-roles')
      .setDescription('Here you define the Buttons and their associated Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    ),
  )
  .addSubcommandGroup(
@@ -271,13 +271,13 @@ const settings = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('delete-commands')
      .setDescription(`Make ${name} delete Commands and/or Replies`)
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('cooldowns')
      .setDescription(`Assign custom defined Cooldowns to Commands of ${name}`)
-     .addStringOption(IDSelector),
+     .addStringOption(structuredClone(IDSelector)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -319,8 +319,8 @@ const info = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Display Information about a User')
-   .addUserOption(User)
-   .addStringOption(SearchUsername),
+   .addUserOption(structuredClone(User))
+   .addStringOption(structuredClone(SearchUsername)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -439,8 +439,8 @@ const check = new Discord.SlashCommandBuilder()
  .setName('check')
  .setDescription('View all Punishments of a User')
  .setDMPermission(false)
- .addUserOption(User)
- .addStringOption(SearchUsername);
+ .addUserOption(structuredClone(User))
+ .addStringOption(structuredClone(SearchUsername));
 
 const stickMessage = new Discord.ContextMenuCommandBuilder()
  .setName('Stick Message')
@@ -891,7 +891,7 @@ const emoji = new Discord.SlashCommandBuilder()
        .setDescription('The URL to create the Emoji from')
        .setRequired(true),
      )
-     .addStringOption(EmojiName),
+     .addStringOption(structuredClone(EmojiName)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -904,7 +904,7 @@ const emoji = new Discord.SlashCommandBuilder()
        .setDescription('The File to create the Emoji from')
        .setRequired(true),
      )
-     .addStringOption(EmojiName),
+     .addStringOption(structuredClone(EmojiName)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -916,7 +916,7 @@ const emoji = new Discord.SlashCommandBuilder()
        .setDescription('The Emoji to create the Emoji from')
        .setRequired(true),
      )
-     .addStringOption(EmojiName),
+     .addStringOption(structuredClone(EmojiName)),
    ),
  )
  .addSubcommand(
@@ -994,8 +994,8 @@ const user = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('info')
    .setDescription('Get Information about a User')
-   .addUserOption(User)
-   .addStringOption(SearchUsername),
+   .addUserOption(structuredClone(User))
+   .addStringOption(structuredClone(SearchUsername)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1203,48 +1203,48 @@ const mod = new Discord.SlashCommandBuilder()
    .setName('tempmute')
    .setDescription('Temporarily Mutes a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Duration.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Duration).setRequired(true))
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unmute')
    .setDescription('Unmutes a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('ban')
    .setDescription('Bans a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Duration)
-   .addStringOption(Reason)
-   .addStringOption(DeleteMessageDuration),
+   .addStringOption(structuredClone(Duration))
+   .addStringOption(structuredClone(Reason))
+   .addStringOption(structuredClone(DeleteMessageDuration)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unban')
    .setDescription('Un-Bans a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('soft-ban')
    .setDescription('Soft-Bans a User (Bans and instantly Un-Bans them)')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason)
-   .addStringOption(DeleteMessageDuration),
+   .addStringOption(structuredClone(Reason))
+   .addStringOption(structuredClone(DeleteMessageDuration)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('temp-ban')
    .setDescription('Temporarily Bans a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Duration.setRequired(true))
-   .addStringOption(Reason)
-   .addStringOption(DeleteMessageDuration),
+   .addStringOption(structuredClone(Duration).setRequired(true))
+   .addStringOption(structuredClone(Reason))
+   .addStringOption(structuredClone(DeleteMessageDuration)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1258,8 +1258,8 @@ const mod = new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(Duration)
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Duration))
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1273,8 +1273,8 @@ const mod = new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(Duration)
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Duration))
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1288,42 +1288,42 @@ const mod = new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('kick')
    .setDescription('Kicks a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('warn')
    .setDescription('Warns a User')
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('soft-warn')
    .setDescription("Soft-Warns a User (Doesn't save the Warn, only notifies the User)")
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('strike')
    .setDescription(`Strikes a User (Let's ${name} decide what Punishment to apply)`)
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unafk')
    .setDescription("Force delete someone's AFK status")
    .addUserOption(User.setRequired(true))
-   .addStringOption(Reason),
+   .addStringOption(structuredClone(Reason)),
  )
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
@@ -1333,7 +1333,7 @@ const mod = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('one')
      .setDescription('Pardon a specific Punishment from a User')
-     .addUserOption(Target)
+     .addUserOption(structuredClone(Target))
      .addStringOption(
       new Discord.SlashCommandStringOption()
        .setName('type')
@@ -1356,13 +1356,13 @@ const mod = new Discord.SlashCommandBuilder()
        .setMaxLength(8)
        .setAutocomplete(true),
      )
-     .addStringOption(Reason),
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('before')
      .setDescription('Pardon all Punishment from a User before a specific Date')
-     .addUserOption(Target)
+     .addUserOption(structuredClone(Target))
      .addStringOption(
       new Discord.SlashCommandStringOption()
        .setName('date')
@@ -1371,13 +1371,13 @@ const mod = new Discord.SlashCommandBuilder()
        .setMaxLength(10)
        .setRequired(true),
      )
-     .addStringOption(Reason),
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('after')
      .setDescription('Pardon all Punishment from a User after a specific Date')
-     .addUserOption(Target)
+     .addUserOption(structuredClone(Target))
      .addStringOption(
       new Discord.SlashCommandStringOption()
        .setName('date')
@@ -1386,13 +1386,13 @@ const mod = new Discord.SlashCommandBuilder()
        .setMaxLength(10)
        .setRequired(true),
      )
-     .addStringOption(Reason),
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('between')
      .setDescription('Pardon all Punishment from a User between 2 specific Dates')
-     .addUserOption(Target)
+     .addUserOption(structuredClone(Target))
      .addStringOption(
       new Discord.SlashCommandStringOption()
        .setName('date-1')
@@ -1409,29 +1409,29 @@ const mod = new Discord.SlashCommandBuilder()
        .setMaxLength(10)
        .setRequired(true),
      )
-     .addStringOption(Reason),
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('by')
      .setDescription('Pardon all Punishment from a User executed by a specific User')
-     .addUserOption(Executor)
-     .addUserOption(Target)
-     .addStringOption(Reason),
+     .addUserOption(structuredClone(Executor))
+     .addUserOption(structuredClone(Target))
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('all-by')
      .setDescription('Pardon all Punishment executed by a specific User')
-     .addUserOption(Executor)
-     .addStringOption(Reason),
+     .addUserOption(structuredClone(Executor))
+     .addStringOption(structuredClone(Reason)),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('all-on')
      .setDescription('Pardon all Punishment from a User')
-     .addUserOption(Target)
-     .addStringOption(Reason),
+     .addUserOption(structuredClone(Target))
+     .addStringOption(structuredClone(Reason)),
    ),
  );
 
@@ -1499,14 +1499,14 @@ const clear = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('all')
    .setDescription('Clear Messages from a Channel')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Clear Messages that are sent by a User')
-   .addUserOption(User.setRequired(true))
-   .addIntegerOption(Amount),
+   .addUserOption(structuredClone(User).setRequired(false))
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -1535,108 +1535,108 @@ const clear = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('match')
    .setDescription('Clear Messages that match the provided Content')
-   .addIntegerOption(Amount)
-   .addStringOption(FilterContent),
+   .addIntegerOption(structuredClone(Amount))
+   .addStringOption(structuredClone(FilterContent)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('not-match')
    .setDescription("Clear Messages that don't match the provided Content")
-   .addIntegerOption(Amount)
-   .addStringOption(FilterContent),
+   .addIntegerOption(structuredClone(Amount))
+   .addStringOption(structuredClone(FilterContent)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('starts-with')
    .setDescription('Clear Messages that start with the provided Content')
-   .addIntegerOption(Amount)
-   .addStringOption(FilterContent),
+   .addIntegerOption(structuredClone(Amount))
+   .addStringOption(structuredClone(FilterContent)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('ends-with')
    .setDescription('Clear Messages that end with the provided Content')
-   .addIntegerOption(Amount)
-   .addStringOption(FilterContent),
+   .addIntegerOption(structuredClone(Amount))
+   .addStringOption(structuredClone(FilterContent)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('includes')
    .setDescription('Clear Messages that include the provided Content')
-   .addIntegerOption(Amount)
-   .addStringOption(FilterContent),
+   .addIntegerOption(structuredClone(Amount))
+   .addStringOption(structuredClone(FilterContent)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('links')
    .setDescription('Clear Messages that have Links')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('invites')
    .setDescription('Clear Messages that have Invites')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('images')
    .setDescription('Clear Messages that have Images')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('videos')
    .setDescription('Clear Messages that have Videos')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('files')
    .setDescription('Clear Messages that have any type of Files')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('audio')
    .setDescription('Clear Messages that have Audio')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('mentions')
    .setDescription('Clear Messages that mention anything')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('stickers')
    .setDescription('Clear Messages that have Stickers')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('embeds')
    .setDescription('Clear Messages that have Embeds')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('text')
    .setDescription('Clear Messages that have only Text')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('humans')
    .setDescription('Clear Messages that are sent by Humans')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('bots')
    .setDescription('Clear Messages that are sent by Bots')
-   .addIntegerOption(Amount),
+   .addIntegerOption(structuredClone(Amount)),
  );
 
 const reminder = new Discord.SlashCommandBuilder()
@@ -1647,13 +1647,7 @@ const reminder = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('create')
    .setDescription('Create a Reminder')
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('duration')
-     .setDescription('The Duration until the Reminder expires (Example: 2d 5h 4s)')
-     .setMinLength(2)
-     .setRequired(true),
-   )
+   .addStringOption(structuredClone(Duration).setRequired(true))
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('content')
