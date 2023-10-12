@@ -150,9 +150,8 @@ const getReactions = (
     }
 
     if (
-     resolvedEmoji.id ??
-     (resolvedEmoji.name &&
-      !message.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? ''))
+     (resolvedEmoji.id ?? resolvedEmoji.name) &&
+     !message.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
     ) {
      message.reactions.cache.set(
       resolvedEmoji.id ?? resolvedEmoji.name ?? '',

@@ -127,7 +127,7 @@ export const getComponents = (
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/delete_${emojiIdentifier}`,
     emoji: ch.emotes.trash,
-    style: Discord.ButtonStyle.Danger,
+    style: Discord.ButtonStyle.Secondary,
     label: language.Delete,
    },
   ],

@@ -29,5 +29,8 @@ export default async (link: string): Promise<Discord.Message | undefined> => {
   return m;
  };
 
- return channel.messages.cache.get(messageId) ?? getMessage();
+ const message = channel.messages.cache.get(messageId) ?? (await getMessage());
+ if (!message) return message;
+ if (!message.author) return message.fetch();
+ return message;
 };

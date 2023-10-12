@@ -23,7 +23,7 @@ export default async (
    : (cmd.message.embeds[0].url as string),
  );
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  ch.errorCmd(cmd, language.errors.messageNotFound, language, reply);
   return;
  }
 
@@ -32,19 +32,31 @@ export default async (
    cmd,
    lan.messageNotFromMe((await ch.getCustomCommand(cmd.guildId, 'embed-builder'))?.id ?? '0'),
    language,
+   reply,
   );
+  return;
  }
 
- const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
+ const baseSettings =
+  (await getBaseSettings(type, cmd.guildId, message.id)) ??
+  (await createBaseSettings(type, cmd.guildId, message.channelId, message.id));
  if (!baseSettings) {
-  ch.errorCmd(cmd, language.errors.settingNotFound, language);
+  ch.errorCmd(cmd, language.errors.settingNotFound, language, reply);
   return;
  }
 
  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
 
  await Promise.all(
-  message.reactions.cache.map((r) => r.users.fetch({ limit: 1 }).catch(() => undefined)),
+  message.reactions.cache.map((r) =>
+   ch.request.channels.getReactions(
+    message as Discord.Message<true>,
+    r.emoji.id ?? r.emoji.name ?? '',
+    {
+     limit: 1,
+    },
+   ),
+  ),
  );
 
  const applyReactions = message.reactions.cache.filter(
@@ -147,7 +159,7 @@ const getComponents = (
     type: Discord.ComponentType.Button,
     customId: `roles/${type}/resetReactions`,
     label: lan.resetReactions,
-    style: Discord.ButtonStyle.Danger,
+    style: Discord.ButtonStyle.Secondary,
     emoji: ch.emotes.trash,
    },
   ],
@@ -167,11 +179,45 @@ export const getBaseSettings = (
      where: { guildid, msgid },
     });
 
-export const getSpecificSettings = (type: Type, guildid: string, linkedid: Prisma.Decimal) =>
+export const getSpecificSettings = (
+ type: Type,
+ guildid: string,
+ linkedid: Prisma.Decimal,
+ emote?: string,
+) =>
  type === 'button-roles'
   ? ch.DataBase.buttonroles.findMany({
-     where: { guildid, linkedid: String(linkedid) },
+     where: { guildid, linkedid: String(linkedid), emote },
     })
   : ch.DataBase.reactionroles.findMany({
-     where: { guildid, linkedid: String(linkedid) },
+     where: { guildid, linkedid: String(linkedid), emote },
     });
+
+const createBaseSettings = (
+ type: 'button-roles' | 'reaction-roles',
+ guildid: string,
+ channelid: string,
+ msgid: string,
+) => {
+ const data = {
+  guildid,
+  channelid,
+  msgid,
+  uniquetimestamp: Date.now(),
+  active: true,
+ };
+
+ const select = {
+  guildid: true,
+  msgid: true,
+  channelid: true,
+  uniquetimestamp: true,
+  active: true,
+ };
+
+ if (type === 'button-roles') {
+  return ch.DataBase.buttonrolesettings.create({ data: { ...data, onlyone: false }, select });
+ }
+
+ return ch.DataBase.reactionrolesettings.create({ data, select });
+};

@@ -34,7 +34,6 @@ export default async (
       data: {
        uniquetimestamp: Date.now(),
        active: true,
-       onlyone: false,
        guildid: cmd.guildId,
        msgid: message.id,
        channelid: message.channelId,
@@ -56,7 +55,7 @@ export default async (
   return;
  }
 
- const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
+ const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp, emoji);
  const field = findField(emoji, cmd.message.embeds[0].fields);
  const roles = field?.value.split(/,\s+/g).map((r) => r.replace(/\D+/g, '')) ?? [];
 

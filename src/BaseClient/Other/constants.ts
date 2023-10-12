@@ -481,7 +481,7 @@ export default {
     desc: 'Mew =^_^=',
     users: false,
     reqUser: false,
-    buttons: ['pat', 'woof'],
+    buttons: ['mew', 'pat'],
    },
    {
     name: 'nya',

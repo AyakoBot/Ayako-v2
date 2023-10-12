@@ -11,7 +11,7 @@ export default (msg: Discord.Message) => {
     where: { msgid: msg.id },
    })
    .then((reactionSettings) => {
-    reactionSettings.forEach((reactionSetting) => {
+    reactionSettings?.forEach((reactionSetting) => {
      ch.DataBase.reactionroles
       .deleteMany({ where: { uniquetimestamp: reactionSetting.uniquetimestamp } })
       .then();
@@ -23,7 +23,7 @@ export default (msg: Discord.Message) => {
     where: { msgid: msg.id },
    })
    .then((buttonSettings) => {
-    buttonSettings.forEach((buttonSetting) => {
+    buttonSettings?.forEach((buttonSetting) => {
      ch.DataBase.buttonroles
       .deleteMany({ where: { uniquetimestamp: buttonSetting.uniquetimestamp } })
       .then();
