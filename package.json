@@ -4,7 +4,7 @@
   "dependencies": {
     "@discordjs/core": "^1.0.1",
     "@discordjs/rest": "^2.0.1",
-    "@prisma/client": "5.3.1",
+    "@prisma/client": "5.4.2",
     "@total-typescript/ts-reset": "^0.5.1",
     "body-parser": "^1.20.2",
     "captcha-canvas": "^3.2.1",
@@ -32,6 +32,7 @@
     "string-similarity": "^4.0.4",
     "topgg-autoposter": "^2.0.1",
     "typescript": "^5.2.2",
+    "undici": "^5.26.3",
     "valid-url": "^1.0.9",
     "waifu-pics-api": "^1.0.5",
     "ws": "^8.14.2"
@@ -63,6 +64,6 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-prettier": "^5.0.0",
-    "prisma": "^5.4.1"
+    "prisma": "^5.4.2"
   }
 }
