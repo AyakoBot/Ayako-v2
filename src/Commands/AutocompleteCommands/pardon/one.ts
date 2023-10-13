@@ -2,6 +2,8 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!('options' in cmd)) return [];
+
  const user = cmd.options.get('target', false)?.value as string;
  if (!user) return [];
 

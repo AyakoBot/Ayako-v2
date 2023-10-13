@@ -1,19 +1,16 @@
-import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-const f: CT.AutoCompleteFile['default'] = async (
- cmd: Discord.AutocompleteInteraction<'cached'> | { guildId: string },
-) => {
+const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.DataBase.reactionrolesettings.findMany({ where: { guildid: cmd.guildId } })
+  await ch.DataBase.reactionrolesettings.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : null;
 
   return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guild.id);
  const lan = language.slashCommands.settings.categories['reaction-role-settings'];
 
  if (!settings) return [];

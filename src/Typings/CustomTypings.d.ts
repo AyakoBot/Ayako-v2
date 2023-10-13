@@ -84,7 +84,7 @@ export type TableNamesMap = {
 
 export interface AutoCompleteFile {
  default: (
-  cmd: Discord.AutocompleteInteraction<'cached'>,
+  cmd: Discord.AutocompleteInteraction<'cached'> | { guild: Discord.Guild },
  ) => Promise<{ name: string; value: string }[] | undefined>;
 }
 

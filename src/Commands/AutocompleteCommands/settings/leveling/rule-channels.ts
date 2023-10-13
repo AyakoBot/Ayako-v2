@@ -4,14 +4,14 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.DataBase.levelingruleschannels.findMany({ where: { guildid: cmd.guildId } })
+  await ch.DataBase.levelingruleschannels.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
-  const id = String(cmd.options.get('id', false)?.value);
+  const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 
   return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await ch.getLanguage(cmd.guild.id);
 
  if (!settings) return [];
 

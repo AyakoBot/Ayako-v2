@@ -873,6 +873,7 @@ const changeHelpers = {
    | 'duration'
    | 'string'
    | 'strings'
+   | 'message'
    | 'autoModRule/string'
    | 'autoModRule/strings'
    | 'autoModRule/duration',

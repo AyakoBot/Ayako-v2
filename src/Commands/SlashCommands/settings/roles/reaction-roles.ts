@@ -154,7 +154,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.setting(
     language,
-    settings?.linkedid,
+    settings?.linkedid ? String(settings?.linkedid) : null,
     'linkedid',
     name,
     'reaction-role-settings',

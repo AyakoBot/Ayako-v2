@@ -3,6 +3,8 @@ import StringSimilarity from 'string-similarity';
 import * as CT from '../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!('options' in cmd)) return [];
+
  const value = cmd.options.getString('command', true);
  const commands = value.length
   ? StringSimilarity.findBestMatch(

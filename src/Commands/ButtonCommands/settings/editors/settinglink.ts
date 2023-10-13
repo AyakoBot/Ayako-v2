@@ -45,9 +45,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!settingsFile) return;
 
  const linkedSetting = (await import(settingsFile)) as CT.AutoCompleteFile;
- const responses = await linkedSetting.default(
-  cmd as unknown as Discord.AutocompleteInteraction<'cached'>,
- );
+ const responses = await linkedSetting.default({ guild: cmd.guild });
  const options = responses?.map((r) => ({
   label: r.name,
   value: r.value,
