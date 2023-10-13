@@ -16,11 +16,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.messagelink.name}: ${
-   s.guildid && s.channelid && s.msgid
-    ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
-    : language.None
-  }`,
+  name: `${lan.fields.msgid.name}: ${s.msgid ?? language.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

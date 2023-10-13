@@ -1,7 +1,16 @@
 /**
  * Regular expressions used by the client helper modules.
  */
+/**
+ * Regular expressions used in the client helper modules.
+ */
 export default {
+ /**
+  * Regular expression for testing Discord message links.
+  * Matches links in the format of https://discord.com/channels/{guildId}/{channelId}/{messageId}
+  */
+ messageTester: /https:\/\/(.*\.?)discord\.com\/channels\/\d{17,19}\/\d{17,19}\/\d{17,19}/g,
+
  /**
   * Regular expression for testing dates in the format of dd.mm.yyyy or d.m.yy.
   */

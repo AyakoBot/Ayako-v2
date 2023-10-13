@@ -67,7 +67,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
-  value: `${lan.fields.messagelink.name}: ${
+  value: `${lan.fields.msgid.name}: ${
    s.guildid && s.channelid && s.msgid
     ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
     : language.None
@@ -114,7 +114,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: lan.fields.messagelink.name,
+    name: lan.fields.msgid.name,
     value:
      settings.guildid && settings.channelid && settings.msgid
       ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
@@ -155,7 +155,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.specific(
     language,
     settings?.msgid,
-    'messagelink',
+    'msgid',
     name,
     Number(settings?.uniquetimestamp),
    ),
@@ -170,3 +170,81 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange'] = async (
+ _oldSettings,
+ newSettings,
+ changedSettings,
+ guild,
+) => {
+ switch (changedSettings) {
+  case 'active': {
+   switch (newSettings.active) {
+    case true: {
+     const relatedSettings = await ch.DataBase.reactionroles.findMany({
+      where: {
+       linkedid: newSettings.uniquetimestamp,
+       active: true,
+       roles: { isEmpty: false },
+       emote: { not: null },
+      },
+     });
+     if (!relatedSettings.length) return;
+
+     const message = (await ch.getMessage(
+      ch.constants.standard.msgurl(
+       newSettings.guildid,
+       newSettings.channelid ?? '',
+       newSettings.msgid ?? '',
+      ),
+     )) as Discord.Message<true> | undefined;
+     if (!message) return;
+
+     const emotes = (
+      await Promise.all(relatedSettings.map((s) => ch.getEmote(s.emote as string)))
+     ).filter((e): e is Discord.GuildEmoji => !!e);
+
+     const noAccessEmotes = relatedSettings
+      .map((s) => s.emote)
+      .filter((e) => !emotes.find((em) => em.identifier === e));
+
+     emotes.forEach((e) => {
+      ch.request.channels.addReaction(message, e.identifier);
+     });
+
+     if (noAccessEmotes.length) {
+      ch.error(
+       guild,
+       new Error(
+        `reaction-roles: no access to emotes ${noAccessEmotes.join(
+         ', ',
+        )}\nPlease react with them manually`,
+       ),
+      );
+     }
+     break;
+    }
+    case false: {
+     const message = await ch.getMessage(
+      ch.constants.standard.msgurl(
+       newSettings.guildid,
+       newSettings.channelid ?? '',
+       newSettings.msgid ?? '',
+      ),
+     );
+
+     if (!message) return;
+     ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
+     break;
+    }
+    default: {
+     break;
+    }
+   }
+   break;
+  }
+  default: {
+   break;
+  }
+ }
+};

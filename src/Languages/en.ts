@@ -3293,9 +3293,10 @@ export default {
     'button-role-settings': {
      name: 'Button Settings',
      fields: {
-      messagelink: {
+      msgid: {
        name: 'Message',
-       desc: 'The Message these Settings apply to',
+       desc:
+        'The Message Link of the Message these Settings apply to\nThe Message MUST be sent by me',
       },
       onlyone: {
        name: 'Only One',
@@ -3308,11 +3309,12 @@ export default {
      },
     },
     'reaction-role-settings': {
+     desc: 'Use the `Active` Button to refresh the Message-Reactions',
      name: 'Reaction Settings',
      fields: {
-      messagelink: {
+      msgid: {
        name: 'Message',
-       desc: 'The Message these Settings apply to',
+       desc: 'The Message Link of the Message these Settings apply to',
       },
       anyroles: {
        name: 'Any Roles',
@@ -3321,6 +3323,8 @@ export default {
      },
     },
     'reaction-roles': {
+     desc:
+      'Use the `Active` Button in the linked Reaction-Role-Settings to refresh the Message-Reactions',
      name: 'Reaction Roles',
      fields: {
       emote: {

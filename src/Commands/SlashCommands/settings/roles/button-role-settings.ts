@@ -67,7 +67,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
-  value: `${lan.fields.messagelink.name}: ${
+  value: `${lan.fields.msgid.name}: ${
    s.guildid && s.channelid && s.msgid
     ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
     : language.None
@@ -114,7 +114,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: lan.fields.messagelink.name,
+    name: lan.fields.msgid.name,
     value:
      settings.guildid && settings.channelid && settings.msgid
       ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
@@ -160,7 +160,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.specific(
     language,
     settings?.msgid,
-    'messagelink',
+    'msgid',
     name,
     Number(settings?.uniquetimestamp),
    ),
@@ -182,3 +182,107 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] = async (
+ _oldSettings,
+ newSettings,
+ changedSettings,
+ guild,
+) => {
+ switch (changedSettings) {
+  case 'active': {
+   switch (newSettings.active) {
+    case true: {
+     const relatedSettings = await ch.DataBase.buttonroles.findMany({
+      where: {
+       linkedid: newSettings.uniquetimestamp,
+       active: true,
+       roles: { isEmpty: false },
+       emote: { not: null },
+      },
+     });
+     if (!relatedSettings.length) return;
+
+     const message = (await ch.getMessage(
+      ch.constants.standard.msgurl(
+       newSettings.guildid,
+       newSettings.channelid ?? '',
+       newSettings.msgid ?? '',
+      ),
+     )) as Discord.Message<true> | undefined;
+     if (!message) return;
+
+     const componentChunks: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] =
+      ch
+       .getChunks(
+        relatedSettings
+         .map((s) => ({
+          label: s.text ?? undefined,
+          style: Discord.ButtonStyle.Secondary,
+          emoji: s.emote ? Discord.parseEmoji(s.emote) ?? undefined : undefined,
+          type: Discord.ComponentType.Button,
+          custom_id: `roles/button-roles/takeRole_${s.uniquetimestamp}`,
+         }))
+         .filter((c) => c.label || c.emoji) as Discord.APIButtonComponentWithCustomId[],
+        5,
+       )
+       .map((c) => ({
+        type: Discord.ComponentType.ActionRow,
+        components: c,
+       }));
+
+     if (message?.author.id === guild.client.user.id) {
+      message.edit({ components: componentChunks });
+     } else {
+      ch.request.channels.editMessage(guild, message.channelId, message.id, {
+       components: componentChunks,
+      });
+     }
+     break;
+    }
+    case false: {
+     const message = await ch.getMessage(
+      ch.constants.standard.msgurl(
+       newSettings.guildid,
+       newSettings.channelid ?? '',
+       newSettings.msgid ?? '',
+      ),
+     );
+
+     if (!message) return;
+     ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
+
+     if (message?.author.id === guild.client.user.id) {
+      message.edit({ components: [] });
+     } else {
+      ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
+     }
+     break;
+    }
+    default: {
+     break;
+    }
+   }
+   break;
+  }
+  case 'msgid': {
+   const message = await ch.getMessage(
+    ch.constants.standard.msgurl(
+     newSettings.guildid,
+     newSettings.channelid ?? '',
+     newSettings.msgid ?? '',
+    ),
+   );
+
+   if (!message) return;
+   if (message.author.id === guild.client.user.id) return;
+   if (message.author.id === (await ch.getBotIdFromGuild(guild))) return;
+
+   ch.error(guild, new Error("button-roles: Message has to be sent by me, else I can't edit it"));
+   break;
+  }
+  default: {
+   break;
+  }
+ }
+};
