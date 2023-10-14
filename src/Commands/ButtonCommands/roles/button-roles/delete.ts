@@ -48,7 +48,7 @@ export default async (
     : await removeReactions(emoji, message);
 
   if (action && 'message' in action && typeof action.message === 'string') {
-   ch.errorCmd(cmd, action.message, language);
+   ch.errorCmd(cmd, action, language);
    return;
   }
  }

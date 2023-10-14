@@ -64,7 +64,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if (!msg || 'message' in msg) {
-  ch.errorCmd(cmd, msg ? msg.message : language.Unknown, language);
+  ch.errorCmd(cmd, msg ?? language.Unknown, language);
   return;
  }
 
@@ -148,7 +148,7 @@ export const endTimeIsValid = (
  try {
   new Date(endTime);
  } catch (e) {
-  ch.errorCmd(cmd, (e as Error).message, language);
+  ch.errorCmd(cmd, e as Error, language);
   return false;
  }
 

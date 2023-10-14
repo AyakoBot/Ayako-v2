@@ -42,7 +42,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if ('message' in editRes) {
-  ch.errorCmd(cmd, editRes.message, language);
+  ch.errorCmd(cmd, editRes, language);
   return;
  }
 

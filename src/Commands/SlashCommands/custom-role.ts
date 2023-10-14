@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -52,7 +53,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   try {
    new URL(iconUrl);
   } catch (e) {
-   ch.errorCmd(cmd, (e as Error).message, await ch.getLanguage(cmd.guildId));
+   ch.errorCmd(cmd, e as Error, await ch.getLanguage(cmd.guildId));
    return;
   }
  }
@@ -69,7 +70,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (customRole) {
   const role = await ch.request.guilds.editRole(cmd.guild, customRole.id, {
-   name: name ?? undefined,
+   name: name ? await getContent(cmd.guild, name) : undefined,
    unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: parsedColor ?? undefined,
    icon:
@@ -81,7 +82,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if ('message' in role) {
    ch.errorCmd(
     cmd,
-    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
+    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
     language,
    );
    return;
@@ -108,7 +109,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in role) {
   ch.errorCmd(
    cmd,
-   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
+   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
    language,
   );
   return;

@@ -1445,11 +1445,11 @@ export default {
     "Only the Submitter of the Suggestion and Suggestion-Approvers can use this Button\nOr this Suggestion couldn't be found",
    banned: (user: Discord.User) => `${getUser(user)}was banned from submitting Suggestions`,
    cantBan: (cmdId: string) => `**You can't ban this User**
-   Either because Suggestions aren't enabled on this Server
-   because you are lacking the Permissions to
-   or because they are already banned
+Either because Suggestions aren't enabled on this Server
+because you are lacking the Permissions to
+or because they are already banned
 
-   Unban Users in </settings automation suggestions:${cmdId}>`,
+Unban Users in </settings automation suggestions:${cmdId}>`,
    tldr: 'TL;DR',
    downvotes: 'Downvotes',
    upvotes: 'Upvotes',
@@ -2082,19 +2082,17 @@ export default {
    blockedCmds: `Blocked Commands:`,
    gifSrc: 'Gif Source Anime:',
    author: `${name} Roleplay Command Manager`,
-   desc: `
-    ${name} supports a wide variety of Roleplay Commands.
+   desc: `${name} supports a wide variety of Roleplay Commands.
 
-    **This Command serves as a Base-Command for all Roleplay-Commands.**
-    Editing the Permissions of this Command will affect all Roleplay-Commands.
-    To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
-    After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
+**This Command serves as a Base-Command for all Roleplay-Commands.**
+Editing the Permissions of this Command will affect all Roleplay-Commands.
+To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
+After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
 
-    Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Commands\`.
-    __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
+Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Commands\`.
+__You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
 
-    __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.
-    `,
+__Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.`,
    fields: (t: string, used: number) => [
     {
      name: 'Permission Syncing can only be used __once__ per Hour',
@@ -2319,17 +2317,17 @@ export default {
      client.user?.id === ch.mainID ? '' : '(The Base of this Bot)'
     } is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)
     
-    It is currently in Version ${ch.util.makeInlineCode(
+It is currently in Version ${ch.util.makeInlineCode(
      packageJSON.version,
     )} and is under the shepherding of <@318453143476371456> (@Lars_und_so), a Full-Time IT Specialist for Application Development.
-    View [Credits](https://ayakobot.com/credits) for more Information.
-    Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).
-    For more Information, visit [AyakoBot.com](https://ayakobot.com/).
-    Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.
+View [Credits](https://ayakobot.com/credits) for more Information.
+Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).
+For more Information, visit [AyakoBot.com](https://ayakobot.com/).
+Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.
 
-    Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.
-    We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, 
-    and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation,`,
+Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.
+We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, 
+and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation,`,
    },
    user: {
     authorUser: `${name} User-Info`,
@@ -3398,12 +3396,12 @@ export default {
       token: {
        name: 'Token',
        desc: `The Token of your Custom Bot
-        Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)
-        
-        __Please make sure you do the following AFTER you set your Token here__:\n- insert \`https://api.ayakobot.com/interactions\` as your Bots \`Interactions Endpoint URL\` under the \`General Information\` Section\n- enable the \`Public Bot\` Switch under the \`Bot\` Section\n- enable the \`Message Content\` and \`Guild Member\` \`Privileged Gateway Intents\` under the \`Bot\` Section\n- invite your Bot to your Server using the provided Invite URL\n
-        __Notice__
-        If you are removing the Token from this Field and previously re-invited ${name} with the Link that removes her Slash-Commands, 
-        you will have to re-invite her using [this Invite Link](${ch.constants.standard.invite})`,
+Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)
+
+__Please make sure you do the following AFTER you set your Token here__:\n- insert \`https://api.ayakobot.com/interactions\` as your Bots \`Interactions Endpoint URL\` under the \`General Information\` Section\n- enable the \`Public Bot\` Switch under the \`Bot\` Section\n- enable the \`Message Content\` and \`Guild Member\` \`Privileged Gateway Intents\` under the \`Bot\` Section\n- invite your Bot to your Server using the provided Invite URL\n
+__Notice__
+If you are removing the Token from this Field and previously re-invited ${name} with the Link that removes her Slash-Commands, 
+you will have to re-invite her using [this Invite Link](${ch.constants.standard.invite})`,
       },
      },
     },

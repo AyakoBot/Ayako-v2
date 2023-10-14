@@ -47,7 +47,7 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
  } else action = await ch.request.channels.deleteAllReactions(message);
 
  if (action && 'message' in action && typeof action.message === 'string') {
-  ch.errorCmd(cmd, action.message, language);
+  ch.errorCmd(cmd, action, language);
   return;
  }
 

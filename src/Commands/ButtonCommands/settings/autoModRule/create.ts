@@ -34,7 +34,7 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  );
 
  if ('message' in rule) {
-  ch.errorCmd(cmd, rule.message, language);
+  ch.errorCmd(cmd, rule, language);
   return;
  }
 

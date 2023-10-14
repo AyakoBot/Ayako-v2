@@ -7,7 +7,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
  const member = await ch.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id);
  if ('message' in member) {
-  ch.errorCmd(cmd, member.message, language);
+  ch.errorCmd(cmd, member, language);
   return;
  }
 

@@ -9,7 +9,7 @@ export default async (cmd: Discord.Interaction) => {
 
  const files = await glob(`${process.cwd()}/Commands/**/*`);
 
- const path = `/${Discord.ApplicationCommandType[cmd.commandType]}/${cmd.commandName
+ const path = `${Discord.ApplicationCommandType[cmd.commandType]}/${cmd.commandName
   .replace(/\s+/g, '-')
   .toLowerCase()}`;
 

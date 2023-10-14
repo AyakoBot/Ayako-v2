@@ -51,9 +51,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (editPositionRes && 'message' in editPositionRes) {
   ch.errorCmd(
    cmd,
-   editPositionRes.message.includes('ENOENT')
-    ? language.errors.emoteNotFound
-    : editPositionRes.message,
+   editPositionRes.message.includes('ENOENT') ? language.errors.emoteNotFound : editPositionRes,
    language,
   );
   return;
@@ -76,7 +74,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in editedRole) {
   ch.errorCmd(
    cmd,
-   editedRole.message.includes('ENOENT') ? language.errors.emoteNotFound : editedRole.message,
+   editedRole.message.includes('ENOENT') ? language.errors.emoteNotFound : editedRole,
    language,
   );
  } else ch.replyCmd(cmd, { content: lan.edit(role as Discord.Role) });

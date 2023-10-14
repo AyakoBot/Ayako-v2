@@ -43,7 +43,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const updatedSetting = await updateSetting(rule, fieldName, newSetting);
 
  if (!updatedSetting || 'message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting?.message || '', language);
+  ch.errorCmd(cmd, updatedSetting || '', language);
   return;
  }
 

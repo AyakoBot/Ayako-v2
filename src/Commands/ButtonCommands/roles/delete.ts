@@ -26,5 +26,5 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   : undefined;
 
  const res = await ch.request.guilds.deleteRole(cmd.guild, role.id);
- if (typeof res !== 'undefined') ch.errorCmd(cmd, res.message, language, m);
+ if (typeof res !== 'undefined') ch.errorCmd(cmd, res, language, m);
 };

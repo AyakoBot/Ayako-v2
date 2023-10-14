@@ -18,7 +18,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const res = await ch.request.guilds.deleteAutoModerationRule(cmd.guild, id, cmd.user.username);
 
  if (typeof res !== 'undefined') {
-  ch.errorCmd(cmd, res.message, language);
+  ch.errorCmd(cmd, res, language);
   return;
  }
 

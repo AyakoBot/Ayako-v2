@@ -31,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  });
 
  if ('message' in res) {
-  ch.errorCmd(cmd, res.message, language);
+  ch.errorCmd(cmd, res, language);
   return;
  }
 

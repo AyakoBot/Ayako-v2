@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  try {
   new URL(img);
  } catch (e) {
-  ch.errorCmd(cmd, (e as Error).message, await ch.getLanguage(cmd.guildId));
+  ch.errorCmd(cmd, e as Error, await ch.getLanguage(cmd.guildId));
   return;
  }
 
@@ -27,7 +27,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in createdEmote) {
-  ch.errorCmd(cmd, createdEmote.message, language);
+  ch.errorCmd(cmd, createdEmote, language);
   return;
  }
 

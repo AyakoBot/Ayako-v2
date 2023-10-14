@@ -23,7 +23,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   new Date(rawDate1);
   new Date(rawDate2);
  } catch (e) {
-  ch.errorCmd(cmd, (e as Error).message, language);
+  ch.errorCmd(cmd, e as Error, language);
   return;
  }
 

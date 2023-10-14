@@ -20,7 +20,7 @@ export default async (
   | Discord.CommandInteraction
   | Discord.AnySelectMenuInteraction
   | Discord.ModalSubmitInteraction,
- content: string,
+ content: string | Error,
  language: CT.Language,
  m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
@@ -31,7 +31,8 @@ export default async (
    url: constants.standard.invite,
   },
   color: constants.colors.danger,
-  description: content,
+  description:
+   typeof content === 'string' ? content : content.message.split(/:+/g).slice(1, 100).join(':'),
  };
 
  if (

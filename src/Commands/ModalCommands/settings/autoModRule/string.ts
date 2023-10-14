@@ -53,7 +53,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  });
 
  if ('message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting.message, language);
+  ch.errorCmd(cmd, updatedSetting, language);
   return;
  }
 

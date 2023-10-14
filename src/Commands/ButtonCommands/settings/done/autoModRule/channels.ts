@@ -36,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  });
 
  if ('message' in updatedRule) {
-  ch.errorCmd(cmd, updatedRule.message, language);
+  ch.errorCmd(cmd, updatedRule, language);
   return;
  }
 

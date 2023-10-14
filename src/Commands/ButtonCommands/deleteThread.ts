@@ -14,5 +14,5 @@ export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  if (!('message' in res)) return;
 
  const language = await ch.getLanguage(cmd.guildId);
- ch.errorCmd(cmd, res.message, language);
+ ch.errorCmd(cmd, res, language);
 };

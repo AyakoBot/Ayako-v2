@@ -22,5 +22,5 @@ export default (
   error(guild, new Error(errs.message));
   return;
  }
- errorCmd(cmd, errs.message, language, message);
+ errorCmd(cmd, errs, language, message);
 };

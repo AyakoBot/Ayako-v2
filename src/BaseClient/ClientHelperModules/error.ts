@@ -30,13 +30,13 @@ export default async (guild: Discord.Guild, err: Error) => {
    {
     color: 0xff0000,
     description: `Stack Trace\n\`\`\`${err.stack?.replace(
-     /file:\/\/\/root\/Bots\/Ayako-v1.6\/dist/g,
+     /file:\/\/\/root\/Bots\/Ayako-v2\/dist/g,
      '',
     )}\`\`\``,
     fields: [
      {
       name: 'Message',
-      value: err.message,
+      value: err.message.split(/:+/g).slice(1, 100).join(':'),
      },
     ],
     author: {

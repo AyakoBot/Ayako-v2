@@ -33,7 +33,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const { value: newSetting, error } = await verify();
 
  if (error) {
-  ch.errorCmd(cmd, error.message, language);
+  ch.errorCmd(cmd, error, language);
   return;
  }
 
@@ -72,7 +72,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  });
 
  if ('message' in updatedRule) {
-  ch.errorCmd(cmd, updatedRule.message, language);
+  ch.errorCmd(cmd, updatedRule, language);
   return;
  }
 

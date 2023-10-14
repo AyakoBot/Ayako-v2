@@ -315,15 +315,21 @@ export default async (
    if (!filterPerms.length) return;
    atLeastOneAdded = true;
 
-   addEmbed.fields?.push({
-    name: '\u200b',
-    value: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
-     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-    }\n${filterPerms
-     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
-     .join('\n')}`,
-    inline: false,
-   });
+   const value = `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
+    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+   }\n${filterPerms
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .join('\n')}`;
+
+   if (!addEmbed.description?.length) {
+    addEmbed.description = value;
+   } else {
+    addEmbed.fields?.push({
+     name: '\u200b',
+     value,
+     inline: false,
+    });
+   }
   });
 
   let atLeastOneChanged = false;
@@ -354,15 +360,21 @@ export default async (
 
    atLeastOneChanged = true;
 
-   changeEmbed.fields?.push({
-    name: '\u200b',
-    value: `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
-     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-    }\n${filteredPerms
-     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
-     .join('\n')}`,
-    inline: false,
-   });
+   const value = `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
+    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+   }\n${filteredPerms
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .join('\n')}`;
+
+   if (!changeEmbed.description?.length) {
+    changeEmbed.description = value;
+   } else {
+    changeEmbed.fields?.push({
+     name: '\u200b',
+     value,
+     inline: false,
+    });
+   }
   });
 
   let atLeastOneRemoved = false;
@@ -382,15 +394,21 @@ export default async (
    if (!filterPerms.length) return;
    atLeastOneRemoved = true;
 
-   removeEmbed.fields?.push({
-    name: '\u200b',
-    value: `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
-     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-    }\n${filterPerms
-     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
-     .join('\n')}`,
-    inline: false,
-   });
+   const value = `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
+    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
+   }\n${filterPerms
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .join('\n')}`;
+
+   if (!removeEmbed.description?.length) {
+    removeEmbed.description = value;
+   } else {
+    removeEmbed.fields?.push({
+     name: '\u200b',
+     value,
+     inline: false,
+    });
+   }
   });
 
   if (atLeastOneAdded) embeds.push(addEmbed);

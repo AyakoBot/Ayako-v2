@@ -18,7 +18,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const res = await ch.request.guilds.deleteEmoji(cmd.guild, emoji.id, lan.deleteReason(cmd.user));
 
  if (res && 'message' in res) {
-  ch.errorCmd(cmd, res.message, language);
+  ch.errorCmd(cmd, res, language);
   return;
  }
 

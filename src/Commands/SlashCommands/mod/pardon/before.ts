@@ -24,7 +24,7 @@ export default async (
  try {
   new Date(rawDate);
  } catch (e) {
-  ch.errorCmd(cmd, (e as Error).message, language);
+  ch.errorCmd(cmd, e as Error, language);
   return;
  }
 

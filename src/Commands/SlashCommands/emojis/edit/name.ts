@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in editedEmote) {
-  ch.errorCmd(cmd, editedEmote.message, language);
+  ch.errorCmd(cmd, editedEmote, language);
   return;
  }
 

@@ -32,7 +32,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const { value: newSetting, error } = await verify();
 
  if (error) {
-  ch.errorCmd(cmd, error.message, language);
+  ch.errorCmd(cmd, error, language);
   return;
  }
 
