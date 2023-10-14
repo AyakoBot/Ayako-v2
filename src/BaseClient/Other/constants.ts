@@ -241,6 +241,8 @@ export default {
    `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
   webhookAvatarURL: (webhookId: string, hash: string) =>
    `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
+  getEmoteIdentifier: (e: { animated: boolean; name: string; id: string | null }) =>
+   `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
  },
  customembeds: {
   type: {

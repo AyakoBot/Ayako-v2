@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
-import client from '../../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -29,26 +28,20 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
   ch.request.channels.delete(cmd.guild, cmd.channelId);
  }
-
  if (!lastMessage) return;
 
- const emoteContent = lastMessage?.first()?.content;
- if (!emoteContent) return;
+ const emoteMessage = lastMessage.size ? undefined : lastMessage.first();
+ const emoteContent = emoteMessage?.content;
 
- const emoteID = emoteContent.replace(/\D+/g, '');
- const emote = emoteContent.match(ch.regexes.emojiTester)?.length
-  ? { identifier: emoteContent.trim() }
-  : (
-     await client.shard?.broadcastEval((c, context) => c.emojis.cache.get(context) ?? null, {
-      context: emoteID,
-     })
-    )?.find((e): e is Discord.Emoji => !!e);
+ const emote = emoteContent?.match(ch.regexes.emojiTester)?.length
+  ? { identifier: emoteContent?.trim() }
+  : { identifier: emoteContent?.replace(/<:/g, '').replace(/</g, '').replace(/>/g, '') };
 
  const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  emote?.identifier,
+  emoteContent ? emote?.identifier : null,
   uniquetimestamp,
  );
 

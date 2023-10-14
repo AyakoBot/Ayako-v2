@@ -188,26 +188,32 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
  newSettings,
  changedSettings,
  guild,
+ uniquetimestamp,
 ) => {
  switch (changedSettings) {
   case 'active': {
    switch (newSettings.active) {
     case true: {
+     const settings = await ch.DataBase.buttonrolesettings.findUnique({
+      where: { uniquetimestamp },
+     });
+     if (!settings) return;
+
      const relatedSettings = await ch.DataBase.buttonroles.findMany({
       where: {
-       linkedid: newSettings.uniquetimestamp,
+       linkedid: uniquetimestamp,
        active: true,
        roles: { isEmpty: false },
-       emote: { not: null },
+       OR: [{ emote: { not: null } }, { text: { not: null } }],
       },
      });
      if (!relatedSettings.length) return;
 
      const message = (await ch.getMessage(
       ch.constants.standard.msgurl(
-       newSettings.guildid,
-       newSettings.channelid ?? '',
-       newSettings.msgid ?? '',
+       settings.guildid,
+       settings.channelid ?? '',
+       settings.msgid ?? '',
       ),
      )) as Discord.Message<true> | undefined;
      if (!message) return;
@@ -241,22 +247,24 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
      break;
     }
     case false: {
+     const settings = await ch.DataBase.buttonrolesettings.findUnique({
+      where: { uniquetimestamp },
+     });
+     if (!settings) return;
+
      const message = await ch.getMessage(
       ch.constants.standard.msgurl(
-       newSettings.guildid,
-       newSettings.channelid ?? '',
-       newSettings.msgid ?? '',
+       settings.guildid,
+       settings.channelid ?? '',
+       settings.msgid ?? '',
       ),
      );
 
      if (!message) return;
-     ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
+     if (!message.components.length) return;
 
-     if (message?.author.id === guild.client.user.id) {
-      message.edit({ components: [] });
-     } else {
-      ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
-     }
+     if (message?.author.id === guild.client.user.id) message.edit({ components: [] });
+     else ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
      break;
     }
     default: {

@@ -176,14 +176,20 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
  newSettings,
  changedSettings,
  guild,
+ uniquetimestamp,
 ) => {
  switch (changedSettings) {
   case 'active': {
    switch (newSettings.active) {
     case true: {
+     const settings = await ch.DataBase.reactionrolesettings.findUnique({
+      where: { uniquetimestamp },
+     });
+     if (!settings) return;
+
      const relatedSettings = await ch.DataBase.reactionroles.findMany({
       where: {
-       linkedid: newSettings.uniquetimestamp,
+       linkedid: uniquetimestamp,
        active: true,
        roles: { isEmpty: false },
        emote: { not: null },
@@ -193,24 +199,33 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
 
      const message = (await ch.getMessage(
       ch.constants.standard.msgurl(
-       newSettings.guildid,
-       newSettings.channelid ?? '',
-       newSettings.msgid ?? '',
+       settings.guildid,
+       settings.channelid ?? '',
+       settings.msgid ?? '',
       ),
      )) as Discord.Message<true> | undefined;
      if (!message) return;
 
-     const emotes = (
-      await Promise.all(relatedSettings.map((s) => ch.getEmote(s.emote as string)))
-     ).filter((e): e is Discord.GuildEmoji => !!e);
+     const emotes = relatedSettings
+      .map((s) => Discord.parseEmoji(s.emote as string))
+      .filter((e): e is NonNullable<typeof e> => !!e)
+      .map((e) => ch.constants.standard.getEmoteIdentifier(e));
 
-     const noAccessEmotes = relatedSettings
-      .map((s) => s.emote)
-      .filter((e) => !emotes.find((em) => em.identifier === e));
+     const noAccessEmotes = (
+      await Promise.all(
+       relatedSettings.map((s) =>
+        (s.emote as string).includes(':') ? ch.getEmote(s.emote as string) : true,
+       ),
+      )
+     )
+      .map((e, i) => (e ? false : relatedSettings[i].emote))
+      .filter((e): e is string => !!e);
 
-     emotes.forEach((e) => {
-      ch.request.channels.addReaction(message, e.identifier);
-     });
+     emotes
+      .filter((e) => !noAccessEmotes.includes(e))
+      .forEach((e) => {
+       ch.request.channels.addReaction(message, e);
+      });
 
      if (noAccessEmotes.length) {
       ch.error(
@@ -225,15 +240,21 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
      break;
     }
     case false: {
+     const settings = await ch.DataBase.reactionrolesettings.findUnique({
+      where: { uniquetimestamp },
+     });
+     if (!settings) return;
+
      const message = await ch.getMessage(
       ch.constants.standard.msgurl(
-       newSettings.guildid,
-       newSettings.channelid ?? '',
-       newSettings.msgid ?? '',
+       settings.guildid,
+       settings.channelid ?? '',
+       settings.msgid ?? '',
       ),
      );
 
      if (!message) return;
+     if (!message.reactions.cache.size) return;
      ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
      break;
     }
