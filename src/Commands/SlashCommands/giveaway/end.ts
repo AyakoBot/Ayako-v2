@@ -76,9 +76,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
       icon_url: host.displayAvatarURL(),
      }
    : undefined,
-  color: ch.getColor(
-   await ch.getBotMemberFromGuild(client.guilds.cache.get(giveaway.guildid)),
-  ),
+  color: ch.getColor(await ch.getBotMemberFromGuild(client.guilds.cache.get(giveaway.guildid))),
  };
 };
 
@@ -244,6 +242,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    update: {
     endtime: collectionEnd,
     replymsgid: replyMsg.id,
+    requiredwinners: giveaway.winners,
    },
   })
   .then();
