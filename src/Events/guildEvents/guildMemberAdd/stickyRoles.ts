@@ -7,8 +7,9 @@ export default async (member: Discord.GuildMember) => {
  });
  if (!settings) return;
 
- const sticky = await ch.DataBase.stickyrolemembers.findUnique({
+ const sticky = await ch.DataBase.stickyrolemembers.delete({
   where: { userid_guildid: { userid: member.id, guildid: member.guild.id } },
+  select: { userid: true, guildid: true, roles: true },
  });
  if (!sticky) return;
 

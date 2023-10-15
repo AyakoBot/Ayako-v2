@@ -2878,11 +2878,11 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        desc: 'Whether defined Roles are sticky or not sticky',
       },
       stickyrolesactive: {
-       name: 'Sticky-Roles Active',
+       name: 'Sticky-Roles',
        desc: 'Whether Sticky-Roles is active or not',
       },
       stickypermsactive: {
-       name: 'Sticky-Channel-Perms Active',
+       name: 'Sticky-Channel-Perms',
        desc: 'Whether Sticky-Channel-Perms is active or not',
       },
      },
