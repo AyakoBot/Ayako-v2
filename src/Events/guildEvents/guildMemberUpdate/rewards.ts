@@ -83,6 +83,9 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   ],
  };
 
+ console.log(oldMember?.roles.cache.size, member?.roles.cache.size);
+ if (!oldMember?.roles.cache.size) return;
+
  await ch.request.threads.addMember(member.guild, thread.id, member.id);
  await ch.send(thread, {
   embeds: [embed],
