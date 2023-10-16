@@ -17,7 +17,7 @@ log(`
 ++++++++++++++++++++++++++++++++++++++++++++++++
 `);
 
-const manager = new Discord.ShardingManager('./bot.js', {
+const manager = new Discord.ShardingManager(`${process.cwd()}/bot.js`, {
  token: auth.token,
  shardArgs: process.argv,
  execArgv: ['--experimental-wasm-modules'],
