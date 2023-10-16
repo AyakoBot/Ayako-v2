@@ -38,6 +38,9 @@ const reminder = async () => {
 };
 
 export const tasks = {
+ bans: async (guild: Discord.Guild) => {
+  ch.getAllBans(guild);
+ },
  deleteSuggestions: async (guild: Discord.Guild) => {
   const settings = await ch.DataBase.suggestionsettings.findUnique({
    where: {
@@ -135,7 +138,7 @@ export const tasks = {
 
   tables.forEach(async (table) => {
    (await table.rows()).forEach((m) => {
-    const time = Number(m.uniquetimestamp) + Number(m.duration);
+    const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
 
     table.cache.set(
      Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
@@ -159,7 +162,7 @@ export const tasks = {
         target,
         reason: m.reason ?? language.None,
         guild,
-        forceFinish: true,
+        skipChecks: true,
         dbOnly:
          'banchannelid' in m
           ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)

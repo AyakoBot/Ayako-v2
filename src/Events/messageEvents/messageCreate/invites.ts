@@ -28,6 +28,7 @@ export default async (msg: Discord.Message<true>) => {
   target: msg.author,
   executor: msg.client.user,
   dbOnly: false,
+  skipChecks: false,
  };
 
  switch (settings.action) {

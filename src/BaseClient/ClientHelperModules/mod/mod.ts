@@ -19,6 +19,14 @@ import isManageable from '../isManageable.js';
 import isModeratable from '../isModeratable.js';
 import DataBase from '../../DataBase.js';
 
+const ChannelBanBits = [
+ Discord.PermissionsBitField.Flags.SendMessages,
+ Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+ Discord.PermissionsBitField.Flags.ViewChannel,
+ Discord.PermissionsBitField.Flags.AddReactions,
+ Discord.PermissionsBitField.Flags.Connect,
+];
+
 const mod = {
  roleAdd: async (
   options: CT.ModOptions<'roleAdd'>,
@@ -42,7 +50,10 @@ const mod = {
     where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
    });
 
-   if (stickyRoleSetting?.roles.filter((r) => roles.find((r1) => r1.id === r)).length) {
+   if (
+    stickyRoleSetting?.roles.filter((r) => roles.find((r1) => r1.id === r)).length &&
+    !options.skipChecks
+   ) {
     actionAlreadyApplied(cmd, message, options.target, language, type);
     return false;
    }
@@ -65,7 +76,7 @@ const mod = {
   }
   const { targetMember } = memberResponse;
 
-  if (targetMember.roles.cache.hasAll(...options.roles.map((r) => r.id))) {
+  if (targetMember.roles.cache.hasAll(...options.roles.map((r) => r.id)) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -73,7 +84,7 @@ const mod = {
   const me = await getCustomBot(options.guild);
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
-  if (!isManageable(targetMember, me) || !options.roles.length) {
+  if ((!isManageable(targetMember, me) || !options.roles.length) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
   }
@@ -110,7 +121,10 @@ const mod = {
    });
    if (!stickyRoleSetting) return true;
 
-   if (!stickyRoleSetting.roles.filter((r) => roles.find((r1) => r1.id === r)).length) {
+   if (
+    !stickyRoleSetting.roles.filter((r) => roles.find((r1) => r1.id === r)).length &&
+    !options.skipChecks
+   ) {
     actionAlreadyApplied(cmd, message, options.target, language, type);
     return false;
    }
@@ -140,7 +154,7 @@ const mod = {
 
   const { targetMember } = memberResponse;
 
-  if (!targetMember.roles.cache.hasAny(...options.roles.map((r) => r.id))) {
+  if (!targetMember.roles.cache.hasAny(...options.roles.map((r) => r.id)) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -149,9 +163,10 @@ const mod = {
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
-   !me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !isManageable(targetMember, me) ||
-   !options.roles.length
+   (!me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
+    !isManageable(targetMember, me) ||
+    !options.roles.length) &&
+   !options.skipChecks
   ) {
    permissionError(cmd, message, language, type);
    return false;
@@ -184,7 +199,7 @@ const mod = {
     (p) => Number(p.uniquetimestamp) + Number(p.duration) * 1000 > Date.now(),
    );
 
-   if (runningPunishment) {
+   if (runningPunishment && !options.skipChecks) {
     actionAlreadyApplied(cmd, message, options.target, language, type);
     return false;
    }
@@ -193,12 +208,12 @@ const mod = {
   const { targetMember } = memberResponse;
 
   const me = await getCustomBot(options.guild);
-  if (!isModeratable(me, targetMember)) {
+  if (!isModeratable(me, targetMember) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
   }
 
-  if (targetMember.isCommunicationDisabled()) {
+  if (targetMember.isCommunicationDisabled() && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -222,8 +237,18 @@ const mod = {
   cache.mutes.set(
    Jobs.scheduleJob(
     new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
-    () => {
-     mod.muteRemove(options, language, message, cmd);
+    async () => {
+     const m: typeof ModTypes = await import(
+      `${process.cwd()}/BaseClient/ClientHelperModules/mod.js`
+     );
+     m.default(undefined, 'muteRemove', {
+      dbOnly: false,
+      executor: (await getCustomBot(options.guild)).user,
+      guild: options.guild,
+      reason: language.mod.execution.muteRemove.reason,
+      target: options.target,
+      skipChecks: true,
+     });
     },
    ),
    options.guild.id,
@@ -252,21 +277,21 @@ const mod = {
     (p) => Number(p.uniquetimestamp) + Number(p.duration) * 1000 > Date.now(),
    );
 
-   if (!runningPunishment) {
+   if (!runningPunishment && !options.skipChecks) {
     actionAlreadyApplied(cmd, message, options.target, language, type);
     return false;
    }
-   return false;
+   return true;
   }
   const { targetMember } = memberResponse;
 
   const me = await getCustomBot(options.guild);
-  if (!isModeratable(me, targetMember)) {
+  if (!isModeratable(me, targetMember) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
   }
 
-  if (targetMember.isCommunicationDisabled()) {
+  if (!targetMember.isCommunicationDisabled() && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -293,14 +318,15 @@ const mod = {
   const memberRes = await getMembers(cmd, options, language, message, type);
   const me = await getCustomBot(options.guild);
   if (
-   (memberRes && !isModeratable(me, memberRes.targetMember)) ||
-   !me.permissions.has(Discord.PermissionFlagsBits.BanMembers)
+   ((memberRes && !isModeratable(me, memberRes.targetMember)) ||
+    !me.permissions.has(Discord.PermissionFlagsBits.BanMembers)) &&
+   !options.skipChecks
   ) {
    permissionError(cmd, message, language, type);
    return false;
   }
 
-  if (options.guild.bans.cache.has(options.target.id)) {
+  if (options.guild.bans.cache.has(options.target.id) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -345,8 +371,18 @@ const mod = {
   if (!res) return res;
 
   cache.bans.set(
-   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), () => {
-    mod.banRemove(options, language, message, cmd);
+   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
+    const m: typeof ModTypes = await import(
+     `${process.cwd()}/BaseClient/ClientHelperModules/mod.js`
+    );
+    m.default(undefined, 'banRemove', {
+     dbOnly: false,
+     executor: (await getCustomBot(options.guild)).user,
+     guild: options.guild,
+     reason: language.mod.execution.muteRemove.reason,
+     target: options.target,
+     skipChecks: true,
+    });
    }),
    options.guild.id,
    options.target.id,
@@ -365,12 +401,12 @@ const mod = {
   cache.bans.delete(options.guild.id, options.target.id);
 
   const me = await getCustomBot(options.guild);
-  if (!me.permissions.has(Discord.PermissionFlagsBits.BanMembers)) {
+  if (!me.permissions.has(Discord.PermissionFlagsBits.BanMembers) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
   }
 
-  if (!options.guild.bans.cache.has(options.target.id)) {
+  if (!options.guild.bans.cache.has(options.target.id) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -392,12 +428,12 @@ const mod = {
   const type = 'kickAdd';
 
   const me = await getCustomBot(options.guild);
-  if (!me.permissions.has(Discord.PermissionFlagsBits.KickMembers)) {
+  if (!me.permissions.has(Discord.PermissionFlagsBits.KickMembers) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
   }
 
-  if (!options.guild.bans.cache.has(options.target.id)) {
+  if (!options.guild.bans.cache.has(options.target.id) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
@@ -458,42 +494,27 @@ const mod = {
       channelid: options.channel.id,
       guildid: options.guild.id,
       allowbits: 0n,
-      denybits: new Discord.PermissionsBitField([
-       Discord.PermissionsBitField.Flags.SendMessages,
-       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-       Discord.PermissionsBitField.Flags.ViewChannel,
-       Discord.PermissionsBitField.Flags.AddReactions,
-       Discord.PermissionsBitField.Flags.Connect,
-      ]).bitfield,
+      denybits: new Discord.PermissionsBitField(ChannelBanBits).bitfield,
      },
      update: {
-      denybits: stickyPermSetting?.denybits
-       ? new Discord.PermissionsBitField(stickyPermSetting.denybits).add([
-          Discord.PermissionsBitField.Flags.SendMessages,
-          Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-          Discord.PermissionsBitField.Flags.ViewChannel,
-          Discord.PermissionsBitField.Flags.AddReactions,
-          Discord.PermissionsBitField.Flags.Connect,
-         ]).bitfield
-       : undefined,
-      allowbits: stickyPermSetting?.allowbits
-       ? new Discord.PermissionsBitField(stickyPermSetting.allowbits).remove([
-          Discord.PermissionsBitField.Flags.SendMessages,
-          Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-          Discord.PermissionsBitField.Flags.ViewChannel,
-          Discord.PermissionsBitField.Flags.AddReactions,
-          Discord.PermissionsBitField.Flags.Connect,
-         ]).bitfield
-       : undefined,
+      denybits: new Discord.PermissionsBitField(
+       stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
+      ).add(ChannelBanBits).bitfield,
+      allowbits: new Discord.PermissionsBitField(
+       stickyPermSetting?.allowbits ? BigInt(stickyPermSetting.allowbits) : 0n,
+      ).remove(ChannelBanBits).bitfield,
      },
     })
     .then();
+
+   return true;
   }
 
   const me = await getCustomBot(options.guild);
   if (
-   !me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
-   !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)
+   (!me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
+    !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)) &&
+   !options.skipChecks
   ) {
    permissionError(cmd, message, language, type);
    return false;
@@ -501,25 +522,12 @@ const mod = {
 
   const perm = options.channel?.permissionOverwrites.cache.get(options.target.id);
 
-  if (
-   perm &&
-   perm.deny.has(Discord.PermissionFlagsBits.SendMessages) &&
-   perm.deny.has(Discord.PermissionFlagsBits.SendMessagesInThreads) &&
-   perm.deny.has(Discord.PermissionFlagsBits.ViewChannel) &&
-   perm.deny.has(Discord.PermissionFlagsBits.AddReactions) &&
-   perm.deny.has(Discord.PermissionFlagsBits.Connect)
-  ) {
+  if (perm && perm.deny.has(ChannelBanBits) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
-  const newPerms = new Discord.PermissionsBitField([
-   Discord.PermissionsBitField.Flags.SendMessages,
-   Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-   Discord.PermissionsBitField.Flags.ViewChannel,
-   Discord.PermissionsBitField.Flags.AddReactions,
-   Discord.PermissionsBitField.Flags.Connect,
-  ]);
+  const newPerms = new Discord.PermissionsBitField(ChannelBanBits);
 
   const res = await request.channels.editPermissionOverwrite(
    options.channel,
@@ -559,27 +567,11 @@ const mod = {
    });
    if (!stickyPermSetting) return true;
 
-   const newDeny = stickyPermSetting?.denybits
-    ? new Discord.PermissionsBitField(stickyPermSetting.denybits).add([
-       Discord.PermissionsBitField.Flags.SendMessages,
-       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-       Discord.PermissionsBitField.Flags.ViewChannel,
-       Discord.PermissionsBitField.Flags.AddReactions,
-       Discord.PermissionsBitField.Flags.Connect,
-      ]).bitfield
-    : undefined;
+   const newDeny = new Discord.PermissionsBitField(
+    stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
+   ).remove(ChannelBanBits).bitfield;
 
-   const newAllow = stickyPermSetting?.allowbits
-    ? new Discord.PermissionsBitField(stickyPermSetting.allowbits).remove([
-       Discord.PermissionsBitField.Flags.SendMessages,
-       Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-       Discord.PermissionsBitField.Flags.ViewChannel,
-       Discord.PermissionsBitField.Flags.AddReactions,
-       Discord.PermissionsBitField.Flags.Connect,
-      ]).bitfield
-    : undefined;
-
-   if (newDeny === 0n && newAllow === 0n) {
+   if (newDeny === 0n && stickyPermSetting.allowbits === 0n) {
     DataBase.stickypermmembers.delete({
      where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
     });
@@ -589,19 +581,18 @@ const mod = {
    DataBase.stickypermmembers
     .update({
      where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
-     data: {
-      denybits: newDeny,
-      allowbits: newAllow,
-     },
+     data: { denybits: newDeny },
     })
     .then();
+
    return true;
   }
 
   const me = await getCustomBot(options.guild);
   if (
-   !me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
-   !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)
+   (!me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
+    !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)) &&
+   !options.skipChecks
   ) {
    permissionError(cmd, message, language, type);
    return false;
@@ -609,27 +600,14 @@ const mod = {
 
   const perm = options.channel.permissionOverwrites.cache.get(options.target.id);
 
-  if (
-   !perm ||
-   (!perm?.deny.has(Discord.PermissionFlagsBits.SendMessages) &&
-    !perm?.deny.has(Discord.PermissionFlagsBits.SendMessagesInThreads) &&
-    !perm?.deny.has(Discord.PermissionFlagsBits.ViewChannel) &&
-    !perm?.deny.has(Discord.PermissionFlagsBits.AddReactions) &&
-    !perm?.deny.has(Discord.PermissionFlagsBits.Connect))
-  ) {
+  if (!perm || !perm?.deny.has(ChannelBanBits)) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
-  const newPerms = new Discord.PermissionsBitField([
-   Discord.PermissionsBitField.Flags.SendMessages,
-   Discord.PermissionsBitField.Flags.SendMessagesInThreads,
-   Discord.PermissionsBitField.Flags.ViewChannel,
-   Discord.PermissionsBitField.Flags.AddReactions,
-   Discord.PermissionsBitField.Flags.Connect,
-  ]);
+  const newPerms = new Discord.PermissionsBitField(ChannelBanBits);
 
-  if (perm.deny.remove(newPerms).bitfield === 0n && perm.allow.bitfield === 0n) {
+  if (perm.deny.remove(newPerms).bitfield !== 0n || perm.allow.bitfield !== 0n) {
    const res = await request.channels.editPermissionOverwrite(
     options.channel,
     options.target.id,
@@ -670,8 +648,19 @@ const mod = {
   if (!res) return res;
 
   cache.channelBans.set(
-   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), () => {
-    mod.channelBanRemove(options, language, message, cmd);
+   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
+    const m: typeof ModTypes = await import(
+     `${process.cwd()}/BaseClient/ClientHelperModules/mod.js`
+    );
+    m.default(undefined, 'channelBanRemove', {
+     dbOnly: false,
+     executor: (await getCustomBot(options.guild)).user,
+     guild: options.guild,
+     reason: language.mod.execution.muteRemove.reason,
+     target: options.target,
+     channel: options.channel,
+     skipChecks: true,
+    });
    }),
    options.guild.id,
    options.channel.id,

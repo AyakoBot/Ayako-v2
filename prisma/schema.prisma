@@ -598,7 +598,7 @@ model punish_tempbans {
   msgid           String  @db.VarChar
   duration        Decimal @db.Decimal
 
-  @@index([guildid, uniquetimestamp, userid])
+  @@index([guildid, userid])
 }
 
 model punish_tempchannelbans {
@@ -629,7 +629,7 @@ model punish_tempmutes {
   msgid           String  @db.VarChar
   duration        Decimal @db.Decimal
 
-  @@index([guildid, uniquetimestamp, userid])
+  @@index([guildid, userid])
 }
 
 model punish_warns {
@@ -780,8 +780,8 @@ model stickypermmembers {
   userid    String  @db.VarChar
   guildid   String  @db.VarChar
   channelid String  @db.VarChar
-  denybits  BigInt?
-  allowbits BigInt?
+  denybits  BigInt  @default(0)
+  allowbits BigInt  @default(0)
 
   @@id([userid, channelid])
   @@index(guildid)

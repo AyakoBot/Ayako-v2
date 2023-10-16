@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (member: Discord.GuildMember) => {
- if (member.communicationDisabledUntil) mute(member);
+ if (!member.communicationDisabledUntil) mute(member);
  else unmute(member);
 };
 
@@ -21,7 +21,7 @@ const mute = async (member: Discord.GuildMember) => {
   member.id,
   {
    communication_disabled_until: new Date(
-    Number(activeMute.uniquetimestamp) + Number(activeMute.duration) + Date.now(),
+    Number(activeMute.uniquetimestamp) + Number(activeMute.duration) * 1000,
    ).toISOString(),
   },
   activeMute?.reason ?? undefined,

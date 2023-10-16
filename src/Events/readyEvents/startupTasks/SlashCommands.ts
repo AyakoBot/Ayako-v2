@@ -1251,7 +1251,7 @@ const mod = new Discord.SlashCommandBuilder()
     new Discord.SlashCommandStringOption()
      .setName('duration')
      .setDescription('The Duration (Example: 4d 30m 12s)')
-     .setRequired(false),
+     .setRequired(true),
    )
    .addStringOption(Reason)
    .addStringOption(DeleteMessageDuration),
@@ -1283,7 +1283,12 @@ const mod = new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(Duration)
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('duration')
+     .setDescription('The Duration (Example: 4d 30m 12s)')
+     .setRequired(true),
+   )
    .addStringOption(Reason),
  )
  .addSubcommand(

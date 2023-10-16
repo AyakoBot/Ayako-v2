@@ -16,5 +16,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   dbOnly: false,
   guild: cmd.guild,
   executor: cmd.user,
+  skipChecks: false,
  });
 };

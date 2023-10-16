@@ -240,6 +240,7 @@ type BaseOptions = {
  guild: Discord.Guild;
  target: Discord.User;
  executor: Discord.User;
+ skipChecks: boolean;
 };
 
 type Channel = {

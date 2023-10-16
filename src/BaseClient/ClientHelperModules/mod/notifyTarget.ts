@@ -45,7 +45,8 @@ export default async <T extends CT.ModTypes>(
 
  if (
   !options.guild.rulesChannel ||
-  ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type)
+  ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type) ||
+  !options.guild.members.cache.has(options.target.id)
  ) {
   send(options.target, {
    embeds: [embed],

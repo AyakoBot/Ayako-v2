@@ -19,6 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   executor: cmd.user,
   dbOnly: false,
   channel,
+  skipChecks: false,
  };
 
  ch.mod(cmd, 'channelBanRemove', modOptions);

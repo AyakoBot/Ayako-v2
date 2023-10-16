@@ -19,8 +19,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   target: user,
   executor: cmd.user,
   dbOnly: false,
-  duration: ch.getDuration(duration),
+  duration: ch.getDuration(duration) / 1000,
   channel,
+  skipChecks: false,
  };
 
  ch.mod(cmd, 'tempChannelBanAdd', modOptions);

@@ -33,6 +33,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   guild: cmd.guild,
   target: user,
   executor: cmd.user,
+  skipChecks: false,
  });
 };
 

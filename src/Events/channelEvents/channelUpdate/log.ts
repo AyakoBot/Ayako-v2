@@ -25,6 +25,10 @@ export default async (
   | Discord.ForumChannel
   | Discord.AnyThreadChannel,
 ) => {
+ if ('position' in channel && (!oldChannel || 'position' in oldChannel)) {
+  if (oldChannel?.position !== channel.position) return;
+ }
+
  const channels = await ch.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 

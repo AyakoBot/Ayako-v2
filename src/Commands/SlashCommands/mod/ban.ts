@@ -22,6 +22,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   deleteMessageSeconds: deleteMessageDuration
    ? ch.getDuration(deleteMessageDuration, 604800) / 1000
    : 604800,
+  skipChecks: false,
  };
 
  if (!duration) delete modOptions.duration;

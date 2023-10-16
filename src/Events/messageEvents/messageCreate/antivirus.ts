@@ -287,6 +287,7 @@ export const performPunishment = (
   executor: msg.client.user,
   target: msg.author,
   guild: msg.guild,
+  skipChecks: false,
  };
 
  switch (settings.action) {

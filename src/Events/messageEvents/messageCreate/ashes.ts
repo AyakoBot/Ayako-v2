@@ -40,6 +40,7 @@ const banHandler = async (msg: Discord.Message) => {
    dbOnly: false,
    reason,
    guild: msg.guild,
+   skipChecks: false,
   };
 
   ch.mod(undefined, isUnban ? 'banRemove' : 'banAdd', modOptions);

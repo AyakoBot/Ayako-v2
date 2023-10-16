@@ -32,6 +32,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   target: user,
   executor: cmd.user,
   dbOnly: false,
+  skipChecks: false,
  };
 
  ch.mod(cmd, 'strikeAdd', modOptions);

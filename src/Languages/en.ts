@@ -3704,6 +3704,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     loading: 'Muting User...',
     self: "You can't Mute yourself",
     me: "I won't Mute myself",
+    durationTooLong: 'Duration cannot be longer than 28 Days',
    },
    muteRemove: {
     dm: () => `You have been Un-Muted`,
@@ -3715,6 +3716,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     loading: 'Un-Muting User...',
     self: "You can't Un-Mute yourself",
     me: "I won't Un-Mute myself",
+    reason: 'Mute ended',
    },
    banAdd: {
     dm: (options: CT.ModOptions<'banAdd'>) => `You have been Banned from ${options.guild.name}`,

@@ -29,6 +29,7 @@ export default async (
   channel.permissionOverwrites.cache
    .filter((o) => o.type === Discord.OverwriteType.Member)
    .filter((o) => o.deny.bitfield === 0n && o.allow.bitfield === 0n)
+   .filter((o) => channel.guild.members.cache.has(o.id))
    .map((o) => o.id)
    .map((data) =>
     ch.DataBase.stickypermmembers.delete({
@@ -40,6 +41,7 @@ export default async (
  const p3 = oldChannel?.permissionOverwrites.cache
   .filter((o) => o.type === Discord.OverwriteType.Member)
   .filter((o) => !channel.permissionOverwrites.cache.has(o.id))
+  .filter((o) => channel.guild.members.cache.has(o.id))
   .map((o) =>
    ch.DataBase.stickypermmembers.delete({
     where: { userid_channelid: { userid: o.id, channelid: channel.id } },

@@ -178,6 +178,6 @@ const runBasics2 = async (
 ) => {
  declareSuccess(cmd, message, language, options, type);
  log(options.guild, type, options.target, options.executor, options as never);
- await db(cmd, options, language, type);
+ db(cmd, options, language, type).then();
  notifyTarget(options, language, type);
 };

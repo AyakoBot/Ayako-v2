@@ -1,3 +1,4 @@
+import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import log from './log.js';
 import cache from './cache.js';
@@ -20,5 +21,7 @@ export default async (oldChannel: Discord.Channel | undefined, channel: Discord.
   return;
  }
 
- stickyPerms(oldChannel as Discord.GuildChannel, channel as Discord.GuildChannel);
+ Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+  stickyPerms(oldChannel as Discord.GuildChannel, channel as Discord.GuildChannel);
+ });
 };

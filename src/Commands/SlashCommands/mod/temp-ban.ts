@@ -18,10 +18,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   target: user,
   executor: cmd.user,
   dbOnly: false,
-  duration: ch.getDuration(duration),
+  duration: ch.getDuration(duration) / 1000,
   deleteMessageSeconds: deleteMessageDuration
    ? ch.getDuration(deleteMessageDuration, 604800) / 1000
    : 604800,
+  skipChecks: false,
  };
 
  ch.mod(cmd, 'tempBanAdd', modOptions);
