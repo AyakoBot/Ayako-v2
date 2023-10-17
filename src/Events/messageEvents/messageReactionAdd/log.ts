@@ -48,17 +48,15 @@ export default async (
   });
  }
 
- if (reaction.emoji.url) {
-  embed.thumbnail = {
-   url: `attachment://${reaction.emoji.name ?? reaction.emoji.id}`,
-  };
+ embed.thumbnail = {
+  url: `attachment://${ch.getNameAndFileType(ch.constants.standard.emoteURL(reaction.emoji))}`,
+ };
 
-  const attachment = (await ch.fileURL2Buffer([reaction.emoji.url])).filter(
-   (e): e is Discord.AttachmentPayload => !!e,
-  );
+ const attachment = (
+  await ch.fileURL2Buffer([ch.constants.standard.emoteURL(reaction.emoji)])
+ ).filter((e): e is Discord.AttachmentPayload => !!e);
 
-  if (attachment) files.push(...attachment);
- }
+ if (attachment) files.push(...attachment);
 
  await ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
 };

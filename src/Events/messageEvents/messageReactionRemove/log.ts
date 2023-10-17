@@ -30,13 +30,14 @@ export default async (
 
  embeds.push(embed);
 
- if (msg.reactions.cache?.size) {
+ if (msg.reactions.cache.filter((r) => Number(r.count) !== 0)?.size) {
   embeds.push({
    title: lan.reactions,
    description: (msg.reactions.cache ?? [{ count: 0, emoji: reaction.emoji }])
+    .filter((r) => Number(r.count) !== 0)
     ?.map(
      (r) =>
-      `\`${ch.spaces(`${r.count}`, 5)}\` ${
+      `\`${ch.spaces(`${Number(r.count)}`, 5)}\` ${
        (reaction.emoji.id && r.emoji.id && reaction.emoji.id === r.emoji.id) ||
        (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
         ? ` ${ch.constants.standard.getEmote(ch.emotes.minusBG)}`
@@ -48,14 +49,14 @@ export default async (
   });
  }
 
- if (reaction.emoji.url) {
-  embed.thumbnail = {
-   url: `attachment://${ch.getNameAndFileType(reaction.emoji.url)}`,
-  };
+ embed.thumbnail = {
+  url: `attachment://${ch.getNameAndFileType(ch.constants.standard.emoteURL(reaction.emoji))}`,
+ };
 
-  const attachment = (await ch.fileURL2Buffer([reaction.emoji.url]))?.[0];
-  if (attachment) files.push(attachment);
- }
+ const attachment = (
+  await ch.fileURL2Buffer([ch.constants.standard.emoteURL(reaction.emoji)])
+ )?.[0];
+ if (attachment) files.push(attachment);
 
  await ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
 };
