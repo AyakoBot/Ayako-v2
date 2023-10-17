@@ -578,7 +578,7 @@ export default {
     descRemoved: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
      `Reaction on\n${getMessage(msg)}with ${getEmote(emoji)}by ${getUser(
       user,
-     )}was removed,\neither by the reactor themself or by a Moderator`,
+     )}was removed.\nEither by the Reactor themselves or by a Moderator`,
     descRemovedAll: (msg: Discord.Message) => `All Reactions on\n${getMessage(msg)}were removed`,
     descRemoveEmoji: (msg: Discord.Message, emoji: Discord.Emoji) =>
      `Reaction with\n${getEmote(emoji)}was removed from\n${getMessage(msg)}`,
