@@ -10,16 +10,13 @@
 
 */
 -- AlterTable
-ALTER TABLE "antispam" ADD COLUMN     "action" "PunishmentType" NOT NULL DEFAULT 'warn',
+ALTER TABLE "antispakm" ADD COLUMN     "action" "PunishmentType" NOT NULL DEFAULT 'warn',
 ADD COLUMN     "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
 ADD COLUMN     "duration" DECIMAL NOT NULL DEFAULT 3600;
 
 -- AlterTable
 ALTER TABLE "autopunish" DROP COLUMN "confirmationreq",
 DROP COLUMN "punishmentawaittime";
-
--- AlterTable
-ALTER TABLE "disboard" RENAME CONSTRAINT "guildsettings_pkey" TO "disboard_pkey";
 
 -- AlterTable
 ALTER TABLE "guildsettings" ADD COLUMN     "appid" VARCHAR,

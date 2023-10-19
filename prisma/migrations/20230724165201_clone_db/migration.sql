@@ -248,7 +248,7 @@ CREATE TABLE "disboard" (
     "msgid" VARCHAR,
     "repeatenabled" BOOLEAN NOT NULL DEFAULT true,
 
-    CONSTRAINT "guildsettings_pkey" PRIMARY KEY ("guildid")
+    CONSTRAINT "disboard_pkey" PRIMARY KEY ("guildid")
 );
 
 -- CreateTable
@@ -334,7 +334,7 @@ CREATE TABLE "guildsettings" (
     "ptreminderenabled" BOOLEAN NOT NULL DEFAULT true,
     "legacyrp" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "guildsettings_pkey1" PRIMARY KEY ("guildid")
+    CONSTRAINT "guildsettings_pkey" PRIMARY KEY ("guildid")
 );
 
 -- CreateTable
@@ -889,7 +889,7 @@ CREATE TABLE "voterewards" (
     "rewardxp" DECIMAL,
     "active" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "voterewards_pkey1" PRIMARY KEY ("uniquetimestamp")
+    CONSTRAINT "voterewards_pkey" PRIMARY KEY ("uniquetimestamp")
 );
 
 -- CreateTable
@@ -904,7 +904,7 @@ CREATE TABLE "voters" (
     "rewardcurrency" DECIMAL,
     "rewardxpmultiplier" DECIMAL,
 
-    CONSTRAINT "voterewards_pkey" PRIMARY KEY ("userid","voted")
+    CONSTRAINT "voters_pkey" PRIMARY KEY ("userid","voted")
 );
 
 -- CreateTable

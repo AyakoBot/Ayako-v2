@@ -13,9 +13,6 @@ ALTER TABLE "buttonroles" DROP COLUMN "linkedid",
 ADD COLUMN     "linkedid" DECIMAL;
 
 -- AlterTable
-ALTER TABLE "guildsettings" RENAME CONSTRAINT "guildsettings_pkey1" TO "guildsettings_pkey";
-
--- AlterTable
 ALTER TABLE "reactionroles" DROP COLUMN "linkedid",
 ADD COLUMN     "linkedid" DECIMAL;
 
