@@ -9,6 +9,8 @@ type DirectProperties<T> = Pick<T, keyof T>;
  * @returns The emoji object if found, otherwise `undefined`.
  */
 export default async (idPair: string) => {
+ if (!idPair.includes(':')) return Discord.parseEmoji(idPair);
+
  const client = (await import('../Client.js')).default;
 
  const response = (await client.shard?.broadcastEval((c, { id }) => c.emojis.cache.get(id), {

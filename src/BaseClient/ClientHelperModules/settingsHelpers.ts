@@ -6,6 +6,8 @@ import changeHelpers from './settingsHelpers/changeHelpers.js';
 import getSettingsFile from './settingsHelpers/getSettingsFile.js';
 import setup from './settingsHelpers/setup.js';
 import del from './settingsHelpers/del.js';
+import getStyle from './settingsHelpers/getStyle.js';
+import getEmoji from './settingsHelpers/getEmoji.js';
 
 /**
  * Helper functions for managing settings.
@@ -35,4 +37,6 @@ export default {
  getSettingsFile,
  setup,
  del,
+ getStyle,
+ getEmoji,
 };
