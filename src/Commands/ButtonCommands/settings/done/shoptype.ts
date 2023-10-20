@@ -1,8 +1,11 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
+import { getOptions } from '../editors/shoptype.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+type Types = 'punishment' | 'shoptype' | 'language';
+
+export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
  if (!cmd.inCachedGuild()) return;
 
  const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
@@ -24,28 +27,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const lastMessage = await cmd.channel?.messages.fetch({ limit: 1 }).catch(() => undefined);
- if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
-  ch.request.channels.delete(cmd.guild, cmd.channelId);
- }
- if (!lastMessage) return;
-
- const emoteMessage = lastMessage.first();
- const emoteContent = emoteMessage?.content;
-
- const emote = emoteContent?.match(ch.regexes.emojiTester)?.length
-  ? { identifier: emoteContent?.trim() }
-  : { identifier: emoteContent?.replace(/<:/g, '').replace(/</g, '').replace(/>/g, '') };
+ const language = await ch.getLanguage(cmd.guildId);
+ const id = Object.entries(getOptions(type, language)).find(
+  (e) => e[1] === cmd.message.embeds[0].description,
+ )?.[0];
 
  const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  emoteContent ? emote?.identifier : null,
+  id,
   uniquetimestamp,
  );
-
- const language = await ch.getLanguage(cmd.guildId);
 
  ch.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
@@ -57,4 +50,22 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   language,
   language.slashCommands.settings.categories[settingName],
  );
+
+ const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
+ if (!settingsFile) return;
+
+ cmd.update({
+  embeds: await settingsFile.getEmbeds(
+   ch.settingsHelpers.embedParsers,
+   updatedSetting,
+   language,
+   language.slashCommands.settings.categories[settingName],
+   cmd.guild,
+  ),
+  components: await settingsFile.getComponents(
+   ch.settingsHelpers.buttonParsers,
+   updatedSetting,
+   language,
+  ),
+ });
 };
