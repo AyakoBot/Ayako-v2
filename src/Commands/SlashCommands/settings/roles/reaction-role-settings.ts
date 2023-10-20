@@ -178,15 +178,22 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
  guild,
  uniquetimestamp,
 ) => {
+ if (!newSettings) return;
+
  switch (changedSettings) {
   case 'active': {
+   const settings = await ch.DataBase.reactionrolesettings.findUnique({
+    where: { uniquetimestamp },
+   });
+   if (!settings) return;
+
+   const message = (await ch.getMessage(
+    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
+   )) as Discord.Message<true>;
+   if (!message) return;
+
    switch (newSettings.active) {
     case true: {
-     const settings = await ch.DataBase.reactionrolesettings.findUnique({
-      where: { uniquetimestamp },
-     });
-     if (!settings) return;
-
      const relatedSettings = await ch.DataBase.reactionroles.findMany({
       where: {
        linkedid: uniquetimestamp,
@@ -196,15 +203,6 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
       },
      });
      if (!relatedSettings.length) return;
-
-     const message = (await ch.getMessage(
-      ch.constants.standard.msgurl(
-       settings.guildid,
-       settings.channelid ?? '',
-       settings.msgid ?? '',
-      ),
-     )) as Discord.Message<true> | undefined;
-     if (!message) return;
 
      const emotes = relatedSettings
       .map((s) => Discord.parseEmoji(s.emote as string))
@@ -240,20 +238,6 @@ export const postChange: CT.SettingsFile<'reaction-role-settings'>['postChange']
      break;
     }
     case false: {
-     const settings = await ch.DataBase.reactionrolesettings.findUnique({
-      where: { uniquetimestamp },
-     });
-     if (!settings) return;
-
-     const message = await ch.getMessage(
-      ch.constants.standard.msgurl(
-       settings.guildid,
-       settings.channelid ?? '',
-       settings.msgid ?? '',
-      ),
-     );
-
-     if (!message) return;
      if (!message.reactions.cache.size) return;
      ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
      break;

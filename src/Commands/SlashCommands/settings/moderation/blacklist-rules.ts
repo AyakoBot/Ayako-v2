@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
-import { getStyle, getEmoji } from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
+import SH from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
 
 const name = 'blacklist-rules';
 
@@ -321,9 +321,9 @@ export const getComponents = (
     {
      type: Discord.ComponentType.Button,
      label: language.events.logs.automodRule.enabled,
-     style: getStyle(rule.enabled),
+     style: SH.getStyle(rule.enabled),
      custom_id: `settings/autoModRule/boolean_active_${rule.id}`,
-     emoji: getEmoji(rule.enabled, 'active'),
+     emoji: SH.getEmoji(rule.enabled, 'active'),
     },
     {
      type: Discord.ComponentType.Button,

@@ -73,7 +73,11 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     ? language.punishments[s.punishment as keyof typeof language.punishments]
     : language.None
   }\``,
-  value: `${s.active ? ch.emotes.enabled : ch.emotes.disabled} - ID: \`${Number(
+  value: `${
+   s.active
+    ? ch.constants.standard.getEmote(ch.emotes.enabled)
+    : ch.constants.standard.getEmote(ch.emotes.disabled)
+  } - ID: \`${Number(
    s.uniquetimestamp,
   ).toString(36)}\``,
  }));

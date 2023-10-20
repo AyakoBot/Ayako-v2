@@ -190,15 +190,22 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
  guild,
  uniquetimestamp,
 ) => {
+ if (!newSettings) return;
+
  switch (changedSettings) {
   case 'active': {
+   const settings = await ch.DataBase.buttonrolesettings.findUnique({
+    where: { uniquetimestamp },
+   });
+   if (!settings) return;
+
+   const message = (await ch.getMessage(
+    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
+   )) as Discord.Message<true> | undefined;
+   if (!message) return;
+
    switch (newSettings.active) {
     case true: {
-     const settings = await ch.DataBase.buttonrolesettings.findUnique({
-      where: { uniquetimestamp },
-     });
-     if (!settings) return;
-
      const relatedSettings = await ch.DataBase.buttonroles.findMany({
       where: {
        linkedid: uniquetimestamp,
@@ -208,15 +215,6 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
       },
      });
      if (!relatedSettings.length) return;
-
-     const message = (await ch.getMessage(
-      ch.constants.standard.msgurl(
-       settings.guildid,
-       settings.channelid ?? '',
-       settings.msgid ?? '',
-      ),
-     )) as Discord.Message<true> | undefined;
-     if (!message) return;
 
      const componentChunks: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] =
       ch
@@ -247,20 +245,6 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
      break;
     }
     case false: {
-     const settings = await ch.DataBase.buttonrolesettings.findUnique({
-      where: { uniquetimestamp },
-     });
-     if (!settings) return;
-
-     const message = await ch.getMessage(
-      ch.constants.standard.msgurl(
-       settings.guildid,
-       settings.channelid ?? '',
-       settings.msgid ?? '',
-      ),
-     );
-
-     if (!message) return;
      if (!message.components.length) return;
 
      if (message?.author.id === guild.client.user.id) message.edit({ components: [] });
