@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
 
 export enum TableNamesPrismaTranslation {
+ shop = 'shop',
+ 'shop-items' = 'shopitems',
  'anti-spam' = 'antispam',
  'anti-virus' = 'antivirus',
  'auto-punish' = 'autopunish',
@@ -220,8 +222,9 @@ export default {
   userURL: (user: Discord.User) => `https://discord.com/users/${user.id}`,
   emoteURL: (emote: Discord.Emoji) =>
    `https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? 'gif' : 'png'}?size=4096`,
-  getEmote: (emoji: Discord.Emoji | { name: string; id?: string; animated?: boolean }) =>
-   emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`,
+  getEmote: (
+   emoji: Discord.Emoji | { name: string; id?: string | null; animated?: boolean | null },
+  ) => (emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`),
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
   msgurl: (g: string | undefined | null, c: string, m: string) =>
@@ -712,6 +715,17 @@ export default {
      anonsuggestion: 'boolean',
      nosendroles: 'roles',
      nosendusers: 'users',
+    },
+    'shop-items': {
+     roles: 'roles',
+     price: 'number',
+     shoptype: 'shoptype',
+     buttonemote: 'emote',
+     buttontext: 'string',
+     msgid: 'message',
+    },
+    shop: {
+     currencyemote: 'emote',
     },
     sticky: {
      roles: 'roles',

@@ -207,6 +207,17 @@ const settings = new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${name}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('shop')
+     .setDescription('Create a Server-Shop Members can buy Roles in using their Server-Currency'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('shop-items')
+     .setDescription('The Roles you can buy in the Server-Shop')
+     .addStringOption(IDSelector),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('role-rewards')
      .setDescription('Give Rewards to Members for achieving a Role')
      .addStringOption(IDSelector),
@@ -1735,6 +1746,16 @@ new Array(5)
   ),
  );
 
+const shop = new Discord.SlashCommandBuilder()
+ .setName('shop')
+ .setDescription('Buy Roles with earned Currency')
+ .setDMPermission(false);
+
+const balance = new Discord.SlashCommandBuilder()
+ .setName('balance')
+ .setDescription('Display your Balance')
+ .setDMPermission(false);
+
 export default {
  public: {
   user,
@@ -1761,6 +1782,8 @@ export default {
   clear,
   reminder,
   suggest,
+  shop,
+  balance,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -1782,6 +1805,7 @@ export default {
   'settings_roles_role-rewards': 'roles',
   'settings_roles_auto-roles': 'roles',
   'settings_roles_self-roles': 'roles',
+  settings_roles_shop: 'roles',
   settings_roles_separators: 'roles',
   settings_roles_sticky: 'roles',
   'settings_roles_reaction-role-settings': 'roles',
@@ -1906,6 +1930,7 @@ export default {
   reminder_delete: 'utility',
   reminder_edit: 'utility',
   suggest: 'utility',
+  shop: 'utility',
  },
  names: [
   'settings',
@@ -1931,5 +1956,7 @@ export default {
   'self-roles',
   'clear',
   'reminder',
+  'shop',
+  'balance',
  ],
 } as const;

@@ -997,18 +997,26 @@ model deletethreads {
 
 model shop {
  guildid         String   @db.VarChar
+ active          Boolean  @db.Boolean @default(false)
+ currencyemote   String?  @db.Text
+
+ @@id(guildid, map: "shop_pkey")
+ @@index(guildid)
+}
+
+model shopitems {
+ guildid         String   @db.VarChar
+ active          Boolean  @db.Boolean @default(false)
  roles           String[] @db.VarChar
  price           Decimal? @db.Decimal
  uniquetimestamp Decimal  @db.Decimal
  shoptype        ShopType             @default(command)
- active          Boolean  @db.Boolean @default(false)
- currencyemote   String?  @db.Text
  buttontext      String?  @db.Text
  buttonemote     String?  @db.Text
  msgid           String?  @db.VarChar
  channelid       String?  @db.VarChar
 
- @@id(uniquetimestamp, map: "shop_pkey")
+ @@id(uniquetimestamp, map: "shopitems_pkey")
  @@index([guildid, uniquetimestamp])
 }
 

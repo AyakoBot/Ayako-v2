@@ -1583,6 +1583,27 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
     `<@${user}> is AFK since ${since}${text ? `\n${text}` : ''}`,
   },
   roles: {
+   shop: {
+    bought: `Shop-Item bought and equipped\nTo unequipt use the Button again`,
+    equipt: `Shop-Item equipped\nTo unequipt use the Button again`,
+    unequipt: `Shop-Item unequipped\nTo equipt use the Button again`,
+    alreadyBought: `You already own this`,
+    notBought: `You don't own this`,
+    notEnoughMoney: (emote: string) => `You don't have enough ${emote} to buy this`,
+    equip: `Equip Roles`,
+    unequip: `Unequip Roles`,
+    buyTheseFor: (amount: string) => `Buy these Roles for ${amount}`,
+    buyThisFor: (amount: string) => `Buy this Role for ${amount}`,
+    selRoleToBuy: 'Select a Role to buy',
+    selRoleToEquip: 'Select a Role to un/equip',
+    description: (balance: number, emote: string, cId: string) =>
+     `Your current Balance is ${ch.util.makeInlineCode(
+      String(ch.splitByThousand(balance)),
+     )} ${emote}\nYou can check your Balance at any time using </balance:${cId}>\n\nBuy Roles through the Select-Menu below`,
+    notEnabled: 'Role Shop is not enabled or there are no Roles in the Shop',
+    oneRole: (link: string) => `This Role can be bought [here](${link})`,
+    manyRoles: (link: string) => `These Roles can be bought [here](${link})`,
+   },
    customRole: {
     notEnabled: 'Setting Custom-Roles is not enabled',
     cantSet: "You don't qualify to set a Custom-Role",
@@ -2453,6 +2474,46 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
     //   },
     //  },
     // },
+    'shop-items': {
+     name: 'Shop-Items',
+     command: (cId: string) => `</shop:${cId}>`,
+     message: 'Shop-Message',
+     fields: {
+      roles: {
+       name: 'Roles',
+       desc: 'Roles that can be bought in the Shop',
+      },
+      price: {
+       name: 'Price',
+       desc: 'Price of the Role',
+      },
+      shoptype: {
+       name: 'Shop-Type',
+       desc: 'The Type of Shop for this Shop-Item',
+      },
+      buttonemote: {
+       name: 'Button Emote',
+       desc: 'Emote of the Buy-Button',
+      },
+      buttontext: {
+       name: 'Button Text',
+       desc: 'Text of the Buy-Button',
+      },
+      msgid: {
+       name: 'Shop-Message',
+       desc: 'The Message the Buy-Button will be put on',
+      },
+     },
+    },
+    shop: {
+     name: 'Shop',
+     fields: {
+      currencyemote: {
+       name: 'Currency Emote',
+       desc: 'Emote used for to display the Currency',
+      },
+     },
+    },
     'vote-rewards': {
      name: 'Vote Rewards',
      fields: {
@@ -3504,6 +3565,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   taken: (user: Discord.User, roles: string) => `<@${user.id}> has been taken\n${roles}\nfrom`,
  },
  autotypes: {
+  shop: `${name} Shop`,
   antispam: `${name} Anti-Spam`,
   antivirus: `${name} Anti-Virus`,
   blacklist: `${name} Blacklist`,
@@ -4178,6 +4240,10 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   tempban: 'Temp-Ban',
   ban: 'Ban',
   strike: 'Strike',
+ },
+ shoptypes: {
+  command: 'Shop-Command',
+  message: 'Shop-Message',
  },
  commandTypes: {
   slashCommands: 'Slash-Commands',

@@ -32,6 +32,7 @@ export default (msg: Discord.Message) => {
 
   ch.DataBase.buttonrolesettings.deleteMany({ where: { msgid: msg.id } }).then();
   ch.DataBase.reactionrolesettings.deleteMany({ where: { msgid: msg.id } }).then();
+  ch.DataBase.shopitems.deleteMany({ where: { msgid: msg.id } }).then();
 
   ch.cache.giveaways.delete(msg.guildId, msg.channelId, msg.id);
   ch.cache.giveawayClaimTimeout.delete(msg.guildId, msg.id);

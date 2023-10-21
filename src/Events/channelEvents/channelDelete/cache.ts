@@ -41,6 +41,7 @@ export default async (channel: Discord.Channel) => {
 
  ch.DataBase.buttonrolesettings.deleteMany({ where: { channelid: channel.id } }).then();
  ch.DataBase.reactionrolesettings.deleteMany({ where: { channelid: channel.id } }).then();
+ ch.DataBase.shopitems.deleteMany({ where: { channelid: channel.id } }).then();
 
  ch.DataBase.giveaways.deleteMany({ where: { channelid: channel.id } }).then();
  ch.DataBase.stickymessages.deleteMany({ where: { channelid: channel.id } }).then();

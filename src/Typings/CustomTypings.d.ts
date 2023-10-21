@@ -47,6 +47,8 @@ export interface TopGGGuildVote {
 }
 
 export type TableNamesMap = {
+ shop: Prisma.shop;
+ 'shop-items': Prisma.shopitems;
  'anti-spam': Prisma.antispam;
  'blacklist-rules': null;
  'anti-virus': Prisma.antivirus;
@@ -115,8 +117,8 @@ export interface SettingsFile<K extends keyof TableNamesMap> {
   lan: Language['slashCommands']['settings']['categories'][K],
  ) => Promise<void>;
  postChange?: (
-  oldSetting: TableNamesMap[K],
-  newSetting: TableNamesMap[K],
+  oldSetting: TableNamesMap[K] | undefined,
+  newSetting: TableNamesMap[K] | undefined,
   changedSetting: keyof TableNamesMap[K],
   guild: Discord.Guild,
   uniquetimestamp?: number | string,
@@ -301,3 +303,44 @@ export type UsualMessagePayload = {
  ephemeral?: boolean;
  allowed_mentions?: Discord.APIAllowedMentions;
 };
+
+export type SettingsNames = CT.Language['slashCommands']['settings']['categories'];
+export type FieldName<T extends keyof SettingsNames> = SettingsNames[T]['fields'];
+export type BLWLType =
+ | 'blchannelid'
+ | 'blroleid'
+ | 'bluserid'
+ | 'wlchannelid'
+ | 'wlroleid'
+ | 'wluserid';
+export type MentionTypes =
+ | 'rolemode'
+ | 'channel'
+ | 'role'
+ | 'user'
+ | 'mention'
+ | 'punishment'
+ | 'language'
+ | 'settinglink'
+ | 'embed'
+ | 'emote'
+ | 'commands'
+ | 'automodrules'
+ | 'shoptype';
+
+export type HelpCommand =
+ | {
+    parentCommand: string;
+    subCommandGroup: string;
+    subCommand: string;
+   }
+ | {
+    parentCommand: string;
+    subCommand: string;
+    subCommandGroup?: undefined;
+   }
+ | {
+    parentCommand: string;
+    subCommandGroup?: undefined;
+    subCommand?: undefined;
+   };
