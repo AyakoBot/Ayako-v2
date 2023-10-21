@@ -258,12 +258,13 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
    break;
   }
   case 'msgid': {
+   const settings = await ch.DataBase.buttonrolesettings.findUnique({
+    where: { uniquetimestamp },
+   });
+   if (!settings) return;
+
    const message = await ch.getMessage(
-    ch.constants.standard.msgurl(
-     newSettings.guildid,
-     newSettings.channelid ?? '',
-     newSettings.msgid ?? '',
-    ),
+    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
    );
 
    if (!message) return;

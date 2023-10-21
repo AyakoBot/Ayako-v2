@@ -184,6 +184,8 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  changedSetting,
  guild,
 ) => {
+ if (!newSettings) return;
+
  switch (changedSetting) {
   case 'token': {
    if (!newSettings.token) {

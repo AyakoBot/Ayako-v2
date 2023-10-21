@@ -427,4 +427,10 @@ export default {
   animated: true,
   link: 'https://cdn.discordapp.com/emojis/1155535992825073714.png',
  },
+ buy: {
+  name: 'Buy',
+  id: '1165211793703043152',
+  animated: false,
+  link: 'https://cdn.discordapp.com/emojis/1165211793703043152.png',
+ },
 };

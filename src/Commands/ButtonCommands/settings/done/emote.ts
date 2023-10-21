@@ -31,7 +31,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!lastMessage) return;
 
  const emoteMessage = lastMessage.first();
- const emoteContent = emoteMessage?.content;
+ const emoteContent = emoteMessage?.author.bot ? undefined : emoteMessage?.content;
 
  const emote = emoteContent?.match(ch.regexes.emojiTester)?.length
   ? { identifier: emoteContent?.trim() }
