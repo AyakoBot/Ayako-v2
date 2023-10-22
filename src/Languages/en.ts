@@ -1832,7 +1832,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
     self: 'kisses themself, how do you even do that??',
     others: 'kisses with',
     request: 'wants to mwah you~! >~<',
-    buttons: ['Mwah back~', 'Bonk em'],
+    buttons: ['Mwah them~', 'Bonk em'],
    },
    laugh: {
     self: 'laughs at themself, something must be funny',
