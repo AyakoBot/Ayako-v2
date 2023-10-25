@@ -38,7 +38,7 @@ const sendMessage = (
     : undefined,
   })
   .then((m) => new Classes.Message(client, m))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
