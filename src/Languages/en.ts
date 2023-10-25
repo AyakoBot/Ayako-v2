@@ -145,7 +145,7 @@ const getScheduledEvent = (event: Discord.GuildScheduledEvent) =>
 const getWebhook = (webhook: Discord.Webhook, type?: string) =>
  `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\`\n`;
 
-const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild) =>
+const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild | Discord.InviteGuild) =>
  `Server \`${guild.name}\` / \`${guild.id}\`${
   'vanityURLCode' in guild && guild.vanityURLCode
    ? ` / [Join](https://discord.gg/${guild.vanityURLCode})`
@@ -2298,12 +2298,24 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
    explain: 'The Roles listed above can use this Emoji',
    placeholder: 'Select 1 or more Roles',
   },
+  invites: {
+   inviteNotFound: 'Invite not found',
+   deleted: (invite: Discord.Invite) => `${getInvite(invite)}was deleted`,
+   created: (invite: Discord.Invite) => `${getInvite(invite)}was created`,
+  },
   info: {
    basic: '__Basic Info__',
    stats: '__Statistics__',
    otherInfo: '__Other Info__',
    servers: {
     noneFound: 'No Servers found',
+   },
+   invite: {
+    uses: 'Uses',
+    author: `${name} Invite-Info`,
+    code: 'Code',
+    invalidInvite: 'Invalid Invite',
+    unsupportedWebsite: 'Unsupported Website',
    },
    emojis: {
     author: `${name} Emoji-Info`,
@@ -3968,6 +3980,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   cantManage: "You can't manage this Member",
   cantManageRole: "You can't manage this Role",
   cantManageChannel: "I can't manage this Channel",
+  cantManageInvite: "I can't manage this Invite",
   commandNotFound: 'Command not found',
   timeInPast: 'Time is in the past',
  },
@@ -4175,7 +4188,6 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   error: {
    msg: "I'm missing Permissions to execute this Command",
    needed: 'Needed Permissions:',
-   role: "I can't manage this Role",
    you: 'You are missing Permissions to execute this Command',
   },
   perms: {
