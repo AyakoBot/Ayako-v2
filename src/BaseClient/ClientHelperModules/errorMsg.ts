@@ -7,6 +7,8 @@ import { request } from './requestHandler.js';
 import error from './error.js';
 import isEditable from './isEditable.js';
 
+const { log } = console;
+
 /**
  * Sends an error message to a Discord channel or edits an existing message with the error message.
  * @param msg - The message object to reply to or edit.
@@ -21,6 +23,8 @@ export default async <T extends Discord.Message<boolean>>(
  language: CT.Language,
  m?: Discord.Message<true>,
 ): Promise<T | undefined> => {
+ log(new Error(content));
+
  const embed: Discord.APIEmbed = {
   author: {
    name: language.error,

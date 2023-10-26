@@ -3,6 +3,7 @@ import { ShopType } from '@prisma/client';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import { API } from '../../../../BaseClient/Client.js';
 
 const name = 'shop-items';
 
@@ -301,7 +302,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    switch (newSettings.active) {
     case true: {
      if (message?.author.id === guild.client.user.id) {
-      message.edit({
+      API.channels.editMessage(message.channelId, message.id, {
        components: componentChunks.map((c) => ({
         type: Discord.ComponentType.ActionRow,
         components: c,
@@ -323,7 +324,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (!message.components.length) return;
 
      if (message?.author.id === guild.client.user.id) {
-      message.edit({
+      API.channels.editMessage(message.channelId, message.id, {
        components: componentChunks
         .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
         .map((c) => ({

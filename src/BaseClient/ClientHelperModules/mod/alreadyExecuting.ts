@@ -33,7 +33,12 @@ export default async (
   if (!replyMessage) return undefined;
 
   if (replyMessage instanceof Discord.Message) {
-   replyMessage.edit(payload);
+   request.channels.editMessage(
+    replyMessage.guild,
+    replyMessage.channelId,
+    replyMessage.id,
+    payload,
+   );
    return replyMessage;
   }
 

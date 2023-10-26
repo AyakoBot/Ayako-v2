@@ -2466,7 +2466,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
    insertHere: 'Insert Value here',
    acceptedValue: 'Accepted Value',
    reactionEditor: {
-    desc: (thread: Discord.PrivateThreadChannel) =>
+    desc: (thread: Discord.ThreadChannel) =>
      `Check the Emote-Collector Thread (${thread}) to select an Emote\n\nOnce finished, press the "Detect" Button.\nThe Thread will then self-delete. Click the Button below to return to the update Settings Menu`,
     name: 'Emote-Collector',
    },

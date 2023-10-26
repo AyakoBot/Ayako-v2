@@ -6,6 +6,8 @@ import type CT from '../../Typings/CustomTypings.js';
 import isEditable from './isEditable.js';
 import { request } from './requestHandler.js';
 
+const { log } = console;
+
 /**
  * Sends an error message to the user in response to an interaction.
  * @param cmd - The interaction that triggered the error.
@@ -24,6 +26,8 @@ export default async (
  language: CT.Language,
  m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
+ log(typeof content === 'string' ? new Error(content) : content);
+
  const embed: Discord.APIEmbed = {
   author: {
    name: language.error,

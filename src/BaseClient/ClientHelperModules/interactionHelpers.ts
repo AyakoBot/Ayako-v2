@@ -78,10 +78,8 @@ const reply = async (
  if (!desc || (con?.reqUser && !users.length)) {
   if (cmd instanceof Discord.Message) {
    const realCmd = (
-    guild.channels.cache.get(
-     (cmd as Discord.Message).channelId,
-    ) as unknown as Discord.TextBasedChannel
-   ).messages.cache.get((cmd as Discord.Message).id);
+    await getChannel.guildTextChannel((cmd as Discord.Message).channelId)
+   )?.messages.cache.get((cmd as Discord.Message).id);
    if (!realCmd) return;
 
    const m = await errorMsg(
@@ -487,8 +485,15 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
 
   return mentionChunks[0];
  }
- const reference = await msg.fetchReference().catch(() => undefined);
- if (!reference) return [];
+
+ if (!msg.reference) return [];
+ const channel = await getChannel.guildTextChannel(msg.reference.channelId);
+ if (!channel) return [];
+
+ const reference = msg.reference
+  ? await request.channels.getMessage(channel, msg.reference.messageId as string)
+  : undefined;
+ if (!reference || 'message' in reference) return [];
 
  if (reference.author.id !== client.user?.id) return [reference.author];
 

@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import { API } from '../../../../BaseClient/Client.js';
 
 const name = 'button-role-settings';
 
@@ -236,7 +237,7 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
        }));
 
      if (message?.author.id === guild.client.user.id) {
-      message.edit({ components: componentChunks });
+      API.channels.editMessage(message.channelId, message.id, { components: componentChunks });
      } else {
       ch.request.channels.editMessage(guild, message.channelId, message.id, {
        components: componentChunks,
@@ -247,8 +248,11 @@ export const postChange: CT.SettingsFile<'button-role-settings'>['postChange'] =
     case false: {
      if (!message.components.length) return;
 
-     if (message?.author.id === guild.client.user.id) message.edit({ components: [] });
-     else ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
+     if (message?.author.id === guild.client.user.id) {
+      API.channels.editMessage(message.channelId, message.id, { components: [] });
+     } else {
+      ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
+     }
      break;
     }
     default: {

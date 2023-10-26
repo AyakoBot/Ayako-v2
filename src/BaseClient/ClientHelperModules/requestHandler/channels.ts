@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as DiscordCore from '@discordjs/core';
+// eslint-disable-next-line import/no-cycle
 import error from '../error.js';
 import { API } from '../../Client.js';
 import * as CT from '../../../Typings/CustomTypings';

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { API } from '../../../BaseClient/Client.js';
 
 export default async (member: Discord.GuildMember) => {
  if (member.client.user.id !== ch.mainID) return;
@@ -68,7 +69,7 @@ export default async (member: Discord.GuildMember) => {
  });
  if (!dm) return;
 
- dm.edit({
+ API.channels.editMessage(dmChannel.id, dm.id, {
   content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
  });
 

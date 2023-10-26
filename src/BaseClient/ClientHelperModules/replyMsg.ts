@@ -91,10 +91,10 @@ export const cooldownHandler = async (
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
  } else emote = '⌛';
 
- if (!('react' in sentMessage)) return;
+ if (!(sentMessage instanceof Discord.Message)) return;
 
- const reaction = await sentMessage.react(emote).catch(() => undefined);
- if (reaction === undefined) return;
+ const reaction = await request.channels.addReaction(sentMessage as Discord.Message<true>, emote);
+ if (reaction) return;
  const reactions = [emote];
 
  if (emote === '⌛') {
@@ -102,21 +102,19 @@ export const cooldownHandler = async (
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
 
   jobs.scheduleJob(new Date(Date.now() + (Number(r.cooldown) * 1000 - 60000)), async () => {
-   const secondReaction = await sentMessage.react(emote).catch(() => undefined);
-   if (secondReaction === undefined) return;
+   const secondReaction = await request.channels.addReaction(
+    sentMessage as Discord.Message<true>,
+    emote,
+   );
+   if (secondReaction) return;
 
    reactions.push(emote);
   });
  }
 
  jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown) * 1000), async () => {
-  const client = (await import('../Client.js')).default;
-
   reactions.forEach((react) => {
-   sentMessage.reactions.cache
-    .get(react)
-    ?.users.remove(client.user?.id)
-    .catch(() => undefined);
+   request.channels.deleteOwnReaction(sentMessage as Discord.Message<true>, react);
   });
  });
 };

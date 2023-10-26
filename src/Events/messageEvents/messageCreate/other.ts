@@ -145,6 +145,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
 };
 
 const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
+ if (!msg.inGuild()) return;
  if (msg.guildId !== '298954459172700181') return;
 
  const roleMembers = msg.guild?.roles.cache.get('809261905855643668')?.members.map((m) => m.id);
@@ -152,13 +153,11 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
  if (!roleMembers) return;
  if (!msg.mentions.members?.hasAny(...roleMembers)) return;
 
- const oldMessages = await msg.channel.messages.fetch({ limit: 100 });
- const authors = (oldMessages as Discord.Collection<string, Discord.Message<boolean>>).map(
-  (m) => m.author.id,
- );
+ const oldMessages = await ch.request.channels.getMessages(msg.channel, { limit: 100 });
+ if ('message' in oldMessages) return;
 
  const mentionedStaff = msg.mentions.members.filter((m) => roleMembers.includes(m.id));
- if (mentionedStaff.hasAny(...authors)) return;
+ if (mentionedStaff.hasAny(...oldMessages.map((m) => m.author.id))) return;
 
  const m = (await ch.replyMsg(msg, {
   content:

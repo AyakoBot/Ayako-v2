@@ -3,6 +3,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
+import { API } from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
  if (!cmd.inCachedGuild()) return;
@@ -67,7 +68,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
  };
 
  if (message.author.id === ch.mainID) {
-  message.edit(payload);
+  API.channels.editMessage(message.channelId, message.id, payload);
  } else if (await ch.isEditable(message)) {
   ch.request.channels.editMsg(message, payload);
  }
@@ -125,6 +126,6 @@ export const endDeleteSuggestion = async (suggestion: Prisma.suggestionvotes) =>
   return;
  }
 
- if (message.author.id === ch.mainID) message.delete();
+ if (message.author.id === ch.mainID) API.channels.deleteMessage(message.channelId, message.id);
  else if (await ch.isDeleteable(message)) ch.request.channels.deleteMessage(message);
 };

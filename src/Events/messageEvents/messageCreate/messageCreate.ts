@@ -20,11 +20,11 @@ export default async (msg: Discord.Message) => {
  if (!msg) return;
  if (!msg.author) return;
 
- _eval(msg);
  execute(msg);
  commandHandler(msg);
 
  if (msg.inGuild()) {
+  _eval(msg);
   other(msg);
   revengePing(msg);
   stickyMessage(msg);

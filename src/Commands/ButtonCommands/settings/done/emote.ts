@@ -24,13 +24,21 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const lastMessage = await cmd.channel?.messages.fetch({ limit: 1 }).catch(() => undefined);
+ const language = await ch.getLanguage(cmd.guildId);
+ const lastMessage = cmd.channel
+  ? cmd.channel.lastMessage ?? (await ch.request.channels.getMessages(cmd.channel, { limit: 1 }))
+  : undefined;
+
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
   ch.request.channels.delete(cmd.guild, cmd.channelId);
  }
- if (!lastMessage) return;
 
- const emoteMessage = lastMessage.first();
+ if (!lastMessage || 'message' in lastMessage) {
+  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  return;
+ }
+
+ const emoteMessage = Array.isArray(lastMessage) ? lastMessage[0] : lastMessage;
  const emoteContent = emoteMessage?.author.bot ? undefined : emoteMessage?.content;
 
  const emote = emoteContent?.match(ch.regexes.emojiTester)?.length
@@ -44,8 +52,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   emoteContent ? emote?.identifier : null,
   uniquetimestamp,
  );
-
- const language = await ch.getLanguage(cmd.guildId);
 
  ch.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },

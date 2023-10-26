@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default async (reaction: Discord.MessageReaction, msg: Discord.Message) => {
+export default async (reaction: Discord.MessageReaction, msg: Discord.Message<true>) => {
  if (!msg.inGuild()) return;
 
  const channels = await ch.getLogChannels('messageevents', msg.guild);

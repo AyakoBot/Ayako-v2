@@ -26,9 +26,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await ch.getLanguage(cmd.guildId);
 
- const channel = await cmd.channel?.fetch().catch(() => undefined);
+ const channel = await ch.getChannel.guildTextChannel(cmd.channelId);
  if (!channel) return;
- if (!channel.isTextBased()) return;
+
  if (!('threads' in channel) || channel.type === Discord.ChannelType.GuildAnnouncement) {
   cmd.update({
    embeds: [
@@ -52,46 +52,56 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const thread = (await channel.threads.create({
+ const thread = await ch.request.channels.createThread(channel, {
   name: language.slashCommands.settings.reactionEditor.name,
   invitable: false,
   type: Discord.ChannelType.PrivateThread,
- })) as Discord.PrivateThreadChannel;
-
- thread.send({
-  content: `${cmd.user}`,
-  embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
-    language,
-    settingName,
-    fieldName,
-    currentSetting?.[fieldName as keyof typeof currentSetting],
-    'emote',
-    cmd.guild,
-   ),
-  ],
-  components: [
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Secondary,
-      custom_id: 'deleteThread',
-      emoji: ch.emotes.trash,
-      label: language.Delete,
-     },
-     {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Success,
-      custom_id: `settings/done/emote_${settingName}_${fieldName}_${uniquetimestamp}`,
-      label: language.Detect,
-     },
-    ],
-   },
-  ],
-  allowedMentions: { users: [cmd.user.id] },
  });
+
+ if ('message' in thread) {
+  ch.errorCmd(cmd, thread.message, language);
+  return;
+ }
+
+ ch.request.channels.sendMessage(
+  thread.guild,
+  thread.id,
+  {
+   content: `${cmd.user}`,
+   embeds: [
+    await ch.settingsHelpers.changeHelpers.changeEmbed(
+     language,
+     settingName,
+     fieldName,
+     currentSetting?.[fieldName as keyof typeof currentSetting],
+     'emote',
+     cmd.guild,
+    ),
+   ],
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Secondary,
+       custom_id: 'deleteThread',
+       emoji: ch.emotes.trash,
+       label: language.Delete,
+      },
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Success,
+       custom_id: `settings/done/emote_${settingName}_${fieldName}_${uniquetimestamp}`,
+       label: language.Detect,
+      },
+     ],
+    },
+   ],
+   allowed_mentions: { users: [cmd.user.id] },
+  },
+  thread.client,
+ );
 
  if (!thread) return;
 

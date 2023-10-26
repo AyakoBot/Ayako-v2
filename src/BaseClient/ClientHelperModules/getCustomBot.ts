@@ -11,9 +11,14 @@ import error from './error.js';
 export default async (guild: Discord.Guild) => {
  const botId = await getBotIdFromGuild(guild);
  const rawMember = await request.guilds.getMember(guild, botId);
+
  if ('message' in rawMember) {
   error(guild, new Error(rawMember.message));
-  return guild.members.fetchMe();
+  return request.guilds.getMember(
+   undefined,
+   guild.client.user.id,
+   guild,
+  ) as Promise<Discord.GuildMember>;
  }
 
  return rawMember;

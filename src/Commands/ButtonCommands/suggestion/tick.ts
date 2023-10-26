@@ -45,8 +45,7 @@ export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true
   },
  ];
 
- cmd.message.edit({ embeds: [embed] });
- cmd.deferUpdate();
+ cmd.update({ embeds: [embed] });
 };
 
 export const isValid = async (cmd: Discord.ButtonInteraction<'cached'>) => {

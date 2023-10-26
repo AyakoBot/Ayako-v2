@@ -17,7 +17,7 @@ const reg = new RegExp(auth.token, 'g');
 // eslint-disable-next-line no-console
 const { log } = console;
 
-export default async (msg: Discord.Message) => {
+export default async (msg: Discord.Message<true>) => {
  if (msg.author.id !== auth.ownerID) return;
  if (!msg.content.startsWith('eval')) return;
 
@@ -43,7 +43,9 @@ export default async (msg: Discord.Message) => {
 
   if (msg.inGuild()) {
    ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
-  } else msg.react(ch.emotes.cross.id);
+  } else {
+   ch.request.channels.addReaction(msg, ch.constants.standard.getEmoteIdentifier(ch.emotes.cross));
+  }
  } catch (err) {
   if (clean(err).length > 2000) {
    ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(err))] });
@@ -61,7 +63,9 @@ export default async (msg: Discord.Message) => {
 
   if (msg.inGuild()) {
    ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
-  } else msg.react(ch.emotes.cross.id);
+  } else {
+   ch.request.channels.addReaction(msg, ch.constants.standard.getEmoteIdentifier(ch.emotes.cross));
+  }
  }
 };
 

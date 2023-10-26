@@ -31,6 +31,10 @@ export default async (link: string): Promise<Discord.Message | undefined> => {
 
  const message = channel.messages.cache.get(messageId) ?? (await getMessage());
  if (!message) return message;
- if (!message.author) return message.fetch();
+ if (!message.author || message.partial) {
+  const m = await request.channels.getMessage(message.channel, message.id);
+  if ('message' in m) return undefined;
+  return m;
+ }
  return message;
 };

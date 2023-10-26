@@ -148,7 +148,7 @@ export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
 
    const language = await ch.getLanguage(channel.guildId);
 
-   channel.send({
+   ch.send(channel, {
     embeds: [
      {
       author: {

@@ -1,6 +1,15 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import log from './log.js';
 
 export default async (reaction: Discord.MessageReaction) => {
- log(reaction, await reaction.message.fetch());
+ if (!('guild' in reaction.message.channel)) return;
+
+ const message = reaction.message.partial
+  ? await ch.request.channels.getMessage(reaction.message.channel, reaction.message.id)
+  : (reaction.message as Discord.Message<true>);
+
+ if ('message' in message) return;
+
+ log(reaction, message);
 };

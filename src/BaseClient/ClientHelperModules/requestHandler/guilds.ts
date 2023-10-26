@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+// eslint-disable-next-line import/no-cycle
 import error from '../error.js';
 import { API } from '../../Client.js';
 // eslint-disable-next-line import/no-cycle
@@ -1182,14 +1183,18 @@ const deleteAutoModerationRule = (guild: Discord.Guild, ruleId: string, reason?:
  * @returns A Promise that resolves with the GuildMember object,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-const getMember = async (guild: Discord.Guild, userId: string) =>
- guild.members.cache.get(userId) ??
- (cache.apis.get(guild.id) ?? API).guilds
-  .getMember(guild.id, userId)
+const getMember = async <T extends Discord.Guild | undefined>(
+ guild: T,
+ userId: string,
+ g?: T extends undefined ? Discord.Guild : undefined,
+) =>
+ (guild ?? g)!.members.cache.get(userId) ??
+ (guild ? cache.apis.get(guild.id) ?? API : API).guilds
+  .getMember((guild ?? g)!.id, userId)
   .then((m) => {
-   const parsed = new Classes.GuildMember(guild.client, m, guild);
-   if (guild.members.cache.get(parsed.id)) return parsed;
-   guild.members.cache.set(parsed.id, parsed);
+   const parsed = new Classes.GuildMember((guild ?? g)!.client, m, (guild ?? g)!);
+   if ((guild ?? g)!.members.cache.get(parsed.id)) return parsed;
+   (guild ?? g)!.members.cache.set(parsed.id, parsed);
    return parsed;
   })
   .catch((e) => e as Discord.DiscordAPIError);

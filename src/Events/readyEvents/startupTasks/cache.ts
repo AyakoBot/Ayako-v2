@@ -226,8 +226,12 @@ export const tasks = {
   }
  },
  scheduledEvents: async (guild: Discord.Guild) => {
-  const scheduledEvents = await guild.scheduledEvents.fetch().catch(() => undefined);
-  scheduledEvents?.forEach(async (event) => {
+  const scheduledEvents = await ch.request.guilds.getScheduledEvents(guild);
+  if ('message' in scheduledEvents) {
+   ch.error(guild, scheduledEvents);
+   return;
+  }
+  scheduledEvents.forEach(async (event) => {
    const users = await ch.fetchAllEventSubscribers(event);
    users?.forEach((u) => {
     ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
