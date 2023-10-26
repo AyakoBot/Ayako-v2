@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import type CT from '../../../Typings/CustomTypings.js';
 
@@ -105,6 +105,32 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  }
  if (!!member.pending !== !!oldMember.pending) {
   merge(oldMember.pending, member.pending, 'boolean', lan.pending);
+ }
+
+ if (member.flags !== oldMember.flags) {
+  const oldFlags = new Discord.GuildMemberFlagsBitField(oldMember.flags).toArray();
+  const newFlags = new Discord.GuildMemberFlagsBitField(member.flags).toArray();
+
+  const addedFlags = ch.getDifference(newFlags, oldFlags);
+  const removedFlags = ch.getDifference(oldFlags, newFlags);
+
+  if (addedFlags.length) {
+   embed.fields?.push({
+    name: lan.memberFlagsName,
+    value: addedFlags
+     .map((t) => lan.memberFlags[t as unknown as Discord.GuildMemberFlagsString])
+     .join(', '),
+   });
+  }
+
+  if (removedFlags.length) {
+   embed.fields?.push({
+    name: lan.memberFlagsName,
+    value: removedFlags
+     .map((t) => lan.memberFlags[t as unknown as Discord.GuildMemberFlagsString])
+     .join(', '),
+   });
+  }
  }
 
  ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed], files }, undefined, 10000);

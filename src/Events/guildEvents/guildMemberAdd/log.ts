@@ -1,4 +1,4 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (member: Discord.GuildMember) => {
@@ -46,6 +46,21 @@ export default async (member: Discord.GuildMember) => {
   embed.fields?.push({
    name: lan.invite,
    value: lan.discovery,
+  });
+ }
+
+ const flagsText = new Discord.GuildMemberFlagsBitField(member.flags || 0)
+  .toArray()
+  .map((f) => lan.memberFlags[f])
+  .filter((f): f is string => !!f)
+  .map((f) => `\`${f}\``)
+  .join(', ');
+
+ if (flagsText?.length) {
+  embed.fields?.push({
+   name: lan.memberFlagsName,
+   value: flagsText,
+   inline: true,
   });
  }
 
