@@ -76,9 +76,11 @@ export default async (role: Discord.Role) => {
   description: Object.entries(new Discord.PermissionsBitField(role.permissions).serialize(false))
    .map(
     ([name, value]) =>
-     `${value ? ch.emotes.enabled : ch.emotes.disabled} \`${
-      language.permissions.perms[name as keyof typeof language.permissions.perms]
-     }\``,
+     `${
+      value
+       ? ch.constants.standard.getEmote(ch.emotes.enabled)
+       : ch.constants.standard.getEmote(ch.emotes.disabled)
+     } \`${language.permissions.perms[name as keyof typeof language.permissions.perms]}\``,
    )
    .join('\n'),
  };
