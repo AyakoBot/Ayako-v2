@@ -19,8 +19,6 @@ export default async (
 
  const language = await ch.getLanguage(cmd.guildId);
 
- console.log(cmd.values);
-
  cmd.update({
   embeds: [
    await ch.settingsHelpers.changeHelpers.changeEmbed(

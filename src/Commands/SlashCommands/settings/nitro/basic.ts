@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -59,6 +59,26 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: settings?.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
     inline: true,
    },
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
+   {
+    name: lan.fields.notification.name,
+    value: embedParsers.boolean(settings?.notification, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.notifembed.name,
+    value: await embedParsers.embed(settings?.notifembed, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.notifchannels.name,
+    value: embedParsers.channels(settings?.notifchannels, language),
+    inline: false,
+   },
   ],
  },
 ];
@@ -84,6 +104,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'channel',
    ),
    buttonParsers.specific(language, settings?.rolemode, 'rolemode', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(language, settings?.notification, 'notification', name, undefined),
+   buttonParsers.specific(language, settings?.notifembed, 'notifembed', name, undefined),
+   buttonParsers.specific(
+    language,
+    settings?.notifchannels,
+    'notifchannels',
+    name,
+    undefined,
+    'channel',
+   ),
   ],
  },
 ];
