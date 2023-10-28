@@ -1,9 +1,12 @@
 import * as Discord from 'discord.js';
-import jobs from 'node-schedule';
+import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import objectEmotes from './emotes.js';
 import DataBase from '../DataBase.js';
 import { request } from './requestHandler.js';
+import constants from '../Other/constants.js';
+import error from './error.js';
+import cache from './cache.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -68,56 +71,88 @@ export const cooldownHandler = async (
  if (!msg.guild) return;
 
  const authorId = 'author' in msg ? msg.author.id : msg.user.id;
+ const settings = await DataBase.cooldowns.findFirst({
+  where: { guildid: msg.guild.id, command: commandName, active: true },
+ });
 
- const r = await getCooldownRow(msg.guild, commandName);
- if (!r) return;
+ if (!settings) return;
  if (!authorId) return;
- if (r.wluserid?.includes(String(authorId))) return;
- if (msg.channel && r.wlchannelid?.includes(msg.channel.id)) return;
+ if (settings.wluserid?.includes(String(authorId))) return;
+ if (msg.channelId && settings.wlchannelid?.includes(msg.channelId)) return;
 
  if (msg.member) {
   const { roles } = msg.member;
-  if (Array.isArray(roles) && r.wlroleid?.some((id) => roles.includes(id))) return;
-  if ('cache' in roles && r.wlroleid?.some((id) => roles.cache.has(id))) return;
+  if (Array.isArray(roles) && settings.wlroleid?.some((id) => roles.includes(id))) return;
+  if ('cache' in roles && settings.wlroleid?.some((id) => roles.cache.has(id))) return;
  }
- if (r.activechannelid?.length && !r.activechannelid?.includes(String(msg.channelId))) return;
+ if (
+  settings.activechannelid?.length &&
+  !settings.activechannelid?.includes(String(msg.channelId))
+ ) {
+  return;
+ }
+
+ let m: Discord.Message<true> | undefined;
+ if (sentMessage instanceof Discord.InteractionResponse) {
+  sentMessage = await sentMessage.fetch();
+  if (!sentMessage) return;
+  m = sentMessage as Discord.Message<true>;
+ } else m = sentMessage as Discord.Message<true>;
+ if (!m) return;
 
  let emote: string;
-
- if (Number(r.cooldown) <= 60) {
-  const emoteToUse = objectEmotes.timers[Number(r.cooldown)];
+ if (Number(settings.cooldown) <= 60) {
+  const emoteToUse = objectEmotes.timers[Number(settings.cooldown)];
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
  } else emote = '⌛';
 
- if (!(sentMessage instanceof Discord.Message)) return;
+ const { channelId } = m;
 
- const reaction = await request.channels.addReaction(sentMessage as Discord.Message<true>, emote);
- if (reaction) return;
+ setCooldown(channelId, commandName, Number(settings.cooldown));
+
+ const reaction = await request.channels.addReaction(m, emote);
+ if (reaction) {
+  error(msg.guild, new Error(reaction.message));
+  return;
+ }
  const reactions = [emote];
 
  if (emote === '⌛') {
   const emoteToUse = objectEmotes.timers[60];
-  emote = `${emoteToUse.name}:${emoteToUse.id}`;
+  emote = constants.standard.getEmoteIdentifier(emoteToUse);
 
-  jobs.scheduleJob(new Date(Date.now() + (Number(r.cooldown) * 1000 - 60000)), async () => {
-   const secondReaction = await request.channels.addReaction(
-    sentMessage as Discord.Message<true>,
-    emote,
-   );
-   if (secondReaction) return;
+  Jobs.scheduleJob(new Date(Date.now() + (Number(settings.cooldown) * 1000 - 60000)), async () => {
+   if (!m) return;
+
+   const secondReaction = await request.channels.addReaction(m, emote);
+   if (secondReaction) {
+    if (m.guild) error(m.guild, new Error(secondReaction.message));
+    return;
+   }
 
    reactions.push(emote);
   });
  }
 
- jobs.scheduleJob(new Date(Date.now() + Number(r.cooldown) * 1000), async () => {
+ Jobs.scheduleJob(new Date(Date.now() + Number(settings.cooldown) * 1000), async () => {
   reactions.forEach((react) => {
-   request.channels.deleteOwnReaction(sentMessage as Discord.Message<true>, react);
+   request.channels.deleteOwnReaction(m as Discord.Message<true>, react);
+   deleteCooldown(channelId, commandName);
   });
  });
 };
 
-const getCooldownRow = (guild: Discord.Guild, commandName: string) =>
- DataBase.cooldowns.findFirst({
-  where: { guildid: guild.id, command: commandName, active: true },
- });
+const setCooldown = (channelId: string, commandName: string, cooldown: number) => {
+ if (cache.cooldown.has(channelId)) {
+  cache.cooldown.get(channelId)?.get(commandName);
+ }
+
+ cache.cooldown.set(channelId, new Map().set(commandName, cooldown * 1000));
+};
+
+const deleteCooldown = (channelId: string, commandName: string) => {
+ if (!cache.cooldown.has(channelId)) return;
+
+ cache.cooldown.get(channelId)?.delete(commandName);
+ if (!cache.cooldown.get(channelId)?.size) cache.cooldown.delete(channelId);
+};

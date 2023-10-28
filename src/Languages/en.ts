@@ -1366,6 +1366,9 @@ export default {
    description: (user: Discord.User, id: Prisma.Decimal) =>
     `${getUser(user)}has appealed their Punishment\n${getPunishment(id)}`,
   },
+  interactionCreate: {
+   cooldown: (t: string) => `This Command is on Cooldown for ${t}`,
+  },
  },
  systemChannelFlags: {
   SuppressJoinNotifications: '`Suppress Member join Notifications`',

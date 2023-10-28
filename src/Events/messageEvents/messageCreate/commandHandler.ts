@@ -73,7 +73,6 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  }
 
  const canRunCommand = await checkCommandPermissions(msg, commandName);
-
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
@@ -104,6 +103,16 @@ const guildCommand = async (msg: Discord.Message<true>) => {
     },
    ],
   });
+  return;
+ }
+
+ if (
+  cache.cooldown.get(msg.channelId)?.has(commandName) ||
+  cache.cooldown
+   .get(msg.channelId)
+   ?.has(constants.commands.interactions.find((c) => c.name === commandName) ? 'interactions' : '')
+ ) {
+  request.channels.addReaction(msg, '⌛');
   return;
  }
 

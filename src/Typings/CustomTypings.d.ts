@@ -5,7 +5,6 @@ import type * as ch from '../BaseClient/ClientHelper.js';
 export type Language = typeof import('../Languages/en.js').default;
 
 export interface Command {
- cooldown: number;
  takesFirstArg: boolean;
  thisGuildOnly: string[];
  dmOnly: boolean;

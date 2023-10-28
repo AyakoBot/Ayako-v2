@@ -26,11 +26,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const language = await ch.getLanguage(cmd.guildId);
- const commandID = cmd.message.embeds[0].description?.includes('/')
-  ? client.application?.commands.cache.get(
-     cmd.message.embeds[0].description?.replace(/\D+/g, '') as string,
-    )?.id
-  : (cmd.message.embeds[0].description as string);
+ const commandID = (
+  cmd.message.embeds[0].description?.includes('/')
+   ? client.application?.commands.cache.get(
+      cmd.message.embeds[0].description?.replace(/\D+/g, '') as string,
+     )?.id
+   : (cmd.message.embeds[0].description as string)
+ )?.replace(/`/g, '');
 
  const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
   settingName,

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 
-export const cooldown = 0;
 export const name = 'stp';
 export const takesFirstArg = true;
 export const aliases = [];

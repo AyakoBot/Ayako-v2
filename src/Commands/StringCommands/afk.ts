@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import afk from '../SlashCommands/afk.js';
 import * as CT from '../../Typings/CustomTypings.js';
 
-export const cooldown = 0;
 export const takesFirstArg = false;
 export const thisGuildOnly = [];
 export const dmOnly = false;

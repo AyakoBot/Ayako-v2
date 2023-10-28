@@ -72,6 +72,7 @@ const cache: {
  lastMessageGlobal: Map<string, string>;
  lastMessageGuild: Map<string, string>;
  afkCD: Map<string, Set<string>>;
+ cooldown: Map<string, Map<string, number>>;
 } = {
  // Discord Cache
  invites,
@@ -112,6 +113,7 @@ const cache: {
  lastMessageGlobal: new Map(),
  lastMessageGuild: new Map(),
  afkCD: new Map(),
+ cooldown: new Map(),
 };
 
 export default cache;
