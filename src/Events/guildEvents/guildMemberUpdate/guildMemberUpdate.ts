@@ -8,11 +8,13 @@ import verification from '../guildMemberAdd/verification.js';
 import stickyRoles from '../guildMemberAdd/stickyRoles.js';
 import nitro from './nitro.js';
 import rewards from './rewards.js';
+import boost from './boost.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
  separator(oldMember, member);
  nitro(oldMember, member);
+ boost(oldMember, member);
  cache(oldMember, member);
  rewards(oldMember, member);
 
