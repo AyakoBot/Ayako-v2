@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
-import client from '../../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -29,19 +28,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
 
  const commands: Discord.APISelectMenuOption[] = [
-  ...(client.application?.commands.cache
-   .filter((c) => c.type === Discord.ApplicationCommandType.ChatInput)
-   .map((c) => ({
-    label: c.name,
-    value: c.id,
-    description: language.commandTypes.slashCommands,
-   })) ?? []),
   ...(await getStringCommands()).map((c) => ({
    label: c,
    value: c,
-   description: language.commandTypes.textCommands,
   })),
- ];
+ ].filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.value));
+
+ commands.push({
+  label: language.slashCommands.rp.button,
+  value: 'interactions',
+ });
 
  cmd.update({
   embeds: [

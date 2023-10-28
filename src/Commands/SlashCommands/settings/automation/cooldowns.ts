@@ -68,14 +68,12 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const fields = settings?.map((s) => ({
   name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${
    lan.fields.cooldown
-  }: \`${embedParsers.time(Number(s.cooldown), language)}\``,
+  }: \`${embedParsers.time(s.cooldown ? Number(s.cooldown) * 1000 : null, language)}\``,
   value: `${
    s.active
     ? ch.constants.standard.getEmote(ch.emotes.enabled)
     : ch.constants.standard.getEmote(ch.emotes.disabled)
-  } - ID: \`${Number(
-   s.uniquetimestamp,
-  ).toString(36)}\``,
+  } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -124,7 +122,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.cooldown.name,
-    value: embedParsers.time(Number(settings?.cooldown), language),
+    value: embedParsers.time(
+     settings?.cooldown ? Number(settings.cooldown) * 1000 : null,
+     language,
+    ),
     inline: true,
    },
    {

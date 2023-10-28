@@ -22,9 +22,12 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
    isID && s.command ? client.application?.commands.cache.get(s.command)?.name : s.command;
 
   return {
-   name: `${lan.fields.command.name}: \`${command ?? language.None}\` - ${
+   name: `${lan.fields.command.name}: ${command ?? language.None} - ${
     lan.fields.cooldown.name
-   }: ${ch.settingsHelpers.embedParsers.time(Number(s.cooldown), language)}`,
+   }: ${ch.settingsHelpers.embedParsers.time(
+    s.cooldown ? Number(s.cooldown) * 1000 : null,
+    language,
+   )}`,
    value: Number(s.uniquetimestamp).toString(36),
   };
  });
