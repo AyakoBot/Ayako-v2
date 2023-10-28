@@ -2121,7 +2121,7 @@ Editing the Permissions of this Command will affect all Roleplay-Commands.
 To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
 After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
 
-Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP Commands\`.
+Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP-Commands\`.
 __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
 
 __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.`,
@@ -2131,11 +2131,11 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
      value: `Last time you've used it was ${t}`,
     },
     {
-     name: 'RP Commands can only be enabled __twice__ per Day',
+     name: 'RP-Commands can only be enabled __twice__ per Day',
      value: `You have used it ${used}x today`,
     },
    ],
-   button: 'RP Commands',
+   button: 'RP-Commands',
    sync: 'Sync Permissions',
    notice: (cmdId: string) =>
     `There is an additional Roleplay-Management-Command called </rp manager:${cmdId}>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server`,
@@ -2728,7 +2728,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        desc: 'Whether to block the sent Message',
       },
       blockInteractions: {
-       desc: 'Whether to block Server Interactions (or just the Username update',
+       desc: 'Whether to block Server Interactions (or just the Username update)',
       },
       customMessage: {
        name: 'Custom Message',
@@ -2859,7 +2859,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        desc: 'The Command that triggers the Cooldown',
       },
       cooldown: {
-       name: 'Cooldown (in Seconds)',
+       name: 'Cooldown',
        desc: 'The Cooldown duration applied to the Command',
       },
       activechannelid: {
@@ -3454,16 +3454,16 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        desc: `The Prefix ${name} should listen to`,
       },
       interactionsmode: {
-       name: 'RP Command Size',
-       desc: 'Whether RP Commands should be large or small',
+       name: 'RP-Command Size',
+       desc: 'Whether RP-Commands should be large or small',
       },
       legacyrp: {
-       name: 'Legacy RP Commands',
-       desc: 'Whether to use Legacy RP Commands',
+       name: 'Legacy RP-Commands',
+       desc: 'Whether to use Legacy RP-Commands',
       },
       editrpcommands: {
-       name: 'Edit RP Commands',
-       desc: 'Whether to use Edit or Repost RP Commands upon replying',
+       name: 'Edit RP-Commands',
+       desc: 'Whether to use Edit or Repost RP-Commands upon replying',
       },
       lan: {
        name: 'Language',
