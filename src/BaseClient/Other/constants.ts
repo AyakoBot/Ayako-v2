@@ -800,14 +800,6 @@ export default {
      deletereply: 'boolean',
      repeatenabled: 'boolean',
     },
-    'delete-commands': {
-     deletecommand: 'boolean',
-     deletereply: 'boolean',
-     deletetimeout: 'duration',
-     command: 'command',
-     wlchannelid: 'channels',
-     activechannelid: 'channels',
-    },
     cooldowns: {
      command: 'command',
      cooldown: 'duration',

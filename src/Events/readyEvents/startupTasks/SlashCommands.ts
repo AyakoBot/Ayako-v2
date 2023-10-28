@@ -280,12 +280,6 @@ const settings = new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('delete-commands')
-     .setDescription(`Make ${name} delete Commands and/or Replies`)
-     .addStringOption(IDSelector),
-   )
-   .addSubcommand(
-    new Discord.SlashCommandSubcommandBuilder()
      .setName('cooldowns')
      .setDescription(`Assign custom defined Cooldowns to Commands of ${name}`)
      .addStringOption(IDSelector),
@@ -1889,7 +1883,6 @@ export default {
   'settings_roles_reaction-roles': 'roles',
   'settings_roles_button-role-settings': 'roles',
   'settings_roles_button-roles': 'roles',
-  'settings_automation_delete-commands': 'automation',
   settings_automation_cooldowns: 'automation',
   'settings_automation_disboard-reminders': 'automation',
   settings_automation_suggestions: 'automation',
