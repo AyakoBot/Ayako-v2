@@ -43,5 +43,5 @@ export default async (
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
 };

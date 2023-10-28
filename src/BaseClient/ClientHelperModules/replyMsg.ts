@@ -13,13 +13,13 @@ const { log } = console;
  * @param msg The Discord message to reply to.
  * @param payload The message payload to send.
  * @param command The command that triggered the reply message.
- * @param commandName The name of the command that triggered the reply message.
+ * @param commandName The name of the command that triggered the reply message,
+ * required for cooldown handling.
  * @returns The sent message if successful, otherwise undefined.
  */
 export default async <T extends Discord.Message<boolean>>(
  msg: T,
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  commandName?: string,
 ): Promise<T | undefined> => {
  if (!msg) return undefined;
@@ -41,8 +41,8 @@ export default async <T extends Discord.Message<boolean>>(
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;
 
- if (msg.guild && command && commandName) {
-  cooldownHandler(msg, sentMessage, command, commandName);
+ if (msg.guild && commandName) {
+  cooldownHandler(msg, sentMessage, commandName);
  }
 
  return sentMessage as T;
@@ -63,15 +63,13 @@ export const cooldownHandler = async (
   | Discord.AnySelectMenuInteraction
   | Discord.ModalSubmitInteraction,
  sentMessage: Discord.Message | Discord.InteractionResponse,
- command: CT.Command,
  commandName: string,
 ) => {
- if (!command.cooldown) return;
  if (!msg.guild) return;
 
  const authorId = 'author' in msg ? msg.author.id : msg.user.id;
 
- const r = await getCooldownRow(msg.guild, command, commandName);
+ const r = await getCooldownRow(msg.guild, commandName);
  if (!r) return;
  if (!authorId) return;
  if (r.wluserid?.includes(String(authorId))) return;
@@ -119,7 +117,7 @@ export const cooldownHandler = async (
  });
 };
 
-const getCooldownRow = (guild: Discord.Guild, command: CT.Command, commandName: string) =>
+const getCooldownRow = (guild: Discord.Guild, commandName: string) =>
  DataBase.cooldowns.findFirst({
-  where: { guildid: guild.id, command: commandName, active: true, cooldown: command.cooldown },
+  where: { guildid: guild.id, command: commandName, active: true },
  });

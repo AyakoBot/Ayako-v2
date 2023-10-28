@@ -164,5 +164,5 @@ export default async (msg: Discord.Message) => {
   }
  }
 
- ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
+ ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
 };

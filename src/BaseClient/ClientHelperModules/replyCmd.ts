@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings.js';
 import * as replyMsg from './replyMsg.js';
 import constants from '../Other/constants.js';
 import error from './error.js';
@@ -59,7 +58,8 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  * @param cmd The interaction to reply to.
  * @param payload The reply options to send.
  * @param command The command that triggered the interaction.
- * @param commandName The name of the command that triggered the interaction.
+ * @param commandName The name of the command that triggered the interaction,
+ * required for handling cooldowns.
  * @returns The sent message if `fetchReply` is `true`, otherwise `undefined`.
  */
 export default async <T extends boolean | undefined, K extends Discord.CacheType>(
@@ -71,7 +71,6 @@ export default async <T extends boolean | undefined, K extends Discord.CacheType
  payload: Discord.InteractionReplyOptions & {
   fetchReply?: T;
  },
- command?: CT.Command,
  commandName?: string,
 ): Promise<ReturnType<T, K>> => {
  if (!cmd) return undefined;
@@ -79,7 +78,7 @@ export default async <T extends boolean | undefined, K extends Discord.CacheType
  const sentMessage = await replyCmd(cmd, payload);
  if (!sentMessage) return undefined;
 
- if (command && commandName) replyMsg.cooldownHandler(cmd, sentMessage, command, commandName);
+ if (commandName) replyMsg.cooldownHandler(cmd, sentMessage, commandName);
 
  return sentMessage;
 };

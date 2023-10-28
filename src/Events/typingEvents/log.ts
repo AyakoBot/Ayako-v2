@@ -22,5 +22,5 @@ export default async (typing: Discord.Typing) => {
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: typing.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: typing.guild.id }, { embeds: [embed], files }, 10000);
 };

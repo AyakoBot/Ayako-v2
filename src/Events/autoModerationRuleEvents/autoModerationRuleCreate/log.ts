@@ -122,5 +122,5 @@ export default async (rule: Discord.AutoModerationRule) => {
   inline: true,
  });
 
- ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, 10000);
 };

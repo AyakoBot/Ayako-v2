@@ -163,5 +163,5 @@ export default async (
   embeds.push(permEmbed);
  }
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, undefined, 10000);
+ ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
 };

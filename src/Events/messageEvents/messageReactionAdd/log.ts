@@ -58,5 +58,5 @@ export default async (
 
  if (attachment) files.push(...attachment);
 
- await ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, undefined, 10000);
+ await ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
 };

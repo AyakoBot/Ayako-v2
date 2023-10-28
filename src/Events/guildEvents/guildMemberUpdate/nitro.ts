@@ -21,12 +21,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
    : language.events.ready.nitro.stopped(member.user),
  };
 
- ch.send(
-  { id: settings.logchannels, guildId: member.guild.id },
-  { embeds: [embed] },
-  undefined,
-  10000,
- );
+ ch.send({ id: settings.logchannels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };
 
 export const startedBoosting = (m: Discord.GuildMember) => {

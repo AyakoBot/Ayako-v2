@@ -20,5 +20,5 @@ export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) 
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

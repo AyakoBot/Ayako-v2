@@ -49,10 +49,5 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message<tr
   if (users) files.push(users);
  }
 
- await ch.send(
-  { id: channels, guildId: msg.guildId },
-  { embeds: [embed], files },
-  undefined,
-  10000,
- );
+ await ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
 };

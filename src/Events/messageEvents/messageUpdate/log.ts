@@ -229,5 +229,5 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
 
  if (!embed.fields?.length) return;
 
- ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
 };

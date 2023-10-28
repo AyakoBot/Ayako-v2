@@ -58,5 +58,5 @@ export default async (sticker: Discord.Sticker) => {
   value: lan.format[sticker.format],
  });
 
- ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, 10000);
 };

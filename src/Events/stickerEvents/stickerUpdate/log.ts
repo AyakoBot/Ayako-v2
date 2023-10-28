@@ -44,5 +44,5 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   merge(`:${oldSticker.tags}:`, `:${sticker.tags}:`, 'string', lan.tags);
  }
 
- ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, 10000);
 };

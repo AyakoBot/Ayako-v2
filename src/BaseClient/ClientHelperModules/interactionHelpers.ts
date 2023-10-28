@@ -4,7 +4,6 @@ import clone from 'lodash.clonedeep';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyCmd from './replyCmd.js';
-import send from './send.js';
 import DataBase from '../DataBase.js';
 import type CT from '../../Typings/CustomTypings.js';
 import getColor from './getColor.js';
@@ -22,6 +21,7 @@ import error from './error.js';
 import * as getChannel from './getChannel.js';
 import isEditable from './isEditable.js';
 import errorCmd from './errorCmd.js';
+import replyMsg from './replyMsg.js';
 
 const cooldown = new Set<string>();
 
@@ -185,7 +185,9 @@ const reply = async (
    });
 
    if (await isDeleteable(cmd.message)) request.channels.deleteMessage(cmd.message);
-   send(cmd.channel, payload);
+
+   payload.ephemeral = false;
+   replyCmd(cmd, payload, 'interactions');
   }
   return;
  }
@@ -217,9 +219,15 @@ const reply = async (
   const content = String(payload.content);
   delete payload.content;
 
-  const m = (await send(channel, payload)) as Discord.Message<true>;
+  const m = (await replyMsg(msg, payload, 'interactions')) as Discord.Message<true>;
   if (m && (await isEditable(m))) request.channels.editMsg(m as Discord.Message<true>, { content });
- } else replyCmd(cmd, { ...payload, ephemeral: false } as Discord.InteractionReplyOptions);
+ } else {
+  replyCmd(
+   cmd,
+   { ...payload, ephemeral: false } as Discord.InteractionReplyOptions,
+   'interactions',
+  );
+ }
 };
 
 export default reply;

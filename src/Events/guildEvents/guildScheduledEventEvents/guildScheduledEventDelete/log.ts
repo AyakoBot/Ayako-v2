@@ -134,5 +134,5 @@ export default async (
   if (attachment) files.push(attachment);
  }
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
 };

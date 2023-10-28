@@ -44,5 +44,5 @@ export default async <T extends CT.ModTypes>(
   ].filter((f): f is Discord.APIEmbedField => !!f),
  };
 
- send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, undefined, 10000);
+ send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, 10000);
 };

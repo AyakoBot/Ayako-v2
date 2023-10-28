@@ -56,5 +56,5 @@ export default async (
   embed.description = lan.descLeaveMember(thread, language.channelTypes[thread.type]);
  }
 
- ch.send({ id: channels, guildId: thread.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: thread.guild.id }, { embeds: [embed], files }, 10000);
 };

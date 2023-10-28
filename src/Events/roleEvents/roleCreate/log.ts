@@ -92,10 +92,5 @@ export default async (role: Discord.Role) => {
    .join('\n'),
  };
 
- ch.send(
-  { id: channels, guildId: role.guild.id },
-  { embeds: [embed, permEmbed], files },
-  undefined,
-  10000,
- );
+ ch.send({ id: channels, guildId: role.guild.id }, { embeds: [embed, permEmbed], files }, 10000);
 };

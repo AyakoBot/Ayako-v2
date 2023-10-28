@@ -59,5 +59,5 @@ export default async (member: Discord.GuildMember) => {
   });
  }
 
- ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };

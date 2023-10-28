@@ -52,5 +52,5 @@ export default async (
   });
  }
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed], files }, 10000);
 };

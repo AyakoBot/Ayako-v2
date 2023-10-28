@@ -129,5 +129,5 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   embeds.push(permEmbed);
  }
 
- ch.send({ id: channels, guildId: role.guild.id }, { embeds, files }, undefined, 10000);
+ ch.send({ id: channels, guildId: role.guild.id }, { embeds, files }, 10000);
 };

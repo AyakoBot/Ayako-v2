@@ -121,5 +121,5 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
 
  if (!embed.fields?.length) return;
 
- ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, 10000);
 };

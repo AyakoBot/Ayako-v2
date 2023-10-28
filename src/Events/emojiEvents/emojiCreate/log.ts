@@ -39,5 +39,5 @@ export default async (emote: Discord.GuildEmoji) => {
   };
  }
 
- ch.send({ id: channels, guildId: emote.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: emote.guild.id }, { embeds: [embed], files }, 10000);
 };

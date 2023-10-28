@@ -63,5 +63,5 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
   );
  }
 
- ch.send({ id: channels, guildId: stage.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: stage.guild.id }, { embeds: [embed], files }, 10000);
 };

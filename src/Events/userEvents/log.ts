@@ -84,5 +84,5 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
  }
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
 };

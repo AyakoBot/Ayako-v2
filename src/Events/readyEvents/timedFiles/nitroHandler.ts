@@ -93,5 +93,5 @@ const log = async (
   color: ch.getColor(await ch.getBotMemberFromGuild(member.guild)),
  };
 
- ch.send({ id: logs, guildId: member.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: logs, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };

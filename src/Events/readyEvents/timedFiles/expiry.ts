@@ -192,5 +192,5 @@ const logExpire = async <T extends TableName>(
  });
  embeds
   .filter((e): e is Discord.APIEmbed => !!e)
-  .forEach((e) => ch.send({ id: channels, guildId: guild.id }, { embeds: [e] }, undefined, 10000));
+  .forEach((e) => ch.send({ id: channels, guildId: guild.id }, { embeds: [e] }, 10000));
 };

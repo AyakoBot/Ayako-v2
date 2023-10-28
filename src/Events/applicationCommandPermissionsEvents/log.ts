@@ -60,5 +60,5 @@ export default async (
  const embeds = [embed, permEmbed];
  if (!permEmbed.description?.length) return;
 
- ch.send({ id: channels, guildId: guild.id }, { embeds }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds }, 10000);
 };

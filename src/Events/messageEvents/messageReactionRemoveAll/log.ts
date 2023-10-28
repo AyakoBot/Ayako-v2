@@ -44,5 +44,5 @@ export default async (
   if (users) files.push(users);
  }
 
- ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
 };

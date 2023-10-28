@@ -123,5 +123,5 @@ export default async (integration: Discord.Integration) => {
   },
  );
 
- ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, 10000);
 };

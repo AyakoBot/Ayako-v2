@@ -89,5 +89,5 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   value: String(invite.maxUses || '∞'),
  });
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, undefined, 10000);
+ ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

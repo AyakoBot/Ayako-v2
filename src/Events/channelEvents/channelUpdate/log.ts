@@ -434,5 +434,5 @@ export default async (
   ? lan.descUpdateAudit(auditUser, channel, language.channelTypes[channel.type])
   : lan.descUpdate(channel, language.channelTypes[channel.type]);
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, undefined, 10000);
+ ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
 };

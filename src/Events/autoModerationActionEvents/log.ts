@@ -105,10 +105,5 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   });
  }
 
- ch.send(
-  { id: channels, guildId: execution.guild.id },
-  { embeds: [embed], files },
-  undefined,
-  10000,
- );
+ ch.send({ id: channels, guildId: execution.guild.id }, { embeds: [embed], files }, 10000);
 };

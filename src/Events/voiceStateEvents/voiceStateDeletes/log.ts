@@ -49,5 +49,5 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   });
  }
 
- ch.send({ id: channels, guildId: state.guild.id }, { embeds: [embed], files }, undefined, 10000);
+ ch.send({ id: channels, guildId: state.guild.id }, { embeds: [embed], files }, 10000);
 };

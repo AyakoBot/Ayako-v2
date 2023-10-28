@@ -13,39 +13,32 @@ export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions,
 async function send(
  channels: Discord.User | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: Discord.TextBasedChannel[],
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
-
 async function send(
  channels: { id: string[]; guildId: string },
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
 async function send(
  channels: Discord.TextBasedChannel,
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
 async function send(
  channels: { id: string; guildId: string },
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
 /**
  * Sends a message to a Discord channel or user.
  * @param channels - The channel or user to send the message to.
  * @param payload - The message payload to send.
- * @param command - The command that triggered the message, if any.
  * @param timeout - The timeout for the message, if any.
  * @returns A Promise that resolves to the sent message, an array of sent messages, or null/void.
  */
@@ -58,20 +51,19 @@ async function send(
   | Discord.User
   | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
- command?: CT.Command,
  timeout?: number,
 ): Promise<Discord.Message | (Discord.Message | null | void)[] | null | void> {
  if (!channels) return null;
 
  if (Array.isArray(channels)) {
-  const sentMessages = await Promise.all(channels.map((ch) => send(ch, payload, command, timeout)));
+  const sentMessages = await Promise.all(channels.map((ch) => send(ch, payload, timeout)));
   return sentMessages;
  }
 
  if (Array.isArray(channels.id)) {
   const sentMessages = await Promise.all(
    channels.id.map((id) =>
-    send({ id, guildId: (channels as Discord.TextChannel).guildId }, payload, command, timeout),
+    send({ id, guildId: (channels as Discord.TextChannel).guildId }, payload, timeout),
    ),
   );
   return sentMessages;
