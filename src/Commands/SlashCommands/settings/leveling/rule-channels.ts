@@ -67,10 +67,12 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings?.map((s) => ({
-  name: `${new ChannelRules(s).toArray().length} ${language.ChannelRules} - ${Number(
-   s.channels?.length,
-  )} ${language.Channels}`,
-  value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${
+   new ChannelRules(s).toArray().length
+  } ${language.ChannelRules} - ${Number(s.channels?.length)} ${language.Channels}`,
+  value: `${language.Channels}: ${
+   s.channels.length ? s.channels.map((c) => `<#${c}>`).slice(0, 5) : language.None
+  }`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);

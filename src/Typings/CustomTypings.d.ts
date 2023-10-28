@@ -325,7 +325,8 @@ export type MentionTypes =
  | 'emote'
  | 'commands'
  | 'automodrules'
- | 'shoptype';
+ | 'shoptype'
+ | 'auto-punishment';
 
 export type HelpCommand =
  | {

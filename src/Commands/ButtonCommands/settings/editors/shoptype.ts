@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-type Types = 'punishment' | 'shoptype' | 'language';
+type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
  if (!cmd.inCachedGuild()) return;
@@ -75,6 +75,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], type: Type
 
 export const getOptions = (type: Types, language: CT.Language) => {
  switch (type) {
+  case 'auto-punishment': {
+   const obj = structuredClone(language.punishments) as Omit<
+    CT.Language['punishments'],
+    'strike'
+   > & {
+    strike?: string;
+   };
+
+   delete obj.strike;
+   return obj;
+  }
   case 'punishment':
    return language.punishments;
   case 'shoptype':

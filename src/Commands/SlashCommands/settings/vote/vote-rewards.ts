@@ -66,10 +66,18 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings.map((s) => ({
-  name: `${lan.fields.tier.name}: \`${s.tier ?? language.None}\` - ${lan.fields.linkedid.name}: ${
+  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${lan.fields.tier.name}: \`${
+   s.tier ?? language.None
+  }\` - ${lan.fields.linkedid.name}: ${
    s?.linkedid ? Number(s.linkedid).toString(36) : language.None
   }`,
-  value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+  value: `${lan.fields.rewardroles.name}: ${
+   s.rewardroles.length ? s.rewardroles.map((c) => `<@&${c}>`).slice(0, 5) : language.None
+  }\n ${lan.fields.rewardxp.name}: ${s.rewardxp ?? language.None} - ${
+   lan.fields.rewardxpmultiplier.name
+  }: ${s.rewardxpmultiplier ?? language.None} - ${lan.fields.rewardcurrency.name}: ${
+   s.rewardcurrency ?? language.None
+  }`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);

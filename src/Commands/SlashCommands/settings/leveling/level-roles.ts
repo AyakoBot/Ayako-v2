@@ -66,8 +66,10 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings?.map((s) => ({
-  name: `${lan.fields.level.name}: \`${s.level ?? language.None}\``,
-  value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\`\n${language.Roles}: ${
+  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${lan.fields.level.name}: \`${
+   s.level ?? language.None
+  }\``,
+  value: `${language.Roles}: ${
    s.roles.length
     ? s.roles
        .splice(0, 5)

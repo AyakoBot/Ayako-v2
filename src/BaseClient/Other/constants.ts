@@ -830,7 +830,7 @@ export default {
     'auto-punish': {
      duration: 'duration',
      warnamount: 'number',
-     punishment: 'punishment',
+     punishment: 'auto-punishment',
      addroles: 'roles',
      removeroles: 'roles',
      deletemessageseconds: 'duration',

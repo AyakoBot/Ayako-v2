@@ -77,17 +77,27 @@ async function f(
  })();
 
  return Promise.all([
-  DataBase.punish_bans.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
-  DataBase.punish_channelbans.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
-  DataBase.punish_kicks.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
-  DataBase.punish_mutes.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
-  DataBase.punish_warns.findMany(where as never).then((r) => ({ ...r, type: 'punish_bans' })),
+  DataBase.punish_bans
+   .findMany(where as never)
+   .then((r) => r.map((r2) => ({ ...r2, type: 'punish_bans' }) as const)),
+  DataBase.punish_channelbans
+   .findMany(where as never)
+   .then((r) => r.map((r2) => ({ ...r2, type: 'punish_channelbans' }) as const)),
+  DataBase.punish_kicks
+   .findMany(where as never)
+   .then((r) => r.map((r2) => ({ ...r2, type: 'punish_kicks' }) as const)),
+  DataBase.punish_mutes
+   .findMany(where as never)
+   .then((r) => r.map((r2) => ({ ...r2, type: 'punish_mutes' }) as const)),
+  DataBase.punish_warns
+   .findMany(where as never)
+   .then((r) => r.map((r2) => ({ ...r2, type: 'punish_warns' }) as const)),
  ]).then((r) => {
   const res = r.flat();
   if (asArray) {
-   return res.filter((p): p is Returned => !!p);
+   return res.filter((p) => !!p);
   }
-  return (res[0] as Returned) || null;
+  return res[0] || null;
  });
 }
 
