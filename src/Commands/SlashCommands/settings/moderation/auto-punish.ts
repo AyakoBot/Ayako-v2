@@ -77,9 +77,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
    s.active
     ? ch.constants.standard.getEmote(ch.emotes.enabled)
     : ch.constants.standard.getEmote(ch.emotes.disabled)
-  } - ID: \`${Number(
-   s.uniquetimestamp,
-  ).toString(36)}\``,
+  } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);

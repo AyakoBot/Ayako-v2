@@ -82,7 +82,6 @@ model antispam {
   dupemsgthreshold     Decimal        @db.Decimal     @default(5)
   timeout              Decimal        @db.Decimal     @default(15)
   deletespam           Boolean        @default(true)
-  usestrike            Boolean        @default(false)
   action               PunishmentType @default(warn)
   duration             Decimal        @db.Decimal     @default(3600)
   deletemessageseconds Decimal        @db.Decimal     @default(604800)
@@ -96,7 +95,6 @@ model antivirus {
   active               Boolean        @db.Boolean @default(false)
   linklogging          Boolean        @db.Boolean @default(false)
   linklogchannels      String[]       @db.VarChar
-  usestrike            Boolean        @db.Boolean @default(false)
   action               PunishmentType             @default(warn)
   duration             Decimal        @db.Decimal @default(3600)
   deletemessageseconds Decimal        @db.Decimal @default(604800) 
@@ -542,11 +540,14 @@ model nitroroles {
 }
 
 model nitrosettings {
-  guildid     String   @db.VarChar
-  active      Boolean  @db.Boolean @default(false)
-  logchannels String[] @db.VarChar
+  guildid       String   @db.VarChar
+  active        Boolean  @db.Boolean @default(false)
+  logchannels   String[] @db.VarChar
   // true = stack, false = replace (WARNING: this value was inverted in relation to the old DB)
-  rolemode    Boolean? @db.Boolean @default(true)
+  rolemode      Boolean  @db.Boolean @default(true)
+  notification  Boolean  @db.Boolean @default(false) 
+  notifchannels String[] @db.VarChar
+  notifembed    Decimal? @db.Decimal
 
   @@id(guildid, map: "nitrosettings_pkey")
   @@index(guildid)

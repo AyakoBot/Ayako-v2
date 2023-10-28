@@ -642,7 +642,6 @@ export default {
      dupemsgthreshold: 'number',
      timeout: 'number',
      deletespam: 'boolean',
-     usestrike: 'boolean',
      deletemessageseconds: 'duration',
      duration: 'duration',
      action: 'punishment',
@@ -654,7 +653,6 @@ export default {
      linklogchannels: 'channels',
      minimizetof: 'boolean',
      deletetof: 'boolean',
-     usestrike: 'boolean',
      deletemessageseconds: 'duration',
      duration: 'duration',
      action: 'punishment',
@@ -874,6 +872,9 @@ export default {
     nitro: {
      logchannels: 'channels',
      rolemode: 'boolean',
+     notification: 'boolean',
+     notifchannels: 'channels',
+     notifembed: 'embed',
     },
     vote: {
      token: 'token',

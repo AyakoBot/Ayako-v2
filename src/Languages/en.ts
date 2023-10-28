@@ -24,11 +24,6 @@ const time = {
  timeIn: (t: string) => `in ${t}`,
 };
 
-const usestrike = {
- name: 'Use Strike-System',
- desc: 'Whether to use the Strike-Sytem or not',
-};
-
 const linkedid = {
  name: 'Linked ID',
  desc: 'The linked Setting',
@@ -2589,7 +2584,6 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Delete Spam',
        desc: 'Whether to Delete Spammed Messages',
       },
-      usestrike,
      },
     },
     'anti-virus': {
@@ -2622,7 +2616,6 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Links Log-Channels',
        desc: 'Where to Log posted Links',
       },
-      usestrike,
      },
     },
     'auto-punish': {
@@ -3366,12 +3359,24 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
      name: 'Nitro-Monitoring',
      fields: {
       logchannels: {
-       name: 'Log Channels',
+       name: 'Log-Channels',
        desc: 'The Channels in which to Log when Members start or stop boosting and more',
       },
       rolemode: {
-       name: 'Role Mode',
+       name: 'Role-Mode',
        desc: 'Whether to Stack or Replace Booster-Roles',
+      },
+      notification: {
+       name: 'Boost-Notification',
+       desc: 'Whether to send a seperate Boost-Notification',
+      },
+      notifchannels: {
+       name: 'Notification-Channels',
+       desc: 'The Channels to send the Boost-Notification in',
+      },
+      notifembed: {
+       name: 'Notification-Embed',
+       desc: 'The Embed to send when a Member boosts the Server',
       },
      },
     },
