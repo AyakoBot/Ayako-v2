@@ -24,7 +24,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
 
  const embed: Discord.APIEmbed =
   settings.notifembed && embedSettings
-   ? ch.getDiscordEmbed(embedSettings)
+   ? ch.makeStp(ch.getDiscordEmbed(embedSettings), { member })
    : {
       author: { name: language.autotypes.nitro },
       color: ch.getColor(await ch.getBotMemberFromGuild(member.guild)),
