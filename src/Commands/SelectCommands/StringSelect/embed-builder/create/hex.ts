@@ -26,7 +26,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
       minLength: 0,
       placeholder: lan.modals.hex.placeholder,
       required: false,
-      value: cmd.message.embeds[0].color ? `#${cmd.message.embeds[0].color?.toString(16)}` : '',
+      value: cmd.message.embeds[1].color ? `#${cmd.message.embeds[1].color?.toString(16)}` : '',
      },
     ],
    },

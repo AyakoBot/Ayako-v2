@@ -3,7 +3,7 @@ import startOver from '../../../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  const name = cmd.values[0];
- const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data);
+ const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data);
  let selected = embed.data.fields?.length ?? 0;
 
  switch (name) {

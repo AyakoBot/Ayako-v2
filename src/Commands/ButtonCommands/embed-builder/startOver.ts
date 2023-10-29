@@ -48,7 +48,6 @@ export default async (
 
  cmd.update({
   embeds: [
-   embed,
    {
     color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
     description: `${lan.desc}\n\n${lan.oneRequired}\n${ch.constants.customembeds.needsOneOf
@@ -59,6 +58,7 @@ export default async (
      .fields((await ch.getCustomCommand(cmd.guildId, 'stp'))?.id ?? '0')
      .map((f) => ({ name: '\u200b', value: `${lan.quick}\n${f}` })),
    },
+   embed,
   ],
   components: [
    {

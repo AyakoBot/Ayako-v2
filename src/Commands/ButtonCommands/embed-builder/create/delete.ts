@@ -5,7 +5,7 @@ import { getSelectedField } from '../../../ModalCommands/embed-builder/editor.js
 export default async (cmd: Discord.ButtonInteraction) => {
  const selectedField = getSelectedField(cmd);
 
- const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data);
+ const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data);
  if (!embed.data.fields?.length) return;
  embed.data.fields.splice(Number(selectedField), 1);
 

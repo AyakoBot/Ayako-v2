@@ -2209,7 +2209,7 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
       hex: {
        label: 'Insert a Hex Color below',
        placeholder:
-        'Can be "random", "none", empty or the Name of a Color. Prefix Hex Colors with "#"',
+        'Can be "random" (will be random every time the Embed is sent), "none", empty or the Name of a Color. Prefix Hex Colors with "#"',
        random: 'random',
       },
       timestamp: {
@@ -2238,7 +2238,7 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
     quick: 'Quick Help',
     fields: (cmdId: string) => [
      'This Part is used in Leveling Settings\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message',
-     'This Part is used in Welcome Settings\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember',
+     'This Part is used in Welcome Settings and Nitro Notifications\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember',
      `You can use </stp:${cmdId}> to test the \`{{msg}}\` Templates`,
     ],
     editButtons: [

@@ -5,7 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!cmd.isFromMessage()) return;
 
- const embed = cmd.message.embeds[0].data;
+ const embed = cmd.message.embeds[1].data;
  const messageLink = cmd.fields.getTextInputValue('message');
  const [, , , , , channelId, messageId] = messageLink.split('/');
 

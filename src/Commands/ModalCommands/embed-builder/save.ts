@@ -6,7 +6,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const name = cmd.fields.getTextInputValue('name');
- const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data).data;
+ const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data).data;
 
  ch.DataBase.customembeds
   .create({

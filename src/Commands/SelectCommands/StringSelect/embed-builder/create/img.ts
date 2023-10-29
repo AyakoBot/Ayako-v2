@@ -35,7 +35,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
 };
 
 const getValue = (arg: string, cmd: Discord.StringSelectMenuInteraction) => {
- const embed = cmd.message.embeds[0];
+ const embed = cmd.message.embeds[1];
  if (!embed) return '';
 
  switch (arg) {

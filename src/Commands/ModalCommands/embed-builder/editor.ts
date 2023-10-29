@@ -119,7 +119,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const embed = new Discord.EmbedBuilder(cmd.message.embeds[0].data);
+ const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data);
 
  switch (fieldType) {
   case 'field-name': {

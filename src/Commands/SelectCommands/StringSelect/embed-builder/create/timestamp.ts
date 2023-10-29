@@ -26,8 +26,8 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
       minLength: 0,
       placeholder: lan.modals.timestamp.placeholder,
       required: false,
-      value: cmd.message.embeds[0].timestamp
-       ? new Date(cmd.message.embeds[0].timestamp).toTimeString()
+      value: cmd.message.embeds[1].timestamp
+       ? new Date(cmd.message.embeds[1].timestamp).toTimeString()
        : '',
      },
     ],
