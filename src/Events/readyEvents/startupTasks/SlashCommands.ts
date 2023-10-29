@@ -25,6 +25,7 @@ import reminder from './slashCommands/reminder.js';
 import suggest from './slashCommands/suggest.js';
 import shop from './slashCommands/shop.js';
 import invites from './slashCommands/invites.js';
+import server from './slashCommands/server.js';
 
 export default {
  public: {
@@ -55,6 +56,7 @@ export default {
   suggest,
   shop,
   invites,
+  server,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -100,6 +102,8 @@ export default {
   info_badges: 'info',
   info_emoji: 'info',
   info_invite: 'info',
+  server_info: 'info',
+  server_list: 'info',
   'embed-builder_view_custom-embeds': 'utility',
   'embed-builder_view_from-message': 'utility',
   'embed-builder_create': 'utility',

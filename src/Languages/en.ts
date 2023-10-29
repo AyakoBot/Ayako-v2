@@ -1494,7 +1494,6 @@ ${
     kicks: 'Kicks',
    },
    placeholder: 'Select up to 9 Punishments',
-   pageBetween: (x: number, y: number) => `A Number from ${x} to ${y}`,
    date: 'Date of Punishment',
    executor: 'The Executor of this Punishment',
    channel: 'The Channel this Punishment was issued in',
@@ -4544,7 +4543,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
  Before: 'Before',
  After: 'After',
  Extra: 'Extra',
- Invite: 'Invite Custom Bot',
+ InviteCustomBot: 'Invite Custom Bot',
+ Invite: 'Invite',
  Other: 'Other',
  Page: 'Page',
+ pageBetween: (x: number, y: number) => `A Number from ${x} to ${y}`,
 };
