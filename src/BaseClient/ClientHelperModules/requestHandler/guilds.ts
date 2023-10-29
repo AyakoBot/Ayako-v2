@@ -1178,8 +1178,9 @@ const deleteAutoModerationRule = (guild: Discord.Guild, ruleId: string, reason?:
 
 /**
  * Retrieves a member from a guild by their user ID.
- * @param guild The guild to retrieve the member from.
+ * @param guild The guild to retrieve the member from, undefined if no custom API should be used
  * @param userId The ID of the user to retrieve.
+ * @param g The guild to retrieve the member from, in case no custom API should be used
  * @returns A Promise that resolves with the GuildMember object,
  * or rejects with a DiscordAPIError if an error occurs.
  */
@@ -1187,7 +1188,7 @@ const getMember = async <T extends Discord.Guild | undefined>(
  guild: T,
  userId: string,
  g?: T extends undefined ? Discord.Guild : undefined,
-) =>
+): Promise<Discord.GuildMember | Discord.DiscordAPIError> =>
  (guild ?? g)!.members.cache.get(userId) ??
  (guild ? cache.apis.get(guild.id) ?? API : API).guilds
   .getMember((guild ?? g)!.id, userId)
