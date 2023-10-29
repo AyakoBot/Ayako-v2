@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { GuildTextChannelTypes } from '../../../../BaseClient/Other/constants';
+import { GuildTextChannelTypes } from '../../../../BaseClient/Other/constants.js';
 
 export default new Discord.SlashCommandBuilder()
  .setName('slowmode')

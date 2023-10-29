@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { AllNonThreadGuildChannelTypes } from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import { AllNonThreadGuildChannelTypes } from '../../../BaseClient/Other/constants.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
