@@ -1447,6 +1447,65 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  check: {
+   name: `${name} Moderation-Management`,
+   desc: (
+    user: Discord.User,
+    { w, m, cb, b, r }: { w: number; m: number; cb: number; b: number; r: number },
+    {
+     isBanned,
+     isMuted,
+     isChannelBanned,
+    }: { isBanned: boolean; isMuted: boolean; isChannelBanned: boolean },
+    {
+     banEmote,
+     muteEmote,
+     channelbanEmote,
+    }: { banEmote: string; muteEmote: string; channelbanEmote: string },
+   ) => `Punishments of\n${getUser(user)}
+
+They currently have 
+${ch.util.makeBold(String(w))} Warns
+${ch.util.makeBold(String(m))} Mutes
+${ch.util.makeBold(String(cb))} Channel-Bans
+${ch.util.makeBold(String(b))} Bans
+of which ${ch.util.makeBold(String(r))} are temporary and currently running
+
+${
+ isBanned
+  ? `${banEmote} They are ${ch.util.makeBold('currently banned')}`
+  : `${banEmote} They are ${ch.util.makeBold('currently not banned')}`
+}
+${
+ isMuted
+  ? `${muteEmote} They are ${ch.util.makeBold('currently muted')}`
+  : `${muteEmote} They are ${ch.util.makeBold('currently not muted')}`
+}
+${
+ isChannelBanned
+  ? `${channelbanEmote} They are ${ch.util.makeBold('currently banned from some Channels')}`
+  : `${channelbanEmote} They are ${ch.util.makeBold('currently not banned from any Channels')}`
+}`,
+   punishmentTypes: {
+    warns: 'Warns',
+    bans: 'Bans',
+    mutes: 'Mutes',
+    channelbans: 'Channel-Bans',
+    kicks: 'Kicks',
+   },
+   placeholder: 'Select up to 9 Punishments',
+   pageBetween: (x: number, y: number) => `A Number from ${x} to ${y}`,
+   date: 'Date of Punishment',
+   executor: 'The Executor of this Punishment',
+   channel: 'The Channel this Punishment was issued in',
+   id: 'Punishment ID',
+   duration: 'Duration of Punishment',
+   endDate: 'End Date of Punishment',
+   message: 'Message of Punishment',
+   banChannel: 'Ban Channel',
+   cantPardon:
+    "This Punishment can't be pardoned until it ends.\nWait for it to end or end it manually using the respective Un-Punish-Command (Un-Mute/Un-Ban/Un-Channel-Ban)",
+  },
   balance: {
    how2Earn: (emote: string) => `Earn ${emote} by Voting for the Server or its Bot on Top.gg`,
   },
@@ -4487,4 +4546,5 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
  Extra: 'Extra',
  Invite: 'Invite Custom Bot',
  Other: 'Other',
+ Page: 'Page',
 };
