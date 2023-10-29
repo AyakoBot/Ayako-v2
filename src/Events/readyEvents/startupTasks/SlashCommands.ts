@@ -1755,11 +1755,6 @@ const shop = new Discord.SlashCommandBuilder()
  .setDescription('Buy Roles with earned Currency')
  .setDMPermission(false);
 
-const balance = new Discord.SlashCommandBuilder()
- .setName('balance')
- .setDescription('Display your Balance')
- .setDMPermission(false);
-
 const invites = new Discord.SlashCommandBuilder()
  .setName('invites')
  .setDescription('Detailed Information and Utilities about Invites')
@@ -1826,8 +1821,20 @@ const invites = new Discord.SlashCommandBuilder()
    .addStringOption(Reason),
  );
 
+const balance = new Discord.SlashCommandBuilder()
+ .setName('balance')
+ .setDescription('Display your Balance')
+ .setDMPermission(false)
+ .addUserOption(
+  new Discord.SlashCommandUserOption()
+   .setName('user')
+   .setDescription('The User')
+   .setRequired(false),
+ );
+
 export default {
  public: {
+  balance,
   user,
   settings,
   info,
@@ -1853,7 +1860,6 @@ export default {
   reminder,
   suggest,
   shop,
-  balance,
   invites,
  },
  categories: {
@@ -2005,6 +2011,7 @@ export default {
   reminder_edit: 'utility',
   suggest: 'utility',
   shop: 'utility',
+  balance: 'utility',
  },
  names: [
   'settings',

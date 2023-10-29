@@ -1447,6 +1447,9 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  balance: {
+   how2Earn: (emote: string) => `Earn ${emote} by Voting for the Server or its Bot on Top.gg`,
+  },
   suggest: {
    accepted: 'Suggestion accepted',
    rejected: 'Suggestion rejected',
