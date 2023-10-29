@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/CustomTypings.js';
-import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 
 const month = 2629743000;
@@ -10,24 +9,11 @@ const month = 2629743000;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const userID = cmd.options.get('user-name', false)?.value as string | null;
- const language = await ch.getLanguage(cmd.guild?.id);
+ const userRes = await ch.getUserFromUserAndUsernameOptions(cmd);
+ if (!userRes) return;
+
+ const { user, language } = userRes;
  const lan = language.slashCommands.info.user;
-
- if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
-  return;
- }
-
- const user =
-  cmd.options.getUser('user', false) ??
-  (userID ? await client.users.fetch(userID).catch(() => undefined) : cmd.user) ??
-  cmd.user;
-
- if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
-  return;
- }
 
  const flags = await user.fetchFlags(true);
  if (user.bot && !flags.has(65536)) flags.add(2048);
