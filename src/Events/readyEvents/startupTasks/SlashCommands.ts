@@ -1035,11 +1035,6 @@ const user = new Discord.SlashCommandBuilder()
    .addUserOption(User),
  );
 
-const vote = new Discord.SlashCommandBuilder()
- .setName('vote')
- .setDescription('Vote for the Bot')
- .setDMPermission(true);
-
 const giveaway = new Discord.SlashCommandBuilder()
  .setName('giveaway')
  .setDescription('Giveaway Management Commands')
@@ -1911,6 +1906,11 @@ const balance = new Discord.SlashCommandBuilder()
    .setDescription('The User')
    .setRequired(false),
  );
+
+const vote = new Discord.SlashCommandBuilder()
+ .setName('vote')
+ .setDescription('Vote for Ayako on Top.gg!')
+ .setDMPermission(true);
 
 export default {
  public: {
