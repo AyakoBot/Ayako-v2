@@ -1,4 +1,22 @@
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
+
+export const GuildTextChannelTypes = [
+ Discord.ChannelType.AnnouncementThread,
+ Discord.ChannelType.GuildAnnouncement,
+ Discord.ChannelType.GuildStageVoice,
+ Discord.ChannelType.GuildText,
+ Discord.ChannelType.GuildVoice,
+ Discord.ChannelType.PrivateThread,
+ Discord.ChannelType.PublicThread,
+] as const;
+
+export const AllNonThreadGuildChannelTypes = [
+ Discord.ChannelType.GuildAnnouncement,
+ Discord.ChannelType.GuildStageVoice,
+ Discord.ChannelType.GuildText,
+ Discord.ChannelType.GuildVoice,
+ Discord.ChannelType.GuildForum,
+] as const;
 
 export enum TableNamesPrismaTranslation {
  shop = 'shop',
