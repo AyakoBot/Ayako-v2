@@ -212,7 +212,9 @@ export const getPayload = async (
       style: Discord.ButtonStyle.Secondary,
       label: `${selected.page}/${Math.ceil(Number(punishmentsOfType?.length) / 25) || 1}`,
       disabled: Number(punishmentsOfType?.length) <= 25 || !selected.type,
-      custom_id: `check/select_${selected.type}_${baseInfo.user.id}_${selected.page}`,
+      custom_id: `check/select_${selected.type}_${baseInfo.user.id}_${selected.page}_${
+       Number(punishmentsOfType?.length) / 25
+      }`,
      },
      {
       emoji: ch.emotes.forth,

@@ -679,17 +679,17 @@ const mod = {
   if (!strike) {
    cache.punishments.delete(options.target.id);
    (await import(`../mod.js`)).default(cmd, 'warnAdd', options, message);
-   return;
+   return false;
   }
 
   if (!cmd) {
    error(options.guild, new Error('Guild not found'));
-   return;
+   return false;
   }
 
   switch (strike.punishment) {
    case 'ban':
-    mod.banAdd(
+    return mod.banAdd(
      {
       ...options,
       deleteMessageSeconds:
@@ -699,14 +699,13 @@ const mod = {
      message,
      cmd,
     );
-    break;
    case 'channelban':
     if (!cmd.channel) {
      error(cmd.guild, new Error('No Channel found in strikeAdd'));
-     return;
+     return false;
     }
 
-    mod.channelBanAdd(
+    return mod.channelBanAdd(
      {
       ...options,
       channel: cmd.channel.isThread()
@@ -717,25 +716,22 @@ const mod = {
      message,
      cmd,
     );
-    break;
    case 'kick':
-    mod.kickAdd(options, language, message, cmd);
-    break;
+    return mod.kickAdd(options, language, message, cmd);
    case 'tempmute':
-    mod.tempMuteAdd(
+    return mod.tempMuteAdd(
      { ...options, duration: Number(strike.duration) * 1000 },
      language,
      message,
      cmd,
     );
-    break;
    case 'tempchannelban':
     if (!cmd.channel) {
      error(cmd.guild, new Error('No channel found in strikeAdd'));
-     return;
+     return false;
     }
 
-    mod.tempChannelBanAdd(
+    return mod.tempChannelBanAdd(
      {
       ...options,
       duration: Number(strike.duration) * 1000,
@@ -747,12 +743,10 @@ const mod = {
      message,
      cmd,
     );
-    break;
    case 'warn':
-    mod.warnAdd();
-    break;
+    return mod.warnAdd();
    case 'tempban':
-    mod.tempBanAdd(
+    return mod.tempBanAdd(
      {
       ...options,
       duration: Number(strike.duration) * 1000,
@@ -763,9 +757,8 @@ const mod = {
      message,
      cmd,
     );
-    break;
    case 'softban': {
-    mod.softBanAdd(
+    return mod.softBanAdd(
      {
       ...options,
       deleteMessageSeconds:
@@ -775,11 +768,9 @@ const mod = {
      message,
      cmd,
     );
-    break;
    }
    default: {
-    mod.softWarnAdd();
-    break;
+    return mod.softWarnAdd();
    }
   }
  },
