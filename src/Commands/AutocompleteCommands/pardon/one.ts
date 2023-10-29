@@ -15,7 +15,11 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   | 'channelban';
  if (!type) return [];
 
- const punishments = await ch.getPunishment(user, 'with-type', type);
+ const punishments = await ch.getPunishment(user, {
+  identType: 'with-type',
+  ident: type,
+  guildid: cmd.guild.id,
+ });
 
  return punishments?.splice(0, 25).map((c) => ({
   name: Number(c.uniquetimestamp).toString(36),

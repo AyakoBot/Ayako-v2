@@ -42,11 +42,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (!member) return;
 
- if (applyingStrike.addroles) {
+ if (applyingStrike?.addroles) {
   ch.roleManager.add(member, applyingStrike.addroles, language.autotypes.autopunish, 1);
  }
 
- if (applyingStrike.removeroles) {
+ if (applyingStrike?.removeroles) {
   ch.roleManager.remove(member, applyingStrike.removeroles, language.autotypes.autopunish, 1);
  }
 };

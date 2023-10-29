@@ -29,7 +29,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const date1 = new Date(rawDate1).getTime();
  const date2 = new Date(rawDate2).getTime();
- const punishments = await ch.getPunishment(date1, 'between', date2);
+ const punishments = await ch.getPunishment(date1, {
+  identType: 'between',
+  ident: date2,
+  guildid: cmd.guild.id,
+ });
 
  if (!punishments) {
   ch.errorCmd(cmd, language.errors.punishmentNotFound, language);

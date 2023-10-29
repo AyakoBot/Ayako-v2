@@ -29,7 +29,7 @@ export default async (
  }
 
  const date = new Date(rawDate).getTime();
- const punishments = await ch.getPunishment(date, type);
+ const punishments = await ch.getPunishment(date, { identType: type, guildid: cmd.guild.id });
 
  if (!punishments) {
   ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
