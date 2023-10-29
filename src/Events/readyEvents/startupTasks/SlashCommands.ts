@@ -1615,8 +1615,8 @@ const clear = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('user')
    .setDescription('Clear Messages that are sent by a User')
-   .addUserOption(User)
-   .addIntegerOption(Amount),
+   .addIntegerOption(Amount)
+   .addUserOption(User),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
