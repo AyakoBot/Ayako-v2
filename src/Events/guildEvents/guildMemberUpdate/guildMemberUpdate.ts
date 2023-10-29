@@ -13,9 +13,12 @@ import boost from './boost.js';
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
  separator(oldMember, member);
+ cache(oldMember, member);
+
+ if (oldMember.partial) return;
+
  nitro(oldMember, member);
  boost(oldMember, member);
- cache(oldMember, member);
  rewards(oldMember, member);
 
  if (oldMember.pending && !member.pending) {
