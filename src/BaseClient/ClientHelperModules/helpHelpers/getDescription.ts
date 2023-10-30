@@ -25,8 +25,10 @@ export default (language: CT.Language, command: string, subCommandGroup?: string
   return language.contextCommands.message[command as keyof typeof language.contextCommands.message]
    ?.desc;
  }
- if (cJSON.type === Discord.ApplicationCommandType.User) {
-  return language.contextCommands.user[command as keyof typeof language.contextCommands.user]?.desc;
- }
+ // if (cJSON.type === Discord.ApplicationCommandType.User) {
+ //  return language.contextCommands.user[
+ //  command as keyof typeof language.contextCommands.user
+ // ]?.desc;
+ // }
  return '';
 };
