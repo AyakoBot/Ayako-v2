@@ -1439,14 +1439,15 @@ export default {
      'This Channel already has a sticked Message.\nYou can merge them into one and stick the merged Message\n\nTo unstick the previous Message, just delete it',
    },
   },
-  user: {
-   TODO: {
-    desc: 'TODO',
-   },
-  },
  },
- stringCommands: {},
  slashCommands: {
+  edit: {
+   invalid: 'Invalid Punishment ID',
+   success: 'Reason updated',
+   author: 'Punishment Reason Edited',
+   desc: (user: Discord.User, target: Discord.User, punId: string) =>
+    `${getUser(user)}has updated\nReason of Punishment with ID ${punId}\nof\n${getUser(target)}`,
+  },
   leaderboard: {
    name: `${name} Leveling`,
    level: 'Level',

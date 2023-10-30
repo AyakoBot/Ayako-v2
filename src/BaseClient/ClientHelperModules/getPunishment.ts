@@ -20,6 +20,7 @@ export type Returned = (
 };
 
 function f(id: number): Promise<Returned | null>;
+function f(id: string): Promise<Returned | null>;
 function f(
  id: number,
  options: {

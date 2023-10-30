@@ -378,4 +378,23 @@ export default new Discord.SlashCommandBuilder()
      .setMinLength(2)
      .setAutocomplete(true),
    ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit')
+   .setDescription('Edit the Reason of a Punishment')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('id')
+     .setDescription('The ID of the Punishment')
+     .setRequired(true)
+     .setMinLength(8)
+     .setMaxLength(8),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('reason')
+     .setDescription('The Reason')
+     .setRequired(true),
+   ),
  );
