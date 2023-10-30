@@ -42,11 +42,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  settings,
  language,
  lan,
+ guild,
 ) => [
  {
   author: embedParsers.author(language, lan),
   description: `${settings.token ? lan.tokenSetDesc : ''}\n\n${language.slashCommands.rp.notice(
-   (await ch.getCustomCommand(settings.guildid, 'rp'))?.id ?? '0',
+   (await ch.getCustomCommand(guild, 'rp'))?.id ?? '0',
   )}\n${
    ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
@@ -116,7 +117,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
        )}\n[${language.InviteCustomBot}](${ch.constants.standard.invite.replace(
         ch.mainID,
-        ch.getBotIdFromToken(settings.token),
+        settings.appid ?? ch.mainID,
        )})`
      : language.None,
    },
@@ -171,7 +172,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     label: language.InviteCustomBot,
     disabled: !settings.token,
     url: settings.token
-     ? ch.constants.standard.invite.replace(ch.mainID, ch.getBotIdFromToken(settings.token))
+     ? ch.constants.standard.invite.replace(ch.mainID, settings.appid ?? ch.mainID)
      : 'https://ayakobot.com',
    },
   ],

@@ -30,7 +30,7 @@ export default async (
  if (message.author.id !== cmd.client.user.id) {
   ch.errorCmd(
    cmd,
-   lan.messageNotFromMe((await ch.getCustomCommand(cmd.guildId, 'embed-builder'))?.id ?? '0'),
+   lan.messageNotFromMe((await ch.getCustomCommand(cmd.guild, 'embed-builder'))?.id ?? '0'),
    language,
    reply,
   );
@@ -86,8 +86,8 @@ export default async (
    {
     description: `${
      type === 'button-roles'
-      ? lan.descButtons((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
-      : lan.descReactions((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
+      ? lan.descButtons((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
+      : lan.descReactions((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
     }\n\n${lan.buttons}`,
     url: message.url,
     fields: settings

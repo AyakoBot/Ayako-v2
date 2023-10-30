@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import { getPayload } from '../SlashCommands/check.js';
+import { getPayload } from '../SlashCommands/mod/check.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

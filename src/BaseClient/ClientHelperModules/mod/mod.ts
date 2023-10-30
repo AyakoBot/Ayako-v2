@@ -14,7 +14,7 @@ import getStrike from './getStrike.js';
 import err from './err.js';
 import constants from '../../Other/constants.js';
 import objectEmotes from '../emotes.js';
-import getCustomBot from '../getCustomBot.js';
+import getBotMemberFromGuild from '../getBotMemberFromGuild.js';
 import isManageable from '../isManageable.js';
 import isModeratable from '../isModeratable.js';
 import DataBase from '../../DataBase.js';
@@ -81,7 +81,7 @@ const mod = {
    return false;
   }
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if ((!isManageable(targetMember, me) || !options.roles.length) && !options.skipChecks) {
@@ -159,7 +159,7 @@ const mod = {
    return false;
   }
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
   if (
@@ -207,7 +207,7 @@ const mod = {
   }
   const { targetMember } = memberResponse;
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (!isModeratable(me, targetMember) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
@@ -243,7 +243,7 @@ const mod = {
      );
      m.default(undefined, 'muteRemove', {
       dbOnly: false,
-      executor: (await getCustomBot(options.guild)).user,
+      executor: (await getBotMemberFromGuild(options.guild)).user,
       guild: options.guild,
       reason: language.mod.execution.muteRemove.reason,
       target: options.target,
@@ -285,7 +285,7 @@ const mod = {
   }
   const { targetMember } = memberResponse;
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (!isModeratable(me, targetMember) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
@@ -316,7 +316,7 @@ const mod = {
   const type = 'banAdd';
 
   const memberRes = await getMembers(cmd, options, language, message, type);
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (
    ((memberRes && !isModeratable(me, memberRes.targetMember)) ||
     !me.permissions.has(Discord.PermissionFlagsBits.BanMembers)) &&
@@ -377,7 +377,7 @@ const mod = {
     );
     m.default(undefined, 'banRemove', {
      dbOnly: false,
-     executor: (await getCustomBot(options.guild)).user,
+     executor: (await getBotMemberFromGuild(options.guild)).user,
      guild: options.guild,
      reason: language.mod.execution.muteRemove.reason,
      target: options.target,
@@ -400,7 +400,7 @@ const mod = {
 
   cache.bans.delete(options.guild.id, options.target.id);
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (!me.permissions.has(Discord.PermissionFlagsBits.BanMembers) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
@@ -427,7 +427,7 @@ const mod = {
  ) => {
   const type = 'kickAdd';
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (!me.permissions.has(Discord.PermissionFlagsBits.KickMembers) && !options.skipChecks) {
    permissionError(cmd, message, language, type);
    return false;
@@ -510,7 +510,7 @@ const mod = {
    return true;
   }
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (
    (!me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
     !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)) &&
@@ -588,7 +588,7 @@ const mod = {
    return true;
   }
 
-  const me = await getCustomBot(options.guild);
+  const me = await getBotMemberFromGuild(options.guild);
   if (
    (!me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
     !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)) &&
@@ -654,7 +654,7 @@ const mod = {
     );
     m.default(undefined, 'channelBanRemove', {
      dbOnly: false,
-     executor: (await getCustomBot(options.guild)).user,
+     executor: (await getBotMemberFromGuild(options.guild)).user,
      guild: options.guild,
      reason: language.mod.execution.muteRemove.reason,
      target: options.target,

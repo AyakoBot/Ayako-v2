@@ -57,9 +57,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     ? [
        {
         name: lan.customRoleName,
-        value: lan.customRole(
-         (await ch.getCustomCommand(member.guild.id, 'custom-role'))?.id ?? '0',
-        ),
+        value: lan.customRole((await ch.getCustomCommand(member.guild, 'custom-role'))?.id ?? '0'),
         inline: false,
        },
       ]

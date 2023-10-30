@@ -97,7 +97,7 @@ export default async (
     description: lan.description(
      Number(balance?.balance ?? 0),
      currencyEmote,
-     (await ch.getCustomCommand(cmd.guildId, 'balance'))?.id ?? '0',
+     (await ch.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
     ),
     fields: shopItems.map((s, i) => ({
      name: `#${i + 1} - ${s.price} ${currencyEmote}`,
@@ -110,7 +110,7 @@ export default async (
      }`,
      inline: true,
     })),
-    color: ch.getColor(await ch.getCustomBot(cmd.guild)),
+    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
    },
   ],
   components: selMenu.map((s) => ({

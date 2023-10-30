@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import { getPayload } from '../../SlashCommands/check.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import { getPayload } from '../../../SlashCommands/mod/check.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

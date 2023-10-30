@@ -2,19 +2,9 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import Commands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
 import permissions from '../../SlashCommands/mod/permissions.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
-type CommandType =
- | 'ban'
- | 'strike'
- | 'channel-ban'
- | 'kick'
- | 'soft-ban'
- | 'temp-ban'
- | 'temp-channel-ban'
- | 'tempmute'
- | 'unban'
- | 'unmute'
- | 'warn';
+type CommandType = keyof CT.Language['slashCommands']['moderation']['permissions']['buttons'];
 
 export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -31,13 +21,14 @@ export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
   message: cmd.message,
  });
 
- const name = args.shift();
+ const name = args.shift() as CommandType;
  if (!name) {
   ch.error(cmd.guild, new Error('No name provided'));
   return;
  }
 
- const command = cmd.guild.commands.cache.find((c) => c.name === name);
+ const command = await ch.getCustomCommand(cmd.guild, name);
+
  if (command) {
   await ch.request.commands.deleteGuildCommand(cmd.guild, command.id);
   permissions(cmd, [], response);
@@ -50,7 +41,7 @@ export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
   return;
  }
 
- ch.request.commands.createGuildCommand(cmd.guild, submitCmdData);
+ await ch.request.commands.createGuildCommand(cmd.guild, submitCmdData);
  permissions(cmd, [], response);
 };
 

@@ -60,7 +60,7 @@ export default async (
   author: {
    name: lan.author,
   },
-  color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+  color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
   description: `${ch.util.makeInlineCode(
    `${ch.spaces(language.name, longestName)} | ${ch.spaces(
     language.Members,

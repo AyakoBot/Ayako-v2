@@ -33,8 +33,8 @@ export default async (
 
  embed.description =
   type === 'reaction-roles'
-   ? lan.descReactions((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0')
-   : lan.descButtons((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0');
+   ? lan.descReactions((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
+   : lan.descButtons((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0');
  embed.fields = [
   ...(embed.fields ?? []),
   ...(findField(value, embed.fields)

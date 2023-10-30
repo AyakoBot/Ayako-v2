@@ -10,6 +10,12 @@ export default async (
 
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.moderation.permissions;
+ const customCommands = await Promise.all(
+  Object.keys(lan.buttons).map((k) =>
+   ch.getCustomCommand(cmd.guild, k as keyof (typeof lan)['buttons']),
+  ),
+ );
+
  const payload = {
   embeds: [
    {
@@ -19,13 +25,11 @@ export default async (
   ],
   components: (
    ch.getChunks(
-    Object.entries(lan.buttons).map(([key, val]) => ({
+    Object.entries(lan.buttons).map(([key, val], i) => ({
      type: Discord.ComponentType.Button,
      label: val,
      custom_id: `mod/permissions_${key}`,
-     style: cmd.guild.commands.cache.find((c) => c.name === key)
-      ? Discord.ButtonStyle.Primary
-      : Discord.ButtonStyle.Secondary,
+     style: customCommands[i] ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
     })),
     5,
    ) as Discord.APIButtonComponentWithCustomId[][]

@@ -16,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ch.errorCmd(
    cmd,
    language.slashCommands.moderation.strike.notEnabled(
-    (await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0',
+    (await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0',
    ),
    language,
   );

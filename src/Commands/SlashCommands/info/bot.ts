@@ -16,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     author: {
      name: lan.author,
     },
-    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
     description: `${[
      ...(stats
       ? [

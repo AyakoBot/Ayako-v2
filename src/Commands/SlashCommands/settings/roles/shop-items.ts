@@ -107,6 +107,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  settings,
  language,
  lan,
+ guild,
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
@@ -134,7 +135,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    },
    {
     name: lan.fields.shoptype.name,
-    value: await getShopType(settings.guildid, settings.shoptype, lan),
+    value: await getShopType(guild, settings.shoptype, lan),
     inline: true,
    },
    ...(settings.shoptype === 'message'
@@ -168,7 +169,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 ];
 
 const getShopType = async (
- guildId: string,
+ guild: Discord.Guild,
  type: ShopType,
  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ) => {
@@ -177,7 +178,7 @@ const getShopType = async (
    return lan.message;
   }
   default: {
-   return lan.command((await ch.getCustomCommand(guildId, 'shop'))?.id ?? '0');
+   return lan.command((await ch.getCustomCommand(guild, 'shop'))?.id ?? '0');
   }
  }
 };

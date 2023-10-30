@@ -21,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   content: lan.deleted,
   embeds: [
    {
-    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
     description: reminder.reason,
     fields: [
      {

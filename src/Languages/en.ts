@@ -1580,6 +1580,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
      unmute: 'Unmute',
      unban: 'Unban',
      pardon: 'Pardon',
+     check: 'Check',
     },
    },
    strike: {

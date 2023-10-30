@@ -75,7 +75,6 @@ import {
  token as getBotIdFromToken,
  guild as getBotIdFromGuild,
 } from './ClientHelperModules/getBotIdFrom.js';
-import getCustomBot from './ClientHelperModules/getCustomBot.js';
 import isModeratable from './ClientHelperModules/isModeratable.js';
 import fetchAllEventSubscribers from './ClientHelperModules/fetchAllEventSubscribers.js';
 import fetchAllGuildMembers from './ClientHelperModules/fetchAllGuildMembers.js';
@@ -107,7 +106,6 @@ export {
  fetchAllEventSubscribers,
  request,
  isModeratable,
- getCustomBot,
  getBotIdFromToken,
  getBotIdFromGuild,
  requestHandler,

@@ -213,8 +213,8 @@ const getGuildCommands = async (
      return;
     }
 
-    if (guild.client.application.commands.cache.get(p.id)) return;
-    guild.client.application.commands.cache.set(p.id, p);
+    if (guild.commands.cache.get(p.id)) return;
+    guild.commands.cache.set(p.id, p);
    });
    return parsed;
   })
@@ -367,7 +367,7 @@ const bulkOverwriteGuildCommands = async (
     return parsed;
    }
 
-   parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
+   parsed.forEach((p) => guild.commands.cache.set(p.id, p));
    return parsed;
   })
   .catch((e) => {

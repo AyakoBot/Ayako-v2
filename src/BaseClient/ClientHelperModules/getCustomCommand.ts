@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import cache from './cache.js';
 import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.js';
 
@@ -10,11 +11,14 @@ type CommandName = (typeof SlashCommands)['names'][number];
  * @param name - The name of the command to retrieve.
  * @returns The custom command with the specified name, or undefined if it does not exist.
  */
-export default async (guildId: string | undefined | null, name: CommandName) => {
+export default async (guild: Discord.Guild | undefined | null, name: CommandName) => {
  const { default: client } = await import('../Client.js');
 
- const clientCommand = client.application?.commands.cache.find((c) => c.name === name);
- return guildId
-  ? cache.commands.get(guildId)?.find((c) => c.name === name) ?? clientCommand
+ const clientCommand =
+  guild?.commands.cache.find((c) => c.name === name) ??
+  client.application?.commands.cache.find((c) => c.name === name);
+
+ return guild
+  ? cache.commands.get(guild.id)?.find((c) => c.name === name) ?? clientCommand
   : clientCommand;
 };

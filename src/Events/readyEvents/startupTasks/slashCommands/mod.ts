@@ -359,4 +359,23 @@ export default new Discord.SlashCommandBuilder()
      .addUserOption(Target)
      .addStringOption(Reason),
    ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('check')
+   .setDescription('View all Punishments of a User')
+   .addUserOption(
+    new Discord.SlashCommandUserOption()
+     .setName('user')
+     .setDescription('The User')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('user-name')
+     .setDescription(`Username of the User (Searches across all of ${name}'s Servers)`)
+     .setRequired(false)
+     .setMinLength(2)
+     .setAutocomplete(true),
+   ),
  );

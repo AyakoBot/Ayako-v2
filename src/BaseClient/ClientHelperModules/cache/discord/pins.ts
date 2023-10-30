@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+// eslint-disable-next-line import/no-cycle
 import error from '../../error.js';
 // eslint-disable-next-line import/no-cycle
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';

@@ -11,14 +11,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  const embed: Discord.APIEmbed = {
-  description: lan.desc((await ch.getCustomCommand(cmd.guildId, 'reminder'))?.id ?? '0'),
+  description: lan.desc((await ch.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
   fields: reminders.map((r) => ({
    name: `<#${r.channelid}> | ${ch.constants.standard.getTime(
     Number(r.uniquetimestamp),
    )} | ID: \`${Number(r.endtime).toString(36)}\``,
    value: r.reason,
   })),
-  color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+  color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
  };
 
  await ch.replyCmd(cmd, { embeds: [embed] });

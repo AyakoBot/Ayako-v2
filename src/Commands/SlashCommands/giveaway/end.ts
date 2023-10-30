@@ -46,6 +46,7 @@ export const end = async (g: Prisma.giveaways) => {
 
 export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.giveaways) => {
  const host = await client.users.fetch(giveaway.host).catch(() => undefined);
+ const guild = client.guilds.cache.get(giveaway.guildid);
 
  return {
   author: {
@@ -76,7 +77,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
       icon_url: host.displayAvatarURL(),
      }
    : undefined,
-  color: ch.getColor(await ch.getBotMemberFromGuild(client.guilds.cache.get(giveaway.guildid))),
+  color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
  };
 };
 

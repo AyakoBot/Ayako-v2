@@ -32,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!settings?.active) {
   ch.errorCmd(
    cmd,
-   lan.cantBan((await ch.getCustomCommand(cmd.guildId, 'settings'))?.id ?? '0'),
+   lan.cantBan((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0'),
    language,
   );
   return;

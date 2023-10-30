@@ -35,10 +35,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  settings,
  language,
  lan,
+ guild,
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: `${lan.desc((await ch.getCustomCommand(settings.guildid, 'check'))?.id ?? '0')}\n${
+  description: `${lan.desc((await ch.getCustomCommand(guild, 'check'))?.id ?? '0')}\n${
    ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
        name as keyof typeof ch.constants.tutorials

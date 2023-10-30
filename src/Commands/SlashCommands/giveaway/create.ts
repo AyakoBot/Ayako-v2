@@ -119,7 +119,7 @@ const canSendMessage = async (
  cmd: CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>,
  language: CT.Language,
 ) => {
- const me = await ch.getCustomBot(cmd.guild);
+ const me = await ch.getBotMemberFromGuild(cmd.guild);
  if (!me) {
   ch.error(cmd.guild, new Error('Cannot find self in guild'));
   return false;

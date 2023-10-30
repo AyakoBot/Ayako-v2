@@ -3,7 +3,6 @@ import user from './slashCommands/user.js';
 import settings from './slashCommands/settings.js';
 import info from './slashCommands/info.js';
 import embedbuilder from './slashCommands/embed-builder.js';
-import check from './slashCommands/check.js';
 import stickMessage from './slashCommands/stick-message.js';
 import stp from './slashCommands/stp.js';
 import membercount from './slashCommands/membercount.js';
@@ -34,7 +33,6 @@ export default {
   settings,
   info,
   'embed-builder': embedbuilder,
-  check,
   'Stick Message': stickMessage,
   stp,
   membercount,
@@ -237,5 +235,20 @@ export default {
   'reminder',
   'shop',
   'balance',
+  'kick',
+  'ban',
+  'soft-ban',
+  'temp-ban',
+  'channel-ban',
+  'temp-channel-ban',
+  'channel-unban',
+  'unban',
+  'warn',
+  'soft-warn',
+  'strike',
+  'unmute',
+  'tempmute',
+  'unafk',
+  'pardon',
  ],
 } as const;

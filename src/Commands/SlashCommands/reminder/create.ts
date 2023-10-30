@@ -44,7 +44,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  ch.replyCmd(cmd, {
-  content: lan.created((await ch.getCustomCommand(cmd.guildId, 'reminder'))?.id ?? '0'),
+  content: lan.created((await ch.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
  });
 };
 
@@ -82,7 +82,7 @@ export const endReminder = (reminder: Prisma.reminders) => {
      {
       description: reason,
       color: chEval.getColor(
-       await chEval.getBotMemberFromGuild('guild' in channel ? channel.guild : undefined),
+       'guild' in channel ? await chEval.getBotMemberFromGuild(channel.guild) : undefined,
       ),
      },
     ],

@@ -61,6 +61,7 @@ const getEmotesPayload = async (
   4096,
  );
  const chunk = chunks[page - 1];
+ const guild = emotes.find((e): e is Discord.GuildEmoji => 'guild' in e)?.guild;
 
  return {
   embeds: [
@@ -69,11 +70,7 @@ const getEmotesPayload = async (
      name: lan.emojis.author,
     },
     description: chunk.join('\n'),
-    color: ch.getColor(
-     await ch.getBotMemberFromGuild(
-      emotes.find((e): e is Discord.GuildEmoji => 'guild' in e)?.guild,
-     ),
-    ),
+    color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
    },
   ],
   components: [
@@ -207,7 +204,7 @@ const getEmotePayloads = async (
    context: {
     guildId: guild?.id,
     e: { ...emote },
-    color: (await ch.getBotMemberFromGuild(guild))?.displayColor,
+    color: guild ? (await ch.getBotMemberFromGuild(guild)).displayColor : undefined,
    },
   },
  );
