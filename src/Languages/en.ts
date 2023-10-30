@@ -1447,6 +1447,14 @@ export default {
  },
  stringCommands: {},
  slashCommands: {
+  leaderboard: {
+   name: `${name} Leveling`,
+   level: 'Level',
+   xp: 'XP',
+   rank: 'Rank',
+   yourPos: 'Your Position',
+   notRanked: 'Not Ranked',
+  },
   check: {
    name: `${name} Moderation-Management`,
    desc: (

@@ -25,9 +25,11 @@ import suggest from './slashCommands/suggest.js';
 import shop from './slashCommands/shop.js';
 import invites from './slashCommands/invites.js';
 import server from './slashCommands/server.js';
+import leaderboard from './slashCommands/leaderboard.js';
 
 export default {
  public: {
+  leaderboard,
   balance,
   user,
   settings,
@@ -208,6 +210,7 @@ export default {
   suggest: 'utility',
   shop: 'utility',
   balance: 'utility',
+  leaderboard: 'info',
  },
  names: [
   'settings',
@@ -250,5 +253,6 @@ export default {
   'tempmute',
   'unafk',
   'pardon',
+  'leaderboard',
  ],
 } as const;
