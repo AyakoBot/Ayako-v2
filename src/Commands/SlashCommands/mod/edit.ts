@@ -17,52 +17,68 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  switch (punishment.type) {
   case 'punish_bans':
-   ch.DataBase.punish_bans.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_bans
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_channelbans':
-   ch.DataBase.punish_channelbans.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_channelbans
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_kicks':
-   ch.DataBase.punish_kicks.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_kicks
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_mutes':
-   ch.DataBase.punish_mutes.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_mutes
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_tempbans':
-   ch.DataBase.punish_tempbans.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_tempbans
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_tempchannelbans':
-   ch.DataBase.punish_tempchannelbans.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_tempchannelbans
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_tempmutes':
-   ch.DataBase.punish_tempmutes.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_tempmutes
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   case 'punish_warns':
-   ch.DataBase.punish_warns.update({
-    where: { uniquetimestamp: punishment.uniquetimestamp },
-    data: { reason },
-   });
+   ch.DataBase.punish_warns
+    .update({
+     where: { uniquetimestamp: punishment.uniquetimestamp },
+     data: { reason },
+    })
+    .then();
    break;
   default:
    break;

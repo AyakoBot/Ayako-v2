@@ -1446,7 +1446,9 @@ export default {
    success: 'Reason updated',
    author: 'Punishment Reason Edited',
    desc: (user: Discord.User, target: Discord.User, punId: string) =>
-    `${getUser(user)}has updated\nReason of Punishment with ID ${punId}\nof\n${getUser(target)}`,
+    `${getUser(user)}has updated\nReason of Punishment with ID ${ch.util.makeInlineCode(
+     punId,
+    )}\nof\n${getUser(target)}`,
   },
   leaderboard: {
    name: `${name} Leveling`,
@@ -1590,6 +1592,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
      unban: 'Unban',
      pardon: 'Pardon',
      check: 'Check',
+     edit: 'Edit',
     },
    },
    strike: {

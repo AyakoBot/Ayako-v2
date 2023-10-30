@@ -254,5 +254,6 @@ export default {
   'unafk',
   'pardon',
   'leaderboard',
+  'edit',
  ],
 } as const;
