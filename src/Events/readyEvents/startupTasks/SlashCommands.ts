@@ -26,7 +26,6 @@ import shop from './slashCommands/shop.js';
 import invites from './slashCommands/invites.js';
 import server from './slashCommands/server.js';
 import leaderboard from './slashCommands/leaderboard.js';
-import leaderboardNitro from './slashCommands/leaderboard-nitro.js';
 
 export default {
  public: {
@@ -58,7 +57,6 @@ export default {
   shop,
   invites,
   server,
-  'leaderboard-nitro': leaderboardNitro,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -212,8 +210,9 @@ export default {
   suggest: 'utility',
   shop: 'utility',
   balance: 'utility',
-  leaderboard: 'info',
-  'leaderboard-nitro': 'info',
+  leaderboard_server: 'info',
+  leaderboard_nitro: 'info',
+  leaderboard_global: 'info',
  },
  names: [
   'settings',
@@ -256,8 +255,7 @@ export default {
   'tempmute',
   'unafk',
   'pardon',
-  'leaderboard',
   'edit',
-  'leaderboard-nitro',
+  'leaderboard',
  ],
 } as const;

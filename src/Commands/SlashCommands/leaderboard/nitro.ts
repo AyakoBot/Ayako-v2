@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../BaseClient/ClientHelper.js';
-import * as CT from '../../Typings/CustomTypings.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -78,15 +78,16 @@ export const makeLine = (
  pos: number,
  { days, longestDays }: { days: number; longestDays: number },
  { displayName, longestUsername }: { displayName: string; longestUsername: number },
-) =>
- `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
+) => {
+ const name = displayName
+  .replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '')
+  .replace(/\s+/g, ' ');
+
+ return `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
   String(days),
   longestDays,
- )} | ${ch.spaces(
-  displayName.replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '').replace(/\s+/g, ' ') ??
-   '-',
-  longestUsername,
- )}`;
+ )} | ${ch.spaces(name.length > 3 ? name : '-', longestUsername)}`;
+};
 
 const getEmbed = async (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
@@ -110,7 +111,7 @@ const getEmbed = async (
        makeLine(
         position - 1,
         { days, longestDays },
-        { displayName: cmd.user.username, longestUsername },
+        { displayName: cmd.user.displayName, longestUsername },
        ),
       )}`
     : lan.notRanked,

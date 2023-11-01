@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../BaseClient/ClientHelper.js';
-import * as CT from '../../Typings/CustomTypings.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -42,7 +42,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  ch.replyCmd(cmd, { embeds: [embed] });
 };
 
-const getLongest = (
+export const getLongest = (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
  levels: Prisma.level[],
  users: (Discord.User | undefined)[],
@@ -76,23 +76,27 @@ export const makeLine = (
  { level, longestLevel }: { level: number; longestLevel: number },
  { xp, longestXP }: { xp: number; longestXP: number },
  { displayName, longestUsername }: { displayName: string; longestUsername: number },
-) =>
- `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
+) => {
+ const name = displayName
+  .replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '')
+  .replace(/\s+/g, ' ');
+
+ return `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
   String(level),
   longestLevel,
  )} | ${ch.spaces(ch.splitByThousand(xp), longestXP)} | ${ch.spaces(
-  displayName.replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '').replace(/\s+/g, ' ') ??
-   '-',
+  name.length > 3 ? name : '-',
   longestUsername,
  )}`;
+};
 
-const getEmbed = async (
+export const getEmbed = async (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
  position: number,
  { levels, longestLevel, level }: { levels: Prisma.level[]; level: number; longestLevel: number },
  { xp, longestXP }: { xp: number; longestXP: number },
  { displayNames, longestUsername }: { displayNames: string[]; longestUsername: number },
- cmd: Discord.ChatInputCommandInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction,
 ): Promise<Discord.APIEmbed> => ({
  author: {
   name: lan.lleaderboard,
@@ -106,15 +110,15 @@ const getEmbed = async (
         position,
         { level: Number(level), longestLevel },
         { xp: Number(xp) ?? 0, longestXP },
-        { displayName: cmd.user.username, longestUsername },
+        { displayName: cmd.user.displayName, longestUsername },
        ),
       )}`
     : lan.notRanked,
   },
  ],
- color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+ color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
  description: `${ch.util.makeInlineCode(
-  `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
+  `${ch.spaces(lan.rank, 7)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
    lan.xp,
    longestXP,
   )} | ${ch.spaces(language.User, longestUsername)}\n${levels
