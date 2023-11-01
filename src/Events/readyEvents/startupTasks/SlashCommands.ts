@@ -26,6 +26,7 @@ import shop from './slashCommands/shop.js';
 import invites from './slashCommands/invites.js';
 import server from './slashCommands/server.js';
 import leaderboard from './slashCommands/leaderboard.js';
+import rank from './slashCommands/rank.js';
 
 export default {
  public: {
@@ -57,6 +58,7 @@ export default {
   shop,
   invites,
   server,
+  rank,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -213,6 +215,9 @@ export default {
   leaderboard_server: 'info',
   leaderboard_nitro: 'info',
   leaderboard_global: 'info',
+  rank_server: 'info',
+  rank_nitro: 'info',
+  rank_global: 'info',
  },
  names: [
   'settings',

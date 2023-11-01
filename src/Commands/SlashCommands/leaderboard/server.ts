@@ -8,6 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
+ const user = cmd.options.getUser('user', false) ?? cmd.user;
 
  const levels = await ch.DataBase.level.findMany({
   where: { guildid: cmd.guildId },
@@ -16,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  const self = await ch.DataBase.level.findUnique({
-  where: { userid_guildid_type: { userid: cmd.user.id, guildid: cmd.guildId, type: 'guild' } },
+  where: { userid_guildid_type: { userid: user.id, guildid: cmd.guildId, type: 'guild' } },
  });
 
  const higherXpCount = self
@@ -29,6 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const users = await Promise.all(levels.map((l) => ch.getUser(l.userid)));
 
  const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
+ const ownLevel = self ? await getOwnLevel(self, language, lan) : undefined;
 
  const embed = await getEmbed(
   { lan, language },
@@ -36,10 +38,66 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   { levels, longestLevel, level: Number(self?.level) },
   { xp: Number(self?.xp), longestXP },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
-  cmd,
+  user,
+  cmd.guild,
  );
 
+ embed.fields?.push(...(ownLevel ?? []));
+
  ch.replyCmd(cmd, { embeds: [embed] });
+};
+
+export const getOwnLevel = async (
+ self: Prisma.level,
+ language: CT.Language,
+ lan: CT.Language['slashCommands']['leaderboard'],
+): Promise<{ name: string; value: string; inline: boolean }[]> => {
+ const settings = await ch.DataBase.leveling.findUnique({
+  where: {
+   guildid: self.guildid,
+  },
+ });
+
+ const gain = Number(settings?.xpmultiplier ?? 1);
+ const xpPerMsg = Number(settings?.xppermsg ?? 15);
+
+ const newLevel = Number(self.level) + 1;
+ const neededXP = (5 / 6) * +newLevel * (2 * +newLevel * +newLevel + 27 * +newLevel + 91);
+ const duration = ch.moment(
+  Math.floor((neededXP - Number(self.xp)) / (xpPerMsg + 10) / gain) * 60000,
+  language,
+ );
+
+ return [
+  {
+   name: lan.currentLvl,
+   value: ch.splitByThousand(newLevel - 1),
+   inline: false,
+  },
+  {
+   name: lan.currentXP,
+   value: ch.splitByThousand(Number(self.xp)),
+   inline: true,
+  },
+  {
+   name: lan.nextLevelXP,
+   value: ch.splitByThousand(neededXP),
+   inline: true,
+  },
+  {
+   name: lan.xpDifference,
+   value: ch.splitByThousand(neededXP - Number(self.xp)),
+   inline: true,
+  },
+  {
+   name: '\u200b',
+   value: lan.thisWillTake(
+    Math.ceil((neededXP - Number(self.xp)) / gain / (xpPerMsg + 10)),
+    duration,
+   ),
+   inline: false,
+  },
+ ];
 };
 
 export const getLongest = (
@@ -96,7 +154,8 @@ export const getEmbed = async (
  { levels, longestLevel, level }: { levels: Prisma.level[]; level: number; longestLevel: number },
  { xp, longestXP }: { xp: number; longestXP: number },
  { displayNames, longestUsername }: { displayNames: string[]; longestUsername: number },
- cmd: Discord.ChatInputCommandInteraction,
+ user: Discord.User,
+ guild?: Discord.Guild,
 ): Promise<Discord.APIEmbed> => ({
  author: {
   name: lan.lleaderboard,
@@ -110,13 +169,13 @@ export const getEmbed = async (
         position,
         { level: Number(level), longestLevel },
         { xp: Number(xp) ?? 0, longestXP },
-        { displayName: cmd.user.displayName, longestUsername },
+        { displayName: user.displayName, longestUsername },
        ),
       )}`
     : lan.notRanked,
   },
  ],
- color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
+ color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
  description: `${ch.util.makeInlineCode(
   `${ch.spaces(lan.rank, 7)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
    lan.xp,

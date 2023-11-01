@@ -8,14 +8,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
+ const user = cmd.options.getUser('user', false) ?? cmd.user;
 
  const nitroUsers = await ch.DataBase.nitrousers.findMany({
   where: { guildid: cmd.guildId },
  });
 
  const daysPerUser = getDaysPerUsers(nitroUsers).sort((a, b) => b.days - a.days);
- const self = daysPerUser.find((d) => d.userId === cmd.user.id);
- const position = self ? daysPerUser.findIndex((s) => s.userId === cmd.user.id) + 1 : 0;
+ const self = daysPerUser.find((d) => d.userId === user.id);
+ const position = self ? daysPerUser.findIndex((s) => s.userId === user.id) + 1 : 0;
  const users = await Promise.all(daysPerUser.map((d) => ch.getUser(d.userId)));
 
  const { longestDays, longestUsername } = getLongest({ lan, language }, daysPerUser, users);
@@ -25,7 +26,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   position,
   { days: Number(self?.days), longestDays, daysPerUser },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
-  cmd,
+  user,
+  cmd.guild,
  );
 
  ch.replyCmd(cmd, { embeds: [embed] });
@@ -98,7 +100,8 @@ const getEmbed = async (
   daysPerUser,
  }: { days: number; longestDays: number; daysPerUser: { days: number; userId: string }[] },
  { displayNames, longestUsername }: { displayNames: string[]; longestUsername: number },
- cmd: Discord.ChatInputCommandInteraction<'cached'>,
+ user: Discord.User,
+ guild: Discord.Guild,
 ): Promise<Discord.APIEmbed> => ({
  author: {
   name: lan.nleaderboard,
@@ -111,13 +114,13 @@ const getEmbed = async (
        makeLine(
         position - 1,
         { days, longestDays },
-        { displayName: cmd.user.displayName, longestUsername },
+        { displayName: user.displayName, longestUsername },
        ),
       )}`
     : lan.notRanked,
   },
  ],
- color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+ color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
  description: `${ch.util.makeInlineCode(
   `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.days, longestDays)} |  ${ch.spaces(
    language.User,

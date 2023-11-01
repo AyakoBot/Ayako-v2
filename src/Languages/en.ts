@@ -1459,6 +1459,16 @@ export default {
    yourPos: 'Your Position',
    notRanked: 'Not Ranked',
    days: 'Days',
+   currentLvl: 'Current Level:',
+   currentXP: 'Current XP:',
+   nextLevelXP: 'Next Level XP:',
+   xpDifference: 'XP Difference:',
+   thisWillTake: (msgs: number, duration: string) =>
+    `This will take an average of about\n${ch.util.makeBold(
+     ch.splitByThousand(msgs),
+    )} counted Messages or\n${ch.util.makeInlineCode(
+     duration,
+    )}\nsince only 1 Message per Minute is counted`,
   },
   check: {
    name: `${name} Moderation-Management`,

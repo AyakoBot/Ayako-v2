@@ -6,7 +6,7 @@ const User = new Discord.SlashCommandUserOption()
  .setRequired(false);
 
 export default new Discord.SlashCommandBuilder()
- .setName('leaderboard')
+ .setName('rank')
  .setDescription('Leaderboard and Rank Commands')
  .setDMPermission(false)
  .addSubcommand(
