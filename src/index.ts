@@ -9,19 +9,22 @@ const { log } = console;
 
 console.clear();
 log(`
-+++++++++++++++ Welcome to Ayako +++++++++++++++
-+      Restart all Shards with "restart"       +
-+  Restart one Shard with "restart [Shard ID]" +
-+                  Arguments:                  +
-+ "--debug --debug-db --warn --debug-queries"  +
-++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++ Welcome to Ayako ++++++++++++++++
++       Restart all Shards with "restart"       +
++   Restart one Shard with "restart [Shard ID]" +
++                   Arguments:                  +
++  "--debug --debug-db --warn --debug-queries"  +
++++++++++++++++++++++++++++++++++++++++++++++++++
 `);
 
-const manager = new Discord.ShardingManager(`${process.cwd()}/bot.js`, {
- token: auth.token,
- shardArgs: process.argv,
- execArgv: ['--experimental-wasm-modules'],
-});
+const manager = new Discord.ShardingManager(
+ `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`,
+ {
+  token: auth.token,
+  shardArgs: process.argv,
+  execArgv: ['--experimental-wasm-modules'],
+ },
+);
 
 manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));
 

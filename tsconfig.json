@@ -1,8 +1,8 @@
 {
  "compilerOptions": {
   "types": ["node"],
-  "target": "ESNEXT",
-  "module": "ESNEXT",
+  "target": "ESNext",
+  "module": "ESNext",
   "lib": ["ESNext", "WebWorker", "ES6", "DOM"],
   "allowJs": false,
   "declaration": false,
