@@ -10,15 +10,20 @@ export default async () => {
  await client.application?.commands.fetch();
 
  const guilds = await ch.DataBase.guildsettings.findMany({ where: { token: { not: null } } });
- guilds.forEach(async (g) => {
-  const guild = client.guilds.cache.get(g.guildid);
-  if (!guild) return;
+ await Promise.all(
+  guilds.map((g) => {
+   const guild = client.guilds.cache.get(g.guildid);
+   if (!guild) return Promise.resolve();
 
-  await ch.request.commands.bulkOverwriteGlobalCommands(
-   guild,
-   createCommands.map((c) => c.toJSON()),
-  );
+   return ch.request.commands.bulkOverwriteGlobalCommands(
+    guild,
+    createCommands.map((c) => c.toJSON()),
+   );
+  }),
+ );
 
-  await ch.request.commands.getGlobalCommands(guild);
+ client.guilds.cache.forEach((g) => {
+  ch.request.commands.getGuildCommands(g);
+  ch.request.commands.getGlobalCommands(g);
  });
 };
