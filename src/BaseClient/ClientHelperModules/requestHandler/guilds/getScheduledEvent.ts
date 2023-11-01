@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - Optional query parameters to include in the request.
  * @returns A Promise that resolves with the retrieved scheduled event, or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  eventId: string,
  query?: Discord.RESTGetAPIGuildScheduledEventQuery,

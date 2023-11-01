@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the updated guild member,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  userId: string,
  body: Discord.RESTPatchAPIGuildMemberJSONBody,

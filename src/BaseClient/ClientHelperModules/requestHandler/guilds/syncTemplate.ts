@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the synced guild template,
  * or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, templateCode: string) =>
+export default async (guild: Discord.Guild, templateCode: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .syncTemplate(guild.id, templateCode)
   .then((t) => new Classes.GuildTemplate(guild.client, t))

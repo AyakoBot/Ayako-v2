@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves when the typing indicator is successfully shown,
  * or rejects with an error.
  */
-export default (channel: Discord.GuildTextBasedChannel) =>
+export default async (channel: Discord.GuildTextBasedChannel) =>
  (cache.apis.get(channel.guild.id) ?? API).channels.showTyping(channel.id).catch((e) => {
   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
  });

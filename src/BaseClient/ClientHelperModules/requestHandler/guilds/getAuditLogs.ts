@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves to a GuildAuditLogs object
  * representing the audit logs for the guild.
  */
-export default (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) =>
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getAuditLogs(guild.id, query)
   .then((a) => new Classes.GuildAuditLogs(guild, a))

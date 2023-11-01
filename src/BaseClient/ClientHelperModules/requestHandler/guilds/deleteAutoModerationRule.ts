@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted auto-moderation rule,
  * or rejects with an error.
  */
-export default (guild: Discord.Guild, ruleId: string, reason?: string) =>
+export default async (guild: Discord.Guild, ruleId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .deleteAutoModerationRule(guild.id, ruleId, { reason })
   .catch((e) => {

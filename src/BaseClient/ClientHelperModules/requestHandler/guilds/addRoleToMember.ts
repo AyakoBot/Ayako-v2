@@ -13,7 +13,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated member object if successful,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, userId: string, roleId: string, reason?: string) =>
+export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .addRoleToMember(guild.id, userId, roleId, { reason })
   .catch((e) => {

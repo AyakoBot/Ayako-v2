@@ -17,7 +17,7 @@ interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJS
  * @param body - The options for the new forum thread.
  * @returns A promise that resolves with the newly created forum thread channel.
  */
-export default (channel: Discord.ForumChannel, body: StartForumThreadOptions) =>
+export default async (channel: Discord.ForumChannel, body: StartForumThreadOptions) =>
  (cache.apis.get(channel.guild.id) ?? API).channels
   .createForumThread(channel.id, body)
   .then((t) => Classes.Channel(channel.client, t, channel.guild))

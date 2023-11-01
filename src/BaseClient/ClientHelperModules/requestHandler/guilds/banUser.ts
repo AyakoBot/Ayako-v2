@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @param reason Reason for banning the user.
  * @returns A promise that resolves with the DiscordAPIError if the request fails, otherwise void.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  userId: string,
  body?: Discord.RESTPutAPIGuildBanJSONBody,

@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason - The reason for creating the invite.
  * @returns A promise that resolves with the created invite or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  channel: Discord.GuildBasedChannel,
  body: Discord.RESTPostAPIChannelInviteJSONBody,
  reason?: string,

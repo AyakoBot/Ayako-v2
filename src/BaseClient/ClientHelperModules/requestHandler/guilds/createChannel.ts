@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason The reason for creating the channel.
  * @returns A promise that resolves with the created channel or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIGuildChannelJSONBody,
  reason?: string,

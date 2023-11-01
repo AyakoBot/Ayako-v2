@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param channel - The guild text-based channel to retrieve pinned messages from.
  * @returns A promise that resolves with an array of parsed messages.
  */
-export default (channel: Discord.GuildTextBasedChannel) =>
+export default async (channel: Discord.GuildTextBasedChannel) =>
  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
   .getPins(channel.id)
   .then((msgs) => {

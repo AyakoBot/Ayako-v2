@@ -13,7 +13,7 @@ import cache from '../../cache.js';
  * @param query - Optional query parameters.
  * @returns A promise that resolves with the deleted message or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  token: string,

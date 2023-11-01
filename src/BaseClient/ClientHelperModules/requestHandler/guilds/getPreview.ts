@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to get the preview for.
  * @returns A promise that resolves with the guild preview.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getPreview(guild.id)
   .then((p) => new Classes.GuildPreview(guild.client, p))

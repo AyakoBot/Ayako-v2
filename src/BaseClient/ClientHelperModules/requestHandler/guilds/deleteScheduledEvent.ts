@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param reason - The reason for deleting the scheduled event.
  * @returns A promise that resolves with the deleted event, or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, eventId: string, reason?: string) =>
+export default async (guild: Discord.Guild, eventId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .deleteScheduledEvent(guild.id, eventId, { reason })
   .catch((e) => {

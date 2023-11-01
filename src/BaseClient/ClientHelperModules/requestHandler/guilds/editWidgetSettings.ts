@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param reason The reason for editing the widget settings.
  * @returns A promise that resolves to an object containing the new widget settings.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Discord.RESTPatchAPIGuildWidgetSettingsJSONBody,
  reason?: string,

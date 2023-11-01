@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the created DM channel,
  * or rejects with a DiscordAPIError if the DM creation fails.
  */
-export default (guild: Discord.Guild, userId: string) =>
+export default async (guild: Discord.Guild, userId: string) =>
  (cache.apis.get(guild.id) ?? API).users
   .createDM(userId)
   .then((c) => Classes.Channel<1>(guild.client, c, guild))

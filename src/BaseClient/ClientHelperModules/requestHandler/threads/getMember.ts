@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param userId - The ID of the user to get the member object for.
  * @returns A promise that resolves to the thread member object for the given user ID.
  */
-export default (thread: Discord.ThreadChannel, userId: string) =>
+export default async (thread: Discord.ThreadChannel, userId: string) =>
  thread.members.cache.get(userId) ??
  (cache.apis.get(thread.guild.id) ?? API).threads
   .getMember(thread.id, userId)

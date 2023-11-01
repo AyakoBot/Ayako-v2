@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - The query parameters for the request.
  * @returns A promise that resolves with an array of parsed thread channels.
  */
-export default (
+export default async (
  channel: Discord.NewsChannel | Discord.TextChannel | Discord.ForumChannel,
  query: Discord.RESTGetAPIChannelThreadsArchivedQuery,
 ) =>

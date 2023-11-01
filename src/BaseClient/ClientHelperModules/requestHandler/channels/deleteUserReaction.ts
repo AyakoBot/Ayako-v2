@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param emoji The emoji to be deleted.
  * @returns A promise that resolves with the deleted reaction, or rejects with an error.
  */
-export default (message: Discord.Message<true>, userId: string, emoji: string) => {
+export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(

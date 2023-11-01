@@ -9,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param userId - The ID of the user to retrieve.
  * @returns A Promise that resolves to the user object.
  */
-export default (guild: Discord.Guild, userId: string) =>
+export default async (guild: Discord.Guild, userId: string) =>
  guild.client.users.cache.get(userId) ??
  (cache.apis.get(guild.id) ?? API).users
   .get(userId)

@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild The guild to retrieve the stickers for.
  * @returns A Promise that resolves with an array of parsed Sticker objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getStickers(guild.id)
   .then((stickers) => {

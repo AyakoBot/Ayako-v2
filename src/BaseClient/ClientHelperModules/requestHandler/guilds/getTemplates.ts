@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve templates for.
  * @returns A promise that resolves with an array of GuildTemplate objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getTemplates(guild.id)
   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))

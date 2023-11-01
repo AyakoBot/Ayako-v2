@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param emojiId - The ID of the emoji to retrieve.
  * @returns A Promise that resolves with the retrieved emoji, or rejects with an error.
  */
-export default (guild: Discord.Guild, emojiId: string) =>
+export default async (guild: Discord.Guild, emojiId: string) =>
  guild.emojis.cache.get(emojiId) ??
  (cache.apis.get(guild.id) ?? API).guilds
   .getEmoji(guild.id, emojiId)

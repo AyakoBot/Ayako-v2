@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the edited guild if successful,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, level: Discord.GuildMFALevel, reason?: string) =>
+export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds.editMFALevel(guild.id, level, { reason }).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

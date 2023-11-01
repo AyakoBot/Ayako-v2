@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the new message object if successful,
  * or rejects with an error.
  */
-export default (message: Discord.Message<true>) =>
+export default async (message: Discord.Message<true>) =>
  (cache.apis.get(message.guild.id) ?? API).channels
   .crosspostMessage(message.channelId, message.id)
   .then((m) => new Classes.Message(message.client, m))

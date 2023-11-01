@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of ThreadMember objects
  * representing the members of the thread.
  */
-export default (thread: Discord.ThreadChannel) =>
+export default async (thread: Discord.ThreadChannel) =>
  (cache.apis.get(thread.guild.id) ?? API).threads
   .getAllMembers(thread.id)
   .then((members) => {

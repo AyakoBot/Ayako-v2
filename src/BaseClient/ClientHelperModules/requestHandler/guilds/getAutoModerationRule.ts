@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param ruleId - The ID of the rule to retrieve.
  * @returns A promise that resolves with the retrieved auto moderation rule.
  */
-export default (guild: Discord.Guild, ruleId: string) =>
+export default async (guild: Discord.Guild, ruleId: string) =>
  guild.autoModerationRules.cache.get(ruleId) ??
  (cache.apis.get(guild.id) ?? API).guilds
   .getAutoModerationRule(guild.id, ruleId)

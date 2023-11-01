@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param channel The stage channel to retrieve the stage instance for.
  * @returns A promise that resolves with the stage instance, or rejects with an error.
  */
-export default (channel: Discord.StageChannel) =>
+export default async (channel: Discord.StageChannel) =>
  channel.guild.stageInstances.cache.find((s) => s.channelId === channel.id) ??
  (cache.apis.get(channel.guild.id) ?? API).stageInstances
   .get(channel.id)

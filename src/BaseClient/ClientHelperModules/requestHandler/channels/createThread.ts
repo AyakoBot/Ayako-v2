@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param messageId - The ID of the message to create the thread from.
  * @returns A promise that resolves with the created thread or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  channel: Discord.GuildTextBasedChannel,
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
  messageId?: string,

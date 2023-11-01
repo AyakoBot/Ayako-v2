@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with a new instance of the ClientUser class
  * representing the current user, or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).users
   .getCurrent()
   .then((u) => new Classes.ClientUser(guild.client, u))

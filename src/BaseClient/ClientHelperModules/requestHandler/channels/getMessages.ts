@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - The query parameters to include in the request.
  * @returns A promise that resolves with an array of parsed messages.
  */
-export default (
+export default async (
  channel: Discord.GuildTextBasedChannel,
  query?: Discord.RESTGetAPIChannelMessagesQuery,
 ) =>

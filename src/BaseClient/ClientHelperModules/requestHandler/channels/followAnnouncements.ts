@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * and the ID of the created webhook,
  * or rejects with a DiscordAPIError.
  */
-export default (channel: Discord.GuildTextBasedChannel, followedChannelId: string) =>
+export default async (channel: Discord.GuildTextBasedChannel, followedChannelId: string) =>
  (cache.apis.get(channel.guild.id) ?? API).channels
   .followAnnouncements(channel.id, followedChannelId)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))

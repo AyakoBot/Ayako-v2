@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to fetch the emojis for.
  * @returns A promise that resolves with an array of GuildEmoji objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getEmojis(guild.id)
   .then((emojis) => {

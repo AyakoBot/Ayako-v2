@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param body The body of the webhook to execute.
  * @returns A Promise that resolves with a new Message object.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  token: string,

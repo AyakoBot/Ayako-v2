@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted permission overwrite,
  * or rejects with a DiscordAPIError.
  */
-export default (channel: Discord.GuildBasedChannel, overwriteId: string, reason?: string) =>
+export default async (channel: Discord.GuildBasedChannel, overwriteId: string, reason?: string) =>
  (cache.apis.get(channel.guild.id) ?? API).channels
   .deletePermissionOverwrite(channel.id, overwriteId, { reason })
   .catch((e) => {

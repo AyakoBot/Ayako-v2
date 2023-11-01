@@ -13,7 +13,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated voice state of the user,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  userId: string,
  body: Discord.RESTPatchAPIGuildVoiceStateUserJSONBody,

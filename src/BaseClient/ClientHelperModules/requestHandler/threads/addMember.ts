@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param userId - The ID of the user to add to the thread.
  * @returns A promise that resolves with the added member or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, threadId: string, userId: string) =>
+export default async (guild: Discord.Guild, threadId: string, userId: string) =>
  (cache.apis.get(guild.id) ?? API).threads.addMember(threadId, userId).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

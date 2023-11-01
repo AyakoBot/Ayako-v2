@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated role connection information,
  * or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  applicationId: string,
  body: Discord.RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,

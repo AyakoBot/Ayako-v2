@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param body The JSON body of the request.
  * @returns A promise that resolves with the newly created guild or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONBody) =>
+export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONBody) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .create(body)
   .then((g) => new Classes.Guild(guild.client, g))

@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted sticker object if successful,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, stickerId: string, reason?: string) =>
+export default async (guild: Discord.Guild, stickerId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .deleteSticker(guild.id, stickerId, { reason })
   .catch((e) => {

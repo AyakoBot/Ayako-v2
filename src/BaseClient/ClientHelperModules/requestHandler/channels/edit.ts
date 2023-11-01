@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param body - The new channel data.
  * @returns A promise that resolves with the updated channel, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
 ) =>

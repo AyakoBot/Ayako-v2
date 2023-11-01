@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild The guild to retrieve invites for.
  * @returns A promise that resolves with an array of parsed invite objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getInvites(guild.id)
   .then((invites) => {

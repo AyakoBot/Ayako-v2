@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the number of members that
  * would be removed in the prune operation.
  */
-export default (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPruneCountQuery) =>
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPruneCountQuery) =>
  (cache.apis.get(guild.id) ?? API).guilds.getPruneCount(guild.id, query).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

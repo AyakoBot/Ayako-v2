@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param reason - The reason for unbanning the user (optional).
  * @returns A promise that resolves with the DiscordAPIError if an error occurs, otherwise void.
  */
-export default (guild: Discord.Guild, userId: string, reason?: string) =>
+export default async (guild: Discord.Guild, userId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds.unbanUser(guild.id, userId, { reason }).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

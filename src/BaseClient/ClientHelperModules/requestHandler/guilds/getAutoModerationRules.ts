@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve the auto moderation rules for.
  * @returns A promise that resolves with an array of parsed auto moderation rules.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getAutoModerationRules(guild.id)
   .then((rules) => {

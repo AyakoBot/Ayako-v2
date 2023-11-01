@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason The reason for editing the sticker.
  * @returns A promise that resolves with the edited sticker, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  stickerId: string,
  body: Discord.RESTPatchAPIGuildStickerJSONBody,

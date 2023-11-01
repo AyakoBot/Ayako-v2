@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated guild channel positions,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Discord.RESTPatchAPIGuildChannelPositionsJSONBody,
  reason?: string,

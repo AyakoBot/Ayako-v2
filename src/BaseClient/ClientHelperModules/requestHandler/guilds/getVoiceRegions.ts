@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve the voice regions for.
  * @returns A promise that resolves with an array of voice regions for the guild.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getVoiceRegions(guild.id)
   .then((voiceRegions) => voiceRegions.map((vR) => new Classes.VoiceRegion(vR)))

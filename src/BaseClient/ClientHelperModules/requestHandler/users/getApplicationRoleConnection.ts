@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves to the application role connection,
  * or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, applicationId: string) =>
+export default async (guild: Discord.Guild, applicationId: string) =>
  (cache.apis.get(guild.id) ?? API).users.getApplicationRoleConnection(applicationId).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

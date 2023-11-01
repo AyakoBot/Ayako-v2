@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted template,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, templateCode: string) =>
+export default async (guild: Discord.Guild, templateCode: string) =>
  (cache.apis.get(guild.id) ?? API).guilds.deleteTemplate(guild.id, templateCode).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

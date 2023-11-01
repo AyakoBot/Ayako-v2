@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the removed member's ID if successful,
  * or rejects with a DiscordAPIError if unsuccessful.
  */
-export default (guild: Discord.Guild, threadId: string, userId: string) =>
+export default async (guild: Discord.Guild, threadId: string, userId: string) =>
  (cache.apis.get(guild.id) ?? API).threads.removeMember(threadId, userId).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

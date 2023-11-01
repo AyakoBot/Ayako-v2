@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted stage instance,
  * or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, channelId: string, reason?: string) =>
+export default async (guild: Discord.Guild, channelId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).stageInstances.delete(channelId, { reason }).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

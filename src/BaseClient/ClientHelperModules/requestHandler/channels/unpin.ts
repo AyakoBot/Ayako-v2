@@ -9,7 +9,7 @@ import cache from '../../cache.js';
  * @param message The message to unpin.
  * @returns A promise that resolves with the unpinned message, or rejects with an error.
  */
-export default (message: Discord.Message<true>) =>
+export default async (message: Discord.Message<true>) =>
  (cache.apis.get(message.guild.id) ?? API).channels
   .unpinMessage(message.channelId, message.id)
   .catch((e) => {

@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted integration if successful,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, integrationId: string, reason?: string) =>
+export default async (guild: Discord.Guild, integrationId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .deleteIntegration(guild.id, integrationId, { reason })
   .catch((e) => {

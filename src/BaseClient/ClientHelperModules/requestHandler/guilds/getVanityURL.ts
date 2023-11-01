@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves with the parsed invite object,
  * or rejects with a DiscordAPIError if the vanity URL is missing or inaccessible.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getVanityURL(guild.id)
   .then(async (v) => {

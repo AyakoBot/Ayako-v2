@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with a new instance of the `Webhook` class,
  * or rejects with a `DiscordAPIError`.
  */
-export default (guild: Discord.Guild, webhookId: string, token?: string) =>
+export default async (guild: Discord.Guild, webhookId: string, token?: string) =>
  (cache.apis.get(guild.id) ?? API).webhooks
   .get(webhookId, { token })
   .then((w) => new Classes.Webhook(guild.client, w))

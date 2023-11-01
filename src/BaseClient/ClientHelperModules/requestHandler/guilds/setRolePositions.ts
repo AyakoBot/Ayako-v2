@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of Role objects representing the updated roles,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Discord.RESTPatchAPIGuildRolePositionsJSONBody,
  reason?: string,

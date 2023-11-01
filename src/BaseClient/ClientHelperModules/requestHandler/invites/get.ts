@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - Optional query parameters to include in the request.
  * @returns A Promise that resolves with the retrieved invite, or rejects with an error.
  */
-export default (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
+export default async (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
  guild.invites.cache.get(code) ??
  (cache.apis.get(guild.id) ?? API).invites
   .get(code, query)

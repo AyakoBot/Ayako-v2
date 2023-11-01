@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @param threadId - The ID of the thread to leave.
  * @returns A promise that resolves with the DiscordAPIError if an error occurs, otherwise void.
  */
-export default (guild: Discord.Guild, threadId: string) =>
+export default async (guild: Discord.Guild, threadId: string) =>
  (cache.apis.get(guild.id) ?? API).threads.leave(threadId).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

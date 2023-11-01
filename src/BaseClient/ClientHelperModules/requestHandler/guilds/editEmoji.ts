@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason The reason for editing the emoji.
  * @returns A promise that resolves with the edited guild emoji, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  emojiId: string,
  body: Discord.RESTPatchAPIGuildEmojiJSONBody,

@@ -13,7 +13,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated permission overwrite,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  channel: Discord.GuildBasedChannel,
  overwriteId: string,
  body: Discord.RESTPutAPIChannelPermissionJSONBody,

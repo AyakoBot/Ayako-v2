@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - An optional query to filter the results.
  * @returns A promise that resolves with an array of GuildBan objects.
  */
-export default (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) =>
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getMemberBans(guild.id, query)
   .then((bans) => {

@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve active threads for.
  * @returns A promise that resolves with an array of parsed thread channels.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getActiveThreads(guild.id)
   .then((threads) => {

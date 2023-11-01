@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param id The ID of the channel to retrieve.
  * @returns A Promise that resolves with the retrieved channel.
  */
-export default (guild: Discord.Guild, id: string) =>
+export default async (guild: Discord.Guild, id: string) =>
  guild.channels.cache.get(id) ??
  (guild ? cache.apis.get(guild.id) ?? API : API).channels
   .get(id)

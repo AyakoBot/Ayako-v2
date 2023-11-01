@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves with an array of objects containing the user
  * and member objects for each user in the scheduled event.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  eventId: string,
  query?: Discord.RESTGetAPIGuildScheduledEventUsersQuery,

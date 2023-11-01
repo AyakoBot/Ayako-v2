@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query Optional query parameters to filter the results.
  * @returns A promise that resolves with an array of users who reacted with the specified emoji.
  */
-export default (
+export default async (
  message: Discord.Message<true>,
  emoji: string,
  query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,

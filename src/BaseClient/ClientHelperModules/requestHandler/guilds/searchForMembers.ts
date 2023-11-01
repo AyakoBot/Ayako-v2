@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - The query to use for searching.
  * @returns A Promise that resolves to an array of GuildMember objects that match the search query.
  */
-export default (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
+export default async (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .searchForMembers(guild.id, query)
   .then((members) => {

@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param channel - The guild-based channel to retrieve invites for.
  * @returns A promise that resolves with an array of parsed invite objects.
  */
-export default (channel: Discord.GuildBasedChannel) =>
+export default async (channel: Discord.GuildBasedChannel) =>
  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
   .getInvites(channel.id)
   .then((invites) => {

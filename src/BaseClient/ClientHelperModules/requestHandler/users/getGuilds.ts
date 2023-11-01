@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the guilds for the current user,
  * or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, query?: Discord.RESTGetAPICurrentUserGuildsQuery) =>
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPICurrentUserGuildsQuery) =>
  (cache.apis.get(guild.id) ?? API).users.getGuilds(query).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

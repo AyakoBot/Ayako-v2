@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @param reason - The reason for deleting the emoji.
  * @returns A promise that resolves with the deleted emoji, or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, emojiId: string, reason?: string) =>
+export default async (guild: Discord.Guild, emojiId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds.deleteEmoji(guild.id, emojiId, { reason }).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

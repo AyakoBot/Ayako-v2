@@ -9,7 +9,7 @@ import cache from '../../cache.js';
  * @param message The message to be deleted.
  * @returns A promise that resolves with the deleted message, or rejects with a DiscordAPIError.
  */
-export default (message: Discord.Message<true>) =>
+export default async (message: Discord.Message<true>) =>
  (cache.apis.get(message.guild.id) ?? API).channels
   .deleteMessage(message.channelId, message.id)
   .catch((e) => {

@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param messageId - The ID of the message to retrieve.
  * @returns A Promise that resolves with the retrieved message or rejects with an error.
  */
-export default (channel: Discord.GuildTextBasedChannel, messageId: string) =>
+export default async (channel: Discord.GuildTextBasedChannel, messageId: string) =>
  channel.messages.cache.get(messageId) ??
  (cache.apis.get(channel.guild.id) ?? API).channels
   .getMessage(channel.id, messageId)

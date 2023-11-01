@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the edited guild template
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  templateCode: string,
  body: Discord.RESTPatchAPIGuildTemplateJSONBody,

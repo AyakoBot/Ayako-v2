@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild The guild to retrieve the webhooks for.
  * @returns A promise that resolves with an array of Webhook objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getWebhooks(guild.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))

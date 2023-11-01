@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the updated guild member
  * or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, data: Discord.RESTPatchAPIGuildMemberJSONBody) =>
+export default async (guild: Discord.Guild, data: Discord.RESTPatchAPIGuildMemberJSONBody) =>
  (cache.apis.get(guild.id) ?? API).users
   .editCurrentGuildMember(guild.id, data)
   .then((m) => new Classes.GuildMember(guild.client, m, guild))

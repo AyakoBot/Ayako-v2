@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve channels from.
  * @returns A Promise that resolves with an array of parsed Channel objects.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getChannels(guild.id)
   .then((channels) => {

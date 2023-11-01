@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - The query parameters for the API request.
  * @returns A promise that resolves with an array of GuildMember objects.
  */
-export default (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) =>
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getMembers(guild.id, query)
   .then((members) => {

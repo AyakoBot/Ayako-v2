@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param payload The message payload to send.
  * @returns A Promise that resolves with the sent message, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  message: Discord.Message<true>,
  payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
 ) =>

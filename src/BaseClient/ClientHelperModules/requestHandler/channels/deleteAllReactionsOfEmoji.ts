@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with a DiscordAPIError if the operation fails,
  * or void if it succeeds.
  */
-export default (message: Discord.Message<true>, emoji: string) => {
+export default async (message: Discord.Message<true>, emoji: string) => {
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(

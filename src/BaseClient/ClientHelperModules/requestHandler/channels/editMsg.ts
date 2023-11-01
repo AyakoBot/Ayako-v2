@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param payload - The new message content and options.
  * @returns A promise that resolves with the edited message, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  message: Discord.Message<true>,
  payload: CT.Argument<DiscordCore.ChannelsAPI['editMessage'], 2>,
 ) =>

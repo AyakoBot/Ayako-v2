@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - Optional query parameters for the request.
  * @returns A Promise that resolves with a Message object or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  token: string,

@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the updated auto-moderation rule,
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  ruleId: string,
  body: Discord.RESTPatchAPIAutoModerationRuleJSONBody,

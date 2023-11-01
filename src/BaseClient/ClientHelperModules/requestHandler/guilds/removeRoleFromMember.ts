@@ -12,7 +12,7 @@ import cache from '../../cache.js';
  * @param reason - The reason for removing the role (optional).
  * @returns A promise that resolves with the removed role or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, userId: string, roleId: string, reason?: string) =>
+export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .removeRoleFromMember(guild.id, userId, roleId, { reason })
   .catch((e) => {

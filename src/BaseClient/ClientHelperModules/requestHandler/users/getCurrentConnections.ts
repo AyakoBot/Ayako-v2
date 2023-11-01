@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @param guild - The guild to retrieve the connections for.
  * @returns A promise that resolves to an array of user connections or an error object.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).users.getConnections().catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

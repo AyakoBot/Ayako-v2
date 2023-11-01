@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves to a new Message object if the message was sent successfully,
  * or rejects with a DiscordAPIError if an error occurred.
  */
-export default (
+export default async (
  guild: Discord.Guild | undefined | null,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {

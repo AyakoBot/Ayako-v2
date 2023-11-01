@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves with a new WelcomeScreen instance if successful,
  * or rejects with a DiscordAPIError if unsuccessful.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getWelcomeScreen(guild.id)
   .then((w) => new Classes.WelcomeScreen(guild, w))

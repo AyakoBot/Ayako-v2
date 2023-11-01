@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason The reason for creating the sticker.
  * @returns A promise that resolves with the created sticker, or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Omit<Discord.RESTPostAPIGuildStickerFormDataBody, 'file'> & {
   file: Discord.RawFile;

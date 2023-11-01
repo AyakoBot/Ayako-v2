@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the GuildBan object for the user,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default (guild: Discord.Guild, userId: string) =>
+export default async (guild: Discord.Guild, userId: string) =>
  guild.bans.cache.get(userId) ??
  (cache.apis.get(guild.id) ?? API).guilds
   .getMemberBan(guild.id, userId)

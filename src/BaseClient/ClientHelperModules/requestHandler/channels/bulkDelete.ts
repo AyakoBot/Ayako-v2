@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @param messages - An array of message IDs to delete.
  * @returns A promise that resolves with the deleted messages or rejects with a DiscordAPIError.
  */
-export default (channel: Discord.GuildTextBasedChannel, messages: string[]) =>
+export default async (channel: Discord.GuildTextBasedChannel, messages: string[]) =>
  (cache.apis.get(channel.guild.id) ?? API).channels
   .bulkDeleteMessages(channel.id, messages)
   .catch((e) => {

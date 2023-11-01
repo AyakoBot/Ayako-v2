@@ -14,7 +14,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param body - The new message content and options.
  * @returns A Promise that resolves with the edited message or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  token: string,

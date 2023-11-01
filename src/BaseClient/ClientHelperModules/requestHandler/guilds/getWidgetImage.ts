@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @param style - The style of the widget image.
  * @returns A Promise that resolves with the widget image, or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, style?: Discord.GuildWidgetStyle) =>
+export default async (guild: Discord.Guild, style?: Discord.GuildWidgetStyle) =>
  (cache.apis.get(guild.id) ?? API).guilds.getWidgetImage(guild.id, style).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;

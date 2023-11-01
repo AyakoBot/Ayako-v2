@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve onboarding data for.
  * @returns A promise that resolves with a new instance of the GuildOnboarding class.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getOnboarding(guild.id)
   .then((o) => new Classes.GuildOnboarding(guild.client, o))

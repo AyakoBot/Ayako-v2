@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @param message - The message to be pinned.
  * @returns A promise that resolves with the pinned message, or rejects with a DiscordAPIError.
  */
-export default (channel: Discord.GuildTextBasedChannel, message: Discord.Message<true>) =>
+export default async (channel: Discord.GuildTextBasedChannel, message: Discord.Message<true>) =>
  (cache.apis.get(channel.guild.id) ?? API).channels
   .pinMessage(channel.id, message.id)
   .catch((e) => {

@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve scheduled events for.
  * @returns A promise that resolves with an array of parsed scheduled events.
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getScheduledEvents(guild.id)
   .then((events) => {

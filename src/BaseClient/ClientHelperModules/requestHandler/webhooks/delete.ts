@@ -14,7 +14,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted webhook if successful,
  * or rejects with a DiscordAPIError if unsuccessful.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  data?: { token?: string; reason?: string },

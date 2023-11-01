@@ -13,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the created stage instance
  * or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  channel: Discord.StageChannel,
  body: Discord.RESTPostAPIStageInstanceJSONBody,
  reason?: string,

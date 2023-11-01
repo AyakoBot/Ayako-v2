@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @returns A promise that resolves to an object containing the widget
  * settings (enabled and channelId).
  */
-export default (guild: Discord.Guild) =>
+export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).guilds
   .getWidgetSettings(guild.id)
   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))

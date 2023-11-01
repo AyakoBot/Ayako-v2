@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param reason The reason for creating the rule.
  * @returns A promise that resolves with the created auto-moderation rule.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIAutoModerationRuleJSONBody,
  reason?: string,

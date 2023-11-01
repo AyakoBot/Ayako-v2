@@ -14,7 +14,7 @@ import cache from '../../cache.js';
  * @returns A Promise that resolves with the result of the webhook execution,
  * or rejects with an error.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  webhookId: string,
  token: string,

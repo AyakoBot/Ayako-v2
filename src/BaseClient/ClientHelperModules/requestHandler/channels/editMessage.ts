@@ -15,7 +15,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param payload The new message content.
  * @returns A Promise that resolves with the edited message or rejects with a DiscordAPIError.
  */
-export default (
+export default async (
  guild: Discord.Guild,
  channelId: string,
  messageId: string,

@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * @param channelId - The ID of the channel to delete.
  * @returns A promise that resolves with the deleted channel, or rejects with a DiscordAPIError.
  */
-export default (guild: Discord.Guild, channelId: string) =>
+export default async (guild: Discord.Guild, channelId: string) =>
  (cache.apis.get(guild.id) ?? API).channels
   .delete(channelId)
   .then((c) => Classes.Channel(guild.client, c, guild))
