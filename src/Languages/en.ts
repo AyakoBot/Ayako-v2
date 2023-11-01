@@ -1451,12 +1451,14 @@ export default {
     )}\nof\n${getUser(target)}`,
   },
   leaderboard: {
-   name: `${name} Leveling`,
+   lleaderboard: `${name} Leveling Leaderboard`,
+   nleaderboard: `${name} Nitro Leaderboard`,
    level: 'Level',
    xp: 'XP',
    rank: 'Rank',
    yourPos: 'Your Position',
    notRanked: 'Not Ranked',
+   days: 'Days',
   },
   check: {
    name: `${name} Moderation-Management`,

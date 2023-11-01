@@ -9,32 +9,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
 
- const levels = await ch.DataBase.level.findMany({
+ const nitroUsers = await ch.DataBase.nitrousers.findMany({
   where: { guildid: cmd.guildId },
-  orderBy: { xp: 'desc' },
-  take: 30,
  });
 
- const self = await ch.DataBase.level.findUnique({
-  where: { userid_guildid_type: { userid: cmd.user.id, guildid: cmd.guildId, type: 'guild' } },
- });
+ const daysPerUser = getDaysPerUsers(nitroUsers).sort((a, b) => b.days - a.days);
+ const self = daysPerUser.find((d) => d.userId === cmd.user.id);
+ const position = self ? daysPerUser.findIndex((s) => s.userId === cmd.user.id) + 1 : 0;
+ const users = await Promise.all(daysPerUser.map((d) => ch.getUser(d.userId)));
 
- const higherXpCount = self
-  ? await ch.DataBase.level.count({
-     where: { xp: { gt: self.xp }, guildid: cmd.guildId },
-    })
-  : undefined;
-
- const position = higherXpCount ?? undefined;
- const users = await Promise.all(levels.map((l) => ch.getUser(l.userid)));
-
- const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
+ const { longestDays, longestUsername } = getLongest({ lan, language }, daysPerUser, users);
 
  const embed = await getEmbed(
   { lan, language },
-  Number(position),
-  { levels, longestLevel, level: Number(self?.level) },
-  { xp: Number(self?.xp), longestXP },
+  position,
+  { days: Number(self?.days), longestDays, daysPerUser },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
   cmd,
  );
@@ -42,16 +31,31 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  ch.replyCmd(cmd, { embeds: [embed] });
 };
 
+const getDaysPerUsers = (nitroUsers: Prisma.nitrousers[]) => {
+ const daysPerUser: { userId: string; days: number }[] = [];
+ nitroUsers.forEach((u) => {
+  const days = getDaysBetween2Days(Number(u.booststart), Number(u.boostend) || Date.now());
+  const user = daysPerUser.find((d) => d.userId === u.userid);
+
+  if (user) user.days += days;
+  else daysPerUser.push({ days, userId: u.userid });
+ });
+ return daysPerUser;
+};
+
+const getDaysBetween2Days = (date1: number, date2: number) => {
+ const diffTime = Math.abs(date2 - date1);
+ const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+ return diffDays;
+};
+
 const getLongest = (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
- levels: Prisma.level[],
+ daysPerUser: { days: number; userId: string }[],
  users: (Discord.User | undefined)[],
 ) => {
- let longestLevel = levels
-  .map((l) => String(l.level))
-  .reduce((a, b) => (a.length > b.length ? a : b)).length;
- let longestXP = levels
-  .map((l) => String(ch.splitByThousand(Number(l.xp))))
+ let longestDays = daysPerUser
+  .map((l) => String(l.days))
   .reduce((a, b) => (a.length > b.length ? a : b)).length;
  let longestUsername =
   users
@@ -64,23 +68,21 @@ const getLongest = (
    )
    .reduce((a, b) => (a.length > b.length ? a : b)).length + 1;
 
- if (longestLevel < lan.level.length) longestLevel = lan.level.length;
- if (longestXP < lan.xp.length) longestXP = lan.xp.length;
+ if (longestDays < lan.days.length) longestDays = lan.level.length;
  if (longestUsername < language.User.length) longestUsername = language.User.length;
 
- return { longestLevel, longestXP, longestUsername };
+ return { longestUsername, longestDays };
 };
 
 export const makeLine = (
  pos: number,
- { level, longestLevel }: { level: number; longestLevel: number },
- { xp, longestXP }: { xp: number; longestXP: number },
+ { days, longestDays }: { days: number; longestDays: number },
  { displayName, longestUsername }: { displayName: string; longestUsername: number },
 ) =>
  `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
-  String(level),
-  longestLevel,
- )} | ${ch.spaces(ch.splitByThousand(xp), longestXP)} | ${ch.spaces(
+  String(days),
+  longestDays,
+ )} | ${ch.spaces(
   displayName.replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '').replace(/\s+/g, ' ') ??
    '-',
   longestUsername,
@@ -89,13 +91,16 @@ export const makeLine = (
 const getEmbed = async (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
  position: number,
- { levels, longestLevel, level }: { levels: Prisma.level[]; level: number; longestLevel: number },
- { xp, longestXP }: { xp: number; longestXP: number },
+ {
+  days,
+  longestDays,
+  daysPerUser,
+ }: { days: number; longestDays: number; daysPerUser: { days: number; userId: string }[] },
  { displayNames, longestUsername }: { displayNames: string[]; longestUsername: number },
  cmd: Discord.ChatInputCommandInteraction<'cached'>,
 ): Promise<Discord.APIEmbed> => ({
  author: {
-  name: lan.lleaderboard,
+  name: lan.nleaderboard,
  },
  fields: [
   {
@@ -103,9 +108,8 @@ const getEmbed = async (
    value: position
     ? `${ch.util.makeInlineCode(
        makeLine(
-        position,
-        { level: Number(level), longestLevel },
-        { xp: Number(xp) ?? 0, longestXP },
+        position - 1,
+        { days, longestDays },
         { displayName: cmd.user.username, longestUsername },
        ),
       )}`
@@ -114,15 +118,14 @@ const getEmbed = async (
  ],
  color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
  description: `${ch.util.makeInlineCode(
-  `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
-   lan.xp,
-   longestXP,
-  )} | ${ch.spaces(language.User, longestUsername)}\n${levels
+  `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.days, longestDays)} |  ${ch.spaces(
+   language.User,
+   longestUsername,
+  )}\n${daysPerUser
    .map((l, i) =>
     makeLine(
      i,
-     { level: Number(l.level), longestLevel },
-     { xp: Number(l.xp), longestXP },
+     { days: l.days, longestDays },
      { displayName: displayNames[i] || '-', longestUsername },
     ),
    )
