@@ -4,8 +4,7 @@
  "scripts": {
   "start": "node --max-old-space-size=8192 ./dist/index.js",
   "build": "npx tsc",
-  "dev": "cd ./dist && node ./index.js --debug --warn",
-  "dev2": "npx nodemon ./src/index.ts --debug --warn"
+  "dev": "cd ./dist && node ./index.js --debug --warn"
  },
  "dependencies": {
   "@discordjs/core": "^1.0.1",
@@ -29,7 +28,6 @@
   "nekos-best.js": "^6.3.0",
   "node-fetch": "^3.3.2",
   "node-schedule": "^2.1.1",
-  "nodemon": "^3.0.1",
   "os": "^0.1.2",
   "prettier": "^3.0.3",
   "prisma-redis-middleware": "^4.8.0",
@@ -38,7 +36,6 @@
   "socket.io-client": "^4.7.2",
   "string-similarity": "^4.0.4",
   "topgg-autoposter": "^2.0.1",
-  "ts-node": "^10.9.1",
   "typescript": "^5.2.2",
   "undici": "^5.26.3",
   "valid-url": "^1.0.9",
