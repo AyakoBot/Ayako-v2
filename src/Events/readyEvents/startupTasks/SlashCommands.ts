@@ -27,6 +27,7 @@ import invites from './slashCommands/invites.js';
 import server from './slashCommands/server.js';
 import leaderboard from './slashCommands/leaderboard.js';
 import rank from './slashCommands/rank.js';
+import resetLevels from './slashCommands/reset-levels.js';
 
 export default {
  public: {
@@ -59,6 +60,7 @@ export default {
   invites,
   server,
   rank,
+  resetLevels,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -218,6 +220,9 @@ export default {
   rank_server: 'info',
   rank_nitro: 'info',
   rank_global: 'info',
+  'reset-levels_all': 'utility',
+  'reset-levels_role': 'utility',
+  'reset-levels_user': 'utility',
  },
  names: [
   'settings',
@@ -262,5 +267,7 @@ export default {
   'pardon',
   'edit',
   'leaderboard',
+  'rank',
+  'reset-levels',
  ],
 } as const;

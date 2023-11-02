@@ -1441,6 +1441,22 @@ export default {
   },
  },
  slashCommands: {
+  resetLevels: {
+   areYouSure: (t: string) =>
+    `Are you sure you want to reset all Levels?
+**This cannot be un-done!**
+__Notice__: This will not un-assign Level-Roles
+
+The Buttons will unlock ${t}`,
+   areYouSure2: 'Are you sure you want to reset all Levels?\n**This cannot be un-done!**',
+   confirmUser: (user: Discord.User) => `Confirm Reset of Levels of\n${getUser(user)}`,
+   confirmRole: (role: Discord.Role, amount: number) =>
+    `Confirm Reset of Levels of all ${ch.splitByThousand(amount)} Members in\n${getRole(role)}`,
+   all: 'All Levels have been reset',
+   user: (u: Discord.User) => `The Levels of\n${getUser(u)}have been reset`,
+   role: (r: Discord.Role, amount: number) =>
+    `The Levels of all ${ch.splitByThousand(amount)} Members in\n${getRole(r)}have been reset`,
+  },
   edit: {
    invalid: 'Invalid Punishment ID',
    success: 'Reason updated',
