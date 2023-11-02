@@ -1441,6 +1441,10 @@ export default {
   },
  },
  slashCommands: {
+  bypass: {
+   notEnabled: 'The Verification-System is not enabled',
+   success: 'Member succesfully bypassed',
+  },
   resetLevels: {
    areYouSure: (t: string) =>
     `Are you sure you want to reset all Levels?
@@ -3698,6 +3702,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   taken: (user: Discord.User, roles: string) => `<@${user.id}> has been taken\n${roles}\nfrom`,
  },
  autotypes: {
+  verification: `${name} Verification`,
   shop: `${name} Shop`,
   antispam: `${name} Anti-Spam`,
   antivirus: `${name} Anti-Virus`,

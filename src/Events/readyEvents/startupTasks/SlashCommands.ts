@@ -28,6 +28,7 @@ import server from './slashCommands/server.js';
 import leaderboard from './slashCommands/leaderboard.js';
 import rank from './slashCommands/rank.js';
 import resetLevels from './slashCommands/reset-levels.js';
+import bypass from './slashCommands/bypass.js';
 
 export default {
  public: {
@@ -61,6 +62,7 @@ export default {
   server,
   rank,
   resetLevels,
+  bypass,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -223,6 +225,7 @@ export default {
   'reset-levels_all': 'utility',
   'reset-levels_role': 'utility',
   'reset-levels_user': 'utility',
+  bypass: 'utility',
  },
  names: [
   'settings',
@@ -269,5 +272,6 @@ export default {
   'leaderboard',
   'rank',
   'reset-levels',
+  'bypass',
  ],
 } as const;

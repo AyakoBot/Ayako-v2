@@ -75,20 +75,19 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: '\u200b',
-    value: '\u200b',
-    inline: false,
-   },
-   {
     name: lan.fields.kicktof.name,
     value: embedParsers.boolean(settings?.kicktof, language),
     inline: false,
    },
-   {
-    name: lan.fields.kickafter.name,
-    value: embedParsers.time(Number(settings?.kickafter), language),
-    inline: false,
-   },
+   ...(settings?.kicktof
+    ? [
+       {
+        name: lan.fields.kickafter.name,
+        value: embedParsers.time(Number(settings?.kickafter), language),
+        inline: false,
+       },
+      ]
+    : []),
   ],
  },
 ];
@@ -130,7 +129,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'role',
    ),
    buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name, undefined),
-   buttonParsers.specific(language, settings?.kickafter, 'kickafter', name, undefined),
+   ...(settings?.kicktof
+    ? [buttonParsers.specific(language, settings?.kickafter, 'kickafter', name, undefined)]
+    : []),
   ],
  },
 ];
