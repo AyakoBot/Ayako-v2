@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 type ClearType =
  | 'all'
