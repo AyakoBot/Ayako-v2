@@ -1,15 +1,15 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.slashCommands.resetLevels;
- const user = cmd.options.getUser('user', true);
+ const role = cmd.options.getRole('role', true);
 
  await ch.replyCmd(cmd, {
-  content: lan.confirmUser(user),
+  content: lan.confirmRole(role, role.members.size),
   components: [
    {
     type: Discord.ComponentType.ActionRow,
@@ -17,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      {
       emoji: ch.emotes.tickWithBackground,
       style: Discord.ButtonStyle.Danger,
-      custom_id: `reset-levels/confirm_user_${user.id}`,
+      custom_id: `reset-levels/confirm_role_${role.id}`,
       type: Discord.ComponentType.Button,
      },
      {

@@ -13,13 +13,11 @@ import roles from './slashCommands/roles.js';
 import afk from './slashCommands/afk.js';
 import help from './slashCommands/help.js';
 import emoji from './slashCommands/emoji.js';
-import slowmode from './slashCommands/slowmode.js';
 import vote from './slashCommands/vote.js';
 import giveaway from './slashCommands/giveaway.js';
 import mod from './slashCommands/mod.js';
 import customRole from './slashCommands/custom-role.js';
 import selfroles from './slashCommands/self-roles.js';
-import clear from './slashCommands/clear.js';
 import reminder from './slashCommands/reminder.js';
 import suggest from './slashCommands/suggest.js';
 import shop from './slashCommands/shop.js';
@@ -27,7 +25,6 @@ import invites from './slashCommands/invites.js';
 import server from './slashCommands/server.js';
 import leaderboard from './slashCommands/leaderboard.js';
 import rank from './slashCommands/rank.js';
-import resetLevels from './slashCommands/reset-levels.js';
 import bypass from './slashCommands/bypass.js';
 
 export default {
@@ -48,20 +45,17 @@ export default {
   afk,
   help,
   emoji,
-  slowmode,
   vote,
   giveaway,
   mod,
   customRole,
   'self-roles': selfroles,
-  clear,
   reminder,
   suggest,
   shop,
   invites,
   server,
   rank,
-  resetLevels,
   bypass,
  },
  categories: {
@@ -74,6 +68,9 @@ export default {
   settings_moderation_expiry: 'moderation',
   settings_leveling_basic: 'leveling',
   'settings_leveling_multi-channels': 'leveling',
+  'settings_leveling_reset-all': 'utility',
+  'settings_leveling_reset-user': 'utility',
+  'settings_leveling_reset-role': 'utility',
   'settings_leveling_multi-roles': 'leveling',
   'settings_leveling_level-roles': 'leveling',
   'settings_leveling_rule-channels': 'leveling',
@@ -156,7 +153,6 @@ export default {
   emojis_delete: 'utility',
   emojis_edit_name: 'utility',
   emojis_edit_roles: 'utility',
-  slowmode: 'utility',
   user_info: 'info',
   user_avatar: 'utility',
   user_banner: 'utility',
@@ -189,26 +185,26 @@ export default {
   'mod_pardon_all-on': 'moderation',
   'custom-role': 'utility',
   'self-roles': 'roles',
-  clear_all: 'utility',
-  clear_user: 'utility',
-  clear_between: 'utility',
-  clear_match: 'utility',
-  'clear_not-match': 'utility',
-  'clear_starts-with': 'utility',
-  'clear_ends-with': 'utility',
-  clear_includes: 'utility',
-  clear_links: 'utility',
-  clear_invites: 'utility',
-  clear_images: 'utility',
-  clear_videos: 'utility',
-  clear_files: 'utility',
-  clear_audio: 'utility',
-  clear_mentions: 'utility',
-  clear_stickers: 'utility',
-  clear_embeds: 'utility',
-  clear_text: 'utility',
-  clear_humans: 'utility',
-  clear_bots: 'utility',
+  mod_clear_all: 'utility',
+  mod_clear_user: 'utility',
+  mod_clear_between: 'utility',
+  mod_clear_match: 'utility',
+  'mod_clear_not-match': 'utility',
+  'mod_clear_starts-with': 'utility',
+  'mod_clear_ends-with': 'utility',
+  mod_clear_includes: 'utility',
+  mod_clear_links: 'utility',
+  mod_clear_invites: 'utility',
+  mod_clear_images: 'utility',
+  mod_clear_videos: 'utility',
+  mod_clear_files: 'utility',
+  mod_clear_audio: 'utility',
+  mod_clear_mentions: 'utility',
+  mod_clear_stickers: 'utility',
+  mod_clear_embeds: 'utility',
+  mod_clear_text: 'utility',
+  mod_clear_humans: 'utility',
+  mod_clear_bots: 'utility',
   reminder_create: 'utility',
   reminder_list: 'utility',
   reminder_delete: 'utility',
@@ -222,9 +218,6 @@ export default {
   rank_server: 'info',
   rank_nitro: 'info',
   rank_global: 'info',
-  'reset-levels_all': 'utility',
-  'reset-levels_role': 'utility',
-  'reset-levels_user': 'utility',
   bypass: 'utility',
  },
  names: [
@@ -242,14 +235,12 @@ export default {
   'afk',
   'help',
   'emoji',
-  'slowmode',
   'user',
   'vote',
   'giveaway',
   'mod',
   'custom-role',
   'self-roles',
-  'clear',
   'reminder',
   'shop',
   'balance',
@@ -271,7 +262,6 @@ export default {
   'edit',
   'leaderboard',
   'rank',
-  'reset-levels',
   'bypass',
  ],
 } as const;

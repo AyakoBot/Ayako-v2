@@ -88,6 +88,33 @@ export default new Discord.SlashCommandBuilder()
      .setName('rule-channels')
      .setDescription('Apply conditional XP rewarded by Action in a Channel')
      .addStringOption(IDSelector),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('reset-all')
+     .setDescription('Reset all Levels of all Members'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('reset-user')
+     .setDescription('Reset Levels for a User')
+     .addUserOption(
+      new Discord.SlashCommandUserOption()
+       .setName('user')
+       .setDescription('The User to reset Levels on')
+       .setRequired(true),
+     ),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('reset-role')
+     .setDescription('Reset Levels for all Members of a Role')
+     .addRoleOption(
+      new Discord.SlashCommandRoleOption()
+       .setName('role')
+       .setDescription('The Role of Users to reset Levels on')
+       .setRequired(true),
+     ),
    ),
  )
  .addSubcommandGroup(
