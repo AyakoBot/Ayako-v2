@@ -26,7 +26,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  const oldWelcomeScreen = await ch.cache.welcomeScreens.get(guild);
  const newWelcomeScreen = await ch.request.guilds
   .getWelcomeScreen(guild)
-  .then((w) => ('message' in w ? undefined : w));
+  .then((w) => (!w || 'message' in w ? undefined : w));
  if (newWelcomeScreen) ch.cache.welcomeScreens.set(newWelcomeScreen);
 
  const files: Discord.AttachmentPayload[] = [];

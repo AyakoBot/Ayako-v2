@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+// eslint-disable-next-line import/no-cycle
 import error from '../../error.js';
 
 /**
@@ -39,6 +40,7 @@ const self: WelcomeScreens = {
   // eslint-disable-next-line import/no-cycle
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getWelcomeScreen(guild);
+  if (!fetched) return undefined;
   if ('message' in fetched) {
    error(guild, new Error(`Couldnt get Welcome Screen`));
    return undefined;
