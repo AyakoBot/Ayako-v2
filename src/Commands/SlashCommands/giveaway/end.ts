@@ -313,7 +313,7 @@ export const getMessage = async (giveaway: {
  if ('message' in msg) {
   ch.DataBase.giveaways
    .delete({
-    where: { ...giveaway },
+    where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
    })
    .then();
 
