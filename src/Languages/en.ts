@@ -1447,11 +1447,20 @@ export default {
    author: `${name} Leveling`,
    newLvl: 'New Level',
    newXP: 'New XP',
-   desc: (user: Discord.User) =>
+   excluded: 'Excluded Roles',
+   descUser: (user: Discord.User) =>
     `Editing Level of\n${getUser(
      user,
     )}Hitting the \`Save\` Button will overwrite and replace their current Levels`,
-   descFin: (user: Discord.User) => `Saved new Level for\n${getUser(user)}`,
+   descFinUser: (user: Discord.User) => `Saved new Level for\n${getUser(user)}`,
+   descRole: (role: Discord.Role) =>
+    `Editing Levels for all Members of\n${getRole(
+     role,
+    )}excluding Members who have any of the Roles listed below.\nHitting the \`Save\` Button will overwrite and replace their current Levels`,
+   descFinRole: (role: Discord.Role) =>
+    `Edited the Levels of all Members of\n${getRole(
+     role,
+    )}excluding Members who have any of the Roles listed below`,
    reset: 'Reset',
    save: 'Save and Apply',
    cancel: 'Cancel',
