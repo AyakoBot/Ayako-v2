@@ -1441,6 +1441,21 @@ export default {
   },
  },
  slashCommands: {
+  setLevel: {
+   min: 'Level and XP cannot go below 0',
+   maxZeros: "You can't add more than 10 Zeros",
+   author: `${name} Leveling`,
+   newLvl: 'New Level',
+   newXP: 'New XP',
+   desc: (user: Discord.User) =>
+    `Editing Level of\n${getUser(
+     user,
+    )}Hitting the \`Save\` Button will overwrite and replace their current Levels`,
+   descFin: (user: Discord.User) => `Saved new Level for\n${getUser(user)}`,
+   reset: 'Reset',
+   save: 'Save and Apply',
+   cancel: 'Cancel',
+  },
   bypass: {
    notEnabled: 'The Verification-System is not enabled',
    success: 'Member succesfully bypassed',

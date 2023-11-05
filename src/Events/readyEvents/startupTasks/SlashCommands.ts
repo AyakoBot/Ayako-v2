@@ -76,6 +76,8 @@ export default {
   'settings_leveling_multi-roles': 'leveling',
   'settings_leveling_level-roles': 'leveling',
   'settings_leveling_rule-channels': 'leveling',
+  'settings_leveling_set-level-role': 'utility',
+  'settings_leveling_set-level-user': 'utility',
   settings_nitro_basic: 'nitro',
   'settings_nitro_booster-roles': 'nitro',
   settings_vote_basic: 'vote',

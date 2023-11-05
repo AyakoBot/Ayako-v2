@@ -115,6 +115,28 @@ export default new Discord.SlashCommandBuilder()
        .setDescription('The Role of Users to reset Levels on')
        .setRequired(true),
      ),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('set-level-user')
+     .setDescription('Set Levels for a User')
+     .addUserOption(
+      new Discord.SlashCommandUserOption()
+       .setName('user')
+       .setDescription('The User to set Levels on')
+       .setRequired(true),
+     ),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('set-level-role')
+     .setDescription('Set Levels for all Members of a Role')
+     .addRoleOption(
+      new Discord.SlashCommandRoleOption()
+       .setName('role')
+       .setDescription('The Role of Users to set Levels on')
+       .setRequired(true),
+     ),
    ),
  )
  .addSubcommandGroup(
