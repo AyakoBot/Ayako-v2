@@ -109,19 +109,13 @@ export const getLevelComponents = (
   ] as const
  ).map((b) => ({ type: Discord.ComponentType.Button, style: Discord.ButtonStyle.Primary, ...b }));
 
-const getSaveAndCancel = (
+const getSave = (
  roleOrUserId: string,
  language: CT.Language,
  type: 'user' | 'role' = 'user',
 ): Discord.APIButtonComponent[] =>
  (
   [
-   {
-    label: language.slashCommands.setLevel.cancel,
-    custom_id: `set-level/${type}/cancel`,
-    style: Discord.ButtonStyle.Danger,
-    emoji: ch.emotes.crossWithBackground,
-   },
    {
     label: language.slashCommands.setLevel.save,
     custom_id: `set-level/${type}/save_${roleOrUserId}`,
@@ -140,7 +134,7 @@ export const getComponents = (
 ): Discord.APIButtonComponent[] => [
  ...getXPComponents(roleOrUserId, zerosXP, language, type),
  ...getLevelComponents(roleOrUserId, zerosLevel, language, type),
- ...getSaveAndCancel(roleOrUserId, language, type),
+ ...getSave(roleOrUserId, language, type),
 ];
 
 export const getEmbed = (
