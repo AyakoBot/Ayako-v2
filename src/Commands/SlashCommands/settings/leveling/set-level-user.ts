@@ -38,85 +38,93 @@ export default async (
 };
 
 export const getXPComponents = (
- userId: string,
+ roleOrUserId: string,
  zerosXP: number,
  language: CT.Language,
+ type: 'user' | 'role' = 'user',
 ): Discord.APIButtonComponent[] =>
  (
   [
    {
     label: '10',
-    custom_id: `set-level/user/zero_x_-_${userId}`,
+    custom_id: `set-level/${type}/zero_x_-_${roleOrUserId}`,
     disabled: zerosXP === 0,
     emoji: { name: '➗' },
    },
    {
     label: `-1${'0'.repeat(zerosXP)}`,
-    custom_id: `set-level/user/calc_x_-_${userId}`,
+    custom_id: `set-level/${type}/calc_x_-_${roleOrUserId}`,
    },
    {
-    label: language.slashCommands.setLevel.reset,
-    custom_id: `set-level/user/reset_${userId}_x`,
-    style: Discord.ButtonStyle.Danger,
+    label: language.slashCommands.leaderboard.xp,
+    custom_id: `xp`,
+    disabled: true,
+    style: Discord.ButtonStyle.Secondary,
    },
    {
     label: `+1${'0'.repeat(zerosXP)}`,
-    custom_id: `set-level/user/calc_x_+_${userId}`,
+    custom_id: `set-level/${type}/calc_x_+_${roleOrUserId}`,
    },
    {
     label: `10`,
-    custom_id: `set-level/user/zero_x_+_${userId}`,
+    custom_id: `set-level/${type}/zero_x_+_${roleOrUserId}`,
     emoji: { name: '✖️' },
    },
   ] as const
  ).map((b) => ({ type: Discord.ComponentType.Button, style: Discord.ButtonStyle.Primary, ...b }));
 
 export const getLevelComponents = (
- userId: string,
+ roleOrUserId: string,
  zerosLevel: number,
  language: CT.Language,
+ type: 'user' | 'role' = 'user',
 ): Discord.APIButtonComponent[] =>
  (
   [
    {
     label: '10',
-    custom_id: `set-level/user/zero_l_-_${userId}`,
+    custom_id: `set-level/${type}/zero_l_-_${roleOrUserId}`,
     disabled: zerosLevel === 0,
     emoji: { name: '➗' },
    },
    {
     label: `-1${'0'.repeat(zerosLevel)}`,
-    custom_id: `set-level/user/calc_l_-_${userId}`,
+    custom_id: `set-level/${type}/calc_l_-_${roleOrUserId}`,
    },
    {
-    label: language.slashCommands.setLevel.reset,
-    custom_id: `set-level/user/reset_${userId}_l`,
-    style: Discord.ButtonStyle.Danger,
+    label: language.slashCommands.leaderboard.level,
+    custom_id: `lvl`,
+    disabled: true,
+    style: Discord.ButtonStyle.Secondary,
    },
    {
     label: `+1${'0'.repeat(zerosLevel)}`,
-    custom_id: `set-level/user/calc_l_+_${userId}`,
+    custom_id: `set-level/${type}/calc_l_+_${roleOrUserId}`,
    },
    {
     label: `10`,
-    custom_id: `set-level/user/zero_l_+_${userId}`,
+    custom_id: `set-level/${type}/zero_l_+_${roleOrUserId}`,
     emoji: { name: '✖️' },
    },
   ] as const
  ).map((b) => ({ type: Discord.ComponentType.Button, style: Discord.ButtonStyle.Primary, ...b }));
 
-const getSaveAndCancel = (userId: string, language: CT.Language): Discord.APIButtonComponent[] =>
+const getSaveAndCancel = (
+ roleOrUserId: string,
+ language: CT.Language,
+ type: 'user' | 'role' = 'user',
+): Discord.APIButtonComponent[] =>
  (
   [
    {
     label: language.slashCommands.setLevel.cancel,
-    custom_id: 'set-level/user/cancel',
+    custom_id: `set-level/${type}/cancel`,
     style: Discord.ButtonStyle.Danger,
     emoji: ch.emotes.crossWithBackground,
    },
    {
     label: language.slashCommands.setLevel.save,
-    custom_id: `set-level/user/save_${userId}`,
+    custom_id: `set-level/${type}/save_${roleOrUserId}`,
     style: Discord.ButtonStyle.Success,
     emoji: ch.emotes.tickWithBackground,
    },
@@ -124,14 +132,15 @@ const getSaveAndCancel = (userId: string, language: CT.Language): Discord.APIBut
  ).map((b) => ({ type: Discord.ComponentType.Button, ...b }));
 
 export const getComponents = (
- userId: string,
+ roleOrUserId: string,
  zerosXP: number,
  zerosLevel: number,
  language: CT.Language,
+ type: 'user' | 'role' = 'user',
 ): Discord.APIButtonComponent[] => [
- ...getXPComponents(userId, zerosXP, language),
- ...getLevelComponents(userId, zerosLevel, language),
- ...getSaveAndCancel(userId, language),
+ ...getXPComponents(roleOrUserId, zerosXP, language, type),
+ ...getLevelComponents(roleOrUserId, zerosLevel, language, type),
+ ...getSaveAndCancel(roleOrUserId, language, type),
 ];
 
 export const getEmbed = (
@@ -143,7 +152,7 @@ export const getEmbed = (
  author: {
   name: language.slashCommands.setLevel.author,
  },
- description: language.slashCommands.setLevel.desc(user),
+ description: language.slashCommands.setLevel.descUser(user),
  color: ch.constants.colors.ephemeral,
  fields: [
   {

@@ -31,7 +31,7 @@ const getEmbed = (language: CT.Language, u: Discord.User, newXP: number, newLeve
  author: {
   name: language.slashCommands.setLevel.author,
  },
- description: language.slashCommands.setLevel.descFin(u),
+ description: language.slashCommands.setLevel.descFinUser(u),
  color: ch.constants.colors.ephemeral,
  fields: [
   {

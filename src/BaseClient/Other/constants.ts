@@ -58,7 +58,7 @@ export enum TableNamesPrismaTranslation {
 const colors = {
  danger: 16711680,
  success: 65280,
- ephemeral: 3092790,
+ ephemeral: 0x2b2d31,
  loading: 16776960,
  base: 11599616,
 };

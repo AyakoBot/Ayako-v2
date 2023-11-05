@@ -5,12 +5,16 @@ import {
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export default async (
+ cmd: Discord.ButtonInteraction,
+ args: string[],
+ cmdType: 'user' | 'role' = 'user',
+) => {
  if (!cmd.inCachedGuild()) return;
 
  const type = args.shift() as 'x' | 'l';
  const addOrRemove = args.shift() as '+' | '-';
- const userId = args.shift() as string;
+ const userOrRoleId = args.shift() as string;
 
  const component = cmd.message
   .components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[];
@@ -30,11 +34,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const components = ch.getChunks(
   [
-   ...getXPComponents(userId, type === 'x' ? newAmountOfZeros : amountOfZerosOnSecondary, language),
+   ...getXPComponents(
+    userOrRoleId,
+    type === 'x' ? newAmountOfZeros : amountOfZerosOnSecondary,
+    language,
+    cmdType,
+   ),
    ...getLevelComponents(
-    userId,
+    userOrRoleId,
     type === 'l' ? newAmountOfZeros : amountOfZerosOnSecondary,
     language,
+    cmdType,
    ),
   ],
   5,
@@ -54,6 +64,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     type: Discord.ComponentType.ActionRow,
     components: cmd.message.components[2].components.map((c) => c.data),
    },
+   ...(cmdType === 'role'
+    ? ([
+       {
+        type: Discord.ComponentType.ActionRow,
+        components: cmd.message.components[3].components.map((c) => c.data),
+       },
+      ] as const)
+    : []),
   ],
  });
 };
