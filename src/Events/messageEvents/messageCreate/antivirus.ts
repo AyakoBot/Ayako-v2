@@ -13,7 +13,6 @@ const cleanURL = (s: string) =>
 export default async (msg: Discord.Message<true>) => {
  if (!msg.content) return;
  if (msg.author.bot) return;
- if (msg.author.id !== '564052925828038658') return;
 
  const settings = await ch.DataBase.antivirus.findUnique({
   where: { guildid: msg.guildId, active: true },
@@ -21,6 +20,8 @@ export default async (msg: Discord.Message<true>) => {
  if (!settings) return;
 
  const url = await run(msg.content);
+ if (!url.url) return;
+
  const language = await ch.getLanguage(msg.guildId);
 
  if (settings.linklogging && settings.linklogchannels.length) {
@@ -113,8 +114,13 @@ const getTriggersAV = async (url: string) => {
  return false;
 };
 
-const checkIfExists = async (url: string) =>
- (await fetch(url.startsWith('http') ? url : `http://${url}`, { method: 'HEAD' })).ok;
+const checkIfExists = async (url: string) => {
+ try {
+  return (await fetch(url.startsWith('http') ? url : `http://${url}`, { method: 'HEAD' })).ok;
+ } catch {
+  return false;
+ }
+};
 
 // https://phish.sinking.yachts/
 const inSinkingYachts = (u: string) => ch.cache.sinkingYachts.cache.has(cleanURL(u));
