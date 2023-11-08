@@ -5,8 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 import { end, getGiveawayEmbed, getButton } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
+ if (!cmd.inCachedGuild()) return;
 
  const prizeDesc = cmd.options.getString('prize-description', true);
  const time = cmd.options.getString('time', true);

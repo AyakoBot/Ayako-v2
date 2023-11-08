@@ -7,8 +7,7 @@ export default async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
  page = 0,
 ) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
+ if (!cmd.inCachedGuild()) return;
 
  const giveaways = await ch.DataBase.giveaways.findMany({
   where: { guildid: cmd.guildId },

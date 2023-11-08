@@ -7,8 +7,7 @@ import { getGiveawayEmbed, end, getMessage } from './end.js';
 import { endTimeIsValid } from './create.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
+ if (!cmd.inCachedGuild()) return;
 
  const messageID = cmd.options.getString('message-id', true);
 

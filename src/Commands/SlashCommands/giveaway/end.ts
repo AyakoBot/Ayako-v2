@@ -6,8 +6,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
+ if (!cmd.inCachedGuild()) return;
 
  const messageID = cmd.options.getString('message-id', true);
  const language = await ch.getLanguage(cmd.guildId);
@@ -200,6 +199,13 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
       style: Discord.ButtonStyle.Link,
       label: language.slashCommands.giveaway.end.button,
       url: ch.constants.standard.msgurl(giveaway.guildid, giveaway.channelid, giveaway.msgid),
+     },
+     {
+      type: Discord.ComponentType.Button,
+      label: language.slashCommands.giveaway.end.reroll,
+      style: Discord.ButtonStyle.Danger,
+      emoji: ch.emotes.refresh,
+      custom_id: `giveaway/reroll_${giveaway.msgid}`,
      },
     ],
    },

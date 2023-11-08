@@ -3,8 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 import { getButton, getGiveawayEmbed } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
+ if (!cmd.inCachedGuild()) return;
 
  const messageID = cmd.options.getString('message-id', true);
 
