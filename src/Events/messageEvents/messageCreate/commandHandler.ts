@@ -4,6 +4,7 @@ import { glob } from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as CT from '../../../Typings/CustomTypings.js';
+// eslint-disable-next-line import/no-cycle
 import getLanguage from '../../../BaseClient/ClientHelperModules/getLanguage.js';
 import constants from '../../../BaseClient/Other/constants.js';
 import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';
@@ -72,7 +73,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   return;
  }
 
- const canRunCommand = await checkCommandPermissions(msg, commandName);
+ const canRunCommand = checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
   const m = await errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
@@ -152,7 +153,16 @@ const getComand = async (commandName: string) => {
  return (await import(path)) as CT.Command;
 };
 
-const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: string) => {
+export const checkCommandPermissions = (
+ msg: {
+  guildId: string;
+  guild: Discord.Guild;
+  author: Discord.User;
+  channelId: string;
+  member: Discord.GuildMember | null;
+ },
+ commandName: string,
+) => {
  const slashCommand =
   cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
@@ -161,7 +171,15 @@ const checkCommandPermissions = async (msg: Discord.Message<true>, commandName: 
  if (!slashCommand) return true;
 
  const commandPerms = cache.commandPermissions.cache.get(msg.guildId)?.get(slashCommand.id);
- if (!commandPerms?.length) return true;
+ if (
+  !commandPerms?.length &&
+  (!slashCommand.defaultMemberPermissions ||
+   msg.member?.permissions.has(slashCommand.defaultMemberPermissions.toArray()))
+ ) {
+  return true;
+ }
+
+ if (!commandPerms?.length) return false;
 
  const userPermission = commandPerms.find(
   (p) => p.type === Discord.ApplicationCommandPermissionType.User && p.id === msg.author.id,
