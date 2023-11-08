@@ -5,7 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
 import requestHandler from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
-import en from '../../../Languages/en.js';
+import Lang from '../../../BaseClient/ClientHelperModules/lang/lang.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 
 const name = 'basic';
@@ -254,7 +254,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     },
    );
 
-   const existingCommands = Object.values(en.slashCommands.moderation.permissions.buttons)
+   const language = new Lang('en');
+   await language.init();
+
+   const existingCommands = Object.values(language.slashCommands.moderation.permissions.buttons)
     .map((e) => guild.commands.cache.find((c) => c.name === e))
     .filter((c): c is Discord.ApplicationCommand => !!c)
     .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))

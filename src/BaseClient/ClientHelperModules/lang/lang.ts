@@ -1,253 +1,161 @@
+/* eslint-disable class-methods-use-this */
 import * as Discord from 'discord.js';
 import { Prisma } from '@prisma/client';
-import type CT from '../Typings/CustomTypings.js';
-import * as ch from '../BaseClient/ClientHelper.js';
-import client from '../BaseClient/Client.js';
+import type CT from '../../../Typings/CustomTypings.js';
+// eslint-disable-next-line import/no-cycle
+import * as ch from '../../ClientHelper.js';
+import client from '../../Client.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import packageJSON from '../../package.json' assert { type: 'json' };
+import packageJSON from '../../../../package.json' assert { type: 'json' };
+import enJSON from '../../../Languages/en.json' assert { type: 'json' };
+import stp from '../stp.js';
 
 type Strumber = string | number;
 
-const name = client.user?.username ?? 'Ayako';
+export default class Language {
+ botName = client.user?.username ?? 'Ayako';
+ CURRENT_LANGUAGE: string = 'en';
+ JSON: typeof enJSON = enJSON;
 
-const time = {
- milliseconds: 'Millisecond(s)',
- seconds: 'Second(s)',
- minutes: 'Minute(s)',
- hours: 'Hour(s)',
- days: 'Day(s)',
- weeks: 'Week(s)',
- months: 'Month(s)',
- years: 'Year(s)',
- timeAgo: (t: string) => `${t} ago`,
- timeIn: (t: string) => `in ${t}`,
-};
+ stp = stp;
 
-const linkedid = {
- name: 'Linked ID',
- desc: 'The linked Setting',
-};
+ unknown = 'unknown';
+ Unknown = 'Unknown';
+ None = 'None';
 
-const none = 'none';
-const None = 'None';
-const Unknown = 'Unknown';
-const unknown = 'unknown';
+ time = {
+  milliseconds: 'Millisecond(s)',
+  seconds: 'Second(s)',
+  minutes: 'Minute(s)',
+  hours: 'Hour(s)',
+  days: 'Day(s)',
+  weeks: 'Week(s)',
+  months: 'Month(s)',
+  years: 'Year(s)',
+  timeAgo: (t: string) => `${t} ago`,
+  timeIn: (t: string) => `in ${t}`,
+ };
 
-const multiplier = {
- name: 'XP Multiplier',
- desc: 'Multiplier to multiply the awarded XP per Message with',
-};
+ linkedid = {
+  name: 'Linked ID',
+  desc: 'The linked Setting',
+ };
 
-const holdhands = {
- self: "holds their own hand, try holding someone else's next time",
- others: 'holds hands with',
- request: 'wants to hold your hand!',
- buttons: ['Hold Hands~!'],
-};
+ multiplier = {
+  name: 'XP Multiplier',
+  desc: 'Multiplier to multiply the awarded XP per Message with',
+ };
 
-const punishmentDuration = {
- name: 'Duration',
- desc: 'The Duration of the Punishment',
-};
+ holdhands = {
+  self: "holds their own hand, try holding someone else's next time",
+  others: 'holds hands with',
+  request: 'wants to hold your hand!',
+  buttons: ['Hold Hands~!'],
+ };
 
-const punishmentAction = {
- name: 'Action',
- desc: 'The Action to take',
-};
+ punishmentDuration = {
+  name: 'Duration',
+  desc: 'The Duration of the Punishment',
+ };
 
-const punishmentDeleteMessageSeconds = {
- name: 'Delete Messages Time-Span',
- desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
-};
+ punishmentAction = {
+  name: 'Action',
+  desc: 'The Action to take',
+ };
 
-const getForumTag = (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
- `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
-  tag.moderated
-   ? ` / ${ch.constants.standard.getEmote(ch.emotes.userFlags.DiscordEmployee)} Managed`
-   : ''
- }`;
+ punishmentDeleteMessageSeconds = {
+  name: 'Delete Messages Time-Span',
+  desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+ };
 
-const getUser = (
- user: Discord.User | { bot: boolean; id: string; username: string; discriminator: string },
-) =>
- `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${
-  user ? ch.constants.standard.user(user) : Unknown
- }\` / \`${user?.id}\`\n`;
+ languageFunction = {
+  getForumTag: (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
+   `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
+    tag.moderated
+     ? ` / ${ch.constants.standard.getEmote(ch.emotes.userFlags.DiscordEmployee)} Managed`
+     : ''
+   }`,
+  getGuild: (guild: Discord.Guild | Discord.APIPartialGuild | Discord.InviteGuild) =>
+   `Server \`${guild.name}\` / \`${guild.id}\`${
+    'vanityURLCode' in guild && guild.vanityURLCode
+     ? ` / [Join](https://discord.gg/${guild.vanityURLCode})`
+     : ''
+   }\n`,
+  getChannel: (
+   channel:
+    | Discord.Channel
+    | Discord.GuildChannel
+    | Discord.ThreadChannel
+    | Discord.APIPartialChannel
+    | { id: string; name: string }
+    | undefined
+    | null,
+   type?: string,
+  ) =>
+   channel
+    ? `${type ?? 'Channel'} <#${channel.id}> / ${
+       'name' in channel
+        ? `\`${channel.name}\``
+        : `<@${'recipientId' in channel ? channel.recipientId : null}>`
+      } / \`${channel.id}\`\n`
+    : `Unknown Channel\n`,
+  getUser: (
+   user: Discord.User | { bot: boolean; id: string; username: string; discriminator: string },
+  ) =>
+   `${user?.bot ? 'Bot' : 'User'} <@${user?.id}> / \`${
+    user ? ch.constants.standard.user(user) : this.Unknown
+   }\` / \`${user?.id}\`\n`,
+  getAutoModerationRule: (rule: Discord.AutoModerationRule) =>
+   `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`,
+  getMessage: (msg: Discord.Message | Discord.MessageReference) =>
+   `[This Message](${ch.constants.standard.msgurl(
+    msg.guildId,
+    msg.channelId,
+    'id' in msg ? msg.id : msg.messageId ?? '',
+   )})\n`,
+  getEmote: (emoji: Discord.Emoji) =>
+   `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? this.None}\` / \`${
+    emoji.id ?? this.None
+   }\`\n`,
+  getInvite: (invite: Discord.Invite) =>
+   `Invite https://discord.gg/${invite.code} / \`${invite.code}\`\n`,
+  getInviteDetails: (invite: Discord.Invite, user?: Discord.User, channelType?: string) =>
+   `Code: \`${invite.code}\`\n${
+    user ? `Inviter: ${this.languageFunction.getUser(user)}` : ''
+   }Uses: ${invite.uses}\nCreated: ${
+    invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : 'unknown'
+   }\n${this.languageFunction.getChannel(invite.channel, channelType)}`,
+  getIntegration: (integration: Discord.Integration) =>
+   `Integration \`${integration.name}\` / \`${integration.id}\`\n`,
+  getRole: (role: Discord.Role | { id: string; name: string }) =>
+   `Role <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`,
+  getApplication: (application: Discord.Application | Discord.IntegrationApplication | bigint) =>
+   `Application ${
+    typeof application === 'bigint'
+     ? `<@${application}> / \`${application}\``
+     : `<@${application.id}> / \`${application.name}\` / \`${application.id}\`\n`
+   }`,
+  getScheduledEvent: (event: Discord.GuildScheduledEvent) =>
+   `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`,
+  getWebhook: (webhook: Discord.Webhook, type?: string) =>
+   `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\`\n`,
+  getCommand: (command: Discord.ApplicationCommand) =>
+   `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`,
+  getPunishment: (id: Prisma.Decimal) =>
+   `Punishment \`${Number(id).toString(
+    36,
+   )}\`\nUse </check:1098291480772235325> to look this Punishment up`,
+  getSticker: (sticker: Discord.Sticker) => `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`,
+  getStageInstance: (stageInstance: Discord.StageInstance) =>
+   `Stage Instance \`${stageInstance.topic}\` / \`${
+    stageInstance.id
+   }\`\nin\n${this.languageFunction.getChannel(stageInstance.channel)}`,
+  getAuditLog: (audit: Discord.GuildAuditLogsEntry) =>
+   `Audit-Log \`${this.auditLogAction[audit.action]}\` / \`${audit.id}\`\n`,
+ };
 
-const getAutoModerationRule = (rule: Discord.AutoModerationRule) =>
- `Auto-Moderation Rule \`${rule.name}\` / \`${rule.id}\`\n`;
-
-const getMessage = (msg: Discord.Message | Discord.MessageReference) =>
- `[This Message](${ch.constants.standard.msgurl(
-  msg.guildId,
-  msg.channelId,
-  'id' in msg ? msg.id : msg.messageId ?? '',
- )})\n`;
-
-const getChannel = (
- channel:
-  | Discord.Channel
-  | Discord.GuildChannel
-  | Discord.ThreadChannel
-  | Discord.APIPartialChannel
-  | { id: string; name: string }
-  | undefined
-  | null,
- type?: string,
-) =>
- channel
-  ? `${type ?? 'Channel'} <#${channel.id}> / ${
-     'name' in channel
-      ? `\`${channel.name}\``
-      : `<@${'recipientId' in channel ? channel.recipientId : null}>`
-    } / \`${channel.id}\`\n`
-  : `Unknown Channel\n`;
-
-const getEmote = (emoji: Discord.Emoji) =>
- `Emoji ${ch.constants.standard.getEmote(emoji)} / \`${emoji.name ?? None}\` / \`${
-  emoji.id ?? None
- }\`\n`;
-
-const getInviteDetails = (invite: Discord.Invite, user?: Discord.User, channelType?: string) =>
- `Code: \`${invite.code}\`\n${user ? `Inviter: ${getUser(user)}` : ''}Uses: ${
-  invite.uses
- }\nCreated: ${
-  invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : 'unknown'
- }\n${getChannel(invite.channel, channelType)}`;
-
-const getInvite = (invite: Discord.Invite) =>
- `Invite https://discord.gg/${invite.code} / \`${invite.code}\`\n`;
-
-const getIntegration = (integration: Discord.Integration) =>
- `Integration \`${integration.name}\` / \`${integration.id}\`\n`;
-
-const getRole = (role: Discord.Role | { id: string; name: string }) =>
- `Role <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`;
-
-const getApplication = (
- application: Discord.Application | Discord.IntegrationApplication | bigint,
-) =>
- `Application ${
-  typeof application === 'bigint'
-   ? `<@${application}> / \`${application}\``
-   : `<@${application.id}> / \`${application.name}\` / \`${application.id}\`\n`
- }`;
-
-const getScheduledEvent = (event: Discord.GuildScheduledEvent) =>
- `Scheduled Event \`${event.name}\` / \`${event.id}\`\n`;
-
-const getWebhook = (webhook: Discord.Webhook, type?: string) =>
- `${type ? `${type} ` : ''}Webhook \`${webhook.name}\` / \`${webhook.id}\`\n`;
-
-const getGuild = (guild: Discord.Guild | Discord.APIPartialGuild | Discord.InviteGuild) =>
- `Server \`${guild.name}\` / \`${guild.id}\`${
-  'vanityURLCode' in guild && guild.vanityURLCode
-   ? ` / [Join](https://discord.gg/${guild.vanityURLCode})`
-   : ''
- }\n`;
-
-const getCommand = (command: Discord.ApplicationCommand) =>
- `Command </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`;
-
-const getSticker = (sticker: Discord.Sticker) =>
- `Sticker \`${sticker.name}\` / \`${sticker.id}\`\n`;
-
-const getPunishment = (id: Prisma.Decimal) =>
- `Punishment \`${Number(id).toString(
-  36,
- )}\`\nUse </check:1098291480772235325> to look this Punishment up`;
-
-const getStageInstance = (stageInstance: Discord.StageInstance) =>
- `Stage Instance \`${stageInstance.topic}\` / \`${stageInstance.id}\`\nin\n${getChannel(
-  stageInstance.channel,
- )}`;
-
-const auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = {
- 1: 'Server Update',
- 10: 'Channel Create',
- 11: 'Channel Update',
- 12: 'Channel Delete',
- 13: 'Permission Overwrite Create',
- 14: 'Permission Overwrite Update',
- 15: 'Permission Overwrite Delete',
- 20: 'Member Kick',
- 21: 'Member Prune',
- 22: 'Member Ban Add',
- 23: 'Member Ban Remove',
- 24: 'Member Update',
- 25: 'Member Role Update',
- 26: 'Member Move',
- 27: 'Member Disconnect',
- 28: 'Bot Add',
- 30: 'Role Create',
- 31: 'Role Update',
- 32: 'Role Delete',
- 40: 'Invite Create',
- 41: 'Invite Update',
- 42: 'Invite Delete',
- 50: 'Webhook Create',
- 51: 'Webhook Update',
- 52: 'Webhook Delete',
- 60: 'Emoji Create',
- 61: 'Emoji Update',
- 62: 'Emoji Delete',
- 72: 'Message Delete',
- 73: 'Message Bulk Delete',
- 74: 'Message Pin',
- 75: 'Message Unpin',
- 80: 'Integration Create',
- 81: 'Integration Update',
- 82: 'Integration Delete',
- 83: 'Stage Instance Create',
- 84: 'Stage Instance Update',
- 85: 'Stage Instance Delete',
- 90: 'Sticker Create',
- 91: 'Sticker Update',
- 92: 'Sticker Delete',
- 100: 'Scheduled Event Create',
- 101: 'Scheduled Event Update',
- 102: 'Scheduled Event Delete',
- 110: 'Thread Create',
- 111: 'Thread Update',
- 112: 'Thread Delete',
- 121: 'Application Command Permission Update',
- 140: 'Auto Moderation Rule Create',
- 141: 'Auto Moderation Rule Update',
- 142: 'Auto Moderation Rule Delete',
- 143: 'Auto Moderation Block Message',
- 144: 'Auto Moderation Flag To Channel',
- 145: 'Auto Moderation User Communication Disabled',
- 150: 'Creator Monetization Request Created',
- 151: 'Creator Monetization Terms Accepted',
-};
-
-const getAuditLog = (audit: Discord.GuildAuditLogsEntry) =>
- `Audit-Log \`${auditLogAction[audit.action]}\` / \`${audit.id}\`\n`;
-
-export default {
- languageFunction: {
-  getForumTag,
-  getGuild,
-  getChannel,
-  getUser,
-  getAutoModerationRule,
-  getMessage,
-  getEmote,
-  getInvite,
-  getInviteDetails,
-  getIntegration,
-  getRole,
-  getApplication,
-  getScheduledEvent,
-  getWebhook,
-  getCommand,
-  getPunishment,
-  getSticker,
-  getStageInstance,
-  getAuditLog,
- },
- events: {
+ events = {
   logs: {
    addedRemoved: (added: string, removed: string) =>
     `__**Added**__\n${added}\n\n__**Removed**__\n${removed}`,
@@ -255,14 +163,23 @@ export default {
     `__**Before**__\n${before}\n\n__**Now**__\n${after}`,
    sticker: {
     descCreateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
-     `${getUser(user)}has created\n${getSticker(sticker)}`,
-    descCreate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was created`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getSticker(
+      sticker,
+     )}`,
+    descCreate: (sticker: Discord.Sticker) =>
+     `${this.languageFunction.getSticker(sticker)}was created`,
     descDeleteAudit: (sticker: Discord.Sticker, user: Discord.User) =>
-     `${getUser(user)}has deleted\n${getSticker(sticker)}`,
-    descDelete: (sticker: Discord.Sticker) => `${getSticker(sticker)}was deleted`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getSticker(
+      sticker,
+     )}`,
+    descDelete: (sticker: Discord.Sticker) =>
+     `${this.languageFunction.getSticker(sticker)}was deleted`,
     descUpdateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
-     `${getUser(user)}has updated\n${getSticker(sticker)}`,
-    descUpdate: (sticker: Discord.Sticker) => `${getSticker(sticker)}was updated`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getSticker(
+      sticker,
+     )}`,
+    descUpdate: (sticker: Discord.Sticker) =>
+     `${this.languageFunction.getSticker(sticker)}was updated`,
     nameCreate: 'Sticker created',
     nameDelete: 'Sticker deleted',
     nameUpdate: 'Sticker updated',
@@ -283,11 +200,17 @@ export default {
      user: Discord.User,
      command: Discord.ApplicationCommand,
     ) =>
-     `${getUser(user)}has updated Permissions of\n${getCommand(command)}from\n${getUser(
+     `${this.languageFunction.getUser(
+      user,
+     )}has updated Permissions of\n${this.languageFunction.getCommand(
+      command,
+     )}from\n${this.languageFunction.getUser(application)}`,
+    descUpdateAll: (application: Discord.User, user: Discord.User) =>
+     `${this.languageFunction.getUser(
+      user,
+     )}has updated Permissions of\nall Commands\nfrom\n${this.languageFunction.getUser(
       application,
      )}`,
-    descUpdateAll: (application: Discord.User, user: Discord.User) =>
-     `${getUser(user)}has updated Permissions of\nall Commands\nfrom\n${getUser(application)}`,
     permissionTypeName: 'Permission Type',
     allChannels: 'All Channels',
    },
@@ -303,12 +226,13 @@ export default {
       | Discord.VoiceBasedChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has left\n${getScheduledEvent(event)}planned in\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has left\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}planned in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descUserRemove: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
-     `${getUser(user)}has left\n${getScheduledEvent(event)}`,
+     `${this.languageFunction.getUser(user)}has left\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}`,
     descUserAddChannel: (
      user: Discord.User,
      event: Discord.GuildScheduledEvent,
@@ -320,12 +244,13 @@ export default {
       | Discord.VoiceBasedChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has joined\n${getScheduledEvent(event)}planned in\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has joined\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}planned in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descUserAdd: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
-     `${getUser(user)}has joined\n${getScheduledEvent(event)}`,
+     `${this.languageFunction.getUser(user)}has joined\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}`,
     descDeleteChannelAudit: (
      event: Discord.GuildScheduledEvent,
      user: Discord.User,
@@ -337,12 +262,13 @@ export default {
       | Discord.VoiceBasedChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has deleted\n${getScheduledEvent(event)}from\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}from\n${this.languageFunction.getChannel(channel, channelType)}`,
     descDeleteAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
-     `${getUser(user)}has deleted\n${getScheduledEvent(event)}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}`,
     descDeleteChannel: (
      event: Discord.GuildScheduledEvent,
      channel:
@@ -352,8 +278,12 @@ export default {
       | Discord.PublicThreadChannel<boolean>
       | Discord.VoiceBasedChannel,
      channelType: string,
-    ) => `${getScheduledEvent(event)}has deleted from\n${getChannel(channel, channelType)}`,
-    descDelete: (event: Discord.GuildScheduledEvent) => `${getScheduledEvent(event)}was deleted`,
+    ) =>
+     `${this.languageFunction.getScheduledEvent(
+      event,
+     )}has deleted from\n${this.languageFunction.getChannel(channel, channelType)}`,
+    descDelete: (event: Discord.GuildScheduledEvent) =>
+     `${this.languageFunction.getScheduledEvent(event)}was deleted`,
     descCreateChannelAudit: (
      event: Discord.GuildScheduledEvent,
      user: Discord.User,
@@ -365,12 +295,13 @@ export default {
       | Discord.VoiceBasedChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has created\n${getScheduledEvent(event)}from\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}from\n${this.languageFunction.getChannel(channel, channelType)}`,
     descCreateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
-     `${getUser(user)}has created\n${getScheduledEvent(event)}`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}`,
     descCreateChannel: (
      event: Discord.GuildScheduledEvent,
      channel:
@@ -380,8 +311,12 @@ export default {
       | Discord.PublicThreadChannel<boolean>
       | Discord.VoiceBasedChannel,
      channelType: string,
-    ) => `${getScheduledEvent(event)}has created from\n${getChannel(channel, channelType)}`,
-    descCreate: (event: Discord.GuildScheduledEvent) => `${getScheduledEvent(event)}was created`,
+    ) =>
+     `${this.languageFunction.getScheduledEvent(
+      event,
+     )}has created from\n${this.languageFunction.getChannel(channel, channelType)}`,
+    descCreate: (event: Discord.GuildScheduledEvent) =>
+     `${this.languageFunction.getScheduledEvent(event)}was created`,
     descUpdateChannelAudit: (
      event: Discord.GuildScheduledEvent,
      user: Discord.User,
@@ -393,12 +328,13 @@ export default {
       | Discord.VoiceBasedChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has updated\n${getScheduledEvent(event)}from\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}from\n${this.languageFunction.getChannel(channel, channelType)}`,
     descUpdateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
-     `${getUser(user)}has updated\n${getScheduledEvent(event)}`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getScheduledEvent(
+      event,
+     )}`,
     descUpdateChannel: (
      event: Discord.GuildScheduledEvent,
      channel:
@@ -408,8 +344,13 @@ export default {
       | Discord.PublicThreadChannel<boolean>
       | Discord.VoiceBasedChannel,
      channelType: string,
-    ) => `${getChannel(channel, channelType)} of \n${getScheduledEvent(event)}\nwas updated`,
-    descUpdate: (event: Discord.GuildScheduledEvent) => `${getScheduledEvent(event)}was updated`,
+    ) =>
+     `${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )} of \n${this.languageFunction.getScheduledEvent(event)}\nwas updated`,
+    descUpdate: (event: Discord.GuildScheduledEvent) =>
+     `${this.languageFunction.getScheduledEvent(event)}was updated`,
     nameUserRemove: 'Scheduled Event Member removed',
     nameUserAdd: 'Scheduled Event Member added',
     nameDelete: 'Scheduled Event deleted',
@@ -443,7 +384,10 @@ export default {
    },
    voiceState: {
     descCreate: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
-     `${getUser(user)}has joined\n${getChannel(channel, channelType)}`,
+     `${this.languageFunction.getUser(user)}has joined\n${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )}`,
     descUpdateChannel: (
      user: Discord.User,
      channel: Discord.GuildChannel,
@@ -451,14 +395,19 @@ export default {
      oldChannel: Discord.GuildChannel | undefined,
      oldChannelType: string | undefined,
     ) =>
-     `${getUser(user)}has switched from\n${getChannel(
+     `${this.languageFunction.getUser(user)}has switched from\n${this.languageFunction.getChannel(
       oldChannel,
       oldChannelType,
-     )}into\n${getChannel(channel, channelType)}`,
+     )}into\n${this.languageFunction.getChannel(channel, channelType)}`,
     descUpdate: (user: Discord.User, channel: Discord.VoiceBasedChannel, channelType: string) =>
-     `The Voice State of\n${getUser(user)}in\n${getChannel(channel, channelType)}was updated`,
+     `The Voice State of\n${this.languageFunction.getUser(
+      user,
+     )}in\n${this.languageFunction.getChannel(channel, channelType)}was updated`,
     descDelete: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
-     `${getUser(user)}has left\n${getChannel(channel, channelType)}`,
+     `${this.languageFunction.getUser(user)}has left\n${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )}`,
     nameUpdate: 'Voice State updated',
     LockedVoiceJoin: 'Locked Voice Channel joined',
     LockedVoiceLeave: 'Locked Voice Channel left',
@@ -485,16 +434,20 @@ export default {
      channel: Discord.GuildChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has created\n${getWebhook(webhook, webhookType)}in\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )}in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descCreate: (
      webhook: Discord.Webhook,
      webhookType: string,
      channel: Discord.GuildChannel,
      channelType: string,
-    ) => `${getWebhook(webhook, webhookType)}was created in\n${getChannel(channel, channelType)}`,
+    ) =>
+     `${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )}was created in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descDeleteAudit: (
      webhook: Discord.Webhook,
      webhookType: string,
@@ -502,16 +455,20 @@ export default {
      channel: Discord.GuildChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has deleted\n${getWebhook(webhook, webhookType)}in\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )}in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descDelete: (
      webhook: Discord.Webhook,
      webhookType: string,
      channel: Discord.GuildChannel,
      channelType: string,
-    ) => `${getWebhook(webhook, webhookType)}in\n${getChannel(channel, channelType)}was deleted`,
+    ) =>
+     `${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )}in\n${this.languageFunction.getChannel(channel, channelType)}was deleted`,
     descUpdateAudit: (
      webhook: Discord.Webhook,
      webhookType: string,
@@ -519,16 +476,20 @@ export default {
      channel: Discord.GuildChannel,
      channelType: string,
     ) =>
-     `${getUser(user)}has updated\n${getWebhook(webhook, webhookType)}in\n${getChannel(
-      channel,
-      channelType,
-     )}`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )}in\n${this.languageFunction.getChannel(channel, channelType)}`,
     descUpdate: (
      webhook: Discord.Webhook,
      webhookType: string,
      channel: Discord.GuildChannel,
      channelType: string,
-    ) => `${getWebhook(webhook, webhookType)} in\n${getChannel(channel, channelType)}updated`,
+    ) =>
+     `${this.languageFunction.getWebhook(
+      webhook,
+      webhookType,
+     )} in\n${this.languageFunction.getChannel(channel, channelType)}updated`,
     nameCreate: 'Webhook created',
     nameUpdate: 'Webhook updated',
     nameDelete: 'Webhook deleted',
@@ -544,14 +505,14 @@ export default {
    },
    role: {
     descCreateAudit: (user: Discord.User, role: Discord.Role) =>
-     `${getUser(user)}has created\n${getRole(role)}`,
-    descCreate: (role: Discord.Role) => `${getRole(role)}was created`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getRole(role)}`,
+    descCreate: (role: Discord.Role) => `${this.languageFunction.getRole(role)}was created`,
     descDeleteAudit: (user: Discord.User, role: Discord.Role) =>
-     `${getUser(user)}has deleted\n${getRole(role)}`,
-    descDelete: (role: Discord.Role) => `${getRole(role)}was deleted`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getRole(role)}`,
+    descDelete: (role: Discord.Role) => `${this.languageFunction.getRole(role)}was deleted`,
     descUpdateAudit: (role: Discord.Role, user: Discord.User) =>
-     `${getUser(user)}has updated\n${getRole(role)}`,
-    descUpdate: (role: Discord.Role) => `${getRole(role)}was updated`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getRole(role)}`,
+    descUpdate: (role: Discord.Role) => `${this.languageFunction.getRole(role)}was updated`,
     nameCreate: 'Role created',
     nameDelete: 'Role deleted',
     nameUpdate: 'Role updated',
@@ -569,14 +530,21 @@ export default {
    },
    reaction: {
     descAdded: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
-     `${getUser(user)}has reacted with\n${getEmote(emoji)}to\n${getMessage(msg)}`,
+     `${this.languageFunction.getUser(user)}has reacted with\n${this.languageFunction.getEmote(
+      emoji,
+     )}to\n${this.languageFunction.getMessage(msg)}`,
     descRemoved: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
-     `Reaction on\n${getMessage(msg)}with ${getEmote(emoji)}by ${getUser(
+     `Reaction on\n${this.languageFunction.getMessage(msg)}with ${this.languageFunction.getEmote(
+      emoji,
+     )}by ${this.languageFunction.getUser(
       user,
      )}was removed.\nEither by the Reactor themselves or by a Moderator`,
-    descRemovedAll: (msg: Discord.Message) => `All Reactions on\n${getMessage(msg)}were removed`,
+    descRemovedAll: (msg: Discord.Message) =>
+     `All Reactions on\n${this.languageFunction.getMessage(msg)}were removed`,
     descRemoveEmoji: (msg: Discord.Message, emoji: Discord.Emoji) =>
-     `Reaction with\n${getEmote(emoji)}was removed from\n${getMessage(msg)}`,
+     `Reaction with\n${this.languageFunction.getEmote(
+      emoji,
+     )}was removed from\n${this.languageFunction.getMessage(msg)}`,
     nameRemoveAll: 'All Reactions removed',
     nameAdd: 'Reaction added',
     nameRemove: 'Reaction removed',
@@ -588,21 +556,32 @@ export default {
     nameDelete: 'Message Deleted',
     nameUpdate: 'Message Updated',
     descDeleteAudit: (user: Discord.User, msg: Discord.Message) =>
-     `${getUser(user)}has deleted\n${getMessage(msg)}from\n${getUser(msg.author)}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getMessage(
+      msg,
+     )}from\n${this.languageFunction.getUser(msg.author)}`,
     descDelete: (msg: Discord.Message) =>
-     `${getMessage(msg)}from\n${getUser(msg.author)}was deleted`,
+     `${this.languageFunction.getMessage(msg)}from\n${this.languageFunction.getUser(
+      msg.author,
+     )}was deleted`,
     descDeleteBulkAudit: (
      user: Discord.User,
      size: number,
      channel: Discord.GuildTextBasedChannel,
-    ) => `${getUser(user)}has bulk deleted\n${size} Messages in\n${getChannel(channel)}`,
+    ) =>
+     `${this.languageFunction.getUser(
+      user,
+     )}has bulk deleted\n${size} Messages in\n${this.languageFunction.getChannel(channel)}`,
     descDeleteBulk: (size: number, channel: Discord.GuildTextBasedChannel) =>
-     `${size} Messages were deleted in\n${getChannel(channel)}`,
+     `${size} Messages were deleted in\n${this.languageFunction.getChannel(channel)}`,
     descUpdateMaybe: (msg: Discord.Message) =>
-     `${getMessage(msg)}may have been updated by\n${getUser(msg.author)}or by a Moderator`,
-    descUpdate: (msg: Discord.Message) => `${getMessage(msg)}was updated`,
+     `${this.languageFunction.getMessage(
+      msg,
+     )}may have been updated by\n${this.languageFunction.getUser(msg.author)}or by a Moderator`,
+    descUpdate: (msg: Discord.Message) => `${this.languageFunction.getMessage(msg)}was updated`,
     descUpdateAuthor: (msg: Discord.Message) =>
-     `${getMessage(msg)} was updated by\n${getUser(msg.author)}`,
+     `${this.languageFunction.getMessage(msg)} was updated by\n${this.languageFunction.getUser(
+      msg.author,
+     )}`,
     flags: {
      Crossposted: 'Published',
      IsCrosspost: 'Received from a News Channel',
@@ -686,11 +665,15 @@ export default {
    },
    invite: {
     descCreateAudit: (user: Discord.User, invite: Discord.Invite) =>
-     `${getUser(user)}has created\n${getInvite(invite)}`,
-    descCreate: (invite: Discord.Invite) => `${getInvite(invite)}was created`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getInvite(
+      invite,
+     )}`,
+    descCreate: (invite: Discord.Invite) => `${this.languageFunction.getInvite(invite)}was created`,
     descDeleteAudit: (user: Discord.User, invite: Discord.Invite) =>
-     `${getUser(user)}has deleted\n${getInvite(invite)}`,
-    descDelete: (invite: Discord.Invite) => `${getInvite(invite)}was deleted`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getInvite(
+      invite,
+     )}`,
+    descDelete: (invite: Discord.Invite) => `${this.languageFunction.getInvite(invite)}was deleted`,
     nameCreate: 'Invite created',
     nameDelete: 'Invite deleted',
     inviter: 'Inviter',
@@ -708,23 +691,31 @@ export default {
    },
    integration: {
     descCreateAudit: (integration: Discord.Integration, user: Discord.User) =>
-     `${getUser(user)}has created\n${getIntegration(integration)}`,
-    descCreate: (integration: Discord.Integration) => `${getIntegration(integration)}was created`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getIntegration(
+      integration,
+     )}`,
+    descCreate: (integration: Discord.Integration) =>
+     `${this.languageFunction.getIntegration(integration)}was created`,
     descDeleteIntegrationAudit: (
      user: Discord.User,
      integration: Discord.Integration,
      application: Discord.Application,
     ) =>
-     `${getUser(user)}has deleted\n${getIntegration(integration)}from${getApplication(
-      application,
-     )}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getIntegration(
+      integration,
+     )}from${this.languageFunction.getApplication(application)}`,
     descDeleteAudit: (user: Discord.User, integration: Discord.Integration) =>
-     `${getUser(user)}has deleted\n${getIntegration(integration)}`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getIntegration(
+      integration,
+     )}`,
     descDeleteIntegration: (integration: Discord.Integration) =>
-     `${getIntegration(integration)}was deleted`,
+     `${this.languageFunction.getIntegration(integration)}was deleted`,
     descUpdateAudit: (user: Discord.User, integration: Discord.Integration) =>
-     `${getUser(user)}has updated\n${getIntegration(integration)}`,
-    descUpdate: (integration: Discord.Integration) => `${getIntegration(integration)}was updated`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getIntegration(
+      integration,
+     )}`,
+    descUpdate: (integration: Discord.Integration) =>
+     `${this.languageFunction.getIntegration(integration)}was updated`,
     nameCreate: 'Integration created',
     nameDelete: 'Integration deleted',
     nameUpdate: 'Integration updated',
@@ -745,134 +736,150 @@ export default {
      `Account \`${account.name}\` / \`${account.id}\``,
    },
    guild: {
-    descBan: (user: Discord.User) => `${getUser(user)}was banned`,
+    descBan: (user: Discord.User) => `${this.languageFunction.getUser(user)}was banned`,
     descBanAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has banned\n${getUser(user)}`,
-    descUnban: (user: Discord.User) => `${getUser(user)} was un-banned`,
+     `${this.languageFunction.getUser(executor)}has banned\n${this.languageFunction.getUser(user)}`,
+    descUnban: (user: Discord.User) => `${this.languageFunction.getUser(user)} was un-banned`,
     descUnbanAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has un-banned\n${getUser(user)}`,
+     `${this.languageFunction.getUser(executor)}has un-banned\n${this.languageFunction.getUser(
+      user,
+     )}`,
     descEmojiCreateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
-     `${getUser(user)}has created\n${getEmote(emoji)}`,
-    descEmojiCreate: (emoji: Discord.Emoji) => `${getEmote(emoji)}was created`,
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getEmote(emoji)}`,
+    descEmojiCreate: (emoji: Discord.Emoji) =>
+     `${this.languageFunction.getEmote(emoji)}was created`,
     descEmojiDeleteAudit: (user: Discord.User, emoji: Discord.Emoji) =>
-     `${getUser(user)}has deleted\n${getEmote(emoji)}`,
-    descEmojiDelete: (emoji: Discord.Emoji) => `${getEmote(emoji)}was deleted`,
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getEmote(emoji)}`,
+    descEmojiDelete: (emoji: Discord.Emoji) =>
+     `${this.languageFunction.getEmote(emoji)}was deleted`,
     descEmojiUpdateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
-     `${getUser(user)}has updated\n${getEmote(emoji)}`,
-    descEmojiUpdate: (emoji: Discord.Emoji) => `${getEmote(emoji)}was updated`,
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getEmote(emoji)}`,
+    descEmojiUpdate: (emoji: Discord.Emoji) =>
+     `${this.languageFunction.getEmote(emoji)}was updated`,
     descJoinAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has added\n${getUser(user)}`,
-    descMemberJoin: (user: Discord.User) => `${getUser(user)}has joined`,
-    descBotJoin: (user: Discord.User) => `${getUser(user)}was added`,
-    descBotLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
+     `${this.languageFunction.getUser(executor)}has added\n${this.languageFunction.getUser(user)}`,
+    descMemberJoin: (user: Discord.User) => `${this.languageFunction.getUser(user)}has joined`,
+    descBotJoin: (user: Discord.User) => `${this.languageFunction.getUser(user)}was added`,
+    descBotLeave: (user: Discord.User) =>
+     `${this.languageFunction.getUser(user)}has left the Server`,
     descBotLeaveAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has kicked\n${getUser(user)}`,
-    descMemberLeave: (user: Discord.User) => `${getUser(user)}has left the Server`,
+     `${this.languageFunction.getUser(executor)}has kicked\n${this.languageFunction.getUser(user)}`,
+    descMemberLeave: (user: Discord.User) =>
+     `${this.languageFunction.getUser(user)}has left the Server`,
     descMemberLeaveAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has kicked\n${getUser(user)}`,
-    descBotUpdate: (user: Discord.User) => `${getUser(user)}was updated`,
+     `${this.languageFunction.getUser(executor)}has kicked\n${this.languageFunction.getUser(user)}`,
+    descBotUpdate: (user: Discord.User) => `${this.languageFunction.getUser(user)}was updated`,
     descBotUpdateAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has updated\n${getUser(user)}`,
-    descMemberUpdate: (user: Discord.User) => `${getUser(user)}was updated`,
+     `${this.languageFunction.getUser(executor)}has updated\n${this.languageFunction.getUser(
+      user,
+     )}`,
+    descMemberUpdate: (user: Discord.User) => `${this.languageFunction.getUser(user)}was updated`,
     descMemberUpdateAudit: (user: Discord.User, executor: Discord.User) =>
-     `${getUser(executor)}has updated\n${getUser(user)}`,
+     `${this.languageFunction.getUser(executor)}has updated\n${this.languageFunction.getUser(
+      user,
+     )}`,
     descGuildUpdate: () => `The Server was updated`,
-    descGuildUpdateAudit: (executor: Discord.User) => `${getUser(executor)}has updated the Server`,
+    descGuildUpdateAudit: (executor: Discord.User) =>
+     `${this.languageFunction.getUser(executor)}has updated the Server`,
     descAuditLogCreate: (audit: Discord.GuildAuditLogsEntry) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
      }`,
     descAuditLogCreateGuild: (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getGuild(guild)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getGuild(guild)}`,
     descAuditLogCreateChannel: (
      audit: Discord.GuildAuditLogsEntry,
      channel: Discord.GuildChannel,
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getChannel(channel)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getChannel(channel)}`,
     descAuditLogCreateUser: (audit: Discord.GuildAuditLogsEntry, user: Discord.User) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getUser(user)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getUser(user)}`,
     descAuditLogCreateRole: (
      audit: Discord.GuildAuditLogsEntry,
      role: Discord.Role | { id: string; name: string },
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getRole(role)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getRole(role)}`,
     descAuditLogCreateInvite: (audit: Discord.GuildAuditLogsEntry, invite: Discord.Invite) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getInvite(invite)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getInvite(invite)}`,
     descAuditLogCreateWebhook: (audit: Discord.GuildAuditLogsEntry, webhook: Discord.Webhook) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getWebhook(webhook)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getWebhook(webhook)}`,
     descAuditLogCreateEmoji: (audit: Discord.GuildAuditLogsEntry, emoji: Discord.Emoji) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getEmote(emoji)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getEmote(emoji)}`,
     descAuditLogCreateMessage: (audit: Discord.GuildAuditLogsEntry, message: Discord.Message) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getMessage(message)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getMessage(message)}`,
     descAuditLogCreateIntegration: (
      audit: Discord.GuildAuditLogsEntry,
      integration: Discord.Integration,
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getIntegration(integration)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getIntegration(integration)}`,
     descAuditLogCreateStageInstance: (
      audit: Discord.GuildAuditLogsEntry,
      stageInstance: Discord.StageInstance,
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getStageInstance(stageInstance)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getStageInstance(stageInstance)}`,
     descAuditLogCreateSticker: (audit: Discord.GuildAuditLogsEntry, sticker: Discord.Sticker) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getSticker(sticker)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getSticker(sticker)}`,
     descAuditLogCreateThread: (audit: Discord.GuildAuditLogsEntry, thread: Discord.ThreadChannel) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getChannel(thread)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getChannel(thread)}`,
     descAuditLogCreateGuildScheduledEvent: (
      audit: Discord.GuildAuditLogsEntry,
      scheduledEvent: Discord.GuildScheduledEvent,
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getScheduledEvent(scheduledEvent)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getScheduledEvent(scheduledEvent)}`,
     descAuditLogCreateApplicationCommand: (
      audit: Discord.GuildAuditLogsEntry,
      applicationCommand: Discord.ApplicationCommand,
     ) =>
-     `New ${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getCommand(applicationCommand)}`,
+     `New ${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getCommand(applicationCommand)}`,
     descAuditLogCreateAutoModerationRule: (
      audit: Discord.GuildAuditLogsEntry,
      autoModerationRule: Discord.AutoModerationRule,
     ) =>
-     `New \n${getAuditLog(audit)} created ${
-      audit.executor ? `by\n${getUser(audit.executor)}` : ''
-     }for\n${getAutoModerationRule(autoModerationRule)}`,
+     `New \n${this.languageFunction.getAuditLog(audit)} created ${
+      audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''
+     }for\n${this.languageFunction.getAutoModerationRule(autoModerationRule)}`,
     descAuditLogCreateAutoModeration: (
      audit: Discord.GuildAuditLogsEntry,
      member: Discord.GuildMember,
      rule: Discord.AutoModerationRule,
     ) =>
-     `New \n${getAuditLog(audit)} created by\n${getAutoModerationRule(rule)}for\n${getUser(
-      member.user,
-     )}`,
+     `New \n${this.languageFunction.getAuditLog(
+      audit,
+     )} created by\n${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}for\n${this.languageFunction.getUser(member.user)}`,
     descMemberPrune: (executor: Discord.User, amount: number, days: number) =>
-     `${getUser(executor)}pruned \`${amount}\` Members\nfor \`${days}\` Days of inactivity`,
+     `${this.languageFunction.getUser(
+      executor,
+     )}pruned \`${amount}\` Members\nfor \`${days}\` Days of inactivity`,
     auditLogChangeKeys: {
      $add: 'Added',
      $remove: 'Removed',
@@ -1002,7 +1009,7 @@ export default {
     },
     explicitContentFilterName: 'Excplicit Content Filter',
     mfaLevel: {
-     0: None,
+     0: this.None,
      1: 'Elevated',
     },
     mfaLevelName: 'MFA Level',
@@ -1014,7 +1021,7 @@ export default {
     },
     nsfwLevelName: 'NSFW Level',
     verificationLevel: {
-     0: None,
+     0: this.None,
      1: 'Low',
      2: 'Medium',
      3: 'High',
@@ -1069,58 +1076,94 @@ export default {
      user: Discord.User,
      channel: Discord.GuildChannel | Discord.AnyThreadChannel,
      type: string,
-    ) => `${getUser(user)}has created\n${getChannel(channel, type)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has created\n${this.languageFunction.getChannel(
+      channel,
+      type,
+     )}`,
     descCreate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
-     `${getChannel(channel, type)}was created`,
+     `${this.languageFunction.getChannel(channel, type)}was created`,
     descDeleteAudit: (
      user: Discord.User,
      channel: Discord.GuildChannel | Discord.AnyThreadChannel,
      type: string,
-    ) => `${getUser(user)}has deleted\n${getChannel(channel, type)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has deleted\n${this.languageFunction.getChannel(
+      channel,
+      type,
+     )}`,
     descDelete: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
-     `${getChannel(channel, type)}was deleted`,
+     `${this.languageFunction.getChannel(channel, type)}was deleted`,
     descUpdateAudit: (
      user: Discord.User,
      channel: Discord.GuildChannel | Discord.AnyThreadChannel,
      type: string,
-    ) => `${getUser(user)}has updated\n${getChannel(channel, type)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has updated\n${this.languageFunction.getChannel(
+      channel,
+      type,
+     )}`,
     descUpdate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
-     `${getChannel(channel, type)}was updated`,
+     `${this.languageFunction.getChannel(channel, type)}was updated`,
     descJoinMember: (thread: Discord.ThreadChannel, channelType: string) =>
-     `Users have joined\n${getChannel(thread, channelType)}`,
+     `Users have joined\n${this.languageFunction.getChannel(thread, channelType)}`,
     descLeaveMember: (thread: Discord.ThreadChannel, channelType: string) =>
-     `Users have left\n${getChannel(thread, channelType)}`,
+     `Users have left\n${this.languageFunction.getChannel(thread, channelType)}`,
     descUpdateStageAudit: (
      channel: Discord.StageChannel,
      channelType: string,
      user: Discord.User,
-    ) => `${getUser(user)}has changed\n${getChannel(channel, channelType)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has changed\n${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )}`,
     descUpdateStage: (channel: Discord.StageChannel, channelType: string) =>
-     `${getChannel(channel, channelType)}was changed`,
+     `${this.languageFunction.getChannel(channel, channelType)}was changed`,
     descCreateStageAudit: (
      channel: Discord.StageChannel,
      channelType: string,
      user: Discord.User,
-    ) => `${getUser(user)}has started\n${getChannel(channel, channelType)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has started\n${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )}`,
     descCreateStage: (channel: Discord.StageChannel, channelType: string) =>
-     `${getChannel(channel, channelType)}was started`,
+     `${this.languageFunction.getChannel(channel, channelType)}was started`,
     descDeleteStageAudit: (
      channel: Discord.StageChannel,
      channelType: string,
      user: Discord.User,
-    ) => `${getUser(user)}has ended\n${getChannel(channel, channelType)}`,
+    ) =>
+     `${this.languageFunction.getUser(user)}has ended\n${this.languageFunction.getChannel(
+      channel,
+      channelType,
+     )}`,
     descDeleteStage: (channel: Discord.StageChannel, channelType: string) =>
-     `${getChannel(channel, channelType)}was ended`,
+     `${this.languageFunction.getChannel(channel, channelType)}was ended`,
     descPinCreateAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
-     `${getUser(user)}has pinned\n${getMessage(msg)}in\n${getChannel(msg.channel, channelType)}`,
+     `${this.languageFunction.getUser(user)}has pinned\n${this.languageFunction.getMessage(
+      msg,
+     )}in\n${this.languageFunction.getChannel(msg.channel, channelType)}`,
     descPinCreate: (msg: Discord.Message, channelType: string) =>
-     `${getMessage(msg)}was pinned in\n${getChannel(msg.channel, channelType)}`,
+     `${this.languageFunction.getMessage(msg)}was pinned in\n${this.languageFunction.getChannel(
+      msg.channel,
+      channelType,
+     )}`,
     descPinRemoveAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
-     `${getUser(user)}has un-pinned\n${getMessage(msg)}in\n${getChannel(msg.channel, channelType)}`,
+     `${this.languageFunction.getUser(user)}has un-pinned\n${this.languageFunction.getMessage(
+      msg,
+     )}in\n${this.languageFunction.getChannel(msg.channel, channelType)}`,
     descPinRemove: (msg: Discord.Message, channelType: string) =>
-     `${getMessage(msg)}was un-pinned in\n${getChannel(msg.channel, channelType)}`,
+     `${this.languageFunction.getMessage(msg)}was un-pinned in\n${this.languageFunction.getChannel(
+      msg.channel,
+      channelType,
+     )}`,
     descTyping: (user: Discord.User, channel: Discord.GuildTextBasedChannel, channelType: string) =>
-     `${getUser(user)}has started typing in\n${getChannel(channel, channelType)}`,
+     `${this.languageFunction.getUser(
+      user,
+     )}has started typing in\n${this.languageFunction.getChannel(channel, channelType)}`,
     nameCreate: 'Channel created',
     nameDelete: 'Channel deleted',
     nameTyping: 'User started typing',
@@ -1181,7 +1224,7 @@ export default {
    },
    userUpdate: {
     name: 'User updated',
-    desc: (user: Discord.User) => `${getUser(user)}has updated`,
+    desc: (user: Discord.User) => `${this.languageFunction.getUser(user)}has updated`,
     avatar: 'Avatar',
     banner: 'Banner',
     flags: 'Badges',
@@ -1192,9 +1235,15 @@ export default {
    automodActionExecution: {
     name: 'Auto-Moderation Rule enforced',
     descMessage: (rule: Discord.AutoModerationRule, msg: Discord.Message, user: Discord.User) =>
-     `${getAutoModerationRule(rule)}was enforced on\nthis ${getMessage(msg)}from\n${getUser(user)}`,
+     `${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}was enforced on\nthis ${this.languageFunction.getMessage(
+      msg,
+     )}from\n${this.languageFunction.getUser(user)}`,
     desc: (rule: Discord.AutoModerationRule, user: Discord.User) =>
-     `${getAutoModerationRule(rule)}was enforced on\n${getUser(user)}`,
+     `${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}was enforced on\n${this.languageFunction.getUser(user)}`,
     matchedKeyword: 'Matched Keyword',
     matchedContent: 'Matched Content',
     content: 'Content',
@@ -1219,11 +1268,17 @@ export default {
    },
    automodRule: {
     descCreate: (user: Discord.User, rule: Discord.AutoModerationRule) =>
-     `${getUser(user)}created\n${getAutoModerationRule(rule)}`,
+     `${this.languageFunction.getUser(user)}created\n${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}`,
     descDelete: (user: Discord.User, rule: Discord.AutoModerationRule) =>
-     `${getUser(user)}deleted\n${getAutoModerationRule(rule)}`,
+     `${this.languageFunction.getUser(user)}deleted\n${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}`,
     descUpdate: (user: Discord.User, rule: Discord.AutoModerationRule) =>
-     `${getUser(user)}updated\n${getAutoModerationRule(rule)}`,
+     `${this.languageFunction.getUser(user)}updated\n${this.languageFunction.getAutoModerationRule(
+      rule,
+     )}`,
     nameCreate: 'Auto-Moderation Rule created',
     nameDelete: 'Auto-Moderation Rule deleted',
     nameUpdate: 'Auto-Moderation Rule updated',
@@ -1306,7 +1361,7 @@ export default {
    unmute: 'Automatically Un-Muted',
    disboard: {
     desc: `You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>`,
-    title: `${name} DISBOARD Bump Reminder`,
+    title: `${this.botName} DISBOARD Bump Reminder`,
    },
    reminder: {
     description: 'Your reminder is due!',
@@ -1320,15 +1375,17 @@ export default {
    },
    nitro: {
     stackRoles: (user: Discord.User, roles: Discord.Role[], days: Strumber) =>
-     `${getUser(user)}has been given\n${roles
-      .map((r) => getRole(r))
+     `${this.languageFunction.getUser(user)}has been given\n${roles
+      .map((r) => this.languageFunction.getRole(r))
       .join('')}for boosting longer than ${days} days`,
     replaceRoles: (user: Discord.User, roles: Discord.Role[], days: Strumber) =>
-     `The Booster-Roles of\n${getUser(user)}have been replaced with\n${roles
-      .map((r) => getRole(r))
+     `The Booster-Roles of\n${this.languageFunction.getUser(user)}have been replaced with\n${roles
+      .map((r) => this.languageFunction.getRole(r))
       .join('')}for boosting longer than ${days} days`,
-    started: (user: Discord.User) => `${getUser(user)}has started boosting the Server`,
-    stopped: (user: Discord.User) => `${getUser(user)}has stopped boosting the Server`,
+    started: (user: Discord.User) =>
+     `${this.languageFunction.getUser(user)}has started boosting the Server`,
+    stopped: (user: Discord.User) =>
+     `${this.languageFunction.getUser(user)}has stopped boosting the Server`,
    },
   },
   vote: {
@@ -1351,7 +1408,7 @@ export default {
      `[Click here to Vote again](https://top.gg/servers/${guild.id}/vote)`,
     voteBotButton: (bot: Discord.User) => `Vote for ${bot.username}`,
     voteGuildButton: (guild: Discord.Guild) => `Vote for ${guild.name}`,
-    voteAyakoButton: `Vote for ${name}`,
+    voteAyakoButton: `Vote for ${this.botName}`,
     disable: 'Disable all Vote Reminders',
    },
   },
@@ -1359,19 +1416,23 @@ export default {
    title: 'New Appeal',
    author: `${client.user?.username} Punishment Appeal System`,
    description: (user: Discord.User, id: Prisma.Decimal) =>
-    `${getUser(user)}has appealed their Punishment\n${getPunishment(id)}`,
+    `${this.languageFunction.getUser(
+     user,
+    )}has appealed their Punishment\n${this.languageFunction.getPunishment(id)}`,
   },
   interactionCreate: {
    cooldown: (t: string) => `This Command is on Cooldown for ${t}`,
   },
- },
- systemChannelFlags: {
+ };
+
+ systemChannelFlags = {
   SuppressJoinNotifications: '`Suppress Member join Notifications`',
   SuppressPremiumSubscriptions: '`Suppress Server Boost Notifications`',
   SuppressGuildReminderNotifications: '`Suppress Server Setup Tips`',
   SuppressJoinNotificationReplies: '`Hide Member join Sticker reply Buttons`',
- },
- channelTypes: {
+ };
+
+ channelTypes = {
   0: 'Text Channel',
   1: 'DM Channel',
   2: 'Voice Channel',
@@ -1385,9 +1446,10 @@ export default {
   13: 'Stage Channel',
   14: 'Directory Channel',
   15: 'Forum Channel',
- },
- verification: {
-  title: `${name} Verification`,
+ };
+
+ verification = {
+  title: `${this.botName} Verification`,
   verify: 'Verify',
   startchannelmessage: 'Press the Button below to re-/start Verification!.',
   description: (guild: Discord.Guild) =>
@@ -1397,21 +1459,21 @@ export default {
    `You have been kicked from \`${guild.name}\` because you didn't verify.\nYou can rejoin anytime with a valid Invite Link`,
   hintmsg:
    'Type out the traced colored Characters from left to right ➡️\nIgnore all gray decoy Characters\nIgnore Character Cases (upper & lower case)\nThe captcha contains 5 digits',
-  kickReason: `${name} Verification | Unverified for too long`,
+  kickReason: `${this.botName} Verification | Unverified for too long`,
   wrongInput: (solution: string) =>
    `That was wrong... Are you a robot?\nThe solution was \`${solution}\`\nPlease try again`,
   alreadyVerified: 'You are already verified',
   log: {
-   start: (user: Discord.User) => `${getUser(user)}started Verification`,
-   end: (user: Discord.User) => `${getUser(user)}finished Verification`,
+   start: (user: Discord.User) => `${this.languageFunction.getUser(user)}started Verification`,
+   end: (user: Discord.User) => `${this.languageFunction.getUser(user)}finished Verification`,
    started: 'Verification Started',
    finished: 'Verification Finished',
   },
   hint: 'Hint',
   enterCode: 'Enter Code',
- },
- time,
- expire: {
+ };
+
+ expire = {
   punishmentIssue: 'Punishment was issued at',
   punishmentOf: (target: Discord.User) =>
    `A Punishment of ${ch.constants.standard.user(target)} has expired`,
@@ -1421,14 +1483,16 @@ export default {
   endedAt: (t: string) => `Punishment ended ${t}`,
   duration: 'Punishment Duration',
   pardonedBy: 'Pardoned by',
- },
- commands: {
+ };
+
+ commands = {
   noArgs: {
    content: 'No Arguments provided',
    button: 'Show Usage',
   },
- },
- contextCommands: {
+ };
+
+ contextCommands = {
   message: {
    'Stick Message': {
     desc: 'Stick a Message to the Channel',
@@ -1439,26 +1503,28 @@ export default {
      'This Channel already has a sticked Message.\nYou can merge them into one and stick the merged Message\n\nTo unstick the previous Message, just delete it',
    },
   },
- },
- slashCommands: {
+ };
+
+ slashCommands = {
   setLevel: {
    min: 'Level and XP cannot go below 0',
    maxZeros: "You can't add more than 10 Zeros",
-   author: `${name} Leveling`,
+   author: `${this.botName} Leveling`,
    newLvl: 'New Level',
    newXP: 'New XP',
    excluded: 'Excluded Roles',
    descUser: (user: Discord.User) =>
-    `Editing Level of\n${getUser(
+    `Editing Level of\n${this.languageFunction.getUser(
      user,
     )}Hitting the \`Save\` Button will overwrite and replace their current Levels`,
-   descFinUser: (user: Discord.User) => `Saved new Level for\n${getUser(user)}`,
+   descFinUser: (user: Discord.User) =>
+    `Saved new Level for\n${this.languageFunction.getUser(user)}`,
    descRole: (role: Discord.Role) =>
-    `Editing Levels for all Members of\n${getRole(
+    `Editing Levels for all Members of\n${this.languageFunction.getRole(
      role,
     )}excluding Members who have any of the Roles listed below.\nHitting the \`Save\` Button will overwrite and replace their current Levels`,
    descFinRole: (role: Discord.Role) =>
-    `Edited the Levels of all Members of\n${getRole(
+    `Edited the Levels of all Members of\n${this.languageFunction.getRole(
      role,
     )}excluding Members who have any of the Roles listed below`,
    reset: 'Reset',
@@ -1472,31 +1538,38 @@ export default {
   resetLevels: {
    areYouSure: (t: string) =>
     `Are you sure you want to reset all Levels?
-**This cannot be un-done!**
-__Notice__: This will not un-assign Level-Roles
-
-The Buttons will unlock ${t}`,
+ **This cannot be un-done!**
+ __Notice__: This will not un-assign Level-Roles
+ 
+ The Buttons will unlock ${t}`,
    areYouSure2: 'Are you sure you want to reset all Levels?\n**This cannot be un-done!**',
-   confirmUser: (user: Discord.User) => `Confirm Reset of Levels of\n${getUser(user)}`,
+   confirmUser: (user: Discord.User) =>
+    `Confirm Reset of Levels of\n${this.languageFunction.getUser(user)}`,
    confirmRole: (role: Discord.Role, amount: number) =>
-    `Confirm Reset of Levels of all ${ch.splitByThousand(amount)} Members in\n${getRole(role)}`,
+    `Confirm Reset of Levels of all ${ch.splitByThousand(
+     amount,
+    )} Members in\n${this.languageFunction.getRole(role)}`,
    all: 'All Levels have been reset',
-   user: (u: Discord.User) => `The Levels of\n${getUser(u)}have been reset`,
+   user: (u: Discord.User) => `The Levels of\n${this.languageFunction.getUser(u)}have been reset`,
    role: (r: Discord.Role, amount: number) =>
-    `The Levels of all ${ch.splitByThousand(amount)} Members in\n${getRole(r)}have been reset`,
+    `The Levels of all ${ch.splitByThousand(amount)} Members in\n${this.languageFunction.getRole(
+     r,
+    )}have been reset`,
   },
   edit: {
    invalid: 'Invalid Punishment ID',
    success: 'Reason updated',
    author: 'Punishment Reason Edited',
    desc: (user: Discord.User, target: Discord.User, punId: string) =>
-    `${getUser(user)}has updated\nReason of Punishment with ID ${ch.util.makeInlineCode(
+    `${this.languageFunction.getUser(
+     user,
+    )}has updated\nReason of Punishment with ID ${ch.util.makeInlineCode(
      punId,
-    )}\nof\n${getUser(target)}`,
+    )}\nof\n${this.languageFunction.getUser(target)}`,
   },
   leaderboard: {
-   lleaderboard: `${name} Leveling Leaderboard`,
-   nleaderboard: `${name} Nitro Leaderboard`,
+   lleaderboard: `${this.botName} Leveling Leaderboard`,
+   nleaderboard: `${this.botName} Nitro Leaderboard`,
    level: 'Level',
    xp: 'XP',
    rank: 'Rank',
@@ -1515,7 +1588,7 @@ The Buttons will unlock ${t}`,
     )}\nsince only 1 Message per Minute is counted`,
   },
   check: {
-   name: `${name} Moderation-Management`,
+   name: `${this.botName} Moderation-Management`,
    desc: (
     user: Discord.User,
     { w, m, cb, b, r }: { w: number; m: number; cb: number; b: number; r: number },
@@ -1529,30 +1602,30 @@ The Buttons will unlock ${t}`,
      muteEmote,
      channelbanEmote,
     }: { banEmote: string; muteEmote: string; channelbanEmote: string },
-   ) => `Punishments of\n${getUser(user)}
-
-They currently have 
-${ch.util.makeBold(String(w))} Warns
-${ch.util.makeBold(String(m))} Mutes
-${ch.util.makeBold(String(cb))} Channel-Bans
-${ch.util.makeBold(String(b))} Bans
-of which ${ch.util.makeBold(String(r))} are temporary and currently running
-
-${
- isBanned
-  ? `${banEmote} They are ${ch.util.makeBold('currently banned')}`
-  : `${banEmote} They are ${ch.util.makeBold('currently not banned')}`
-}
-${
- isMuted
-  ? `${muteEmote} They are ${ch.util.makeBold('currently muted')}`
-  : `${muteEmote} They are ${ch.util.makeBold('currently not muted')}`
-}
-${
- isChannelBanned
-  ? `${channelbanEmote} They are ${ch.util.makeBold('currently banned from some Channels')}`
-  : `${channelbanEmote} They are ${ch.util.makeBold('currently not banned from any Channels')}`
-}`,
+   ) => `Punishments of\n${this.languageFunction.getUser(user)}
+ 
+ They currently have 
+ ${ch.util.makeBold(String(w))} Warns
+ ${ch.util.makeBold(String(m))} Mutes
+ ${ch.util.makeBold(String(cb))} Channel-Bans
+ ${ch.util.makeBold(String(b))} Bans
+ of which ${ch.util.makeBold(String(r))} are temporary and currently running
+ 
+ ${
+  isBanned
+   ? `${banEmote} They are ${ch.util.makeBold('currently banned')}`
+   : `${banEmote} They are ${ch.util.makeBold('currently not banned')}`
+ }
+ ${
+  isMuted
+   ? `${muteEmote} They are ${ch.util.makeBold('currently muted')}`
+   : `${muteEmote} They are ${ch.util.makeBold('currently not muted')}`
+ }
+ ${
+  isChannelBanned
+   ? `${channelbanEmote} They are ${ch.util.makeBold('currently banned from some Channels')}`
+   : `${channelbanEmote} They are ${ch.util.makeBold('currently not banned from any Channels')}`
+ }`,
    punishmentTypes: {
     warns: 'Warns',
     bans: 'Bans',
@@ -1580,13 +1653,14 @@ ${
    rejected: 'Suggestion rejected',
    notOwner:
     "Only the Submitter of the Suggestion and Suggestion-Approvers can use this Button\nOr this Suggestion couldn't be found",
-   banned: (user: Discord.User) => `${getUser(user)}was banned from submitting Suggestions`,
+   banned: (user: Discord.User) =>
+    `${this.languageFunction.getUser(user)}was banned from submitting Suggestions`,
    cantBan: (cmdId: string) => `**You can't ban this User**
-Either because Suggestions aren't enabled on this Server
-because you are lacking the Permissions to
-or because they are already banned
-
-Unban Users in </settings automation suggestions:${cmdId}>`,
+ Either because Suggestions aren't enabled on this Server
+ because you are lacking the Permissions to
+ or because they are already banned
+ 
+ Unban Users in </settings automation suggestions:${cmdId}>`,
    tldr: 'TL;DR',
    downvotes: 'Downvotes',
    upvotes: 'Upvotes',
@@ -1595,7 +1669,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
    cannotSend: "You can't submit Suggestions",
    cannotVote: "You can't vote on Suggestions",
    notEnabled: "Suggestions aren't enabled on this Server",
-   author: `${name} Suggestions`,
+   author: `${this.botName} Suggestions`,
    votes: 'Votes',
    view: 'View Votes',
    accept: 'Accept',
@@ -1659,8 +1733,8 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
      `The Strike-System is not enabled\nuse </settings auto-moderation:${cmdId}> to enable it`,
    },
    unafk: {
-    notAfk: (user: Discord.User) => `${getUser(user)}is not AFK.`,
-    unAfk: (user: Discord.User) => `AFK of\n${getUser(user)}deleted`,
+    notAfk: (user: Discord.User) => `${this.languageFunction.getUser(user)}is not AFK.`,
+    unAfk: (user: Discord.User) => `AFK of\n${this.languageFunction.getUser(user)}deleted`,
    },
   },
   vote: {
@@ -1747,7 +1821,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
     notEnabled: 'Setting Custom-Roles is not enabled',
     cantSet: "You don't qualify to set a Custom-Role",
     edit: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
-     `${getRole(
+     `${this.languageFunction.getRole(
       role,
      )}was created\n\n__Applying limits:__\nCan set Role-Icon ${ch.constants.standard.getEmote(
       limit.icon ? ch.emotes.enabled : ch.emotes.disabled,
@@ -1755,7 +1829,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
       limit.color ? ch.emotes.enabled : ch.emotes.disabled,
      )}`,
     create: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
-     `${getRole(
+     `${this.languageFunction.getRole(
       role,
      )}was created\n\n__Applying limits:__\nCan set Role-Icon ${ch.constants.standard.getEmote(
       limit.icon ? ch.emotes.enabled : ch.emotes.disabled,
@@ -1765,7 +1839,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
    },
    builders: {
     descReactions: (cmdId: string) =>
-     `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:${cmdId}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${name}'s Reaction`,
+     `React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:${cmdId}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove ${this.botName}'s Reaction`,
     descButtons: (cmdId: string) =>
      `React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:${cmdId}>\n__Notice:__ Emotes might not display properly below, but they will work just fine`,
     buttons:
@@ -1786,7 +1860,7 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
    edit: (role: Discord.Role) => `Successfully edit Role ${role}`,
    delete: {
     areYouSure: (role: Discord.Role) => `Are you sure you want to delete the Role ${role}?`,
-    deleted: (role: Discord.Role) => `Successfully deleted ${getRole(role)}`,
+    deleted: (role: Discord.Role) => `Successfully deleted ${this.languageFunction.getRole(role)}`,
    },
    give: {
     administrator:
@@ -1921,8 +1995,8 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
     request: 'holds their hand up, waiting for a high-five!',
     buttons: ['High-five!'],
    },
-   holdhands,
-   handhold: holdhands,
+   holdhands: this.holdhands,
+   handhold: this.holdhands,
    comfort: {
     self: "shhh, It's alright. Everything will be fine",
     others: 'comforts',
@@ -2232,27 +2306,29 @@ Unban Users in </settings automation suggestions:${cmdId}>`,
   rp: {
    allBlockedUsers: 'All Users you have blocked',
    cantRP: "You can't use RP-Commands on this Users as either of you has blocked the other.",
-   notBlocked: (user: Discord.User) => `${getUser(user)}is not blocked from using RP-Commands`,
+   notBlocked: (user: Discord.User) =>
+    `${this.languageFunction.getUser(user)}is not blocked from using RP-Commands`,
    unblock: 'Unblock User',
    unblocked: (user: Discord.User) =>
-    `${getUser(user)}is no longer blocked from using RP-Commands on you`,
-   blocked: (user: Discord.User) => `${getUser(user)}blocked from using RP-Commands on you`,
+    `${this.languageFunction.getUser(user)}is no longer blocked from using RP-Commands on you`,
+   blocked: (user: Discord.User) =>
+    `${this.languageFunction.getUser(user)}blocked from using RP-Commands on you`,
    blockPlaceholder: 'Select Commands to switch their Block-Status',
    availableCmds: `Allowed Commands:`,
    blockedCmds: `Blocked Commands:`,
    gifSrc: 'Gif Source Anime:',
-   author: `${name} Roleplay Command Manager`,
-   desc: `${name} supports a wide variety of Roleplay Commands.
-
-**This Command serves as a Base-Command for all Roleplay-Commands.**
-Editing the Permissions of this Command will affect all Roleplay-Commands.
-To be able __to use Permission syncing, please log into ${name}'s [Website](https://ayakobot.com/login)__ with the Button below. 
-After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
-
-Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP-Commands\`.
-__You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
-
-__Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.`,
+   author: `${this.botName} Roleplay Command Manager`,
+   desc: `${this.botName} supports a wide variety of Roleplay Commands.
+ 
+ **This Command serves as a Base-Command for all Roleplay-Commands.**
+ Editing the Permissions of this Command will affect all Roleplay-Commands.
+ To be able __to use Permission syncing, please log into ${this.botName}'s [Website](https://ayakobot.com/login)__ with the Button below. 
+ After you edited the Permissions of this Command, use the \`Sync Permissions\` Button below to sync them.
+ 
+ Additionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button \`RP-Commands\`.
+ __You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.
+ 
+ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.`,
    fields: (t: string, used: number) => [
     {
      name: 'Permission Syncing can only be used __once__ per Hour',
@@ -2281,7 +2357,7 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
     label: 'Past your Embed Code below',
     placeholder0: 'Embed Code can be split into all displayed Fields',
     placeholder1: 'Please do not escape the Code',
-    placeholder2: `${name} will merge the code of all Fields together`,
+    placeholder2: `${this.botName} will merge the code of all Fields together`,
     placeholder3: 'Properly escaping the Code will cause Errors',
     placeholder4:
      "Also Embeds have a maximum Length of 6000 Characters, so you probably won't ever need this one",
@@ -2362,7 +2438,7 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
      'footer-text': 'Footer Text',
      'author-name': 'Author Name',
     },
-    author: `${name} Embed Builder`,
+    author: `${this.botName} Embed Builder`,
     desc:
      'Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)',
     quick: 'Quick Help',
@@ -2420,27 +2496,27 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
    },
   },
   membercount: {
-   author: `${name} Member-Count`,
+   author: `${this.botName} Member-Count`,
    field: 'For more in-depth Statistics, try [Statbot](https://statbot.net/)',
   },
   ping: {
-   author: `${name} Ping`,
+   author: `${this.botName} Ping`,
    lastHeartbeat: 'Last Heartbeat',
   },
   emojis: {
    createReason: (user: Discord.User) => `Emoji created by ${ch.constants.standard.user(user)}`,
    deleteReason: (user: Discord.User) => `Emoji deleted by ${ch.constants.standard.user(user)}`,
    editReason: (user: Discord.User) => `Emoji edited by ${ch.constants.standard.user(user)}`,
-   created: (e: Discord.GuildEmoji) => `Successfully created ${getEmote(e)}`,
-   deleted: (e: Discord.GuildEmoji) => `Successfully deleted ${getEmote(e)}`,
-   edited: (e: Discord.GuildEmoji) => `Successfully edited ${getEmote(e)}`,
+   created: (e: Discord.GuildEmoji) => `Successfully created ${this.languageFunction.getEmote(e)}`,
+   deleted: (e: Discord.GuildEmoji) => `Successfully deleted ${this.languageFunction.getEmote(e)}`,
+   edited: (e: Discord.GuildEmoji) => `Successfully edited ${this.languageFunction.getEmote(e)}`,
    explain: 'The Roles listed above can use this Emoji',
    placeholder: 'Select 1 or more Roles',
   },
   invites: {
    inviteNotFound: 'Invite not found',
-   deleted: (invite: Discord.Invite) => `${getInvite(invite)}was deleted`,
-   created: (invite: Discord.Invite) => `${getInvite(invite)}was created`,
+   deleted: (invite: Discord.Invite) => `${this.languageFunction.getInvite(invite)}was deleted`,
+   created: (invite: Discord.Invite) => `${this.languageFunction.getInvite(invite)}was created`,
   },
   info: {
    basic: '__Basic Info__',
@@ -2451,13 +2527,13 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
    },
    invite: {
     uses: 'Uses',
-    author: `${name} Invite-Info`,
+    author: `${this.botName} Invite-Info`,
     code: 'Code',
     invalidInvite: 'Invalid Invite',
     unsupportedWebsite: 'Unsupported Website',
    },
    emojis: {
-    author: `${name} Emoji-Info`,
+    author: `${this.botName} Emoji-Info`,
     animated: 'Animated',
     uploader: 'Uploader',
     available: 'Available',
@@ -2465,7 +2541,7 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
     roles: 'Roles that can use this Emoji',
    },
    role: {
-    author: `${name} Role-Info`,
+    author: `${this.botName} Role-Info`,
     position: 'Position',
     membercount: 'Membercount',
     tooManyMembers: 'Too many Members to display',
@@ -2473,10 +2549,10 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
     viewChannelPermissions: 'View Channel Permissions',
    },
    badges: {
-    author: `${name} Badge-Info`,
+    author: `${this.botName} Badge-Info`,
    },
    bot: {
-    author: `${name} Info`,
+    author: `${this.botName} Info`,
     shards: 'Shards',
     uptime: 'Uptime',
     CPU: 'CPU',
@@ -2488,33 +2564,33 @@ __Notice__: When re-enabling Slash-Commands you will have to re-sync them afterw
     base: `Ayako ${
      client.user?.id === ch.mainID ? '' : '(The Base of this Bot)'
     } is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)
-    
-It is currently in Version ${ch.util.makeInlineCode(
-     packageJSON.version,
-    )} and is under the shepherding of <@318453143476371456> (@Lars_und_so), a Full-Time IT Specialist for Application Development.
-View [Credits](https://ayakobot.com/credits) for more Information.
-Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).
-For more Information, visit [AyakoBot.com](https://ayakobot.com/).
-Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.
-
-Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.
-We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, 
-and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation,`,
+     
+ It is currently in Version ${ch.util.makeInlineCode(
+  packageJSON.version,
+ )} and is under the shepherding of <@318453143476371456> (@Lars_und_so), a Full-Time IT Specialist for Application Development.
+ View [Credits](https://ayakobot.com/credits) for more Information.
+ Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).
+ For more Information, visit [AyakoBot.com](https://ayakobot.com/).
+ Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.
+ 
+ Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.
+ We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, 
+ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation,`,
    },
    user: {
-    authorUser: `${name} User-Info`,
-    authorBot: `${name} Bot-Info`,
+    authorUser: `${this.botName} User-Info`,
+    authorBot: `${this.botName} Bot-Info`,
     userInfo: (user: Discord.User) =>
      `**User:** ${user}\n**Tag:** \`${ch.constants.standard.user(user)}\`\n**Discriminator:** \`${
       user.discriminator
      }\`\n**ID:** \`${user.id}\`\n**Username:** \`${user.username}\`\n**Accent Color:** ${
-      user.accentColor ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\`` : None
+      user.accentColor ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\`` : this.None
      }`,
     flags: 'Badges',
     createdAt: 'Created At',
     footer: '⬅️ Accent Color',
-    memberAuthorUser: `${name} Member User-Info`,
-    memberAuthorBot: `${name} Member Bot-Info`,
+    memberAuthorUser: `${this.botName} Member User-Info`,
+    memberAuthorBot: `${this.botName} Member Bot-Info`,
     displayName: 'Display Name',
     timeout: 'Timed Out',
     joinedAt: 'Joined At',
@@ -2530,9 +2606,9 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
      `\n**__Basic Info:__**\n**Prefix:** \`${res.prefix}\`\n**Server Count:** ${
       res.server_count ?? 'Unknown'
      }\n**Tags:** ${
-      res.tags?.map((t) => `\`${t}\``).join(', ') ?? None
-     }\n\n**__Links:__**\n**Website:** ${res.website ?? None}\n**Support Server:** ${
-      res.support ? `https://discord.gg/${res.support}` : None
+      res.tags?.map((t) => `\`${t}\``).join(', ') ?? this.None
+     }\n\n**__Links:__**\n**Website:** ${res.website ?? this.None}\n**Support Server:** ${
+      res.support ? `https://discord.gg/${res.support}` : this.None
      }\n**Invite Link:** [Click to Invite](${res.invite})\n**GitHub:** ${
       res.github ?? 'Unknown'
      }\n\n**__Votes:__**\n**All Time Votes:** ${res.points}\n**This Months Votes:** ${
@@ -2543,7 +2619,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
     mobile: 'Try Opening Profile | Mobile',
    },
    server: {
-    author: `${name} Server-Info`,
+    author: `${this.botName} Server-Info`,
     info: {
      acronym: 'Acronym',
      widgetChannel: 'Widget Channel',
@@ -2564,20 +2640,20 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
      maximumBitrate: 'Maximum Bitrate',
      maxStageVideoChannelUsers: 'Max. Stage Video Channel Users',
     },
-    inviteGuild: `${name} is not Part of this Server, therefore only limited Information is available`,
+    inviteGuild: `${this.botName} is not Part of this Server, therefore only limited Information is available`,
    },
    channel: {
-    author: `${name} Channel-Info`,
+    author: `${this.botName} Channel-Info`,
     stageInstanceName: 'Stage Instance',
     scheduledEvent: {
-     author: `${name} Event-Info`,
+     author: `${this.botName} Event-Info`,
      userCount: 'User Count',
     },
    },
   },
   settings: {
    tutorial: 'There are Tutorials available for this Setting',
-   authorType: (type: string) => `${name} ${type} Settings`,
+   authorType: (type: string) => `${this.botName} ${type} Settings`,
    active: 'Active',
    wlchannel: 'Whitelisted Channels',
    blchannel: 'Blacklisted Channels',
@@ -2689,15 +2765,15 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Reward Roles',
        desc: 'Roles Rewarded (will be removed when the User can Vote again)',
       },
-      linkedid,
+      linkedid: this.linkedid,
      },
     },
     'anti-spam': {
      name: 'Anti-Spam',
      fields: {
-      action: punishmentAction,
-      duration: punishmentDuration,
-      deletemessageseconds: punishmentDeleteMessageSeconds,
+      action: this.punishmentAction,
+      duration: this.punishmentDuration,
+      deletemessageseconds: this.punishmentDeleteMessageSeconds,
       msgthreshold: {
        name: 'Message Threshold',
        desc: 'Amount of Messages required before Anti-Spam triggers',
@@ -2719,9 +2795,9 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
     'anti-virus': {
      name: 'Anti-Virus',
      fields: {
-      action: punishmentAction,
-      duration: punishmentDuration,
-      deletemessageseconds: punishmentDeleteMessageSeconds,
+      action: this.punishmentAction,
+      duration: this.punishmentDuration,
+      deletemessageseconds: this.punishmentDeleteMessageSeconds,
       minimize: {
        name: 'Minimize Timeout (in Seconds)',
        desc: 'Timeout until the Mod-Response is minimized',
@@ -2780,9 +2856,9 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
     invites: {
      name: 'Invites',
      fields: {
-      action: punishmentAction,
-      duration: punishmentDuration,
-      deletemessageseconds: punishmentDeleteMessageSeconds,
+      action: this.punishmentAction,
+      duration: this.punishmentDuration,
+      deletemessageseconds: this.punishmentDeleteMessageSeconds,
      },
     },
     censor: {
@@ -2806,9 +2882,9 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Max. Newlines',
        desc: 'Maximum amount of Newlines allowed in a Message',
       },
-      action: punishmentAction,
-      duration: punishmentDuration,
-      deletemessageseconds: punishmentDeleteMessageSeconds,
+      action: this.punishmentAction,
+      duration: this.punishmentDuration,
+      deletemessageseconds: this.punishmentDeleteMessageSeconds,
      },
     },
     'blacklist-rules': {
@@ -2883,7 +2959,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
     },
     expiry: {
      desc: (cmdId: string) =>
-      `⚠️ Note: ⚠️\nAll of these Settings are ${name}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:${cmdId}>`,
+      `⚠️ Note: ⚠️\nAll of these Settings are ${this.botName}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:${cmdId}>`,
      name: 'Expiry',
      fields: {
       bans: {
@@ -2949,7 +3025,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Custom Role',
        desc: 'Whether Users can create their own Roles or not',
       },
-      xpmultiplier: multiplier,
+      xpmultiplier: this.multiplier,
       currency: {
        name: 'Currency Reward',
        desc: 'Amount of Currency rewarded',
@@ -3327,7 +3403,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'XP per Message',
        desc: 'Amount of XP awarded per Member',
       },
-      xpmultiplier: multiplier,
+      xpmultiplier: this.multiplier,
       rolemode: {
        name: 'Role Mode',
        desc: 'Whether to Stack or Replace Level-Roles',
@@ -3373,7 +3449,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Channels',
        desc: 'The Channels in which this Multiplier applies',
       },
-      multiplier,
+      multiplier: this.multiplier,
      },
     },
     'multi-roles': {
@@ -3383,7 +3459,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Roles',
        desc: 'The Roles that will have a Multiplier applied',
       },
-      multiplier,
+      multiplier: this.multiplier,
      },
     },
     'level-roles': {
@@ -3556,7 +3632,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Roles',
        desc: 'The Roles given to the Member once reacted',
       },
-      linkedid,
+      linkedid: this.linkedid,
      },
     },
     'button-roles': {
@@ -3575,21 +3651,23 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
        name: 'Roles',
        desc: 'The Roles given to the Member once reacted',
       },
-      linkedid,
+      linkedid: this.linkedid,
      },
     },
     basic: {
      name: 'Basic',
      tokenSetDesc: `**It appears you have a custom Bot-Token set**
-     If you want to get rid of double Slash-Commands, remove ${name} from your Server and Invite her back [using this Invite Link](${ch.constants.standard.invite.replace(
-      '%20applications.commands',
-      '',
-     )})
-     __${name} is required to run Custom-Bots__`,
+      If you want to get rid of double Slash-Commands, remove ${
+       this.botName
+      } from your Server and Invite her back [using this Invite Link](${ch.constants.standard.invite.replace(
+       '%20applications.commands',
+       '',
+      )})
+      __${this.botName} is required to run Custom-Bots__`,
      fields: {
       prefix: {
        name: 'Prefix',
-       desc: `The Prefix ${name} should listen to`,
+       desc: `The Prefix ${this.botName} should listen to`,
       },
       interactionsmode: {
        name: 'RP-Command Size',
@@ -3605,7 +3683,7 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
       },
       lan: {
        name: 'Language',
-       desc: `The Language ${name} displays in`,
+       desc: `The Language ${this.botName} displays in`,
       },
       errorchannel: {
        name: 'Error Channel',
@@ -3618,12 +3696,17 @@ and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https:
       token: {
        name: 'Token',
        desc: `The Token of your Custom Bot
-Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)
-
-__Please make sure you do the following AFTER you set your Token here__:\n- insert \`https://api.ayakobot.com/interactions\` as your Bots \`Interactions Endpoint URL\` under the \`General Information\` Section\n- enable the \`Public Bot\` Switch under the \`Bot\` Section\n- enable the \`Message Content\` and \`Guild Member\` \`Privileged Gateway Intents\` under the \`Bot\` Section\n- invite your Bot to your Server using the provided Invite URL\n
-__Notice__
-If you are removing the Token from this Field and previously re-invited ${name} with the Link that removes her Slash-Commands, 
-you will have to re-invite her using [this Invite Link](${ch.constants.standard.invite})`,
+ Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)
+ 
+ __Please make sure you do the following AFTER you set your Token here__:
+ - insert \`https://api.ayakobot.com/interactions\` as your Bots \`Interactions Endpoint URL\` under the \`General Information\` Section
+ - enable the \`Public Bot\` Switch under the \`Bot\` Section
+ - enable the \`Message Content\` and \`Guild Member\` \`Privileged Gateway Intents\` under the \`Bot\` Section
+ - invite your Bot to your Server using the provided Invite URL
+ 
+ __Notice__
+ If you are removing the Token from this Field and previously re-invited ${this.botName} with the Link that removes her Slash-Commands, 
+ you will have to re-invite her using [this Invite Link](${ch.constants.standard.invite})`,
       },
      },
     },
@@ -3663,7 +3746,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     description: 'Create a Giveaway',
     missingPermissions: "I can't send or view Messages in this Channel",
     invalidTime: 'The provided Time was invalid',
-    author: `${name} Giveaways`,
+    author: `${this.botName} Giveaways`,
     participants: 'Participants',
     winners: (n: number) => `Possible Winners: ${n}`,
     end: (e: string) => `End: ${e}`,
@@ -3691,6 +3774,8 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     claim: 'Claim',
     claimingdone: 'Everyone claimed',
     expired: 'Claiming expired',
+    rerolling: 'Rerolling...',
+    reroll: 'Reroll',
    },
    claim: {
     notWinner: 'You are not a Winner of this Giveaway',
@@ -3719,30 +3804,33 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     cancelled: 'Giveaway Cancelled',
    },
   },
- },
- nitro: {
+ };
+
+ nitro = {
   given: (user: Discord.User, roles: string, days: Strumber) =>
    `<@${user.id}> has been given\n${roles}\nfor boosting ${days} Days`,
   taken: (user: Discord.User, roles: string) => `<@${user.id}> has been taken\n${roles}\nfrom`,
- },
- autotypes: {
-  verification: `${name} Verification`,
-  shop: `${name} Shop`,
-  antispam: `${name} Anti-Spam`,
-  antivirus: `${name} Anti-Virus`,
-  blacklist: `${name} Blacklist`,
-  statschannel: `${name} Stats-Channel`,
-  separators: `${name} Separators`,
-  autopunish: `${name} Auto-Punish`,
-  selfroles: `${name} Self-Roles`,
-  nitro: `${name} Nitro-Monitoring`,
-  autoroles: `${name} Auto-Roles`,
-  stickyroles: `${name} Sticky-Roles`,
-  stickyperms: `${name} Sticky-Channel-Perms`,
-  reactionroles: `${name} Reaction-Roles`,
-  buttonroles: `${name} Button-Roles`,
- },
- mod: {
+ };
+
+ autotypes = {
+  verification: `${this.botName} Verification`,
+  shop: `${this.botName} Shop`,
+  antispam: `${this.botName} Anti-Spam`,
+  antivirus: `${this.botName} Anti-Virus`,
+  blacklist: `${this.botName} Blacklist`,
+  statschannel: `${this.botName} Stats-Channel`,
+  separators: `${this.botName} Separators`,
+  autopunish: `${this.botName} Auto-Punish`,
+  selfroles: `${this.botName} Self-Roles`,
+  nitro: `${this.botName} Nitro-Monitoring`,
+  autoroles: `${this.botName} Auto-Roles`,
+  stickyroles: `${this.botName} Sticky-Roles`,
+  stickyperms: `${this.botName} Sticky-Channel-Perms`,
+  reactionroles: `${this.botName} Reaction-Roles`,
+  buttonroles: `${this.botName} Button-Roles`,
+ };
+
+ mod = {
   warning: {
    text:
     'You just issued a **Moderation Command** on a User with a **Mod Role**.\nAre you sure you want to **proceed**!',
@@ -3753,7 +3841,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
    strikeAdd: {
     author: 'Member striked',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was striked by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was striked by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    roleAdd: {
     author: 'Role given to Member',
@@ -3762,9 +3852,11 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'roleAdd'>,
     ) =>
-     `${options.roles.map((r) => getRole(r)).join('')}${
+     `${options.roles.map((r) => this.languageFunction.getRole(r)).join('')}${
       options.roles.length > 1 ? 'were' : 'was'
-     } given to\n${getUser(target)}by\n${getUser(executor)}`,
+     } given to\n${this.languageFunction.getUser(target)}by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    roleRemove: {
     author: 'Role removed from Member',
@@ -3773,9 +3865,11 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'roleRemove'>,
     ) =>
-     `${options.roles.map((r) => getRole(r)).join('')}${
+     `${options.roles.map((r) => this.languageFunction.getRole(r)).join('')}${
       options.roles.length > 1 ? 'were' : 'was'
-     } removed from\n${getUser(target)}by\n${getUser(executor)}`,
+     } removed from\n${this.languageFunction.getUser(target)}by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    tempMuteAdd: {
     author: 'Member Muted',
@@ -3784,29 +3878,37 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'tempMuteAdd'>,
     ) =>
-     `${getUser(target)}was Muted by\n${getUser(executor)}until\n${ch.constants.standard.getTime(
-      options.duration * 1000,
-     )}`,
+     `${this.languageFunction.getUser(target)}was Muted by\n${this.languageFunction.getUser(
+      executor,
+     )}until\n${ch.constants.standard.getTime(options.duration * 1000)}`,
    },
    muteRemove: {
     author: 'Member Un-Muted',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Un-Muted by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Un-Muted by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    unAfk: {
     author: 'Member AFK-Status removed',
     description: (target: Discord.User, executor: Discord.User) =>
-     `AFK-Status of\n${getUser(target)}was removed by\n${getUser(executor)}`,
+     `AFK-Status of\n${this.languageFunction.getUser(
+      target,
+     )}was removed by\n${this.languageFunction.getUser(executor)}`,
    },
    banAdd: {
     author: 'User Banned',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Banned by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    softBanAdd: {
     author: 'User Soft-Banned',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was soft-Banned by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was soft-Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    tempBanAdd: {
     author: 'User Temp-Banned',
@@ -3815,7 +3917,7 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'tempBanAdd'>,
     ) =>
-     `${getUser(target)}was Temp-Banned by\n${getUser(
+     `${this.languageFunction.getUser(target)}was Temp-Banned by\n${this.languageFunction.getUser(
       executor,
      )}until\n${ch.constants.standard.getTime(options.duration * 1000)}`,
    },
@@ -3826,9 +3928,11 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'channelBanAdd'>,
     ) =>
-     `${getUser(target)}was Channel-Banned by\n${getUser(executor)}from\n${getChannel(
-      options.channel,
-     )}`,
+     `${this.languageFunction.getUser(
+      target,
+     )}was Channel-Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}from\n${this.languageFunction.getChannel(options.channel)}`,
    },
    tempChannelBanAdd: {
     author: 'Member Temp-Channel-Banned',
@@ -3837,7 +3941,11 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'tempChannelBanAdd'>,
     ) =>
-     `${getUser(target)}was Temp-Channel-Banned by\n${getUser(executor)}from\n${getChannel(
+     `${this.languageFunction.getUser(
+      target,
+     )}was Temp-Channel-Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}from\n${this.languageFunction.getChannel(
       options.channel,
      )}until\n${ch.constants.standard.getTime(options.duration * 1000)}`,
    },
@@ -3848,29 +3956,39 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      executor: Discord.User,
      options: CT.ModOptions<'channelBanRemove'>,
     ) =>
-     `${getUser(target)}was Channel-Un-Banned by\n${getUser(executor)}from\n${getChannel(
-      options.channel,
-     )}`,
+     `${this.languageFunction.getUser(
+      target,
+     )}was Channel-Un-Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}from\n${this.languageFunction.getChannel(options.channel)}`,
    },
    banRemove: {
     author: 'User Un-Banned',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Un-Banned by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Un-Banned by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    kickAdd: {
     author: 'Member Kicked',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Kicked by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Kicked by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    warnAdd: {
     author: 'User Warned',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Warned by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Warned by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
    softWarnAdd: {
     author: 'User Soft-Warned',
     description: (target: Discord.User, executor: Discord.User) =>
-     `${getUser(target)}was Soft-Warned by\n${getUser(executor)}`,
+     `${this.languageFunction.getUser(target)}was Soft-Warned by\n${this.languageFunction.getUser(
+      executor,
+     )}`,
    },
   },
   alreadyExecuting: 'There currently is a Moderation-Command being executed on this User',
@@ -3880,8 +3998,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Strike this User",
     youNoPerms: "You can't Strike this User",
     error: 'I failed to Strike this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Striked`,
-    success: (target: Discord.User) => `${getUser(target)}was Striked`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}isn't Striked`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Striked`,
     loading: 'Striking User...',
     self: "You can't Strike yourself",
     me: "I won't Strike myself",
@@ -3894,7 +4013,8 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't add Roles to this User",
     youNoPerms: "You can't add Roles to this User",
     error: 'I failed to add these Roles to the User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}already has these Roles`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}already has these Roles`,
     success: (target: Discord.User, options: CT.ModOptions<'roleAdd'>) =>
      `${options.roles.join(', ')} ${options.roles.length > 1 ? 'were' : 'was'} added to ${target}`,
     loading: 'Adding Role to User...',
@@ -3909,7 +4029,8 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't remove Roles from this User",
     youNoPerms: "You can't remove Roles from this User",
     error: 'I failed to remove these Roles from the User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}doesn't have that Role`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}doesn't have that Role`,
     success: (target: Discord.User, options: CT.ModOptions<'roleRemove'>) =>
      `${options.roles.join(', ')} ${
       options.roles.length > 1 ? 'were' : 'was'
@@ -3923,8 +4044,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Mute this User",
     youNoPerms: "You can't Mute this User",
     error: 'I failed to Mute this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Muted`,
-    success: (target: Discord.User) => `${getUser(target)}was Muted`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Muted`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Muted`,
     loading: 'Muting User...',
     self: "You can't Mute yourself",
     me: "I won't Mute myself",
@@ -3935,8 +4057,8 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Un-Mute this User",
     youNoPerms: "You can't Un-Mute this User",
     error: 'I failed to Un-Mute this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Muted`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Muted`,
+    alreadyApplied: (target: Discord.User) => `${this.languageFunction.getUser(target)}isn't Muted`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Un-Muted`,
     loading: 'Un-Muting User...',
     self: "You can't Un-Mute yourself",
     me: "I won't Un-Mute myself",
@@ -3947,8 +4069,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Ban this User",
     youNoPerms: "You can't Ban this User",
     error: 'I failed to Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Banned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Banned`,
     loading: 'Banning User...',
     self: "You can't Ban yourself",
     me: "I won't Ban myself",
@@ -3959,8 +4082,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Soft-Ban this User",
     youNoPerms: "You can't Soft-Ban this User",
     error: 'I failed to Soft-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Soft-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Soft-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Soft-Banned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Soft-Banned`,
     loading: 'Soft-Banning User...',
     self: "You can't Soft-Ban yourself",
     me: "I won't Soft-Ban myself",
@@ -3971,8 +4095,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Temp-Ban this User",
     youNoPerms: "You can't Temp-Ban this User",
     error: 'I failed to Temp-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Temp-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Temp-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Temp-Banned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Temp-Banned`,
     loading: 'Temp-Banning User...',
     self: "You can't Temp-Ban yourself",
     me: "I won't Temp-Ban myself",
@@ -3983,8 +4108,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Channel-Ban this User",
     youNoPerms: "You can't Channel-Ban this User",
     error: 'I failed to Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Channel-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Channel-Banned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Channel-Banned`,
     loading: 'Channel-Banning User...',
     self: "You can't Channel-Ban yourself",
     me: "I won't Channel-Ban myself",
@@ -3996,8 +4122,10 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Temp-Channel-Ban this User",
     youNoPerms: "You can't Temp-Channel-Ban this User",
     error: 'I failed to Temp-Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Temp-Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Temp-Channel-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Temp-Channel-Banned`,
+    success: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}was Temp-Channel-Banned`,
     loading: 'Temp-Channel-Banning User...',
     self: "You can't Temp-Channel-Ban yourself",
     me: "I won't Temp-Channel-Ban myself",
@@ -4008,8 +4136,10 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Un-Channel-Ban this User",
     youNoPerms: "You can't Un-Channel-Ban this User",
     error: 'I failed to Un-Channel-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Channel-Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Channel-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}isn't Channel-Banned`,
+    success: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}was Un-Channel-Banned`,
     loading: 'Un-Channel-Banning User...',
     self: "You can't Un-Channel-Ban yourself",
     me: "I won't Un-Channel-Ban myself",
@@ -4020,8 +4150,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Un-Ban this User",
     youNoPerms: "You can't Un-Ban this User",
     error: 'I failed to Un-Ban this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}isn't Banned`,
-    success: (target: Discord.User) => `${getUser(target)}was Un-Banned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}isn't Banned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Un-Banned`,
     loading: 'Un-Banning User...',
     self: "You can't Un-Ban yourself",
     me: "I won't Un-Ban myself",
@@ -4031,8 +4162,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Kick this User",
     youNoPerms: "You can't Kick this User",
     error: 'I failed to Kick this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is not a Member`,
-    success: (target: Discord.User) => `${getUser(target)}was Kicked`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is not a Member`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Kicked`,
     loading: 'Kicking User...',
     self: "You can't Kick yourself",
     me: "I won't Kick myself",
@@ -4042,8 +4174,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Warn this User",
     youNoPerms: "You can't Warn this User",
     error: 'I failed to Warn this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Warned`,
-    success: (target: Discord.User) => `${getUser(target)}was Warned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Warned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Warned`,
     loading: 'Warning User...',
     self: "You can't Warn yourself",
     me: "I won't Warn myself",
@@ -4053,15 +4186,17 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     meNoPerms: "I can't Soft-Warn this User",
     youNoPerms: "You can't Soft-Warn this User",
     error: 'I failed to Soft-Warn this User',
-    alreadyApplied: (target: Discord.User) => `${getUser(target)}is already Soft-Warned`,
-    success: (target: Discord.User) => `${getUser(target)}was Soft-Warned`,
+    alreadyApplied: (target: Discord.User) =>
+     `${this.languageFunction.getUser(target)}is already Soft-Warned`,
+    success: (target: Discord.User) => `${this.languageFunction.getUser(target)}was Soft-Warned`,
     loading: 'Soft-Warning User...',
     self: "You can't Soft-Warn yourself",
     me: "I won't Soft-Warn myself",
    },
   },
- },
- leveling: {
+ };
+
+ leveling = {
   author: (msg: Discord.Message) =>
    `Welcome ${msg.author.username}#${msg.author.discriminator} to ${msg.guild?.name}`,
   description: (reactions?: string) =>
@@ -4072,16 +4207,18 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
      ? `The current Reactions are: ${reactions}`
      : "However, I currently don't have access to the Emotes or there are none set"
    }`,
-  reason: `${name} Leveling`,
- },
- censor: {
+  reason: `${this.botName} Leveling`,
+ };
+
+ censor = {
   reasonNewlines: 'Too many Newlines',
   warnNewlines: (n: number) =>
    `You've exceeded the Newlines limit of ${n}.\nPlease send less many Newlines`,
   warnInvite: `You are not allowed to post Invites`,
   reasonInvite: 'Invite posted',
- },
- antivirus: {
+ };
+
+ antivirus = {
   malicious: (cross: string) => `${cross} This Link __is__ Malicious`,
   log: {
    value: (msg: Discord.Message) =>
@@ -4092,8 +4229,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
     }\` / \`${msg.channel.id}\``,
    name: 'Links with Redirects',
   },
- },
- errors: {
+ };
+
+ errors = {
   cantFetch: "Can't fetch Messages in this Channel",
   settingNotFound: 'The Setting could not be found',
   messageNotFound: 'The Mentioned Message could not be found',
@@ -4133,8 +4271,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   cantManageInvite: "I can't manage this Invite",
   commandNotFound: 'Command not found',
   timeInPast: 'Time is in the past',
- },
- channelRules: {
+ };
+
+ channelRules = {
   HasLeastAttachments: (val: Strumber) => `Has at least ${val} Attachments`,
   HasMostAttachments: (val: Strumber) => `Has at most ${val} Attachments`,
   HasLeastCharacters: (val: Strumber) => `Has at least ${val} Characters in Content`,
@@ -4153,8 +4292,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   HasMostEmotes: (val: Strumber) => `Has at most ${val} Emotes`,
   HasLeastMentions: (val: Strumber) => `Has at least ${val} Mentions`,
   HasMostMentions: (val: Strumber) => `Has at most ${val} Mentions`,
- },
- userFlags: {
+ };
+
+ userFlags = {
   Staff: 'Discord Employee',
   DiscordEmployee: 'Discord Employee',
   PartneredServerOwner: 'Partnered Server Owner',
@@ -4200,9 +4340,10 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   DisablePremium: 'Premium disabled',
   Collaborator: 'Collaborator',
   RestrictedCollaborator: 'Restricted Collaborator',
- },
- featuresName: 'Features',
- features: {
+ };
+
+ featuresName = 'Features';
+ features = {
   ACTIVITIES_ALPHA: 'Can use Activities Alpha',
   ACTIVITIES_EMPLOYEE: 'Is Activities Employee Server',
   ACTIVITIES_INTERNAL_DEV: 'Is Activities Internal Dev Server',
@@ -4324,8 +4465,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   PUBLIC_DISABLED: 'Disabled Public Server (Deprecated)',
   SEVEN_DAY_THREAD_ARCHIVE: 'Ability to use 7 Day Thread Archive (Deprecated)',
   THREE_DAY_THREAD_ARCHIVE: 'Ability to use 3 Day Thread Archive (Deprecated)',
- },
- permissions: {
+ };
+
+ permissions = {
   categories: {
    GENERAL: 'General Server Permissions',
    MEMBER: 'Membership Permissions',
@@ -4392,8 +4534,9 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
    ViewChannels: 'View Channels',
    ManagePermissions: 'Manage Permissions',
   },
- },
- punishments: {
+ };
+
+ punishments = {
   warn: 'Warn',
   tempmute: 'Temp-Mute',
   tempchannelban: 'Temp-Channel-Ban',
@@ -4402,32 +4545,37 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   tempban: 'Temp-Ban',
   ban: 'Ban',
   strike: 'Strike',
- },
- shoptypes: {
+ };
+
+ shoptypes = {
   command: 'Shop-Command',
   message: 'Shop-Message',
- },
- commandTypes: {
+ };
+
+ commandTypes = {
   slashCommands: 'Slash-Commands',
   textCommands: 'Text-Commands',
- },
- languages: {
+ };
+
+ languages = {
   en: 'English | Finished',
- },
- deleteReasons: {
+ };
+
+ deleteReasons = {
   deleteCommand: 'Delete Commands',
   deleteReply: 'Delete Reply',
-  deleteBlacklist: `${name} Blacklists`,
-  leveling: `${name} Leveling`,
-  disboard: `${name} DISBOARD Reminder`,
-  antivirus: `${name} Anti-Virus`,
-  antispam: `${name} Anti-Spam`,
-  cooldown: `${name} Cooldowns`,
+  deleteBlacklist: `${this.botName} Blacklists`,
+  leveling: `${this.botName} Leveling`,
+  disboard: `${this.botName} DISBOARD Reminder`,
+  antivirus: `${this.botName} Anti-Virus`,
+  antispam: `${this.botName} Anti-Spam`,
+  cooldown: `${this.botName} Cooldowns`,
   abortedMod: 'Aborted Mod Command',
-  afk: `${name} AFK`,
- },
- regionsName: 'Regions',
- regions: {
+  afk: `${this.botName} AFK`,
+ };
+
+ regionsName = 'Regions';
+ regions = {
   null: 'Automatic',
   brazil: 'Brazil',
   hongkong: 'Hong Kong',
@@ -4471,10 +4619,12 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   tr: 'Turkey',
   uk: 'Ukraine',
   vi: 'Vietnam',
- },
- welcome: (user: Discord.User, guild: Discord.Guild) =>
-  `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`,
- scopes: {
+ };
+
+ welcome = (user: Discord.User, guild: Discord.Guild) =>
+  `Welcome ${user.username}#${user.discriminator} to ${guild.name} <:AMayakowave:924071188957913108>`;
+
+ scopes = {
   bot: 'Bot',
   connections: 'View Connections',
   'dm_channels.read': 'Read DM Channels',
@@ -4500,122 +4650,192 @@ you will have to re-invite her using [this Invite Link](${ch.constants.standard.
   'application.commands': 'Use Slash-Commands',
   'applicaiton.commands.update': 'Update Slash-Commands',
   'application.commands.permissions.update': 'Update Slash Command Permissions',
- },
- rolemodes: {
+ };
+
+ rolemodes = {
   stack: 'Stack',
   replace: 'Replace',
- },
- defaultAutoArchiveDurationName: 'Default Auto-Archive Duration',
- defaultAutoArchiveDuration: {
+ };
+
+ defaultAutoArchiveDurationName = 'Default Auto-Archive Duration';
+ defaultAutoArchiveDuration = {
   1440: '1 Day',
   4320: '3 Days',
   60: '1 Hour',
   10080: '1 Week',
- },
- defaultForumLayoutName: 'Forum Layout Type',
- defaultForumLayout: {
+ };
+
+ defaultForumLayoutName = 'Forum Layout Type';
+ defaultForumLayout = {
   2: 'Gallery View',
   1: 'List View',
   0: 'Not Set',
- },
- defaultSortOrderName: 'Default Sort Order',
- defaultSortOrder: {
+ };
+
+ defaultSortOrderName = 'Default Sort Order';
+ defaultSortOrder = {
   0: 'Latest Activity',
   1: 'Newest First',
- },
- auditLogAction,
- Scopes: 'Scopes',
- Result: 'Result',
- stagePrivacyLevels: ['Public', 'Server Only'],
- none,
- defaultValuesLog: (oldValue: string, newValue: string) =>
-  `__Before:__\n${oldValue}\n\n__After:__\n${newValue}`,
- reason: 'Reason',
- No: 'No',
- Yes: 'Yes',
- duration: 'Duration',
- attention: 'Attention',
- Embeds: 'Embeds',
- unknown,
- Unknown,
- error: 'Error',
- content: 'Content',
- name: 'Name',
- optional: 'Optional',
- required: 'Required',
- small: 'Small',
- joinedAt: 'Joined At',
- createdAt: 'Created At',
- roles: 'roles',
- large: 'Large',
- loading: 'Loading',
- Enabled: 'Enabled',
- Disabled: 'Disabled',
- Number: 'Number',
- Punishment: 'Punishment',
- noReasonProvided: 'No Reason provided',
- Aborted: 'Aborted',
- Description: 'Description',
- Command: 'Command',
- Type: 'Type',
- noAliases: 'No Aliases',
- Default: 'Default',
- Level: 'Level',
- End: 'End',
- Message: 'Message',
- Added: 'Added',
- Removed: 'Removed',
- Changed: 'Changed',
- Member: 'Member',
- Members: 'Members',
- Role: 'Role',
- Roles: 'Roles',
- Tier: 'Tier',
- Channel: 'Channel',
- Emoji: 'Emoji',
- User: 'User',
- Users: 'Users',
- Application: 'Application',
- Bot: 'Bot',
- Flags: 'Flags',
- ScheduledEvent: 'Scheduled Event',
- Webhook: 'Webhook',
- color: 'Color',
- ChannelRules: 'Channel Rules',
- Channels: 'Channels',
- Current: 'Current',
- Mentionables: 'Mentionables',
- Mentionable: 'Mentionable',
- Done: 'Done',
- None,
- Create: 'Create',
- Detect: 'Detect',
- Refresh: 'Refresh',
- Delete: 'Delete',
- Examples: 'Examples',
- Redacted: 'Redacted',
- Threads: 'Threads',
- Topic: 'Topic',
- Servers: 'Servers',
- Commands: 'Commands',
- login: 'Log-In',
- and: 'and',
- Never: 'Never',
- Join: 'Join',
- Server: 'Server',
- Deprecated: 'Deprecated',
- Overrides: 'Overrides',
- Triggers: 'Triggers',
- Empty: 'Empty',
- Label: 'Label',
- Add: 'Add',
- Edit: 'Edit',
- Before: 'Before',
- After: 'After',
- Extra: 'Extra',
- InviteCustomBot: 'Invite Custom Bot',
- Invite: 'Invite',
- Other: 'Other',
- Page: 'Page',
- pageBetween: (x: number, y: number) => `A Number from ${x} to ${y}`,
-};
+ };
+
+ auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = {
+  1: 'Server Update',
+  10: 'Channel Create',
+  11: 'Channel Update',
+  12: 'Channel Delete',
+  13: 'Permission Overwrite Create',
+  14: 'Permission Overwrite Update',
+  15: 'Permission Overwrite Delete',
+  20: 'Member Kick',
+  21: 'Member Prune',
+  22: 'Member Ban Add',
+  23: 'Member Ban Remove',
+  24: 'Member Update',
+  25: 'Member Role Update',
+  26: 'Member Move',
+  27: 'Member Disconnect',
+  28: 'Bot Add',
+  30: 'Role Create',
+  31: 'Role Update',
+  32: 'Role Delete',
+  40: 'Invite Create',
+  41: 'Invite Update',
+  42: 'Invite Delete',
+  50: 'Webhook Create',
+  51: 'Webhook Update',
+  52: 'Webhook Delete',
+  60: 'Emoji Create',
+  61: 'Emoji Update',
+  62: 'Emoji Delete',
+  72: 'Message Delete',
+  73: 'Message Bulk Delete',
+  74: 'Message Pin',
+  75: 'Message Unpin',
+  80: 'Integration Create',
+  81: 'Integration Update',
+  82: 'Integration Delete',
+  83: 'Stage Instance Create',
+  84: 'Stage Instance Update',
+  85: 'Stage Instance Delete',
+  90: 'Sticker Create',
+  91: 'Sticker Update',
+  92: 'Sticker Delete',
+  100: 'Scheduled Event Create',
+  101: 'Scheduled Event Update',
+  102: 'Scheduled Event Delete',
+  110: 'Thread Create',
+  111: 'Thread Update',
+  112: 'Thread Delete',
+  121: 'Application Command Permission Update',
+  140: 'Auto Moderation Rule Create',
+  141: 'Auto Moderation Rule Update',
+  142: 'Auto Moderation Rule Delete',
+  143: 'Auto Moderation Block Message',
+  144: 'Auto Moderation Flag To Channel',
+  145: 'Auto Moderation User Communication Disabled',
+  150: 'Creator Monetization Request Created',
+  151: 'Creator Monetization Terms Accepted',
+ };
+
+ Scopes = 'Scopes';
+ Result = 'Result';
+ stagePrivacyLevels = ['Public', 'Server Only'];
+ none = 'none';
+ defaultValuesLog = (oldValue: string, newValue: string) =>
+  `__Before:__\n${oldValue}\n\n__After:__\n${newValue}`;
+ reason = 'Reason';
+ No = 'No';
+ Yes = 'Yes';
+ duration = 'Duration';
+ attention = 'Attention';
+ Embeds = 'Embeds';
+ error = 'Error';
+ content = 'Content';
+ name = 'Name';
+ optional = 'Optional';
+ required = 'Required';
+ small = 'Small';
+ joinedAt = 'Joined At';
+ createdAt = 'Created At';
+ roles = 'roles';
+ large = 'Large';
+ loading = 'Loading';
+ Enabled = 'Enabled';
+ Disabled = 'Disabled';
+ Number = 'Number';
+ Punishment = 'Punishment';
+ noReasonProvided = 'No Reason provided';
+ Aborted = 'Aborted';
+ Description = 'Description';
+ Command = 'Command';
+ Type = 'Type';
+ noAliases = 'No Aliases';
+ Default = 'Default';
+ Level = 'Level';
+ End = 'End';
+ Message = 'Message';
+ Added = 'Added';
+ Removed = 'Removed';
+ Changed = 'Changed';
+ Member = 'Member';
+ Members = 'Members';
+ Role = 'Role';
+ Roles = 'Roles';
+ Tier = 'Tier';
+ Channel = 'Channel';
+ Emoji = 'Emoji';
+ User = 'User';
+ Users = 'Users';
+ Application = 'Application';
+ Bot = 'Bot';
+ Flags = 'Flags';
+ ScheduledEvent = 'Scheduled Event';
+ Webhook = 'Webhook';
+ color = 'Color';
+ ChannelRules = 'Channel Rules';
+ Channels = 'Channels';
+ Current = 'Current';
+ Mentionables = 'Mentionables';
+ Mentionable = 'Mentionable';
+ Done = 'Done';
+ Create = 'Create';
+ Detect = 'Detect';
+ Refresh = 'Refresh';
+ Delete = 'Delete';
+ Examples = 'Examples';
+ Redacted = 'Redacted';
+ Threads = 'Threads';
+ Topic = 'Topic';
+ Servers = 'Servers';
+ Commands = 'Commands';
+ login = 'Log-In';
+ and = 'and';
+ Never = 'Never';
+ Join = 'Join';
+ Server = 'Server';
+ Deprecated = 'Deprecated';
+ Overrides = 'Overrides';
+ Triggers = 'Triggers';
+ Empty = 'Empty';
+ Label = 'Label';
+ Add = 'Add';
+ Edit = 'Edit';
+ Before = 'Before';
+ After = 'After';
+ Extra = 'Extra';
+ InviteCustomBot = 'Invite Custom Bot';
+ Invite = 'Invite';
+ Other = 'Other';
+ Page = 'Page';
+ pageBetween = (x: number, y: number) => `A Number from ${x} to ${y}`;
+
+ constructor(type: string | 'en') {
+  this.CURRENT_LANGUAGE = type;
+ }
+
+ public async init() {
+  this.JSON = await import(`../../../Languages/${this.CURRENT_LANGUAGE}.json`, {
+   assert: { type: 'json' },
+  });
+ }
+}

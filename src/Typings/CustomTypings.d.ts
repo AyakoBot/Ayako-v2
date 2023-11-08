@@ -2,7 +2,7 @@ import type * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import type * as ch from '../BaseClient/ClientHelper.js';
 
-export type Language = typeof import('../Languages/en.js').default;
+export type Language = import('../BaseClient/ClientHelperModules/lang/lang.js').default;
 
 export interface Command {
  takesFirstArg: boolean;
