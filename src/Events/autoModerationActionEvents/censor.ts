@@ -63,6 +63,12 @@ export const getContent = async (
    const includesParent = channel?.parentId ? r.exemptChannels.has(channel.parentId) : false;
 
    if (includesChannel || includesParent) return false;
+   if (
+    !channel &&
+    r.exemptChannels.hasAny(guild.rulesChannelId ?? '', guild.rulesChannel?.parentId ?? '')
+   ) {
+    return false;
+   }
    return true;
   });
 
