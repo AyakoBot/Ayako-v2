@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import auth from '../../../auth.json' assert { type: 'json' };
-import CT from '../../../Typings/CustomTypings.js';
+import CT, { DePromisify } from '../../../Typings/CustomTypings.js';
 import pack from '../../../../package.json' assert { type: 'json' };
 import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
 
@@ -20,57 +20,135 @@ const highlyCredibleVTVendors = [
 const cleanURL = (s: string) =>
  s.replace('https://', '').replace('http://', '').replace('www.', '').split(/\/+/g)[0];
 
-export default async (msg: Discord.Message<true>) => {
+export default async (msg: Discord.Message) => {
  if (!msg.content) return;
  if (msg.author.bot) return;
 
- const settings = await ch.DataBase.antivirus.findUnique({
-  where: { guildid: msg.guildId, active: true },
- });
- if (!settings) return;
+ const settings = msg.inGuild()
+  ? await ch.DataBase.antivirus.findUnique({
+     where: { guildid: msg.guildId, active: true },
+    })
+  : undefined;
+ if (!settings && msg.inGuild()) return;
 
  const url = await run(msg.content);
  if (!url.url) return;
 
  const language = await ch.getLanguage(msg.guildId);
 
- if (settings.linklogging && settings.linklogchannels.length) {
-  // TODO: extended logging with new results
-  ch.send(
-   { id: settings.linklogchannels, guildId: msg.guildId },
-   {
-    embeds: [
-     {
-      color: url.triggers ? ch.constants.colors.danger : ch.constants.colors.success,
-      author: {
-       name: language.deleteReasons.antivirus,
-       icon_url: ch.constants.events.logs.invite.create,
-      },
-      description: language.antivirus.log.value(msg),
-      fields: [
-       {
-        name: language.antivirus.log.name,
-        value: url.urls.map((u) => ch.util.makeInlineCode(u)).join('\n'),
-       },
-       ...(url.url
-        ? [
-           {
-            name: language.antivirus.malicious(
-             ch.constants.standard.getEmote(ch.emotes.crossWithBackground),
-            ),
-            value: ch.util.makeInlineCode(url.url),
-           },
-          ]
-        : []),
-      ],
-     },
-    ],
-   },
-  );
+ if (settings?.linklogging && settings?.linklogchannels.length) {
+  log(settings.linklogchannels, msg, language, url);
  }
 
  if (!url.triggers) return;
- performPunishment(msg, settings, language, msg);
+
+ if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
+ else log(msg.channel, msg, language, url);
+};
+
+const log = (
+ channels: string[] | Discord.Message<false>['channel'],
+ msg: Discord.Message,
+ language: CT.Language,
+ url: DePromisify<ReturnType<typeof run>>,
+) => {
+ const getFields = () => {
+  const lan = language.antivirus.log;
+
+  switch (url.type) {
+   case 'VirusTotal': {
+    const res = url.result as VirusVendorsTypings.VirusTotalAnalyses;
+    const results = res.data.attributes.stats;
+
+    return [
+     {
+      name: lan.scanResult,
+      value: `${lan.vtStats(
+       results.malicious,
+       results.suspicious,
+       results.harmless,
+       results.undetected,
+      )}\n\n[${lan.scanLink}](https://www.virustotal.com/gui/url/${res.data.id.split('-')[1]})`,
+     },
+    ];
+   }
+   case 'PromptAPI':
+    return [
+     {
+      name: lan.age,
+      value: lan.ageDesc,
+     },
+    ];
+   case 'Kaspersky': {
+    const res = url.result as VirusVendorsTypings.Kaspersky;
+
+    return [
+     {
+      name: lan.scanResult,
+      value: lan.detectedAs(
+       res.DomainGeneralInfo.Categories.map((c) => ch.util.makeInlineCode(c)).join(', '),
+      ),
+     },
+    ];
+   }
+   case 'Google Safe Browsing': {
+    const res = url.result as VirusVendorsTypings.GoogleSafeBrowsing;
+
+    return [
+     {
+      name: lan.scanResult,
+      value: lan.detectedAs(
+       res.matches.map((m) => ch.util.makeInlineCode(m.threatType)).join(', '),
+      ),
+     },
+    ];
+   }
+   default:
+    return [];
+  }
+ };
+
+ const payload: CT.UsualMessagePayload = {
+  embeds: [
+   {
+    color: url.triggers ? ch.constants.colors.danger : ch.constants.colors.success,
+    author: {
+     name: language.autotypes.antivirus,
+     icon_url: ch.constants.events.logs.invite.create,
+    },
+    description: `${language.antivirus.log.value(msg)}\n\n${language.antivirus.log.name}\n${url.urls
+     .map((u) => ch.util.makeInlineCode(u))
+     .join(', ')}`,
+    fields: [
+     ...(url.url
+      ? [
+         {
+          name: '\u200b',
+          value: '\u200b',
+         },
+         {
+          name: language.antivirus.malicious(
+           ch.constants.standard.getEmote(ch.emotes.crossWithBackground),
+          ),
+          value: ch.util.makeInlineCode(url.url),
+         },
+         {
+          name: '\u200b',
+          value: '\u200b',
+         },
+        ]
+      : []),
+     ...getFields(),
+    ],
+   },
+  ],
+ };
+
+ if (msg.inGuild()) {
+  ch.send({ id: channels as string[], guildId: msg.guildId }, payload, 10000);
+ } else {
+  ch.send(channels as Discord.TextBasedChannel, payload);
+ }
 };
 
 const run = async (content: string) => {
@@ -91,11 +169,11 @@ const run = async (content: string) => {
      // eslint-disable-next-line no-async-promise-executor
     } = await new Promise(async (res) => {
   for (let i = 0; i < urls.length; i += 1) {
-   if (resolved) return;
+   if (resolved) continue;
 
    // eslint-disable-next-line no-await-in-loop
    const result = await getTriggersAV(urls[i]);
-   if (!result.triggers) return;
+   if (!result.triggers) continue;
 
    resolved = true;
    res({ triggers: true, url: urls[i], result: result.result, type: result.type });
@@ -143,7 +221,7 @@ const getTriggersAV = async (
  const websiteResponse = await checkIfExists(url);
  if (!websiteResponse) return { url, triggers: false };
 
- if (await inFishFish(url)) return { url, triggers: true };
+ if (inFishFish(url)) return { url, triggers: true };
  if (inSinkingYachts(url)) return { url, triggers: true };
  if (await inSpamHaus(url)) return { url, triggers: true };
 
@@ -260,7 +338,7 @@ const getAnalyses = async (
 const getSeverity = (result: VirusVendorsTypings.VirusTotalAnalyses | false) => {
  if (!result) return false;
  if (
-  Object.entries(result.data.attributes.results).filter(
+  Object.entries(result.data.attributes.results).find(
    ([, v]) =>
     ['malicious', 'suspicious'].includes(v.category) &&
     highlyCredibleVTVendors.includes(v.engine_name),
@@ -304,7 +382,7 @@ const inGoogleSafeBrowsing = async (u: string) => {
  if (!res.ok) return { triggers: false, type: 'Google Safe Browsing' };
 
  const json = (await res.json()) as VirusVendorsTypings.GoogleSafeBrowsing;
- if (json.matches.length) {
+ if (json.matches?.length) {
   return { triggers: true, type: 'Google Safe Browsing', result: json };
  }
 
@@ -326,7 +404,7 @@ const reportFishFish = (u: string) => {
 };
 
 // https://api.fishfish.gg/v1/docs
-const inFishFish = async (u: string) => ch.cache.fishFish.cache.has(cleanURL(u));
+const inFishFish = (u: string) => ch.cache.fishFish.cache.has(cleanURL(u));
 
 const inKaspersky = async (u: string) => {
  const res = await fetch(
@@ -356,7 +434,7 @@ export const performPunishment = (
 
  const baseOptions = {
   dbOnly: false,
-  reason: language.deleteReasons.antivirus,
+  reason: language.autotypes.antivirus,
   executor: msg.client.user,
   target: msg.author,
   guild: msg.guild,

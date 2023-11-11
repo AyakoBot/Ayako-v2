@@ -50,7 +50,7 @@ export type Kaspersky = {
 //  DomainGeneralInfo: {
 //   UrlsCount: 10;
 //   HitsCount: 10;
-//   Domain: 'csgo2invite.com';
+//   Domain: 'example.com';
 //   Ipv4Count: 16;
 //   Categories: ['CATEGORY_PHISHING'];
 //   CategoriesWithZone: [

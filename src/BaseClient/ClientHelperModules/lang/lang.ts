@@ -1509,7 +1509,6 @@ export default class Language {
   setLevel: {
    min: 'Level and XP cannot go below 0',
    maxZeros: "You can't add more than 10 Zeros",
-   author: `${this.botName} Leveling`,
    newLvl: 'New Level',
    newXP: 'New XP',
    excluded: 'Excluded Roles',
@@ -3815,8 +3814,13 @@ export default class Language {
  autotypes = {
   verification: `${this.botName} Verification`,
   shop: `${this.botName} Shop`,
+  disboard: `${this.botName} DISBOARD Reminder`,
+  afk: `${this.botName} AFK`,
+  leveling: `${this.botName} Leveling`,
+  cooldown: `${this.botName} Cooldowns`,
   antispam: `${this.botName} Anti-Spam`,
   antivirus: `${this.botName} Anti-Virus`,
+  deleteBlacklist: `${this.botName} Blacklists`,
   blacklist: `${this.botName} Blacklist`,
   statschannel: `${this.botName} Stats-Channel`,
   separators: `${this.botName} Separators`,
@@ -4207,7 +4211,6 @@ export default class Language {
      ? `The current Reactions are: ${reactions}`
      : "However, I currently don't have access to the Emotes or there are none set"
    }`,
-  reason: `${this.botName} Leveling`,
  };
 
  censor = {
@@ -4221,6 +4224,17 @@ export default class Language {
  antivirus = {
   malicious: (cross: string) => `${cross} This Link __is__ Malicious`,
   log: {
+   scanResult: 'Scan Results',
+   vtStats: (m: number, s: number, h: number, u: number) =>
+    `Malicious: ${m} out of 5 minimumrequired to block this Link
+Suspicious: ${s} out of 5 required to block this Link
+Undetected: ${u}
+Harmless: ${h}`,
+   scanLink: 'Look-up Scan',
+   age: 'Age-Based block',
+   detectedAs: (c: string) => `The URl was detected as ${c}`,
+   ageDesc:
+    'This URL was blocked because it is too young\nDomains younger than 8 Days are a major Red-Flag 🚩',
    value: (msg: Discord.Message) =>
     `User <@${msg.author.id}> / \`${msg.author.username}#${msg.author.discriminator}\` / \`${
      msg.author.id
@@ -4236,7 +4250,7 @@ export default class Language {
   settingNotFound: 'The Setting could not be found',
   messageNotFound: 'The Mentioned Message could not be found',
   deprecatedByDiscord:
-   'This Function has been deprecated by Discord, it does not serve any purpopse anymore.\nYou can go ahead and delete it if you wish.',
+   'This Function has been deprecated by Discord, it does not serve any purpose anymore.\nYou can go ahead and delete it if you wish.',
   contactSupport: "If you see this Message and don't know what to do, contact Support [click me]",
   inputNoMatch: 'Input did not match validation Regex',
   punishmentNotFound: 'The Mentioned Punishment could not be found',
@@ -4270,7 +4284,7 @@ export default class Language {
   cantManageChannel: "I can't manage this Channel",
   cantManageInvite: "I can't manage this Invite",
   commandNotFound: 'Command not found',
-  timeInPast: 'Time is in the past',
+  timeInPast: 'Time is in the Past',
  };
 
  channelRules = {
@@ -4564,14 +4578,7 @@ export default class Language {
  deleteReasons = {
   deleteCommand: 'Delete Commands',
   deleteReply: 'Delete Reply',
-  deleteBlacklist: `${this.botName} Blacklists`,
-  leveling: `${this.botName} Leveling`,
-  disboard: `${this.botName} DISBOARD Reminder`,
-  antivirus: `${this.botName} Anti-Virus`,
-  antispam: `${this.botName} Anti-Spam`,
-  cooldown: `${this.botName} Cooldowns`,
   abortedMod: 'Aborted Mod Command',
-  afk: `${this.botName} AFK`,
  };
 
  regionsName = 'Regions';
