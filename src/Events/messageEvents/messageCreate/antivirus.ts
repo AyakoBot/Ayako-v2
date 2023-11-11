@@ -4,8 +4,18 @@ import fetch from 'node-fetch';
 import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import auth from '../../../auth.json' assert { type: 'json' };
-import CT, { DePromisify } from '../../../Typings/CustomTypings.js';
+import CT from '../../../Typings/CustomTypings.js';
 import pack from '../../../../package.json' assert { type: 'json' };
+import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
+
+type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
+
+const highlyCredibleVTVendors = [
+ 'Yandex Safebrowsing',
+ 'Google Safebrowsing',
+ 'Kaspersky',
+ 'BitDefender',
+];
 
 const cleanURL = (s: string) =>
  s.replace('https://', '').replace('http://', '').replace('www.', '').split(/\/+/g)[0];
@@ -64,29 +74,46 @@ export default async (msg: Discord.Message<true>) => {
 
 const run = async (content: string) => {
  const urls = await getURLs(content);
-
  let resolved = false;
- // eslint-disable-next-line no-async-promise-executor
- const triggersAV: string | false = await new Promise(async (res) => {
+
+ const triggersAV:
+  | undefined
+  | {
+     triggers: boolean;
+     url: string;
+     result?:
+      | VirusVendorsTypings.Kaspersky
+      | VirusVendorsTypings.GoogleSafeBrowsing
+      | VirusVendorsTypings.PromptAPI
+      | VirusVendorsTypings.VirusTotalAnalyses;
+     type?: VendorType;
+     // eslint-disable-next-line no-async-promise-executor
+    } = await new Promise(async (res) => {
   for (let i = 0; i < urls.length; i += 1) {
    if (resolved) return;
 
    // eslint-disable-next-line no-await-in-loop
    const result = await getTriggersAV(urls[i]);
-   if (!result) return;
+   if (!result.triggers) return;
 
    resolved = true;
-   res(result);
+   res({ triggers: true, url: urls[i], result: result.result, type: result.type });
   }
 
-  if (!resolved) res(false);
+  if (!resolved) res(undefined);
  });
 
- if (!triggersAV) return { triggers: false, urls, url: triggersAV };
+ if (!triggersAV?.triggers) return { triggers: false, urls, url: triggersAV?.url };
 
- reportFishFish(triggersAV);
+ reportFishFish(triggersAV.url);
 
- return { triggers: true, urls, url: triggersAV };
+ return {
+  triggers: true,
+  urls,
+  url: triggersAV.url,
+  result: triggersAV.result,
+  type: triggersAV.type,
+ };
 };
 
 const getURLs = async (content: string): Promise<string[]> => {
@@ -100,18 +127,46 @@ const getURLs = async (content: string): Promise<string[]> => {
  return (await Promise.all(argsContainingLink.map((arg) => ch.fetchWithRedirects(arg)))).flat();
 };
 
-const getTriggersAV = async (url: string) => {
+const getTriggersAV = async (
+ url: string,
+): Promise<{
+ url: string;
+ type?: VendorType;
+ result?:
+  | VirusVendorsTypings.Kaspersky
+  | VirusVendorsTypings.GoogleSafeBrowsing
+  | VirusVendorsTypings.PromptAPI
+  | VirusVendorsTypings.VirusTotalAnalyses;
+ triggers: boolean;
+}> => {
  const websiteResponse = await checkIfExists(url);
- if (!websiteResponse) return false;
+ if (!websiteResponse) return { url, triggers: false };
 
- if (await inFishFish(url)) return url;
- if (inSinkingYachts(url)) return url;
- if (await inSpamHaus(url)) return url;
- if (await inGoogleSafeBrowsing(url)) return url;
- if (await ageCheck(url)) return url;
- if (await inVT(url)) return url;
+ if (await inFishFish(url)) return { url, triggers: true };
+ if (inSinkingYachts(url)) return { url, triggers: true };
+ if (await inSpamHaus(url)) return { url, triggers: true };
 
- return false;
+ const kaspersky = await inKaspersky(url);
+ if (kaspersky.triggered) {
+  return { url, type: 'Kaspersky', result: kaspersky.result, triggers: true };
+ }
+
+ const googleSafeBrowsing = await inGoogleSafeBrowsing(url);
+ if (googleSafeBrowsing.triggers) {
+  return { url, type: 'Google Safe Browsing', result: googleSafeBrowsing.result, triggers: true };
+ }
+
+ const promptAPI = await ageCheck(url);
+ if (promptAPI.triggers) {
+  return { url, triggers: true, result: promptAPI.result, type: 'PromptAPI' };
+ }
+
+ const virusTotal = await inVT(url);
+ if (virusTotal.triggers && virusTotal.result !== false && typeof virusTotal.result !== 'string') {
+  return { url, triggers: true, result: virusTotal.result, type: 'VirusTotal' };
+ }
+
+ return { triggers: false, url };
 };
 
 const checkIfExists = async (url: string) => {
@@ -141,15 +196,17 @@ const ageCheck = async (u: string) => {
   headers: { apikey: auth.promptAPIToken },
  });
 
- if (!res.ok) return false;
+ if (!res.ok) return { triggers: false };
 
- const data = (await res.json()) as { result: { creation_date: string } };
+ const json = (await res.json()) as VirusVendorsTypings.PromptAPI;
+ if (json.result === 'not found') return { triggers: false, type: 'PromptAPI' };
+
  const ageInDays = Math.ceil(
-  Math.abs(new Date(data.result.creation_date).getTime() + new Date().getTime()) /
+  Math.abs(new Date(json.result.creation_date).getTime() + new Date().getTime()) /
    (1000 * 3600 * 24),
  );
 
- return ageInDays < 8;
+ return { triggers: ageInDays < 8, type: 'PromptAPI', result: json };
 };
 
 const inVT = async (u: string) => {
@@ -164,30 +221,21 @@ const inVT = async (u: string) => {
   body,
  });
 
- if (!urlsRes.ok) return false;
+ if (!urlsRes.ok) return { triggers: false };
 
- const urlsData = (await urlsRes.json()) as { data: { id: string; type: 'analyses' } };
+ const urlsData = (await urlsRes.json()) as VirusVendorsTypings.VirusTotalURLs;
  const analysesData = await getAnalyses(urlsData.data.id);
- if (typeof analysesData === 'string') return false;
+ if (typeof analysesData === 'string') return { triggers: false };
 
- return getSeverity(analysesData.data.attributes.stats) ? u : false;
+ return getSeverity(analysesData)
+  ? { triggers: true, result: analysesData, type: 'VirusTotal' }
+  : { triggers: false };
 };
 
 const getAnalyses = async (
  id: string,
  i = 1,
-): Promise<
- | {
-    data: {
-     attributes: {
-      status: 'queued' | 'completed' | 'in-progress';
-      stats: CT.Argument<typeof getSeverity, 0>;
-     };
-     id: string;
-    };
-   }
- | string
-> => {
+): Promise<false | string | VirusVendorsTypings.VirusTotalAnalyses> => {
  if (i > 5) throw new Error('Too many requests');
 
  return new Promise((resolve) => {
@@ -199,34 +247,28 @@ const getAnalyses = async (
    });
    if (!res.ok) return resolve((await res.text()) as string);
 
-   const data = (await res.json()) as DePromisify<ReturnType<typeof getAnalyses>>;
+   const data = (await res.json()) as VirusVendorsTypings.VirusTotalAnalyses;
+   if (typeof data === 'string') return resolve(false);
 
-   if (typeof data === 'string') return false;
    if (data.data.attributes.status === 'completed') return resolve(data);
    return resolve(await getAnalyses(id, i + 1));
   });
  });
 };
 
-const getSeverity = (VTresponse: { suspicious: number; malicious: number }) => {
- if (!VTresponse) return false;
-
- let severity = 0;
-
- if (VTresponse.suspicious) {
-  severity = VTresponse.suspicious % 10;
+const getSeverity = (result: VirusVendorsTypings.VirusTotalAnalyses | false) => {
+ if (!result) return false;
+ if (
+  Object.entries(result.data.attributes.results).filter(
+   ([, v]) =>
+    ['malicious', 'suspicious'].includes(v.category) &&
+    highlyCredibleVTVendors.includes(v.engine_name),
+  )
+ ) {
+  return true;
  }
 
- if (VTresponse.malicious) {
-  if (VTresponse.malicious > 1 && VTresponse.malicious < 5) {
-   severity += 6;
-  } else if (VTresponse.malicious > 50) {
-   severity = 100;
-  }
-
-  severity += VTresponse.malicious * 2;
- }
- return severity > 2;
+ return result.data.attributes.stats.malicious + result.data.attributes.stats.suspicious > 5;
 };
 
 const inGoogleSafeBrowsing = async (u: string) => {
@@ -258,8 +300,14 @@ const inGoogleSafeBrowsing = async (u: string) => {
   },
  );
 
- if (!res.ok) return false;
- return !!((await res.json()) as { matches?: string[] }).matches?.length;
+ if (!res.ok) return { triggers: false, type: 'Google Safe Browsing' };
+
+ const json = (await res.json()) as VirusVendorsTypings.GoogleSafeBrowsing;
+ if (json.matches.length) {
+  return { triggers: true, type: 'Google Safe Browsing', result: json };
+ }
+
+ return { triggers: false, type: 'Google Safe Browsing' };
 };
 
 const reportFishFish = (u: string) => {
@@ -278,6 +326,24 @@ const reportFishFish = (u: string) => {
 
 // https://api.fishfish.gg/v1/docs
 const inFishFish = async (u: string) => ch.cache.fishFish.cache.has(cleanURL(u));
+
+const inKaspersky = async (u: string) => {
+ const res = await fetch(
+  `https://opentip.kaspersky.com/api/v1/search/domain?request=${cleanURL(u)}`,
+  {
+   headers: {
+    'x-api-key': auth.kasperskyKey,
+   },
+  },
+ );
+
+ if (res.ok) return { triggered: false };
+
+ const json = (await res.json()) as VirusVendorsTypings.Kaspersky;
+ if (json.Zone === 'Red') return { triggered: true, type: 'Kaspersky', result: json };
+
+ return { triggered: false, type: 'Kaspersky', result: json };
+};
 
 export const performPunishment = (
  rawMessage: Discord.Message<true> | undefined,
