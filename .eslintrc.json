@@ -66,6 +66,7 @@
     "singleQuote": true,
     "semi": true
    }
-  ]
+  ],
+  "no-continue": "off"
  }
 }
