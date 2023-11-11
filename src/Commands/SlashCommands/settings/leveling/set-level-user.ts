@@ -144,7 +144,7 @@ export const getEmbed = (
  { xp: newXP, level: newLevel }: { xp: number; level: number },
 ): Discord.APIEmbed => ({
  author: {
-  name: language.slashCommands.setLevel.author,
+  name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descUser(user),
  color: ch.constants.colors.ephemeral,

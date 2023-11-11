@@ -450,8 +450,8 @@ const roleAssign = async (
  }
 
  if (!msg.member) return;
- if (add.length) await ch.roleManager.add(msg.member, add, language.leveling.reason);
- if (remove.length) await ch.roleManager.remove(msg.member, remove, language.leveling.reason);
+ if (add.length) await ch.roleManager.add(msg.member, add, language.autotypes.leveling);
+ if (remove.length) await ch.roleManager.remove(msg.member, remove, language.autotypes.leveling);
 };
 
 const doReact = async (

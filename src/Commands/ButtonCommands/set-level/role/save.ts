@@ -43,7 +43,7 @@ const getEmbed = (
  roles: string[],
 ) => ({
  author: {
-  name: language.slashCommands.setLevel.author,
+  name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descFinRole(role),
  color: ch.constants.colors.ephemeral,
