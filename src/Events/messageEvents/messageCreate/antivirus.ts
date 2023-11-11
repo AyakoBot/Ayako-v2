@@ -35,6 +35,7 @@ export default async (msg: Discord.Message<true>) => {
  const language = await ch.getLanguage(msg.guildId);
 
  if (settings.linklogging && settings.linklogchannels.length) {
+  // TODO: extended logging with new results
   ch.send(
    { id: settings.linklogchannels, guildId: msg.guildId },
    {
