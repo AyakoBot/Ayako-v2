@@ -9,6 +9,7 @@ import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThre
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
+import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
 
 export default () => {
  reminder();
@@ -38,6 +39,34 @@ const reminder = async () => {
 };
 
 export const tasks = {
+ vcDeleteTimeouts: async (guild: Discord.Guild) => {
+  const settings = await ch.DataBase.voicechannels.findMany({
+   where: { guildid: guild.id },
+  });
+
+  const vcs = await ch.DataBase.voicechannels.findMany({ where: { guildid: guild.id } });
+
+  vcs.forEach(async (vc) => {
+   const delDB = () =>
+    ch.DataBase.voicechannels
+     .delete({ where: { guildid_channelid: { guildid: vc.guildid, channelid: vc.channelid } } })
+     .then();
+
+   const applyingSetting = settings.find((s) => vc.hubid === s.channelid);
+   if (!applyingSetting) {
+    delDB();
+    return;
+   }
+
+   const channel = await ch.getChannel.guildVoiceChannel(vc.channelid);
+   if (!channel) {
+    delDB();
+    return;
+   }
+
+   del(channel);
+  });
+ },
  bans: async (guild: Discord.Guild) => {
   ch.getAllBans(guild);
  },

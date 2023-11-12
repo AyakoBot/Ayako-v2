@@ -19,6 +19,8 @@ export const AllNonThreadGuildChannelTypes = [
 ] as const;
 
 export enum TableNamesPrismaTranslation {
+ 'voice-hubs' = 'voicehubs',
+ voicechannels = 'voicechannels',
  shop = 'shop',
  'shop-items' = 'shopitems',
  'anti-spam' = 'antispam',
@@ -925,6 +927,11 @@ export default {
      emote: 'emote',
      roles: 'roles',
      linkedid: 'settinglink',
+    },
+    'voice-hubs': {
+     channelid: 'channel',
+     categoryid: 'category',
+     deletetime: 'duration',
     },
    },
   },

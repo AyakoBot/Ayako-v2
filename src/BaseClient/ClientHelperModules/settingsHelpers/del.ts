@@ -51,6 +51,8 @@ export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimest
     return DataBase.buttonroles.delete(where);
    case 'booster-roles':
     return DataBase.nitroroles.delete(where);
+   case 'voice-hubs':
+    return DataBase.voicehubs.delete(where);
    default:
     throw new Error(`Unsupported Setting ${tableName}`);
   }

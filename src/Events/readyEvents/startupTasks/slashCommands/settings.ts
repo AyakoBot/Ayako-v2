@@ -274,6 +274,12 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('welcome')
      .setDescription('Greet joining Users with a welcome Message'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('voice-hub')
+     .setDescription('Have Ayako create Voice Channels for your Members')
+     .addStringOption(IDSelector),
    ),
  )
  .addSubcommand(

@@ -2,7 +2,6 @@
 import * as Discord from 'discord.js';
 import { Prisma } from '@prisma/client';
 import type CT from '../../../Typings/CustomTypings.js';
-// eslint-disable-next-line import/no-cycle
 import * as ch from '../../ClientHelper.js';
 import client from '../../Client.js';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -2669,6 +2668,24 @@ export default class Language {
     //   },
     //  },
     // },
+    'voice-hubs': {
+     name: 'Voice-Hubs',
+     fields: {
+      channelid: {
+       name: 'Channel',
+       desc: 'The Voice-Channel Members have to join to create Voice-Hubs',
+      },
+      categoryid: {
+       name: 'Voice-Hub Category',
+       desc: 'The Category Voice-Hubs will be created in',
+      },
+      deletetime: {
+       name: 'Delete Timeout',
+       desc:
+        'How long to wait until a Voice-Hub is deleted after the last Member left (Example: 1h 5 minutes 30 s)',
+      },
+     },
+    },
     'shop-items': {
      name: 'Shop-Items',
      command: (cId: string) => `</shop:${cId}>`,

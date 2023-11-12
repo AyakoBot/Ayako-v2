@@ -49,6 +49,8 @@ export default async (
      return DataBase.buttonroles.findUnique(where);
     case 'booster-roles':
      return DataBase.nitroroles.findUnique(where);
+    case 'voice-hubs':
+     return DataBase.voicehubs.findUnique(where);
     default:
      throw new Error(`1 Unsupported Setting ${tableName}`);
    }

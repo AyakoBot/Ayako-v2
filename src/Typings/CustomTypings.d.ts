@@ -81,6 +81,7 @@ export type TableNamesMap = {
  'role-rewards': Prisma.rolerewards;
  invites: Prisma.invites;
  newlines: Prisma.newlines;
+ 'voice-hubs': Prisma.voicehubs;
 };
 
 export interface AutoCompleteFile {

@@ -53,4 +53,7 @@ export default async (channel: Discord.Channel) => {
   ch.cache.deleteSuggestions.delete(s.guildid, s.msgid);
  });
  ch.DataBase.suggestionvotes.deleteMany({ where: { channelid: channel.id } }).then();
+
+ ch.cache.vcDeleteTimeout.delete(channel.guildId, channel.id);
+ ch.DataBase.voicechannels.deleteMany({ where: { channelid: channel.id } }).then();
 };

@@ -1,7 +1,6 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
 
-// eslint-disable-next-line import/no-cycle
 import auditLogs, { AuditLogs } from './cache/discord/auditLogs.js';
 import commandPermissions, { CommandPermissions } from './cache/discord/commandPermissions.js';
 import integrations, { Integrations } from './cache/discord/integrations.js';
@@ -24,6 +23,7 @@ import giveaways, { Giveaways } from './cache/bot/giveaways.js';
 import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
 import deleteSuggestions, { DeleteSuggestions } from './cache/bot/deleteSuggestions.js';
+import vcDeleteTimeout, { VcDeleteTimeout } from './cache/bot/vcDeleteTimeout.js';
 
 import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
 import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
@@ -61,6 +61,7 @@ const cache: {
  punishments: Set<string>;
  antispam: Map<string, Discord.Message<true>[]>;
  deleteSuggestions: DeleteSuggestions;
+ vcDeleteTimeout: VcDeleteTimeout;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -102,6 +103,7 @@ const cache: {
  punishments: new Set(),
  antispam: new Map(),
  deleteSuggestions,
+ vcDeleteTimeout,
 
  // URLs
  urlTLDs,

@@ -49,6 +49,8 @@ export default (
      return DataBase.buttonroles.update(where);
     case 'booster-roles':
      return DataBase.nitroroles.update(where);
+    case 'voice-hubs':
+     return DataBase.voicehubs.update(where);
     default:
      throw new Error(`3 Unsupported Setting ${String(tableName)}`);
    }

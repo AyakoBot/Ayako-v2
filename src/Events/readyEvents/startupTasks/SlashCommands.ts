@@ -93,6 +93,7 @@ export default {
   'settings_roles_button-role-settings': 'roles',
   'settings_roles_button-roles': 'roles',
   settings_automation_cooldowns: 'automation',
+  'settings_automation_voice-hub': 'automation',
   'settings_automation_disboard-reminders': 'automation',
   settings_automation_suggestions: 'automation',
   settings_automation_verification: 'automation',

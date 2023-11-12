@@ -1029,3 +1029,31 @@ model shopusers {
  @@id([userid, guildid], map: "shopusers_pkey")
  @@index([userid, guildid])
 }
+
+model voicehubs {
+ uniquetimestamp Decimal  @db.Decimal
+ guildid         String   @db.VarChar
+ active          Boolean  @db.Boolean @default(false)
+ channelid       String?  @db.VarChar
+ categoryid      String?  @db.VarChar
+ deletetime      Decimal  @db.Decimal @default(3600)
+ blroleid        String[] @db.VarChar
+ bluserid        String[] @db.VarChar
+ wlroleid        String[] @db.VarChar
+ wluserid        String[] @db.VarChar
+
+
+ @@id(uniquetimestamp, map: "voicehubs_pkey")
+ @@index([guildid, uniquetimestamp])
+}
+
+model voicechannels {
+ ownerid          String   @db.VarChar
+ guildid          String   @db.VarChar
+ channelid        String   @db.VarChar
+ hubid            String   @db.VarChar
+ everyonelefttime Decimal? @db.Decimal
+
+ @@id([guildid, channelid], map: "voicechannels_pkey")
+ @@index([guildid, channelid])
+}

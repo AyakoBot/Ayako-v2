@@ -187,15 +187,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.specific(
     language,
-    settings.settingslog,
-    'settingslog',
-    name,
-    undefined,
-    'channel',
-   ),
-   buttonParsers.specific(language, settings.modlog, 'modlog', name, undefined, 'channel'),
-   buttonParsers.specific(
-    language,
     settings.reactionevents,
     'reactionevents',
     name,
@@ -210,6 +201,15 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     undefined,
     'channel',
    ),
+   buttonParsers.specific(
+    language,
+    settings.settingslog,
+    'settingslog',
+    name,
+    undefined,
+    'channel',
+   ),
+   buttonParsers.specific(language, settings.modlog, 'modlog', name, undefined, 'channel'),
   ],
  },
 ];
