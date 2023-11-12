@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import get from './invites/get.js';
 import del from './invites/delete.js';
 

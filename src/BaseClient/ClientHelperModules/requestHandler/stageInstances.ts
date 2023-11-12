@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import create from './stageInstances/create.js';
 import get from './stageInstances/get.js';
 import edit from './stageInstances/edit.js';

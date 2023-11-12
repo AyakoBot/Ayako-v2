@@ -25,8 +25,7 @@ export default async (guild: Discord.Guild, err: Error) => {
  if (!channel) return;
 
  const language = await getLanguage(guild.id);
- // eslint-disable-next-line import/no-cycle
- const requestHandler: typeof RequestHandler = await import('./requestHandler.js');
+  const requestHandler: typeof RequestHandler = await import('./requestHandler.js');
 
  requestHandler.request.channels.sendMessage(
   undefined,

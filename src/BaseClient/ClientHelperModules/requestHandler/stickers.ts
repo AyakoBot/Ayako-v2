@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import getNitroStickers from './stickers/getNitroStickers.js';
 import get from './stickers/get.js';
 

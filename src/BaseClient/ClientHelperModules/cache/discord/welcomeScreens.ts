@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-// eslint-disable-next-line import/no-cycle
 import error from '../../error.js';
 
 /**
@@ -37,8 +36,7 @@ const self: WelcomeScreens = {
   const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  // eslint-disable-next-line import/no-cycle
-  const requestHandler = (await import('../../requestHandler.js')).request;
+    const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getWelcomeScreen(guild);
   if (!fetched) return undefined;
   if ('message' in fetched) {

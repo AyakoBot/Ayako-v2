@@ -37,8 +37,7 @@ const self: Onboarding = {
   const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  // eslint-disable-next-line import/no-cycle
-  const requestHandler = (await import('../../requestHandler.js')).request;
+    const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getOnboarding(guild);
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Onboarding'));

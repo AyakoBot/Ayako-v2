@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import get from './webhooks/get.js';
 import edit from './webhooks/edit.js';
 import del from './webhooks/delete.js';

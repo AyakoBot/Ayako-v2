@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-// eslint-disable-next-line import/no-cycle
 import error from '../../error.js';
-// eslint-disable-next-line import/no-cycle
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 
 /**
@@ -51,8 +49,7 @@ const self: Pins = {
 
   if (!('lastPinTimestamp' in channel)) return undefined;
 
-  // eslint-disable-next-line import/no-cycle
-  const requestHandler = (await import('../../requestHandler.js')).request;
+    const requestHandler = (await import('../../requestHandler.js')).request;
   const me = await getBotMemberFromGuild(channel.guild);
   const channelBitfield = me?.permissionsIn(channel);
   if (channelBitfield && !channelBitfield?.has(Discord.PermissionFlagsBits.ViewChannel)) {

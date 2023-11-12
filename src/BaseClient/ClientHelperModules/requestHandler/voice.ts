@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import getVoiceRegions from './voice/getVoiceRegions.js';
 
 /**

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import getGlobalCommands from './commands/getGlobalCommands.js';
 import createGlobalCommand from './commands/createGlobalCommand.js';
 import getGlobalCommand from './commands/getGlobalCommand.js';

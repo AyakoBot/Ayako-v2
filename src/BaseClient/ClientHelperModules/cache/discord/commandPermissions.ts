@@ -47,8 +47,7 @@ const self: CommandPermissions = {
   const cached = self.cache.get(guild.id)?.get(commandId);
   if (cached) return cached;
 
-  // eslint-disable-next-line import/no-cycle
-  const requestHandler = (await import('../../requestHandler.js')).request;
+    const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.commands.getGuildCommandsPermissions(guild);
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Command Permissions'));

@@ -45,8 +45,7 @@ const self: Integrations = {
   const cached = self.cache.get(guild.id)?.get(id);
   if (cached) return cached;
 
-  // eslint-disable-next-line import/no-cycle
-  const requestHandler = (await import('../../requestHandler.js')).request;
+    const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getIntegrations(guild);
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Guild Integrations'));

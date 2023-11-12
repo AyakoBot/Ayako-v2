@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import get from './users/get.js';
 import getCurrent from './users/getCurrent.js';
 import getGuilds from './users/getGuilds.js';

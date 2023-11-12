@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import edit from './guilds/edit.js';
 import del from './guilds/delete.js';
 import getChannels from './guilds/getChannels.js';

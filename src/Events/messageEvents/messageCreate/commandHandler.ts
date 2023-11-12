@@ -4,7 +4,6 @@ import { glob } from 'glob';
 import client from '../../../BaseClient/Client.js';
 import auth from '../../../auth.json' assert { type: 'json' };
 import * as CT from '../../../Typings/CustomTypings.js';
-// eslint-disable-next-line import/no-cycle
 import getLanguage from '../../../BaseClient/ClientHelperModules/getLanguage.js';
 import constants from '../../../BaseClient/Other/constants.js';
 import errorMsg from '../../../BaseClient/ClientHelperModules/errorMsg.js';

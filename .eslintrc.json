@@ -67,6 +67,7 @@
     "semi": true
    }
   ],
-  "no-continue": "off"
+  "no-continue": "off",
+  "import/no-cycle": "off"
  }
 }

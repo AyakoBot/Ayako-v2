@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import join from './threads/join.js';
 import addMember from './threads/addMember.js';
 import leave from './threads/leave.js';

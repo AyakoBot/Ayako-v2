@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-cycle
 import sendMessage from './channels/sendMessage.js';
 import replyMsg from './channels/replyMsg.js';
 import editMsg from './channels/editMsg.js';

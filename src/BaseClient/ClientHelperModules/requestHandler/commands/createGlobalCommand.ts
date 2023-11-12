@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Client.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-// eslint-disable-next-line import/no-cycle
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';

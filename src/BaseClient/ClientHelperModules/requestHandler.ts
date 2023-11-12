@@ -1,11 +1,9 @@
 import * as DiscordRest from '@discordjs/rest';
 import * as DiscordCore from '@discordjs/core';
 import * as CT from '../../Typings/CustomTypings';
-// eslint-disable-next-line import/no-cycle
 import cache from './cache.js';
 import { API } from '../Client.js';
 
-// eslint-disable-next-line import/no-cycle
 import commands from './requestHandler/commands.js';
 import channels from './requestHandler/channels.js';
 import guilds from './requestHandler/guilds.js';
