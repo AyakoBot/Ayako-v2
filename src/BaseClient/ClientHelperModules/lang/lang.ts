@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import * as Discord from 'discord.js';
 import { Prisma } from '@prisma/client';
 import type CT from '../../../Typings/CustomTypings.js';
@@ -691,7 +690,7 @@ export default class Language {
     syncing: 'Syncing',
     enableEmoticons: 'Enables Emotes',
     revoked: 'Revoked',
-    expireBehaviorName: 'Expire Behaviour',
+    expireBehaviorName: 'Expire Behavior',
     expireBehavior: {
      0: 'Remove Role from Member',
      1: 'Kick Member',
@@ -3798,6 +3797,7 @@ export default class Language {
  };
 
  autotypes = {
+  voiceHub: `${this.botName} Voice-Hub`,
   verification: `${this.botName} Verification`,
   shop: `${this.botName} Shop`,
   disboard: `${this.botName} DISBOARD Reminder`,
@@ -4821,6 +4821,15 @@ Harmless: ${h}`,
  Other = 'Other';
  Page = 'Page';
  pageBetween = (x: number, y: number) => `A Number from ${x} to ${y}`;
+
+ voiceHub = {
+  desc: (u: Discord.User) => `Welcome, ${u}, to your personal Voice-Channel
+
+You have full access to Permission management here, 
+meaning you can manually add people to your Voice-Channel and change its behavior as you wish.
+
+To do so, simply open the Channel-Settings`,
+ };
 
  constructor(type: string | 'en') {
   this.CURRENT_LANGUAGE = type;

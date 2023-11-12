@@ -32,14 +32,52 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   }
  }
 
- const channel = await ch.request.guilds.createChannel(state.guild, {
+ const channel = (await ch.request.guilds.createChannel(state.guild, {
   parent_id: settings.categoryid,
   name: member.displayName,
   type: Discord.ChannelType.GuildVoice,
   position: state.channel.position + 1,
- });
+  permission_overwrites: [
+   {
+    id: member.id,
+    type: Discord.OverwriteType.Member,
+    allow: new Discord.PermissionsBitField([
+     Discord.PermissionFlagsBits.Connect,
+     Discord.PermissionFlagsBits.ManageChannels,
+     Discord.PermissionFlagsBits.Speak,
+     Discord.PermissionFlagsBits.PrioritySpeaker,
+     Discord.PermissionFlagsBits.DeafenMembers,
+     Discord.PermissionFlagsBits.MuteMembers,
+    ]).bitfield.toString(),
+   },
+   {
+    id: member.guild.roles.everyone.id,
+    type: Discord.OverwriteType.Role,
+    deny: new Discord.PermissionsBitField([
+     Discord.PermissionFlagsBits.Connect,
+    ]).bitfield.toString(),
+   },
+  ],
+ })) as Discord.VoiceChannel | Discord.DiscordAPIError;
 
  if ('message' in channel) return;
+
+ const language = await ch.getLanguage(state.guild.id);
+ ch.send(channel, {
+  content: `${member}`,
+  embeds: [
+   {
+    author: {
+     name: language.autotypes.voiceHub,
+    },
+    description: language.voiceHub.desc(member.user),
+    color: ch.getColor(await ch.getBotIdFromGuild(state.guild)),
+   },
+  ],
+  allowed_mentions: {
+   users: [member.id],
+  },
+ });
 
  ch.DataBase.voicechannels
   .create({
