@@ -33,7 +33,8 @@
   "sourceRoot": "./src/",
   "forceConsistentCasingInFileNames": true,
   "skipLibCheck": true,
-  "allowSyntheticDefaultImports": true
+  "allowSyntheticDefaultImports": true,
+  "noErrorTruncation": true
  },
  "exclude": ["node_modules", "dist"]
 }
