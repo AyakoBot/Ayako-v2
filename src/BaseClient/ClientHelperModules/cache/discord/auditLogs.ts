@@ -49,7 +49,7 @@ const self: AuditLogs = {
   const cached = self.cache.get(guild.id)?.get(type);
   if (cached) return [...cached.values()];
 
-    const requestHandler = (await import('../../requestHandler.js')).request;
+  const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getAuditLogs(guild, {
    action_type: type,
    limit: 100,

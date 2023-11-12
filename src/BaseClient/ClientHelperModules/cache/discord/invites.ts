@@ -51,7 +51,7 @@ const self: Invites = {
   const cached = self.cache.get(guild.id)?.get(channelId)?.get(code);
   if (cached) return cached;
 
-    const requestHandler = (await import('../../requestHandler.js')).request;
+  const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getInvites(guild);
   if ('message' in fetched) {
    error(guild, new Error('Couldnt get Invites'));
