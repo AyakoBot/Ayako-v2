@@ -182,7 +182,7 @@ export const Channel = <T extends Discord.ChannelType>(
   }
   case Discord.ChannelType.GuildVoice: {
    // @ts-ignore
-   return new Discord.VoiceChannel(guild, c);
+   return new Discord.VoiceChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildCategory: {
    // @ts-ignore
@@ -200,7 +200,7 @@ export const Channel = <T extends Discord.ChannelType>(
   }
   case Discord.ChannelType.GuildStageVoice: {
    // @ts-ignore
-   return new Discord.StageChannel(guild, c);
+   return new Discord.StageChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildForum: {
    // @ts-ignore
