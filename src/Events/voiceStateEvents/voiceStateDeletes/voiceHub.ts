@@ -13,12 +13,12 @@ export default async (state: Discord.VoiceState) => {
   data: {
    everyonelefttime: Date.now(),
   },
-  select: { guildid: true },
+  select: { hubid: true },
  });
  if (!vc) return;
 
  const settings = await ch.DataBase.voicehubs.findFirst({
-  where: { channelid: state.channel.id },
+  where: { channelid: vc.hubid },
  });
  if (!settings) {
   ch.DataBase.voicechannels
@@ -28,7 +28,6 @@ export default async (state: Discord.VoiceState) => {
    .then();
   return;
  }
-
  ch.cache.vcDeleteTimeout.delete(state.guild.id, state.channel.id);
 
  ch.cache.vcDeleteTimeout.set(
@@ -42,6 +41,7 @@ export default async (state: Discord.VoiceState) => {
 
 export const del = (channel: Discord.VoiceBasedChannel) => {
  if (channel.members.size) return;
+
  ch.DataBase.voicechannels
   .delete({
    where: { guildid_channelid: { guildid: channel.guild.id, channelid: channel.id } },

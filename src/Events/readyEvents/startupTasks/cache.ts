@@ -40,7 +40,7 @@ const reminder = async () => {
 
 export const tasks = {
  vcDeleteTimeouts: async (guild: Discord.Guild) => {
-  const settings = await ch.DataBase.voicechannels.findMany({
+  const settings = await ch.DataBase.voicehubs.findMany({
    where: { guildid: guild.id },
   });
 
@@ -64,7 +64,24 @@ export const tasks = {
     return;
    }
 
-   del(channel);
+   if (channel.members.size) return;
+
+   if (!vc.everyonelefttime) {
+    ch.DataBase.voicechannels
+     .update({
+      where: { guildid_channelid: { guildid: guild.id, channelid: channel.id } },
+      data: { everyonelefttime: Date.now() },
+     })
+     .then();
+   }
+
+   ch.cache.vcDeleteTimeout.set(
+    Jobs.scheduleJob(new Date(Date.now() + Number(applyingSetting.deletetime) * 1000), () =>
+     del(channel),
+    ),
+    guild.id,
+    channel.id,
+   );
   });
  },
  bans: async (guild: Discord.Guild) => {

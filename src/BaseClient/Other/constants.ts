@@ -929,7 +929,7 @@ export default {
      linkedid: 'settinglink',
     },
     'voice-hubs': {
-     channelid: 'channel',
+     channelid: 'voice',
      categoryid: 'category',
      deletetime: 'duration',
     },

@@ -2,7 +2,11 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export default async (
+ cmd: Discord.ButtonInteraction,
+ args: string[],
+ channelTypes: 'category' | 'voice' | 'text' = 'text',
+) => {
  if (!cmd.inCachedGuild()) return;
 
  const fieldName = args.shift();
@@ -46,6 +50,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       fieldName,
       settingName,
       uniquetimestamp,
+      channelTypes,
      ),
     ],
    },

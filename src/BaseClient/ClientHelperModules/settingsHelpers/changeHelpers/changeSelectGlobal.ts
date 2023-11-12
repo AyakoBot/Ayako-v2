@@ -10,6 +10,7 @@ export default <T extends keyof CT.SettingsNames>(
  fieldName: string,
  settingName: T,
  uniquetimestamp: number | undefined | string,
+ channelType?: 'text' | 'voice' | 'category',
 ) => {
  const menu:
   | Discord.APIRoleSelectComponent
@@ -26,16 +27,29 @@ export default <T extends keyof CT.SettingsNames>(
  };
 
  if (menu.type === Discord.ComponentType.ChannelSelect) {
-  menu.channel_types = [
-   Discord.ChannelType.AnnouncementThread,
-   Discord.ChannelType.GuildAnnouncement,
-   Discord.ChannelType.GuildForum,
-   Discord.ChannelType.GuildStageVoice,
-   Discord.ChannelType.GuildText,
-   Discord.ChannelType.GuildVoice,
-   Discord.ChannelType.PrivateThread,
-   Discord.ChannelType.PublicThread,
-  ];
+  switch (channelType) {
+   case 'voice': {
+    menu.channel_types = [Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice];
+    break;
+   }
+   case 'category': {
+    menu.channel_types = [Discord.ChannelType.GuildCategory];
+    break;
+   }
+   default: {
+    menu.channel_types = [
+     Discord.ChannelType.AnnouncementThread,
+     Discord.ChannelType.GuildAnnouncement,
+     Discord.ChannelType.GuildForum,
+     Discord.ChannelType.GuildStageVoice,
+     Discord.ChannelType.GuildText,
+     Discord.ChannelType.GuildVoice,
+     Discord.ChannelType.PrivateThread,
+     Discord.ChannelType.PublicThread,
+    ];
+    break;
+   }
+  }
  }
 
  return menu;

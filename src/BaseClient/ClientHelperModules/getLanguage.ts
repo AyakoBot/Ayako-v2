@@ -8,7 +8,7 @@ import DataBase from '../DataBase.js';
  */
 export default async (guildID: bigint | undefined | null | string) => {
  if (!guildID) {
-    const { default: Lang } = await import('./lang/lang.js');
+  const { default: Lang } = await import('./lang/lang.js');
 
   const lang = new Lang('en');
   await lang.init();
@@ -20,7 +20,7 @@ export default async (guildID: bigint | undefined | null | string) => {
   .findUnique({ where: { guildid: String(guildID) } })
   .then((r) => r?.lan);
 
-  const { default: Lang } = await import('./lang/lang.js');
+ const { default: Lang } = await import('./lang/lang.js');
  const lang = new Lang(lan || 'en');
  await lang.init();
 

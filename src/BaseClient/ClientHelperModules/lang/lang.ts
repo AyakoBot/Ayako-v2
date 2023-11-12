@@ -2672,11 +2672,11 @@ export default class Language {
      name: 'Voice-Hubs',
      fields: {
       channelid: {
-       name: 'Channel',
+       name: 'Voice-Hub Channel',
        desc: 'The Voice-Channel Members have to join to create Voice-Hubs',
       },
       categoryid: {
-       name: 'Voice-Hub Category',
+       name: 'Voice Category',
        desc: 'The Category Voice-Hubs will be created in',
       },
       deletetime: {
@@ -3282,14 +3282,6 @@ export default class Language {
        name: 'Webhook Events',
        desc: 'The Channel to send Webhook Events in',
       },
-      settingslog: {
-       name: 'Settings Log',
-       desc: 'The Channel to send Settings Logs in',
-      },
-      modlog: {
-       name: 'Mod Log',
-       desc: 'The Channel to send Mod Logs in',
-      },
       reactionevents: {
        name: 'Reaction Events',
        desc: 'The Channel to send Reaction Events in',
@@ -3297,6 +3289,14 @@ export default class Language {
       memberevents: {
        name: 'Member Events',
        desc: 'The Channel to send Member Events in',
+      },
+      settingslog: {
+       name: 'Settings Log',
+       desc: 'The Channel to send Settings Logs in',
+      },
+      modlog: {
+       name: 'Mod Log',
+       desc: 'The Channel to send Mod Logs in',
       },
      },
     },

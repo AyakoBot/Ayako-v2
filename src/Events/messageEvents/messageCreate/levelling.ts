@@ -68,7 +68,7 @@ const levelling = async (msg: Discord.Message<true>) => {
   }
 
   if (
-   settings?.wlroleid ||
+   settings?.wlroleid.length &&
    !msg.member?.roles.cache.some((r) => settings?.wlroleid.includes(r.id))
   ) {
    if (settings?.blchannelid && settings.blchannelid.includes(msg.channel.id)) return;
