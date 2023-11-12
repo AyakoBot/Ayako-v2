@@ -1,3 +1,46 @@
 {
- "test": "test"
+ "languageFunction": {
+  "getForumTag": "{{emoji}}`{{tag.name}}` / `{{tag.id}}`{{moderated}}"
+ },
+ "punishmentAction": {
+  "name": "Action",
+  "desc": "The Action to take"
+ },
+ "punishmentDeleteMessageSeconds": {
+  "name": "Delete Messages Time-Span",
+  "desc": "Time-Span of Messages to Delete (Max. 7 Days)"
+ },
+ "time": {
+  "milliseconds": "Millisecond(s)",
+  "seconds": "Second(s)",
+  "minutes": "Minute(s)",
+  "hours": "Hour(s)",
+  "days": "Day(s)",
+  "weeks": "Week(s)",
+  "months": "Month(s)",
+  "years": "Year(s)",
+  "timeAgo": "{{t}} ago",
+  "timeIn": "in {{t}}"
+ },
+ "linkedid": {
+  "name": "Linked ID",
+  "desc": "The linked Setting"
+ },
+ "multiplier": {
+  "name": "XP Multiplier",
+  "desc": "Multiplier to multiply the awarded XP per Message with"
+ },
+ "holdhands": {
+  "self": "holds their own hand, try holding someone else's next time",
+  "others": "holds hands with",
+  "request": "wants to hold your hand!",
+  "buttons": ["Hold Hands~!"]
+ },
+ "punishmentDuration": {
+  "name": "Duration",
+  "desc": "The Duration of the Punishment"
+ },
+ "unknown": "unknown",
+ "Unknown": "Unknown",
+ "None": "None"
 }

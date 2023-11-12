@@ -20,62 +20,31 @@ export default class Language {
 
  stp = stp;
 
- unknown = 'unknown';
- Unknown = 'Unknown';
- None = 'None';
+ unknown = this.JSON.unknown;
+ Unknown = this.JSON.Unknown;
+ None = this.JSON.None;
+ linkedid = this.JSON.linkedid;
+ multiplier = this.JSON.multiplier;
+ holdhands = this.JSON.holdhands;
+ punishmentDuration = this.JSON.punishmentDuration;
+ punishmentAction = this.JSON.punishmentAction;
+ punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
 
  time = {
-  milliseconds: 'Millisecond(s)',
-  seconds: 'Second(s)',
-  minutes: 'Minute(s)',
-  hours: 'Hour(s)',
-  days: 'Day(s)',
-  weeks: 'Week(s)',
-  months: 'Month(s)',
-  years: 'Year(s)',
-  timeAgo: (t: string) => `${t} ago`,
-  timeIn: (t: string) => `in ${t}`,
- };
-
- linkedid = {
-  name: 'Linked ID',
-  desc: 'The linked Setting',
- };
-
- multiplier = {
-  name: 'XP Multiplier',
-  desc: 'Multiplier to multiply the awarded XP per Message with',
- };
-
- holdhands = {
-  self: "holds their own hand, try holding someone else's next time",
-  others: 'holds hands with',
-  request: 'wants to hold your hand!',
-  buttons: ['Hold Hands~!'],
- };
-
- punishmentDuration = {
-  name: 'Duration',
-  desc: 'The Duration of the Punishment',
- };
-
- punishmentAction = {
-  name: 'Action',
-  desc: 'The Action to take',
- };
-
- punishmentDeleteMessageSeconds = {
-  name: 'Delete Messages Time-Span',
-  desc: 'Time-Span of Messages to Delete (Max. 7 Days)',
+  ...this.JSON.time,
+  timeAgo: (t: string) => this.stp(this.JSON.time.timeAgo, { t }),
+  timeIn: (t: string) => this.stp(this.JSON.time.timeIn, { t }),
  };
 
  languageFunction = {
   getForumTag: (tag: Discord.GuildForumTag, emoji?: Discord.Emoji | string) =>
-   `${emoji ? `${emoji} ` : ''}\`${tag.name}\` / \`${tag.id}\`${
-    tag.moderated
-     ? ` / ${ch.constants.standard.getEmote(ch.emotes.userFlags.DiscordEmployee)} Managed`
-     : ''
-   }`,
+   this.stp(this.JSON.languageFunction.getForumTag, {
+    emoji: `${emoji ? `${emoji} ` : ''}`,
+    tag,
+    moderated: tag.moderated
+     ? ` / ${ch.constants.standard.getEmote(ch.emotes.userFlags.DiscordEmployee)}`
+     : '',
+   }),
   getGuild: (guild: Discord.Guild | Discord.APIPartialGuild | Discord.InviteGuild) =>
    `Server \`${guild.name}\` / \`${guild.id}\`${
     'vanityURLCode' in guild && guild.vanityURLCode
