@@ -63,7 +63,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         .toArray()
         .filter((p) => cmd.member.roles.highest.permissions.toArray().includes(p)),
       ).bitfield.toString()
-    : undefined,
+    : new Discord.PermissionsBitField(0n).bitfield.toString(),
   },
   cmd.user.username,
  );

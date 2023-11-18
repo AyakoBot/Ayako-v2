@@ -5,7 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 import { TableNamesPrismaTranslation } from '../../../BaseClient/Other/constants.js';
 import requestHandler from '../../../BaseClient/ClientHelperModules/requestHandler.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
-import Lang from '../../../BaseClient/ClientHelperModules/lang/lang.js';
+import Lang from '../../../BaseClient/Other/language.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 
 const name = 'basic';

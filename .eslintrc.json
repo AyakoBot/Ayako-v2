@@ -68,6 +68,7 @@
    }
   ],
   "no-continue": "off",
-  "import/no-cycle": "off"
+  "import/no-cycle": "off",
+  "func-names": "off"
  }
 }
