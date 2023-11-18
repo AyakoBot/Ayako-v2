@@ -88,6 +88,10 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
     (r) => r.triggerType === Discord.AutoModerationRuleTriggerType.KeywordPreset,
    ).length,
   ),
+  Number(
+   automodRules?.filter((r) => r.triggerType === (6 as Discord.AutoModerationRuleTriggerType))
+    .length,
+  ),
  );
 
  const components = getAllComponents(language, automodRules);
