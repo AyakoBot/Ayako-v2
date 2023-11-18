@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const member = cmd.options.getMember('user');
  if (!member) {
-  ch.errorCmd(cmd, language.errors.memberNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.memberNotFound, language);
   return;
  }
 

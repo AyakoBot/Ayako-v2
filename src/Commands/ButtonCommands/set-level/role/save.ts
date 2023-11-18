@@ -9,7 +9,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
  const role = cmd.guild.roles.cache.get(roleId);
  if (!role) {
-  ch.errorCmd(cmd, language.errors.roleNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.roleNotFound, language);
   return;
  }
 
@@ -60,7 +60,7 @@ const getEmbed = (
   },
   {
    name: language.slashCommands.setLevel.excluded,
-   value: roles.length ? roles.map((r) => `<@&${r}>`).join(', ') : language.None,
+   value: roles.length ? roles.map((r) => `<@&${r}>`).join(', ') : language.t.None,
   },
  ],
 });

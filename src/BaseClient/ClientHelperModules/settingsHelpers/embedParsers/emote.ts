@@ -10,4 +10,4 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 export default (val: string | null, language: CT.Language) =>
  val
   ? `${!Discord.parseEmoji(val)?.id ? val : `<${val.startsWith('a:') ? '' : ':'}${val}>`}`
-  : language.None;
+  : language.t.None;

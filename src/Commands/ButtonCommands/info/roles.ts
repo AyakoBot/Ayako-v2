@@ -14,7 +14,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  cmd.reply({
   embeds: [
    {
-    description: `**${language.roles}**:\n${member.roles.cache
+    description: `**${language.t.roles}**:\n${member.roles.cache
      .sort((a, b) => b.rawPosition - a.rawPosition)
      .map((r) => `${r}`)
      .join('\n')}`,

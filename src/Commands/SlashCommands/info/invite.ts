@@ -49,13 +49,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    },
    invite.createdTimestamp
     ? {
-       name: language.createdAt,
+       name: language.t.createdAt,
        value: `${ch.constants.standard.getTime(invite.createdTimestamp)}`,
       }
     : undefined,
    invite.channel || invite.channelId
     ? {
-       name: language.Channel,
+       name: language.t.Channel,
        value: invite.channel
         ? language.languageFunction.getChannel(
            invite.channel,
@@ -66,7 +66,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     : undefined,
    invite.guild
     ? {
-       name: language.Server,
+       name: language.t.Server,
        value: language.languageFunction.getGuild(invite.guild),
       }
     : undefined,
@@ -81,7 +81,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        name: eventLan.expiresAt,
        value:
         invite.maxAge === 0
-         ? language.Never
+         ? language.t.Never
          : ch.constants.standard.getTime(invite.maxAge * 1000 + invite.createdTimestamp),
       }
     : undefined,
@@ -100,7 +100,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    invite.temporary !== null
     ? {
        name: eventLan.temporary,
-       value: invite.temporary ? language.Yes : language.No,
+       value: invite.temporary ? language.t.Yes : language.t.No,
       }
     : undefined,
    invite.uses

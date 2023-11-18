@@ -29,7 +29,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  const automodRule = cmd.guild?.autoModerationRules.cache.get(ID);
 
  if (!automodRule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -58,12 +58,12 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const automodRules = cmd.guild?.autoModerationRules.cache.map((o) => o);
 
  const fields = automodRules?.map((r) => ({
-  name: `${language.name}: \`${r.name}\` - ${language.events.logs.automodRule.actions}: ${
+  name: `${language.t.name}: \`${r.name}\` - ${language.events.logs.automodRule.actions}: ${
    r.actions.length
     ? r.actions
        .map((a) => ch.util.makeInlineCode(language.events.logs.automodRule.actionsType[a.type]))
        .join(', ')
-    : language.None
+    : language.t.None
   }`,
   value: `${r.enabled ? ch.emotes.enabled : ch.emotes.disabled} - ID: ${ch.util.makeInlineCode(
    r.id,
@@ -114,7 +114,7 @@ export const getEmbeds = (
  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ): Discord.APIEmbed[] => [
  {
-  footer: { text: `${language.name}: ${rule.name}` },
+  footer: { text: `${language.t.name}: ${rule.name}` },
   description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
       name as keyof typeof ch.constants.tutorials
@@ -131,7 +131,7 @@ export const getEmbeds = (
        },
        {
         name: '\u200b',
-        value: ch.util.makeUnderlined(ch.util.makeBold(language.Triggers)),
+        value: ch.util.makeUnderlined(ch.util.makeBold(language.t.Triggers)),
        },
        ...([Discord.AutoModerationRuleTriggerType.Keyword, 6].includes(rule.triggerType)
         ? [
@@ -139,13 +139,13 @@ export const getEmbeds = (
             name: language.events.logs.automodRule.keywordFilter,
             value: rule.triggerMetadata.keywordFilter.length
              ? ch.util.makeCodeBlock(rule.triggerMetadata.keywordFilter.join(', '))
-             : language.None,
+             : language.t.None,
            },
            {
             name: language.events.logs.automodRule.regexPatterns,
             value: rule.triggerMetadata.regexPatterns.length
              ? ch.util.makeCodeBlock(rule.triggerMetadata.regexPatterns.join(', '))
-             : language.None,
+             : language.t.None,
            },
           ]
         : []),
@@ -178,7 +178,7 @@ export const getEmbeds = (
             name: language.events.logs.automodRule.allowList,
             value: rule.triggerMetadata.allowList.length
              ? ch.util.makeCodeBlock(rule.triggerMetadata.allowList.join(', '))
-             : language.None,
+             : language.t.None,
            },
           ]
         : []),
@@ -267,7 +267,7 @@ export const getEmbeds = (
         : []),
        {
         name: '\u200b',
-        value: ch.util.makeUnderlined(ch.util.makeBold(language.Overrides)),
+        value: ch.util.makeUnderlined(ch.util.makeBold(language.t.Overrides)),
        },
        {
         name: language.slashCommands.settings.wlrole,
@@ -290,8 +290,8 @@ export const getEmbeds = (
       ]
     : [
        {
-        name: language.Deprecated,
-        value: language.errors.deprecatedByDiscord,
+        name: language.t.Deprecated,
+        value: language.t.errors.deprecatedByDiscord,
        },
       ],
  },

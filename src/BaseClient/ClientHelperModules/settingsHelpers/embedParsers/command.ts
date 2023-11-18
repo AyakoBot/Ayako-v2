@@ -8,7 +8,7 @@ import client from '../../../Client.js';
  * @returns A string representation of the command.
  */
 export default (val: string | null, language: CT.Language) => {
- if (!val) return language.None;
+ if (!val) return language.t.None;
 
  const isID = val?.replace(/\D+/g, '').length === val?.length;
  const cmd = isID ? client.application?.commands.cache.get(val) : undefined;

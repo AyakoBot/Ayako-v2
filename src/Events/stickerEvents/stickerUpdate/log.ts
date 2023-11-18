@@ -38,7 +38,7 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   merge(oldSticker.description, sticker.description, 'string', lan.description);
  }
  if (oldSticker.name !== sticker.name) {
-  merge(oldSticker.name, sticker.name, 'string', language.name);
+  merge(oldSticker.name, sticker.name, 'string', language.t.name);
  }
  if (oldSticker.tags !== sticker.tags) {
   merge(`:${oldSticker.tags}:`, `:${sticker.tags}:`, 'string', lan.tags);

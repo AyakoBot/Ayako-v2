@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  ch.mod(cmd, 'roleRemove', {
   roles: [role],
   target: user,
-  reason: reason ?? language.noReasonProvided,
+  reason: reason ?? language.t.noReasonProvided,
   dbOnly: false,
   guild: cmd.guild,
   executor: cmd.user,

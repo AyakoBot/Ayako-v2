@@ -27,7 +27,7 @@ export default async <T extends Discord.Message<boolean>>(
 
  const embed: Discord.APIEmbed = {
   author: {
-   name: language.error,
+   name: language.t.error,
    icon_url: objectEmotes.warning.link,
    url: constants.standard.invite,
   },

@@ -44,7 +44,7 @@ export default async (role: Discord.Role) => {
 
  if (flagsText) {
   embed.fields?.push({
-   name: language.Flags,
+   name: language.t.Flags,
    value: flagsText,
    inline: true,
   });
@@ -59,14 +59,14 @@ export default async (role: Discord.Role) => {
 
  if (role.name) {
   embed.fields?.push({
-   name: language.name,
+   name: language.t.name,
    value: role.name,
   });
  }
 
  if (role.color) {
   embed.fields?.push({
-   name: language.color,
+   name: language.t.color,
    value: role.color.toString(16),
   });
  }
@@ -80,7 +80,7 @@ export default async (role: Discord.Role) => {
       value
        ? ch.constants.standard.getEmote(ch.emotes.enabled)
        : ch.constants.standard.getEmote(ch.emotes.disabled)
-     } \`${language.permissions.perms[name as keyof typeof language.permissions.perms]}\``,
+     } \`${language.t.permissions.perms[name as keyof typeof language.t.permissions.perms]}\``,
    )
    .join('\n'),
  };

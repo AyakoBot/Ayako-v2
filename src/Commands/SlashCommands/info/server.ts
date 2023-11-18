@@ -21,12 +21,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (enteredName) serverID = enteredName;
  if (enteredInvite) {
   if (!invite) {
-   ch.errorCmd(cmd, language.errors.inviteNotFound, language);
+   ch.errorCmd(cmd, language.t.errors.inviteNotFound, language);
    return;
   }
 
   if (!invite.guild) {
-   ch.errorCmd(cmd, language.errors.inviteNotFound, language);
+   ch.errorCmd(cmd, language.t.errors.inviteNotFound, language);
    return;
   }
 
@@ -35,14 +35,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  if (!serverID || (serverID && serverID.replace(/\D+/g, '').length !== serverID.length)) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.serverNotFound, language);
   return;
  }
 
  const embeds = (await getEmbed(serverID))?.flat().filter((e) => !!e);
 
  if (!embeds?.length) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.serverNotFound, language);
   return;
  }
 
@@ -54,7 +54,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     components: [
      {
       type: Discord.ComponentType.Button,
-      label: language.featuresName,
+      label: language.t.featuresName,
       style: Discord.ButtonStyle.Secondary,
       custom_id: `info/features_${isInviteGuild ? invite?.code : serverID}_${isInviteGuild}`,
      },
@@ -107,7 +107,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        name: language.slashCommands.info.basic,
        value: [
         {
-         name: chEval.util.makeBold(language.name),
+         name: chEval.util.makeBold(language.t.name),
          value: `\`${g.name}\`\n`,
         },
         {
@@ -122,7 +122,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
          name: chEval.util.makeBold(eventLan.vanityUrlCode),
          value: g.vanityURLCode
           ? `[${g.vanityURLCode}](https://discord.gg/${g.vanityURLCode})\n`
-          : `${language.None}\n`,
+          : `${language.t.None}\n`,
         },
         ...(isInviteGuild
          ? []
@@ -131,7 +131,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
              name: `${chEval.util.makeBold(lan.info.widgetChannel)}\n`,
              value: g.widgetChannel
               ? language.languageFunction.getChannel(g.widgetChannel)
-              : `${language.None}\n`,
+              : `${language.t.None}\n`,
             },
             {
              name: `${chEval.util.makeBold(eventLan.afkChannelId)}\n`,
@@ -151,16 +151,16 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
             },
             {
              name: chEval.util.makeBold(eventLan.afkTimeout),
-             value: `\`${chEval.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.None}\n`,
+             value: `\`${chEval.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
             },
            ]),
         {
          name: `${chEval.util.makeBold(eventLan.ownerId)}\n`,
-         value: owner ? language.languageFunction.getUser(owner.user) : `${language.Unknown}\n`,
+         value: owner ? language.languageFunction.getUser(owner.user) : `${language.t.Unknown}\n`,
         },
         {
          name: chEval.util.makeBold(lan.info.description),
-         value: g.description ? `\`\`\`${g.description}\`\`\`` : `${language.None}\n`,
+         value: g.description ? `\`\`\`${g.description}\`\`\`` : `${language.t.None}\n`,
         },
        ]
         .map(({ name, value }) => `${name} ${value}`)
@@ -171,7 +171,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        name: language.slashCommands.info.stats,
        value: [
         {
-         name: chEval.util.makeBold(language.createdAt),
+         name: chEval.util.makeBold(language.t.createdAt),
          value: chEval.constants.standard.getTime(g.createdTimestamp),
         },
         ...(isInviteGuild
@@ -234,7 +234,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
              value: `\`${chEval.splitByThousand(g.maxStageVideoChannelUsers ?? 0)}\``,
             },
             {
-             name: chEval.util.makeBold(language.large),
+             name: chEval.util.makeBold(language.t.large),
              value: `${chEval.settingsHelpers.embedParsers.boolean(g.large, language)}`,
             },
            ]),
@@ -262,8 +262,8 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
              value: `\`${eventLan.mfaLevel[g.mfaLevel]}\``,
             },
             {
-             name: chEval.util.makeBold(language.regionsName),
-             value: `\`${language.regions[g.preferredLocale as keyof typeof language.regions]}\``,
+             name: chEval.util.makeBold(language.t.regionsName),
+             value: `\`${language.t.regions[g.preferredLocale as keyof typeof language.t.regions]}\``,
             },
            ]),
         {

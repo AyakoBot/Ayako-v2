@@ -56,7 +56,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       settings.currencyemote
        ? Discord.parseEmoji(settings.currencyemote) ?? ch.emotes.book
        : ch.emotes.book,
-     ) ?? language.None,
+     ) ?? language.t.None,
     inline: true,
    },
   ],

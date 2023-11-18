@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const emoji = rawEmoji?.id ? cmd.guild.emojis.cache.get(rawEmoji.id) : undefined;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
+  ch.errorCmd(cmd, language.t.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
   return;
  }
 

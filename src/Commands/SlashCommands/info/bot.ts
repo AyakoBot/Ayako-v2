@@ -26,25 +26,25 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
          },
          {
           name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.guildcount)))} ${
-           language.Servers
+           language.t.Servers
           }`,
           value: '',
          },
          {
           name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.channelcount)))} ${
-           language.Channels
+           language.t.Channels
           }`,
           value: '',
          },
          {
           name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.rolecount)))} ${
-           language.Roles
+           language.t.Roles
           }`,
           value: '',
          },
          {
           name: `${ch.util.makeInlineCode(ch.splitByThousand(Number(stats.allusers)))} ${
-           language.Users
+           language.t.Users
           }`,
           value: '',
          },

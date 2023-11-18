@@ -52,9 +52,9 @@ export default async (
   guildsFlatted.reduce((a, b) => ((a.invite?.length || 0) > (b.invite?.length || 0) ? a : b)).invite
    ?.length || 0;
 
- if (longestName < language.name.length) longestName = language.name.length;
- if (longestMemberCount < language.Members.length) longestMemberCount = language.Members.length;
- if (longestInvite < language.Invite.length) longestInvite = language.Invite.length;
+ if (longestName < language.t.name.length) longestName = language.t.name.length;
+ if (longestMemberCount < language.t.Members.length) longestMemberCount = language.t.Members.length;
+ if (longestInvite < language.t.Invite.length) longestInvite = language.t.Invite.length;
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -62,10 +62,10 @@ export default async (
   },
   color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
   description: `${ch.util.makeInlineCode(
-   `${ch.spaces(language.name, longestName)} | ${ch.spaces(
-    language.Members,
+   `${ch.spaces(language.t.name, longestName)} | ${ch.spaces(
+    language.t.Members,
     longestMemberCount,
-   )} | ${ch.spaces(language.Invite, longestInvite)} `,
+   )} | ${ch.spaces(language.t.Invite, longestInvite)} `,
   )}\n${guildsFlatted
    .map((g) =>
     ch.util.makeInlineCode(

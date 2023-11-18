@@ -78,13 +78,13 @@ export default async (
     added.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
     removed.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
     'difference',
-    language.Flags,
+    language.t.Flags,
    );
   }
  }
 
  if (oldChannel?.name !== channel.name) {
-  merge(oldChannel?.name ?? language.unknown, channel.name, 'string', language.name);
+  merge(oldChannel?.name ?? language.t.unknown, channel.name, 'string', language.t.name);
  }
 
  if (
@@ -92,7 +92,7 @@ export default async (
   'topic' in channel &&
   !!oldChannel?.topic !== !!channel.topic
  ) {
-  merge(oldChannel?.topic || language.None, channel.topic || language.None, 'string', lan.topic);
+  merge(oldChannel?.topic || language.t.None, channel.topic || language.t.None, 'string', lan.topic);
  }
 
  if (
@@ -101,7 +101,7 @@ export default async (
   oldChannel?.bitrate !== channel.bitrate
  ) {
   merge(
-   oldChannel ? `${oldChannel?.bitrate}kbps` : language.unknown,
+   oldChannel ? `${oldChannel?.bitrate}kbps` : language.t.unknown,
    `${channel.bitrate}kbps`,
    'string',
    lan.bitrate,
@@ -156,8 +156,8 @@ export default async (
   merge(
    oldChannel?.rateLimitPerUser
     ? ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
-    : language.None,
-   channel.rateLimitPerUser ? ch.moment(channel.rateLimitPerUser * 1000, language) : language.None,
+    : language.t.None,
+   channel.rateLimitPerUser ? ch.moment(channel.rateLimitPerUser * 1000, language) : language.t.None,
    'string',
    lan.rateLimitPerUser,
   );
@@ -170,11 +170,11 @@ export default async (
  ) {
   merge(
    oldChannel?.rtcRegion
-    ? language.regions[oldChannel.rtcRegion as keyof typeof language.regions]
-    : language.unknown,
+    ? language.t.regions[oldChannel.rtcRegion as keyof typeof language.t.regions]
+    : language.t.unknown,
    channel.rtcRegion
-    ? language.regions[channel.rtcRegion as keyof typeof language.regions]
-    : language.unknown,
+    ? language.t.regions[channel.rtcRegion as keyof typeof language.t.regions]
+    : language.t.unknown,
    'string',
    lan.rtcRegion,
   );
@@ -188,8 +188,8 @@ export default async (
   merge(
    oldChannel?.videoQualityMode
     ? lan.videoQualityMode[oldChannel.videoQualityMode]
-    : language.unknown,
-   channel.videoQualityMode ? lan.videoQualityMode[channel.videoQualityMode] : language.unknown,
+    : language.t.unknown,
+   channel.videoQualityMode ? lan.videoQualityMode[channel.videoQualityMode] : language.t.unknown,
    'string',
    lan.videoQualityModeName,
   );
@@ -208,10 +208,10 @@ export default async (
   merge(
    oldParent
     ? language.languageFunction.getChannel(oldParent, language.channelTypes[oldParent.type])
-    : language.None,
+    : language.t.None,
    parent
     ? language.languageFunction.getChannel(parent, language.channelTypes[parent.type])
-    : language.None,
+    : language.t.None,
    'string',
    lan.parentChannel,
   );
@@ -225,10 +225,10 @@ export default async (
   merge(
    oldChannel?.archiveTimestamp
     ? `<t:${String(oldChannel.archiveTimestamp).slice(0, -3)}:f>`
-    : language.unknown,
+    : language.t.unknown,
    channel.archiveTimestamp
     ? `<t:${String(channel.archiveTimestamp).slice(0, -3)}:f>`
-    : language.None,
+    : language.t.None,
    'string',
    lan.archiveTimestamp,
   );
@@ -242,10 +242,10 @@ export default async (
   merge(
    oldChannel?.defaultAutoArchiveDuration
     ? ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
-    : language.unknown,
+    : language.t.unknown,
    channel.defaultAutoArchiveDuration
     ? ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
-    : language.None,
+    : language.t.None,
    'string',
    lan.autoArchiveDuration,
   );
@@ -253,7 +253,7 @@ export default async (
 
  if (oldChannel?.type !== channel.type) {
   merge(
-   oldChannel ? language.channelTypes[oldChannel.type] : language.unknown,
+   oldChannel ? language.channelTypes[oldChannel.type] : language.t.unknown,
    language.channelTypes[channel.type],
    'string',
    lan.type,
@@ -322,7 +322,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filterPerms
-    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!addEmbed.description?.length) {
@@ -367,7 +367,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filteredPerms
-    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!changeEmbed.description?.length) {
@@ -401,7 +401,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filterPerms
-    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!removeEmbed.description?.length) {

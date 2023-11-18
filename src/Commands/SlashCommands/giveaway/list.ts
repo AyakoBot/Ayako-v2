@@ -54,7 +54,7 @@ export default async (
     },
     {
      name: language.slashCommands.giveaway.list.reqrole,
-     value: g.reqrole ? `<@&${g.reqrole}>` : language.None,
+     value: g.reqrole ? `<@&${g.reqrole}>` : language.t.None,
     },
     g.collecttime
      ? {

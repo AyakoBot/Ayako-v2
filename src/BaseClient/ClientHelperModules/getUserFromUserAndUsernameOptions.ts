@@ -9,7 +9,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await getLanguage(cmd.guild?.id);
 
  if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
-  errorCmd(cmd, language.errors.userNotFound, language);
+  errorCmd(cmd, language.t.errors.userNotFound, language);
   return undefined;
  }
 

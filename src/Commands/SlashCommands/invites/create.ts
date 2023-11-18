@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.invites;
 
  if (!channel?.permissionsFor(me)?.has(Discord.PermissionFlagsBits.CreateInstantInvite)) {
-  ch.errorCmd(cmd, language.errors.cantManageChannel, language);
+  ch.errorCmd(cmd, language.t.errors.cantManageChannel, language);
   return;
  }
 

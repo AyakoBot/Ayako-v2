@@ -206,7 +206,7 @@ export const tasks = {
        {
         executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
         target,
-        reason: m.reason ?? language.None,
+        reason: m.reason ?? language.t.None,
         guild,
         skipChecks: true,
         dbOnly:

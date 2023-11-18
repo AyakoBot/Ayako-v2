@@ -58,18 +58,18 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
    value:
     execution.action.type === 2
      ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
-        language.Message
+        language.t.Message
        }](${ch.constants.standard.msgurl(
         execution.guild.id,
         execution.action.metadata.channelId ?? '',
         execution.alertSystemMessageId ?? '',
        )})`
-     : `${language.duration} \`${ch.moment(
+     : `${language.t.duration} \`${ch.moment(
         execution.action.metadata.durationSeconds
          ? Number(execution.action.metadata.durationSeconds) * 1000
          : 0,
         language,
-       )}\` / ${language.End} ${ch.constants.standard.getTime(
+       )}\` / ${language.t.End} ${ch.constants.standard.getTime(
         Number(execution.action.metadata.durationSeconds) * 1000 + Date.now(),
        )}`,
    inline: true,
@@ -78,12 +78,12 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
 
  if (execution.content) {
   if (execution.content?.length > 1024) {
-   const content = ch.txtFileWriter(execution.content, undefined, language.content);
+   const content = ch.txtFileWriter(execution.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
-    name: language.content,
-    value: execution.content ?? language.None,
+    name: language.t.content,
+    value: execution.content ?? language.t.None,
     inline: false,
    });
   }

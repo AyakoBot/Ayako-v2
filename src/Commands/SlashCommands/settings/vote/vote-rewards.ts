@@ -67,16 +67,16 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${lan.fields.tier.name}: \`${
-   s.tier ?? language.None
+   s.tier ?? language.t.None
   }\` - ${lan.fields.linkedid.name}: ${
-   s?.linkedid ? Number(s.linkedid).toString(36) : language.None
+   s?.linkedid ? Number(s.linkedid).toString(36) : language.t.None
   }`,
   value: `${lan.fields.rewardroles.name}: ${
-   s.rewardroles.length ? s.rewardroles.map((c) => `<@&${c}>`).slice(0, 5) : language.None
-  }\n ${lan.fields.rewardxp.name}: ${s.rewardxp ?? language.None} - ${
+   s.rewardroles.length ? s.rewardroles.map((c) => `<@&${c}>`).slice(0, 5) : language.t.None
+  }\n ${lan.fields.rewardxp.name}: ${s.rewardxp ?? language.t.None} - ${
    lan.fields.rewardxpmultiplier.name
-  }: ${s.rewardxpmultiplier ?? language.None} - ${lan.fields.rewardcurrency.name}: ${
-   s.rewardcurrency ?? language.None
+  }: ${s.rewardxpmultiplier ?? language.t.None} - ${lan.fields.rewardcurrency.name}: ${
+   s.rewardcurrency ?? language.t.None
   }`,
  }));
 
@@ -130,7 +130,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     {
      name: lan.fields.linkedid.name,
      value: embedParsers.string(
-      settings.linkedid ? Number(settings.linkedid).toString(36) : language.None,
+      settings.linkedid ? Number(settings.linkedid).toString(36) : language.t.None,
       language,
      ),
      inline: false,

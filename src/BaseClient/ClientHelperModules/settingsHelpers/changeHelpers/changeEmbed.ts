@@ -30,7 +30,7 @@ export default async <T extends keyof CT.SettingsNames>(
      .map((v) => (v ? getMention(language, type, v, guild) : null))
      .filter((v): v is Promise<string> => !!v),
    )
-  ).join(', ') || language.None
+  ).join(', ') || language.t.None
  }`,
  fields: [
   {

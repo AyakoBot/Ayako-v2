@@ -56,7 +56,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
 
   if (channel) {
    embed.fields?.push({
-    name: language.Channel,
+    name: language.t.Channel,
     value: language.languageFunction.getChannel(channel, language.channelTypes[channel.type]),
     inline: false,
    });
@@ -72,7 +72,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
 
  if (invite.createdAt) {
   embed.fields?.push({
-   name: language.createdAt,
+   name: language.t.createdAt,
    value: ch.constants.standard.getTime(invite.createdAt.getTime()),
   });
  }

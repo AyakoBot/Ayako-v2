@@ -67,7 +67,7 @@ export default async (event: Discord.GuildScheduledEvent) => {
 
  if (event.description) {
   embed.fields?.push({
-   name: language.Description,
+   name: language.t.Description,
    value: event.description,
   });
  }

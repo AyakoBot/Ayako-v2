@@ -64,7 +64,7 @@ export const getEmbed = (
   },
   {
    name: language.slashCommands.setLevel.excluded,
-   value: roles.length ? roles.map((r) => `<@&${r}>`).join(', ') : language.None,
+   value: roles.length ? roles.map((r) => `<@&${r}>`).join(', ') : language.t.None,
    inline: false,
   },
  ],

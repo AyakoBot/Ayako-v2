@@ -70,7 +70,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   value: `${lan.fields.msgid.name}: ${
    s.guildid && s.channelid && s.msgid
     ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
-    : language.None
+    : language.t.None
   }`,
  }));
 
@@ -118,7 +118,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value:
      settings.guildid && settings.channelid && settings.msgid
       ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
-      : language.None,
+      : language.t.None,
     inline: true,
    },
    {

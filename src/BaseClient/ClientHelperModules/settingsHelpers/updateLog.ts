@@ -77,20 +77,20 @@ export default async <T extends keyof CT.SettingsNames>(
    default: {
     return [
      {
-      name: language.Before,
+      name: language.t.Before,
       value: `${makeInlineCode(field.name)}:\n${
        oldSetting?.[String(changedSetting)]
         ? makeCodeBlock((oldSetting?.[String(changedSetting)] as string) ?? ' ')
-        : language.None
+        : language.t.None
       }`,
       inline: false,
      },
      {
-      name: language.After,
+      name: language.t.After,
       value: `${makeInlineCode(field.name)}:\n${
        oldSetting?.[String(changedSetting)]
         ? makeCodeBlock((oldSetting?.[String(changedSetting)] as string) ?? ' ')
-        : language.None
+        : language.t.None
       }`,
       inline: false,
      },

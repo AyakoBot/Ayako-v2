@@ -28,7 +28,7 @@ export default async (ban: Discord.GuildBan) => {
   timestamp: new Date().toISOString(),
  };
 
- if (ban && ban.reason) embed.fields?.push({ name: language.reason, value: ban.reason });
+ if (ban && ban.reason) embed.fields?.push({ name: language.t.Reason, value: ban.reason });
 
  ch.send({ id: channels, guildId: ban.guild.id }, { embeds: [embed] }, 10000);
 };

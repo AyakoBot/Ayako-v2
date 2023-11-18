@@ -67,7 +67,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const fields = settings?.map((s) => ({
   name: `${lan.fields.announcementchannel.name}: ${
-   s.announcementchannel ? `<#${s.announcementchannel}>` : language.None
+   s.announcementchannel ? `<#${s.announcementchannel}>` : language.t.None
   }`,
   value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
  }));
@@ -127,7 +127,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.token.name,
-    value: settings?.token ? ch.util.makeSpoiler(settings.token) : language.None,
+    value: settings?.token ? ch.util.makeSpoiler(settings.token) : language.t.None,
     inline: false,
    },
   ],

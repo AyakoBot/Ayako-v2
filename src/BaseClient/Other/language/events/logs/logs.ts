@@ -18,9 +18,9 @@ import webhook from './webhook.js';
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs,
  addedRemoved: (added: string, removed: string) =>
-  `__**${t.Added}**__\n${added}\n\n__**${t.Removed}**__\n${removed}`,
+  `__**${t.JSON.Added}**__\n${added}\n\n__**${t.JSON.Removed}**__\n${removed}`,
  beforeAfter: (before: string, after: string) =>
-  `__**${t.Before}**__\n${before}\n\n__**${t.After}**__\n${after}`,
+  `__**${t.JSON.Before}**__\n${before}\n\n__**${t.JSON.After}**__\n${after}`,
  sticker: sticker(t),
  application: application(t),
  scheduledEvent: scheduledEvent(t),

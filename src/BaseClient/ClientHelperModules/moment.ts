@@ -11,7 +11,7 @@ import * as CT from '../../Typings/CustomTypings.js';
  */
 export default (duration: number, language: CT.Language) =>
  !duration
-  ? language.None
+  ? language.t.None
   : moment
      .duration(duration)
      .format(

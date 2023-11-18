@@ -11,5 +11,5 @@ export default <T extends keyof CT.SettingsNames>(
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Success,
  custom_id: `settings/done/${type}_${String(name)}_${fieldName}_${uniquetimestamp}`,
- label: language.Done,
+ label: language.t.Done,
 });

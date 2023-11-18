@@ -177,7 +177,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
       ? [
          {
           name: language.slashCommands.giveaway.end.dmUser,
-          value: host ? language.languageFunction.getUser(host) : language.Unknown,
+          value: host ? language.languageFunction.getUser(host) : language.t.Unknown,
          },
         ]
       : [

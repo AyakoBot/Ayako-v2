@@ -20,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
          url: user.displayAvatarURL({ size: 4096 }) as string,
         }
       : undefined,
-     description: user.avatar ? undefined : language.None,
+     description: user.avatar ? undefined : language.t.None,
      color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
     },
     member && member.avatar
@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
             url: member.displayAvatarURL({ size: 4096 }) as string,
            }
          : undefined,
-        description: member.avatar ? undefined : language.None,
+        description: member.avatar ? undefined : language.t.None,
         color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
        }
      : undefined,

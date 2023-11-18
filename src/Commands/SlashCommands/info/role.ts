@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   color: role.color || ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
   description: [
    {
-    name: language.name,
+    name: language.t.name,
     value: `${ch.util.makeInlineCode(role.name)}`,
    },
    {
@@ -23,17 +23,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     value: `${ch.util.makeInlineCode(role.id)}`,
    },
    {
-    name: language.Role,
+    name: language.t.Role,
     value: `${role}`,
    },
    role.color
     ? {
-       name: `${language.color}`,
+       name: `${language.t.color}`,
        value: `${ch.util.makeInlineCode(role.hexColor)}`,
       }
     : undefined,
    {
-    name: language.createdAt,
+    name: language.t.createdAt,
     value: `${ch.constants.standard.getTime(role.createdTimestamp)}`,
    },
    {
@@ -64,7 +64,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     : undefined,
    role.tags?.integrationId
     ? {
-       name: language.Bot,
+       name: language.t.Bot,
        value: `${language.languageFunction.getUser(
         (await ch.getUser(role.tags.integrationId)) as Discord.User,
        )}`,
@@ -118,7 +118,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     components: [
      {
       type: Discord.ComponentType.Button,
-      label: language.Members,
+      label: language.t.Members,
       style: Discord.ButtonStyle.Secondary,
       custom_id: `info/members_${role.id}`,
      },

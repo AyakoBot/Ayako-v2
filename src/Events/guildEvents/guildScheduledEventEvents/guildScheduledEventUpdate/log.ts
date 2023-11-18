@@ -85,12 +85,12 @@ export default async (
   await getImage();
  }
  if (event.description !== oldEvent.description) {
-  merge(oldEvent.description, event.description, 'string', language.Description);
+  merge(oldEvent.description, event.description, 'string', language.t.Description);
  }
  if (!!event.entityMetadata?.location !== !!oldEvent.entityMetadata?.location) {
   merge(
-   oldEvent.entityMetadata?.location ?? language.None,
-   event.entityMetadata?.location ?? language.None,
+   oldEvent.entityMetadata?.location ?? language.t.None,
+   event.entityMetadata?.location ?? language.t.None,
    'string',
    lan.location,
   );
@@ -114,22 +114,22 @@ export default async (
   merge(
    oldChannel
     ? language.languageFunction.getChannel(oldChannel, language.channelTypes[oldChannel.type])
-    : language.unknown,
+    : language.t.unknown,
    newChannel
     ? language.languageFunction.getChannel(newChannel, language.channelTypes[newChannel.type])
-    : language.unknown,
+    : language.t.unknown,
    'string',
-   language.Channel,
+   language.t.Channel,
   );
  }
  if (event.scheduledEndTimestamp !== oldEvent.scheduledEndTimestamp) {
   merge(
    oldEvent.scheduledEndTimestamp
     ? ch.constants.standard.getTime(oldEvent.scheduledEndTimestamp)
-    : language.None,
+    : language.t.None,
    event.scheduledEndTimestamp
     ? ch.constants.standard.getTime(event.scheduledEndTimestamp)
-    : language.None,
+    : language.t.None,
    'string',
    lan.scheduledEndTime,
   );
@@ -138,16 +138,16 @@ export default async (
   merge(
    oldEvent.scheduledStartTimestamp
     ? ch.constants.standard.getTime(oldEvent.scheduledStartTimestamp)
-    : language.None,
+    : language.t.None,
    event.scheduledStartTimestamp
     ? ch.constants.standard.getTime(event.scheduledStartTimestamp)
-    : language.None,
+    : language.t.None,
    'string',
    lan.scheduledStartTime,
   );
  }
  if (event.name !== oldEvent.name) {
-  merge(oldEvent.name, event.name, 'string', language.name);
+  merge(oldEvent.name, event.name, 'string', language.t.name);
  }
  if (event.status !== oldEvent.status) {
   merge(lan.status[oldEvent.status], lan.status[event.status], 'string', lan.statusName);

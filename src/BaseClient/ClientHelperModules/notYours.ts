@@ -13,12 +13,12 @@ export default (interaction: Discord.ButtonInteraction, language: CT.Language) =
   embeds: [
    {
     author: {
-     name: language.error,
+     name: language.t.error,
      icon_url: constants.standard.error,
      url: constants.standard.invite,
     },
     color: constants.colors.danger,
-    description: language.errors.notYours,
+    description: language.t.errors.notYours,
    },
   ],
   ephemeral: true,

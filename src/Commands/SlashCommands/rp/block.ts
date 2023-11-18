@@ -61,7 +61,7 @@ export const respond = async (
          .filter((c) => !blocked.blockedcmd?.includes(c.name))
          .map((c) => ch.util.makeInlineCode(c.name))
          .join(', ')
-      : language.None
+      : language.t.None
     }`,
     url: `https://ayakobot.com?user=${user.id}`,
    },

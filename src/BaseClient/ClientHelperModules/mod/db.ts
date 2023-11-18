@@ -13,11 +13,11 @@ export default async <T extends CT.ModTypes>(
   userid: options.target.id,
   reason: options.reason,
   uniquetimestamp: Date.now(),
-  channelid: cmd?.channelId ?? language.Unknown,
-  channelname: cmd?.channel?.name ?? language.Unknown,
+  channelid: cmd?.channelId ?? language.t.Unknown,
+  channelname: cmd?.channel?.name ?? language.t.Unknown,
   executorid: options.executor.id,
   executorname: options.executor.username,
-  msgid: cmd?.id ?? language.Unknown,
+  msgid: cmd?.id ?? language.t.Unknown,
  };
 
  switch (type) {

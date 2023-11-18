@@ -16,9 +16,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.price.name}: ${ch.splitByThousand(Number(s.price)) ?? language.None} - ${
+  name: `${lan.fields.price.name}: ${ch.splitByThousand(Number(s.price)) ?? language.t.None} - ${
    lan.fields.roles.name
-  }: ${s?.roles.length ?? language.None}`,
+  }: ${s?.roles.length ?? language.t.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

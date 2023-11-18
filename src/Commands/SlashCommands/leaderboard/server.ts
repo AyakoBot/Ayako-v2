@@ -124,7 +124,7 @@ export const getLongest = (
 
  if (longestLevel < lan.level.length) longestLevel = lan.level.length;
  if (longestXP < lan.xp.length) longestXP = lan.xp.length;
- if (longestUsername < language.User.length) longestUsername = language.User.length;
+ if (longestUsername < language.t.User.length) longestUsername = language.t.User.length;
 
  return { longestLevel, longestXP, longestUsername };
 };
@@ -180,7 +180,7 @@ export const getEmbed = async (
   `${ch.spaces(lan.rank, 7)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
    lan.xp,
    longestXP,
-  )} | ${ch.spaces(language.User, longestUsername)}\n${levels
+  )} | ${ch.spaces(language.t.User, longestUsername)}\n${levels
    .map((l, i) =>
     makeLine(
      i,

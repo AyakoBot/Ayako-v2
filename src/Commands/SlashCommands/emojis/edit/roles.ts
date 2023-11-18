@@ -17,7 +17,7 @@ export default async (
  const lan = language.slashCommands.emojis;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
+  ch.errorCmd(cmd, language.t.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
   return;
  }
 
@@ -28,8 +28,8 @@ export default async (
     ? emoji.roles.cache
        .sort((a, b) => b.position - a.position)
        .map((r) => r)
-       .join(', ') ?? language.None
-    : language.None,
+       .join(', ') ?? language.t.None
+    : language.t.None,
    footer: {
     text: lan.explain,
    },
@@ -56,7 +56,7 @@ export default async (
     {
      color: ch.constants.colors.loading,
      author: {
-      name: language.loading,
+      name: language.t.loading,
       icon_url: ch.emotes.loading.link,
      },
     },

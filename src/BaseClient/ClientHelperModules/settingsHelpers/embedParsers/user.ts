@@ -7,4 +7,4 @@ import * as CT from '../../../../Typings/CustomTypings.js';
  * @returns A string representation of the user.
  */
 export default (val: string | null, language: CT.Language) =>
- val?.length ? `<@${val}>` : language.None;
+ val?.length ? `<@${val}>` : language.t.None;

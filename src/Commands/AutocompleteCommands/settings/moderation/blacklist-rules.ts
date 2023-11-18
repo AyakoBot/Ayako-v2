@@ -15,7 +15,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const language = await ch.getLanguage(cmd.guild.id);
 
  return automodRules?.map((r) => ({
-  name: `${r.name.slice(0, 100) ?? language.None}`,
+  name: `${r.name.slice(0, 100) ?? language.t.None}`,
   value: r.id,
  }));
 };

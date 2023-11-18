@@ -23,7 +23,7 @@ export default async (cmd: Discord.CommandInteraction) => {
     fields: [
      {
       name: '\u200b',
-      value: `${language.Examples}: ${ch.util.makeCodeBlock(
+      value: `${language.t.Examples}: ${ch.util.makeCodeBlock(
        '{{cmd.guild.name}}\n{{cmd.user.username}}\n{{cmd.channel.name}}',
       )}`,
      },

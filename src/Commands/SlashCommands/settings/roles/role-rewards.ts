@@ -73,7 +73,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
        .splice(0, 5)
        .map((r) => `<@&${r}>`)
        .join(', ')
-    : language.None
+    : language.t.None
   }`,
  }));
 

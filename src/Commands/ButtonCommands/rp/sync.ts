@@ -12,13 +12,13 @@ export default async (cmd: Discord.ButtonInteraction) => {
  const lan = language.slashCommands.rp;
 
  if (!user?.refreshtoken || !user?.accesstoken || !user?.expires) {
-  ch.errorCmd(cmd, language.errors.notLoggedIn, language);
+  ch.errorCmd(cmd, language.t.errors.notLoggedIn, language);
   return;
  }
 
  if (Number(user.expires) < Date.now()) user.accesstoken = await ch.refreshToken(user.refreshtoken);
  if (!user.accesstoken) {
-  ch.errorCmd(cmd, language.errors.notLoggedIn, language);
+  ch.errorCmd(cmd, language.t.errors.notLoggedIn, language);
   return;
  }
 

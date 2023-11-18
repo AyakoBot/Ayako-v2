@@ -22,7 +22,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  }
 
  if (!ch.isManageable(channel, me)) {
-  ch.errorCmd(cmd, language.errors.cantManageChannel, language);
+  ch.errorCmd(cmd, language.t.errors.cantManageChannel, language);
   return;
  }
 

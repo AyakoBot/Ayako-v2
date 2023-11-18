@@ -19,12 +19,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   Number(positionRole?.rawPosition) >=
   Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
  ) {
-  ch.errorCmd(cmd, language.errors.roleNotManageable, language);
+  ch.errorCmd(cmd, language.t.errors.roleNotManageable, language);
   return;
  }
 
  if (Number(positionRole?.rawPosition) >= cmd.member.roles.highest.rawPosition) {
-  ch.errorCmd(cmd, language.errors.cantManageRole, language);
+  ch.errorCmd(cmd, language.t.errors.cantManageRole, language);
   return;
  }
 
@@ -71,7 +71,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in role) {
   ch.errorCmd(
    cmd,
-   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
+   role.message.includes('ENOENT') ? language.t.errors.emoteNotFound : role,
    language,
   );
   return;

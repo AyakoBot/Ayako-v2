@@ -13,7 +13,7 @@ export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandI
   );
   user = userId ? await ch.getUser(userId) : undefined;
   if (!userId || !user) {
-   ch.errorCmd(cmd, language.errors.userNotExist, language);
+   ch.errorCmd(cmd, language.t.errors.userNotExist, language);
    return;
   }
  } else {

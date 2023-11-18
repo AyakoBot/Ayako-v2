@@ -31,8 +31,8 @@ const getServers = async (language: CT.Language) =>
 
     return c.guilds.cache.map((g) => ({
      content: `${chEval.util.makeInlineCode(g.name)}\n> ${chEval.splitByThousand(g.memberCount)} ${
-      lang.Members
-     } ${g.vanityURLCode ? ` - [${lang.Join}](https://discord.gg/${g.vanityURLCode})` : ''}`,
+      lang.t.Members
+     } ${g.vanityURLCode ? ` - [${lang.t.Join}](https://discord.gg/${g.vanityURLCode})` : ''}`,
      count: g.memberCount,
     }));
    },

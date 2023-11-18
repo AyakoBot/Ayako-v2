@@ -56,16 +56,16 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   await getImage();
  }
  if (member.nickname !== oldMember.nickname) {
-  merge(oldMember.displayName, member.displayName, 'string', language.name);
+  merge(oldMember.displayName, member.displayName, 'string', language.t.name);
  }
  if (member.premiumSinceTimestamp !== oldMember.premiumSinceTimestamp) {
   merge(
    oldMember.premiumSince
     ? ch.constants.standard.getTime(oldMember.premiumSince.getTime())
-    : language.None,
+    : language.t.None,
    member.premiumSince
     ? ch.constants.standard.getTime(member.premiumSince.getTime())
-    : language.None,
+    : language.t.None,
 
    'string',
    lan.premiumSince,
@@ -75,10 +75,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   merge(
    oldMember.communicationDisabledUntil
     ? ch.constants.standard.getTime(oldMember.communicationDisabledUntil.getTime())
-    : language.None,
+    : language.t.None,
    member.communicationDisabledUntil
     ? ch.constants.standard.getTime(member.communicationDisabledUntil.getTime())
-    : language.None,
+    : language.t.None,
    'string',
    lan.communicationDisabledUntil,
   );
@@ -100,7 +100,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
    addedRoles.length ? addedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
    removedRoles.length ? removedRoles.map((r) => `<@&${r.id}>`).join(', ') : undefined,
    'difference',
-   language.Roles,
+   language.t.Roles,
   );
  }
  if (!!member.pending !== !!oldMember.pending) {

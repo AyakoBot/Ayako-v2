@@ -48,7 +48,7 @@ export default async (guild: Discord.Guild, err: Error) => {
       name: 'Error',
       icon_url: objectEmotes.warning.link,
      },
-     title: language.errors.contactSupport,
+     title: language.t.errors.contactSupport,
      url: constants.standard.support,
     },
    ],

@@ -16,7 +16,7 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
  )) as Discord.Message<true>;
 
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.messageNotFound, language);
   return;
  }
 

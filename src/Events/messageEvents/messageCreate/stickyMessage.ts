@@ -31,7 +31,7 @@ export default async (msg: Discord.Message<true>) => {
  }
 
  const language = await ch.getLanguage(msg.guildId);
- const lan = language.contextCommands.message['Stick Message'];
+ const lan = language.t.contextCommands.message['Stick Message'];
 
  ch.cache.stickyTimeouts.delete(msg.channelId);
  ch.cache.stickyTimeouts.set(

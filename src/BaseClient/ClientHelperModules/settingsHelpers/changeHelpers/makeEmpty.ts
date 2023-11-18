@@ -11,5 +11,5 @@ export default <T extends keyof CT.SettingsNames>(
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Danger,
  custom_id: `settings/empty/${type}_${String(name)}_${fieldName}_${uniquetimestamp}`,
- label: language.Empty,
+ label: language.t.Empty,
 });

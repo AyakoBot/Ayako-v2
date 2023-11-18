@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.help;
 
  if (!command) {
-  ch.errorCmd(cmd, language.errors.commandNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.commandNotFound, language);
   return;
  }
 

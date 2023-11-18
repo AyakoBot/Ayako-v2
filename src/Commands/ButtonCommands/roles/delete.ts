@@ -10,14 +10,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const roleId = args.shift() as string;
  const role = cmd.guild.roles.cache.get(roleId);
  if (!role) {
-  ch.errorCmd(cmd, language.errors.roleNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.roleNotFound, language);
   return;
  }
 
  const me = await ch.getBotMemberFromGuild(cmd.guild);
  const isManageable = me ? ch.isManageable(role, me) : false;
  if (!isManageable) {
-  ch.errorCmd(cmd, language.errors.roleNotManageable, language);
+  ch.errorCmd(cmd, language.t.errors.roleNotManageable, language);
   return;
  }
 

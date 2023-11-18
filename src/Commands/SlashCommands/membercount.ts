@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    name: lan.author,
   },
   color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
-  description: `${language.Members} ${ch.util.makeInlineCode(
+  description: `${language.t.Members} ${ch.util.makeInlineCode(
    ch.splitByThousand(cmd.guild?.memberCount ?? 0),
   )}`,
   fields: [

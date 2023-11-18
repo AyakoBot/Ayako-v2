@@ -12,15 +12,17 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.slashCommands.info.user.userInfo, {
    user,
    conUser: ch.constants.standard.user(user),
-   accentColor: user.accentColor ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\`` : t.None,
+   accentColor: user.accentColor
+    ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\``
+    : t.JSON.None,
   }),
  botInfo: (res: CT.TopGGResponse<true>) =>
   t.stp(t.JSON.slashCommands.info.user.botInfo, {
-   serverCount: res.server_count ?? t.Unknown,
-   tags: res.tags?.map((tag) => `\`${tag}\``).join(', ') ?? t.None,
-   website: res.website ?? t.None,
-   support: res.support ? `https://discord.gg/${res.support}` : t.None,
-   github: res.github ?? t.None,
+   serverCount: res.server_count ?? t.JSON.Unknown,
+   tags: res.tags?.map((tag) => `\`${tag}\``).join(', ') ?? t.JSON.None,
+   website: res.website ?? t.JSON.None,
+   support: res.support ? `https://discord.gg/${res.support}` : t.JSON.None,
+   github: res.github ?? t.JSON.None,
    res,
   }),
 });

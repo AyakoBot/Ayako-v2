@@ -28,7 +28,7 @@ export default async (
   const userMentions = added.map((m) => `<@${m.id}>`).join(', ');
 
   if (userMentions.length > 1024) {
-   const content = ch.txtFileWriter(userMentions, undefined, language.Added);
+   const content = ch.txtFileWriter(userMentions, undefined, language.t.Added);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -44,7 +44,7 @@ export default async (
   const userMentions = removed.map((m) => `<@${m.id}>`).join(', ');
 
   if (userMentions.length > 1024) {
-   const content = ch.txtFileWriter(userMentions, undefined, language.Added);
+   const content = ch.txtFileWriter(userMentions, undefined, language.t.Added);
    if (content) files.push(content);
   } else {
    embed.fields?.push({

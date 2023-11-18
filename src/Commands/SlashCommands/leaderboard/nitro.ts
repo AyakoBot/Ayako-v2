@@ -71,7 +71,7 @@ const getLongest = (
    .reduce((a, b) => (a.length > b.length ? a : b)).length + 1;
 
  if (longestDays < lan.days.length) longestDays = lan.level.length;
- if (longestUsername < language.User.length) longestUsername = language.User.length;
+ if (longestUsername < language.t.User.length) longestUsername = language.t.User.length;
 
  return { longestUsername, longestDays };
 };
@@ -123,7 +123,7 @@ const getEmbed = async (
  color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
  description: `${ch.util.makeInlineCode(
   `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.days, longestDays)} |  ${ch.spaces(
-   language.User,
+   language.t.User,
    longestUsername,
   )}\n${daysPerUser
    .map((l, i) =>

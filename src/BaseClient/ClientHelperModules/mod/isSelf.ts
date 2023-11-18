@@ -24,7 +24,7 @@ export default (
    {
     color: constants.colors.danger,
     author: {
-     name: language.error,
+     name: language.t.error,
      icon_url: objectEmotes.warning.link,
     },
     description: self,

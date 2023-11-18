@@ -61,17 +61,17 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
  }
  if (role.unicodeEmoji !== oldRole.unicodeEmoji) {
   merge(
-   oldRole.unicodeEmoji ?? language.None,
-   role.unicodeEmoji ?? language.None,
+   oldRole.unicodeEmoji ?? language.t.None,
+   role.unicodeEmoji ?? language.t.None,
    'string',
    lan.unicodeEmoji,
   );
  }
  if (role.name !== oldRole.name) {
-  merge(oldRole.name, role.name, 'string', language.name);
+  merge(oldRole.name, role.name, 'string', language.t.name);
  }
  if (role.color !== oldRole.color) {
-  merge(oldRole.hexColor, role.hexColor, 'string', language.color);
+  merge(oldRole.hexColor, role.hexColor, 'string', language.t.color);
  }
  if (role.hoist !== oldRole.hoist) {
   merge(oldRole.hoist, role.hoist, 'boolean', lan.hoisted);
@@ -97,7 +97,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
    Object.entries(oldPermissions)
     .filter(([, b]) => !b)
     .map(([p]) => p),
-  ) as (typeof language.permissions.perms)[];
+  ) as (typeof language.t.permissions.perms)[];
   const changedAllowed = ch.getDifference(
    Object.entries(newPermissions)
     .filter(([, b]) => !!b)
@@ -105,7 +105,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
    Object.entries(oldPermissions)
     .filter(([, b]) => !!b)
     .map(([p]) => p),
-  ) as (typeof language.permissions.perms)[];
+  ) as (typeof language.t.permissions.perms)[];
 
   const permEmbed: Discord.APIEmbed = {
    color: ch.constants.colors.ephemeral,
@@ -113,14 +113,14 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
     .map(
      (p) =>
       `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
-       language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
+       language.t.permissions.perms[p as unknown as keyof typeof language.t.permissions.perms]
       }\``,
     )
     .join('\n')}\n${changedAllowed
     .map(
      (p) =>
       `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
-       language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
+       language.t.permissions.perms[p as unknown as keyof typeof language.t.permissions.perms]
       }\``,
     )
     .join('\n')}`,

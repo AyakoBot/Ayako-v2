@@ -58,7 +58,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
-      label: language.Delete,
+      label: language.t.Delete,
       emoji: ch.emotes.trash,
       custom_id: `suggestion/delete`,
      },

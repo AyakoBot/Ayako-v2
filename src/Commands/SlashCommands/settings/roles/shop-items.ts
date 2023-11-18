@@ -79,7 +79,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
    s.roles
     .slice(0, 5)
     .map((r) => `<@&${r}>`)
-    .join(', ') ?? language.None
+    .join(', ') ?? language.t.None
   }`,
  }));
 
@@ -130,7 +130,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    },
    {
     name: lan.fields.price.name,
-    value: settings?.price ? embedParsers.number(Number(settings.price), language) : language.None,
+    value: settings?.price ? embedParsers.number(Number(settings.price), language) : language.t.None,
     inline: true,
    },
    {
@@ -145,7 +145,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
         value:
          settings.guildid && settings.channelid && settings.msgid
           ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
-          : language.None,
+          : language.t.None,
         inline: true,
        },
        {
@@ -154,7 +154,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
          ? ch.constants.standard.getEmote(
             Discord.parseEmoji(settings.buttonemote) ?? ch.emotes.book,
            )
-         : language.None,
+         : language.t.None,
         inline: true,
        },
        {

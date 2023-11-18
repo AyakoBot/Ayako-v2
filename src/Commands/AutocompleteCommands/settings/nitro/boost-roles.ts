@@ -16,7 +16,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.days.name}: ${s.days ?? language.None}`,
+  name: `${lan.fields.days.name}: ${s.days ?? language.t.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

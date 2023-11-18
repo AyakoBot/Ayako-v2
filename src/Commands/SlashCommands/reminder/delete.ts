@@ -25,7 +25,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     description: reminder.reason,
     fields: [
      {
-      name: language.End,
+      name: language.t.End,
       value: ch.constants.standard.getTime(Number(reminder.endtime)),
       inline: false,
      },

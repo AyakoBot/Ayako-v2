@@ -66,7 +66,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings?.map((s) => ({
-  name: `${lan.fields.command.name}: \`${s.command ?? language.None}\` - ${
+  name: `${lan.fields.command.name}: \`${s.command ?? language.t.None}\` - ${
    lan.fields.cooldown
   }: \`${embedParsers.time(s.cooldown ? Number(s.cooldown) * 1000 : null, language)}\``,
   value: `${

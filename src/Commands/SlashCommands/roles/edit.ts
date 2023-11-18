@@ -23,7 +23,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition) ||
   role.rawPosition >= Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
  ) {
-  ch.errorCmd(cmd, language.errors.cantManageRole, language);
+  ch.errorCmd(cmd, language.t.errors.cantManageRole, language);
   return;
  }
 
@@ -31,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   Number(positionRole?.rawPosition) >= cmd.member.roles.highest.rawPosition ||
   role.rawPosition >= cmd.member.roles.highest.rawPosition
  ) {
-  ch.errorCmd(cmd, language.errors.cantManageRole, language);
+  ch.errorCmd(cmd, language.t.errors.cantManageRole, language);
   return;
  }
 
@@ -51,7 +51,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (editPositionRes && 'message' in editPositionRes) {
   ch.errorCmd(
    cmd,
-   editPositionRes.message.includes('ENOENT') ? language.errors.emoteNotFound : editPositionRes,
+   editPositionRes.message.includes('ENOENT') ? language.t.errors.emoteNotFound : editPositionRes,
    language,
   );
   return;
@@ -74,7 +74,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in editedRole) {
   ch.errorCmd(
    cmd,
-   editedRole.message.includes('ENOENT') ? language.errors.emoteNotFound : editedRole,
+   editedRole.message.includes('ENOENT') ? language.t.errors.emoteNotFound : editedRole,
    language,
   );
  } else ch.replyCmd(cmd, { content: lan.edit(role as Discord.Role) });

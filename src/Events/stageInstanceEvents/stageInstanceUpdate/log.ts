@@ -36,12 +36,12 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
   merge(
    oldStage.guildScheduledEvent
     ? language.languageFunction.getScheduledEvent(oldStage.guildScheduledEvent)
-    : language.None,
+    : language.t.None,
    stage.guildScheduledEvent
     ? language.languageFunction.getScheduledEvent(stage.guildScheduledEvent)
-    : language.None,
+    : language.t.None,
    'string',
-   language.ScheduledEvent,
+   language.t.ScheduledEvent,
   );
  }
  if (oldStage.topic !== stage.topic) {
@@ -54,12 +54,12 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
        oldStage.channel,
        language.channelTypes[oldStage.channel.type],
       )
-    : language.unknown,
+    : language.t.unknown,
    stage.channel
     ? language.languageFunction.getChannel(stage.channel, language.channelTypes[stage.channel.type])
-    : language.unknown,
+    : language.t.unknown,
    'string',
-   language.Channel,
+   language.t.Channel,
   );
  }
 

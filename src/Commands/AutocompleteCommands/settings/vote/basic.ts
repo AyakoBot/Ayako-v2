@@ -18,8 +18,8 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  return settings?.map((s) => ({
   name: `${lan.fields.announcementchannel.name}: ${
    s.announcementchannel
-    ? cmd.guild?.channels.cache.get(s.announcementchannel)?.name ?? language.None
-    : language.None
+    ? cmd.guild?.channels.cache.get(s.announcementchannel)?.name ?? language.t.None
+    : language.t.None
   }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

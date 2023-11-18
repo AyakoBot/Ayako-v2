@@ -21,12 +21,12 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   name: `${lan.fields.channelid.name}: ${
    s.channelid
     ? (client.channels.cache.get(s.channelid) as Discord.GuildTextBasedChannel)?.name ??
-      language.None
-    : language.None
+      language.t.None
+    : language.t.None
   } - ${lan.fields.categoryid.name}: ${
    s.categoryid
-    ? (client.channels.cache.get(s.categoryid) as Discord.CategoryChannel)?.name ?? language.None
-    : language.None
+    ? (client.channels.cache.get(s.categoryid) as Discord.CategoryChannel)?.name ?? language.t.None
+    : language.t.None
   }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

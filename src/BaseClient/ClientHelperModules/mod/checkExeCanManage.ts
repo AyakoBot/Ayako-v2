@@ -23,7 +23,7 @@ export default async (
     color: constants.colors.danger,
     author: {
      icon_url: objectEmotes.warning.link,
-     name: language.error,
+     name: language.t.error,
     },
     description: language.mod.execution[type as keyof CT.Language['mod']['execution']].youNoPerms,
    },

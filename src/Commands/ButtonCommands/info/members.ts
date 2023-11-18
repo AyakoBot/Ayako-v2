@@ -28,7 +28,7 @@ export default async (
       ],
   files: [
    {
-    name: `${language.Members}.txt`,
+    name: `${language.t.Members}.txt`,
     attachment: Buffer.from(getDescription(role, language, true)),
    },
   ],

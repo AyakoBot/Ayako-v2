@@ -27,7 +27,7 @@ export default async (
     fields: lan.fields(
      guildsettings?.lastrpsyncrun
       ? ch.constants.standard.getTime(Number(guildsettings.lastrpsyncrun))
-      : ch.util.makeInlineCode(language.Never),
+      : ch.util.makeInlineCode(language.t.Never),
      Number(guildsettings?.rpenableruns ?? 0) ?? 0,
     ),
    },
@@ -73,7 +73,7 @@ export const getComponents = (
    },
    {
     type: Discord.ComponentType.Button,
-    label: language.login,
+    label: language.t.login,
     style: Discord.ButtonStyle.Link,
     url: 'https://ayakobot.com/login',
    },

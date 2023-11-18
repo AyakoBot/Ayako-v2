@@ -16,12 +16,12 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.warnamount.name}: ${s.warnamount ?? language.None} - ${
+  name: `${lan.fields.warnamount.name}: ${s.warnamount ?? language.t.None} - ${
    lan.fields.punishment.name
   }: ${
    s.punishment
-    ? language.punishments[s.punishment as keyof typeof language.punishments]
-    : language.None
+    ? language.t.punishments[s.punishment as keyof typeof language.t.punishments]
+    : language.t.None
   }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

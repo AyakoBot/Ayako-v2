@@ -18,7 +18,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  return settings?.map((s) => ({
   name: `${lan.fields.linkedid.name}: ${Number(s.linkedid).toString(36)} - ${
    lan.fields.emote.name
-  }: ${s.emote ?? language.None}`,
+  }: ${s.emote ?? language.t.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

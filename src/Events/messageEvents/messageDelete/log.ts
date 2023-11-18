@@ -46,7 +46,7 @@ export default async (msg: Discord.Message) => {
 
  if (flagsText?.length) {
   embed.fields?.push({
-   name: language.Flags,
+   name: language.t.Flags,
    value: flagsText,
    inline: true,
   });
@@ -90,7 +90,7 @@ export default async (msg: Discord.Message) => {
 
   if (webhook) {
    embed.fields?.push({
-    name: language.Webhook,
+    name: language.t.Webhook,
     value: language.languageFunction.getWebhook(webhook),
    });
   }
@@ -136,12 +136,12 @@ export default async (msg: Discord.Message) => {
 
  if (msg.content) {
   if (msg.content?.length > 1024) {
-   const content = ch.txtFileWriter(msg.content, undefined, language.content);
+   const content = ch.txtFileWriter(msg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
-    name: language.content,
-    value: msg.content ?? language.None,
+    name: language.t.content,
+    value: msg.content ?? language.t.None,
     inline: false,
    });
   }

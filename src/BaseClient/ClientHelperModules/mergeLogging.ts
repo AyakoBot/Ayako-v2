@@ -35,8 +35,8 @@ export default (
   }
   case 'difference': {
    value = language.events.logs.addedRemoved(
-    (before as string) ?? language.None,
-    (after as string) ?? language.None,
+    (before as string) ?? language.t.None,
+    (after as string) ?? language.t.None,
    );
    break;
   }
@@ -68,5 +68,5 @@ export default (
  */
 const boolify = (b: unknown, l: CT.Language) =>
  b
-  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.Enabled}`
-  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.Disabled}`;
+  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.JSON.Enabled}`
+  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.JSON.Disabled}`;

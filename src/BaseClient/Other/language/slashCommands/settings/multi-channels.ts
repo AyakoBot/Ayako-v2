@@ -4,6 +4,6 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories['multi-channels'],
  fields: {
   ...t.JSON.slashCommands.settings.categories['multi-channels'].fields,
-  multiplier: t.multiplier,
+  multiplier: t.JSON.multiplier,
  },
 });

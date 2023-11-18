@@ -29,7 +29,7 @@ export default async (member: Discord.GuildMember) => {
   description,
   fields: [
    {
-    name: language.roles,
+    name: language.t.roles,
     value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
    },
   ],
@@ -39,7 +39,7 @@ export default async (member: Discord.GuildMember) => {
 
  if (member.joinedAt) {
   embed.fields?.push({
-   name: language.joinedAt,
+   name: language.t.joinedAt,
    value: ch.constants.standard.getTime(member.joinedAt.getTime()),
   });
  }

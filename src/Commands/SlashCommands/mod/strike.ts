@@ -27,7 +27,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false);
 
  const modOptions: CT.ModOptions<'strikeAdd'> = {
-  reason: reason ?? language.noReasonProvided,
+  reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
   executor: cmd.user,

@@ -466,7 +466,7 @@ const mod = {
       description: language.mod.execution.channelBanAdd.importantChannel,
       author: {
        icon_url: objectEmotes.warning.link,
-       name: language.error,
+       name: language.t.error,
       },
      },
     ],

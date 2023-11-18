@@ -82,7 +82,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if ('message' in role) {
    ch.errorCmd(
     cmd,
-    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
+    role.message.includes('ENOENT') ? language.t.errors.emoteNotFound : role,
     language,
    );
    return;
@@ -109,7 +109,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in role) {
   ch.errorCmd(
    cmd,
-   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
+   role.message.includes('ENOENT') ? language.t.errors.emoteNotFound : role,
    language,
   );
   return;

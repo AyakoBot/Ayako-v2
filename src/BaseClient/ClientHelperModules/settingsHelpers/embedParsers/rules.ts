@@ -11,4 +11,4 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 export default (val: string[] | null, language: CT.Language, guild: Discord.Guild) =>
  val && val.length
   ? val.map((v) => `\`${guild.autoModerationRules.cache.get(v)?.name ?? v}\``).join(', ')
-  : language.None;
+  : language.t.None;

@@ -8,7 +8,7 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
  const language = await ch.getLanguage(cmd.guildId);
  const role = cmd.guild.roles.cache.get(args.shift() as string);
  if (!role) {
-  ch.errorCmd(cmd, language.errors.roleNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.roleNotFound, language);
   return;
  }
 

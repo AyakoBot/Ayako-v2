@@ -13,18 +13,18 @@ export default (
  switch (type) {
   case 'channel':
   case 'channels': {
-   return language.Channels;
+   return language.t.Channels;
   }
   case 'user':
   case 'users': {
-   return language.Users;
+   return language.t.Users;
   }
   case 'role':
   case 'roles': {
-   return language.Roles;
+   return language.t.Roles;
   }
   default: {
-   return language.Mentionables;
+   return language.t.Mentionables;
   }
  }
 };

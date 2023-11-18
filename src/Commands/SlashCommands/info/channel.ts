@@ -8,14 +8,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guildId);
 
  if (!channel) {
-  ch.errorCmd(cmd, language.errors.channelNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.channelNotFound, language);
   return;
  }
 
  const embeds = (await getEmbed(channel.id, cmd.guildId, cmd.user.id))?.flat();
 
  if (!embeds) {
-  ch.errorCmd(cmd, language.errors.channelNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.channelNotFound, language);
   return;
  }
 
@@ -55,7 +55,7 @@ const getEmbed = async (
      color: chEval.getColor(await chEval.getBotMemberFromGuild(g)),
      description: `**${language.slashCommands.info.basic}**\n${[
       {
-       name: chEval.util.makeBold(language.name),
+       name: chEval.util.makeBold(language.t.name),
        value: `\`${c.name}\`\n`,
       },
       {
@@ -63,11 +63,11 @@ const getEmbed = async (
        value: `\`${c.id}\`\n`,
       },
       {
-       name: chEval.util.makeBold(language.createdAt),
+       name: chEval.util.makeBold(language.t.createdAt),
        value: `${chEval.constants.standard.getTime(c.createdTimestamp ?? 0)}\n`,
       },
       {
-       name: chEval.util.makeBold(language.Type),
+       name: chEval.util.makeBold(language.t.Type),
        value: `\`${language.channelTypes[c.type]}\`\n`,
       },
       'nsfw' in c
@@ -78,7 +78,7 @@ const getEmbed = async (
        : undefined,
       'defaultAutoArchiveDuration' in c && c.defaultAutoArchiveDuration
        ? {
-          name: chEval.util.makeBold(language.defaultAutoArchiveDurationName),
+          name: chEval.util.makeBold(language.t.defaultAutoArchiveDurationName),
           value: `\`${language.defaultAutoArchiveDuration[c.defaultAutoArchiveDuration]}\`\n`,
          }
        : undefined,
@@ -107,8 +107,8 @@ const getEmbed = async (
        ? {
           name: chEval.util.makeBold(eventLan.rtcRegion),
           value: `\`${c.rtcRegion}\`${
-           language.regions[c.rtcRegion as keyof typeof language.regions]
-            ? ` / \`${language.regions[c.rtcRegion as keyof typeof language.regions]}\``
+           language.t.regions[c.rtcRegion as keyof typeof language.t.regions]
+            ? ` / \`${language.t.regions[c.rtcRegion as keyof typeof language.t.regions]}\``
             : ''
           }\n`,
          }
@@ -121,7 +121,7 @@ const getEmbed = async (
        : undefined,
       'defaultForumLayout' in c
        ? {
-          name: chEval.util.makeBold(language.defaultForumLayoutName),
+          name: chEval.util.makeBold(language.t.defaultForumLayoutName),
           value: `${
            language.defaultForumLayout[
             c.defaultForumLayout as keyof typeof language.defaultForumLayout
@@ -145,7 +145,7 @@ const getEmbed = async (
        : undefined,
       'defaultSortOrder' in c && c.defaultSortOrder
        ? {
-          name: chEval.util.makeBold(language.defaultSortOrderName),
+          name: chEval.util.makeBold(language.t.defaultSortOrderName),
           value: `${language.defaultSortOrder[c.defaultSortOrder]}\n`,
          }
        : undefined,
@@ -184,10 +184,10 @@ const getEmbed = async (
        : undefined,
       'topic' in c && c.topic
        ? {
-          name: language.Description,
+          name: language.t.Description,
           value: member?.permissionsIn(c).has(BigInt(ViewChannel))
            ? c.topic
-           : `[${language.Redacted.toUpperCase()}]`,
+           : `[${language.t.Redacted.toUpperCase()}]`,
          }
        : undefined,
       'stageInstance' in c && c.stageInstance
@@ -196,7 +196,7 @@ const getEmbed = async (
           value: [
            c.stageInstance.topic
             ? {
-               name: `**${language.Topic}**`,
+               name: `**${language.t.Topic}**`,
                value: `\`${c.stageInstance.topic}\`\n`,
               }
             : undefined,
@@ -208,7 +208,7 @@ const getEmbed = async (
             : undefined,
            c.stageInstance.createdTimestamp
             ? {
-               name: `**${language.createdAt}**`,
+               name: `**${language.t.createdAt}**`,
                value: `${chEval.constants.standard.getTime(c.stageInstance.createdTimestamp)}\n`,
               }
             : undefined,
@@ -241,7 +241,7 @@ const getEmbed = async (
         },
         description: [
          {
-          name: `**${language.name}**`,
+          name: `**${language.t.name}**`,
           value: `\`${event.name}\`\n`,
          },
          {
@@ -256,7 +256,7 @@ const getEmbed = async (
           : undefined,
          event.channel
           ? {
-             name: `**${language.Channel}**\n`,
+             name: `**${language.t.Channel}**\n`,
              value: language.languageFunction.getChannel(
               event.channel,
               language.channelTypes[event.channel.type],
@@ -312,7 +312,7 @@ const getEmbed = async (
         fields: [
          event.description
           ? {
-             name: language.Description,
+             name: language.t.Description,
              value: event.description,
             }
           : undefined,

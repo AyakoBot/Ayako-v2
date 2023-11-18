@@ -9,7 +9,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const maxPage = Number(args.shift() as string);
 
  cmd.showModal({
-  title: language.Page,
+  title: language.t.Page,
   custom_id: `server`,
   components: [
    {
@@ -19,8 +19,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       type: Discord.ComponentType.TextInput,
       style: Discord.TextInputStyle.Short,
       custom_id: 'page',
-      placeholder: language.Page,
-      label: language.pageBetween(1, maxPage),
+      placeholder: language.t.Page,
+      label: language.t.pageBetween(1, maxPage),
       value: String(page),
      },
     ],

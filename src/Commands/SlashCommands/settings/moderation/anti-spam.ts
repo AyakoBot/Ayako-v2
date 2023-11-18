@@ -57,8 +57,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.action.name,
     value: settings?.action
-     ? language.punishments[settings?.action as keyof typeof language.punishments]
-     : language.None,
+     ? language.t.punishments[settings?.action as keyof typeof language.t.punishments]
+     : language.t.None,
     inline: true,
    },
    ...(['tempmute', 'tempchannelban', 'tempban'].includes(settings?.action)

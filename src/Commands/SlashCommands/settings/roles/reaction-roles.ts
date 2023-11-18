@@ -68,7 +68,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   value: `${lan.fields.linkedid.name}: ${
-   s.linkedid ? Number(s.linkedid).toString(36) : language.None
+   s.linkedid ? Number(s.linkedid).toString(36) : language.t.None
   }`,
  }));
 
@@ -113,7 +113,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.linkedid.name,
-    value: settings.linkedid ? Number(settings.linkedid).toString(36) : language.None,
+    value: settings.linkedid ? Number(settings.linkedid).toString(36) : language.t.None,
     inline: true,
    },
    {

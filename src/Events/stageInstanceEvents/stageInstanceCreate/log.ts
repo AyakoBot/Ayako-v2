@@ -30,7 +30,7 @@ export default async (stage: Discord.StageInstance) => {
 
  if (stage.guildScheduledEvent) {
   embed.fields?.push({
-   name: language.ScheduledEvent,
+   name: language.t.ScheduledEvent,
    value: language.languageFunction.getScheduledEvent(stage.guildScheduledEvent),
   });
  }

@@ -34,7 +34,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  if (!lastMessage || 'message' in lastMessage) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.messageNotFound, language);
   return;
  }
 

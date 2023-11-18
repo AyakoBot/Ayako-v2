@@ -23,7 +23,7 @@ export default async (
  )) as Discord.Message<true>;
 
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.messageNotFound, language);
   return;
  }
 

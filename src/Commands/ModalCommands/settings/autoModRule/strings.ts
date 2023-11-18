@@ -15,7 +15,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
  const field = cmd.fields.fields.first();
  if (!field) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+  ch.errorCmd(cmd, language.t.errors.inputNoMatch, language);
   return;
  }
 
@@ -34,7 +34,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.automodRuleNotFound, language);
   return;
  }
 

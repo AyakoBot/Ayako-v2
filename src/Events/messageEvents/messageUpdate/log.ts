@@ -38,7 +38,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
    .getDifference(newFlags, oldFlags)
    .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
 
-  if (added.length || removed.length) merge(added, removed, 'difference', language.Flags);
+  if (added.length || removed.length) merge(added, removed, 'difference', language.t.Flags);
  }
  if (
   JSON.stringify(oldMsg.components) !== JSON.stringify(msg.components) &&
@@ -56,18 +56,18 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  }
  if (oldMsg.editedTimestamp !== msg.editedTimestamp) {
   merge(
-   oldMsg.editedTimestamp ? ch.constants.standard.getTime(oldMsg.editedTimestamp) : language.None,
-   msg.editedTimestamp ? ch.constants.standard.getTime(msg.editedTimestamp) : language.None,
+   oldMsg.editedTimestamp ? ch.constants.standard.getTime(oldMsg.editedTimestamp) : language.t.None,
+   msg.editedTimestamp ? ch.constants.standard.getTime(msg.editedTimestamp) : language.t.None,
    'string',
    lan.editedTimestamp,
   );
  }
  if (oldMsg.activity?.type !== msg.activity?.type) {
   merge(
-   oldMsg.activity ? lan.activity[oldMsg.activity?.type] : language.None,
-   msg.activity ? lan.activity[msg.activity?.type] : language.None,
+   oldMsg.activity ? lan.activity[oldMsg.activity?.type] : language.t.None,
+   msg.activity ? lan.activity[msg.activity?.type] : language.t.None,
    'string',
-   language.Flags,
+   language.t.Flags,
   );
 
   byAuthor = false;
@@ -76,10 +76,10 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   merge(
    oldMsg.thread
     ? language.languageFunction.getChannel(oldMsg.thread, language.channelTypes[oldMsg.thread.type])
-    : language.None,
+    : language.t.None,
    msg.thread
     ? language.languageFunction.getChannel(msg.thread, language.channelTypes[msg.thread.type])
-    : language.None,
+    : language.t.None,
    'string',
    language.channelTypes[(msg.thread ?? oldMsg.thread)?.type ?? 11],
   );
@@ -100,33 +100,33 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  }
  if (oldMsg.type !== msg.type) {
   merge(
-   lan.type[oldMsg.type] ?? language.unknown,
-   lan.type[msg.type] ?? language.unknown,
+   lan.type[oldMsg.type] ?? language.t.unknown,
+   lan.type[msg.type] ?? language.t.unknown,
    'string',
-   language.Type,
+   language.t.Type,
   );
 
   byAuthor = false;
  }
  if (oldMsg.content !== msg.content) {
   if (oldMsg.content?.length > 1024) {
-   const content = ch.txtFileWriter(oldMsg.content, undefined, language.content);
+   const content = ch.txtFileWriter(oldMsg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
     name: lan.beforeContent,
-    value: oldMsg.content ?? language.None,
+    value: oldMsg.content ?? language.t.None,
     inline: false,
    });
   }
 
   if (msg.content?.length > 1024) {
-   const content = ch.txtFileWriter(msg.content, undefined, language.content);
+   const content = ch.txtFileWriter(msg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
     name: lan.afterContent,
-    value: msg.content ?? language.None,
+    value: msg.content ?? language.t.None,
     inline: false,
    });
   }
@@ -138,7 +138,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
    const embedFile = ch.txtFileWriter(
     JSON.stringify(oldMsg.embeds, null, 2),
     undefined,
-    language.Embeds,
+    language.t.Embeds,
    );
    if (embedFile) files.push(embedFile);
   }
@@ -176,8 +176,8 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   ) as Discord.User[];
 
   merge(
-   oldMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.None,
-   newMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.None,
+   oldMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.t.None,
+   newMentions.map((i) => `<@${i.id}>`).join(', ') ?? language.t.None,
    'string',
    lan.mentionedUsers,
   );

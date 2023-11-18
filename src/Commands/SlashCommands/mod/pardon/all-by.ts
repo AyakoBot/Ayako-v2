@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.pardon;
 
  const executor = cmd.options.getUser('executor', true);
- const reason = cmd.options.getString('reason', false) ?? language.noReasonProvided;
+ const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  const punishments = await ch.getPunishment(executor.id, {
   identType: 'all-by',
@@ -18,7 +18,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
   return;
  }
 

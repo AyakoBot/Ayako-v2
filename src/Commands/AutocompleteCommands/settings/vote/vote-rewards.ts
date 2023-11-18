@@ -16,8 +16,8 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.tier.name}: ${s.tier ?? language.None} - ${lan.fields.linkedid.name}: ${
-   s?.linkedid ? Number(s.linkedid).toString(36) : language.None
+  name: `${lan.fields.tier.name}: ${s.tier ?? language.t.None} - ${lan.fields.linkedid.name}: ${
+   s?.linkedid ? Number(s.linkedid).toString(36) : language.t.None
   }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

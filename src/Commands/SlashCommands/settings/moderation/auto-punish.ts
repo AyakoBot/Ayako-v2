@@ -66,12 +66,12 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings?.map((s) => ({
-  name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.None}\` - ${
+  name: `${lan.fields.warnamount.name}: \`${s.warnamount ?? language.t.None}\` - ${
    lan.fields.punishment.name
   }: \`${
    s.punishment
-    ? language.punishments[s.punishment as keyof typeof language.punishments]
-    : language.None
+    ? language.t.punishments[s.punishment as keyof typeof language.t.punishments]
+    : language.t.None
   }\``,
   value: `${
    s.active
@@ -127,8 +127,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.punishment.name,
     value: settings?.punishment
-     ? language.punishments[settings?.punishment as keyof typeof language.punishments]
-     : language.None,
+     ? language.t.punishments[settings?.punishment as keyof typeof language.t.punishments]
+     : language.t.None,
     inline: true,
    },
    ...(['tempmute', 'tempban', 'tempchannelban'].includes(settings.punishment)

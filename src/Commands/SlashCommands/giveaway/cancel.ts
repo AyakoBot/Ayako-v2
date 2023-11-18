@@ -21,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const channel = await ch.getChannel.guildTextChannel(giveaway.channelid);
  if (!channel) {
-  ch.errorCmd(cmd, language.errors.channelNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.channelNotFound, language);
   return;
  }
 

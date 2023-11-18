@@ -14,10 +14,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawID = cmd.options.getString('id', true);
  const id = Number.parseInt(rawID, 36);
  const punishment = await ch.getPunishment(id);
- const reason = cmd.options.getString('reason', false) ?? language.noReasonProvided;
+ const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (!punishment) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
   return;
  }
 
@@ -73,7 +73,7 @@ export const log = async (
       name: lan.author,
      },
      color: ch.constants.colors.success,
-     description: `${ch.util.makeBold(language.reason)}:\n${punishment.reason}`,
+     description: `${ch.util.makeBold(language.t.Reason)}:\n${punishment.reason}`,
      fields: [
       {
        name: lan.target,
@@ -142,7 +142,7 @@ export const log = async (
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Link,
        url: ch.constants.standard.msgurl(cmd.guildId, punishment.channelid, punishment.msgid),
-       label: language.Message,
+       label: language.t.Message,
       },
      ],
     },

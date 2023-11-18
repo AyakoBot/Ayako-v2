@@ -4,6 +4,6 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories.leveling,
  fields: {
   ...t.JSON.slashCommands.settings.categories.leveling.fields,
-  xpmultiplier: t.multiplier,
+  xpmultiplier: t.JSON.multiplier,
  },
 });

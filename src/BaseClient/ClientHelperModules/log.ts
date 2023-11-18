@@ -37,7 +37,7 @@ export default async <T extends CT.ModTypes>(
   fields: [
    options.reason
     ? {
-       name: language.reason,
+       name: language.t.Reason,
        value: options.reason,
       }
     : undefined,

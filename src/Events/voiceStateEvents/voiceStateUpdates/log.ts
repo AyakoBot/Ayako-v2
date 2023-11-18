@@ -84,12 +84,12 @@ export default async (
        oldState.channel,
        language.channelTypes[oldState.channel.type],
       )
-    : language.None,
+    : language.t.None,
    state.channel
     ? language.languageFunction.getChannel(state.channel, language.channelTypes[state.channel.type])
-    : language.None,
+    : language.t.None,
    'string',
-   language.Channel,
+   language.t.Channel,
   );
  }
 

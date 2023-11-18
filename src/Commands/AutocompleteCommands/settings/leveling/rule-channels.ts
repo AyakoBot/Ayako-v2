@@ -16,9 +16,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${new ChannelRules(s).toArray().length} ${language.ChannelRules} - ${Number(
+  name: `${new ChannelRules(s).toArray().length} ${language.t.ChannelRules} - ${Number(
    s.channels?.length ?? 0,
-  )} ${language.Channels}`,
+  )} ${language.t.Channels}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

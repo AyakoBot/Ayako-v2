@@ -12,7 +12,7 @@ export default (t: CT.Language) => ({
   value: (msg: Discord.Message) =>
    t.stp(t.JSON.antivirus.log.value, {
     msg: t.languageFunction.getMessage(msg),
-    name: 'name' in msg.channel ? msg.channel.name : t.Unknown,
+    name: 'name' in msg.channel ? msg.channel.name : t.JSON.Unknown,
    }),
  },
 });

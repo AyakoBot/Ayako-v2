@@ -58,7 +58,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
   fields: [
    {
     name: lan.fields.prefix.name,
-    value: settings?.prefix ? `\`${settings?.prefix}\`` : language.None,
+    value: settings?.prefix ? `\`${settings?.prefix}\`` : language.t.None,
     inline: true,
    },
 
@@ -74,7 +74,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    },
    {
     name: lan.fields.interactionsmode.name,
-    value: settings?.interactionsmode ? `${language.small}` : `${language.large}`,
+    value: settings?.interactionsmode ? `${language.t.small}` : `${language.t.large}`,
     inline: true,
    },
    {
@@ -99,8 +99,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    {
     name: lan.fields.lan.name,
     value: settings?.lan
-     ? language.languages[settings.lan as keyof typeof language.languages]
-     : language.languages.en,
+     ? language.t.languages[settings.lan as keyof typeof language.t.languages]
+     : language.t.languages.en,
     inline: true,
    },
    {
@@ -115,11 +115,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
         `${settings.token.split('.')[0]}.${'*'.repeat(
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
-       )}\n[${language.InviteCustomBot}](${ch.constants.standard.invite.replace(
+       )}\n[${language.t.InviteCustomBot}](${ch.constants.standard.invite.replace(
         ch.mainID,
         settings.appid ?? ch.mainID,
        )})`
-     : language.None,
+     : language.t.None,
    },
   ],
  },
@@ -169,7 +169,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    {
     type: Discord.ComponentType.Button,
     style: Discord.ButtonStyle.Link,
-    label: language.InviteCustomBot,
+    label: language.t.InviteCustomBot,
     disabled: !settings.token,
     url: settings.token
      ? ch.constants.standard.invite.replace(ch.mainID, settings.appid ?? ch.mainID)

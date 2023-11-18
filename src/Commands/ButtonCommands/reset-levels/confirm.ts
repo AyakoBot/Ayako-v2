@@ -20,7 +20,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   case 'role': {
    const role = cmd.guild.roles.cache.get(id);
    if (!role) {
-    ch.errorCmd(cmd, language.errors.roleNotFound, language);
+    ch.errorCmd(cmd, language.t.errors.roleNotFound, language);
     return;
    }
 
@@ -34,7 +34,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   case 'user': {
    const user = await ch.getUser(id);
    if (!user) {
-    ch.errorCmd(cmd, language.errors.userNotFound, language);
+    ch.errorCmd(cmd, language.t.errors.userNotFound, language);
     return;
    }
 

@@ -58,7 +58,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const components = getComponents(member, user, language, cmd.guild);
 
  if (botInfo && botInfo.description) {
-  userInfo.fields?.push({ name: language.Description, value: botInfo.description });
+  userInfo.fields?.push({ name: language.t.Description, value: botInfo.description });
  }
 
  if (userflags.length) {
@@ -109,10 +109,10 @@ const getMemberEmbed = (
     name: lan.timeout,
     value: `${
      member.communicationDisabledUntil && member.isCommunicationDisabled()
-      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.Yes}\n${
+      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Yes}\n${
          lan.communicationDisabledUntil
         } ${ch.constants.standard.getTime(member.communicationDisabledUntilTimestamp)}`
-      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.No}`
+      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.No}`
     }`,
     inline: false,
    },
@@ -124,10 +124,10 @@ const getMemberEmbed = (
     name: `${getBoostEmote(member)} ${lan.boosting}`,
     value: `${
      member.premiumSinceTimestamp
-      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.Yes}\n${
+      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Yes}\n${
          lan.boostingSince
         } ${ch.constants.standard.getTime(member.premiumSinceTimestamp)}`
-      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.No}`
+      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.No}`
     }`,
    },
   ],

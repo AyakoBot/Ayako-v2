@@ -21,7 +21,7 @@ export default async <T extends CT.ModTypes>(
    ? constants.colors.success
    : constants.colors.danger,
   description: dm(options as never),
-  fields: [...(options.reason ? [{ name: language.reason, value: options.reason }] : [])],
+  fields: [...(options.reason ? [{ name: language.t.Reason, value: options.reason }] : [])],
   thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
    ? undefined
    : {

@@ -84,7 +84,7 @@ const reply = async (
 
    const m = await errorMsg(
     realCmd,
-    allUsers.length ? language.slashCommands.rp.cantRP : language.errors.noUserMentioned,
+    allUsers.length ? language.slashCommands.rp.cantRP : language.t.errors.noUserMentioned,
     language,
    );
 
@@ -166,7 +166,7 @@ const reply = async (
 
   const lastUser = newUsers.length > 1 ? newUsers.pop() : undefined;
   payload.content = lastUser
-   ? `${mapper(newUsers)} ${language.and} <@${lastUser}>`
+   ? `${mapper(newUsers)} ${language.t.and} <@${lastUser}>`
    : `${mapper(newUsers)}`;
   if (!lastUser && !newUsers.length) payload.content = '';
 
@@ -194,7 +194,7 @@ const reply = async (
 
  const lastUser = users.length > 1 ? users.pop() : undefined;
  payload.content = `${
-  lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
+  lastUser ? `${mapper(users)} ${language.t.and} ${lastUser}` : `${mapper(users)}`
  }`;
 
  if (cmd instanceof Discord.Message) {
@@ -438,7 +438,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
   const lastUser = users.length > 1 ? users.pop() : undefined;
 
   return `${author} ${Array.isArray(lan.others) ? lan.others[0] : lan.others} ${
-   lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
+   lastUser ? `${mapper(users)} ${language.t.and} ${lastUser}` : `${mapper(users)}`
   }${Array.isArray(lan.others) ? ` ${lan.others[1]}` : ''}`;
  }
 
@@ -446,7 +446,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
   const lastUser = users.length > 1 ? users.pop() : undefined;
 
   return `${author} ${Array.isArray(lan.one) ? lan.one[0] : lan.one} ${
-   lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
+   lastUser ? `${mapper(users)} ${language.t.and} ${lastUser}` : `${mapper(users)}`
   }${Array.isArray(lan.one) ? ` ${lan.one[1]}` : ''}`;
  }
 
@@ -454,7 +454,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
   const lastUser = users.length > 1 ? users.pop() : undefined;
 
   return `${author} ${Array.isArray(lan.many) ? lan.many[0] : lan.many} ${
-   lastUser ? `${mapper(users)} ${language.and} ${lastUser}` : `${mapper(users)}`
+   lastUser ? `${mapper(users)} ${language.t.and} ${lastUser}` : `${mapper(users)}`
   }${Array.isArray(lan.many) ? ` ${lan.many[1]}` : ''}`;
  }
 

@@ -117,8 +117,8 @@ export default async (rule: Discord.AutoModerationRule) => {
  embed.fields?.push({
   name: lan.enabled,
   value: rule.enabled
-   ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.Enabled}`
-   : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.Disabled}`,
+   ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Enabled}`
+   : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.Disabled}`,
   inline: true,
  });
 

@@ -26,6 +26,6 @@ export default ({
  },
  color: constants.colors.loading,
  description: `${constants.standard.getEmote(emotes.loading)} ${
-  lan.loading ? lan.loading : language.loading
+  lan.loading ? lan.loading : language.t.loading
  }`,
 });

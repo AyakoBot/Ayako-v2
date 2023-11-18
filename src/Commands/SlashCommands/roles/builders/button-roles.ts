@@ -23,7 +23,7 @@ export default async (
    : (cmd.message.embeds[0].url as string),
  );
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language, reply);
+  ch.errorCmd(cmd, language.t.errors.messageNotFound, language, reply);
   return;
  }
 
@@ -41,7 +41,7 @@ export default async (
   (await getBaseSettings(type, cmd.guildId, message.id)) ??
   (await createBaseSettings(type, cmd.guildId, message.channelId, message.id));
  if (!baseSettings) {
-  ch.errorCmd(cmd, language.errors.settingNotFound, language, reply);
+  ch.errorCmd(cmd, language.t.errors.settingNotFound, language, reply);
   return;
  }
 
@@ -71,12 +71,12 @@ export default async (
  const options: Discord.SelectMenuComponentOptionData[] = [
   ...((settings?.map((s) => ({
    emoji: s.emote,
-   label: language.Edit,
+   label: language.t.Edit,
    value: s.emote ?? s.uniquetimestamp,
   })) ?? []) as Discord.SelectMenuComponentOptionData[]),
   ...applyReactions.map((r) => ({
    emoji: r.emoji.identifier,
-   label: language.Add,
+   label: language.t.Add,
    value: !r.emoji.id ? (r.emoji.name as string) : r.emoji.identifier,
   })),
  ].slice(0, 25);
@@ -98,7 +98,7 @@ export default async (
         ? s.emote
         : `<${s.emote?.startsWith('a:') ? '' : ':'}${s.emote}>`
       } / ${ch.util.makeInlineCode(s.emote as string)}`,
-      value: s?.roles?.map((r) => `<@&${r}>`).join(', ') ?? language.None,
+      value: s?.roles?.map((r) => `<@&${r}>`).join(', ') ?? language.t.None,
      })),
    },
   ],

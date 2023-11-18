@@ -11,5 +11,5 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 export default async (val: Prisma.Decimal | null, language: CT.Language) =>
  val
   ? (await DataBase.customembeds.findUnique({ where: { uniquetimestamp: val } }))?.name ??
-    language.None
-  : language.None;
+    language.t.None
+  : language.t.None;

@@ -4,8 +4,8 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories['anti-spam'],
  fields: {
   ...t.JSON.slashCommands.settings.categories['anti-spam'].fields,
-  action: t.punishmentAction,
-  duration: t.punishmentDuration,
-  deletemessageseconds: t.punishmentDeleteMessageSeconds,
+  action: t.JSON.punishmentAction,
+  duration: t.JSON.punishmentDuration,
+  deletemessageseconds: t.JSON.punishmentDeleteMessageSeconds,
  },
 });

@@ -69,9 +69,9 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${
    new ChannelRules(s).toArray().length
-  } ${language.ChannelRules} - ${Number(s.channels?.length)} ${language.Channels}`,
-  value: `${language.Channels}: ${
-   s.channels.length ? s.channels.map((c) => `<#${c}>`).slice(0, 5) : language.None
+  } ${language.t.ChannelRules} - ${Number(s.channels?.length)} ${language.t.Channels}`,
+  value: `${language.t.Channels}: ${
+   s.channels.length ? s.channels.map((c) => `<#${c}>`).slice(0, 5) : language.t.None
   }`,
  }));
 
@@ -125,7 +125,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         })
         .filter((r): r is string => !!r)
         .join('\n')
-     : language.None
+     : language.t.None
    }`,
    fields: [
     {

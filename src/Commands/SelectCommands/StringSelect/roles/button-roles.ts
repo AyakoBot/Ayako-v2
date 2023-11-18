@@ -25,7 +25,7 @@ export default async (
    : await getValue();
 
  if (!value) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
   return;
  }
 
@@ -44,7 +44,7 @@ export default async (
        name: `${
         !Discord.parseEmoji(value)?.id ? value : `<${value.startsWith('a:') ? '' : ':'}${value}>`
        } / ${ch.util.makeInlineCode(value)}`,
-       value: language.None,
+       value: language.t.None,
       },
      ]),
  ];
@@ -128,7 +128,7 @@ export const getComponents = (
     custom_id: `roles/${type}/delete_${emojiIdentifier}`,
     emoji: ch.emotes.trash,
     style: Discord.ButtonStyle.Secondary,
-    label: language.Delete,
+    label: language.t.Delete,
    },
   ],
  },

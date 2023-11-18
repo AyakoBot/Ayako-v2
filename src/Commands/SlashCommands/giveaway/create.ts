@@ -63,7 +63,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if (!msg || 'message' in msg) {
-  ch.errorCmd(cmd, msg ?? language.Unknown, language);
+  ch.errorCmd(cmd, msg ?? language.t.Unknown, language);
   return;
  }
 
@@ -84,7 +84,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if (!giveaway) {
-  ch.errorCmd(cmd, language.Unknown, language);
+  ch.errorCmd(cmd, language.t.Unknown, language);
   if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
   return;
  }

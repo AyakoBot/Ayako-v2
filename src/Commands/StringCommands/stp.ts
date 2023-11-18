@@ -28,7 +28,7 @@ export default async (msg: Discord.Message, args: string[]) => {
     fields: [
      {
       name: '\u200b',
-      value: `${language.Examples}: ${ch.util.makeCodeBlock(
+      value: `${language.t.Examples}: ${ch.util.makeCodeBlock(
        '{{msg.guild.name}}\n{{msg.user.username}}\n{{msg.channel.name}}',
       )}`,
      },

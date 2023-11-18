@@ -25,7 +25,7 @@ export default async (integration: Discord.Integration) => {
  };
 
  const flagsText = [
-  integration.enabled ? language.Enabled : null,
+  integration.enabled ? language.t.Enabled : null,
   integration.syncing ? lan.syncing : null,
   integration.enableEmoticons ? lan.enableEmoticons : null,
   integration.revoked ? lan.revoked : null,
@@ -36,7 +36,7 @@ export default async (integration: Discord.Integration) => {
 
  if (flagsText) {
   embed.fields?.push({
-   name: language.Flags,
+   name: language.t.Flags,
    value: flagsText,
    inline: true,
   });
@@ -44,14 +44,14 @@ export default async (integration: Discord.Integration) => {
 
  if (integration.user) {
   embed.fields?.push({
-   name: language.User,
+   name: language.t.User,
    value: language.languageFunction.getUser(integration.user),
   });
  }
 
  if (integration.role) {
   embed.fields?.push({
-   name: language.Role,
+   name: language.t.Role,
    value: language.languageFunction.getRole(integration.role),
   });
  }
@@ -93,7 +93,7 @@ export default async (integration: Discord.Integration) => {
 
  if (integration.application) {
   embed.fields?.push({
-   name: `${language.Application} / ${language.Bot}`,
+   name: `${language.t.Application} / ${language.t.Bot}`,
    value: `${language.languageFunction.getApplication(integration.application)}${
     integration.application.bot
      ? `\n${language.languageFunction.getUser(integration.application.bot)}`
@@ -104,17 +104,17 @@ export default async (integration: Discord.Integration) => {
 
  embed.fields?.push(
   {
-   name: language.Type,
+   name: language.t.Type,
    value: integration.type,
   },
   {
-   name: language.name,
+   name: language.t.name,
    value: integration.name,
   },
   {
-   name: language.Scopes,
+   name: language.t.Scopes,
    value: integration.scopes
-    .map((s) => `\`${language.scopes[s as keyof typeof language.scopes]}\``)
+    .map((s) => `\`${language.t.scopes[s as keyof typeof language.t.scopes]}\``)
     .join(', '),
   },
   {

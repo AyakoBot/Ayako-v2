@@ -10,5 +10,5 @@ import constants from '../../../Other/constants.js';
  */
 export default (val: boolean | undefined, language: CT.Language) =>
  val
-  ? `${constants.standard.getEmote(emotes.enabled)} ${language.Enabled}`
-  : `${constants.standard.getEmote(emotes.disabled)} ${language.Disabled}`;
+  ? `${constants.standard.getEmote(emotes.enabled)} ${language.t.Enabled}`
+  : `${constants.standard.getEmote(emotes.disabled)} ${language.t.Disabled}`;

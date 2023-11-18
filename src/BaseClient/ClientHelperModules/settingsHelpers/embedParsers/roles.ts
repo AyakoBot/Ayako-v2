@@ -7,4 +7,4 @@ import * as CT from '../../../../Typings/CustomTypings.js';
  * @returns A string representation of the roles.
  */
 export default (val: string[] | null, language: CT.Language) =>
- val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.None;
+ val?.length ? val.map((c) => `<@&${c}>`).join(', ') : language.t.None;

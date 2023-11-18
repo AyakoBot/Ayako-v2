@@ -6,4 +6,4 @@ import * as CT from '../../../../Typings/CustomTypings.js';
  * @param language - The language object containing translations.
  * @returns The string value or the "None" string if the value is falsy.
  */
-export default (val: string | null | undefined, language: CT.Language) => val ?? language.None;
+export default (val: string | null | undefined, language: CT.Language) => val ?? language.t.None;

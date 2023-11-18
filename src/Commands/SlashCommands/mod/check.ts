@@ -96,7 +96,7 @@ export const getPayload = async (
     .map(
      (p): Discord.APIEmbed => ({
       color: ch.constants.colors.ephemeral,
-      description: `${ch.util.makeUnderlined(language.reason)}:\n${p.reason}`,
+      description: `${ch.util.makeUnderlined(language.t.Reason)}:\n${p.reason}`,
       fields: [
        {
         name: lan.date,

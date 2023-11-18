@@ -3,8 +3,8 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories.invites,
  fields: {
-  action: t.punishmentAction,
-  duration: t.punishmentDuration,
-  deletemessageseconds: t.punishmentDeleteMessageSeconds,
+  action: t.JSON.punishmentAction,
+  duration: t.JSON.punishmentDuration,
+  deletemessageseconds: t.JSON.punishmentDeleteMessageSeconds,
  },
 });

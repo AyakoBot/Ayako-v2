@@ -135,7 +135,7 @@ const logExpire = async <T extends TableName>(
   if (!client.user) return undefined;
 
   const embed: Discord.APIEmbed = {
-   description: `**${language.reason}:**\n${p.reason}`,
+   description: `**${language.t.Reason}:**\n${p.reason}`,
    author: {
     name: lan.punishmentOf(user),
     url: `https://discord.com/channels/${guild.id}/${p.channelid}/${p.msgid}`,

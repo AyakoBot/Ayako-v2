@@ -46,7 +46,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
    break;
   }
   default: {
-   ch.errorCmd(cmd, language.Unknown, language);
+   ch.errorCmd(cmd, language.t.Unknown, language);
    return;
   }
  }

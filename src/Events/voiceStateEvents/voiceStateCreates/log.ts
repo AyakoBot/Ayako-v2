@@ -43,7 +43,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
 
  if (flagsText) {
   embed.fields?.push({
-   name: language.Flags,
+   name: language.t.Flags,
    value: flagsText,
    inline: true,
   });

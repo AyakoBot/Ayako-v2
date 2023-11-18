@@ -9,7 +9,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
  const language = await ch.getLanguage(cmd.guildId);
 
  if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.userNotFound, language);
   return;
  }
 

@@ -34,7 +34,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   ch.mergeLogging(before, after, type, embed, language, name);
 
  if (guild.description !== oldGuild.description) {
-  merge(oldGuild.description, guild.description, 'string', language.Description);
+  merge(oldGuild.description, guild.description, 'string', language.t.Description);
  }
  if (guild.banner !== oldGuild.banner) {
   const getImage = async () => {
@@ -119,24 +119,24 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  }
  if (guild.systemChannelId !== oldGuild.systemChannelId) {
   merge(
-   oldGuild.systemChannelId ? `<#${oldGuild.systemChannelId}>` : language.None,
-   guild.systemChannelId ? `<#${guild.systemChannelId}>` : language.None,
+   oldGuild.systemChannelId ? `<#${oldGuild.systemChannelId}>` : language.t.None,
+   guild.systemChannelId ? `<#${guild.systemChannelId}>` : language.t.None,
    'string',
    lan.systemChannelId,
   );
  }
  if (guild.rulesChannelId !== oldGuild.rulesChannelId) {
   merge(
-   oldGuild.rulesChannelId ? `<#${oldGuild.rulesChannelId}>` : language.None,
-   guild.rulesChannelId ? `<#${guild.rulesChannelId}>` : language.None,
+   oldGuild.rulesChannelId ? `<#${oldGuild.rulesChannelId}>` : language.t.None,
+   guild.rulesChannelId ? `<#${guild.rulesChannelId}>` : language.t.None,
    'string',
    lan.rulesChannelId,
   );
  }
  if (guild.publicUpdatesChannelId !== oldGuild.publicUpdatesChannelId) {
   merge(
-   oldGuild.publicUpdatesChannelId ? `<#${oldGuild.publicUpdatesChannelId}>` : language.None,
-   guild.publicUpdatesChannelId ? `<#${guild.publicUpdatesChannelId}>` : language.None,
+   oldGuild.publicUpdatesChannelId ? `<#${oldGuild.publicUpdatesChannelId}>` : language.t.None,
+   guild.publicUpdatesChannelId ? `<#${guild.publicUpdatesChannelId}>` : language.t.None,
    'string',
    lan.publicUpdatesChannelId,
   );
@@ -192,32 +192,32 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  }
  if (guild.preferredLocale !== oldGuild.preferredLocale) {
   merge(
-   language.regions[oldGuild.preferredLocale as keyof typeof language.regions],
-   language.regions[guild.preferredLocale as keyof typeof language.regions],
+   language.t.regions[oldGuild.preferredLocale as keyof typeof language.t.regions],
+   language.t.regions[guild.preferredLocale as keyof typeof language.t.regions],
    'string',
    lan.preferredLocale,
   );
  }
  if (guild.premiumTier !== oldGuild.premiumTier) {
   merge(
-   `${language.Tier} ${oldGuild.premiumTier}`,
-   `${language.Tier} ${guild.premiumTier}`,
+   `${language.t.Tier} ${oldGuild.premiumTier}`,
+   `${language.t.Tier} ${guild.premiumTier}`,
    'string',
    lan.premiumTier,
   );
  }
  if (guild.verificationLevel !== oldGuild.verificationLevel) {
   merge(
-   language.regions[oldGuild.preferredLocale as keyof typeof language.regions],
-   language.regions[guild.preferredLocale as keyof typeof language.regions],
+   language.t.regions[oldGuild.preferredLocale as keyof typeof language.t.regions],
+   language.t.regions[guild.preferredLocale as keyof typeof language.t.regions],
    'string',
    lan.preferredLocale,
   );
  }
  if (newWelcomeScreen?.description !== oldWelcomeScreen?.description) {
   merge(
-   oldWelcomeScreen?.description ?? language.None,
-   newWelcomeScreen?.description ?? language.None,
+   oldWelcomeScreen?.description ?? language.t.None,
+   newWelcomeScreen?.description ?? language.t.None,
    'string',
    lan.welcomeScreenDescription,
   );
@@ -268,12 +268,12 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
     embed.fields?.push({
      name: lan.welcomeChannelAdded,
-     value: `${language.Channel}: ${language.languageFunction.getChannel(
+     value: `${language.t.Channel}: ${language.languageFunction.getChannel(
       channel,
       language.channelTypes[channel.type],
-     )}\n${language.Description}: \`${c.description}\`\n${language.Emoji}: ${
+     )}\n${language.t.Description}: \`${c.description}\`\n${language.t.Emoji}: ${
       (emoji && typeof emoji === 'object' ? language.languageFunction.getEmote(emoji) : emoji) ??
-      language.None
+      language.t.None
      }`,
     });
    });
@@ -288,12 +288,12 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
     embed.fields?.push({
      name: lan.welcomeChannelRemoved,
-     value: `${language.Channel}: ${language.languageFunction.getChannel(
+     value: `${language.t.Channel}: ${language.languageFunction.getChannel(
       channel,
       language.channelTypes[channel.type],
-     )}\n${language.Description}: \`${c.description}\`\n${language.Emoji}: ${
+     )}\n${language.t.Description}: \`${c.description}\`\n${language.t.Emoji}: ${
       (emoji && typeof emoji === 'object' ? language.languageFunction.getEmote(emoji) : emoji) ??
-      language.None
+      language.t.None
      }`,
     });
    });
@@ -308,7 +308,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     const newChannel = newWelcomeScreen?.welcomeChannels.find((o) => o.channelId === channel.id);
 
     if (oldChannel?.description !== newChannel?.description) {
-     merge(oldChannel?.description, newChannel?.description, 'string', language.Description);
+     merge(oldChannel?.description, newChannel?.description, 'string', language.t.Description);
     }
     if (
      `${oldChannel?.emoji.id}-${oldChannel?.emoji.name}` !==
@@ -324,10 +324,10 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
      merge(
       (oldEmoji && typeof oldEmoji === 'object'
        ? language.languageFunction.getEmote(oldEmoji)
-       : oldEmoji) ?? language.None,
+       : oldEmoji) ?? language.t.None,
       (newEmoji && typeof newEmoji === 'object'
        ? language.languageFunction.getEmote(newEmoji)
-       : newEmoji) ?? language.None,
+       : newEmoji) ?? language.t.None,
       'string',
       lan.welcomeChannelEmoji(channel as Discord.GuildChannel),
      );
@@ -346,7 +346,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     value: removedToggles
      .map(
       (t) =>
-       language.features[
+       language.t.features[
         t as unknown as (typeof Discord.GuildFeature)[keyof typeof Discord.GuildFeature]
        ],
      )
@@ -358,7 +358,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
    embed.fields?.push({
     name: lan.togglesNameAdded,
     value: addedToggles
-     .map((t) => language.features[t as unknown as Discord.GuildFeature])
+     .map((t) => language.t.features[t as unknown as Discord.GuildFeature])
      .join(', '),
    });
   }

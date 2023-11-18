@@ -36,7 +36,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   ch.mergeLogging(before, after, type, embed, language, name);
 
  if (oldIntegration?.enabled !== integration?.enabled) {
-  merge(oldIntegration.enabled, integration.enabled, 'boolean', language.Enabled);
+  merge(oldIntegration.enabled, integration.enabled, 'boolean', language.t.Enabled);
  }
 
  if (oldIntegration.syncing !== integration.syncing) {
@@ -48,7 +48,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
    language.languageFunction.getRole(oldIntegration.role),
    language.languageFunction.getRole(integration.role),
    'string',
-   language.Role,
+   language.t.Role,
   );
  }
 
@@ -65,8 +65,8 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   merge(
    oldIntegration.expireBehavior
     ? lan.expireBehavior[oldIntegration.expireBehavior]
-    : language.None,
-   integration.expireBehavior ? lan.expireBehavior[integration.expireBehavior] : language.None,
+    : language.t.None,
+   integration.expireBehavior ? lan.expireBehavior[integration.expireBehavior] : language.t.None,
    'string',
    lan.expireBehaviorName,
   );
@@ -76,10 +76,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   merge(
    oldIntegration.expireGracePeriod
     ? ch.moment(oldIntegration.expireGracePeriod, language)
-    : language.None,
+    : language.t.None,
    integration.expireGracePeriod
     ? ch.moment(integration.expireGracePeriod, language)
-    : language.None,
+    : language.t.None,
    'string',
    lan.expireGracePeriod,
   );
@@ -89,10 +89,10 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
   merge(
    oldIntegration.syncedAt
     ? ch.constants.standard.getTime(oldIntegration.syncedAt.getTime())
-    : language.None,
+    : language.t.None,
    integration.syncedAt
     ? ch.constants.standard.getTime(integration.syncedAt.getTime())
-    : language.None,
+    : language.t.None,
    'string',
    lan.syncedAt,
   );
@@ -103,11 +103,11 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
  }
 
  if (oldIntegration.type !== integration.type) {
-  merge(oldIntegration.type, integration.type, 'string', language.Type);
+  merge(oldIntegration.type, integration.type, 'string', language.t.Type);
  }
 
  if (oldIntegration.name !== integration.name) {
-  merge(oldIntegration.name, integration.name, 'string', language.name);
+  merge(oldIntegration.name, integration.name, 'string', language.t.name);
  }
 
  if (JSON.stringify(oldIntegration.account) !== JSON.stringify(integration.account)) {

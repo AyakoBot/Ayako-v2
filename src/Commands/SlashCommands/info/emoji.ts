@@ -14,7 +14,7 @@ export default async (
  ) {
   const language = await ch.getLanguage(undefined);
 
-  ch.errorCmd(cmd, language.errors.guildCommand, language);
+  ch.errorCmd(cmd, language.t.errors.guildCommand, language);
   return;
  }
 
@@ -38,7 +38,7 @@ export default async (
  })();
 
  if (!payload) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
   return;
  }
 
@@ -54,8 +54,8 @@ const getEmotesPayload = async (
  const chunks = ch.getStringChunks(
   emotes.map(
    (e) =>
-    `${ch.constants.standard.getEmote(e)} / \`${e.name ?? language.None}\` / \`${
-     e.id ?? language.None
+    `${ch.constants.standard.getEmote(e)} / \`${e.name ?? language.t.None}\` / \`${
+     e.id ?? language.t.None
     }\``,
   ),
   4096,
@@ -127,7 +127,7 @@ const getEmotePayloads = async (
       description: [
        emoji.name
         ? {
-           name: `${chEval.util.makeBold(language.name)}:`,
+           name: `${chEval.util.makeBold(language.t.name)}:`,
            value: `${chEval.util.makeInlineCode(emoji.name)}`,
           }
         : undefined,
@@ -153,7 +153,7 @@ const getEmotePayloads = async (
        },
        'createdTimestamp' in emoji && emoji.createdTimestamp
         ? {
-           name: `${chEval.util.makeBold(language.createdAt)}:`,
+           name: `${chEval.util.makeBold(language.t.createdAt)}:`,
            value: `${chEval.constants.standard.getTime(emoji.createdTimestamp)}`,
           }
         : undefined,
@@ -171,7 +171,7 @@ const getEmotePayloads = async (
         : undefined,
        'guild' in emoji && emoji.guild
         ? {
-           name: `\n${chEval.util.makeBold(language.Server)}:\n`,
+           name: `\n${chEval.util.makeBold(language.t.Server)}:\n`,
            value: language.languageFunction.getGuild(emoji.guild),
           }
         : undefined,

@@ -34,11 +34,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    embeds: [
     {
      author: {
-      name: language.error,
+      name: language.t.error,
       icon_url: ch.emotes.warning.link,
      },
      color: ch.constants.colors.danger,
-     description: language.errors.noThreadCanBeCreated,
+     description: language.t.errors.noThreadCanBeCreated,
     },
    ],
    components: [
@@ -87,13 +87,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
        style: Discord.ButtonStyle.Secondary,
        custom_id: 'deleteThread',
        emoji: ch.emotes.trash,
-       label: language.Delete,
+       label: language.t.Delete,
       },
       {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Success,
        custom_id: `settings/done/emote_${settingName}_${fieldName}_${uniquetimestamp}`,
-       label: language.Detect,
+       label: language.t.Detect,
       },
      ],
     },

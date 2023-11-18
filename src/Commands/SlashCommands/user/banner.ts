@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
         url: user.bannerURL({ size: 4096 }) as string,
        }
      : undefined,
-    description: user.banner ? undefined : language.None,
+    description: user.banner ? undefined : language.t.None,
     color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
    },
   ],

@@ -98,7 +98,7 @@ export default async (
              ) === i,
            )
            .map((c) => ({
-            label: (c.parent || language.Other) as string,
+            label: (c.parent || language.t.Other) as string,
             value: c.parent || 'other',
             default: c.parent === selected || (!selected && !c.parent),
            }))

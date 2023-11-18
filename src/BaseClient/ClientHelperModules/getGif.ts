@@ -356,7 +356,7 @@ export const imageGetter = async (
     components: [
      {
       type: Discord.ComponentType.Button,
-      label: language.Refresh,
+      label: language.t.Refresh,
       custom_id: `images/${commandName}`,
       style: Discord.ButtonStyle.Primary,
       emoji: objectEmotes.refresh,

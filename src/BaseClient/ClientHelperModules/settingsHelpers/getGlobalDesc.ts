@@ -43,7 +43,7 @@ export default (
   }
   default: {
    log(new Error(`Unknown Type ${type}`));
-   return language.unknown;
+   return language.t.unknown;
   }
  }
 };

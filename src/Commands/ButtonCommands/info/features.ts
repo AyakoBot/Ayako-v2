@@ -12,7 +12,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const serverID = isInviteGuild ? invite?.guild?.id : inviteOrID;
 
  if (!serverID) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.serverNotFound, language);
   return;
  }
 
@@ -37,7 +37,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }));
 
  if (!embeds) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.serverNotFound, language);
   return;
  }
  ch.replyCmd(cmd, {
@@ -58,7 +58,7 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    return [
     {
      color: chEval.getColor(isInviteGuild ? undefined : await chEval.getBotMemberFromGuild(g)),
-     description: Object.entries(language.features)
+     description: Object.entries(language.t.features)
       .map(([k, v]) => `${g.features.includes(k as Discord.GuildFeature) ? '☑️' : '❌'} ${v}`)
       .join('\n'),
     },

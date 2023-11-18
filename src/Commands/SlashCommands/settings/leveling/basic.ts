@@ -80,7 +80,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     },
     {
      name: lan.fields.rolemode.name,
-     value: settings.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
+     value: settings.rolemode ? language.t.rolemodes.replace : language.t.rolemodes.stack,
      inline: true,
     },
     {
@@ -152,7 +152,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    name: lan.fields.prefixes.name,
    value: settings.prefixes?.length
     ? settings.prefixes.map((p) => `\`${p}\``).join(', ')
-    : language.None,
+    : language.t.None,
    inline: true,
   },
   {

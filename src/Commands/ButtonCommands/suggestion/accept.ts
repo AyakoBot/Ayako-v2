@@ -14,12 +14,12 @@ export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) 
   (!settings.approverroleid.length &&
    !cmd.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild))
  ) {
-  ch.errorCmd(cmd, language.permissions.error.you, language);
+  ch.errorCmd(cmd, language.t.permissions.error.you, language);
   return;
  }
 
  cmd.showModal({
-  title: language.reason,
+  title: language.t.Reason,
   custom_id: `suggestion/${accept ? 'accept' : 'reject'}_${cmd.message.id}`,
   components: [
    {
@@ -28,9 +28,9 @@ export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) 
      {
       type: Discord.ComponentType.TextInput,
       style: Discord.TextInputStyle.Paragraph,
-      placeholder: `(${language.optional})`,
+      placeholder: `(${language.t.optional})`,
       custom_id: 'paragraph',
-      label: language.reason,
+      label: language.t.Reason,
       required: false,
      },
     ],
@@ -41,7 +41,7 @@ export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) 
      {
       type: Discord.ComponentType.TextInput,
       style: Discord.TextInputStyle.Short,
-      placeholder: `(${language.optional})`,
+      placeholder: `(${language.t.optional})`,
       custom_id: 'short',
       label: lan.tldr,
       required: false,

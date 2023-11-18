@@ -69,13 +69,13 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   name: `${lan.fields.channelid.name}: ${
    s.channelid
     ? (cmd.client.channels.cache.get(s.channelid) as Discord.GuildTextBasedChannel)?.name ??
-      language.None
-    : language.None
+      language.t.None
+    : language.t.None
   } - ${lan.fields.categoryid.name}: ${
    s.categoryid
     ? (cmd.client.channels.cache.get(s.categoryid) as Discord.CategoryChannel)?.name ??
-      language.None
-    : language.None
+      language.t.None
+    : language.t.None
   }`,
   value: `${
    s.active

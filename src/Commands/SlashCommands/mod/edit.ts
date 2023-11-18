@@ -86,7 +86,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const target = await ch.getUser(punishment.userid);
  if (!target) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.userNotFound, language);
   return;
  }
 
@@ -97,7 +97,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   description: lan.desc(cmd.user, target, Number(punishment.uniquetimestamp).toString(36)),
   fields: [
    {
-    name: language.reason,
+    name: language.t.Reason,
     value: reason,
    },
   ],

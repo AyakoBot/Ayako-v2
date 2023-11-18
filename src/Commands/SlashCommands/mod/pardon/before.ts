@@ -14,10 +14,10 @@ export default async (
 
  const user = cmd.options.getUser('target', true);
  const rawDate = cmd.options.getString('date', true);
- const reason = cmd.options.getString('reason', false) ?? language.noReasonProvided;
+ const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (ch.regexes.dateTester.test(rawDate)) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+  ch.errorCmd(cmd, language.t.errors.inputNoMatch, language);
   return;
  }
 
@@ -32,7 +32,7 @@ export default async (
  const punishments = await ch.getPunishment(date, { identType: type, guildid: cmd.guild.id });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
   return;
  }
 
