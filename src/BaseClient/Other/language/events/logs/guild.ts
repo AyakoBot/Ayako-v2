@@ -232,6 +232,10 @@ export default (t: CT.Language) => ({
    amount: `${amount}`,
    days: `${days}`,
   }),
+ welcomeChannelEmoji: (channel: Discord.GuildChannel) =>
+  t.stp(t.JSON.events.logs.guild.welcomeChannelEmoji, {
+   channel: t.languageFunction.getChannel(channel),
+  }),
  defaultMessageNotifications: {
   0: t.JSON.events.logs.guild.defaultMessageNotifications[0],
   1: t.JSON.events.logs.guild.defaultMessageNotifications[1],

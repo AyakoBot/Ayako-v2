@@ -3369,7 +3369,7 @@
     "prize": "Prize"
    },
    "create": {
-    "collectTimeout": "The Collect Timeout is too short, should be longer than or equal to  1 Hour",
+    "collectTimeTooShort": "The Collect Timeout is too short, should be longer than or equal to 1 Hour",
     "description": "Create a Giveaway",
     "missingPermissions": "I can't send or view Messages in this Channel",
     "invalidTime": "The provided Time was invalid",
@@ -3437,7 +3437,7 @@
  },
  "antivirus": {
   "malicious": "{{cross}} This Link __is__ malicious",
-  "logs": {
+  "log": {
    "vtStats": "Malicious: {{m}} out of 5 minimumrequired to block this Link\nSuspicious: {{s}} out of 5 required to block this Link\nUndetected: {{u}}\nHarmless: {{h}}",
    "detectedAs": "The URL was detected as {{c}}",
    "scanResult": "Scan Results",

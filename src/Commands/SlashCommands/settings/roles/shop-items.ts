@@ -178,7 +178,7 @@ const getShopType = async (
    return lan.message;
   }
   default: {
-   return lan.command((await ch.getCustomCommand(guild, 'shop'))?.id ?? '0');
+   return `</shop:${(await ch.getCustomCommand(guild, 'shop'))?.id ?? '0'}>`;
   }
  }
 };

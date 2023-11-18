@@ -42,7 +42,7 @@ export default async (appeal: CT.Appeal) => {
   title: lan.title,
   description: lan.description(
    user,
-   punishment.uniquetimestamp,
+   String(punishment.uniquetimestamp),
    (await ch.getCustomCommand(guild, 'check'))?.id ?? '0',
   ),
   color: ch.getColor(await ch.getBotMemberFromGuild(guild)),

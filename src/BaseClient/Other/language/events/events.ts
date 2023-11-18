@@ -7,6 +7,7 @@ import ready from './logs/ready.js';
 import vote from './logs/vote.js';
 
 export default (t: CT.Language) => ({
+ ...t.JSON.events,
  logs: logs(t),
  guildMemberUpdate: guildMemberUpdate(t),
  guildMemberAdd: t.JSON.events.guildMemberAdd,

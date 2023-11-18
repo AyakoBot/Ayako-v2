@@ -16,6 +16,7 @@ import voiceState from './voiceState.js';
 import webhook from './webhook.js';
 
 export default (t: CT.Language) => ({
+ ...t.JSON.events.logs,
  addedRemoved: (added: string, removed: string) =>
   `__**${t.Added}**__\n${added}\n\n__**${t.Removed}**__\n${removed}`,
  beforeAfter: (before: string, after: string) =>

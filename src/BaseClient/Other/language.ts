@@ -19,6 +19,7 @@ import censor from './language/censor.js';
 import slashCommands from './language/slashCommands.js';
 import nitro from './language/nitro.js';
 import mod from './language/mod.js';
+import leveling from './language/leveling.js';
 
 export default class Language {
  botName = client.user?.username ?? 'Ayako';
@@ -35,23 +36,9 @@ export default class Language {
  punishmentDuration = this.JSON.punishmentDuration;
  punishmentAction = this.JSON.punishmentAction;
  punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
-
- time = time(this);
- languageFunction = languageFunction(this);
- events = events(this);
  systemChannelFlags = this.JSON.systemChannelFlags;
- channelTypes = channelTypes(this);
- verification = verification(this);
- expire = expire(this);
  commands = this.JSON.commands;
  contextCommands = this.JSON.contextCommands;
- slashCommands = slashCommands(this);
- nitro = nitro(this);
- mod = mod(this);
- censor = censor(this);
- antivirus = antivirus(this);
- autotypes = autotypes(this);
- channelRules = channelRules(this);
  userFlags = this.JSON.userFlags;
  errors = this.JSON.errors;
  features = this.JSON.features;
@@ -73,10 +60,6 @@ export default class Language {
  defaultAutoArchiveDurationName = this.JSON.defaultAutoArchiveDurationName;
  defaultForumLayoutName = this.JSON.defaultForumLayoutName;
  defaultSortOrderName = this.JSON.defaultSortOrderName;
- defaultAutoArchiveDuration = defaultAutoArchiveDuration(this);
- defaultForumLayout = defaultForumLayout(this);
- defaultSortOrder = defaultSortOrder(this);
- auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = auditLogAction(this);
  Scopes = this.JSON.Scopes;
  Result = this.JSON.Result;
  stagePrivacyLevels = this.JSON.stagePrivacyLevels;
@@ -167,6 +150,25 @@ export default class Language {
  Page = this.JSON.Page;
  pageBetween = (x: number, y: number) => this.stp(this.JSON.pageBetween, { x, y });
  voiceHub = (u: Discord.User) => this.stp(this.JSON.voiceHub, { u });
+
+ leveling = leveling(this);
+ time = time(this);
+ languageFunction = languageFunction(this);
+ events = events(this);
+ channelTypes = channelTypes(this);
+ verification = verification(this);
+ expire = expire(this);
+ slashCommands = slashCommands(this);
+ nitro = nitro(this);
+ mod = mod(this);
+ censor = censor(this);
+ antivirus = antivirus(this);
+ autotypes = autotypes(this);
+ channelRules = channelRules(this);
+ defaultAutoArchiveDuration = defaultAutoArchiveDuration(this);
+ defaultForumLayout = defaultForumLayout(this);
+ defaultSortOrder = defaultSortOrder(this);
+ auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = auditLogAction(this);
 
  constructor(type: string | 'en') {
   this.CURRENT_LANGUAGE = type;

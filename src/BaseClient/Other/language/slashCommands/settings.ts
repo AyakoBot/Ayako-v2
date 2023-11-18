@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import antiSpam from './settings/anti-spam.js';
 import antiVirus from './settings/anti-virus.js';
@@ -17,6 +18,19 @@ import voteRewards from './settings/vote-rewards.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings,
+ authorType: (type: string) => t.stp(t.JSON.slashCommands.settings.authorType, { type, t }),
+ reactionEditor: {
+  ...t.JSON.slashCommands.settings.reactionEditor,
+  desc: (thread: Discord.ThreadChannel) =>
+   t.stp(t.JSON.slashCommands.settings.reactionEditor.desc, { thread }),
+ },
+ log: {
+  ...t.JSON.slashCommands.settings.log,
+  desc: (n: string, setting: string) =>
+   t.stp(t.JSON.slashCommands.settings.log.desc, { n, setting }),
+  created: (setting: string) => t.stp(t.JSON.slashCommands.settings.log.created, { setting }),
+  deleted: (setting: string) => t.stp(t.JSON.slashCommands.settings.log.deleted, { setting }),
+ },
  categories: {
   ...t.JSON.slashCommands.settings.categories,
   'anti-spam': antiSpam(t),

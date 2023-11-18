@@ -13,10 +13,12 @@ import tempMuteAdd from './execution/tempMuteAdd.js';
 import warnAdd from './execution/warnAdd.js';
 import tempBanAdd from './execution/tempBanAdd.js';
 import tempChannelBanAdd from './execution/tempChannelBanAdd.js';
+import banAdd from './execution/banAdd.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution,
  banRemove: banRemove(t),
+ banAdd: banAdd(t),
  channelBanAdd: channelBanAdd(t),
  channelBanRemove: channelBanRemove(t),
  kickAdd: kickAdd(t),

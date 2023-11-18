@@ -2,12 +2,10 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.embedbuilder.create,
- placeholder2: t.stp(t.JSON.slashCommands.rp.notice, {
-  t,
- }),
  start: {
   ...t.JSON.slashCommands.embedbuilder.create.start,
-  'field-nr': t.stp(t.JSON.slashCommands.embedbuilder.create.start['field-nr'], { t }),
+  'field-nr': (fieldNr: number) =>
+   t.stp(t.JSON.slashCommands.embedbuilder.create.start['field-nr'], { fieldNr, t }),
  },
  author: t.stp(t.JSON.slashCommands.embedbuilder.create.author, { t }),
  fields: (cmdId: string) => [

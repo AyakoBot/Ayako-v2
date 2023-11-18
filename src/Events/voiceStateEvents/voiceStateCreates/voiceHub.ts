@@ -70,7 +70,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
     author: {
      name: language.autotypes.voiceHub,
     },
-    description: language.voiceHub.desc(member.user),
+    description: language.voiceHub(member.user),
     color: ch.getColor(await ch.getBotIdFromGuild(state.guild)),
    },
   ],

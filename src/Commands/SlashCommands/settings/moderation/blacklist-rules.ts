@@ -72,7 +72,14 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
  embeds[0].description = lan.desc(
-  Number(automodRules?.filter((r) => r.triggerType === (6 as never)).length),
+  Number(
+   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Keyword)
+    .length,
+  ),
+  Number(
+   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.MentionSpam)
+    .length,
+  ),
   Number(
    automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Spam).length,
   ),
@@ -80,14 +87,6 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
    automodRules?.filter(
     (r) => r.triggerType === Discord.AutoModerationRuleTriggerType.KeywordPreset,
    ).length,
-  ),
-  Number(
-   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.MentionSpam)
-    .length,
-  ),
-  Number(
-   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Keyword)
-    .length,
   ),
  );
 

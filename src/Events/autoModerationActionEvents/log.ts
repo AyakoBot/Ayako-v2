@@ -23,7 +23,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
       .then((r) => ('message' in r ? undefined : r))
    : undefined;
  const language = await ch.getLanguage(execution.guild.id);
- const lan = language.events.logs.automodActionExecution;
+ const lan = language.events.logs.automodExec;
 
  const files: Discord.AttachmentPayload[] = [];
  const embed: Discord.APIEmbed = {

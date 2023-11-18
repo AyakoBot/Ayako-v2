@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
- ...t.JSON.events.logs.user,
+ ...t.JSON.events.logs.automodExec,
  descMessage: (rule: Discord.AutoModerationRule, msg: Discord.Message, user: Discord.User) =>
   t.stp(t.JSON.events.logs.automodExec.descMessage, {
    rule: t.languageFunction.getAutoModerationRule(rule),

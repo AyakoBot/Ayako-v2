@@ -7,7 +7,7 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  if (!channels) return;
 
  const language = await ch.getLanguage(guild.id);
- const lan = language.events.logs.userUpdate;
+ const lan = language.events.logs.user;
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
