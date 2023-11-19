@@ -1,4 +1,5 @@
 {
+ "redirectTo": null,
  "events": {
   "logs": {
    "sticker": {
@@ -2266,6 +2267,12 @@
     "available": "Available",
     "managed": "Managed",
     "roles": "Roles that can use this Emoji"
+   },
+   "stickers": {
+    "author": "{{t.botName}} Sticker-Info",
+    "pack": "Pack",
+    "formatName": "Format",
+    "tags": "Related Emoji"
    },
    "role": {
     "author": "{{t.botName}} Role-Info",

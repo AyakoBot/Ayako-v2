@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import client from '../Client.js';
-import enJSON from '../../Languages/en.json' assert { type: 'json' };
+import enJSON from '../../Languages/en-GB.json' assert { type: 'json' };
 import stp from '../ClientHelperModules/stp.js';
 import languageFunction from './language/languageFunction.js';
 import events from './language/events/events.js';
@@ -24,7 +24,7 @@ import leveling from './language/leveling.js';
 export default class Language {
  botName = client.user?.username ?? 'Ayako';
  botId = client.user?.id;
- CURRENT_LANGUAGE: string = 'en';
+ CURRENT_LANGUAGE: string = 'en-GB';
  JSON: typeof enJSON = enJSON;
  stp = stp;
 
@@ -57,7 +57,7 @@ export default class Language {
  defaultSortOrder = defaultSortOrder(this);
  auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = auditLogAction(this);
 
- constructor(type: string | 'en') {
+ constructor(type: string | 'en-GB') {
   this.CURRENT_LANGUAGE = type;
  }
 
@@ -67,6 +67,20 @@ export default class Language {
     assert: { type: 'json' },
    })
   ).default;
+
+  if (this.JSON.redirectTo) {
+   this.CURRENT_LANGUAGE = this.JSON.redirectTo;
+
+   this.JSON = (
+    await import(`../../Languages/${this.CURRENT_LANGUAGE}.json`, {
+     assert: { type: 'json' },
+    })
+   ).default;
+  }
+
+  if (!this.JSON) {
+   this.JSON = enJSON;
+  }
  }
 }
 
