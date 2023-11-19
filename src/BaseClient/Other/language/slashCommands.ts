@@ -6,6 +6,7 @@ import clear from './slashCommands/clear.js';
 import edit from './slashCommands/edit.js';
 import embedbuilder from './slashCommands/embedbuilder.js';
 import emojis from './slashCommands/emojis.js';
+import stickers from './slashCommands/stickers.js';
 import giveaway from './slashCommands/giveaway.js';
 import info from './slashCommands/info.js';
 import interactions from './slashCommands/interactions.js';
@@ -46,6 +47,7 @@ export default (t: CT.Language) => ({
  membercount: membercount(t),
  ping: ping(t),
  emojis: emojis(t),
+ stickers: stickers(t),
  invites: invites(t),
  info: info(t),
  settings: settings(t),

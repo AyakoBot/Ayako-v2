@@ -27,6 +27,7 @@ import leaderboard from './slashCommands/leaderboard.js';
 import rank from './slashCommands/rank.js';
 import bypass from './slashCommands/bypass.js';
 import clear from './slashCommands/clear.js';
+import sticker from './slashCommands/stickers.js';
 
 export default {
  public: {
@@ -59,6 +60,7 @@ export default {
   rank,
   bypass,
   clear,
+  sticker,
  },
  categories: {
   'settings_moderation_anti-spam': 'moderation',
@@ -109,6 +111,7 @@ export default {
   info_bot: 'info',
   info_badges: 'info',
   info_emoji: 'info',
+  info_sticker: 'info',
   info_invite: 'info',
   server_info: 'info',
   server_list: 'info',
@@ -152,12 +155,12 @@ export default {
   'emojis_create_from-url': 'utility',
   'emojis_create_from-file': 'utility',
   'emojis_create_from-emoji': 'utility',
-  invites_create: 'utility',
-  invites_info: 'info',
-  invites_delete: 'utility',
   emojis_delete: 'utility',
   emojis_edit_name: 'utility',
   emojis_edit_roles: 'utility',
+  invites_create: 'utility',
+  invites_info: 'info',
+  invites_delete: 'utility',
   user_info: 'info',
   user_avatar: 'utility',
   user_banner: 'utility',
@@ -224,6 +227,13 @@ export default {
   rank_nitro: 'info',
   rank_global: 'info',
   bypass: 'utility',
+  stickers_info: 'info',
+  'stickers_create_from-url': 'utility',
+  'stickers_create_from-file': 'utility',
+  'stickers_create_from-sticker': 'utility',
+  stickers_delete: 'utility',
+  stickers_edit_name: 'utility',
+  stickers_edit_roles: 'utility',
  },
  names: [
   'settings',

@@ -5,15 +5,15 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.emojis,
  createReason: (user: Discord.User) =>
   t.stp(t.JSON.slashCommands.emojis.createReason, {
-   user: t.languageFunction.getUser(user),
+   user,
   }),
  deleteReason: (user: Discord.User) =>
   t.stp(t.JSON.slashCommands.emojis.deleteReason, {
-   user: t.languageFunction.getUser(user),
+   user,
   }),
  editReason: (user: Discord.User) =>
   t.stp(t.JSON.slashCommands.emojis.editReason, {
-   user: t.languageFunction.getUser(user),
+   user,
   }),
  created: (e: Discord.GuildEmoji) =>
   t.stp(t.JSON.slashCommands.emojis.created, {

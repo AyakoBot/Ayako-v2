@@ -1193,6 +1193,7 @@
   "replace": "Replace"
  },
  "errors": {
+  "stickerNotFound": "The Mentioned Sticker could not be found",
   "cantFetch": "Can't fetch Messages in this Channel",
   "settingNotFound": "The Setting could not be found",
   "messageNotFound": "The Mentioned Message could not be found",
@@ -2220,13 +2221,23 @@
    "lastHeartbeat": "Last Heartbeat"
   },
   "emojis": {
-   "createReason": "Emoji created by {{user}}",
-   "deleteReason": "Emoji deleted by {{user}}",
-   "editReason": "Emoji edited by {{user}}",
+   "createReason": "Emoji created by {{user.username}}",
+   "deleteReason": "Emoji deleted by {{user.username}}",
+   "editReason": "Emoji edited by {{user.username}}",
    "created": "Successfully created {{e}}",
    "deleted": "Successfully deleted {{e}}",
    "edited": "Successfully edited {{e}}",
    "explain": "The Roles listed above can use this Emoji",
+   "placeholder": "Select 1 or more Roles"
+  },
+  "stickers": {
+   "createReason": "Sticker created by {{user.username}}",
+   "deleteReason": "Sticker deleted by {{user.username}}",
+   "editReason": "Sticker edited by {{user.username}}",
+   "created": "Successfully created {{e}}",
+   "deleted": "Successfully deleted {{e}}",
+   "edited": "Successfully edited {{e}}",
+   "explain": "The Roles listed above can use this Sticker",
    "placeholder": "Select 1 or more Roles"
   },
   "invites": {
@@ -3377,7 +3388,7 @@
     "participants": "Participants",
     "winners": "Possible Winners: {{n}}",
     "end": "End: {{e}}",
-    "host": "Giveaway Host: {{ch.constants.standard.user(u)}}",
+    "host": "Giveaway Host: {{u}}",
     "roleRequire": "Required Role to enter this Giveaway",
     "participate": "Participate",
     "sent": "Giveaway started in {{channel}}",
