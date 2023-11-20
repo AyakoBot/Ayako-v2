@@ -17,7 +17,7 @@ export default async (
  const lan = language.slashCommands.emojis;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.t.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
+  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
   return;
  }
 

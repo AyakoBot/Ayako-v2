@@ -76,8 +76,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], type: Type
 export const getOptions = (type: Types, language: CT.Language) => {
  switch (type) {
   case 'auto-punishment': {
-   const obj = structuredClone(language.t.punishments) as Omit<
-    CT.Language['t']['punishments'],
+   const obj = structuredClone(language.punishments) as Omit<
+    CT.Language['punishments'],
     'strike'
    > & {
     strike?: string;
@@ -87,11 +87,11 @@ export const getOptions = (type: Types, language: CT.Language) => {
    return obj;
   }
   case 'punishment':
-   return language.t.punishments;
+   return language.punishments;
   case 'shoptype':
-   return language.t.shoptypes;
+   return language.shoptypes;
   case 'language':
-   return language.t.languages;
+   return language.languages;
   default:
    return [];
  }

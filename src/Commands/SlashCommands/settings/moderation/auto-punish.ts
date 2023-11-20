@@ -70,7 +70,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
    lan.fields.punishment.name
   }: \`${
    s.punishment
-    ? language.t.punishments[s.punishment as keyof typeof language.t.punishments]
+    ? language.punishments[s.punishment as keyof typeof language.punishments]
     : language.t.None
   }\``,
   value: `${
@@ -127,7 +127,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.punishment.name,
     value: settings?.punishment
-     ? language.t.punishments[settings?.punishment as keyof typeof language.t.punishments]
+     ? language.punishments[settings?.punishment as keyof typeof language.punishments]
      : language.t.None,
     inline: true,
    },

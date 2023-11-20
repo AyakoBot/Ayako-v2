@@ -29,15 +29,36 @@ export default class Language {
  stp = stp;
 
  t = {
-  ...this.JSON,
+  ...this.JSON.t,
   welcome: (user: Discord.User, guild: Discord.Guild) =>
-   this.stp(this.JSON.welcome, { user, guild }),
+   this.stp(this.JSON.t.welcome, { user, guild }),
   defaultValuesLog: (oldValue: string, newValue: string) =>
-   this.stp(this.JSON.welcome, { oldValue, newValue }),
-  pageBetween: (x: number, y: number) => this.stp(this.JSON.pageBetween, { x, y }),
-  voiceHub: (u: Discord.User) => this.stp(this.JSON.voiceHub, { u }),
+   this.stp(this.JSON.t.welcome, { oldValue, newValue }),
+  pageBetween: (x: number, y: number) => this.stp(this.JSON.t.pageBetween, { x, y }),
+  voiceHub: (u: Discord.User) => this.stp(this.JSON.t.voiceHub, { u }),
  };
 
+ permissions = this.JSON.permissions;
+ userFlags = this.JSON.userFlags;
+ systemChannelFlags = this.JSON.systemChannelFlags;
+ punishmentAction = this.JSON.punishmentAction;
+ punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
+ commands = this.JSON.commands;
+ contextCommands = this.JSON.contextCommands;
+ linkedid = this.JSON.linkedid;
+ multiplier = this.JSON.multiplier;
+ holdhands = this.JSON.holdhands;
+ punishments = this.JSON.punishments;
+ punishmentDuration = this.JSON.punishmentDuration;
+ shoptypes = this.JSON.shoptypes;
+ commandTypes = this.JSON.commandTypes;
+ languages = this.JSON.languages;
+ features = this.JSON.features;
+ deleteReasons = this.JSON.deleteReasons;
+ regions = this.JSON.regions;
+ rolemodes = this.JSON.rolemodes;
+ scopes = this.JSON.scopes;
+ errors = this.JSON.errors;
  leveling = leveling(this);
  time = time(this);
  languageFunction = languageFunction(this);

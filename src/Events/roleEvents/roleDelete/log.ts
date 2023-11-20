@@ -80,7 +80,7 @@ export default async (role: Discord.Role) => {
       value
        ? ch.constants.standard.getEmote(ch.emotes.enabled)
        : ch.constants.standard.getEmote(ch.emotes.disabled)
-     } \`${language.t.permissions.perms[name as keyof typeof language.t.permissions.perms]}\``,
+     } \`${language.permissions.perms[name as keyof typeof language.permissions.perms]}\``,
    )
    .join('\n'),
  };

@@ -114,7 +114,7 @@ export default async (integration: Discord.Integration) => {
   {
    name: language.t.Scopes,
    value: integration.scopes
-    .map((s) => `\`${language.t.scopes[s as keyof typeof language.t.scopes]}\``)
+    .map((s) => `\`${language.scopes[s as keyof typeof language.scopes]}\``)
     .join(', '),
   },
   {

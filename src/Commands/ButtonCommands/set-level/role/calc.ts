@@ -17,7 +17,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
  const role = cmd.guild.roles.cache.get(roleId);
  if (!role) {
-  ch.errorCmd(cmd, language.t.errors.roleNotFound, language);
+  ch.errorCmd(cmd, language.errors.roleNotFound, language);
   return;
  }
 

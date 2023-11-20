@@ -18,7 +18,7 @@ export default (interaction: Discord.ButtonInteraction, language: CT.Language) =
      url: constants.standard.invite,
     },
     color: constants.colors.danger,
-    description: language.t.errors.notYours,
+    description: language.errors.notYours,
    },
   ],
   ephemeral: true,

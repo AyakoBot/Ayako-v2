@@ -30,7 +30,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    'giveaway',
   )
  ) {
-  ch.errorCmd(cmd, language.t.permissions.error.you, language);
+  ch.errorCmd(cmd, language.permissions.error.you, language);
   return;
  }
 

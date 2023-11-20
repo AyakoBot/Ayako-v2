@@ -16,7 +16,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   },
  });
  if (!buttonRoles || !buttonRoles.linkedid) {
-  ch.errorCmd(cmd, language.t.errors.settingNotFound, language);
+  ch.errorCmd(cmd, language.errors.settingNotFound, language);
   return;
  }
 
@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   where: { uniquetimestamp: buttonRoles.linkedid, guildid: cmd.guildId, active: true },
  });
  if (!settings) {
-  ch.errorCmd(cmd, language.t.errors.settingNotFound, language);
+  ch.errorCmd(cmd, language.errors.settingNotFound, language);
   return;
  }
 

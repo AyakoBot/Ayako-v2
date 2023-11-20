@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.emojis;
 
  if (ch.regexes.emojiTester.test(rawEmoji) || !emoji) {
-  ch.errorCmd(cmd, language.t.errors.invalidEmote, await ch.getLanguage(cmd.guildId));
+  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.getLanguage(cmd.guildId));
   return;
  }
 

@@ -10,7 +10,7 @@ export default (t: CT.Language) => ({
  getGuild: (guild: Discord.Guild | Discord.APIPartialGuild | Discord.InviteGuild) =>
   `Server ${ch.util.makeInlineCode(guild.name)} / ${ch.util.makeInlineCode(guild.id)}${
    'vanityURLCode' in guild && guild.vanityURLCode
-    ? ` / [${t.JSON.Join}](https://discord.gg/${guild.vanityURLCode})`
+    ? ` / [${t.JSON.t.Join}](https://discord.gg/${guild.vanityURLCode})`
     : ''
   }\n`,
  getChannel: (
@@ -25,7 +25,7 @@ export default (t: CT.Language) => ({
   type?: string,
  ) =>
   channel
-   ? `${type ?? t.JSON.Channel} <#${channel.id}> / ${ch.util.makeInlineCode(
+   ? `${type ?? t.JSON.t.Channel} <#${channel.id}> / ${ch.util.makeInlineCode(
       'name' in channel
        ? `${channel.name}`
        : `<@${'recipientId' in channel ? channel.recipientId : null}>`,
@@ -34,57 +34,59 @@ export default (t: CT.Language) => ({
  getUser: (
   user: Discord.User | { bot: boolean; id: string; username: string; discriminator: string },
  ) =>
-  `${user?.bot ? t.JSON.Bot : t.JSON.User} <@${user?.id}> / ${ch.util.makeInlineCode(
-   user ? ch.constants.standard.user(user) : t.JSON.Unknown,
+  `${user?.bot ? t.JSON.t.Bot : t.JSON.t.User} <@${user?.id}> / ${ch.util.makeInlineCode(
+   user ? ch.constants.standard.user(user) : t.JSON.t.Unknown,
   )} / ${ch.util.makeInlineCode(user?.id)}\n`,
  getAutoModerationRule: (rule: Discord.AutoModerationRule) =>
-  `${t.JSON.AutoModRule} ${ch.util.makeInlineCode(rule.name)} / ${ch.util.makeInlineCode(rule.id)}`,
+  `${t.JSON.t.AutoModRule} ${ch.util.makeInlineCode(rule.name)} / ${ch.util.makeInlineCode(
+   rule.id,
+  )}`,
  getMessage: (msg: Discord.Message | Discord.MessageReference) =>
-  `[${t.JSON.thisMessage}](${ch.constants.standard.msgurl(
+  `[${t.JSON.t.thisMessage}](${ch.constants.standard.msgurl(
    msg.guildId,
    msg.channelId,
    'id' in msg ? msg.id : msg.messageId ?? '',
   )})\n`,
  getEmote: (emoji: Discord.Emoji) =>
-  `${t.JSON.Emoji} ${ch.constants.standard.getEmote(emoji)} / \`${
-   emoji.name ?? t.JSON.None
-  }\` / \`${emoji.id ?? t.JSON.None}\`\n`,
+  `${t.JSON.t.Emoji} ${ch.constants.standard.getEmote(emoji)} / \`${
+   emoji.name ?? t.JSON.t.None
+  }\` / \`${emoji.id ?? t.JSON.t.None}\`\n`,
  getInvite: (invite: Discord.Invite) =>
-  `${t.JSON.Invite} https://discord.gg/${invite.code} / \`${invite.code}\`\n`,
+  `${t.JSON.t.Invite} https://discord.gg/${invite.code} / \`${invite.code}\`\n`,
  getInviteDetails(invite: Discord.Invite, user?: Discord.User, channelType?: string) {
-  return `${t.JSON.Code}: \`${invite.code}\`\n${
-   user ? `${t.JSON.Inviter}: ${this.getUser(user)}` : ''
-  }${t.JSON.Uses}: ${invite.uses}\n${t.JSON.Created}: ${
-   invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : t.JSON.unknown
+  return `${t.JSON.t.Code}: \`${invite.code}\`\n${
+   user ? `${t.JSON.t.Inviter}: ${this.getUser(user)}` : ''
+  }${t.JSON.t.Uses}: ${invite.uses}\n${t.JSON.t.Created}: ${
+   invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : t.JSON.t.unknown
   }\n${this.getChannel(invite.channel, channelType)}`;
  },
  getIntegration: (integration: Discord.Integration) =>
-  `${t.JSON.Integration} \`${integration.name}\` / \`${integration.id}\`\n`,
+  `${t.JSON.t.Integration} \`${integration.name}\` / \`${integration.id}\`\n`,
  getRole: (role: Discord.Role | { id: string; name: string }) =>
-  `${t.JSON.Role} <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`,
+  `${t.JSON.t.Role} <@&${role.id}> / \`${role.name}\` / \`${role.id}\`\n`,
  getApplication: (application: Discord.Application | Discord.IntegrationApplication | bigint) =>
-  `${t.JSON.Application} ${
+  `${t.JSON.t.Application} ${
    typeof application === 'bigint'
     ? `<@${application}> / \`${application}\``
     : `<@${application.id}> / \`${application.name}\` / \`${application.id}\`\n`
   }`,
  getScheduledEvent: (event: Discord.GuildScheduledEvent) =>
-  `${t.JSON.ScheduledEvent} \`${event.name}\` / \`${event.id}\`\n`,
+  `${t.JSON.t.ScheduledEvent} \`${event.name}\` / \`${event.id}\`\n`,
  getWebhook: (webhook: Discord.Webhook, type?: string) =>
-  `${type ? `${type} ` : ''}${t.JSON.Webhook} \`${webhook.name}\` / \`${webhook.id}\`\n`,
+  `${type ? `${type} ` : ''}${t.JSON.t.Webhook} \`${webhook.name}\` / \`${webhook.id}\`\n`,
  getCommand: (command: Discord.ApplicationCommand) =>
-  `${t.JSON.Command} </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`,
+  `${t.JSON.t.Command} </${command.name}:${command.id}> / \`${command.name}\` / \`${command.id}\`\n`,
  getPunishment: (id: string, cId: string) =>
-  `${t.JSON.Punishment} \`${Number(id).toString(36)}\`\n${ch.stp(t.JSON.lookupPunishment, {
+  `${t.JSON.t.Punishment} \`${Number(id).toString(36)}\`\n${ch.stp(t.JSON.t.lookupPunishment, {
    cId,
   })}`,
  getSticker: (sticker: Discord.Sticker) =>
-  `${t.JSON.Sticker} \`${sticker.name}\` / \`${sticker.id}\`\n`,
+  `${t.JSON.t.Sticker} \`${sticker.name}\` / \`${sticker.id}\`\n`,
  getStageInstance(stageInstance: Discord.StageInstance) {
-  return `${t.JSON.stageInstance} \`${stageInstance.topic}\` / \`${
+  return `${t.JSON.t.stageInstance} \`${stageInstance.topic}\` / \`${
    stageInstance.id
   }\`\n> ${this.getChannel(stageInstance.channel)}`;
  },
  getAuditLog: (audit: Discord.GuildAuditLogsEntry) =>
-  `${t.JSON.auditLog} \`${t.auditLogAction[audit.action]}\` / \`${audit.id}\`\n`,
+  `${t.JSON.t.auditLog} \`${t.auditLogAction[audit.action]}\` / \`${audit.id}\`\n`,
 });

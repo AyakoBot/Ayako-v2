@@ -8,14 +8,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guildId);
 
  if (!channel) {
-  ch.errorCmd(cmd, language.t.errors.channelNotFound, language);
+  ch.errorCmd(cmd, language.errors.channelNotFound, language);
   return;
  }
 
  const embeds = (await getEmbed(channel.id, cmd.guildId, cmd.user.id))?.flat();
 
  if (!embeds) {
-  ch.errorCmd(cmd, language.t.errors.channelNotFound, language);
+  ch.errorCmd(cmd, language.errors.channelNotFound, language);
   return;
  }
 
@@ -107,8 +107,8 @@ const getEmbed = async (
        ? {
           name: chEval.util.makeBold(eventLan.rtcRegion),
           value: `\`${c.rtcRegion}\`${
-           language.t.regions[c.rtcRegion as keyof typeof language.t.regions]
-            ? ` / \`${language.t.regions[c.rtcRegion as keyof typeof language.t.regions]}\``
+           language.regions[c.rtcRegion as keyof typeof language.regions]
+            ? ` / \`${language.regions[c.rtcRegion as keyof typeof language.regions]}\``
             : ''
           }\n`,
          }

@@ -25,7 +25,7 @@ export default async (
    : await getValue();
 
  if (!value) {
-  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 

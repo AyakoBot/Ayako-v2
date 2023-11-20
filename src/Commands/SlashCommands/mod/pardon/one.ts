@@ -17,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (!punishment) {
-  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 

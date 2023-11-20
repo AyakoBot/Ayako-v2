@@ -10,7 +10,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const field = cmd.fields.fields.first();
  if (!field) {
-  ch.errorCmd(cmd, language.t.errors.numNaN, language);
+  ch.errorCmd(cmd, language.errors.numNaN, language);
   return;
  }
 
@@ -21,7 +21,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const newSetting = field.value;
 
  if (Number.isNaN(+newSetting)) {
-  ch.errorCmd(cmd, language.t.errors.numNaN, language);
+  ch.errorCmd(cmd, language.errors.numNaN, language);
   return;
  }
 

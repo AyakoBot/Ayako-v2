@@ -86,7 +86,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const target = await ch.getUser(punishment.userid);
  if (!target) {
-  ch.errorCmd(cmd, language.t.errors.userNotFound, language);
+  ch.errorCmd(cmd, language.errors.userNotFound, language);
   return;
  }
 

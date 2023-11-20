@@ -23,7 +23,7 @@ export default async (
    : (cmd.message.embeds[0].url as string),
  );
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.t.errors.messageNotFound, language, reply);
+  ch.errorCmd(cmd, language.errors.messageNotFound, language, reply);
   return;
  }
 
@@ -41,7 +41,7 @@ export default async (
   (await getBaseSettings(type, cmd.guildId, message.id)) ??
   (await createBaseSettings(type, cmd.guildId, message.channelId, message.id));
  if (!baseSettings) {
-  ch.errorCmd(cmd, language.t.errors.settingNotFound, language, reply);
+  ch.errorCmd(cmd, language.errors.settingNotFound, language, reply);
   return;
  }
 

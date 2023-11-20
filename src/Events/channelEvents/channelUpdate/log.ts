@@ -170,10 +170,10 @@ export default async (
  ) {
   merge(
    oldChannel?.rtcRegion
-    ? language.t.regions[oldChannel.rtcRegion as keyof typeof language.t.regions]
+    ? language.regions[oldChannel.rtcRegion as keyof typeof language.regions]
     : language.t.unknown,
    channel.rtcRegion
-    ? language.t.regions[channel.rtcRegion as keyof typeof language.t.regions]
+    ? language.regions[channel.rtcRegion as keyof typeof language.regions]
     : language.t.unknown,
    'string',
    lan.rtcRegion,
@@ -322,7 +322,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filterPerms
-    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!addEmbed.description?.length) {
@@ -367,7 +367,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filteredPerms
-    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!changeEmbed.description?.length) {
@@ -401,7 +401,7 @@ export default async (
    const value = `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
     p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
    }\n${filterPerms
-    .map((perm) => `${getEmoji(perm)} ${language.t.permissions.perms[perm.perm]}`)
+    .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
    if (!removeEmbed.description?.length) {

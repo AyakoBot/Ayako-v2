@@ -38,7 +38,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       icon_url: ch.emotes.warning.link,
      },
      color: ch.constants.colors.danger,
-     description: language.t.errors.noThreadCanBeCreated,
+     description: language.errors.noThreadCanBeCreated,
     },
    ],
    components: [

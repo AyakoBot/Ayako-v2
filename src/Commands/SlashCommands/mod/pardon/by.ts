@@ -20,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 

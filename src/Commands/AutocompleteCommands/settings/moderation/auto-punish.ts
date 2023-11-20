@@ -20,7 +20,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
    lan.fields.punishment.name
   }: ${
    s.punishment
-    ? language.t.punishments[s.punishment as keyof typeof language.t.punishments]
+    ? language.punishments[s.punishment as keyof typeof language.punishments]
     : language.t.None
   }`,
   value: Number(s.uniquetimestamp).toString(36),

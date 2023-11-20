@@ -29,7 +29,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  const automodRule = cmd.guild?.autoModerationRules.cache.get(ID);
 
  if (!automodRule) {
-  ch.errorCmd(cmd, language.t.errors.automodRuleNotFound, language);
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -295,7 +295,7 @@ export const getEmbeds = (
     : [
        {
         name: language.t.Deprecated,
-        value: language.t.errors.deprecatedByDiscord,
+        value: language.errors.deprecatedByDiscord,
        },
       ],
  },

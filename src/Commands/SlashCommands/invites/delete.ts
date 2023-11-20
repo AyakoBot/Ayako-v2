@@ -28,12 +28,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const channel = cmd.client.channels.cache.get(invite.channelId as string);
  if (!channel || !('permissionsFor' in channel)) {
-  ch.errorCmd(cmd, language.t.errors.cantManageInvite, language);
+  ch.errorCmd(cmd, language.errors.cantManageInvite, language);
   return;
  }
 
  if (!channel?.permissionsFor(me)?.has(Discord.PermissionFlagsBits.ManageChannels)) {
-  ch.errorCmd(cmd, language.t.errors.cantManageInvite, language);
+  ch.errorCmd(cmd, language.errors.cantManageInvite, language);
   return;
  }
 

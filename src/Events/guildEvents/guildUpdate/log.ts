@@ -192,8 +192,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  }
  if (guild.preferredLocale !== oldGuild.preferredLocale) {
   merge(
-   language.t.regions[oldGuild.preferredLocale as keyof typeof language.t.regions],
-   language.t.regions[guild.preferredLocale as keyof typeof language.t.regions],
+   language.regions[oldGuild.preferredLocale as keyof typeof language.regions],
+   language.regions[guild.preferredLocale as keyof typeof language.regions],
    'string',
    lan.preferredLocale,
   );
@@ -208,8 +208,8 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  }
  if (guild.verificationLevel !== oldGuild.verificationLevel) {
   merge(
-   language.t.regions[oldGuild.preferredLocale as keyof typeof language.t.regions],
-   language.t.regions[guild.preferredLocale as keyof typeof language.t.regions],
+   language.regions[oldGuild.preferredLocale as keyof typeof language.regions],
+   language.regions[guild.preferredLocale as keyof typeof language.regions],
    'string',
    lan.preferredLocale,
   );
@@ -346,7 +346,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     value: removedToggles
      .map(
       (t) =>
-       language.t.features[
+       language.features[
         t as unknown as (typeof Discord.GuildFeature)[keyof typeof Discord.GuildFeature]
        ],
      )
@@ -358,7 +358,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
    embed.fields?.push({
     name: lan.togglesNameAdded,
     value: addedToggles
-     .map((t) => language.t.features[t as unknown as Discord.GuildFeature])
+     .map((t) => language.features[t as unknown as Discord.GuildFeature])
      .join(', '),
    });
   }

@@ -31,9 +31,8 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('sticker')
-     .setDescription('The Sticker to get Information about (Can also be a Message Link)')
-     .setRequired(false)
-     .setAutocomplete(true),
+     .setDescription('A Message Link to the Sticker you want info about (can also be a Sticker ID)')
+     .setRequired(false),
    ),
  )
  .addSubcommandGroup(

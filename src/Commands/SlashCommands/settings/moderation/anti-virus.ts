@@ -52,7 +52,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.action.name,
     value: settings?.action
-     ? language.t.punishments[settings?.action as keyof typeof language.t.punishments]
+     ? language.punishments[settings?.action as keyof typeof language.punishments]
      : language.t.None,
     inline: true,
    },

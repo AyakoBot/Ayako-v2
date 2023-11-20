@@ -22,12 +22,12 @@ export default (language: CT.Language, command: string, subCommandGroup?: string
 
  if ('description' in c) return c.description;
  if (c.type === Discord.ApplicationCommandType.Message) {
-  return language.t.contextCommands.message[command as keyof typeof language.t.contextCommands.message]
+  return language.contextCommands.message[command as keyof typeof language.contextCommands.message]
    ?.desc;
  }
  // if (cJSON.type === Discord.ApplicationCommandType.User) {
- //  return language.t.contextCommands.user[
- //  command as keyof typeof language.t.contextCommands.user
+ //  return language.contextCommands.user[
+ //  command as keyof typeof language.contextCommands.user
  // ]?.desc;
  // }
  return '';

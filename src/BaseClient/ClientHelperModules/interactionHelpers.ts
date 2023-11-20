@@ -84,7 +84,7 @@ const reply = async (
 
    const m = await errorMsg(
     realCmd,
-    allUsers.length ? language.slashCommands.rp.cantRP : language.t.errors.noUserMentioned,
+    allUsers.length ? language.slashCommands.rp.cantRP : language.errors.noUserMentioned,
     language,
    );
 

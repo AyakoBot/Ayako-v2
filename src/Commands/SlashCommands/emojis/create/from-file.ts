@@ -19,7 +19,7 @@ export default async (
   const emoji = cmd.options.getString('emoji', true);
   const selectedEmoji = Emojis.find((e) => e === emoji.replace(/:/g, ''));
   if (!selectedEmoji) {
-   ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
+   ch.errorCmd(cmd, language.errors.emoteNotFound, language);
    return;
   }
  }

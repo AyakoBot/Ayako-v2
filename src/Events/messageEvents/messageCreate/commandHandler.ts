@@ -74,7 +74,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
  const canRunCommand = checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
-  const m = await errorMsg(msg, language.t.permissions.error.you, language);
+  const m = await errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
    if (!m) return;
    if (m && (await isDeleteable(m))) request.channels.deleteMessage(m);
@@ -84,7 +84,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  }
 
  if (command.takesFirstArg && !args.length) {
-  const lan = language.t.commands.noArgs;
+  const lan = language.commands.noArgs;
 
   replyMsg(msg, {
    content: lan.content,

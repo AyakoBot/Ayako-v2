@@ -40,17 +40,17 @@ export default async (
    url: constants.standard.invite,
   },
   color: constants.colors.danger,
-  description: me ? language.t.permissions.error.msg : language.t.permissions.error.you,
+  description: me ? language.permissions.error.msg : language.permissions.error.you,
   fields: [
    {
-    name: util.makeBold(language.t.permissions.error.needed),
+    name: util.makeBold(language.permissions.error.needed),
     value: `\u200b${
      neededPerms.has(8n)
-      ? `${util.makeInlineCode(language.t.permissions.perms.Administrator)}`
+      ? `${util.makeInlineCode(language.permissions.perms.Administrator)}`
       : Object.entries(neededPerms).map(
          ([name]) =>
           `${util.makeInlineCode(
-           language.t.permissions.perms[name as keyof typeof language.t.permissions.perms],
+           language.permissions.perms[name as keyof typeof language.permissions.perms],
           )}`,
         )
     }`,

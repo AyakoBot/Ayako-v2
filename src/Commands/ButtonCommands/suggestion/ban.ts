@@ -40,7 +40,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  const user = await ch.getUser(suggestion.userid);
  if (!user) {
-  ch.errorCmd(cmd, language.t.errors.userNotExist, language);
+  ch.errorCmd(cmd, language.errors.userNotExist, language);
   return;
  }
 

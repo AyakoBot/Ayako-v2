@@ -25,14 +25,14 @@ export default async (
   case 'user':
    return `<@${value}>`;
   case 'shoptype':
-   return language.t.shoptypes[value as keyof typeof language.t.shoptypes];
+   return language.shoptypes[value as keyof typeof language.shoptypes];
   case 'auto-punishment':
   case 'punishment':
-   return language.t.punishments[value as keyof typeof language.t.punishments];
+   return language.punishments[value as keyof typeof language.punishments];
   case 'language':
-   return language.t.languages[value as keyof typeof language.t.languages];
+   return language.languages[value as keyof typeof language.languages];
   case 'rolemode':
-   return language.t.rolemodes[value as keyof typeof language.t.rolemodes];
+   return language.rolemodes[value as keyof typeof language.rolemodes];
   case 'emote':
    return value.includes(':') ? `<${value}>` : value;
   case 'automodrules':

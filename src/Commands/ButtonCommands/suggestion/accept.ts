@@ -14,7 +14,7 @@ export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) 
   (!settings.approverroleid.length &&
    !cmd.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild))
  ) {
-  ch.errorCmd(cmd, language.t.permissions.error.you, language);
+  ch.errorCmd(cmd, language.permissions.error.you, language);
   return;
  }
 

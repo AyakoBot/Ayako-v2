@@ -96,7 +96,7 @@ export default async (
  if ('rtcRegion' in channel && channel.rtcRegion) {
   embed.fields?.push({
    name: lan.rtcRegion,
-   value: language.t.regions[channel.rtcRegion as keyof typeof language.t.regions],
+   value: language.regions[channel.rtcRegion as keyof typeof language.regions],
    inline: true,
   });
  }
@@ -142,7 +142,7 @@ export default async (
        .map(
         (permissionString) =>
          `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
-          language.t.permissions.perms[permissionString[0] as keyof typeof language.t.permissions.perms]
+          language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )
        .join('\n')}\n${Object.entries(
@@ -152,7 +152,7 @@ export default async (
        .map(
         (permissionString) =>
          `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
-          language.t.permissions.perms[permissionString[0] as keyof typeof language.t.permissions.perms]
+          language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )
        .join('\n')}`,

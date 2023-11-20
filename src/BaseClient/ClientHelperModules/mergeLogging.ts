@@ -68,5 +68,5 @@ export default (
  */
 const boolify = (b: unknown, l: CT.Language) =>
  b
-  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.JSON.Enabled}`
-  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.JSON.Disabled}`;
+  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.JSON.t.Enabled}`
+  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.JSON.t.Disabled}`;

@@ -29,13 +29,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   new Discord.Collection();
 
  const categoryBits = [
-  [1879573680n, language.t.permissions.categories.GENERAL],
-  [1099712954375n, language.t.permissions.categories.MEMBER],
-  [534723950656n, language.t.permissions.categories.TEXT],
-  [554116842240n, language.t.permissions.categories.VOICE],
-  [4294967296n, language.t.permissions.categories.STAGE],
-  [8589934592n, language.t.permissions.categories.EVENTS],
-  [8n, language.t.permissions.categories.ADVANCED],
+  [1879573680n, language.permissions.categories.GENERAL],
+  [1099712954375n, language.permissions.categories.MEMBER],
+  [534723950656n, language.permissions.categories.TEXT],
+  [554116842240n, language.permissions.categories.VOICE],
+  [4294967296n, language.permissions.categories.STAGE],
+  [8589934592n, language.permissions.categories.EVENTS],
+  [8n, language.permissions.categories.ADVANCED],
  ];
 
  categoryBits.forEach(([bit, name]) => {

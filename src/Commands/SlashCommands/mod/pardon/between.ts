@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (ch.regexes.dateTester.test(rawDate1) || ch.regexes.dateTester.test(rawDate2)) {
-  ch.errorCmd(cmd, language.t.errors.inputNoMatch, language);
+  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
 
@@ -36,7 +36,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.t.errors.punishmentNotFound, language);
+  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 

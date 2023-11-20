@@ -47,14 +47,14 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
     added
      .map((r) =>
       flagsBefore.length
-       ? `\`${language.t.userFlags[r as unknown as Discord.UserFlagsString]}\``
+       ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
        : language.t.unknown,
      )
      .join(', '),
     removed
      .map((r) =>
       flagsAfter.length
-       ? `\`${language.t.userFlags[r as unknown as Discord.UserFlagsString]}\``
+       ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
        : language.t.unknown,
      )
      .join(', '),

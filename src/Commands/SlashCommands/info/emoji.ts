@@ -14,7 +14,7 @@ export default async (
  ) {
   const language = await ch.getLanguage(undefined);
 
-  ch.errorCmd(cmd, language.t.errors.guildCommand, language);
+  ch.errorCmd(cmd, language.errors.guildCommand, language);
   return;
  }
 
@@ -38,11 +38,12 @@ export default async (
  })();
 
  if (!payload) {
-  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 
- ch.replyCmd(cmd, payload);
+ if (cmd instanceof Discord.ButtonInteraction) cmd.update(payload);
+ else ch.replyCmd(cmd, payload);
 };
 
 const getEmotesPayload = async (
@@ -83,6 +84,13 @@ const getEmotesPayload = async (
       custom_id: `info/emojis_${page - 1}`,
       emoji: ch.emotes.back,
       disabled: page === 1,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      style: Discord.ButtonStyle.Secondary,
+      custom_id: '-',
+      disabled: true,
+      label: `${page}/${chunks.length}`,
      },
      {
       type: Discord.ComponentType.Button,

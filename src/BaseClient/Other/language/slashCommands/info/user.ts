@@ -14,15 +14,15 @@ export default (t: CT.Language) => ({
    conUser: ch.constants.standard.user(user),
    accentColor: user.accentColor
     ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\``
-    : t.JSON.None,
+    : t.JSON.t.None,
   }),
  botInfo: (res: CT.TopGGResponse<true>) =>
   t.stp(t.JSON.slashCommands.info.user.botInfo, {
-   serverCount: res.server_count ?? t.JSON.Unknown,
-   tags: res.tags?.map((tag) => `\`${tag}\``).join(', ') ?? t.JSON.None,
-   website: res.website ?? t.JSON.None,
-   support: res.support ? `https://discord.gg/${res.support}` : t.JSON.None,
-   github: res.github ?? t.JSON.None,
+   serverCount: res.server_count ?? t.JSON.t.Unknown,
+   tags: res.tags?.map((tag) => `\`${tag}\``).join(', ') ?? t.JSON.t.None,
+   website: res.website ?? t.JSON.t.None,
+   support: res.support ? `https://discord.gg/${res.support}` : t.JSON.t.None,
+   github: res.github ?? t.JSON.t.None,
    res,
   }),
 });

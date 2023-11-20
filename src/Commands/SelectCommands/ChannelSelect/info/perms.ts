@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
  if (!check) {
   ch.errorCmd(
    cmd,
-   isUser ? language.t.errors.memberNotFound : language.t.errors.roleNotFound,
+   isUser ? language.errors.memberNotFound : language.errors.roleNotFound,
    language,
   );
   return;
@@ -26,13 +26,13 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
 
  const permissions = channel.permissionsFor(check);
  let categoryBits = [
-  [1879573680n, language.t.permissions.categories.GENERAL],
-  [1099712954375n, language.t.permissions.categories.MEMBER],
-  [534723950656n, language.t.permissions.categories.TEXT],
-  [549821874944n, language.t.permissions.categories.VOICE],
-  [4294967296n, language.t.permissions.categories.STAGE],
-  [8589934592n, language.t.permissions.categories.EVENTS],
-  [8n, language.t.permissions.categories.ADVANCED],
+  [1879573680n, language.permissions.categories.GENERAL],
+  [1099712954375n, language.permissions.categories.MEMBER],
+  [534723950656n, language.permissions.categories.TEXT],
+  [549821874944n, language.permissions.categories.VOICE],
+  [4294967296n, language.permissions.categories.STAGE],
+  [8589934592n, language.permissions.categories.EVENTS],
+  [8n, language.permissions.categories.ADVANCED],
  ];
 
  let usedPermissions = new Discord.PermissionsBitField(Discord.PermissionsBitField.All);

@@ -48,7 +48,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const language = await ch.getLanguage(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.t.errors.automodRuleNotFound, language);
+  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
