@@ -1460,11 +1460,6 @@
     "request": "wants to bathe with you!",
     "buttons": ["Bathe together~", "Pat them", "Bonk them"]
    },
-   "bite": {
-    "self": "bites themself, how did they get that way?",
-    "others": "bites",
-    "buttons": ["Revenge!", "Pat them!", "Bonk them!"]
-   },
    "blush": {
     "self": "blushes because of their own actions, what a sub~",
     "noOne": "blushes",
@@ -1743,10 +1738,6 @@
     "noOne": "winks at Chat c;",
     "others": "winks at"
    },
-   "yeet": {
-    "self": "yeets themself, at least they are gone now",
-    "others": "yeets"
-   },
    "yawn": {
     "self": "yawns at themself, sounds like someone needs a nap~",
     "noOne": "yawns",
@@ -1758,11 +1749,6 @@
     "noOne": "Woof~ :3",
     "others": ["woofs at", ":3"],
     "buttons": ["Pat them", "Nya~ ^~^"]
-   },
-   "kick": {
-    "self": "kicks themself, why though?",
-    "others": ["kicks", "out of chat"],
-    "buttons": ["Cry at them ;-;"]
    },
    "nod": {
     "self": "yep yep~",
@@ -1801,12 +1787,12 @@
    "pickup": {
     "self": "picks themself up, but how..?",
     "others": ["picks", "up"],
-    "buttons": ["Enjoy getting carried around~", "Bite them!"]
+    "buttons": ["Enjoy getting carried around~", "Bonk them!"]
    },
    "lift": {
     "self": "lifts themself up, how the hecc???",
     "others": ["lifts", "up"],
-    "buttons": ["Enjoy getting carried around~", "Bite them!"]
+    "buttons": ["Enjoy getting carried around~", "Bonk them!"]
    },
    "lurk": {
     "self": "lurks in Chat <:AMayakopeek:924071140257841162>",

@@ -319,13 +319,6 @@ export default {
     buttons: ['bath', 'pat', 'bonk'],
    },
    {
-    name: 'bite',
-    desc: 'Bite someone',
-    users: true,
-    reqUser: true,
-    buttons: ['bite', 'pat', 'bonk'],
-   },
-   {
     name: 'blush',
     desc: 'Blush',
     users: true,
@@ -475,9 +468,9 @@ export default {
     desc: 'Pick someone up',
     users: true,
     reqUser: true,
-    buttons: ['happy', 'bite'],
+    buttons: ['happy', 'bonk'],
    },
-   { name: 'lift', desc: 'Lift someone', users: true, reqUser: true, buttons: ['happy', 'bite'] },
+   { name: 'lift', desc: 'Lift someone', users: true, reqUser: true, buttons: ['happy', 'bonk'] },
    {
     aliasOf: 'peek',
     name: 'lurk',
@@ -608,10 +601,8 @@ export default {
    },
    { name: 'wave', desc: 'Wave', users: true, reqUser: false, buttons: ['wave', 'boop'] },
    { name: 'wink', desc: 'Wink', users: true, reqUser: false, buttons: [] },
-   { name: 'yeet', desc: 'Yeet someone', users: true, reqUser: true, buttons: [] },
    { name: 'yawn', desc: 'Yawn', users: true, reqUser: false, buttons: ['cuddle', 'boop'] },
    { name: 'woof', desc: 'Woof', users: true, reqUser: false, buttons: ['pat', 'nya'] },
-   { name: 'kick', desc: 'Kick someone', users: true, reqUser: true, buttons: ['cry'] },
    {
     name: 'nod',
     desc: "Couldn't agree more",
