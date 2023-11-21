@@ -109,4 +109,15 @@ export default new Discord.SlashCommandBuilder()
      .setDescription('The Emoji you want to get Information about')
      .setRequired(false),
    ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('sticker')
+   .setDescription('Display Information about a Sticker')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('sticker')
+     .setDescription('A Message Link to the Sticker you want info about (can also be a Sticker ID)')
+     .setRequired(false),
+   ),
  );

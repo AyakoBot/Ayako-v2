@@ -7,6 +7,7 @@ import bot from './info/bot.js';
 import user from './info/user.js';
 import server from './info/server.js';
 import channel from './info/channel.js';
+import stickers from './info/stickers.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.info,
@@ -18,4 +19,5 @@ export default (t: CT.Language) => ({
  user: user(t),
  server: server(t),
  channel: channel(t),
+ stickers: stickers(t),
 });

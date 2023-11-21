@@ -10,7 +10,7 @@ export default async (guildIDOrLocale: bigint | undefined | null | string) => {
  if (!guildIDOrLocale) {
   const { default: Lang } = await import('../Other/language.js');
 
-  const lang = new Lang('en');
+  const lang = new Lang('en-GB');
   await lang.init();
 
   return lang;
@@ -30,7 +30,7 @@ export default async (guildIDOrLocale: bigint | undefined | null | string) => {
   .then((r) => r?.lan);
 
  const { default: Lang } = await import('../Other/language.js');
- const lang = new Lang(lan || 'en');
+ const lang = new Lang((lan === 'en' ? 'en-GB' : lan) || 'en-GB');
  await lang.init();
 
  return lang;

@@ -5,6 +5,7 @@ import client from '../../../BaseClient/Client.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ _args: string[],
  page?: number,
 ) => {
  if (

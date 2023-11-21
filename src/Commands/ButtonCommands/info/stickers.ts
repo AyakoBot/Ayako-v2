@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import emojis from '../../SlashCommands/info/emoji.js';
+import sticker from '../../SlashCommands/info/sticker.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
- emojis(cmd, [], Number(args.shift()));
+ sticker(cmd, [], Number(args.shift()));

@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
 
  const selectedEmoji = Emojis.find((e) => e === emoji.replace(/:/g, ''));
  if (!selectedEmoji) {
-  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 
@@ -19,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   (s) => s.name === stickerIDorName || s.id === stickerIDorName,
  );
  if (!sticker) {
-  ch.errorCmd(cmd, language.t.errors.stickerNotFound, language);
+  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 

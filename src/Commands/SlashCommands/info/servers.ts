@@ -5,6 +5,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
+ _args: string[],
  page = 1,
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;

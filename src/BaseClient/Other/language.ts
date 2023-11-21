@@ -79,6 +79,7 @@ export default class Language {
  auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string } = auditLogAction(this);
 
  constructor(type: string | 'en-GB') {
+  if (type === 'en') throw new Error('EN given');
   this.CURRENT_LANGUAGE = type;
  }
 

@@ -14,13 +14,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
 
  const selectedEmoji = Emojis.find((e) => e === emoji.replace(/:/g, ''));
  if (!selectedEmoji) {
-  ch.errorCmd(cmd, language.t.errors.emoteNotFound, language);
+  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 
  const message = await ch.getMessage(messageLink);
  if (!message) {
-  ch.errorCmd(cmd, language.t.errors.messageNotFound, language);
+  ch.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
  }
 
@@ -28,7 +28,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   ? message.stickers.find((s) => s.name === stickerName || s.id === stickerName)
   : message.stickers.first();
  if (!sticker) {
-  ch.errorCmd(cmd, language.t.errors.stickerNotFound, language);
+  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 

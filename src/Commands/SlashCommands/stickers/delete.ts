@@ -10,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   (s) => s.id === stickerIDorName || s.name === stickerIDorName,
  );
  if (!sticker) {
-  ch.errorCmd(cmd, language.t.errors.stickerNotFound, language);
+  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 

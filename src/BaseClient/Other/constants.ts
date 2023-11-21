@@ -244,7 +244,10 @@ export default {
    `https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? 'gif' : 'png'}?size=4096`,
   getEmote: (
    emoji: Discord.Emoji | { name: string; id?: string | null; animated?: boolean | null },
-  ) => (emoji.id ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>` : `${emoji.name}`),
+  ) =>
+   emoji.id
+    ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`
+    : `${/\w/g.test(emoji.name ?? '') ? `:${emoji.name}:` : emoji.name}`,
   getTime: (time: number) =>
    `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
   msgurl: (g: string | undefined | null, c: string, m: string) =>

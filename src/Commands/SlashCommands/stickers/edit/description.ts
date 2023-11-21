@@ -16,7 +16,7 @@ export default async (
   (s) => s.name === stickerIDorName || s.id === stickerIDorName,
  );
  if (!sticker) {
-  ch.errorCmd(cmd, language.t.errors.stickerNotFound, language);
+  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 
