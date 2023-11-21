@@ -119,7 +119,7 @@ const mention = async (
     description: language.slashCommands.afk.isAFK(
      a.userid,
      ch.constants.standard.getTime(Number(a.since)),
-     a.text ?? undefined,
+     a.text ? `\n${a.text}` : ' ',
     ),
    };
   })

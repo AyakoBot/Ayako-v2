@@ -1977,7 +1977,7 @@
    "removeReason": "User returned from AFK",
    "set": "`{{user.username}}` went AFK",
    "removed": "Welcome Back!\nYou've been AFK since {{time}}",
-   "isAFK": "<@{{user.id}}> is AFK since {{since}{{text}}"
+   "isAFK": "<@{{user}}> is AFK since {{since}}{{text}}"
   },
   "roles": {
    "shop": {
@@ -2019,7 +2019,7 @@
     "selectedEmoji": "Selected Emoji:"
    },
    "delete": {
-    "areYouSure": "Are you sure you want to delete the Role {{role}}?",
+    "areYouSure": "Are you sure you want to delete the Role {{role}}",
     "deleted": "Successfully deleted {{role}}"
    },
    "give": {
