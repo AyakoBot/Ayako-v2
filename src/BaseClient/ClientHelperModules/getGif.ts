@@ -187,20 +187,52 @@ const getGif = async <T extends 'gif' | 'img'>(
  switch (type[Math.ceil(Math.random() * (type.length - 1))]) {
   case 'purr': {
    const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
-   return {
-    url: await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
-     functionToCall as 'gif' | 'img',
-    ),
-   };
+   const url = await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
+    functionToCall as 'gif' | 'img',
+   ).catch(() => undefined);
+
+   if (type.length > 2 && !url) {
+    return getGif(
+     gifName,
+     type.filter((t) => t !== 'purr'),
+    );
+   }
+
+   return { url: url ?? '' };
   }
   case 'neko': {
-   const res = (await neko.fetch(gifName as Neko.NbCategories, 1)).results[0];
+   const res = (await neko.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
+    ?.results[0];
+
+   if (type.length > 2 && !res) {
+    return getGif(
+     gifName,
+     type.filter((t) => t !== 'neko'),
+    );
+   }
+
+   if (!res) return { url: '' };
+
    return 'anime_name' in res
     ? { url: res.url, anime_name: res.anime_name }
-    : { url: res.url, artist: res.artist_name, source: res.source_url, artistUrl: res.artist_href };
+    : {
+       url: res.url,
+       artist: res.artist_name,
+       source: res.source_url,
+       artistUrl: res.artist_href,
+      };
   }
   case 'waifu': {
-   return { url: await WaifuPics(gifName as WaifuGifNames) };
+   const url = await WaifuPics(gifName as WaifuGifNames).catch(() => undefined);
+
+   if (type.length > 2 && !url) {
+    return getGif(
+     gifName,
+     type.filter((t) => t !== 'waifu'),
+    );
+   }
+
+   return { url: url ?? '' };
   }
   case 'hardcoded': {
    return { url: getRandom(hardcodedGifs[gifName as keyof typeof hardcodedGifs]) };
