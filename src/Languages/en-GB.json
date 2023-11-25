@@ -1110,7 +1110,7 @@
   "textCommands": "Text-Commands"
  },
  "languages": {
-  "en": "English | Finished"
+  "en-GB": "English | Finished"
  },
  "deleteReasons": {
   "deleteCommand": "Delete Commands",
@@ -2002,7 +2002,8 @@
     "saveAndExit": "Save and Exit",
     "couldntReact": "I couldn't add Reactions to this Message\nThis is not required, but make sure your Reaction will not be removed from it",
     "messageNotFromMe": "I can't add Buttons to a Message I didn't send.\nConsider using the </embed-builder create:{{cmdId}}> to create a Custom Message through me\nor using Reaction-Roles instead",
-    "selectedEmoji": "Selected Emoji:"
+    "selectedEmoji": "Selected Emoji:",
+    "addWithText": "Add with Text"
    },
    "delete": {
     "areYouSure": "Are you sure you want to delete the Role {{role}}",

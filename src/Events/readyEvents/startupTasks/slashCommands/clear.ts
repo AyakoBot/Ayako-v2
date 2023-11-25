@@ -33,7 +33,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandUserOption()
      .setName('user')
      .setDescription('The User')
-     .setRequired(false),
+     .setRequired(true),
    ),
  )
  .addSubcommand(
