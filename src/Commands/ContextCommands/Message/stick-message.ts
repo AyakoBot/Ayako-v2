@@ -4,6 +4,10 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
+ const res = await ch.DataBase.stickymessages.findUnique({
+  where: { channelid: cmd.channelId },
+ });
+
  ch.DataBase.stickymessages
   .upsert({
    where: { channelid: cmd.channelId },
@@ -16,10 +20,6 @@ export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
    update: {},
   })
   .then();
-
- const res = await ch.DataBase.stickymessages.findUnique({
-  where: { channelid: cmd.channelId },
- });
 
  const language = await ch.getLanguage(cmd.guildId);
  const lan = language.contextCommands.message['Stick Message'];
