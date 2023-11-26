@@ -240,7 +240,7 @@ const getComponents = (
       type: Discord.ComponentType.Button,
       disabled: member.roles.cache.size <= 1,
       style: Discord.ButtonStyle.Secondary,
-      custom_id: `info/roles_${user.id}`,
+      custom_id: `info/roles_member_${user.id}`,
       label: lan.viewRoles,
      },
      {

@@ -5,16 +5,21 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await ch.getLanguage(cmd.guildId);
- const member = await ch.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id);
- if ('message' in member) {
-  ch.errorCmd(cmd, member, language);
+ const type = args.shift() as 'member' | 'server';
+
+ const guildOrMember =
+  type === 'member'
+   ? await ch.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id)
+   : cmd.guild;
+ if ('message' in guildOrMember) {
+  ch.errorCmd(cmd, guildOrMember, language);
   return;
  }
 
  cmd.reply({
   embeds: [
    {
-    description: `**${language.t.roles}**:\n${member.roles.cache
+    description: `**${language.t.Roles}**:\n${guildOrMember.roles.cache
      .sort((a, b) => b.rawPosition - a.rawPosition)
      .map((r) => `${r}`)
      .join('\n')}`,

@@ -58,6 +58,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       style: Discord.ButtonStyle.Secondary,
       custom_id: `info/features_${isInviteGuild ? invite?.code : serverID}_${isInviteGuild}`,
      },
+     {
+      type: Discord.ComponentType.Button,
+      label: language.t.Roles,
+      style: Discord.ButtonStyle.Secondary,
+      disabled: isInviteGuild,
+      custom_id: `info/roles_server_${isInviteGuild ? invite?.code : serverID}}`,
+     },
     ],
    },
   ],
@@ -151,7 +158,8 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
             },
             {
              name: chEval.util.makeBold(eventLan.afkTimeout),
-             value: `\`${chEval.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
+             value:
+              `\`${chEval.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
             },
            ]),
         {
