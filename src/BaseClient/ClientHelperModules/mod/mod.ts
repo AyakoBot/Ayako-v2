@@ -433,7 +433,7 @@ const mod = {
    return false;
   }
 
-  if (!options.guild.bans.cache.has(options.target.id) && !options.skipChecks) {
+  if (!options.guild.members.cache.get(options.target.id) && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
