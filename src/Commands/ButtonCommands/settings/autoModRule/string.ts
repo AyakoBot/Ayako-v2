@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 
-const settingName = 'blacklist-rules';
+const settingName = 'denylist-rules';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

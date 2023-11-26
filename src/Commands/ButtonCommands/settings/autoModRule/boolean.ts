@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
-import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  enabled: rule.enabled,
@@ -26,7 +26,7 @@ export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  exempt_channels: rule.exemptChannels?.map((c) => c.id),
 });
 
-const settingName = 'blacklist-rules';
+const settingName = 'denylist-rules';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -60,7 +60,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   if (updatedSetting.message.includes('actions[BASE_TYPE_BAD_LENGTH]')) {
    ch.errorCmd(
     cmd,
-    language.slashCommands.settings.categories['blacklist-rules'].actionsRequired,
+    language.slashCommands.settings.categories['denylist-rules'].actionsRequired,
     language,
    );
    return;
@@ -97,7 +97,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   components: settingsFile.getComponents(
    updatedSetting,
    language,
-   language.slashCommands.settings.categories['blacklist-rules'],
+   language.slashCommands.settings.categories['denylist-rules'],
   ),
  });
 };

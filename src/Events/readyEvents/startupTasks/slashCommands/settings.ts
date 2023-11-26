@@ -46,8 +46,8 @@ export default new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('blacklist-rules')
-     .setDescription('The Rules of the Blacklist')
+     .setName('denylist-rules')
+     .setDescription('The Rules of the Denylist')
      .addStringOption(IDSelector),
    )
    .addSubcommand(
@@ -247,7 +247,7 @@ export default new Discord.SlashCommandBuilder()
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('censor')
-     .setDescription('Repost Messages that contain Blacklisted Words'),
+     .setDescription('Repost Messages that contain Denylisted Words'),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()

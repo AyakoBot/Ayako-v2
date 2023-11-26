@@ -3,7 +3,7 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import SH from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
 
-const name = 'blacklist-rules';
+const name = 'denylist-rules';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -309,7 +309,7 @@ const getActionMetadata = (
 export const getComponents = (
  rule: Discord.AutoModerationRule,
  language: CT.Language,
- lan: CT.Language['slashCommands']['settings']['categories']['blacklist-rules'],
+ lan: CT.Language['slashCommands']['settings']['categories']['denylist-rules'],
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent>[] =>
  [
   {
@@ -606,21 +606,21 @@ const getAllComponents = (
  language: CT.Language,
  automodRules: Discord.AutoModerationRule[] | undefined,
 ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
- const lan = language.slashCommands.settings.categories['blacklist-rules'];
+ const lan = language.slashCommands.settings.categories['denylist-rules'];
 
- const createKeywordRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
+ const createKeywordRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
  createKeywordRule.custom_id = 'settings/autoModRule/create_keyword';
  createKeywordRule.label = lan.keyword;
- const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
+ const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
  createMentionSpamRule.custom_id = 'settings/autoModRule/create_mention';
  createMentionSpamRule.label = lan.mention;
- const createSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
+ const createSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
  createSpamRule.custom_id = 'settings/autoModRule/create_spam';
  createSpamRule.label = lan.spam;
- const createPresetRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
+ const createPresetRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
  createPresetRule.custom_id = 'settings/autoModRule/create_preset';
  createPresetRule.label = lan.preset;
- const createMemberRule = ch.settingsHelpers.buttonParsers.create(language, 'blacklist-rules');
+ const createMemberRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
  createMemberRule.custom_id = 'settings/autoModRule/create_member';
  createMemberRule.label = lan.member;
 

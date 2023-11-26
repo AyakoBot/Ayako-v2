@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
-const settingName = 'blacklist-rules';
+const settingName = 'denylist-rules';
 
 const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  if (!cmd.inCachedGuild()) return;
@@ -54,7 +54,7 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
   components: settingsFile.getComponents(
    rule,
    language,
-   language.slashCommands.settings.categories['blacklist-rules'],
+   language.slashCommands.settings.categories['denylist-rules'],
   ),
  });
 };

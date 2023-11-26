@@ -65,10 +65,10 @@ export default async (msg: Discord.Message) => {
  }
 
  if (!result.triggers) {
-  writeWhitelist(result.url);
+  writeAllowlist(result.url);
   return;
  }
- writeBlacklist(result.url);
+ writeDenylist(result.url);
 
  if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
 };
@@ -255,8 +255,8 @@ const getTriggersAV = async (
  const websiteResponse = await checkIfExists(url);
  if (!websiteResponse) return { url, triggers: false };
 
- if (inWhitelist(url)) return { url, triggers: false };
- if (inBlacklist(url)) return { url, triggers: true };
+ if (inAllowlist(url)) return { url, triggers: false };
+ if (inDenylist(url)) return { url, triggers: true };
  if (inFishFish(url)) return { url, triggers: true };
  if (inSinkingYachts(url)) return { url, triggers: true };
  if (await inSpamHaus(url)) return { url, triggers: true };
@@ -439,17 +439,17 @@ const reportFishFish = (u: string) => {
  });
 };
 
-const inWhitelist = (url: string) =>
+const inAllowlist = (url: string) =>
  (
   fs
-   .readFileSync(ch.constants.path.whitelist, {
+   .readFileSync(ch.constants.path.allowlist, {
     encoding: 'utf8',
    })
    ?.split(/\n+/g)
    .map((r) => r.replace(/\r+/g, '')) ?? []
  ).includes(new URL(url).origin);
 
-const inBlacklist = (url: string) =>
+const inDenylist = (url: string) =>
  (
   fs
    .readFileSync(ch.constants.path.badLinks, {
@@ -459,12 +459,12 @@ const inBlacklist = (url: string) =>
    .map((r) => r.replace(/\r+/g, '')) ?? []
  ).includes(new URL(url).origin);
 
-const writeWhitelist = (url: string | undefined) => {
+const writeAllowlist = (url: string | undefined) => {
  if (!url) return;
- fs.appendFileSync(ch.constants.path.whitelist, `\n${new URL(url).origin}`);
+ fs.appendFileSync(ch.constants.path.allowlist, `\n${new URL(url).origin}`);
 };
 
-const writeBlacklist = (url: string | undefined) => {
+const writeDenylist = (url: string | undefined) => {
  if (!url) return;
  fs.appendFileSync(ch.constants.path.badLinks, `\n${new URL(url).origin}`);
 };

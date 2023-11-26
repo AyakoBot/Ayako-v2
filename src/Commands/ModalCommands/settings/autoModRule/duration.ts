@@ -1,11 +1,11 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as SettingsFile from '../../../SlashCommands/settings/moderation/blacklist-rules.js';
+import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 import CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 
-const settingName = 'blacklist-rules';
+const settingName = 'denylist-rules';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

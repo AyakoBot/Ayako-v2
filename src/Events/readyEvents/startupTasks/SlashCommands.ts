@@ -68,7 +68,7 @@ export default {
   'settings_moderation_auto-punish': 'moderation',
   settings_moderation_newlines: 'moderation',
   settings_moderation_invites: 'moderation',
-  'settings_moderation_blacklist-rules': 'moderation',
+  'settings_moderation_denylist-rules': 'moderation',
   settings_moderation_expiry: 'moderation',
   settings_leveling_basic: 'leveling',
   'settings_leveling_multi-channels': 'leveling',

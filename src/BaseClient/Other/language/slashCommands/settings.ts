@@ -3,7 +3,7 @@ import * as CT from '../../../../Typings/CustomTypings.js';
 import antiSpam from './settings/anti-spam.js';
 import antiVirus from './settings/anti-virus.js';
 import basic from './settings/basic.js';
-import blacklistRules from './settings/blacklist-rules.js';
+import denylistRules from './settings/denylist-rules.js';
 import buttonRoles from './settings/button-roles.js';
 import expiry from './settings/expiry.js';
 import invites from './settings/invites.js';
@@ -36,7 +36,7 @@ export default (t: CT.Language) => ({
   'anti-spam': antiSpam(t),
   'anti-virus': antiVirus(t),
   basic: basic(t),
-  'blacklist-rules': blacklistRules(t),
+  'denylist-rules': denylistRules(t),
   'button-roles': buttonRoles(t),
   expiry: expiry(t),
   invites: invites(t),

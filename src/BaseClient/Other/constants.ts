@@ -67,7 +67,7 @@ const colors = {
 
 export default {
  path: {
-  whitelist: '/root/Bots/Ayako-VueJS/Website-CDN/antivirus/whitelisted.txt',
+  allowlist: '/root/Bots/Ayako-VueJS/Website-CDN/antivirus/allowlisted.txt',
   badLinks: '/root/Bots/Ayako-VueJS/Website-CDN/antivirus/badLinks.txt',
  },
  events: {
@@ -856,7 +856,7 @@ export default {
      userroleid: 'roles',
      allroleid: 'roles',
     },
-    'blacklist-rules': {},
+    'denylist-rules': {},
     'level-roles': {
      level: 'number',
      roles: 'roles',

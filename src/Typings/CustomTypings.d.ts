@@ -49,7 +49,7 @@ export type TableNamesMap = {
  shop: Prisma.shop;
  'shop-items': Prisma.shopitems;
  'anti-spam': Prisma.antispam;
- 'blacklist-rules': null;
+ 'denylist-rules': Prisma.denylistrules;
  'anti-virus': Prisma.antivirus;
  'auto-punish': Prisma.autopunish;
  censor: Prisma.censor;
