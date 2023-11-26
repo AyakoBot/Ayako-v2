@@ -22,6 +22,7 @@ export default async (msg: Discord.Message) => {
 
  execute(msg);
  commandHandler(msg);
+ antivirus(msg);
 
  if (msg.inGuild()) {
   _eval(msg);
@@ -33,7 +34,6 @@ export default async (msg: Discord.Message) => {
   invites(msg);
   newlines(msg);
   disboard(msg);
-  antivirus(msg);
   antispam(msg);
  } else {
   dmLog(msg);

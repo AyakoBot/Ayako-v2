@@ -7,6 +7,7 @@ import auth from '../../../auth.json' assert { type: 'json' };
 import CT, { DePromisify } from '../../../Typings/CustomTypings.js';
 import pack from '../../../../package.json' assert { type: 'json' };
 import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
+import { API } from '../../../BaseClient/Client.js';
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -31,19 +32,38 @@ export default async (msg: Discord.Message) => {
   : undefined;
  if (!settings && msg.inGuild()) return;
 
- const url = await run(msg.content);
- if (!url.url) return;
+ if (!msg.inGuild()) {
+  await API.channels.addMessageReaction(
+   msg.channelId,
+   msg.id,
+   ch.constants.standard.getEmoteIdentifier(ch.emotes.loading),
+  );
+ }
+ const result = await run(msg.content);
+ if (!('url' in result)) return;
 
  const language = await ch.getLanguage(msg.guildId);
 
- if (settings?.linklogging && settings?.linklogchannels.length) {
-  log(settings.linklogchannels, msg, language, url);
+ log(
+  settings?.linklogging && settings?.linklogchannels.length
+   ? settings.linklogchannels
+   : msg.channel,
+  msg,
+  language,
+  result,
+ );
+
+ if (!msg.inGuild()) {
+  await API.channels.deleteOwnMessageReaction(
+   msg.channelId,
+   msg.id,
+   ch.constants.standard.getEmoteIdentifier(ch.emotes.loading),
+  );
  }
 
- if (!url.triggers) return;
+ if (!result.triggers) return;
 
  if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
- else log(msg.channel, msg, language, url);
 };
 
 const log = (
@@ -104,7 +124,12 @@ const log = (
     ];
    }
    default:
-    return [];
+    return [
+     {
+      name: lan.scanResult,
+      value: lan.detectedAs(lan.harmless),
+     },
+    ];
   }
  };
 
@@ -153,6 +178,8 @@ const log = (
 
 const run = async (content: string) => {
  const urls = await getURLs(content);
+ if (!urls.length) return { triggers: false, urls };
+
  let resolved = false;
 
  const triggersAV:
