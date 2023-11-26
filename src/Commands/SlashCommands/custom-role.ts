@@ -89,6 +89,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   }
 
   ch.replyCmd(cmd, { content: lan.edit(role, { icon: canseticon, color: cansetcolor }) });
+
+  ch.roleManager.add(
+   cmd.member,
+   [role.id],
+   language.events.guildMemberUpdate.rewards.customRoleName,
+  );
   return;
  }
 

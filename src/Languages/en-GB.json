@@ -1990,7 +1990,7 @@
    "customRole": {
     "notEnabled": "Setting Custom-Roles is not enabled",
     "cantSet": "You don't qualify to set a Custom-Role",
-    "edit": "{{role}}was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
+    "edit": "{{role}}was edited\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
     "create": "{{role}}was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}"
    },
    "builders": {
