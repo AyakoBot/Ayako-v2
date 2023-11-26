@@ -1,5 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import auth from '../../auth.json' assert { type: 'json' };
+
+interface R {
+ [key: string]: unknown | R;
+}
 
 /**
  * Replaces placeholders in a string with values from an object.
@@ -7,25 +10,23 @@ import auth from '../../auth.json' assert { type: 'json' };
  * @param obj - The object containing values to replace placeholders.
  * @returns The updated string with placeholders replaced with values.
  */
-export default (expression: string, obj: Record<string, any>) => {
- const text = (e: string) => {
-  const t = e.replace(/{{\s?([^{}\s]*)\s?}}/g, (substring: string, value: string) => {
-   const newValue = value.split('.');
-   let decided: any;
-   const Result = obj[newValue[0]];
-   if (Result) {
-    if (newValue.length > 1) {
-     newValue.forEach((element: any, i) => {
-      if (i === 1) decided = Result[element];
-      if (i > 1) decided = decided[element];
-     });
-     return decided;
-    }
-    return Result;
-   }
-   return substring;
+export default (expression: string, obj: R) => {
+ const replace = (substring: string, value: string): string => {
+  const newValue = value.split('.');
+  let decided: R | string = '';
+  const result = obj[newValue[0]];
+  if (!result) return substring;
+  if (newValue.length < 2) return result as string;
+
+  newValue.forEach((element: string, i) => {
+   if (i === 1) decided = (result as R)[element] as string;
+   if (i > 1) decided = (decided as R)[element] as string;
   });
-  return t;
+
+  return decided as string;
  };
- return text(expression).replace(RegExp(auth.token, 'g'), 'TOKEN');
+
+ return expression
+  .replace(/{{\s?([^{}\s]*)\s?}}/g, replace)
+  .replace(RegExp(auth.token, 'g'), 'TOKEN');
 };

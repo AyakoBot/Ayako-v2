@@ -3450,7 +3450,8 @@
    "ageDesc": "This URL was blocked because it is too young\nDomains younger than 8 Days are a major Red-Flag 🚩",
    "age": "Age-Based block",
    "name": "Links with Redirects",
-   "value": "User <@{{msg.author.id}> / ` {{msg.author.username}#{{msg.author.discriminator}` / `{{msg.author.id}`\nposted at least 1 Link in\nChannel <#{{msg.channel.id}> / `{{name}}` / `{{msg.channel.id}}`"
+   "value": "User <@{{msg.author.id}}> / ` {{msg.author.username}}#{{msg.author.discriminator}}` / `{{msg.author.id}}`\nposted at least 1 Link in\nChannel <#{{msg.channel.id}}> / `{{name}}` / `{{msg.channel.id}}`",
+   "harmless": "Harmless"
   }
  },
  "censor": {

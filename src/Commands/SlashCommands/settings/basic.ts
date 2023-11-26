@@ -100,7 +100,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     name: lan.fields.lan.name,
     value: settings?.lan
      ? language.languages[settings.lan as keyof typeof language.languages]
-     : language.languages.en,
+     : language.languages['en-GB'],
     inline: true,
    },
    {

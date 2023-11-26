@@ -11,7 +11,7 @@ export default (t: CT.Language) => ({
   detectedAs: (c: string) => t.stp(t.JSON.antivirus.log.detectedAs, { c }),
   value: (msg: Discord.Message) =>
    t.stp(t.JSON.antivirus.log.value, {
-    msg: t.languageFunction.getMessage(msg),
+    msg,
     name: 'name' in msg.channel ? msg.channel.name : t.JSON.t.Unknown,
    }),
  },
