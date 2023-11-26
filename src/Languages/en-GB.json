@@ -1164,6 +1164,7 @@
  },
  "scopes": {
   "bot": "Bot",
+  "identify": "Identify",
   "connections": "View Connections",
   "dm_channels.read": "Read DM Channels",
   "email": "See E-Mail",
@@ -1178,16 +1179,18 @@
   "rpc.notifications.read": "Read Discord Notifications",
   "webhook.incoming": "Create a Webhook for Token Code grants",
   "voice": "Join Voice Channels",
-  "application.builds.upload": "Update/Upload Builds",
+  "applications.builds.upload": "Update/Upload Builds",
   "applications.builds.read": "See Builds",
-  "application.store.update": "See Store listings, SKUs, Achievements and more",
+  "applications.store.update": "See Store listings, SKUs, Achievements and more",
   "applications.entitlements": "See Entitlements",
   "relationshipts.read": "See Friends",
   "activities.read": "See Activities",
   "activities.write": "Create Activities",
-  "application.commands": "Use Slash-Commands",
-  "applicaiton.commands.update": "Update Slash-Commands",
-  "application.commands.permissions.update": "Update Slash Command Permissions"
+  "applications.commands": "Use Slash-Commands",
+  "applications.commands.update": "Update Slash-Commands",
+  "applications.commands.permissions.update": "Update Slash-Command Permissions",
+  "guilds.members.read": "See Guild Members",
+  "relationships.read": "See Relationships"
  },
  "rolemodes": {
   "stack": "Stack",
