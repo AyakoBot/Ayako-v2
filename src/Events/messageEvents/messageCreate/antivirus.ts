@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as fs from 'fs';
 import Jobs from 'node-schedule';
 import fetch from 'node-fetch';
 import Prisma from '@prisma/client';
@@ -44,14 +45,16 @@ export default async (msg: Discord.Message) => {
 
  const language = await ch.getLanguage(msg.guildId);
 
- log(
-  settings?.linklogging && settings?.linklogchannels.length
-   ? settings.linklogchannels
-   : msg.channel,
-  msg,
-  language,
-  result,
- );
+ if (!msg.inGuild() || result.triggers) {
+  log(
+   settings?.linklogging && settings?.linklogchannels.length
+    ? settings.linklogchannels
+    : msg.channel,
+   msg,
+   language,
+   result,
+  );
+ }
 
  if (!msg.inGuild()) {
   await API.channels.deleteOwnMessageReaction(
@@ -61,7 +64,11 @@ export default async (msg: Discord.Message) => {
   );
  }
 
- if (!result.triggers) return;
+ if (!result.triggers) {
+  writeWhitelist(result.url);
+  return;
+ }
+ writeBlacklist(result.url);
 
  if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
 };
@@ -248,6 +255,8 @@ const getTriggersAV = async (
  const websiteResponse = await checkIfExists(url);
  if (!websiteResponse) return { url, triggers: false };
 
+ if (inWhitelist(url)) return { url, triggers: false };
+ if (inBlacklist(url)) return { url, triggers: true };
  if (inFishFish(url)) return { url, triggers: true };
  if (inSinkingYachts(url)) return { url, triggers: true };
  if (await inSpamHaus(url)) return { url, triggers: true };
@@ -428,6 +437,36 @@ const reportFishFish = (u: string) => {
     'Reported by at least one of the following Vendors: Google Safe Browsing, SpamHaus, VirusTotal, Sinking Yachts, PromptAPI, FishFish',
   }),
  });
+};
+
+const inWhitelist = (url: string) =>
+ (
+  fs
+   .readFileSync(ch.constants.path.whitelist, {
+    encoding: 'utf8',
+   })
+   ?.split(/\n+/g)
+   .map((r) => r.replace(/\r+/g, '')) ?? []
+ ).includes(new URL(url).origin);
+
+const inBlacklist = (url: string) =>
+ (
+  fs
+   .readFileSync(ch.constants.path.badLinks, {
+    encoding: 'utf8',
+   })
+   ?.split(/\n+/g)
+   .map((r) => r.replace(/\r+/g, '')) ?? []
+ ).includes(new URL(url).origin);
+
+const writeWhitelist = (url: string | undefined) => {
+ if (!url) return;
+ fs.appendFileSync(ch.constants.path.whitelist, `\n${new URL(url).origin}`);
+};
+
+const writeBlacklist = (url: string | undefined) => {
+ if (!url) return;
+ fs.appendFileSync(ch.constants.path.badLinks, `\n${new URL(url).origin}`);
 };
 
 // https://api.fishfish.gg/v1/docs

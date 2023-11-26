@@ -66,6 +66,10 @@ const colors = {
 };
 
 export default {
+ path: {
+  whitelist: '/root/Bots/Ayako-VueJS/Website-CDN/antivirus/whitelisted.txt',
+  badLinks: '/root/Bots/Ayako-VueJS/Website-CDN/antivirus/badLinks.txt',
+ },
  events: {
   logs: {
    automodRule: {
