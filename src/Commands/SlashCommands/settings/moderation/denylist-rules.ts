@@ -65,32 +65,35 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
        .join(', ')
     : language.t.None
   }`,
-  value: `${r.enabled ? ch.emotes.enabled : ch.emotes.disabled} - ID: ${ch.util.makeInlineCode(
-   r.id,
-  )}`,
+  value: `${
+   r.enabled
+    ? ch.constants.standard.getEmote(ch.emotes.enabled)
+    : ch.constants.standard.getEmote(ch.emotes.disabled)
+  } - ID: ${ch.util.makeInlineCode(r.id)}`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
  embeds[0].description = lan.desc(
-  Number(
+  String(
    automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Keyword)
-    .length,
+    .length ?? 0,
   ),
-  Number(
+  String(
    automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.MentionSpam)
-    .length,
+    .length ?? 0,
   ),
-  Number(
-   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Spam).length,
+  String(
+   automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Spam)
+    .length ?? 0,
   ),
-  Number(
+  String(
    automodRules?.filter(
     (r) => r.triggerType === Discord.AutoModerationRuleTriggerType.KeywordPreset,
-   ).length,
+   ).length ?? 0,
   ),
-  Number(
+  String(
    automodRules?.filter((r) => r.triggerType === (6 as Discord.AutoModerationRuleTriggerType))
-    .length,
+    .length ?? 0,
   ),
  );
 
@@ -104,6 +107,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   });
   return;
  }
+
  cmd.reply({
   embeds,
   components,

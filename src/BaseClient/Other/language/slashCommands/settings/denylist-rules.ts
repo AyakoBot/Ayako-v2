@@ -2,6 +2,6 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories['denylist-rules'],
- desc: (kF: number, msF: number, sF: number, kpF: number, mF: number) =>
+ desc: (kF: string, msF: string, sF: string, kpF: string, mF: string) =>
   t.stp(t.JSON.slashCommands.settings.categories['denylist-rules'].desc, { kF, msF, sF, kpF, mF }),
 });
