@@ -43,7 +43,6 @@ export default class Language {
  systemChannelFlags = this.JSON.systemChannelFlags;
  punishmentAction = this.JSON.punishmentAction;
  punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
- commands = this.JSON.commands;
  contextCommands = this.JSON.contextCommands;
  linkedid = this.JSON.linkedid;
  multiplier = this.JSON.multiplier;
