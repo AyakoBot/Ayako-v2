@@ -77,21 +77,21 @@ export default async (
 
  if (
   oldRule &&
-  JSON.stringify(rule.exemptRoles.map((r) => r.id)) !==
-   JSON.stringify(oldRule?.exemptRoles.map((r) => r.id))
+  JSON.stringify(rule.exemptRoles.map((r) => r?.id)) !==
+   JSON.stringify(oldRule?.exemptRoles.map((r) => r?.id))
  ) {
   merge(
    ch
     .getDifference(
-     rule.exemptRoles.map((r) => r.id),
-     oldRule?.exemptRoles.map((r) => r.id) ?? [],
+     rule.exemptRoles.map((r) => r?.id),
+     oldRule?.exemptRoles.map((r) => r?.id) ?? [],
     )
     .map((r) => `<@&${r}>`)
     .join(', '),
    ch
     .getDifference(
-     oldRule?.exemptRoles.map((r) => r.id) ?? [],
-     rule.exemptRoles.map((r) => r.id),
+     oldRule?.exemptRoles.map((r) => r?.id) ?? [],
+     rule.exemptRoles.map((r) => r?.id),
     )
     .map((r) => `<@&${r}>`)
     .join(', '),
@@ -101,20 +101,20 @@ export default async (
  }
  if (
   oldRule &&
-  JSON.stringify(rule.exemptChannels.map((r) => r.id)) !==
-   JSON.stringify(oldRule?.exemptChannels.map((r) => r.id))
+  JSON.stringify(rule.exemptChannels.map((r) => r?.id)) !==
+   JSON.stringify(oldRule?.exemptChannels.map((r) => r?.id))
  ) {
   const beforeContent = ch
    .getDifference(
-    rule.exemptChannels.map((r) => r.id),
-    oldRule?.exemptChannels.map((r) => r.id) ?? [],
+    rule.exemptChannels.map((r) => r?.id),
+    oldRule?.exemptChannels.map((r) => r?.id) ?? [],
    )
    .map((r) => `<#${r}>`)
    .join(', ');
   const afterContent = ch
    .getDifference(
-    oldRule?.exemptChannels.map((r) => r.id) ?? [],
-    rule.exemptChannels.map((r) => r.id),
+    oldRule?.exemptChannels.map((r) => r?.id) ?? [],
+    rule.exemptChannels.map((r) => r?.id),
    )
    .map((r) => `<#${r}>`)
    .join(', ');
