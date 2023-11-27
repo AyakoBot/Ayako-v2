@@ -14,7 +14,7 @@ export default (t: CT.Language) => ({
    executor: t.languageFunction.getUser(executor),
    options: {
     channel: t.languageFunction.getChannel(options.channel),
-    duration: ch.constants.standard.getTime(options.duration * 1000),
+    duration: ch.constants.standard.getTime(Date.now() + options.duration * 1000),
    },
   }),
 });

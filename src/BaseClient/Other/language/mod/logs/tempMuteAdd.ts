@@ -12,6 +12,6 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.logs.tempMuteAdd.description, {
    target: t.languageFunction.getUser(target),
    executor: t.languageFunction.getUser(executor),
-   duration: ch.constants.standard.getTime(options.duration * 1000),
+   duration: ch.constants.standard.getTime(Date.now() + options.duration * 1000),
   }),
 });
