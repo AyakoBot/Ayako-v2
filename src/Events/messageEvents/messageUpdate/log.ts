@@ -38,7 +38,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
    .getDifference(newFlags, oldFlags)
    .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
 
-  if (added.length || removed.length) merge(added, removed, 'difference', language.t.Flags);
+  if (added.length || removed.length) merge(removed, added, 'difference', language.t.Flags);
  }
  if (
   JSON.stringify(oldMsg.components) !== JSON.stringify(msg.components) &&
