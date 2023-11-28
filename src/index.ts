@@ -22,7 +22,7 @@ const manager = new Discord.ShardingManager(
  {
   token: auth.token,
   shardArgs: process.argv,
-  execArgv: ['--experimental-wasm-modules'],
+  execArgv: ['--experimental-wasm-modules', '--experimental-websocket'],
  },
 );
 
