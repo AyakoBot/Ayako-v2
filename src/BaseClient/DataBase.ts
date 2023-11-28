@@ -1,14 +1,13 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { createPrismaRedisCache } from 'prisma-redis-middleware';
 import Redis from 'ioredis';
-import * as CT from '../Typings/CustomTypings.js';
 
 const { log } = console;
 
 const redis = new Redis();
 const prisma = new PrismaClient();
 
-const options: CT.Argument<typeof createPrismaRedisCache, 0> = {
+const options: Parameters<typeof createPrismaRedisCache>[0] = {
  storage: {
   type: 'redis',
   options: {

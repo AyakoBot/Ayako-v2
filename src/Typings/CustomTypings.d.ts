@@ -291,8 +291,6 @@ export type NeverNull<T, K extends keyof T> = {
  [P in keyof T]: P extends K ? NonNullable<T[P]> : T[P];
 };
 
-export type Argument<F, N extends number> = F extends (...args: infer A) => unknown ? A[N] : never;
-
 export type UsualMessagePayload = {
  embeds?: Discord.APIEmbed[];
  content?: string;

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/denylist-rules.js';
-import CT from '../../../../../Typings/CustomTypings.js';
 
 const settingName = 'denylist-rules';
 
@@ -57,7 +56,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   { exemptChannels: oldSetting } as never,
   { exemptChannels: rule?.[fieldName as keyof typeof rule] } as never,
-  fieldName as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

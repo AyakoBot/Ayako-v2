@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 
 const settingName = 'denylist-rules';
@@ -19,7 +18,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const fieldName = field.customId as CT.Argument<typeof updateSetting, 1>;
+ const fieldName = field.customId as Parameters<typeof updateSetting>[1];
 
  const getID = () => {
   const arg = args.shift();
@@ -50,7 +49,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   { [fieldName]: oldSetting } as never,
   { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] } as never,
-  fieldName as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

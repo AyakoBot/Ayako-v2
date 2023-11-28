@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
-import CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 
 const settingName = 'denylist-rules';
@@ -68,7 +67,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     updatedSetting.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)
      ?.metadata.customMessage || language.events.logs.automodRule.defaultMessage,
   } as never,
-  'customMessage' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  'customMessage' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

@@ -48,7 +48,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   updatedSetting,
-  fieldName as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,

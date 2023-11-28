@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import ms from 'ms';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
-import CT from '../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 
 const settingName = 'denylist-rules';
@@ -79,7 +78,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   { timeoutDuration: currentSetting } as never,
   { timeoutDuration: updatedRule?.['timeoutDuration' as keyof typeof updatedRule] } as never,
-  'timeoutDuration' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  'timeoutDuration' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

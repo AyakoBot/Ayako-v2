@@ -51,16 +51,16 @@ type TableName =
  | 'punish_channelbans';
 
 const findTable = {
- punish_warns: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_warns']['findMany'], 0>) =>
+ punish_warns: (findWhere: Parameters<(typeof ch)['DataBase']['punish_warns']['findMany']>[0]) =>
   ch.DataBase.punish_warns.findMany(findWhere),
- punish_mutes: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_mutes']['findMany'], 0>) =>
+ punish_mutes: (findWhere: Parameters<(typeof ch)['DataBase']['punish_mutes']['findMany']>[0]) =>
   ch.DataBase.punish_mutes.findMany(findWhere),
- punish_kicks: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_kicks']['findMany'], 0>) =>
+ punish_kicks: (findWhere: Parameters<(typeof ch)['DataBase']['punish_kicks']['findMany']>[0]) =>
   ch.DataBase.punish_kicks.findMany(findWhere),
- punish_bans: (findWhere: CT.Argument<(typeof ch)['DataBase']['punish_bans']['findMany'], 0>) =>
+ punish_bans: (findWhere: Parameters<(typeof ch)['DataBase']['punish_bans']['findMany']>[0]) =>
   ch.DataBase.punish_bans.findMany(findWhere),
  punish_channelbans: (
-  findWhere: CT.Argument<(typeof ch)['DataBase']['punish_channelbans']['findMany'], 0>,
+  findWhere: Parameters<(typeof ch)['DataBase']['punish_channelbans']['findMany']>[0],
  ) => ch.DataBase.punish_channelbans.findMany(findWhere),
 };
 

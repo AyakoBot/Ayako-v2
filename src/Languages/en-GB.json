@@ -3435,7 +3435,7 @@
  },
  "nitro": {
   "given": "<@{{user.id}}> has been given\n{{r}}\nfor boosting {{days}} Days",
-  "taken": "<@{{user.id}}> has been taken\n{{r}}\nfrom"
+  "taken": "<@{{user.id}}> had\n{{r}}\ntaken from"
  },
  "antivirus": {
   "malicious": "{{cross}} This Link __is__ malicious",

@@ -1,7 +1,6 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import * as CT from '../../../../Typings/CustomTypings';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
@@ -14,7 +13,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (
  message: Discord.Message<true>,
- payload: CT.Argument<DiscordCore.ChannelsAPI['createMessage'], 1>,
+ payload: Parameters<DiscordCore.ChannelsAPI['createMessage']>[1],
 ) =>
  (cache.apis.get(message.guild.id) ?? API).channels
   .createMessage(message.channel.id, {

@@ -74,7 +74,7 @@ async function send(
  if (payload.components?.length) timeout = undefined;
  if (payload.content?.length) timeout = undefined;
 
- const channel = await getChannel(channels as CT.Argument<typeof getChannel, 0>);
+ const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
 
  if (!('send' in channel)) return null;

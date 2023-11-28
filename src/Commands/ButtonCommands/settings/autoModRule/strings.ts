@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 
 const settingName = 'denylist-rules';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const fieldName = args.shift() as CT.Argument<typeof getCurrentSetting, 1>;
+ const fieldName = args.shift() as Parameters<typeof getCurrentSetting>[1];
  if (!fieldName) {
   ch.error(cmd.guild, new Error('No field name found'));
   return;

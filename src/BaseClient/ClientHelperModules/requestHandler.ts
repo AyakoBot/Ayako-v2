@@ -1,6 +1,5 @@
 import * as DiscordRest from '@discordjs/rest';
 import * as DiscordCore from '@discordjs/core';
-import * as CT from '../../Typings/CustomTypings';
 import cache from './cache.js';
 import { API } from '../Client.js';
 
@@ -22,7 +21,7 @@ import voice from './requestHandler/voice.js';
  */
 export default async (guildId: string, token: string) => {
  const rest = new DiscordRest.REST({ version: '10' }).setToken(token);
- const api = new DiscordCore.API(rest as CT.Argument<typeof DiscordCore.API, 0>);
+ const api = new DiscordCore.API(rest);
  cache.apis.set(guildId, api);
 };
 

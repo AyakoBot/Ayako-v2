@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
@@ -52,9 +51,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const oldSetting = getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>);
+ const oldSetting = getSetting(rule, fieldName as Parameters<typeof getSetting>[1]);
 
- const updatedSetting = await updateRule(rule, fieldName as CT.Argument<typeof updateRule, 1>);
+ const updatedSetting = await updateRule(rule, fieldName as Parameters<typeof updateRule>[1]);
  if (!updatedSetting) return;
  if ('message' in updatedSetting) {
   if (updatedSetting.message.includes('actions[BASE_TYPE_BAD_LENGTH]')) {
@@ -72,8 +71,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  ch.settingsHelpers.updateLog(
   oldSetting as never,
-  getSetting(rule, fieldName as CT.Argument<typeof getSetting, 1>) as never,
-  '*' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  getSetting(rule, fieldName as Parameters<typeof getSetting>[1]) as never,
+  '*' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

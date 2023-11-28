@@ -21,7 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   oldSettings,
   undefined,
-  '*' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  '*' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,

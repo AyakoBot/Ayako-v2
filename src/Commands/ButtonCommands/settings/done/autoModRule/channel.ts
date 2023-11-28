@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/denylist-rules.js';
-import * as CT from '../../../../../Typings/CustomTypings.js';
 import { getAPIRule } from '../../autoModRule/boolean.js';
 
 const settingName = 'denylist-rules';
@@ -62,7 +61,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  ch.settingsHelpers.updateLog(
   { alertChannel: oldSetting } as never,
   { alertChannel: channelID } as never,
-  'alertChannel' as CT.Argument<(typeof ch)['settingsHelpers']['updateLog'], 2>,
+  'alertChannel' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,
