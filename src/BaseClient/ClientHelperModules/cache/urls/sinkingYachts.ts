@@ -1,5 +1,8 @@
+import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
 import constants from '../../../Other/constants.js';
+import client from '../../../Client.js';
+
 /**
  * Interface for the SinkingYachts cache module.
  */
@@ -38,7 +41,10 @@ const self: SinkingYachts = {
   const ws = new WebSocket('wss://phish.sinking.yachts/feed');
   ws.onmessage = (message) => {
    const msg = JSON.parse(message.data) as { type: 'add' | 'remove'; domains: string[] };
-   console.log(msg);
+
+   (client.channels.cache.get('941894692885372928') as Discord.TextChannel).send({
+    content: JSON.stringify(msg),
+   });
 
    if (msg.type === 'add') msg.domains.forEach((d) => self.cache.add(d));
    else msg.domains.forEach((d) => self.cache.delete(d));

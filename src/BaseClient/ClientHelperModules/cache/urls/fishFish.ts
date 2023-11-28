@@ -1,6 +1,8 @@
+import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
 import * as Jobs from 'node-schedule';
 import auth from '../../../../auth.json' assert { type: 'json' };
+import client from '../../../Client.js';
 
 /**
  * Interface for the FishFish cache module.
@@ -62,6 +64,18 @@ const self: FishFish = {
   self.cache = new Set();
   const data = (await res.json()) as string[];
   data.forEach((d) => self.cache.add(d));
+
+  const ws = new WebSocket('wss://api.fishfish.gg/v1/stream');
+  ws.onmessage = (message) => {
+   const msg = JSON.parse(message.data) as { type: 'add' | 'remove'; domains: string[] };
+
+   (client.channels.cache.get('941894692885372928') as Discord.TextChannel).send({
+    content: JSON.stringify(msg),
+   });
+
+   if (msg.type === 'add') msg.domains.forEach((d) => self.cache.add(d));
+   else msg.domains.forEach((d) => self.cache.delete(d));
+  };
  },
  toArray: () => [...self.cache],
  cache: new Set(),
