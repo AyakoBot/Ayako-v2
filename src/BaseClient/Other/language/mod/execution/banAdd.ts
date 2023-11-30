@@ -5,7 +5,7 @@ export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.banAdd,
  dm: (options: CT.ModOptions<'banAdd'>) =>
   t.stp(t.JSON.mod.execution.banAdd.dm, {
-   options,
+   guild: t.languageFunction.getGuild(options.guild),
   }),
  alreadyApplied: (target: Discord.User) =>
   t.stp(t.JSON.mod.execution.banAdd.alreadyApplied, {

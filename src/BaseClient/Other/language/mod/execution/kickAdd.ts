@@ -5,7 +5,7 @@ export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.kickAdd,
  dm: (options: CT.ModOptions<'kickAdd'>) =>
   t.stp(t.JSON.mod.execution.kickAdd.dm, {
-   options,
+   guild: t.languageFunction.getGuild(options.guild),
   }),
  alreadyApplied: (target: Discord.User) =>
   t.stp(t.JSON.mod.execution.kickAdd.alreadyApplied, {

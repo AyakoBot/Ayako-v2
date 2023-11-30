@@ -3606,7 +3606,7 @@
     "reason": "Mute ended"
    },
    "banAdd": {
-    "dm": "You have been Banned from {{options.guild.name}}",
+    "dm": "You have been Banned from\n{{guild}}",
     "meNoPerms": "I can't Ban this User",
     "youNoPerms": "You can't Ban this User",
     "error": "I failed to Ban this User",
@@ -3617,7 +3617,7 @@
     "me": "I won't Ban myself"
    },
    "softBanAdd": {
-    "dm": "You have been Soft-Banned from {{options.guild.name}}",
+    "dm": "You have been Soft-Banned from\n{{guild}}",
     "meNoPerms": "I can't Soft-Ban this User",
     "youNoPerms": "You can't Soft-Ban this User",
     "error": "I failed to Soft-Ban this User",
@@ -3628,7 +3628,7 @@
     "me": "I won't Soft-Ban myself"
    },
    "tempBanAdd": {
-    "dm": "You have been Temp-Banned from {{options.guild.name}}",
+    "dm": "You have been Temp-Banned from\n{{guild}}",
     "meNoPerms": "I can't Temp-Ban this User",
     "youNoPerms": "You can't Temp-Ban this User",
     "error": "I failed to Temp-Ban this User",
@@ -3639,7 +3639,7 @@
     "me": "I won't Temp-Ban myself"
    },
    "channelBanAdd": {
-    "dm": "You have been Channel-Banned from {{options.channel.name}}",
+    "dm": "You have been Channel-Banned from\n{{channel}}",
     "meNoPerms": "I can't Channel-Ban this User",
     "youNoPerms": "You can't Channel-Ban this User",
     "error": "I failed to Channel-Ban this User",
@@ -3651,7 +3651,7 @@
     "importantChannel": "You can't Channel-Ban Members from the Server's Rules-Channel"
    },
    "tempChannelBanAdd": {
-    "dm": "You have been Temp-Channel-Banned from {{options.channel.name}}",
+    "dm": "You have been Temp-Channel-Banned from\n{{channel}}",
     "meNoPerms": "I can't Temp-Channel-Ban this User",
     "youNoPerms": "You can't Temp-Channel-Ban this User",
     "error": "I failed to Temp-Channel-Ban this User",
@@ -3662,7 +3662,7 @@
     "me": "I won't Temp-Channel-Ban myself"
    },
    "channelBanRemove": {
-    "dm": "You have been Un-Channel-Banned from {{options.channel.name}}",
+    "dm": "You have been Un-Channel-Banned from\n{{channel}}",
     "meNoPerms": "I can't Un-Channel-Ban this User",
     "youNoPerms": "You can't Un-Channel-Ban this User",
     "error": "I failed to Un-Channel-Ban this User",
@@ -3673,7 +3673,7 @@
     "me": "I won't Un-Channel-Ban myself"
    },
    "banRemove": {
-    "dm": "You have been Un-Banned from {{options.guild.name}}",
+    "dm": "You have been Un-Banned from\n{{guild}}",
     "meNoPerms": "I can't Un-Ban this User",
     "youNoPerms": "You can't Un-Ban this User",
     "error": "I failed to Un-Ban this User",
@@ -3684,7 +3684,7 @@
     "me": "I won't Un-Ban myself"
    },
    "kickAdd": {
-    "dm": "You have been Kicked from {{options.guild.name}}",
+    "dm": "You have been Kicked from\n{{guild}}",
     "meNoPerms": "I can't Kick this User",
     "youNoPerms": "You can't Kick this User",
     "error": "I failed to Kick this User",

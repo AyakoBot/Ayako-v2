@@ -5,7 +5,7 @@ export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.channelBanAdd,
  dm: (options: CT.ModOptions<'channelBanAdd'>) =>
   t.stp(t.JSON.mod.execution.channelBanAdd.dm, {
-   options,
+   channel: t.languageFunction.getChannel(options.channel),
   }),
  alreadyApplied: (target: Discord.User) =>
   t.stp(t.JSON.mod.execution.channelBanAdd.alreadyApplied, {

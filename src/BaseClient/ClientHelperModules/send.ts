@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
+import * as Classes from '../Other/classes.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -262,6 +263,12 @@ const getChannel = async (
 ) => {
  const { default: client, API } = await import('../Client.js');
 
- if ('username' in channels) return API.users.createDM(channels.id);
- return !('name' in channels) ? client.channels.cache.get(channels.id) : channels;
+ if ('username' in channels) {
+  return Classes.Channel<Discord.ChannelType.DM>(
+   client,
+   await API.users.createDM(channels.id),
+   undefined as never,
+  );
+ }
+ return 'name' in channels ? channels : client.channels.cache.get(channels.id);
 };

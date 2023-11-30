@@ -48,7 +48,9 @@ export default async <T extends CT.ModTypes>(
   ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type) ||
   !options.guild.members.cache.has(options.target.id)
  ) {
-  send(options.target, {
+  console.log(embed, appeal);
+
+  await send(options.target, {
    embeds: [embed],
    components: appeal,
   });
