@@ -3378,7 +3378,7 @@
     "participants": "Participants",
     "winners": "Possible Winners: {{n}}",
     "end": "End: {{e}}",
-    "host": "Giveaway Host: {{u}}",
+    "host": "Giveaway Host: {{u.username}}",
     "roleRequire": "Required Role to enter this Giveaway",
     "participate": "Participate",
     "sent": "Giveaway started in {{channel}}",

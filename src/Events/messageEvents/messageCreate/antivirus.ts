@@ -482,7 +482,7 @@ const inKaspersky = async (u: string) => {
   },
  );
 
- if (res.ok) return { triggered: false };
+ if (!res.ok) return { triggered: false };
 
  const json = (await res.json()) as VirusVendorsTypings.Kaspersky;
  if (json.Zone === 'Red') return { triggered: true, type: 'Kaspersky', result: json };
