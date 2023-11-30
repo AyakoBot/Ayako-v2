@@ -30,14 +30,14 @@ export default async (
   ch.mergeLogging(before, after, type, embed, language, name);
 
  if (rule.name !== oldRule?.name) {
-  merge(oldRule ? oldRule.name : language.t.unknown, rule.name, 'string', language.t.name);
+  merge(oldRule ? oldRule.name : language.t.Unknown, rule.name, 'string', language.t.name);
  }
  if (oldRule && rule.enabled !== oldRule?.enabled) {
   merge(oldRule?.enabled, rule.enabled, 'boolean', lan.enabled);
  }
  if (rule.eventType !== oldRule?.eventType) {
   merge(
-   oldRule?.eventType ? lan.eventType[oldRule.eventType] : language.t.unknown,
+   oldRule?.eventType ? lan.eventType[oldRule.eventType] : language.t.Unknown,
    lan.eventType[rule.eventType],
    'string',
    lan.eventTypeName,
@@ -45,7 +45,7 @@ export default async (
  }
  if (rule.triggerType !== oldRule?.triggerType) {
   merge(
-   oldRule?.triggerType ? lan.triggerType[oldRule?.triggerType] : language.t.unknown,
+   oldRule?.triggerType ? lan.triggerType[oldRule?.triggerType] : language.t.Unknown,
    lan.triggerType[rule.triggerType],
    'string',
    lan.triggerTypeName,

@@ -50,7 +50,7 @@ export default async (
      return 5;
     };
 
-    return `${type() === 5 ? language.t.unknown : type()} ${
+    return `${type() === 5 ? language.t.Unknown : type()} ${
      permission.permission ? ch.emotes.enabled : ch.emotes.disabled
     }`;
    })

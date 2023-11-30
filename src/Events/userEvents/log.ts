@@ -48,14 +48,14 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
      .map((r) =>
       flagsBefore.length
        ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
-       : language.t.unknown,
+       : language.t.Unknown,
      )
      .join(', '),
     removed
      .map((r) =>
       flagsAfter.length
        ? `\`${language.userFlags[r as unknown as Discord.UserFlagsString]}\``
-       : language.t.unknown,
+       : language.t.Unknown,
      )
      .join(', '),
     'difference',
@@ -64,10 +64,15 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   }
  }
  if (user.discriminator !== oldUser.discriminator) {
-  merge(oldUser.discriminator ?? language.t.unknown, user.discriminator, 'string', lan.discriminator);
+  merge(
+   oldUser.discriminator ?? language.t.Unknown,
+   user.discriminator,
+   'string',
+   lan.discriminator,
+  );
  }
  if (user.username !== oldUser.username) {
-  merge(oldUser.username ?? language.t.unknown, user.username, 'string', lan.username);
+  merge(oldUser.username ?? language.t.Unknown, user.username, 'string', lan.username);
  }
  if (user.banner !== oldUser.banner && user.bannerURL()) {
   const attachment = (await ch.fileURL2Buffer([user.bannerURL({ size: 4096 }) as string]))?.[0];

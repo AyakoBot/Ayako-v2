@@ -100,8 +100,8 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  }
  if (oldMsg.type !== msg.type) {
   merge(
-   lan.type[oldMsg.type] ?? language.t.unknown,
-   lan.type[msg.type] ?? language.t.unknown,
+   lan.type[oldMsg.type] ?? language.t.Unknown,
+   lan.type[msg.type] ?? language.t.Unknown,
    'string',
    language.t.Type,
   );

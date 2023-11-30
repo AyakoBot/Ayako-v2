@@ -57,7 +57,7 @@ export default (t: CT.Language) => ({
   return `${t.JSON.t.Code}: \`${invite.code}\`\n${
    user ? `${t.JSON.t.Inviter}: ${this.getUser(user)}` : ''
   }${t.JSON.t.Uses}: ${invite.uses}\n${t.JSON.t.Created}: ${
-   invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : t.JSON.t.unknown
+   invite.createdAt ? ch.constants.standard.getTime(invite.createdAt.getTime()) : t.JSON.t.Unknown
   }\n${this.getChannel(invite.channel, channelType)}`;
  },
  getIntegration: (integration: Discord.Integration) =>

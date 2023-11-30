@@ -68,7 +68,7 @@ export default async (
   await getImage();
  }
  if (oldWebhook?.name !== webhook.name) {
-  merge(oldWebhook?.name ?? language.t.unknown, webhook.name, 'string', language.t.name);
+  merge(oldWebhook?.name ?? language.t.Unknown, webhook.name, 'string', language.t.name);
  }
  if (oldWebhook.channel?.id !== webhook.channel?.id) {
   merge(
@@ -77,7 +77,7 @@ export default async (
        oldWebhook.channel,
        language.channelTypes[oldWebhook.channel.type],
       )
-    : language.t.unknown,
+    : language.t.Unknown,
 
    language.languageFunction.getChannel(channel, language.channelTypes[channel.type]),
    'string',

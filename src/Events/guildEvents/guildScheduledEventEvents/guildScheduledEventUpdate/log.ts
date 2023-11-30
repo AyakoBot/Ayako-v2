@@ -114,10 +114,10 @@ export default async (
   merge(
    oldChannel
     ? language.languageFunction.getChannel(oldChannel, language.channelTypes[oldChannel.type])
-    : language.t.unknown,
+    : language.t.Unknown,
    newChannel
     ? language.languageFunction.getChannel(newChannel, language.channelTypes[newChannel.type])
-    : language.t.unknown,
+    : language.t.Unknown,
    'string',
    language.t.Channel,
   );

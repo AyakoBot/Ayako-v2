@@ -84,7 +84,7 @@ export default async (
  }
 
  if (oldChannel?.name !== channel.name) {
-  merge(oldChannel?.name ?? language.t.unknown, channel.name, 'string', language.t.name);
+  merge(oldChannel?.name ?? language.t.Unknown, channel.name, 'string', language.t.name);
  }
 
  if (
@@ -92,7 +92,12 @@ export default async (
   'topic' in channel &&
   !!oldChannel?.topic !== !!channel.topic
  ) {
-  merge(oldChannel?.topic || language.t.None, channel.topic || language.t.None, 'string', lan.topic);
+  merge(
+   oldChannel?.topic || language.t.None,
+   channel.topic || language.t.None,
+   'string',
+   lan.topic,
+  );
  }
 
  if (
@@ -101,7 +106,7 @@ export default async (
   oldChannel?.bitrate !== channel.bitrate
  ) {
   merge(
-   oldChannel ? `${oldChannel?.bitrate}kbps` : language.t.unknown,
+   oldChannel ? `${oldChannel?.bitrate}kbps` : language.t.Unknown,
    `${channel.bitrate}kbps`,
    'string',
    lan.bitrate,
@@ -157,7 +162,9 @@ export default async (
    oldChannel?.rateLimitPerUser
     ? ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
     : language.t.None,
-   channel.rateLimitPerUser ? ch.moment(channel.rateLimitPerUser * 1000, language) : language.t.None,
+   channel.rateLimitPerUser
+    ? ch.moment(channel.rateLimitPerUser * 1000, language)
+    : language.t.None,
    'string',
    lan.rateLimitPerUser,
   );
@@ -171,10 +178,10 @@ export default async (
   merge(
    oldChannel?.rtcRegion
     ? language.regions[oldChannel.rtcRegion as keyof typeof language.regions]
-    : language.t.unknown,
+    : language.t.Unknown,
    channel.rtcRegion
     ? language.regions[channel.rtcRegion as keyof typeof language.regions]
-    : language.t.unknown,
+    : language.t.Unknown,
    'string',
    lan.rtcRegion,
   );
@@ -188,8 +195,8 @@ export default async (
   merge(
    oldChannel?.videoQualityMode
     ? lan.videoQualityMode[oldChannel.videoQualityMode]
-    : language.t.unknown,
-   channel.videoQualityMode ? lan.videoQualityMode[channel.videoQualityMode] : language.t.unknown,
+    : language.t.Unknown,
+   channel.videoQualityMode ? lan.videoQualityMode[channel.videoQualityMode] : language.t.Unknown,
    'string',
    lan.videoQualityModeName,
   );
@@ -225,7 +232,7 @@ export default async (
   merge(
    oldChannel?.archiveTimestamp
     ? `<t:${String(oldChannel.archiveTimestamp).slice(0, -3)}:f>`
-    : language.t.unknown,
+    : language.t.Unknown,
    channel.archiveTimestamp
     ? `<t:${String(channel.archiveTimestamp).slice(0, -3)}:f>`
     : language.t.None,
@@ -242,7 +249,7 @@ export default async (
   merge(
    oldChannel?.defaultAutoArchiveDuration
     ? ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
-    : language.t.unknown,
+    : language.t.Unknown,
    channel.defaultAutoArchiveDuration
     ? ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
     : language.t.None,
@@ -253,7 +260,7 @@ export default async (
 
  if (oldChannel?.type !== channel.type) {
   merge(
-   oldChannel ? language.channelTypes[oldChannel.type] : language.t.unknown,
+   oldChannel ? language.channelTypes[oldChannel.type] : language.t.Unknown,
    language.channelTypes[channel.type],
    'string',
    lan.type,

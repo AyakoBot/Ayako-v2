@@ -54,10 +54,10 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
        oldStage.channel,
        language.channelTypes[oldStage.channel.type],
       )
-    : language.t.unknown,
+    : language.t.Unknown,
    stage.channel
     ? language.languageFunction.getChannel(stage.channel, language.channelTypes[stage.channel.type])
-    : language.t.unknown,
+    : language.t.Unknown,
    'string',
    language.t.Channel,
   );
