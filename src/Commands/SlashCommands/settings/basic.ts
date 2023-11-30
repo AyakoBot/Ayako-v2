@@ -254,8 +254,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     },
    );
 
-   const language = new Lang('en');
-   await language.init();
+   const language = new Lang('en-GB');
 
    const existingCommands = Object.values(language.slashCommands.moderation.permissions.buttons)
     .map((e) => guild.commands.cache.find((c) => c.name === e))

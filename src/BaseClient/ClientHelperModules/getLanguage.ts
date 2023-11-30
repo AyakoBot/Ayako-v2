@@ -1,4 +1,5 @@
 import DataBase from '../DataBase.js';
+import Language, { languages } from '../Other/language.js';
 
 /**
  * Returns the language object for the specified guild ID.
@@ -7,31 +8,15 @@ import DataBase from '../DataBase.js';
  * @returns A Promise that resolves to the language object for the specified guild ID.
  */
 export default async (guildIDOrLocale: bigint | undefined | null | string) => {
- if (!guildIDOrLocale) {
-  const { default: Lang } = await import('../Other/language.js');
-
-  const lang = new Lang('en-GB');
-  await lang.init();
-
-  return lang;
- }
+ if (!guildIDOrLocale) return new Language('en-GB');
 
  if (typeof guildIDOrLocale === 'string' && guildIDOrLocale.includes('-')) {
-  const { default: Lang } = await import('../Other/language.js');
-
-  const lang = new Lang(guildIDOrLocale);
-  await lang.init();
-
-  return lang;
+  return new Language(guildIDOrLocale as keyof typeof languages);
  }
 
  const lan = await DataBase.guildsettings
   .findUnique({ where: { guildid: String(guildIDOrLocale) } })
   .then((r) => r?.lan);
 
- const { default: Lang } = await import('../Other/language.js');
- const lang = new Lang((lan === 'en' ? 'en-GB' : lan) || 'en-GB');
- await lang.init();
-
- return lang;
+ return new Language((lan || 'en-GB') as keyof typeof languages);
 };

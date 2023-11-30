@@ -1,0 +1,15 @@
+{
+ "t": {
+  "Servers": "Servers",
+  "Commands": "Befehle",
+  "login": "Einloggen",
+  "and": "und",
+  "Never": "Niemals",
+  "Join": "Beitreten",
+  "Server": "Server",
+  "Deprecated": "Nicht mehr unterstützt",
+  "Overrides": "Überschreibt",
+  "Triggers": "Auslöser",
+  "Empty": "Leer"
+ }
+}
