@@ -1,12 +1,16 @@
-import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import fetch from 'node-fetch';
 import constants from '../../../Other/constants.js';
-import client from '../../../Client.js';
 
 /**
  * Interface for the SinkingYachts cache module.
  */
 export interface SinkingYachts {
+ /**
+  * The refresh job for the cache.
+  */
+ refreshJob: Jobs.Job | null;
+
  /**
   * Starts the cache module.
   */
@@ -25,6 +29,7 @@ export interface SinkingYachts {
 }
 
 const self: SinkingYachts = {
+ refreshJob: null,
  start: async () => {
   const res = await fetch('https://phish.sinking.yachts/v2/all', {
    headers: {
@@ -34,21 +39,13 @@ const self: SinkingYachts = {
 
   if (!res.ok) throw new Error('Failed to fetch Sinking Yachts API');
 
+  self.refreshJob = Jobs.scheduleJob(new Date(Date.now() + 3600000), () => {
+   self.start();
+  });
+
   self.cache = new Set();
   const data = (await res.json()) as string[];
   data.forEach((d) => self.cache.add(d));
-
-  const ws = new WebSocket('wss://phish.sinking.yachts/feed');
-  ws.onmessage = (message) => {
-   const msg = JSON.parse(message.data) as { type: 'add' | 'remove'; domains: string[] };
-
-   (client.channels.cache.get('941894692885372928') as Discord.TextChannel).send({
-    content: JSON.stringify(msg),
-   });
-
-   if (msg.type === 'add') msg.domains.forEach((d) => self.cache.add(d));
-   else msg.domains.forEach((d) => self.cache.delete(d));
-  };
  },
  toArray: () => [...self.cache],
  cache: new Set(),
