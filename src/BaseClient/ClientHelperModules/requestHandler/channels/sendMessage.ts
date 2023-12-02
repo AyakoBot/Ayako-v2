@@ -19,7 +19,7 @@ export default async (
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
   files?: Discord.RawFile[];
  },
- client: Discord.Client,
+ client: Discord.Client<true>,
 ) =>
  (guild ? cache.apis.get(guild.id) ?? API : API).channels
   .createMessage(channelId, {

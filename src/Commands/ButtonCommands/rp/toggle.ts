@@ -84,7 +84,7 @@ export const create = async (guild: Discord.Guild) => {
    }
 
    if (c.users) {
-    new Array(3).fill(null).forEach((_, i) => {
+    new Array(5).fill(null).forEach((_, i) => {
      command.addUserOption(
       new Discord.SlashCommandUserOption()
        .setDescription(`Another User to interact with`)

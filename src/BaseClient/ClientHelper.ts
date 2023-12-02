@@ -85,6 +85,7 @@ import fetchMessages from './ClientHelperModules/fetchMessages.js';
 import getCustomCommand from './ClientHelperModules/getCustomCommand.js';
 import disableComponents from './ClientHelperModules/disableComponents.js';
 import getUserFromUserAndUsernameOptions from './ClientHelperModules/getUserFromUserAndUsernameOptions.js';
+import encodeString2BigInt from './ClientHelperModules/encodeString2BigInt.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -93,6 +94,7 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ encodeString2BigInt,
  getUserFromUserAndUsernameOptions,
  disableComponents,
  getCustomCommand,

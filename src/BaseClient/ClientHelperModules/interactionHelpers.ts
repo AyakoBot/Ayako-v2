@@ -22,6 +22,7 @@ import * as getChannel from './getChannel.js';
 import isEditable from './isEditable.js';
 import errorCmd from './errorCmd.js';
 import replyMsg from './replyMsg.js';
+import encodeString2BigInt from './encodeString2BigInt.js';
 
 const cooldown = new Set<string>();
 
@@ -58,12 +59,7 @@ const reply = async (
   where: {
    userid: { in: [...allUsers.map((u) => u.id), author.id] },
    blockeduserid: { in: [...allUsers.map((u) => u.id), author.id] },
-   OR: [
-    {
-     blockedcmd: { has: commandName },
-    },
-    { blockedcmd: { isEmpty: true } },
-   ],
+   OR: [{ blockedcmd: { has: commandName } }, { blockedcmd: { isEmpty: true } }],
   },
  });
 
@@ -126,7 +122,7 @@ const reply = async (
    ? cmd.customId
       .split('_')
       .slice(1)
-      .filter((id) => id !== author.id)
+      .filter((id) => id !== BigInt(author.id).toString(36))
       .filter((id) => id !== 'everyone')
    : users.map((u) => u.id);
 
@@ -238,8 +234,10 @@ export default reply;
  * @param args - The arguments to use for reacting to the interaction.
  * @returns A Promise that resolves when the reaction is complete.
  */
-export const react = async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export const react = async (cmd: Discord.ButtonInteraction, a: string[]) => {
  if (!cmd.inCachedGuild()) return;
+
+ const args = a[0] === 'everyone' ? ['everyone'] : a.map((u) => String(encodeString2BigInt(u, 36)));
 
  const language = await getLanguage(cmd.guildId);
 
@@ -292,6 +290,9 @@ const parsers = {
    cmd.options.getUser('user-0', false),
    cmd.options.getUser('user-1', false),
    cmd.options.getUser('user-2', false),
+   cmd.options.getUser('user-3', false),
+   cmd.options.getUser('user-4', false),
+   cmd.options.getUser('user-5', false),
   ].filter((u): u is Discord.User => !!u),
   text: cmd.options.getString('text', false) ?? '',
   otherText: constants.commands.interactions
@@ -348,7 +349,9 @@ const getComponents = (
    .filter((c): c is Discord.ButtonComponent => c.type === Discord.ComponentType.Button)
    .map((c) => ({
     label: c.label as string,
-    custom_id: `${c.customId?.split(/_+/g)[0]}_${replyUsers.join('_')}`,
+    custom_id: `${c.customId?.split(/_+/g)[0]}_${replyUsers
+     .map((u) => BigInt(u).toString(36))
+     .join('_')}`,
     style: Discord.ButtonStyle.Secondary,
     type: c.type,
    })),
@@ -397,7 +400,7 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
            ({
             type: Discord.ComponentType.Button,
             label: 'buttons' in lan ? lan.buttons[i] : b,
-            custom_id: `${b}_${replyUsers.join('_')}`,
+            custom_id: `${b}_${replyUsers.map((u) => BigInt(u).toString(36)).join('_')}`,
             style: Discord.ButtonStyle.Secondary,
            }) as Discord.APIButtonComponent,
          ),
@@ -476,9 +479,9 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
   : undefined;
 
  if (mentionedUsers?.length) {
-  if (mentionedUsers.length < 5) return mentionedUsers;
+  if (mentionedUsers.length < 7) return mentionedUsers;
 
-  const mentionChunks = getChunks(mentionedUsers, 4);
+  const mentionChunks = getChunks(mentionedUsers, 6);
 
   const messages = new Array(mentionChunks.length)
    .fill(null)

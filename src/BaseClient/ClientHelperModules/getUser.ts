@@ -26,6 +26,7 @@ interface bEvalUser {
  */
 export default async (id: string) => {
  const client = (await import('../Client.js')).default;
+ if (!client.isReady()) return undefined;
 
  const response = (
   await client.shard?.broadcastEval((cl, { id: userID }) => cl.users.cache.get(userID), {

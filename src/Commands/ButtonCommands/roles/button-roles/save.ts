@@ -202,11 +202,13 @@ const putReactions = async (
   const emoji = Discord.resolvePartialEmoji(
    s.emote?.includes(':') ? s.emote?.split(/:/g)[1] : (s.emote as string),
   );
-  if (!emoji) return;
+  if (!emoji || !('name' in emoji)) return;
 
   ch.request.channels.addReaction(
    message,
-   emoji.id ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}` : (emoji.name as string),
+   emoji.id
+    ? `${'animated' in emoji && emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
+    : (emoji.name as string),
   );
  });
 

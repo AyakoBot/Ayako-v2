@@ -10,7 +10,7 @@ import { guildTextChannel } from './getChannel.js';
  * @returns The webhook for the channel, or undefined if it could not be retrieved or created.
  */
 export default async (
- rawChannel: Discord.GuildTextBasedChannel | Discord.ForumChannel | string,
+ rawChannel: Discord.GuildTextBasedChannel | Discord.ForumChannel | Discord.MediaChannel | string,
 ) => {
  let channel =
   typeof rawChannel === 'string'
@@ -36,7 +36,8 @@ export default async (
    | Discord.StageChannel
    | Discord.TextChannel
    | Discord.VoiceChannel
-   | Discord.ForumChannel,
+   | Discord.ForumChannel
+   | Discord.MediaChannel,
  ) => {
   const w = await request.channels.getWebhooks(c);
   if ('message' in w) return [];
@@ -55,7 +56,8 @@ export default async (
    | Discord.StageChannel
    | Discord.TextChannel
    | Discord.VoiceChannel
-   | Discord.ForumChannel,
+   | Discord.ForumChannel
+   | Discord.MediaChannel,
  ) => {
   const w = await request.channels.createWebhook(c.guild, c.id, {
    name: constants.standard.user(c.client.user),

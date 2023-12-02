@@ -11,6 +11,7 @@ export default async (
   | Discord.PublicThreadChannel
   | Discord.VoiceChannel
   | Discord.ForumChannel
+  | Discord.MediaChannel
   | Discord.AnyThreadChannel,
 ) => {
  if (!channel.guild.id) return;
@@ -54,7 +55,7 @@ export default async (
  const flags = new Discord.ChannelFlagsBitField(channel.flags || 0).toArray();
 
  const flagsText = [
-  ...flags.map((f) => lan.flags[f]),
+  ...flags.map((f) => language.events.logs.guild.systemChannelFlags[f]),
   'nsfw' in channel && channel.nsfw ? lan.nsfw : null,
   'archived' in channel && channel.archived ? lan.archived : null,
   'locked' in channel && channel.locked ? lan.locked : null,

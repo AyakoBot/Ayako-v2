@@ -11,6 +11,7 @@ export default async (
   | Discord.PublicThreadChannel<boolean>
   | Discord.VoiceChannel
   | Discord.ForumChannel
+  | Discord.MediaChannel
   | undefined,
  channel:
   | Discord.CategoryChannel
@@ -19,6 +20,7 @@ export default async (
   | Discord.TextChannel
   | Discord.AnyThreadChannel<boolean>
   | Discord.VoiceChannel
+  | Discord.MediaChannel
   | Discord.ForumChannel,
 ) => {
  if (channel.isThread()) return;

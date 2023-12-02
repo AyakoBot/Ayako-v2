@@ -54,7 +54,6 @@ export default class Language {
 
  permissions: typeof this.JSON.permissions;
  userFlags: typeof this.JSON.userFlags;
- systemChannelFlags: typeof this.JSON.systemChannelFlags;
  punishmentAction: typeof this.JSON.punishmentAction;
  punishmentDeleteMessageSeconds: typeof this.JSON.punishmentDeleteMessageSeconds;
  contextCommands: typeof this.JSON.contextCommands;
@@ -102,7 +101,6 @@ export default class Language {
 
   this.permissions = this.JSON.permissions;
   this.userFlags = this.JSON.userFlags;
-  this.systemChannelFlags = this.JSON.systemChannelFlags;
   this.punishmentAction = this.JSON.punishmentAction;
   this.punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
   this.contextCommands = this.JSON.contextCommands;

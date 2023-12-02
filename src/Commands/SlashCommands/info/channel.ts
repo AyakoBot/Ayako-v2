@@ -160,7 +160,7 @@ const getEmbed = async (
           name: chEval.util.makeBold(eventLan.flagsName),
           value: `\`${c.flags
            .toArray()
-           .map((f) => `\`${eventLan.flags[f]}\``)
+           .map((f) => `\`${language.events.logs.guild.systemChannelFlags[f]}\``)
            .join(', ')}\`\n`,
          }
        : undefined,

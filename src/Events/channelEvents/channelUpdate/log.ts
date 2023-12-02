@@ -13,6 +13,7 @@ export default async (
   | Discord.VoiceChannel
   | Discord.ForumChannel
   | Discord.AnyThreadChannel
+  | Discord.MediaChannel
   | undefined,
  channel:
   | Discord.CategoryChannel
@@ -23,6 +24,7 @@ export default async (
   | Discord.PublicThreadChannel
   | Discord.VoiceChannel
   | Discord.ForumChannel
+  | Discord.MediaChannel
   | Discord.AnyThreadChannel,
 ) => {
  if ('position' in channel && (!oldChannel || 'position' in oldChannel)) {
@@ -75,8 +77,18 @@ export default async (
 
   if (removed.length || added.length) {
    merge(
-    added.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
-    removed.map((r) => lan.flags[r as unknown as Discord.ChannelFlagsString]).join(', '),
+    added
+     .map(
+      (r) =>
+       language.events.logs.guild.systemChannelFlags[r as unknown as Discord.ChannelFlagsString],
+     )
+     .join(', '),
+    removed
+     .map(
+      (r) =>
+       language.events.logs.guild.systemChannelFlags[r as unknown as Discord.ChannelFlagsString],
+     )
+     .join(', '),
     'difference',
     language.t.Flags,
    );

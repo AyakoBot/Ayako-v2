@@ -14,5 +14,6 @@ export default (t: CT.Language) => ({
  13: t.JSON.channelTypes[13],
  14: t.JSON.channelTypes[14],
  15: t.JSON.channelTypes[15],
+ 16: t.JSON.channelTypes[16],
  unknownChannel: t.JSON.channelTypes.unknownChannel,
 });

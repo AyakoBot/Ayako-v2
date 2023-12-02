@@ -11,7 +11,7 @@ import cache from '../../cache.js';
  * or void if it succeeds.
  */
 export default async (message: Discord.Message<true>, emoji: string) => {
- const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+ const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(
    Discord.DiscordjsErrorCodes.EmojiType,

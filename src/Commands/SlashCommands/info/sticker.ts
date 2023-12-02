@@ -114,7 +114,11 @@ const getEmbeds = async (
   const partialEmoji = sticker.tags ? Discord.resolvePartialEmoji(sticker.tags) : undefined;
   const emoji = partialEmoji?.id
    ? sticker.guild?.emojis.cache.get(partialEmoji.id)
-   : (partialEmoji as { name: string; animated: false; id: undefined });
+   : (partialEmoji as {
+      name: string | undefined;
+      animated: false | undefined;
+      id: undefined | string;
+     });
 
   return {
    color,

@@ -247,7 +247,9 @@ export default {
   emoteURL: (emote: Discord.Emoji) =>
    `https://cdn.discordapp.com/emojis/${emote.id}.${emote.animated ? 'gif' : 'png'}?size=4096`,
   getEmote: (
-   emoji: Discord.Emoji | { name: string; id?: string | null; animated?: boolean | null },
+   emoji:
+    | Discord.Emoji
+    | { name: string | undefined; id?: string | null | undefined; animated?: boolean | null },
   ) =>
    emoji.id
     ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`
@@ -271,7 +273,7 @@ export default {
    `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
   webhookAvatarURL: (webhookId: string, hash: string) =>
    `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
-  getEmoteIdentifier: (e: { animated: boolean; name: string; id: string | null }) =>
+  getEmoteIdentifier: (e: { animated: boolean; name: string; id: string | null | undefined }) =>
    `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
  },
  customembeds: {

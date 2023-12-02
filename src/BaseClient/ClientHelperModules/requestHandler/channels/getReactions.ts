@@ -16,7 +16,8 @@ export default async (
  emoji: string,
  query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,
 ) => {
- const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+ const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
+
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(
    Discord.DiscordjsErrorCodes.EmojiType,

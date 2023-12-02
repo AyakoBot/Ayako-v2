@@ -251,7 +251,8 @@ type Channel = {
   | Discord.StageChannel
   | Discord.TextChannel
   | Discord.VoiceChannel
-  | Discord.ForumChannel;
+  | Discord.ForumChannel
+  | Discord.MediaChannel;
 };
 
 type Roles = { roles: Discord.Role[] };

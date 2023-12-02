@@ -7,6 +7,8 @@ import * as ch from '../BaseClient/ClientHelper.js';
 
 export default () => {
  Socket.on('interaction', async (rawInteraction: Discord.APIInteraction) => {
+  if (!client.isReady()) return;
+
   if (rawInteraction.guild_id && !ch.cache.apis.get(rawInteraction.guild_id)) {
    const startOfToken = Buffer.from(rawInteraction.application_id)
     .toString('base64')
@@ -41,11 +43,15 @@ export default () => {
    return;
   }
 
-  interactionCreate(getParsedInteraction(rawInteraction));
+  const parsedInteraction = getParsedInteraction(rawInteraction);
+  if (!parsedInteraction) return;
+  interactionCreate(parsedInteraction);
  });
 };
 
 const getParsedInteraction = (i: Discord.APIInteraction) => {
+ if (!client.isReady()) return undefined;
+
  switch (i.type) {
   case Discord.InteractionType.ApplicationCommand: {
    switch (i.data.type) {

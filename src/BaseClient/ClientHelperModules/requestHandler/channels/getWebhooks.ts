@@ -9,7 +9,9 @@ import * as Classes from '../../../Other/classes.js';
  * @param channel - The guild text-based channel or forum channel to retrieve webhooks for.
  * @returns A promise that resolves with an array of webhooks for the given channel.
  */
-export default async (channel: Discord.GuildTextBasedChannel | Discord.ForumChannel) =>
+export default async (
+ channel: Discord.GuildTextBasedChannel | Discord.ForumChannel | Discord.MediaChannel,
+) =>
  (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
   .getWebhooks(channel.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(channel.client, w)))

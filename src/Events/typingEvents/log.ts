@@ -7,7 +7,9 @@ export default async (typing: Discord.Typing) => {
  const channels = await ch.getLogChannels('typingevents', typing.guild);
  if (!channels) return;
 
- const user = await typing.user.fetch();
+ const user = await ch.getUser(typing.user.id);
+ if (!user) return;
+
  const language = await ch.getLanguage(typing.guild.id);
  const lan = language.events.logs.channel;
  const files: Discord.AttachmentPayload[] = [];

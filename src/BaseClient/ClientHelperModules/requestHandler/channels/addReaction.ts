@@ -10,7 +10,7 @@ import cache from '../../cache.js';
  * @returns A Promise that resolves with the DiscordAPIError if the reaction could not be added.
  */
 export default async (message: Discord.Message<true>, emoji: string) => {
- const resolvedEmoji = Discord.resolvePartialEmoji(emoji);
+ const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(
    Discord.DiscordjsErrorCodes.EmojiType,

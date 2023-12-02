@@ -516,7 +516,8 @@
      "IsSpam": "Is Spam",
      "IsGuildResourceChannel": "Is Server Resource Channel",
      "ClydeAI": "Clyde AI enabled",
-     "IsScheduledForDeletion": "Is Scheduled for Deletion"
+     "IsScheduledForDeletion": "Is Scheduled for Deletion",
+     "HideMediaDownloadOptions": "Hide Media Download Options"
     },
     "pending": "Pending"
    },
@@ -535,16 +536,6 @@
     "left": "Left Users",
     "topic": "Description",
     "flagsName": "Flags",
-    "flags": {
-     "ActiveChannelsRemoved": "Active Channels removed",
-     "ClydeAI": "Clyde AI enabled",
-     "GuildFeedRemoved": "Guild Feed removed",
-     "IsGuildResourceChannel": "Guild Resource Channel",
-     "IsScheduledForDeletion": "Scheduled for Deletion",
-     "IsSpam": "Spam",
-     "Pinned": "Pinned",
-     "RequireTag": "Requires a Tag"
-    },
     "privacyLevelName": "Privacy Level",
     "privacyLevel": {
      "1": "Public",
@@ -759,12 +750,6 @@
    "cooldown": "This Command is on Cooldown for {{t}}"
   }
  },
- "systemChannelFlags": {
-  "SuppressJoinNotifications": "`Suppress Member join Notifications`",
-  "SuppressPremiumSubscriptions": "`Suppress Server Boost Notifications`",
-  "SuppressGuildReminderNotifications": "`Suppress Server Setup Tips`",
-  "SuppressJoinNotificationReplies": "`Hide Member join Sticker reply Buttons`"
- },
  "punishmentAction": {
   "name": "Action",
   "desc": "The Action to take"
@@ -787,6 +772,7 @@
   "13": "Stage Channel",
   "14": "Directory Channel",
   "15": "Forum Channel",
+  "16": "Media Channel",
   "unknownChannel": "Unknown Channel"
  },
  "verification": {

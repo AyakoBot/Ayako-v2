@@ -27,14 +27,18 @@ export default async <T extends Discord.Message<boolean>>(
 ): Promise<T | undefined> => {
  if (!msg) return undefined;
 
- const body = (await Discord.MessagePayload.create(msg, payload, {
+ const messagePayload = new Discord.MessagePayload(msg, {
+  ...payload,
   reply: {
    messageReference: msg,
    failIfNotExists: false,
   },
- })
-  .resolveBody()
-  .resolveFiles()) as { body: Discord.RESTPostAPIChannelMessageJSONBody; files: Discord.RawFile[] };
+ });
+
+ const body = (await messagePayload.resolveBody().resolveFiles()) as {
+  body: Discord.RESTPostAPIChannelMessageJSONBody;
+  files: Discord.RawFile[];
+ };
 
  const sentMessage = await request.channels
   .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
