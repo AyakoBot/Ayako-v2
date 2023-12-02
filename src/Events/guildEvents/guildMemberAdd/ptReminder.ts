@@ -60,16 +60,13 @@ export default async (member: Discord.GuildMember) => {
   color: ch.constants.colors.base,
  };
 
- const dmChannel = await member.user.createDM().catch(() => undefined);
- if (!dmChannel) return;
-
- const dm = await ch.send(dmChannel, {
+ const dm = await ch.send(member.user, {
   embeds: [embed],
   content: 'Ayako Terms and Privacy Notice',
  });
  if (!dm) return;
 
- API.channels.editMessage(dmChannel.id, dm.id, {
+ API.channels.editMessage(dm.channelId, dm.id, {
   content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
  });
 

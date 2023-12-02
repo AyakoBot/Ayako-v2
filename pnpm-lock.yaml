@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  discord.js@14.14.1:
+    hash: kvzacsilciopxrpoam4g2c2nga
+    path: patches/discord.js@14.14.1.patch
+
 dependencies:
   '@discordjs/core':
     specifier: ^1.1.1
@@ -37,7 +42,7 @@ dependencies:
     version: 0.37.65
   discord.js:
     specifier: ^14.14.1
-    version: 14.14.1
+    version: 14.14.1(patch_hash=kvzacsilciopxrpoam4g2c2nga)
   express:
     specifier: ^4.18.2
     version: 4.18.2
@@ -1769,7 +1774,7 @@ packages:
     resolution: {integrity: sha512-CQHW3Nu04LEHIj1Xps/sfGhTdrowilxnek2tirpLhwvrmgmLr1C6A+4JFLs+0kJMH2IX2QgDyA9GfNehqN+xPQ==}
     dev: false
 
-  /discord.js@14.14.1:
+  /discord.js@14.14.1(patch_hash=kvzacsilciopxrpoam4g2c2nga):
     resolution: {integrity: sha512-/hUVzkIerxKHyRKopJy5xejp4MYKDPTszAnpYxzVVv4qJYf+Tkt+jnT2N29PIPschicaEEpXwF2ARrTYHYwQ5w==}
     engines: {node: '>=16.11.0'}
     dependencies:
@@ -1791,6 +1796,7 @@ packages:
       - bufferutil
       - utf-8-validate
     dev: false
+    patched: true
 
   /doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}

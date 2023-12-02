@@ -15,7 +15,7 @@ async function send(
  channels: Discord.User | Discord.GuildMember,
  payload: CT.UsualMessagePayload,
  timeout?: number,
-): Promise<(Discord.Message | null | void)[] | null | void>;
+): Promise<Discord.Message | null | void>;
 async function send(
  channels: Discord.TextBasedChannel[],
  payload: CT.UsualMessagePayload,
@@ -109,9 +109,10 @@ async function send(
   p.fields?.forEach((pa) => (pa.value?.length > 1024 ? log(p) : null));
  });
 
- const body = (await Discord.MessagePayload.create(channel, payload, {})
-  .resolveBody()
-  .resolveFiles()) as { body: Discord.RESTPostAPIChannelMessageJSONBody; files: Discord.RawFile[] };
+ const body = (await new Discord.MessagePayload(channel, payload).resolveBody().resolveFiles()) as {
+  body: Discord.RESTPostAPIChannelMessageJSONBody;
+  files: Discord.RawFile[];
+ };
 
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,

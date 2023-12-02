@@ -53,10 +53,7 @@ export const kick = async (
  if (!verification.kickafter) return;
 
  const dm = async () => {
-  const channel = await member.user.createDM().catch(() => undefined);
-  if (!channel) return;
-
-  ch.send(channel, {
+  ch.send(member.user, {
    content: language.verification.kickMsg(member.guild),
   });
  };
