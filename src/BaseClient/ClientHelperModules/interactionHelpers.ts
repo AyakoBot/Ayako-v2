@@ -1,6 +1,5 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import clone from 'lodash.clonedeep';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyCmd from './replyCmd.js';
@@ -23,6 +22,7 @@ import isEditable from './isEditable.js';
 import errorCmd from './errorCmd.js';
 import replyMsg from './replyMsg.js';
 import encodeString2BigInt from './encodeString2BigInt.js';
+import { Message } from '../Other/classes.js';
 
 const cooldown = new Set<string>();
 
@@ -36,13 +36,12 @@ type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
  */
 const reply = async (
  cmd:
-  | Omit<Discord.ChatInputCommandInteraction<'cached'>, 'guild' | 'client'>
-  | Omit<Discord.Message<true>, 'guild' | 'client'>
-  | Omit<Discord.ButtonInteraction<'cached'>, 'guild' | 'client'>,
- guild: Discord.Guild | null,
+  | Discord.ChatInputCommandInteraction<'cached'>
+  | Discord.Message<true>
+  | Discord.ButtonInteraction<'cached'>,
 ) => {
  if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
- if (!guild) return;
+ if (!cmd.guild) return;
  if (!cmd.inGuild()) return;
 
  const parse = async () => {
@@ -52,7 +51,7 @@ const reply = async (
  };
 
  const setting = await DataBase.guildsettings.findUnique({
-  where: { guildid: guild.id },
+  where: { guildid: cmd.guild.id },
  });
  const { author, users: allUsers, text, otherText, commandName } = await parse();
  const blockedUsers = await DataBase.blockedusers.findMany({
@@ -105,7 +104,7 @@ const reply = async (
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
-  color: getColor(await getBotMemberFromGuild(guild)),
+  color: getColor(await getBotMemberFromGuild(cmd.guild)),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,
@@ -171,6 +170,10 @@ const reply = async (
   );
 
   if (!setting || setting?.editrpcommands || !cmd.channel) {
+   payload.content = lastUser
+    ? `${mapper(newUsers)} ${language.t.and} <@${encodeString2BigInt(lastUser, 36)}>`
+    : `${mapper(newUsers)}`;
+
    cmd.update(payload as Discord.InteractionUpdateOptions);
   } else {
    if (cooldown.has(cmd.message.id)) return;
@@ -180,7 +183,9 @@ const reply = async (
     cooldown.delete(cmd.message.id);
    });
 
-   if (await isDeleteable(cmd.message)) request.channels.deleteMessage(cmd.message);
+   if (await isDeleteable(cmd.message)) {
+    request.channels.deleteMessage(cmd.message);
+   }
 
    payload.ephemeral = false;
    replyCmd(cmd, payload, 'interactions');
@@ -203,13 +208,16 @@ const reply = async (
   const realCmd = await request.channels.getMessage(channel, msg.id);
   if (!realCmd || 'message' in realCmd) return;
 
-  const me = await getBotMemberFromGuild(guild);
+  const me = await getBotMemberFromGuild(cmd.guild);
   if (!me) {
-   error(guild, new Error('Could not find myself in this guild!'));
+   error(cmd.guild, new Error('Could not find myself in this guild!'));
    return;
   }
 
-  if (await isDeleteable(realCmd as Discord.Message<true>)) {
+  if (
+   (await isDeleteable(realCmd as Discord.Message<true>)) &&
+   cmd.type !== Discord.MessageType.UserJoin
+  ) {
    request.channels.deleteMessage(realCmd as Discord.Message<true>);
   }
   const content = String(payload.content);
@@ -246,7 +254,7 @@ export const react = async (cmd: Discord.ButtonInteraction, a: string[]) => {
   return;
  }
 
- reply(cmd, cmd.guild);
+ reply(cmd);
 };
 
 /**
@@ -365,7 +373,7 @@ const getComponents = (
  */
 const mapper = (u: (Discord.User | string)[]) =>
  u
-  .map((m) => `<@${typeof m !== 'string' ? m.id : m}>`)
+  .map((m) => `<@${typeof m !== 'string' ? m.id : encodeString2BigInt(m, 36)}>`)
   .filter((a, index, arr) => arr.indexOf(a) === index)
   .join(', ');
 
@@ -485,13 +493,43 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
 
   const messages = new Array(mentionChunks.length)
    .fill(null)
-   .map(() => clone(msg)) as Discord.Message[];
+   .map(() => structuredClone(msg)) as Discord.Message[];
 
   mentionChunks.forEach((c, i) => {
    if (i === 0) return;
 
-   messages[i].mentions.users = new Discord.Collection(c.map((u) => [u.id, u]));
-   reply(messages[i] as Parameters<typeof reply>[0], msg.guild);
+   const message = new Message(msg.client, {
+    id: messages[i].id,
+    channel_id: messages[i].channelId,
+    author: {
+     id: messages[i].author.id,
+     username: messages[i].author.username,
+     avatar: messages[i].author.avatar,
+     discriminator: messages[i].author.discriminator,
+     global_name: messages[i].author.globalName,
+    },
+    content: messages[i].content,
+    timestamp: new Date(messages[i].createdTimestamp).toISOString(),
+    edited_timestamp: null,
+    tts: messages[i].tts,
+    mention_everyone: messages[i].mentions.everyone,
+    mention_roles: [],
+    mention_channels: [],
+    attachments: [],
+    embeds: [],
+    reactions: [],
+    pinned: false,
+    type: Discord.MessageType.UserJoin,
+    mentions: c.map((u) => ({
+     id: u.id,
+     username: u.username,
+     avatar: u.avatar,
+     discriminator: u.discriminator,
+     global_name: u.globalName,
+    })),
+   });
+
+   reply(message);
   });
 
   return mentionChunks[0];

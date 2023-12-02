@@ -14,7 +14,6 @@ const client = new Discord.Client({
   Discord.Partials.GuildMember,
   Discord.Partials.Message,
   Discord.Partials.Reaction,
-  Discord.Partials.Reaction,
   Discord.Partials.GuildScheduledEvent,
   Discord.Partials.ThreadMember,
  ],

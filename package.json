@@ -4,7 +4,7 @@
   "scripts": {
     "start": "node --max-old-space-size=8192 ./dist/index.js",
     "build": "npx tsc",
-    "dev": "cd ./dist && node ./index.js --debug --warn"
+    "dev": "cd ./dist && node --enable-source-maps ./index.js --debug --warn"
   },
   "dependencies": {
     "@discordjs/core": "^1.1.1",
@@ -22,7 +22,6 @@
     "fastify": "^4.24.3",
     "glob": "^10.3.10",
     "ioredis": "^5.3.2",
-    "lodash.clonedeep": "^4.5.0",
     "lodash.merge": "^4.6.2",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",

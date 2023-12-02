@@ -47,10 +47,7 @@ export default async <T extends Discord.Message<boolean>>(
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;
-
- if (msg.guild && commandName) {
-  cooldownHandler(msg, sentMessage, commandName);
- }
+ if (msg.guild && commandName) cooldownHandler(msg, sentMessage, commandName);
 
  return sentMessage as T;
 };

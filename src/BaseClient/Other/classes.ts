@@ -153,24 +153,26 @@ export const Channel = <T extends Discord.ChannelType>(
 ): T extends 0
  ? Discord.TextChannel
  : T extends 1
- ? Discord.DMChannel
- : T extends 2
- ? Discord.BaseGuildVoiceChannel
- : T extends 4
- ? Discord.CategoryChannel
- : T extends 5
- ? Discord.NewsChannel
- : T extends 10
- ? Discord.ThreadChannel
- : T extends 11
- ? Discord.ThreadChannel
- : T extends 12
- ? Discord.ThreadChannel
- : T extends 13
- ? Discord.StageChannel
- : T extends 15
- ? Discord.ForumChannel
- : never => {
+   ? Discord.DMChannel
+   : T extends 2
+     ? Discord.BaseGuildVoiceChannel
+     : T extends 4
+       ? Discord.CategoryChannel
+       : T extends 5
+         ? Discord.NewsChannel
+         : T extends 10
+           ? Discord.ThreadChannel
+           : T extends 11
+             ? Discord.ThreadChannel
+             : T extends 12
+               ? Discord.ThreadChannel
+               : T extends 13
+                 ? Discord.StageChannel
+                 : T extends 15
+                   ? Discord.ForumChannel
+                   : T extends 16
+                     ? Discord.MediaChannel
+                     : never => {
  switch (c.type) {
   case Discord.ChannelType.GuildText: {
    // @ts-ignore

@@ -14,6 +14,7 @@ export default async (msg: Discord.Message<true>) => {
   return false;
  }
 
+ if (!Discord.Constants.DeletableMessageTypes.includes(msg.type)) return false;
  if (msg.author.id === executor.id) return true;
  if (executor.id === msg.guild.ownerId) return true;
  if (executor.permissions.has(Discord.PermissionFlagsBits.Administrator)) return true;

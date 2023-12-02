@@ -50,9 +50,6 @@ dependencies:
   ioredis:
     specifier: ^5.3.2
     version: 5.3.2
-  lodash.clonedeep:
-    specifier: ^4.5.0
-    version: 4.5.0
   lodash.merge:
     specifier: ^4.6.2
     version: 4.6.2
@@ -3315,10 +3312,6 @@ packages:
     dependencies:
       p-locate: 5.0.0
     dev: true
-
-  /lodash.clonedeep@4.5.0:
-    resolution: {integrity: sha512-H5ZhCF25riFd9uB5UCkVKo61m3S/xZk1x4wA6yp/L3RFP6Z/eHH1ymQcGLo7J3GMPfm0V/7m1tryHuGVxpqEBQ==}
-    dev: false
 
   /lodash.defaults@4.2.0:
     resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
