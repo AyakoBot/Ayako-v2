@@ -1,7 +1,14 @@
+import sms from 'source-map-support';
 /* eslint-disable no-console */
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 import { getReady } from './Events/readyEvents/ready.js';
+
+sms.install({
+ handleUncaughtExceptions: process.argv.includes('--debug'),
+ environment: 'node',
+ emptyCacheBetweenOperations: process.argv.includes('--debug'),
+});
 
 const processArgs = process.argv;
 if (processArgs.includes('--debug')) console.log('[DEBUG] Debug mode enabled');

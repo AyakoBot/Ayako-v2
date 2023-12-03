@@ -1,8 +1,15 @@
+import sms from 'source-map-support';
 import readline from 'readline';
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
 
 import auth from './auth.json' assert { type: 'json' };
+
+sms.install({
+ handleUncaughtExceptions: process.argv.includes('--debug'),
+ environment: 'node',
+ emptyCacheBetweenOperations: process.argv.includes('--debug'),
+});
 
 // eslint-disable-next-line no-console
 const { log } = console;
