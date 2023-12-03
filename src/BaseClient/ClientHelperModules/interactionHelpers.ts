@@ -358,7 +358,7 @@ const getComponents = (
    .map((c) => ({
     label: c.label as string,
     custom_id: `${c.customId?.split(/_+/g)[0]}_${replyUsers
-     .map((u) => BigInt(u).toString(36))
+     .map((u) => (/\D/g.test(u) ? u : BigInt(u).toString(36)))
      .join('_')}`,
     style: Discord.ButtonStyle.Secondary,
     type: c.type,
@@ -408,7 +408,9 @@ const getPayload = <T extends keyof CT.Language['slashCommands']['interactions']
            ({
             type: Discord.ComponentType.Button,
             label: 'buttons' in lan ? lan.buttons[i] : b,
-            custom_id: `${b}_${replyUsers.map((u) => BigInt(u).toString(36)).join('_')}`,
+            custom_id: `${b}_${replyUsers
+             .map((u) => (/\D/g.test(u) ? u : BigInt(u).toString(36)))
+             .join('_')}`,
             style: Discord.ButtonStyle.Secondary,
            }) as Discord.APIButtonComponent,
          ),
