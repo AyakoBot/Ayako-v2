@@ -150,6 +150,13 @@ const postMessage = async (
  ch.send(
   { id: settings.postchannels, guildId: guild.id },
   {
+   content: `${settings.pingusers.map((u) => `<@${u}>`).join(', ')}\n${settings.pingroles
+    .map((r) => `<@&${r}>`)
+    .join(', ')})}`,
+   allowed_mentions: {
+    users: settings.pingusers,
+    roles: settings.pingroles,
+   },
    files: await Promise.all(
     [last5minsLang, last5minsIDs, caughtUsersLang, caughtUsersIDs].map((a, i) =>
      ch.txtFileWriter(

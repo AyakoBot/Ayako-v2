@@ -109,12 +109,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
        },
        {
         name: lan.fields.pingusers.name,
-        value: embedParsers.channels(settings?.pingusers, language),
+        value: embedParsers.users(settings?.pingusers, language),
         inline: false,
        },
        {
         name: lan.fields.pingroles.name,
-        value: embedParsers.channels(settings?.pingroles, language),
+        value: embedParsers.roles(settings?.pingroles, language),
         inline: false,
        },
       ]
