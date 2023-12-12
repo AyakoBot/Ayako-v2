@@ -1,5 +1,6 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 
 import auditLogs, { AuditLogs } from './cache/discord/auditLogs.js';
 import commandPermissions, { CommandPermissions } from './cache/discord/commandPermissions.js';
@@ -74,6 +75,9 @@ const cache: {
  lastMessageGuild: Map<string, string>;
  afkCD: Map<string, Set<string>>;
  cooldown: Map<string, Map<string, number>>;
+ antiraid: Map<string, Set<Discord.GuildMember>>;
+ antiraidQueued: Set<string>;
+ enableInvites: Map<string, Jobs.Job>;
 } = {
  // Discord Cache
  invites,
@@ -116,6 +120,9 @@ const cache: {
  lastMessageGuild: new Map(),
  afkCD: new Map(),
  cooldown: new Map(),
+ antiraid: new Map(),
+ antiraidQueued: new Set(),
+ enableInvites: new Map(),
 };
 
 export default cache;

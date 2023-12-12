@@ -8,6 +8,7 @@ import checkMuted from './checkMuted.js';
 import stickyRoles from './stickyRoles.js';
 import stickyPerms from './stickyPerms.js';
 import nitro from './nitro.js';
+import antiraid from './antiraid.js';
 
 export default async (member: Discord.GuildMember) => {
  log(member);
@@ -16,6 +17,7 @@ export default async (member: Discord.GuildMember) => {
  stickyPerms(member);
  checkMuted(member);
  nitro(member);
+ antiraid(member);
 
  if (!member.guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
   autoRoles(member);

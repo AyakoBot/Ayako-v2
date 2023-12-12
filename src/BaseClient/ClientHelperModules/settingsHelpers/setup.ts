@@ -94,9 +94,10 @@ export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimest
      return DataBase.welcome.create(where);
     case 'nitro':
      return DataBase.nitrosettings.create(where);
+    case 'anti-raid':
+     return DataBase.antiraid.create(where);
     // case 'appealsettings':
     //  DataBase.appealsettings.create(where);
-
     default:
      throw new Error(`Unsupported Setting ${tableName}`);
    }

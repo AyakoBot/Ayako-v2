@@ -22,4 +22,5 @@ export default (t: CT.Language) => ({
  stickyperms: t.stp(t.JSON.autotypes.stickyperms, { t }),
  reactionroles: t.stp(t.JSON.autotypes.reactionroles, { t }),
  buttonroles: t.stp(t.JSON.autotypes.buttonroles, { t }),
+ antiraid: t.stp(t.JSON.autotypes.antiraid, { t }),
 });

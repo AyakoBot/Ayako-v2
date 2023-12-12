@@ -92,9 +92,10 @@ export default async (
      return DataBase.welcome.findUnique(where);
     case 'nitro':
      return DataBase.nitrosettings.findUnique(where);
+    case 'anti-raid':
+     return DataBase.antiraid.findUnique(where);
     // case 'appealsettings':
     //  DataBase.appealsettings.findUnique(where);
-
     default:
      throw new Error(`2 Unsupported Setting ${tableName}`);
    }

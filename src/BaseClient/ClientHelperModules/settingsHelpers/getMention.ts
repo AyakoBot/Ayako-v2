@@ -27,6 +27,7 @@ export default async (
   case 'shoptype':
    return language.shoptypes[value as keyof typeof language.shoptypes];
   case 'auto-punishment':
+  case 'antiraid-punishment':
   case 'punishment':
    return language.punishments[value as keyof typeof language.punishments];
   case 'language':

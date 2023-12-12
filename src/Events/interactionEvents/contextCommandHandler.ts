@@ -5,7 +5,7 @@ import { glob } from 'glob';
 const { log } = console;
 
 export default async (cmd: Discord.Interaction) => {
- if (!cmd.isMessageContextMenuCommand()) return;
+ if (!cmd.isContextMenuCommand()) return;
 
  const files = await glob(`${process.cwd()}/Commands/**/*`);
 

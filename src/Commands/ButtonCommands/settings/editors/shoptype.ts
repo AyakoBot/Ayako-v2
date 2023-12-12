@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment';
+type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment' | 'antiraid-punishment';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
  if (!cmd.inCachedGuild()) return;
@@ -75,6 +75,29 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], type: Type
 
 export const getOptions = (type: Types, language: CT.Language) => {
  switch (type) {
+  case 'antiraid-punishment': {
+   const obj = structuredClone(language.punishments) as Omit<
+    CT.Language['punishments'],
+    'strike' | 'warn' | 'tempmute' | 'tempchannelban' | 'channelban' | 'tempban' | 'softban'
+   > & {
+    strike?: string;
+    warn?: string;
+    tempmute?: string;
+    tempchannelban?: string;
+    channelban?: string;
+    tempban?: string;
+    softban?: string;
+   };
+
+   delete obj.strike;
+   delete obj.warn;
+   delete obj.tempmute;
+   delete obj.tempchannelban;
+   delete obj.channelban;
+   delete obj.tempban;
+   delete obj.softban;
+   return obj;
+  }
   case 'auto-punishment': {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],

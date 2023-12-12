@@ -3,7 +3,7 @@ import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 import { getOptions } from '../editors/shoptype.js';
 
-type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment';
+type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment' | 'antiraid-punishment';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
  if (!cmd.inCachedGuild()) return;

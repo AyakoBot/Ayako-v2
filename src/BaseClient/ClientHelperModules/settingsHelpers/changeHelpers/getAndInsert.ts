@@ -92,9 +92,10 @@ export default (
      return DataBase.welcome.update(where);
     case 'nitro':
      return DataBase.nitrosettings.update(where);
+    case 'anti-raid':
+     return DataBase.antiraid.update(where);
     // case 'appealsettings':
     //  DataBase.appealsettings.update(where);
-
     default:
      throw new Error(`4 Unsupported Setting ${String(tableName)}`);
    }

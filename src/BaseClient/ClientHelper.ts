@@ -86,6 +86,8 @@ import getCustomCommand from './ClientHelperModules/getCustomCommand.js';
 import disableComponents from './ClientHelperModules/disableComponents.js';
 import getUserFromUserAndUsernameOptions from './ClientHelperModules/getUserFromUserAndUsernameOptions.js';
 import encodeString2BigInt from './ClientHelperModules/encodeString2BigInt.js';
+import isKickable from './ClientHelperModules/isKickable.js';
+import isBannable from './ClientHelperModules/isBannable.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -94,6 +96,8 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ isBannable,
+ isKickable,
  encodeString2BigInt,
  getUserFromUserAndUsernameOptions,
  disableComponents,

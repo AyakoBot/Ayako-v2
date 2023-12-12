@@ -49,6 +49,7 @@ export type TableNamesMap = {
  shop: Prisma.shop;
  'shop-items': Prisma.shopitems;
  'anti-spam': Prisma.antispam;
+ 'anti-raid': Prisma.antiraid;
  'denylist-rules': Prisma.denylistrules;
  'anti-virus': Prisma.antivirus;
  'auto-punish': Prisma.autopunish;
@@ -326,7 +327,8 @@ export type MentionTypes =
  | 'commands'
  | 'automodrules'
  | 'shoptype'
- | 'auto-punishment';
+ | 'auto-punishment'
+ | 'antiraid-punishment';
 
 export type HelpCommand =
  | {

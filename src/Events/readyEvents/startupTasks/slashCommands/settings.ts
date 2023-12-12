@@ -20,6 +20,11 @@ export default new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${name}'s Moderation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('anti-raid')
+     .setDescription('Detect and prevent Raids'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('anti-spam')
      .setDescription('Stop Members from spamming'),
    )

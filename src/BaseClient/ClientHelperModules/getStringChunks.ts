@@ -16,5 +16,5 @@ export default (s: string[], maxLength: number) => {
   lastI += 1;
  }
 
- return chunks;
+ return chunks.map((c) => c.filter((a) => !!a.length)).filter((c) => !!c.length);
 };

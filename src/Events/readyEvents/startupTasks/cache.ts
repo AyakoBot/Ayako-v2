@@ -10,6 +10,7 @@ import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
+import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 export default () => {
  reminder();
@@ -327,5 +328,18 @@ export const tasks = {
  },
  webhooks: async (guild: Discord.Guild) => {
   ch.cache.webhooks.get('', '', guild);
+ },
+ enableInvites: async (guild: Discord.Guild) => {
+  const settings = await ch.DataBase.guildsettings.findUnique({
+   where: { guildid: guild.id, enableinvitesat: { not: null } },
+  });
+  if (!settings) return;
+
+  ch.cache.enableInvites.set(
+   guild.id,
+   Jobs.scheduleJob(new Date(Number(settings.enableinvitesat)), () => {
+    enableInvites(guild);
+   }),
+  );
  },
 };

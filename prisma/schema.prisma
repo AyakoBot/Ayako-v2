@@ -30,6 +30,11 @@ enum PunishmentType {
   softban
 }
 
+enum AntiRaidPunishmentType {
+  kick
+  ban
+}
+
 enum AnswerType {
   paragraph
   short
@@ -402,6 +407,7 @@ model guildsettings {
   token             String?  @db.VarChar
   publickey         String?  @db.Text
   appid             String?  @db.VarChar
+  enableinvitesat   Decimal? @db.Decimal
 
   @@id(guildid, map: "guildsettings_pkey")
   @@index(guildid)
@@ -1055,4 +1061,22 @@ model voicechannels {
 
  @@id([guildid, channelid], map: "voicechannels_pkey")
  @@index([guildid, channelid])
+}
+
+model antiraid {
+ guildid        String                 @db.VarChar
+ active         Boolean                @db.Boolean @default(false)
+
+ posttof        Boolean                @db.Boolean @default(false)
+ postchannels   String[]               @db.VarChar
+ pingroles      String[]               @db.VarChar
+ pingusers      String[]               @db.VarChar
+ timeout        Decimal                @db.Decimal @default(15)
+ jointhreshold  Decimal                @db.Decimal @default(5)
+ actiontof      Boolean                @db.Boolean @default(true)
+ action         AntiRaidPunishmentType             @default(kick)
+ disableinvites Boolean                @db.Boolean @default(true)
+
+ @@id(guildid, map: "antiraid_pkey")
+ @@index([guildid])
 }
