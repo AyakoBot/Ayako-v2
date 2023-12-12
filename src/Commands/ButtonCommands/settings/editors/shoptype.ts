@@ -50,6 +50,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], type: Type
        options: Object.entries(getOptions(type, language)).map(([k, v]) => ({
         label: v,
         value: k,
+        default: k === currentSetting?.[fieldName as keyof typeof currentSetting],
        })),
       },
       uniquetimestamp,

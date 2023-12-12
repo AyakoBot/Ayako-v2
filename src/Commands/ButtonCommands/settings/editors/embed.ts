@@ -51,6 +51,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
         ? embeds.map((e) => ({
            label: e.name,
            value: e.uniquetimestamp.toString(),
+           default:
+            e.uniquetimestamp.toString() ===
+            currentSetting?.[fieldName as keyof typeof currentSetting],
           }))
         : [{ label: '-', value: '-' }],
        disabled: !embeds?.length,

@@ -10,6 +10,10 @@ export default <T extends keyof CT.SettingsNames>(
  fieldName: string,
  settingName: T,
  uniquetimestamp: number | undefined | string,
+ values: {
+  id: string;
+  type: Discord.SelectMenuDefaultValueType;
+ }[],
  channelType?: 'text' | 'voice' | 'category',
 ) => {
  const menu:
@@ -22,6 +26,7 @@ export default <T extends keyof CT.SettingsNames>(
   custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
    uniquetimestamp ? `_${uniquetimestamp}` : ''
   }`,
+  default_values: values as never,
   type: getChangeSelectType(type),
   placeholder: getPlaceholder(type, language),
  };
@@ -46,6 +51,7 @@ export default <T extends keyof CT.SettingsNames>(
      Discord.ChannelType.GuildVoice,
      Discord.ChannelType.PrivateThread,
      Discord.ChannelType.PublicThread,
+     Discord.ChannelType.GuildMedia,
     ];
     break;
    }

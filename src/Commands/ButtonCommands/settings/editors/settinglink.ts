@@ -49,6 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const options = responses?.map((r) => ({
   label: r.name,
   value: r.value,
+  default: r.value === currentSetting?.[fieldName as keyof typeof currentSetting],
  }));
 
  cmd.update({

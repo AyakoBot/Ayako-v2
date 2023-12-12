@@ -51,6 +51,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
          .map((c) => ({
           label: c.name,
           value: c.id,
+          default: c.id === currentSetting?.[fieldName as keyof typeof currentSetting],
          })) ?? [],
        disabled: !cmd.guild?.autoModerationRules.cache.filter(
         (c) => c.eventType === Discord.AutoModerationRuleEventType.MessageSend,

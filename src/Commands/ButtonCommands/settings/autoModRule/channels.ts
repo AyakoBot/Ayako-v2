@@ -45,6 +45,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       'autoModRule/channels',
       settingName,
       id,
+      rule.exemptChannels
+       .map((c) => c.id)
+       .map((o) => ({ id: o, type: Discord.SelectMenuDefaultValueType.Channel })),
      ),
     ],
    },

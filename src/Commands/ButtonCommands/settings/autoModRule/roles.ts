@@ -45,6 +45,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       'autoModRule/roles',
       settingName,
       id,
+      rule.exemptRoles
+       .map((c) => c.id)
+       .map((o) => ({ id: o, type: Discord.SelectMenuDefaultValueType.Role })),
      ),
     ],
    },

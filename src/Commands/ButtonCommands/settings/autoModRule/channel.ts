@@ -24,6 +24,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
+ const currentSetting = rule.actions.find(
+  (r) => r.type === Discord.AutoModerationActionType.SendAlertMessage,
+ )?.metadata.channelId;
+
  cmd.update({
   embeds: [
    await ch.settingsHelpers.changeHelpers.changeEmbed(
@@ -46,6 +50,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       'autoModRule/channel',
       settingName,
       id,
+      currentSetting
+       ? [
+          {
+           id: currentSetting,
+           type: Discord.SelectMenuDefaultValueType.Channel,
+          },
+         ]
+       : [],
      ),
     ],
    },

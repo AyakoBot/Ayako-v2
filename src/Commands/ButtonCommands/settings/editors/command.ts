@@ -59,7 +59,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       settingName,
       'commands',
       {
-       options: commands,
+       options: commands.map((c) => ({
+        label: c.label,
+        value: c.value,
+        default: c.value === currentSetting?.[fieldName as keyof typeof currentSetting],
+       })),
       },
       uniquetimestamp,
      ),

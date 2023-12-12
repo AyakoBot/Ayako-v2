@@ -22,11 +22,15 @@ export default async (
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSettings = await ch.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
+
+ const currentSetting = currentSettings?.[fieldName as keyof typeof currentSettings] as
+  | string
+  | string[];
 
  const language = await ch.getLanguage(cmd.guildId);
  cmd.update({
@@ -35,7 +39,7 @@ export default async (
     language,
     settingName,
     fieldName,
-    currentSetting?.[fieldName as keyof typeof currentSetting],
+    currentSettings?.[fieldName as keyof typeof currentSettings],
     'channel',
     cmd.guild,
    ),
@@ -50,6 +54,10 @@ export default async (
       fieldName,
       settingName,
       uniquetimestamp,
+      (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
+       id: o,
+       type: Discord.SelectMenuDefaultValueType.Channel,
+      })),
       channelTypes,
      ),
     ],
