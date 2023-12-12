@@ -447,7 +447,7 @@ const inAllowlist = (url: string) =>
    })
    ?.split(/\n+/g)
    .map((r) => r.replace(/\r+/g, '')) ?? []
- ).includes(new URL(url).origin);
+ ).includes(cleanURL(new URL(url).origin).replace('https://', ''));
 
 const inDenylist = (url: string) =>
  (
@@ -457,7 +457,7 @@ const inDenylist = (url: string) =>
    })
    ?.split(/\n+/g)
    .map((r) => r.replace(/\r+/g, '')) ?? []
- ).includes(new URL(url).origin);
+ ).includes(cleanURL(new URL(url).origin).replace('https://', ''));
 
 const writeAllowlist = (url: string | undefined) => {
  if (!url) return;
