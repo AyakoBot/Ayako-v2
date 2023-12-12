@@ -19,5 +19,5 @@ export const guild = async (g: Discord.Guild) => {
  });
  if (!settings) return g.client.user.id;
 
- return token(settings.token as string);
+ return token(settings.token as string) ?? g.client.user.id;
 };

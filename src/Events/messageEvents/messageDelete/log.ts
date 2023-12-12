@@ -3,6 +3,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
+ if (msg.author?.id === (await ch.getBotIdFromGuild(msg.guild))) return;
  if (!msg.author) return;
 
  const channels = await ch.getLogChannels('messageevents', msg.guild);

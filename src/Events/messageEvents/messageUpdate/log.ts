@@ -4,6 +4,7 @@ import type CT from '../../../Typings/CustomTypings.js';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  if (!msg.inGuild()) return;
+ if (msg.author?.id === (await ch.getBotIdFromGuild(msg.guild))) return;
 
  const channels = await ch.getLogChannels('messageevents', msg.guild);
  if (!channels) return;
