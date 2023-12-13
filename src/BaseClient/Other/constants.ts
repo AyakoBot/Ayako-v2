@@ -519,6 +519,13 @@ export default {
     buttons: ['pat', 'woof', 'nya'],
    },
    {
+    name: 'pet',
+    desc: 'Headpat time~!',
+    users: true,
+    reqUser: true,
+    buttons: ['blush', 'happy', 'pout'],
+   },
+   {
     name: 'pat',
     desc: 'Headpat time~!',
     users: true,

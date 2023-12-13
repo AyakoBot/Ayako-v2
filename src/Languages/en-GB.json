@@ -1600,6 +1600,11 @@
     "request": "wants to mwah you~! >~<",
     "buttons": ["Mwah them~", "Bonk em"]
    },
+   "pet": {
+    "self": "pats themself, what an odd thing to do",
+    "others": "pats",
+    "buttons": ["Blush~ #~#", "Enjoy the pats <3", "Pout >~>"]
+   },
    "pat": {
     "self": "pats themself, what an odd thing to do",
     "others": "pats",
