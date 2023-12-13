@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../Typings/CustomTypings';
 
 export const GuildTextChannelTypes = [
  Discord.ChannelType.AnnouncementThread,
@@ -220,15 +221,16 @@ export default {
   tempBanAdd: 'danger',
   tempChannelBanAdd: 'danger',
   channelBanAdd: 'danger',
-  channelBanRemove: 'danger',
+  channelBanRemove: 'success',
   banRemove: 'success',
   kickAdd: 'danger',
   roleAdd: 'success',
   roleRemove: 'danger',
   muteRemove: 'danger',
-  tempMuteAdd: 'danger',
+  tempMuteAdd: 'success',
   warnAdd: 'danger',
- } as Record<string, keyof typeof colors>,
+  strikeAdd: 'danger',
+ } as Record<CT.ModTypes, keyof typeof colors>,
  colors,
  standard: {
   dmLogChannelID: '825297763822469140',

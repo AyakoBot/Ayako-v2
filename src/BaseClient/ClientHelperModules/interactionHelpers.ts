@@ -156,7 +156,9 @@ const reply = async (
    payload.embeds?.push(data);
   });
 
-  const newUsers = cmd.customId.split('_').filter((u) => u !== author.id && u !== 'everyone');
+  const newUsers = cmd.customId
+   .split('_')
+   .filter((u) => String(encodeString2BigInt(u, 36)) !== author.id && u !== 'everyone');
   newUsers.shift();
 
   const lastUser = newUsers.length > 1 ? newUsers.pop() : undefined;

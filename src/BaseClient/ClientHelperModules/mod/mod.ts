@@ -720,7 +720,7 @@ const mod = {
     return mod.kickAdd(options, language, message, cmd);
    case 'tempmute':
     return mod.tempMuteAdd(
-     { ...options, duration: Number(strike.duration) * 1000 },
+     { ...options, duration: Number(strike.duration) },
      language,
      message,
      cmd,

@@ -88,6 +88,7 @@ async function f(
    id as string,
    options.ident as Parameters<typeof getWithType>[1],
    options.includeTemp ?? false,
+   options.guildid as string,
   ) as ReturnType<typeof f>;
  }
 
@@ -184,55 +185,56 @@ const getWithType = (
  id: string,
  type: 'warn' | 'mute' | 'ban' | 'channelban' | 'kick',
  includeTemp: boolean,
+ guildid: string,
 ) => {
  switch (type) {
   case 'warn': {
    return DataBase.punish_warns
-    .findMany({ where: { userid: id } })
+    .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: 'punish_warns' })));
   }
   case 'mute': {
    const perm = DataBase.punish_mutes
-    .findMany({ where: { userid: id } })
+    .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: 'punish_mutes' })));
    return includeTemp
     ? Promise.all([
        perm,
        DataBase.punish_tempmutes
-        .findMany({ where: { userid: id } })
+        .findMany({ where: { userid: id, guildid } })
         .then((r) => r.map((p) => ({ ...p, type: 'punish_tempmutes' }))),
       ]).then((r) => r.flat())
     : perm;
   }
   case 'ban': {
    const perm = DataBase.punish_bans
-    .findMany({ where: { userid: id } })
+    .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: 'punish_bans' })));
    return includeTemp
     ? Promise.all([
        perm,
        DataBase.punish_tempbans
-        .findMany({ where: { userid: id } })
+        .findMany({ where: { userid: id, guildid } })
         .then((r) => r.map((p) => ({ ...p, type: 'punish_tempbans' }))),
       ]).then((r) => r.flat())
     : perm;
   }
   case 'channelban': {
    const perm = DataBase.punish_channelbans
-    .findMany({ where: { userid: id } })
+    .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: 'punish_channelbans' })));
    return includeTemp
     ? Promise.all([
        perm,
        DataBase.punish_tempchannelbans
-        .findMany({ where: { userid: id } })
+        .findMany({ where: { userid: id, guildid } })
         .then((r) => r.map((p) => ({ ...p, type: 'punish_tempchannelbans' }))),
       ]).then((r) => r.flat())
     : perm;
   }
   case 'kick': {
    return DataBase.punish_kicks
-    .findMany({ where: { userid: id } })
+    .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: 'punish_kicks' })));
   }
   default: {
