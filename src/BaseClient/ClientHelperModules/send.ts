@@ -21,7 +21,6 @@ async function send(
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
-
 async function send(
  channels: Discord.TextBasedChannel,
  payload: CT.UsualMessagePayload,

@@ -220,7 +220,7 @@ const reply = async (
    (await isDeleteable(realCmd as Discord.Message<true>)) &&
    cmd.type !== Discord.MessageType.UserJoin
   ) {
-   request.channels.deleteMessage(realCmd as Discord.Message<true>);
+   await request.channels.deleteMessage(realCmd as Discord.Message<true>);
   }
   const content = String(payload.content);
   delete payload.content;
