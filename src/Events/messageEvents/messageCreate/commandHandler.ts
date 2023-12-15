@@ -129,7 +129,7 @@ const getComand = async (commandName: string) => {
 
  log(commandName);
 
- return (await import(path)) as CT.Command;
+ return (await import(path)) as CT.Command<boolean>;
 };
 
 export const checkCommandPermissions = (
@@ -198,7 +198,7 @@ export const checkCommandPermissions = (
 const checkCommandIsEnabled = async (
  msg: Discord.Message<true>,
  commandName: string,
- command: CT.Command,
+ command: CT.Command<boolean>,
 ) => {
  const slashCommand =
   ch.cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??

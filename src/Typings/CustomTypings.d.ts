@@ -4,16 +4,16 @@ import type * as ch from '../BaseClient/ClientHelper.js';
 
 export type Language = import('../BaseClient/Other/language.js').default;
 
-export interface Command {
+export interface Command<T extends boolean | undefined> {
  takesFirstArg: boolean;
  thisGuildOnly: string[];
  dmOnly: boolean;
- dmAllowed: boolean;
+ dmAllowed: T;
  type: 'mod' | 'other' | 'owner';
  requiresSlashCommand: boolean;
  default: (
-  msg: Discord.Message,
-  args?: string[],
+  msg: Discord.Message<T extends true ? false : true>,
+  args: string[],
   {
    language,
    command,

@@ -88,6 +88,9 @@ import getUserFromUserAndUsernameOptions from './ClientHelperModules/getUserFrom
 import encodeString2BigInt from './ClientHelperModules/encodeString2BigInt.js';
 import isKickable from './ClientHelperModules/isKickable.js';
 import isBannable from './ClientHelperModules/isBannable.js';
+import getReferenceMessage from './ClientHelperModules/getReferenceMessage.js';
+import getTarget from './ClientHelperModules/getTarget.js';
+import getTargetChannel from './ClientHelperModules/getTargetChannel.js';
 
 const mainID = '650691698409734151';
 type CQ = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -96,6 +99,9 @@ const channelQueue: CQ = new Map();
 const channelTimeout: CT = new Map();
 
 export {
+ getTargetChannel,
+ getTarget,
+ getReferenceMessage,
  isBannable,
  isKickable,
  encodeString2BigInt,

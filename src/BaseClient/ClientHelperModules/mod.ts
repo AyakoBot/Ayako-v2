@@ -48,6 +48,7 @@ export default async <T extends CT.ModTypes>(
   return;
  }
  const { message, language } = basicsResponse;
+ if (!options.reason.length) options.reason = language.t.noReasonProvided;
 
  const runAction = async () => {
   switch (type) {
