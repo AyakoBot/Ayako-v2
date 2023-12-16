@@ -1,3 +1,4 @@
+import * as stringSimilarity from 'string-similarity';
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
@@ -23,7 +24,8 @@ const dmCommand = async (msg: Discord.Message) => {
   .trim()
   .split(/\s+|\n+/g);
 
- const command = await getComand(args.shift()?.toLowerCase() as string);
+ const commandName = args.shift()?.toLowerCase() as string;
+ const command = await getComand(commandName);
  if (!command) return;
  if (!command.dmAllowed) return;
 
@@ -44,7 +46,40 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (!commandName) return;
 
  const command = await getComand(commandName);
- if (!command) return;
+ if (!command) {
+  const allSlashCommands = (await glob(`${process.cwd()}/Commands/SlashCommands/**/*`))
+   .filter((f) => f.endsWith('.js') && !f.endsWith('.map.js'))
+   .map((f) => f.replace(`${process.cwd()}/Commands/SlashCommands/`, '').replace('.js', ''))
+   .filter((f) => !f.includes('/'));
+
+  const slashCommand = await getSlashCommand(
+   msg.guild,
+   stringSimilarity.findBestMatch(commandName, allSlashCommands).bestMatch.target,
+  );
+  if (!slashCommand) return;
+
+  const canUse = checkCommandPermissions(msg, commandName);
+  if (!canUse) {
+   const reaction = await ch.request.channels.addReaction(
+    msg,
+    ch.constants.standard.getEmoteIdentifier(ch.emotes.cross),
+   );
+
+   if (typeof reaction !== 'undefined') ch.error(msg.guild, new Error(reaction.message));
+   return;
+  }
+
+  const language = await ch.getLanguage(msg.author.id);
+  const embed: Discord.APIEmbed = {
+   description: language.slashCommands.useSlashCommands(
+    `</${slashCommand.name}:${slashCommand.id}>`,
+   ),
+   color: ch.constants.colors.ephemeral,
+  };
+
+  ch.replyMsg(msg, { embeds: [embed] });
+  return;
+ }
 
  if (command.thisGuildOnly?.length && command.thisGuildOnly?.includes(msg.guildId)) return;
  if (command.type === 'owner' && msg.author.id !== auth.ownerID) return;
@@ -131,6 +166,9 @@ const getComand = async (commandName: string) => {
 
  return (await import(path)) as CT.Command<boolean>;
 };
+
+const getSlashCommand = (guild: Discord.Guild, commandName: string) =>
+ ch.getCustomCommand(guild, commandName as Parameters<typeof ch.getCustomCommand>[1]);
 
 export const checkCommandPermissions = (
  msg: {

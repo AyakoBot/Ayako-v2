@@ -1358,6 +1358,7 @@
   "antirad": "{{t.botName}} Anti-Raid"
  },
  "slashCommands": {
+  "useSlashCommands": "Unknown Command. Did you mean {{c}}?",
   "setLevel": {
    "reset": "Reset",
    "save": "Save and Apply",
@@ -1380,8 +1381,8 @@
    "areYouSure2": "Are you sure you want to reset all Levels?\n**This cannot be un-done!**",
    "all": "All Levels have been reset",
    "areYouSure": "Are you sure you want to reset all Levels?\n**This cannot be un-done!**\n__Notice__: This will not un-assign Level-Roles\n\nThe Buttons will unlock {{t}}",
-   "confirmUser": "Confirm Reset of Levels of\n{{t.languageFunction.getUser(user)}}",
-   "confirmRole": "Confirm Reset of Levels of all {{amount}} Members in\n{{t.languageFunction.getRole(role)}}",
+   "confirmUser": "Confirm Reset of Levels of\n{{user}}",
+   "confirmRole": "Confirm Reset of Levels of all {{amount}} Members in\n{{role}}",
    "user": "The Levels of\n{{user}}have been reset",
    "role": "The Levels of all {{amount}} Members in\n{{role)}}have been reset"
   },

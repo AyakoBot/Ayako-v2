@@ -52,4 +52,5 @@ export default (t: CT.Language) => ({
  info: info(t),
  settings: settings(t),
  giveaway: giveaway(t),
+ useSlashCommands: (c: string) => t.stp(t.JSON.slashCommands.useSlashCommands, { c }),
 });
