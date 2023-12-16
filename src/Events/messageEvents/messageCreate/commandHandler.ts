@@ -77,7 +77,27 @@ const guildCommand = async (msg: Discord.Message<true>) => {
    color: ch.constants.colors.ephemeral,
   };
 
-  ch.replyMsg(msg, { embeds: [embed] });
+  const reply = await ch.replyMsg(msg, {
+   embeds: [embed],
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [
+      {
+       type: Discord.ComponentType.Button,
+       emoji: ch.emotes.crossWithBackground,
+       style: Discord.ButtonStyle.Secondary,
+       custom_id: 'dismiss',
+      },
+     ],
+    },
+   ],
+  });
+  if (!reply) return;
+
+  Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+   if (reply && (await ch.isDeleteable(reply))) ch.request.channels.deleteMessage(reply);
+  });
   return;
  }
 
