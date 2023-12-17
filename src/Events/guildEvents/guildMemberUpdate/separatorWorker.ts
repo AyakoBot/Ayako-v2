@@ -1,5 +1,5 @@
 import { parentPort, workerData } from 'worker_threads';
-import jobs from 'node-schedule';
+import Jobs from 'node-schedule';
 import Prisma from '@prisma/client';
 
 type PassObject = {
@@ -22,90 +22,75 @@ type PassObject = {
  clientHighestRole: { id: string; position: number };
 };
 
-start(workerData);
-
-async function start(wd: { obj: PassObject; res: Prisma.roleseparator[] }) {
+const start = async (wd: { obj: PassObject; res: Prisma.roleseparator[] }) => {
  const { res, obj } = wd;
  const membersWithRoles: PassObject['members'] = [];
 
- const resolved = await new Promise((resolve) => {
-  obj.members.forEach((member, indexMember) => {
-   const giveThese: string[] = [];
-   const takeThese: string[] = [];
-   res.forEach(async (row) => {
-    const sep = obj.separators.find((s) => s.separator.id === row.separator)?.separator;
-    if (!sep) return;
-    if (row.isvarying) {
-     const affectedRoles: ({ id: string; position: number } | undefined)[] = [];
-     const roles = obj.roles.map((o) => o);
-     const stoprole = row.stoprole
-      ? obj.separators.find((s) => s.separator.id === row.separator)?.stoprole
-      : null;
+ obj.members.forEach((member) => {
+  const giveThese: string[] = [];
+  const takeThese: string[] = [];
+  const memberRoleIds = new Set(member.roles.map((o) => o.id));
 
-     if (row.stoprole && stoprole) {
-      if (sep.position > stoprole.position) {
-       for (let i = stoprole.position + 1; i < roles.length && i < sep.position; i += 1) {
-        affectedRoles.push(obj.roles.find((r) => r.position === i));
-       }
-      } else {
-       for (let i = sep.position + 1; i < roles.length && i < stoprole.position; i += 1) {
-        affectedRoles.push(obj.roles.find((r) => r.position === i));
-       }
+  res.forEach((row) => {
+   const sep = obj.separators.find((s) => s.separator.id === row.separator)?.separator;
+   if (!sep) return;
+
+   if (row.isvarying) {
+    const roles = obj.roles.map((o) => o);
+    const affectedRoles: ({ id: string; position: number } | undefined)[] = [];
+    const stoprole = row.stoprole
+     ? obj.separators.find((s) => s.separator.id === row.separator)?.stoprole
+     : null;
+
+    if (row.stoprole && stoprole) {
+     if (sep.position > stoprole.position) {
+      for (let i = stoprole.position + 1; i < roles.length && i < sep.position; i += 1) {
+       affectedRoles.push(obj.roles.find((r) => r.position === i));
       }
-     } else if (sep.position < obj.highestRole.position) {
-      for (let i = sep.position + 1; i < roles.length && i < obj.highestRole.position; i += 1) {
+     } else {
+      for (let i = sep.position + 1; i < roles.length && i < stoprole.position; i += 1) {
        affectedRoles.push(obj.roles.find((r) => r.position === i));
       }
      }
-     const has: boolean[] = [];
-     affectedRoles.forEach((role) => {
-      if (role) {
-       if (member.roles.map((o) => o.id).includes(role.id)) has.push(true);
-       else has.push(false);
-      }
-     });
-     if (
-      has.includes(true) &&
-      !member.roles.map((o) => o.id).includes(sep.id) &&
-      obj.clientHighestRole.position > sep.position
-     ) {
-      giveThese.push(sep.id);
-     } else if (
-      !has.includes(true) &&
-      member.roles.map((o) => o.id).includes(sep.id) &&
-      obj.clientHighestRole.position > sep.position
-     ) {
-      takeThese.push(sep.id);
-     }
-    } else {
-     const has: boolean[] = [];
-     row.roles?.forEach((role) => {
-      if (member.roles.map((o) => o.id).includes(role)) has.push(true);
-      else has.push(false);
-     });
-     if (
-      has.includes(true) &&
-      !member.roles.map((o) => o.id).includes(sep.id) &&
-      obj.clientHighestRole.position > sep.position
-     ) {
-      giveThese.push(sep.id);
-     } else if (
-      !has.includes(true) &&
-      member.roles.map((o) => o.id).includes(sep.id) &&
-      obj.clientHighestRole.position > sep.position
-     ) {
-      takeThese.push(sep.id);
+    } else if (sep.position < obj.highestRole.position) {
+     for (let i = sep.position + 1; i < roles.length && i < obj.highestRole.position; i += 1) {
+      affectedRoles.push(obj.roles.find((r) => r.position === i));
      }
     }
-   });
-   if (giveThese.length) member.giveTheseRoles = giveThese;
-   if (takeThese.length) member.takeTheseRoles = takeThese;
-   if (takeThese.length || giveThese.length) membersWithRoles.push(member);
-   if (indexMember === obj.members.length - 1) resolve(true);
+
+    const hasRole = affectedRoles.some((role) => role && memberRoleIds.has(role.id));
+    if (hasRole && !memberRoleIds.has(sep.id) && obj.clientHighestRole.position > sep.position) {
+     giveThese.push(sep.id);
+    } else if (
+     !hasRole &&
+     memberRoleIds.has(sep.id) &&
+     obj.clientHighestRole.position > sep.position
+    ) {
+     takeThese.push(sep.id);
+    }
+   } else {
+    const hasRole = row.roles?.some((role) => memberRoleIds.has(role));
+
+    if (hasRole && !memberRoleIds.has(sep.id) && obj.clientHighestRole.position > sep.position) {
+     giveThese.push(sep.id);
+    } else if (
+     !hasRole &&
+     memberRoleIds.has(sep.id) &&
+     obj.clientHighestRole.position > sep.position
+    ) {
+     takeThese.push(sep.id);
+    }
+   }
   });
+
+  if (giveThese.length) member.giveTheseRoles = giveThese;
+  if (takeThese.length) member.takeTheseRoles = takeThese;
+  if (takeThese.length || giveThese.length) membersWithRoles.push(member);
  });
 
- jobs.scheduleJob('*/1 * * * * *', () => {
-  if (resolved) parentPort?.postMessage(membersWithRoles);
+ Jobs.scheduleJob('*/1 * * * * *', () => {
+  parentPort?.postMessage(membersWithRoles);
  });
-}
+};
+
+start(workerData);
