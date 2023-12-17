@@ -15,8 +15,8 @@ export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimest
   const where = { where: { uniquetimestamp, guildid } };
 
   switch (tableName) {
-   // case 'appeal-questions':
-   //  return DataBase.appealquestions.delete(where);
+   case 'questions':
+    return DataBase.appealquestions.delete(where);
    case 'shop-items':
     return DataBase.shopitems.delete(where);
    case 'vote-rewards':

@@ -13,8 +13,8 @@ export default async (
    const where = { where: { uniquetimestamp } };
 
    switch (tableName) {
-    // case 'appeal-questions':
-    //  return DataBase.appealquestions.findUnique(where);
+    case 'questions':
+     return DataBase.appealquestions.findUnique(where);
     case 'shop-items':
      return DataBase.shopitems.findUnique(where);
     case 'vote-rewards':
@@ -94,8 +94,8 @@ export default async (
      return DataBase.nitrosettings.findUnique(where);
     case 'anti-raid':
      return DataBase.antiraid.findUnique(where);
-    // case 'appealsettings':
-    //  DataBase.appealsettings.findUnique(where);
+    case 'appeal-settings':
+     return DataBase.appealsettings.findUnique(where);
     default:
      throw new Error(`2 Unsupported Setting ${tableName}`);
    }

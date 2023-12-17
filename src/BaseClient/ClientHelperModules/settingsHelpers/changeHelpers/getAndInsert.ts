@@ -13,8 +13,8 @@ export default (
    const where = { where: { uniquetimestamp }, data: { [fieldName]: newSetting } };
 
    switch (tableName) {
-    // case 'appeal-questions':
-    //  return DataBase.appealquestions.update(where);
+    case 'questions':
+     return DataBase.appealquestions.update(where);
     case 'shop-items':
      return DataBase.shopitems.update(where);
     case 'vote-rewards':
@@ -94,8 +94,8 @@ export default (
      return DataBase.nitrosettings.update(where);
     case 'anti-raid':
      return DataBase.antiraid.update(where);
-    // case 'appealsettings':
-    //  DataBase.appealsettings.update(where);
+    case 'appeal-settings':
+     return DataBase.appealsettings.update(where);
     default:
      throw new Error(`4 Unsupported Setting ${String(tableName)}`);
    }

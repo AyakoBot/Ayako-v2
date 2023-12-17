@@ -2,7 +2,13 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import type CT from '../../../../Typings/CustomTypings.js';
 
-type Type = 'shoptype' | 'punishment' | 'language' | 'auto-punishment' | 'antiraid-punishment';
+type Type =
+ | 'shoptype'
+ | 'punishment'
+ | 'language'
+ | 'auto-punishment'
+ | 'antiraid-punishment'
+ | 'questions';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction,

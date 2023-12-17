@@ -57,6 +57,8 @@ export enum TableNamesPrismaTranslation {
  'role-rewards' = 'rolerewards',
  invites = 'invites',
  newlines = 'newlines',
+ 'questions' = 'appealquestions',
+ 'appeal-settings' = 'appealsettings',
 }
 
 const colors = {
@@ -629,7 +631,7 @@ export default {
    { name: 'nope', desc: "I'm outta here", users: true, reqUser: false, buttons: [] },
   ],
   settings: {
-   basicSettings: ['vote', 'leveling', 'nitro'],
+   basicSettings: ['vote', 'leveling', 'nitro', 'appeals'],
    types: {
     logchannels: {
      applicationevents: 'channels',
@@ -954,6 +956,16 @@ export default {
      channelid: 'voice',
      categoryid: 'category',
      deletetime: 'duration',
+    },
+    'appeal-settings': {
+     channelid: 'channel',
+     bluserid: 'users',
+    },
+    questions: {
+     question: 'string',
+     answertype: 'question-type',
+     required: 'boolean',
+     options: 'strings',
     },
    },
   },

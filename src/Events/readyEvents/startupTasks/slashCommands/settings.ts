@@ -16,6 +16,22 @@ export default new Discord.SlashCommandBuilder()
  .setDMPermission(false)
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
+   .setName('appeals')
+   .setDescription(`Everything about ${name}'s Appeals`)
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('basic')
+     .setDescription('Basic Settings for Appeals'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('questions')
+     .setDescription('The Questions of the Appeal-Form')
+     .addStringOption(IDSelector),
+   ),
+ )
+ .addSubcommandGroup(
+  new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('moderation')
    .setDescription(`Everything about ${name}'s Moderation`)
    .addSubcommand(

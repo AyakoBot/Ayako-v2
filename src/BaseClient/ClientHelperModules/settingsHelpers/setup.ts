@@ -15,8 +15,8 @@ export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimest
    const where = { data: { uniquetimestamp, guildid } };
 
    switch (tableName) {
-    // case 'appeal-questions':
-    //  return DataBase.appealquestions.create(where);
+    case 'questions':
+     return DataBase.appealquestions.create(where);
     case 'shop-items':
      return DataBase.shopitems.create(where);
     case 'vote-rewards':
@@ -96,8 +96,8 @@ export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimest
      return DataBase.nitrosettings.create(where);
     case 'anti-raid':
      return DataBase.antiraid.create(where);
-    // case 'appealsettings':
-    //  DataBase.appealsettings.create(where);
+    case 'appeal-settings':
+     return DataBase.appealsettings.create(where);
     default:
      throw new Error(`Unsupported Setting ${tableName}`);
    }

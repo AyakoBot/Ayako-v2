@@ -21,6 +21,7 @@ export default async (channel: Discord.GuildTextBasedChannel) =>
    return parsed;
   })
   .catch((e) => {
+   console.log(JSON.stringify(e));
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

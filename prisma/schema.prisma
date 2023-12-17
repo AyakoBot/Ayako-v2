@@ -42,7 +42,7 @@ enum AnswerType {
   boolean
   multiple_choice
   single_choice
-  justtext // TODO no answer
+  text
 }
 
 enum LevelType {
@@ -115,8 +115,9 @@ model appealquestions {
   question        String?     @db.Text
   answertype      AnswerType              @default(paragraph)
   required        Boolean     @db.Boolean @default(true)
+  options         String[]    @db.Text
 
-  @@id(guildid, map: "appealquestions_pkey")
+  @@id(uniquetimestamp, map: "appealquestions_pkey")
   @@index([guildid, uniquetimestamp])
 }
 

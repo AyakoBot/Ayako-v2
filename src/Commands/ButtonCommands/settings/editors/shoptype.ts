@@ -2,7 +2,13 @@ import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/CustomTypings.js';
 
-type Types = 'punishment' | 'shoptype' | 'language' | 'auto-punishment' | 'antiraid-punishment';
+type Types =
+ | 'punishment'
+ | 'shoptype'
+ | 'language'
+ | 'auto-punishment'
+ | 'antiraid-punishment'
+ | 'questions';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
  if (!cmd.inCachedGuild()) return;
@@ -116,6 +122,8 @@ export const getOptions = (type: Types, language: CT.Language) => {
    return language.shoptypes;
   case 'language':
    return language.languages;
+  case 'questions':
+   return language.answertypes;
   default:
    return [];
  }

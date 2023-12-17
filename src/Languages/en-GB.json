@@ -1106,6 +1106,15 @@
   "command": "Shop-Command",
   "message": "Shop-Message"
  },
+ "answertypes": {
+  "paragraph": "Paragraph",
+  "short": "Short",
+  "number": "Number",
+  "boolean": "Yes/No",
+  "multiple_choice": "Multiple Choice",
+  "single_choice": "Single Choice",
+  "text": "None"
+ },
  "commandTypes": {
   "slashCommands": "Slash-Commands",
   "textCommands": "Text-Commands"
@@ -2465,6 +2474,36 @@
       }
      }
     },
+    "questions": {
+     "name": "Appeal Questions",
+     "fields": {
+      "answertype": {
+       "name": "Answertype",
+       "desc": "The Type of the Answer"
+      },
+      "required": {
+       "name": "Required",
+       "desc": "Whether the Answer is required"
+      },
+      "question": {
+       "name": "Question",
+       "desc": "The Question"
+      },
+      "options": {
+       "name": "Options",
+       "desc": "The Options for Single-Choice and Multiple-Choice-Questions (split by #)"
+      }
+     }
+    },
+    "appeal-settings": {
+     "name": "Appeal Settings",
+     "fields": {
+      "channelid": {
+       "name": "Appeal Channel",
+       "desc": "The Channel to send Appeals to"
+      }
+     }
+    },
     "anti-spam": {
      "name": "Anti-Spam",
      "fields": {
@@ -3147,7 +3186,7 @@
       },
       "prefixes": {
        "name": "Prefixes",
-       "desc": "The Prefixes that will tell if the Message should be ignored"
+       "desc": "The Prefixes that will tell if the Message should be ignored (split by #)"
       },
       "minwords": {
        "name": "Minimum Amount of Words",

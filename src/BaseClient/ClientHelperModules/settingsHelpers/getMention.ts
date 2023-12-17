@@ -46,7 +46,8 @@ export default async (
    if (!cmd) return `\`${value}\``;
    return `</${cmd?.name}:${cmd?.id}>`;
   }
-
+  case 'questions':
+   return language.answertypes[value as keyof typeof language.answertypes];
   default:
    return value;
  }

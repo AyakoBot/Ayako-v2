@@ -63,6 +63,7 @@ export default class Language {
  punishments: typeof this.JSON.punishments;
  punishmentDuration: typeof this.JSON.punishmentDuration;
  shoptypes: typeof this.JSON.shoptypes;
+ answertypes: typeof this.JSON.answertypes;
  commandTypes: typeof this.JSON.commandTypes;
  languages: typeof this.JSON.languages;
  features: typeof this.JSON.features;
@@ -110,6 +111,7 @@ export default class Language {
   this.punishments = this.JSON.punishments;
   this.punishmentDuration = this.JSON.punishmentDuration;
   this.shoptypes = this.JSON.shoptypes;
+  this.answertypes = this.JSON.answertypes;
   this.commandTypes = this.JSON.commandTypes;
   this.languages = this.JSON.languages;
   this.features = this.JSON.features;
@@ -139,24 +141,3 @@ export default class Language {
   this.auditLogAction = auditLogAction(this);
  }
 }
-
-// 'appeal-questions': {
-//  name: 'Appeal Questions',
-//  fields: {
-//   // TODO
-//   yes: {
-//    name: 'to',
-//    desc: 'do',
-//   },
-//  },
-// },
-// appealsettings: {
-//  name: 'Appeals',
-//  fields: {
-//   // TODO
-//   yes: {
-//    name: 'to',
-//    desc: 'do',
-//   },
-//  },
-// },

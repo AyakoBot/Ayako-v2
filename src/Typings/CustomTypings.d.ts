@@ -83,6 +83,8 @@ export type TableNamesMap = {
  invites: Prisma.invites;
  newlines: Prisma.newlines;
  'voice-hubs': Prisma.voicehubs;
+ 'appeal-settings': Prisma.appealsettings;
+ questions: Prisma.appealquestions;
 };
 
 export interface AutoCompleteFile {
@@ -328,7 +330,8 @@ export type MentionTypes =
  | 'automodrules'
  | 'shoptype'
  | 'auto-punishment'
- | 'antiraid-punishment';
+ | 'antiraid-punishment'
+ | 'questions';
 
 export type HelpCommand =
  | {
