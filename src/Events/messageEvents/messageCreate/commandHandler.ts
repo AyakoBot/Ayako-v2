@@ -75,6 +75,8 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
   const language = await ch.getLanguage(msg.author.id);
   const matchingCommands = ch.constants.standard.getCommand(slashCommand);
+  if (!matchingCommands.length) return;
+
   const embed: Discord.APIEmbed = {
    description: language.slashCommands.useSlashCommands(
     matchingCommands.length > 1 ? `\n${matchingCommands.join('\n')}` : matchingCommands.join('\n'),
