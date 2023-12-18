@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Creates an invite for a guild-based channel.
  * @param channel - The guild-based channel to create the invite for.
@@ -15,11 +18,30 @@ export default async (
  channel: Discord.GuildBasedChannel,
  body: Discord.RESTPostAPIChannelInviteJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(channel.guild.id) ?? API).channels
+) => {
+ if (!canCreateInvite(channel, await getBotMemberFromGuild(channel.guild))) {
+  const e = requestHandlerError(`Cannot create invite in ${channel.name} / ${channel.id}`, [
+   Discord.PermissionFlagsBits.CreateInstantInvite,
+  ]);
+
+  error(channel.guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(channel.guild.id) ?? API).channels
   .createInvite(channel.id, body, { reason })
   .then((i) => new Classes.Invite(channel.client, i))
   .catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given user has permission to create an invite in the specified channel.
+ * @param channel - The guild-based channel to check.
+ * @param me - The guild member representing the user.
+ * @returns A boolean indicating whether the user can create an invite in the channel.
+ */
+export const canCreateInvite = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
+ me.permissionsIn(channel).has(Discord.PermissionFlagsBits.CreateInstantInvite);

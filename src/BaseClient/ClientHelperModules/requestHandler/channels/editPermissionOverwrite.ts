@@ -24,3 +24,14 @@ export default async (
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+
+export const canEditPermissionOverwrite = (
+ channel: Discord.GuildBasedChannel,
+ body: Discord.RESTPutAPIChannelPermissionJSONBody,
+ overwriteId: string,
+ me: Discord.GuildMember,
+) =>
+ me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageRoles) &&
+ (overwriteId === me.id
+  ? me.permissionsIn(channel).has(body.allow ? BigInt(body.allow) : 0n)
+  : true);

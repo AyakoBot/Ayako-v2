@@ -1,9 +1,7 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Client.js';
-import cache from '../../cache.js';
-import * as Classes from '../../../Other/classes.js';
+
+import sendMessage from './sendMessage.js';
 
 /**
  * Sends a reply message to a Discord channel.
@@ -15,17 +13,17 @@ export default async (
  message: Discord.Message<true>,
  payload: Parameters<DiscordCore.ChannelsAPI['createMessage']>[1],
 ) =>
- (cache.apis.get(message.guild.id) ?? API).channels
-  .createMessage(message.channel.id, {
+ sendMessage(
+  message.guild,
+  message.channelId,
+  {
    ...payload,
    message_reference: {
     message_id: message.id,
     channel_id: message.channelId,
     guild_id: message.guildId,
+    fail_if_not_exists: false,
    },
-  })
-  .then((m) => new Classes.Message(message.client, m))
-  .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+  },
+  message.client,
+ );

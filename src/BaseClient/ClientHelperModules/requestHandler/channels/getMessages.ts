@@ -4,6 +4,10 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import { canGetMessage } from './getMessage.js';
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Retrieves messages from a guild text-based channel.
  * @param channel - The guild text-based channel to retrieve messages from.
@@ -13,8 +17,21 @@ import * as Classes from '../../../Other/classes.js';
 export default async (
  channel: Discord.GuildTextBasedChannel,
  query?: Discord.RESTGetAPIChannelMessagesQuery,
-) =>
- (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+) => {
+ if (!canGetMessage(channel, await getBotMemberFromGuild(channel.guild))) {
+  const e = requestHandlerError(`Cannot get messages in ${channel.name} / ${channel.id}`, [
+   Discord.PermissionFlagsBits.ViewChannel,
+   Discord.PermissionFlagsBits.ReadMessageHistory,
+   ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(channel.type)
+    ? [Discord.PermissionFlagsBits.Connect]
+    : []),
+  ]);
+
+  error(channel.guild, e);
+  return e;
+ }
+
+ return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
   .getMessages(channel.id, query)
   .then((msgs) => {
    const parsed = msgs.map((m) => new Classes.Message(channel.client, m));
@@ -28,3 +45,4 @@ export default async (
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Retrieves a list of archived threads in a channel.
  * @param channel - The channel to retrieve archived threads from.
@@ -15,8 +18,20 @@ export default async (
  channel: Discord.NewsChannel | Discord.TextChannel | Discord.ForumChannel,
  status: 'private' | 'public',
  query: Discord.RESTGetAPIChannelThreadsArchivedQuery,
-) =>
- (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+) => {
+ if (!canGetArchivedThreads(channel, status, await getBotMemberFromGuild(channel.guild))) {
+  const e = requestHandlerError(
+   `Cannot get archived threads in ${channel.name} / ${channel.id}`,
+   status === 'private'
+    ? [Discord.PermissionFlagsBits.ManageThreads, Discord.PermissionFlagsBits.ReadMessageHistory]
+    : [],
+  );
+
+  error(channel.guild, e);
+  return e;
+ }
+
+ return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
   .getArchivedThreads(channel.id, status, query)
   .then((res) => {
    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
@@ -33,3 +48,21 @@ export default async (
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Determines whether the current user can get archived threads in a channel.
+ * @param channel - The channel in which the archived threads are being accessed.
+ * @param status - The status of the archived threads ('private' or 'public').
+ * @param me - The guild member representing the current user.
+ * @returns A boolean value indicating whether the current user can get archived threads.
+ */
+export const canGetArchivedThreads = (
+ channel: Discord.NewsChannel | Discord.TextChannel | Discord.ForumChannel,
+ status: 'private' | 'public',
+ me: Discord.GuildMember,
+) =>
+ status === 'private'
+  ? me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageThreads) &&
+    me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ReadMessageHistory)
+  : true;

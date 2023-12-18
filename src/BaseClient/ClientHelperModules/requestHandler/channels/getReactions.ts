@@ -4,6 +4,10 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import { canGetMessage } from './getMessage.js';
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Retrieves a list of users who reacted with a specific emoji to a message.
  * @param message The message to retrieve reactions from.
@@ -16,8 +20,25 @@ export default async (
  emoji: string,
  query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,
 ) => {
- const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
+ if (!canGetMessage(message.channel, await getBotMemberFromGuild(message.guild))) {
+  const e = requestHandlerError(
+   `Cannot get reactions of emoji ${emoji} in ${message.guild.name} / ${message.guild.id}`,
+   [
+    Discord.PermissionFlagsBits.ViewChannel,
+    Discord.PermissionFlagsBits.ReadMessageHistory,
+    ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(
+     message.channel.type,
+    )
+     ? [Discord.PermissionFlagsBits.Connect]
+     : []),
+   ],
+  );
 
+  error(message.guild, e);
+  return e;
+ }
+
+ const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(
    Discord.DiscordjsErrorCodes.EmojiType,

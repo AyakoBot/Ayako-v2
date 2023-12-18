@@ -3,6 +3,9 @@ import error from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Deletes a user's reaction from a message.
  * @param message The message object from which the reaction is to be deleted.
@@ -11,6 +14,16 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted reaction, or rejects with an error.
  */
 export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
+ if (!canDeleteUserReaction(message.channel, await getBotMemberFromGuild(message.guild))) {
+  const e = requestHandlerError(
+   `Cannot delete user reaction in ${message.guild.name} / ${message.guild.id}`,
+   [Discord.PermissionFlagsBits.ManageMessages],
+  );
+
+  error(message.guild, e);
+  return e;
+ }
+
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(
@@ -34,3 +47,8 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
    return e as Discord.DiscordAPIError;
   });
 };
+
+export const canDeleteUserReaction = (
+ channel: Discord.GuildBasedChannel,
+ me: Discord.GuildMember,
+) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageMessages);

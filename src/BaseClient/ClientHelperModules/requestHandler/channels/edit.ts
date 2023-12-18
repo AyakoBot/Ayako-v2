@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a guild-based channel or thread channel.
  * @param channel - The channel to edit.
@@ -11,13 +14,53 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the updated channel, or rejects with a DiscordAPIError.
  */
 export default async (
- channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
+ channel: Discord.GuildBasedChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
-) =>
- (cache.apis.get(channel.guild.id) ?? API).channels
+) => {
+ if (!canEdit(channel, body, await getBotMemberFromGuild(channel.guild))) {
+  const e = requestHandlerError(`Cannot edit channel ${channel.name} / ${channel.id}`, [
+   [Discord.ChannelType.PrivateThread, Discord.ChannelType.PublicThread].includes(channel.type)
+    ? Discord.PermissionFlagsBits.ManageThreads
+    : Discord.PermissionFlagsBits.ManageChannels,
+  ]);
+
+  error(channel.guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(channel.guild.id) ?? API).channels
   .edit(channel.id, body)
   .then((c) => Classes.Channel(channel.client, c, channel.guild))
   .catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the user has permission to edit a channel.
+ * @param channel - The guild-based channel to be edited.
+ * @param body - The JSON body containing the channel edits.
+ * @param me - The guild member representing the user.
+ * @returns A boolean indicating whether the user can edit the channel.
+ */
+export const canEdit = (
+ channel: Discord.GuildBasedChannel,
+ body: Discord.RESTPatchAPIChannelJSONBody,
+ me: Discord.GuildMember,
+) =>
+ me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels) &&
+ (body.permission_overwrites
+  ? me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageRoles) &&
+    body.permission_overwrites.every(
+     (overwrite) =>
+      me
+       .permissionsIn(channel)
+       .has(
+        new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
+       ) &&
+      me
+       .permissionsIn(channel)
+       .has(new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield),
+    )
+  : true);
