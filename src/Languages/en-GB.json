@@ -1367,7 +1367,7 @@
   "antirad": "{{t.botName}} Anti-Raid"
  },
  "slashCommands": {
-  "useSlashCommands": "Unknown Command. Did you mean {{c}}?",
+  "useSlashCommands": "Unknown Command. Did you mean {{c}}",
   "setLevel": {
    "reset": "Reset",
    "save": "Save and Apply",
@@ -1725,12 +1725,6 @@
     "self": "sleeps on their own lap, it seems they are quite agile",
     "others": ["lets", "sleep on their lap"],
     "request": "wants to sleep on your lap!",
-    "buttons": ["Get comfy~"]
-   },
-   "thighsleep": {
-    "self": "sleeps on their own thighs, it seems they are quite agile",
-    "others": ["lets", "sleep on their thighs"],
-    "request": "wants to sleep on your thighs!",
     "buttons": ["Get comfy~"]
    },
    "think": {

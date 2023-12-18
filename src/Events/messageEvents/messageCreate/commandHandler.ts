@@ -49,13 +49,17 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (!command) {
   const allSlashCommands = (await glob(`${process.cwd()}/Commands/SlashCommands/**/*`))
    .filter((f) => f.endsWith('.js') && !f.endsWith('.map.js'))
-   .map((f) => f.replace(`${process.cwd()}/Commands/SlashCommands/`, '').replace('.js', ''))
-   .filter((f) => !f.includes('/'));
+   .map((f) =>
+    f
+     .replace(`${process.cwd()}/Commands/SlashCommands/`, '')
+     .replace('.js', '')
+     .replace(/\/.*/g, ''),
+   );
 
-  const slashCommand = await getSlashCommand(
-   msg.guild,
-   stringSimilarity.findBestMatch(commandName, allSlashCommands).bestMatch.target,
-  );
+  const matchingName = stringSimilarity.findBestMatch(commandName, allSlashCommands).bestMatch
+   .target;
+
+  const slashCommand = await getSlashCommand(msg.guild, matchingName);
   if (!slashCommand) return;
 
   const canUse = checkCommandPermissions(msg, commandName);
@@ -70,9 +74,10 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   }
 
   const language = await ch.getLanguage(msg.author.id);
+  const matchingCommands = ch.constants.standard.getCommand(slashCommand);
   const embed: Discord.APIEmbed = {
    description: language.slashCommands.useSlashCommands(
-    `</${slashCommand.name}:${slashCommand.id}>`,
+    matchingCommands.length > 1 ? `\n${matchingCommands.join('\n')}` : matchingCommands.join('\n'),
    ),
    color: ch.constants.colors.ephemeral,
   };

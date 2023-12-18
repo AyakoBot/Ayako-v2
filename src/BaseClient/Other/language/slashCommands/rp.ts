@@ -24,7 +24,7 @@ export default (t: CT.Language) => ({
   },
   {
    name: t.JSON.slashCommands.rp.fields[1].name,
-   value: t.stp(t.JSON.slashCommands.rp.fields[1].value, { used }),
+   value: t.stp(t.JSON.slashCommands.rp.fields[1].value, { used: used || '0' }),
   },
  ],
  notice: (cmdId: string) =>

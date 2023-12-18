@@ -280,6 +280,26 @@ export default {
    `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
   getEmoteIdentifier: (e: { animated: boolean; name: string; id: string | null | undefined }) =>
    `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
+  getCommand: (cmd: Discord.ApplicationCommand<NonNullable<unknown>>) =>
+   cmd.options
+    .filter(
+     (o): o is Discord.ApplicationCommandSubGroup | Discord.ApplicationCommandSubCommand =>
+      o.type === Discord.ApplicationCommandOptionType.SubcommandGroup ||
+      o.type === Discord.ApplicationCommandOptionType.Subcommand,
+    )
+    .map((o) =>
+     o.type === Discord.ApplicationCommandOptionType.SubcommandGroup
+      ? o.options
+         ?.filter(
+          (o2): o2 is Discord.ApplicationCommandSubCommand =>
+           o2.type === Discord.ApplicationCommandOptionType.Subcommand,
+         )
+         .map((o2) => `${cmd.name} ${o.name} ${o2.name}`)
+      : `${cmd.name} ${o.name}`,
+    )
+    .filter((s): s is string[] => !!s)
+    .flat()
+    .map((c) => `</${c}:${cmd.id}>`),
  },
  customembeds: {
   type: {
@@ -593,14 +613,6 @@ export default {
     users: true,
     reqUser: true,
     buttons: ['lapsleep'],
-   },
-   {
-    aliasOf: 'lapsleep',
-    name: 'thighsleep',
-    desc: "Sleep on someone's lap",
-    users: true,
-    reqUser: true,
-    buttons: ['thighsleep'],
    },
    { name: 'think', desc: 'Think', users: true, reqUser: false, buttons: [] },
    {
