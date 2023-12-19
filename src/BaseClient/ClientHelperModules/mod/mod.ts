@@ -331,14 +331,19 @@ const mod = {
    return false;
   }
 
-  const res = await request.guilds.banUser(
-   options.guild,
-   options.target.id,
-   {
-    delete_message_seconds: options.deleteMessageSeconds,
-   },
-   options.reason,
-  );
+  const res = await (memberRes
+   ? request.guilds.banMember(
+      options.guild,
+      memberRes.targetMember,
+      { delete_message_seconds: options.deleteMessageSeconds },
+      options.reason,
+     )
+   : request.guilds.banUser(
+      options.guild,
+      options.target.id,
+      { delete_message_seconds: options.deleteMessageSeconds },
+      options.reason,
+     ));
 
   if (typeof res !== 'undefined' && 'message' in res) {
    err(cmd, res, language, message, options.guild);

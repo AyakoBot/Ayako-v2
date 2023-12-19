@@ -1,11 +1,9 @@
-import * as ch from '../../../../ClientHelper.js';
 import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories.basic,
  tokenSetDesc: t.stp(t.JSON.slashCommands.settings.categories.basic.tokenSetDesc, {
   t,
-  invite: ch.constants.standard.invite.replace('%20applications.commands', ''),
  }),
  fields: {
   ...t.JSON.slashCommands.settings.categories.basic.fields,

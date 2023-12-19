@@ -14,12 +14,12 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the updated channel, or rejects with a DiscordAPIError.
  */
 export default async (
- channel: Discord.GuildBasedChannel,
+ channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
 ) => {
  if (!canEdit(channel, body, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot edit channel ${channel.name} / ${channel.id}`, [
-   [Discord.ChannelType.PrivateThread, Discord.ChannelType.PublicThread].includes(channel.type)
+   channel.isThread()
     ? Discord.PermissionFlagsBits.ManageThreads
     : Discord.PermissionFlagsBits.ManageChannels,
   ]);
@@ -45,22 +45,35 @@ export default async (
  * @returns A boolean indicating whether the user can edit the channel.
  */
 export const canEdit = (
- channel: Discord.GuildBasedChannel,
+ channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
  me: Discord.GuildMember,
-) =>
- me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels) &&
- (body.permission_overwrites
-  ? me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageRoles) &&
-    body.permission_overwrites.every(
-     (overwrite) =>
-      me
-       .permissionsIn(channel)
-       .has(
-        new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
-       ) &&
-      me
-       .permissionsIn(channel)
-       .has(new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield),
-    )
-  : true);
+) => {
+ const parent = channel.isThread()
+  ? (channel.parent as
+     | Discord.ForumChannel
+     | Discord.MediaChannel
+     | Discord.TextChannel
+     | Discord.NewsChannel)
+  : (channel as Discord.GuildBasedChannel);
+
+ return (
+  me.permissionsIn(parent).has(Discord.PermissionFlagsBits.ManageChannels) &&
+  (body.permission_overwrites
+   ? me.permissionsIn(parent).has(Discord.PermissionFlagsBits.ManageRoles) &&
+     body.permission_overwrites.every(
+      (overwrite) =>
+       me
+        .permissionsIn(parent)
+        .has(
+         new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
+        ) &&
+       me
+        .permissionsIn(parent)
+        .has(
+         new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield,
+        ),
+     )
+   : true)
+ );
+};

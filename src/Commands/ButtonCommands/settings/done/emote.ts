@@ -30,7 +30,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   : undefined;
 
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
-  ch.request.channels.delete(cmd.guild, cmd.channelId);
+  ch.request.channels.delete(cmd.channel);
  }
 
  if (!lastMessage || 'message' in lastMessage) {

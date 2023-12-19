@@ -16,7 +16,11 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildBasedChannel) => {
  if (!isDeleteable(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot delete channel ${channel.name} / ${channel.id}`, [
-   [Discord.ChannelType.PrivateThread, Discord.ChannelType.PublicThread].includes(channel.type)
+   [
+    Discord.ChannelType.PrivateThread,
+    Discord.ChannelType.PublicThread,
+    Discord.ChannelType.AnnouncementThread,
+   ].includes(channel.type)
     ? Discord.PermissionFlagsBits.ManageThreads
     : Discord.PermissionFlagsBits.ManageChannels,
   ]);
@@ -40,6 +44,10 @@ export default async (channel: Discord.GuildBasedChannel) => {
  * @returns A boolean indicating whether the channel is deleteable.
  */
 export const isDeleteable = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
- [Discord.ChannelType.PrivateThread, Discord.ChannelType.PublicThread].includes(channel.type)
+ [
+  Discord.ChannelType.PrivateThread,
+  Discord.ChannelType.PublicThread,
+  Discord.ChannelType.AnnouncementThread,
+ ].includes(channel.type)
   ? me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageThreads)
   : me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels);

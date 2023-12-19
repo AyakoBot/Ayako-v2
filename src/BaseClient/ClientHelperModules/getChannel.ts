@@ -12,6 +12,18 @@ const getChannel = async (channelId: string) => {
 };
 
 /**
+ * Retrieves a thread channel by its ID.
+ * @param channelId The ID of the channel to retrieve.
+ * @returns The thread channel if found, otherwise undefined.
+ */
+export const threadChannel = async (channelId: string) => {
+ const channel = await getChannel(channelId);
+ if (!channel) return undefined;
+ if (!channel.isThread()) return undefined;
+ return channel;
+};
+
+/**
  * Returns a guild text channel with the given ID.
  * @param channelId - The ID of the channel to retrieve.
  * @returns The guild text channel with the given ID,
@@ -52,9 +64,9 @@ export const categoryChannel = async (channelId: string) => {
 };
 
 /**
- * Retrieves the parent channel of a given channel ID.
- * @param channelId The ID of the channel to retrieve the parent channel for.
- * @returns The parent channel of the given channel ID,
+ * Retrieves the channel as a parent channel of a given channel ID.
+ * @param channelId The ID of the channel to retrieve as parent channel.
+ * @returns The channel of the given channel ID,
  * or undefined if it does not exist or is not a valid parent channel type.
  */
 export const parentChannel = async (channelId: string) => {

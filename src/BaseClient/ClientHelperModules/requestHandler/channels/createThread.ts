@@ -22,7 +22,7 @@ export default async (
  if (!canCreateThread(channel, body, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(
    `Cannot create ${
-    body.type === Discord.ChannelType.PrivateThread ? 'private' : 'public'
+    body.type === Discord.ChannelType.PrivateThread ? 'private' : 'public / announcement'
    } threads in ${channel.name} / ${channel.id}`,
    [
     body.type === Discord.ChannelType.PublicThread

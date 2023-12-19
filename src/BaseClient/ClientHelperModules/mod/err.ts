@@ -8,7 +8,7 @@ import error from '../error.js';
 
 export default (
  cmd: ModTypes.CmdType,
- errs: Discord.DiscordAPIError,
+ errs: Discord.DiscordAPIError | Error,
  language: CT.Language,
  message: ModTypes.ResponseMessage,
  guild: Discord.Guild,

@@ -3407,7 +3407,7 @@
     },
     "basic": {
      "name": "Basic",
-     "tokenSetDesc": "**It appears you have a custom Bot-Token set**\nIf you want to get rid of double Slash-Commands, remove {{t.botName}} from your Server and Invite her back [using this Invite Link]({{invite}})\n__{{t.botName}} is required to run Custom-Bots__",
+     "tokenSetDesc": "**It appears you have a custom Bot-Token set**\n__{{t.botName}} is required to run Custom-Bots__",
      "fields": {
       "prefix": {
        "name": "Prefix",
@@ -3439,7 +3439,7 @@
       },
       "token": {
        "name": "Token",
-       "desc": "The Token of your Custom Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n __Please make sure you do the following AFTER you set your Token here__:\n - insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n - enable the `Public Bot` Switch under the `Bot` Section\n - enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n - invite your Bot to your Server using the provided Invite URL\n \n __Notice__\n If you are removing the Token from this Field and previously re-invited {{t.botName}} with the Link that removes her Slash-Commands, \n you will have to re-invite her using [this Invite Link]({{ch.constants.standard.invite})"
+       "desc": "The Token of your Custom Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n __Please make sure you do the following AFTER you set your Token here__:\n - insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section\n - enable the `Public Bot` Switch under the `Bot` Section\n - enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n - invite your Bot to your Server using the provided Invite URL"
       }
      }
     }

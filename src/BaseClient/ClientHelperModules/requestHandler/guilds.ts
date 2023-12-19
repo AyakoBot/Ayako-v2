@@ -66,6 +66,7 @@ import setChannelPositions from './guilds/setChannelPositions.js';
 import getActiveThreads from './guilds/getActiveThreads.js';
 import getMemberBan from './guilds/getMemberBan.js';
 import banUser from './guilds/banUser.js';
+import banMember from './guilds/banMember.js';
 import unbanUser from './guilds/unbanUser.js';
 import setRolePositions from './guilds/setRolePositions.js';
 
@@ -141,8 +142,7 @@ import setRolePositions from './guilds/setRolePositions.js';
  * @property {Function} getRoles
  * - Gets the roles for a guild.
  * @property {Function} createRole
- * -
- *  Creates a role for a guild.
+ * - Creates a role for a guild.
  * @property {Function} editRole
  * - Edits a role for a guild.
  * @property {Function} deleteRole
@@ -207,6 +207,8 @@ import setRolePositions from './guilds/setRolePositions.js';
  * - Gets the active threads in a guild.
  * @property {Function} getMemberBan
  * - Gets a ban for a member in a guild.
+ * @property {Function} banMember
+ * - Bans a member from a guild.
  * @property {Function} banUser
  * - Bans a user from a guild.
  * @property {Function} unbanUser
@@ -282,6 +284,7 @@ export default {
  setChannelPositions,
  getActiveThreads,
  getMemberBan,
+ banMember,
  banUser,
  unbanUser,
  setRolePositions,

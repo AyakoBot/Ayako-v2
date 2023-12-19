@@ -47,5 +47,5 @@ export const del = (channel: Discord.VoiceBasedChannel) => {
    where: { guildid_channelid: { guildid: channel.guild.id, channelid: channel.id } },
   })
   .then();
- ch.request.channels.delete(channel.guild, channel.id);
+ ch.request.channels.delete(channel);
 };
