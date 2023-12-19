@@ -42,8 +42,7 @@ const updateNickname = (reason: string, member: Discord.GuildMember | null) => {
  if (!member.nickname?.endsWith(' [AFK]')) return;
 
  ch.request.guilds.editMember(
-  member.guild,
-  member.id,
+  member,
   {
    nick: member.displayName.slice(0, member.displayName.length - 6),
   },

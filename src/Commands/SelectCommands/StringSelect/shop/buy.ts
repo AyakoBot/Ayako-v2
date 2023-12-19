@@ -77,8 +77,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
 
  if (!cmd.member.roles.cache.hasAll(...shopitem.roles)) {
   await ch.request.guilds.editMember(
-   cmd.guild,
-   cmd.user.id,
+   cmd.member,
    {
     roles: [...cmd.member.roles.cache.map((r) => r.id), ...shopitem.roles],
    },

@@ -83,8 +83,7 @@ const buy = async (
   .then();
 
  ch.request.guilds.editMember(
-  cmd.guild,
-  cmd.user.id,
+  cmd.member,
   {
    roles: [...cmd.member.roles.cache.map((r) => r.id), ...shopitem.roles],
   },
@@ -109,5 +108,5 @@ const equip = async (
    : language.slashCommands.roles.shop.equipt,
  });
 
- ch.request.guilds.editMember(cmd.guild, cmd.user.id, { roles }, language.autotypes.shop);
+ ch.request.guilds.editMember(cmd.member, { roles }, language.autotypes.shop);
 };

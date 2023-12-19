@@ -11,8 +11,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
 
  if (removeRoles.length) {
   await ch.request.guilds.editMember(
-   cmd.guild,
-   cmd.user.id,
+   cmd.member,
    {
     roles: cmd.member.roles.cache.map((r) => r.id).filter((r) => !removeRoles.includes(r)),
    },
@@ -22,8 +21,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
 
  if (giveRoles.length) {
   await ch.request.guilds.editMember(
-   cmd.guild,
-   cmd.user.id,
+   cmd.member,
    {
     roles: [...giveRoles, ...cmd.member.roles.cache.map((r) => r.id)],
    },

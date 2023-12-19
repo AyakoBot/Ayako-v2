@@ -42,7 +42,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
   ? cmd.member.roles.cache.map((r) => r.id).filter((r) => !shopitem.roles.includes(r))
   : [...cmd.member.roles.cache.map((r) => r.id), ...shopitem.roles];
 
- await ch.request.guilds.editMember(cmd.guild, cmd.user.id, { roles }, language.autotypes.shop);
+ await ch.request.guilds.editMember(cmd.member, { roles }, language.autotypes.shop);
 
  shopCmd(cmd);
 };

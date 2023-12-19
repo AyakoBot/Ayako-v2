@@ -68,8 +68,7 @@ const deleteNick = async (language: CT.Language, member?: Discord.GuildMember | 
  if (!ch.isManageable(member, me)) return;
 
  ch.request.guilds.editMember(
-  member.guild,
-  member.id,
+  member,
   {
    nick: member.displayName.slice(0, member.displayName.length - 6),
   },

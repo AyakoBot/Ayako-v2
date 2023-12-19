@@ -17,8 +17,7 @@ const mute = async (member: Discord.GuildMember) => {
  if (!activeMute) return;
 
  ch.request.guilds.editMember(
-  member.guild,
-  member.id,
+  member,
   {
    communication_disabled_until: new Date(
     Number(activeMute.uniquetimestamp) + Number(activeMute.duration) * 1000,
@@ -38,7 +37,7 @@ const unmute = async (member: Discord.GuildMember) => {
  );
  if (activeMute) return;
 
- ch.request.guilds.editMember(member.guild, member.id, {
+ ch.request.guilds.editMember(member, {
   communication_disabled_until: null,
  });
 };

@@ -3,6 +3,9 @@ import error from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Deletes a scheduled event for a guild.
  * @param guild - The guild where the event is scheduled.
@@ -10,10 +13,29 @@ import cache from '../../cache.js';
  * @param reason - The reason for deleting the scheduled event.
  * @returns A promise that resolves with the deleted event, or rejects with a DiscordAPIError.
  */
-export default async (guild: Discord.Guild, eventId: string, reason?: string) =>
- (cache.apis.get(guild.id) ?? API).guilds
+export default async (guild: Discord.Guild, eventId: string, reason?: string) => {
+ if (!canDeleteScheduledEvent(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(
+   `Cannot delete scheduled event ${eventId} in ${guild.name} / ${guild.id}`,
+   [Discord.PermissionFlagsBits.ManageEvents],
+  );
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .deleteScheduledEvent(guild.id, eventId, { reason })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has the necessary permissions to delete a scheduled event.
+ * @param me - The Discord guild member.
+ * @returns True if the guild member has the necessary permissions, false otherwise.
+ */
+export const canDeleteScheduledEvent = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageEvents);

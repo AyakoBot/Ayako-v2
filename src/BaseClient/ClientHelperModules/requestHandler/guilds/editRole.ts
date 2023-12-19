@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a role in a guild.
  * @param guild The guild where the role is located.
@@ -17,8 +20,17 @@ export default async (
  roleId: string,
  body: Discord.RESTPatchAPIGuildRoleJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canEditRole(await getBotMemberFromGuild(guild), roleId)) {
+  const e = requestHandlerError(`Cannot edit role ${roleId} in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageRoles,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .editRole(
    guild.id,
    roleId,
@@ -30,3 +42,14 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has permission to edit the specified role.
+ * @param me - The guild member performing the action.
+ * @param roleId - The role ID to be edited.
+ * @returns True if the guild member can edit the role, false otherwise.
+ */
+export const canEditRole = (me: Discord.GuildMember, roleId: string) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+ me.roles.highest.comparePositionTo(roleId) > 0;

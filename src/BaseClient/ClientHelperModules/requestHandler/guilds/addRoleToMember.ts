@@ -3,6 +3,9 @@ import error from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Adds a role to a member in a guild.
  * @param guild - The guild where the member is in.
@@ -12,10 +15,35 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated member object if successful,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) =>
- (cache.apis.get(guild.id) ?? API).guilds
+export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) => {
+ if (
+  !canAddRoleToMember(
+   guild.roles.cache.get(roleId) as Discord.Role,
+   await getBotMemberFromGuild(guild),
+  )
+ ) {
+  const e = requestHandlerError(`Cannot add role to member in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageRoles,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .addRoleToMember(guild.id, userId, roleId, { reason })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if a role can be added to a guild member.
+ * @param role - The role to be added.
+ * @param me - The guild member performing the action.
+ * @returns A boolean indicating whether the role can be added to the member.
+ */
+export const canAddRoleToMember = (role: Discord.Role, me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+ role.comparePositionTo(me.roles.highest) < 0;

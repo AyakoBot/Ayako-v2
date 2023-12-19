@@ -128,11 +128,12 @@ export const runPunishment = async (
     }
    }
 
+   if (!member) return;
+
    const res = await (type === 'kick'
-    ? ch.request.guilds.removeMember(guild, id)
-    : ch.request.guilds.banUser(
-       guild,
-       id,
+    ? ch.request.guilds.removeMember(member)
+    : ch.request.guilds.banMember(
+       member,
        { delete_message_seconds: 604800 },
        language.autotypes.antivirus,
       ));

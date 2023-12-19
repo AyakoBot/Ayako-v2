@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Creates a new channel in the specified guild.
  * @param guild The guild where the channel will be created.
@@ -15,11 +18,41 @@ export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIGuildChannelJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canCreateChannel(await getBotMemberFromGuild(guild), body)) {
+  const e = requestHandlerError(`Cannot create channel in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageChannels,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .createChannel(guild.id, body, { reason })
   .then((c) => Classes.Channel(guild.client, c, guild))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has the necessary permissions
+ * to create a channel with the specified properties.
+ * @param me - The Discord guild member object representing the bot.
+ * @param body - The JSON body containing the properties of the channel to be created.
+ * @returns A boolean indicating whether the guild member can create the channel.
+ */
+export const canCreateChannel = (
+ me: Discord.GuildMember,
+ body: Discord.RESTPostAPIGuildChannelJSONBody,
+) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) &&
+ (body.permission_overwrites
+  ? body.permission_overwrites.every(
+     (p) =>
+      me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+      (p.id === me.id ? me.permissions.has(p.allow ? BigInt(p.allow) : 0n) : true),
+    )
+  : true);

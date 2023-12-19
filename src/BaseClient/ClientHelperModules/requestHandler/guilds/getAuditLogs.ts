@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Retrieves the audit logs for a given guild.
  * @param guild - The guild to retrieve the audit logs for.
@@ -11,11 +14,29 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves to a GuildAuditLogs object
  * representing the audit logs for the guild.
  */
-export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) =>
- (cache.apis.get(guild.id) ?? API).guilds
+export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) => {
+ if (!canViewAuditLogs(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot view audit logs in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ViewAuditLog,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .getAuditLogs(guild.id, query)
   .then((a) => new Classes.GuildAuditLogs(guild, a))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has permission to view audit logs.
+ * @param me - The guild member to check.
+ * @returns True if the guild member has permission to view audit logs, false otherwise.
+ */
+export const canViewAuditLogs = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ViewAuditLog);

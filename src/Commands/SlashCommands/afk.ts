@@ -66,8 +66,7 @@ export default async (
   !cmd.member?.displayName.endsWith(' [AFK]')
  ) {
   await ch.request.guilds.editMember(
-   cmd.guild,
-   cmd.member.id,
+   cmd.member,
    { nick: `${cmd.member.displayName} [AFK]` },
    lan.setReason,
   );

@@ -59,5 +59,5 @@ export const kick = async (
  };
 
  await dm();
- ch.request.guilds.removeMember(member.guild, member.user.id, language.verification.kickReason);
+ ch.request.guilds.removeMember(member, language.verification.kickReason);
 };

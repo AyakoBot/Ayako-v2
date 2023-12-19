@@ -219,8 +219,7 @@ const mod = {
   }
 
   const res = await request.guilds.editMember(
-   options.guild,
-   targetMember.id,
+   targetMember,
    {
     communication_disabled_until: new Date(
      Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000),
@@ -296,7 +295,7 @@ const mod = {
    return false;
   }
 
-  const res = await request.guilds.editMember(options.guild, targetMember.id, {
+  const res = await request.guilds.editMember(targetMember, {
    communication_disabled_until: null,
   });
 
@@ -333,7 +332,6 @@ const mod = {
 
   const res = await (memberRes
    ? request.guilds.banMember(
-      options.guild,
       memberRes.targetMember,
       { delete_message_seconds: options.deleteMessageSeconds },
       options.reason,
@@ -438,13 +436,15 @@ const mod = {
    return false;
   }
 
-  if (!options.guild.members.cache.get(options.target.id) && !options.skipChecks) {
+  const member = options.guild.members.cache.get(options.target.id);
+
+  if (!member && !options.skipChecks) {
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
-  const res = await request.guilds.removeMember(options.guild, options.target.id);
-  if ((res as Discord.DiscordAPIError).message) {
+  const res = member ? await request.guilds.removeMember(member, options.reason) : false;
+  if (res && (res as Discord.DiscordAPIError).message) {
    err(cmd, res as Discord.DiscordAPIError, language, message, options.guild);
    return false;
   }

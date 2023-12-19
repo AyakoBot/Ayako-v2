@@ -25,7 +25,7 @@ export default async (member: Discord.GuildMember) => {
   ? manageableRoles.filter((r) => !settings.roles.includes(r.id))
   : manageableRoles.filter((r) => settings.roles.includes(r.id));
 
- ch.request.guilds.editMember(member.guild, member.id, {
+ ch.request.guilds.editMember(member, {
   roles: rolesToAdd.map((r) => r.id),
  });
 };

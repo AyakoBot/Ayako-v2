@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Creates a scheduled event for a guild.
  * @param guild The guild to create the scheduled event for.
@@ -16,8 +19,17 @@ export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIGuildScheduledEventJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canCreateScheduledEvent(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot create scheduled event in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageEvents,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .createScheduledEvent(
    guild.id,
    {
@@ -31,3 +43,14 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+// TODO: CreateEvents should be coming to D.js soon.
+/**
+ * Checks if the given guild member has the necessary permissions to create a scheduled event.
+ * @param me - The Discord guild member.
+ * @returns True if the guild member has the "Manage Events" permission, false otherwise.
+ */
+export const canCreateScheduledEvent = (me: Discord.GuildMember) =>
+ me.permissions.has(17592186044416n) ||
+ me.permissions.has(Discord.PermissionFlagsBits.ManageEvents);

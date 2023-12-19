@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Creates a new emoji for the specified guild.
  * @param guild The guild to create the emoji in.
@@ -16,8 +19,17 @@ export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIGuildEmojiJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canCreateEmoji(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot create emoji in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageGuildExpressions,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .createEmoji(
    guild.id,
    {
@@ -31,3 +43,14 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+// TODO: CreateGuildExpressions should be coming to D.js soon.
+/**
+ * Checks if the given guild member has the permission to create an emoji.
+ * @param me - The guild member to check.
+ * @returns True if the guild member has the permission to create an emoji, false otherwise.
+ */
+export const canCreateEmoji = (me: Discord.GuildMember) =>
+ me.permissions.has(8796093022208n) ||
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuildExpressions);

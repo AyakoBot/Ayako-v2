@@ -92,11 +92,9 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
 
  const vanity = await ch.request.guilds.getVanityURL(guild);
  if (!vanity) return undefined;
+ if ('message' in vanity) return undefined;
 
- if (!('message' in vanity)) {
-  ch.cache.invites.set(vanity, guild.id);
- }
-
+ ch.cache.invites.set(vanity, guild.id);
  const parsedVanity = vanity.code ? ch.cache.invites.find(vanity.code as string) : undefined;
  const changedVanity = oldInvites.find((i) => i.code === vanity?.code);
  if (Number(changedVanity?.uses) < Number(parsedVanity)) return parsedVanity;

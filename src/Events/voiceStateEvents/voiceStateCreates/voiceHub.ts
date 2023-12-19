@@ -98,7 +98,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   everyonelefttime: Date.now(),
  };
 
- const move = await ch.request.guilds.editMember(state.guild, member.id, {
+ const move = await ch.request.guilds.editMember( member, {
   channel_id: channel.id,
  });
  if (!('message' in move)) {

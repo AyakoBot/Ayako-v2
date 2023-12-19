@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a sticker in a guild.
  * @param guild The guild where the sticker is located.
@@ -17,11 +20,28 @@ export default async (
  stickerId: string,
  body: Discord.RESTPatchAPIGuildStickerJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canEditSticker(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot edit sticker ${stickerId} in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.ManageGuildExpressions,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .editSticker(guild.id, stickerId, body, { reason })
   .then((s) => new Classes.Sticker(guild.client, s))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+/**
+ * Checks if the given guild member has permission to edit stickers.
+ * @param me - The guild member to check.
+ * @returns True if the guild member has permission to edit stickers, false otherwise.
+ */
+export const canEditSticker = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuildExpressions);

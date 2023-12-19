@@ -143,14 +143,7 @@ const runJob = async (guild: Discord.Guild) => {
   return true;
  });
 
- request.guilds.editMember(
-  memberCache.member.guild,
-  memberCache.member.id,
-  {
-   roles,
-  },
-  memberCache.reason,
- );
+ request.guilds.editMember(memberCache.member, { roles }, memberCache.reason);
 
  endJob(memberCaches);
 };

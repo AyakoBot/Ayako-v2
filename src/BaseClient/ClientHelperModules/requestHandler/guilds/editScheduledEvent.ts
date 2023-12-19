@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a scheduled event for a guild.
  * @param guild The guild where the scheduled event belongs.
@@ -18,8 +21,18 @@ export default async (
  eventId: string,
  body: Discord.RESTPatchAPIGuildScheduledEventJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds
+) => {
+ if (!canEditScheduledEvent(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(
+   `Cannot edit scheduled event ${eventId} in ${guild.name} / ${guild.id}`,
+   [Discord.PermissionFlagsBits.ManageEvents],
+  );
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .editScheduledEvent(
    guild.id,
    eventId,
@@ -34,3 +47,12 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has the necessary permissions to edit a scheduled event.
+ * @param me - The Discord guild member.
+ * @returns True if the guild member has the "Manage Events" permission, false otherwise.
+ */
+export const canEditScheduledEvent = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageEvents);

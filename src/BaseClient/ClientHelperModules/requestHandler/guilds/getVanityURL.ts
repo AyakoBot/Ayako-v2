@@ -4,14 +4,26 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Retrieves the vanity URL for a given guild and returns an invite object with the parsed data.
  * @param guild The guild to retrieve the vanity URL for.
  * @returns A Promise that resolves with the parsed invite object,
  * or rejects with a DiscordAPIError if the vanity URL is missing or inaccessible.
  */
-export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+export default async (guild: Discord.Guild) => {
+ if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot get vanity URL in ${guild.name} / ${guild.id}`, [
+   Discord.PermissionFlagsBits.KickMembers,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
   .getVanityURL(guild.id)
   .then(async (v) => {
    const parsed = v.code
@@ -58,3 +70,12 @@ export default async (guild: Discord.Guild) =>
    }
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the user has the necessary permissions to get the vanity URL of a guild.
+ * @param me - The Discord GuildMember representing the user.
+ * @returns A boolean indicating whether the user can get the vanity URL.
+ */
+export const canGetVanityURL = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);

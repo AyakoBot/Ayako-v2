@@ -3,6 +3,9 @@ import error from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Bans a user from a guild.
  * @param guild The guild to ban the user from.
@@ -16,8 +19,28 @@ export default async (
  userId: string,
  body?: Discord.RESTPutAPIGuildBanJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(guild.id) ?? API).guilds.banUser(guild.id, userId, body, { reason }).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+) => {
+ if (!canBanUser(await getBotMemberFromGuild(guild))) {
+  const e = requestHandlerError(`Cannot ban user ${userId}`, [
+   Discord.PermissionFlagsBits.BanMembers,
+  ]);
+
+  error(guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).guilds
+  .banUser(guild.id, userId, body, { reason })
+  .catch((e) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
+};
+
+/**
+ * Checks if the given guild member has the permission to ban members.
+ * @param me - The guild member to check.
+ * @returns True if the guild member has the permission to ban members, false otherwise.
+ */
+export const canBanUser = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.BanMembers);

@@ -16,24 +16,23 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the DiscordAPIError if the request fails, otherwise void.
  */
 export default async (
- guild: Discord.Guild,
  member: Discord.GuildMember,
  body?: Discord.RESTPutAPIGuildBanJSONBody,
  reason?: string,
 ) => {
- if (!canBanUser(await getBotMemberFromGuild(guild))) {
+ if (!canBanUser(await getBotMemberFromGuild(member.guild))) {
   const e = requestHandlerError(`Cannot ban member in ${member.displayName} / ${member.id}`, [
    Discord.PermissionFlagsBits.BanMembers,
   ]);
 
-  error(guild, e);
+  error(member.guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .banUser(guild.id, member.id, body, { reason })
+ return (cache.apis.get(member.guild.id) ?? API).guilds
+  .banUser(member.guild.id, member.id, body, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };
