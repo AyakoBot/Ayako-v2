@@ -16,7 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, channelId: string, reason?: string) => {
  if (!canDelete(await getBotMemberFromGuild(guild), channelId)) {
-  const e = requestHandlerError(`Cannot delete stage instance in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot delete stage instance`, [
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 

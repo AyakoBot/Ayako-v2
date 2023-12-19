@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetAutoModerationRule(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get auto moderation rules in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get auto moderation rules`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

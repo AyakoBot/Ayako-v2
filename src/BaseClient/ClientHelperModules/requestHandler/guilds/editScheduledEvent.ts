@@ -23,10 +23,9 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditScheduledEvent(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot edit scheduled event ${eventId} in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageEvents],
-  );
+  const e = requestHandlerError(`Cannot edit scheduled event ${eventId}`, [
+   Discord.PermissionFlagsBits.ManageEvents,
+  ]);
 
   error(guild, e);
   return e;

@@ -16,7 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, roleId: string, reason?: string) => {
  if (!canDeleteRole(await getBotMemberFromGuild(guild), roleId)) {
-  const e = requestHandlerError(`Cannot delete role ${roleId} in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot delete role ${roleId}`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 

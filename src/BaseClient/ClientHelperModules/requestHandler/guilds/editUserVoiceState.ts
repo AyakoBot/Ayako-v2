@@ -22,7 +22,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditUserVoiceState(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot edit user voice state in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot edit user voice state`, [
    Discord.PermissionFlagsBits.MuteMembers,
   ]);
 

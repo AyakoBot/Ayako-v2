@@ -21,7 +21,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canSetRolePositions(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot set role positions in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot set role positions`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 

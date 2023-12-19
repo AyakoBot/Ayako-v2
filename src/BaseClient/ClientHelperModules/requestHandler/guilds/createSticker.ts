@@ -22,7 +22,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateSticker(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create sticker in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create sticker`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 

@@ -16,9 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason?: string) => {
  if (!canEditMFALevel(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit MFA level in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.ManageGuild,
-  ]);
+  const e = requestHandlerError(`Cannot edit MFA level`, [Discord.PermissionFlagsBits.ManageGuild]);
 
   error(guild, e);
   return e;

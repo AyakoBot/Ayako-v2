@@ -15,10 +15,9 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, eventId: string, reason?: string) => {
  if (!canDeleteScheduledEvent(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot delete scheduled event ${eventId} in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageEvents],
-  );
+  const e = requestHandlerError(`Cannot delete scheduled event ${eventId}`, [
+   Discord.PermissionFlagsBits.ManageEvents,
+  ]);
 
   error(guild, e);
   return e;

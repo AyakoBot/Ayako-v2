@@ -21,7 +21,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateEmoji(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create emoji in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create emoji`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 

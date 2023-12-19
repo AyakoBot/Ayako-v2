@@ -16,10 +16,9 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, integrationId: string, reason?: string) => {
  if (!canDeleteIntegration(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot delete integration ${integrationId} in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageGuild],
-  );
+  const e = requestHandlerError(`Cannot delete integration ${integrationId}`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
   error(guild, e);
   return e;

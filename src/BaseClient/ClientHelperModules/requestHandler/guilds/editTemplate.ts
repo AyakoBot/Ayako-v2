@@ -21,10 +21,9 @@ export default async (
  body: Discord.RESTPatchAPIGuildTemplateJSONBody,
 ) => {
  if (!canEditTemplate(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot edit template ${templateCode} in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageGuild],
-  );
+  const e = requestHandlerError(`Cannot edit template ${templateCode}`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
   error(guild, e);
   return e;

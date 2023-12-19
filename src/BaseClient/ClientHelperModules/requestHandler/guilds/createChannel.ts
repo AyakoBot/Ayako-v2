@@ -20,7 +20,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateChannel(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot create channel in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create channel`, [
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 

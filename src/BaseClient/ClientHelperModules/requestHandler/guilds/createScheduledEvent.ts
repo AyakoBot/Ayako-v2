@@ -21,7 +21,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateScheduledEvent(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create scheduled event in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create scheduled event`, [
    Discord.PermissionFlagsBits.ManageEvents,
   ]);
 

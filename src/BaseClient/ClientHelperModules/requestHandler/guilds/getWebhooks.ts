@@ -14,7 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetWebhooks(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get webhooks in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get webhooks`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 

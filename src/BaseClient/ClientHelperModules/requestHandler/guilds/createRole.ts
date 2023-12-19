@@ -20,9 +20,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateRole(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create role in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.ManageRoles,
-  ]);
+  const e = requestHandlerError(`Cannot create role`, [Discord.PermissionFlagsBits.ManageRoles]);
 
   error(guild, e);
   return e;

@@ -17,7 +17,7 @@ export default async (guild: Discord.Guild) => {
  if (
   !(await getBotMemberFromGuild(guild)).permissions.has(Discord.PermissionFlagsBits.ManageGuild)
  ) {
-  const e = requestHandlerError(`Cannot get integrations in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get integrations`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

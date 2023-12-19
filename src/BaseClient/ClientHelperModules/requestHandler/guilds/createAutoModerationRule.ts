@@ -20,10 +20,9 @@ export default async (
  reason?: string,
 ) => {
  if (!canCreateAutoModerationRule(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot create auto-moderation rule in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageGuild],
-  );
+  const e = requestHandlerError(`Cannot create auto-moderation rule`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
   error(guild, e);
   return e;

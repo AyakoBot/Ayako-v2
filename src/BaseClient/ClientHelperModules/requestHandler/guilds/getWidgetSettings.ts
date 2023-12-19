@@ -14,7 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetWidgetSettings(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get widget settings in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get widget settings`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

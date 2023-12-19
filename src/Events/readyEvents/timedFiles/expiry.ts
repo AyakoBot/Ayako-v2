@@ -101,14 +101,14 @@ const logExpire = async <T extends TableName>(
  rows: T extends 'punish_warns'
   ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_warns']['findMany']>>
   : T extends 'punish_mutes'
-  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_mutes']['findMany']>>
-  : T extends 'punish_kicks'
-  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_kicks']['findMany']>>
-  : T extends 'punish_bans'
-  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_bans']['findMany']>>
-  : T extends 'punish_channelbans'
-  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_channelbans']['findMany']>>
-  : never,
+    ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_mutes']['findMany']>>
+    : T extends 'punish_kicks'
+      ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_kicks']['findMany']>>
+      : T extends 'punish_bans'
+        ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_bans']['findMany']>>
+        : T extends 'punish_channelbans'
+          ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_channelbans']['findMany']>>
+          : never,
  guildid: string,
 ) => {
  const guild = client.guilds.cache.get(guildid);

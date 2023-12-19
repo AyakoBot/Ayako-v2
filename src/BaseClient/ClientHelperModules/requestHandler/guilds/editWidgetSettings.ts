@@ -19,7 +19,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditWidgetSettings(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit widget settings in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot edit widget settings`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

@@ -20,9 +20,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canPrune(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot prune members in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.KickMembers,
-  ]);
+  const e = requestHandlerError(`Cannot prune members`, [Discord.PermissionFlagsBits.KickMembers]);
 
   error(guild, e);
   return e;

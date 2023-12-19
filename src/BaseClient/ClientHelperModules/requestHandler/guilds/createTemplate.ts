@@ -16,7 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTemplatesJSONBody) => {
  if (!canCreateTemplate(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create template in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create template`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

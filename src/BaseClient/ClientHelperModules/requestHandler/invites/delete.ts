@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, code: string, reason?: string) => {
  if (!canDeleteInvite(await getBotMemberFromGuild(guild), code)) {
-  const e = requestHandlerError(`Cannot delete invite ${code} in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot delete invite ${code}`, [
    Discord.PermissionFlagsBits.ManageGuild,
    Discord.PermissionFlagsBits.ManageChannels,
   ]);

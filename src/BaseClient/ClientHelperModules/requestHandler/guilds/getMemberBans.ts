@@ -16,9 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) => {
  if (!canGetMemberBan(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get member bans in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.BanMembers,
-  ]);
+  const e = requestHandlerError(`Cannot get member bans`, [Discord.PermissionFlagsBits.BanMembers]);
 
   error(guild, e);
   return e;

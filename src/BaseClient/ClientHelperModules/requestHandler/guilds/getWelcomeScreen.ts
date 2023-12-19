@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetWelcomeScreen(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get welcome screen in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get welcome screen`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

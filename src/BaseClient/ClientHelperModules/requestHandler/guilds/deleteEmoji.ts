@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, emojiId: string, reason?: string) => {
  if (!canDeleteEmoji(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot delete emoji ${emojiId} in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot delete emoji ${emojiId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 

@@ -16,10 +16,9 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, stickerId: string, reason?: string) => {
  if (!canDeleteSticker(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(
-   `Cannot delete sticker ${stickerId} in ${guild.name} / ${guild.id}`,
-   [Discord.PermissionFlagsBits.ManageGuildExpressions],
-  );
+  const e = requestHandlerError(`Cannot delete sticker ${stickerId}`, [
+   Discord.PermissionFlagsBits.ManageGuildExpressions,
+  ]);
 
   error(guild, e);
   return e;

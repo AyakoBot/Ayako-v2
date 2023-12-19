@@ -22,7 +22,7 @@ export default async (guild: Discord.Guild, userId: string, roleId: string, reas
    await getBotMemberFromGuild(guild),
   )
  ) {
-  const e = requestHandlerError(`Cannot add role to member in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot add role to member`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 

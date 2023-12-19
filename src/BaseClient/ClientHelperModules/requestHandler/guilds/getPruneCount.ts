@@ -16,7 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPruneCountQuery) => {
  if (!canPrune(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get prune count in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot get prune count`, [
    Discord.PermissionFlagsBits.KickMembers,
   ]);
 

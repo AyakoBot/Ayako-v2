@@ -20,7 +20,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canSetChannelPositions(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot set channel positions in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot set channel positions`, [
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 

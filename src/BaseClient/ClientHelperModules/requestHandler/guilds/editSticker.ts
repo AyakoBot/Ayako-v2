@@ -22,7 +22,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditSticker(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit sticker ${stickerId} in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot edit sticker ${stickerId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 

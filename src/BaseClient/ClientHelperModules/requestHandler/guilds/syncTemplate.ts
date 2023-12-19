@@ -16,9 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild, templateCode: string) => {
  if (!canSyncTemplate(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot sync template in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.ManageGuild,
-  ]);
+  const e = requestHandlerError(`Cannot sync template`, [Discord.PermissionFlagsBits.ManageGuild]);
 
   error(guild, e);
   return e;

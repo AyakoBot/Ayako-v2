@@ -22,7 +22,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditEmoji(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit emoji ${emojiId} in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot edit emoji ${emojiId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 

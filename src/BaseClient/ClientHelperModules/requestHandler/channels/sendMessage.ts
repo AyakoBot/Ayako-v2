@@ -32,7 +32,7 @@ export default async (
    await getBotMemberFromGuild(guild),
   )
  ) {
-  const e = requestHandlerError(`Cannot send message in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot send message`, [
    Discord.PermissionFlagsBits.SendMessages,
    Discord.PermissionFlagsBits.SendMessagesInThreads,
    Discord.PermissionFlagsBits.ReadMessageHistory,

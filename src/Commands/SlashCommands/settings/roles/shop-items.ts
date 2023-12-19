@@ -130,7 +130,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    },
    {
     name: lan.fields.price.name,
-    value: settings?.price ? embedParsers.number(Number(settings.price), language) : language.t.None,
+    value: settings?.price
+     ? embedParsers.number(Number(settings.price), language)
+     : language.t.None,
     inline: true,
    },
    {

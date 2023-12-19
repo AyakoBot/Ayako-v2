@@ -21,7 +21,7 @@ export default async (
  reason?: string,
 ) => {
  if (!canEditWelcomeScreen(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit welcome screen in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot edit welcome screen`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 

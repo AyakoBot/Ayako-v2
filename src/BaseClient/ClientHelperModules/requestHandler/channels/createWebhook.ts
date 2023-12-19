@@ -26,7 +26,7 @@ export default async (
    await getBotMemberFromGuild(guild),
   )
  ) {
-  const e = requestHandlerError(`Cannot create webhook in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot create webhook`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 

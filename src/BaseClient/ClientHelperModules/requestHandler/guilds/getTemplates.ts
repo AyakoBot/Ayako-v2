@@ -14,9 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetTemplates(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get template in ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.KickMembers,
-  ]);
+  const e = requestHandlerError(`Cannot get template`, [Discord.PermissionFlagsBits.KickMembers]);
 
   error(guild, e);
   return e;

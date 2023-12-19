@@ -4,7 +4,8 @@
   "scripts": {
     "start": "node --max-old-space-size=8192 ./dist/index.js",
     "build": "npx tsc",
-    "dev": "cd ./dist && node --enable-source-maps ./index.js --debug --warn"
+    "dev": "cd ./dist && node --enable-source-maps ./index.js --debug --warn",
+    "link": "npx eslint 'src/**/*.ts' --fix"
   },
   "dependencies": {
     "@discordjs/core": "^1.1.1",

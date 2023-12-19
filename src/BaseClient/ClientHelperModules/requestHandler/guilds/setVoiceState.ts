@@ -18,7 +18,7 @@ export default async (
  body?: Discord.RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 ) => {
  if (!canSetVoiceState(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot set voice state in ${guild.name} / ${guild.id}`, [
+  const e = requestHandlerError(`Cannot set voice state`, [
    Discord.PermissionFlagsBits.RequestToSpeak,
   ]);
 
