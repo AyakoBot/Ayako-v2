@@ -10,11 +10,9 @@ import requestHandlerError from '../../requestHandlerError.js';
 /**
  * Edits a webhook.
  * @param guild - The guild where the webhook is located.
- * @param webhookId - The ID of the webhook to edit.
+ * @param webhook - The webhook to edit.
  * @param body - The new webhook data to set.
  * @param data - Optional additional data for the request.
- * @param data.token - The token to use for the request.
- * @param data.reason - The reason for the request.
  * @returns A promise that resolves with the edited webhook.
  */
 export default async (

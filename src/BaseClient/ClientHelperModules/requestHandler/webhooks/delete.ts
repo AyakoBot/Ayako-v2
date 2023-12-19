@@ -9,10 +9,8 @@ import requestHandlerError from '../../requestHandlerError.js';
 /**
  * Deletes a webhook in a guild.
  * @param guild - The guild where the webhook is located.
- * @param webhookId - The ID of the webhook to delete.
+ * @param webhook - The webhook to delete.
  * @param data - Optional data to provide when deleting the webhook.
- * @param data.token - The webhook token to authenticate the request.
- * @param data.reason - The reason for deleting the webhook.
  * @returns A promise that resolves with the deleted webhook if successful,
  * or rejects with a DiscordAPIError if unsuccessful.
  */

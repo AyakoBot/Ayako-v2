@@ -9,8 +9,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a channel from the given guild.
- * @param guild - The guild where the channel is located.
- * @param channelId - The ID of the channel to delete.
+ * @param channel - The channel to delete.
  * @returns A promise that resolves with the deleted channel, or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildBasedChannel) => {

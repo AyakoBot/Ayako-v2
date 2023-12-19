@@ -9,8 +9,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a member in a guild.
- * @param guild The guild where the member is located.
- * @param userId The ID of the member to edit.
+ * @param member The member to edit.
  * @param body The data to update the member with.
  * @param reason The reason for editing the member.
  * @returns A promise that resolves with the updated guild member,

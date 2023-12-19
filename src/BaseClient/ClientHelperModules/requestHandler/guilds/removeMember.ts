@@ -8,8 +8,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Removes a member from a guild.
- * @param guild The guild to remove the member from.
- * @param userId The ID of the user to remove.
+ * @param member The member to remove.
  * @param reason The reason for removing the member (optional).
  * @returns A promise that resolves with the removed member's data if successful,
  * or rejects with a DiscordAPIError if an error occurs.

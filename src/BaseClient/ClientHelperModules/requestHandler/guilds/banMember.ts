@@ -9,8 +9,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Bans a user from a guild.
- * @param guild The guild to ban the user from.
- * @param userId The ID of the user to ban.
+ * @param member The member to ban.
  * @param body Optional request body to send.
  * @param reason Reason for banning the user.
  * @returns A promise that resolves with the DiscordAPIError if the request fails, otherwise void.

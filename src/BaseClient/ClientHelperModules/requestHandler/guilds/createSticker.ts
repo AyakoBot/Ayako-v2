@@ -11,7 +11,6 @@ import requestHandlerError from '../../requestHandlerError.js';
  * Creates a new sticker for the given guild.
  * @param guild The guild to create the sticker in.
  * @param body The sticker data to send in the request.
- * @param body.file The sticker image to upload.
  * @param reason The reason for creating the sticker.
  * @returns A promise that resolves with the created sticker, or rejects with a DiscordAPIError.
  */

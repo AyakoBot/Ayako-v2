@@ -8,7 +8,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 /**
  * Leaves a thread in a guild.
  * @param guild - The guild where the thread is located.
- * @param threadId - The ID of the thread to leave.
+ * @param thread - The thread to leave.
  * @returns A promise that resolves with the DiscordAPIError if an error occurs, otherwise void.
  */
 export default async (thread: Discord.ThreadChannel) => {

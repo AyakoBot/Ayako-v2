@@ -48,32 +48,19 @@ export const canEdit = (
  channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
  me: Discord.GuildMember,
-) => {
- const parent = channel.isThread()
-  ? (channel.parent as
-     | Discord.ForumChannel
-     | Discord.MediaChannel
-     | Discord.TextChannel
-     | Discord.NewsChannel)
-  : (channel as Discord.GuildBasedChannel);
-
- return (
-  me.permissionsIn(parent).has(Discord.PermissionFlagsBits.ManageChannels) &&
-  (body.permission_overwrites
-   ? me.permissionsIn(parent).has(Discord.PermissionFlagsBits.ManageRoles) &&
-     body.permission_overwrites.every(
-      (overwrite) =>
-       me
-        .permissionsIn(parent)
-        .has(
-         new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
-        ) &&
-       me
-        .permissionsIn(parent)
-        .has(
-         new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield,
-        ),
-     )
-   : true)
- );
-};
+) =>
+ me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageChannels) &&
+ (body.permission_overwrites
+  ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageRoles) &&
+    body.permission_overwrites.every(
+     (overwrite) =>
+      me
+       .permissionsIn(channel.id)
+       .has(
+        new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
+       ) &&
+      me
+       .permissionsIn(channel.id)
+       .has(new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield),
+    )
+  : true);

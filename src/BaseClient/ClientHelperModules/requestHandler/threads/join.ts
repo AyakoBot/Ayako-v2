@@ -8,7 +8,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 /**
  * Joins a thread in a guild.
  * @param guild - The guild where the thread is located.
- * @param threadId - The ID of the thread to join.
+ * @param thread - The thread to join.
  * @returns A promise that resolves with the joined thread or rejects with a DiscordAPIError.
  */
 export default async (thread: Discord.ThreadChannel) => {

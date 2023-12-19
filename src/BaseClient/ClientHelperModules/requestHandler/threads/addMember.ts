@@ -8,8 +8,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Adds a member to a thread in a guild.
- * @param guild - The guild where the thread is located.
- * @param threadId - The ID of the thread to add the member to.
+ * @param thread - The thread to add the member to.
  * @param userId - The ID of the user to add to the thread.
  * @returns A promise that resolves with the added member or rejects with a DiscordAPIError.
  */
