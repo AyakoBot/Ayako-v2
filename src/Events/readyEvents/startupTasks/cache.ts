@@ -293,6 +293,8 @@ export const tasks = {
  pins: async (guild: Discord.Guild) => {
   guild.channels.cache.forEach(async (c) => {
    if (!c.isTextBased()) return;
+   if (c.isThread() && c.name === '⚠️') return;
+
    ch.cache.pins.get('', c);
   });
  },

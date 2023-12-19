@@ -314,22 +314,22 @@
     "descMemberUpdateAudit": "{{executor}}has updated\n{{user}}",
     "descGuildUpdate": "The Server was updated",
     "descGuildUpdateAudit": "{{executor}}has updated the Server",
-    "descAuditLogCreate": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}",
-    "descAuditLogCreateGuild": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{guild}}",
-    "descAuditLogCreateChannel": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{channel}}",
-    "descAuditLogCreateUser": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{user}}",
-    "descAuditLogCreateRole": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{role}}",
-    "descAuditLogCreateInvite": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{invite}}",
-    "descAuditLogCreateWebhook": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{webhook}}",
-    "descAuditLogCreateEmoji": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{emoji}}",
-    "descAuditLogCreateMessage": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{message}}",
-    "descAuditLogCreateIntegration": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{integration}}",
-    "descAuditLogCreateStageInstance": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{stageInstance}}",
-    "descAuditLogCreateSticker": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{sticker}}",
-    "descAuditLogCreateThread": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{thread}}",
-    "descAuditLogCreateGuildScheduledEvent": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{guildScheduledEvent}}",
-    "descAuditLogCreateApplicationCommand": "New {{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{applicationCommand}}",
-    "descAuditLogCreateAutoModerationRule": "New \n{{audit}}created {{audit.executor ? `by\n${this.languageFunction.getUser(audit.executor)}` : ''}}for\n{{autoModerationRule}}",
+    "descAuditLogCreate": "New \n{{audit}}created {{executor}}",
+    "descAuditLogCreateGuild": "New \n{{audit}}created {{executor}}for\n{{guild}}",
+    "descAuditLogCreateChannel": "New \n{{audit}}created {{executor}}for\n{{channel}}",
+    "descAuditLogCreateUser": "New \n{{audit}}created {{executor}}for\n{{user}}",
+    "descAuditLogCreateRole": "New \n{{audit}}created {{executor}}for\n{{role}}",
+    "descAuditLogCreateInvite": "New \n{{audit}}created {{executor}}for\n{{invite}}",
+    "descAuditLogCreateWebhook": "New \n{{audit}}created {{executor}}for\n{{webhook}}",
+    "descAuditLogCreateEmoji": "New \n{{audit}}created {{executor}}for\n{{emoji}}",
+    "descAuditLogCreateMessage": "New \n{{audit}}created {{executor}}for\n{{message}}",
+    "descAuditLogCreateIntegration": "New \n{{audit}}created {{executor}}for\n{{integration}}",
+    "descAuditLogCreateStageInstance": "New \n{{audit}}created {{executor}}for\n{{stageInstance}}",
+    "descAuditLogCreateSticker": "New \n{{audit}}created {{executor}}for\n{{sticker}}",
+    "descAuditLogCreateThread": "New \n{{audit}}created {{executor}}for\n{{thread}}",
+    "descAuditLogCreateGuildScheduledEvent": "New \n{{audit}}created {{executor}}for\n{{guildScheduledEvent}}",
+    "descAuditLogCreateApplicationCommand": "New {{audit}}created {{executor}}for\n{{applicationCommand}}",
+    "descAuditLogCreateAutoModerationRule": "New \n{{audit}}created {{executor}}for\n{{autoModerationRule}}",
     "descAuditLogCreateAutoModeration": "New \n{{audit}}created by\n{{autoModerationRule}}for\n{{user}}",
     "descMemberPrune": "{{executor}}pruned `{{amount}}` Members\nfor `{{days}}` Days of inactivity",
     "auditLogChangeKeys": {
@@ -3434,6 +3434,14 @@
       "errorchannel": {
        "name": "Error Channel",
        "desc": "The Channel to post Error Messages in"
+      },
+      "statuschannel": {
+       "name": "Status-Channel",
+       "desc": "The Channel to post Ayako Status Messages in"
+      },
+      "updateschannel": {
+       "name": "Updates-Channel",
+       "desc": "The Channel to post Ayako Updates in"
       },
       "ptreminderenabled": {
        "name": "Privacy & Terms Reminder",

@@ -98,7 +98,7 @@ export const create = async (guild: Discord.Guild) => {
   });
 
  await ch.request.commands.bulkOverwriteGuildCommands(guild, [
-  ...registerCommands.map((c) => c.toJSON() as Discord.APIApplicationCommand),
+  ...registerCommands.map((c) => c.toJSON()),
   ...(ch.cache.commands.get(guild.id) ?? guild.commands.cache.map((c) => c))
    .map((c) => c.toJSON() as Discord.APIApplicationCommand)
    .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
@@ -106,10 +106,6 @@ export const create = async (guild: Discord.Guild) => {
 
  await ch.DataBase.guildsettings.update({
   where: { guildid: guild.id },
-  data: {
-   rpenableruns: {
-    increment: 1,
-   },
-  },
+  data: { rpenableruns: { increment: 1 } },
  });
 };
