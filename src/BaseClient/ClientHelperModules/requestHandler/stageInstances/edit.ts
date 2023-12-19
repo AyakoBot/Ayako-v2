@@ -4,6 +4,9 @@ import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a stage instance in a stage channel.
  * @param channel The stage channel where the stage instance is located.
@@ -16,11 +19,31 @@ export default async (
  channel: Discord.StageChannel,
  body: Discord.RESTPatchAPIStageInstanceJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(channel.guild.id) ?? API).stageInstances
+) => {
+ if (!canEdit(await getBotMemberFromGuild(channel.guild), channel)) {
+  const e = requestHandlerError(
+   `Cannot edit stage instance in ${channel.guild.name} / ${channel.guild.id}`,
+   [Discord.PermissionFlagsBits.ManageChannels],
+  );
+
+  error(channel.guild, e);
+  return e;
+ }
+
+ return (cache.apis.get(channel.guild.id) ?? API).stageInstances
   .edit(channel.id, body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
   .catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
+
+/**
+ * Checks if the given guild member has the permission to edit stage instances.
+ * @param me - The Discord guild member.
+ * @param channel - The stage channel where the stage instance is located.
+ * @returns A boolean indicating whether the guild member can edit stage instances.
+ */
+export const canEdit = (me: Discord.GuildMember, channel: Discord.StageChannel) =>
+ me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels);

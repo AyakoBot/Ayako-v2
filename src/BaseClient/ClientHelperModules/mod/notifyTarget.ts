@@ -63,7 +63,7 @@ export default async <T extends CT.ModTypes>(
 
  if ('message' in thread) return;
 
- await request.threads.addMember(options.guild, thread.id, options.target.id);
+ await request.threads.addMember(thread, options.target.id);
  await send(thread, {
   embeds: [embed],
   content: `<@${options.target.id}>`,

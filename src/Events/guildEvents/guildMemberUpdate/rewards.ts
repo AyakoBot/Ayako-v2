@@ -83,7 +83,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   ],
  };
 
- await ch.request.threads.addMember(member.guild, thread.id, member.id);
+ await ch.request.threads.addMember(thread, member.id);
  await ch.send(thread, {
   embeds: [embed],
   content: `<@${member.id}>`,
