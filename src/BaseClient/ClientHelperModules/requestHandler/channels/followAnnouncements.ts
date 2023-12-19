@@ -25,7 +25,7 @@ export default async (channel: Discord.GuildTextBasedChannel, followedChannelId:
  }
 
  return (cache.apis.get(channel.guild.id) ?? API).channels
-  .followAnnouncements(channel.id, followedChannelId)
+  .followAnnouncements(followedChannelId, channel.id)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
   .catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));

@@ -172,14 +172,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   type: Discord.ComponentType.ActionRow,
   components: [
    buttonParsers.specific(language, settings?.lan, 'lan', name, undefined),
-   buttonParsers.specific(
-    language,
-    settings?.errorchannel,
-    'errorchannel',
-    name,
-    undefined,
-    'channel',
-   ),
    buttonParsers.specific(language, settings?.token, 'token', name, undefined),
    {
     type: Discord.ComponentType.Button,
@@ -192,10 +184,39 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    },
   ],
  },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.specific(
+    language,
+    settings?.errorchannel,
+    'errorchannel',
+    name,
+    undefined,
+    'channel',
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.statuschannel,
+    'statuschannel',
+    name,
+    undefined,
+    'channel',
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.updateschannel,
+    'updateschannel',
+    name,
+    undefined,
+    'channel',
+   ),
+  ],
+ },
 ];
 
 export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
- _oldSettings,
+ oldSettings,
  newSettings,
  changedSetting,
  guild,
@@ -204,10 +225,17 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
  switch (changedSetting) {
   case 'statuschannel': {
-   if (!newSettings.statuschannel) break;
+   if (!newSettings.statuschannel) {
+    if (!oldSettings?.statuschannel) return;
+
+    [...(ch.cache.webhooks.cache.get(guild.id)?.get(oldSettings.statuschannel)?.values() ?? [])]
+     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '827312892982198272')
+     .map((w) => ch.request.webhooks.delete(guild, w));
+    return;
+   }
 
    const channel = await ch.getChannel.guildTextChannel(newSettings.statuschannel);
-   if (!channel) break;
+   if (!channel) return;
 
    const response = await ch.request.channels.followAnnouncements(channel, '827312892982198272');
    if (!('message' in response)) return;
@@ -218,13 +246,20 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
     ),
    );
-   break;
+   return;
   }
   case 'updateschannel': {
-   if (!newSettings.updateschannel) break;
+   if (!newSettings.updateschannel) {
+    if (!oldSettings?.updateschannel) return;
+
+    [...(ch.cache.webhooks.cache.get(guild.id)?.get(oldSettings.updateschannel)?.values() ?? [])]
+     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '827312892982198272')
+     .map((w) => ch.request.webhooks.delete(guild, w));
+    return;
+   }
 
    const channel = await ch.getChannel.guildTextChannel(newSettings.updateschannel);
-   if (!channel) break;
+   if (!channel) return;
 
    const response = await ch.request.channels.followAnnouncements(channel, '765743834118225961');
    if (!('message' in response)) return;
@@ -235,7 +270,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
     ),
    );
-   break;
+   return;
   }
   case 'token': {
    if (!newSettings.token) {
@@ -247,7 +282,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
     ch.request.commands.getGuildCommands(guild);
     ch.cache.commandPermissions.get(guild, '');
-    break;
+    return;
    }
 
    requestHandler(guild.id, newSettings.token);
@@ -269,7 +304,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      })
      .then();
 
-    break;
+    return;
    }
 
    if (!me.bot_public) {
@@ -277,7 +312,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      guild,
      new Error('Bot is not public, please make it public so it can use external Emojis'),
     );
-    break;
+    return;
    }
 
    ch.send(

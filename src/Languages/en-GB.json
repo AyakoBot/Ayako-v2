@@ -3437,7 +3437,7 @@
       },
       "statuschannel": {
        "name": "Status-Channel",
-       "desc": "The Channel to post Ayako Status Messages in"
+       "desc": "The Channel to post Ayako Status Messages in\nStatus-Messages are made to be small, so you can put them in the Channel Ayako is mostly used in"
       },
       "updateschannel": {
        "name": "Updates-Channel",

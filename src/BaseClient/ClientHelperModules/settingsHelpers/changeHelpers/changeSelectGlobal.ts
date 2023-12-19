@@ -26,7 +26,7 @@ export default <T extends keyof CT.SettingsNames>(
   custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
    uniquetimestamp ? `_${uniquetimestamp}` : ''
   }`,
-  default_values: values as never,
+  default_values: values.filter((v) => !!v.id) as never,
   type: getChangeSelectType(type),
   placeholder: getPlaceholder(type, language),
  };
