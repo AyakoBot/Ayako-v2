@@ -104,11 +104,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     inline: true,
    },
    {
-    name: lan.fields.errorchannel.name,
-    value: embedParsers.channel(settings?.errorchannel, language),
-    inline: true,
-   },
-   {
     name: lan.fields.token.name,
     value: settings.token
      ? `${ch.util.makeInlineCode(
@@ -120,6 +115,26 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
         settings.appid ?? ch.mainID,
        )})`
      : language.t.None,
+   },
+   {
+    name: '\u200b',
+    value: '\u200b',
+    inline: false,
+   },
+   {
+    name: lan.fields.errorchannel.name,
+    value: embedParsers.channel(settings?.errorchannel, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.statuschannel.name,
+    value: embedParsers.channel(settings?.statuschannel, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.updateschannel.name,
+    value: embedParsers.channel(settings?.updateschannel, language),
+    inline: true,
    },
   ],
  },
@@ -188,6 +203,40 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  if (!newSettings) return;
 
  switch (changedSetting) {
+  case 'statuschannel': {
+   if (!newSettings.statuschannel) break;
+
+   const channel = await ch.getChannel.guildTextChannel(newSettings.statuschannel);
+   if (!channel) break;
+
+   const response = await ch.request.channels.followAnnouncements(channel, '827312892982198272');
+   if (!('message' in response)) return;
+
+   ch.error(
+    guild,
+    new Error(
+     'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
+    ),
+   );
+   break;
+  }
+  case 'updateschannel': {
+   if (!newSettings.updateschannel) break;
+
+   const channel = await ch.getChannel.guildTextChannel(newSettings.updateschannel);
+   if (!channel) break;
+
+   const response = await ch.request.channels.followAnnouncements(channel, '765743834118225961');
+   if (!('message' in response)) return;
+
+   ch.error(
+    guild,
+    new Error(
+     'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
+    ),
+   );
+   break;
+  }
   case 'token': {
    if (!newSettings.token) {
     ch.cache.apis.delete(guild.id);
@@ -198,7 +247,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
     ch.request.commands.getGuildCommands(guild);
     ch.cache.commandPermissions.get(guild, '');
-    return;
+    break;
    }
 
    requestHandler(guild.id, newSettings.token);
@@ -220,7 +269,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      })
      .then();
 
-    return;
+    break;
    }
 
    if (!me.bot_public) {
@@ -228,7 +277,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      guild,
      new Error('Bot is not public, please make it public so it can use external Emojis'),
     );
-    return;
+    break;
    }
 
    ch.send(

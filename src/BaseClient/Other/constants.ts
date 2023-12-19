@@ -842,6 +842,8 @@ export default {
      editrpcommands: 'boolean',
      lan: 'language',
      errorchannel: 'channel',
+     statuschannel: 'channel',
+     updateschannel: 'channel',
      vanity: 'string',
      ptreminderenabled: 'boolean',
      token: 'bot-token',

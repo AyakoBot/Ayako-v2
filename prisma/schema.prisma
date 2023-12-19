@@ -400,6 +400,8 @@ model guildsettings {
   editrpcommands    Boolean  @db.Boolean @default(true)
   lan               String   @db.Text    @default("en-GB")
   errorchannel      String?  @db.VarChar
+  statuschannel     String?  @db.VarChar
+  updateschannel    String?  @db.Text
   enabledrp         Boolean  @db.Boolean @default(false)
   rpenableruns      Decimal  @db.Decimal @default(0)
   lastrpsyncrun     Decimal? @db.Decimal
