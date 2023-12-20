@@ -253,7 +253,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     if (!oldSettings?.updateschannel) return;
 
     [...(ch.cache.webhooks.cache.get(guild.id)?.get(oldSettings.updateschannel)?.values() ?? [])]
-     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '827312892982198272')
+     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '765743834118225961')
      .map((w) => ch.request.webhooks.delete(guild, w));
     return;
    }
