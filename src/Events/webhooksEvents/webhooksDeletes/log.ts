@@ -1,10 +1,7 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
-export default async (
- webhook: Discord.Webhook,
- channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
-) => {
+export default async (webhook: Discord.Webhook, channel: Discord.GuildTextBasedChannel) => {
  const channels = await ch.getLogChannels('webhookevents', channel.guild);
  if (!channels) return;
 

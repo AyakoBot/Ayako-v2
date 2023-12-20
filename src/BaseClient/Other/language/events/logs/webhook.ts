@@ -7,7 +7,7 @@ export default (t: CT.Language) => ({
   webhook: Discord.Webhook,
   webhookType: string,
   user: Discord.User,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descCreateAudit, {
@@ -18,7 +18,7 @@ export default (t: CT.Language) => ({
  descCreate: (
   webhook: Discord.Webhook,
   webhookType: string,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descCreate, {
@@ -29,7 +29,7 @@ export default (t: CT.Language) => ({
   webhook: Discord.Webhook,
   webhookType: string,
   user: Discord.User,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descDeleteAudit, {
@@ -40,7 +40,7 @@ export default (t: CT.Language) => ({
  descDelete: (
   webhook: Discord.Webhook,
   webhookType: string,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descDelete, {
@@ -51,7 +51,7 @@ export default (t: CT.Language) => ({
   webhook: Discord.Webhook,
   webhookType: string,
   user: Discord.User,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descUpdateAudit, {
@@ -62,7 +62,7 @@ export default (t: CT.Language) => ({
  descUpdate: (
   webhook: Discord.Webhook,
   webhookType: string,
-  channel: Discord.GuildChannel,
+  channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
   t.stp(t.JSON.events.logs.webhook.descUpdate, {

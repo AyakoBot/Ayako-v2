@@ -5,7 +5,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (
  oldWebhook: Discord.Webhook,
  webhook: Discord.Webhook,
- channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
+ channel: Discord.GuildTextBasedChannel,
 ) => {
  ch.cache.webhooks.set(webhook);
  log(oldWebhook, webhook, channel);

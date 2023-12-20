@@ -5,7 +5,7 @@ import type CT from '../../../Typings/CustomTypings.js';
 export default async (
  oldWebhook: Discord.Webhook,
  webhook: Discord.Webhook,
- channel: Discord.TextChannel | Discord.NewsChannel | Discord.VoiceChannel | Discord.ForumChannel,
+ channel: Discord.GuildTextBasedChannel,
 ) => {
  const channels = await ch.getLogChannels('webhookevents', channel.guild);
  if (!channels) return;
