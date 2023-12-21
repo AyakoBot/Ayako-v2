@@ -16,11 +16,7 @@ export default async (
  body: Discord.RESTPutAPIApplicationGuildCommandsJSONBody,
 ) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
-  .bulkOverwriteGuildCommands(
-   await getBotIdFromGuild(guild),
-   guild.id,
-   body.map((c) => ({ ...c, default_member_permissions: String(c.default_member_permissions) })),
-  )
+  .bulkOverwriteGuildCommands(await getBotIdFromGuild(guild), guild.id, body)
   .then((cmds) => {
    const parsed = cmds.map(
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),

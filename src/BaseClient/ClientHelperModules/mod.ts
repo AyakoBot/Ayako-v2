@@ -53,17 +53,22 @@ export default async <T extends CT.ModTypes>(
  const runAction = async () => {
   switch (type) {
    case 'banAdd':
-    return mod.banAdd(options as unknown as CT.ModOptions<'banAdd'>, language, message, cmd);
+    return mod.banAdd(
+     options as unknown as CT.ModOptions<CT.ModTypes.BanAdd>,
+     language,
+     message,
+     cmd,
+    );
    case 'channelBanAdd':
     return mod.channelBanAdd(
-     options as unknown as CT.ModOptions<'channelBanAdd'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanAdd>,
      language,
      message,
      cmd,
     );
    case 'softBanAdd':
     return mod.softBanAdd(
-     options as unknown as CT.ModOptions<'softBanAdd'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.SoftBanAdd>,
      language,
      message,
      cmd,
@@ -72,21 +77,21 @@ export default async <T extends CT.ModTypes>(
     return mod.kickAdd(options, language, message, cmd);
    case 'tempBanAdd':
     return mod.tempBanAdd(
-     options as unknown as CT.ModOptions<'tempBanAdd'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.TempBanAdd>,
      language,
      message,
      cmd,
     );
    case 'tempChannelBanAdd':
     return mod.tempChannelBanAdd(
-     options as unknown as CT.ModOptions<'tempChannelBanAdd'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.TempChannelBanAdd>,
      language,
      message,
      cmd,
     );
    case 'tempMuteAdd':
     return mod.tempMuteAdd(
-     options as unknown as CT.ModOptions<'tempMuteAdd'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.TempMuteAdd>,
      language,
      message,
      cmd,
@@ -99,18 +104,23 @@ export default async <T extends CT.ModTypes>(
     return mod.softWarnAdd();
    case 'roleRemove':
     return mod.roleRemove(
-     options as unknown as CT.ModOptions<'roleRemove'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.RoleRemove>,
      language,
      message,
      cmd,
     );
    case 'roleAdd':
-    return mod.roleAdd(options as unknown as CT.ModOptions<'roleAdd'>, language, message, cmd);
+    return mod.roleAdd(
+     options as unknown as CT.ModOptions<CT.ModTypes.RoleAdd>,
+     language,
+     message,
+     cmd,
+    );
    case 'muteRemove':
     return mod.muteRemove(options, language, message, cmd);
    case 'channelBanRemove':
     return mod.channelBanRemove(
-     options as unknown as CT.ModOptions<'channelBanRemove'>,
+     options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanRemove>,
      language,
      message,
      cmd,
@@ -123,12 +133,20 @@ export default async <T extends CT.ModTypes>(
   }
  };
 
- if (!(await runAction())) {
+ const action = await runAction();
+
+ if (!action || (typeof action !== 'boolean' && !action.success)) {
   cache.punishments.delete(options.target.id);
   return;
  }
 
- runBasics2(options, message, language, type, cmd);
+ if (typeof action !== 'boolean') {
+  type = action.type as T;
+ }
+
+ if (type === 'strikeAdd') return;
+
+ runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);
  cache.punishments.delete(options.target.id);
 };
 

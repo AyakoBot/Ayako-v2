@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.kickAdd,
- dm: (options: CT.ModOptions<'kickAdd'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.KickAdd>) =>
   t.stp(t.JSON.mod.execution.kickAdd.dm, {
    guild: t.languageFunction.getGuild(options.guild),
   }),

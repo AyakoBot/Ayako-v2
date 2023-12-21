@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.channelBanRemove,
- dm: (options: CT.ModOptions<'channelBanRemove'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.ChannelBanRemove>) =>
   t.stp(t.JSON.mod.execution.channelBanRemove.dm, {
    channel: t.languageFunction.getChannel(options.channel),
   }),

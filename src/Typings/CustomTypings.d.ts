@@ -221,23 +221,24 @@ export type Onboarding = {
  }[];
 };
 
-export type ModTypes =
- | 'roleAdd'
- | 'roleRemove'
- | 'tempMuteAdd'
- | 'muteRemove'
- | 'banAdd'
- | 'softBanAdd'
- | 'tempBanAdd'
- | 'channelBanAdd'
- | 'tempChannelBanAdd'
- | 'channelBanRemove'
- | 'banRemove'
- | 'kickAdd'
- | 'warnAdd'
- | 'softWarnAdd'
- | 'strikeAdd'
- | 'unAfk';
+export enum ModTypes {
+ RoleAdd = 'roleAdd',
+ RoleRemove = 'roleRemove',
+ TempMuteAdd = 'tempMuteAdd',
+ MuteRemove = 'muteRemove',
+ BanAdd = 'banAdd',
+ SoftBanAdd = 'softBanAdd',
+ TempBanAdd = 'tempBanAdd',
+ ChannelBanAdd = 'channelBanAdd',
+ TempChannelBanAdd = 'tempChannelBanAdd',
+ ChannelBanRemove = 'channelBanRemove',
+ BanRemove = 'banRemove',
+ KickAdd = 'kickAdd',
+ WarnAdd = 'warnAdd',
+ SoftWarnAdd = 'softWarnAdd',
+ StrikeAdd = 'strikeAdd',
+ UnAfk = 'unAfk',
+}
 
 type BaseOptions = {
  reason: string;
@@ -263,17 +264,27 @@ type Temp = { duration: number };
 type Empty = NonNullable<unknown>;
 type DeleteMessageSeconds = { deleteMessageSeconds: number };
 
+type SpecificOpts = {
+ [ModTypes.RoleAdd]: Roles;
+ [ModTypes.RoleRemove]: Roles;
+ [ModTypes.TempMuteAdd]: Temp;
+ [ModTypes.MuteRemove]: Empty;
+ [ModTypes.BanAdd]: DeleteMessageSeconds;
+ [ModTypes.SoftBanAdd]: DeleteMessageSeconds;
+ [ModTypes.TempBanAdd]: Temp & DeleteMessageSeconds;
+ [ModTypes.ChannelBanAdd]: Channel;
+ [ModTypes.TempChannelBanAdd]: Channel & Temp;
+ [ModTypes.ChannelBanRemove]: Channel;
+ [ModTypes.BanRemove]: Empty;
+ [ModTypes.KickAdd]: Empty;
+ [ModTypes.WarnAdd]: Empty;
+ [ModTypes.SoftWarnAdd]: Empty;
+ [ModTypes.StrikeAdd]: Empty;
+ [ModTypes.UnAfk]: Empty;
+};
+
 type SpecificOptions = {
- roleAdd: Roles;
- roleRemove: Roles;
- tempMuteAdd: Temp;
- banAdd: DeleteMessageSeconds;
- softBanAdd: DeleteMessageSeconds;
- tempBanAdd: Temp & DeleteMessageSeconds;
- channelBanAdd: Channel;
- tempChannelBanAdd: Channel & Temp;
- channelBanRemove: Channel;
- unAfk: Empty;
+ [K in ModTypes]: SpecificOpts[K];
 };
 
 export type ModOptions<T extends ModTypes> = BaseOptions & SpecificOptions[T];

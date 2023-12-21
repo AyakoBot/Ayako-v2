@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.roleAdd,
- dm: (options: CT.ModOptions<'roleAdd'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.RoleAdd>) =>
   t.stp(t.JSON.mod.execution.roleAdd.dm, {
    roles: options.roles.join(', '),
    haveHas:
@@ -13,7 +13,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.execution.roleAdd.alreadyApplied, {
    target: t.languageFunction.getUser(target),
   }),
- success: (target: Discord.User, options: CT.ModOptions<'roleAdd'>) =>
+ success: (target: Discord.User, options: CT.ModOptions<CT.ModTypes.RoleAdd>) =>
   t.stp(t.JSON.mod.execution.roleAdd.success, {
    roles: options.roles.join(', '),
    wasWere:

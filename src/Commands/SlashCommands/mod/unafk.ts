@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/CustomTypings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -27,7 +28,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  updateNickname(reason, member);
 
  ch.replyCmd(cmd, { content: lan.unAfk(user) });
- ch.log(cmd.guild, 'unAfk', user, cmd.user, {
+ ch.log(cmd.guild, CT.ModTypes.UnAfk, user, cmd.user, {
   reason,
   dbOnly: false,
   guild: cmd.guild,

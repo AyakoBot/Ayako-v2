@@ -7,7 +7,7 @@ export default (t: CT.Language) => ({
  description: (
   target: Discord.User,
   executor: Discord.User,
-  options: CT.ModOptions<'tempMuteAdd'>,
+  options: CT.ModOptions<CT.ModTypes.TempMuteAdd>,
  ) =>
   t.stp(t.JSON.mod.logs.tempMuteAdd.description, {
    target: t.languageFunction.getUser(target),

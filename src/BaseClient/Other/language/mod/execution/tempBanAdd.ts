@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.tempBanAdd,
- dm: (options: CT.ModOptions<'tempBanAdd'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.TempBanAdd>) =>
   t.stp(t.JSON.mod.execution.tempBanAdd.dm, {
    guild: t.languageFunction.getGuild(options.guild),
   }),

@@ -16,7 +16,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
  if (!channel) return;
  if (await ch.isDeleteable(msg)) await ch.request.channels.deleteMessage(msg);
 
- const modOptions: CT.ModOptions<'channelBanRemove'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.ChannelBanRemove> = {
   reason,
   guild: msg.guild,
   target: user,
@@ -26,7 +26,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   channel: channel.isThread() ? (channel.parent as NonNullable<typeof channel.parent>) : channel,
  };
 
- ch.mod(msg, 'channelBanRemove', modOptions);
+ ch.mod(msg, CT.ModTypes.ChannelBanRemove, modOptions);
 };
 
 export default cmd;

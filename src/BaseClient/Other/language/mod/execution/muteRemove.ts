@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.muteRemove,
- dm: (options: CT.ModOptions<'muteRemove'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.MuteRemove>) =>
   t.stp(t.JSON.mod.execution.muteRemove.dm, {
    options,
   }),

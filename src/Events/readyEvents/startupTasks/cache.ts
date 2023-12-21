@@ -169,17 +169,17 @@ export const tasks = {
    {
     rows: () => ch.DataBase.punish_mutes.findMany(where),
     cache: ch.cache.mutes,
-    event: 'muteRemove',
+    event: CT.ModTypes.MuteRemove,
    },
    {
     rows: () => ch.DataBase.punish_tempbans.findMany(where),
     cache: ch.cache.bans,
-    event: 'banRemove',
+    event: CT.ModTypes.BanRemove,
    },
    {
     rows: () => ch.DataBase.punish_tempchannelbans.findMany(where),
     cache: ch.cache.channelBans,
-    event: 'channelBanRemove',
+    event: CT.ModTypes.ChannelBanRemove,
    },
   ] as const;
 
@@ -220,7 +220,9 @@ export const tasks = {
              (m as Prisma.punish_tempchannelbans).banchannelid,
             ) as Discord.GuildChannel)
           : undefined,
-       } as CT.ModOptions<'channelBanRemove' | 'banRemove' | 'muteRemove'>,
+       } as CT.ModOptions<
+        CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
+       >,
       );
      }),
      guild.id,

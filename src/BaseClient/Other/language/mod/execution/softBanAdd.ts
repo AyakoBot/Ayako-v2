@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.softBanAdd,
- dm: (options: CT.ModOptions<'softBanAdd'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.SoftBanAdd>) =>
   t.stp(t.JSON.mod.execution.softBanAdd.dm, {
    guild: t.languageFunction.getGuild(options.guild),
   }),

@@ -32,9 +32,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  ch.mod(
   cmd,
-  duration ? 'tempChannelBanAdd' : 'channelBanAdd',
+  duration ? CT.ModTypes.TempChannelBanAdd : CT.ModTypes.ChannelBanAdd,
   modOptions as CT.ModOptions<
-   typeof duration extends string ? 'tempChannelBanAdd' : 'channelBanAdd'
+   typeof duration extends string ? CT.ModTypes.TempChannelBanAdd : CT.ModTypes.ChannelBanAdd
   >,
  );
 };

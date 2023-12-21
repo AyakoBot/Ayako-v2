@@ -14,7 +14,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
 
  const reason = args?.slice(1).join(' ');
 
- const modOptions: CT.ModOptions<'kickAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.KickAdd> = {
   reason: reason ?? '',
   guild: msg.guild,
   target: user,
@@ -23,7 +23,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   skipChecks: false,
  };
 
- ch.mod(msg, 'kickAdd', modOptions);
+ ch.mod(msg, CT.ModTypes.KickAdd, modOptions);
 };
 
 export default cmd;

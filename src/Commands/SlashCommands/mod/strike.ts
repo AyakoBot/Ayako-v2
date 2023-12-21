@@ -26,7 +26,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
 
- const modOptions: CT.ModOptions<'strikeAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.StrikeAdd> = {
   reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
@@ -35,7 +35,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, 'strikeAdd', modOptions);
+ ch.mod(cmd, CT.ModTypes.StrikeAdd, modOptions);
 
  const applyingStrike = await getStrike(user, cmd.guild);
  const member = cmd.options.getMember('user');

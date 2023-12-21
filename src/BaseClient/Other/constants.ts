@@ -19,6 +19,14 @@ export const AllNonThreadGuildChannelTypes = [
  Discord.ChannelType.GuildForum,
 ] as const;
 
+export const ChannelBanBits = [
+ Discord.PermissionsBitField.Flags.SendMessages,
+ Discord.PermissionsBitField.Flags.SendMessagesInThreads,
+ Discord.PermissionsBitField.Flags.ViewChannel,
+ Discord.PermissionsBitField.Flags.AddReactions,
+ Discord.PermissionsBitField.Flags.Connect,
+] as const;
+
 export enum TableNamesPrismaTranslation {
  'voice-hubs' = 'voicehubs',
  voicechannels = 'voicechannels',

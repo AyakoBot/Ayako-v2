@@ -11,7 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const language = await ch.getLanguage(cmd.guildId);
 
- const modOptions: CT.ModOptions<'softBanAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.SoftBanAdd> = {
   reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
@@ -23,5 +23,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, 'softBanAdd', modOptions);
+ ch.mod(cmd, CT.ModTypes.SoftBanAdd, modOptions);
 };

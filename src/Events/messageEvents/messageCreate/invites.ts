@@ -33,7 +33,7 @@ export default async (msg: Discord.Message<true>) => {
 
  switch (settings.action) {
   case 'ban':
-   ch.mod(msg, 'banAdd', {
+   ch.mod(msg, CT.ModTypes.BanAdd, {
     ...modOptions,
     deleteMessageSeconds:
      Number(settings.deletemessageseconds) > 604800
@@ -42,7 +42,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'channelban':
-   ch.mod(msg, 'channelBanAdd', {
+   ch.mod(msg, CT.ModTypes.ChannelBanAdd, {
     ...modOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -50,13 +50,13 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'kick':
-   ch.mod(msg, 'kickAdd', modOptions);
+   ch.mod(msg, CT.ModTypes.KickAdd, modOptions);
    break;
   case 'tempmute':
-   ch.mod(msg, 'tempMuteAdd', { ...modOptions, duration: Number(settings.duration) });
+   ch.mod(msg, CT.ModTypes.TempMuteAdd, { ...modOptions, duration: Number(settings.duration) });
    break;
   case 'tempchannelban':
-   ch.mod(msg, 'tempChannelBanAdd', {
+   ch.mod(msg, CT.ModTypes.TempChannelBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
     channel: msg.channel.isThread()
@@ -65,13 +65,13 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'warn':
-   ch.mod(msg, 'warnAdd', modOptions);
+   ch.mod(msg, CT.ModTypes.WarnAdd, modOptions);
    break;
   case 'strike':
-   ch.mod(msg, 'strikeAdd', modOptions);
+   ch.mod(msg, CT.ModTypes.StrikeAdd, modOptions);
    break;
   case 'tempban':
-   ch.mod(msg, 'tempBanAdd', {
+   ch.mod(msg, CT.ModTypes.TempBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
     deleteMessageSeconds:
@@ -81,7 +81,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'softban':
-   ch.mod(msg, 'softBanAdd', {
+   ch.mod(msg, CT.ModTypes.SoftBanAdd, {
     ...modOptions,
     deleteMessageSeconds:
      Number(settings.deletemessageseconds) > 604800
@@ -90,7 +90,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   default: {
-   ch.mod(msg, 'softWarnAdd', {
+   ch.mod(msg, CT.ModTypes.SoftWarnAdd, {
     ...modOptions,
     reason: language.censor.warnInvite,
    });

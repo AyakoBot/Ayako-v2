@@ -14,7 +14,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
 
  const reason = args?.slice(1).join(' ');
 
- const modOptions: CT.ModOptions<'softBanAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.SoftBanAdd> = {
   reason: reason ?? '',
   guild: msg.guild,
   target: user,
@@ -24,7 +24,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   deleteMessageSeconds: 604800,
  };
 
- ch.mod(msg, 'softBanAdd', modOptions);
+ ch.mod(msg, CT.ModTypes.SoftBanAdd, modOptions);
 };
 
 export default cmd;

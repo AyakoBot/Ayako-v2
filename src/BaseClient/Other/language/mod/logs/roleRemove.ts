@@ -6,7 +6,7 @@ export default (t: CT.Language) => ({
  description: (
   target: Discord.User,
   executor: Discord.User,
-  options: CT.ModOptions<'roleRemove'>,
+  options: CT.ModOptions<CT.ModTypes.RoleRemove>,
  ) =>
   t.stp(t.JSON.mod.logs.roleRemove.description, {
    roles: options.roles.map((r) => t.languageFunction.getRole(r)),

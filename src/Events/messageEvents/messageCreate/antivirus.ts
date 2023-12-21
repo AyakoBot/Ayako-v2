@@ -5,7 +5,7 @@ import fetch from 'node-fetch';
 import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import auth from '../../../auth.json' assert { type: 'json' };
-import CT, { DePromisify } from '../../../Typings/CustomTypings.js';
+import CT, { DePromisify, ModTypes } from '../../../Typings/CustomTypings.js';
 import pack from '../../../../package.json' assert { type: 'json' };
 import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
 import { API } from '../../../BaseClient/Client.js';
@@ -509,36 +509,36 @@ export const performPunishment = (
 
  switch (settings.action) {
   case 'ban':
-   return ch.mod(msg, 'banAdd', {
+   return ch.mod(msg, ModTypes.BanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'channelban':
-   return ch.mod(msg, 'channelBanAdd', {
+   return ch.mod(msg, ModTypes.ChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
    });
   case 'kick':
-   return ch.mod(msg, 'kickAdd', baseOptions);
+   return ch.mod(msg, ModTypes.KickAdd, baseOptions);
   case 'softban':
-   return ch.mod(msg, 'softBanAdd', {
+   return ch.mod(msg, ModTypes.SoftBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'strike':
-   return ch.mod(msg, 'strikeAdd', baseOptions);
+   return ch.mod(msg, ModTypes.StrikeAdd, baseOptions);
   case 'warn':
-   return ch.mod(msg, 'warnAdd', baseOptions);
+   return ch.mod(msg, ModTypes.WarnAdd, baseOptions);
   case 'tempban':
-   return ch.mod(msg, 'tempBanAdd', {
+   return ch.mod(msg, ModTypes.TempBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
     duration: Number(settings.duration),
    });
   case 'tempchannelban':
-   return ch.mod(msg, 'tempChannelBanAdd', {
+   return ch.mod(msg, ModTypes.TempChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -546,7 +546,10 @@ export const performPunishment = (
     duration: Number(settings.duration),
    });
   case 'tempmute':
-   return ch.mod(msg, 'tempMuteAdd', { ...baseOptions, duration: Number(settings.duration) });
+   return ch.mod(msg, ModTypes.TempMuteAdd, {
+    ...baseOptions,
+    duration: Number(settings.duration),
+   });
   default:
    throw new Error(`Invalid action: ${settings.action}`);
  }

@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const language = await ch.getLanguage(cmd.guildId);
 
- const modOptions: CT.ModOptions<'tempBanAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.TempBanAdd> = {
   reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
@@ -25,5 +25,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, 'tempBanAdd', modOptions);
+ ch.mod(cmd, CT.ModTypes.TempBanAdd, modOptions);
 };

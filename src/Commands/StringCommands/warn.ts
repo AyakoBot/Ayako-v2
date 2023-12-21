@@ -15,7 +15,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
  if (!user) return;
  if (await ch.isDeleteable(msg)) await ch.request.channels.deleteMessage(msg);
 
- const modOptions: CT.ModOptions<'warnAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.WarnAdd> = {
   reason: reason ?? '',
   guild: msg.guild,
   target: user,
@@ -24,7 +24,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   skipChecks: false,
  };
 
- ch.mod(msg, 'warnAdd', modOptions);
+ ch.mod(msg, CT.ModTypes.WarnAdd, modOptions);
 };
 
 export default cmd;

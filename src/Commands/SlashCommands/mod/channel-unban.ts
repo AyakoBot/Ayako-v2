@@ -12,7 +12,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const language = await ch.getLanguage(cmd.guildId);
 
- const modOptions: CT.ModOptions<'channelBanRemove'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.ChannelBanRemove> = {
   reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
@@ -22,5 +22,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, 'channelBanRemove', modOptions);
+ ch.mod(cmd, CT.ModTypes.ChannelBanRemove, modOptions);
 };

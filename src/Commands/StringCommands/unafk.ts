@@ -15,7 +15,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
  if (!user) return;
  if (await ch.isDeleteable(msg)) await ch.request.channels.deleteMessage(msg);
 
- const modOptions: CT.ModOptions<'unAfk'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.UnAfk> = {
   reason: reason ?? '',
   guild: msg.guild,
   target: user,
@@ -24,7 +24,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   skipChecks: false,
  };
 
- ch.mod(msg, 'unAfk', modOptions);
+ ch.mod(msg, CT.ModTypes.UnAfk, modOptions);
 };
 
 export default cmd;

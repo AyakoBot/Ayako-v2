@@ -7,7 +7,7 @@ export default (t: CT.Language) => ({
  description: (
   target: Discord.User,
   executor: Discord.User,
-  options: CT.ModOptions<'tempChannelBanAdd'>,
+  options: CT.ModOptions<CT.ModTypes.TempChannelBanAdd>,
  ) =>
   t.stp(t.JSON.mod.logs.tempChannelBanAdd.description, {
    target: t.languageFunction.getUser(target),

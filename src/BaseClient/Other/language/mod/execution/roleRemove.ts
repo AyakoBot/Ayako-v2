@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution.roleRemove,
- dm: (options: CT.ModOptions<'roleRemove'>) =>
+ dm: (options: CT.ModOptions<CT.ModTypes.RoleRemove>) =>
   t.stp(t.JSON.mod.execution.roleRemove.dm, {
    roles: options.roles.join(', '),
    haveHas:
@@ -13,7 +13,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.execution.roleRemove.alreadyApplied, {
    target: t.languageFunction.getUser(target),
   }),
- success: (target: Discord.User, options: CT.ModOptions<'roleRemove'>) =>
+ success: (target: Discord.User, options: CT.ModOptions<CT.ModTypes.RoleRemove>) =>
   t.stp(t.JSON.mod.execution.roleRemove.success, {
    roles: options.roles.join(', '),
    wasWere:

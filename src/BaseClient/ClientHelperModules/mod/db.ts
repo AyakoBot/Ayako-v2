@@ -26,7 +26,7 @@ export default async <T extends CT.ModTypes>(
     data: baseData,
    });
   case 'channelBanAdd': {
-   const opts = options as unknown as CT.ModOptions<'channelBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanAdd>;
    return DataBase.punish_channelbans.create({
     data: { ...baseData, banchannelid: opts.channel.id },
    });
@@ -36,19 +36,19 @@ export default async <T extends CT.ModTypes>(
     data: baseData,
    });
   case 'tempBanAdd': {
-   const opts = options as unknown as CT.ModOptions<'tempBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempBanAdd>;
    return DataBase.punish_tempbans.create({
     data: { ...baseData, duration: opts.duration },
    });
   }
   case 'tempChannelBanAdd': {
-   const opts = options as unknown as CT.ModOptions<'tempChannelBanAdd'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempChannelBanAdd>;
    return DataBase.punish_tempchannelbans.create({
     data: { ...baseData, banchannelid: opts.channel.id, duration: opts.duration },
    });
   }
   case 'tempMuteAdd': {
-   const opts = options as unknown as CT.ModOptions<'tempMuteAdd'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempMuteAdd>;
    return DataBase.punish_tempmutes.create({
     data: { ...baseData, duration: opts.duration },
    });
@@ -58,7 +58,7 @@ export default async <T extends CT.ModTypes>(
     data: baseData,
    });
   case 'muteRemove': {
-   const opts = options as unknown as CT.ModOptions<'muteRemove'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.MuteRemove>;
 
    const prevMute = await DataBase.punish_tempmutes.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
@@ -79,7 +79,7 @@ export default async <T extends CT.ModTypes>(
     : undefined;
   }
   case 'channelBanRemove': {
-   const opts = options as unknown as CT.ModOptions<'channelBanRemove'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanRemove>;
    const prevCBan = await DataBase.punish_tempchannelbans.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
    });
@@ -97,7 +97,7 @@ export default async <T extends CT.ModTypes>(
     : undefined;
   }
   case 'banRemove': {
-   const opts = options as unknown as CT.ModOptions<'banRemove'>;
+   const opts = options as unknown as CT.ModOptions<CT.ModTypes.BanRemove>;
    const prevBan = await DataBase.punish_tempbans.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
    });

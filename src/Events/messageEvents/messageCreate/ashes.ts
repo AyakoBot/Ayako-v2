@@ -34,7 +34,7 @@ const banHandler = async (msg: Discord.Message) => {
   if (!msg.guildId) return;
   if (!client.user?.id) return;
 
-  const modOptions: CT.ModOptions<'banRemove'> = {
+  const modOptions: CT.ModOptions<CT.ModTypes.BanRemove> = {
    target: user,
    executor: executor || client.user,
    dbOnly: false,
@@ -43,7 +43,7 @@ const banHandler = async (msg: Discord.Message) => {
    skipChecks: false,
   };
 
-  ch.mod(undefined, isUnban ? 'banRemove' : 'banAdd', modOptions);
+  ch.mod(undefined, isUnban ? CT.ModTypes.BanRemove : CT.ModTypes.BanAdd, modOptions);
  });
 };
 

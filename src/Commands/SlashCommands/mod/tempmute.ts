@@ -17,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const modOptions: CT.ModOptions<'tempMuteAdd'> = {
+ const modOptions: CT.ModOptions<CT.ModTypes.TempMuteAdd> = {
   reason: reason ?? language.t.noReasonProvided,
   guild: cmd.guild,
   target: user,
@@ -27,5 +27,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, 'tempMuteAdd', modOptions);
+ ch.mod(cmd, CT.ModTypes.TempMuteAdd, modOptions);
 };

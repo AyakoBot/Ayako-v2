@@ -29,7 +29,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  ch.mod(
   cmd,
-  duration ? 'tempBanAdd' : 'banAdd',
-  modOptions as CT.ModOptions<typeof duration extends string ? 'tempBanAdd' : 'banAdd'>,
+  duration ? CT.ModTypes.TempBanAdd : CT.ModTypes.BanAdd,
+  modOptions as CT.ModOptions<
+   typeof duration extends string ? CT.ModTypes.TempBanAdd : CT.ModTypes.BanAdd
+  >,
  );
 };

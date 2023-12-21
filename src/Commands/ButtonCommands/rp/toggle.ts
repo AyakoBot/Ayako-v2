@@ -38,6 +38,7 @@ const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
  await ch.request.commands.bulkOverwriteGuildCommands(
   cmd.guild,
   (ch.cache.commands.get(cmd.guild.id) ?? cmd.guild.commands.cache.map((c) => c))
+   .filter((c) => !!c.guildId)
    .map((c) => c.toJSON() as Discord.APIApplicationCommand)
    .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
  );
