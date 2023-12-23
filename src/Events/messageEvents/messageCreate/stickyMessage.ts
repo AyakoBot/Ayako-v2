@@ -36,6 +36,7 @@ export default async (msg: Discord.Message<true>) => {
  ch.cache.stickyTimeouts.delete(msg.channelId);
  ch.cache.stickyTimeouts.set(
   msg.channelId,
+  stickyMessage.lastmsgid,
   Jobs.scheduleJob(new Date(Date.now() + 60000), async () => {
    const webhook = await ch.getChannelWebhook(msg.channel);
    if (!webhook) ch.error(msg.guild, new Error('Webhook to post Message with not found'));
@@ -94,6 +95,8 @@ export default async (msg: Discord.Message<true>) => {
      },
     })
     .then();
+
+   ch.cache.stickyTimeouts.delete(msg.channelId);
   }),
  );
 };

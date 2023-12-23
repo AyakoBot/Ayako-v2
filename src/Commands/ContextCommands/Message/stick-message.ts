@@ -4,11 +4,7 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const res = await ch.DataBase.stickymessages.findUnique({
-  where: { channelid: cmd.channelId },
- });
-
- ch.DataBase.stickymessages
+ const res = await ch.DataBase.stickymessages
   .upsert({
    where: { channelid: cmd.channelId },
    create: {
@@ -18,6 +14,7 @@ export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
     userid: cmd.user.id,
    },
    update: {},
+   select: { lastmsgid: true },
   })
   .then();
 

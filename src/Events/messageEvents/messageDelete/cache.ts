@@ -39,12 +39,16 @@ export default (msg: Discord.Message) => {
 
   ch.DataBase.giveawaycollection.delete({ where: { msgid: msg.id } }).then();
   ch.DataBase.giveawaycollection.delete({ where: { msgid: msg.id } }).then();
+
   ch.DataBase.stickymessages
-   .delete({
-    where: { lastmsgid: msg.id, channelid: msg.channel.id },
-   })
+   .delete({ where: { lastmsgid: msg.id, channelid: msg.channel.id } })
    .then();
  });
+ const stickyMsgJob = ch.cache.stickyTimeouts.find(msg.id);
+ if (stickyMsgJob) {
+  stickyMsgJob.job.cancel();
+  ch.cache.stickyTimeouts.delete(msg.channelId);
+ }
 
  ch.DataBase.suggestionvotes.delete({ where: { msgid: msg.id } }).then();
  ch.cache.deleteSuggestions.delete(msg.guildId, msg.id);
