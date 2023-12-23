@@ -123,7 +123,9 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
  if (fetchedMatches?.length) {
   const anyIsNotFromGuild = fetchedMatches.filter(
    (m) =>
-    !guild.invites.cache.has(new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1)),
+    !guild.invites.cache.has(
+     new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1).replace('invite/', ''),
+    ),
   );
   if (anyIsNotFromGuild.length) return true;
  }
