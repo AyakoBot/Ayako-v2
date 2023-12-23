@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -65,7 +66,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const embed: Discord.APIEmbed = {
   fields: [],
-  color: ch.constants.colors.ephemeral,
+  color: CT.Colors.Ephemeral,
  };
 
  categories.forEach((perms, name) => {

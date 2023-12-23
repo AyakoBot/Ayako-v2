@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import Commands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import * as CT from '../../../Typings/Typings.js';
 import permissions from '../../SlashCommands/mod/permissions.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 
 type CommandType = keyof CT.Language['slashCommands']['moderation']['permissions']['buttons'];
 

@@ -1,9 +1,9 @@
 import Prisma from '@prisma/client';
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as Jobs from 'node-schedule';
 import { API } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
  if (!cmd.inCachedGuild()) return;
@@ -35,7 +35,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
    name: accept ? lan.accepted : lan.rejected,
    url: ch.constants.standard.invite,
   },
-  color: accept ? ch.constants.colors.success : ch.constants.colors.danger,
+  color: accept ? CT.Colors.Success : CT.Colors.Danger,
   description: paragraph.length ? paragraph : undefined,
   fields: short.length
    ? [

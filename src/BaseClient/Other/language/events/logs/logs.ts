@@ -1,4 +1,4 @@
-import * as CT from '../../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../../Typings/Typings.js';
 import application from './application.js';
 import automodExec from './automodExec.js';
 import automodRule from './automodRule.js';

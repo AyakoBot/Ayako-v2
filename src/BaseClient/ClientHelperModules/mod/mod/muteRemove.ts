@@ -1,17 +1,16 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
-
+import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../DataBase.js';
 
-import { request } from '../../requestHandler.js';
-import type * as ModTypes from '../../mod.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import cache from '../../cache.js';
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import isModeratable from '../../isModeratable.js';
+import type * as ModTypes from '../../mod.js';
+import { request } from '../../requestHandler.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import permissionError from '../permissionError.js';
-import getMembers from '../getMembers.js';
 import err from '../err.js';
+import getMembers from '../getMembers.js';
+import permissionError from '../permissionError.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.MuteRemove>,

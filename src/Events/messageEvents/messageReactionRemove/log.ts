@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  reaction: Discord.MessageReaction,
@@ -24,7 +25,7 @@ export default async (
   },
   description: lan.descRemoved(reaction.emoji, user, msg),
   fields: [],
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 
@@ -45,7 +46,7 @@ export default async (
       } ${language.languageFunction.getEmote(r.emoji)}`,
     )
     .join(''),
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
   });
  }
 

@@ -1,6 +1,6 @@
-import commands from './SlashCommands.js';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import commands from './SlashCommands.js';
 
 export default async () => {
  if (client.shard?.mode !== 'process') return;

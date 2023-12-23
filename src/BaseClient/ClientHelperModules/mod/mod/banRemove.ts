@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-import { request } from '../../requestHandler.js';
-import type * as ModTypes from '../../mod.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import cache from '../../cache.js';
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as ModTypes from '../../mod.js';
+import { request } from '../../requestHandler.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import permissionError from '../permissionError.js';
 import err from '../err.js';
+import permissionError from '../permissionError.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.BanRemove>,

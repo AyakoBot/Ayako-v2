@@ -1,8 +1,8 @@
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import { CaptchaGenerator } from 'captcha-canvas';
+import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
@@ -79,7 +79,7 @@ const log = async (
     },
     description: language.verification.log.start(cmd.user),
     timestamp: new Date(Date.now()).toString(),
-    color: ch.constants.colors.loading,
+    color: CT.Colors.Loading,
    },
   ],
  });

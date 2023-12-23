@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -31,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     'exemptRoles',
     rule.exemptRoles.map((c) => c.id),
-    'role',
+    CT.EditorTypes.Role,
     cmd.guild,
    ),
   ],
@@ -41,8 +42,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      ch.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      'roles',
-      'autoModRule/roles',
+      CT.EditorTypes.Roles,
+      CT.AutoModEditorType.Roles,
       settingName,
       id,
       rule.exemptRoles
@@ -60,7 +61,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       custom_id: `settings/autoModRule/display_${id}`,
       emoji: ch.emotes.back,
      },
-     ch.settingsHelpers.changeHelpers.done(settingName, 'role', 'autoModRule/roles', language, id),
+     ch.settingsHelpers.changeHelpers.done(
+      settingName,
+      'role',
+      CT.AutoModEditorType.Roles,
+      language,
+      id,
+     ),
      ch.settingsHelpers.changeHelpers.makeEmpty(
       settingName,
       'exemptRoles',

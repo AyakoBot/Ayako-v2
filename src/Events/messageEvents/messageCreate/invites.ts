@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;

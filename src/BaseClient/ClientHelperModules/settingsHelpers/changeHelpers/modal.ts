@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
 
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  name: T,
  fieldName: string,
 ): Discord.APIButtonComponent => ({

@@ -1,9 +1,9 @@
 import type * as Discord from 'discord.js';
 
-import string from './string.js';
 import hex from './hex.js';
 import img from './img.js';
 import link from './link.js';
+import string from './string.js';
 import timestamp from './timestamp.js';
 
 const editors = {

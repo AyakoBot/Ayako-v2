@@ -1,8 +1,9 @@
+import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import { runPunishment } from '../../../Commands/ButtonCommands/antiraid/punish.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const settings = await ch.DataBase.antiraid.findUnique({
@@ -173,7 +174,7 @@ const postMessage = async (
      },
      title: lan.title,
      description: lan.desc(last5mins.length, caughtUsers.length),
-     color: ch.constants.colors.danger,
+     color: CT.Colors.Danger,
      fields: [
       {
        name: lan.actionsTaken,

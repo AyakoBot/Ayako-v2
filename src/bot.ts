@@ -1,5 +1,5 @@
-import sms from 'source-map-support';
 /* eslint-disable no-console */
+import sms from 'source-map-support';
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 import { getReady } from './Events/readyEvents/ready.js';

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;
@@ -51,7 +51,10 @@ export default async (msg: Discord.Message<true>) => {
    ch.mod(msg, CT.ModTypes.KickAdd, modOptions);
    break;
   case 'tempmute':
-   ch.mod(msg, CT.ModTypes.TempMuteAdd, { ...modOptions, duration: Number(settings.duration) });
+   ch.mod(msg, CT.ModTypes.TempMuteAdd, {
+    ...modOptions,
+    duration: Number(settings.duration),
+   });
    break;
   case 'tempchannelban':
    ch.mod(msg, CT.ModTypes.TempChannelBanAdd, {

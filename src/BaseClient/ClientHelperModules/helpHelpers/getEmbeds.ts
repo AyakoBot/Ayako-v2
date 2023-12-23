@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import constants from '../../Other/constants.js';
 import cache from '../cache.js';
 import emotes from '../emotes.js';
@@ -38,7 +38,7 @@ export default (
   : cmd.client.application.commands.cache.map((c) => c);
 
  const embed: Discord.APIEmbed = {
-  color: constants.colors.base,
+  color: CT.Colors.Base,
   title: lan.categories[type as keyof typeof lan.categories],
   description: '',
  };
@@ -96,7 +96,7 @@ export default (
   const fieldChunk = fieldChunks.shift();
 
   embeds.push({
-   color: constants.colors.base,
+   color: CT.Colors.Base,
    description: fieldChunk?.shift()?.value ?? '\u200b',
    fields: fieldChunk ?? [],
    footer: {

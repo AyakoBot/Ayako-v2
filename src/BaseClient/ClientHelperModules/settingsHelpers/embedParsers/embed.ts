@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
+import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../DataBase.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 
 /**
  * Parser for embed type settings.

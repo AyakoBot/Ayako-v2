@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  fieldName: string,
  settingName: T,
- type: string,
+ type: CT.EditorTypes,
  options: {
   options: Discord.StringSelectMenuComponent['options'];
   placeholder?: string;

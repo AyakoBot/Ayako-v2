@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import invite from './info/invite.js';
 import emojis from './info/emojis.js';
 import role from './info/role.js';

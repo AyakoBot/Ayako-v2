@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../Typings/Typings.js';
 import afk from '../SlashCommands/afk.js';
-import * as CT from '../../Typings/CustomTypings.js';
 
 export const takesFirstArg = false;
 export const thisGuildOnly = [];

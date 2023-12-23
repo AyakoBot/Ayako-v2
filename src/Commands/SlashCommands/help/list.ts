@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import SlashCommands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const stringCommandFiles = (await getCommand('StringCommands')).filter((c) =>
@@ -47,7 +48,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  const commandEmbed: Discord.APIEmbed = {
-  color: ch.constants.colors.base,
+  color: CT.Colors.Base,
   title: lan.title,
   description: Array.from(commands, ([, c]) => c)
    .map(

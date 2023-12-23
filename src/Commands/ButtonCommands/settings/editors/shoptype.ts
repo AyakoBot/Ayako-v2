@@ -1,22 +1,26 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 type Types =
- | 'punishment'
- | 'shoptype'
- | 'language'
- | 'auto-punishment'
- | 'antiraid-punishment'
- | 'questions';
+ | CT.EditorTypes.Punishment
+ | CT.EditorTypes.ShopType
+ | CT.EditorTypes.Language
+ | CT.EditorTypes.AutoPunishment
+ | CT.EditorTypes.AntiRaidPunishment
+ | CT.EditorTypes.Questions;
 
-export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
+export default async (
+ cmd: Discord.ButtonInteraction,
+ args: string[],
+ type: Types = CT.EditorTypes.ShopType,
+) => {
  if (!cmd.inCachedGuild()) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -82,7 +86,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], type: Type
 
 export const getOptions = (type: Types, language: CT.Language) => {
  switch (type) {
-  case 'antiraid-punishment': {
+  case CT.EditorTypes.AntiRaidPunishment: {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],
     'strike' | 'warn' | 'tempmute' | 'tempchannelban' | 'channelban' | 'tempban' | 'softban'
@@ -105,7 +109,7 @@ export const getOptions = (type: Types, language: CT.Language) => {
    delete obj.softban;
    return obj;
   }
-  case 'auto-punishment': {
+  case CT.EditorTypes.AutoPunishment: {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],
     'strike'
@@ -116,13 +120,13 @@ export const getOptions = (type: Types, language: CT.Language) => {
    delete obj.strike;
    return obj;
   }
-  case 'punishment':
+  case CT.EditorTypes.Punishment:
    return language.punishments;
-  case 'shoptype':
+  case CT.EditorTypes.ShopType:
    return language.shoptypes;
-  case 'language':
+  case CT.EditorTypes.Language:
    return language.languages;
-  case 'questions':
+  case CT.EditorTypes.Questions:
    return language.answertypes;
   default:
    return [];

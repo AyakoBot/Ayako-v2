@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import * as CT from '../../../Typings/Typings.js';
 
-import type * as ModTypes from '../mod.js';
-import constants from '../../Other/constants.js';
-import replyMsg from '../replyMsg.js';
-import replyCmd from '../replyCmd.js';
 import getLanguage from '../getLanguage.js';
-import { request } from '../requestHandler.js';
 import isDeleteable from '../isDeleteable.js';
+import type * as ModTypes from '../mod.js';
+import replyCmd from '../replyCmd.js';
+import replyMsg from '../replyMsg.js';
+import { request } from '../requestHandler.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -23,7 +23,7 @@ export default async (
  const payload = {
   embeds: [
    {
-    color: constants.colors.danger,
+    color: CT.Colors.Danger,
     description: language.mod.alreadyExecuting,
    },
   ],

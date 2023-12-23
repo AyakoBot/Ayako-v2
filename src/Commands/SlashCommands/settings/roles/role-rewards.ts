@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'role-rewards';
+const name = CT.SettingNames.RoleRewards;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -26,7 +25,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  lan,
 ) => {
  const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
@@ -37,7 +36,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
-    ) as unknown as CT.TableNamesMap[typeof name]),
+    ) as unknown as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[typeof name]]),
   );
 
  if (cmd.isButton()) {
@@ -61,7 +60,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  lan,
 ) => {
  const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]].findMany({
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -173,12 +172,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: language.slashCommands.settings.blrole,
+    name: language.slashCommands.settings.BLWL.blroleid,
     value: embedParsers.channels(settings?.blroleid, language),
     inline: false,
    },
    {
-    name: language.slashCommands.settings.bluser,
+    name: language.slashCommands.settings.BLWL.bluserid,
     value: embedParsers.users(settings?.bluserid, language),
     inline: false,
    },
@@ -198,7 +197,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.global(
     language,
     !!settings?.active,
-    'active',
+    CT.GlobalDescType.Active,
     name,
     Number(settings?.uniquetimestamp),
    ),
@@ -214,7 +213,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'roles',
     name,
     Number(settings?.uniquetimestamp),
-    'role',
+    CT.EditorTypes.Role,
    ),
    buttonParsers.specific(
     language,
@@ -272,8 +271,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, settings?.blroleid, 'blroleid', name, undefined),
-   buttonParsers.global(language, settings?.bluserid, 'bluserid', name, undefined),
+   buttonParsers.global(language, settings?.blroleid, CT.GlobalDescType.BLRoleId, name, undefined),
+   buttonParsers.global(language, settings?.bluserid, CT.GlobalDescType.BLUserId, name, undefined),
   ],
  },
 ];

@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Parser for number type settings.

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { getMessage, getClaimButton, getButton } from '../../SlashCommands/giveaway/end.js';
+import { getButton, getClaimButton, getMessage } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;

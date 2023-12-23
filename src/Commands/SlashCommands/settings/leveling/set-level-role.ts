@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import { getComponents } from './set-level-user.js';
 
 export default async (
@@ -50,7 +50,7 @@ export const getEmbed = (
   name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descRole(role),
- color: ch.constants.colors.ephemeral,
+ color: CT.Colors.Ephemeral,
  fields: [
   {
    name: language.slashCommands.setLevel.newXP,

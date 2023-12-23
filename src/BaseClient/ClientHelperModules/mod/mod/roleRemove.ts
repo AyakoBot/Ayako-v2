@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 import DataBase from '../../../DataBase.js';
 
-import type * as ModTypes from '../../mod.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import roleManager from '../../roleManager.js';
 import isManageable from '../../isManageable.js';
+import type * as ModTypes from '../../mod.js';
+import roleManager from '../../roleManager.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import getMembers from '../getMembers.js';

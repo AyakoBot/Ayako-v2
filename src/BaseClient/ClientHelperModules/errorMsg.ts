@@ -1,8 +1,8 @@
 import type * as Discord from 'discord.js';
+import * as CT from '../../Typings/Typings.js';
 import reply from './replyMsg.js';
 import objectEmotes from './emotes.js';
 import constants from '../Other/constants.js';
-import type CT from '../../Typings/CustomTypings.js';
 import { request } from './requestHandler.js';
 import error from './error.js';
 import isEditable from './isEditable.js';
@@ -31,7 +31,7 @@ export default async <T extends Discord.Message<boolean>>(
    icon_url: objectEmotes.warning.link,
    url: constants.standard.invite,
   },
-  color: constants.colors.danger,
+  color: CT.Colors.Danger,
   description: content,
  };
 

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import { Returned } from '../../../BaseClient/ClientHelperModules/getPunishment.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -95,7 +95,7 @@ export const getPayload = async (
     .filter((p): p is Returned => !!p)
     .map(
      (p): Discord.APIEmbed => ({
-      color: ch.constants.colors.ephemeral,
+      color: CT.Colors.Ephemeral,
       description: `${ch.util.makeUnderlined(language.t.Reason)}:\n${p.reason}`,
       fields: [
        {

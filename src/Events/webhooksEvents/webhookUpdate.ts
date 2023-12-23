@@ -1,8 +1,8 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
-import webhooksUpdates from './webhooksUpdates/webhooksUpdates.js';
-import webhooksDeletes from './webhooksDeletes/webhooksDeletes.js';
 import webhooksCreates from './webhooksCreates/webhooksCreates.js';
+import webhooksDeletes from './webhooksDeletes/webhooksDeletes.js';
+import webhooksUpdates from './webhooksUpdates/webhooksUpdates.js';
 
 export default async (channel: Discord.GuildTextBasedChannel) => {
  const newWebhooks = await ch.request.channels.getWebhooks(channel);

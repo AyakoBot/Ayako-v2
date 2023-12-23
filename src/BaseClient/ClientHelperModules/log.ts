@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/Typings.js';
 import getLogChannels from './getLogChannels.js';
 import getLanguage from './getLanguage.js';
-import constants from '../Other/constants.js';
 import send from './send.js';
 
 /**
@@ -32,7 +31,7 @@ export default async <T extends CT.ModTypes>(
    name: lan.author,
   },
   description: lan.description(target, executor, options as never),
-  color: constants.colors[constants.modColors[type]],
+  color: CT.ModColors[type],
   timestamp: new Date().toISOString(),
   fields: [
    options.reason

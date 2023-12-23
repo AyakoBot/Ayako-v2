@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../../../Typings/CustomTypings.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (oldIntegration: Discord.Integration, integration: Discord.Integration) => {
  if (
@@ -28,7 +28,7 @@ export default async (oldIntegration: Discord.Integration, integration: Discord.
    ? lan.descUpdateAudit(auditUser, integration)
    : lan.descUpdate(integration),
   fields: [],
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 

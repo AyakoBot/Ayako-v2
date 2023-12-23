@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import antiSpam from './settings/anti-spam.js';
 import antiVirus from './settings/anti-virus.js';
 import basic from './settings/basic.js';
-import denylistRules from './settings/denylist-rules.js';
 import buttonRoles from './settings/button-roles.js';
+import denylistRules from './settings/denylist-rules.js';
 import expiry from './settings/expiry.js';
 import invites from './settings/invites.js';
 import leveling from './settings/leveling.js';
@@ -16,7 +16,7 @@ import roleRewards from './settings/role-rewards.js';
 import separators from './settings/separators.js';
 import voteRewards from './settings/vote-rewards.js';
 
-export default (t: CT.Language) => ({
+const self = (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings,
  authorType: (type: string) => t.stp(t.JSON.slashCommands.settings.authorType, { type, t }),
  reactionEditor: {
@@ -50,3 +50,5 @@ export default (t: CT.Language) => ({
   'vote-rewards': voteRewards(t),
  },
 });
+
+export default self;

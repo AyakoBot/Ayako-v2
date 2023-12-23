@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
  if (!state.channel) return;
@@ -19,7 +20,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
    name: lan[`${channelType}Join` as keyof typeof lan] as string,
    icon_url: con[`${channelType}Join` as keyof typeof con],
   },
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   description: lan.descCreate(
    member.user,
    state.channel,

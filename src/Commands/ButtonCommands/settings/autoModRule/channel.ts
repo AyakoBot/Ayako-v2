@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -36,7 +37,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     'alertChannel',
     rule.actions.find((r) => r.type === Discord.AutoModerationActionType.SendAlertMessage)?.metadata
      .channelId || undefined,
-    'channel',
+    CT.EditorTypes.Channel,
     cmd.guild,
    ),
   ],
@@ -46,8 +47,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      ch.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      'channel',
-      'autoModRule/channel',
+      CT.EditorTypes.Channel,
+      CT.AutoModEditorType.Channel,
       settingName,
       id,
       currentSetting
@@ -72,8 +73,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      },
      ch.settingsHelpers.changeHelpers.done(
       settingName,
-      'channel',
-      'autoModRule/channel',
+      CT.EditorTypes.Channel,
+      CT.AutoModEditorType.Channel,
       language,
       id,
      ),

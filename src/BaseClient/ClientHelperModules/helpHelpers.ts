@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../Typings/Typings.js';
 import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.js';
-import * as CT from '../../Typings/CustomTypings.js';
 import replyCmd from './replyCmd.js';
 import getLanguage from './getLanguage.js';
 

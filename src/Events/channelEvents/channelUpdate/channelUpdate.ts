@@ -1,7 +1,7 @@
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import log from './log.js';
+import * as Jobs from 'node-schedule';
 import cache from './cache.js';
+import log from './log.js';
 import stickyPerms from './stickyPerms.js';
 
 export default async (oldChannel: Discord.Channel | undefined, channel: Discord.Channel) => {

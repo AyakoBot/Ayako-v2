@@ -1,6 +1,6 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
-import guildMemberUpdate from './guildMemberUpdate.js';
+import * as CT from '../../../../Typings/Typings.js';
 import guildMemberAdd from './guildMemberAdd.js';
+import guildMemberUpdate from './guildMemberUpdate.js';
 import appeal from './logs/appeal.js';
 import interactionCreate from './logs/interactionCreate.js';
 import logs from './logs/logs.js';

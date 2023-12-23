@@ -1,10 +1,9 @@
-import * as Discord from 'discord.js';
 import { LevelUpMode } from '@prisma/client';
+import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'leveling';
+const name = CT.SettingNames.Leveling;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -12,14 +11,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+    ch.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -161,32 +160,32 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    inline: true,
   },
   {
-   name: language.slashCommands.settings.blchannel,
+   name: language.slashCommands.settings.BLWL.blchannelid,
    value: embedParsers.channels(settings.blchannelid, language),
    inline: false,
   },
   {
-   name: language.slashCommands.settings.wlchannel,
+   name: language.slashCommands.settings.BLWL.wlchannelid,
    value: embedParsers.channels(settings.wlchannelid, language),
    inline: false,
   },
   {
-   name: language.slashCommands.settings.blrole,
+   name: language.slashCommands.settings.BLWL.blroleid,
    value: embedParsers.channels(settings.blroleid, language),
    inline: false,
   },
   {
-   name: language.slashCommands.settings.wlrole,
+   name: language.slashCommands.settings.BLWL.wlroleid,
    value: embedParsers.channels(settings.wlroleid, language),
    inline: false,
   },
   {
-   name: language.slashCommands.settings.bluser,
+   name: language.slashCommands.settings.BLWL.bluserid,
    value: embedParsers.channels(settings.bluserid, language),
    inline: false,
   },
   {
-   name: language.slashCommands.settings.wluser,
+   name: language.slashCommands.settings.BLWL.wluserid,
    value: embedParsers.channels(settings.wluserid, language),
    inline: false,
   },
@@ -203,14 +202,16 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
   {
    type: Discord.ComponentType.ActionRow,
-   components: [buttonParsers.global(language, !!settings.active, 'active', name, undefined)],
+   components: [
+    buttonParsers.global(language, !!settings.active, CT.GlobalDescType.Active, name, undefined),
+   ],
   },
   {
    type: Discord.ComponentType.ActionRow,
    components: [
     buttonParsers.specific(language, settings.xppermsg, 'xppermsg', name, undefined),
     buttonParsers.specific(language, settings.xpmultiplier, 'xpmultiplier', name, undefined),
-    buttonParsers.specific(language, settings.rolemode, 'rolemode', name, undefined),
+    buttonParsers.specific(language, settings.rolemode, CT.EditorTypes.RoleMode, name, undefined),
    ],
   },
   {
@@ -223,17 +224,29 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
     buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
     buttonParsers.specific(language, settings.minwords, 'minwords', name, undefined),
-    buttonParsers.global(language, settings.blchannelid, 'blchannelid', name, undefined),
+    buttonParsers.global(
+     language,
+     settings.blchannelid,
+     CT.GlobalDescType.BLChannelId,
+     name,
+     undefined,
+    ),
    ],
   },
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.global(language, settings.blroleid, 'blroleid', name, undefined),
-    buttonParsers.global(language, settings.bluserid, 'bluserid', name, undefined),
-    buttonParsers.global(language, settings.wlchannelid, 'wlchannelid', name, undefined),
-    buttonParsers.global(language, settings.wlroleid, 'wlroleid', name, undefined),
-    buttonParsers.global(language, settings.wluserid, 'wluserid', name, undefined),
+    buttonParsers.global(language, settings.blroleid, CT.GlobalDescType.BLRoleId, name, undefined),
+    buttonParsers.global(language, settings.bluserid, CT.GlobalDescType.BLUserId, name, undefined),
+    buttonParsers.global(
+     language,
+     settings.wlchannelid,
+     CT.GlobalDescType.WLChannelId,
+     name,
+     undefined,
+    ),
+    buttonParsers.global(language, settings.wlroleid, CT.GlobalDescType.WLRoleId, name, undefined),
+    buttonParsers.global(language, settings.wluserid, CT.GlobalDescType.WLUserId, name, undefined),
    ],
   },
  ];
@@ -249,7 +262,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
      'lvlupchannels',
      name,
      undefined,
-     'channel',
+     CT.EditorTypes.Channel,
     ),
    );
    break;

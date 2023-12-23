@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
-import type * as ModTypes from '../mod.js';
-import constants from '../../Other/constants.js';
 import objectEmotes from '../emotes.js';
+import type * as ModTypes from '../mod.js';
 import { request } from '../requestHandler.js';
 
 export default (
@@ -22,7 +21,7 @@ export default (
  const payload = {
   embeds: [
    {
-    color: constants.colors.danger,
+    color: CT.Colors.Danger,
     author: {
      name: language.t.error,
      icon_url: objectEmotes.warning.link,

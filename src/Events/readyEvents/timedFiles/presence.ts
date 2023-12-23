@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import client from '../../../BaseClient/Client.js';
 import pack from '../../../../package.json' assert { type: 'json' };
+import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
  const random = Math.floor(Math.random() * 3);

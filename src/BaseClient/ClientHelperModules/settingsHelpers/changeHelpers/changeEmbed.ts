@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import constants from '../../../Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
 
-import getMention from '../getMention.js';
 import getGlobalDesc from '../getGlobalDesc.js';
+import getMention from '../getMention.js';
 
-export default async <T extends keyof CT.SettingsNames>(
+export default async <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  settingName: T,
  fieldName: string,
@@ -16,9 +15,7 @@ export default async <T extends keyof CT.SettingsNames>(
 ): Promise<Discord.APIEmbed> => ({
  author: {
   name: language.slashCommands.settings.authorType(
-   language.slashCommands.settings.categories[
-    String(settingName) as keyof typeof language.slashCommands.settings.categories
-   ].name,
+   language.slashCommands.settings.categories[settingName].name,
   ),
   icon_url: emotes.settings.link,
  },
@@ -37,11 +34,12 @@ export default async <T extends keyof CT.SettingsNames>(
    name: '\u200b',
    value:
     (
-     language.slashCommands.settings.categories[
-      String(settingName) as keyof typeof language.slashCommands.settings.categories
-     ].fields[fieldName as never] as Record<string, string>
-    )?.desc ?? getGlobalDesc(fieldName as CT.BLWLType, language),
+     language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+      string,
+      string
+     >
+    )?.desc ?? getGlobalDesc(fieldName as CT.GlobalDescType | CT.AutoModEditorType, language),
   },
  ],
- color: constants.colors.ephemeral,
+ color: CT.Colors.Ephemeral,
 });

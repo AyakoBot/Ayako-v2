@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (ban: Discord.GuildBan) => {
  const channels = await ch.getLogChannels('guildevents', ban.guild);
@@ -18,7 +19,7 @@ export default async (ban: Discord.GuildBan) => {
   },
   description: auditUser ? lan.descUnbanAudit(ban.user, auditUser) : lan.descUnban(ban.user),
   fields: [],
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

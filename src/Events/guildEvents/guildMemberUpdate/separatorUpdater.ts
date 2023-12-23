@@ -1,6 +1,6 @@
-import { parentPort } from 'worker_threads';
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
+import * as Discord from 'discord.js';
+import { parentPort } from 'worker_threads';
 
 interface Data {
  roles: string[];

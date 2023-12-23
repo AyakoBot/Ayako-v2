@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'suggestions';
+const name = CT.SettingNames.Suggestions;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+    ch.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -138,19 +137,28 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+  components: [
+   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
+  ],
  },
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings?.channelid, 'channelid', name, undefined, 'channel'),
+   buttonParsers.specific(
+    language,
+    settings?.channelid,
+    'channelid',
+    name,
+    undefined,
+    CT.EditorTypes.Channel,
+   ),
    buttonParsers.specific(
     language,
     settings?.approverroleid,
     'approverroleid',
     name,
     undefined,
-    'role',
+    CT.EditorTypes.Role,
    ),
    buttonParsers.boolean(language, settings?.anonvote, 'anonvote', name, undefined),
    buttonParsers.boolean(language, settings?.anonsuggestion, 'anonsuggestion', name, undefined),
@@ -180,7 +188,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         'deleteapprovedafter',
         name,
         undefined,
-        'role',
+        CT.EditorTypes.Role,
        ),
       ]
     : []),
@@ -190,10 +198,38 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings?.novoteroles, 'novoteroles', name, undefined, 'role'),
-   buttonParsers.specific(language, settings?.novoteusers, 'novoteusers', name, undefined, 'user'),
-   buttonParsers.specific(language, settings?.nosendroles, 'nosendroles', name, undefined, 'role'),
-   buttonParsers.specific(language, settings?.nosendusers, 'nosendusers', name, undefined, 'user'),
+   buttonParsers.specific(
+    language,
+    settings?.novoteroles,
+    'novoteroles',
+    name,
+    undefined,
+    CT.EditorTypes.Role,
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.novoteusers,
+    'novoteusers',
+    name,
+    undefined,
+    CT.EditorTypes.User,
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.nosendroles,
+    'nosendroles',
+    name,
+    undefined,
+    CT.EditorTypes.Role,
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.nosendusers,
+    'nosendusers',
+    name,
+    undefined,
+    CT.EditorTypes.User,
+   ),
   ],
  },
 ];

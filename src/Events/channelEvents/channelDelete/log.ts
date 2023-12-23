@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  channel:
@@ -46,7 +47,7 @@ export default async (
    ? lan.descDeleteAudit(auditUser, channel, language.channelTypes[channel.type])
    : lan.descDelete(channel, language.channelTypes[channel.type]),
   fields: [],
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 
@@ -131,7 +132,7 @@ export default async (
 
  if ('permissionOverwrites' in channel) {
   const permEmbed: Discord.APIEmbed = {
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
    description: channel.permissionOverwrites.cache
     .map(
      (perm) =>

@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-
+import * as CT from '../../../../Typings/Typings.js';
 import embedParsers from '../embedParsers.js';
 
 /**
@@ -10,7 +9,7 @@ import embedParsers from '../embedParsers.js';
  * @param lan - The name of the setting being paginated.
  * @returns An array of APIEmbed objects.
  */
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof CT.Categories>(
  fields:
   | {
      name: string;
@@ -18,7 +17,7 @@ export default <T extends keyof CT.SettingsNames>(
     }[]
   | undefined,
  language: CT.Language,
- lan: CT.SettingsNames[T],
+ lan: CT.Categories[T],
 ): Discord.APIEmbed[] => [
  {
   author: embedParsers.author(language, lan),

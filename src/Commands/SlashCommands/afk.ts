@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
 import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
+import * as CT from '../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true>,
@@ -25,7 +26,7 @@ export default async (
  const embeds: Discord.APIEmbed[] = text
   ? [
      {
-      color: ch.constants.colors.loading,
+      color: CT.Colors.Loading,
       description: await getContent(cmd.guild, text, undefined, undefined, cmd.channel),
      },
     ]

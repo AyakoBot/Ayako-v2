@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (reaction: Discord.MessageReaction, msg: Discord.Message<true>) => {
  if (!msg.inGuild()) return;
@@ -20,7 +21,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message<tr
    url: ch.constants.standard.msgurl(msg.guildId, msg.channelId, msg.id),
   },
   description: lan.descRemoveEmoji(msg, reaction.emoji),
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   fields: [],
   timestamp: new Date().toISOString(),
  };

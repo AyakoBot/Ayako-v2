@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
+import getEmoji from '../getEmoji.js';
 import getLable from '../getLable.js';
 import getStyle from '../getStyle.js';
-import getGlobalType from '../getGlobalType.js';
-import getEmoji from '../getEmoji.js';
 
 /**
  * Creates a global button component for the settings editor.
@@ -18,13 +17,13 @@ import getEmoji from '../getEmoji.js';
 export default (
  language: CT.Language,
  setting: boolean | string[] | null,
- type: CT.BLWLType | 'active',
+ type: CT.GlobalDescType,
  settingName: string,
  uniquetimestamp: number | undefined,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  label: getLable(language, type),
  style: getStyle(setting),
- custom_id: `settings/editors/${getGlobalType(type)}_${type}_${settingName}_${uniquetimestamp}`,
+ custom_id: `settings/editors/${CT.GlobalType[type]}_${type}_${settingName}_${uniquetimestamp}`,
  emoji: getEmoji(setting, type),
 });

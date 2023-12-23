@@ -1,5 +1,5 @@
+import * as CT from '../../../Typings/Typings.js';
 import DataBase from '../../DataBase.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 
 /**
  * Sets up a database query based on the provided table name,
@@ -9,7 +9,11 @@ import * as CT from '../../../Typings/CustomTypings.js';
  * @param uniquetimestamp - An optional unique timestamp to include in the query.
  * @returns A database query object based on the provided parameters.
  */
-export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp?: number) => {
+export default (
+ tableName: keyof typeof CT.SettingsName2TableName,
+ guildid: string,
+ uniquetimestamp?: number,
+) => {
  const getDBType = () => {
   if (uniquetimestamp) {
    const where = { data: { uniquetimestamp, guildid } };

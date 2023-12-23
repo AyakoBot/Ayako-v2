@@ -1,11 +1,11 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import refresh from './refresh.js';
 import {
  Type,
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
+import refresh from './refresh.js';
 
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;

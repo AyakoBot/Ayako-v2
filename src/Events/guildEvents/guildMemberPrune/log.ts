@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) => {
  const channels = await ch.getLogChannels('guildevents', guild);
@@ -16,7 +17,7 @@ export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) 
    name: lan.memberPrune,
   },
   description: lan.descMemberPrune(audit.executor as Discord.User, extra.removed, extra.days),
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 

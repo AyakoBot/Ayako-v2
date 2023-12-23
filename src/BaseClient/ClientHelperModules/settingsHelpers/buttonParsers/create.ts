@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
 
 /**
@@ -8,7 +8,7 @@ import emotes from '../../emotes.js';
  * @param name - The name of the setting.
  * @returns A Discord API button component with a custom ID.
  */
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  name: T,
 ): Discord.APIButtonComponentWithCustomId => ({

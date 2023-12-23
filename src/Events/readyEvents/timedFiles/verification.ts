@@ -1,5 +1,5 @@
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import { kick } from '../../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {

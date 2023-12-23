@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -31,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     'exemptChannels',
     rule.exemptChannels.map((c) => c.id),
-    'channel',
+    CT.EditorTypes.Channel,
     cmd.guild,
    ),
   ],
@@ -41,8 +42,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      ch.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      'channel',
-      'autoModRule/channels',
+      CT.EditorTypes.Channel,
+      CT.AutoModEditorType.Channels,
       settingName,
       id,
       rule.exemptChannels
@@ -62,8 +63,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      },
      ch.settingsHelpers.changeHelpers.done(
       settingName,
-      'channel',
-      'autoModRule/channels',
+      CT.EditorTypes.Channel,
+      CT.AutoModEditorType.Channels,
       language,
       id,
      ),

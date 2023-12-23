@@ -1,6 +1,6 @@
-import type * as separator from '../../guildEvents/guildMemberUpdate/separator.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import type * as separator from '../../guildEvents/guildMemberUpdate/separator.js';
 
 export default async () => {
  const settings = await ch.DataBase.roleseparatorsettings.findMany({

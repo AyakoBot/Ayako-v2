@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import DataBase from '../../DataBase.js';
 import type * as ModTypes from '../mod.js';
 

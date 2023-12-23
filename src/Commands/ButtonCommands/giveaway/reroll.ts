@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { end } from '../../SlashCommands/giveaway/end.js';
 import { checkCommandPermissions } from '../../../Events/messageEvents/messageCreate/commandHandler.js';
+import { end } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

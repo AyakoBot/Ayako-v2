@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
-import constants from '../../Other/constants.js';
+import * as CT from '../../../Typings/Typings.js';
 import getLogChannels from '../getLogChannels.js';
 import send from '../send.js';
 import { makeCodeBlock, makeInlineCode } from '../util.js';
@@ -18,7 +17,7 @@ import postUpdate from './postUpdate.js';
  * @param language - The language object.
  * @param lan - The settings language object.
  */
-export default async <T extends keyof CT.SettingsNames>(
+export default async <T extends keyof typeof CT.SettingsName2TableName>(
  oldSetting: { [key in keyof CT.FieldName<T>]: unknown } | undefined,
  newSetting: { [key in keyof CT.FieldName<T>]: unknown } | undefined,
  changedSetting: keyof CT.FieldName<T>,
@@ -26,7 +25,7 @@ export default async <T extends keyof CT.SettingsNames>(
  uniquetimestamp: number | string | undefined,
  guild: Discord.Guild,
  language: CT.Language,
- lan: CT.SettingsNames[T],
+ lan: CT.Categories[T],
 ) => {
  postUpdate(oldSetting, newSetting, changedSetting, settingName, guild, uniquetimestamp);
 
@@ -36,13 +35,13 @@ export default async <T extends keyof CT.SettingsNames>(
  const getColor = () => {
   switch (true) {
    case !oldSetting: {
-    return constants.colors.success;
+    return CT.Colors.Success;
    }
    case !newSetting: {
-    return constants.colors.danger;
+    return CT.Colors.Danger;
    }
    default: {
-    return constants.colors.loading;
+    return CT.Colors.Loading;
    }
   }
  };
@@ -79,8 +78,8 @@ export default async <T extends keyof CT.SettingsNames>(
      {
       name: language.t.Before,
       value: `${makeInlineCode(field.name)}:\n${
-       oldSetting?.[String(changedSetting)] && String(oldSetting?.[String(changedSetting)]).length
-        ? makeCodeBlock((oldSetting?.[String(changedSetting)] as string) ?? ' ')
+       oldSetting?.[changedSetting] && oldSetting?.[changedSetting]
+        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
         : language.t.None
       }`,
       inline: false,
@@ -88,8 +87,8 @@ export default async <T extends keyof CT.SettingsNames>(
      {
       name: language.t.After,
       value: `${makeInlineCode(field.name)}:\n${
-       newSetting?.[String(changedSetting)] && String(newSetting?.[String(changedSetting)]).length
-        ? makeCodeBlock((newSetting?.[String(changedSetting)] as string) ?? ' ')
+       newSetting?.[changedSetting] && newSetting?.[changedSetting]
+        ? makeCodeBlock((newSetting?.[changedSetting] as string) ?? ' ')
         : language.t.None
       }`,
       inline: false,

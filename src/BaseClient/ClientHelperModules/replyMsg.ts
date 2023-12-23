@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import type CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/Typings.js';
 import objectEmotes from './emotes.js';
 import DataBase from '../DataBase.js';
 import { request } from './requestHandler.js';

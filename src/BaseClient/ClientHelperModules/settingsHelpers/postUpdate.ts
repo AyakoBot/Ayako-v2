@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as CT from '../../../Typings/CustomTypings.js';
-import constants, { TableNamesPrismaTranslation } from '../../Other/constants.js';
+import * as CT from '../../../Typings/Typings.js';
+import constants from '../../Other/constants.js';
 
 /**
  * Updates a setting and triggers a post-update action if necessary.
@@ -12,7 +12,7 @@ import constants, { TableNamesPrismaTranslation } from '../../Other/constants.js
  * @param guild The guild where the setting was changed.
  * @param uniquetimestamp A unique timestamp to identify the update.
  */
-export default async <T extends keyof CT.SettingsNames>(
+export default async <T extends keyof typeof CT.SettingsName2TableName>(
  oldSetting: unknown,
  newSetting: unknown,
  changedSetting: keyof CT.FieldName<T>,
@@ -33,11 +33,7 @@ export default async <T extends keyof CT.SettingsNames>(
  );
  if (!file) return;
 
- const tableName = TableNamesPrismaTranslation[
-  settingName as keyof typeof TableNamesPrismaTranslation
- ] as keyof CT.Language['slashCommands']['settings']['categories'];
-
- const settingsFile = (await import(file)) as CT.SettingsFile<typeof tableName>;
+ const settingsFile = (await import(file)) as CT.SettingsFile<typeof settingName>;
 
  settingsFile.postChange?.(
   oldSetting as never,

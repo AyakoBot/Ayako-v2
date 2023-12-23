@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -14,7 +14,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const fieldName = field.customId;

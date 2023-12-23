@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Parser for users type settings.

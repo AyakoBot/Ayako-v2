@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,7 +8,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -36,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     fieldName,
     currentSettings?.[fieldName as keyof typeof currentSettings],
-    'channel',
+    CT.EditorTypes.Channel,
     cmd.guild,
    ),
   ],
@@ -46,7 +46,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      ch.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      'channels',
+      CT.EditorTypes.Channels,
       fieldName,
       settingName,
       uniquetimestamp,
@@ -64,7 +64,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      ch.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      'channels',
+      CT.EditorTypes.Channels,
       language,
       Number(uniquetimestamp),
      ),

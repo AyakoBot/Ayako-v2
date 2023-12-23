@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import constants from '../../../Other/constants.js';
 import emotes from '../../emotes.js';
 
@@ -12,7 +12,7 @@ import emotes from '../../emotes.js';
  * @param uniquetimestamp - A unique timestamp used to identify the button component.
  * @returns A Discord API button component.
  */
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof CT.Categories>(
  language: CT.Language,
  setting: boolean | undefined,
  name: keyof CT.FieldName<T>,
@@ -26,9 +26,8 @@ export default <T extends keyof CT.SettingsNames>(
   type: Discord.ComponentType.Button,
   label: (
    (
-    language.slashCommands.settings.categories[
-     settingName as keyof CT.Language['slashCommands']['settings']['categories']
-    ].fields as CT.FieldName<T>
+    language.slashCommands.settings.categories[settingName as CT.SettingNames]
+     .fields as CT.FieldName<T>
    )[name] as unknown as Record<'name', string>
   ).name,
   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,

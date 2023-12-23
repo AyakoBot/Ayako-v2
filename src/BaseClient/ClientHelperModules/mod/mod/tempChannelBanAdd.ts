@@ -1,9 +1,9 @@
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
+import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import type * as ModTypes from '../../mod.js';
-import cache from '../../cache.js';
 
 import channelBanAdd from './channelBanAdd.js';
 

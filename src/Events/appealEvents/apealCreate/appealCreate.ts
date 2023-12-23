@@ -1,8 +1,8 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (appeal: CT.Appeal) => {
  const settings = await ch.DataBase.appealsettings.findUnique({

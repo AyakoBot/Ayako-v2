@@ -1,8 +1,8 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
 import DataBase from '../../../DataBase.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default (
- tableName: keyof CT.SettingsNames,
+ tableName: keyof typeof CT.SettingsName2TableName,
  fieldName: string,
  guildid: string,
  newSetting: unknown,

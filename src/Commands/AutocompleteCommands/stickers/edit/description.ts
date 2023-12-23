@@ -1,5 +1,5 @@
+import * as CT from '../../../../Typings/Typings.js';
 import sticker from '../delete.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!('options' in cmd)) return [];

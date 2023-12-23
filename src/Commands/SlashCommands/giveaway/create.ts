@@ -1,8 +1,8 @@
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
-import { end, getGiveawayEmbed, getButton } from './end.js';
+import * as CT from '../../../Typings/Typings.js';
+import { end, getButton, getGiveawayEmbed } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;

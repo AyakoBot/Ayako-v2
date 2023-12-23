@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -147,7 +147,7 @@ export const getEmbed = (
   name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descUser(user),
- color: ch.constants.colors.ephemeral,
+ color: CT.Colors.Ephemeral,
  fields: [
   {
    name: language.slashCommands.leaderboard.currentXP,

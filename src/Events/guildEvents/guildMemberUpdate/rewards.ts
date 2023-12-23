@@ -1,6 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  if (oldMember.partial) return;
@@ -50,7 +51,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  const language = await ch.getLanguage(member.guild.id);
  const lan = language.events.guildMemberUpdate.rewards;
  const embed: Discord.APIEmbed = {
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   description: lan.desc(settings.map((s) => s.roles).flat()),
   fields: [
    ...(canCustomRole

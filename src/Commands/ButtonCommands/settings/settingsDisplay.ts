@@ -1,11 +1,11 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -34,14 +34,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingsFile.showAll(
    cmd,
    language,
-   language.slashCommands.settings.categories[
-    settingName as keyof CT.Language['slashCommands']['settings']['categories']
-   ],
+   language.slashCommands.settings.categories[settingName as CT.SettingNames],
   );
   return;
  }
 
  const settings = await ch.settingsHelpers.changeHelpers.get(settingName, cmd.guildId, undefined);
+ if (!settings) {
+  ch.error(cmd.guild, new Error(`Setting not found ${settingName}`));
+  return;
+ }
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(

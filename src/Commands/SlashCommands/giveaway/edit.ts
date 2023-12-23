@@ -1,10 +1,10 @@
+import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
-import { getGiveawayEmbed, end, getMessage } from './end.js';
+import * as CT from '../../../Typings/Typings.js';
 import { endTimeIsValid } from './create.js';
+import { end, getGiveawayEmbed, getMessage } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;

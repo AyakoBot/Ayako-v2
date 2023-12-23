@@ -1,22 +1,22 @@
 import Jobs from 'node-schedule';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import client from '../../BaseClient/Client.js';
+import * as ch from '../../BaseClient/ClientHelper.js';
 
-import cache from './startupTasks/cache.js';
-import slashCommandInitializer from './startupTasks/slashCommandInitializer.js';
-import voteHandler from './startupTasks/voteHandler.js';
-import appealHandler from './startupTasks/appealHandler.js';
 import interactionHandler from '../interaction.js';
+import appealHandler from './startupTasks/appealHandler.js';
+import cache from './startupTasks/cache.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
 import separators from './startupTasks/separators.js';
+import slashCommandInitializer from './startupTasks/slashCommandInitializer.js';
+import voteHandler from './startupTasks/voteHandler.js';
 
-import nitroHandler from './timedFiles/nitroHandler.js';
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
-import websiteFetcher from './timedFiles/websiteFetcher.js';
-import verification from './timedFiles/verification.js';
+import nitroHandler from './timedFiles/nitroHandler.js';
 import presence from './timedFiles/presence.js';
 import timedManager from './timedFiles/timedManager.js';
+import verification from './timedFiles/verification.js';
+import websiteFetcher from './timedFiles/websiteFetcher.js';
 
 export default async () => {
  customAPIsHandler();

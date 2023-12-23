@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 import client from '../BaseClient/Client.js';
-import Socket from '../BaseClient/Socket.js';
-import * as Classes from '../BaseClient/Other/classes.js';
-import interactionCreate from './interactionEvents/interactionCreate.js';
 import * as ch from '../BaseClient/ClientHelper.js';
+import * as Classes from '../BaseClient/Other/classes.js';
+import Socket from '../BaseClient/Socket.js';
+import interactionCreate from './interactionEvents/interactionCreate.js';
 
 export default () => {
  Socket.on('interaction', async (rawInteraction: Discord.APIInteraction) => {

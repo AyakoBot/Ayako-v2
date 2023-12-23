@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../../Typings/Typings.js';
 import * as SettingsFile from '../../../../SlashCommands/settings/moderation/denylist-rules.js';
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

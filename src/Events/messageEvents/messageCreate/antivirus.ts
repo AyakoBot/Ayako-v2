@@ -1,14 +1,14 @@
+import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
-import Jobs from 'node-schedule';
 import fetch from 'node-fetch';
-import Prisma from '@prisma/client';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import auth from '../../../auth.json' assert { type: 'json' };
-import CT, { DePromisify, ModTypes } from '../../../Typings/CustomTypings.js';
+import Jobs from 'node-schedule';
 import pack from '../../../../package.json' assert { type: 'json' };
-import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
 import { API } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
+import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -77,7 +77,7 @@ const log = (
  channels: string[] | Discord.Message<false>['channel'],
  msg: Discord.Message,
  language: CT.Language,
- url: DePromisify<ReturnType<typeof run>>,
+ url: CT.DePromisify<ReturnType<typeof run>>,
 ) => {
  const getFields = () => {
   const lan = language.antivirus.log;
@@ -143,7 +143,7 @@ const log = (
  const payload: CT.UsualMessagePayload = {
   embeds: [
    {
-    color: url.triggers ? ch.constants.colors.danger : ch.constants.colors.success,
+    color: url.triggers ? CT.Colors.Danger : CT.Colors.Success,
     author: {
      name: language.autotypes.antivirus,
      icon_url: ch.constants.events.logs.invite.create,
@@ -509,36 +509,36 @@ export const performPunishment = (
 
  switch (settings.action) {
   case 'ban':
-   return ch.mod(msg, ModTypes.BanAdd, {
+   return ch.mod(msg, CT.ModTypes.BanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'channelban':
-   return ch.mod(msg, ModTypes.ChannelBanAdd, {
+   return ch.mod(msg, CT.ModTypes.ChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
    });
   case 'kick':
-   return ch.mod(msg, ModTypes.KickAdd, baseOptions);
+   return ch.mod(msg, CT.ModTypes.KickAdd, baseOptions);
   case 'softban':
-   return ch.mod(msg, ModTypes.SoftBanAdd, {
+   return ch.mod(msg, CT.ModTypes.SoftBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'strike':
-   return ch.mod(msg, ModTypes.StrikeAdd, baseOptions);
+   return ch.mod(msg, CT.ModTypes.StrikeAdd, baseOptions);
   case 'warn':
-   return ch.mod(msg, ModTypes.WarnAdd, baseOptions);
+   return ch.mod(msg, CT.ModTypes.WarnAdd, baseOptions);
   case 'tempban':
-   return ch.mod(msg, ModTypes.TempBanAdd, {
+   return ch.mod(msg, CT.ModTypes.TempBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
     duration: Number(settings.duration),
    });
   case 'tempchannelban':
-   return ch.mod(msg, ModTypes.TempChannelBanAdd, {
+   return ch.mod(msg, CT.ModTypes.TempChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -546,7 +546,7 @@ export const performPunishment = (
     duration: Number(settings.duration),
    });
   case 'tempmute':
-   return ch.mod(msg, ModTypes.TempMuteAdd, {
+   return ch.mod(msg, CT.ModTypes.TempMuteAdd, {
     ...baseOptions,
     duration: Number(settings.duration),
    });

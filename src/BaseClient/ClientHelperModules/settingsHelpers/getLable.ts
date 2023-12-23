@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 /**
  * Returns the label for a given type of denylist/allowlist setting.
@@ -6,11 +6,7 @@ import * as CT from '../../../Typings/CustomTypings.js';
  * @param type - The type of denylist/allowlist setting to get the label for.
  * @returns The label for the given type of denylist/allowlist setting.
  */
-export default (language: CT.Language, type: CT.BLWLType | 'active') => {
- if (type && type !== 'active') {
-  return language.slashCommands.settings[
-   type.slice(0, -2) as 'blchannel' | 'blrole' | 'bluser' | 'wlchannel' | 'wlrole' | 'wluser'
-  ];
- }
- return language.slashCommands.settings.active;
-};
+export default (language: CT.Language, type: CT.GlobalDescType) =>
+ type && type !== CT.GlobalDescType.Active
+  ? language.slashCommands.settings.BLWL[type]
+  : language.slashCommands.settings.active;

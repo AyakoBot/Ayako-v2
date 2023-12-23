@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  name: T,
  fieldName: string,
- type: 'channel' | 'channels' | 'role' | 'roles' | 'user' | 'users' | string,
+ type: CT.EditorTypes | CT.AutoModEditorType,
  language: CT.Language,
  uniquetimestamp: number | undefined | string,
 ): Discord.APIButtonComponent => ({

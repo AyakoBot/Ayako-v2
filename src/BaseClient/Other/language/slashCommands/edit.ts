@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../../../Typings/Typings.js';
 import * as ch from '../../../ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.edit,

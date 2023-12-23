@@ -1,5 +1,5 @@
-import sms from 'source-map-support';
 import readline from 'readline';
+import sms from 'source-map-support';
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
 

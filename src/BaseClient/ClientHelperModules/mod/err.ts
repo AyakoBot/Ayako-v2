@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../../Typings/Typings.js';
 import type * as ModTypes from '../mod.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 
-import errorMsg from '../errorMsg.js';
-import errorCmd from '../errorCmd.js';
 import error from '../error.js';
+import errorCmd from '../errorCmd.js';
+import errorMsg from '../errorMsg.js';
 
 export default (
  cmd: ModTypes.CmdType,

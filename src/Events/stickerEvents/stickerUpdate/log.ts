@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
@@ -27,7 +27,7 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   },
   description: auditUser ? lan.descUpdateAudit(sticker, auditUser) : lan.descUpdate(sticker),
   fields: [],
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 

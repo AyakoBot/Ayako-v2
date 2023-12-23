@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import DataBase from '../../DataBase.js';
 
 /**
@@ -10,7 +10,11 @@ import DataBase from '../../DataBase.js';
  * @returns A promise that resolves to the number of rows deleted from the table.
  * @throws An error if the specified table name is not supported.
  */
-export default (tableName: keyof CT.TableNamesMap, guildid: string, uniquetimestamp: number) => {
+export default (
+ tableName: keyof typeof CT.SettingsName2TableName,
+ guildid: string,
+ uniquetimestamp: number,
+) => {
  const getDBType = () => {
   const where = { where: { uniquetimestamp, guildid } };
 

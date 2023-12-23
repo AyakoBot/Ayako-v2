@@ -1,7 +1,7 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-import error from '../../error.js';
 import cache from '../../cache.js';
+import error from '../../error.js';
 import type * as ModTypes from '../../mod.js';
 
 import getStrike from '../getStrike.js';
@@ -9,12 +9,12 @@ import getStrike from '../getStrike.js';
 import banAdd from './banAdd.js';
 import channelBanAdd from './channelBanAdd.js';
 import kickAdd from './kickAdd.js';
-import tempMuteAdd from './tempMuteAdd.js';
-import tempChannelBanAdd from './tempChannelBanAdd.js';
-import warnAdd from './warnAdd.js';
-import tempBanAdd from './tempBanAdd.js';
 import softBanAdd from './softBanAdd.js';
 import softWarnAdd from './softWarnAdd.js';
+import tempBanAdd from './tempBanAdd.js';
+import tempChannelBanAdd from './tempChannelBanAdd.js';
+import tempMuteAdd from './tempMuteAdd.js';
+import warnAdd from './warnAdd.js';
 
 export default async <T extends CT.ModTypes>(
  rawOpts: CT.ModOptions<CT.ModTypes.StrikeAdd>,

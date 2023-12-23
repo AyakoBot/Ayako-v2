@@ -1,10 +1,10 @@
 // eslint-disable-next-line no-shadow
-import { Worker } from 'worker_threads';
-import Jobs from 'node-schedule';
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import Jobs from 'node-schedule';
+import { Worker } from 'worker_threads';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const UpdateWorker = new Worker(
  `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,

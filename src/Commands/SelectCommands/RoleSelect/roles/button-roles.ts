@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import { getComponents, findField } from '../../StringSelect/roles/button-roles.js';
+import { findField, getComponents } from '../../StringSelect/roles/button-roles.js';
 
 export default async (
  cmd: Discord.RoleSelectMenuInteraction,

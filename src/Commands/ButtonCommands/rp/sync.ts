@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 import { getComponents } from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
@@ -50,7 +51,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  });
 
  const embed: Discord.APIEmbed = {
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   author: {
    name: lan.syncing,
    icon_url: ch.emotes.loading.link,
@@ -66,7 +67,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
 
   if (promises.length === resolved.length) {
-   embed.color = ch.constants.colors.success;
+   embed.color = CT.Colors.Success;
    embed.author = {
     name: lan.synced,
     icon_url: ch.emotes.tick.link,

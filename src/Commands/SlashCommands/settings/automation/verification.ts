@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'verification';
+const name = CT.SettingNames.Verification;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+    ch.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -99,7 +98,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+  components: [
+   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
+  ],
  },
  {
   type: Discord.ComponentType.ActionRow,
@@ -111,22 +112,36 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'startchannel',
     name,
     undefined,
-    'channel',
+    CT.EditorTypes.Channel,
    ),
-   buttonParsers.specific(language, settings?.logchannel, 'logchannel', name, undefined, 'channel'),
+   buttonParsers.specific(
+    language,
+    settings?.logchannel,
+    'logchannel',
+    name,
+    undefined,
+    CT.EditorTypes.Channel,
+   ),
   ],
  },
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings?.pendingrole, 'pendingrole', name, undefined, 'role'),
+   buttonParsers.specific(
+    language,
+    settings?.pendingrole,
+    'pendingrole',
+    name,
+    undefined,
+    CT.EditorTypes.Role,
+   ),
    buttonParsers.specific(
     language,
     settings?.finishedrole,
     'finishedrole',
     name,
     undefined,
-    'role',
+    CT.EditorTypes.Role,
    ),
    buttonParsers.boolean(language, settings?.kicktof, 'kicktof', name, undefined),
    ...(settings?.kicktof
@@ -136,7 +151,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  },
 ];
 
-export const postChange: CT.SettingsFile<'verification'>['postChange'] = async (
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  _oldSettings,
  newSettings,
  changedSettings,

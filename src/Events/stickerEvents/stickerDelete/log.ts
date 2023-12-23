@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
@@ -26,7 +27,7 @@ export default async (sticker: Discord.Sticker) => {
   },
   description: auditUser ? lan.descDeleteAudit(sticker, auditUser) : lan.descDelete(sticker),
   fields: [],
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 

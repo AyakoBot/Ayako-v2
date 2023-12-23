@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 import type * as ModTypes from '../mod.js';
 import { request } from '../requestHandler.js';
-import constants from '../../Other/constants.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -17,7 +16,7 @@ export default async (
  const payload = {
   embeds: [
    {
-    color: constants.colors.danger,
+    color: CT.Colors.Danger,
     description:
      language.mod.execution[type as keyof CT.Language['mod']['execution']].alreadyApplied(target),
    },

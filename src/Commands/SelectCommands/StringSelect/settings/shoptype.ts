@@ -1,26 +1,26 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 type Type =
- | 'shoptype'
- | 'punishment'
- | 'language'
- | 'auto-punishment'
- | 'antiraid-punishment'
- | 'questions';
+ | CT.EditorTypes.ShopType
+ | CT.EditorTypes.Punishment
+ | CT.EditorTypes.Language
+ | CT.EditorTypes.AutoPunishment
+ | CT.EditorTypes.AntiRaidPunishment
+ | CT.EditorTypes.Questions;
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction,
  args: string[],
- type: Type = 'shoptype',
+ type: Type = CT.EditorTypes.ShopType,
 ) => {
  if (!cmd.inCachedGuild()) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const language = await ch.getLanguage(cmd.guildId);

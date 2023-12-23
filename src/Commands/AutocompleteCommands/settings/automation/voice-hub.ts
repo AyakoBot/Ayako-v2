@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 import client from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (

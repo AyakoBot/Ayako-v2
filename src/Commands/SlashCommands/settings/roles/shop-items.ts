@@ -1,11 +1,10 @@
-import * as Discord from 'discord.js';
 import { ShopType } from '@prisma/client';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as Discord from 'discord.js';
 import { API } from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'shop-items';
+const name = CT.SettingNames.ShopItems;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -28,7 +27,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  lan,
 ) => {
  const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
@@ -39,7 +38,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
-    ) as unknown as CT.TableNamesMap[typeof name]),
+    ) as unknown as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[typeof name]]),
   );
 
  if (cmd.isButton()) {
@@ -63,7 +62,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  lan,
 ) => {
  const { embedParsers, multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]].findMany({
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -197,7 +196,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.global(
     language,
     !!settings?.active,
-    'active',
+    CT.GlobalDescType.Active,
     name,
     Number(settings?.uniquetimestamp),
    ),

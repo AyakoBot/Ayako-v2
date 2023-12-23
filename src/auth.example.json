@@ -1,0 +1,37 @@
+{
+ "token": "",
+ "ayakoToken": "",
+ "ownerID": "",
+ "pSQLpw": "",
+ "VTtoken": "",
+ "spamhausToken": "",
+ "ip2whoisToken": "",
+ "promptAPIToken": "",
+ "topGGtoken": "",
+ "DBToken": "",
+ "DBListToken": "",
+ "circleToken": "",
+ "socketToken": "",
+ "redisToken": "",
+ "clientID": "",
+ "mainID": "",
+ "secret": "",
+ "phishToken": "",
+ "fishToken": "",
+ "antivirusWebhook": {
+  "id": "",
+  "token": ""
+ },
+ "guildActionWebhook": {
+  "id": "",
+  "token": ""
+ },
+ "dmWebhook": {
+  "id": "",
+  "token": ""
+ },
+ "safeBrowsingToken": "",
+ "dbConnectionString": "",
+ "proxyKey": "",
+ "kasperskyKey": ""
+}

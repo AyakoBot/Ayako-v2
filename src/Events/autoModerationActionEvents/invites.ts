@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import invites from '../messageEvents/messageCreate/invites.js';
-import * as Classes from '../../BaseClient/Other/classes.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import * as Classes from '../../BaseClient/Other/classes.js';
+import invites from '../messageEvents/messageCreate/invites.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  const user = msg.user ?? (await ch.getUser(msg.userId));

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import Emojis from '../../../../BaseClient/Other/Emojis.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import Emojis from '../../../../BaseClient/Other/Emojis.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;

@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
+import client from '../../../../BaseClient/Client.js';
 import {
  AllNonThreadGuildChannelTypes,
  GuildTextChannelTypes,
 } from '../../../../BaseClient/Other/constants.js';
-import client from '../../../../BaseClient/Client.js';
 
 const name = client.user?.username;
 

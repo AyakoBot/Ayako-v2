@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
+import * as CT from '../../Typings/Typings.js';
 import bitUniques from './bitUniques.js';
 import reply from './replyMsg.js';
 import * as util from './util.js';
-import type CT from '../../Typings/CustomTypings.js';
 import constants from '../Other/constants.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
@@ -39,7 +39,7 @@ export default async (
    icon_url: constants.standard.error,
    url: constants.standard.invite,
   },
-  color: constants.colors.danger,
+  color: CT.Colors.Danger,
   description: me ? language.permissions.error.msg : language.permissions.error.you,
   fields: [
    {

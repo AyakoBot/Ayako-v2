@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 import type { Returned } from '../../../../BaseClient/ClientHelperModules/getPunishment.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -72,7 +72,7 @@ export const log = async (
      author: {
       name: lan.author,
      },
-     color: ch.constants.colors.success,
+     color: CT.Colors.Success,
      description: `${ch.util.makeBold(language.t.Reason)}:\n${punishment.reason}`,
      fields: [
       {
@@ -129,7 +129,7 @@ export const log = async (
      timestamp: new Date().toISOString(),
     },
     {
-     color: ch.constants.colors.ephemeral,
+     color: CT.Colors.Ephemeral,
      author: { name: lan.pardonReason },
      description: reason,
     },

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -49,14 +49,14 @@ export const runPunishment = async (
  const embeds = [
   {
    author: loadingEmbed.author,
-   color: ch.constants.colors.success,
+   color: CT.Colors.Success,
    description: language.events.guildMemberAdd.antiraid[
     type === 'kick' ? 'kickingSuccess' : 'banningSuccess'
    ](success.length),
   },
   {
    author: loadingEmbed.author,
-   color: ch.constants.colors.danger,
+   color: CT.Colors.Danger,
    description: language.events.guildMemberAdd.antiraid[
     type === 'kick' ? 'kickingError' : 'banningError'
    ](failed.length),

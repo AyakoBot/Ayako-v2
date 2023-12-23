@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  if (!msg.inGuild()) return;
@@ -21,7 +21,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
    name: lan.nameUpdate,
   },
   fields: [],
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 

@@ -1,10 +1,10 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
+import * as CT from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyCmd from './replyCmd.js';
 import DataBase from '../DataBase.js';
-import type CT from '../../Typings/CustomTypings.js';
 import getColor from './getColor.js';
 import getLanguage from './getLanguage.js';
 import errorMsg from './errorMsg.js';

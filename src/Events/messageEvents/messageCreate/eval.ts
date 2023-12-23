@@ -1,9 +1,9 @@
+import * as Discord from 'discord.js';
+import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
-import fetch from 'node-fetch';
-import * as Discord from 'discord.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 // eslint-disable-next-line no-unused-expressions

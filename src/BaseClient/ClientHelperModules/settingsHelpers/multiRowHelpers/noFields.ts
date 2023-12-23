@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Adds a "no fields found" message to the first embed if it has no fields.

@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import logs from './mod/logs.js';
 import execution from './mod/execution.js';
 

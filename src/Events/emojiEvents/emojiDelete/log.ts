@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (emote: Discord.GuildEmoji) => {
  const channels = await ch.getLogChannels('emojievents', emote.guild);
@@ -19,7 +20,7 @@ export default async (emote: Discord.GuildEmoji) => {
   },
   description: auditUser ? lan.descEmojiDeleteAudit(auditUser, emote) : lan.descEmojiDelete(emote),
   fields: [],
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
  };
 
  const attachment = (await ch.fileURL2Buffer([emote.url]))?.[0];

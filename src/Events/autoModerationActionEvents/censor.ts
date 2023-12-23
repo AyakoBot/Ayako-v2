@@ -1,7 +1,7 @@
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../BaseClient/ClientHelper.js';
+import * as Discord from 'discord.js';
 import { filtered_content as filterContent } from '../../../rust/rust.js';
+import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  if (msg.action.type !== Discord.AutoModerationActionType.BlockMessage) return;

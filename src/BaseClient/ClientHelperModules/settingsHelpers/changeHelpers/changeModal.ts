@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  settingName: T,
  fieldName: string,
@@ -21,9 +21,10 @@ export default <T extends keyof CT.SettingsNames>(
  required?: boolean,
 ): Discord.APIModalInteractionResponseCallbackData => ({
  title: (
-  language.slashCommands.settings.categories[
-   String(settingName) as keyof typeof language.slashCommands.settings.categories
-  ].fields[fieldName as never] as Record<string, string>
+  language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+   string,
+   string
+  >
  ).name,
  custom_id: `settings/${type}_${String(settingName)}${
   uniquetimestamp ? `_${uniquetimestamp}` : ''
@@ -54,19 +55,22 @@ export default <T extends keyof CT.SettingsNames>(
      label: language.slashCommands.settings.acceptedValue,
      custom_id: '-',
      value: (
-      language.slashCommands.settings.categories[
-       String(settingName) as keyof typeof language.slashCommands.settings.categories
-      ].fields[fieldName as never] as Record<string, string>
+      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+       string,
+       string
+      >
      ).desc,
      max_length: (
-      language.slashCommands.settings.categories[
-       String(settingName) as keyof typeof language.slashCommands.settings.categories
-      ].fields[fieldName as never] as Record<string, string>
+      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+       string,
+       string
+      >
      ).desc.length,
      min_length: (
-      language.slashCommands.settings.categories[
-       String(settingName) as keyof typeof language.slashCommands.settings.categories
-      ].fields[fieldName as never] as Record<string, string>
+      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+       string,
+       string
+      >
      ).desc.length,
     },
    ],

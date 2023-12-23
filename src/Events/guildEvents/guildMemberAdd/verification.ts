@@ -1,8 +1,8 @@
+import Prisma from '@prisma/client';
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
-import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const verification = await ch.DataBase.verification.findUnique({

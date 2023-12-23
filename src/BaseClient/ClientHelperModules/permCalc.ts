@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/Typings.js';
 
 /**
  * Calculates the permissions of a user or role based on the given permission bits.

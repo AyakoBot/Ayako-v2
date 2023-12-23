@@ -1,7 +1,26 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import client from '../../Client.js';
 import { makeInlineCode } from '../util.js';
+
+export type MentionTypes =
+ | CT.EditorTypes.Channel
+ | CT.EditorTypes.Role
+ | CT.EditorTypes.User
+ | CT.EditorTypes.Emote
+ | CT.EditorTypes.ShopType
+ | CT.EditorTypes.AutoPunishment
+ | CT.EditorTypes.AntiRaidPunishment
+ | CT.EditorTypes.Punishment
+ | CT.EditorTypes.Language
+ | CT.EditorTypes.RoleMode
+ | CT.EditorTypes.Emotes
+ | CT.EditorTypes.AutoModRules
+ | CT.EditorTypes.Commands
+ | CT.EditorTypes.QuestionType
+ | CT.EditorTypes.SettingLink
+ | CT.EditorTypes.Embed
+ | CT.EditorTypes.Questions;
 
 /**
  * Returns a mention string based on the given type and value.
@@ -13,40 +32,40 @@ import { makeInlineCode } from '../util.js';
  */
 export default async (
  language: CT.Language,
- type: CT.MentionTypes,
+ type: MentionTypes,
  value: string,
  guild: Discord.Guild,
 ) => {
  switch (type) {
-  case 'channel':
+  case CT.EditorTypes.Channel:
    return `<#${value}>`;
-  case 'role':
+  case CT.EditorTypes.Role:
    return `<@&${value}>`;
-  case 'user':
+  case CT.EditorTypes.User:
    return `<@${value}>`;
-  case 'shoptype':
+  case CT.EditorTypes.ShopType:
    return language.shoptypes[value as keyof typeof language.shoptypes];
-  case 'auto-punishment':
-  case 'antiraid-punishment':
-  case 'punishment':
+  case CT.EditorTypes.AutoPunishment:
+  case CT.EditorTypes.AntiRaidPunishment:
+  case CT.EditorTypes.Punishment:
    return language.punishments[value as keyof typeof language.punishments];
-  case 'language':
+  case CT.EditorTypes.Language:
    return language.languages[value as keyof typeof language.languages];
-  case 'rolemode':
+  case CT.EditorTypes.RoleMode:
    return language.rolemodes[value as keyof typeof language.rolemodes];
-  case 'emote':
+  case CT.EditorTypes.Emote:
    return value.includes(':') ? `<${value}>` : value;
-  case 'automodrules':
+  case CT.EditorTypes.AutoModRules:
    return makeInlineCode(
     (guild as NonNullable<typeof guild>).autoModerationRules.cache.get(value)?.name ?? value,
    );
-  case 'commands': {
+  case CT.EditorTypes.Commands: {
    const cmd = client.application?.commands.cache.get(value);
 
    if (!cmd) return `\`${value}\``;
    return `</${cmd?.name}:${cmd?.id}>`;
   }
-  case 'questions':
+  case CT.EditorTypes.QuestionType:
    return language.answertypes[value as keyof typeof language.answertypes];
   default:
    return value;

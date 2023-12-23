@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'shop';
+const name = CT.SettingNames.Shop;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+    ch.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -70,7 +69,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+  components: [
+   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
+  ],
  },
  {
   type: Discord.ComponentType.ActionRow,

@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-import { TableNamesPrismaTranslation } from '../../../../BaseClient/Other/constants.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const name = 'anti-spam';
+const name = CT.SettingNames.AntiSpam;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await ch.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[TableNamesPrismaTranslation[name]]
+ const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[TableNamesPrismaTranslation[name]].create({
+    ch.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -106,17 +105,17 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: true,
    },
    {
-    name: language.slashCommands.settings.wlchannel,
+    name: language.slashCommands.settings.BLWL.wlchannelid,
     value: embedParsers.channels(settings?.wlchannelid, language),
     inline: false,
    },
    {
-    name: language.slashCommands.settings.wlrole,
+    name: language.slashCommands.settings.BLWL.wlroleid,
     value: embedParsers.roles(settings?.wlroleid, language),
     inline: false,
    },
    {
-    name: language.slashCommands.settings.wluser,
+    name: language.slashCommands.settings.BLWL.wluserid,
     value: embedParsers.users(settings?.wluserid, language),
     inline: false,
    },
@@ -131,7 +130,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ) => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.global(language, !!settings?.active, 'active', name, undefined)],
+  components: [
+   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
+  ],
  },
  {
   type: Discord.ComponentType.ActionRow,
@@ -171,9 +172,15 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, settings?.wlchannelid, 'wlchannelid', name, undefined),
-   buttonParsers.global(language, settings?.wlroleid, 'wlroleid', name, undefined),
-   buttonParsers.global(language, settings?.wluserid, 'wluserid', name, undefined),
+   buttonParsers.global(
+    language,
+    settings?.wlchannelid,
+    CT.GlobalDescType.WLChannelId,
+    name,
+    undefined,
+   ),
+   buttonParsers.global(language, settings?.wlroleid, CT.GlobalDescType.WLRoleId, name, undefined),
+   buttonParsers.global(language, settings?.wluserid, CT.GlobalDescType.WLUserId, name, undefined),
   ],
  },
 ];

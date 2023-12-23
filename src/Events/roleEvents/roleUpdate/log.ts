@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import type CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldRole: Discord.Role, role: Discord.Role) => {
  if (oldRole.position !== role.position) return;
@@ -21,7 +21,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
    name: lan.nameUpdate,
    icon_url: con.update,
   },
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   fields: [],
   description: auditUser ? lan.descUpdateAudit(role, auditUser) : lan.descUpdate(role),
   timestamp: new Date().toISOString(),
@@ -108,7 +108,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   ) as (typeof language.permissions.perms)[];
 
   const permEmbed: Discord.APIEmbed = {
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
    description: `${changedDenied
     .map(
      (p) =>

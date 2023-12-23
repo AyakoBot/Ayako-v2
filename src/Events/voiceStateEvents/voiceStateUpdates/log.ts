@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  oldState: Discord.VoiceState,
@@ -25,7 +25,7 @@ export default async (
    name: lan.nameUpdate,
    icon_url: con.update,
   },
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   description: lan.descUpdate(
    member.user,
    state.channel,

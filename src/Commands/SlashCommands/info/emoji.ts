@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -121,7 +121,7 @@ const getEmotePayloads = async (
    const payload = {
     embeds: [
      {
-      color: color || chEval.constants.colors.base,
+      color: color || CT.Colors.Base,
       author: {
        name: lan.emojis.author,
       },

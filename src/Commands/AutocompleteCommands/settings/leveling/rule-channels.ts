@@ -1,6 +1,6 @@
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (

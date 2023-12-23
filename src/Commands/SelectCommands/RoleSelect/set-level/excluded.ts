@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import { getEmbed } from '../../../SlashCommands/settings/leveling/set-level-role.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import { getEmbed } from '../../../SlashCommands/settings/leveling/set-level-role.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

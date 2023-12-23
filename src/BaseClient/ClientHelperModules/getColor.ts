@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
 import { findBestMatch } from 'string-similarity';
-import Constants from '../Other/constants.js';
+import * as CT from '../../Typings/Typings.js';
 
 export const colors = {
- transparent: Constants.colors.ephemeral,
- none: Constants.colors.ephemeral,
- red: Constants.colors.danger,
- green: Constants.colors.success,
- yellow: Constants.colors.loading,
+ transparent: CT.Colors.Ephemeral,
+ none: CT.Colors.Ephemeral,
+ red: CT.Colors.Danger,
+ green: CT.Colors.Success,
+ yellow: CT.Colors.Loading,
  blue: 0x0000ff,
  orange: 0xffa500,
  purple: 0x800080,
@@ -176,12 +176,10 @@ export default (color?: string | number | Discord.GuildMember | null | undefined
  if (!color) return 0xb0ff00;
 
  if (color instanceof Discord.GuildMember) {
-  if (!color) return Constants.colors.base;
-  if (!color.roles.highest) return Constants.colors.base;
+  if (!color) return CT.Colors.Base;
+  if (!color.roles.highest) return CT.Colors.Base;
 
-  return color && color.roles.highest.color !== 0
-   ? color.roles.highest.color
-   : Constants.colors.base;
+  return color && color.roles.highest.color !== 0 ? color.roles.highest.color : CT.Colors.Base;
  }
 
  if (typeof color === 'number') return color;

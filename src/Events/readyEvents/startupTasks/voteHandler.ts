@@ -1,8 +1,8 @@
 import * as Jobs from 'node-schedule';
 import { Prisma } from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 import client from '../../../BaseClient/Client.js';
-import type CT from '../../../Typings/CustomTypings.js';
 import VoteBotCreate, { endVote } from '../../voteEvents/voteBotEvents/voteBotCreate.js';
 import VoteGuildCreate from '../../voteEvents/voteGuildEvents/voteGuildCreate.js';
 import Socket from '../../../BaseClient/Socket.js';

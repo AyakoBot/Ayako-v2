@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import create from './giveaway/create.js';
 import end from './giveaway/end.js';
 import participate from './giveaway/participate.js';

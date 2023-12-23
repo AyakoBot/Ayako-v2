@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  oldWebhook: Discord.Webhook,
@@ -22,7 +22,7 @@ export default async (
    name: lan.nameUpdate,
    icon_url: con.update,
   },
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   fields: [],
   description: auditUser
    ? lan.descUpdateAudit(

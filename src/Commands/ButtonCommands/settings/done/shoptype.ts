@@ -1,20 +1,24 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import { getOptions } from '../editors/shoptype.js';
 
 type Types =
- | 'punishment'
- | 'shoptype'
- | 'language'
- | 'auto-punishment'
- | 'antiraid-punishment'
- | 'questions';
+ | CT.EditorTypes.Punishment
+ | CT.EditorTypes.ShopType
+ | CT.EditorTypes.Language
+ | CT.EditorTypes.AutoPunishment
+ | CT.EditorTypes.AntiRaidPunishment
+ | CT.EditorTypes.Questions;
 
-export default async (cmd: Discord.ButtonInteraction, args: string[], type: Types = 'shoptype') => {
+export default async (
+ cmd: Discord.ButtonInteraction,
+ args: string[],
+ type: Types = CT.EditorTypes.ShopType,
+) => {
  if (!cmd.inCachedGuild()) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const fieldName = args.shift();

@@ -1,9 +1,9 @@
-import { AutoPoster } from 'topgg-autoposter';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import auth from '../../../auth.json' assert { type: 'json' };
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import { AutoPoster } from 'topgg-autoposter';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';

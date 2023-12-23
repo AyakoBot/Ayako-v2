@@ -1,5 +1,5 @@
-import * as CT from '../../Typings/CustomTypings.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import * as CT from '../../Typings/Typings.js';
 
 export const takesFirstArg = true;
 export const thisGuildOnly = [];

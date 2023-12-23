@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  oldChannel:
@@ -46,7 +46,7 @@ export default async (
    name: lan.nameUpdate,
   },
   fields: [],
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 
@@ -286,17 +286,17 @@ export default async (
    JSON.stringify(channel.permissionOverwrites.cache.map((o) => o))
  ) {
   const addEmbed: Discord.APIEmbed = {
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
    fields: [],
   };
 
   const removeEmbed: Discord.APIEmbed = {
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
    fields: [],
   };
 
   const changeEmbed: Discord.APIEmbed = {
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
    fields: [],
   };
 

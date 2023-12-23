@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import SH from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
 
-const name = 'denylist-rules';
+const name = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -278,7 +278,7 @@ export const getEmbeds = (
         value: ch.util.makeUnderlined(ch.util.makeBold(language.t.Overrides)),
        },
        {
-        name: language.slashCommands.settings.wlrole,
+        name: language.slashCommands.settings.BLWL.wlroleid,
         value: embedParsers.roles(
          rule.exemptRoles.map((o) => o.id),
          language,
@@ -287,7 +287,7 @@ export const getEmbeds = (
        ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
         ? [
            {
-            name: language.slashCommands.settings.wlchannel,
+            name: language.slashCommands.settings.BLWL.wlchannelid,
             value: embedParsers.channels(
              rule.exemptChannels.map((o) => o.id),
              language,
@@ -313,7 +313,7 @@ const getActionMetadata = (
 export const getComponents = (
  rule: Discord.AutoModerationRule,
  language: CT.Language,
- lan: CT.Language['slashCommands']['settings']['categories']['denylist-rules'],
+ lan: CT.Language['slashCommands']['settings']['categories'][CT.SettingNames.DenylistRules],
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent>[] =>
  [
   {
@@ -330,7 +330,7 @@ export const getComponents = (
      label: language.events.logs.automodRule.enabled,
      style: SH.getStyle(rule.enabled),
      custom_id: `settings/autoModRule/boolean_active_${rule.id}`,
-     emoji: SH.getEmoji(rule.enabled, 'active'),
+     emoji: SH.getEmoji(rule.enabled, CT.GlobalDescType.Active),
     },
     {
      type: Discord.ComponentType.Button,
@@ -586,7 +586,7 @@ export const getComponents = (
      type: Discord.ComponentType.Button,
      label: language.events.logs.automodRule.exemptRoles,
      style: rule.exemptRoles.size ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
-     custom_id: `settings/autoModRule/roles_${rule.id}`,
+     custom_id: `settings/${CT.AutoModEditorType.Roles}_${rule.id}`,
      emoji: ch.emotes.Role,
     },
     ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
@@ -597,7 +597,7 @@ export const getComponents = (
          style: rule.exemptChannels.size
           ? Discord.ButtonStyle.Secondary
           : Discord.ButtonStyle.Primary,
-         custom_id: `settings/autoModRule/channels_${rule.id}`,
+         custom_id: `settings/${CT.AutoModEditorType.Channels}_${rule.id}`,
          emoji: ch.emotes.channelTypes[0],
         },
        ]
@@ -610,21 +610,36 @@ const getAllComponents = (
  language: CT.Language,
  automodRules: Discord.AutoModerationRule[] | undefined,
 ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
- const lan = language.slashCommands.settings.categories['denylist-rules'];
+ const lan = language.slashCommands.settings.categories[CT.SettingNames.DenylistRules];
 
- const createKeywordRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
+ const createKeywordRule = ch.settingsHelpers.buttonParsers.create(
+  language,
+  CT.SettingNames.DenylistRules,
+ );
  createKeywordRule.custom_id = 'settings/autoModRule/create_keyword';
  createKeywordRule.label = lan.keyword;
- const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
+ const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(
+  language,
+  CT.SettingNames.DenylistRules,
+ );
  createMentionSpamRule.custom_id = 'settings/autoModRule/create_mention';
  createMentionSpamRule.label = lan.mention;
- const createSpamRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
+ const createSpamRule = ch.settingsHelpers.buttonParsers.create(
+  language,
+  CT.SettingNames.DenylistRules,
+ );
  createSpamRule.custom_id = 'settings/autoModRule/create_spam';
  createSpamRule.label = lan.spam;
- const createPresetRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
+ const createPresetRule = ch.settingsHelpers.buttonParsers.create(
+  language,
+  CT.SettingNames.DenylistRules,
+ );
  createPresetRule.custom_id = 'settings/autoModRule/create_preset';
  createPresetRule.label = lan.preset;
- const createMemberRule = ch.settingsHelpers.buttonParsers.create(language, 'denylist-rules');
+ const createMemberRule = ch.settingsHelpers.buttonParsers.create(
+  language,
+  CT.SettingNames.DenylistRules,
+ );
  createMemberRule.custom_id = 'settings/autoModRule/create_member';
  createMemberRule.label = lan.member;
 

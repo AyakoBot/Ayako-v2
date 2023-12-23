@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,7 +8,7 @@ export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) =>
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const language = await ch.getLanguage(cmd.guildId);
@@ -20,7 +20,7 @@ export default async (cmd: Discord.UserSelectMenuInteraction, args: string[]) =>
     settingName,
     fieldName,
     cmd.users.map((c) => c.id),
-    'user',
+    CT.EditorTypes.User,
     cmd.guild,
    ),
   ],

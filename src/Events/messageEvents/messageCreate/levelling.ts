@@ -1,10 +1,10 @@
-import * as Discord from 'discord.js';
-import * as StringSimilarity from 'string-similarity';
 import Prisma, { LevelType } from '@prisma/client';
+import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import * as StringSimilarity from 'string-similarity';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import ChannelRules from '../../../BaseClient/Other/ChannelRules.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 type LevelData = { oldXP: number; newXP: number; newLevel: number; oldLevel: number };
 

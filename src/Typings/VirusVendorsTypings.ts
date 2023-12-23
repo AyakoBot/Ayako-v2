@@ -226,7 +226,7 @@ export type PromptAPI =
 //  };
 // };
 
-type VirusTotalURLs = {
+export type VirusTotalURLs = {
  data: {
   type: 'analysis';
   id: string;
@@ -247,7 +247,7 @@ type VirusTotalURLs = {
 //  };
 // };
 
-type VirusTotalAnalyses = {
+export type VirusTotalAnalyses = {
  meta: {
   url_info: {
    url: string;

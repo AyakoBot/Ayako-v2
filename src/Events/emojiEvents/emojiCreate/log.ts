@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (emote: Discord.GuildEmoji) => {
  const channels = await ch.getLogChannels('emojievents', emote.guild);
@@ -25,7 +26,7 @@ export default async (emote: Discord.GuildEmoji) => {
   },
   description: auditUser ? lan.descEmojiCreateAudit(auditUser, emote) : lan.descEmojiCreate(emote),
   fields: [],
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

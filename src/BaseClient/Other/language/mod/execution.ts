@@ -1,4 +1,5 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
+import banAdd from './execution/banAdd.js';
 import banRemove from './execution/banRemove.js';
 import channelBanAdd from './execution/channelBanAdd.js';
 import channelBanRemove from './execution/channelBanRemove.js';
@@ -9,11 +10,10 @@ import roleRemove from './execution/roleRemove.js';
 import softBanAdd from './execution/softBanAdd.js';
 import softWarnAdd from './execution/softWarnAdd.js';
 import strikeAdd from './execution/strikeAdd.js';
-import tempMuteAdd from './execution/tempMuteAdd.js';
-import warnAdd from './execution/warnAdd.js';
 import tempBanAdd from './execution/tempBanAdd.js';
 import tempChannelBanAdd from './execution/tempChannelBanAdd.js';
-import banAdd from './execution/banAdd.js';
+import tempMuteAdd from './execution/tempMuteAdd.js';
+import warnAdd from './execution/warnAdd.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution,

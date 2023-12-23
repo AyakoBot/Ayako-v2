@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import emotes from '../emotes.js';
 
 /**
@@ -10,23 +10,19 @@ import emotes from '../emotes.js';
  */
 export default (
  setting: string | boolean | string[] | undefined | Prisma.Decimal | null,
- type?: CT.BLWLType | 'active',
+ type?: CT.GlobalDescType,
 ) => {
  switch (type) {
-  case 'blchannelid':
-  case 'wlchannelid': {
+  case CT.GlobalDescType.BLChannelId:
+  case CT.GlobalDescType.WLChannelId:
    return emotes.channelTypes[0];
-  }
-  case 'blroleid':
-  case 'wlroleid': {
+  case CT.GlobalDescType.BLRoleId:
+  case CT.GlobalDescType.WLRoleId:
    return emotes.Role;
-  }
-  case 'bluserid':
-  case 'wluserid': {
+  case CT.GlobalDescType.BLUserId:
+  case CT.GlobalDescType.WLUserId:
    return emotes.Member;
-  }
-  default: {
+  default:
    return setting ? emotes.enabled : emotes.disabled;
-  }
  }
 };

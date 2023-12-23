@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import startOver from '../startOver.js';
 import { getSelectedField } from '../../../ModalCommands/embed-builder/editor.js';
+import startOver from '../startOver.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  const selectedField = getSelectedField(cmd);

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import 'moment-duration-format';
-import * as CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/Typings.js';
 
 /**
  * Formats the given duration in years, months, days, hours, minutes and seconds.

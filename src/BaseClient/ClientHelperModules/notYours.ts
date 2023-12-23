@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import type CT from '../../Typings/CustomTypings.js';
+import * as CT from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';
 import reply from './replyCmd.js';
 
@@ -17,7 +17,7 @@ export default (interaction: Discord.ButtonInteraction, language: CT.Language) =
      icon_url: constants.standard.error,
      url: constants.standard.invite,
     },
-    color: constants.colors.danger,
+    color: CT.Colors.Danger,
     description: language.errors.notYours,
    },
   ],

@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (webhook: Discord.Webhook, channel: Discord.GuildTextBasedChannel) => {
  const channels = await ch.getLogChannels('webhookevents', channel.guild);
@@ -18,7 +19,7 @@ export default async (webhook: Discord.Webhook, channel: Discord.GuildTextBasedC
    name: lan.nameCreate,
    icon_url: con.create,
   },
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   description: auditUser
    ? lan.descCreateAudit(
       webhook,

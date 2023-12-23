@@ -1,16 +1,16 @@
-import * as Jobs from 'node-schedule';
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
-import { giveawayCollectTimeExpired, end } from '../../../Commands/SlashCommands/giveaway/end.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
-import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
-import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
-import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
+import { end, giveawayCollectTimeExpired } from '../../../Commands/SlashCommands/giveaway/end.js';
+import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
+import * as CT from '../../../Typings/Typings.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
+import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
+import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
 
 export default () => {
  reminder();

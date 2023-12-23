@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -9,7 +9,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -46,7 +46,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     fieldName,
     currentSetting?.[fieldName as keyof typeof currentSetting],
-    'commands',
+    CT.EditorTypes.Commands,
     cmd.guild,
    ),
   ],
@@ -57,7 +57,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      ch.settingsHelpers.changeHelpers.changeSelect(
       fieldName,
       settingName,
-      'commands',
+      CT.EditorTypes.Commands,
       {
        options: commands.map((c) => ({
         label: c.label,
@@ -76,7 +76,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      ch.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      'commands',
+      CT.EditorTypes.Commands,
       language,
       Number(uniquetimestamp),
      ),

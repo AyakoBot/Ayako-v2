@@ -1,8 +1,8 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;

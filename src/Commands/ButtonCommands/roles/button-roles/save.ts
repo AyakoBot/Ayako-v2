@@ -1,13 +1,13 @@
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
+import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import refresh from './refresh.js';
 import { findField } from '../../../SelectCommands/StringSelect/roles/button-roles.js';
 import {
  Type,
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';
+import refresh from './refresh.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,

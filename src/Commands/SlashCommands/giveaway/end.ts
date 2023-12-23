@@ -1,9 +1,9 @@
-import * as Jobs from 'node-schedule';
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as Discord from 'discord.js';
+import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -170,7 +170,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
      icon_url: ch.emotes.ayakoLove.link,
     },
     title: language.slashCommands.giveaway.end.title,
-    color: ch.constants.colors.success,
+    color: CT.Colors.Success,
     url: ch.constants.standard.msgurl(giveaway.guildid, giveaway.channelid, giveaway.msgid),
     fields:
      !giveaway.collecttime || !giveaway.actualprize

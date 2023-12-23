@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
@@ -25,7 +26,7 @@ export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  exempt_channels: rule.exemptChannels?.map((c) => c.id),
 });
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -101,36 +102,36 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  });
 };
 
-const getSetting = (
- rule: Discord.AutoModerationRule,
- type:
-  | 'active'
-  | 'profanity'
-  | 'sexualContent'
-  | 'slurs'
-  | 'mentionRaidProtectionEnabled'
-  | 'blockMessage'
-  | 'sendAlertMessage'
-  | 'timeout',
-) => {
+enum SettingNames {
+ Active = 'active',
+ Profanity = 'profanity',
+ SexualContent = 'sexualContent',
+ Slurs = 'slurs',
+ MentionRaidProtectionEnabled = 'mentionRaidProtectionEnabled',
+ BlockMessage = 'blockMessage',
+ SendAlertMessage = 'sendAlertMessage',
+ Timeout = 'timeout',
+}
+
+const getSetting = (rule: Discord.AutoModerationRule, type: SettingNames) => {
  switch (type) {
-  case 'active':
+  case SettingNames.Active:
    return !!rule.enabled;
-  case 'profanity':
+  case SettingNames.Profanity:
    return !!rule.triggerMetadata.presets.includes(
     Discord.AutoModerationRuleKeywordPresetType.Profanity,
    );
-  case 'sexualContent':
+  case SettingNames.SexualContent:
    return !!rule.triggerMetadata.presets.includes(
     Discord.AutoModerationRuleKeywordPresetType.SexualContent,
    );
-  case 'slurs':
+  case SettingNames.Slurs:
    return !!rule.triggerMetadata.presets.includes(
     Discord.AutoModerationRuleKeywordPresetType.Slurs,
    );
-  case 'mentionRaidProtectionEnabled':
+  case SettingNames.MentionRaidProtectionEnabled:
    return !!rule.triggerMetadata.mentionRaidProtectionEnabled;
-  case 'blockMessage':
+  case SettingNames.BlockMessage:
    return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)
     ? (JSON.parse(
        JSON.stringify(
@@ -138,7 +139,7 @@ const getSetting = (
        ),
       ) as Discord.AutoModerationAction)
     : undefined;
-  case 'sendAlertMessage':
+  case SettingNames.SendAlertMessage:
    return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.SendAlertMessage)
     ? (JSON.parse(
        JSON.stringify(
@@ -146,7 +147,7 @@ const getSetting = (
        ),
       ) as Discord.AutoModerationAction)
     : undefined;
-  case 'timeout':
+  case SettingNames.Timeout:
    return rule.actions.find((a) => a.type === Discord.AutoModerationActionType.Timeout)
     ? (JSON.parse(
        JSON.stringify(
@@ -159,20 +160,9 @@ const getSetting = (
  }
 };
 
-const updateRule = async (
- rule: Discord.AutoModerationRule,
- type:
-  | 'active'
-  | 'profanity'
-  | 'sexualContent'
-  | 'slurs'
-  | 'mentionRaidProtectionEnabled'
-  | 'blockMessage'
-  | 'sendAlertMessage'
-  | 'timeout',
-) => {
+const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) => {
  switch (type) {
-  case 'active': {
+  case SettingNames.Active: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     enabled: !rule.enabled,
    });
@@ -180,7 +170,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'profanity': {
+  case SettingNames.Profanity: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
@@ -196,7 +186,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'sexualContent': {
+  case SettingNames.SexualContent: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
@@ -215,7 +205,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'slurs': {
+  case SettingNames.Slurs: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
@@ -231,7 +221,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'mentionRaidProtectionEnabled': {
+  case SettingNames.MentionRaidProtectionEnabled: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      mention_raid_protection_enabled: !rule.triggerMetadata.mentionRaidProtectionEnabled,
@@ -241,7 +231,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'blockMessage': {
+  case SettingNames.BlockMessage: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
@@ -251,7 +241,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'sendAlertMessage': {
+  case SettingNames.SendAlertMessage: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
@@ -261,7 +251,7 @@ const updateRule = async (
    if ('message' in res) return res;
    return res;
   }
-  case 'timeout': {
+  case SettingNames.Timeout: {
    const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.Timeout,

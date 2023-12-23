@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 import messageDelete from '../messageDelete/messageDelete.js';
 
 export default async (
@@ -24,7 +25,7 @@ export default async (
    ? lan.descDeleteBulkAudit(auditUser, msgs.size, channel)
    : lan.descDeleteBulk(msgs.size, channel),
   fields: [],
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 

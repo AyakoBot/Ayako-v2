@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import client from '../../../../BaseClient/Client.js';
+import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (event: Discord.GuildScheduledEvent) => {
  const guild = event.guild ?? client.guilds.cache.get(event.guildId);
@@ -43,7 +44,7 @@ export default async (event: Discord.GuildScheduledEvent) => {
    name: lan.nameCreate,
    icon_url: con.ScheduledEventCreate,
   },
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   fields: [],
   description,
   timestamp: new Date().toISOString(),

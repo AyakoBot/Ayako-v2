@@ -1,10 +1,9 @@
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../DataBase.js';
-
 import setup from '../setup.js';
 
 export default async (
- tableName: keyof CT.TableNamesMap,
+ tableName: keyof typeof CT.SettingsName2TableName,
  guildid: string,
  uniquetimestamp: number | undefined,
 ) => {

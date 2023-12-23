@@ -1,5 +1,5 @@
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
  const settings = await ch.DataBase.guildsettings.findMany({

@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 import getChangeSelectType from '../getChangeSelectType.js';
 import getPlaceholder from '../getPlaceholder.js';
 
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
- type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
+ type: CT.ChangeSelectType,
  fieldName: string,
  settingName: T,
  uniquetimestamp: number | undefined | string,

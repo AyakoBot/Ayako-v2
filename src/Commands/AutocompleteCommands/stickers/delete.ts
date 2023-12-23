@@ -1,5 +1,5 @@
 import { findBestMatch } from 'string-similarity';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!('options' in cmd)) return [];

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import log from './log.js';
 import cache from './cache.js';
+import log from './log.js';
 
 export default async (channel: Discord.Channel) => {
  if (channel.type === Discord.ChannelType.DM) return;

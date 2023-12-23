@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import StringSimilarity from 'string-similarity';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawCommand = cmd.options.getString('command', true);
@@ -27,7 +28,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const embeds: Discord.APIEmbed[] = [
   {
-   color: ch.constants.colors.base,
+   color: CT.Colors.Base,
    author: {
     name: lan.author,
    },
@@ -51,7 +52,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .forEach((c) => {
    embeds.push({
     description: c.join('\n'),
-    color: ch.constants.colors.base,
+    color: CT.Colors.Base,
     footer: {
      text: lan.footer,
     },

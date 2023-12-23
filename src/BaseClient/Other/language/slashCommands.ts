@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import afk from './slashCommands/afk.js';
 import balance from './slashCommands/balance.js';
 import check from './slashCommands/check.js';

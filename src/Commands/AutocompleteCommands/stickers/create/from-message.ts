@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import { findBestMatch } from 'string-similarity';
-import Emojis from '../../../../BaseClient/Other/Emojis.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import Emojis from '../../../../BaseClient/Other/Emojis.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!('options' in cmd)) return [];

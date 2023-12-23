@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { API } from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  if (member.client.user.id !== ch.mainID) return;
@@ -57,7 +58,7 @@ export default async (member: Discord.GuildMember) => {
     inline: false,
    },
   ],
-  color: ch.constants.colors.base,
+  color: CT.Colors.Base,
  };
 
  const dm = await ch.send(member.user, {

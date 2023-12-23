@@ -1,7 +1,17 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
+
+export enum GlobalDescType {
+ BLChannelId = 'blchannelid',
+ BLRoleId = 'blroleid',
+ BLUserId = 'bluserid',
+ WLChannelId = 'wlchannelid',
+ WLRoleId = 'wlroleid',
+ WLUserId = 'wluserid',
+ Active = 'active',
+}
 
 /**
  * Returns the description for a given type based on the provided language.
@@ -9,41 +19,25 @@ const { log } = console;
  * @param language - The language object containing the descriptions.
  * @returns The description for the given type.
  */
-export default (
- type: CT.BLWLType | 'autoModRule/channel' | 'autoModRule/channels' | 'autoModRule/roles',
- language: CT.Language,
-) => {
+export default (type: GlobalDescType | CT.AutoModEditorType, language: CT.Language) => {
  switch (type) {
-  case 'blchannelid': {
-   return language.slashCommands.settings.blchannel;
-  }
-  case 'blroleid': {
-   return language.slashCommands.settings.blrole;
-  }
-  case 'bluserid': {
-   return language.slashCommands.settings.bluser;
-  }
-  case 'wlchannelid': {
-   return language.slashCommands.settings.wlchannel;
-  }
-  case 'wlroleid': {
-   return language.slashCommands.settings.wlrole;
-  }
-  case 'wluserid': {
-   return language.slashCommands.settings.wluser;
-  }
-  case 'autoModRule/channel': {
+  case GlobalDescType.BLChannelId:
+  case GlobalDescType.BLRoleId:
+  case GlobalDescType.BLUserId:
+  case GlobalDescType.WLChannelId:
+  case GlobalDescType.WLRoleId:
+  case GlobalDescType.WLUserId:
+   return language.slashCommands.settings.BLWL[type];
+  case GlobalDescType.Active:
+   return language.slashCommands.settings.active;
+  case CT.AutoModEditorType.Channel:
    return language.events.logs.automodRule.alertChannel;
-  }
-  case 'autoModRule/roles': {
+  case CT.AutoModEditorType.Roles:
    return language.events.logs.automodRule.exemptRoles;
-  }
-  case 'autoModRule/channels': {
+  case CT.AutoModEditorType.Channels:
    return language.events.logs.automodRule.exemptChannels;
-  }
-  default: {
+  default:
    log(new Error(`Unknown Type ${type}`));
    return language.t.Unknown;
-  }
  }
 };

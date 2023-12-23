@@ -1,8 +1,8 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
+import type * as ModTypes from '../mod.js';
 import { request } from '../requestHandler.js';
 import checkExeCanManage from './checkExeCanManage.js';
-import type * as ModTypes from '../mod.js';
 
 export default async (
  cmd: ModTypes.CmdType,

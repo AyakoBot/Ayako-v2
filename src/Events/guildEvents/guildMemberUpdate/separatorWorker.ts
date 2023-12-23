@@ -1,6 +1,6 @@
-import { parentPort, workerData } from 'worker_threads';
-import Jobs from 'node-schedule';
 import Prisma from '@prisma/client';
+import Jobs from 'node-schedule';
+import { parentPort, workerData } from 'worker_threads';
 
 type PassObject = {
  members: {

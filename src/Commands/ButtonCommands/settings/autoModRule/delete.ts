@@ -1,8 +1,8 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
-const settingName = 'denylist-rules';
+const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -28,10 +28,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const lan =
-  language.slashCommands.settings.categories[
-   settingName as keyof CT.Language['slashCommands']['settings']['categories']
-  ];
+ const lan = language.slashCommands.settings.categories[settingName as CT.SettingNames];
 
  ch.settingsHelpers.updateLog(
   oldSettings as never,

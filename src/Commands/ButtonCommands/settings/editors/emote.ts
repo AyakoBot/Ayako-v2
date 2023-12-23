@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,7 +8,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as keyof CT.Language['slashCommands']['settings']['categories'];
+ const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -37,7 +37,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       name: language.t.error,
       icon_url: ch.emotes.warning.link,
      },
-     color: ch.constants.colors.danger,
+     color: CT.Colors.Danger,
      description: language.errors.noThreadCanBeCreated,
     },
    ],
@@ -74,7 +74,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      settingName,
      fieldName,
      currentSetting?.[fieldName as keyof typeof currentSetting],
-     'emote',
+     CT.EditorTypes.Emote,
      cmd.guild,
     ),
    ],

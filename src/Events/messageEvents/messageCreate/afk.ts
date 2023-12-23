@@ -1,10 +1,10 @@
-import Jobs from 'node-schedule';
-import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import { getPrefix } from './commandHandler.js';
+import * as Discord from 'discord.js';
+import Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import { getContent } from '../../autoModerationActionEvents/censor.js';
+import { getPrefix } from './commandHandler.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -32,7 +32,7 @@ const self = async (
  if (Number(afk.since) > Date.now() - 60000) return;
 
  const embed: Discord.APIEmbed = {
-  color: ch.constants.colors.loading,
+  color: CT.Colors.Loading,
   description: language.slashCommands.afk.removed(ch.constants.standard.getTime(Number(afk.since))),
  };
 
@@ -114,7 +114,7 @@ const mention = async (
    });
 
    return {
-    color: ch.constants.colors.loading,
+    color: CT.Colors.Loading,
     description: language.slashCommands.afk.isAFK(
      a.userid,
      ch.constants.standard.getTime(Number(a.since)),

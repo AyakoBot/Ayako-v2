@@ -1,11 +1,11 @@
-import * as stringSimilarity from 'string-similarity';
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
+import * as Jobs from 'node-schedule';
+import * as stringSimilarity from 'string-similarity';
 import client from '../../../BaseClient/Client.js';
-import auth from '../../../auth.json' assert { type: 'json' };
-import * as CT from '../../../Typings/CustomTypings.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -81,7 +81,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
    description: language.slashCommands.useSlashCommands(
     matchingCommands.length > 1 ? `\n${matchingCommands.join('\n')}` : matchingCommands.join('\n'),
    ),
-   color: ch.constants.colors.ephemeral,
+   color: CT.Colors.Ephemeral,
   };
 
   const reply = await ch.replyMsg(msg, {

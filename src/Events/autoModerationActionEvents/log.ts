@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../BaseClient/ClientHelper.js';
+import * as CT from '../../Typings/Typings.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
  const channels = await ch.getLogChannels('automodevents', execution.guild);
@@ -33,7 +34,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
    url: msg ? msg.url : undefined,
   },
   description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   fields: [],
   timestamp: new Date().toISOString(),
  };

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  msg: Discord.Message,
@@ -39,7 +40,7 @@ export default async (
    ? lan.descPinCreateAudit(auditUser, msg, language.channelTypes[msg.channel.type])
    : lan.descPinCreate(msg, language.channelTypes[msg.channel.type]),
   fields: [],
-  color: ch.constants.colors.success,
+  color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

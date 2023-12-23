@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
-
+import * as CT from '../../../../Typings/Typings.js';
 import buttonParsers from '../buttonParsers.js';
 
 /**
@@ -9,7 +8,7 @@ import buttonParsers from '../buttonParsers.js';
  * @param name - The name of the setting to generate buttons for.
  * @returns An array of action row components containing a single button.
  */
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  name: T,
 ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [

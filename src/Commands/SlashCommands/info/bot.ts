@@ -1,5 +1,5 @@
-import * as os from 'os';
 import * as Discord from 'discord.js';
+import * as os from 'os';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {

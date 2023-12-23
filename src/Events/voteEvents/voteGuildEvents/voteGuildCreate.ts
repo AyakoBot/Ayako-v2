@@ -2,7 +2,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import type CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import {
  doAnnouncement,
  getTier,

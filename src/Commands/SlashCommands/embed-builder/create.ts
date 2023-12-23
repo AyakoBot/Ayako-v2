@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export const buildEmbed = async (
  cmd:
@@ -20,7 +20,7 @@ export const buildEmbed = async (
      name: lan.author,
     },
     description: lan.start.desc,
-    color: ch.constants.colors.ephemeral,
+    color: CT.Colors.Ephemeral,
    },
   ],
   components: [

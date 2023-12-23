@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  0: t.JSON.defaultForumLayout[0],

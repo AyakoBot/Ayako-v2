@@ -1,7 +1,7 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 import client from '../../../BaseClient/Client.js';
+import * as CT from '../../../Typings/Typings.js';
+import auth from '../../../auth.json' assert { type: 'json' };
 
 export default async (guild: Discord.Guild) => {
  const webhook = await client.fetchWebhook(
@@ -12,7 +12,7 @@ export default async (guild: Discord.Guild) => {
  webhook?.send({
   embeds: [
    {
-    color: ch.constants.colors.success,
+    color: CT.Colors.Success,
     description: '<@&669894051851403294> joined a new Guild',
     fields: [
      {

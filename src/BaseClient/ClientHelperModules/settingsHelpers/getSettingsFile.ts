@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 import error from '../error.js';
 import constants from '../../Other/constants.js';
 
@@ -10,7 +10,7 @@ import constants from '../../Other/constants.js';
  * @param guild - The guild to retrieve the setting for.
  * @returns The settings file for the given setting name, or undefined if no file is found.
  */
-export default async <T extends keyof CT.Language['slashCommands']['settings']['categories']>(
+export default async <T extends keyof typeof CT.SettingsName2TableName>(
  settingName: T,
  guild: Discord.Guild,
 ) => {
@@ -19,9 +19,9 @@ export default async <T extends keyof CT.Language['slashCommands']['settings']['
  const file = files.find((f) =>
   f.endsWith(
    `/${
-    constants.commands.settings.basicSettings.includes(settingName)
-     ? `${settingName}/basic`
-     : settingName
+    constants.commands.settings.basicSettings.includes(String(settingName))
+     ? `${String(settingName)}/basic`
+     : String(settingName)
    }.js`,
   ),
  );
@@ -30,5 +30,5 @@ export default async <T extends keyof CT.Language['slashCommands']['settings']['
   return undefined;
  }
 
- return (await import(file)) as CT.SettingsFile<typeof settingName>;
+ return (await import(file)) as CT.SettingsFile<T>;
 };

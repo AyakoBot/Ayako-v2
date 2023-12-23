@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -26,7 +27,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  ch.replyCmd(cmd, {
   embeds: [
    {
-    color: ch.constants.colors.success,
+    color: CT.Colors.Success,
     author: {
      name: lan.upvotes,
      icon_url: ch.emotes.tickWithBackground.link,
@@ -34,7 +35,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
     description: (suggestion?.upvoted ?? []).map((u) => `<@${u}>`).join(', '),
    },
    {
-    color: ch.constants.colors.danger,
+    color: CT.Colors.Danger,
     author: {
      name: lan.downvotes,
      icon_url: ch.emotes.crossWithBackground.link,

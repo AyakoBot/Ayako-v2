@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async (stage: Discord.StageInstance) => {
  if (!stage.guild) return;
@@ -20,7 +21,7 @@ export default async (stage: Discord.StageInstance) => {
    name: lan.nameStageDelete,
    icon_url: con.StageDelete,
   },
-  color: ch.constants.colors.danger,
+  color: CT.Colors.Danger,
   description: auditUser
    ? lan.descDeleteStageAudit(stage.channel, language.channelTypes[stage.channel.type], auditUser)
    : lan.descDeleteStage(stage.channel, language.channelTypes[stage.channel.type]),

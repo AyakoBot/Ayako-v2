@@ -1,8 +1,8 @@
 import type * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import guildIntegrationsUpdates from './guildIntegrationsUpdates/guildIntegrationsUpdates.js';
-import guildIntegrationsDeletes from './guildIntegrationsDeletes/guildIntegrationsDeletes.js';
 import guildIntegrationsCreates from './guildIntegrationsCreates/guildIntegrationsCreates.js';
+import guildIntegrationsDeletes from './guildIntegrationsDeletes/guildIntegrationsDeletes.js';
+import guildIntegrationsUpdates from './guildIntegrationsUpdates/guildIntegrationsUpdates.js';
 
 export default async (guild: Discord.Guild) => {
  const cached = ch.cache.integrations.cache.get(guild.id);

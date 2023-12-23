@@ -1,7 +1,7 @@
-import * as Discord from 'discord.js';
 import { Prisma } from '@prisma/client';
+import * as Discord from 'discord.js';
+import * as CT from '../../../../Typings/Typings.js';
 import constants from '../../../Other/constants.js';
-import * as CT from '../../../../Typings/CustomTypings.js';
 
 import getEmoji from '../getEmoji.js';
 
@@ -16,13 +16,13 @@ import getEmoji from '../getEmoji.js';
  * @param emoji - The emoji to use for the button component.
  * @returns A Discord API button component.
  */
-export default <T extends keyof CT.SettingsNames>(
+export default <T extends keyof CT.Categories>(
  language: CT.Language,
  setting: string[] | string | boolean | null | Prisma.Decimal,
  name: keyof CT.FieldName<T>,
  settingName: T,
  uniquetimestamp: number | undefined,
- type?: 'channel' | 'role' | 'user',
+ type?: CT.EditorTypes.Channel | CT.EditorTypes.Role | CT.EditorTypes.User,
  emoji?: Discord.APIMessageComponentEmoji,
 ): Discord.APIButtonComponent => {
  const constantTypes =
@@ -38,9 +38,8 @@ export default <T extends keyof CT.SettingsNames>(
   type: Discord.ComponentType.Button,
   label: (
    (
-    language.slashCommands.settings.categories[
-     settingName as keyof CT.Language['slashCommands']['settings']['categories']
-    ].fields as CT.FieldName<T>
+    language.slashCommands.settings.categories[settingName as CT.SettingNames]
+     .fields as CT.FieldName<T>
    )[name] as unknown as Record<string, string>
   ).name,
   style:
@@ -50,6 +49,6 @@ export default <T extends keyof CT.SettingsNames>(
   custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
    name,
   )}_${String(settingName)}_${uniquetimestamp}`,
-  emoji: (type ? getEmoji(setting, `wl${type}id`) : undefined) ?? emoji,
+  emoji: (type ? getEmoji(setting, `wl${type}id` as CT.GlobalDescType) : undefined) ?? emoji,
  };
 };

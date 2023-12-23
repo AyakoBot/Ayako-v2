@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import client from '../../../BaseClient/Client.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.discriminator === '0000') return;

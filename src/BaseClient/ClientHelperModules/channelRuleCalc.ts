@@ -1,6 +1,6 @@
 import Prisma from '@prisma/client';
+import * as CT from '../../Typings/Typings.js';
 import ChannelRules from '../Other/ChannelRules.js';
-import type CT from '../../Typings/CustomTypings.js';
 
 /**
  * Calculates the channel rules based on the given bitfield and language.

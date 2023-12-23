@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
-import { request } from '../requestHandler.js';
 import constants from '../../Other/constants.js';
-import emotes from '../emotes.js';
-import send from '../send.js';
 import cache from '../cache.js';
+import emotes from '../emotes.js';
+import { request } from '../requestHandler.js';
+import send from '../send.js';
 import deleteThread from './deleteThread.js';
 
 export default async <T extends CT.ModTypes>(
@@ -18,8 +18,8 @@ export default async <T extends CT.ModTypes>(
 
  const embed = {
   color: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
-   ? constants.colors.success
-   : constants.colors.danger,
+   ? CT.Colors.Success
+   : CT.Colors.Danger,
   description: dm(options as never),
   fields: [...(options.reason ? [{ name: language.t.Reason, value: options.reason }] : [])],
   thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)

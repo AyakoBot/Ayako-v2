@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 export default async () => client.guilds.cache.forEach((g) => run(g));
 

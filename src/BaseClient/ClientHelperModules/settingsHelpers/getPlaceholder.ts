@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/CustomTypings.js';
+import * as CT from '../../../Typings/Typings.js';
 
 /**
  * Returns a placeholder string based on the type of mentionable.
@@ -6,25 +6,18 @@ import * as CT from '../../../Typings/CustomTypings.js';
  * @param language - The language object containing the placeholder strings.
  * @returns The placeholder string.
  */
-export default (
- type: 'channel' | 'role' | 'user' | 'mention' | 'channels' | 'roles' | 'users' | 'mentions',
- language: CT.Language,
-) => {
+export default (type: CT.EditorTypes, language: CT.Language) => {
  switch (type) {
-  case 'channel':
-  case 'channels': {
+  case CT.EditorTypes.Channel:
+  case CT.EditorTypes.Channels:
    return language.t.Channels;
-  }
-  case 'user':
-  case 'users': {
+  case CT.EditorTypes.User:
+  case CT.EditorTypes.Users:
    return language.t.Users;
-  }
-  case 'role':
-  case 'roles': {
+  case CT.EditorTypes.Role:
+  case CT.EditorTypes.Roles:
    return language.t.Roles;
-  }
-  default: {
+  default:
    return language.t.Mentionables;
-  }
  }
 };
