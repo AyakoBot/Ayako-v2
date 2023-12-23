@@ -14,8 +14,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   description: lan.desc((await ch.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
   fields: reminders.map((r) => ({
    name: `<#${r.channelid}> | ${ch.constants.standard.getTime(
-    Number(r.uniquetimestamp),
-   )} | ID: \`${Number(r.endtime).toString(36)}\``,
+    Number(r.endtime) + Date.now(),
+   )} | ID: \`${Number(r.uniquetimestamp).toString(36)}\``,
    value: r.reason,
   })),
   color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
