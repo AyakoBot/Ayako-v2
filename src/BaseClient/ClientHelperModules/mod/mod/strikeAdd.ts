@@ -1,3 +1,4 @@
+import Prisma from '@prisma/client';
 import * as CT from '../../../../Typings/Typings.js';
 
 import cache from '../../cache.js';
@@ -37,7 +38,7 @@ export default async <T extends CT.ModTypes>(
  }
 
  switch (strike.punishment) {
-  case 'ban': {
+  case Prisma.$Enums.AutoPunishPunishmentType.ban: {
    const opts = {
     ...options,
     deleteMessageSeconds:
@@ -50,7 +51,7 @@ export default async <T extends CT.ModTypes>(
     options: opts,
    };
   }
-  case 'channelban': {
+  case Prisma.$Enums.AutoPunishPunishmentType.channelban: {
    if (!cmd.channel) {
     error(cmd.guild, new Error('No Channel found in strikeAdd'));
     return { success: false, type: CT.ModTypes.StrikeAdd, options };
@@ -60,37 +61,30 @@ export default async <T extends CT.ModTypes>(
     ...options,
     deleteMessageSeconds:
      Number(strike.deletemessageseconds) > 604800 ? 604800 : Number(strike.deletemessageseconds),
+    channel: cmd.channel.isThread()
+     ? (cmd.channel.parent as NonNullable<typeof cmd.channel.parent>)
+     : cmd.channel,
    };
 
    return {
-    success: channelBanAdd(
-     {
-      ...options,
-      channel: cmd.channel.isThread()
-       ? (cmd.channel.parent as NonNullable<typeof cmd.channel.parent>)
-       : cmd.channel,
-     },
-     language,
-     message,
-     cmd,
-    ),
+    success: channelBanAdd(opts, language, message, cmd),
     type: CT.ModTypes.ChannelBanAdd,
     options: opts,
    };
   }
-  case 'kick':
+  case Prisma.$Enums.AutoPunishPunishmentType.kick:
    return {
     success: kickAdd(options, language, message, cmd),
     type: CT.ModTypes.KickAdd,
     options,
    };
-  case 'tempmute':
+  case Prisma.$Enums.AutoPunishPunishmentType.tempmute:
    return {
     success: tempMuteAdd({ ...options, duration: Number(strike.duration) }, language, message, cmd),
     type: CT.ModTypes.TempMuteAdd,
     options,
    };
-  case 'tempchannelban': {
+  case Prisma.$Enums.AutoPunishPunishmentType.tempchannelban: {
    if (!cmd.channel) {
     error(cmd.guild, new Error('No channel found in strikeAdd'));
     return { success: false, type: CT.ModTypes.StrikeAdd, options };
@@ -110,9 +104,9 @@ export default async <T extends CT.ModTypes>(
     options: opts,
    };
   }
-  case 'warn':
+  case Prisma.$Enums.AutoPunishPunishmentType.warn:
    return { success: warnAdd(), type: CT.ModTypes.WarnAdd, options };
-  case 'tempban': {
+  case Prisma.$Enums.AutoPunishPunishmentType.tempban: {
    const opts = {
     ...options,
     duration: Number(strike.duration) * 1000,
@@ -126,7 +120,7 @@ export default async <T extends CT.ModTypes>(
     options: opts,
    };
   }
-  case 'softban': {
+  case Prisma.$Enums.AutoPunishPunishmentType.softban: {
    const opts = {
     ...options,
     deleteMessageSeconds:
