@@ -16,7 +16,7 @@ const initReminders = async () => {
  const users = await ch.DataBase.voters.findMany();
  users.forEach((u) => {
   client.shard?.broadcastEval(
-   (cl) => {
+   async (cl) => {
     const guild = cl.guilds.cache.get(u.guildid);
     if (!guild) return;
 
