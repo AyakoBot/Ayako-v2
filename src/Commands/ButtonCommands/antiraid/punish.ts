@@ -3,6 +3,9 @@ import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
+import { canBanMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/banMember.js';
+import { canRemoveMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/removeMember.js';
+
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -100,7 +103,7 @@ export const runPunishment = async (
 
    switch (type) {
     case 'ban': {
-     if (!ch.isBannable(self, member)) {
+     if (member ? !canBanMember(self, member) : false) {
       failed.push(id);
       checkDone();
       return;
@@ -114,7 +117,7 @@ export const runPunishment = async (
       return;
      }
 
-     if (!ch.isKickable(self, member)) {
+     if (!canRemoveMember(self, member)) {
       failed.push(id);
       checkDone();
       return;

@@ -57,10 +57,8 @@ import getUser from './ClientHelperModules/getUser.js';
 import getUserFromUserAndUsernameOptions from './ClientHelperModules/getUserFromUserAndUsernameOptions.js';
 import helpHelpers from './ClientHelperModules/helpHelpers.js';
 import interactionHelpers from './ClientHelperModules/interactionHelpers.js';
-import isBannable from './ClientHelperModules/isBannable.js';
 import isDeleteable from './ClientHelperModules/isDeleteable.js';
 import isEditable from './ClientHelperModules/isEditable.js';
-import isKickable from './ClientHelperModules/isKickable.js';
 import isManageable from './ClientHelperModules/isManageable.js';
 import isModeratable from './ClientHelperModules/isModeratable.js';
 import loadingEmbed from './ClientHelperModules/loadingEmbed.js';
@@ -157,10 +155,8 @@ export {
  getUserFromUserAndUsernameOptions,
  helpHelpers,
  interactionHelpers,
- isBannable,
  isDeleteable,
  isEditable,
- isKickable,
  isManageable,
  isModeratable,
  loadingEmbed,
