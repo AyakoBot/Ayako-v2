@@ -4,7 +4,7 @@ import * as ch from '../../../ClientHelper.js';
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.leaderboard,
  thisWillTake: (msgs: number, duration: string) =>
-  t.stp(t.JSON.slashCommands.edit.desc, {
+  t.stp(t.JSON.slashCommands.leaderboard.thisWillTake, {
    msgs: ch.util.makeBold(ch.splitByThousand(msgs)),
    duration: ch.util.makeInlineCode(duration),
   }),
