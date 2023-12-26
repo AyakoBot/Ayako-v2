@@ -49,7 +49,7 @@ export default (guild: Discord.Guild) => {
  ch.cache.deleteThreads.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.deleteThreads.cache.delete(guild.id);
  ch.cache.apis.delete(guild.id);
- ch.cache.commands.delete(guild.id);
+ ch.cache.commands.cache.delete(guild.id);
  ch.cache.deleteSuggestions.cache.get(guild.id)?.forEach((i) => i.cancel());
  ch.cache.deleteSuggestions.cache.delete(guild.id);
  ch.cache.vcDeleteTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());

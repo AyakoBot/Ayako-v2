@@ -13,17 +13,15 @@ import error from '../../error.js';
  */
 export default async (guild: Discord.Guild, commandId: string) =>
  guild.client.application.commands.cache.get(commandId) ??
+ cache.commands.cache.get(guild.id)?.get(commandId) ??
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGlobalCommand(await getBotIdFromGuild(guild), commandId)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
-   if (cache.apis.get(guild.id)) {
-    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
-    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+   if (!cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
+   cache.commands.cache.get(guild.id)?.set(parsed.id, parsed);
 
-    return parsed;
-   }
-
+   if (cache.apis.get(guild.id)) return parsed;
    if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
    guild.client.application.commands.cache.set(parsed.id, parsed);
    return parsed;

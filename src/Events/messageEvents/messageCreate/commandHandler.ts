@@ -208,7 +208,9 @@ export const checkCommandPermissions = (
  commandName: string,
 ) => {
  const slashCommand =
-  ch.cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??
+  [...(ch.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
+   (c) => c.name === commandName,
+  ) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
   msg.guild.commands.cache.find((c) => c.name === commandName);
 
@@ -266,7 +268,9 @@ const checkCommandIsEnabled = async (
  command: CT.Command<boolean>,
 ) => {
  const slashCommand =
-  ch.cache.commands.get(msg.guildId)?.find((c) => c.name === commandName) ??
+  [...(ch.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
+   (c) => c.name === commandName,
+  ) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
   msg.guild.commands.cache.find((c) => c.name === commandName);
 

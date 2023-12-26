@@ -21,14 +21,12 @@ export default async (
    const parsed = cmds.map(
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
    );
+
+   if (!cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
    parsed.forEach((p) => {
-    if (cache.apis.get(guild.id)) {
-     if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [p]);
-     else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(p));
+    cache.commands.cache.get(guild.id)?.set(p.id, p);
 
-     return;
-    }
-
+    if (cache.apis.get(guild.id)) return;
     if (guild.commands.cache.get(p.id)) return;
     guild.commands.cache.set(p.id, p);
    });

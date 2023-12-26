@@ -16,10 +16,13 @@ export default async (guild: Discord.Guild, body: Discord.RESTPutAPIApplicationC
   .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
-   if (cache.apis.get(guild.id)) {
-    cache.commands.set(guild.id, parsed);
-    return parsed;
-   }
+   if (!cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
+   parsed.forEach((p) => {
+    cache.commands.cache.get(guild.id)?.set(p.id, p);
+
+    if (cache.apis.get(guild.id)) return;
+    guild.commands.cache.set(p.id, p);
+   });
 
    parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
    return parsed;

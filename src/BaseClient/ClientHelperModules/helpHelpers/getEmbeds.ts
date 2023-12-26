@@ -34,7 +34,10 @@ export default (
 ) => {
  const lan = language.slashCommands.help;
  const fetchedCommands = cmd.guildId
-  ? cache.commands.get(cmd.guildId) ?? cmd.client.application.commands.cache.map((c) => c)
+  ? [
+     ...(cache.commands.cache.get(cmd.guildId)?.values() ??
+      cmd.client.application.commands.cache.map((c) => c)),
+    ]
   : cmd.client.application.commands.cache.map((c) => c);
 
  const embed: Discord.APIEmbed = {

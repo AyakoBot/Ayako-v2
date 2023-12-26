@@ -21,6 +21,10 @@ export default async (
 ) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .editGuildCommandPermissions(userToken, await getBotIdFromGuild(guild), guild.id, commandId, body)
+  .then((res) => {
+   cache.commandPermissions.set(guild.id, commandId, res.permissions);
+   return res.permissions;
+  })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;

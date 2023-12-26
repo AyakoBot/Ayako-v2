@@ -12,6 +12,7 @@ import webhooks, { Webhooks } from './cache/discord/webhooks.js';
 import welcomeScreens, { WelcomeScreens } from './cache/discord/welcomeScreens.js';
 import onboarding, { Onboarding } from './cache/discord/onboarding.js';
 import invites, { Invites } from './cache/discord/invites.js';
+import commands, { Commands } from './cache/discord/commands.js';
 
 import giveawayClaimTimeout, { GiveawayClaimTimeout } from './cache/bot/giveawayClaimTimeout.js';
 import mutes, { Mutes } from './cache/bot/mutes.js';
@@ -58,7 +59,7 @@ const cache: {
  stickyTimeouts: StickyTimeouts;
  deleteThreads: DeleteThreads;
  apis: Map<string, DiscordCore.API>;
- commands: Map<string, Discord.ApplicationCommand[]>;
+ commands: Commands;
  punishments: Set<string>;
  antispam: Map<string, Discord.Message<true>[]>;
  deleteSuggestions: DeleteSuggestions;
@@ -103,7 +104,7 @@ const cache: {
  auditLogs,
  deleteThreads,
  apis: new Map(),
- commands: new Map(),
+ commands,
  punishments: new Set(),
  antispam: new Map(),
  deleteSuggestions,

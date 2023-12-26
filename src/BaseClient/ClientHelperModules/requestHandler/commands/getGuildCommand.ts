@@ -17,13 +17,10 @@ export default async (guild: Discord.Guild, commandId: string) =>
   .getGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
-   if (cache.apis.get(guild.id)) {
-    if (!cache.commands.get(guild.id)) cache.commands.set(guild.id, [parsed]);
-    else cache.commands.set(guild.id, cache.commands.get(guild.id)!.concat(parsed));
+   if (!cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
+   cache.commands.cache.get(guild.id)?.set(parsed.id, parsed);
 
-    return parsed;
-   }
-
+   if (cache.apis.get(guild.id)) return parsed;
    guild.commands.cache.set(cmd.id, parsed);
    return parsed;
   })

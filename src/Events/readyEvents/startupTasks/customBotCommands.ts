@@ -24,7 +24,7 @@ export default async () => {
     return;
    }
 
-   ch.cache.commands.set(guild.id, [...commands, ...(ch.cache.commands.get(guild.id) ?? [])]);
+   commands.forEach((c) => ch.cache.commands.set(guild.id, c.id, c));
   };
 
   const guildCommands = async () => {
@@ -37,7 +37,7 @@ export default async () => {
     return;
    }
 
-   ch.cache.commands.set(guild.id, [...commands, ...(ch.cache.commands.get(guild.id) ?? [])]);
+   commands.forEach((c) => ch.cache.commands.set(guild.id, c.id, c));
   };
 
   globalCommands();

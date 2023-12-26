@@ -12,6 +12,14 @@ import error from '../../error.js';
 export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandsPermissions(await getBotIdFromGuild(guild), guild.id)
+  .then((res) => {
+   res.forEach((r) => {
+    cache.commandPermissions.set(guild.id, r.id, r.permissions);
+    return r.permissions;
+   });
+
+   return res;
+  })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;

@@ -16,17 +16,9 @@ export default async (guild: Discord.Guild, commandId: string) =>
  (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGlobalCommand(await getBotIdFromGuild(guild), commandId)
   .then(() => {
-   if (cache.apis.get(guild.id)) {
-    cache.commands.set(
-     guild.id,
-     cache.commands.get(guild.id)!.filter((c) => c.id !== commandId),
-    );
+   cache.commands.delete(guild.id, commandId);
 
-    if (cache.commands.get(guild.id)!.length > 0) return;
-    cache.commands.delete(guild.id);
-    return;
-   }
-
+   if (cache.apis.get(guild.id)) return;
    guild.client.application.commands.cache.delete(commandId);
   })
   .catch((e) => {
