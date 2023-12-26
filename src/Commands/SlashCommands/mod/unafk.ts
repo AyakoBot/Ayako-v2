@@ -7,18 +7,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const user = cmd.options.getUser('user', true);
  const member = cmd.options.getMember('user');
- const reason = cmd.options.getString('reason', false)
-  ? `${cmd.user.displayName}`
-  : `${cmd.user.displayName}: ${cmd.options.getString('reason', false)}`;
+ const language = await ch.getLanguage(cmd.guildId);
+ const lan = language.slashCommands.moderation.unafk;
+ const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
  const afk = await ch.DataBase.afk.delete({
   where: {
    userid_guildid: { guildid: cmd.guildId, userid: user.id },
   },
   select: { userid: true },
  });
-
- const language = await ch.getLanguage(cmd.guildId);
- const lan = language.slashCommands.moderation.unafk;
 
  if (!afk?.userid) {
   ch.errorCmd(cmd, lan.notAfk(user), language);
