@@ -2,6 +2,8 @@ import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
+ if (client.shard?.mode === 'process') return;
+
  const settings = await ch.DataBase.guildsettings.findMany({
   where: {
    token: { not: null },
