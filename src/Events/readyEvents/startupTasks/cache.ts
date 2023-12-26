@@ -85,9 +85,6 @@ export const tasks = {
    );
   });
  },
- bans: async (guild: Discord.Guild) => {
-  ch.getAllBans(guild);
- },
  deleteSuggestions: async (guild: Discord.Guild) => {
   const settings = await ch.DataBase.suggestionsettings.findUnique({
    where: {

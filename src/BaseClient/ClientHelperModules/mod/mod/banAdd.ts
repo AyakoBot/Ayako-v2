@@ -30,7 +30,7 @@ export default async (
   return false;
  }
 
- if (options.guild.bans.cache.has(options.target.id) && !options.skipChecks) {
+ if ((await request.guilds.getMemberBan(options.guild, options.target.id)) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }

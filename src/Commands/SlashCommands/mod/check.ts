@@ -34,7 +34,7 @@ export const getPayload = async (
  });
 
  const punishedOpts = {
-  isBanned: baseInfo.guild.bans.cache.has(baseInfo.user.id),
+  isBanned: !!(await ch.request.guilds.getMemberBan(baseInfo.guild, baseInfo.user.id)),
   isMuted: baseInfo.member?.isCommunicationDisabled() ?? false,
   isChannelBanned: !!baseInfo.guild.channels.cache.find((c) => {
    const perms = c.permissionsFor(baseInfo.user.id)?.serialize();
