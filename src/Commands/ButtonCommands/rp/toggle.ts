@@ -41,9 +41,8 @@ const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
    [...(ch.cache.commands.cache.get(cmd.guild.id)?.values() ?? [])] ??
    cmd.guild.commands.cache.map((c) => c)
   )
-   .filter((c) => !!c.guildId)
-   .map((c) => c.toJSON() as Discord.APIApplicationCommand)
-   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
+   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name) && !!c.guildId)
+   .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  );
 };
 
@@ -103,12 +102,14 @@ export const create = async (guild: Discord.Guild) => {
 
  await ch.request.commands.bulkOverwriteGuildCommands(guild, [
   ...registerCommands.map((c) => c.toJSON()),
-  ...(
-   [...(ch.cache.commands.cache.get(guild.id)?.values() ?? [])] ??
-   guild.commands.cache.map((c) => c)
-  )
-   .map((c) => c.toJSON() as Discord.APIApplicationCommand)
-   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name)),
+  ...[...(ch.cache.commands.cache.get(guild.id)?.values() ?? guild.commands.cache.map((c) => c))]
+   .filter(
+    (c) =>
+     !ch.constants.commands.interactions.find((i) => i.name === c.name) &&
+     !!c.guildId &&
+     !registerCommands.find((r) => r.name === c.name),
+   )
+   .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  ]);
 
  await ch.DataBase.guildsettings.update({
