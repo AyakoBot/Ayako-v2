@@ -71,6 +71,8 @@ export const canSendMessage = (
  },
  me: Discord.GuildMember,
 ) => {
+ if (!channel) return true;
+
  switch (true) {
   case Number(me.communicationDisabledUntilTimestamp) > Date.now():
    return false;
