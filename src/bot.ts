@@ -17,6 +17,7 @@ const processArgs = process.argv;
 if (processArgs.includes('--debug')) console.log('[DEBUG] Debug mode enabled');
 if (processArgs.includes('--debug-db')) console.log('[DEBUG] Debug mode for database enabled');
 if (processArgs.includes('--warn')) console.log('[DEBUG] Warn mode enabled');
+if (processArgs.includes('--silent')) console.log('[DEBUG] Silent mode enabled');
 
 const events = await ch.getEvents();
 client.setMaxListeners(events.length);
