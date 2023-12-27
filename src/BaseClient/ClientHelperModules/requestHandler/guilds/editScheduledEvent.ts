@@ -22,6 +22,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildScheduledEventJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditScheduledEvent(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit scheduled event ${eventId}`, [
    Discord.PermissionFlagsBits.ManageEvents,

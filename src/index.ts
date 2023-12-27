@@ -21,7 +21,8 @@ log(`
 +       Restart all Shards with "restart"       +
 +   Restart one Shard with "restart [Shard ID]" +
 +                   Arguments:                  +
-+  "--debug --debug-db --warn --debug-queries"  +
++   --debug --debug-db --warn --debug-queries   +
++                   --silent                    +
 +++++++++++++++++++++++++++++++++++++++++++++++++
 `);
 

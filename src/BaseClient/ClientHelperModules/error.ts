@@ -12,6 +12,8 @@ import type * as RequestHandler from './requestHandler.js';
  * @returns Promise<void>
  */
 export default async (guild: Discord.Guild, err: Error) => {
+ if (process.argv.includes('--silent')) return;
+
  const errorchannel = await DataBase.guildsettings
   .findUnique({
    where: { guildid: guild.id },

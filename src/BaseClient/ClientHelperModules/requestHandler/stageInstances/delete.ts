@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, channelId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDelete(await getBotMemberFromGuild(guild), channelId)) {
   const e = requestHandlerError(`Cannot delete stage instance`, [
    Discord.PermissionFlagsBits.ManageChannels,

@@ -19,6 +19,8 @@ export default async (
  body?: Discord.RESTPostAPIGuildPruneJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canPrune(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot prune members`, [Discord.PermissionFlagsBits.KickMembers]);
 

@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted emoji, or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, emojiId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteEmoji(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot delete emoji ${emojiId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,

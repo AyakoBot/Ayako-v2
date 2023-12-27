@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (guild: Discord.Guild) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDelete(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot delete guild ${guild.name} / ${guild.id}`, [
    Discord.PermissionFlagsBits.ManageGuild,

@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPostAPIGuildEmojiJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateEmoji(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create emoji`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,

@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A Promise that resolves with the DiscordAPIError if the reaction could not be added.
  */
 export default async (msg: Discord.Message<true>, emoji: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!isReactable(msg, emoji, await getBotMemberFromGuild(msg.guild))) {
   const e = requestHandlerError(
    `Cannot apply ${emoji} as reaction in ${msg.channel.name} / ${msg.channel.id}`,

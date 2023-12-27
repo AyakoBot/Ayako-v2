@@ -11,8 +11,13 @@ import error from '../../error.js';
  * @param body - The JSON body containing the new commands.
  * @returns A promise that resolves with an array of the newly created application commands.
  */
-export default async (guild: Discord.Guild, body: Discord.RESTPutAPIApplicationCommandsJSONBody) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+export default async (
+ guild: Discord.Guild,
+ body: Discord.RESTPutAPIApplicationCommandsJSONBody,
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
@@ -31,3 +36,4 @@ export default async (guild: Discord.Guild, body: Discord.RESTPutAPIApplicationC
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

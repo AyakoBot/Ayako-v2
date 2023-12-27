@@ -19,10 +19,13 @@ export default async (
  token: string,
  body: unknown,
  query?: Discord.RESTPostAPIWebhookWithTokenSlackQuery,
-) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).webhooks
   .executeSlack(webhookId, token, body, query)
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
+};

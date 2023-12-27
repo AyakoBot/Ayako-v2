@@ -21,6 +21,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildStickerJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditSticker(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit sticker ${stickerId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,

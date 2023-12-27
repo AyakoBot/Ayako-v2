@@ -10,6 +10,8 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the deleted reaction or rejects with an error.
  */
 export default async (message: Discord.Message<true>, emoji: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
   return new Discord.DiscordjsTypeError(

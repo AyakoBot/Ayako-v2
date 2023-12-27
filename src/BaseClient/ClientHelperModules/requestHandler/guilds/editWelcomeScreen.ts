@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildWelcomeScreenJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditWelcomeScreen(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit welcome screen`, [
    Discord.PermissionFlagsBits.ManageGuild,

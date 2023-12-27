@@ -12,8 +12,10 @@ import error from '../../error.js';
  * and removed from the cache,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default async (guild: Discord.Guild, commandId: string) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+export default async (guild: Discord.Guild, commandId: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGlobalCommand(await getBotIdFromGuild(guild), commandId)
   .then(() => {
    cache.commands.delete(guild.id, commandId);
@@ -25,3 +27,4 @@ export default async (guild: Discord.Guild, commandId: string) =>
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

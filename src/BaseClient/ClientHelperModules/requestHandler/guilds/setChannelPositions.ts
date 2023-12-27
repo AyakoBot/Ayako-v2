@@ -19,6 +19,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildChannelPositionsJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canSetChannelPositions(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot set channel positions`, [
    Discord.PermissionFlagsBits.ManageChannels,

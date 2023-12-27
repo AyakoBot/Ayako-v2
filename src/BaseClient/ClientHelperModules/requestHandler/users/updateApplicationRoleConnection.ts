@@ -15,10 +15,13 @@ export default async (
  guild: Discord.Guild,
  applicationId: string,
  body: Discord.RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
-) =>
- (cache.apis.get(guild.id) ?? API).users
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).users
   .updateApplicationRoleConnection(applicationId, body)
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
+};

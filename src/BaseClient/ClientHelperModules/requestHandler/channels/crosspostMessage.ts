@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with an error.
  */
 export default async (message: Discord.Message<true>) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  const me = await getBotMemberFromGuild(message.guild);
 
  if (!canCrosspostMessages(message, me)) {

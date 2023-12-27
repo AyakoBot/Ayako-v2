@@ -10,8 +10,10 @@ import * as Classes from '../../../Other/classes.js';
  * @param data The data to update the user's profile.
  * @returns A promise that resolves with the updated user's profile.
  */
-export default async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUserJSONBody) =>
- (cache.apis.get(guild.id) ?? API).users
+export default async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUserJSONBody) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).users
   .edit({
    ...data,
    avatar: data.avatar ? await Discord.DataResolver.resolveImage(data.avatar) : data.avatar,
@@ -21,3 +23,4 @@ export default async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUse
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

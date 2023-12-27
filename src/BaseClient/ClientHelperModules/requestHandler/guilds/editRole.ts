@@ -21,6 +21,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildRoleJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditRole(await getBotMemberFromGuild(guild), roleId)) {
   const e = requestHandlerError(`Cannot edit role ${roleId}`, [
    Discord.PermissionFlagsBits.ManageRoles,

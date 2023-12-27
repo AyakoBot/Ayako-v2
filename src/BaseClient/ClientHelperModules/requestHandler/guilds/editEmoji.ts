@@ -21,6 +21,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildEmojiJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditEmoji(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit emoji ${emojiId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,

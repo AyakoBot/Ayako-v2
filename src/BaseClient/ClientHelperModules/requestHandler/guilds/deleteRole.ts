@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (guild: Discord.Guild, roleId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteRole(await getBotMemberFromGuild(guild), roleId)) {
   const e = requestHandlerError(`Cannot delete role ${roleId}`, [
    Discord.PermissionFlagsBits.ManageRoles,

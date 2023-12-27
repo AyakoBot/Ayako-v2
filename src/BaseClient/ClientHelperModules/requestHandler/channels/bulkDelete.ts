@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted messages or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildTextBasedChannel, messages: string[]) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canBulkDelete(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot bulk-delete messages in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,

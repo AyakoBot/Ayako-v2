@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the newly created guild or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONBody) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreate(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create guild ${guild.name} / ${guild.id}`, [
    Discord.PermissionFlagsBits.ManageGuild,

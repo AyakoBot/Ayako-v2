@@ -24,6 +24,8 @@ export default async (
  },
  client: Discord.Client<true>,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (
   guild &&
   !canSendMessage(

@@ -14,8 +14,10 @@ import error from '../../error.js';
 export default async (
  guild: Discord.Guild,
  body: Discord.RESTPostAPIApplicationGuildCommandsJSONBody,
-) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .createGuildCommand(await getBotIdFromGuild(guild), guild.id, body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);
@@ -30,3 +32,4 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted channel, or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildBasedChannel) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!isDeleteable(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot delete channel ${channel.name} / ${channel.id}`, [
    [

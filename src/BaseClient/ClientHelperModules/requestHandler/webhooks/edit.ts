@@ -21,6 +21,8 @@ export default async (
  body: Discord.RESTPatchAPIWebhookJSONBody,
  data?: { token?: string; reason?: string },
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEdit(await getBotMemberFromGuild(guild), webhook)) {
   const e = requestHandlerError(`Cannot edit webhook ${webhook.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,

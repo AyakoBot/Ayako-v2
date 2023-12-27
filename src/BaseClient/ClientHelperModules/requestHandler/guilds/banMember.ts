@@ -19,6 +19,8 @@ export default async (
  body?: Discord.RESTPutAPIGuildBanJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canBanUser(await getBotMemberFromGuild(member.guild))) {
   const e = requestHandlerError(`Cannot ban member in ${member.displayName} / ${member.id}`, [
    Discord.PermissionFlagsBits.BanMembers,

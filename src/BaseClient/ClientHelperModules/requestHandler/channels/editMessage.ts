@@ -18,11 +18,14 @@ export default async (
  channelId: string,
  messageId: string,
  payload: Parameters<DiscordCore.ChannelsAPI['editMessage']>[2],
-) =>
- (cache.apis.get(guild.id) ?? API).channels
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).channels
   .editMessage(channelId, messageId, payload)
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

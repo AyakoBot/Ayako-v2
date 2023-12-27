@@ -12,6 +12,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the DiscordAPIError if an error occurs, otherwise void.
  */
 export default async (thread: Discord.ThreadChannel) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canLeave(thread)) {
   const e = requestHandlerError(
    `Cannot leave thread ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,

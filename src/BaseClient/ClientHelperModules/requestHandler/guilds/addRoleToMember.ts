@@ -16,6 +16,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (
   !canAddRoleToMember(
    guild.roles.cache.get(roleId) as Discord.Role,

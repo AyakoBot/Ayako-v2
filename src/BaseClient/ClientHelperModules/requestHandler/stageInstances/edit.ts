@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPatchAPIStageInstanceJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEdit(await getBotMemberFromGuild(channel.guild), channel)) {
   const e = requestHandlerError(
    `Cannot edit stage instance in ${channel.guild.name} / ${channel.guild.id}`,

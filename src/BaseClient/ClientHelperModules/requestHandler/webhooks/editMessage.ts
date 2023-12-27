@@ -22,11 +22,14 @@ export default async (
   files?: Discord.RawFile[];
   thread_id?: string;
  },
-) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).webhooks
   .editMessage(webhookId, token, messageId, body)
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
+};

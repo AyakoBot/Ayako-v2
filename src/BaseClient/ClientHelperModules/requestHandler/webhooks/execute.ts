@@ -21,11 +21,14 @@ export default async (
   Discord.RESTPostAPIWebhookWithTokenQuery & {
    files?: Discord.RawFile[];
   },
-) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).webhooks
   .execute(webhookId, token, { ...body, wait: true })
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

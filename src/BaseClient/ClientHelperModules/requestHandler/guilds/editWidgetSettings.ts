@@ -18,6 +18,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildWidgetSettingsJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditWidgetSettings(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit widget settings`, [
    Discord.PermissionFlagsBits.ManageGuild,

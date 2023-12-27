@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildRolePositionsJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canSetRolePositions(await getBotMemberFromGuild(guild), body)) {
   const e = requestHandlerError(`Cannot set role positions`, [
    Discord.PermissionFlagsBits.ManageRoles,

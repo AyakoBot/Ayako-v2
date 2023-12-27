@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, templateCode: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canSyncTemplate(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot sync template`, [Discord.PermissionFlagsBits.ManageGuild]);
 

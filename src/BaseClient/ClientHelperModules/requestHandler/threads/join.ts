@@ -12,6 +12,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the joined thread or rejects with a DiscordAPIError.
  */
 export default async (thread: Discord.ThreadChannel) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canJoin(thread)) {
   const e = requestHandlerError(
    `Cannot join thread ${thread.name} / ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,

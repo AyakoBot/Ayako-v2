@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted invite or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, code: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteInvite(await getBotMemberFromGuild(guild), code)) {
   const e = requestHandlerError(`Cannot delete invite ${code}`, [
    Discord.PermissionFlagsBits.ManageGuild,

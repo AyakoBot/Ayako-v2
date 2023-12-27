@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (guild: Discord.Guild, integrationId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteIntegration(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot delete integration ${integrationId}`, [
    Discord.PermissionFlagsBits.ManageGuild,

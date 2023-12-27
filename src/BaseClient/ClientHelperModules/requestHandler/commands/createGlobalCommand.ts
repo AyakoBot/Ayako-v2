@@ -12,8 +12,13 @@ import error from '../../error.js';
  * @returns A Promise that resolves with the created ApplicationCommand object,
  * or rejects with a DiscordAPIError.
  */
-export default async (guild: Discord.Guild, body: Discord.RESTPostAPIApplicationCommandsJSONBody) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+export default async (
+ guild: Discord.Guild,
+ body: Discord.RESTPostAPIApplicationCommandsJSONBody,
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .createGlobalCommand(await getBotIdFromGuild(guild), body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
@@ -28,3 +33,4 @@ export default async (guild: Discord.Guild, body: Discord.RESTPostAPIApplication
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

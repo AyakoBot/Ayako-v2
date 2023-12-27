@@ -17,6 +17,8 @@ export default async (
  guild: Discord.Guild,
  body?: Discord.RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canSetVoiceState(await getBotMemberFromGuild(guild), body)) {
   const e = requestHandlerError(`Cannot set voice state`, [
    Discord.PermissionFlagsBits.RequestToSpeak,

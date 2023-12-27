@@ -3,6 +3,9 @@ import error from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 
+import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import requestHandlerError from '../../requestHandlerError.js';
+
 /**
  * Edits a permission overwrite for a guild-based channel.
  * @param channel - The guild-based channel to edit the permission overwrite for.
@@ -17,13 +20,32 @@ export default async (
  overwriteId: string,
  body: Discord.RESTPutAPIChannelPermissionJSONBody,
  reason?: string,
-) =>
- (cache.apis.get(channel.guild.id) ?? API).channels
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ if (
+  !canEditPermissionOverwrite(
+   channel,
+   body,
+   overwriteId,
+   await getBotMemberFromGuild(channel.guild),
+  )
+ ) {
+  const e = requestHandlerError(
+   `Cannot edit message in ${channel.guild.name} / ${channel.guild.id}`,
+   [Discord.PermissionFlagsBits.ManageMessages],
+  );
+
+  return e;
+ }
+
+ return (cache.apis.get(channel.guild.id) ?? API).channels
   .editPermissionOverwrite(channel.id, overwriteId, body, { reason })
   .catch((e) => {
    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};
 
 export const canEditPermissionOverwrite = (
  channel: Discord.GuildBasedChannel,

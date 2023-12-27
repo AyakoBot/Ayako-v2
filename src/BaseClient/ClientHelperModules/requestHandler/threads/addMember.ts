@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the added member or rejects with a DiscordAPIError.
  */
 export default async (thread: Discord.ThreadChannel, userId: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canAddMember(await getBotMemberFromGuild(thread.guild), thread)) {
   const e = requestHandlerError(
    `Cannot add member ${userId} to thread ${thread.name} / ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,

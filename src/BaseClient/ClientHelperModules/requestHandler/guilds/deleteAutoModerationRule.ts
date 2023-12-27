@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with an error.
  */
 export default async (guild: Discord.Guild, ruleId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteAutoModerationRule(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot delete auto-moderation rule ${ruleId}`, [
    Discord.PermissionFlagsBits.ManageGuild,

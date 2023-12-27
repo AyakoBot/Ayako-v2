@@ -20,6 +20,8 @@ export default async (
  role: Discord.Role,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canRemoveRoleFromMember(await getBotMemberFromGuild(guild), role)) {
   const e = requestHandlerError(`Cannot remove role ${role.name} / ${role.id}`, [
    Discord.PermissionFlagsBits.ManageRoles,

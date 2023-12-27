@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPostAPIStageInstanceJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreate(await getBotMemberFromGuild(channel.guild), channel)) {
   const e = requestHandlerError(
    `Cannot create stage instance in ${channel.guild.name} / ${channel.guild.id}`,

@@ -19,6 +19,8 @@ export default async (
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
  messageId?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateThread(channel, body, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(
    `Cannot create ${

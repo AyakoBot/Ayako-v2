@@ -20,6 +20,8 @@ export default async (
  templateCode: string,
  body: Discord.RESTPatchAPIGuildTemplateJSONBody,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditTemplate(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit template ${templateCode}`, [
    Discord.PermissionFlagsBits.ManageGuild,

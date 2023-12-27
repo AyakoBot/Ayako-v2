@@ -12,6 +12,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted message, or rejects with a DiscordAPIError.
  */
 export default async (message: Discord.Message<true>) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteMessages(message, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot delete message in ${message.guild.name} / ${message.guild.id}`,

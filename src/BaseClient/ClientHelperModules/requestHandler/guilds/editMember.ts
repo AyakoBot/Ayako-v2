@@ -20,6 +20,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildMemberJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditMember(await getBotMemberFromGuild(member.guild), member, body)) {
   const e = requestHandlerError(
    `Cannot edit member ${member.user.username} / ${member.user.id} in ${member.guild.name} / ${member.guild.id}`,

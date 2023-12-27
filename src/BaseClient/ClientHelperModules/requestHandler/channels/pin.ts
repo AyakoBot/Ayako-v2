@@ -13,6 +13,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the pinned message, or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildTextBasedChannel, message: Discord.Message<true>) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canPinMessage(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot pin message in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,

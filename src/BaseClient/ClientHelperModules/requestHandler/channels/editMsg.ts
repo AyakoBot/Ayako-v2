@@ -18,6 +18,8 @@ export default async (
  message: Discord.Message<true>,
  payload: Parameters<DiscordCore.ChannelsAPI['editMessage']>[2],
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditMessage(message, payload, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot edit message in ${message.guild.name} / ${message.guild.id}`,

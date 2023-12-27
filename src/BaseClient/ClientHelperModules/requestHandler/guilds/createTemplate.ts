@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTemplatesJSONBody) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateTemplate(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create template`, [
    Discord.PermissionFlagsBits.ManageGuild,

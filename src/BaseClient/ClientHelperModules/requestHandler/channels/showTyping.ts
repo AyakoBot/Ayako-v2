@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with an error.
  */
 export default async (channel: Discord.GuildTextBasedChannel) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canGetMessage(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot show typing indicator in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ViewChannel,

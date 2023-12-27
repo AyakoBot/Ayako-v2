@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or void if it succeeds.
  */
 export default async (message: Discord.Message<true>, emoji: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteAllreactionsOfEmoji(message.channel, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot delete all reactions of emoji ${emoji} in ${message.guild.name} / ${message.guild.id}`,

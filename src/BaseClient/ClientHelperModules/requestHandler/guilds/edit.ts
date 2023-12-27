@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the edited guild.
  */
 export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBody) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEdit(await getBotMemberFromGuild(guild), guild, body)) {
   const e = requestHandlerError(`Cannot edit guild ${guild.name} / ${guild.id}`, [
    Discord.PermissionFlagsBits.ManageGuild,

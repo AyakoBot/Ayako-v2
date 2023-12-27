@@ -16,8 +16,10 @@ export default async (
  guild: Discord.Guild,
  commandId: string,
  body: Discord.RESTPatchAPIApplicationCommandJSONBody,
-) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .editGlobalCommand(await getBotIdFromGuild(guild), commandId, body)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd);
@@ -33,3 +35,4 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (member: Discord.GuildMember, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canRemoveMember(await getBotMemberFromGuild(member.guild), member)) {
   const e = requestHandlerError(`Cannot remove member ${member.displayName} / ${member.id}`, [
    Discord.PermissionFlagsBits.KickMembers,

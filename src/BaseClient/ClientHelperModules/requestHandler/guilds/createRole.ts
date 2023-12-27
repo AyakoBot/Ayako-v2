@@ -19,6 +19,8 @@ export default async (
  body: Discord.RESTPostAPIGuildRoleJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateRole(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create role`, [Discord.PermissionFlagsBits.ManageRoles]);
 

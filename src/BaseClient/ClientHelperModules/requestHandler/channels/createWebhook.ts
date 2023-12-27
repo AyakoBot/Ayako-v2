@@ -20,6 +20,8 @@ export default async (
  channelId: string,
  body: Discord.RESTPostAPIChannelWebhookJSONBody,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (
   !canCreateWebhook(
    guild.channels.cache.get(channelId) as Discord.GuildBasedChannel,

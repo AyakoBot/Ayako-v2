@@ -17,6 +17,8 @@ export default async (
  channel: Discord.GuildBasedChannel | Discord.ThreadChannel,
  body: Discord.RESTPatchAPIChannelJSONBody,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEdit(channel, body, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot edit channel ${channel.name} / ${channel.id}`, [
    channel.isThread()

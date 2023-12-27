@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the DiscordAPIError if an error occurs, otherwise void.
  */
 export default async (guild: Discord.Guild, userId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canUnbanUser(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot unban user ${userId}`, [
    Discord.PermissionFlagsBits.BanMembers,

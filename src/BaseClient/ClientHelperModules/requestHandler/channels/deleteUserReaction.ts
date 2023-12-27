@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted reaction, or rejects with an error.
  */
 export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteUserReaction(message.channel, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot delete user reaction in ${message.guild.name} / ${message.guild.id}`,

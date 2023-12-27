@@ -19,6 +19,8 @@ export default async (
  body: Discord.RESTPostAPIChannelInviteJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateInvite(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot create invite in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.CreateInstantInvite,

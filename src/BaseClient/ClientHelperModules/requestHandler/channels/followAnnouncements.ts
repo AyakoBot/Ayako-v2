@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildTextBasedChannel, followedChannelId: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canFollowAnnouncements(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot follow announcements in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,

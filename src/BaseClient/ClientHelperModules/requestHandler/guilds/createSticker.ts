@@ -21,6 +21,8 @@ export default async (
  },
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateSticker(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create sticker`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,

@@ -14,6 +14,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the deleted event, or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, eventId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeleteScheduledEvent(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot delete scheduled event ${eventId}`, [
    Discord.PermissionFlagsBits.ManageEvents,

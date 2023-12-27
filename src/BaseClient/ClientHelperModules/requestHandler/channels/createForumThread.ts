@@ -23,6 +23,8 @@ export default async (
  channel: Discord.ForumChannel | Discord.MediaChannel,
  body: StartForumThreadOptions,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canCreateForumThread(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot create forum post in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.SendMessages,

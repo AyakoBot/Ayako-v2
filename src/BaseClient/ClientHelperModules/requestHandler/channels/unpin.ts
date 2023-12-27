@@ -12,6 +12,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the unpinned message, or rejects with an error.
  */
 export default async (message: Discord.Message<true>) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canUnPinMessage(message.channel, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot unpin message in ${message.guild.name} / ${message.guild.id}`,

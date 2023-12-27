@@ -19,6 +19,8 @@ export default async (
  webhook: Discord.Webhook,
  data?: { token?: string; reason?: string },
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDelete(await getBotMemberFromGuild(guild), webhook)) {
   const e = requestHandlerError(`Cannot delete webhook ${webhook.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,

@@ -18,10 +18,13 @@ export default async (
  token: string,
  messageId: string,
  query?: { thread_id: string },
-) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).webhooks
   .deleteMessage(webhookId, token, messageId, query)
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
+};

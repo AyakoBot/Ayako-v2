@@ -22,6 +22,8 @@ export default async (
  body: Discord.RESTPatchAPIAutoModerationRuleJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditAutoModerationRule(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot edit auto-moderation rule ${ruleId}`, [
    Discord.PermissionFlagsBits.ManageGuild,

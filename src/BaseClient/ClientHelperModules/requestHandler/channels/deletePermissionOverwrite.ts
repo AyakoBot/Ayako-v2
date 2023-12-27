@@ -15,6 +15,8 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (channel: Discord.GuildBasedChannel, overwriteId: string, reason?: string) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canDeletePermissionOverwrite(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(
    `Cannot delete permission overwrite in ${channel.name} / ${channel.id}`,

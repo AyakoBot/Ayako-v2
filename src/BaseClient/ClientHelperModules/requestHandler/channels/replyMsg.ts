@@ -12,8 +12,10 @@ import sendMessage from './sendMessage.js';
 export default async (
  message: Discord.Message<true>,
  payload: Parameters<DiscordCore.ChannelsAPI['createMessage']>[1],
-) =>
- sendMessage(
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return sendMessage(
   message.guild,
   message.channelId,
   {
@@ -27,3 +29,4 @@ export default async (
   },
   message.client,
  );
+};

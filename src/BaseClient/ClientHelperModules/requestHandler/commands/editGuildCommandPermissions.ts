@@ -18,8 +18,10 @@ export default async (
  userToken: string,
  commandId: string,
  body: Discord.RESTPutAPIApplicationCommandPermissionsJSONBody,
-) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .editGuildCommandPermissions(userToken, await getBotIdFromGuild(guild), guild.id, commandId, body)
   .then((res) => {
    cache.commandPermissions.set(guild.id, commandId, res.permissions);
@@ -29,3 +31,4 @@ export default async (
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

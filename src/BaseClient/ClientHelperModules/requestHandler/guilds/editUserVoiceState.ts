@@ -21,6 +21,8 @@ export default async (
  body: Discord.RESTPatchAPIGuildVoiceStateUserJSONBody,
  reason?: string,
 ) => {
+ if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+
  if (!canEditUserVoiceState(await getBotMemberFromGuild(guild), body)) {
   const e = requestHandlerError(`Cannot edit user voice state`, [
    Discord.PermissionFlagsBits.MuteMembers,
