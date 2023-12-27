@@ -41,7 +41,7 @@ const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
    [...(ch.cache.commands.cache.get(cmd.guild.id)?.values() ?? [])] ??
    cmd.guild.commands.cache.map((c) => c)
   )
-   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name) && !!c.guildId)
+   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name) && !c.guildId)
    .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  );
 };
@@ -106,7 +106,7 @@ export const create = async (guild: Discord.Guild) => {
    .filter(
     (c) =>
      !ch.constants.commands.interactions.find((i) => i.name === c.name) &&
-     !!c.guildId &&
+     !c.guildId &&
      !registerCommands.find((r) => r.name === c.name),
    )
    .map((c) => c.toJSON() as Discord.APIApplicationCommand),

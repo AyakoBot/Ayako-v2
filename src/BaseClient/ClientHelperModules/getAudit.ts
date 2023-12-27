@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
-import getUnix from './getUnix.js';
 import cache from './cache.js';
+import getUnix from './getUnix.js';
+import sleep from './sleep.js';
 
 /**
  * Retrieves the latest audit log entry of a given type and target ID (if provided) in a guild.
@@ -11,6 +12,8 @@ import cache from './cache.js';
  * and target ID (if provided), or undefined if no such entry exists.
  */
 export default async (guild: Discord.Guild, type: number, targetId?: string) => {
+ await sleep(1000);
+
  const audits = await cache.auditLogs.get(guild, type);
  if (!audits?.length) return undefined;
 
