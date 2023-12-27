@@ -32,10 +32,7 @@ export default async (guild: Discord.Guild, userId: string) => {
     guild.bans.cache.set(parsed.user.id, parsed);
     return parsed;
    })
-   .catch((e) => {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
-    return e as Discord.DiscordAPIError;
-   })
+   .catch((e) => e as Discord.DiscordAPIError)
  );
 };
 
