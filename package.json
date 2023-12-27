@@ -1,8 +1,8 @@
 {
  "type": "module",
- "version": "1.7.1",
+ "version": "2.0.0",
  "scripts": {
-  "start": "node --max-old-space-size=8192 ./dist/index.js",
+  "start": "node --max-old-space-size=8192 --warn ./dist/index.js",
   "build": "npx tsc",
   "dev": "cd ./dist && node --enable-source-maps ./index.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix"
