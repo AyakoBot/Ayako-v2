@@ -21,12 +21,18 @@ export default async (
  const memberResponse = await getMembers(cmd, options, language, message, type);
  if (!memberResponse) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
-  if (!sticky?.stickyrolesactive) return false;
+  if (!sticky?.stickyrolesactive) {
+   actionAlreadyApplied(cmd, message, options.target, language, CT.ModTypes.KickAdd);
+   return false;
+  }
 
   const roles = sticky.stickyrolesmode
    ? options.roles.filter((r) => !sticky.roles.includes(r.id))
    : options.roles.filter((r) => sticky.roles.includes(r.id));
-  if (!roles.length) return false;
+  if (!roles.length) {
+   actionAlreadyApplied(cmd, message, options.target, language, CT.ModTypes.KickAdd);
+   return false;
+  }
 
   const stickyRoleSetting = await DataBase.stickyrolemembers.findUnique({
    where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
