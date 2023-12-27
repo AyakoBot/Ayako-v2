@@ -3,7 +3,6 @@ import Jobs from 'node-schedule';
 import { AutoPoster } from 'topgg-autoposter';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 
 const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
@@ -27,7 +26,7 @@ export default async () => {
    }),
    headers: {
     'Content-Type': 'application/json',
-    Authorization: auth.DBToken,
+    Authorization: process.env.DBToken ?? '',
    },
   }).catch(() => null);
 
@@ -39,10 +38,10 @@ export default async () => {
    }),
    headers: {
     'Content-Type': 'application/json',
-    Authorization: auth.DBListToken,
+    Authorization: process.env.DBListToken ?? '',
    },
   }).catch(() => null);
  });
 
- AutoPoster(auth.topGGtoken, client);
+ AutoPoster(process.env.topGGtoken ?? '', client);
 };

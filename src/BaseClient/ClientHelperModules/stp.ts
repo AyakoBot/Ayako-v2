@@ -1,5 +1,3 @@
-import auth from '../../auth.json' assert { type: 'json' };
-
 interface R {
  [key: string]: unknown | R;
 }
@@ -26,7 +24,11 @@ export default (expression: string, obj: R) => {
   return decided as string;
  };
 
- return expression
-  .replace(/{{\s?([^{}\s]*)\s?}}/g, replace)
-  .replace(RegExp(auth.token, 'g'), 'TOKEN');
+ expression = expression.replace(/{{\s?([^{}\s]*)\s?}}/g, replace);
+
+ Object.values(process.env).forEach((s) => {
+  expression = expression.replace(new RegExp(`${s}`, 'g'), '*');
+ });
+
+ return expression;
 };

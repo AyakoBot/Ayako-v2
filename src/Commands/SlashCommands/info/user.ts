@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 
 const month = 2629743000;
 
@@ -142,7 +141,7 @@ const getMemberEmbed = (
 
 const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
  const res = await fetch(`https://top.gg/api/bots/${bot.id}`, {
-  headers: { Authorization: auth.topGGtoken },
+  headers: { Authorization: process.env.topGGtoken ?? '' },
  })
   .then(
    (r) => r.json() as Promise<CT.TopGGResponse<true> | CT.TopGGResponse<false>> | Promise<null>,

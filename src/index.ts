@@ -1,9 +1,10 @@
-import readline from 'readline';
-import sms from 'source-map-support';
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
+import DotENV from 'dotenv';
+import readline from 'readline';
+import sms from 'source-map-support';
 
-import auth from './auth.json' assert { type: 'json' };
+DotENV.config();
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),
@@ -27,7 +28,7 @@ log(`
 const manager = new Discord.ShardingManager(
  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`,
  {
-  token: auth.token,
+  token: process.env.Token,
   shardArgs: process.argv,
   execArgv: ['--experimental-wasm-modules', '--experimental-websocket'],
  },

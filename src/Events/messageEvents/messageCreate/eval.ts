@@ -3,7 +3,6 @@ import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 // eslint-disable-next-line no-unused-expressions
@@ -15,13 +14,13 @@ os.arch;
 // eslint-disable-next-line no-unused-expressions
 antiraid;
 
-const reg = new RegExp(auth.token, 'g');
+const reg = new RegExp(process.env.Token ?? '', 'g');
 
 // eslint-disable-next-line no-console
 const { log } = console;
 
 export default async (msg: Discord.Message<true>) => {
- if (msg.author.id !== auth.ownerID) return;
+ if (msg.author.id !== process.env.ownerID) return;
  if (!msg.content.startsWith('eval')) return;
 
  const args = msg.content.split(/\s+/g);

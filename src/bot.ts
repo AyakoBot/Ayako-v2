@@ -1,8 +1,11 @@
 /* eslint-disable no-console */
+import DotENV from 'dotenv';
 import sms from 'source-map-support';
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 import { getReady } from './Events/readyEvents/ready.js';
+
+DotENV.config();
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),

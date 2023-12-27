@@ -1,12 +1,11 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 
 export default async (guild: Discord.Guild) => {
  const webhook = await client.fetchWebhook(
-  auth.guildActionWebhook.id,
-  auth.guildActionWebhook.token,
+  process.env.guildActionWebhookID ?? '',
+  process.env.guildActionWebhookToken ?? '',
  );
 
  webhook?.send({

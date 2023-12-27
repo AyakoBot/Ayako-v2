@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import * as Jobs from 'node-schedule';
-import auth from '../../../../auth.json' assert { type: 'json' };
 
 /**
  * Interface for the FishFish cache module.
@@ -40,7 +39,7 @@ const self: FishFish = {
   const authRes = await fetch('https://api.fishfish.gg/v1/users/@me/tokens', {
    method: 'POST',
    headers: {
-    authorization: auth.fishToken,
+    authorization: process.env.fishToken ?? '',
    },
   });
   if (!authRes.ok) throw new Error('Failed to create FishFish Session');

@@ -8,7 +8,6 @@ import { API } from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -298,7 +297,7 @@ const inSinkingYachts = (u: string) => ch.cache.sinkingYachts.cache.has(cleanURL
 const inSpamHaus = async (u: string) => {
  const res = await fetch(`https://apibl.spamhaus.net/lookup/v1/dbl/${cleanURL(u)}`, {
   headers: {
-   Authorization: `Bearer ${auth.spamhausToken}`,
+   Authorization: `Bearer ${process.env.spamhausToken}`,
    'Content-Type': 'application/json',
   },
  });
@@ -308,7 +307,7 @@ const inSpamHaus = async (u: string) => {
 
 const ageCheck = async (u: string) => {
  const res = await fetch(`https://api.promptapi.com/whois/query?domain=${cleanURL(u)}`, {
-  headers: { apikey: auth.promptAPIToken },
+  headers: { apikey: process.env.promptAPIToken ?? '' },
  });
 
  if (!res.ok) return { triggers: false };
@@ -331,7 +330,7 @@ const inVT = async (u: string) => {
  const urlsRes = await fetch('https://www.virustotal.com/api/v3/urls', {
   method: 'POST',
   headers: {
-   'x-apikey': auth.VTtoken,
+   'x-apikey': process.env.VTToken ?? '',
   },
   body,
  });
@@ -357,7 +356,7 @@ const getAnalyses = async (
   Jobs.scheduleJob(new Date(Date.now() + 5000 * i), async () => {
    const res = await fetch(`https://www.virustotal.com/api/v3/analyses/${id}`, {
     headers: {
-     'x-apikey': auth.VTtoken,
+     'x-apikey': process.env.VTToken ?? '',
     },
    });
    if (!res.ok) return resolve((await res.text()) as string);
@@ -388,7 +387,9 @@ const getSeverity = (result: VirusVendorsTypings.VirusTotalAnalyses | false) => 
 
 const inGoogleSafeBrowsing = async (u: string) => {
  const res = await fetch(
-  `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${auth.safeBrowsingToken}`,
+  `https://safebrowsing.googleapis.com/v4/threatMatches:find?key=${
+   process.env.safeBrowsingToken ?? ''
+  }`,
   {
    method: 'POST',
    body: JSON.stringify({
@@ -429,7 +430,7 @@ const reportFishFish = (u: string) => {
  fetch('https://yuri.bots.lostluma.dev/phish/report', {
   method: 'POST',
   headers: {
-   authorization: auth.phishToken,
+   authorization: process.env.phishToken ?? '',
   },
   body: JSON.stringify({
    url: u,
@@ -477,7 +478,7 @@ const inKaspersky = async (u: string) => {
   `https://opentip.kaspersky.com/api/v1/search/domain?request=${cleanURL(u)}`,
   {
    headers: {
-    'x-api-key': auth.kasperskyKey,
+    'x-api-key': process.env.kasperskyToken ?? '',
    },
   },
  );

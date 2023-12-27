@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as DiscordCore from '@discordjs/core';
-import auth from '../auth.json' assert { type: 'json' };
 
 const client = new Discord.Client({
  shards: 'auto',
@@ -56,7 +55,7 @@ const client = new Discord.Client({
  },
 });
 
-await client.login(auth.token);
+await client.login(process.env.Token);
 
 export const API = new DiscordCore.API(client.rest);
 export default client;

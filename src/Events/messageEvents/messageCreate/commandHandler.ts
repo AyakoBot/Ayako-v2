@@ -5,9 +5,7 @@ import * as stringSimilarity from 'string-similarity';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
-import auth from '../../../auth.json' assert { type: 'json' };
 
-// eslint-disable-next-line no-console
 const { log } = console;
 
 export default async (msg: Discord.Message) => {
@@ -109,7 +107,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  }
 
  if (command.thisGuildOnly?.length && command.thisGuildOnly?.includes(msg.guildId)) return;
- if (command.type === 'owner' && msg.author.id !== auth.ownerID) return;
+ if (command.type === 'owner' && msg.author.id !== process.env.ownerID) return;
  if (command.dmOnly) return;
 
  const language = await ch.getLanguage(msg.guildId);
