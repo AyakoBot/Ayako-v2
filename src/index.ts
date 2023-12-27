@@ -4,7 +4,7 @@ import DotENV from 'dotenv';
 import readline from 'readline';
 import sms from 'source-map-support';
 
-DotENV.config();
+DotENV.config({ path: `${process.cwd()}/../.env` });
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),

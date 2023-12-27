@@ -5,7 +5,7 @@ import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
 import { getReady } from './Events/readyEvents/ready.js';
 
-DotENV.config();
+DotENV.config({ path: `${process.cwd()}/../.env` });
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),
