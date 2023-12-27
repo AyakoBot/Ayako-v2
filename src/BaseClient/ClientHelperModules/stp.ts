@@ -27,7 +27,9 @@ export default (expression: string, obj: R) => {
  expression = expression.replace(/{{\s?([^{}\s]*)\s?}}/g, replace);
 
  Object.values(process.env).forEach((s) => {
-  expression = expression.replace(new RegExp(`${s}`, 'g'), '*');
+  expression = s
+   ? expression.replace(new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '*')
+   : expression;
  });
 
  return expression;
