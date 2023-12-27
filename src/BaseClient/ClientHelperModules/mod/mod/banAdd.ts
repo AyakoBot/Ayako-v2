@@ -30,7 +30,8 @@ export default async (
   return false;
  }
 
- if ((await request.guilds.getMemberBan(options.guild, options.target.id)) && !options.skipChecks) {
+ const existingBan = await request.guilds.getMemberBan(options.guild, options.target.id);
+ if ('message' in existingBan && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
