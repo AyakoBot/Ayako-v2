@@ -4,9 +4,6 @@ import * as CT from '../../Typings/Typings.js';
 import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
 
-// eslint-disable-next-line no-console
-const { log } = console;
-
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
 }
@@ -104,10 +101,6 @@ async function send(
   combineMessages(channel as Discord.TextChannel, payload.embeds, timeout);
   return null;
  }
-
- payload.embeds?.forEach((p) => {
-  p.fields?.forEach((pa) => (pa.value?.length > 1024 ? log(p) : null));
- });
 
  const body = (await new Discord.MessagePayload(channel, payload).resolveBody().resolveFiles()) as {
   body: Discord.RESTPostAPIChannelMessageJSONBody;

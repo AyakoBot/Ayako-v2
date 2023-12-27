@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
 import arrayBufferToBuffer from './ClientHelperModules/arrayBufferToBuffer.js';
@@ -96,6 +97,21 @@ type ChannelTimeouts = Map<string, Map<string, Jobs.Job>>;
 const channelQueue: ChannelQueue = new Map();
 const channelTimeout: ChannelTimeouts = new Map();
 
+const logFiles = {
+ ratelimits: fs.createWriteStream(
+  `${process.cwd()}/../logs/ratelimits-${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+  {
+   flags: 'a',
+  },
+ ),
+ console: fs.createWriteStream(
+  `${process.cwd()}/../logs/console_${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+  {
+   flags: 'a',
+  },
+ ),
+};
+
 export {
  DataBase,
  arrayBufferToBuffer,
@@ -161,6 +177,7 @@ export {
  isModeratable,
  loadingEmbed,
  log,
+ logFiles,
  mainID,
  makeStp,
  memberBoostCalc,

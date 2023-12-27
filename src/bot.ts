@@ -23,10 +23,22 @@ const events = await ch.getEvents();
 client.setMaxListeners(events.length);
 
 process.setMaxListeners(4);
-process.on('unhandledRejection', async (error: string) => console.error(error));
-process.on('uncaughtException', async (error: string) => console.error(error));
-process.on('promiseRejectionHandledWarning', (error: string) => console.error(error));
-process.on('experimentalWarning', (error: string) => console.error(error));
+process.on('unhandledRejection', async (error: string) => {
+ console.error(error);
+ ch.logFiles.console.write(`${error}\n`);
+});
+process.on('uncaughtException', async (error: string) => {
+ console.error(error);
+ ch.logFiles.console.write(`${error}\n`);
+});
+process.on('promiseRejectionHandledWarning', (error: string) => {
+ console.error(error);
+ ch.logFiles.console.write(`${error}\n`);
+});
+process.on('experimentalWarning', (error: string) => {
+ console.error(error);
+ ch.logFiles.console.write(`${error}\n`);
+});
 
 events.forEach(async (path) => {
  const eventName = path.replace('.js', '').split(/\/+/).pop();
@@ -38,15 +50,15 @@ events.forEach(async (path) => {
  else client.on(eventName, (...args) => eventHandler(eventName, args));
 });
 
-if (processArgs.includes('--debug')) {
- client.rest.on('rateLimited', (info) => {
-  console.log(
-   `[Ratelimited] ${info.method} ${info.url.replace('https://discord.com/api/v10/', '')} ${
-    info.timeToReset
-   }ms`,
-  );
- });
-}
+client.rest.on('rateLimited', (info) => {
+ const str = `[Ratelimited] ${info.method} ${info.url.replace(
+  'https://discord.com/api/v10/',
+  '',
+ )} ${info.timeToReset}ms`;
+
+ if (processArgs.includes('--debug')) console.log(str);
+ ch.logFiles.ratelimits.write(`${str}\n`);
+});
 
 setTimeout(() => {
  if (client.readyTimestamp && !getReady()) client.shard?.respawnAll();

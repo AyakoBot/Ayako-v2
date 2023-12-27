@@ -1,8 +1,12 @@
-const { log } = console;
+import log from '../BaseClient/ClientHelperModules/logError.js';
 
 const warnEnabled = process.argv.includes('--warn');
 
 export default (message: string) => {
- if (!warnEnabled) return;
- log(message);
+ if (!warnEnabled) {
+  log(message);
+  return;
+ }
+
+ log(message, true);
 };

@@ -1,15 +1,13 @@
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import * as CT from '../../Typings/Typings.js';
-import objectEmotes from './emotes.js';
 import DataBase from '../DataBase.js';
-import { request } from './requestHandler.js';
 import constants from '../Other/constants.js';
-import error from './error.js';
 import cache from './cache.js';
-
-// eslint-disable-next-line no-console
-const { log } = console;
+import objectEmotes from './emotes.js';
+import error from './error.js';
+import { request } from './requestHandler.js';
+import log from './logError.js';
 
 /**
  * Sends a reply message to a Discord message.
@@ -43,7 +41,7 @@ export default async <T extends Discord.Message<boolean>>(
  const sentMessage = await request.channels
   .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
   .catch((err) => {
-   log('msg reply err', err);
+   log(err);
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;

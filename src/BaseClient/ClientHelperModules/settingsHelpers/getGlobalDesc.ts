@@ -1,7 +1,5 @@
 import * as CT from '../../../Typings/Typings.js';
-
-// eslint-disable-next-line no-console
-const { log } = console;
+import log from '../logError.js';
 
 export enum GlobalDescType {
  BLChannelId = 'blchannelid',

@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/Typings.js';
-import reply from './replyCmd.js';
-import objectEmotes from './emotes.js';
 import constants from '../Other/constants.js';
+import objectEmotes from './emotes.js';
 import isEditable from './isEditable.js';
+import reply from './replyCmd.js';
 import { request } from './requestHandler.js';
-
-const { log } = console;
+import log from './logError.js';
 
 /**
  * Sends an error message to the user in response to an interaction.

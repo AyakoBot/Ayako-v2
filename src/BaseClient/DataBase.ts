@@ -1,8 +1,7 @@
-import { PrismaClient, Prisma } from '@prisma/client';
-import { createPrismaRedisCache } from 'prisma-redis-middleware';
+import { Prisma, PrismaClient } from '@prisma/client';
 import Redis from 'ioredis';
-
-const { log } = console;
+import { createPrismaRedisCache } from 'prisma-redis-middleware';
+import log from './ClientHelperModules/logError.js';
 
 const prisma = new PrismaClient();
 
@@ -24,20 +23,20 @@ if (process.env.useRedis) {
  };
 
  if (process.argv.includes('--debug-db')) {
-  options.onHit = (key) => log(`[Redis] Cache Hit: ${key}`);
-  options.onDedupe = (key) => log(`[Redis] Cache Dedupe: ${key}`);
-  options.onMiss = (key) => log(`[Redis] Cache Miss: ${key}`);
-  options.onError = (error) => log(`[Redis] Error: ${error}`);
+  options.onHit = (key) => log(`[Redis] Cache Hit: ${key}`, true);
+  options.onDedupe = (key) => log(`[Redis] Cache Dedupe: ${key}`, true);
+  options.onMiss = (key) => log(`[Redis] Cache Miss: ${key}`, true);
+  options.onError = (error) => log(`[Redis] Error: ${error}`, true);
  }
 
  const cacheMiddleware: Prisma.Middleware = createPrismaRedisCache(options);
 
  prisma.$use(cacheMiddleware);
 
- redis.on('connect', () => log('[Redis] Connecting to Redis...'));
- redis.on('ready', () => log('[Redis] Established Connection to DataBase'));
- redis.on('error', (err) => log(`[Redis] Error: ${err}`));
- redis.on('reconnecting', () => log('[Redis] Connection lost. Re-connecting...'));
+ redis.on('connect', () => log('[Redis] Connecting to Redis...', true));
+ redis.on('ready', () => log('[Redis] Established Connection to DataBase', true));
+ redis.on('error', (err) => log(`[Redis] Error: ${err}`, true));
+ redis.on('reconnecting', () => log('[Redis] Connection lost. Re-connecting...', true));
 }
 
 prisma.$use(async (params, next) => {
@@ -46,7 +45,7 @@ prisma.$use(async (params, next) => {
   return result;
  } catch (error) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-   if (process.argv.includes('--debug-db')) log(`[Prisma] Error: ${error}`);
+   if (process.argv.includes('--debug-db')) log(`[Prisma] Error: ${error}`, true);
    return null;
   }
   throw error;

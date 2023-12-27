@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import DotENV from 'dotenv';
 import readline from 'readline';
 import sms from 'source-map-support';
+import log from './BaseClient/ClientHelperModules/logError.js';
 
 DotENV.config({ path: `${process.cwd()}/../.env` });
 
@@ -12,11 +13,9 @@ sms.install({
  emptyCacheBetweenOperations: process.argv.includes('--debug'),
 });
 
-// eslint-disable-next-line no-console
-const { log } = console;
-
 console.clear();
-log(`
+log(
+ `
 +++++++++++++++ Welcome to Ayako ++++++++++++++++
 +       Restart all Shards with "restart"       +
 +   Restart one Shard with "restart [Shard ID]" +
@@ -24,7 +23,9 @@ log(`
 +   --debug --debug-db --warn --debug-queries   +
 +                   --silent                    +
 +++++++++++++++++++++++++++++++++++++++++++++++++
-`);
+`,
+ true,
+);
 
 const manager = new Discord.ShardingManager(
  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`,
@@ -35,7 +36,7 @@ const manager = new Discord.ShardingManager(
  },
 );
 
-manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`));
+manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`, true));
 
 process.setMaxListeners(5);
 process.on('unhandledRejection', async (error: string) => console.error(error));
@@ -44,7 +45,7 @@ process.on('promiseRejectionHandledWarning', (error: string) => console.error(er
 process.on('experimentalWarning', (error: string) => console.error(error));
 process.on('SIGINT', () => {
  manager.broadcastEval((cl) => cl.emit('SIGINT'));
- log('[SIGINT]: Gracefully shutting down...');
+ log('[SIGINT]: Gracefully shutting down...', true);
  process.exit(0);
 });
 
