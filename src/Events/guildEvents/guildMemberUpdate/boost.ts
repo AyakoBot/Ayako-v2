@@ -31,5 +31,5 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
       description: language.events.ready.nitro.started(member.user),
      };
 
- ch.send({ id: settings.notifchannels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
+ ch.send({ id: settings.notifchannels, guildId: member.guild.id }, { embeds: [embed] });
 };
