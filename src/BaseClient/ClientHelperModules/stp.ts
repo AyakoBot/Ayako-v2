@@ -26,11 +26,13 @@ export default (expression: string, obj: R) => {
 
  expression = expression.replace(/{{\s?([^{}\s]*)\s?}}/g, replace);
 
- Object.values(process.env).forEach((s) => {
-  expression = s
-   ? expression.replace(new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '*')
-   : expression;
- });
+ Object.entries(process.env)
+  .filter((e) => e[0].toLowerCase().includes('token'))
+  .forEach((s) => {
+   expression = s[1]
+    ? expression.replace(new RegExp(s[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '*')
+    : expression;
+  });
 
  return expression;
 };
