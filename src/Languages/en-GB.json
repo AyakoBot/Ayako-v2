@@ -1899,7 +1899,7 @@
   },
   "moderation": {
    "permissions": {
-    "desc": "If you want to limit Moderation-Command Access, you can split the `/mod` Command into several smaller ones using the Buttons below\n\nThese Buttons can only be used by Server Managers",
+    "desc": "If you want to limit Moderation-Command Access, you can split the `/mod` Command into several smaller ones using the Buttons below\n**Notice**:\nAfter you did that the Commands will still only be available to Server Managers.\nYou will have to visit `Server Settings > Integrations` and adjust the Roles of the Mod-Command to your liking\n\nThese Buttons can only be used by Server Managers",
     "buttons": {
      "strike": "Strike",
      "warn": "Warn",
