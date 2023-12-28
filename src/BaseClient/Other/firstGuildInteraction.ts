@@ -9,7 +9,10 @@ import deleteThread from '../ClientHelperModules/mod/deleteThread.js';
 import { request } from '../ClientHelperModules/requestHandler.js';
 import DataBase from '../DataBase.js';
 
-export default async (guild: Discord.Guild) => {
+export default async (guild: Discord.Guild | null) => {
+ if (!guild) return;
+ if (!(guild instanceof Discord.Guild)) return;
+
  if (cache.interactedGuilds.has(guild.id)) return;
  cache.interactedGuilds.add(guild.id);
 

@@ -71,19 +71,24 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.finishedrole.name,
     value: embedParsers.role(settings?.finishedrole, language),
+    inline: true,
+   },
+   {
+    name: '\u200b',
+    value: '\u200b',
     inline: false,
    },
    {
     name: lan.fields.kicktof.name,
     value: embedParsers.boolean(settings?.kicktof, language),
-    inline: false,
+    inline: true,
    },
    ...(settings?.kicktof
     ? [
        {
         name: lan.fields.kickafter.name,
         value: embedParsers.time(Number(settings?.kickafter), language),
-        inline: false,
+        inline: true,
        },
       ]
     : []),
@@ -163,32 +168,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    if (!channel) return;
 
    const language = await ch.getLanguage(channel.guildId);
-
-   ch.send(channel, {
-    embeds: [
-     {
-      author: {
-       name: language.verification.title,
-       icon_url: ch.emotes.tickWithBackground.link,
-      },
-      description: language.verification.startchannelmessage,
-      color: ch.getColor(await ch.getBotMemberFromGuild(channel.guild)),
-     },
-    ],
-    components: [
-     {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-       {
-        type: Discord.ComponentType.Button,
-        custom_id: 'verification/verify',
-        label: language.verification.verify,
-        style: Discord.ButtonStyle.Primary,
-       },
-      ],
-     },
-    ],
-   });
+   ch.send(channel, await getPayload(language, channel.guild));
    break;
   }
   default: {
@@ -196,3 +176,32 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
   }
  }
 };
+
+export const getPayload = async (
+ language: CT.Language,
+ guild: Discord.Guild,
+): Promise<CT.UsualMessagePayload> => ({
+ embeds: [
+  {
+   author: {
+    name: language.verification.title,
+    icon_url: ch.emotes.tickWithBackground.link,
+   },
+   description: language.verification.startchannelmessage,
+   color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
+  },
+ ],
+ components: [
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: [
+    {
+     type: Discord.ComponentType.Button,
+     custom_id: 'verification/verify',
+     label: language.verification.verify,
+     style: Discord.ButtonStyle.Primary,
+    },
+   ],
+  },
+ ],
+});

@@ -1435,7 +1435,7 @@
    "endDate": "End Date of Punishment",
    "message": "Message of Punishment",
    "banChannel": "Ban Channel",
-   "cantPardon": "This Punishment can't be pardoned until it ends.\nWait for it to end or end it manually using the respective Un-Punish-Command (Un-Mute/Un-Ban/Un-Channel-Ban)",
+   "cantPardon": "This Punishment can't be pardoned until it ends.\nWait for it to end or end it manually using the respective Un-Punish-Command (Un-Mute/Un-Ban/Channel-Unban)",
    "name": "{{t.botName}} Moderation-Management",
    "desc": "Punishments of\n{{user}}\n \n They currently have \n {{w}} Warns\n {{m}} Mutes\n {{cb}} Channel-Bans\n {{b}} Bans\n of which {{r}} are temporary and currently running\n\n{{isBanned}}\n{{isMuted}}\n{{isChannelBanned}}",
    "status": {
@@ -3765,15 +3765,15 @@
     "me": "I won't Temp-Channel-Ban myself"
    },
    "channelBanRemove": {
-    "dm": "You have been Un-Channel-Banned from\n{{channel}}",
-    "meNoPerms": "I can't Un-Channel-Ban this User",
-    "youNoPerms": "You can't Un-Channel-Ban this User",
-    "error": "I failed to Un-Channel-Ban this User",
+    "dm": "You have been Channel-Unbanned from\n{{channel}}",
+    "meNoPerms": "I can't Channel-Unban this User",
+    "youNoPerms": "You can't Channel-Unban this User",
+    "error": "I failed to Channel-Unban this User",
     "alreadyApplied": "{{target}} isn't Channel-Banned",
-    "success": "{{target}} was Un-Channel-Banned",
-    "loading": "Un-Channel-Banning User...",
-    "self": "You can't Un-Channel-Ban yourself",
-    "me": "I won't Un-Channel-Ban myself"
+    "success": "{{target}} was Channel-Unbanned",
+    "loading": "Channel-Unbanning User...",
+    "self": "You can't Channel-Unban yourself",
+    "me": "I won't Channel-Unban myself"
    },
    "banRemove": {
     "dm": "You have been Un-Banned from\n{{guild}}",

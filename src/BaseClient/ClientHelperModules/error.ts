@@ -3,7 +3,6 @@ import DataBase from '../DataBase.js';
 import objectEmotes from './emotes.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
-import type * as RequestHandler from './requestHandler.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -27,34 +26,33 @@ export default async (guild: Discord.Guild, err: Error) => {
  if (!channel) return;
 
  const language = await getLanguage(guild.id);
- const requestHandler: typeof RequestHandler = await import('./requestHandler.js');
 
- requestHandler.request.channels.sendMessage(
-  undefined,
-  channel.id,
-  {
-   embeds: [
-    {
-     color: 0xff0000,
-     description: `Stack Trace\n\`\`\`${err.stack?.replace(
-      /file:\/\/\/root\/Bots\/Ayako-v2\/dist/g,
-      '',
-     )}\`\`\``,
-     fields: [
-      {
-       name: 'Message',
-       value: err.message.split(/:+/g).slice(1, 100).join(':'),
-      },
-     ],
-     author: {
-      name: 'Error',
-      icon_url: objectEmotes.warning.link,
-     },
-     title: language.errors.contactSupport,
-     url: constants.standard.support,
-    },
-   ],
-  },
-  guild.client,
+ const webhook = await guild.client.fetchWebhook(
+  process.env.debugWebhookID ?? '',
+  process.env.debugWebhookToken ?? '',
  );
+
+ webhook.send({
+  embeds: [
+   {
+    color: 0xff0000,
+    description: `Stack Trace\n\`\`\`${err.stack?.replace(
+     /file:\/\/\/root\/Bots\/Ayako-v2\/dist/g,
+     '',
+    )}\`\`\``,
+    fields: [
+     {
+      name: 'Message',
+      value: err.message.split(/:+/g).slice(1, 100).join(':'),
+     },
+    ],
+    author: {
+     name: 'Error',
+     icon_url: objectEmotes.warning.link,
+    },
+    title: language.errors.contactSupport,
+    url: constants.standard.support,
+   },
+  ],
+ });
 };

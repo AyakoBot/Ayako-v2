@@ -3,6 +3,7 @@ import Jobs from 'node-schedule';
 import * as CT from '../../Typings/Typings.js';
 import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
+import log from './logError.js';
 
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
@@ -75,6 +76,8 @@ async function send(
  const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
 
+ if (channel.type === Discord.ChannelType.DM) log(JSON.stringify(payload));
+
  if (!('send' in channel)) return null;
 
  if (
@@ -86,7 +89,11 @@ async function send(
   return null;
  }
 
- const constants = (await import(`${process.cwd()}/BaseClient/Other/constants.js`)).default;
+ const constants = (
+  await import(
+   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/Other/constants.js`
+  )
+ ).default;
  payload.embeds?.forEach((e) => {
   if (e.author && !e.author.url) e.author.url = constants.standard.invite;
 
@@ -138,7 +145,7 @@ const combineMessages = async (
  timeout: number,
 ) => {
  const ch = (await import(
-  `${process.cwd()}/BaseClient/ClientHelper.js`
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
  )) as typeof import('../ClientHelper.js');
 
  let guildQueue = ch.channelQueue.get(channel.guildId);
@@ -258,11 +265,10 @@ const getChannel = async (
  const { default: client, API } = await import('../Client.js');
 
  if ('username' in channels) {
-  return Classes.Channel<Discord.ChannelType.DM>(
-   client,
-   await API.users.createDM(channels.id),
-   undefined as never,
-  );
+  const dm = await API.users.createDM(channels.id).catch(() => undefined);
+  if (!dm) return dm;
+
+  return Classes.Channel<Discord.ChannelType.DM>(client, dm, undefined as never);
  }
  return 'name' in channels ? channels : client.channels.cache.get(channels.id);
 };

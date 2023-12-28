@@ -101,7 +101,7 @@ export const cooldownHandler = async (
 
  let emote: string;
  if (Number(settings.cooldown) <= 60) {
-  const emoteToUse = objectEmotes.timers[Number(settings.cooldown)];
+  const emoteToUse = objectEmotes.timers[Number(settings.cooldown) - 1];
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
  } else emote = '⌛';
 
@@ -117,7 +117,7 @@ export const cooldownHandler = async (
  const reactions = [emote];
 
  if (emote === '⌛') {
-  const emoteToUse = objectEmotes.timers[60];
+  const emoteToUse = objectEmotes.timers[59];
   emote = constants.standard.getEmoteIdentifier(emoteToUse);
 
   Jobs.scheduleJob(new Date(Date.now() + (Number(settings.cooldown) * 1000 - 60000)), async () => {

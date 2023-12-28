@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as DiscordCore from '@discordjs/core';
 
 const client = new Discord.Client({
- shards: 'auto',
  allowedMentions: {
   parse: ['users'],
   repliedUser: false,

@@ -43,10 +43,7 @@ export default async (
     channel.messages.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => {
-    error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
-    return e as Discord.DiscordAPIError;
-   })
+   .catch((e) => e as Discord.DiscordAPIError)
  );
 };
 

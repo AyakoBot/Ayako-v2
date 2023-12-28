@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
-import DotENV from 'dotenv';
+import 'dotenv/config';
 import sms from 'source-map-support';
 import client from './BaseClient/Client.js';
 import * as ch from './BaseClient/ClientHelper.js';
-import { getReady } from './Events/readyEvents/ready.js';
-
-DotENV.config({ path: `${process.cwd()}/../.env` });
+// import { getReady } from './Events/readyEvents/ready.js';
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),
@@ -60,6 +58,6 @@ client.rest.on('rateLimited', (info) => {
  ch.logFiles.ratelimits.write(`${str}\n`);
 });
 
-setTimeout(() => {
- if (client.readyTimestamp && !getReady()) client.shard?.respawnAll();
-}, 5000);
+// setTimeout(() => {
+//  if (client.readyTimestamp && !getReady()) client.shard?.respawnAll();
+// }, 5000);

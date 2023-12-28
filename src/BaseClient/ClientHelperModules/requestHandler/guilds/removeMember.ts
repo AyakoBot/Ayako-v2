@@ -17,9 +17,10 @@ export default async (member: Discord.GuildMember, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  if (!canRemoveMember(await getBotMemberFromGuild(member.guild), member)) {
-  const e = requestHandlerError(`Cannot remove member ${member.displayName} / ${member.id}`, [
-   Discord.PermissionFlagsBits.KickMembers,
-  ]);
+  const e = requestHandlerError(
+   `Cannot remove member ${member.displayName} / ${member.id} from ${member.guild.name} / ${member.guild.id}`,
+   [Discord.PermissionFlagsBits.KickMembers],
+  );
 
   error(member.guild, e);
   return e;
@@ -41,4 +42,4 @@ export default async (member: Discord.GuildMember, reason?: string) => {
  */
 export const canRemoveMember = (me: Discord.GuildMember, member: Discord.GuildMember) =>
  me.permissions.has(Discord.PermissionFlagsBits.KickMembers) &&
- me.roles.highest.comparePositionTo(member.roles.highest) < 0;
+ me.roles.highest.comparePositionTo(member.roles.highest) > 0;

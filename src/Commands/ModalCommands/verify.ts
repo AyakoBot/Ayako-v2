@@ -25,9 +25,9 @@ export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: strin
  });
  if (!settings) return;
 
- const pendingRole = settings.pendingrole ? cmd.guild?.roles.cache.get(settings.pendingrole) : null;
+ const pendingRole = settings.pendingrole ? cmd.guild.roles.cache.get(settings.pendingrole) : null;
  const verifiedRole = settings.finishedrole
-  ? cmd.guild?.roles.cache.get(settings.finishedrole)
+  ? cmd.guild.roles.cache.get(settings.finishedrole)
   : null;
 
  if (pendingRole) {
