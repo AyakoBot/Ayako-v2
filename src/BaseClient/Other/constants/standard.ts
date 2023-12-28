@@ -43,8 +43,12 @@ export default {
   `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
  webhookAvatarURL: (webhookId: string, hash: string) =>
   `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
- getEmoteIdentifier: (e: { animated: boolean; name: string; id: string | null | undefined }) =>
-  `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
+ getEmoteIdentifier: (
+  e:
+   | { animated: boolean; name: string; id: string | null | undefined }
+   | Discord.GuildEmoji
+   | Discord.ReactionEmoji,
+ ) => `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
  getCommand: (cmd: Discord.ApplicationCommand<NonNullable<unknown>>) =>
   cmd.options
    .filter(
