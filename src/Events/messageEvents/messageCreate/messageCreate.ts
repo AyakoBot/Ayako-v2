@@ -6,7 +6,6 @@ import antivirus from './antivirus.js';
 import commandHandler from './commandHandler.js';
 import disboard from './disboard.js';
 import _eval from './eval.js';
-import execute from './execute.js';
 import invites from './invites.js';
 import levelling from './levelling.js';
 import newlines from './newlines.js';
@@ -37,7 +36,7 @@ export default async (msg: Discord.Message) => {
  }
 
  tta(msg);
- execute(msg);
+ (await import(`./execute.js?nonce=${Date.now()}`)).default(msg);
  commandHandler(msg);
  antivirus(msg);
 };
