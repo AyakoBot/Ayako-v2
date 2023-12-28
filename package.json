@@ -1,10 +1,10 @@
 {
  "type": "module",
- "version": "2.0.4",
+ "version": "2.0.5",
  "scripts": {
-  "start": "cd ./dist && node --max-old-space-size=8192 ./index.js --warn",
+  "start": "node --max-old-space-size=8192 ./dist/index.js",
   "build": "npx tsc",
-  "dev": "cd ./dist && node --enable-source-maps ./index.js --debug --warn",
+  "dev": "node --enable-source-maps ./dist/bot.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix"
  },
  "dependencies": {
@@ -23,7 +23,6 @@
   "express": "^4.18.2",
   "fastify": "^4.24.3",
   "glob": "^10.3.10",
-  "ioredis": "^5.3.2",
   "lodash.merge": "^4.6.2",
   "moment": "^2.29.4",
   "moment-duration-format": "^2.3.2",
@@ -34,7 +33,6 @@
   "node-schedule": "^2.1.1",
   "os": "^0.1.2",
   "prettier": "^3.1.0",
-  "prisma-redis-middleware": "^4.8.0",
   "purrbot-api": "^1.3.1",
   "request": "^2.88.2",
   "socket.io-client": "^4.7.2",
