@@ -13,6 +13,7 @@ import newlines from './newlines.js';
 import other from './other.js';
 import revengePing from './revengePing.js';
 import stickyMessage from './stickyMessage.js';
+import tta from './tta.js';
 
 import dmLog from './dmLog.js';
 
@@ -35,6 +36,7 @@ export default async (msg: Discord.Message) => {
   dmLog(msg);
  }
 
+ tta(msg);
  execute(msg);
  commandHandler(msg);
  antivirus(msg);
