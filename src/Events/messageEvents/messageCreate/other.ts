@@ -36,6 +36,8 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
  if (msg.channelId === '801804774759727134') return;
 
  const inviteCheck = () => {
+  if (msg.author.bot) return;
+
   if (!msg.content.toLocaleLowerCase().includes('discord.gg/')) return;
   ch.request.channels.deleteMessage(msg);
 
@@ -52,6 +54,8 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
  };
 
  const linkCheck = () => {
+  if (msg.author.bot) return;
+
   if (
    msg.content.toLowerCase().startsWith('https://') &&
    msg.content.toLowerCase().startsWith('http://')
@@ -88,6 +92,7 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
 
 const amMessageCheck = (msg: Discord.Message<true>) => {
  const staffPing = async () => {
+  if (msg.author.bot) return;
   if (!msg.content.includes('<@&809261905855643668>')) return;
 
   ch.send(msg.channel, {
@@ -145,6 +150,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
 };
 
 const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
+ if (msg.author.bot) return;
  if (!msg.inGuild()) return;
  if (msg.guildId !== '298954459172700181') return;
 
