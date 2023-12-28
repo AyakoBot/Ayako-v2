@@ -30,7 +30,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await ch.getLanguage(cmd.guildId);
 
- const settingsFiles = await glob(`${process.cwd()}/Commands/AutocompleteCommands/settings/**/*`);
+ const settingsFiles = await glob(
+  `${process.cwd()}${
+   process.cwd().includes('dist') ? '' : '/dist'
+  }/Commands/AutocompleteCommands/settings/**/*`,
+ );
 
  const settingsFile = settingsFiles.find((f) =>
   f.endsWith(

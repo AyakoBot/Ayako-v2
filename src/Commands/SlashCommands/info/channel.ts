@@ -31,7 +31,9 @@ const getEmbed = async (
 ): Promise<Discord.APIEmbed[] | undefined> =>
  client.shard?.broadcastEval(
   async (cl, { id, gid, mid, ViewChannel }) => {
-   const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+   const chEval: typeof ch = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+   );
    const g = cl.guilds.cache.get(gid);
    if (!g) return undefined;
 

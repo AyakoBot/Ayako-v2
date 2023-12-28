@@ -71,7 +71,9 @@ export default async (
    new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
    async () => {
     const m: typeof ModTypes = await import(
-     `${process.cwd()}/BaseClient/ClientHelperModules/mod.js`
+     `${process.cwd()}${
+      process.cwd().includes('dist') ? '' : '/dist'
+     }/BaseClient/ClientHelperModules/mod.js`
     );
     m.default(undefined, CT.ModTypes.MuteRemove, {
      dbOnly: false,

@@ -32,7 +32,9 @@ export const end = async (g: Prisma.giveaways) => {
    if (!guild) return;
 
    const { giveawayCollectTime: gCT } = (await import(
-    `${process.cwd()}/Commands/SlashCommands/giveaway/end.js`
+    `${process.cwd()}${
+     process.cwd().includes('dist') ? '' : '/dist'
+    }/Commands/SlashCommands/giveaway/end.js`
    )) as {
     giveawayCollectTime: typeof giveawayCollectTime;
    };
@@ -271,7 +273,9 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
    const guild = cl.guilds.cache.get(gID);
    if (!guild) return;
 
-   const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+   const chEval: typeof ch = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+   );
    const giveaway = await chEval.DataBase.giveaways.findUnique({
     where: { msgid: mID },
    });
@@ -284,7 +288,9 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
    if (!giveaway.winners.length) return;
 
    const { giveawayCollectTime: gCT, failReroll: fR } = (await import(
-    `${process.cwd()}/Commands/SlashCommands/giveaway/end.js`
+    `${process.cwd()}${
+     process.cwd().includes('dist') ? '' : '/dist'
+    }/Commands/SlashCommands/giveaway/end.js`
    )) as {
     giveawayCollectTime: typeof giveawayCollectTime;
     failReroll: typeof failReroll;
@@ -312,6 +318,18 @@ export const getMessage = async (giveaway: {
  const channel = await ch.getChannel.guildTextChannel(giveaway.channelid);
  if (!channel) {
   ch.error(guild, new Error('Channel not found'));
+
+  ch.DataBase.giveaways
+   .delete({
+    where: { channelid: giveaway.channelid, guildid: giveaway.guildid, msgid: giveaway.msgid },
+   })
+   .then();
+
+  ch.DataBase.giveawaycollection
+   .delete({
+    where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
+   })
+   .then();
   return undefined;
  }
 

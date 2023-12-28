@@ -87,7 +87,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 };
 
 const getStringCommands = async (): Promise<string[]> => {
- const files = await glob(`${process.cwd()}/Commands/StringCommands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/StringCommands/**/*`,
+ );
 
  return files
   .filter((f) => f.endsWith('.js'))

@@ -6,7 +6,9 @@ import * as Discord from 'discord.js';
  * @returns A Promise that resolves to an array of filtered event files.
  */
 export default async () => {
- const events = await glob(`${process.cwd()}/Events/**/*`);
+ const events = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Events/**/*`,
+ );
 
  const filteredEvents = events
   .filter((path) => path.endsWith('.js'))

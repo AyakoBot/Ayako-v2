@@ -28,7 +28,9 @@ const getServers = async (language: CT.Language) =>
  (
   await client.shard?.broadcastEval(
    async (c, { lang }) => {
-    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+    const chEval: typeof ch = await import(
+     `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+    );
 
     return c.guilds.cache.map((g) => ({
      content: `${chEval.util.makeInlineCode(g.name)}\n> ${chEval.splitByThousand(g.memberCount)} ${

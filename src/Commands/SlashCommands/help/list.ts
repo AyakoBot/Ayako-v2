@@ -65,4 +65,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
 const getCommand = (
  type: 'SlashCommands' | 'StringCommands' | 'ContextCommands',
-): Promise<string[]> => glob(`${process.cwd()}/Commands/${type}/**/*`);
+): Promise<string[]> =>
+ glob(`${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/${type}/**/*`);

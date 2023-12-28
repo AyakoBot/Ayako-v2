@@ -19,7 +19,9 @@ export default async (
  cache.channelBans.set(
   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
    const m: typeof ModTypes = await import(
-    `${process.cwd()}/BaseClient/ClientHelperModules/mod.js`
+    `${process.cwd()}${
+     process.cwd().includes('dist') ? '' : '/dist'
+    }/BaseClient/ClientHelperModules/mod.js`
    );
    m.default(undefined, CT.ModTypes.ChannelBanRemove, {
     dbOnly: false,

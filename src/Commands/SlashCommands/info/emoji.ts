@@ -112,8 +112,12 @@ const getEmotePayloads = async (
 ) =>
  client.shard?.broadcastEval(
   async (cl, { color, e, guildId }) => {
-   const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
-   const ctEval: typeof CT = await import(`${process.cwd()}/Typings/Typings.js`);
+   const chEval: typeof ch = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+   );
+   const ctEval: typeof CT = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Typings/Typings.js`
+   );
 
    const emoji = e.id ? cl.emojis.cache.get(e.id) ?? e : e;
    const language = await chEval.getLanguage(guildId);

@@ -100,13 +100,17 @@ const channelTimeout: ChannelTimeouts = new Map();
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
-  `${process.cwd()}/../logs/ratelimits-${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+  `${process.cwd()}${
+   process.cwd().includes('dist') ? '/..' : ''
+  }/logs/ratelimits-${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
   {
    flags: 'a',
   },
  ),
  console: fs.createWriteStream(
-  `${process.cwd()}/../logs/console_${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+  `${process.cwd()}${
+   process.cwd().includes('dist') ? '/..' : ''
+  }/logs/console_${new Date().getDay()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
   {
    flags: 'a',
   },

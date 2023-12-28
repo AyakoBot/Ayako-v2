@@ -14,7 +14,11 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
  settingName: T,
  guild: Discord.Guild,
 ) => {
- const files = await glob(`${process.cwd()}/Commands/SlashCommands/settings/**/*`);
+ const files = await glob(
+  `${process.cwd()}${
+   process.cwd().includes('dist') ? '' : '/dist'
+  }/Commands/SlashCommands/settings/**/*`,
+ );
 
  const file = files.find((f) =>
   f.endsWith(

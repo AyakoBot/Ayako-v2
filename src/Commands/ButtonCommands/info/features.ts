@@ -48,7 +48,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.shard?.broadcastEval(
   async (c, { id }) => {
-   const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+   const chEval: typeof ch = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+   );
    const g = c.guilds.cache.get(id) ?? chEval.cache.inviteGuilds.get(id);
    if (!g) return undefined;
 

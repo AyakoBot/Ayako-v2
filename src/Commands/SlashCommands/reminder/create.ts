@@ -51,7 +51,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 export const endReminder = (reminder: Prisma.reminders) => {
  client.shard?.broadcastEval(
   async (cl, { channelid, userid, uniquetimestamp, reason, endtime }) => {
-   const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+   const chEval: typeof ch = await import(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+   );
    let channel: Discord.TextBasedChannel | Discord.User | undefined = cl.channels.cache.get(
     channelid,
    ) as Discord.TextBasedChannel | undefined;
