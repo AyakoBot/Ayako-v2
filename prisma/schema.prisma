@@ -899,7 +899,7 @@ model users {
   userid         String   @db.VarChar
   votereminders  Boolean  @db.Boolean @default(true)
   username       String   @db.Text    @default("Unkown User")
-  avatar         String   @db.Text
+  avatar         String   @db.Text    @default("https://cdn.discordapp.com/embed/avatars/0.png")
   socials        String[] @db.Text
   socialstype    String[] @db.Text
   lastfetch      Decimal  @db.Decimal @default(1)
