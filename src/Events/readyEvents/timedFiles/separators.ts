@@ -14,9 +14,13 @@ export default async () => {
     const guild = cl.guilds.cache.get(guildid);
     if (!guild) return;
 
-    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+    const chEval: typeof ch = await import(
+     `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+    );
     const { separatorAssigner }: typeof separator = await import(
-     `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separator.js`
+     `${process.cwd()}${
+      process.cwd().includes('dist') ? '' : '/dist'
+     }/Events/guildEvents/guildMemberUpdate/separator.js`
     );
 
     if (!separatorAssigner) return;
@@ -35,7 +39,9 @@ export default async () => {
       : undefined;
 
     const oTR: typeof separator = await import(
-     `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separator.js`
+     `${process.cwd()}${
+      process.cwd().includes('dist') ? '' : '/dist'
+     }/Events/guildEvents/guildMemberUpdate/separator.js`
     );
 
     Jobs.scheduleJob(new Date(Date.now() + 300000), () => {

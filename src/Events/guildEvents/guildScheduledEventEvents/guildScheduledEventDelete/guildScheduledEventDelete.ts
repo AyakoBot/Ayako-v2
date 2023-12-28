@@ -8,7 +8,5 @@ export default async (event: Discord.GuildScheduledEvent) => {
 
  if (!event.guild) return;
 
- await ch.firstGuildInteraction(event.guild);
-
  log(event, cached);
 };

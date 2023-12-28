@@ -4,7 +4,7 @@ const Amount = new Discord.SlashCommandIntegerOption()
  .setName('amount')
  .setDescription('The Amount of matching Messages to delete')
  .setMaxValue(500)
- .setMinValue(1)
+ .setMinValue(2)
  .setRequired(true);
 
 const FilterContent = new Discord.SlashCommandStringOption()

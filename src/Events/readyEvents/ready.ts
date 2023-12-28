@@ -1,4 +1,3 @@
-import * as Jobs from 'node-schedule';
 import client from '../../BaseClient/Client.js';
 import log from '../../BaseClient/ClientHelperModules/logError.js';
 
@@ -16,10 +15,6 @@ export default async () => {
 | => Shard: ${client.guilds.cache.first()?.shardId}`,
   true,
  );
-
- Jobs.scheduleJob('*/10 * * * *', async () => {
-  log(`=> Current Date: ${new Date().toLocaleString()}`, true);
- });
 
  startupTasks();
 };

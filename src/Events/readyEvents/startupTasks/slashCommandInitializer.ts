@@ -4,6 +4,7 @@ import commands from './SlashCommands.js';
 
 export default async () => {
  if (client.shard?.mode !== 'process') return;
+ if (!process.argv.includes('--put-commands')) return;
 
  const createCommands = Object.values(commands.public);
  await client.application?.commands.set(createCommands);

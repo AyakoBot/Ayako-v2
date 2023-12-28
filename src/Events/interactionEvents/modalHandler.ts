@@ -7,7 +7,9 @@ const { log } = console;
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isModalSubmit()) return;
 
- const files = await glob(`${process.cwd()}/Commands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
+ );
 
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();

@@ -7,7 +7,9 @@ import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const UpdateWorker = new Worker(
- `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
+ `${process.cwd()}${
+  process.cwd().includes('dist') ? '' : '/dist'
+ }/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
 );
 export const separatorAssigner: Map<string, Jobs.Job[]> = new Map();
 

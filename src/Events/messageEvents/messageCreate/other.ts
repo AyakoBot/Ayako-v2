@@ -103,7 +103,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
  staffPing();
 
  const intros = async () => {
-  if (msg.channel.id !== '763132467041140737') return;
+  if (msg.channel?.id !== '763132467041140737') return;
   if (msg.author.bot) return;
 
   const messages = await ch.request.channels

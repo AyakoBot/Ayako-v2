@@ -5,8 +5,6 @@ import voiceStateDeletes from './voiceStateDeletes/voiceStateDeletes.js';
 import voiceStateUpdates from './voiceStateUpdates/voiceStateUpdates.js';
 
 export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
- await ch.firstGuildInteraction(state.guild);
-
  if (!oldState.channelId) {
   voiceStateCreates(
    state as Discord.VoiceState,

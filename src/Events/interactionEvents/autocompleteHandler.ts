@@ -9,7 +9,9 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
  if (!cmd.inCachedGuild()) return;
 
- const files = await glob(`${process.cwd()}/Commands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
+ );
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,

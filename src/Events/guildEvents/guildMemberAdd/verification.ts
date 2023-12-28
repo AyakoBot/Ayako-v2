@@ -36,8 +36,9 @@ const prepKick = async (
 ) => {
  if (!verification.kicktof) return;
  if (!verification.kickafter) return;
+ if (member.user.bot) return;
 
- scheduleJob(new Date(Date.now() + Number(verification.kickafter)), async () => {
+ scheduleJob(new Date(Date.now() + Number(verification.kickafter) * 1000), async () => {
   kick(member, verification, language);
  });
 };
@@ -51,6 +52,12 @@ export const kick = async (
  if (member.roles.cache.has(verification.finishedrole)) return;
  if (!verification.kicktof) return;
  if (!verification.kickafter) return;
+ if (member.user.bot) return;
+
+ ch.logFiles.console.write(
+  `Would've tried kicking ${member.user.tag} from ${member.guild.name} (${member.guild.id})\n`,
+ );
+ return;
 
  const dm = async () => {
   ch.send(member.user, {

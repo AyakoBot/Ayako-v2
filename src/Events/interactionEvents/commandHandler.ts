@@ -9,7 +9,9 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isChatInputCommand()) return;
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const files = await glob(`${process.cwd()}/Commands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
+ );
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,
@@ -41,6 +43,7 @@ export default async (cmd: Discord.Interaction) => {
     ? 'interactions'
     : '',
   );
+
  if (cooldown) {
   const language = await ch.getLanguage(cmd.guildId);
   ch.errorCmd(

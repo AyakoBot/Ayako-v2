@@ -13,7 +13,9 @@ export default async () => {
     const guild = cl.guilds.cache.get(guildid);
     if (!guild) return;
 
-    const chEval: typeof ch = await import(`${process.cwd()}/BaseClient/ClientHelper.js`);
+    const chEval: typeof ch = await import(
+     `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+    );
     const channel = channelid ? await chEval.getChannel.guildTextChannel(channelid) : undefined;
     const message =
      messageid && channel
@@ -23,7 +25,9 @@ export default async () => {
       : undefined;
 
     const oTR: typeof separator = await import(
-     `${process.cwd()}/Events/guildEvents/guildMemberUpdate/separator.js`
+     `${process.cwd()}${
+      process.cwd().includes('dist') ? '' : '/dist'
+     }/Events/guildEvents/guildMemberUpdate/separator.js`
     );
 
     oTR.oneTimeRunner(

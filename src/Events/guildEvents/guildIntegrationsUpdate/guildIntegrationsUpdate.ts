@@ -5,8 +5,6 @@ import guildIntegrationsDeletes from './guildIntegrationsDeletes/guildIntegratio
 import guildIntegrationsUpdates from './guildIntegrationsUpdates/guildIntegrationsUpdates.js';
 
 export default async (guild: Discord.Guild) => {
- await ch.firstGuildInteraction(guild);
-
  const cached = ch.cache.integrations.cache.get(guild.id);
  const fetched = await ch.request.guilds.getIntegrations(guild).then((i) => {
   if ('message' in i) {

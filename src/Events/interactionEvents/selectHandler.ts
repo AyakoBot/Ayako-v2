@@ -30,7 +30,9 @@ export default async (cmd: Discord.Interaction) => {
   }
  };
 
- const files = await glob(`${process.cwd()}/Commands/SelectCommands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/SelectCommands/**/*`,
+ );
 
  const args = cmd.customId.split(/_+/g);
  const path = args.shift();

@@ -6,8 +6,6 @@ import log from './log.js';
 export default async (channel: Discord.Channel) => {
  if (!('guild' in channel)) return;
 
- await ch.firstGuildInteraction(channel.guild);
-
  const channelBans = ch.cache.channelBans.cache.get(channel.guild.id)?.get(channel.id);
  if (channelBans) {
   const array = Array.from(channelBans, ([, g]) => g);

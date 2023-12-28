@@ -7,11 +7,14 @@ export default async (member: Discord.GuildMember) => {
  });
  if (!settings) return;
 
- const rolesToAdd: string[] = [];
- if (member.user.bot && settings.botroleid.length) rolesToAdd.concat(...settings.botroleid);
- if (!member.user.bot && settings.userroleid.length) rolesToAdd.concat(...settings.userroleid);
- if (settings.allroleid.length) rolesToAdd.concat(...settings.allroleid);
-
+ let rolesToAdd: string[] = [];
+ if (member.user.bot && settings.botroleid.length) {
+  rolesToAdd = [...rolesToAdd, ...settings.botroleid];
+ }
+ if (!member.user.bot && settings.userroleid.length) {
+  rolesToAdd = [...rolesToAdd, ...settings.userroleid];
+ }
+ if (settings.allroleid.length) rolesToAdd = [...rolesToAdd, ...settings.allroleid];
  if (!rolesToAdd.length) return;
 
  const language = await ch.getLanguage(member.guild.id);

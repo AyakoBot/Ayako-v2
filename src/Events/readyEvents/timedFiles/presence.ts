@@ -5,23 +5,33 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
  const random = Math.floor(Math.random() * 3);
- const users = await ch.DataBase.stats.findFirst().then((r) => r?.allusers);
 
  const activities: Discord.ActivitiesOptions[] = [];
+
+ const [guildSize, userSize] = await Promise.all([
+  client.shard?.fetchClientValues('guilds.cache.size'),
+  client.shard?.broadcastEval((c) =>
+   c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+  ),
+ ]);
+
+ const totalusers = (userSize as number[] | undefined)?.reduce((acc, count) => acc + count, 0) ?? 0;
+ const totalguildcount =
+  (guildSize as number[] | undefined)?.reduce((acc, count) => acc + count, 0) ?? 0;
 
  switch (random) {
   case 1: {
    activities.push({
-    name: `${ch.splitByThousand(client.guilds.cache.size)} Servers | v${
-     pack.version
-    } | Default Prefix: ${ch.constants.standard.prefix}`,
+    name: `${ch.splitByThousand(totalguildcount)} Servers | v${pack.version} | Default Prefix: ${
+     ch.constants.standard.prefix
+    }`,
     type: Discord.ActivityType.Competing,
    });
    break;
   }
   case 2: {
    activities.push({
-    name: `with ${ch.splitByThousand(Number(users))} Users | v${pack.version} | ${
+    name: `with ${ch.splitByThousand(totalusers)} Users | v${pack.version} | ${
      ch.constants.standard.prefix
     }invite`,
     type: Discord.ActivityType.Playing,
@@ -30,8 +40,8 @@ export default async () => {
   }
   default: {
    activities.push({
-    name: 'Development',
-    state: `Development | v${pack.version} | Default Prefix: ${ch.constants.standard.prefix}`,
+    name: 'Stable',
+    state: `Stable | v${pack.version} | Default Prefix: ${ch.constants.standard.prefix}`,
     type: Discord.ActivityType.Custom,
    });
    break;

@@ -7,7 +7,9 @@ const { log } = console;
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isContextMenuCommand()) return;
 
- const files = await glob(`${process.cwd()}/Commands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
+ );
 
  const path = `${Discord.ApplicationCommandType[cmd.commandType]}/${cmd.commandName
   .replace(/\s+/g, '-')

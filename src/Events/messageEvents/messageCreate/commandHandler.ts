@@ -45,11 +45,18 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
  const command = await getComand(commandName);
  if (!command) {
-  const allSlashCommands = (await glob(`${process.cwd()}/Commands/SlashCommands/**/*`))
+  const allSlashCommands = (
+   await glob(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/SlashCommands/**/*`,
+   )
+  )
    .filter((f) => f.endsWith('.js') && !f.endsWith('.map.js'))
    .map((f) =>
     f
-     .replace(`${process.cwd()}/Commands/SlashCommands/`, '')
+     .replace(
+      `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/SlashCommands/`,
+      '',
+     )
      .replace('.js', '')
      .replace(/\/.*/g, ''),
    );
@@ -182,7 +189,9 @@ export const getPrefix = async (msg: Discord.Message) => {
 };
 
 const getComand = async (commandName: string) => {
- const files = await glob(`${process.cwd()}/Commands/StringCommands/**/*`);
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/StringCommands/**/*`,
+ );
 
  const path = files.find((f) => f.endsWith(`/${commandName}.js`));
  if (!path) return undefined;

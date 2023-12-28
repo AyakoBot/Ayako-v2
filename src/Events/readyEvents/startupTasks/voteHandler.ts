@@ -75,7 +75,9 @@ const initSocket = () =>
 
      if ('bot' in vote) {
       const voteBotCreate: typeof VoteBotCreate = await import(
-       `${process.cwd()}/Events/voteEvents/voteBotEvents/voteBotCreate.js`
+       `${process.cwd()}${
+        process.cwd().includes('dist') ? '' : '/dist'
+       }/Events/voteEvents/voteBotEvents/voteBotCreate.js`
       );
 
       voteBotCreate(vote, guild, user, member, {
@@ -87,7 +89,9 @@ const initSocket = () =>
 
      if ('guild' in vote) {
       const voteGuildCreate: typeof VoteGuildCreate = await import(
-       `${process.cwd()}/Events/voteEvents/voteGuildEvents/voteGuildCreate.js`
+       `${process.cwd()}${
+        process.cwd().includes('dist') ? '' : '/dist'
+       }/Events/voteEvents/voteGuildEvents/voteGuildCreate.js`
       );
 
       voteGuildCreate(vote, guild, user, member, {

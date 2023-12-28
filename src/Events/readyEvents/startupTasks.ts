@@ -33,11 +33,13 @@ export default async () => {
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
 
-  if (client.user?.id === ch.mainID) {
-   ch.cache.fishFish.start();
-   ch.cache.sinkingYachts.start();
-   ch.cache.urlTLDs.start();
-  }
+  Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
+   if (client.user?.id === ch.mainID) {
+    ch.cache.fishFish.start();
+    ch.cache.sinkingYachts.start();
+    ch.cache.urlTLDs.start();
+   }
+  });
  });
 
  Jobs.scheduleJob('0 0 0 * * *', async () => {
