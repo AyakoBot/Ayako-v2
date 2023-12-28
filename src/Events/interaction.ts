@@ -27,7 +27,10 @@ export default () => {
      embeds: [
       {
        color: ch.getColor(),
-       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${ch.constants.standard.invite})\nPlease invite the original Bot into your Server instead of this one using [this Invite-URL](${ch.constants.standard.invite})\n\nI will now leave this Server`,
+       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${ch.constants.standard.invite})
+Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${ch.constants.standard.invite})
+
+I will now leave this Server`,
        author: {
         icon_url: client.user?.displayAvatarURL(),
         name: client.user?.username ?? 'Ayako',

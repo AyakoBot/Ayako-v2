@@ -12,6 +12,8 @@ export default async (
  member: Discord.GuildMember | undefined,
  setting: Prisma.votesettings,
 ) => {
+ await ch.firstGuildInteraction(guild);
+
  const allRewards = await ch.DataBase.voterewards.findMany({
   where: {
    guildid: guild.id,

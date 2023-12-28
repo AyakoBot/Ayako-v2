@@ -6,6 +6,8 @@ import reactionRoles from './reactionRoles.js';
 export default async (reaction: Discord.MessageReaction, user: Discord.User) => {
  if (!reaction.message.guild) return;
 
+ await ch.firstGuildInteraction(reaction.message.guild);
+
  const msg = await ch.request.channels
   .getMessage(reaction.message.channel as Discord.GuildTextBasedChannel, reaction.message.id)
   .then((m) => ('message' in m ? undefined : m));

@@ -2,11 +2,13 @@ import type * as Discord from 'discord.js';
 import * as ch from '../../../../BaseClient/ClientHelper.js';
 import log from './log.js';
 
-export default async (scheduledEvent: Discord.GuildScheduledEvent) => {
- const cached = ch.cache.scheduledEventUsers.cache
-  .get(scheduledEvent.guildId)
-  ?.get(scheduledEvent.id);
- ch.cache.scheduledEventUsers.cache.get(scheduledEvent.guildId)?.delete(scheduledEvent.id);
+export default async (event: Discord.GuildScheduledEvent) => {
+ const cached = ch.cache.scheduledEventUsers.cache.get(event.guildId)?.get(event.id);
+ ch.cache.scheduledEventUsers.cache.get(event.guildId)?.delete(event.id);
 
- log(scheduledEvent, cached);
+ if (!event.guild) return;
+
+ await ch.firstGuildInteraction(event.guild);
+
+ log(event, cached);
 };

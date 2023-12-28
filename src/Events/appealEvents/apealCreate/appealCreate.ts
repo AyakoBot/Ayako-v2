@@ -29,6 +29,8 @@ export default async (appeal: CT.Appeal) => {
  const guild = client.guilds.cache.get(appeal.guildid);
  if (!guild) return;
 
+ await ch.firstGuildInteraction(guild);
+
  const channel = await ch.getChannel.guildTextChannel(settings.channelid);
  if (!channel) return;
 

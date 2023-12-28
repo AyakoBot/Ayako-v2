@@ -64,6 +64,7 @@ const cache: {
  antispam: Map<string, Discord.Message<true>[]>;
  deleteSuggestions: DeleteSuggestions;
  vcDeleteTimeout: VcDeleteTimeout;
+ interactedGuilds: Set<string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -90,6 +91,7 @@ const cache: {
  inviteGuilds,
  onboarding,
  commandPermissions,
+ interactedGuilds: new Set(),
 
  // Cache
  giveawayClaimTimeout,

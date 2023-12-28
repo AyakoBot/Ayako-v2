@@ -3,7 +3,6 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import deleteThread from '../../../BaseClient/ClientHelperModules/mod/deleteThread.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
 import { end, giveawayCollectTimeExpired } from '../../../Commands/SlashCommands/giveaway/end.js';
 import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
@@ -245,90 +244,6 @@ export const tasks = {
     t.msgid,
    );
   });
- },
- deleteThreads: async (guild: Discord.Guild) => {
-  if (!guild.rulesChannel) return;
-  const deleteThreads = await ch.DataBase.deletethreads.findMany({
-   where: { guildid: guild.id },
-  });
-  deleteThreads?.forEach((t) => {
-   ch.cache.deleteThreads.set(
-    Jobs.scheduleJob(
-     new Date(Number(t.deletetime) < Date.now() ? Date.now() + 10000 : Number(t.deletetime)),
-     () => {
-      deleteThread(guild, t.channelid);
-     },
-    ),
-    t.guildid,
-    t.channelid,
-   );
-  });
- },
- autoModRules: async (guild: Discord.Guild) => {
-  if (
-   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-  ) {
-   await ch.request.guilds.getAutoModerationRules(guild);
-  }
- },
- scheduledEvents: async (guild: Discord.Guild) => {
-  const scheduledEvents = await ch.request.guilds.getScheduledEvents(guild);
-  if ('message' in scheduledEvents) {
-   ch.error(guild, scheduledEvents);
-   return;
-  }
-  scheduledEvents.forEach(async (event) => {
-   const users = await ch.fetchAllEventSubscribers(event);
-   users?.forEach((u) => {
-    ch.cache.scheduledEventUsers.add(u.user, guild.id, event.id);
-   });
-  });
- },
- welcomeScreen: async (guild: Discord.Guild) => {
-  if (guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
-   ch.cache.welcomeScreens.get(guild);
-  }
- },
- pins: async (guild: Discord.Guild) => {
-  guild.channels.cache.forEach(async (c) => {
-   if (!c.isTextBased()) return;
-   if (c.isThread() && c.name === '⚠️') return;
-
-   ch.cache.pins.get('', c);
-  });
- },
- invites: async (guild: Discord.Guild) => {
-  if (
-   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-  ) {
-   ch.cache.invites.get('', '', guild);
-  }
-
-  const vanity = (await ch.getBotMemberFromGuild(guild))?.permissions.has(
-   Discord.PermissionFlagsBits.ManageGuild,
-  )
-   ? await ch.request.guilds.getVanityURL(guild)
-   : undefined;
-  if (vanity && !('message' in vanity)) ch.cache.invites.set(vanity, guild.id);
- },
- integrations: async (guild: Discord.Guild) => {
-  if (
-   (await ch.getBotMemberFromGuild(guild))?.permissions.has(Discord.PermissionFlagsBits.ManageGuild)
-  ) {
-   ch.cache.integrations.get('', guild);
-  }
- },
- commands: async (guild: Discord.Guild) => {
-  ch.request.commands.getGuildCommands(guild);
- },
- members: async (guild: Discord.Guild) => {
-  ch.fetchAllGuildMembers(guild);
- },
- commandPermissions: async (guild: Discord.Guild) => {
-  ch.cache.commandPermissions.get(guild, '');
- },
- webhooks: async (guild: Discord.Guild) => {
-  ch.cache.webhooks.get('', '', guild);
  },
  enableInvites: async (guild: Discord.Guild) => {
   const settings = await ch.DataBase.guildsettings.findUnique({

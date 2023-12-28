@@ -14,6 +14,8 @@ export default async (
 ) => {
  if (channel.isDMBased()) return;
 
+ await ch.firstGuildInteraction(channel.guild);
+
  const newPins = await ch.request.channels.getPins(channel).then((pins) => {
   if ('message' in pins) {
    ch.error(channel.guild, new Error(pins.message));

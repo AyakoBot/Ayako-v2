@@ -1,4 +1,5 @@
 import type * as Discord from 'discord.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 
 import afk from './afk.js';
 import antispam from './antispam.js';
@@ -20,11 +21,9 @@ export default async (msg: Discord.Message) => {
  if (!msg) return;
  if (!msg.author) return;
 
- execute(msg);
- commandHandler(msg);
- antivirus(msg);
-
  if (msg.inGuild()) {
+  await ch.firstGuildInteraction(msg.guild);
+
   _eval(msg);
   other(msg);
   revengePing(msg);
@@ -38,4 +37,8 @@ export default async (msg: Discord.Message) => {
  } else {
   dmLog(msg);
  }
+
+ execute(msg);
+ commandHandler(msg);
+ antivirus(msg);
 };

@@ -10,6 +10,8 @@ export default async (invite: Discord.Invite) => {
  const guild = client.guilds.cache.get(invite.guild.id);
  if (!guild) return;
 
+ await ch.firstGuildInteraction(guild);
+
  ch.cache.invites.delete(invite.code, invite.guild.id, invite.channel.id);
 
  log(invite, guild);

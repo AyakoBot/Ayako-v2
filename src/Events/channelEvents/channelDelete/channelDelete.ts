@@ -4,8 +4,9 @@ import cache from './cache.js';
 import log from './log.js';
 
 export default async (channel: Discord.Channel) => {
- if (channel.type === Discord.ChannelType.DM) return;
- if (channel.type === Discord.ChannelType.GroupDM) return;
+ if (!('guild' in channel)) return;
+
+ await ch.firstGuildInteraction(channel.guild);
 
  const channelBans = ch.cache.channelBans.cache.get(channel.guild.id)?.get(channel.id);
  if (channelBans) {

@@ -90,6 +90,7 @@ import userFlagsCalc from './ClientHelperModules/userFlagsCalc.js';
 import * as util from './ClientHelperModules/util.js';
 import DataBase from './DataBase.js';
 import constants from './Other/constants.js';
+import firstGuildInteraction from './Other/firstGuildInteraction.js';
 
 const mainID = '650691698409734151';
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -136,6 +137,7 @@ export {
  fileURL2Buffer,
  findServerByName,
  findUserByName,
+ firstGuildInteraction,
  getAllBans,
  getAllInvites,
  getAudit,

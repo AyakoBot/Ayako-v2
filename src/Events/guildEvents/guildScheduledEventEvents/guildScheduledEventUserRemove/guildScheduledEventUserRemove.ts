@@ -5,5 +5,9 @@ import log from './log.js';
 export default async (event: Discord.GuildScheduledEvent, user: Discord.User) => {
  ch.cache.scheduledEventUsers.remove(user, event.guildId, event.id);
 
+ if (!event.guild) return;
+
+ await ch.firstGuildInteraction(event.guild);
+
  log(event, user);
 };

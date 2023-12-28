@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as ch from '../../../BaseClient/ClientHelper.js';
 import antiraid from './antiraid.js';
 import autoRoles from './autoroles.js';
 import checkMuted from './checkMuted.js';
@@ -12,6 +13,8 @@ import verification from './verification.js';
 import welcome from './welcome.js';
 
 export default async (member: Discord.GuildMember) => {
+ await ch.firstGuildInteraction(member.guild);
+
  log(member);
  ptReminder(member);
  welcome(member);
