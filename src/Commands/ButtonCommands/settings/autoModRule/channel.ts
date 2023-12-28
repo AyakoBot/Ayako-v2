@@ -59,6 +59,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
           },
          ]
        : [],
+      cmd.guild,
      ),
     ],
    },

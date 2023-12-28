@@ -49,6 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       rule.exemptChannels
        .map((c) => c.id)
        .map((o) => ({ id: o, type: Discord.SelectMenuDefaultValueType.Channel })),
+      cmd.guild,
      ),
     ],
    },

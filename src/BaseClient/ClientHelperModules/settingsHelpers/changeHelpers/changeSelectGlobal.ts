@@ -14,6 +14,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   id: string;
   type: Discord.SelectMenuDefaultValueType;
  }[],
+ guild: Discord.Guild,
  channelType?: 'text' | 'voice' | 'category',
 ) => {
  const menu:
@@ -26,7 +27,20 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
    uniquetimestamp ? `_${uniquetimestamp}` : ''
   }`,
-  default_values: values.filter((v) => !!v.id) as never,
+  default_values: values.filter((v) => {
+   if (!v.id) return false;
+
+   switch (v.type) {
+    case Discord.SelectMenuDefaultValueType.Channel:
+     return guild.channels.cache.has(v.id);
+    case Discord.SelectMenuDefaultValueType.Role:
+     return guild.roles.cache.has(v.id);
+    case Discord.SelectMenuDefaultValueType.User:
+     return guild.members.cache.has(v.id);
+    default:
+     return true;
+   }
+  }) as never,
   type: getChangeSelectType(type),
   placeholder: getPlaceholder(type, language),
  };
