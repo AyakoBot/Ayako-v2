@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
+import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import DotENV from 'dotenv';
 import readline from 'readline';
 import sms from 'source-map-support';
 import log from './BaseClient/ClientHelperModules/logError.js';
 
-DotENV.config({ path: `${process.cwd()}/../.env` });
+DotENV.config({ path: `${process.cwd()}${process.cwd().includes('dist') ? '/..' : ''}/.env` });
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),
@@ -21,7 +22,7 @@ log(
 +   Restart one Shard with "restart [Shard ID]" +
 +                   Arguments:                  +
 +   --debug --debug-db --warn --debug-queries   +
-+                   --silent                    +
++           --silent --put-commands             +
 +++++++++++++++++++++++++++++++++++++++++++++++++
 `,
  true,
@@ -36,7 +37,10 @@ const manager = new Discord.ShardingManager(
  },
 );
 
-manager.on('shardCreate', (shard) => log(`[Shard Manager] Launched Shard ${shard.id}`, true));
+manager.on('shardCreate', (shard) => {
+ log(`[Shard Manager] Launched Shard ${shard.id}`, true);
+ shard.on('ready', () => log(`[Shard Manager] Shard ${shard.id} is ready`, true));
+});
 
 process.setMaxListeners(5);
 process.on('unhandledRejection', async (error: string) => console.error(error));
@@ -49,7 +53,16 @@ process.on('SIGINT', () => {
  process.exit(0);
 });
 
-await manager.spawn();
+await manager.spawn().catch((e) => {
+ console.log(
+  `[Shard Manager] Startup Failed. Retry after: ${e.headers.get('retry-after') / 60} Minutes`,
+ );
+ process.exit(1);
+});
+
+Jobs.scheduleJob('*/10 * * * *', async () => {
+ log(`=> Current Date: ${new Date().toLocaleString()}`, true);
+});
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
