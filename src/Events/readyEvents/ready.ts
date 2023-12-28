@@ -4,7 +4,7 @@ import log from '../../BaseClient/ClientHelperModules/logError.js';
 
 import startupTasks from './startupTasks.js';
 
-let ready = true;
+let ready = !process.argv.includes('--debug');
 
 export default async () => {
  ready = true;

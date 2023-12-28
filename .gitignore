@@ -2,7 +2,7 @@ node_modules
 .vscode
 .idea
 /dist
-src/auth.json
 src/Bot/BaseClient/Other/cache-proxy
 .env
 /rust/target
+/logs

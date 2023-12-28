@@ -43,5 +43,5 @@ export default async () => {
   }).catch(() => null);
  });
 
- AutoPoster(process.env.topGGtoken ?? '', client);
+ AutoPoster(process.env.topGGToken ?? '', client);
 };
