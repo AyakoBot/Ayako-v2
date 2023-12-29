@@ -10,8 +10,8 @@ export default async () => {
  await client.application?.commands.set(createCommands);
  await client.application?.commands.fetch();
 
- mainBotCommands(createCommands);
- customBotCommands(createCommands);
+ await mainBotCommands(createCommands);
+ await customBotCommands(createCommands);
 };
 
 type ValueOf<T> = T[keyof T];
