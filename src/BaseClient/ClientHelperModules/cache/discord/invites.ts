@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 /**
  * Represents a cache for Discord invites.
@@ -53,10 +52,7 @@ const self: Invites = {
 
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getInvites(guild);
-  if ('message' in fetched) {
-   error(guild, new Error('Couldnt get Invites'));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => {
    self.set(f, guild.id);

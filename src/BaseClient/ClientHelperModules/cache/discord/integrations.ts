@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 /**
  * Represents a collection of integrations for a guild.
@@ -47,10 +46,7 @@ const self: Integrations = {
 
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getIntegrations(guild);
-  if ('message' in fetched) {
-   error(guild, new Error('Couldnt get Guild Integrations'));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f, guild.id));
 

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 /**
  * Interface for managing command permissions for a Discord guild.
@@ -49,10 +48,7 @@ const self: CommandPermissions = {
 
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.commands.getGuildCommandsPermissions(guild);
-  if ('message' in fetched) {
-   error(guild, new Error('Couldnt get Command Permissions'));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   self.cache.get(guild.id)?.clear();
   fetched?.map((f) =>

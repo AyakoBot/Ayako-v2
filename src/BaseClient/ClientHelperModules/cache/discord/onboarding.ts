@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 /**
  * Interface for managing onboarding data for a Discord guild.
@@ -39,10 +38,7 @@ const self: Onboarding = {
 
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getOnboarding(guild);
-  if ('message' in fetched) {
-   error(guild, new Error('Couldnt get Onboarding'));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   self.set(guild.id, fetched);
   return fetched;

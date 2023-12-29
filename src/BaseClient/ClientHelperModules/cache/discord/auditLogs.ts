@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 type ActionType = Discord.GuildAuditLogsEntry<
  Discord.AuditLogEvent,
@@ -54,10 +53,7 @@ const self: AuditLogs = {
    action_type: type,
    limit: 100,
   });
-  if ('message' in fetched) {
-   error(guild, new Error('Missing Permissions to fetch Audit Logs'));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   fetched?.entries.forEach((entry) => self.set(guild.id, entry));
   return fetched?.entries.map((o) => o);

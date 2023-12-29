@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 
 /**
@@ -57,10 +56,7 @@ const self: Pins = {
   }
 
   const fetched = await requestHandler.channels.getPins(channel);
-  if ('message' in fetched) {
-   error(channel.guild, new Error(`Couldnt get Channel Pins of ${channel.id}`));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f));
 

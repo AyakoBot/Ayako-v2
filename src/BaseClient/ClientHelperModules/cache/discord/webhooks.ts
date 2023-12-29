@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 
 /**
  * Interface for managing webhooks in cache.
@@ -51,10 +50,7 @@ const self: Webhooks = {
 
   const requestHandler = (await import('../../requestHandler.js')).request;
   const fetched = await requestHandler.guilds.getWebhooks(guild);
-  if ('message' in fetched) {
-   error(guild, new Error(`Couldnt get Guild Webhooks`));
-   return undefined;
-  }
+  if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f));
 
