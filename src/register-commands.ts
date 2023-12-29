@@ -28,14 +28,6 @@ requestHandler(process.env.Token ?? '')
    createCommands.map((c) => c.toJSON()),
   )
   .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`));
-
- await api.applicationCommands
-  .bulkOverwriteGuildCommands(
-   s.appid ?? '',
-   s.guildid,
-   createCommands.map((c) => c.toJSON()),
-  )
-  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Guild Commands`));
 });
 
 setTimeout(async () => {
