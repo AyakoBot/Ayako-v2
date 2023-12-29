@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
-import SlashCommands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import SlashCommands from '../../../SlashCommands/index.js';
 
 /**
  * Returns the description of a command or subcommand group in the specified language.

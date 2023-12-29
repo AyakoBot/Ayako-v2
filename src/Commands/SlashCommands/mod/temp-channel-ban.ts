@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import { AllNonThreadGuildChannelTypes } from '../../../BaseClient/Other/constants.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -9,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
  const duration = cmd.options.getString('duration', true);
- const channel = cmd.options.getChannel('channel', true, AllNonThreadGuildChannelTypes);
+ const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
 
  const language = await ch.getLanguage(cmd.guildId);
 

@@ -4,6 +4,7 @@ import * as Discord from 'discord.js';
 export * from './DataBase.js';
 export * from './Settings.js';
 export * from './TopGG.js';
+export * from './Channel.js';
 
 export type Language = import('../BaseClient/Other/language.js').default;
 

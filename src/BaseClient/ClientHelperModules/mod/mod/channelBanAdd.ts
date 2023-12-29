@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 import DataBase from '../../../DataBase.js';
-import { ChannelBanBits } from '../../../Other/constants.js';
 
 import objectEmotes from '../../emotes.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
@@ -63,15 +62,15 @@ export default async (
      channelid: options.channel.id,
      guildid: options.guild.id,
      allowbits: 0n,
-     denybits: new Discord.PermissionsBitField(ChannelBanBits).bitfield,
+     denybits: new Discord.PermissionsBitField(CT.ChannelBanBits).bitfield,
     },
     update: {
      denybits: new Discord.PermissionsBitField(
       stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
-     ).add(ChannelBanBits).bitfield,
+     ).add(CT.ChannelBanBits).bitfield,
      allowbits: new Discord.PermissionsBitField(
       stickyPermSetting?.allowbits ? BigInt(stickyPermSetting.allowbits) : 0n,
-     ).remove(ChannelBanBits).bitfield,
+     ).remove(CT.ChannelBanBits).bitfield,
     },
    })
    .then();
@@ -87,12 +86,12 @@ export default async (
 
  const perm = options.channel?.permissionOverwrites.cache.get(options.target.id);
 
- if (perm && perm.deny.has(ChannelBanBits) && !options.skipChecks) {
+ if (perm && perm.deny.has(CT.ChannelBanBits) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
- const newPerms = new Discord.PermissionsBitField(ChannelBanBits);
+ const newPerms = new Discord.PermissionsBitField(CT.ChannelBanBits);
 
  const res = await request.channels.editPermissionOverwrite(
   options.channel,

@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 import DataBase from '../../../DataBase.js';
-import { ChannelBanBits } from '../../../Other/constants.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
@@ -38,7 +37,7 @@ export default async (
 
   const newDeny = new Discord.PermissionsBitField(
    stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
-  ).remove(ChannelBanBits).bitfield;
+  ).remove(CT.ChannelBanBits).bitfield;
 
   if (newDeny === 0n && stickyPermSetting.allowbits === 0n) {
    DataBase.stickypermmembers.delete({
@@ -69,12 +68,12 @@ export default async (
 
  const perm = options.channel.permissionOverwrites.cache.get(options.target.id);
 
- if (!perm || !perm?.deny.has(ChannelBanBits)) {
+ if (!perm || !perm?.deny.has(CT.ChannelBanBits)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
- const newPerms = new Discord.PermissionsBitField(ChannelBanBits);
+ const newPerms = new Discord.PermissionsBitField(CT.ChannelBanBits);
 
  if (perm.deny.remove(newPerms).bitfield !== 0n || perm.allow.bitfield !== 0n) {
   const res = await request.channels.editPermissionOverwrite(
