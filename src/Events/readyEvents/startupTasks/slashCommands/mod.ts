@@ -25,7 +25,7 @@ const Reason = new Discord.SlashCommandStringOption()
 const Duration = new Discord.SlashCommandStringOption()
  .setName('duration')
  .setDescription('The Duration (Example: 4d 30m 12s)')
- .setRequired(false);
+ .setRequired(true);
 
 const DeleteMessageDuration = new Discord.SlashCommandStringOption()
  .setName('delete-message-duration')
