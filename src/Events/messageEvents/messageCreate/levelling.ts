@@ -37,6 +37,7 @@ const globalLevelling = async (msg: Discord.Message<true>) => {
 };
 
 const levelling = async (msg: Discord.Message<true>) => {
+ await checkLevelRoles(msg);
  if (ch.cache.guildLevellingCD.has(msg.author.id)) return;
 
  const lastMessage = ch.cache.lastMessageGuild.get(msg.author.id);
@@ -394,7 +395,7 @@ const roleAssign = async (
  language: CT.Language,
 ) => {
  const roles = await ch.DataBase.levelingroles.findMany({
-  where: { guildid: msg.guildId },
+  where: { guildid: msg.guildId, level: { lte: newLevel } },
  });
  if (!roles.length) return;
 
@@ -402,7 +403,7 @@ const roleAssign = async (
  let remove: string[] = [];
 
  switch (rolemode) {
-  case true: {
+  case false: {
    roles
     .filter((r) => Number(r.level) <= newLevel)
     .forEach((r) => {
@@ -419,6 +420,8 @@ const roleAssign = async (
    break;
   }
   default: {
+   if (!roles.find((r) => Number(r.level) === newLevel)) return;
+
    roles
     .filter((r) => Number(r.level) <= newLevel)
     .forEach((r) => {
@@ -571,4 +574,28 @@ const send = async (
    if (messages && (await ch.isDeleteable(messages))) ch.request.channels.deleteMessage(messages);
   },
  );
+};
+
+const checkLevelRoles = async (msg: Discord.Message<true>) => {
+ const msgsFromUserLastHour = msg.channel.messages.cache.filter(
+  (m) => m.createdTimestamp > Date.now() - 3600000 && m.author.id === msg.author.id,
+ );
+ if (msgsFromUserLastHour.size > 2) return;
+
+ const level = await ch.DataBase.level.findUnique({
+  where: { userid_guildid_type: { userid: msg.author.id, guildid: msg.guildId, type: 'guild' } },
+ });
+ if (!level) return;
+
+ const settings = await ch.DataBase.leveling.findUnique({
+  where: { guildid: msg.guildId, active: true },
+ });
+ if (!settings) return;
+
+ const roles = await ch.DataBase.levelingroles.findMany({
+  where: { guildid: msg.guildId, level: { lte: level.level } },
+ });
+ if (!roles.length) return;
+
+ await roleAssign(msg, settings.rolemode, Number(level.level), await ch.getLanguage(msg.guildId));
 };

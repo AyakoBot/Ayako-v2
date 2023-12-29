@@ -439,8 +439,8 @@ model leveling {
   wlroleid        String[]    @db.VarChar
   wluserid        String[]    @db.VarChar
   xppermsg        Decimal     @db.Decimal @default(25)
-  // true = stack, false = replace
-  rolemode        Boolean     @db.Boolean @default(true)
+  // false = stack, true = replace
+  rolemode        Boolean     @db.Boolean @default(false)
   lvlupmode       LevelUpMode             @default(silent)
   lvlupdeltimeout Decimal     @db.Decimal @default(10)
   lvlupchannels   String[]    @db.VarChar
