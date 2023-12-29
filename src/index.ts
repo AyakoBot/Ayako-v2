@@ -3,6 +3,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import DotENV from 'dotenv';
 import readline from 'readline';
+import { AutoPoster } from 'topgg-autoposter';
 import sms from 'source-map-support';
 import log from './BaseClient/ClientHelperModules/logError.js';
 
@@ -21,7 +22,7 @@ log(
 +   Restart one Shard with "restart [Shard ID]" +
 +                   Arguments:                  +
 +   --debug --debug-db --warn --debug-queries   +
-+           --silent --put-commands             +
++                   --silent                    +
 +++++++++++++++++++++++++++++++++++++++++++++++++`,
  true,
 );
@@ -57,6 +58,8 @@ await manager.spawn().catch((e) => {
  );
  process.exit(1);
 });
+
+AutoPoster(process.env.topGGToken ?? '', manager).start();
 
 Jobs.scheduleJob('*/10 * * * *', async () => {
  log(`=> Current Date: ${new Date().toLocaleString()}`, true);

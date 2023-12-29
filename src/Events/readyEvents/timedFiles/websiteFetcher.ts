@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import { AutoPoster } from 'topgg-autoposter';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
@@ -42,6 +41,4 @@ export default async () => {
    },
   }).catch(() => null);
  });
-
- AutoPoster(process.env.topGGToken ?? '', client);
 };
