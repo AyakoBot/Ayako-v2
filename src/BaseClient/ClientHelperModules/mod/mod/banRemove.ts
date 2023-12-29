@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 import cache from '../../cache.js';
@@ -9,6 +8,7 @@ import { request } from '../../requestHandler.js';
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import permissionError from '../permissionError.js';
+import { canUnbanUser } from '../../requestHandler/guilds/unbanUser.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.BanRemove>,
@@ -21,7 +21,7 @@ export default async (
  cache.bans.delete(options.guild.id, options.target.id);
 
  const me = await getBotMemberFromGuild(options.guild);
- if (!me.permissions.has(Discord.PermissionFlagsBits.BanMembers) && !options.skipChecks) {
+ if (!canUnbanUser(me) && !options.skipChecks) {
   permissionError(cmd, message, language, type);
   return false;
  }

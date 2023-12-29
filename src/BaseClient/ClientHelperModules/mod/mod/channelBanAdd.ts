@@ -13,6 +13,7 @@ import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
+import { canEdit } from '../../requestHandler/channels/edit.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.ChannelBanAdd>,
@@ -43,8 +44,10 @@ export default async (
   return false;
  }
 
- const memberResponse = await getMembers(cmd, options, language, message, type);
- if (!memberResponse) {
+ const memberRes = await getMembers(cmd, options, language, message, type);
+ if (memberRes && !memberRes.canExecute) return false;
+
+ if (!memberRes) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
   if (!sticky?.stickypermsactive) return false;
 
@@ -77,11 +80,7 @@ export default async (
  }
 
  const me = await getBotMemberFromGuild(options.guild);
- if (
-  (!me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) ||
-   !options.channel.permissionsFor(me).has(Discord.PermissionFlagsBits.ManageChannels)) &&
-  !options.skipChecks
- ) {
+ if (canEdit(options.channel, { permission_overwrites: [] }, me) && !options.skipChecks) {
   permissionError(cmd, message, language, type);
   return false;
  }

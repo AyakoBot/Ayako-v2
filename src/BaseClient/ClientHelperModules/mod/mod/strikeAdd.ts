@@ -6,6 +6,7 @@ import error from '../../error.js';
 import type * as ModTypes from '../../mod.js';
 
 import getStrike from '../getStrike.js';
+import getMembers from '../getMembers.js';
 
 import banAdd from './banAdd.js';
 import channelBanAdd from './channelBanAdd.js';
@@ -25,6 +26,11 @@ export default async <T extends CT.ModTypes>(
 ): Promise<{ success: Promise<boolean> | false; type: CT.ModTypes; options: CT.ModOptions<T> }> => {
  const options = rawOpts as CT.ModOptions<T>;
  const strike = await getStrike(options.target, options.guild);
+
+ const memberRes = await getMembers(cmd, options, language, message, CT.ModTypes.StrikeAdd);
+ if (memberRes && !memberRes.canExecute) {
+  return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
+ }
 
  if (!strike) {
   cache.punishments.delete(options.target.id);
@@ -105,7 +111,7 @@ export default async <T extends CT.ModTypes>(
    };
   }
   case Prisma.$Enums.AutoPunishPunishmentType.warn:
-   return { success: warnAdd(), type: CT.ModTypes.WarnAdd, options };
+   return { success: warnAdd(options, language, message, cmd), type: CT.ModTypes.WarnAdd, options };
   case Prisma.$Enums.AutoPunishPunishmentType.tempban: {
    const opts = {
     ...options,

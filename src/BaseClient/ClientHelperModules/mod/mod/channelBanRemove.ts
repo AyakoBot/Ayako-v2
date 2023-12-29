@@ -24,8 +24,10 @@ export default async (
 
  cache.channelBans.delete(options.guild.id, options.channel.id, options.target.id);
 
- const memberResponse = await getMembers(cmd, options, language, message, type);
- if (!memberResponse) {
+ const memberRes = await getMembers(cmd, options, language, message, type);
+ if (memberRes && !memberRes.canExecute) return false;
+
+ if (!memberRes) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
   if (!sticky?.stickypermsactive) return true;
 

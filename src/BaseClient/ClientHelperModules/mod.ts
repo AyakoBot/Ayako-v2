@@ -97,7 +97,7 @@ export default async <T extends CT.ModTypes>(
      cmd,
     );
    case CT.ModTypes.WarnAdd:
-    return mod.warnAdd();
+    return mod.warnAdd(options, language, message, cmd);
    case CT.ModTypes.StrikeAdd:
     return mod.strikeAdd(options, language, message, cmd);
    case CT.ModTypes.SoftWarnAdd:
