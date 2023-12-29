@@ -140,10 +140,7 @@ export default async <T extends CT.ModTypes>(
   return;
  }
 
- if (typeof action !== 'boolean') {
-  type = action.type as T;
- }
-
+ if (typeof action !== 'boolean') type = action.type as T;
  if (type === CT.ModTypes.StrikeAdd) return;
 
  runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);

@@ -38,8 +38,10 @@ export default async (
    actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
+
   return true;
  }
+
  const { targetMember } = memberRes;
 
  const me = await getBotMemberFromGuild(options.guild);
