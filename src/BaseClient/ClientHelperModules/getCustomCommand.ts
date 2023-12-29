@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import cache from './cache.js';
-import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.js';
+import SlashCommands from '../../SlashCommands/index.js';
 
 type CommandName = (typeof SlashCommands)['names'][number];
 

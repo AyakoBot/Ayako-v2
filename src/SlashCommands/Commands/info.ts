@@ -1,7 +1,4 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
-
-const name = client.user?.username;
 
 export default new Discord.SlashCommandBuilder()
  .setName('info')
@@ -30,7 +27,9 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('user-name')
-     .setDescription(`Username of the User (Searches across all of ${name}'s Servers)`)
+     .setDescription(
+      `Username of the User (Searches across all of ${process.env.mainName}'s Servers)`,
+     )
      .setRequired(false)
      .setMinLength(2)
      .setAutocomplete(true),
@@ -39,7 +38,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('servers')
-   .setDescription(`Display all servers ${name} is part of`),
+   .setDescription(`Display all servers ${process.env.mainName} is part of`),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -54,7 +53,9 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('server-name')
-     .setDescription(`Name of the Server (Searches across all of ${name}'s Servers)`)
+     .setDescription(
+      `Name of the Server (Searches across all of ${process.env.mainName}'s Servers)`,
+     )
      .setRequired(false)
      .setMinLength(1)
      .setAutocomplete(true),
@@ -92,7 +93,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('bot')
-   .setDescription(`Display Information about a ${name}`),
+   .setDescription(`Display Information about a ${process.env.mainName}`),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()

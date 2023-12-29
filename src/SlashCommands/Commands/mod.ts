@@ -1,11 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
-import {
- AllNonThreadGuildChannelTypes,
- GuildTextChannelTypes,
-} from '../../../../BaseClient/Other/constants.js';
-
-const name = client.user?.username;
+import { AllNonThreadGuildChannelTypes, GuildTextChannelTypes } from '../../Typings/Channel.js';
 
 const Target = new Discord.SlashCommandUserOption()
  .setName('target')
@@ -25,7 +19,7 @@ const Reason = new Discord.SlashCommandStringOption()
 const Duration = new Discord.SlashCommandStringOption()
  .setName('duration')
  .setDescription('The Duration (Example: 4d 30m 12s)')
- .setRequired(true);
+ .setRequired(false);
 
 const DeleteMessageDuration = new Discord.SlashCommandStringOption()
  .setName('delete-message-duration')
@@ -233,7 +227,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('strike')
-   .setDescription(`Strikes a User (Let's ${name} decide what Punishment to apply)`)
+   .setDescription(`Strikes a User (Let's ${process.env.mainName} decide what Punishment to apply)`)
    .addUserOption(
     new Discord.SlashCommandUserOption()
      .setName('user')
@@ -376,7 +370,9 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('user-name')
-     .setDescription(`Username of the User (Searches across all of ${name}'s Servers)`)
+     .setDescription(
+      `Username of the User (Searches across all of ${process.env.mainName}'s Servers)`,
+     )
      .setRequired(false)
      .setMinLength(2)
      .setAutocomplete(true),

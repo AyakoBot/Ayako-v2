@@ -1,7 +1,4 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
-
-const name = client.user?.username;
 
 const IDSelector = new Discord.SlashCommandStringOption()
  .setAutocomplete(true)
@@ -12,12 +9,12 @@ const IDSelector = new Discord.SlashCommandStringOption()
 export default new Discord.SlashCommandBuilder()
  .setName('settings')
  .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
- .setDescription(`Manage ${name}'s Settings`)
+ .setDescription(`Manage ${process.env.mainName}'s Settings`)
  .setDMPermission(false)
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('appeals')
-   .setDescription(`Everything about ${name}'s Appeals`)
+   .setDescription(`Everything about ${process.env.mainName}'s Appeals`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
@@ -33,7 +30,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('moderation')
-   .setDescription(`Everything about ${name}'s Moderation`)
+   .setDescription(`Everything about ${process.env.mainName}'s Moderation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('anti-raid')
@@ -80,7 +77,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('leveling')
-   .setDescription(`Everything about ${name}'s Leveling`)
+   .setDescription(`Everything about ${process.env.mainName}'s Leveling`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
@@ -163,7 +160,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('nitro')
-   .setDescription(`Everything about ${name}'s Nitro-Rewards`)
+   .setDescription(`Everything about ${process.env.mainName}'s Nitro-Rewards`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
@@ -196,7 +193,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('roles')
-   .setDescription(`Everything about ${name}'s Role Management`)
+   .setDescription(`Everything about ${process.env.mainName}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('shop')
@@ -264,7 +261,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('automation')
-   .setDescription(`Everything about ${name}'s Automation`)
+   .setDescription(`Everything about ${process.env.mainName}'s Automation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('censor')
@@ -273,7 +270,7 @@ export default new Discord.SlashCommandBuilder()
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('cooldowns')
-     .setDescription(`Assign custom defined Cooldowns to Commands of ${name}`)
+     .setDescription(`Assign custom defined Cooldowns to Commands of ${process.env.mainName}`)
      .addStringOption(IDSelector),
    )
    .addSubcommand(
@@ -306,7 +303,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('basic')
-   .setDescription(`Basic Settings to modify ${name}'s behaviour`),
+   .setDescription(`Basic Settings to modify ${process.env.mainName}'s behaviour`),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()

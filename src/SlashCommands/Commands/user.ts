@@ -1,7 +1,4 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
-
-const name = client.user?.username;
 
 const User = new Discord.SlashCommandUserOption()
  .setName('user')
@@ -20,7 +17,9 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('user-name')
-     .setDescription(`Username of the User (Searches across all of ${name}'s Servers)`)
+     .setDescription(
+      `Username of the User (Searches across all of ${process.env.mainName}'s Servers)`,
+     )
      .setRequired(false)
      .setMinLength(2)
      .setAutocomplete(true),

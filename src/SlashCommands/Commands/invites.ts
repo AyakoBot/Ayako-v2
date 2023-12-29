@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { AllNonThreadGuildChannelTypes } from '../../../../BaseClient/Other/constants.js';
+import { AllNonThreadGuildChannelTypes } from '../../Typings/Channel.js';
 
 export default new Discord.SlashCommandBuilder()
  .setName('invites')

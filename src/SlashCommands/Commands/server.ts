@@ -1,11 +1,8 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
-
-const name = client.user?.username;
 
 export default new Discord.SlashCommandBuilder()
  .setName('server')
- .setDescription(`Get Information about Servers ${name} is on`)
+ .setDescription(`Get Information about Servers ${process.env.mainName} is on`)
  .setDMPermission(true)
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -20,7 +17,9 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('server-name')
-     .setDescription(`Name of the Server (Searches across all of ${name}'s Servers)`)
+     .setDescription(
+      `Name of the Server (Searches across all of ${process.env.mainName}'s Servers)`,
+     )
      .setRequired(false)
      .setMinLength(1)
      .setAutocomplete(true),
@@ -36,5 +35,5 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('list')
-   .setDescription(`Get a List of all Servers ${name} is on`),
+   .setDescription(`Get a List of all Servers ${process.env.mainName} is on`),
  );

@@ -8,7 +8,6 @@ import cache from './startupTasks/cache.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
 import separators from './startupTasks/separators.js';
-import slashCommandInitializer from './startupTasks/slashCommandInitializer.js';
 import voteHandler from './startupTasks/voteHandler.js';
 
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
@@ -19,8 +18,6 @@ import verification from './timedFiles/verification.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
 
 export default async () => {
- await slashCommandInitializer();
-
  await customAPIsHandler();
  customBotCommands();
 

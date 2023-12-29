@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.js';
+import SlashCommands from '../../SlashCommands/index.js';
 import * as CT from '../../Typings/Typings.js';
 import getLanguage from './getLanguage.js';
 import getEmbeds from './helpHelpers/getEmbeds.js';

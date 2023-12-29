@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import SlashCommands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import SlashCommands from '../../../SlashCommands/index.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {

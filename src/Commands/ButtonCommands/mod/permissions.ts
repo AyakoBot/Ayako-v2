@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
-import Commands from '../../../Events/readyEvents/startupTasks/SlashCommands.js';
+import Commands from '../../../SlashCommands/index.js';
 import * as CT from '../../../Typings/Typings.js';
 import permissions from '../../SlashCommands/mod/permissions.js';
 
