@@ -58,12 +58,12 @@ export enum EditorTypes {
 }
 
 export const GlobalType = {
- [GlobalDescType.BLChannelId]: EditorTypes.Channel,
- [GlobalDescType.BLRoleId]: EditorTypes.Role,
- [GlobalDescType.BLUserId]: EditorTypes.User,
- [GlobalDescType.WLChannelId]: EditorTypes.Channel,
- [GlobalDescType.WLRoleId]: EditorTypes.Role,
- [GlobalDescType.WLUserId]: EditorTypes.User,
+ [GlobalDescType.BLChannelId]: EditorTypes.Channels,
+ [GlobalDescType.BLRoleId]: EditorTypes.Roles,
+ [GlobalDescType.BLUserId]: EditorTypes.Users,
+ [GlobalDescType.WLChannelId]: EditorTypes.Channels,
+ [GlobalDescType.WLRoleId]: EditorTypes.Roles,
+ [GlobalDescType.WLUserId]: EditorTypes.Users,
  [GlobalDescType.Active]: EditorTypes.Boolean,
 };
 
