@@ -44,4 +44,6 @@ export default async (
  * @returns True if the guild member has the permission to ban another member, false otherwise.
  */
 export const canBanMember = (me: Discord.GuildMember, member: Discord.GuildMember) =>
- canBanUser(me) && member.roles.highest.comparePositionTo(me.roles.highest) < 0;
+ canBanUser(me) &&
+ member.roles.highest.comparePositionTo(me.roles.highest) < 0 &&
+ member.guild.ownerId !== member.id;

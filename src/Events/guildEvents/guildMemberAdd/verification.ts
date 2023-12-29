@@ -4,6 +4,7 @@ import { scheduleJob } from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { canRemoveMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/removeMember.js';
+import { canAddRoleToMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/addRoleToMember.js';
 
 export default async (member: Discord.GuildMember) => {
  const verification = await ch.DataBase.verification.findUnique({
@@ -49,12 +50,19 @@ export const kick = async (
  verification: Prisma.verification,
  language: CT.Language,
 ) => {
- if (!verification.finishedrole) return;
- if (member.roles.cache.has(verification.finishedrole)) return;
+ const verifyRole = verification.finishedrole
+  ? member.guild.roles.cache.get(verification.finishedrole)
+  : false;
+
+ if (!verifyRole) return;
+ if (member.roles.cache.has(verifyRole.id)) return;
  if (!verification.kicktof) return;
  if (!verification.kickafter) return;
  if (member.user.bot) return;
- if (!canRemoveMember(await ch.getBotMemberFromGuild(member.guild), member)) return;
+
+ const me = await ch.getBotMemberFromGuild(member.guild);
+ if (!canRemoveMember(me, member)) return;
+ if (!canAddRoleToMember(verifyRole, me)) return;
 
  const dm = async () => {
   ch.send(member.user, {

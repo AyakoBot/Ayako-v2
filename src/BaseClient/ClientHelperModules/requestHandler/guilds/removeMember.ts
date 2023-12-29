@@ -42,4 +42,5 @@ export default async (member: Discord.GuildMember, reason?: string) => {
  */
 export const canRemoveMember = (me: Discord.GuildMember, member: Discord.GuildMember) =>
  me.permissions.has(Discord.PermissionFlagsBits.KickMembers) &&
- me.roles.highest.comparePositionTo(member.roles.highest) > 0;
+ me.roles.highest.comparePositionTo(member.roles.highest) > 0 &&
+ member.guild.ownerId !== member.id;
