@@ -22,12 +22,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (
-  !canCreateWebhook(
-   guild.channels.cache.get(channelId) as Discord.GuildBasedChannel,
-   await getBotMemberFromGuild(guild),
-  )
- ) {
+ if (!canCreateWebhook(channelId, await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create webhook`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
@@ -50,9 +45,9 @@ export default async (
 
 /**
  * Checks if the user has the necessary permissions to create a webhook in a given channel.
- * @param channel - The guild-based channel where the webhook will be created.
+ * @param channelId - The ID of the guild-based channel where the webhook will be created.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user can create a webhook in the channel.
  */
-export const canCreateWebhook = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
- me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageWebhooks);
+export const canCreateWebhook = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks);

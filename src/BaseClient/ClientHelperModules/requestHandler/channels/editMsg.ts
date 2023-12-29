@@ -53,5 +53,5 @@ export const canEditMessage = (
 ) =>
  msg.author.id === me.id
   ? true
-  : me.permissionsIn(msg.channel).has(Discord.PermissionFlagsBits.ManageMessages) &&
+  : me.permissionsIn(msg.channelId).has(Discord.PermissionFlagsBits.ManageMessages) &&
     !!payload.flags;

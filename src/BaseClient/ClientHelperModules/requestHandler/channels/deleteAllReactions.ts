@@ -14,7 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (message: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteAllReactions(message.channel, await getBotMemberFromGuild(message.guild))) {
+ if (!canDeleteAllReactions(message.channel.id, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot delete all reactions of messages in ${message.guild.name} / ${message.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
@@ -34,11 +34,9 @@ export default async (message: Discord.Message<true>) => {
 
 /**
  * Checks if the user has the permission to delete all reactions in a channel.
- * @param channel - The guild-based channel to check.
+ * @param channelId - The ID of the guild-based channel to check.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user has the permission to delete all reactions.
  */
-export const canDeleteAllReactions = (
- channel: Discord.GuildBasedChannel,
- me: Discord.GuildMember,
-) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageMessages);
+export const canDeleteAllReactions = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageMessages);

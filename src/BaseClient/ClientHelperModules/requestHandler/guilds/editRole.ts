@@ -53,5 +53,6 @@ export default async (
  * @returns True if the guild member can edit the role, false otherwise.
  */
 export const canEditRole = (me: Discord.GuildMember, roleId: string) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
- me.roles.highest.comparePositionTo(roleId) > 0;
+ me.guild.ownerId === me.id ||
+ (me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+  me.roles.highest.comparePositionTo(roleId) > 0);

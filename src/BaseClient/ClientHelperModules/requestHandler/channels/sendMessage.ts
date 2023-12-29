@@ -26,14 +26,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (
-  guild &&
-  !canSendMessage(
-   guild.channels.cache.get(channelId) as Discord.GuildBasedChannel,
-   payload,
-   await getBotMemberFromGuild(guild),
-  )
- ) {
+ if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot send message`, [
    Discord.PermissionFlagsBits.SendMessages,
    Discord.PermissionFlagsBits.SendMessagesInThreads,
@@ -61,39 +54,43 @@ export default async (
 
 /**
  * Determines whether the user can send a message in a channel.
- * @param channel - The channel in which the message will be sent.
+ * @param channelId - The ID of the channel in which the message will be sent.
  * @param payload - The message payload, including optional files.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user can send the message.
  */
 export const canSendMessage = (
- channel: Discord.GuildBasedChannel,
+ channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
   files?: Discord.RawFile[];
  },
  me: Discord.GuildMember,
 ) => {
- if (!channel) return true;
+ if (!channelId) return true;
+ const channel = me.guild.channels.cache.get(channelId);
 
  switch (true) {
   case Number(me.communicationDisabledUntilTimestamp) > Date.now():
    return false;
-  case !channel.isThread() &&
-   !me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendMessages):
-  case channel.isThread() &&
-   !me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendMessagesInThreads):
+  case channel &&
+   !channel?.isThread() &&
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessages):
+  case channel &&
+   channel?.isThread() &&
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessagesInThreads):
    return false;
-  case payload.tts && !me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendTTSMessages): {
+  case payload.tts &&
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendTTSMessages): {
    payload.tts = false;
    return true;
   }
   case payload.message_reference &&
-   !me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ReadMessageHistory): {
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ReadMessageHistory): {
    payload.message_reference = undefined;
    return true;
   }
   case payload.files?.length &&
-   !me.permissionsIn(channel).has(Discord.PermissionFlagsBits.AttachFiles):
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.AttachFiles):
    return false;
 
   default:

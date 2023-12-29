@@ -21,7 +21,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateInvite(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canCreateInvite(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot create invite in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.CreateInstantInvite,
   ]);
@@ -41,9 +41,9 @@ export default async (
 
 /**
  * Checks if the given user has permission to create an invite in the specified channel.
- * @param channel - The guild-based channel to check.
+ * @param channelId - The ID of the guild-based channel to check.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user can create an invite in the channel.
  */
-export const canCreateInvite = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
- me.permissionsIn(channel).has(Discord.PermissionFlagsBits.CreateInstantInvite);
+export const canCreateInvite = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreateInstantInvite);

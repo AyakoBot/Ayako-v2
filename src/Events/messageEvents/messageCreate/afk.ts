@@ -64,9 +64,6 @@ const deleteNick = async (language: CT.Language, member?: Discord.GuildMember | 
   return;
  }
 
- if (!me.permissions.has(Discord.PermissionFlagsBits.ManageNicknames)) return;
- if (!ch.isManageable(member, me)) return;
-
  ch.request.guilds.editMember(
   member,
   {

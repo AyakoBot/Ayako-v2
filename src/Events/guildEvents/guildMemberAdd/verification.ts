@@ -62,7 +62,7 @@ export const kick = async (
 
  const me = await ch.getBotMemberFromGuild(member.guild);
  if (!canRemoveMember(me, member)) return;
- if (!canAddRoleToMember(verifyRole, me)) return;
+ if (!canAddRoleToMember(verifyRole.id, me)) return;
 
  const dm = async () => {
   ch.send(member.user, {

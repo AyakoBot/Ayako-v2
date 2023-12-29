@@ -50,11 +50,12 @@ export const canCreateChannel = (
  me: Discord.GuildMember,
  body: Discord.RESTPostAPIGuildChannelJSONBody,
 ) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) &&
- (body.permission_overwrites
-  ? body.permission_overwrites.every(
-     (p) =>
-      me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
-      (p.id === me.id ? me.permissions.has(p.allow ? BigInt(p.allow) : 0n) : true),
-    )
-  : true);
+ me.guild.ownerId === me.id ||
+ (me.permissions.has(Discord.PermissionFlagsBits.ManageChannels) &&
+  (body.permission_overwrites
+   ? body.permission_overwrites.every(
+      (p) =>
+       me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+       (p.id === me.id ? me.permissions.has(p.allow ? BigInt(p.allow) : 0n) : true),
+     )
+   : true));

@@ -61,8 +61,6 @@ export default async (
 
  if (
   cmd.member &&
-  ch.isManageable(cmd.member, me) &&
-  (await ch.getBotMemberFromGuild(cmd.guild))?.permissions.has(134217728n) &&
   Number(cmd.member?.displayName.length) <= 26 &&
   !cmd.member?.displayName.endsWith(' [AFK]')
  ) {

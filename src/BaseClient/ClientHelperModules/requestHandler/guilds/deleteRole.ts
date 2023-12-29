@@ -41,5 +41,6 @@ export default async (guild: Discord.Guild, roleId: string, reason?: string) => 
  * @returns A boolean indicating whether the guild member can delete the role.
  */
 export const canDeleteRole = (me: Discord.GuildMember, roleId: string) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
- me.roles.highest.comparePositionTo(roleId) > 0;
+ me.guild.ownerId === me.id ||
+ (me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+  me.roles.highest.comparePositionTo(roleId) > 0);

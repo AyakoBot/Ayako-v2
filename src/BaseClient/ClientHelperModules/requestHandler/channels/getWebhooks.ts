@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (
  channel: Discord.GuildTextBasedChannel | Discord.ForumChannel | Discord.MediaChannel,
 ) => {
- if (!canGetWebhooks(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canGetWebhooks(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot get webhooks in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
@@ -35,11 +35,9 @@ export default async (
 
 /**
  * Checks if the user has permission to get webhooks in a given channel.
- * @param channel - The channel to check permissions in.
+ * @param channelId - The ID of the channel to check permissions in.
  * @param me - The user's guild member object.
  * @returns A boolean indicating whether the user has permission to manage webhooks in the channel.
  */
-export const canGetWebhooks = (
- channel: Discord.GuildTextBasedChannel | Discord.ForumChannel | Discord.MediaChannel,
- me: Discord.GuildMember,
-) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageWebhooks);
+export const canGetWebhooks = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks);

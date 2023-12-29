@@ -25,15 +25,15 @@ export default async (
 
  if (
   !canEditPermissionOverwrite(
-   channel,
+   channel.id,
    body,
    overwriteId,
    await getBotMemberFromGuild(channel.guild),
   )
  ) {
   const e = requestHandlerError(
-   `Cannot edit message in ${channel.guild.name} / ${channel.guild.id}`,
-   [Discord.PermissionFlagsBits.ManageMessages],
+   `Cannot edit permission overwrite in ${channel.name} / ${channel.id}`,
+   [Discord.PermissionFlagsBits.ManageRoles],
   );
 
   return e;
@@ -47,13 +47,22 @@ export default async (
   });
 };
 
+/**
+ * Checks if the user can edit a permission overwrite in a guild-based channel.
+ * @param channelId - The ID of the guild-based channel.
+ * @param body - The JSON body of the REST API request to edit the permission overwrite.
+ * @param overwriteId - The ID of the permission overwrite.
+ * @param me - The guild member representing the user.
+ * @returns A boolean indicating whether the user can edit the permission overwrite.
+ */
 export const canEditPermissionOverwrite = (
- channel: Discord.GuildBasedChannel,
+ channelId: string,
  body: Discord.RESTPutAPIChannelPermissionJSONBody,
  overwriteId: string,
  me: Discord.GuildMember,
 ) =>
- me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageRoles) &&
- (overwriteId === me.id
-  ? me.permissionsIn(channel).has(body.allow ? BigInt(body.allow) : 0n)
-  : true);
+ me.guild.ownerId === me.id ||
+ (me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageRoles) &&
+  (overwriteId === me.id
+   ? me.permissionsIn(channelId).has(body.allow ? BigInt(body.allow) : 0n)
+   : true));

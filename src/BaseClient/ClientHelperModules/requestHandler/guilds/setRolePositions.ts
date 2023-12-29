@@ -48,8 +48,9 @@ export const canSetRolePositions = (
  me: Discord.GuildMember,
  body: Discord.RESTPatchAPIGuildRolePositionsJSONBody,
 ) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
- body.every(
-  (r) =>
-   me.roles.highest.comparePositionTo(r.id) > 0 && me.roles.highest.position > Number(r.position),
- );
+ me.guild.ownerId === me.id ||
+ (me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
+  body.every(
+   (r) =>
+    me.roles.highest.comparePositionTo(r.id) > 0 && me.roles.highest.position > Number(r.position),
+  ));

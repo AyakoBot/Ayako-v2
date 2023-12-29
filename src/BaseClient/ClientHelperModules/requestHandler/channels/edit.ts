@@ -51,18 +51,21 @@ export const canEdit = (
  body: Discord.RESTPatchAPIChannelJSONBody,
  me: Discord.GuildMember,
 ) =>
- me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageChannels) &&
- (body.permission_overwrites
-  ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageRoles) &&
-    body.permission_overwrites.every(
-     (overwrite) =>
-      me
-       .permissionsIn(channel.id)
-       .has(
-        new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
-       ) &&
-      me
-       .permissionsIn(channel.id)
-       .has(new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield),
-    )
-  : true);
+ me.guild.ownerId === me.id ||
+ (me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageChannels) &&
+  (body.permission_overwrites
+   ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageRoles) &&
+     body.permission_overwrites.every(
+      (overwrite) =>
+       me
+        .permissionsIn(channel.id)
+        .has(
+         new Discord.PermissionsBitField(overwrite.allow ? BigInt(overwrite.allow) : 0n).bitfield,
+        ) &&
+       me
+        .permissionsIn(channel.id)
+        .has(
+         new Discord.PermissionsBitField(overwrite.deny ? BigInt(overwrite.deny) : 0n).bitfield,
+        ),
+     )
+   : true));

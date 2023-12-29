@@ -25,7 +25,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateForumThread(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canCreateForumThread(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot create forum post in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.SendMessages,
   ]);
@@ -45,11 +45,9 @@ export default async (
 
 /**
  * Checks if the specified user has permission to create a forum thread in the given channel.
- * @param channel - The channel in which the forum thread is to be created.
+ * @param channelId - The ID of the channel in which the forum thread is to be created.
  * @param me - The guild member representing the user.
  * @returns True if the user has permission to create a forum thread, false otherwise.
  */
-export const canCreateForumThread = (
- channel: Discord.ForumChannel | Discord.MediaChannel,
- me: Discord.GuildMember,
-) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendMessages);
+export const canCreateForumThread = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessages);

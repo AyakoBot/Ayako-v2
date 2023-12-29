@@ -17,7 +17,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildBasedChannel, overwriteId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeletePermissionOverwrite(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canDeletePermissionOverwrite(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(
    `Cannot delete permission overwrite in ${channel.name} / ${channel.id}`,
    [Discord.PermissionFlagsBits.ManageRoles],
@@ -36,12 +36,10 @@ export default async (channel: Discord.GuildBasedChannel, overwriteId: string, r
 };
 /**
  * Checks if the user has the permission to delete a permission overwrite in a channel.
- * @param channel - The guild-based channel where the permission overwrite is being deleted.
+ * @param channelId - The ID of the guild-based channel to check.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user has the permission to
  * delete the permission overwrite.
  */
-export const canDeletePermissionOverwrite = (
- channel: Discord.GuildBasedChannel,
- me: Discord.GuildMember,
-) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageRoles);
+export const canDeletePermissionOverwrite = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageRoles);

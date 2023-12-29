@@ -3,6 +3,7 @@ import * as Jobs from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { end, getButton, getGiveawayEmbed } from './end.js';
+import { canSendMessage } from '../../../BaseClient/ClientHelperModules/requestHandler/channels/sendMessage.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -38,11 +39,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const endTime = Date.now() + Math.abs(duration);
  if (!endTimeIsValid(endTime, cmd, language)) return;
  if (
-  !canSendMessage(
-   channel,
-   cmd as CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>,
-   language,
-  )
+  !canSend(channel.id, cmd as CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>, language)
  ) {
   return;
  }
@@ -113,8 +110,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 };
 
-const canSendMessage = async (
- channel: Discord.StageChannel | Discord.GuildTextBasedChannel,
+const canSend = async (
+ channelId: string,
  cmd: CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>,
  language: CT.Language,
 ) => {
@@ -124,10 +121,7 @@ const canSendMessage = async (
   return false;
  }
 
- if (
-  me.permissionsIn(channel).has(Discord.PermissionFlagsBits.SendMessages) &&
-  me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ViewChannel)
- ) {
+ if (canSendMessage(channelId, { embeds: [], components: [] }, me)) {
   return true;
  }
 

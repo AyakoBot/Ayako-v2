@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
+import { canEdit } from '../../../BaseClient/ClientHelperModules/requestHandler/channels/edit.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const channel = cmd.options.getChannel('channel', true, [
@@ -21,7 +22,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   return;
  }
 
- if (!ch.isManageable(channel, me)) {
+ if (!canEdit(channel, { rate_limit_per_user: 1 }, me)) {
   ch.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;
  }

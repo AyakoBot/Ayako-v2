@@ -285,8 +285,6 @@ export const roles = async (
   return;
  }
 
- if (!ch.isManageable(member, me)) return;
-
  ch.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
 };
 

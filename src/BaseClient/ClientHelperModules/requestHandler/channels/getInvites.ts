@@ -13,7 +13,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of parsed invite objects.
  */
 export default async (channel: Discord.GuildBasedChannel) => {
- if (!canGetInvites(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canGetInvites(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot get invites in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
@@ -40,9 +40,9 @@ export default async (channel: Discord.GuildBasedChannel) => {
 
 /**
  * Checks if the user has permission to get invites in a guild-based channel.
- * @param channel - The guild-based channel to check permissions in.
+ * @param channelId - The ID of the guild-based channel to check permissions in.
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user has permission to get invites.
  */
-export const canGetInvites = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
- me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels);
+export const canGetInvites = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageChannels);

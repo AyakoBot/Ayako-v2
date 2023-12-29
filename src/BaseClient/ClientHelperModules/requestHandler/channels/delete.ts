@@ -50,5 +50,5 @@ export const isDeleteable = (channel: Discord.GuildBasedChannel, me: Discord.Gui
   Discord.ChannelType.PublicThread,
   Discord.ChannelType.AnnouncementThread,
  ].includes(channel.type)
-  ? me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageThreads)
-  : me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageChannels);
+  ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageThreads)
+  : me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ManageChannels);

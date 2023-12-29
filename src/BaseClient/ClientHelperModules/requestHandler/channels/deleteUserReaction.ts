@@ -16,7 +16,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteUserReaction(message.channel, await getBotMemberFromGuild(message.guild))) {
+ if (!canDeleteUserReaction(message.channel.id, await getBotMemberFromGuild(message.guild))) {
   const e = requestHandlerError(
    `Cannot delete user reaction in ${message.guild.name} / ${message.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
@@ -50,7 +50,11 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
   });
 };
 
-export const canDeleteUserReaction = (
- channel: Discord.GuildBasedChannel,
- me: Discord.GuildMember,
-) => me.permissionsIn(channel).has(Discord.PermissionFlagsBits.ManageMessages);
+/**
+ * Checks if the user has permission to delete a user's reaction in a channel.
+ * @param channelId - The ID of the channel.
+ * @param me - The Discord GuildMember object representing the user.
+ * @returns True if the user has permission to manage messages in the channel, false otherwise.
+ */
+export const canDeleteUserReaction = (channelId: string, me: Discord.GuildMember) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageMessages);
