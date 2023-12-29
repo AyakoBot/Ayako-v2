@@ -2,8 +2,8 @@ import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../DataBase.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import isManageable from '../../isManageable.js';
 import type * as ModTypes from '../../mod.js';
+import { canAddRoleToMember } from '../../requestHandler/guilds/addRoleToMember.js';
 import roleManager from '../../roleManager.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
@@ -18,8 +18,10 @@ export default async (
 ) => {
  const type = CT.ModTypes.RoleAdd;
 
- const memberResponse = await getMembers(cmd, options, language, message, type);
- if (!memberResponse) {
+ const memberRes = await getMembers(cmd, options, language, message, type);
+ if (memberRes && !memberRes.canExecute) return false;
+
+ if (!memberRes) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
   if (!sticky?.stickyrolesactive) {
    actionAlreadyApplied(cmd, message, options.target, language, CT.ModTypes.KickAdd);
@@ -62,7 +64,7 @@ export default async (
 
   return true;
  }
- const { targetMember } = memberResponse;
+ const { targetMember } = memberRes;
 
  if (targetMember.roles.cache.hasAll(...options.roles.map((r) => r.id)) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
@@ -72,7 +74,11 @@ export default async (
  const me = await getBotMemberFromGuild(options.guild);
  options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
 
- if ((!isManageable(targetMember, me) || !options.roles.length) && !options.skipChecks) {
+ if (
+  (options.roles.map((r) => canAddRoleToMember(r.id, me)).find((can) => !can) ||
+   !options.roles.length) &&
+  !options.skipChecks
+ ) {
   permissionError(cmd, message, language, type);
   return false;
  }

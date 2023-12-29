@@ -60,8 +60,6 @@ import helpHelpers from './ClientHelperModules/helpHelpers.js';
 import interactionHelpers from './ClientHelperModules/interactionHelpers.js';
 import isDeleteable from './ClientHelperModules/isDeleteable.js';
 import isEditable from './ClientHelperModules/isEditable.js';
-import isManageable from './ClientHelperModules/isManageable.js';
-import isModeratable from './ClientHelperModules/isModeratable.js';
 import loadingEmbed from './ClientHelperModules/loadingEmbed.js';
 import log from './ClientHelperModules/log.js';
 import makeStp from './ClientHelperModules/makeStp.js';
@@ -179,8 +177,6 @@ export {
  interactionHelpers,
  isDeleteable,
  isEditable,
- isManageable,
- isModeratable,
  loadingEmbed,
  log,
  logFiles,

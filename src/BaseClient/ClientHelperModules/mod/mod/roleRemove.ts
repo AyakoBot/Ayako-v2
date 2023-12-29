@@ -4,13 +4,13 @@ import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../DataBase.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import isManageable from '../../isManageable.js';
 import type * as ModTypes from '../../mod.js';
 import roleManager from '../../roleManager.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
+import { canEditMember } from '../../requestHandler/guilds/editMember.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.RoleRemove>,
@@ -20,8 +20,10 @@ export default async (
 ) => {
  const type = CT.ModTypes.RoleRemove;
 
- const memberResponse = await getMembers(cmd, options, language, message, type);
- if (!memberResponse) {
+ const memberRes = await getMembers(cmd, options, language, message, type);
+ if (memberRes && !memberRes.canExecute) return false;
+
+ if (!memberRes) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
   if (!sticky?.stickyrolesactive) return true;
 
@@ -66,7 +68,7 @@ export default async (
   return true;
  }
 
- const { targetMember } = memberResponse;
+ const { targetMember } = memberRes;
 
  if (!targetMember.roles.cache.hasAny(...options.roles.map((r) => r.id)) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
@@ -78,7 +80,7 @@ export default async (
 
  if (
   (!me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !isManageable(targetMember, me) ||
+   !canEditMember(targetMember, me, { roles: [] }) ||
    !options.roles.length) &&
   !options.skipChecks
  ) {

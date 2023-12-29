@@ -3,9 +3,9 @@ import DataBase from '../../../DataBase.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import isModeratable from '../../isModeratable.js';
 import type * as ModTypes from '../../mod.js';
 import { request } from '../../requestHandler.js';
+import { canEditMember } from '../../requestHandler/guilds/editMember.js';
 
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
@@ -22,8 +22,10 @@ export default async (
 
  cache.mutes.delete(options.guild.id, options.target.id);
 
- const memberResponse = await getMembers(cmd, options, language, message, type);
- if (!memberResponse) {
+ const memberRes = await getMembers(cmd, options, language, message, type);
+ if (memberRes && !memberRes.canExecute) return false;
+
+ if (!memberRes) {
   const punishments = await DataBase.punish_tempmutes.findMany({
    where: { userid: options.target.id, guildid: options.guild.id },
   });
@@ -38,10 +40,13 @@ export default async (
   }
   return true;
  }
- const { targetMember } = memberResponse;
+ const { targetMember } = memberRes;
 
  const me = await getBotMemberFromGuild(options.guild);
- if (!isModeratable(me, targetMember) && !options.skipChecks) {
+ if (
+  !options.skipChecks &&
+  !canEditMember(me, targetMember, { communication_disabled_until: '1' })
+ ) {
   permissionError(cmd, message, language, type);
   return false;
  }
