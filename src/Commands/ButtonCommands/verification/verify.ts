@@ -78,7 +78,7 @@ const log = async (
      icon_url: cmd.user.displayAvatarURL({ size: 4096 }),
     },
     description: language.verification.log.start(cmd.user),
-    timestamp: new Date(Date.now()).toISOString(),
+    timestamp: new Date().toISOString(),
     color: CT.Colors.Loading,
    },
   ],
