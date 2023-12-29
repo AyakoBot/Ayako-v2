@@ -1,3 +1,3 @@
-import exe from './mod/softwarn.js';
+import exe from './mod/soft-warn.js';
 
 export default exe;
