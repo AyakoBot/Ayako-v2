@@ -87,7 +87,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     ? [
        {
         name: lan.fields.kickafter.name,
-        value: embedParsers.time(Number(settings?.kickafter), language),
+        value: embedParsers.time(Number(settings?.kickafter) * 1000, language),
         inline: true,
        },
       ]
