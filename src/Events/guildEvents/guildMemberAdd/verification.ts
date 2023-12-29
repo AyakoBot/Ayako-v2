@@ -3,6 +3,7 @@ import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
+import { canRemoveMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/removeMember.js';
 
 export default async (member: Discord.GuildMember) => {
  const verification = await ch.DataBase.verification.findUnique({
@@ -53,11 +54,7 @@ export const kick = async (
  if (!verification.kicktof) return;
  if (!verification.kickafter) return;
  if (member.user.bot) return;
-
- ch.logFiles.console.write(
-  `Would've tried kicking ${member.user.tag} from ${member.guild.name} (${member.guild.id})\n`,
- );
- return;
+ if (!canRemoveMember(await ch.getBotMemberFromGuild(member.guild), member)) return;
 
  const dm = async () => {
   ch.send(member.user, {
