@@ -19,7 +19,7 @@ export default async (guild: Discord.Guild | undefined) => {
   embeds: [
    {
     color: CT.Colors.Danger,
-    description: '<@&669894051851403294> joined a new Guild',
+    description: '<@&669894051851403294> left a Guild',
     fields: [
      { name: 'Guild Name', value: guild?.name || 'Unknown/Uncached', inline: true },
      { name: 'Guild ID', value: String(guild?.id) || 'Unknown/Uncached', inline: true },

@@ -61,9 +61,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      },
      {
       name: `${lan.CPU}:`,
-      value: `${ch.util.makeInlineCode(os.cpus()[0].model)} / \`${
-       Math.round(os.cpus()[0].speed / 100) / 10
-      }GHz\``,
+      value: `${ch.util.makeInlineCode(os.cpus()[0].model)}`,
      },
      {
       name: `${lan.OS}:`,
