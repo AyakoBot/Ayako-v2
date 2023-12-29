@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
 import SlashCommands from '../../Events/readyEvents/startupTasks/SlashCommands.js';
-import replyCmd from './replyCmd.js';
+import * as CT from '../../Typings/Typings.js';
 import getLanguage from './getLanguage.js';
-
 import getEmbeds from './helpHelpers/getEmbeds.js';
+import replyCmd from './replyCmd.js';
 
 /**
  * Helper function to generate a message payload for a slash command

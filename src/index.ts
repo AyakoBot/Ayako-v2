@@ -16,15 +16,13 @@ sms.install({
 
 console.clear();
 log(
- `
-+++++++++++++++ Welcome to Ayako ++++++++++++++++
+ `+++++++++++++++ Welcome to Ayako ++++++++++++++++
 +       Restart all Shards with "restart"       +
 +   Restart one Shard with "restart [Shard ID]" +
 +                   Arguments:                  +
 +   --debug --debug-db --warn --debug-queries   +
 +           --silent --put-commands             +
-+++++++++++++++++++++++++++++++++++++++++++++++++
-`,
++++++++++++++++++++++++++++++++++++++++++++++++++`,
  true,
 );
 
@@ -33,7 +31,7 @@ const manager = new Discord.ShardingManager(
  {
   token: process.env.Token,
   shardArgs: process.argv,
-  execArgv: ['--experimental-wasm-modules', '--experimental-websocket'],
+  execArgv: ['--experimental-wasm-modules'],
  },
 );
 
