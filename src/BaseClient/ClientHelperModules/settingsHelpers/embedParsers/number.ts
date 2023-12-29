@@ -8,4 +8,4 @@ import * as CT from '../../../../Typings/Typings.js';
  * @returns A string representation of the number value.
  */
 export default (val: string | number | Prisma.Decimal | null, language: CT.Language) =>
- val ? String(val) : language.t.None;
+ val || typeof val === 'number' ? String(val) : language.t.None;
