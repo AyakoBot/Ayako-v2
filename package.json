@@ -1,11 +1,12 @@
 {
  "type": "module",
- "version": "2.0.14",
+ "version": "2.0.15",
  "scripts": {
   "start": "node --max-old-space-size=8192 ./dist/index.js",
   "build": "npx tsc",
-  "dev": "node --enable-source-maps ./dist/bot.js --debug --warn",
-  "lint": "npx eslint 'src/**/*.ts' --fix"
+  "dev": "node --enable-source-maps --experimental-wasm-modules ./dist/bot.js --debug --warn",
+  "lint": "npx eslint 'src/**/*.ts' --fix",
+  "postinstall": "mkdir ./logs"
  },
  "dependencies": {
   "@discordjs/core": "^1.1.1",

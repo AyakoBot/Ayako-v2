@@ -1,45 +1,31 @@
+import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async () => {
- if (client.shard?.mode === 'process') return;
+ ch.request.commands.getGlobalCommands(undefined, client as Discord.Client<true>);
 
- const settings = await ch.DataBase.guildsettings.findMany({
-  where: {
-   token: { not: null },
-  },
- });
-
- settings.forEach(async (s) => {
-  if (!s.token) return;
-
-  const guild = client.guilds.cache.get(s.guildid);
-  if (!guild) return;
-
+ client.guilds.cache.forEach((g) => {
   const globalCommands = async () => {
-   if (!s.token) return;
-
-   const commands = await ch.request.commands.getGlobalCommands(guild);
+   const commands = await ch.request.commands.getGlobalCommands(g, client as Discord.Client<true>);
 
    if ('message' in commands) {
-    ch.error(guild, new Error(commands.message));
+    ch.error(g, new Error(commands.message));
     return;
    }
 
-   commands.forEach((c) => ch.cache.commands.set(guild.id, c.id, c));
+   commands.forEach((c) => ch.cache.commands.set(g.id, c.id, c));
   };
 
   const guildCommands = async () => {
-   if (!s.token) return;
-
-   const commands = await ch.request.commands.getGuildCommands(guild);
+   const commands = await ch.request.commands.getGuildCommands(g);
 
    if ('message' in commands) {
-    ch.error(guild, new Error(commands.message));
+    ch.error(g, new Error(commands.message));
     return;
    }
 
-   commands.forEach((c) => ch.cache.commands.set(guild.id, c.id, c));
+   commands.forEach((c) => ch.cache.commands.set(g.id, c.id, c));
   };
 
   globalCommands();

@@ -19,13 +19,14 @@ import verification from './timedFiles/verification.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
 
 export default async () => {
- customAPIsHandler();
+ await slashCommandInitializer();
+
+ await customAPIsHandler();
  customBotCommands();
 
  voteHandler();
  appealHandler();
  interactionHandler();
- slashCommandInitializer();
  antivirusBlocklistCacher();
  nitroHandler();
  separators();
