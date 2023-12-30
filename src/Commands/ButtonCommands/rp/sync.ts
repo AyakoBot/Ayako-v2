@@ -1,6 +1,4 @@
 import * as Discord from 'discord.js';
-import * as Jobs from 'node-schedule';
-import client from '../../../BaseClient/Client.js';
 import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { getComponents } from '../../SlashCommands/rp/manager.js';
@@ -23,22 +21,20 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- const rpCmd = (await client.application?.commands.fetch())?.find((c) => c.name === 'rp');
+ const rpCmd = await ch.getCustomCommand(cmd.guild, 'rp');
  if (!rpCmd) {
   ch.error(cmd.guild, new Error('RP Command not found'));
   return;
  }
 
  const perms = (await ch.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
- const resolved: boolean[] = [];
- const promises = (await cmd.guild.commands.fetch()).map((c) =>
-  ch.request.commands
-   .editGuildCommandPermissions(c.guild as Discord.Guild, user.accesstoken as string, c.id, {
-    permissions: perms,
-   })
-   .then(() => {
-    resolved.push(true);
-   }),
+ [...(ch.cache.commands.cache.get(cmd.guildId)?.values() ?? [])].map((c) =>
+  ch.request.commands.editGuildCommandPermissions(
+   cmd.guild as Discord.Guild,
+   user.accesstoken as string,
+   c.id,
+   { permissions: perms },
+  ),
  );
 
  const guildsettings = await ch.DataBase.guildsettings.update({
@@ -52,31 +48,15 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  const embed: Discord.APIEmbed = {
   color: CT.Colors.Loading,
+  description: lan.willTake(ch.constants.standard.getTime(Date.now() + 3600000)),
   author: {
    name: lan.syncing,
    icon_url: ch.emotes.loading.link,
   },
  };
 
- const message = await cmd.followUp({
+ await cmd.followUp({
   ephemeral: true,
   embeds: [embed],
- });
-
- const job = Jobs.scheduleJob('*/10 * * * * *', () => {
-  embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
-
-  if (promises.length === resolved.length) {
-   embed.color = CT.Colors.Success;
-   embed.author = {
-    name: lan.synced,
-    icon_url: ch.emotes.tick.link,
-   };
-   embed.description = `${lan.synced} ${resolved.length}/${cmd.guild.commands.cache.size}`;
-   job.cancel();
-  }
-
-  if (message) cmd.editReply({ embeds: [embed], message });
-  else job.cancel();
  });
 };

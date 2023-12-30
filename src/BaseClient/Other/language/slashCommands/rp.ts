@@ -31,4 +31,5 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.slashCommands.rp.notice, {
    cmdId,
   }),
+ willTake: (time: string) => t.stp(t.JSON.slashCommands.rp.willTake, { time }),
 });

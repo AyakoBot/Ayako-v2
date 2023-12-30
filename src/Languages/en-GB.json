@@ -2073,6 +2073,7 @@
    "notice": "There is an additional Roleplay-Management-Command called </rp manager:{{cmdId}}>.\nVisit it to find out how to manage Permissions for Roleplay Commands,\nand to figure out how to set up Roleplay Slash-Commands on your Server",
    "delay": "This Operation might take a while to finish, please be patient",
    "syncing": "Syncing Permissions...",
+   "willTake": "This will finish {{time}}",
    "synced": "Synced"
   },
   "stp": {

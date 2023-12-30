@@ -5,30 +5,12 @@ import * as ch from '../../../BaseClient/ClientHelper.js';
 export default async () => {
  ch.request.commands.getGlobalCommands(undefined, client as Discord.Client<true>);
 
- client.guilds.cache.forEach((g) => {
-  const globalCommands = async () => {
-   const commands = await ch.request.commands.getGlobalCommands(g, client as Discord.Client<true>);
+ client.guilds.cache.forEach(async (g) => {
+  const settings = await ch.DataBase.guildsettings.findUnique({
+   where: { guildid: g.id, token: { not: null } },
+  });
+  if (!settings?.token) return;
 
-   if ('message' in commands) {
-    ch.error(g, new Error(commands.message));
-    return;
-   }
-
-   commands.forEach((c) => ch.cache.commands.set(g.id, c.id, c));
-  };
-
-  const guildCommands = async () => {
-   const commands = await ch.request.commands.getGuildCommands(g);
-
-   if ('message' in commands) {
-    ch.error(g, new Error(commands.message));
-    return;
-   }
-
-   commands.forEach((c) => ch.cache.commands.set(g.id, c.id, c));
-  };
-
-  globalCommands();
-  guildCommands();
+  await ch.request.commands.getGlobalCommands(g, client as Discord.Client<true>);
  });
 };
