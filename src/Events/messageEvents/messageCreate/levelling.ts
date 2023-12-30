@@ -578,7 +578,7 @@ const send = async (
 
 const checkLevelRoles = async (msg: Discord.Message<true>) => {
  const msgsFromUserLastHour = msg.channel.messages.cache.filter(
-  (m) => m.createdTimestamp > Date.now() - 3600000 && m.author.id === msg.author.id,
+  (m) => m.createdTimestamp > Date.now() - 3600000 && m.author?.id === msg.author.id,
  );
  if (msgsFromUserLastHour.size > 2) return;
 
