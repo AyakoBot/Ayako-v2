@@ -61,7 +61,7 @@ export const canEditMember = (
  if (member.guild.ownerId === me.id) return true;
 
  switch (true) {
-  case body.channel_id !== member.voice.channelId: {
+  case 'channel_id' in body && body.channel_id !== member.voice.channelId: {
    if (!body.channel_id) return me.permissions.has(Discord.PermissionFlagsBits.MoveMembers);
 
    return me.permissionsIn(body.channel_id).has(Discord.PermissionFlagsBits.Connect);
