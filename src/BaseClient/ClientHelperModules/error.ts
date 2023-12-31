@@ -3,6 +3,7 @@ import DataBase from '../DataBase.js';
 import objectEmotes from './emotes.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
+import * as CT from '../../Typings/Typings.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -32,7 +33,7 @@ export default async (guild: Discord.Guild, err: Error) => {
   process.env.debugWebhookToken ?? '',
  );
 
- webhook.send({
+ const payload: CT.UsualMessagePayload = {
   embeds: [
    {
     color: 0xff0000,
@@ -54,5 +55,20 @@ export default async (guild: Discord.Guild, err: Error) => {
     url: constants.standard.support,
    },
   ],
- });
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      style: Discord.ButtonStyle.Link,
+      label: language.slashCommands.help.clickMe,
+      url: constants.standard.support,
+     },
+    ],
+   },
+  ],
+ };
+
+ webhook.send(payload);
 };
