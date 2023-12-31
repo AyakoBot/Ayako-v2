@@ -41,7 +41,7 @@ export default (msg: Discord.Message) => {
   ch.DataBase.giveawaycollection.delete({ where: { msgid: msg.id } }).then();
 
   ch.DataBase.stickymessages
-   .delete({ where: { lastmsgid: msg.id, channelid: msg.channel.id } })
+   .delete({ where: { lastmsgid: msg.id, channelid: msg.channelId } })
    .then();
  });
  const stickyMsgJob = ch.cache.stickyTimeouts.find(msg.id);
