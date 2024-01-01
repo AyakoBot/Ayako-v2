@@ -26,7 +26,7 @@ export default async (
     if (guild) cache.commands.cache.get(guild.id)?.set(p.id, p);
 
     if (guild && cache.apis.get(guild.id)) return;
-    if (client.application.commands.cache.get(p.id)) return;
+
     client.application.commands.cache.set(p.id, p);
    });
    return parsed;

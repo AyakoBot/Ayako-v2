@@ -27,7 +27,6 @@ export default async (
    cache.commands.cache.get(guild.id)?.set(parsed.id, parsed);
 
    if (cache.apis.get(guild.id)) return parsed;
-   if (guild.client.application.commands.cache.get(parsed.id)) return parsed;
    guild.client.application.commands.cache.set(parsed.id, parsed);
    return parsed;
   })
