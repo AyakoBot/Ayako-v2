@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.KickMembers]);
+  const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.ManageGuild]);
 
   error(guild, e);
   return e;
