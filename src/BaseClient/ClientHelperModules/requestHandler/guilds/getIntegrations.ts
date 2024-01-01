@@ -14,9 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of integrations for the given guild.
  */
 export default async (guild: Discord.Guild) => {
- if (
-  !(await getBotMemberFromGuild(guild)).permissions.has(Discord.PermissionFlagsBits.ManageGuild)
- ) {
+ if (!canGetIntegrations(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get integrations`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
