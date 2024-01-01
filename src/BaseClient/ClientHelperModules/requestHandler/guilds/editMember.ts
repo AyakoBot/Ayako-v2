@@ -25,7 +25,7 @@ export default async (
  if (!canEditMember(await getBotMemberFromGuild(member.guild), member, body)) {
   sendDebugMessage({ embeds: [{ description: JSON.stringify(body) }] });
   const e = requestHandlerError(
-   `Cannot edit member ${member.user.username} / ${member.user.id} in ${member.guild.name} / ${member.guild.id}`,
+   `Cannot edit member ${member.user.username} / ${member.user.id}\nCheck role hierarchy.`,
    [
     Discord.PermissionFlagsBits.ManageGuild,
     Discord.PermissionFlagsBits.ModerateMembers,
@@ -82,13 +82,20 @@ export const canEditMember = (
     me.permissions.has(Discord.PermissionFlagsBits.ManageNicknames) &&
     member.roles.highest.comparePositionTo(me.roles.highest) < 0
    );
-  case !!body.roles:
+  case !!body.roles: {
+   const removedRoles = member.roles.cache.filter((r) => !body.roles?.includes(r.id));
+
+   if (removedRoles.some((r) => r.comparePositionTo(me.roles.highest) > 0)) return false;
+   if (removedRoles.some((r) => r.managed)) return false;
+   if (body.roles.some((r) => !me.guild.roles.cache.get(r)?.managed)) return false;
+
    return (
     me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
     body.roles.every(
      (r) => Number(me.guild.roles.cache.get(r)?.comparePositionTo(me.roles.highest)) < 0,
     )
    );
+  }
   default:
    return member.roles.highest.comparePositionTo(me.roles.highest) < 0;
  }
