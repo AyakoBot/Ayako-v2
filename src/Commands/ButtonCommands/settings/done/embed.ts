@@ -31,7 +31,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  embedID,
+  embedID === language.t.None ? null : embedID,
   uniquetimestamp,
  );
 
