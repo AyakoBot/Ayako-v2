@@ -4,6 +4,8 @@ import objectEmotes from './emotes.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import * as CT from '../../Typings/Typings.js';
+import client from '../Client.js';
+import { request } from './requestHandler.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -28,12 +30,7 @@ export default async (guild: Discord.Guild, err: Error) => {
 
  const language = await getLanguage(guild.id);
 
- const webhook = await guild.client.fetchWebhook(
-  process.env.debugWebhookID ?? '',
-  process.env.debugWebhookToken ?? '',
- );
-
- const payload: CT.UsualMessagePayload = {
+ const payload: Omit<CT.UsualMessagePayload, 'files'> = {
   embeds: [
    {
     color: 0xff0000,
@@ -69,6 +66,16 @@ export default async (guild: Discord.Guild, err: Error) => {
    },
   ],
  };
+
+ sendDebugMessage(payload);
+ request.channels.sendMessage(guild, channel.id, payload, guild.client);
+};
+
+export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
+ const webhook = await client.fetchWebhook(
+  process.env.debugWebhookID ?? '',
+  process.env.debugWebhookToken ?? '',
+ );
 
  webhook.send(payload);
 };

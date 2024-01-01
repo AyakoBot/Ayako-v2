@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
@@ -23,6 +23,7 @@ export default async (
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  if (!canEditMember(await getBotMemberFromGuild(member.guild), member, body)) {
+  sendDebugMessage({ embeds: [{ description: JSON.stringify(body) }] });
   const e = requestHandlerError(
    `Cannot edit member ${member.user.username} / ${member.user.id} in ${member.guild.name} / ${member.guild.id}`,
    [
@@ -42,6 +43,7 @@ export default async (
   .editMember(member.guild.id, member.id, body, { reason })
   .then((m) => new Classes.GuildMember(member.client, m, member.guild))
   .catch((e) => {
+   sendDebugMessage({ embeds: [{ description: JSON.stringify(body) }] });
    error(member.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
