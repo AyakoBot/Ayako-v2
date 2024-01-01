@@ -2,7 +2,7 @@
  "type": "module",
  "version": "2.0.25",
  "scripts": {
-  "start": "node --max-old-space-size=8192 ./dist/index.js",
+  "start": "node --max-old-space-size=10240 ./dist/index.js",
   "build": "npx tsc",
   "dev": "node --enable-source-maps --experimental-wasm-modules ./dist/bot.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix",
