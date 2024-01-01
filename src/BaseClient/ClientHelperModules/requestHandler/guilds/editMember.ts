@@ -88,7 +88,7 @@ export const canEditMember = (
 
    if (removedRoles.some((r) => r.comparePositionTo(me.roles.highest) > 0)) return false;
    if (removedRoles.some((r) => r.managed)) return false;
-   if (addedRoles.some((r) => !me.guild.roles.cache.get(r)?.managed)) return false;
+   if (addedRoles.some((r) => me.guild.roles.cache.get(r)?.managed)) return false;
 
    return (
     me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
