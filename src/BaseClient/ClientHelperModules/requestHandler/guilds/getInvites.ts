@@ -13,9 +13,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of parsed invite objects.
  */
 export default async (guild: Discord.Guild) => {
- if (
-  !(await getBotMemberFromGuild(guild)).permissions.has(Discord.PermissionFlagsBits.ManageGuild)
- ) {
+ if (!canGetInvites(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get invites`, [Discord.PermissionFlagsBits.ManageGuild]);
 
   error(guild, e);
