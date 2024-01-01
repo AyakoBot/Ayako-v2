@@ -28,13 +28,14 @@ export default async (
 
  if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot send message`, [
+   Discord.PermissionFlagsBits.ViewChannel,
    Discord.PermissionFlagsBits.SendMessages,
    Discord.PermissionFlagsBits.SendMessagesInThreads,
    Discord.PermissionFlagsBits.ReadMessageHistory,
    Discord.PermissionFlagsBits.AttachFiles,
   ]);
 
-  error(guild, e);
+  error(guild, e, false);
   return e;
  }
 
@@ -68,8 +69,11 @@ export const canSendMessage = (
 ) => {
  if (!channelId) return true;
  const channel = me.guild.channels.cache.get(channelId);
+ if (!channel) return false;
 
  switch (true) {
+  case !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel):
+   return false;
   case Number(me.communicationDisabledUntilTimestamp) > Date.now():
    return false;
   case channel &&
