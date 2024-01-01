@@ -351,7 +351,7 @@ export default gifSelection;
  * @returns A Promise that resolves with the sent message.
  */
 export const imageGetter = async (
- cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
@@ -372,7 +372,7 @@ export const imageGetter = async (
     image: {
      url: img.url,
     },
-    color: getColor(await getBotMemberFromGuild(cmd.guild)),
+    color: cmd.guild ? getColor(await getBotMemberFromGuild(cmd.guild)) : undefined,
     author: img.artist
      ? {
         name: lan.madeBy,
