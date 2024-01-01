@@ -84,14 +84,15 @@ export const canEditMember = (
    );
   case !!body.roles: {
    const removedRoles = member.roles.cache.filter((r) => !body.roles?.includes(r.id));
+   const addedRoles = body.roles.filter((r) => !member.roles.cache.has(r));
 
    if (removedRoles.some((r) => r.comparePositionTo(me.roles.highest) > 0)) return false;
    if (removedRoles.some((r) => r.managed)) return false;
-   if (body.roles.some((r) => !me.guild.roles.cache.get(r)?.managed)) return false;
+   if (addedRoles.some((r) => !me.guild.roles.cache.get(r)?.managed)) return false;
 
    return (
     me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
-    body.roles.every(
+    addedRoles.every(
      (r) => Number(me.guild.roles.cache.get(r)?.comparePositionTo(me.roles.highest)) < 0,
     )
    );
