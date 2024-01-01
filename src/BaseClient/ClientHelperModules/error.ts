@@ -13,7 +13,7 @@ import { request } from './requestHandler.js';
  * @param err - The error object to be sent.
  * @returns Promise<void>
  */
-export default async (guild: Discord.Guild, err: Error) => {
+export default async (guild: Discord.Guild, err: Error, postDebug: boolean = true) => {
  if (process.argv.includes('--silent')) return;
 
  const errorchannel = await DataBase.guildsettings
@@ -67,7 +67,7 @@ export default async (guild: Discord.Guild, err: Error) => {
   ],
  };
 
- sendDebugMessage(payload);
+ if (postDebug) sendDebugMessage(payload);
  request.channels.sendMessage(guild, channel.id, payload, guild.client);
 };
 
