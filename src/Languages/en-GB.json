@@ -2225,7 +2225,9 @@
   },
   "ping": {
    "author": "{{t.botName}} Ping",
-   "lastHeartbeat": "Last Heartbeat"
+   "lastHeartbeat": "Last Heartbeat",
+   "websocket": "Websocket Latency",
+   "roundtrip": "Roundtrip Latency"
   },
   "emojis": {
    "createReason": "Emoji created by {{user.username}}",
