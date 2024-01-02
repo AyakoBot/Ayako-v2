@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     )} ${language.time.milliseconds}\n**${lan.websocket}**: ${ch.util.makeInlineCode(
      String(cmd.client.ws.shards.get(Number(cmd.client.shard?.ids[0]))?.ping ?? 0),
     )} ${language.time.milliseconds}\n**${lan.roundtrip}**: ${ch.util.makeInlineCode(
-     String(sent.createdTimestamp - cmd.createdTimestamp),
+     String(sent.createdTimestamp - Date.now()),
     )} ${language.time.milliseconds}`,
     color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
     author: { name: lan.author },
