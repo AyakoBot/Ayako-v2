@@ -6,6 +6,7 @@ import constants from '../Other/constants.js';
 import * as CT from '../../Typings/Typings.js';
 import client from '../Client.js';
 import { request } from './requestHandler.js';
+import { canSendMessage } from './requestHandler/channels/sendMessage.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -68,6 +69,8 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
  };
 
  if (postDebug) sendDebugMessage(payload);
+ if (!guild.members.me) return;
+ if (!canSendMessage(channel.id, payload, guild.members.me)) return;
  request.channels.sendMessage(guild, channel.id, payload, guild.client);
 };
 
