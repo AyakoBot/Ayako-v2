@@ -44,13 +44,9 @@ export default async (
    }`,
   }));
 
- let longestName = guildsFlatted.reduce((a, b) => (a.name.length > b.name.length ? a : b)).name
-  .length;
- let longestMemberCount = guildsFlatted.reduce((a, b) => (a.members > b.members ? a : b)).members
-  .length;
- let longestInvite =
-  guildsFlatted.reduce((a, b) => ((a.invite?.length || 0) > (b.invite?.length || 0) ? a : b)).invite
-   ?.length || 0;
+ let longestName = Math.max(...guildsFlatted.map((g) => g.name.length));
+ let longestMemberCount = Math.max(...guildsFlatted.map((g) => g.members.length));
+ let longestInvite = Math.max(...guildsFlatted.map((g) => Number(g.invite?.length)));
 
  if (longestName < language.t.name.length) longestName = language.t.name.length;
  if (longestMemberCount < language.t.Members.length) longestMemberCount = language.t.Members.length;

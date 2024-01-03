@@ -56,11 +56,9 @@ const getLongest = (
  daysPerUser: { days: number; userId: string }[],
  users: (Discord.User | undefined)[],
 ) => {
- let longestDays = daysPerUser
-  .map((l) => String(l.days))
-  .reduce((a, b) => (a.length > b.length ? a : b)).length;
- let longestUsername =
-  users
+ let longestDays = Math.max(...daysPerUser.map((l) => String(l.days).length));
+ let longestUsername = Math.max(
+  ...users
    .map((u) =>
     u
      ? String(u?.displayName)
@@ -68,7 +66,8 @@ const getLongest = (
         .replace(/\s+/g, ' ')
      : '-',
    )
-   .reduce((a, b) => (a.length > b.length ? a : b)).length + 1;
+   .map((u) => u.length + 1),
+ );
 
  if (longestDays < lan.days.length) longestDays = lan.level.length;
  if (longestUsername < language.t.User.length) longestUsername = language.t.User.length;

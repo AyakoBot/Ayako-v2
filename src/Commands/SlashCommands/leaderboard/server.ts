@@ -105,14 +105,10 @@ export const getLongest = (
  levels: Prisma.level[],
  users: (Discord.User | undefined)[],
 ) => {
- let longestLevel = levels
-  .map((l) => String(l.level))
-  .reduce((a, b) => (a.length > b.length ? a : b)).length;
- let longestXP = levels
-  .map((l) => String(ch.splitByThousand(Number(l.xp))))
-  .reduce((a, b) => (a.length > b.length ? a : b)).length;
- let longestUsername =
-  users
+ let longestLevel = Math.max(...levels.map((l) => String(l.level).length));
+ let longestXP = Math.max(...levels.map((l) => String(ch.splitByThousand(Number(l.xp))).length));
+ let longestUsername = Math.max(
+  ...users
    .map((u) =>
     u
      ? String(u?.displayName)
@@ -120,7 +116,8 @@ export const getLongest = (
         .replace(/\s+/g, ' ')
      : '-',
    )
-   .reduce((a, b) => (a.length > b.length ? a : b)).length + 1;
+   .map((u) => u.length),
+ );
 
  if (longestLevel < lan.level.length) longestLevel = lan.level.length;
  if (longestXP < lan.xp.length) longestXP = lan.xp.length;
