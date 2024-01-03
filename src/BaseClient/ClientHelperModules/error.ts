@@ -71,7 +71,7 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
  if (postDebug) sendDebugMessage(payload);
  if (!guild.members.me) return;
  if (!canSendMessage(channel.id, payload, guild.members.me)) return;
- request.channels.sendMessage(guild, channel.id, payload, guild.client);
+ request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };
 
 export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
