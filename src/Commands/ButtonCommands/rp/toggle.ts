@@ -112,8 +112,13 @@ export const create = async (guild: Discord.Guild) => {
    .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  ]);
 
- await ch.DataBase.guildsettings.update({
+ await ch.DataBase.guildsettings.upsert({
   where: { guildid: guild.id },
-  data: { rpenableruns: { increment: 1 } },
+  update: { rpenableruns: { increment: 1 } },
+  create: {
+   guildid: guild.id,
+   rpenableruns: 1,
+   enabledrp: true,
+  },
  });
 };
