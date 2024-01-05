@@ -2010,7 +2010,7 @@
    },
    "builders": {
     "descReactions": "React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:{{cmdId}}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove {{t.botName}}'s Reaction",
-    "descButtons": "React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:{{cmdId}}>\n__Notice:__ Emotes might not display properly below, but they will work just fine",
+    "descButtons": "React to the Message with the Emojis you want to use\nYou can add up to 25 Buttons in total and 10 Roles per Button\nFor extended Settings visit </settings roles button-role-settings:{{cmdId}}>\n__Notice:__ Emotes might not display properly below, but they will work just fine\n\nNeed Help? Check out the [Tutorial](https://www.youtube.com/watch?v=hrLPGVnAEeI)",
     "buttons": "`React Here` leads you to the Message to add Reactions on\n`Refresh Command` refreshes Builder to apply your newly added Reactions\n`Reset Reactions` resets the Reactions on the Reaction-Message to only show Reactions current define in the Builder",
     "reactHere": "React Here",
     "refreshCommand": "Refresh Selection",
