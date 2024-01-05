@@ -9,7 +9,8 @@ type Types =
  | CT.EditorTypes.Language
  | CT.EditorTypes.AutoPunishment
  | CT.EditorTypes.AntiRaidPunishment
- | CT.EditorTypes.Questions;
+ | CT.EditorTypes.Questions
+ | CT.EditorTypes.LvlUpMode;
 
 export default async (
  cmd: Discord.ButtonInteraction,

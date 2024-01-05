@@ -372,11 +372,11 @@ const levelUp = async (
  const language = await ch.getLanguage(msg.guildId);
 
  switch (setting.lvlupmode) {
-  case 'message': {
+  case 'messages': {
    await doEmbed(msg, language, levelData, setting);
    break;
   }
-  case 'react': {
+  case 'reactions': {
    await doReact(msg, setting, levelData.newLevel, language);
    break;
   }

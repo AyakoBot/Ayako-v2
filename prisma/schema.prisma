@@ -51,8 +51,8 @@ enum LevelType {
 }
 
 enum LevelUpMode {
-  message
-  react
+  messages
+  reactions
   silent
 }
 

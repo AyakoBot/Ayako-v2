@@ -31,10 +31,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 const getLevelUpMode = (type: LevelUpMode, language: CT.Language) => {
- switch (true) {
-  case type === 'message':
+ switch (type) {
+  case 'messages':
    return language.lvlupmodes.messages;
-  case type === 'react':
+  case 'reactions':
    return language.lvlupmodes.reactions;
   default:
    return language.lvlupmodes.silent;
@@ -85,8 +85,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
   },
  ];
 
- switch (true) {
-  case settings.lvlupmode === 'message': {
+ switch (settings.lvlupmode) {
+  case 'messages': {
    embeds[0].fields?.push(
     {
      name: lan.fields.embed.name,
@@ -107,7 +107,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 
    break;
   }
-  case settings.lvlupmode === 'react': {
+  case 'reactions': {
    embeds[0].fields?.push(
     {
      name: lan.fields.lvlupemotes.name,
@@ -245,8 +245,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   },
  ];
 
- switch (true) {
-  case settings.lvlupmode === 'message': {
+ switch (settings.lvlupmode) {
+  case 'messages': {
    components[2].components.push(
     buttonParsers.specific(language, settings.embed, 'embed', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
@@ -261,7 +261,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    );
    break;
   }
-  case settings.lvlupmode === 'react': {
+  case 'reactions': {
    components[2].components.push(
     buttonParsers.specific(language, settings.lvlupemotes, 'lvlupemotes', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
