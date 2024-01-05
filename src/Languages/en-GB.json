@@ -1093,6 +1093,11 @@
    "ManagePermissions": "Manage Permissions"
   }
  },
+ "lvlupmodes": {
+  "messages": "Messages",
+  "reactions": "Reactions",
+  "silent": "Silent"
+ },
  "punishments": {
   "warn": "Warn",
   "tempmute": "Temp-Mute",
@@ -3149,9 +3154,6 @@
     },
     "leveling": {
      "name": "Leveling",
-     "messages": "Messages",
-     "reactions": "Reactions",
-     "silent": "Silent",
      "fields": {
       "xppermsg": {
        "name": "XP per Message",
