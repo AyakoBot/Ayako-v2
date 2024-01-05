@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
 
+// TODO: Fix this
 // eslint-disable-next-line no-console
 const { log } = console;
 
