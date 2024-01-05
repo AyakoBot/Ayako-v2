@@ -34,7 +34,6 @@ export enum EditorTypes {
  Number = 'number',
  Punishment = 'punishment',
  AntiRaidPunishment = 'antiraid-punishment',
- Emotes = 'emotes',
  Embed = 'embed',
  Token = 'token',
  BotToken = 'bot-token',

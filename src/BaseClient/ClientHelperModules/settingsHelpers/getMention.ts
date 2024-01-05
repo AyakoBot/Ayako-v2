@@ -14,13 +14,13 @@ export type MentionTypes =
  | CT.EditorTypes.Punishment
  | CT.EditorTypes.Language
  | CT.EditorTypes.RoleMode
- | CT.EditorTypes.Emotes
  | CT.EditorTypes.AutoModRules
  | CT.EditorTypes.Commands
  | CT.EditorTypes.QuestionType
  | CT.EditorTypes.SettingLink
  | CT.EditorTypes.Embed
- | CT.EditorTypes.Questions;
+ | CT.EditorTypes.Questions
+ | CT.EditorTypes.LvlUpMode;
 
 /**
  * Returns a mention string based on the given type and value.
@@ -67,6 +67,8 @@ export default async (
   }
   case CT.EditorTypes.QuestionType:
    return language.answertypes[value as keyof typeof language.answertypes];
+  case CT.EditorTypes.LvlUpMode:
+   return language.lvlupmodes[value as keyof typeof language.lvlupmodes];
   default:
    return value;
  }

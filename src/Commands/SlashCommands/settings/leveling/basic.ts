@@ -30,20 +30,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-const getLevelUpMode = (
- type: LevelUpMode,
- lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
-) => {
+const getLevelUpMode = (type: LevelUpMode, language: CT.Language) => {
  switch (true) {
-  case type === 'message': {
-   return lan.messages;
-  }
-  case type === 'react': {
-   return lan.reactions;
-  }
-  default: {
-   return lan.silent;
-  }
+  case type === 'message':
+   return language.lvlupmodes.messages;
+  case type === 'react':
+   return language.lvlupmodes.reactions;
+  default:
+   return language.lvlupmodes.silent;
  }
 };
 
@@ -84,7 +78,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     },
     {
      name: lan.fields.lvlupmode.name,
-     value: getLevelUpMode(settings.lvlupmode, lan),
+     value: getLevelUpMode(settings.lvlupmode, language),
      inline: true,
     },
    ],

@@ -72,6 +72,7 @@ export default class Language {
  rolemodes: typeof this.JSON.rolemodes;
  scopes: typeof this.JSON.scopes;
  errors: typeof this.JSON.errors;
+ lvlupmodes: typeof this.JSON.lvlupmodes;
 
  leveling: ReturnType<typeof leveling>;
  time: ReturnType<typeof time>;
@@ -120,6 +121,7 @@ export default class Language {
   this.rolemodes = this.JSON.rolemodes;
   this.scopes = this.JSON.scopes;
   this.errors = this.JSON.errors;
+  this.lvlupmodes = this.JSON.lvlupmodes;
 
   this.leveling = leveling(this);
   this.time = time(this);
