@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -22,13 +21,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const settingsFiles = await glob(
   `${process.cwd()}${
@@ -39,7 +38,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const settingsFile = settingsFiles.find((f) =>
   f.endsWith(
    `/${
-    ch.constants.commands.settings.basicSettings.includes(linkedSettingName)
+    cmd.client.util.constants.commands.settings.basicSettings.includes(linkedSettingName)
      ? `${linkedSettingName}/basic`
      : linkedSettingName
    }.js`,
@@ -57,7 +56,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.update({
   embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
+   await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
     language,
     settingName,
     fieldName,
@@ -70,7 +69,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.changeSelect(
+     cmd.client.util.settingsHelpers.changeHelpers.changeSelect(
       fieldName,
       settingName,
       CT.EditorTypes.SettingLink,
@@ -85,8 +84,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
-     ch.settingsHelpers.changeHelpers.done(
+     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
       CT.EditorTypes.SettingLink,

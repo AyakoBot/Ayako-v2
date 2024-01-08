@@ -1,15 +1,14 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (integration: Discord.Integration) => {
- const channels = await ch.getLogChannels('guildevents', integration.guild);
+ const channels = await integration.client.util.getLogChannels('guildevents', integration.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(integration.guild.id);
+ const language = await integration.client.util.getLanguage(integration.guild.id);
  const lan = language.events.logs.integration;
- const con = ch.constants.events.logs.guild;
- const audit = await ch.getAudit(integration.guild, 80, integration.id);
+ const con = integration.client.util.constants.events.logs.guild;
+ const audit = await integration.client.util.getAudit(integration.guild, 80, integration.id);
  const auditUser = audit?.executor ?? undefined;
 
  const embed: Discord.APIEmbed = {
@@ -67,21 +66,21 @@ export default async (integration: Discord.Integration) => {
  if (integration.expireGracePeriod) {
   embed.fields?.push({
    name: lan.expireGracePeriod,
-   value: ch.moment(integration.expireGracePeriod, language),
+   value: integration.client.util.moment(integration.expireGracePeriod, language),
   });
  }
 
  if (integration.expireGracePeriod) {
   embed.fields?.push({
    name: lan.expireGracePeriod,
-   value: ch.moment(integration.expireGracePeriod, language),
+   value: integration.client.util.moment(integration.expireGracePeriod, language),
   });
  }
 
  if (integration.syncedAt) {
   embed.fields?.push({
    name: lan.syncedAt,
-   value: ch.constants.standard.getTime(integration.syncedAt.getTime()),
+   value: integration.client.util.constants.standard.getTime(integration.syncedAt.getTime()),
   });
  }
 
@@ -124,5 +123,9 @@ export default async (integration: Discord.Integration) => {
   },
  );
 
- ch.send({ id: channels, guildId: integration.guild.id }, { embeds: [embed] }, 10000);
+ integration.client.util.send(
+  { id: channels, guildId: integration.guild.id },
+  { embeds: [embed] },
+  10000,
+ );
 };

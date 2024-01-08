@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const settingName = CT.SettingNames.DenylistRules;
@@ -9,31 +8,35 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const id = args.shift();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const oldSettings = JSON.parse(JSON.stringify(cmd.guild.autoModerationRules.cache.get(id)));
- const res = await ch.request.guilds.deleteAutoModerationRule(cmd.guild, id, cmd.user.username);
+ const res = await cmd.client.util.request.guilds.deleteAutoModerationRule(
+  cmd.guild,
+  id,
+  cmd.user.username,
+ );
 
  if (typeof res !== 'undefined') {
-  ch.errorCmd(cmd, res, language);
+  cmd.client.util.errorCmd(cmd, res, language);
   return;
  }
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
+ const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) {
-  ch.error(cmd.guild, new Error('SettingsFile not found'));
+  cmd.client.util.error(cmd.guild, new Error('SettingsFile not found'));
   return;
  }
 
  const lan = language.slashCommands.settings.categories[settingName as CT.SettingNames];
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   oldSettings as never,
   undefined,
-  '*' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  '*' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,

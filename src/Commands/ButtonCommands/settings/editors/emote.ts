@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -18,15 +17,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
- const channel = await ch.getChannel.guildTextChannel(cmd.channelId);
+ const channel = await cmd.client.util.getChannel.guildTextChannel(cmd.channelId);
  if (!channel) return;
 
  if (!('threads' in channel) || channel.type === Discord.ChannelType.GuildAnnouncement) {
@@ -35,7 +34,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     {
      author: {
       name: language.t.error,
-      icon_url: ch.emotes.warning.link,
+      icon_url: cmd.client.util.emotes.warning.link,
      },
      color: CT.Colors.Danger,
      description: language.errors.noThreadCanBeCreated,
@@ -44,7 +43,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    components: [
     {
      type: Discord.ComponentType.ActionRow,
-     components: [ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp))],
+     components: [
+      cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     ],
     },
    ],
   });
@@ -52,24 +53,24 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const thread = await ch.request.channels.createThread(channel, {
+ const thread = await cmd.client.util.request.channels.createThread(channel, {
   name: language.slashCommands.settings.reactionEditor.name,
   invitable: false,
   type: Discord.ChannelType.PrivateThread,
  });
 
  if ('message' in thread) {
-  ch.errorCmd(cmd, thread.message, language);
+  cmd.client.util.errorCmd(cmd, thread.message, language);
   return;
  }
 
- ch.request.channels.sendMessage(
+ cmd.client.util.request.channels.sendMessage(
   thread.guild,
   thread.id,
   {
    content: `${cmd.user}`,
    embeds: [
-    await ch.settingsHelpers.changeHelpers.changeEmbed(
+    await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
      language,
      settingName,
      fieldName,
@@ -86,7 +87,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Secondary,
        custom_id: 'deleteThread',
-       emoji: ch.emotes.trash,
+       emoji: cmd.client.util.emotes.trash,
        label: language.t.Delete,
       },
       {
@@ -114,7 +115,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   components: [
    {
     type: Discord.ComponentType.ActionRow,
-    components: [ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp))],
+    components: [
+     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+    ],
    },
   ],
  });

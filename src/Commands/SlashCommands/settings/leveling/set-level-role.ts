@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
+import client from '../../../../BaseClient/Client.js';
 import { getComponents } from './set-level-user.js';
 
 export default async (
@@ -11,13 +11,13 @@ export default async (
  if (!cmd.inCachedGuild()) return;
 
  const role = cmd instanceof Discord.ButtonInteraction ? r : cmd.options.getRole('role', true);
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
 
- const components = ch.getChunks(getComponents(role.id, 0, 0, language, 'role'), 5);
+ const components = client.util.getChunks(getComponents(role.id, 0, 0, language, 'role'), 5);
  const excluded = getExcludedButton(language, role);
  const embed = getEmbed(language, role, 0, 0, []);
 
- ch.replyCmd(cmd, {
+ client.util.replyCmd(cmd, {
   components: [
    { type: Discord.ComponentType.ActionRow, components: components[0] },
    { type: Discord.ComponentType.ActionRow, components: components[1] },
@@ -54,12 +54,12 @@ export const getEmbed = (
  fields: [
   {
    name: language.slashCommands.setLevel.newXP,
-   value: ch.splitByThousand(newXP),
+   value: client.util.splitByThousand(newXP),
    inline: true,
   },
   {
    name: language.slashCommands.setLevel.newLvl,
-   value: ch.splitByThousand(newLevel),
+   value: client.util.splitByThousand(newLevel),
    inline: true,
   },
   {

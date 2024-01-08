@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -8,29 +7,29 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const type = args.shift() as 'last5mins' | 'caughtUsers';
  const page = Number(args.shift()) || 0;
 
- const language = await ch.getLanguage(cmd.guild.id);
+ const language = await cmd.client.util.getLanguage(cmd.guild.id);
  const file = cmd.message.attachments.find(
   (a) => a.name === (type === 'last5mins' ? 'last_5_mins_users.txt' : 'caught_users.txt'),
  );
  if (!file) {
-  ch.errorCmd(cmd, language.errors.fileNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.fileNotFound, language);
   return;
  }
 
- const text = await ch.txtFileLinkToString(file.url);
+ const text = await cmd.client.util.txtFileLinkToString(file.url);
  if (!text) {
-  ch.errorCmd(cmd, language.errors.fileNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.fileNotFound, language);
   return;
  }
 
- const textChunks = ch.getStringChunks(
-  ch.getChunks(text.split(/\r?\n/), 3).map((a) => a.join('\n')),
+ const textChunks = cmd.client.util.getStringChunks(
+  cmd.client.util.getChunks(text.split(/\r?\n/), 3).map((a) => a.join('\n')),
   4000,
  );
  const thisChunk = textChunks[page];
  if (!thisChunk) return;
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   embeds: [
    {
     description: thisChunk.join('\n'),
@@ -50,7 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
-      emoji: ch.emotes.back,
+      emoji: cmd.client.util.emotes.back,
       custom_id: `antiraid/print_${type}_${page - 1}`,
       disabled: page === 0,
      },
@@ -64,7 +63,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
-      emoji: ch.emotes.forth,
+      emoji: cmd.client.util.emotes.forth,
       custom_id: `antiraid/print_${type}_${page + 1}`,
       disabled: page === textChunks.length - 1,
      },

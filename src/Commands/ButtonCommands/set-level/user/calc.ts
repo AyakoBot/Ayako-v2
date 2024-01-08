@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import {
  getEmbed,
  getLevelComponents,
@@ -13,10 +12,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const addOrRemove = args.shift() as '+' | '-';
  const userId = args.shift() as string;
 
- const language = await ch.getLanguage(cmd.guildId);
- const user = await ch.getUser(userId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const user = await cmd.client.util.getUser(userId);
  if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.userNotFound, language);
   return;
  }
 
@@ -34,7 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const newXpOrLevel =
   xpOrLevel + (addOrRemove === '+' ? amountToAddOrRemove : -amountToAddOrRemove);
 
- const level = await ch.DataBase.level.findUnique({
+ const level = await cmd.client.util.DataBase.level.findUnique({
   where: { userid_guildid_type: { guildid: cmd.guildId, userid: user.id, type: 'guild' } },
  });
 
@@ -42,7 +41,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const newXP = type === 'x' ? newXpOrLevel : getXP(newXpOrLevel);
 
  if (newLevel < 0 || newXP < 0) {
-  ch.errorCmd(cmd, language.slashCommands.setLevel.min, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.min, language);
   return;
  }
 
@@ -56,7 +55,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   },
  );
 
- const components = ch.getChunks(
+ const components = cmd.client.util.getChunks(
   [
    ...getXPComponents(
     userId,

@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { end, getButton, getGiveawayEmbed } from './end.js';
-import { canSendMessage } from '../../../BaseClient/ClientHelperModules/requestHandler/channels/sendMessage.js';
+import { canSendMessage } from '../../../BaseClient/UtilModules/requestHandler/channels/sendMessage.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -22,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    Discord.ChannelType.AnnouncementThread,
   ]) || (cmd.channel as Discord.GuildTextBasedChannel);
  if (!channel) {
-  ch.error(cmd.guild, new Error('Channel not found'));
+  cmd.client.util.error(cmd.guild, new Error('Channel not found'));
   return;
  }
 
@@ -32,10 +31,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const claimTimeout = cmd.options.getString('claiming-timeout', false);
  const claimFailReroll = cmd.options.getBoolean('claim-fail-reroll', false);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.create;
 
- const duration = ch.getDuration(time);
+ const duration = cmd.client.util.getDuration(time);
  const endTime = Date.now() + Math.abs(duration);
  if (!endTimeIsValid(endTime, cmd, language)) return;
  if (
@@ -44,27 +43,27 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const collectTime = claimTimeout ? Math.abs(ch.getDuration(claimTimeout)) : null;
+ const collectTime = claimTimeout ? Math.abs(cmd.client.util.getDuration(claimTimeout)) : null;
  if (collectTime && collectTime < 3600000) {
-  ch.errorCmd(cmd, lan.collectTimeTooShort, language);
+  cmd.client.util.errorCmd(cmd, lan.collectTimeTooShort, language);
   return;
  }
 
- const msg = await ch.request.channels.sendMessage(
+ const msg = await cmd.client.util.request.channels.sendMessage(
   cmd.guild,
   channel.id,
   {
-   embeds: [ch.loadingEmbed({ language, lan })],
+   embeds: [cmd.client.util.loadingEmbed({ language, lan })],
   },
   cmd.client,
  );
 
  if (!msg || 'message' in msg) {
-  ch.errorCmd(cmd, msg ?? language.t.Unknown, language);
+  cmd.client.util.errorCmd(cmd, msg ?? language.t.Unknown, language);
   return;
  }
 
- const giveaway = await ch.DataBase.giveaways.create({
+ const giveaway = await cmd.client.util.DataBase.giveaways.create({
   data: {
    guildid: cmd.guild.id,
    msgid: msg.id,
@@ -81,12 +80,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  if (!giveaway) {
-  ch.errorCmd(cmd, language.t.Unknown, language);
-  if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
+  cmd.client.util.errorCmd(cmd, language.t.Unknown, language);
+  if (await cmd.client.util.isDeleteable(msg)) cmd.client.util.request.channels.deleteMessage(msg);
   return;
  }
 
- await ch.request.channels.editMsg(msg, {
+ await cmd.client.util.request.channels.editMsg(msg, {
   embeds: [await getGiveawayEmbed(language, giveaway)],
   components: [
    {
@@ -96,11 +95,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ],
  });
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.sent(channel),
  });
 
- ch.cache.giveaways.set(
+ cmd.client.util.cache.giveaways.set(
   Jobs.scheduleJob(new Date(endTime), () => {
    end(giveaway);
   }),
@@ -115,9 +114,9 @@ const canSend = async (
  cmd: CT.NeverNull<Discord.ChatInputCommandInteraction, 'guild'>,
  language: CT.Language,
 ) => {
- const me = await ch.getBotMemberFromGuild(cmd.guild);
+ const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
  if (!me) {
-  ch.error(cmd.guild, new Error('Cannot find self in guild'));
+  cmd.client.util.error(cmd.guild, new Error('Cannot find self in guild'));
   return false;
  }
 
@@ -125,7 +124,7 @@ const canSend = async (
   return true;
  }
 
- ch.errorCmd(
+ cmd.client.util.errorCmd(
   cmd as Discord.ChatInputCommandInteraction,
   language.slashCommands.giveaway.create.missingPermissions,
   language,
@@ -141,7 +140,7 @@ export const endTimeIsValid = (
  try {
   new Date(endTime);
  } catch (e) {
-  ch.errorCmd(cmd, e as Error, language);
+  cmd.client.util.errorCmd(cmd, e as Error, language);
   return false;
  }
 

@@ -2,27 +2,26 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const messageID = cmd.options.getString('message-id', true);
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
- const giveaway = await ch.DataBase.giveaways.findUnique({
+ const giveaway = await client.util.DataBase.giveaways.findUnique({
   where: { msgid: messageID, ended: false },
  });
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
+  client.util.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
   return;
  }
 
  await end(giveaway);
 
- ch.replyCmd(cmd, { content: lan.manuallyEnded });
+ client.util.replyCmd(cmd, { content: lan.manuallyEnded });
 };
 
 export const end = async (g: Prisma.giveaways) => {
@@ -52,7 +51,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
  return {
   author: {
    name: language.slashCommands.giveaway.create.author,
-   icon_url: ch.emotes.ayakoLove.link,
+   icon_url: client.util.emotes.ayakoLove.link,
   },
   description: giveaway.description,
   title: giveaway.participants?.length
@@ -62,7 +61,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
    {
     name: language.slashCommands.giveaway.create.winners(Number(giveaway.winnercount)),
     value: language.slashCommands.giveaway.create.end(
-     ch.constants.standard.getTime(Number(giveaway.endtime)),
+     client.util.constants.standard.getTime(Number(giveaway.endtime)),
     ),
    },
    giveaway.reqrole
@@ -78,21 +77,21 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
       icon_url: host.displayAvatarURL(),
      }
    : undefined,
-  color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
+  color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
  };
 };
 
 export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) => {
- const giveaway = await ch.DataBase.giveaways.findUnique({
+ const giveaway = await client.util.DataBase.giveaways.findUnique({
   where: { msgid: msgID },
  });
 
  if (!giveaway) {
-  ch.error(guild, new Error('Giveaway not found'));
+  client.util.error(guild, new Error('Giveaway not found'));
   return;
  }
 
- const language = await ch.getLanguage(giveaway.guildid);
+ const language = await client.util.getLanguage(giveaway.guildid);
  const embed = await getGiveawayEmbed(language, giveaway);
 
  embed.author.name += ` | ${language.slashCommands.giveaway.end.ended}`;
@@ -109,7 +108,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   const winners = new Array(giveaway.winners.length || Number(giveaway.winnercount))
    .fill(0)
    .map(() => {
-    const random = ch.getRandom(0, Number(giveaway.participants?.length || 1) - 1);
+    const random = client.util.getRandom(0, Number(giveaway.participants?.length || 1) - 1);
     const winner = giveaway.participants[random];
     giveaway.participants.splice(giveaway.participants.indexOf(winner), 1);
 
@@ -119,7 +118,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
 
   giveaway.winners = winners;
 
-  ch.DataBase.giveaways
+  client.util.DataBase.giveaways
    .update({
     where: { msgid: giveaway.msgid },
     data: {
@@ -143,7 +142,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- await ch.request.channels.editMsg(msg, {
+ await client.util.request.channels.editMsg(msg, {
   embeds: [embed],
   components: [
    {
@@ -158,22 +157,26 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
 
  if (!giveaway.winners?.length) return;
 
- const host = await ch.getUser(giveaway.host);
- if (!host) ch.error(msg.guild, new Error('Host not found'));
+ const host = await client.util.getUser(giveaway.host);
+ if (!host) client.util.error(msg.guild, new Error('Host not found'));
 
  const collectionEnd = Date.now() + Number(giveaway.collecttime);
 
- const replyMsg = await ch.send(msg.channel, {
+ const replyMsg = await client.util.send(msg.channel, {
   content: giveaway.winners.map((w) => `<@${w}>`).join(', '),
   embeds: [
    {
     author: {
      name: language.slashCommands.giveaway.create.author,
-     icon_url: ch.emotes.ayakoLove.link,
+     icon_url: client.util.emotes.ayakoLove.link,
     },
     title: language.slashCommands.giveaway.end.title,
     color: CT.Colors.Success,
-    url: ch.constants.standard.msgurl(giveaway.guildid, giveaway.channelid, giveaway.msgid),
+    url: client.util.constants.standard.msgurl(
+     giveaway.guildid,
+     giveaway.channelid,
+     giveaway.msgid,
+    ),
     fields:
      !giveaway.collecttime || !giveaway.actualprize
       ? [
@@ -186,7 +189,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
          {
           name: language.slashCommands.giveaway.end.clickButton,
           value: language.slashCommands.giveaway.end.until(
-           ch.constants.standard.getTime(collectionEnd),
+           client.util.constants.standard.getTime(collectionEnd),
           ),
          },
         ],
@@ -200,13 +203,17 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Link,
       label: language.slashCommands.giveaway.end.button,
-      url: ch.constants.standard.msgurl(giveaway.guildid, giveaway.channelid, giveaway.msgid),
+      url: client.util.constants.standard.msgurl(
+       giveaway.guildid,
+       giveaway.channelid,
+       giveaway.msgid,
+      ),
      },
      {
       type: Discord.ComponentType.Button,
       label: language.slashCommands.giveaway.end.reroll,
       style: Discord.ButtonStyle.Danger,
-      emoji: ch.emotes.refresh,
+      emoji: client.util.emotes.refresh,
       custom_id: `giveaway/reroll_${giveaway.msgid}`,
      },
     ],
@@ -215,14 +222,14 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  });
 
  if (!replyMsg) {
-  ch.error(msg.guild, new Error('Winners could not be notified'));
+  client.util.error(msg.guild, new Error('Winners could not be notified'));
   return;
  }
 
  if (!giveaway.collecttime) return;
  if (!giveaway.actualprize) return;
 
- const collection = await ch.DataBase.giveawaycollection.findUnique({
+ const collection = await client.util.DataBase.giveawaycollection.findUnique({
   where: { msgid: giveaway.msgid },
  });
 
@@ -233,12 +240,12 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
    msgid: collection.replymsgid,
   });
 
-  if (oldReplyMsg && (await ch.isDeleteable(oldReplyMsg))) {
-   ch.request.channels.deleteMessage(oldReplyMsg);
+  if (oldReplyMsg && (await client.util.isDeleteable(oldReplyMsg))) {
+   client.util.request.channels.deleteMessage(oldReplyMsg);
   }
  }
 
- ch.DataBase.giveawaycollection
+ client.util.DataBase.giveawaycollection
   .upsert({
    where: { msgid: giveaway.msgid },
    create: {
@@ -256,9 +263,9 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
   })
   .then();
 
- ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
+ client.util.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
 
- ch.cache.giveawayClaimTimeout.set(
+ client.util.cache.giveawayClaimTimeout.set(
   Jobs.scheduleJob(new Date(collectionEnd), () => {
    giveawayCollectTimeExpired(giveaway.msgid, giveaway.guildid);
   }),
@@ -273,15 +280,12 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
    const guild = cl.guilds.cache.get(gID);
    if (!guild) return;
 
-   const chEval: typeof ch = await import(
-    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
-   );
-   const giveaway = await chEval.DataBase.giveaways.findUnique({
+   const giveaway = await cl.util.DataBase.giveaways.findUnique({
     where: { msgid: mID },
    });
 
    if (!giveaway) {
-    ch.error(guild, new Error('Giveaway not found'));
+    client.util.error(guild, new Error('Giveaway not found'));
     return;
    }
 
@@ -315,17 +319,17 @@ export const getMessage = async (giveaway: {
  const guild = client.guilds.cache.get(giveaway.guildid);
  if (!guild) return undefined;
 
- const channel = await ch.getChannel.guildTextChannel(giveaway.channelid);
+ const channel = await client.util.getChannel.guildTextChannel(giveaway.channelid);
  if (!channel) {
-  ch.error(guild, new Error('Channel not found'));
+  client.util.error(guild, new Error('Channel not found'));
 
-  ch.DataBase.giveaways
+  client.util.DataBase.giveaways
    .delete({
     where: { channelid: giveaway.channelid, guildid: giveaway.guildid, msgid: giveaway.msgid },
    })
    .then();
 
-  ch.DataBase.giveawaycollection
+  client.util.DataBase.giveawaycollection
    .delete({
     where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
    })
@@ -333,21 +337,21 @@ export const getMessage = async (giveaway: {
   return undefined;
  }
 
- const msg = await ch.request.channels.getMessage(channel, giveaway.msgid);
+ const msg = await client.util.request.channels.getMessage(channel, giveaway.msgid);
  if ('message' in msg) {
-  ch.DataBase.giveaways
+  client.util.DataBase.giveaways
    .delete({
     where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
    })
    .then();
 
-  ch.DataBase.giveawaycollection
+  client.util.DataBase.giveawaycollection
    .delete({
     where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
    })
    .then();
 
-  ch.error(guild, msg);
+  client.util.error(guild, msg);
   return undefined;
  }
 
@@ -362,7 +366,7 @@ export const getButton = (
  style: Discord.ButtonStyle.Primary,
  custom_id: 'giveaway/participate',
  label: language.slashCommands.giveaway.create.participate,
- emoji: ch.emotes.gift,
+ emoji: client.util.emotes.gift,
  disabled: giveaway.ended,
 });
 
@@ -379,7 +383,7 @@ export const getClaimButton = (
 });
 
 export const failReroll = async (giveaway: Prisma.giveaways) => {
- const collection = await ch.DataBase.giveawaycollection.findUnique({
+ const collection = await client.util.DataBase.giveawaycollection.findUnique({
   where: { msgid: giveaway.msgid },
  });
 
@@ -391,18 +395,20 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
   });
 
   if (!oldReplyMsg) return;
-  if (await ch.isDeleteable(oldReplyMsg)) ch.request.channels.deleteMessage(oldReplyMsg);
+  if (await client.util.isDeleteable(oldReplyMsg)) {
+   client.util.request.channels.deleteMessage(oldReplyMsg);
+  }
  }
 
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- const language = await ch.getLanguage(giveaway.guildid);
+ const language = await client.util.getLanguage(giveaway.guildid);
  const claimButton = getClaimButton(language, giveaway);
  claimButton.label = language.slashCommands.giveaway.end.expired;
  claimButton.disabled = true;
 
- await ch.request.channels.editMsg(msg, {
+ await client.util.request.channels.editMsg(msg, {
   components: [
    {
     type: Discord.ComponentType.ActionRow,
@@ -413,13 +419,13 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
   ],
  });
 
- ch.DataBase.giveawaycollection
+ client.util.DataBase.giveawaycollection
   .delete({
    where: { msgid: giveaway.msgid },
   })
   .then();
 
- ch.DataBase.giveaways
+ client.util.DataBase.giveaways
   .update({
    where: { msgid: giveaway.msgid },
    data: { claimingdone: true },

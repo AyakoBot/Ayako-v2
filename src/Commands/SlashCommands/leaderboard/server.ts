@@ -1,33 +1,33 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
  const user = cmd.options.getUser('user', false) ?? cmd.user;
 
- const levels = await ch.DataBase.level.findMany({
+ const levels = await client.util.DataBase.level.findMany({
   where: { guildid: cmd.guildId },
   orderBy: { xp: 'desc' },
   take: 30,
  });
 
- const self = await ch.DataBase.level.findUnique({
+ const self = await client.util.DataBase.level.findUnique({
   where: { userid_guildid_type: { userid: user.id, guildid: cmd.guildId, type: 'guild' } },
  });
 
  const higherXpCount = self
-  ? await ch.DataBase.level.count({
+  ? await client.util.DataBase.level.count({
      where: { xp: { gt: self.xp }, guildid: cmd.guildId },
     })
   : undefined;
 
  const position = higherXpCount ?? undefined;
- const users = await Promise.all(levels.map((l) => ch.getUser(l.userid)));
+ const users = await Promise.all(levels.map((l) => client.util.getUser(l.userid)));
 
  const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
  const ownLevel = self ? await getOwnLevel(self, language, lan) : undefined;
@@ -44,7 +44,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  embed.fields?.push(...(ownLevel ?? []));
 
- ch.replyCmd(cmd, { embeds: [embed] });
+ client.util.replyCmd(cmd, { embeds: [embed] });
 };
 
 export const getOwnLevel = async (
@@ -52,7 +52,7 @@ export const getOwnLevel = async (
  language: CT.Language,
  lan: CT.Language['slashCommands']['leaderboard'],
 ): Promise<{ name: string; value: string; inline: boolean }[]> => {
- const settings = await ch.DataBase.leveling.findUnique({
+ const settings = await client.util.DataBase.leveling.findUnique({
   where: {
    guildid: self.guildid,
   },
@@ -63,7 +63,7 @@ export const getOwnLevel = async (
 
  const newLevel = Number(self.level) + 1;
  const neededXP = (5 / 6) * newLevel * (2 * newLevel * newLevel + 27 * newLevel + 91);
- const duration = ch.moment(
+ const duration = client.util.moment(
   Math.floor((neededXP - Number(self.xp)) / (xpPerMsg + 10) / gain) * 60000,
   language,
  );
@@ -71,22 +71,22 @@ export const getOwnLevel = async (
  return [
   {
    name: lan.currentLvl,
-   value: ch.splitByThousand(newLevel - 1),
+   value: client.util.splitByThousand(newLevel - 1),
    inline: false,
   },
   {
    name: lan.currentXP,
-   value: ch.splitByThousand(Number(self.xp)),
+   value: client.util.splitByThousand(Number(self.xp)),
    inline: true,
   },
   {
    name: lan.nextLevelXP,
-   value: ch.splitByThousand(neededXP),
+   value: client.util.splitByThousand(neededXP),
    inline: true,
   },
   {
    name: lan.xpDifference,
-   value: ch.splitByThousand(neededXP - Number(self.xp)),
+   value: client.util.splitByThousand(neededXP - Number(self.xp)),
    inline: true,
   },
   {
@@ -106,7 +106,9 @@ export const getLongest = (
  users: (Discord.User | undefined)[],
 ) => {
  let longestLevel = Math.max(...levels.map((l) => String(l.level).length));
- let longestXP = Math.max(...levels.map((l) => String(ch.splitByThousand(Number(l.xp))).length));
+ let longestXP = Math.max(
+  ...levels.map((l) => String(client.util.splitByThousand(Number(l.xp))).length),
+ );
  let longestUsername = Math.max(
   ...users
    .map((u) =>
@@ -136,13 +138,13 @@ export const makeLine = (
   .replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '')
   .replace(/\s+/g, ' ');
 
- return `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
-  String(level),
-  longestLevel,
- )} | ${ch.spaces(ch.splitByThousand(xp), longestXP)} | ${ch.spaces(
-  name.length > 3 ? name : '-',
-  longestUsername,
- )}`;
+ return `${client.util.spaces(
+  `${client.util.splitByThousand(pos + 1)}.`,
+  7,
+ )} | ${client.util.spaces(String(level), longestLevel)} | ${client.util.spaces(
+  client.util.splitByThousand(xp),
+  longestXP,
+ )} | ${client.util.spaces(name.length > 3 ? name : '-', longestUsername)}`;
 };
 
 export const getEmbed = async (
@@ -161,7 +163,7 @@ export const getEmbed = async (
   {
    name: lan.yourPos,
    value: position
-    ? `${ch.util.makeInlineCode(
+    ? `${client.util.util.makeInlineCode(
        makeLine(
         position,
         { level: Number(level), longestLevel },
@@ -172,12 +174,15 @@ export const getEmbed = async (
     : lan.notRanked,
   },
  ],
- color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
- description: `${ch.util.makeInlineCode(
-  `${ch.spaces(lan.rank, 7)} | ${ch.spaces(lan.level, longestLevel)} | ${ch.spaces(
-   lan.xp,
-   longestXP,
-  )} | ${ch.spaces(language.t.User, longestUsername)}\n${levels
+ color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
+ description: `${client.util.util.makeInlineCode(
+  `${client.util.spaces(lan.rank, 7)} | ${client.util.spaces(
+   lan.level,
+   longestLevel,
+  )} | ${client.util.spaces(lan.xp, longestXP)} | ${client.util.spaces(
+   language.t.User,
+   longestUsername,
+  )}\n${levels
    .map((l, i) =>
     makeLine(
      i,

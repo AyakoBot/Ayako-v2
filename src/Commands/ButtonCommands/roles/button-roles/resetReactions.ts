@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import {
  Type,
  getBaseSettings,
@@ -10,19 +9,19 @@ import refresh from './refresh.js';
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
- const message = (await ch.getMessage(
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const message = (await cmd.client.util.getMessage(
   cmd.message.embeds[0].url as string,
  )) as Discord.Message<true>;
 
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
  }
 
  const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
  if (!baseSettings) {
-  ch.error(cmd.guild, new Error('Failed to find settings'));
+  cmd.client.util.error(cmd.guild, new Error('Failed to find settings'));
   return;
  }
 
@@ -37,17 +36,20 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
 
   const firstEmoji = reactionsToRemove.shift();
   action = firstEmoji
-   ? await ch.request.channels.deleteAllReactionsOfEmoji(message, firstEmoji?.emoji.identifier)
+   ? await cmd.client.util.request.channels.deleteAllReactionsOfEmoji(
+      message,
+      firstEmoji?.emoji.identifier,
+     )
    : undefined;
   if (action && 'message' in action && typeof action.message !== 'string') {
    reactionsToRemove.forEach((r) =>
-    ch.request.channels.deleteAllReactionsOfEmoji(message, r.emoji.identifier),
+    cmd.client.util.request.channels.deleteAllReactionsOfEmoji(message, r.emoji.identifier),
    );
   }
- } else action = await ch.request.channels.deleteAllReactions(message);
+ } else action = await cmd.client.util.request.channels.deleteAllReactions(message);
 
  if (action && 'message' in action && typeof action.message === 'string') {
-  ch.errorCmd(cmd, action, language);
+  cmd.client.util.errorCmd(cmd, action, language);
   return;
  }
 

@@ -1,15 +1,14 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (invite: Discord.Invite, guild: Discord.Guild) => {
- const channels = await ch.getLogChannels('inviteevents', guild);
+ const channels = await invite.client.util.getLogChannels('inviteevents', guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await invite.client.util.getLanguage(guild.id);
  const lan = language.events.logs.invite;
- const con = ch.constants.events.logs.invite;
- const audit = await ch.getAudit(guild, 40, invite.code);
+ const con = invite.client.util.constants.events.logs.invite;
+ const audit = await invite.client.util.getAudit(guild, 40, invite.code);
  const auditUser = audit?.executor ?? undefined;
 
  const embed: Discord.APIEmbed = {
@@ -74,14 +73,14 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
  if (invite.createdAt) {
   embed.fields?.push({
    name: language.t.createdAt,
-   value: ch.constants.standard.getTime(invite.createdAt.getTime()),
+   value: invite.client.util.constants.standard.getTime(invite.createdAt.getTime()),
   });
  }
 
  if (invite.maxAge) {
   embed.fields?.push({
    name: lan.maxAge,
-   value: ch.moment(invite.maxAge, language),
+   value: invite.client.util.moment(invite.maxAge, language),
   });
  }
 
@@ -90,5 +89,5 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   value: String(invite.maxUses || '∞'),
  });
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
+ invite.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

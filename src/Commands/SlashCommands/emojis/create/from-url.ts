@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -10,14 +9,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  try {
   new URL(img);
  } catch (e) {
-  ch.errorCmd(cmd, e as Error, await ch.getLanguage(cmd.guildId));
+  cmd.client.util.errorCmd(cmd, e as Error, await cmd.client.util.getLanguage(cmd.guildId));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
- const createdEmote = await ch.request.guilds.createEmoji(
+ const createdEmote = await cmd.client.util.request.guilds.createEmoji(
   cmd.guild,
   {
    name,
@@ -27,9 +26,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in createdEmote) {
-  ch.errorCmd(cmd, createdEmote.message, language);
+  cmd.client.util.errorCmd(cmd, createdEmote.message, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.created(createdEmote) });
+ cmd.client.util.replyCmd(cmd, { content: lan.created(createdEmote) });
 };

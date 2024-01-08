@@ -1,19 +1,18 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.Guild) => {
- const channels = await ch.getLogChannels('userevents', guild);
+ const channels = await guild.client.util.getLogChannels('userevents', guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.logs.user;
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
    name: lan.name,
-   url: ch.constants.standard.userURL(user),
+   url: guild.client.util.constants.standard.userURL(user),
   },
   description: lan.desc(user),
   fields: [],
@@ -22,14 +21,16 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  guild.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (user.avatar !== oldUser.avatar) {
-  const attachment = (await ch.fileURL2Buffer([user.displayAvatarURL({ size: 4096 })]))?.[0];
+  const attachment = (
+   await guild.client.util.fileURL2Buffer([user.displayAvatarURL({ size: 4096 })])
+  )?.[0];
 
   merge(
    user.displayAvatarURL({ size: 4096 }),
-   ch.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
+   guild.client.util.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
    'icon',
    lan.avatar,
   );
@@ -39,8 +40,8 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  if (user.flags !== oldUser.flags) {
   const flagsBefore = oldUser.flags?.toArray() ?? [];
   const flagsAfter = user.flags?.toArray() ?? [];
-  const removed = ch.getDifference(flagsBefore, flagsAfter);
-  const added = ch.getDifference(flagsAfter, flagsBefore);
+  const removed = guild.client.util.getDifference(flagsBefore, flagsAfter);
+  const added = guild.client.util.getDifference(flagsAfter, flagsBefore);
 
   if (removed.length || added.length) {
    merge(
@@ -75,11 +76,13 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   merge(oldUser.username ?? language.t.Unknown, user.username, 'string', lan.username);
  }
  if (user.banner !== oldUser.banner && user.bannerURL()) {
-  const attachment = (await ch.fileURL2Buffer([user.bannerURL({ size: 4096 }) as string]))?.[0];
+  const attachment = (
+   await guild.client.util.fileURL2Buffer([user.bannerURL({ size: 4096 }) as string])
+  )?.[0];
 
   merge(
    user.bannerURL({ size: 4096 }),
-   ch.getNameAndFileType(user.bannerURL({ size: 4096 }) as string),
+   guild.client.util.getNameAndFileType(user.bannerURL({ size: 4096 }) as string),
    'image',
    lan.banner,
   );
@@ -89,5 +92,5 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
  }
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
+ guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
 };

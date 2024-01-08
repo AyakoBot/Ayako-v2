@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import * as ch from '../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.check,
@@ -21,11 +20,11 @@ export default (t: CT.Language) => ({
  ) =>
   t.stp(t.JSON.slashCommands.check.desc, {
    user: t.languageFunction.getUser(user),
-   w: ch.util.makeBold(String(w)),
-   m: ch.util.makeBold(String(m)),
-   cb: ch.util.makeBold(String(cb)),
-   b: ch.util.makeBold(String(b)),
-   r: ch.util.makeBold(String(r)),
+   w: t.util.util.makeBold(String(w)),
+   m: t.util.util.makeBold(String(m)),
+   cb: t.util.util.makeBold(String(cb)),
+   b: t.util.util.makeBold(String(b)),
+   r: t.util.util.makeBold(String(r)),
    isBanned: isBanned
     ? `${banEmote} ${t.JSON.slashCommands.check.status.banned}`
     : `${banEmote} ${t.JSON.slashCommands.check.status.notBanned}`,

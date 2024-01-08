@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.id === msg.client.user.id) return;
  if (msg.author.discriminator === '0000' && msg.author.bot) return;
 
- const stickyMessage = await ch.DataBase.stickymessages.findUnique({
+ const stickyMessage = await msg.client.util.DataBase.stickymessages.findUnique({
   where: {
    guildid: msg.guildId,
    channelid: msg.channelId,
@@ -16,12 +15,12 @@ export default async (msg: Discord.Message<true>) => {
 
  if (!stickyMessage) return;
 
- const message = await ch.request.channels
+ const message = await msg.client.util.request.channels
   .getMessage(msg.channel, stickyMessage.lastmsgid)
   .then((m) => ('message' in m ? undefined : m));
 
  if (!message) {
-  ch.DataBase.stickymessages
+  msg.client.util.DataBase.stickymessages
    .delete({
     where: { guildid: msg.guildId, channelid: msg.channelId },
    })
@@ -30,19 +29,21 @@ export default async (msg: Discord.Message<true>) => {
   return;
  }
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
  const lan = language.contextCommands.message['Stick Message'];
 
- ch.cache.stickyTimeouts.delete(msg.channelId);
- ch.cache.stickyTimeouts.set(
+ msg.client.util.cache.stickyTimeouts.delete(msg.channelId);
+ msg.client.util.cache.stickyTimeouts.set(
   msg.channelId,
   stickyMessage.lastmsgid,
   Jobs.scheduleJob(new Date(Date.now() + 60000), async () => {
-   const webhook = await ch.getChannelWebhook(msg.channel);
-   if (!webhook) ch.error(msg.guild, new Error('Webhook to post Message with not found'));
+   const webhook = await msg.client.util.getChannelWebhook(msg.channel);
+   if (!webhook) {
+    msg.client.util.error(msg.guild, new Error('Webhook to post Message with not found'));
+   }
 
    const user = msg.client.users.cache.get(stickyMessage.userid);
-   if (!user) ch.error(msg.guild, new Error('User to post Message as not found'));
+   if (!user) msg.client.util.error(msg.guild, new Error('User to post Message as not found'));
 
    const payload: CT.UsualMessagePayload = {
     content: message.content,
@@ -66,25 +67,32 @@ export default async (msg: Discord.Message<true>) => {
 
    const m =
     webhook && webhook.token
-     ? await ch.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
+     ? await msg.client.util.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
         username: user?.bot ? user.username : user?.displayName ?? msg.client.user.username,
         avatar_url: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
         ...(payload as Omit<CT.UsualMessagePayload, 'files'>),
        })
-     : await ch.send(msg.channel, payload);
+     : await msg.client.util.send(msg.channel, payload);
 
    if (!m) return;
 
    if ('message' in m) {
-    ch.error(msg.guild, new Error(m.message));
+    msg.client.util.error(msg.guild, new Error(m.message));
     return;
    }
 
    if (webhook && message.author.id === webhook.id && webhook.token) {
-    ch.request.webhooks.deleteMessage(msg.guild, webhook.id, webhook.token, message.id);
-   } else if (await ch.isDeleteable(message)) ch.request.channels.deleteMessage(message);
+    msg.client.util.request.webhooks.deleteMessage(
+     msg.guild,
+     webhook.id,
+     webhook.token,
+     message.id,
+    );
+   } else if (await msg.client.util.isDeleteable(message)) {
+    msg.client.util.request.channels.deleteMessage(message);
+   }
 
-   ch.DataBase.stickymessages
+   msg.client.util.DataBase.stickymessages
     .update({
      where: {
       guildid: msg.guildId,
@@ -96,7 +104,7 @@ export default async (msg: Discord.Message<true>) => {
     })
     .then();
 
-   ch.cache.stickyTimeouts.delete(msg.channelId);
+   msg.client.util.cache.stickyTimeouts.delete(msg.channelId);
   }),
  );
 };

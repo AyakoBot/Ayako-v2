@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!cmd.isFromMessage()) return;
@@ -8,7 +7,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  const name = cmd.fields.getTextInputValue('name');
  const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data).data;
 
- ch.DataBase.customembeds
+ cmd.client.util.DataBase.customembeds
   .create({
    data: {
     color: embed.color ? String(embed.color) : null,
@@ -33,7 +32,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   })
   .then();
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.save;
 
  cmd.reply({

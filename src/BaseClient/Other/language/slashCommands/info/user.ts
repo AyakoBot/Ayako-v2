@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../../Typings/Typings.js';
-import * as ch from '../../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.info.user,
@@ -11,7 +10,7 @@ export default (t: CT.Language) => ({
  userInfo: (user: Discord.User) =>
   t.stp(t.JSON.slashCommands.info.user.userInfo, {
    user,
-   conUser: ch.constants.standard.user(user),
+   conUser: t.util.constants.standard.user(user),
    accentColor: user.accentColor
     ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\``
     : t.JSON.t.None,

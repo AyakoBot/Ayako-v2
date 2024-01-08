@@ -1,7 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import {
  doAnnouncement,
@@ -19,12 +18,12 @@ export default async (
  member: Discord.GuildMember | undefined,
  setting: Prisma.votesettings,
 ) => {
- const allRewards = await ch.DataBase.voterewards.findMany({
+ const allRewards = await guild.client.util.DataBase.voterewards.findMany({
   where: {
    guildid: guild.id,
   },
  });
- const language = await ch.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, guild, language);
@@ -40,7 +39,7 @@ export default async (
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
-  ch.DataBase.voters
+  guild.client.util.DataBase.voters
    .upsert({
     where: { userid_voted: { userid: user.id, voted: vote.guild } },
     update: {
@@ -80,11 +79,16 @@ const roles = async (
  if (!r.rewardroles?.length) return;
  if (!member) return;
 
- const me = await ch.getBotMemberFromGuild(member.guild);
+ const me = await guild.client.util.getBotMemberFromGuild(member.guild);
  if (!me) {
-  ch.error(member.guild, new Error("I can't find myself in this guild!"));
+  guild.client.util.error(member.guild, new Error("I can't find myself in this guild!"));
   return;
  }
 
- ch.roleManager.add(member, r.rewardroles, language.events.vote.guildReason(guild), 1);
+ guild.client.util.roleManager.add(
+  member,
+  r.rewardroles,
+  language.events.vote.guildReason(guild),
+  1,
+ );
 };

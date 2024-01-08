@@ -1,4 +1,3 @@
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
@@ -15,7 +14,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   | 'channelban';
  if (!type) return [];
 
- const punishments = await ch.getPunishment(user, {
+ const punishments = await cmd.guild.client.util.getPunishment(user, {
   identType: 'with-type',
   ident: type,
   guildid: cmd.guild.id,

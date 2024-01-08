@@ -1,54 +1,43 @@
+import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import type * as separator from '../../guildEvents/guildMemberUpdate/separator.js';
 
 export default async () => {
- const settings = await ch.DataBase.roleseparatorsettings.findMany({
+ const settings = await client.util.DataBase.roleseparatorsettings.findMany({
   where: { startat: { lt: Date.now() - 3900000 } },
  });
 
  settings.forEach((s) => {
-  client.shard?.broadcastEval(
+  client.cluster?.broadcastEval(
    async (cl, { guildid, channelid, messageid }) => {
     const guild = cl.guilds.cache.get(guildid);
     if (!guild) return;
 
-    const chEval: typeof ch = await import(
-     `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
+    cl.util.files['/Events/guildEvents/guildMemberUpdate/separator.js'].separatorAssigner
+     .get(guild.id)
+     ?.forEach((job) => {
+      job.cancel();
+     });
+
+    cl.util.files['/Events/guildEvents/guildMemberUpdate/separator.js'].separatorAssigner.delete(
+     guild.id,
     );
-    const { separatorAssigner }: typeof separator = await import(
-     `${process.cwd()}${
-      process.cwd().includes('dist') ? '' : '/dist'
-     }/Events/guildEvents/guildMemberUpdate/separator.js`
-    );
 
-    if (!separatorAssigner) return;
-    separatorAssigner.get(guild.id)?.forEach((job) => {
-     job.cancel();
-    });
-
-    separatorAssigner.delete(guild.id);
-
-    const channel = channelid ? await chEval.getChannel.guildTextChannel(channelid) : undefined;
+    const channel = channelid
+     ? await client.util.getChannel.guildTextChannel(channelid)
+     : undefined;
     const message =
      messageid && channel
-      ? await chEval.request.channels
+      ? await client.util.request.channels
          .getMessage(channel, messageid)
          .then((m) => ('message' in m ? undefined : m))
       : undefined;
 
-    const oTR: typeof separator = await import(
-     `${process.cwd()}${
-      process.cwd().includes('dist') ? '' : '/dist'
-     }/Events/guildEvents/guildMemberUpdate/separator.js`
-    );
-
     Jobs.scheduleJob(new Date(Date.now() + 300000), () => {
-     oTR.oneTimeRunner(
+     cl.util.files['/Events/guildEvents/guildMemberUpdate/separator.js'].oneTimeRunner(
       message ?? {
        guild,
-       author: cl.user,
+       author: cl.user as Discord.User,
        channel,
        id: messageid,
       },

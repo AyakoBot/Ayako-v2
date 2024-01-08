@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,19 +7,21 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!valid) return;
 
  await cmd.deferUpdate();
- if (await ch.isDeleteable(cmd.message)) ch.request.channels.deleteMessage(cmd.message);
- ch.DataBase.suggestionvotes.delete({ where: { msgid: cmd.message.id } }).then();
+ if (await cmd.client.util.isDeleteable(cmd.message)) {
+  cmd.client.util.request.channels.deleteMessage(cmd.message);
+ }
+ cmd.client.util.DataBase.suggestionvotes.delete({ where: { msgid: cmd.message.id } }).then();
 };
 
 const isValid = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.suggest;
 
- const settings = await ch.DataBase.suggestionsettings.findUnique({
+ const settings = await cmd.client.util.DataBase.suggestionsettings.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
 
- const suggestion = await ch.DataBase.suggestionvotes.findUnique({
+ const suggestion = await cmd.client.util.DataBase.suggestionvotes.findUnique({
   where: { msgid: cmd.message.id, userid: cmd.user.id },
  });
 
@@ -28,7 +29,7 @@ const isValid = async (cmd: Discord.ButtonInteraction<'cached'>) => {
   suggestion?.userid !== cmd.user.id ||
   !cmd.member.roles.cache.hasAny(...(settings?.approverroleid ?? []))
  ) {
-  ch.errorCmd(cmd, lan.notOwner, language);
+  cmd.client.util.errorCmd(cmd, lan.notOwner, language);
   return false;
  }
 

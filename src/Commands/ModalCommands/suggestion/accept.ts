@@ -1,29 +1,28 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { API } from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client, { API } from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.suggest;
 
- const suggestion = await ch.DataBase.suggestionvotes.findUnique({
+ const suggestion = await client.util.DataBase.suggestionvotes.findUnique({
   where: { msgid: args[0] },
  });
  if (!suggestion) {
-  ch.errorCmd(cmd, lan.notFound, language);
+  client.util.errorCmd(cmd, lan.notFound, language);
   return;
  }
 
- const message = await ch.getMessage(
-  ch.constants.standard.msgurl(cmd.guildId, cmd.channelId ?? '', args[0]),
+ const message = await client.util.getMessage(
+  client.util.constants.standard.msgurl(cmd.guildId, cmd.channelId ?? '', args[0]),
  );
  if (!message || !message.inGuild()) {
-  ch.errorCmd(cmd, lan.notFound, language);
+  client.util.errorCmd(cmd, lan.notFound, language);
   return;
  }
 
@@ -33,7 +32,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
  const embed: Discord.APIEmbed = {
   author: {
    name: accept ? lan.accepted : lan.rejected,
-   url: ch.constants.standard.invite,
+   url: client.util.constants.standard.invite,
   },
   color: accept ? CT.Colors.Success : CT.Colors.Danger,
   description: paragraph.length ? paragraph : undefined,
@@ -59,7 +58,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
       label: language.t.Delete,
-      emoji: ch.emotes.trash,
+      emoji: client.util.emotes.trash,
       custom_id: `suggestion/delete`,
      },
     ],
@@ -67,15 +66,15 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
   ],
  };
 
- if (message.author.id === ch.mainID) {
+ if (message.author.id === client.util.mainID) {
   API.channels.editMessage(message.channelId, message.id, payload);
- } else if (await ch.isEditable(message)) {
-  ch.request.channels.editMsg(message, payload);
+ } else if (await client.util.isEditable(message)) {
+  client.util.request.channels.editMsg(message, payload);
  }
 
  const where = accept ? { deleteapproved: true } : { deletedenied: true };
 
- const settings = await ch.DataBase.suggestionsettings.findUnique({
+ const settings = await client.util.DataBase.suggestionsettings.findUnique({
   where: {
    ...where,
    guildid: cmd.guildId,
@@ -88,7 +87,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
  });
 
  if (!settings) {
-  ch.DataBase.suggestionvotes
+  client.util.DataBase.suggestionvotes
    .delete({
     where: { msgid: message.id },
    })
@@ -96,12 +95,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
   return;
  }
 
- ch.DataBase.suggestionvotes.update({
+ client.util.DataBase.suggestionvotes.update({
   where: { msgid: message.id },
   data: { approved: accept },
  });
 
- ch.cache.deleteSuggestions.set(
+ client.util.cache.deleteSuggestions.set(
   Jobs.scheduleJob(
    new Date(
     Date.now() +
@@ -117,15 +116,18 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
 };
 
 export const endDeleteSuggestion = async (suggestion: Prisma.suggestionvotes) => {
- const message = await ch.getMessage(
-  ch.constants.standard.msgurl(suggestion.guildid, suggestion.channelid, suggestion.msgid),
+ const message = await client.util.getMessage(
+  client.util.constants.standard.msgurl(suggestion.guildid, suggestion.channelid, suggestion.msgid),
  );
 
  if (!message || !message.inGuild()) {
-  ch.DataBase.suggestionvotes.delete({ where: { msgid: suggestion.msgid } }).then();
+  client.util.DataBase.suggestionvotes.delete({ where: { msgid: suggestion.msgid } }).then();
   return;
  }
 
- if (message.author.id === ch.mainID) API.channels.deleteMessage(message.channelId, message.id);
- else if (await ch.isDeleteable(message)) ch.request.channels.deleteMessage(message);
+ if (message.author.id === client.util.mainID) {
+  API.channels.deleteMessage(message.channelId, message.id);
+ } else if (await client.util.isDeleteable(message)) {
+  client.util.request.channels.deleteMessage(message);
+ }
 };

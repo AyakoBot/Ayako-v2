@@ -1,4 +1,3 @@
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
@@ -12,7 +11,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  if (!automodRules) return [];
 
- const language = await ch.getLanguage(cmd.guild.id);
+ const language = await cmd.guild.client.util.getLanguage(cmd.guild.id);
 
  return automodRules?.map((r) => ({
   name: `${r.name.slice(0, 100) ?? language.t.None}`,

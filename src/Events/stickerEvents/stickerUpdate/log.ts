@@ -1,21 +1,20 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
 
- const channels = await ch.getLogChannels('stickerevents', sticker.guild);
+ const channels = await sticker.client.util.getLogChannels('stickerevents', sticker.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(sticker.guild.id);
+ const language = await sticker.client.util.getLanguage(sticker.guild.id);
  const lan = language.events.logs.sticker;
- const con = ch.constants.events.logs.sticker;
- const audit = (await ch.getAudit(sticker.guild, 91, sticker.id)) ?? undefined;
+ const con = sticker.client.util.constants.events.logs.sticker;
+ const audit = (await sticker.client.util.getAudit(sticker.guild, 91, sticker.id)) ?? undefined;
  const auditUser =
   audit?.executor ??
   sticker.user ??
-  (await ch.request.guilds
+  (await sticker.client.util.request.guilds
    .getSticker(sticker.guild, sticker.id)
    .then((s) => ('message' in s || !s.user ? undefined : s.user)));
  const files: Discord.AttachmentPayload[] = [];
@@ -32,7 +31,7 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  sticker.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (oldSticker.description !== sticker.description) {
   merge(oldSticker.description, sticker.description, 'string', lan.description);
@@ -44,5 +43,9 @@ export default async (oldSticker: Discord.Sticker, sticker: Discord.Sticker) => 
   merge(`:${oldSticker.tags}:`, `:${sticker.tags}:`, 'string', lan.tags);
  }
 
- ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, 10000);
+ sticker.client.util.send(
+  { id: channels, guildId: sticker.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

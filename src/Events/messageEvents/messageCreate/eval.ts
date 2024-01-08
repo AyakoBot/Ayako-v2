@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 // eslint-disable-next-line no-unused-expressions
@@ -33,41 +32,43 @@ export default async (msg: Discord.Message<true>) => {
   if (typeof evaled !== 'string') evaled = util.inspect(evaled);
 
   if (evaled.length > 2000) {
-   ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(evaled))] });
+   msg.client.util.replyMsg(msg, { files: [msg.client.util.txtFileWriter(clean(evaled))] });
    log(clean(evaled));
    return;
   }
   if (clean(evaled) !== '"undefined"') {
-   ch.replyMsg(msg, { content: `\n${ch.util.makeCodeBlock(`js\n${clean(evaled)}`)}` });
+   msg.client.util.replyMsg(msg, {
+    content: `\n${msg.client.util.util.makeCodeBlock(`js\n${clean(evaled)}`)}`,
+   });
    log(clean(evaled));
    return;
   }
 
-  if (msg.inGuild()) {
-   ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
-  } else {
-   ch.request.channels.addReaction(msg, ch.constants.standard.getEmoteIdentifier(ch.emotes.cross));
-  }
+  msg.client.util.request.channels.addReaction(
+   msg,
+   msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
+  );
  } catch (err) {
   if (clean(err).length > 2000) {
-   ch.replyMsg(msg, { files: [ch.txtFileWriter(clean(err))] });
+   msg.client.util.replyMsg(msg, { files: [msg.client.util.txtFileWriter(clean(err))] });
    log(clean(err));
    return;
   }
 
   if (clean(err) !== '"undefined"') {
-   ch.replyMsg(msg, {
-    content: `\`ERROR\` \n${ch.util.makeCodeBlock(`js\n${clean((err as Error).message)}`)}\n`,
+   msg.client.util.replyMsg(msg, {
+    content: `\`ERROR\` \n${msg.client.util.util.makeCodeBlock(
+     `js\n${clean((err as Error).message)}`,
+    )}\n`,
    });
    log(clean(err));
    return;
   }
 
-  if (msg.inGuild()) {
-   ch.request.channels.addReaction(msg, `${ch.emotes.cross.name}:${ch.emotes.cross.id}`);
-  } else {
-   ch.request.channels.addReaction(msg, ch.constants.standard.getEmoteIdentifier(ch.emotes.cross));
-  }
+  msg.client.util.request.channels.addReaction(
+   msg,
+   msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
+  );
  }
 };
 

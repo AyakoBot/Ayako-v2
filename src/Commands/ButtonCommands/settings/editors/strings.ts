@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -18,16 +17,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  cmd.showModal(
-  ch.settingsHelpers.changeHelpers.changeModal(
+  cmd.client.util.settingsHelpers.changeHelpers.changeModal(
    language,
    settingName,
    fieldName,

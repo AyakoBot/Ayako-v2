@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
 import * as CT from '../../Typings/Typings.js';
 
@@ -12,10 +11,10 @@ export default async (
  if (!cmd.channel) return;
 
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.afk;
 
- const afk = await ch.DataBase.afk.findUnique({
+ const afk = await cmd.client.util.DataBase.afk.findUnique({
   where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
  });
 
@@ -33,29 +32,29 @@ export default async (
   : [];
 
  if (cmd instanceof Discord.ChatInputCommandInteraction && !afk) {
-  await ch.replyCmd(cmd, {
+  await cmd.client.util.replyCmd(cmd, {
    embeds,
    ephemeral: false,
    content: afk ? lan.updated : lan.set(author),
   });
  } else if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  await ch.replyCmd(cmd, {
+  await cmd.client.util.replyCmd(cmd, {
    embeds,
    ephemeral: true,
    content: afk ? lan.updated : lan.set(author),
   });
  } else {
-  await ch.send(cmd.channel, {
+  await cmd.client.util.send(cmd.channel, {
    embeds,
    content: afk ? lan.updated : lan.set(author),
   });
 
-  if (await ch.isDeleteable(cmd)) ch.request.channels.deleteMessage(cmd);
+  if (await cmd.client.util.isDeleteable(cmd)) cmd.client.util.request.channels.deleteMessage(cmd);
  }
 
- const me = await ch.getBotMemberFromGuild(cmd.guild);
+ const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
  if (!me) {
-  ch.error(cmd.guild, new Error("I can't find myself in this guild!"));
+  cmd.client.util.error(cmd.guild, new Error("I can't find myself in this guild!"));
   return;
  }
 
@@ -64,14 +63,14 @@ export default async (
   Number(cmd.member?.displayName.length) <= 26 &&
   !cmd.member?.displayName.endsWith(' [AFK]')
  ) {
-  await ch.request.guilds.editMember(
+  await cmd.client.util.request.guilds.editMember(
    cmd.member,
    { nick: `${cmd.member.displayName} [AFK]` },
    lan.setReason,
   );
  }
 
- ch.DataBase.afk
+ cmd.client.util.DataBase.afk
   .upsert({
    where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
    create: {

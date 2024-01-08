@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  oldChannel: Discord.GuildChannel | undefined,
@@ -17,7 +16,7 @@ export default async (
     allowbits: o.allow.bitfield,
    }))
    .map((data) =>
-    ch.DataBase.stickypermmembers.upsert({
+    channel.client.util.DataBase.stickypermmembers.upsert({
      where: { userid_channelid: { userid: data.userid, channelid: data.channelid } },
      create: data,
      update: data,
@@ -32,7 +31,7 @@ export default async (
    .filter((o) => channel.guild.members.cache.has(o.id))
    .map((o) => o.id)
    .map((data) =>
-    ch.DataBase.stickypermmembers.delete({
+    channel.client.util.DataBase.stickypermmembers.delete({
      where: { userid_channelid: { userid: data, channelid: channel.id } },
     }),
    ),
@@ -43,7 +42,7 @@ export default async (
   .filter((o) => !channel.permissionOverwrites.cache.has(o.id))
   .filter((o) => channel.guild.members.cache.has(o.id))
   .map((o) =>
-   ch.DataBase.stickypermmembers.delete({
+   channel.client.util.DataBase.stickypermmembers.delete({
     where: { userid_channelid: { userid: o.id, channelid: channel.id } },
    }),
   );

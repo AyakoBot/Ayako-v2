@@ -1,20 +1,19 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.suggest;
- const suggestion = await ch.DataBase.suggestionvotes.findUnique({
+ const suggestion = await cmd.client.util.DataBase.suggestionvotes.findUnique({
   where: { msgid: cmd.message.id },
  });
  if (!suggestion) {
-  ch.errorCmd(cmd, lan.notFound, language);
+  cmd.client.util.errorCmd(cmd, lan.notFound, language);
   return;
  }
 
- const settings = await ch.DataBase.suggestionsettings.update({
+ const settings = await cmd.client.util.DataBase.suggestionsettings.update({
   where: {
    guildid: cmd.guildId,
    active: true,
@@ -30,19 +29,19 @@ export default async (cmd: Discord.ButtonInteraction) => {
  });
 
  if (!settings?.active) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
-   lan.cantBan((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0'),
+   lan.cantBan((await cmd.client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0'),
    language,
   );
   return;
  }
 
- const user = await ch.getUser(suggestion.userid);
+ const user = await cmd.client.util.getUser(suggestion.userid);
  if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotExist, language);
+  cmd.client.util.errorCmd(cmd, language.errors.userNotExist, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.banned(user) });
+ cmd.client.util.replyCmd(cmd, { content: lan.banned(user) });
 };

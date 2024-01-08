@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<boolean>) => {
@@ -13,11 +12,11 @@ export default async (msg: Discord.Message<boolean>) => {
   },
  };
 
- msg.client.rest.post(`/channels/${ch.constants.standard.dmLogChannelID}/messages`, {
+ msg.client.rest.post(`/channels/${msg.client.util.constants.standard.dmLogChannelID}/messages`, {
   body: {
    embeds: [embed],
   },
-  files: (await ch.fileURL2Buffer(msg.attachments.map((o) => o.url)))
+  files: (await msg.client.util.fileURL2Buffer(msg.attachments.map((o) => o.url)))
    ?.filter((a): a is Discord.AttachmentPayload => !!a)
    .map((attachment) => ({
     data: attachment.attachment as Buffer,

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.VoiceHubs;
@@ -7,7 +7,7 @@ const name = CT.SettingNames.VoiceHubs;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const ID = cmd.options.get('id', false)?.value as string;
@@ -24,15 +24,15 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  language,
  lan,
 ) => {
- const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { buttonParsers, embedParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
   .then(
    (r) =>
     r ??
-    (ch.settingsHelpers.setup(
+    (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
@@ -59,27 +59,26 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  language,
  lan,
 ) => {
- const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
+ const { multiRowHelpers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
  const fields = settings?.map((s) => ({
   name: `${lan.fields.channelid.name}: ${
    s.channelid
-    ? (cmd.client.channels.cache.get(s.channelid) as Discord.GuildTextBasedChannel)?.name ??
+    ? (client.channels.cache.get(s.channelid) as Discord.GuildTextBasedChannel)?.name ??
       language.t.None
     : language.t.None
   } - ${lan.fields.categoryid.name}: ${
    s.categoryid
-    ? (cmd.client.channels.cache.get(s.categoryid) as Discord.CategoryChannel)?.name ??
-      language.t.None
+    ? (client.channels.cache.get(s.categoryid) as Discord.CategoryChannel)?.name ?? language.t.None
     : language.t.None
   }`,
   value: `${
    s.active
-    ? ch.constants.standard.getEmote(ch.emotes.enabled)
-    : ch.constants.standard.getEmote(ch.emotes.disabled)
+    ? client.util.constants.standard.getEmote(client.util.emotes.enabled)
+    : client.util.constants.standard.getEmote(client.util.emotes.disabled)
   } - ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
  }));
 
@@ -110,9 +109,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   author: embedParsers.author(language, lan),

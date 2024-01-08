@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -13,15 +12,15 @@ export default async (
   !(cmd instanceof Discord.ButtonInteraction) &&
   !cmd.options.getString('emoji', false)
  ) {
-  const language = await ch.getLanguage(undefined);
+  const language = await client.util.getLanguage(undefined);
 
-  ch.errorCmd(cmd, language.errors.guildCommand, language);
+  client.util.errorCmd(cmd, language.errors.guildCommand, language);
   return;
  }
 
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info;
 
  const emoji =
@@ -39,12 +38,12 @@ export default async (
  })();
 
  if (!payload) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
+  client.util.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 
  if (cmd instanceof Discord.ButtonInteraction) cmd.update(payload);
- else ch.replyCmd(cmd, payload);
+ else client.util.replyCmd(cmd, payload);
 };
 
 const getEmotesPayload = async (
@@ -53,10 +52,10 @@ const getEmotesPayload = async (
  lan: CT.Language['slashCommands']['info'],
  page = 1,
 ): Promise<CT.UsualMessagePayload> => {
- const chunks = ch.getStringChunks(
+ const chunks = client.util.getStringChunks(
   emotes.map(
    (e) =>
-    `${ch.constants.standard.getEmote(e)} / \`${e.name ?? language.t.None}\` / \`${
+    `${client.util.constants.standard.getEmote(e)} / \`${e.name ?? language.t.None}\` / \`${
      e.id ?? language.t.None
     }\``,
   ),
@@ -72,7 +71,7 @@ const getEmotesPayload = async (
      name: lan.emojis.author,
     },
     description: chunk.join('\n'),
-    color: ch.getColor(guild ? await ch.getBotMemberFromGuild(guild) : undefined),
+    color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
    },
   ],
   components: [
@@ -83,7 +82,7 @@ const getEmotesPayload = async (
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
       custom_id: `info/emojis_${page - 1}`,
-      emoji: ch.emotes.back,
+      emoji: client.util.emotes.back,
       disabled: page === 1,
      },
      {
@@ -97,7 +96,7 @@ const getEmotesPayload = async (
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
       custom_id: `info/emojis_${page + 1}`,
-      emoji: ch.emotes.forth,
+      emoji: client.util.emotes.forth,
       disabled: page + 1 === chunks.length,
      },
     ],
@@ -112,15 +111,10 @@ const getEmotePayloads = async (
 ) =>
  client.shard?.broadcastEval(
   async (cl, { color, e, guildId }) => {
-   const chEval: typeof ch = await import(
-    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
-   );
-   const ctEval: typeof CT = await import(
-    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Typings/Typings.js`
-   );
+   const ctEval = cl.util.files['/Typings/Typings.js'];
 
    const emoji = e.id ? cl.emojis.cache.get(e.id) ?? e : e;
-   const language = await chEval.getLanguage(guildId);
+   const language = await cl.util.getLanguage(guildId);
    const lan = language.slashCommands.info;
 
    const payload = {
@@ -134,64 +128,64 @@ const getEmotePayloads = async (
        ? {
           url:
            'url' in emoji && emoji.url
-            ? emoji.url ?? chEval.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
-            : chEval.constants.standard.emoteURL(emoji as Discord.GuildEmoji),
+            ? emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
+            : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji),
          }
        : undefined,
       description: [
        emoji.name
         ? {
-           name: `${chEval.util.makeBold(language.t.name)}:`,
-           value: `${chEval.util.makeInlineCode(emoji.name)}`,
+           name: `${cl.util.util.makeBold(language.t.name)}:`,
+           value: `${cl.util.util.makeInlineCode(emoji.name)}`,
           }
         : undefined,
        emoji.id
         ? {
-           name: `${chEval.util.makeBold('ID')}:`,
-           value: `${chEval.util.makeInlineCode(emoji.id)}`,
+           name: `${cl.util.util.makeBold('ID')}:`,
+           value: `${cl.util.util.makeInlineCode(emoji.id)}`,
           }
         : undefined,
        emoji.id
         ? {
-           name: `${chEval.util.makeBold('URL')}:`,
+           name: `${cl.util.util.makeBold('URL')}:`,
            value: `${
             'url' in emoji && emoji.url
-             ? emoji.url ?? chEval.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
-             : chEval.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
+             ? emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
+             : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
            }`,
           }
         : undefined,
        {
-        name: `${chEval.util.makeBold(lan.emojis.animated)}:`,
-        value: `${chEval.settingsHelpers.embedParsers.boolean(!!emoji.animated, language)}`,
+        name: `${cl.util.util.makeBold(lan.emojis.animated)}:`,
+        value: `${cl.util.settingsHelpers.embedParsers.boolean(!!emoji.animated, language)}`,
        },
        'createdTimestamp' in emoji && emoji.createdTimestamp
         ? {
-           name: `${chEval.util.makeBold(language.t.createdAt)}:`,
-           value: `${chEval.constants.standard.getTime(emoji.createdTimestamp)}`,
+           name: `${cl.util.util.makeBold(language.t.createdAt)}:`,
+           value: `${cl.util.constants.standard.getTime(emoji.createdTimestamp)}`,
           }
         : undefined,
        'available' in emoji
         ? {
-           name: `${chEval.util.makeBold(lan.emojis.available)}:`,
-           value: `${chEval.settingsHelpers.embedParsers.boolean(!!emoji.available, language)}`,
+           name: `${cl.util.util.makeBold(lan.emojis.available)}:`,
+           value: `${cl.util.settingsHelpers.embedParsers.boolean(!!emoji.available, language)}`,
           }
         : undefined,
        'managed' in emoji
         ? {
-           name: `${chEval.util.makeBold(lan.emojis.managed)}:`,
-           value: `${chEval.settingsHelpers.embedParsers.boolean(!!emoji.managed, language)}`,
+           name: `${cl.util.util.makeBold(lan.emojis.managed)}:`,
+           value: `${cl.util.settingsHelpers.embedParsers.boolean(!!emoji.managed, language)}`,
           }
         : undefined,
        'guild' in emoji && emoji.guild
         ? {
-           name: `\n${chEval.util.makeBold(language.t.Server)}:\n`,
+           name: `\n${cl.util.util.makeBold(language.t.Server)}:\n`,
            value: language.languageFunction.getGuild(emoji.guild),
           }
         : undefined,
        'author' in emoji && emoji.author
         ? {
-           name: `${chEval.util.makeBold(lan.emojis.uploader)}:\n`,
+           name: `${cl.util.util.makeBold(lan.emojis.uploader)}:\n`,
            value: language.languageFunction.getUser(emoji.author as Discord.User),
           }
         : undefined,
@@ -218,7 +212,7 @@ const getEmotePayloads = async (
    context: {
     guildId: guild?.id,
     e: { ...emote },
-    color: guild ? (await ch.getBotMemberFromGuild(guild)).displayColor : undefined,
+    color: guild ? (await client.util.getBotMemberFromGuild(guild)).displayColor : undefined,
    },
   },
  );

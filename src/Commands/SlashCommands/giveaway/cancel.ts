@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { getButton, getGiveawayEmbed } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -7,21 +6,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const messageID = cmd.options.getString('message-id', true);
 
- const giveaway = await ch.DataBase.giveaways.findUnique({
+ const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
   where: { msgid: messageID },
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.cancel;
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
   return;
  }
 
- const channel = await ch.getChannel.guildTextChannel(giveaway.channelid);
+ const channel = await cmd.client.util.getChannel.guildTextChannel(giveaway.channelid);
  if (!channel) {
-  ch.errorCmd(cmd, language.errors.channelNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.channelNotFound, language);
   return;
  }
 
@@ -30,26 +29,35 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  giveaway.ended = true;
  const participateButton = getButton(language, giveaway);
 
- const editRes = await ch.request.channels.editMessage(cmd.guild, channel.id, giveaway.msgid, {
-  embeds: [giveawayEmbed],
-  components: [
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [participateButton],
-   },
-  ],
- });
+ const editRes = await cmd.client.util.request.channels.editMessage(
+  cmd.guild,
+  channel.id,
+  giveaway.msgid,
+  {
+   embeds: [giveawayEmbed],
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [participateButton],
+    },
+   ],
+  },
+ );
 
  if ('message' in editRes) {
-  ch.errorCmd(cmd, editRes, language);
+  cmd.client.util.errorCmd(cmd, editRes, language);
   return;
  }
 
- ch.DataBase.giveaways.update({ where: { msgid: messageID }, data: { ended: true } }).then();
- ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
+ cmd.client.util.DataBase.giveaways
+  .update({ where: { msgid: messageID }, data: { ended: true } })
+  .then();
+ cmd.client.util.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.cancelled,
-  files: giveaway.participants?.length ? [ch.txtFileWriter(giveaway.participants?.join(', '))] : [],
+  files: giveaway.participants?.length
+   ? [cmd.client.util.txtFileWriter(giveaway.participants?.join(', '))]
+   : [],
  });
 };

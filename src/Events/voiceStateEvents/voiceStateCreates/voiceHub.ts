@@ -1,13 +1,12 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { del } from '../voiceStateDeletes/voiceHub.js';
 
 export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
  if (!member) return;
  if (!state.channel) return;
 
- const settings = await ch.DataBase.voicehubs.findFirst({
+ const settings = await state.client.util.DataBase.voicehubs.findFirst({
   where: {
    guildid: state.guild.id,
    channelid: state.channel.id,
@@ -32,7 +31,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   }
  }
 
- const channel = (await ch.request.guilds.createChannel(state.guild, {
+ const channel = (await state.client.util.request.guilds.createChannel(state.guild, {
   parent_id: settings.categoryid,
   name: member.displayName,
   type: Discord.ChannelType.GuildVoice,
@@ -62,8 +61,8 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
 
  if ('message' in channel) return;
 
- const language = await ch.getLanguage(state.guild.id);
- ch.send(channel, {
+ const language = await state.client.util.getLanguage(state.guild.id);
+ state.client.util.send(channel, {
   content: `${member}`,
   embeds: [
    {
@@ -71,7 +70,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
      name: language.autotypes.voiceHub,
     },
     description: language.t.voiceHub(member.user),
-    color: ch.getColor(await ch.getBotIdFromGuild(state.guild)),
+    color: state.client.util.getColor(await state.client.util.getBotIdFromGuild(state.guild)),
    },
   ],
   allowed_mentions: {
@@ -79,7 +78,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   },
  });
 
- ch.DataBase.voicechannels
+ state.client.util.DataBase.voicechannels
   .create({
    data: {
     channelid: channel.id,
@@ -98,17 +97,17 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   everyonelefttime: Date.now(),
  };
 
- const move = await ch.request.guilds.editMember(member, {
+ const move = await state.client.util.request.guilds.editMember(member, {
   channel_id: channel.id,
  });
  if (!('message' in move)) {
-  ch.DataBase.voicechannels.create({ data }).then();
+  state.client.util.DataBase.voicechannels.create({ data }).then();
   return;
  }
 
- ch.DataBase.voicechannels.create({ data }).then();
+ state.client.util.DataBase.voicechannels.create({ data }).then();
 
- ch.cache.vcDeleteTimeout.set(
+ state.client.util.cache.vcDeleteTimeout.set(
   Jobs.scheduleJob(new Date(Date.now() + 300000), () =>
    del(channel as NonNullable<typeof state.channel>),
   ),

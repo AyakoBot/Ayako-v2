@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  cmd:
@@ -10,7 +9,7 @@ export default async (
  embed?: Discord.APIEmbed,
  selectedField?: number | null,
 ) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
  let canFinish = true;
 
@@ -42,20 +41,24 @@ export default async (
   options.push({
    label: lan.start.createButtons.addField,
    value: 'create',
-   emoji: ch.emotes.plusBG,
+   emoji: cmd.client.util.emotes.plusBG,
   });
  }
 
  cmd.update({
   embeds: [
    {
-    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
-    description: `${lan.desc}\n\n${lan.oneRequired}\n${ch.constants.customembeds.needsOneOf
+    color: cmd.client.util.getColor(
+     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+    ),
+    description: `${lan.desc}\n\n${
+     lan.oneRequired
+    }\n${cmd.client.util.constants.customembeds.needsOneOf
      .map((n) => lan.embedProperties[n as keyof typeof lan.embedProperties])
      .filter((a): a is string => !!a)
      .join(', ')}`,
     fields: lan
-     .fields((await ch.getCustomCommand(cmd.guild, 'stp'))?.id ?? '0')
+     .fields((await cmd.client.util.getCustomCommand(cmd.guild, 'stp'))?.id ?? '0')
      .map((f) => ({ name: '\u200b', value: `${lan.quick}\n${f}` })),
    },
    embed,
@@ -73,7 +76,9 @@ export default async (
       options: Object.entries(lan.start.createButtons.selectMenu).map(([k, v]) => ({
        label: v,
        value: `${
-        ch.constants.customembeds.type[k as keyof typeof ch.constants.customembeds.type]
+        cmd.client.util.constants.customembeds.type[
+         k as keyof typeof cmd.client.util.constants.customembeds.type
+        ]
        }_${k}`,
       })),
      },

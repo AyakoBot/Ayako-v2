@@ -2,7 +2,6 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
 import { end, giveawayCollectTimeExpired } from '../../../Commands/SlashCommands/giveaway/end.js';
 import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
@@ -20,12 +19,12 @@ export default () => {
 };
 
 const reminder = async () => {
- const reminders = await ch.DataBase.reminders.findMany({
+ const reminders = await client.util.DataBase.reminders.findMany({
   where: {},
  });
 
  reminders.forEach((r) => {
-  ch.cache.reminders.set(
+  client.util.cache.reminders.set(
    Jobs.scheduleJob(
     new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
     () => {
@@ -40,15 +39,15 @@ const reminder = async () => {
 
 export const tasks = {
  vcDeleteTimeouts: async (guild: Discord.Guild) => {
-  const settings = await ch.DataBase.voicehubs.findMany({
+  const settings = await client.util.DataBase.voicehubs.findMany({
    where: { guildid: guild.id },
   });
 
-  const vcs = await ch.DataBase.voicechannels.findMany({ where: { guildid: guild.id } });
+  const vcs = await client.util.DataBase.voicechannels.findMany({ where: { guildid: guild.id } });
 
   vcs.forEach(async (vc) => {
    const delDB = () =>
-    ch.DataBase.voicechannels
+    client.util.DataBase.voicechannels
      .delete({ where: { guildid_channelid: { guildid: vc.guildid, channelid: vc.channelid } } })
      .then();
 
@@ -58,7 +57,7 @@ export const tasks = {
     return;
    }
 
-   const channel = await ch.getChannel.guildVoiceChannel(vc.channelid);
+   const channel = await client.util.getChannel.guildVoiceChannel(vc.channelid);
    if (!channel) {
     delDB();
     return;
@@ -67,7 +66,7 @@ export const tasks = {
    if (channel.members.size) return;
 
    if (!vc.everyonelefttime) {
-    ch.DataBase.voicechannels
+    client.util.DataBase.voicechannels
      .update({
       where: { guildid_channelid: { guildid: guild.id, channelid: channel.id } },
       data: { everyonelefttime: Date.now() },
@@ -75,7 +74,7 @@ export const tasks = {
      .then();
    }
 
-   ch.cache.vcDeleteTimeout.set(
+   client.util.cache.vcDeleteTimeout.set(
     Jobs.scheduleJob(new Date(Date.now() + Number(applyingSetting.deletetime) * 1000), () =>
      del(channel),
     ),
@@ -85,7 +84,7 @@ export const tasks = {
   });
  },
  deleteSuggestions: async (guild: Discord.Guild) => {
-  const settings = await ch.DataBase.suggestionsettings.findUnique({
+  const settings = await client.util.DataBase.suggestionsettings.findUnique({
    where: {
     guildid: guild.id,
     active: true,
@@ -94,12 +93,12 @@ export const tasks = {
   });
   if (!settings) return;
 
-  const suggestions = await ch.DataBase.suggestionvotes.findMany({
+  const suggestions = await client.util.DataBase.suggestionvotes.findMany({
    where: { guildid: guild.id },
   });
 
   suggestions.forEach((s) => {
-   ch.cache.deleteSuggestions.set(
+   client.util.cache.deleteSuggestions.set(
     Jobs.scheduleJob(
      new Date(
       Date.now() +
@@ -116,11 +115,11 @@ export const tasks = {
   });
  },
  disboard: async (guild: Discord.Guild) => {
-  const disboardBumpReminders = await ch.DataBase.disboard.findUnique({
+  const disboardBumpReminders = await client.util.DataBase.disboard.findUnique({
    where: { guildid: guild.id },
   });
   if (disboardBumpReminders) {
-   ch.cache.disboardBumpReminders.set(
+   client.util.cache.disboardBumpReminders.set(
     Jobs.scheduleJob(
      new Date(
       Number(disboardBumpReminders.nextbump) < Date.now()
@@ -136,7 +135,7 @@ export const tasks = {
   }
  },
  giveaways: async (guild: Discord.Guild) => {
-  const giveaways = await ch.DataBase.giveaways.findMany({
+  const giveaways = await client.util.DataBase.giveaways.findMany({
    where: {
     guildid: guild.id,
     ended: false,
@@ -145,7 +144,7 @@ export const tasks = {
   });
 
   giveaways.forEach((g) => {
-   ch.cache.giveaways.set(
+   client.util.cache.giveaways.set(
     Jobs.scheduleJob(
      new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
      () => {
@@ -159,22 +158,22 @@ export const tasks = {
   });
  },
  punishments: async (guild: Discord.Guild) => {
-  const language = await ch.getLanguage(guild.id);
+  const language = await client.util.getLanguage(guild.id);
   const where = { where: { guildid: guild.id } };
   const tables = [
    {
-    rows: () => ch.DataBase.punish_mutes.findMany(where),
-    cache: ch.cache.mutes,
+    rows: () => client.util.DataBase.punish_mutes.findMany(where),
+    cache: client.util.cache.mutes,
     event: CT.ModTypes.MuteRemove,
    },
    {
-    rows: () => ch.DataBase.punish_tempbans.findMany(where),
-    cache: ch.cache.bans,
+    rows: () => client.util.DataBase.punish_tempbans.findMany(where),
+    cache: client.util.cache.bans,
     event: CT.ModTypes.BanRemove,
    },
    {
-    rows: () => ch.DataBase.punish_tempchannelbans.findMany(where),
-    cache: ch.cache.channelBans,
+    rows: () => client.util.DataBase.punish_tempchannelbans.findMany(where),
+    cache: client.util.cache.channelBans,
     event: CT.ModTypes.ChannelBanRemove,
    },
   ] as const;
@@ -185,23 +184,30 @@ export const tasks = {
 
     table.cache.set(
      Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
-      const target = m.userid ? await ch.getUser(m.userid).catch(() => undefined) : undefined;
+      const target = m.userid
+       ? await client.util.getUser(m.userid).catch(() => undefined)
+       : undefined;
       if (!target) {
-       ch.error(guild, new Error(`Could not find user to initialize ${table}Remove event.`));
+       client.util.error(
+        guild,
+        new Error(`Could not find user to initialize ${table}Remove event.`),
+       );
        return;
       }
 
-      const channel = await ch.getChannel.guildTextChannel(m.channelid);
+      const channel = await client.util.getChannel.guildTextChannel(m.channelid);
 
-      ch.mod(
+      client.util.mod(
        m.msgid && channel
-        ? await ch.request.channels
+        ? await client.util.request.channels
            .getMessage(channel, m.msgid)
            .then((s) => ('message' in s ? undefined : s))
         : undefined,
        table.event,
        {
-        executor: m.executorid ? await ch.getUser(m.executorid).catch(() => undefined) : undefined,
+        executor: m.executorid
+         ? await client.util.getUser(m.executorid).catch(() => undefined)
+         : undefined,
         target,
         reason: m.reason ?? language.t.None,
         guild,
@@ -229,11 +235,11 @@ export const tasks = {
   });
  },
  claimTimeouts: async (guild: Discord.Guild) => {
-  const claimTimeouts = await ch.DataBase.giveawaycollection.findMany({
+  const claimTimeouts = await client.util.DataBase.giveawaycollection.findMany({
    where: { guildid: guild.id },
   });
   claimTimeouts?.forEach((t) => {
-   ch.cache.giveawayClaimTimeout.set(
+   client.util.cache.giveawayClaimTimeout.set(
     Jobs.scheduleJob(
      new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
      () => {
@@ -246,12 +252,12 @@ export const tasks = {
   });
  },
  enableInvites: async (guild: Discord.Guild) => {
-  const settings = await ch.DataBase.guildsettings.findUnique({
+  const settings = await client.util.DataBase.guildsettings.findUnique({
    where: { guildid: guild.id, enableinvitesat: { not: null } },
   });
   if (!settings) return;
 
-  ch.cache.enableInvites.set(
+  client.util.cache.enableInvites.set(
    guild.id,
    Jobs.scheduleJob(new Date(Number(settings.enableinvitesat)), () => {
     enableInvites(guild);

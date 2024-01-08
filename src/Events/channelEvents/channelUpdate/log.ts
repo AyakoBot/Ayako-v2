@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -31,13 +30,13 @@ export default async (
   if (oldChannel?.position !== channel.position) return;
  }
 
- const channels = await ch.getLogChannels('channelevents', channel.guild);
+ const channels = await channel.client.util.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(channel.guild.id);
+ const language = await channel.client.util.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.channel;
- const channelType = `${ch.getTrueChannelType(channel, channel.guild)}Update`;
+ const con = channel.client.util.constants.events.logs.channel;
+ const channelType = `${channel.client.util.getTrueChannelType(channel, channel.guild)}Update`;
  let typeID = [10, 11, 12].includes(channel.type) ? 111 : 11;
 
  const embed: Discord.APIEmbed = {
@@ -53,7 +52,7 @@ export default async (
  const embeds = [embed];
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  channel.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (oldChannel?.flags !== channel.flags) {
   const [oldFlags, newFlags] = [oldChannel, channel]
@@ -72,8 +71,8 @@ export default async (
      | Discord.AnyThreadChannel => !!c,
    )
    .map((c) => new Discord.ChannelFlagsBitField(c.flags).toArray());
-  const removed = ch.getDifference(oldFlags, newFlags);
-  const added = ch.getDifference(newFlags, oldFlags);
+  const removed = channel.client.util.getDifference(oldFlags, newFlags);
+  const added = channel.client.util.getDifference(newFlags, oldFlags);
 
   if (removed.length || added.length) {
    merge(
@@ -172,10 +171,10 @@ export default async (
  ) {
   merge(
    oldChannel?.rateLimitPerUser
-    ? ch.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
+    ? channel.client.util.moment(Number(oldChannel?.rateLimitPerUser) * 1000, language)
     : language.t.None,
    channel.rateLimitPerUser
-    ? ch.moment(channel.rateLimitPerUser * 1000, language)
+    ? channel.client.util.moment(channel.rateLimitPerUser * 1000, language)
     : language.t.None,
    'string',
    lan.rateLimitPerUser,
@@ -220,9 +219,11 @@ export default async (
   oldChannel?.parentId !== channel.parentId
  ) {
   const oldParent = oldChannel?.parentId
-   ? await ch.getChannel.parentChannel(oldChannel.parentId)
+   ? await channel.client.util.getChannel.parentChannel(oldChannel.parentId)
    : undefined;
-  const parent = channel.parentId ? await ch.getChannel.parentChannel(channel.parentId) : undefined;
+  const parent = channel.parentId
+   ? await channel.client.util.getChannel.parentChannel(channel.parentId)
+   : undefined;
 
   merge(
    oldParent
@@ -260,10 +261,10 @@ export default async (
  ) {
   merge(
    oldChannel?.defaultAutoArchiveDuration
-    ? ch.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
+    ? channel.client.util.moment(oldChannel.defaultAutoArchiveDuration * 60000, language)
     : language.t.Unknown,
    channel.defaultAutoArchiveDuration
-    ? ch.moment(channel.defaultAutoArchiveDuration * 60000, language)
+    ? channel.client.util.moment(channel.defaultAutoArchiveDuration * 60000, language)
     : language.t.None,
    'string',
    lan.autoArchiveDuration,
@@ -300,8 +301,8 @@ export default async (
    fields: [],
   };
 
-  const oldPerms = oldChannel ? ch.getSerializedChannelPerms(oldChannel) : [];
-  const perms = ch.getSerializedChannelPerms(channel);
+  const oldPerms = oldChannel ? channel.client.util.getSerializedChannelPerms(oldChannel) : [];
+  const perms = channel.client.util.getSerializedChannelPerms(channel);
 
   const addedPerms = perms.filter((p) => !oldPerms.find((p2) => p2.id === p.id));
   const removedPerms = oldPerms.filter((p) => !perms.find((p2) => p2.id === p.id));
@@ -313,12 +314,18 @@ export default async (
 
   const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
    if (denied) {
-    return ch.emotes.switch.disabled.map((e) => ch.constants.standard.getEmote(e)).join('');
+    return channel.client.util.emotes.switch.disabled
+     .map((e) => channel.client.util.constants.standard.getEmote(e))
+     .join('');
    }
    if (allowed) {
-    return ch.emotes.switch.enabled.map((e) => ch.constants.standard.getEmote(e)).join('');
+    return channel.client.util.emotes.switch.enabled
+     .map((e) => channel.client.util.constants.standard.getEmote(e))
+     .join('');
    }
-   return ch.emotes.switch.neutral.map((e) => ch.constants.standard.getEmote(e)).join('');
+   return channel.client.util.emotes.switch.neutral
+    .map((e) => channel.client.util.constants.standard.getEmote(e))
+    .join('');
   };
 
   let atLeastOneAdded = false;
@@ -338,9 +345,9 @@ export default async (
    if (!filterPerms.length) return;
    atLeastOneAdded = true;
 
-   const value = `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${
-    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-   }\n${filterPerms
+   const value = `${channel.client.util.constants.standard.getEmote(
+    channel.client.util.emotes.plusBG,
+   )} ${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}\n${filterPerms
     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
@@ -383,9 +390,9 @@ export default async (
 
    atLeastOneChanged = true;
 
-   const value = `${ch.constants.standard.getEmote(ch.emotes.edit)} ${
-    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-   }\n${filteredPerms
+   const value = `${channel.client.util.constants.standard.getEmote(
+    channel.client.util.emotes.edit,
+   )} ${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}\n${filteredPerms
     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
@@ -417,9 +424,9 @@ export default async (
    if (!filterPerms.length) return;
    atLeastOneRemoved = true;
 
-   const value = `${ch.constants.standard.getEmote(ch.emotes.minusBG)} ${
-    p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`
-   }\n${filterPerms
+   const value = `${channel.client.util.constants.standard.getEmote(
+    channel.client.util.emotes.minusBG,
+   )} ${p.type === Discord.OverwriteType.Member ? `<@${p.id}>` : `<@&${p.id}>`}\n${filterPerms
     .map((perm) => `${getEmoji(perm)} ${language.permissions.perms[perm.perm]}`)
     .join('\n')}`;
 
@@ -439,11 +446,11 @@ export default async (
   if (atLeastOneRemoved) embeds.push(removeEmbed);
  }
 
- const audit = await ch.getAudit(channel.guild, typeID, channel.id);
+ const audit = await channel.client.util.getAudit(channel.guild, typeID, channel.id);
  const getChannelOwner = () => {
   if (audit?.executor) return audit.executor;
   if ('ownerId' in channel && channel.ownerId) {
-   return ch.getUser(channel.ownerId).catch(() => undefined);
+   return channel.client.util.getUser(channel.ownerId).catch(() => undefined);
   }
   return undefined;
  };
@@ -453,5 +460,5 @@ export default async (
   ? lan.descUpdateAudit(auditUser, channel, language.channelTypes[channel.type])
   : lan.descUpdate(channel, language.channelTypes[channel.type]);
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
+ channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
 };

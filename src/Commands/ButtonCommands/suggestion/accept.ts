@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { isValid } from './tick.js';
 
 export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) => {
@@ -14,7 +13,7 @@ export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) 
   (!settings.approverroleid.length &&
    !cmd.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild))
  ) {
-  ch.errorCmd(cmd, language.permissions.error.you, language);
+  cmd.client.util.errorCmd(cmd, language.permissions.error.you, language);
   return;
  }
 

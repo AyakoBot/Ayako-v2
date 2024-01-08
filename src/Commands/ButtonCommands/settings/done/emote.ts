@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -18,34 +17,35 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lastMessage = cmd.channel
-  ? cmd.channel.lastMessage ?? (await ch.request.channels.getMessages(cmd.channel, { limit: 1 }))
+  ? cmd.channel.lastMessage ??
+    (await cmd.client.util.request.channels.getMessages(cmd.channel, { limit: 1 }))
   : undefined;
 
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
-  ch.request.channels.delete(cmd.channel);
+  cmd.client.util.request.channels.delete(cmd.channel);
  }
 
  if (!lastMessage || 'message' in lastMessage) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
  }
 
  const emoteMessage = Array.isArray(lastMessage) ? lastMessage[0] : lastMessage;
  const emoteContent = emoteMessage?.author.bot ? undefined : emoteMessage?.content;
 
- const emote = emoteContent?.match(ch.regexes.emojiTester)?.length
+ const emote = emoteContent?.match(cmd.client.util.regexes.emojiTester)?.length
   ? { identifier: emoteContent?.trim() }
   : { identifier: emoteContent?.replace(/<:/g, '').replace(/</g, '').replace(/>/g, '') };
 
- const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
+ const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
@@ -53,10 +53,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] },
-  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  fieldName as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,

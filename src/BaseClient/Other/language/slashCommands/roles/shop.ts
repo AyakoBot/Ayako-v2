@@ -1,5 +1,4 @@
 import * as CT from '../../../../../Typings/Typings.js';
-import * as ch from '../../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.roles.shop,
@@ -9,7 +8,7 @@ export default (t: CT.Language) => ({
  buyThisFor: (amount: string) => t.stp(t.JSON.slashCommands.roles.shop.buyThisFor, { amount }),
  description: (balance: number, emote: string, cId: string) =>
   t.stp(t.JSON.slashCommands.roles.shop.description, {
-   balance: ch.util.makeInlineCode(String(ch.splitByThousand(balance))),
+   balance: t.util.util.makeInlineCode(String(t.util.splitByThousand(balance))),
    emote,
    cId,
   }),

@@ -1,31 +1,35 @@
 import Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (member: Discord.GuildMember) => {
  if (member.pending) return;
- const settings = await ch.DataBase.welcome.findUnique({
+ const settings = await member.client.util.DataBase.welcome.findUnique({
   where: { guildid: member.guild.id, active: true },
  });
  if (!settings) return;
 
  const channel = settings.channelid
-  ? await ch.getChannel.guildTextChannel(settings.channelid)
+  ? await member.client.util.getChannel.guildTextChannel(settings.channelid)
   : member.guild.systemChannel;
  if (!channel) return;
 
  const rawEmbed = settings.embed
-  ? await ch.DataBase.customembeds.findUnique({ where: { uniquetimestamp: settings.embed } })
+  ? await member.client.util.DataBase.customembeds.findUnique({
+     where: { uniquetimestamp: settings.embed },
+    })
   : undefined;
 
  const embed: Discord.APIEmbed = rawEmbed
-  ? ch.makeStp(ch.getDiscordEmbed(rawEmbed), { member, serverName: member.guild.name })
+  ? member.client.util.makeStp(member.client.util.getDiscordEmbed(rawEmbed), {
+     member,
+     serverName: member.guild.name,
+    })
   : await getDefaultEmbed(member);
 
  const content = `${settings.pingjoin ? member : ''}${
   settings.pingroles.length ? `\n${settings.pingroles.map((r) => `<@&${r}>`).join(' ')}` : ''
  }${settings.pingusers.length ? `\n${settings.pingusers.map((r) => `<@${r}>`).join(' ')}` : ''}`;
 
- ch.send(channel, {
+ member.client.util.send(channel, {
   embeds: [embed],
   content,
   allowed_mentions: {
@@ -38,7 +42,9 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const getDefaultEmbed = async (member: Discord.GuildMember) => {
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
 
- return { description: ch.stp(language.events.guildMemberAdd.welcome.embed, { member }) };
+ return {
+  description: member.client.util.stp(language.events.guildMemberAdd.welcome.embed, { member }),
+ };
 };

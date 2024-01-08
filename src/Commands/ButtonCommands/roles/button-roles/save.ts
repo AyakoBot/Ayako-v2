@@ -1,6 +1,5 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import { findField } from '../../../SelectCommands/StringSelect/roles/button-roles.js';
 import {
  Type,
@@ -17,20 +16,20 @@ export default async (
  if (!cmd.inCachedGuild()) return;
 
  const emoji = args.join('_');
- const language = await ch.getLanguage(cmd.guildId);
- const message = (await ch.getMessage(
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const message = (await cmd.client.util.getMessage(
   cmd.message.embeds[0].url as string,
  )) as Discord.Message<true>;
 
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
  }
 
  const baseSettings =
   (await getBaseSettings(type, cmd.guildId, message.id)) ??
   (type === 'reaction-roles'
-   ? await ch.DataBase.reactionrolesettings.create({
+   ? await cmd.client.util.DataBase.reactionrolesettings.create({
       data: {
        uniquetimestamp: Date.now(),
        active: true,
@@ -39,7 +38,7 @@ export default async (
        channelid: message.channelId,
       },
      })
-   : await ch.DataBase.buttonrolesettings.create({
+   : await cmd.client.util.DataBase.buttonrolesettings.create({
       data: {
        uniquetimestamp: Date.now(),
        active: true,
@@ -51,7 +50,7 @@ export default async (
      }));
 
  if (!baseSettings) {
-  ch.error(cmd.guild, new Error('Failed to create settings'));
+  cmd.client.util.error(cmd.guild, new Error('Failed to create settings'));
   return;
  }
 
@@ -61,7 +60,7 @@ export default async (
 
  if (settings.length) {
   if (type === 'reaction-roles') {
-   await ch.DataBase.reactionroles.updateMany({
+   await cmd.client.util.DataBase.reactionroles.updateMany({
     where: {
      linkedid: baseSettings.uniquetimestamp.toString(),
      emote: emoji,
@@ -72,7 +71,7 @@ export default async (
     },
    });
   } else {
-   await ch.DataBase.buttonroles.updateMany({
+   await cmd.client.util.DataBase.buttonroles.updateMany({
     where: {
      linkedid: baseSettings.uniquetimestamp.toString(),
      emote: emoji,
@@ -84,7 +83,7 @@ export default async (
    });
   }
  } else if (type === 'reaction-roles') {
-  await ch.DataBase.reactionroles.create({
+  await cmd.client.util.DataBase.reactionroles.create({
    data: {
     uniquetimestamp: Date.now(),
     guildid: cmd.guildId,
@@ -95,7 +94,7 @@ export default async (
    },
   });
  } else {
-  await ch.DataBase.buttonroles.create({
+  await cmd.client.util.DataBase.buttonroles.create({
    data: {
     uniquetimestamp: Date.now(),
     guildid: cmd.guildId,
@@ -109,12 +108,12 @@ export default async (
 
  const allSettings =
   type === 'reaction-roles'
-   ? await ch.DataBase.reactionroles.findMany({
+   ? await cmd.client.util.DataBase.reactionroles.findMany({
       where: {
        linkedid: baseSettings.uniquetimestamp.toString(),
       },
      })
-   : await ch.DataBase.buttonroles.findMany({
+   : await cmd.client.util.DataBase.buttonroles.findMany({
       where: {
        linkedid: baseSettings.uniquetimestamp.toString(),
       },
@@ -128,14 +127,17 @@ export default async (
  if (type === 'button-roles') {
   const reaction = message.reactions.cache.get(emoji.includes(':') ? emoji.split(/:/g)[1] : emoji);
   if (reaction) {
-   await ch.request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
+   await cmd.client.util.request.channels.deleteAllReactionsOfEmoji(
+    message,
+    reaction.emoji.identifier,
+   );
   }
  }
 
  const lan = language.slashCommands.roles.builders;
 
  if (action && 'message' in action && typeof action.message === 'string') {
-  ch.errorCmd(cmd, lan.couldntReact, language);
+  cmd.client.util.errorCmd(cmd, lan.couldntReact, language);
   return;
  }
 
@@ -147,7 +149,7 @@ export const putComponents = async (
  message: Discord.Message<true>,
 ) => {
  const chunks = allSettings
-  ? ch.getChunks(
+  ? message.client.util.getChunks(
      allSettings.map(
       (s): Discord.APIButtonComponentWithCustomId => ({
        label: s.text || undefined,
@@ -165,7 +167,7 @@ export const putComponents = async (
     )
   : [];
 
- const action = await ch.request.channels.editMsg(message, {
+ const action = await message.client.util.request.channels.editMsg(message, {
   components: chunks.map((c) => ({
    type: Discord.ComponentType.ActionRow,
    components: c,
@@ -179,7 +181,7 @@ const putReactions = async (
  allSettings: Prisma.reactionroles[] | undefined,
  message: Discord.Message<true>,
 ) => {
- if (!allSettings) return ch.request.channels.deleteAllReactions(message);
+ if (!allSettings) return message.client.util.request.channels.deleteAllReactions(message);
 
  const firstSetting = allSettings.find(
   (s) =>
@@ -194,7 +196,7 @@ const putReactions = async (
    : (firstSetting?.emote as string),
  );
  const action = reaction
-  ? await ch.request.channels.addReaction(message, reaction.emoji.identifier)
+  ? await message.client.util.request.channels.addReaction(message, reaction.emoji.identifier)
   : undefined;
  if (action && 'message' in action && typeof action.message === 'string') return action;
 
@@ -204,7 +206,7 @@ const putReactions = async (
   );
   if (!emoji || !('name' in emoji)) return;
 
-  ch.request.channels.addReaction(
+  message.client.util.request.channels.addReaction(
    message,
    emoji.id
     ? `${'animated' in emoji && emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`

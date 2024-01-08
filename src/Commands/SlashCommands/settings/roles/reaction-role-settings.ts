@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.ReactionRoleSettings;
@@ -7,7 +7,7 @@ const name = CT.SettingNames.ReactionRoleSettings;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const ID = cmd.options.get('id', false)?.value as string;
@@ -24,15 +24,15 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  language,
  lan,
 ) => {
- const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { buttonParsers, embedParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
   .then(
    (r) =>
     r ??
-    (ch.settingsHelpers.setup(
+    (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
@@ -59,8 +59,8 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  language,
  lan,
 ) => {
- const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
+ const { multiRowHelpers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -68,7 +68,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   value: `${lan.fields.msgid.name}: ${
    s.guildid && s.channelid && s.msgid
-    ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
+    ? client.util.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
     : language.t.None
   }`,
  }));
@@ -100,9 +100,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   author: embedParsers.author(language, lan),
@@ -116,7 +117,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     name: lan.fields.msgid.name,
     value:
      settings.guildid && settings.channelid && settings.msgid
-      ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
+      ? client.util.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
       : language.t.None,
     inline: true,
    },
@@ -181,19 +182,23 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
  switch (changedSettings) {
   case 'active': {
-   const settings = await ch.DataBase.reactionrolesettings.findUnique({
+   const settings = await client.util.DataBase.reactionrolesettings.findUnique({
     where: { uniquetimestamp },
    });
    if (!settings) return;
 
-   const message = (await ch.getMessage(
-    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
+   const message = (await client.util.getMessage(
+    client.util.constants.standard.msgurl(
+     settings.guildid,
+     settings.channelid ?? '',
+     settings.msgid ?? '',
+    ),
    )) as Discord.Message<true>;
    if (!message) return;
 
    switch (newSettings.active) {
     case true: {
-     const relatedSettings = await ch.DataBase.reactionroles.findMany({
+     const relatedSettings = await client.util.DataBase.reactionroles.findMany({
       where: {
        linkedid: uniquetimestamp,
        active: true,
@@ -206,12 +211,12 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      const emotes = relatedSettings
       .map((s) => Discord.parseEmoji(s.emote as string))
       .filter((e): e is NonNullable<typeof e> => !!e)
-      .map((e) => ch.constants.standard.getEmoteIdentifier(e));
+      .map((e) => client.util.constants.standard.getEmoteIdentifier(e));
 
      const noAccessEmotes = (
       await Promise.all(
        relatedSettings.map((s) =>
-        (s.emote as string).includes(':') ? ch.getEmote(s.emote as string) : true,
+        (s.emote as string).includes(':') ? client.util.getEmote(s.emote as string) : true,
        ),
       )
      )
@@ -221,11 +226,11 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      emotes
       .filter((e) => !noAccessEmotes.includes(e))
       .forEach((e) => {
-       ch.request.channels.addReaction(message, e);
+       client.util.request.channels.addReaction(message, e);
       });
 
      if (noAccessEmotes.length) {
-      ch.error(
+      client.util.error(
        guild,
        new Error(
         `reaction-roles: no access to emotes ${noAccessEmotes.join(
@@ -238,7 +243,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     }
     case false: {
      if (!message.reactions.cache.size) return;
-     ch.request.channels.deleteAllReactions(message as Discord.Message<true>);
+     client.util.request.channels.deleteAllReactions(message as Discord.Message<true>);
      break;
     }
     default: {

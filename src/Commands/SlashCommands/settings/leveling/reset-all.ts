@@ -1,11 +1,11 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.resetLevels;
  const buttons = getButtons();
  const now = Date.now() + 30000;
@@ -14,8 +14,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   button.disabled = true;
  });
 
- await ch.replyCmd(cmd, {
-  content: lan.areYouSure(ch.constants.standard.getTime(now)),
+ await client.util.replyCmd(cmd, {
+  content: lan.areYouSure(client.util.constants.standard.getTime(now)),
   components: [{ type: Discord.ComponentType.ActionRow, components: buttons }],
  });
 
@@ -29,13 +29,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
 const getButtons = (): Discord.APIButtonComponent[] => [
  {
-  emoji: ch.emotes.tickWithBackground,
+  emoji: client.util.emotes.tickWithBackground,
   style: Discord.ButtonStyle.Danger,
   custom_id: 'reset-levels/confirm_all',
   type: Discord.ComponentType.Button,
  },
  {
-  emoji: ch.emotes.crossWithBackground,
+  emoji: client.util.emotes.crossWithBackground,
   style: Discord.ButtonStyle.Secondary,
   custom_id: 'reset-levels/reject_all',
   type: Discord.ComponentType.Button,

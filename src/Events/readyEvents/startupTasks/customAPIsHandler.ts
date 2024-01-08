@@ -1,13 +1,13 @@
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 export default async () => {
- const settings = await ch.DataBase.guildsettings.findMany({
+ const settings = await client.util.DataBase.guildsettings.findMany({
   where: {
    token: { not: null },
   },
  });
 
  settings.forEach((s) => {
-  ch.requestHandler(s.guildid, s.token as string);
+  client.util.requestHandler(s.guildid, s.token as string);
  });
 };

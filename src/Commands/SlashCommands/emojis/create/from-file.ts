@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import Emojis from '../../../../BaseClient/Other/Emojis.js';
 
 export default async (
@@ -9,7 +8,7 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const name = cmd.options
   .getString('name', true)
   .replace(type === 'emoji' ? /[^a-zA-Z0-9_]/g : '', '');
@@ -19,7 +18,7 @@ export default async (
   const emoji = cmd.options.getString('emoji', true);
   const selectedEmoji = Emojis.find((e) => e === emoji.replace(/:/g, ''));
   if (!selectedEmoji) {
-   ch.errorCmd(cmd, language.errors.emoteNotFound, language);
+   cmd.client.util.errorCmd(cmd, language.errors.emoteNotFound, language);
    return;
   }
  }
@@ -27,7 +26,7 @@ export default async (
  const lan = type === 'emoji' ? language.slashCommands.emojis : language.slashCommands.stickers;
 
  const created = await (type === 'emoji'
-  ? ch.request.guilds.createEmoji(
+  ? cmd.client.util.request.guilds.createEmoji(
      cmd.guild,
      {
       name,
@@ -35,7 +34,7 @@ export default async (
      },
      lan.createReason(cmd.user),
     )
-  : ch.request.guilds.createSticker(
+  : cmd.client.util.request.guilds.createSticker(
      cmd.guild,
      {
       name,
@@ -47,18 +46,18 @@ export default async (
     ));
 
  if ('message' in created) {
-  ch.errorCmd(cmd, created.message, language);
+  cmd.client.util.errorCmd(cmd, created.message, language);
   return;
  }
 
  if (type === 'emoji') {
-  ch.replyCmd(cmd, {
+  cmd.client.util.replyCmd(cmd, {
    content: language.slashCommands.emojis.created(created as Discord.GuildEmoji),
   });
   return;
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: language.slashCommands.stickers.created(created as Discord.Sticker),
  });
 };

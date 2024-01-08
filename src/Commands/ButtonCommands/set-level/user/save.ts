@@ -1,22 +1,21 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const userId = args.shift() as string;
- const language = await ch.getLanguage(cmd.guildId);
- const user = await ch.getUser(userId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const user = await cmd.client.util.getUser(userId);
  if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.userNotFound, language);
   return;
  }
 
  const newXP = Number(cmd.message.embeds[0].fields[1].value.replace(/,/g, ''));
  const newLevel = Number(cmd.message.embeds[0].fields[4].value.replace(/,/g, ''));
 
- ch.DataBase.level
+ cmd.client.util.DataBase.level
   .upsert({
    where: { userid_guildid_type: { guildid: cmd.guildId, userid: cmd.user.id, type: 'guild' } },
    update: { xp: newXP, level: newLevel },
@@ -36,12 +35,12 @@ const getEmbed = (language: CT.Language, u: Discord.User, newXP: number, newLeve
  fields: [
   {
    name: language.slashCommands.setLevel.newXP,
-   value: ch.splitByThousand(newXP),
+   value: u.client.util.splitByThousand(newXP),
    inline: true,
   },
   {
    name: language.slashCommands.setLevel.newLvl,
-   value: ch.splitByThousand(newLevel),
+   value: u.client.util.splitByThousand(newLevel),
    inline: true,
   },
  ],

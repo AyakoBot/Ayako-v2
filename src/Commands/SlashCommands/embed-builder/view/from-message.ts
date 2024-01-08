@@ -1,16 +1,15 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
  const link = cmd.options.get('message-link', true).value as string;
  const [, , , gID, cID, mID] = link.split(/\/+/g);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.view['from-message'];
 
  if (!gID || !cID || !mID) {
-  ch.errorCmd(cmd, lan.notALink, language);
+  cmd.client.util.errorCmd(cmd, lan.notALink, language);
   return;
  }
 
@@ -24,10 +23,7 @@ export default async (cmd: Discord.CommandInteraction) => {
     if (!channel) return undefined;
     if (!('messages' in channel)) return undefined;
 
-    const chEval: typeof ch = await import(
-     `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
-    );
-    const message = await chEval.request.channels.getMessage(channel, messageID);
+    const message = await cl.util.request.channels.getMessage(channel, messageID);
     if ('message' in message) return undefined;
 
     return message?.embeds.map((e) => e);
@@ -41,16 +37,16 @@ export default async (cmd: Discord.CommandInteraction) => {
   .filter((e): e is Discord.APIEmbed => !!e);
 
  if (!response) {
-  ch.errorCmd(cmd, lan.notALink, language);
+  cmd.client.util.errorCmd(cmd, lan.notALink, language);
   return;
  }
 
  const embedCode = JSON.stringify(response, null, 2);
- const attachment = ch.txtFileWriter(embedCode);
+ const attachment = cmd.client.util.txtFileWriter(embedCode);
 
  if (!attachment) return;
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   ephemeral: true,
   files: [attachment],
  });

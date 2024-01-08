@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const month = 2629743000;
@@ -8,7 +8,7 @@ const month = 2629743000;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const userRes = await ch.getUserFromUserAndUsernameOptions(cmd);
+ const userRes = await client.util.getUserFromUserAndUsernameOptions(cmd);
  if (!userRes) return;
 
  const { user, language } = userRes;
@@ -20,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  let botInfo: { info: string; description: string } | null = null;
  if (user.bot) botInfo = await getBotInfo(user, language);
 
- const userflags = ch.userFlagsCalc(flags.bitfield, language, true);
+ const userflags = client.util.userFlagsCalc(flags.bitfield, language, true);
  await getBoosting(userflags, user, language);
 
  if (
@@ -50,7 +50,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  };
  const embeds = [userInfo];
  const member = cmd.guild
-  ? await ch.request.guilds
+  ? await client.util.request.guilds
      .getMember(cmd.guild, user.id)
      .then((m) => ('message' in m ? undefined : m))
   : undefined;
@@ -69,8 +69,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  userInfo.fields?.push({
-  name: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${lan.createdAt}`,
-  value: `${ch.constants.standard.getTime(user.createdTimestamp)}\n\`${ch.moment(
+  name: `${client.util.constants.standard.getEmote(client.util.emotes.plusBG)} ${lan.createdAt}`,
+  value: `${client.util.constants.standard.getTime(user.createdTimestamp)}\n\`${client.util.moment(
    Date.now() - user.createdTimestamp,
    language,
   )}\``,
@@ -101,32 +101,40 @@ const getMemberEmbed = (
   fields: [
    {
     name: lan.displayName,
-    value: ch.util.makeInlineCode(member.displayName),
+    value: client.util.util.makeInlineCode(member.displayName),
     inline: false,
    },
    {
     name: lan.timeout,
     value: `${
      member.communicationDisabledUntil && member.isCommunicationDisabled()
-      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Yes}\n${
-         lan.communicationDisabledUntil
-        } ${ch.constants.standard.getTime(member.communicationDisabledUntilTimestamp)}`
-      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.No}`
+      ? `${client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)} ${
+         language.t.Yes
+        }\n${lan.communicationDisabledUntil} ${client.util.constants.standard.getTime(
+         member.communicationDisabledUntilTimestamp,
+        )}`
+      : `${client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground)} ${
+         language.t.No
+        }`
     }`,
     inline: false,
    },
    {
-    name: `${ch.constants.standard.getEmote(ch.emotes.plusBG)} ${lan.joinedAt}`,
-    value: `${ch.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
+    name: `${client.util.constants.standard.getEmote(client.util.emotes.plusBG)} ${lan.joinedAt}`,
+    value: `${client.util.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
    },
    {
     name: `${getBoostEmote(member)} ${lan.boosting}`,
     value: `${
      member.premiumSinceTimestamp
-      ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Yes}\n${
-         lan.boostingSince
-        } ${ch.constants.standard.getTime(member.premiumSinceTimestamp)}`
-      : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.No}`
+      ? `${client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)} ${
+         language.t.Yes
+        }\n${lan.boostingSince} ${client.util.constants.standard.getTime(
+         member.premiumSinceTimestamp,
+        )}`
+      : `${client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground)} ${
+         language.t.No
+        }`
     }`,
    },
   ],
@@ -182,7 +190,11 @@ const getBoosting = async (flags: string[], user: Discord.User, language: CT.Lan
  else if (time < month * 24) boostFlags.add(128);
  else boostFlags.add(256);
 
- const translatedBoostFlags = await ch.memberBoostCalc(boostFlags.bitfield, language, true);
+ const translatedBoostFlags = await client.util.memberBoostCalc(
+  boostFlags.bitfield,
+  language,
+  true,
+ );
  flags.push(...translatedBoostFlags);
 };
 
@@ -190,15 +202,15 @@ const getBoostEmote = (member: Discord.GuildMember) => {
  if (!member.premiumSinceTimestamp) return '';
  const time = Math.abs(member.premiumSinceTimestamp - Date.now());
 
- if (time < month * 2) return ch.emotes.userFlags.Boost1;
- if (time < month * 3) return ch.emotes.userFlags.Boost2;
- if (time < month * 6) return ch.emotes.userFlags.Boost3;
- if (time < month * 9) return ch.emotes.userFlags.Boost6;
- if (time < month * 12) return ch.emotes.userFlags.Boost9;
- if (time < month * 15) return ch.emotes.userFlags.Boost12;
- if (time < month * 18) return ch.emotes.userFlags.Boost15;
- if (time < month * 24) return ch.emotes.userFlags.Boost18;
- return ch.emotes.userFlags.Boost24;
+ if (time < month * 2) return client.util.emotes.userFlags.Boost1;
+ if (time < month * 3) return client.util.emotes.userFlags.Boost2;
+ if (time < month * 6) return client.util.emotes.userFlags.Boost3;
+ if (time < month * 9) return client.util.emotes.userFlags.Boost6;
+ if (time < month * 12) return client.util.emotes.userFlags.Boost9;
+ if (time < month * 15) return client.util.emotes.userFlags.Boost12;
+ if (time < month * 18) return client.util.emotes.userFlags.Boost15;
+ if (time < month * 24) return client.util.emotes.userFlags.Boost18;
+ return client.util.emotes.userFlags.Boost24;
 };
 
 const getComponents = (

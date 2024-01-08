@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import * as Jobs from 'node-schedule';
-import * as Discord from 'discord.js';
+import * as Sharding from 'discord-hybrid-sharding';
 import DotENV from 'dotenv';
 import readline from 'readline';
 import { AutoPoster } from 'topgg-autoposter';
 import sms from 'source-map-support';
-import log from './BaseClient/ClientHelperModules/logError.js';
+import log from './BaseClient/UtilModules/logError.js';
 
 DotENV.config({ path: `${process.cwd()}${process.cwd().includes('dist') ? '/..' : ''}/.env` });
 
@@ -19,29 +19,49 @@ console.clear();
 log(
  `+++++++++++++++ Welcome to Ayako ++++++++++++++++
 +       Restart all Shards with "restart"       +
-+   Restart one Shard with "restart [Shard ID]" +
-+                   Arguments:                  +
++                  Arguments:                   +
 +   --debug --debug-db --warn --debug-queries   +
 +                   --silent                    +
 +++++++++++++++++++++++++++++++++++++++++++++++++`,
  true,
 );
 
-const manager = new Discord.ShardingManager(
+const manager = new Sharding.ClusterManager(
  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`,
  {
+  totalShards: 'auto',
+  totalClusters: 'auto',
   token: process.env.Token,
   shardArgs: process.argv,
   execArgv: ['--experimental-wasm-modules'],
+  respawn: true,
+  mode: 'process',
  },
 );
 
-manager.on('shardCreate', (shard) => {
- log(`[Shard Manager] Launched Shard ${shard.id}`, true);
- shard.on('ready', () => log(`[Shard Manager] Shard ${shard.id} is ready`, true));
+manager.on('clusterCreate', (cluster) => {
+ log(`[Cluster Manager] Launched Shard ${cluster.id}`, true);
+
+ cluster.setMaxListeners(4);
+
+ cluster.on('ready', () => log(`[Cluster Manager] Shard ${cluster.id} is ready`, true));
+ cluster.on('death', (cl) => log(`[Cluster Manager] Shard ${cl.id} has died`, true));
+ cluster.on('error', (err) =>
+  log(
+   `[Cluster Manager] Shard ${cluster.id} has encountered an error\n> ${err.message}\n${err.stack}`,
+   true,
+  ),
+ );
 });
 
+if (process.argv.includes('--debug')) {
+ manager.on('debug', (debug) => {
+  log(`[Cluster Manager] Debug Message: ${debug}`);
+ });
+}
+
 process.setMaxListeners(5);
+
 process.on('unhandledRejection', async (error: string) => console.error(error));
 process.on('uncaughtException', async (error: string) => console.error(error));
 process.on('promiseRejectionHandledWarning', (error: string) => console.error(error));
@@ -54,7 +74,7 @@ process.on('SIGINT', () => {
 
 await manager.spawn().catch((e) => {
  console.log(
-  `[Shard Manager] Startup Failed. Retry after: ${e.headers.get('retry-after') / 60} Minutes`,
+  `[Cluster Manager] Startup Failed. Retry after: ${e.headers.get('retry-after') / 60} Minutes`,
  );
  process.exit(1);
 });
@@ -72,7 +92,5 @@ rl.on('line', async (msg: string) => {
 
  if (!code.startsWith('restart')) return;
 
- const shardID = code.split(/\s+/)[1];
- if (!shardID) manager.respawnAll({ respawnDelay: 1000 });
- else manager.shards.get(Number(shardID))?.respawn({ delay: 1000 });
+ manager.respawnAll({ respawnDelay: 1000 });
 });

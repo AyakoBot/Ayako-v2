@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -17,22 +16,22 @@ export default async (
 ) => {
  if (!channel.guild.id) return;
 
- const channels = await ch.getLogChannels('channelevents', channel.guild);
+ const channels = await channel.client.util.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(channel.guild.id);
+ const language = await channel.client.util.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.channel;
- const audit = await ch.getAudit(
+ const con = channel.client.util.constants.events.logs.channel;
+ const audit = await channel.client.util.getAudit(
   channel.guild,
   [10, 11, 12].includes(channel.type) ? 112 : 12,
   channel.id,
  );
- const channelType = `${ch.getTrueChannelType(channel, channel.guild)}Delete`;
+ const channelType = `${channel.client.util.getTrueChannelType(channel, channel.guild)}Delete`;
  const getChannelOwner = () => {
   if (audit?.executor) return audit.executor;
   if ('ownerId' in channel && channel.ownerId) {
-   return ch.getUser(channel.ownerId).catch(() => undefined);
+   return channel.client.util.getUser(channel.ownerId).catch(() => undefined);
   }
   return undefined;
  };
@@ -89,7 +88,7 @@ export default async (
  if ('rateLimitPerUser' in channel && channel.rateLimitPerUser) {
   embed.fields?.push({
    name: lan.rateLimitPerUser,
-   value: ch.moment(channel.rateLimitPerUser, language),
+   value: channel.client.util.moment(channel.rateLimitPerUser, language),
    inline: true,
   });
  }
@@ -111,7 +110,9 @@ export default async (
  }
 
  if ('nsfw' in channel && channel.parentId) {
-  const parent = channel.parentId ? await ch.getChannel.parentChannel(channel.parentId) : undefined;
+  const parent = channel.parentId
+   ? await channel.client.util.getChannel.parentChannel(channel.parentId)
+   : undefined;
 
   if (parent) {
    embed.fields?.push({
@@ -125,7 +126,7 @@ export default async (
  if ('autoArchiveDuration' in channel && channel.autoArchiveDuration) {
   embed.fields?.push({
    name: lan.autoArchiveDuration,
-   value: ch.moment(channel.autoArchiveDuration * 60000, language),
+   value: channel.client.util.moment(channel.autoArchiveDuration * 60000, language),
    inline: true,
   });
  }
@@ -142,7 +143,9 @@ export default async (
        .filter(([, a]) => !!a)
        .map(
         (permissionString) =>
-         `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
+         `${channel.client.util.constants.standard.getEmote(
+          channel.client.util.emotes.enabled,
+         )} \`${
           language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )
@@ -152,7 +155,9 @@ export default async (
        .filter(([, a]) => !!a)
        .map(
         (permissionString) =>
-         `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
+         `${channel.client.util.constants.standard.getEmote(
+          channel.client.util.emotes.disabled,
+         )} \`${
           language.permissions.perms[permissionString[0] as keyof typeof language.permissions.perms]
          }\``,
        )
@@ -164,5 +169,5 @@ export default async (
   embeds.push(permEmbed);
  }
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
+ channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);
 };

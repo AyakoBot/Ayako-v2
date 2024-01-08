@@ -1,15 +1,14 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
- const channels = await ch.getLogChannels('automodevents', rule.guild);
+ const channels = await rule.client.util.getLogChannels('automodevents', rule.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(rule.guild.id);
+ const language = await rule.client.util.getLanguage(rule.guild.id);
  const lan = language.events.logs.automodRule;
- const con = ch.constants.events.logs.automodRule;
- const user = await ch.getUser(rule.creatorId);
+ const con = rule.client.util.constants.events.logs.automodRule;
+ const user = await rule.client.util.getUser(rule.creatorId);
  if (!user) return;
 
  const embed: Discord.APIEmbed = {
@@ -87,7 +86,9 @@ export default async (rule: Discord.AutoModerationRule) => {
 
  const actionChannels = await Promise.all(
   rule.actions.map((r) =>
-   r.metadata?.channelId ? ch.getChannel.guildTextChannel(r.metadata.channelId) : undefined,
+   r.metadata?.channelId
+    ? rule.client.util.getChannel.guildTextChannel(r.metadata.channelId)
+    : undefined,
   ),
  );
 
@@ -99,7 +100,7 @@ export default async (rule: Discord.AutoModerationRule) => {
       ? `- ${
          a.type === 2
           ? `${lan.alertChannel} <#${a.metadata?.channelId}>  / \`${actionChannels[i]?.name}\` / \`${a.metadata?.channelId}\``
-          : `${lan.timeoutDuration} \`${ch.moment(
+          : `${lan.timeoutDuration} \`${rule.client.util.moment(
              a.metadata?.durationSeconds ? Number(a.metadata.durationSeconds) * 1000 : 0,
              language,
             )}\``
@@ -118,10 +119,14 @@ export default async (rule: Discord.AutoModerationRule) => {
  embed.fields?.push({
   name: lan.enabled,
   value: rule.enabled
-   ? `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)} ${language.t.Enabled}`
-   : `${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)} ${language.t.Disabled}`,
+   ? `${rule.client.util.constants.standard.getEmote(rule.client.util.emotes.tickWithBackground)} ${
+      language.t.Enabled
+     }`
+   : `${rule.client.util.constants.standard.getEmote(
+      rule.client.util.emotes.crossWithBackground,
+     )} ${language.t.Disabled}`,
   inline: true,
  });
 
- ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, 10000);
+ rule.client.util.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, 10000);
 };

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (member: Discord.GuildMember) => {
  switch (true) {
@@ -21,10 +20,14 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const reiko = async (member: Discord.GuildMember) => {
- const channel = await ch.request.users.createDM(member.guild, member.user.id, member.client);
+ const channel = await member.client.util.request.users.createDM(
+  member.guild,
+  member.user.id,
+  member.client,
+ );
  if ('message' in channel) return;
 
- ch.request.channels.sendMessage(
+ member.client.util.request.channels.sendMessage(
   member.guild,
   channel.id,
   {
@@ -39,10 +42,14 @@ https://discord.gg/pocky?ref=reiko`,
 };
 
 const pockytime = async (member: Discord.GuildMember) => {
- const channel = await ch.request.users.createDM(member.guild, member.user.id, member.client);
+ const channel = await member.client.util.request.users.createDM(
+  member.guild,
+  member.user.id,
+  member.client,
+ );
  if ('message' in channel) return;
 
- ch.request.channels.sendMessage(
+ member.client.util.request.channels.sendMessage(
   member.guild,
   channel.id,
   {

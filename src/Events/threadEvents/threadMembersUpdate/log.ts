@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -7,12 +6,12 @@ export default async (
  removed: Discord.Collection<Discord.Snowflake, Discord.ThreadMember>,
  thread: Discord.ThreadChannel,
 ) => {
- const channels = await ch.getLogChannels('channelevents', thread.guild);
+ const channels = await thread.client.util.getLogChannels('channelevents', thread.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(thread.guild.id);
+ const language = await thread.client.util.getLanguage(thread.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.threadMembers;
+ const con = thread.client.util.constants.events.logs.threadMembers;
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
@@ -29,7 +28,7 @@ export default async (
   const userMentions = added.map((m) => `<@${m.id}>`).join(', ');
 
   if (userMentions.length > 1024) {
-   const content = ch.txtFileWriter(userMentions, undefined, language.t.Added);
+   const content = thread.client.util.txtFileWriter(userMentions, undefined, language.t.Added);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -45,7 +44,7 @@ export default async (
   const userMentions = removed.map((m) => `<@${m.id}>`).join(', ');
 
   if (userMentions.length > 1024) {
-   const content = ch.txtFileWriter(userMentions, undefined, language.t.Added);
+   const content = thread.client.util.txtFileWriter(userMentions, undefined, language.t.Added);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -57,5 +56,9 @@ export default async (
   embed.description = lan.descLeaveMember(thread, language.channelTypes[thread.type]);
  }
 
- ch.send({ id: channels, guildId: thread.guild.id }, { embeds: [embed], files }, 10000);
+ thread.client.util.send(
+  { id: channels, guildId: thread.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -7,27 +6,31 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const name = cmd.options.getString('name', true).replace(/[^a-zA-Z0-9_]/g, '');
  const rawEmoji = cmd.options.getString('emoji', true);
  const emoji = Discord.parseEmoji(rawEmoji);
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
- if (ch.regexes.emojiTester.test(rawEmoji) || !emoji) {
-  ch.errorCmd(cmd, language.errors.invalidEmote, await ch.getLanguage(cmd.guildId));
+ if (cmd.client.util.regexes.emojiTester.test(rawEmoji) || !emoji) {
+  cmd.client.util.errorCmd(
+   cmd,
+   language.errors.invalidEmote,
+   await cmd.client.util.getLanguage(cmd.guildId),
+  );
   return;
  }
 
- const createdEmote = await ch.request.guilds.createEmoji(
+ const createdEmote = await cmd.client.util.request.guilds.createEmoji(
   cmd.guild,
   {
    name,
-   image: ch.constants.standard.emoteURL(emoji as Discord.Emoji),
+   image: cmd.client.util.constants.standard.emoteURL(emoji as Discord.Emoji),
   },
   lan.createReason(cmd.user),
  );
 
  if ('message' in createdEmote) {
-  ch.errorCmd(cmd, createdEmote.message, language);
+  cmd.client.util.errorCmd(cmd, createdEmote.message, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.created(createdEmote) });
+ cmd.client.util.replyCmd(cmd, { content: lan.created(createdEmote) });
 };

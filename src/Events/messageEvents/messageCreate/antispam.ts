@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { performPunishment } from './antivirus.js';
 
 export default async (msg: Discord.Message<true>) => {
@@ -9,7 +8,7 @@ export default async (msg: Discord.Message<true>) => {
 
  if (msg.author.id !== '564052925828038658') return;
 
- const settings = await ch.DataBase.antispam.findUnique({
+ const settings = await msg.client.util.DataBase.antispam.findUnique({
   where: {
    guildid: msg.guildId,
    active: true,
@@ -22,9 +21,11 @@ export default async (msg: Discord.Message<true>) => {
  if (settings.wlroleid.some((r) => msg.member?.roles.cache.has(r))) return;
  if (settings.wlchannelid.includes(msg.channelId)) return;
 
- if (!ch.cache.antispam.get(msg.author.id)) ch.cache.antispam.set(msg.author.id, []);
+ if (!msg.client.util.cache.antispam.get(msg.author.id)) {
+  msg.client.util.cache.antispam.set(msg.author.id, []);
+ }
 
- const sentMessages = ch.cache.antispam.get(msg.author.id);
+ const sentMessages = msg.client.util.cache.antispam.get(msg.author.id);
  if (!sentMessages) return;
 
  const duplicates = sentMessages.filter((m) => m.content === msg.content);
@@ -36,11 +37,11 @@ export default async (msg: Discord.Message<true>) => {
  sentMessages?.push(msg);
 
  Jobs.scheduleJob(new Date(Date.now() + Number(settings.timeout) * 1000), () => {
-  const sent = ch.cache.antispam.get(msg.author.id);
+  const sent = msg.client.util.cache.antispam.get(msg.author.id);
   if (!sent) return;
 
   const replace = sent.filter((m) => m.id !== msg.id);
-  ch.cache.antispam.set(msg.author.id, replace);
+  msg.client.util.cache.antispam.set(msg.author.id, replace);
  });
 
  if (!violatesThreshold) return;
@@ -55,17 +56,17 @@ export default async (msg: Discord.Message<true>) => {
    }));
 
   channels.forEach(async (c) => {
-   const messages = (await Promise.all(c.messages.map((m) => ch.isDeleteable(m))))
+   const messages = (await Promise.all(c.messages.map((m) => msg.client.util.isDeleteable(m))))
     .map((m, i) => (m ? c.messages[i] : undefined))
     .filter((m): m is Discord.Message<true> => !!m);
 
-   ch.request.channels.bulkDelete(
+   msg.client.util.request.channels.bulkDelete(
     c.channel,
     messages.map((m) => m.id),
    );
   });
  }
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
  performPunishment(settings.deletespam ? undefined : msg, settings, language, msg);
 };

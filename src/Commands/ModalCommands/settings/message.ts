@@ -1,15 +1,14 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
  if (!cmd.isFromMessage()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const field = cmd.fields.fields.first();
- if (!field || !ch.regexes.messageTester.test(field.value)) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+ if (!field || !cmd.client.util.regexes.messageTester.test(field.value)) {
+  cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
 
@@ -27,7 +26,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
@@ -35,20 +34,20 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const [, , , , channelid, msgid] = newSetting?.split(/\/+/g) ?? [];
 
- ch.settingsHelpers.changeHelpers
+ cmd.client.util.settingsHelpers.changeHelpers
   .getAndInsert(settingName, 'channelid', cmd.guildId, channelid, uniquetimestamp)
   .then();
 
- ch.settingsHelpers.changeHelpers
+ cmd.client.util.settingsHelpers.changeHelpers
   .getAndInsert(settingName, 'msgid', cmd.guildId, msgid, uniquetimestamp)
   .then();
 
  const updatedSetting = { ...currentSetting, msgid, channelid };
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   updatedSetting,
-  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  fieldName as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,
@@ -56,19 +55,19 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
+ const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    updatedSetting as Parameters<(typeof settingsFile)['getEmbeds']>[1],
    language,
    language.slashCommands.settings.categories[settingName],
    cmd.guild,
   ),
   components: await settingsFile.getComponents(
-   ch.settingsHelpers.buttonParsers,
+   cmd.client.util.settingsHelpers.buttonParsers,
    updatedSetting as Parameters<(typeof settingsFile)['getEmbeds']>[1],
    language,
   ),

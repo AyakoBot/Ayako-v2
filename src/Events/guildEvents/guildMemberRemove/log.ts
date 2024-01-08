@@ -1,15 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
- const channels = await ch.getLogChannels('memberevents', member.guild);
+ const channels = await member.client.util.getLogChannels('memberevents', member.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
  const lan = language.events.logs.guild;
- const con = ch.constants.events.logs.guild;
- const audit = member.user.bot ? await ch.getAudit(member.guild, 20, member.user.id) : undefined;
+ const con = member.client.util.constants.events.logs.guild;
+ const audit = member.user.bot
+  ? await member.client.util.getAudit(member.guild, 20, member.user.id)
+  : undefined;
  const auditUser = audit?.executor ?? undefined;
  let description = '';
 
@@ -41,7 +42,7 @@ export default async (member: Discord.GuildMember) => {
  if (member.joinedAt) {
   embed.fields?.push({
    name: language.t.joinedAt,
-   value: ch.constants.standard.getTime(member.joinedAt.getTime()),
+   value: member.client.util.constants.standard.getTime(member.joinedAt.getTime()),
   });
  }
 
@@ -60,5 +61,5 @@ export default async (member: Discord.GuildMember) => {
   });
  }
 
- ch.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
+ member.client.util.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
@@ -12,22 +11,22 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  const { guild } = cmd;
  if (!guild) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await cmd.client.util.getLanguage(guild.id);
  const lan = language.slashCommands.embedbuilder.edit;
 
- const channel = await ch.getChannel.guildTextChannel(channelId);
+ const channel = await cmd.client.util.getChannel.guildTextChannel(channelId);
  if (!channel) {
   noChannelFound(cmd, lan);
   return;
  }
 
- const message = await ch.request.channels.getMessage(channel, messageId);
+ const message = await cmd.client.util.request.channels.getMessage(channel, messageId);
  if ('message' in message) {
   noMessageFound(cmd, lan);
   return;
  }
 
- ch.request.channels.editMessage(guild, channel.id, message.id, { embeds: [embed] });
+ cmd.client.util.request.channels.editMessage(guild, channel.id, message.id, { embeds: [embed] });
 
  cmd.reply({
   content: lan.edited,
@@ -40,7 +39,7 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Link,
       label: lan.view,
-      url: ch.constants.standard.msgurl(guild.id, channel.id, message.id),
+      url: cmd.client.util.constants.standard.msgurl(guild.id, channel.id, message.id),
      },
     ],
    },

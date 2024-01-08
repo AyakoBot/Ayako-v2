@@ -1,12 +1,11 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  if (oldMember.partial) return;
 
- const rewardSettings = await ch.DataBase.rolerewards.findMany({
+ const rewardSettings = await member.client.util.DataBase.rolerewards.findMany({
   where: {
    guildid: member.guild.id,
    active: true,
@@ -30,10 +29,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
 
  if (!member.guild.rulesChannel) return;
 
- const thread = await ch.request.channels.createThread(member.guild.rulesChannel, {
+ const thread = await member.client.util.request.channels.createThread(member.guild.rulesChannel, {
   type: Discord.ChannelType.PrivateThread,
   invitable: false,
-  name: ch.constants.standard.getEmote(ch.emotes.warning),
+  name: member.client.util.constants.standard.getEmote(member.client.util.emotes.warning),
  });
 
  if ('message' in thread) return;
@@ -48,7 +47,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   .reduce((a, b) => a + b, 0);
  const canCustomRole = !!settings.find((s) => s.customrole);
 
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
  const lan = language.events.guildMemberUpdate.rewards;
  const embed: Discord.APIEmbed = {
   color: CT.Colors.Success,
@@ -58,7 +57,9 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     ? [
        {
         name: lan.customRoleName,
-        value: lan.customRole((await ch.getCustomCommand(member.guild, 'custom-role'))?.id ?? '0'),
+        value: lan.customRole(
+         (await member.client.util.getCustomCommand(member.guild, 'custom-role'))?.id ?? '0',
+        ),
         inline: false,
        },
       ]
@@ -84,22 +85,22 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   ],
  };
 
- await ch.request.threads.addMember(thread, member.id);
- await ch.send(thread, {
+ await member.client.util.request.threads.addMember(thread, member.id);
+ await member.client.util.send(thread, {
   embeds: [embed],
   content: `<@${member.id}>`,
   allowed_mentions: {
    users: [member.id],
   },
  });
- await ch.request.channels.edit(thread, { locked: true });
+ await member.client.util.request.channels.edit(thread, { locked: true });
 };
 
 const doCurrency = (settings: Prisma.rolerewards[], member: Discord.GuildMember) => {
  const currency = settings.map((s) => Number(s.currency)).reduce((a, b) => a + b, 0);
  if (!currency) return;
 
- ch.DataBase.balance.upsert({
+ member.client.util.DataBase.balance.upsert({
   where: { userid_guildid: { guildid: member.guild.id, userid: member.id } },
   update: {
    balance: { increment: currency },
@@ -129,7 +130,7 @@ const takeRewards = async (
  const canKeepCustomRole = !!rewardSettings.find(
   (s) => s.customrole && member.roles.cache.some((r) => s.roles.includes(r.id)),
  );
- const customRole = await ch.DataBase.customroles.findUnique({
+ const customRole = await member.client.util.DataBase.customroles.findUnique({
   where: {
    guildid_userid: {
     guildid: member.guild.id,
@@ -140,14 +141,14 @@ const takeRewards = async (
 
  if (canKeepCustomRole || !customRole) return;
 
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
 
- await ch.request.guilds.deleteRole(
+ await member.client.util.request.guilds.deleteRole(
   member.guild,
   customRole.roleid,
   language.events.guildMemberUpdate.rewards.reqLost,
  );
- await ch.DataBase.customroles.delete({
+ await member.client.util.DataBase.customroles.delete({
   where: {
    guildid_userid: {
     guildid: member.guild.id,

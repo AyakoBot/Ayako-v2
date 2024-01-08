@@ -1,4 +1,3 @@
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
@@ -8,9 +7,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!cmd.guild) return [];
 
  const entered = cmd.options.getString('message-id', true);
-
- const giveaways = await ch.DataBase.giveaways.findMany({ where: { guildid: cmd.guildId } });
-
+ const giveaways = await cmd.guild.client.util.DataBase.giveaways.findMany({
+  where: { guildid: cmd.guildId },
+ });
  if (!giveaways?.length) return [];
 
  const giveaway = giveaways

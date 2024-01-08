@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Logs;
@@ -7,17 +7,17 @@ const name = CT.SettingNames.Logs;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
- const { embedParsers, buttonParsers } = ch.settingsHelpers;
+ const language = await client.util.getLanguage(cmd.guild?.id);
+ const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -40,9 +40,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  {
   author: embedParsers.author(language, lan),
   description: `${
-   ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-       name as keyof typeof ch.constants.tutorials
+   client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
       ].map((t) => `[${t.name}](${t.link})`)}`
     : ''
   }`,

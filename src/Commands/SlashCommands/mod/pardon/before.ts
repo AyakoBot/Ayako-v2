@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import { log, pardon } from './one.js';
 
 export default async (
@@ -9,30 +8,33 @@ export default async (
  if (!cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.pardon;
 
  const user = cmd.options.getUser('target', true);
  const rawDate = cmd.options.getString('date', true);
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
- if (ch.regexes.dateTester.test(rawDate)) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+ if (cmd.client.util.regexes.dateTester.test(rawDate)) {
+  cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
 
  try {
   new Date(rawDate);
  } catch (e) {
-  ch.errorCmd(cmd, e as Error, language);
+  cmd.client.util.errorCmd(cmd, e as Error, language);
   return;
  }
 
  const date = new Date(rawDate).getTime();
- const punishments = await ch.getPunishment(date, { identType: type, guildid: cmd.guild.id });
+ const punishments = await cmd.client.util.getPunishment(date, {
+  identType: type,
+  guildid: cmd.guild.id,
+ });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 
@@ -41,7 +43,7 @@ export default async (
   log(cmd, p, language, lan, reason);
  });
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.pardonedMany(
    punishments.map((p) => `\`${Number(p.uniquetimestamp).toString(36)}\``).join(', '),
    user.id,

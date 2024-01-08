@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -9,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false);
  const deleteMessageDuration = cmd.options.getString('delete-message-duration', false);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const modOptions: CT.ModOptions<CT.ModTypes.SoftBanAdd> = {
   reason: reason ?? language.t.noReasonProvided,
@@ -18,10 +17,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   executor: cmd.user,
   dbOnly: false,
   deleteMessageSeconds: deleteMessageDuration
-   ? ch.getDuration(deleteMessageDuration, 604800) / 1000
+   ? cmd.client.util.getDuration(deleteMessageDuration, 604800) / 1000
    : 604800,
   skipChecks: false,
  };
 
- ch.mod(cmd, CT.ModTypes.SoftBanAdd, modOptions);
+ cmd.client.util.mod(cmd, CT.ModTypes.SoftBanAdd, modOptions);
 };

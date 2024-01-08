@@ -1,6 +1,6 @@
 import { LevelUpMode } from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Leveling;
@@ -8,17 +8,17 @@ const name = CT.SettingNames.Leveling;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
- const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { embedParsers, buttonParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -50,9 +50,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  const embeds: Discord.APIEmbed[] = [
   {
    author: embedParsers.author(language, lan),
-   description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-       name as keyof typeof ch.constants.tutorials
+   description: client.util.constants.tutorials[
+    name as keyof typeof client.util.constants.tutorials
+   ]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
       ].map((t) => `[${t.name}](${t.link})`)}`
     : undefined,
    fields: [
@@ -112,11 +114,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     {
      name: lan.fields.lvlupemotes.name,
      value: settings.lvlupemotes?.length
-      ? (await Promise.all(settings.lvlupemotes.map((e) => ch.getEmote(e))))
+      ? (await Promise.all(settings.lvlupemotes.map((e) => client.util.getEmote(e))))
          .filter((e): e is Discord.GuildEmoji => !!e)
          .join(', ')
-      : ch.emotes.levelupemotes
-         .map((e) => ch.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''))
+      : client.util.emotes.levelupemotes
+         .map((e) => client.util.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''))
          .map((e) => embedParsers.emote(e, language))
          .join(', '),
      inline: true,

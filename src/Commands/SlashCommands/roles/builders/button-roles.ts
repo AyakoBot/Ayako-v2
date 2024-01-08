@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export type Type = 'button-roles' | 'reaction-roles';
@@ -14,23 +14,25 @@ export default async (
  if (!cmd.inCachedGuild()) return;
  if (!reply) reply = await cmd.deferReply({ ephemeral: true });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.builders;
 
- const message = await ch.getMessage(
+ const message = await client.util.getMessage(
   cmd.isChatInputCommand()
    ? cmd.options.getString('message', true)
    : (cmd.message.embeds[0].url as string),
  );
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language, reply);
+  client.util.errorCmd(cmd, language.errors.messageNotFound, language, reply);
   return;
  }
 
  if (message.author.id !== cmd.client.user.id) {
-  ch.errorCmd(
+  client.util.errorCmd(
    cmd,
-   lan.messageNotFromMe((await ch.getCustomCommand(cmd.guild, 'embed-builder'))?.id ?? '0'),
+   lan.messageNotFromMe(
+    (await client.util.getCustomCommand(cmd.guild, 'embed-builder'))?.id ?? '0',
+   ),
    language,
    reply,
   );
@@ -41,7 +43,7 @@ export default async (
   (await getBaseSettings(type, cmd.guildId, message.id)) ??
   (await createBaseSettings(type, cmd.guildId, message.channelId, message.id));
  if (!baseSettings) {
-  ch.errorCmd(cmd, language.errors.settingNotFound, language, reply);
+  client.util.errorCmd(cmd, language.errors.settingNotFound, language, reply);
   return;
  }
 
@@ -49,7 +51,7 @@ export default async (
 
  await Promise.all(
   message.reactions.cache.map((r) =>
-   ch.request.channels.getReactions(
+   client.util.request.channels.getReactions(
     message as Discord.Message<true>,
     r.emoji.id ?? r.emoji.name ?? '',
     {
@@ -86,8 +88,8 @@ export default async (
    {
     description: `${
      type === 'button-roles'
-      ? lan.descButtons((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
-      : lan.descReactions((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
+      ? lan.descButtons((await client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
+      : lan.descReactions((await client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
     }\n\n${lan.buttons}`,
     url: message.url,
     fields: settings
@@ -97,7 +99,7 @@ export default async (
        !Discord.parseEmoji(s.emote as string)?.id
         ? s.emote
         : `<${s.emote?.startsWith('a:') ? '' : ':'}${s.emote}>`
-      } / ${ch.util.makeInlineCode(s.emote as string)}`,
+      } / ${client.util.util.makeInlineCode(s.emote as string)}`,
       value: s?.roles?.map((r) => `<@&${r}>`).join(', ') ?? language.t.None,
      })),
    },
@@ -147,7 +149,7 @@ const getComponents = (
     customId: `roles/${type}/refresh`,
     label: lan.refreshCommand,
     style: Discord.ButtonStyle.Secondary,
-    emoji: ch.emotes.refresh,
+    emoji: client.util.emotes.refresh,
    },
    {
     type: Discord.ComponentType.Button,
@@ -160,7 +162,7 @@ const getComponents = (
     customId: `roles/${type}/resetReactions`,
     label: lan.resetReactions,
     style: Discord.ButtonStyle.Secondary,
-    emoji: ch.emotes.trash,
+    emoji: client.util.emotes.trash,
    },
   ],
  },
@@ -172,10 +174,10 @@ export const getBaseSettings = (
  msgid: string,
 ) =>
  type === 'button-roles'
-  ? ch.DataBase.buttonrolesettings.findFirst({
+  ? client.util.DataBase.buttonrolesettings.findFirst({
      where: { guildid, msgid },
     })
-  : ch.DataBase.reactionrolesettings.findFirst({
+  : client.util.DataBase.reactionrolesettings.findFirst({
      where: { guildid, msgid },
     });
 
@@ -186,10 +188,10 @@ export const getSpecificSettings = (
  emote?: string,
 ) =>
  type === 'button-roles'
-  ? ch.DataBase.buttonroles.findMany({
+  ? client.util.DataBase.buttonroles.findMany({
      where: { guildid, linkedid: String(linkedid), emote },
     })
-  : ch.DataBase.reactionroles.findMany({
+  : client.util.DataBase.reactionroles.findMany({
      where: { guildid, linkedid: String(linkedid), emote },
     });
 
@@ -216,8 +218,11 @@ const createBaseSettings = (
  };
 
  if (type === 'button-roles') {
-  return ch.DataBase.buttonrolesettings.create({ data: { ...data, onlyone: false }, select });
+  return client.util.DataBase.buttonrolesettings.create({
+   data: { ...data, onlyone: false },
+   select,
+  });
  }
 
- return ch.DataBase.reactionrolesettings.create({ data, select });
+ return client.util.DataBase.reactionrolesettings.create({ data, select });
 };

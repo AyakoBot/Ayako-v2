@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -11,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
  const deleteMessageDuration = cmd.options.getString('delete-message-duration', false);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const modOptions = {
   reason: reason ?? language.t.noReasonProvided,
@@ -20,16 +19,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   executor: cmd.user,
   dbOnly: false,
   channel,
-  duration: duration ? ch.getDuration(duration) : undefined,
+  duration: duration ? cmd.client.util.getDuration(duration) : undefined,
   deleteMessageSeconds: deleteMessageDuration
-   ? ch.getDuration(deleteMessageDuration, 604800) / 1000
+   ? cmd.client.util.getDuration(deleteMessageDuration, 604800) / 1000
    : 604800,
   skipChecks: false,
  };
 
  if (!duration) delete modOptions.duration;
 
- ch.mod(
+ cmd.client.util.mod(
   cmd,
   duration ? CT.ModTypes.TempChannelBanAdd : CT.ModTypes.ChannelBanAdd,
   modOptions as CT.ModOptions<

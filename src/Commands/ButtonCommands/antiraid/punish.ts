@@ -1,26 +1,25 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
-import { canBanMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/banMember.js';
-import { canRemoveMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/removeMember.js';
+import { canBanMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/banMember.js';
+import { canRemoveMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const type = args.shift() as 'ban' | 'kick';
- const language = await ch.getLanguage(cmd.guild.id);
+ const language = await cmd.client.util.getLanguage(cmd.guild.id);
  const file = cmd.message.attachments.find((a) => a.name === 'caught_users_ids.txt');
 
  if (!file) {
-  ch.errorCmd(cmd, language.errors.fileNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.fileNotFound, language);
   return;
  }
 
- const text = await ch.txtFileLinkToString(file.url);
+ const text = await cmd.client.util.txtFileLinkToString(file.url);
  if (!text) {
-  ch.errorCmd(cmd, language.errors.fileNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.fileNotFound, language);
   return;
  }
 
@@ -40,13 +39,16 @@ export const runPunishment = async (
  guild: Discord.Guild,
  cmd?: Discord.ButtonInteraction<'cached'>,
 ) => {
- const self = (await ch.getBotMemberFromGuild(guild)) ?? guild.members.me;
+ const self = (await guild.client.util.getBotMemberFromGuild(guild)) ?? guild.members.me;
  if (!self) {
-  ch.error(guild, new Error('Cant find self'));
+  guild.client.util.error(guild, new Error('Cant find self'));
   return [];
  }
 
- const loadingEmbed = ch.loadingEmbed({ language, lan: { author: language.t.loading } });
+ const loadingEmbed = guild.client.util.loadingEmbed({
+  language,
+  lan: { author: language.t.loading },
+ });
  const failed: string[] = [];
  const success: string[] = [];
  const embeds = [
@@ -66,7 +68,7 @@ export const runPunishment = async (
   },
  ];
 
- if (cmd) await ch.replyCmd(cmd, { embeds });
+ if (cmd) await cmd.client.util.replyCmd(cmd, { embeds });
 
  const job = Jobs.scheduleJob('*/5 * * * * *', () => {
   cmd?.editReply({
@@ -134,8 +136,8 @@ export const runPunishment = async (
    if (!member) return;
 
    const res = await (type === 'kick'
-    ? ch.request.guilds.removeMember(member)
-    : ch.request.guilds.banMember(
+    ? guild.client.util.request.guilds.removeMember(member)
+    : guild.client.util.request.guilds.banMember(
        member,
        { delete_message_seconds: 604800 },
        language.autotypes.antivirus,
@@ -157,7 +159,7 @@ export const runPunishment = async (
   ...embeds[0],
   author: {
    name: language.t.Done,
-   icon_url: ch.emotes.tickWithBackground.link,
+   icon_url: guild.client.util.emotes.tickWithBackground.link,
   },
   description: language.events.guildMemberAdd.antiraid[
    type === 'kick' ? 'kickingSuccess' : 'banningSuccess'
@@ -167,7 +169,7 @@ export const runPunishment = async (
   ...embeds[1],
   author: {
    name: language.t.Done,
-   icon_url: ch.emotes.tickWithBackground.link,
+   icon_url: guild.client.util.emotes.tickWithBackground.link,
   },
   description: language.events.guildMemberAdd.antiraid[
    type === 'kick' ? 'kickingError' : 'banningError'

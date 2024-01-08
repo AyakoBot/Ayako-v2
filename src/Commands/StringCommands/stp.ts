@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export const name = 'stp';
 export const takesFirstArg = true;
@@ -13,23 +12,23 @@ export default async (msg: Discord.Message, args: string[]) => {
  let returned;
 
  try {
-  returned = ch.stp(args.join(' '), { msg });
+  returned = msg.client.util.stp(args.join(' '), { msg });
  } catch (e) {
   returned = (e as Error).message;
  }
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
  const lan = language.slashCommands.stp;
 
- ch.replyMsg(msg, {
+ msg.client.util.replyMsg(msg, {
   embeds: [
    {
     description: returned,
     fields: [
      {
       name: '\u200b',
-      value: `${language.t.Examples}: ${ch.util.makeCodeBlock(
-       '{{msg.guild.name}}\n{{msg.user.username}}\n{{msg.channel.name}}',
+      value: `${language.t.Examples}: ${msg.client.util.util.makeCodeBlock(
+       '{{msg.guild.name}}\n{{msg.user.username}}\n{{msg.msg.client.util.nnel.name}}',
       )}`,
      },
     ],

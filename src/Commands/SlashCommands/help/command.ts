@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import StringSimilarity from 'string-similarity';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -16,11 +16,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     ).bestMatch.target,
   );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.help;
 
  if (!command) {
-  ch.errorCmd(cmd, language.errors.commandNotFound, language);
+  client.util.errorCmd(cmd, language.errors.commandNotFound, language);
   return;
  }
 
@@ -33,20 +33,22 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     name: lan.author,
    },
    title: lan.clickMe,
-   url: ch.constants.standard.support,
-   description: `# ${ch.util.makeInlineCode(command?.name ?? '')}${
-    ch.constants.commands.help[command?.name as keyof typeof ch.constants.commands.help] ??
-    command?.description
+   url: client.util.constants.standard.support,
+   description: `# ${client.util.util.makeInlineCode(command?.name ?? '')}${
+    client.util.constants.commands.help[
+     command?.name as keyof typeof client.util.constants.commands.help
+    ] ?? command?.description
      ? `\n> ${
-        ch.constants.commands.help[command?.name as keyof typeof ch.constants.commands.help] ??
-        command?.description
+        client.util.constants.commands.help[
+         command?.name as keyof typeof client.util.constants.commands.help
+        ] ?? command?.description
        }`
      : ''
    }`,
   },
  ];
 
- ch
+ client.util
   .getStringChunks(fields, 4096)
   .filter((c) => c.length)
   .forEach((c) => {
@@ -59,7 +61,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    });
   });
 
- ch.replyCmd(cmd, { embeds });
+ client.util.replyCmd(cmd, { embeds });
 };
 
 const parseOptions = (
@@ -77,13 +79,16 @@ const parseOptions = (
     case Discord.ApplicationCommandOptionType.SubcommandGroup: {
      return `${
       isSubCommandGroup || !parentWasSubCommandGroup ? '### ' : '- '
-     }${ch.util.makeInlineCode(c1.name)}${isSubCommandGroup ? ' - ' : `\n> `}${ch.util.makeBold(
-      ch.constants.commands.help[c1.name as keyof typeof ch.constants.commands.help] ??
-       c1.description,
+     }${client.util.util.makeInlineCode(c1.name)}${
+      isSubCommandGroup ? ' - ' : `\n> `
+     }${client.util.util.makeBold(
+      client.util.constants.commands.help[
+       c1.name as keyof typeof client.util.constants.commands.help
+      ] ?? c1.description,
      )}\n${parseOptions(c1, isSubCommandGroup).join('')}`;
     }
     default: {
-     return `> ${ch.util.makeInlineCode(
+     return `> ${client.util.util.makeInlineCode(
       `${c1.name}${'required' in c1 && c1.required ? '' : '?'}`,
      )}: ${c1.description}\n`;
     }

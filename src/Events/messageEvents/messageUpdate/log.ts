@@ -1,17 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  if (!msg.inGuild()) return;
- if (msg.author?.id === (await ch.getBotIdFromGuild(msg.guild))) return;
+ if (msg.author?.id === (await msg.client.util.getBotIdFromGuild(msg.guild))) return;
 
- const channels = await ch.getLogChannels('messageevents', msg.guild);
+ const channels = await msg.client.util.getLogChannels('messageevents', msg.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
  const lan = language.events.logs.message;
- const con = ch.constants.events.logs.message;
+ const con = msg.client.util.constants.events.logs.message;
  const files: Discord.AttachmentPayload[] = [];
  let byAuthor: boolean | null = true;
 
@@ -26,16 +25,16 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  msg.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (oldMsg.flags !== msg.flags) {
   const oldFlags = new Discord.MessageFlagsBitField(oldMsg.flags).toArray();
   const newFlags = new Discord.MessageFlagsBitField(msg.flags).toArray();
 
-  const added = ch
+  const added = msg.client.util
    .getDifference(oldFlags, newFlags)
    .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
-  const removed = ch
+  const removed = msg.client.util
    .getDifference(newFlags, oldFlags)
    .map((f) => lan.flags[f as unknown as Discord.MessageFlagsString]);
 
@@ -46,7 +45,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   !!oldMsg.components?.length
  ) {
   if (oldMsg.components?.length) {
-   const components = ch.txtFileWriter(
+   const components = msg.client.util.txtFileWriter(
     oldMsg.components.map((c) => JSON.stringify(c, null, 2)),
     undefined,
     lan.components,
@@ -57,8 +56,12 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  }
  if (oldMsg.editedTimestamp !== msg.editedTimestamp) {
   merge(
-   oldMsg.editedTimestamp ? ch.constants.standard.getTime(oldMsg.editedTimestamp) : language.t.None,
-   msg.editedTimestamp ? ch.constants.standard.getTime(msg.editedTimestamp) : language.t.None,
+   oldMsg.editedTimestamp
+    ? msg.client.util.constants.standard.getTime(oldMsg.editedTimestamp)
+    : language.t.None,
+   msg.editedTimestamp
+    ? msg.client.util.constants.standard.getTime(msg.editedTimestamp)
+    : language.t.None,
    'string',
    lan.editedTimestamp,
   );
@@ -88,11 +91,11 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   byAuthor = false;
  }
  if (JSON.stringify(oldMsg.stickers) !== JSON.stringify(msg.stickers)) {
-  const oldStickers = ch.getDifference(
+  const oldStickers = msg.client.util.getDifference(
    oldMsg.stickers.map((o) => o) ?? [],
    msg.stickers.map((o) => o) ?? [],
   );
-  const newStickers = ch.getDifference(
+  const newStickers = msg.client.util.getDifference(
    msg.stickers.map((o) => o) ?? [],
    oldMsg.stickers.map((o) => o) ?? [],
   );
@@ -111,7 +114,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  }
  if (oldMsg.content !== msg.content) {
   if (oldMsg.content?.length > 1024) {
-   const content = ch.txtFileWriter(oldMsg.content, undefined, language.t.content);
+   const content = msg.client.util.txtFileWriter(oldMsg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -122,7 +125,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   }
 
   if (msg.content?.length > 1024) {
-   const content = ch.txtFileWriter(msg.content, undefined, language.t.content);
+   const content = msg.client.util.txtFileWriter(msg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -136,7 +139,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   if (!msg.embeds.length) byAuthor = null;
 
   if (oldMsg.embeds?.length) {
-   const embedFile = ch.txtFileWriter(
+   const embedFile = msg.client.util.txtFileWriter(
     JSON.stringify(oldMsg.embeds, null, 2),
     undefined,
     language.t.Embeds,
@@ -152,14 +155,14 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  ) {
   if (!msg.attachments.size) byAuthor = null;
 
-  const oldAttachments = ch.getDifference(
+  const oldAttachments = msg.client.util.getDifference(
    oldMsg.attachments.map((o) => o) ?? [],
    msg.attachments.map((o) => o) ?? [],
   );
 
-  const attachments = (await ch.fileURL2Buffer(oldAttachments.map((a) => a.url))).filter(
-   (e): e is Discord.AttachmentPayload => !!e,
-  );
+  const attachments = (
+   await msg.client.util.fileURL2Buffer(oldAttachments.map((a) => a.url))
+  ).filter((e): e is Discord.AttachmentPayload => !!e);
 
   if (attachments?.length) files.push(...attachments);
  }
@@ -167,11 +170,11 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   JSON.stringify(oldMsg.mentions.users.map((o) => o)) !==
   JSON.stringify(msg.mentions.users.map((o) => o))
  ) {
-  const oldMentions = ch.getDifference(
+  const oldMentions = msg.client.util.getDifference(
    oldMsg.mentions.users.map((o) => o),
    msg.mentions.users.map((o) => o),
   ) as Discord.User[];
-  const newMentions = ch.getDifference(
+  const newMentions = msg.client.util.getDifference(
    msg.mentions.users.map((o) => o),
    oldMsg.mentions.users.map((o) => o),
   ) as Discord.User[];
@@ -187,11 +190,11 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   JSON.stringify(oldMsg.mentions.roles.map((o) => o)) !==
   JSON.stringify(msg.mentions.roles.map((o) => o))
  ) {
-  const oldMentions = ch.getDifference(
+  const oldMentions = msg.client.util.getDifference(
    oldMsg.mentions.roles.map((o) => o),
    msg.mentions.roles.map((o) => o),
   ) as Discord.Role[];
-  const newMentions = ch.getDifference(
+  const newMentions = msg.client.util.getDifference(
    msg.mentions.roles.map((o) => o),
    oldMsg.mentions.roles.map((o) => o),
   ) as Discord.Role[];
@@ -207,11 +210,11 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
   JSON.stringify(oldMsg.mentions.channels.map((o) => o)) !==
   JSON.stringify(msg.mentions.channels.map((o) => o))
  ) {
-  const oldMentions = ch.getDifference(
+  const oldMentions = msg.client.util.getDifference(
    oldMsg.mentions.channels.map((o) => o),
    msg.mentions.channels.map((o) => o),
   ) as Discord.Channel[];
-  const newMentions = ch.getDifference(
+  const newMentions = msg.client.util.getDifference(
    msg.mentions.channels.map((o) => o),
    oldMsg.mentions.channels.map((o) => o),
   ) as Discord.Channel[];
@@ -230,5 +233,5 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
 
  if (!embed.fields?.length) return;
 
- ch.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
+ msg.client.util.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
 };

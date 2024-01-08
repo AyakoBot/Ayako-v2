@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -13,19 +12,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const unique = cmd.options.getBoolean('unique', false);
  const reason = cmd.options.getString('reason', false);
 
- const me = await ch.getBotMemberFromGuild(cmd.guild);
+ const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
  if (!me) return;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.invites;
 
  if (!channel?.permissionsFor(me)?.has(Discord.PermissionFlagsBits.CreateInstantInvite)) {
-  ch.errorCmd(cmd, language.errors.cantManageChannel, language);
+  cmd.client.util.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;
  }
 
- const duration = maxAge ? ch.getDuration(maxAge, 604800000) : undefined;
+ const duration = maxAge ? cmd.client.util.getDuration(maxAge, 604800000) : undefined;
 
- const invite = await ch.request.channels
+ const invite = await cmd.client.util.request.channels
   .createInvite(
    channel,
    {
@@ -39,9 +38,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .catch((e) => e);
 
  if ('message' in invite) {
-  ch.errorCmd(cmd, invite.message, language);
+  cmd.client.util.errorCmd(cmd, invite.message, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.created(invite) });
+ cmd.client.util.replyCmd(cmd, { content: lan.created(invite) });
 };

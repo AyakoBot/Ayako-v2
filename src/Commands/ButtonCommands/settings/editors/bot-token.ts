@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -18,15 +17,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
- const embed = await ch.settingsHelpers.changeHelpers.changeEmbed(
+ const embed = await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
   language,
   settingName,
   fieldName,
@@ -44,7 +43,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Success,

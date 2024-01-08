@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
@@ -12,16 +11,16 @@ export default async (
   | Discord.VoiceChannel,
  date: Date,
 ) => {
- const channels = await ch.getLogChannels('channelevents', channel.guild);
+ const channels = await channel.client.util.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 
- const last100 = await ch.request.channels
+ const last100 = await channel.client.util.request.channels
   .getMessages(channel, { limit: 100 })
   .then((ms) => ('message' in ms ? undefined : ms));
- const language = await ch.getLanguage(channel.guild.id);
+ const language = await channel.client.util.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.channel;
- const audit = await ch.getAudit(channel.guild, 74);
+ const con = channel.client.util.constants.events.logs.channel;
+ const audit = await channel.client.util.getAudit(channel.guild, 74);
  const auditUser =
   audit?.executor ??
   last100?.find(
@@ -44,5 +43,5 @@ export default async (
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
+ channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
 };

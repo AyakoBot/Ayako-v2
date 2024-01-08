@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import { canEdit } from '../../../BaseClient/ClientHelperModules/requestHandler/channels/edit.js';
+import { canEdit } from '../../../BaseClient/UtilModules/requestHandler/channels/edit.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const channel = cmd.options.getChannel('channel', true, [
@@ -13,33 +12,33 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
   Discord.ChannelType.AnnouncementThread,
  ]);
  const time = cmd.options.getNumber('time', true);
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.slowmode;
- const me = await ch.getBotMemberFromGuild(cmd.guild);
+ const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
 
  if (!me) {
-  ch.error(cmd.guild, new Error("I can't find myself in this guild!"));
+  cmd.client.util.error(cmd.guild, new Error("I can't find myself in this guild!"));
   return;
  }
 
  if (!canEdit(channel, { rate_limit_per_user: 1 }, me)) {
-  ch.errorCmd(cmd, language.errors.cantManageChannel, language);
+  cmd.client.util.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;
  }
 
- const res = await ch.request.channels.edit(channel, {
+ const res = await cmd.client.util.request.channels.edit(channel, {
   rate_limit_per_user: time,
  });
 
  if ('message' in res) {
-  ch.errorCmd(cmd, res, language);
+  cmd.client.util.errorCmd(cmd, res, language);
   return;
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content:
    time === 0
     ? lan.deleted(channel as Discord.GuildChannel)
-    : lan.success(channel as Discord.GuildChannel, ch.moment(time * 1000, language)),
+    : lan.success(channel as Discord.GuildChannel, cmd.client.util.moment(time * 1000, language)),
  });
 };

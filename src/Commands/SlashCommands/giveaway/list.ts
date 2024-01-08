@@ -1,6 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -9,14 +9,14 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const giveaways = await ch.DataBase.giveaways.findMany({
+ const giveaways = await client.util.DataBase.giveaways.findMany({
   where: { guildid: cmd.guildId },
   orderBy: {
    msgid: 'desc',
   },
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.list;
 
  const embed: Discord.APIEmbed = {
@@ -26,19 +26,21 @@ export default async (
    value: [
     {
      name: language.slashCommands.giveaway.end.ended,
-     value: g.ended ? ch.emotes.tickWithBackground : ch.emotes.crossWithBackground,
+     value: g.ended
+      ? client.util.emotes.tickWithBackground
+      : client.util.emotes.crossWithBackground,
     },
     {
      name: language.slashCommands.giveaway.list.end,
-     value: ch.constants.standard.getTime(Number(g.endtime)),
+     value: client.util.constants.standard.getTime(Number(g.endtime)),
     },
     {
      name: language.slashCommands.giveaway.create.participants,
-     value: ch.util.makeInlineCode(String(g.participants?.length || 0)),
+     value: client.util.util.makeInlineCode(String(g.participants?.length || 0)),
     },
     {
      name: language.slashCommands.giveaway.list.winnercount,
-     value: ch.util.makeInlineCode(String(g.winnercount)),
+     value: client.util.util.makeInlineCode(String(g.winnercount)),
     },
     {
      name: language.slashCommands.giveaway.list.claimingdone,
@@ -46,7 +48,7 @@ export default async (
     },
     {
      name: 'URL',
-     value: ch.constants.standard.msgurl(g.guildid, g.channelid, g.msgid),
+     value: client.util.constants.standard.msgurl(g.guildid, g.channelid, g.msgid),
     },
     {
      name: language.slashCommands.giveaway.list.host,
@@ -59,12 +61,14 @@ export default async (
     g.collecttime
      ? {
         name: language.slashCommands.giveaway.list.collecttime,
-        value: ch.util.makeInlineCode(ch.moment(Number(g.collecttime), language)),
+        value: client.util.util.makeInlineCode(client.util.moment(Number(g.collecttime), language)),
        }
      : undefined,
     {
      name: language.slashCommands.giveaway.list.failreroll,
-     value: g.failreroll ? ch.emotes.tickWithBackground : ch.emotes.crossWithBackground,
+     value: g.failreroll
+      ? client.util.emotes.tickWithBackground
+      : client.util.emotes.crossWithBackground,
     },
    ]
     .filter((v): v is { name: string; value: string } => !!v)
@@ -73,7 +77,7 @@ export default async (
   })),
  };
 
- ch.replyCmd(cmd, {
+ client.util.replyCmd(cmd, {
   embeds: [embed],
   components: [
    {
@@ -86,21 +90,21 @@ export default async (
 
 const getClaimingDone = (g: Prisma.giveaways, language: CT.Language) => {
  if (!g.collecttime || !g.actualprize) return language.slashCommands.giveaway.list.notEnabled;
- if (!g.claimingdone) return ch.emotes.crossWithBackground;
- return ch.emotes.tickWithBackground;
+ if (!g.claimingdone) return client.util.emotes.crossWithBackground;
+ return client.util.emotes.tickWithBackground;
 };
 
 const getButtons = (page: number, giveaways: Prisma.giveaways[]): Discord.APIButtonComponent[] => [
  {
   type: Discord.ComponentType.Button,
-  emoji: ch.emotes.back,
+  emoji: client.util.emotes.back,
   style: Discord.ButtonStyle.Primary,
   custom_id: `giveaway/list_${page - 1}`,
   disabled: page === 0,
  },
  {
   type: Discord.ComponentType.Button,
-  emoji: ch.emotes.forth,
+  emoji: client.util.emotes.forth,
   style: Discord.ButtonStyle.Primary,
   custom_id: `giveaway/list_${page + 1}`,
   disabled: Math.ceil(giveaways.length / 25) - 1 === page,

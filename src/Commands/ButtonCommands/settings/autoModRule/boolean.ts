@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
@@ -41,14 +40,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const id = getID();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -58,7 +57,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!updatedSetting) return;
  if ('message' in updatedSetting) {
   if (updatedSetting.message.includes('actions[BASE_TYPE_BAD_LENGTH]')) {
-   ch.errorCmd(
+   cmd.client.util.errorCmd(
     cmd,
     language.slashCommands.settings.categories['denylist-rules'].actionsRequired,
     language,
@@ -66,14 +65,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    return;
   }
 
-  ch.errorCmd(cmd, updatedSetting, language);
+  cmd.client.util.errorCmd(cmd, updatedSetting, language);
   return;
  }
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   oldSetting as never,
   getSetting(rule, fieldName as Parameters<typeof getSetting>[1]) as never,
-  '*' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  '*' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,
@@ -81,7 +80,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = (await ch.settingsHelpers.getSettingsFile(
+ const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
@@ -89,7 +88,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.update({
   embeds: settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    updatedSetting,
    language,
    language.slashCommands.settings.categories[settingName],
@@ -163,7 +162,7 @@ const getSetting = (rule: Discord.AutoModerationRule, type: SettingNames) => {
 const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) => {
  switch (type) {
   case SettingNames.Active: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     enabled: !rule.enabled,
    });
 
@@ -171,7 +170,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.Profanity: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.Profanity,
@@ -187,7 +186,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.SexualContent: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.SexualContent,
@@ -206,7 +205,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.Slurs: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      presets: rule.triggerMetadata.presets.includes(
       Discord.AutoModerationRuleKeywordPresetType.Slurs,
@@ -222,7 +221,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.MentionRaidProtectionEnabled: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     trigger_metadata: getAPIRule(rule) && {
      mention_raid_protection_enabled: !rule.triggerMetadata.mentionRaidProtectionEnabled,
     },
@@ -232,7 +231,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.BlockMessage: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
     ),
@@ -242,7 +241,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.SendAlertMessage: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
     ),
@@ -252,7 +251,7 @@ const updateRule = async (rule: Discord.AutoModerationRule, type: SettingNames) 
    return res;
   }
   case SettingNames.Timeout: {
-   const res = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
+   const res = await rule.client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
     actions: getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.Timeout,
     ),

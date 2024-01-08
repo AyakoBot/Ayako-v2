@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../../Typings/Typings.js';
-import * as ch from '../../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.logs.tempChannelBanAdd,
@@ -14,7 +13,7 @@ export default (t: CT.Language) => ({
    executor: t.languageFunction.getUser(executor),
    options: {
     channel: t.languageFunction.getChannel(options.channel),
-    duration: ch.constants.standard.getTime(Date.now() + options.duration * 1000),
+    duration: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
    },
   }),
 });

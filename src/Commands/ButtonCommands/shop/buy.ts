@@ -1,6 +1,5 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -8,30 +7,30 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const id = args.shift();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.shop;
 
- const settings = await ch.DataBase.shop.findUnique({
+ const settings = await cmd.client.util.DataBase.shop.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
  if (!settings) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
   return;
  }
 
- const shopitem = await ch.DataBase.shopitems.findUnique({
+ const shopitem = await cmd.client.util.DataBase.shopitems.findUnique({
   where: { uniquetimestamp: id, active: true, roles: { isEmpty: false } },
  });
  if (!shopitem) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
   return;
  }
 
- const shopuser = await ch.DataBase.shopusers.findUnique({
+ const shopuser = await cmd.client.util.DataBase.shopusers.findUnique({
   where: { userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id }, boughtids: { has: id } },
  });
 
@@ -45,7 +44,7 @@ const buy = async (
  shopitem: Prisma.shopitems,
  language: CT.Language,
 ) => {
- const balance = await ch.DataBase.balance.update({
+ const balance = await cmd.client.util.DataBase.balance.update({
   where: {
    userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id },
    balance: { gte: Number(shopitem.price) },
@@ -54,13 +53,13 @@ const buy = async (
   select: { balance: true },
  });
  if (!balance) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
    language.slashCommands.roles.shop.notEnoughMoney(
-    ch.constants.standard.getEmote(
+    cmd.client.util.constants.standard.getEmote(
      settings.currencyemote
-      ? Discord.parseEmoji(settings.currencyemote) ?? ch.emotes.book
-      : ch.emotes.book,
+      ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+      : cmd.client.util.emotes.book,
     ),
    ),
    language,
@@ -68,7 +67,7 @@ const buy = async (
   return;
  }
 
- ch.DataBase.shopusers
+ cmd.client.util.DataBase.shopusers
   .upsert({
    where: {
     userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id },
@@ -82,7 +81,7 @@ const buy = async (
   })
   .then();
 
- ch.request.guilds.editMember(
+ cmd.client.util.request.guilds.editMember(
   cmd.member,
   {
    roles: [...cmd.member.roles.cache.map((r) => r.id), ...shopitem.roles],
@@ -90,7 +89,7 @@ const buy = async (
   language.autotypes.shop,
  );
 
- ch.replyCmd(cmd, { content: language.slashCommands.roles.shop.bought });
+ cmd.client.util.replyCmd(cmd, { content: language.slashCommands.roles.shop.bought });
 };
 
 const equip = async (
@@ -102,11 +101,11 @@ const equip = async (
   ? cmd.member.roles.cache.map((r) => r.id).filter((r) => !shopitem.roles.includes(r))
   : [...cmd.member.roles.cache.map((r) => r.id), ...shopitem.roles];
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: cmd.member.roles.cache.hasAll(...shopitem.roles)
    ? language.slashCommands.roles.shop.unequipt
    : language.slashCommands.roles.shop.equipt,
  });
 
- ch.request.guilds.editMember(cmd.member, { roles }, language.autotypes.shop);
+ cmd.client.util.request.guilds.editMember(cmd.member, { roles }, language.autotypes.shop);
 };

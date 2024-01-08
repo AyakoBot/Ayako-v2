@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -19,13 +18,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const commandID = (
   cmd.message.embeds[0].description?.includes('/')
    ? client.application?.commands.cache.get(
@@ -34,7 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    : (cmd.message.embeds[0].description as string)
  )?.replace(/`/g, '');
 
- const updatedSetting = await ch.settingsHelpers.changeHelpers.getAndInsert(
+ const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
@@ -42,10 +41,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] },
-  fieldName as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  fieldName as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,
@@ -53,19 +52,19 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
+ const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
  cmd.update({
   embeds: await settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    updatedSetting,
    language,
    language.slashCommands.settings.categories[settingName],
    cmd.guild,
   ),
   components: await settingsFile.getComponents(
-   ch.settingsHelpers.buttonParsers,
+   cmd.client.util.settingsHelpers.buttonParsers,
    updatedSetting,
    language,
   ),

@@ -1,21 +1,20 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
 
- const channels = await ch.getLogChannels('stickerevents', sticker.guild);
+ const channels = await sticker.client.util.getLogChannels('stickerevents', sticker.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(sticker.guild.id);
+ const language = await sticker.client.util.getLanguage(sticker.guild.id);
  const lan = language.events.logs.sticker;
- const con = ch.constants.events.logs.sticker;
- const audit = (await ch.getAudit(sticker.guild, 92, sticker.id)) ?? undefined;
+ const con = sticker.client.util.constants.events.logs.sticker;
+ const audit = (await sticker.client.util.getAudit(sticker.guild, 92, sticker.id)) ?? undefined;
  const auditUser =
   audit?.executor ??
   sticker.user ??
-  (await ch.request.guilds
+  (await sticker.client.util.request.guilds
    .getSticker(sticker.guild, sticker.id)
    .then((s) => ('message' in s || !s.user ? undefined : s.user)));
  const files: Discord.AttachmentPayload[] = [];
@@ -31,12 +30,12 @@ export default async (sticker: Discord.Sticker) => {
   timestamp: new Date().toISOString(),
  };
 
- const attachment = (await ch.fileURL2Buffer([sticker.url]))?.[0];
+ const attachment = (await sticker.client.util.fileURL2Buffer([sticker.url]))?.[0];
  if (attachment) {
   files.push(attachment);
 
   embed.thumbnail = {
-   url: `attachment://${ch.getNameAndFileType(sticker.url)}`,
+   url: `attachment://${sticker.client.util.getNameAndFileType(sticker.url)}`,
   };
  }
 
@@ -59,5 +58,9 @@ export default async (sticker: Discord.Sticker) => {
   value: lan.format[sticker.format],
  });
 
- ch.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed], files }, 10000);
+ sticker.client.util.send(
+  { id: channels, guildId: sticker.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

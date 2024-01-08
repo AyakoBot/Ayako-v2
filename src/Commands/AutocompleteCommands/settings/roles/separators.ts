@@ -1,9 +1,8 @@
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.DataBase.roleseparator.findMany({ where: { guildid: cmd.guild.id } })
+  await cmd.guild.client.util.DataBase.roleseparator.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../ClientHelper.js';
 import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
@@ -34,7 +33,7 @@ export default (t: CT.Language) => ({
   name: t.JSON.events.vote.reminder.name,
   descBot: (bot: Discord.User) =>
    t.stp(t.JSON.events.vote.reminder.descBot, {
-    bot: ch.constants.standard.user(bot),
+    bot: t.util.constants.standard.user(bot),
    }),
   descGuild: (guild: Discord.Guild) =>
    t.stp(t.JSON.events.vote.reminder.descGuild, {

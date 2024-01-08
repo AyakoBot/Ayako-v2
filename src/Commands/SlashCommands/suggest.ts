@@ -1,17 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
-import { colors } from '../../BaseClient/ClientHelperModules/getColor.js';
+import { colors } from '../../BaseClient/UtilModules/getColor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.suggest;
- const settings = await ch.DataBase.suggestionsettings.findUnique({
+ const settings = await cmd.client.util.DataBase.suggestionsettings.findUnique({
   where: { guildid: cmd.guildId, active: true, channelid: { not: null } },
  });
  if (!settings || !settings.channelid) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
   return;
  }
 
@@ -19,7 +18,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   settings.nosendusers.includes(cmd.user.id) ||
   settings.nosendroles.some((r) => cmd.member.roles.cache.has(r))
  ) {
-  ch.errorCmd(cmd, lan.cannotSend, language);
+  cmd.client.util.errorCmd(cmd, lan.cannotSend, language);
   return;
  }
 
@@ -29,13 +28,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .map((_, i) => cmd.options.getAttachment(`attachment-${i}`, false))
   .filter((a): a is Discord.Attachment => !!a);
 
- const files = await ch.fileURL2Buffer(attachments.map((a) => a.url));
+ const files = await cmd.client.util.fileURL2Buffer(attachments.map((a) => a.url));
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.sent,
  });
 
- const m = await ch.send(
+ const m = await cmd.client.util.send(
   { id: settings.channelid, guildId: cmd.guildId },
   {
    content:
@@ -47,7 +46,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    allowed_mentions: { users: settings.pinguserid, roles: settings.pingroleid },
    embeds: [
     {
-     color: ch.getColor(Object.keys(colors)[ch.getRandom(0, Object.keys(colors).length - 1)]),
+     color: cmd.client.util.getColor(
+      Object.keys(colors)[cmd.client.util.getRandom(0, Object.keys(colors).length - 1)],
+     ),
      author: {
       name: `${lan.author}${settings.anonsuggestion ? '' : ` | ${cmd.user.displayName}`}`,
      },
@@ -61,9 +62,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      fields: [
       {
        name: lan.votes,
-       value: `${ch.constants.standard.getEmote(
-        ch.emotes.tickWithBackground,
-       )}: 0\n${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)}: 0`,
+       value: `${cmd.client.util.constants.standard.getEmote(
+        cmd.client.util.emotes.tickWithBackground,
+       )}: 0\n${cmd.client.util.constants.standard.getEmote(
+        cmd.client.util.emotes.crossWithBackground,
+       )}: 0`,
       },
      ],
     },
@@ -77,7 +80,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Success,
        custom_id: 'suggestion/tick',
-       emoji: ch.emotes.tickWithBackground,
+       emoji: cmd.client.util.emotes.tickWithBackground,
       },
       {
        type: Discord.ComponentType.Button,
@@ -89,7 +92,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Danger,
        custom_id: 'suggestion/cross',
-       emoji: ch.emotes.crossWithBackground,
+       emoji: cmd.client.util.emotes.crossWithBackground,
       },
      ],
     },
@@ -105,7 +108,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Secondary,
-       emoji: ch.emotes.ban,
+       emoji: cmd.client.util.emotes.ban,
        custom_id: 'suggestion/ban',
       },
       {
@@ -123,7 +126,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Secondary,
        custom_id: 'suggestion/delete',
-       emoji: ch.emotes.trash,
+       emoji: cmd.client.util.emotes.trash,
       },
      ],
     },
@@ -133,7 +136,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (!m) return;
 
- ch.DataBase.suggestionvotes
+ cmd.client.util.DataBase.suggestionvotes
   .create({
    data: {
     msgid: m.id,

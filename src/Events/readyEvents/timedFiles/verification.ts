@@ -1,9 +1,8 @@
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { kick } from '../../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {
- const verificationRows = await ch.DataBase.verification.findMany({
+ const verificationRows = await client.util.DataBase.verification.findMany({
   where: { active: true, kicktof: true },
  });
  if (!verificationRows) return;
@@ -15,7 +14,7 @@ export default async () => {
   const guild = client.guilds.cache.get(r.guildid);
   if (!guild) return;
 
-  const language = await ch.getLanguage(guild.id);
+  const language = await client.util.getLanguage(guild.id);
 
   guild.members.cache
    .filter(

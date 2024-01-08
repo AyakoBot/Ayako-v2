@@ -1,17 +1,19 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (role: Discord.Role) => {
- const channels = await ch.getLogChannels('roleevents', role.guild);
+ const channels = await role.client.util.getLogChannels('roleevents', role.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(role.guild.id);
+ const language = await role.client.util.getLanguage(role.guild.id);
  const lan = language.events.logs.role;
- const con = ch.constants.events.logs.role;
- const audit = role.tags?.botId ? undefined : await ch.getAudit(role.guild, 30, role.id);
+ const con = role.client.util.constants.events.logs.role;
+ const audit = role.tags?.botId
+  ? undefined
+  : await role.client.util.getAudit(role.guild, 30, role.id);
  const auditUser =
-  (role.tags?.botId ? await ch.getUser(role.tags.botId) : audit?.executor) ?? undefined;
+  (role.tags?.botId ? await role.client.util.getUser(role.tags.botId) : audit?.executor) ??
+  undefined;
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
@@ -26,9 +28,9 @@ export default async (role: Discord.Role) => {
  };
 
  if (role.icon) {
-  const attachments = (await ch.fileURL2Buffer([role.iconURL({ size: 4096 })])).filter(
-   (e): e is Discord.AttachmentPayload => !!e,
-  );
+  const attachments = (
+   await role.client.util.fileURL2Buffer([role.iconURL({ size: 4096 })])
+  ).filter((e): e is Discord.AttachmentPayload => !!e);
 
   if (attachments?.length) files.push(...attachments);
  }
@@ -79,12 +81,16 @@ export default async (role: Discord.Role) => {
     ([name, value]) =>
      `${
       value
-       ? ch.constants.standard.getEmote(ch.emotes.enabled)
-       : ch.constants.standard.getEmote(ch.emotes.disabled)
+       ? role.client.util.constants.standard.getEmote(role.client.util.emotes.enabled)
+       : role.client.util.constants.standard.getEmote(role.client.util.emotes.disabled)
      } \`${language.permissions.perms[name as keyof typeof language.permissions.perms]}\``,
    )
    .join('\n'),
  };
 
- ch.send({ id: channels, guildId: role.guild.id }, { embeds: [embed, permEmbed], files }, 10000);
+ role.client.util.send(
+  { id: channels, guildId: role.guild.id },
+  { embeds: [embed, permEmbed], files },
+  10000,
+ );
 };

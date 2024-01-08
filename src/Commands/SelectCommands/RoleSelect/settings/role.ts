@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
@@ -11,11 +10,11 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
  const settingName = args.shift() as CT.SettingNames;
  if (!settingName) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  cmd.update({
   embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
+   await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
     language,
     settingName,
     fieldName,

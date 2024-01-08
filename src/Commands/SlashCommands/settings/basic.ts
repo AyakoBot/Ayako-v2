@@ -1,8 +1,8 @@
 import DiscordAPI from 'discord-api-types/v10';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import requestHandler from '../../../BaseClient/ClientHelperModules/requestHandler.js';
+import client from '../../../BaseClient/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
+import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
 import * as CT from '../../../Typings/Typings.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
@@ -12,17 +12,17 @@ const name = CT.SettingNames.Basic;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
- const { embedParsers, buttonParsers } = ch.settingsHelpers;
+ const language = await client.util.getLanguage(cmd.guild?.id);
+ const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -46,11 +46,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  {
   author: embedParsers.author(language, lan),
   description: `${settings.token ? lan.tokenSetDesc : ''}\n\n${language.slashCommands.rp.notice(
-   (await ch.getCustomCommand(guild, 'rp'))?.id ?? '0',
+   (await client.util.getCustomCommand(guild, 'rp'))?.id ?? '0',
   )}\n${
-   ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-       name as keyof typeof ch.constants.tutorials
+   client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
       ].map((t) => `[${t.name}](${t.link})`)}`
     : ''
   }`,
@@ -105,13 +105,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    {
     name: lan.fields.token.name,
     value: settings.token
-     ? `${ch.util.makeInlineCode(
+     ? `${client.util.util.makeInlineCode(
         `${settings.token.split('.')[0]}.${'*'.repeat(
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
-       )}\n[${language.t.InviteCustomBot}](${ch.constants.standard.invite.replace(
-        ch.mainID,
-        settings.appid ?? ch.mainID,
+       )}\n[${language.t.InviteCustomBot}](${client.util.constants.standard.invite.replace(
+        client.util.mainID,
+        settings.appid ?? client.util.mainID,
        )})`
      : language.t.None,
    },
@@ -178,7 +178,10 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     label: language.t.InviteCustomBot,
     disabled: !settings.token,
     url: settings.token
-     ? ch.constants.standard.invite.replace(ch.mainID, settings.appid ?? ch.mainID)
+     ? client.util.constants.standard.invite.replace(
+        client.util.mainID,
+        settings.appid ?? client.util.mainID,
+       )
      : 'https://ayakobot.com',
    },
   ],
@@ -227,19 +230,25 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    if (!newSettings.statuschannel) {
     if (!oldSettings?.statuschannel) return;
 
-    [...(ch.cache.webhooks.cache.get(guild.id)?.get(oldSettings.statuschannel)?.values() ?? [])]
+    [
+     ...(client.util.cache.webhooks.cache.get(guild.id)?.get(oldSettings.statuschannel)?.values() ??
+      []),
+    ]
      .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '827312892982198272')
-     .map((w) => ch.request.webhooks.delete(guild, w));
+     .map((w) => client.util.request.webhooks.delete(guild, w));
     return;
    }
 
-   const channel = await ch.getChannel.guildTextChannel(newSettings.statuschannel);
+   const channel = await client.util.getChannel.guildTextChannel(newSettings.statuschannel);
    if (!channel) return;
 
-   const response = await ch.request.channels.followAnnouncements(channel, '827312892982198272');
+   const response = await client.util.request.channels.followAnnouncements(
+    channel,
+    '827312892982198272',
+   );
    if (!('message' in response)) return;
 
-   ch.error(
+   client.util.error(
     guild,
     new Error(
      'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
@@ -251,19 +260,27 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    if (!newSettings.updateschannel) {
     if (!oldSettings?.updateschannel) return;
 
-    [...(ch.cache.webhooks.cache.get(guild.id)?.get(oldSettings.updateschannel)?.values() ?? [])]
+    [
+     ...(client.util.cache.webhooks.cache
+      .get(guild.id)
+      ?.get(oldSettings.updateschannel)
+      ?.values() ?? []),
+    ]
      .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '765743834118225961')
-     .map((w) => ch.request.webhooks.delete(guild, w));
+     .map((w) => client.util.request.webhooks.delete(guild, w));
     return;
    }
 
-   const channel = await ch.getChannel.guildTextChannel(newSettings.updateschannel);
+   const channel = await client.util.getChannel.guildTextChannel(newSettings.updateschannel);
    if (!channel) return;
 
-   const response = await ch.request.channels.followAnnouncements(channel, '765743834118225961');
+   const response = await client.util.request.channels.followAnnouncements(
+    channel,
+    '765743834118225961',
+   );
    if (!('message' in response)) return;
 
-   ch.error(
+   client.util.error(
     guild,
     new Error(
      'Could not follow channel. Please adjust permissions as outlined above and re-set the channel',
@@ -273,29 +290,29 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
   }
   case 'token': {
    if (!newSettings.token) {
-    ch.cache.apis.delete(guild.id);
-    ch.DataBase.guildsettings.update({
+    client.util.cache.apis.delete(guild.id);
+    client.util.DataBase.guildsettings.update({
      where: { guildid: guild.id },
      data: { publickey: null, appid: null, token: null },
     });
 
-    ch.request.commands.getGuildCommands(guild);
-    ch.cache.commandPermissions.get(guild, '');
+    client.util.request.commands.getGuildCommands(guild);
+    client.util.cache.commandPermissions.get(guild, '');
     return;
    }
 
    requestHandler(guild.id, newSettings.token);
 
-   const me = await ch.cache.apis
+   const me = await client.util.cache.apis
     .get(guild.id)
-    ?.rest.get(`/applications/${ch.getBotIdFromToken(newSettings.token)}`)
+    ?.rest.get(`/applications/${client.util.getBotIdFromToken(newSettings.token)}`)
     .then((a) => a as DiscordAPI.APIApplication)
     .catch((e: Discord.DiscordAPIError) => e);
 
    if (!me || 'message' in me) {
-    ch.error(guild, new Error(me ? me.message : 'Unknown Application'));
+    client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
 
-    ch.DataBase.guildsettings
+    client.util.DataBase.guildsettings
      .update({
       where: { guildid: guild.id },
       data: { token: null },
@@ -307,14 +324,14 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    }
 
    if (!me.bot_public) {
-    ch.error(
+    client.util.error(
      guild,
      new Error('Bot is not public, please make it public so it can use external Emojis'),
     );
     return;
    }
 
-   ch.send(
+   client.util.send(
     { id: '1024968281465040957', guildId: '669893888856817665' },
     {
      content: `New Custom Client <@318453143476371456>`,
@@ -345,17 +362,17 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))
     .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
 
-   await ch.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
+   await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
 
-   const settings = await ch.DataBase.guildsettings.update({
+   const settings = await client.util.DataBase.guildsettings.update({
     where: { guildid: guild.id },
     data: { publickey: me.verify_key, appid: me.id },
     select: { enabledrp: true },
    });
    if (settings.enabledrp) await create(guild);
 
-   ch.request.commands.getGuildCommands(guild);
-   ch.cache.commandPermissions.get(guild, '');
+   client.util.request.commands.getGuildCommands(guild);
+   client.util.cache.commandPermissions.get(guild, '');
    break;
   }
   default:

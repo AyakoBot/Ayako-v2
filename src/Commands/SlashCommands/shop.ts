@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (
@@ -7,36 +6,36 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.shop;
 
- const settings = await ch.DataBase.shop.findUnique({
+ const settings = await cmd.client.util.DataBase.shop.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
  if (!settings) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
   return;
  }
 
- const shopItems = await ch.DataBase.shopitems.findMany({
+ const shopItems = await cmd.client.util.DataBase.shopitems.findMany({
   where: { guildid: cmd.guildId, roles: { isEmpty: false } },
  });
  if (!shopItems) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
   return;
  }
 
- const balance = await ch.DataBase.balance.findUnique({
+ const balance = await cmd.client.util.DataBase.balance.findUnique({
   where: { userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id }, balance: { gt: 0 } },
  });
 
- const currencyEmote = ch.constants.standard.getEmote(
+ const currencyEmote = cmd.client.util.constants.standard.getEmote(
   settings.currencyemote
-   ? Discord.parseEmoji(settings.currencyemote) ?? ch.emotes.book
-   : ch.emotes.book,
+   ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+   : cmd.client.util.emotes.book,
  );
 
- const user = await ch.DataBase.shopusers.findUnique({
+ const user = await cmd.client.util.DataBase.shopusers.findUnique({
   where: { userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id } },
  });
 
@@ -53,9 +52,9 @@ export default async (
    disabled: !buyable.length,
    options: buyable.length
     ? buyable.map((s) => ({
-       emoji: ch.emotes.buy,
+       emoji: cmd.client.util.emotes.buy,
        label: `${(s.roles.length > 1 ? lan.buyTheseFor : lan.buyThisFor)(
-        ch.splitByThousand(Number(s.price)),
+        cmd.client.util.splitByThousand(Number(s.price)),
        )}`,
        description: `${s.roles
         .map((r) => cmd.guild.roles.cache.get(r)?.name)
@@ -75,7 +74,9 @@ export default async (
    disabled: !equippable.length,
    options: equippable.length
     ? equippable.map((s) => ({
-       emoji: cmd.member.roles.cache.hasAll(...s.roles) ? ch.emotes.minusBG : ch.emotes.plusBG,
+       emoji: cmd.member.roles.cache.hasAll(...s.roles)
+        ? cmd.client.util.emotes.minusBG
+        : cmd.client.util.emotes.plusBG,
        label: cmd.member.roles.cache.hasAll(...s.roles) ? lan.unequip : lan.equip,
        description: `${s.roles
         .map((r) => cmd.guild.roles.cache.get(r)?.name)
@@ -97,20 +98,20 @@ export default async (
     description: lan.description(
      Number(balance?.balance ?? 0),
      currencyEmote,
-     (await ch.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
+     (await cmd.client.util.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
     ),
     fields: shopItems.map((s, i) => ({
      name: `#${i + 1} - ${s.price} ${currencyEmote}`,
      value: `${s.roles.map((r) => `<@&${r}>`).join(', ')}${
       s.shoptype === 'message'
        ? `\n${(s.roles.length > 1 ? lan.oneRole : lan.manyRoles)(
-          ch.constants.standard.msgurl(cmd.guildId, s.channelid ?? '', s.msgid ?? ''),
+          cmd.client.util.constants.standard.msgurl(cmd.guildId, s.channelid ?? '', s.msgid ?? ''),
          )}`
        : ''
      }`,
      inline: true,
     })),
-    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
    },
   ],
   components: selMenu.map((s) => ({
@@ -119,6 +120,6 @@ export default async (
   })),
  };
 
- if (cmd instanceof Discord.ChatInputCommandInteraction) ch.replyCmd(cmd, payload);
+ if (cmd instanceof Discord.ChatInputCommandInteraction) cmd.client.util.replyCmd(cmd, payload);
  else cmd.update(payload);
 };

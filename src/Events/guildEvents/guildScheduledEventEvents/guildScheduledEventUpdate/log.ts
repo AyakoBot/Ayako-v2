@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
@@ -15,19 +14,19 @@ export default async (
    : undefined);
  if (!guild) return;
 
- const channels = await ch.getLogChannels('scheduledeventevents', guild);
+ const channels = await event.client.util.getLogChannels('scheduledeventevents', guild);
  if (!channels) return;
 
  const channel =
   event.channel ??
   (event.channelId
-   ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
-     (await ch.getChannel.guildVoiceChannel(event.channelId))
+   ? (await event.client.util.getChannel.guildTextChannel(event.channelId)) ??
+     (await event.client.util.getChannel.guildVoiceChannel(event.channelId))
    : undefined);
- const language = await ch.getLanguage(guild.id);
+ const language = await event.client.util.getLanguage(guild.id);
  const lan = language.events.logs.scheduledEvent;
- const con = ch.constants.events.logs.guild;
- const audit = await ch.getAudit(guild, 101, event.id);
+ const con = event.client.util.constants.events.logs.guild;
+ const audit = await event.client.util.getAudit(guild, 101, event.id);
  const auditUser = audit?.executor ?? undefined;
  const files: Discord.AttachmentPayload[] = [];
  let description = '';
@@ -59,7 +58,7 @@ export default async (
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  event.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (event.image !== oldEvent.image) {
   const getImage = async () => {
@@ -75,9 +74,9 @@ export default async (
     return;
    }
 
-   const attachment = (await ch.fileURL2Buffer([url]))?.[0];
+   const attachment = (await event.client.util.fileURL2Buffer([url]))?.[0];
 
-   merge(url, ch.getNameAndFileType(url), 'icon', lan.image);
+   merge(url, event.client.util.getNameAndFileType(url), 'icon', lan.image);
 
    if (attachment) files.push(attachment);
   };
@@ -100,15 +99,15 @@ export default async (
   const oldChannel =
    oldEvent.channel ??
    (oldEvent.channelId
-    ? (await ch.getChannel.guildTextChannel(oldEvent.channelId)) ??
-      (await ch.getChannel.guildVoiceChannel(oldEvent.channelId))
+    ? (await event.client.util.getChannel.guildTextChannel(oldEvent.channelId)) ??
+      (await event.client.util.getChannel.guildVoiceChannel(oldEvent.channelId))
     : undefined);
 
   const newChannel =
    event.channel ??
    (event.channelId
-    ? (await ch.getChannel.guildTextChannel(event.channelId)) ??
-      (await ch.getChannel.guildVoiceChannel(event.channelId))
+    ? (await event.client.util.getChannel.guildTextChannel(event.channelId)) ??
+      (await event.client.util.getChannel.guildVoiceChannel(event.channelId))
     : undefined);
 
   merge(
@@ -125,10 +124,10 @@ export default async (
  if (event.scheduledEndTimestamp !== oldEvent.scheduledEndTimestamp) {
   merge(
    oldEvent.scheduledEndTimestamp
-    ? ch.constants.standard.getTime(oldEvent.scheduledEndTimestamp)
+    ? event.client.util.constants.standard.getTime(oldEvent.scheduledEndTimestamp)
     : language.t.None,
    event.scheduledEndTimestamp
-    ? ch.constants.standard.getTime(event.scheduledEndTimestamp)
+    ? event.client.util.constants.standard.getTime(event.scheduledEndTimestamp)
     : language.t.None,
    'string',
    lan.scheduledEndTime,
@@ -137,10 +136,10 @@ export default async (
  if (event.scheduledStartTimestamp !== oldEvent.scheduledStartTimestamp) {
   merge(
    oldEvent.scheduledStartTimestamp
-    ? ch.constants.standard.getTime(oldEvent.scheduledStartTimestamp)
+    ? event.client.util.constants.standard.getTime(oldEvent.scheduledStartTimestamp)
     : language.t.None,
    event.scheduledStartTimestamp
-    ? ch.constants.standard.getTime(event.scheduledStartTimestamp)
+    ? event.client.util.constants.standard.getTime(event.scheduledStartTimestamp)
     : language.t.None,
    'string',
    lan.scheduledStartTime,
@@ -169,5 +168,5 @@ export default async (
   );
  }
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
+ event.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
 };

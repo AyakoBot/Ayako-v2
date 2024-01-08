@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Verification;
@@ -7,17 +7,17 @@ const name = CT.SettingNames.Verification;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
- const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { embedParsers, buttonParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -37,9 +37,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   fields: [
@@ -164,11 +165,11 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  switch (changedSettings) {
   case 'startchannel': {
    if (!newSettings?.startchannel) return;
-   const channel = await ch.getChannel.guildTextChannel(newSettings.startchannel);
+   const channel = await client.util.getChannel.guildTextChannel(newSettings.startchannel);
    if (!channel) return;
 
-   const language = await ch.getLanguage(channel.guildId);
-   ch.send(channel, await getPayload(language, channel.guild));
+   const language = await client.util.getLanguage(channel.guildId);
+   client.util.send(channel, await getPayload(language, channel.guild));
    break;
   }
   default: {
@@ -185,10 +186,10 @@ export const getPayload = async (
   {
    author: {
     name: language.verification.title,
-    icon_url: ch.emotes.tickWithBackground.link,
+    icon_url: client.util.emotes.tickWithBackground.link,
    },
    description: language.verification.startchannelmessage,
-   color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
+   color: client.util.getColor(await client.util.getBotMemberFromGuild(guild)),
   },
  ],
  components: [

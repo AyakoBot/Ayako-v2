@@ -1,20 +1,21 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- const stats = await ch.DataBase.stats.findFirst();
- const language = await ch.getLanguage(cmd.guildId);
+ const stats = await cmd.client.util.DataBase.stats.findFirst();
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.ping;
 
- const sent = await ch.replyCmd(cmd, {
+ const sent = await cmd.client.util.replyCmd(cmd, {
   embeds: [
    {
-    description: `**${lan.lastHeartbeat}**: ${ch.util.makeInlineCode(
+    description: `**${lan.lastHeartbeat}**: ${cmd.client.util.util.makeInlineCode(
      String(stats?.heartbeat ?? 0),
-    )} ${language.time.milliseconds}\n**${lan.websocket}**: ${ch.util.makeInlineCode(
+    )} ${language.time.milliseconds}\n**${lan.websocket}**: ${cmd.client.util.util.makeInlineCode(
      String(cmd.client.ws.shards.get(Number(cmd.client.shard?.ids[0]))?.ping ?? 0),
     )} ${language.time.milliseconds}`,
-    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
+    color: cmd.client.util.getColor(
+     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+    ),
     author: { name: lan.author },
    },
   ],
@@ -25,14 +26,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  cmd.editReply({
   embeds: [
    {
-    description: `**${lan.lastHeartbeat}**: ${ch.util.makeInlineCode(
+    description: `**${lan.lastHeartbeat}**: ${cmd.client.util.util.makeInlineCode(
      String(stats?.heartbeat ?? 0),
-    )} ${language.time.milliseconds}\n**${lan.websocket}**: ${ch.util.makeInlineCode(
+    )} ${language.time.milliseconds}\n**${lan.websocket}**: ${cmd.client.util.util.makeInlineCode(
      String(cmd.client.ws.shards.get(Number(cmd.client.shard?.ids[0]))?.ping ?? 0),
-    )} ${language.time.milliseconds}\n**${lan.roundtrip}**: ${ch.util.makeInlineCode(
-     String(sent.createdTimestamp - Date.now()),
+    )} ${language.time.milliseconds}\n**${lan.roundtrip}**: ${cmd.client.util.util.makeInlineCode(
+     String(Math.abs(sent.createdTimestamp - Date.now())),
     )} ${language.time.milliseconds}`,
-    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
+    color: cmd.client.util.getColor(
+     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+    ),
     author: { name: lan.author },
    },
   ],

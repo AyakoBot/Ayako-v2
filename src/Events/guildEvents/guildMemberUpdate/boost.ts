@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  if (oldMember.premiumSinceTimestamp === member.premiumSinceTimestamp) return;
  if (!member.premiumSinceTimestamp) return;
 
- const settings = await ch.DataBase.nitrosettings.findUnique({
+ const settings = await member.client.util.DataBase.nitrosettings.findUnique({
   where: {
    guildid: member.guild.id,
    active: true,
@@ -15,21 +14,26 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  });
  if (!settings) return;
 
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
  const embedSettings = settings.notifembed
-  ? await ch.DataBase.customembeds.findUnique({
+  ? await member.client.util.DataBase.customembeds.findUnique({
      where: { guildid: member.guild.id, uniquetimestamp: settings.notifembed },
     })
   : undefined;
 
  const embed: Discord.APIEmbed =
   settings.notifembed && embedSettings
-   ? ch.makeStp(ch.getDiscordEmbed(embedSettings), { member })
+   ? member.client.util.makeStp(member.client.util.getDiscordEmbed(embedSettings), { member })
    : {
       author: { name: language.autotypes.nitro },
-      color: ch.getColor(await ch.getBotMemberFromGuild(member.guild)),
+      color: member.client.util.getColor(
+       await member.client.util.getBotMemberFromGuild(member.guild),
+      ),
       description: language.events.ready.nitro.started(member.user),
      };
 
- ch.send({ id: settings.notifchannels, guildId: member.guild.id }, { embeds: [embed] });
+ member.client.util.send(
+  { id: settings.notifchannels, guildId: member.guild.id },
+  { embeds: [embed] },
+ );
 };

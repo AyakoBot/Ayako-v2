@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 type Types =
@@ -31,16 +30,16 @@ export default async (
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSetting = await ch.settingsHelpers.changeHelpers.get(
+ const currentSetting = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
  );
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  cmd.update({
   embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
+   await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
     language,
     settingName,
     fieldName,
@@ -53,7 +52,7 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.changeSelect(
+     cmd.client.util.settingsHelpers.changeHelpers.changeSelect(
       fieldName,
       settingName,
       type,
@@ -71,8 +70,8 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
-     ch.settingsHelpers.changeHelpers.done(
+     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
       type,

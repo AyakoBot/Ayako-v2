@@ -1,18 +1,17 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  oldRule: Discord.AutoModerationRule | undefined,
  rule: Discord.AutoModerationRule,
 ) => {
- const channels = await ch.getLogChannels('automodevents', rule.guild);
+ const channels = await rule.client.util.getLogChannels('automodevents', rule.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(rule.guild.id);
+ const language = await rule.client.util.getLanguage(rule.guild.id);
  const lan = language.events.logs.automodRule;
- const con = ch.constants.events.logs.automodRule;
- const user = await ch.getUser(rule.creatorId);
+ const con = rule.client.util.constants.events.logs.automodRule;
+ const user = await rule.client.util.getUser(rule.creatorId);
  if (!user) return;
 
  const embed: Discord.APIEmbed = {
@@ -27,7 +26,7 @@ export default async (
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  rule.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (rule.name !== oldRule?.name) {
   merge(oldRule ? oldRule.name : language.t.Unknown, rule.name, 'string', language.t.name);
@@ -81,14 +80,14 @@ export default async (
    JSON.stringify(oldRule?.exemptRoles.map((r) => r?.id))
  ) {
   merge(
-   ch
+   rule.client.util
     .getDifference(
      rule.exemptRoles.map((r) => r?.id),
      oldRule?.exemptRoles.map((r) => r?.id) ?? [],
     )
     .map((r) => `<@&${r}>`)
     .join(', '),
-   ch
+   rule.client.util
     .getDifference(
      oldRule?.exemptRoles.map((r) => r?.id) ?? [],
      rule.exemptRoles.map((r) => r?.id),
@@ -104,14 +103,14 @@ export default async (
   JSON.stringify(rule.exemptChannels.map((r) => r?.id)) !==
    JSON.stringify(oldRule?.exemptChannels.map((r) => r?.id))
  ) {
-  const beforeContent = ch
+  const beforeContent = rule.client.util
    .getDifference(
     rule.exemptChannels.map((r) => r?.id),
     oldRule?.exemptChannels.map((r) => r?.id) ?? [],
    )
    .map((r) => `<#${r}>`)
    .join(', ');
-  const afterContent = ch
+  const afterContent = rule.client.util
    .getDifference(
     oldRule?.exemptChannels.map((r) => r?.id) ?? [],
     rule.exemptChannels.map((r) => r?.id),
@@ -131,7 +130,7 @@ export default async (
   JSON.stringify(rule.triggerMetadata?.keywordFilter) !==
    JSON.stringify(oldRule?.triggerMetadata?.keywordFilter)
  ) {
-  const beforeContent = ch
+  const beforeContent = rule.client.util
    .getDifference(
     rule.triggerMetadata?.keywordFilter ?? [],
     oldRule?.triggerMetadata?.keywordFilter ?? [],
@@ -139,7 +138,7 @@ export default async (
    .map((r) => `\`${r}\``)
    .join(', ');
 
-  const afterContent = ch
+  const afterContent = rule.client.util
    .getDifference(
     oldRule?.triggerMetadata?.keywordFilter ?? [],
     rule.triggerMetadata?.keywordFilter ?? [],
@@ -159,12 +158,12 @@ export default async (
   JSON.stringify(rule.triggerMetadata?.presets) !==
    JSON.stringify(oldRule?.triggerMetadata?.presets)
  ) {
-  const beforeContent = ch
+  const beforeContent = rule.client.util
    .getDifference(rule.triggerMetadata?.presets ?? [], oldRule?.triggerMetadata?.presets ?? [])
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
 
-  const afterContent = ch
+  const afterContent = rule.client.util
    .getDifference(oldRule?.triggerMetadata?.presets ?? [], rule.triggerMetadata?.presets ?? [])
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
@@ -181,12 +180,12 @@ export default async (
   JSON.stringify(rule.triggerMetadata?.allowList) !==
    JSON.stringify(oldRule?.triggerMetadata?.allowList)
  ) {
-  const beforeContent = ch
+  const beforeContent = rule.client.util
    .getDifference(rule.triggerMetadata?.allowList ?? [], oldRule?.triggerMetadata?.allowList ?? [])
    .map((r) => `\`${r}\``)
    .join(', ');
 
-  const afterContent = ch
+  const afterContent = rule.client.util
    .getDifference(oldRule?.triggerMetadata?.allowList ?? [], rule.triggerMetadata?.allowList ?? [])
    .map((r) => `\`${r}\``)
    .join(', ');
@@ -203,7 +202,7 @@ export default async (
   JSON.stringify(rule.triggerMetadata?.regexPatterns) !==
    JSON.stringify(oldRule?.triggerMetadata?.regexPatterns)
  ) {
-  const beforeContent = ch
+  const beforeContent = rule.client.util
    .getDifference(
     rule.triggerMetadata?.regexPatterns ?? [],
     oldRule?.triggerMetadata?.regexPatterns ?? [],
@@ -211,7 +210,7 @@ export default async (
    .map((r) => `\`${r}\``)
    .join(', ');
 
-  const afterContent = ch
+  const afterContent = rule.client.util
    .getDifference(
     oldRule?.triggerMetadata?.regexPatterns ?? [],
     rule.triggerMetadata?.regexPatterns ?? [],
@@ -234,7 +233,7 @@ export default async (
    (a) => !rule.actions.find((a2) => a2.type === a.type),
   );
   const changedActions = (
-   ch.getChanged(
+   rule.client.util.getChanged(
     rule.actions as unknown as Record<string, unknown>[],
     (oldRule?.actions ?? []) as unknown as Record<string, unknown>[],
     'id',
@@ -247,13 +246,17 @@ export default async (
 
   const addedChannels = await Promise.all(
    addedActions.map((a) =>
-    a?.metadata?.channelId ? ch.getChannel.guildTextChannel(a.metadata.channelId) : undefined,
+    a?.metadata?.channelId
+     ? rule.client.util.getChannel.guildTextChannel(a.metadata.channelId)
+     : undefined,
    ),
   );
   const removedChannels = removedActions
    ? await Promise.all(
       removedActions.map((a) =>
-       a?.metadata?.channelId ? ch.getChannel.guildTextChannel(a.metadata.channelId) : undefined,
+       a?.metadata?.channelId
+        ? rule.client.util.getChannel.guildTextChannel(a.metadata.channelId)
+        : undefined,
       ),
      )
    : [];
@@ -278,14 +281,14 @@ export default async (
         ? ` - ${
            action.type === 2
             ? `${lan.alertChannel} <#${action.metadata.channelId}>  / \`${channel[i]?.name}\` / \`${action.metadata?.channelId}\``
-            : `${lan.timeoutDuration} \`${ch.moment(
+            : `${lan.timeoutDuration} \`${rule.client.util.moment(
                action.metadata?.durationSeconds
                 ? Number(action.metadata.durationSeconds) * 1000
                 : 0,
                language,
               )}\``
           }`
-        : `\n${lan.warnMessage}\n${ch.util.makeCodeBlock(
+        : `\n${lan.warnMessage}\n${rule.client.util.util.makeCodeBlock(
            action.metadata?.customMessage || lan.defaultMessage,
           )}`
       }`,
@@ -318,7 +321,9 @@ export default async (
     before,
     await Promise.all(
      before.map((a) =>
-      a?.metadata?.channelId ? ch.getChannel.guildTextChannel(a.metadata.channelId) : undefined,
+      a?.metadata?.channelId
+       ? rule.client.util.getChannel.guildTextChannel(a.metadata.channelId)
+       : undefined,
      ),
     ),
    ),
@@ -326,7 +331,9 @@ export default async (
     after,
     await Promise.all(
      after.map((a) =>
-      a?.metadata?.channelId ? ch.getChannel.guildTextChannel(a.metadata.channelId) : undefined,
+      a?.metadata?.channelId
+       ? rule.client.util.getChannel.guildTextChannel(a.metadata.channelId)
+       : undefined,
      ),
     ),
    ),
@@ -347,5 +354,5 @@ export default async (
 
  if (!embed.fields?.length) return;
 
- ch.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, 10000);
+ rule.client.util.send({ id: channels, guildId: rule.guild.id }, { embeds: [embed] }, 10000);
 };

@@ -1,11 +1,10 @@
 import { Prisma } from '@prisma/client';
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async () => {
- const settingsRows = await ch.DataBase.expiry.findMany({
+ const settingsRows = await client.util.DataBase.expiry.findMany({
   where: {
    OR: [
     { warns: true, warnstime: { not: null } },
@@ -51,17 +50,21 @@ type TableName =
  | 'punish_channelbans';
 
 const findTable = {
- punish_warns: (findWhere: Parameters<(typeof ch)['DataBase']['punish_warns']['findMany']>[0]) =>
-  ch.DataBase.punish_warns.findMany(findWhere),
- punish_mutes: (findWhere: Parameters<(typeof ch)['DataBase']['punish_mutes']['findMany']>[0]) =>
-  ch.DataBase.punish_mutes.findMany(findWhere),
- punish_kicks: (findWhere: Parameters<(typeof ch)['DataBase']['punish_kicks']['findMany']>[0]) =>
-  ch.DataBase.punish_kicks.findMany(findWhere),
- punish_bans: (findWhere: Parameters<(typeof ch)['DataBase']['punish_bans']['findMany']>[0]) =>
-  ch.DataBase.punish_bans.findMany(findWhere),
+ punish_warns: (
+  findWhere: Parameters<(typeof client.util)['DataBase']['punish_warns']['findMany']>[0],
+ ) => client.util.DataBase.punish_warns.findMany(findWhere),
+ punish_mutes: (
+  findWhere: Parameters<(typeof client.util)['DataBase']['punish_mutes']['findMany']>[0],
+ ) => client.util.DataBase.punish_mutes.findMany(findWhere),
+ punish_kicks: (
+  findWhere: Parameters<(typeof client.util)['DataBase']['punish_kicks']['findMany']>[0],
+ ) => client.util.DataBase.punish_kicks.findMany(findWhere),
+ punish_bans: (
+  findWhere: Parameters<(typeof client.util)['DataBase']['punish_bans']['findMany']>[0],
+ ) => client.util.DataBase.punish_bans.findMany(findWhere),
  punish_channelbans: (
-  findWhere: Parameters<(typeof ch)['DataBase']['punish_channelbans']['findMany']>[0],
- ) => ch.DataBase.punish_channelbans.findMany(findWhere),
+  findWhere: Parameters<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>[0],
+ ) => client.util.DataBase.punish_channelbans.findMany(findWhere),
 };
 
 const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableName: TableName) => {
@@ -85,11 +88,11 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
   };
 
   const deleteTable = {
-   punish_warns: () => ch.DataBase.punish_warns.deleteMany(deleteWhere),
-   punish_mutes: () => ch.DataBase.punish_mutes.deleteMany(deleteWhere),
-   punish_kicks: () => ch.DataBase.punish_kicks.deleteMany(deleteWhere),
-   punish_bans: () => ch.DataBase.punish_bans.deleteMany(deleteWhere),
-   punish_channelbans: () => ch.DataBase.punish_channelbans.deleteMany(deleteWhere),
+   punish_warns: () => client.util.DataBase.punish_warns.deleteMany(deleteWhere),
+   punish_mutes: () => client.util.DataBase.punish_mutes.deleteMany(deleteWhere),
+   punish_kicks: () => client.util.DataBase.punish_kicks.deleteMany(deleteWhere),
+   punish_bans: () => client.util.DataBase.punish_bans.deleteMany(deleteWhere),
+   punish_channelbans: () => client.util.DataBase.punish_channelbans.deleteMany(deleteWhere),
   };
   deleteTable[tableName]().then();
  });
@@ -99,35 +102,39 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
 
 const logExpire = async <T extends TableName>(
  rows: T extends 'punish_warns'
-  ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_warns']['findMany']>>
+  ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_warns']['findMany']>>
   : T extends 'punish_mutes'
-    ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_mutes']['findMany']>>
+    ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_mutes']['findMany']>>
     : T extends 'punish_kicks'
-      ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_kicks']['findMany']>>
+      ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_kicks']['findMany']>>
       : T extends 'punish_bans'
-        ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_bans']['findMany']>>
+        ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_bans']['findMany']>>
         : T extends 'punish_channelbans'
-          ? CT.DePromisify<ReturnType<(typeof ch)['DataBase']['punish_channelbans']['findMany']>>
+          ? CT.DePromisify<
+             ReturnType<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>
+            >
           : never,
  guildid: string,
 ) => {
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 
- const channels = await ch.getLogChannels('modlog', guild);
+ const channels = await client.util.getLogChannels('modlog', guild);
  if (!channels) return;
 
  await Promise.all(
   rows.map((p) =>
-   ch.request.guilds.getMember(guild, p.userid).then((m) => ('message' in m ? undefined : m)),
+   client.util.request.guilds
+    .getMember(guild, p.userid)
+    .then((m) => ('message' in m ? undefined : m)),
   ),
  );
- await Promise.all(rows.map((p) => ch.getUser(p.userid).catch(() => null)));
+ await Promise.all(rows.map((p) => client.util.getUser(p.userid).catch(() => null)));
 
- const language = await ch.getLanguage(guildid);
+ const language = await client.util.getLanguage(guildid);
  const lan = language.expire;
 
- const users = await Promise.all(rows.map((r) => ch.getUser(r.userid)));
+ const users = await Promise.all(rows.map((r) => client.util.getUser(r.userid)));
 
  const embeds: (Discord.APIEmbed | undefined)[] = rows.map((p) => {
   const user = users.find((u) => u?.id === p.userid);
@@ -165,13 +172,13 @@ const logExpire = async <T extends TableName>(
 
   if ('duration' in p) {
    const endedAt = lan.endedAt(
-    ch.constants.standard.getTime(Number(p.uniquetimestamp) + Number(p.duration)),
+    client.util.constants.standard.getTime(Number(p.uniquetimestamp) + Number(p.duration)),
    );
 
    embed.fields?.push(
     {
      name: lan.duration,
-     value: `${p.duration ? ch.moment(Number(p.duration), language) : '∞'}`,
+     value: `${p.duration ? client.util.moment(Number(p.duration), language) : '∞'}`,
      inline: false,
     },
     {
@@ -192,5 +199,5 @@ const logExpire = async <T extends TableName>(
  });
  embeds
   .filter((e): e is Discord.APIEmbed => !!e)
-  .forEach((e) => ch.send({ id: channels, guildId: guild.id }, { embeds: [e] }, 10000));
+  .forEach((e) => client.util.send({ id: channels, guildId: guild.id }, { embeds: [e] }, 10000));
 };

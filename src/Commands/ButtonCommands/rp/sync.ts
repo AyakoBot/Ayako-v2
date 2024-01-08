@@ -1,35 +1,36 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { getComponents } from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const user = await ch.DataBase.users.findUnique({ where: { userid: cmd.user.id } });
- const language = await ch.getLanguage(cmd.guildId);
+ const user = await cmd.client.util.DataBase.users.findUnique({ where: { userid: cmd.user.id } });
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
 
  if (!user?.refreshtoken || !user?.accesstoken || !user?.expires) {
-  ch.errorCmd(cmd, language.errors.notLoggedIn, language);
+  cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
   return;
  }
 
- if (Number(user.expires) < Date.now()) user.accesstoken = await ch.refreshToken(user.refreshtoken);
+ if (Number(user.expires) < Date.now()) {
+  user.accesstoken = await cmd.client.util.refreshToken(user.refreshtoken);
+ }
  if (!user.accesstoken) {
-  ch.errorCmd(cmd, language.errors.notLoggedIn, language);
+  cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
   return;
  }
 
- const rpCmd = await ch.getCustomCommand(cmd.guild, 'rp');
+ const rpCmd = await cmd.client.util.getCustomCommand(cmd.guild, 'rp');
  if (!rpCmd) {
-  ch.error(cmd.guild, new Error('RP Command not found'));
+  cmd.client.util.error(cmd.guild, new Error('RP Command not found'));
   return;
  }
 
- const perms = (await ch.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
- [...(ch.cache.commands.cache.get(cmd.guildId)?.values() ?? [])].map((c) =>
-  ch.request.commands.editGuildCommandPermissions(
+ const perms = (await cmd.client.util.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
+ [...(cmd.client.util.cache.commands.cache.get(cmd.guildId)?.values() ?? [])].map((c) =>
+  cmd.client.util.request.commands.editGuildCommandPermissions(
    cmd.guild as Discord.Guild,
    user.accesstoken as string,
    c.id,
@@ -37,7 +38,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   ),
  );
 
- const guildsettings = await ch.DataBase.guildsettings.update({
+ const guildsettings = await cmd.client.util.DataBase.guildsettings.update({
   where: { guildid: cmd.guildId },
   data: { lastrpsyncrun: Date.now() },
  });
@@ -48,10 +49,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  const embed: Discord.APIEmbed = {
   color: CT.Colors.Loading,
-  description: lan.willTake(ch.constants.standard.getTime(Date.now() + 3600000)),
+  description: lan.willTake(cmd.client.util.constants.standard.getTime(Date.now() + 3600000)),
   author: {
    name: lan.syncing,
-   icon_url: ch.emotes.loading.link,
+   icon_url: cmd.client.util.emotes.loading.link,
   },
  };
 

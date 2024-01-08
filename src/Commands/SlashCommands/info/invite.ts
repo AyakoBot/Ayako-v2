@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.invite;
  const eventLan = language.events.logs.invite;
  const inviteCodeOrLink = cmd.options.getString('invite', true);
@@ -17,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   : inviteCodeOrLink;
 
  if (!inviteCode) {
-  ch.replyCmd(cmd, { content: lan.invalidInvite });
+  cmd.client.util.replyCmd(cmd, { content: lan.invalidInvite });
   return;
  }
 
@@ -31,26 +30,28 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   (await cmd.client.fetchInvite(inviteCode).catch(() => undefined));
 
  if (!invite) {
-  ch.replyCmd(cmd, { content: lan.invalidInvite });
+  cmd.client.util.replyCmd(cmd, { content: lan.invalidInvite });
   return;
  }
 
- const inviter = invite.inviterId ? await ch.getUser(invite.inviterId) : undefined;
+ const inviter = invite.inviterId ? await cmd.client.util.getUser(invite.inviterId) : undefined;
 
  const embed: Discord.APIEmbed = {
   author: {
    name: lan.author,
   },
-  color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+  color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
   description: [
    {
     name: lan.code,
-    value: `https://discord.gg/${invite.code} / ${ch.util.makeInlineCode(invite.code)}`,
+    value: `https://discord.gg/${invite.code} / ${cmd.client.util.util.makeInlineCode(
+     invite.code,
+    )}`,
    },
    invite.createdTimestamp
     ? {
        name: language.t.createdAt,
-       value: `${ch.constants.standard.getTime(invite.createdTimestamp)}`,
+       value: `${cmd.client.util.constants.standard.getTime(invite.createdTimestamp)}`,
       }
     : undefined,
    invite.channel || invite.channelId
@@ -61,7 +62,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
            invite.channel,
            language.channelTypes[invite.channel.type],
           )
-        : `<#${invite.channelId}> / ${ch.util.makeInlineCode(invite.channelId as string)}`,
+        : `<#${invite.channelId}> / ${cmd.client.util.util.makeInlineCode(
+           invite.channelId as string,
+          )}`,
       }
     : undefined,
    invite.guild
@@ -82,13 +85,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        value:
         invite.maxAge === 0
          ? language.t.Never
-         : ch.constants.standard.getTime(invite.maxAge * 1000 + invite.createdTimestamp),
+         : cmd.client.util.constants.standard.getTime(
+            invite.maxAge * 1000 + invite.createdTimestamp,
+           ),
       }
     : undefined,
    invite.maxAge
     ? {
        name: eventLan.maxAge,
-       value: invite.maxAge === 0 ? '∞' : ch.moment(invite.maxAge * 1000, language),
+       value: invite.maxAge === 0 ? '∞' : cmd.client.util.moment(invite.maxAge * 1000, language),
       }
     : undefined,
    invite.maxUses
@@ -106,14 +111,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    invite.uses
     ? {
        name: lan.uses,
-       value: ch.util.makeInlineCode(String(invite.uses)),
+       value: cmd.client.util.util.makeInlineCode(String(invite.uses)),
       }
     : undefined,
   ]
    .filter((v): v is { name: string; value: string } => !!v)
-   .map((v) => `${ch.util.makeBold(`${v.name}:`)} ${v.value.replace('\n', '')}`)
+   .map((v) => `${cmd.client.util.util.makeBold(`${v.name}:`)} ${v.value.replace('\n', '')}`)
    .join('\n'),
  };
 
- ch.replyCmd(cmd, { embeds: [embed] });
+ cmd.client.util.replyCmd(cmd, { embeds: [embed] });
 };

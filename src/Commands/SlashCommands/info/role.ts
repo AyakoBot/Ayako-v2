@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.role;
  const eventLan = language.events.logs.role;
  const role = cmd.options.getRole('role', true);
@@ -12,15 +11,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   author: {
    name: lan.author,
   },
-  color: role.color || ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+  color:
+   role.color || cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
   description: [
    {
     name: language.t.name,
-    value: `${ch.util.makeInlineCode(role.name)}`,
+    value: `${cmd.client.util.util.makeInlineCode(role.name)}`,
    },
    {
     name: 'ID',
-    value: `${ch.util.makeInlineCode(role.id)}`,
+    value: `${cmd.client.util.util.makeInlineCode(role.id)}`,
    },
    {
     name: language.t.Role,
@@ -29,36 +29,36 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    role.color
     ? {
        name: `${language.t.color}`,
-       value: `${ch.util.makeInlineCode(role.hexColor)}`,
+       value: `${cmd.client.util.util.makeInlineCode(role.hexColor)}`,
       }
     : undefined,
    {
     name: language.t.createdAt,
-    value: `${ch.constants.standard.getTime(role.createdTimestamp)}`,
+    value: `${cmd.client.util.constants.standard.getTime(role.createdTimestamp)}`,
    },
    {
     name: eventLan.hoisted,
-    value: `${ch.settingsHelpers.embedParsers.boolean(role.hoist, language)}`,
+    value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(role.hoist, language)}`,
    },
    {
     name: eventLan.mentionable,
-    value: `${ch.settingsHelpers.embedParsers.boolean(role.mentionable, language)}`,
+    value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(role.mentionable, language)}`,
    },
    {
     name: lan.position,
-    value: `${ch.util.makeInlineCode(String(role.position))}`,
+    value: `${cmd.client.util.util.makeInlineCode(String(role.position))}`,
    },
    role.unicodeEmoji
     ? {
        name: eventLan.unicodeEmoji,
-       value: `${ch.util.makeInlineCode(role.unicodeEmoji as string)}`,
+       value: `${cmd.client.util.util.makeInlineCode(role.unicodeEmoji as string)}`,
       }
     : undefined,
    role.tags?.botId
     ? {
        name: eventLan.managed,
        value: `${language.languageFunction.getUser(
-        (await ch.getUser(role.tags.botId)) as Discord.User,
+        (await cmd.client.util.getUser(role.tags.botId)) as Discord.User,
        )}`,
       }
     : undefined,
@@ -66,14 +66,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     ? {
        name: language.t.Bot,
        value: `${language.languageFunction.getUser(
-        (await ch.getUser(role.tags.integrationId)) as Discord.User,
+        (await cmd.client.util.getUser(role.tags.integrationId)) as Discord.User,
        )}`,
       }
     : undefined,
    role.tags?.premiumSubscriberRole
     ? {
        name: eventLan.boosterRole,
-       value: `${ch.settingsHelpers.embedParsers.boolean(
+       value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(
         role.tags.premiumSubscriberRole,
         language,
        )}`,
@@ -81,26 +81,34 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     : undefined,
    {
     name: eventLan.availableForPurchase,
-    value: `${ch.settingsHelpers.embedParsers.boolean(role.tags?.availableForPurchase, language)}`,
+    value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(
+     role.tags?.availableForPurchase,
+     language,
+    )}`,
    },
    {
     name: eventLan.inOnboarding,
-    value: `${ch.settingsHelpers.embedParsers.boolean(
+    value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(
      role.flags.has(Discord.RoleFlags.InPrompt),
      language,
     )}`,
    },
    {
     name: eventLan.guildConnections,
-    value: `${ch.settingsHelpers.embedParsers.boolean(role.tags?.guildConnections, language)}`,
+    value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(
+     role.tags?.guildConnections,
+     language,
+    )}`,
    },
    {
     name: lan.membercount,
-    value: `${ch.util.makeInlineCode(ch.splitByThousand(role.members.size))}`,
+    value: `${cmd.client.util.util.makeInlineCode(
+     cmd.client.util.splitByThousand(role.members.size),
+    )}`,
    },
   ]
    .filter((v): v is { name: string; value: string } => !!v)
-   .map((v) => `${ch.util.makeBold(`${v.name}:`)} ${v.value}`)
+   .map((v) => `${cmd.client.util.util.makeBold(`${v.name}:`)} ${v.value}`)
    .join('\n'),
  };
 
@@ -110,7 +118,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   };
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   embeds: [embed],
   components: [
    {

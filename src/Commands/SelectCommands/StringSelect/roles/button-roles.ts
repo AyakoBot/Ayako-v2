@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
+import client from '../../../../BaseClient/Client.js';
 import type { Type } from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
@@ -10,14 +10,14 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.builders;
  const where = { where: { uniquetimestamp: cmd.values[0] } };
 
  const getValue = () =>
   type === 'button-roles'
-   ? ch.DataBase.buttonroles.findUnique(where).then((s) => s?.emote)
-   : ch.DataBase.reactionroles.findUnique(where).then((s) => s?.emote);
+   ? client.util.DataBase.buttonroles.findUnique(where).then((s) => s?.emote)
+   : client.util.DataBase.reactionroles.findUnique(where).then((s) => s?.emote);
 
  const value =
   cmd.values[0].includes(':') || !Discord.parseEmoji(cmd.values[0])?.id
@@ -25,7 +25,7 @@ export default async (
    : await getValue();
 
  if (!value) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, language);
+  client.util.errorCmd(cmd, language.errors.emoteNotFound, language);
   return;
  }
 
@@ -33,8 +33,8 @@ export default async (
 
  embed.description =
   type === 'reaction-roles'
-   ? lan.descReactions((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
-   : lan.descButtons((await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0');
+   ? lan.descReactions((await client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0')
+   : lan.descButtons((await client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0');
  embed.fields = [
   ...(embed.fields ?? []),
   ...(findField(value, embed.fields)
@@ -43,7 +43,7 @@ export default async (
       {
        name: `${
         !Discord.parseEmoji(value)?.id ? value : `<${value.startsWith('a:') ? '' : ':'}${value}>`
-       } / ${ch.util.makeInlineCode(value)}`,
+       } / ${client.util.util.makeInlineCode(value)}`,
        value: language.t.None,
       },
      ]),
@@ -112,13 +112,13 @@ export const getComponents = (
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/refresh`,
-    emoji: ch.emotes.back,
+    emoji: client.util.emotes.back,
     style: Discord.ButtonStyle.Secondary,
    },
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/save_${emojiIdentifier}`,
-    emoji: ch.emotes.tickWithBackground,
+    emoji: client.util.emotes.tickWithBackground,
     style: Discord.ButtonStyle.Success,
     label: lan.saveAndExit,
     disabled: !roles.length,
@@ -126,7 +126,7 @@ export const getComponents = (
    {
     type: Discord.ComponentType.Button,
     custom_id: `roles/${type}/delete_${emojiIdentifier}`,
-    emoji: ch.emotes.trash,
+    emoji: client.util.emotes.trash,
     style: Discord.ButtonStyle.Secondary,
     label: language.t.Delete,
    },
@@ -137,9 +137,9 @@ export const getComponents = (
 export const findField = (emoji: string, fields: Discord.APIEmbedField[] | undefined) =>
  fields?.find((f) =>
   !Discord.parseEmoji(emoji)?.id
-   ? f.name === `${emoji} / ${ch.util.makeInlineCode(emoji)}`
+   ? f.name === `${emoji} / ${client.util.util.makeInlineCode(emoji)}`
    : [
-      `<${emoji.startsWith('a:') ? '' : ':'}${emoji}> / ${ch.util.makeInlineCode(emoji)}`,
-      `:${emoji.split(/:/g)[0]}: / ${ch.util.makeInlineCode(emoji)}`,
+      `<${emoji.startsWith('a:') ? '' : ':'}${emoji}> / ${client.util.util.makeInlineCode(emoji)}`,
+      `:${emoji.split(/:/g)[0]}: / ${client.util.util.makeInlineCode(emoji)}`,
      ].includes(f.name),
  );

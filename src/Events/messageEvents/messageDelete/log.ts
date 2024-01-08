@@ -1,19 +1,18 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
- if (msg.author?.id === (await ch.getBotIdFromGuild(msg.guild))) return;
+ if (msg.author?.id === (await msg.client.util.getBotIdFromGuild(msg.guild))) return;
  if (!msg.author) return;
 
- const channels = await ch.getLogChannels('messageevents', msg.guild);
+ const channels = await msg.client.util.getLogChannels('messageevents', msg.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
  const lan = language.events.logs.message;
- const con = ch.constants.events.logs.message;
- const audit = await ch.getAudit(msg.guild, 72, msg.id);
+ const con = msg.client.util.constants.events.logs.message;
+ const audit = await msg.client.util.getAudit(msg.guild, 72, msg.id);
  const auditUser = audit?.executor ?? msg.author;
  const files: Discord.AttachmentPayload[] = [];
  const embeds: Discord.APIEmbed[] = [];
@@ -55,7 +54,7 @@ export default async (msg: Discord.Message) => {
  }
 
  if (msg.components?.length) {
-  const components = ch.txtFileWriter(
+  const components = msg.client.util.txtFileWriter(
    msg.components.map((c) => JSON.stringify(c, null, 2)),
    undefined,
    lan.components,
@@ -68,7 +67,12 @@ export default async (msg: Discord.Message) => {
   embed.fields?.push({
    name: lan.reactions,
    value: msg.reactions.cache
-    .map((r) => `\`${ch.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(r.emoji)}`)
+    .map(
+     (r) =>
+      `\`${msg.client.util.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(
+       r.emoji,
+      )}`,
+    )
     .join(''),
   });
  }
@@ -88,7 +92,7 @@ export default async (msg: Discord.Message) => {
  }
 
  if (msg.webhookId) {
-  const webhook = await ch.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild);
+  const webhook = await msg.client.util.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild);
 
   if (webhook) {
    embed.fields?.push({
@@ -106,7 +110,7 @@ export default async (msg: Discord.Message) => {
  }
 
  if (msg.embeds?.length) {
-  const msgEmbeds = ch.txtFileWriter(
+  const msgEmbeds = msg.client.util.txtFileWriter(
    msg.embeds.map((c) => JSON.stringify(c, null, 2)),
    undefined,
    lan.embeds,
@@ -138,7 +142,7 @@ export default async (msg: Discord.Message) => {
 
  if (msg.content) {
   if (msg.content?.length > 1024) {
-   const content = ch.txtFileWriter(msg.content, undefined, language.t.content);
+   const content = msg.client.util.txtFileWriter(msg.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -152,9 +156,9 @@ export default async (msg: Discord.Message) => {
  if (msg.attachments?.size) {
   const isRemix = msg.attachments.map((a) => a.flags.has(Discord.AttachmentFlags.IsRemix));
 
-  const attachments = (await ch.fileURL2Buffer(msg.attachments.map((a) => a.url))).filter(
-   (e): e is Discord.AttachmentPayload => !!e,
-  );
+  const attachments = (
+   await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url))
+  ).filter((e): e is Discord.AttachmentPayload => !!e);
 
   if (attachments?.length) {
    files.push(
@@ -166,5 +170,5 @@ export default async (msg: Discord.Message) => {
   }
  }
 
- ch.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
+ msg.client.util.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
 };

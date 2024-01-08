@@ -1,21 +1,20 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (
  data: Discord.ApplicationCommandPermissionsUpdateData,
  guild: Discord.Guild,
 ) => {
- const channels = await ch.getLogChannels('applicationevents', guild);
+ const channels = await guild.client.util.getLogChannels('applicationevents', guild);
  if (!channels) return;
 
- const application = await ch.getUser(data.applicationId);
+ const application = await guild.client.util.getUser(data.applicationId);
  if (!application) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.logs.application;
- const con = ch.constants.events.logs.guild;
- const audit = await ch.getAudit(guild, 121, data.id);
+ const con = guild.client.util.constants.events.logs.guild;
+ const audit = await guild.client.util.getAudit(guild, 121, data.id);
  const auditUser = audit?.executor ?? undefined;
  if (!audit || !auditUser) return;
 
@@ -52,7 +51,7 @@ export default async (
     };
 
     return `${type() === 5 ? language.t.Unknown : type()} ${
-     permission.permission ? ch.emotes.enabled : ch.emotes.disabled
+     permission.permission ? guild.client.util.emotes.enabled : guild.client.util.emotes.disabled
     }`;
    })
    .join('\n')}`,
@@ -61,5 +60,5 @@ export default async (
  const embeds = [embed, permEmbed];
  if (!permEmbed.description?.length) return;
 
- ch.send({ id: channels, guildId: guild.id }, { embeds }, 10000);
+ guild.client.util.send({ id: channels, guildId: guild.id }, { embeds }, 10000);
 };

@@ -1,10 +1,9 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const res = await ch.DataBase.stickymessages
+ const res = await cmd.client.util.DataBase.stickymessages
   .upsert({
    where: { channelid: cmd.channelId },
    create: {
@@ -18,10 +17,10 @@ export default async (cmd: Discord.MessageContextMenuCommandInteraction) => {
   })
   .then();
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.contextCommands.message['Stick Message'];
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: res?.lastmsgid === cmd.targetId ? lan.reply : lan.already,
  });
 };

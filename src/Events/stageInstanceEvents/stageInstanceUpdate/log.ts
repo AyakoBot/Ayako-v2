@@ -1,18 +1,17 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldStage: Discord.StageInstance, stage: Discord.StageInstance) => {
  if (!stage.guild) return;
  if (!stage.channel) return;
 
- const channels = await ch.getLogChannels('stageevents', stage.guild);
+ const channels = await stage.client.util.getLogChannels('stageevents', stage.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(stage.guild.id);
+ const language = await stage.client.util.getLanguage(stage.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.channel;
- const audit = await ch.getAudit(stage.guild, 84, stage.id);
+ const con = stage.client.util.constants.events.logs.channel;
+ const audit = await stage.client.util.getAudit(stage.guild, 84, stage.id);
  const auditUser = audit?.executor ?? undefined;
  const files: Discord.AttachmentPayload[] = [];
 
@@ -30,7 +29,7 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  stage.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (oldStage.guildScheduledEventId !== stage.guildScheduledEventId) {
   merge(
@@ -63,5 +62,9 @@ export default async (oldStage: Discord.StageInstance, stage: Discord.StageInsta
   );
  }
 
- ch.send({ id: channels, guildId: stage.guild.id }, { embeds: [embed], files }, 10000);
+ stage.client.util.send(
+  { id: channels, guildId: stage.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

@@ -1,16 +1,15 @@
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
 
 export default async () => {
- let allusers = await ch.DataBase.stats.findFirst().then((r) => Number(r?.allusers));
+ let allusers = await client.util.DataBase.stats.findFirst().then((r) => Number(r?.allusers));
 
  if (!allusers) {
-  const userSize = (await client.shard?.broadcastEval((c) =>
+  const userSize = (await client.cluster?.broadcastEval((c) =>
    c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
   )) ?? [0];
 

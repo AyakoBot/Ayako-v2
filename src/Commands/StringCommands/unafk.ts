@@ -1,4 +1,3 @@
-import * as ch from '../../BaseClient/ClientHelper.js';
 import * as CT from '../../Typings/Typings.js';
 
 export const takesFirstArg = true;
@@ -10,10 +9,12 @@ export const requiresSlashCommand = true;
 
 const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
  const reason = args?.slice(1).join(' ');
- const user = await ch.getTarget(msg, args);
+ const user = await msg.client.util.getTarget(msg, args);
 
  if (!user) return;
- if (await ch.isDeleteable(msg)) await ch.request.channels.deleteMessage(msg);
+ if (await msg.client.util.isDeleteable(msg)) {
+  await msg.client.util.request.channels.deleteMessage(msg);
+ }
 
  const modOptions: CT.ModOptions<CT.ModTypes.UnAfk> = {
   reason: reason ?? '',
@@ -24,7 +25,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   skipChecks: false,
  };
 
- ch.mod(msg, CT.ModTypes.UnAfk, modOptions);
+ msg.client.util.mod(msg, CT.ModTypes.UnAfk, modOptions);
 };
 
 export default cmd;

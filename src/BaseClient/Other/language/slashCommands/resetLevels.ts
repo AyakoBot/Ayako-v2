@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import * as ch from '../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.resetLevels,
@@ -10,13 +9,13 @@ export default (t: CT.Language) => ({
  confirmRole: (role: Discord.Role, amount: number) =>
   t.stp(t.JSON.slashCommands.resetLevels.confirmRole, {
    role: t.languageFunction.getRole(role),
-   amount: ch.splitByThousand(amount),
+   amount: t.util.splitByThousand(amount),
   }),
  user: (user: Discord.User) =>
   t.stp(t.JSON.slashCommands.resetLevels.user, { user: t.languageFunction.getUser(user) }),
  role: (role: Discord.Role, amount: number) =>
   t.stp(t.JSON.slashCommands.resetLevels.role, {
    role: t.languageFunction.getRole(role),
-   amount: ch.splitByThousand(amount),
+   amount: t.util.splitByThousand(amount),
   }),
 });

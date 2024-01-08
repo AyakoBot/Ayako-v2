@@ -1,16 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import { Returned } from '../../../BaseClient/ClientHelperModules/getPunishment.js';
+import { Returned } from '../../../BaseClient/UtilModules/getPunishment.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const userRes = await ch.getUserFromUserAndUsernameOptions(cmd);
+ const userRes = await client.util.getUserFromUserAndUsernameOptions(cmd);
  if (!userRes) return;
 
  const { user, language, member } = userRes;
- ch.replyCmd(cmd, await getPayload({ user, guild: cmd.guild, language, member }));
+ client.util.replyCmd(cmd, await getPayload({ user, guild: cmd.guild, language, member }));
 };
 
 export const getPayload = async (
@@ -26,14 +26,14 @@ export const getPayload = async (
   values: number[];
  } = { page: 1, values: [] },
 ): Promise<Discord.InteractionReplyOptions> => {
- const language = baseInfo.language ?? (await ch.getLanguage(baseInfo.guild.id));
+ const language = baseInfo.language ?? (await client.util.getLanguage(baseInfo.guild.id));
  const lan = language.slashCommands.check;
- const allPunishments = await ch.getPunishment(baseInfo.user.id, {
+ const allPunishments = await client.util.getPunishment(baseInfo.user.id, {
   identType: 'all-on',
   guildid: baseInfo.guild.id,
  });
 
- const ban = await ch.request.guilds.getMemberBan(baseInfo.guild, baseInfo.user.id);
+ const ban = await client.util.request.guilds.getMemberBan(baseInfo.guild, baseInfo.user.id);
 
  const punishedOpts = {
   isBanned: !('message' in ban),
@@ -65,7 +65,7 @@ export const getPayload = async (
  return {
   embeds: [
    {
-    color: ch.getColor(await ch.getBotMemberFromGuild(baseInfo.guild)),
+    color: client.util.getColor(await client.util.getBotMemberFromGuild(baseInfo.guild)),
     author: {
      name: lan.name,
     },
@@ -80,14 +80,14 @@ export const getPayload = async (
      },
      punishedOpts,
      {
-      banEmote: ch.constants.standard.getEmote(
-       punishedOpts.isBanned ? ch.emotes.banTick : ch.emotes.banCross,
+      banEmote: client.util.constants.standard.getEmote(
+       punishedOpts.isBanned ? client.util.emotes.banTick : client.util.emotes.banCross,
       ),
-      muteEmote: ch.constants.standard.getEmote(
-       punishedOpts.isMuted ? ch.emotes.timedoutTick : ch.emotes.timedoutCross,
+      muteEmote: client.util.constants.standard.getEmote(
+       punishedOpts.isMuted ? client.util.emotes.timedoutTick : client.util.emotes.timedoutCross,
       ),
-      channelbanEmote: ch.constants.standard.getEmote(
-       punishedOpts.isChannelBanned ? ch.emotes.mutedTick : ch.emotes.mutedCross,
+      channelbanEmote: client.util.constants.standard.getEmote(
+       punishedOpts.isChannelBanned ? client.util.emotes.mutedTick : client.util.emotes.mutedCross,
       ),
      },
     ),
@@ -98,11 +98,11 @@ export const getPayload = async (
     .map(
      (p): Discord.APIEmbed => ({
       color: CT.Colors.Ephemeral,
-      description: `${ch.util.makeUnderlined(language.t.Reason)}:\n${p.reason}`,
+      description: `${client.util.util.makeUnderlined(language.t.Reason)}:\n${p.reason}`,
       fields: [
        {
         name: lan.date,
-        value: ch.constants.standard.getTime(Number(p.uniquetimestamp)),
+        value: client.util.constants.standard.getTime(Number(p.uniquetimestamp)),
         inline: true,
        },
        {
@@ -122,7 +122,7 @@ export const getPayload = async (
        },
        {
         name: lan.id,
-        value: `${ch.util.makeInlineCode(Number(p.uniquetimestamp).toString(36))}${
+        value: `${client.util.util.makeInlineCode(Number(p.uniquetimestamp).toString(36))}${
          p.type.includes('temp') ? `\n${lan.cantPardon}` : ''
         }`,
         inline: true,
@@ -131,12 +131,12 @@ export const getPayload = async (
         ? [
            {
             name: lan.duration,
-            value: ch.moment(Number(p.duration) * 1000, language),
+            value: client.util.moment(Number(p.duration) * 1000, language),
             inline: true,
            },
            {
             name: lan.endDate,
-            value: ch.constants.standard.getTime(
+            value: client.util.constants.standard.getTime(
              Number(p.uniquetimestamp) + Number(p.duration) * 1000,
             ),
             inline: true,
@@ -147,14 +147,14 @@ export const getPayload = async (
         ? [
            {
             name: lan.banChannel,
-            value: `<#${p.banchannelid}> / ${ch.util.makeInlineCode(p.banchannelid)}`,
+            value: `<#${p.banchannelid}> / ${client.util.util.makeInlineCode(p.banchannelid)}`,
             inline: true,
            },
           ]
         : []),
        {
         name: lan.message,
-        value: ch.constants.standard.msgurl(p.guildid, p.channelid, p.msgid),
+        value: client.util.constants.standard.msgurl(p.guildid, p.channelid, p.msgid),
         inline: true,
        },
       ],
@@ -203,7 +203,7 @@ export const getPayload = async (
     type: Discord.ComponentType.ActionRow,
     components: [
      {
-      emoji: ch.emotes.back,
+      emoji: client.util.emotes.back,
       custom_id: `mod/check/page_${selected.type}_${baseInfo.user.id}_back_${selected.page}`,
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,
@@ -219,7 +219,7 @@ export const getPayload = async (
       }`,
      },
      {
-      emoji: ch.emotes.forth,
+      emoji: client.util.emotes.forth,
       custom_id: `mod/check/page_${selected.type}_${baseInfo.user.id}_forth_${selected.page}`,
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Secondary,

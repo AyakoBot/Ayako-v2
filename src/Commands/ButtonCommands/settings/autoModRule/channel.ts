@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const settingName = CT.SettingNames.DenylistRules;
@@ -14,14 +13,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  };
  const id = getID();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -31,7 +30,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.update({
   embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
+   await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
     language,
     settingName,
     'alertChannel',
@@ -45,7 +44,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.changeSelectGlobal(
+     cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
       CT.EditorTypes.Channel,
       CT.AutoModEditorType.Channel,
@@ -70,9 +69,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Danger,
       custom_id: `settings/autoModRule/display_${id}`,
-      emoji: ch.emotes.back,
+      emoji: cmd.client.util.emotes.back,
      },
-     ch.settingsHelpers.changeHelpers.done(
+     cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       CT.EditorTypes.Channel,
       CT.AutoModEditorType.Channel,

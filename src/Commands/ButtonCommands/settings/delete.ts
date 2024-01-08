@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -10,18 +9,22 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const uniquetimestamp = Number(args.shift());
 
- const oldSettings = await ch.settingsHelpers.del(settingName, cmd.guildId, uniquetimestamp);
+ const oldSettings = await cmd.client.util.settingsHelpers.del(
+  settingName,
+  cmd.guildId,
+  uniquetimestamp,
+ );
 
- const settingsFile = await ch.settingsHelpers.getSettingsFile(settingName, cmd.guild);
+ const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   oldSettings,
   undefined,
-  '*' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  '*' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   uniquetimestamp,
   cmd.guild,

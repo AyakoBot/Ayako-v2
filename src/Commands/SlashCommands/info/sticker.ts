@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -13,7 +12,7 @@ export default async (
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.getString('sticker', false)
    : undefined;
- const language = await ch.getLanguage(cmd.locale);
+ const language = await cmd.client.util.getLanguage(cmd.locale);
 
  if (messageLinkOrStickerID) single(cmd as Discord.ChatInputCommandInteraction<'cached'>, language);
  else multiple(cmd, language, page);
@@ -28,9 +27,9 @@ const single = async (
  const messageLinkOrStickerID = cmd.options.getString('sticker', true);
 
  if (messageLinkOrStickerID.includes('discord.com')) {
-  const message = await ch.getMessage(messageLinkOrStickerID);
+  const message = await cmd.client.util.getMessage(messageLinkOrStickerID);
   if (!message) {
-   ch.errorCmd(cmd, language.errors.messageNotFound, language);
+   cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
    return;
   }
 
@@ -43,11 +42,11 @@ const single = async (
   await Promise.all(stickerIDs.map((s) => cmd.client.fetchSticker(s).catch(() => undefined)))
  ).filter((s): s is Discord.Sticker => !!s);
  if (!stickers.length) {
-  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 
- ch.replyCmd(cmd, { embeds: await getEmbeds(stickers, cmd, language) });
+ cmd.client.util.replyCmd(cmd, { embeds: await getEmbeds(stickers, cmd, language) });
 };
 
 export const multiple = async (
@@ -69,7 +68,7 @@ export const multiple = async (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Secondary,
      custom_id: `info/stickers_${page - 1}`,
-     emoji: ch.emotes.back,
+     emoji: cmd.client.util.emotes.back,
      disabled: page === 1,
     },
     {
@@ -83,7 +82,7 @@ export const multiple = async (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Secondary,
      custom_id: `info/stickers_${page + 1}`,
-     emoji: ch.emotes.forth,
+     emoji: cmd.client.util.emotes.forth,
      disabled: page === Math.ceil(cmd.guild.stickers.cache.size / 10),
     },
    ],
@@ -95,7 +94,7 @@ export const multiple = async (
   return;
  }
 
- ch.replyCmd(cmd, { embeds, components });
+ cmd.client.util.replyCmd(cmd, { embeds, components });
 };
 
 const getEmbeds = async (
@@ -107,7 +106,9 @@ const getEmbeds = async (
  const packs = stickers.find((s) => s.packId)
   ? await cmd.client.fetchPremiumStickerPacks()
   : undefined;
- const color = ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined);
+ const color = cmd.client.util.getColor(
+  cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+ );
 
  return stickers.map((sticker) => {
   const pack = packs?.find((p) => p.id === sticker.packId);
@@ -131,60 +132,63 @@ const getEmbeds = async (
    description: [
     sticker.name
      ? {
-        name: `${ch.util.makeBold(language.t.name)}:`,
-        value: `${ch.util.makeInlineCode(sticker.name)}`,
+        name: `${cmd.client.util.util.makeBold(language.t.name)}:`,
+        value: `${cmd.client.util.util.makeInlineCode(sticker.name)}`,
        }
      : undefined,
     sticker.description
      ? {
-        name: `${ch.util.makeBold(language.t.Description)}:`,
-        value: `${ch.util.makeInlineCode(sticker.description)}`,
+        name: `${cmd.client.util.util.makeBold(language.t.Description)}:`,
+        value: `${cmd.client.util.util.makeInlineCode(sticker.description)}`,
        }
      : undefined,
     sticker.id
      ? {
-        name: `${ch.util.makeBold('ID')}:`,
-        value: `${ch.util.makeInlineCode(sticker.id)}`,
+        name: `${cmd.client.util.util.makeBold('ID')}:`,
+        value: `${cmd.client.util.util.makeInlineCode(sticker.id)}`,
        }
      : undefined,
     sticker.url
      ? {
-        name: `${ch.util.makeBold('URL')}:`,
+        name: `${cmd.client.util.util.makeBold('URL')}:`,
         value: sticker.url,
        }
      : undefined,
     sticker.createdTimestamp
      ? {
-        name: `${ch.util.makeBold(language.t.createdAt)}:`,
-        value: `${ch.constants.standard.getTime(sticker.createdTimestamp)}`,
+        name: `${cmd.client.util.util.makeBold(language.t.createdAt)}:`,
+        value: `${cmd.client.util.constants.standard.getTime(sticker.createdTimestamp)}`,
        }
      : undefined,
     {
-     name: `${ch.util.makeBold(language.slashCommands.info.emojis.available)}:`,
-     value: `${ch.settingsHelpers.embedParsers.boolean(!!sticker.available, language)}`,
+     name: `${cmd.client.util.util.makeBold(language.slashCommands.info.emojis.available)}:`,
+     value: `${cmd.client.util.settingsHelpers.embedParsers.boolean(
+      !!sticker.available,
+      language,
+     )}`,
     },
     sticker.guild
      ? {
-        name: `\n${ch.util.makeBold(language.t.Server)}:\n`,
+        name: `\n${cmd.client.util.util.makeBold(language.t.Server)}:\n`,
         value: language.languageFunction.getGuild(sticker.guild),
        }
      : undefined,
     sticker.user
      ? {
-        name: `${ch.util.makeBold(language.slashCommands.info.emojis.uploader)}:\n`,
+        name: `${cmd.client.util.util.makeBold(language.slashCommands.info.emojis.uploader)}:\n`,
         value: language.languageFunction.getUser(sticker.user),
        }
      : undefined,
     sticker.format
      ? {
-        name: `${ch.util.makeBold(lan.formatName)}: `,
-        value: `${ch.util.makeInlineCode(Discord.StickerFormatType[sticker.format])}`,
+        name: `${cmd.client.util.util.makeBold(lan.formatName)}: `,
+        value: `${cmd.client.util.util.makeInlineCode(Discord.StickerFormatType[sticker.format])}`,
        }
      : undefined,
     emoji
      ? {
-        name: `${ch.util.makeBold(lan.tags)}: `,
-        value: `${ch.constants.standard.getEmote(emoji)}`,
+        name: `${cmd.client.util.util.makeBold(lan.tags)}: `,
+        value: `${cmd.client.util.constants.standard.getEmote(emoji)}`,
        }
      : undefined,
    ]
@@ -198,26 +202,26 @@ const getEmbeds = async (
         value: [
          pack.name
           ? {
-             name: `${ch.util.makeBold(language.t.name)}:`,
-             value: `${ch.util.makeInlineCode(pack.name)}`,
+             name: `${cmd.client.util.util.makeBold(language.t.name)}:`,
+             value: `${cmd.client.util.util.makeInlineCode(pack.name)}`,
             }
           : undefined,
          pack.description
           ? {
-             name: `${ch.util.makeBold(language.t.Description)}:`,
-             value: `${ch.util.makeInlineCode(pack.description)}`,
+             name: `${cmd.client.util.util.makeBold(language.t.Description)}:`,
+             value: `${cmd.client.util.util.makeInlineCode(pack.description)}`,
             }
           : undefined,
          pack.id
           ? {
-             name: `${ch.util.makeBold('ID')}:`,
-             value: `${ch.util.makeInlineCode(pack.id)}`,
+             name: `${cmd.client.util.util.makeBold('ID')}:`,
+             value: `${cmd.client.util.util.makeInlineCode(pack.id)}`,
             }
           : undefined,
          pack.createdTimestamp
           ? {
-             name: `${ch.util.makeBold(language.t.createdAt)}:`,
-             value: `${ch.constants.standard.getTime(pack.createdTimestamp)}`,
+             name: `${cmd.client.util.util.makeBold(language.t.createdAt)}:`,
+             value: `${cmd.client.util.constants.standard.getTime(pack.createdTimestamp)}`,
             }
           : undefined,
         ]

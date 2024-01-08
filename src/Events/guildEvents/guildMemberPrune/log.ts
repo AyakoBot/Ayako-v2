@@ -1,14 +1,13 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) => {
- const channels = await ch.getLogChannels('guildevents', guild);
+ const channels = await guild.client.util.getLogChannels('guildevents', guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.logs.guild;
- const con = ch.constants.events.logs.guild;
+ const con = guild.client.util.constants.events.logs.guild;
  const extra = audit.extra as { removed: number; days: number };
 
  const embed: Discord.APIEmbed = {
@@ -21,5 +20,5 @@ export default async (audit: Discord.GuildAuditLogsEntry, guild: Discord.Guild) 
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
+ guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

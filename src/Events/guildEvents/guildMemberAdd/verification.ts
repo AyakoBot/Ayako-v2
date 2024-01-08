@@ -1,13 +1,12 @@
 import Prisma from '@prisma/client';
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
-import { canRemoveMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/removeMember.js';
-import { canAddRoleToMember } from '../../../BaseClient/ClientHelperModules/requestHandler/guilds/addRoleToMember.js';
+import { canRemoveMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
+import { canAddRoleToMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/addRoleToMember.js';
 
 export default async (member: Discord.GuildMember) => {
- const verification = await ch.DataBase.verification.findUnique({
+ const verification = await member.client.util.DataBase.verification.findUnique({
   where: {
    guildid: member.guild.id,
    active: true,
@@ -16,7 +15,7 @@ export default async (member: Discord.GuildMember) => {
  });
  if (!verification) return;
 
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
 
  preverified(member, verification, language);
  prepKick(member, verification, language);
@@ -28,7 +27,12 @@ const preverified = async (
  language: CT.Language,
 ) => {
  if (!verification.pendingrole) return;
- ch.roleManager.add(member, [verification.pendingrole], language.verification.log.started, 1);
+ member.client.util.roleManager.add(
+  member,
+  [verification.pendingrole],
+  language.verification.log.started,
+  1,
+ );
 };
 
 const prepKick = async (
@@ -60,16 +64,16 @@ export const kick = async (
  if (!verification.kickafter) return;
  if (member.user.bot) return;
 
- const me = await ch.getBotMemberFromGuild(member.guild);
+ const me = await member.client.util.getBotMemberFromGuild(member.guild);
  if (!canRemoveMember(me, member)) return;
  if (!canAddRoleToMember(verifyRole.id, me)) return;
 
  const dm = async () => {
-  ch.send(member.user, {
+  member.client.util.send(member.user, {
    content: language.verification.kickMsg(member.guild),
   });
  };
 
  await dm();
- ch.request.guilds.removeMember(member, language.verification.kickReason);
+ member.client.util.request.guilds.removeMember(member, language.verification.kickReason);
 };

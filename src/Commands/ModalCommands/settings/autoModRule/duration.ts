@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
@@ -13,11 +12,11 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  args.shift();
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const field = cmd.fields.fields.first();
  if (!field) {
-  ch.errorCmd(cmd, language.errors.numNaN, language);
+  cmd.client.util.errorCmd(cmd, language.errors.numNaN, language);
   return;
  }
 
@@ -25,7 +24,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   new Promise((res) => {
    try {
     ms(field.value);
-    res({ value: ch.getDuration(field.value) / 1000 });
+    res({ value: cmd.client.util.getDuration(field.value) / 1000 });
    } catch (e) {
     res({ error: e as Error });
    }
@@ -33,7 +32,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const { value: newSetting, error } = await verify();
 
  if (error) {
-  ch.errorCmd(cmd, error, language);
+  cmd.client.util.errorCmd(cmd, error, language);
   return;
  }
 
@@ -44,13 +43,13 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  };
  const id = getID();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -59,27 +58,31 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    .durationSeconds,
  );
 
- const updatedRule = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-  actions: [
-   ...getAPIRule(rule).actions.filter((a) => a.type !== Discord.AutoModerationActionType.Timeout),
-   {
-    type: Discord.AutoModerationActionType.Timeout,
-    metadata: {
-     duration_seconds: Number(newSetting),
+ const updatedRule = await cmd.client.util.request.guilds.editAutoModerationRule(
+  rule.guild,
+  rule.id,
+  {
+   actions: [
+    ...getAPIRule(rule).actions.filter((a) => a.type !== Discord.AutoModerationActionType.Timeout),
+    {
+     type: Discord.AutoModerationActionType.Timeout,
+     metadata: {
+      duration_seconds: Number(newSetting),
+     },
     },
-   },
-  ],
- });
+   ],
+  },
+ );
 
  if ('message' in updatedRule) {
-  ch.errorCmd(cmd, updatedRule, language);
+  cmd.client.util.errorCmd(cmd, updatedRule, language);
   return;
  }
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   { timeoutDuration: currentSetting } as never,
   { timeoutDuration: updatedRule?.['timeoutDuration' as keyof typeof updatedRule] } as never,
-  'timeoutDuration' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  'timeoutDuration' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,
@@ -87,7 +90,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = (await ch.settingsHelpers.getSettingsFile(
+ const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
@@ -95,7 +98,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  cmd.update({
   embeds: settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    updatedRule,
    language,
    language.slashCommands.settings.categories[settingName],

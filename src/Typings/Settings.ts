@@ -1,10 +1,10 @@
 import type * as Discord from 'discord.js';
-import { MentionTypes } from '../BaseClient/ClientHelperModules/settingsHelpers/getMention.js';
-import { ChangeSelectType } from '../BaseClient/ClientHelperModules/settingsHelpers/getChangeSelectType.js';
+import { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMention.js';
+import { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
 import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
-import { GlobalDescType } from '../BaseClient/ClientHelperModules/settingsHelpers/getGlobalDesc.js';
+import { GlobalDescType } from '../BaseClient/UtilModules/settingsHelpers/getGlobalDesc.js';
 
-import type * as ch from '../BaseClient/ClientHelper.js';
+import type util from '../BaseClient/Util.js';
 import * as DB from './DataBase.js';
 
 export { MentionTypes, ChangeSelectType, ChannelTypes, GlobalDescType };
@@ -71,14 +71,14 @@ export type MatchingCategoryKeys = Extract<keyof typeof SettingsName2TableName, 
 
 export interface SettingsFile<K extends MatchingCategoryKeys> {
  getEmbeds: (
-  embedParsers: (typeof ch)['settingsHelpers']['embedParsers'],
+  embedParsers: (typeof util)['settingsHelpers']['embedParsers'],
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
   language: Language,
   lan: Categories[K],
   guild: Discord.Guild,
  ) => Discord.APIEmbed[] | Promise<Discord.APIEmbed[]>;
  getComponents: (
-  buttonParsers: (typeof ch)['settingsHelpers']['buttonParsers'],
+  buttonParsers: (typeof util)['settingsHelpers']['buttonParsers'],
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
   language: Language,
  ) =>

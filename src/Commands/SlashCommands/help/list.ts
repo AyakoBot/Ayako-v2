@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import SlashCommands from '../../../SlashCommands/index.js';
 import * as CT from '../../../Typings/Typings.js';
 
@@ -11,7 +10,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const stringCommandsUnfiltered = await Promise.all(stringCommandFiles.map((f) => import(f)));
  const stringCommands = stringCommandsUnfiltered.filter((c) => !!c.name);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.help;
  const fetchedCommands = cmd.client.application.commands.cache;
 
@@ -24,7 +23,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  >();
 
  const settings = cmd.guildId
-  ? await ch.DataBase.guildsettings.findUnique({ where: { guildid: cmd.guildId } })
+  ? await cmd.client.util.DataBase.guildsettings.findUnique({ where: { guildid: cmd.guildId } })
   : undefined;
 
  Object.entries(SlashCommands.categories).forEach(([key, category]) => {
@@ -39,8 +38,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    ?.commands.push(
     `${!key.match(/\s|[A-Z]/g) ? `</${key.replace(/_/g, ' ')}:${command?.id}>` : key} ${
      stringCommand
-      ? ch.util.makeInlineCode(
-         `${settings?.prefix ?? ch.constants.standard.prefix}${stringCommand.name}`,
+      ? cmd.client.util.util.makeInlineCode(
+         `${settings?.prefix ?? cmd.client.util.constants.standard.prefix}${stringCommand.name}`,
         )
       : ''
     }`,
@@ -60,7 +59,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    .join('\n\n'),
  };
 
- ch.replyCmd(cmd, { embeds: [commandEmbed] });
+ cmd.client.util.replyCmd(cmd, { embeds: [commandEmbed] });
 };
 
 const getCommand = (

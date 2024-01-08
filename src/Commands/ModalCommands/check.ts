@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import { getPayload } from '../SlashCommands/mod/check.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
@@ -7,15 +6,15 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
 
  const type = args.shift() as 'warns' | 'bans' | 'mutes' | 'channelbans' | 'kicks';
- const user = await ch.getUser(args.shift() as string);
- const language = await ch.getLanguage(cmd.guildId);
+ const user = await cmd.client.util.getUser(args.shift() as string);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (!user) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.userNotFound, language);
   return;
  }
 
- const member = await ch.request.guilds.getMember(cmd.guild, cmd.user.id);
+ const member = await cmd.client.util.request.guilds.getMember(cmd.guild, cmd.user.id);
  const page = cmd.fields.getTextInputValue('page');
 
  const payload = await getPayload(

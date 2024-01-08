@@ -3,7 +3,6 @@ import { glob } from 'glob';
 import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const { log } = console;
@@ -16,7 +15,7 @@ export default async (msg: Discord.Message) => {
 };
 
 const dmCommand = async (msg: Discord.Message) => {
- const { prefix } = ch.constants.standard;
+ const { prefix } = msg.client.util.constants.standard;
  const args = msg.content
   .slice(prefix.length)
   .trim()
@@ -27,7 +26,7 @@ const dmCommand = async (msg: Discord.Message) => {
  if (!command) return;
  if (!command.dmAllowed) return;
 
- const language = await ch.getLanguage(msg.author.id);
+ const language = await msg.client.util.getLanguage(msg.author.id);
  command.default(msg, args, { language, command, prefix });
 };
 
@@ -69,17 +68,19 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 
   const canUse = checkCommandPermissions(msg, commandName);
   if (!canUse) {
-   const reaction = await ch.request.channels.addReaction(
+   const reaction = await msg.client.util.request.channels.addReaction(
     msg,
-    ch.constants.standard.getEmoteIdentifier(ch.emotes.cross),
+    msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
    );
 
-   if (typeof reaction !== 'undefined') ch.error(msg.guild, new Error(reaction.message));
+   if (typeof reaction !== 'undefined') {
+    msg.client.util.error(msg.guild, new Error(reaction.message));
+   }
    return;
   }
 
-  const language = await ch.getLanguage(msg.author.id);
-  const matchingCommands = ch.constants.standard.getCommand(slashCommand);
+  const language = await msg.client.util.getLanguage(msg.author.id);
+  const matchingCommands = msg.client.util.constants.standard.getCommand(slashCommand);
   if (!matchingCommands.length) return;
 
   const embed: Discord.APIEmbed = {
@@ -89,7 +90,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
    color: CT.Colors.Ephemeral,
   };
 
-  const reply = await ch.replyMsg(msg, {
+  const reply = await msg.client.util.replyMsg(msg, {
    embeds: [embed],
    components: [
     {
@@ -97,7 +98,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
      components: [
       {
        type: Discord.ComponentType.Button,
-       emoji: ch.emotes.crossWithBackground,
+       emoji: msg.client.util.emotes.crossWithBackground,
        style: Discord.ButtonStyle.Secondary,
        custom_id: 'dismiss',
       },
@@ -108,7 +109,9 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   if (!reply) return;
 
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
-   if (reply && (await ch.isDeleteable(reply))) ch.request.channels.deleteMessage(reply);
+   if (reply && (await msg.client.util.isDeleteable(reply))) {
+    msg.client.util.request.channels.deleteMessage(reply);
+   }
   });
   return;
  }
@@ -117,49 +120,57 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  if (command.type === 'owner' && msg.author.id !== process.env.ownerID) return;
  if (command.dmOnly) return;
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
 
  const commandIsEnabled = await checkCommandIsEnabled(msg, commandName, command);
  if (!commandIsEnabled) {
-  const reaction = await ch.request.channels.addReaction(
+  const reaction = await msg.client.util.request.channels.addReaction(
    msg,
-   ch.constants.standard.getEmoteIdentifier(ch.emotes.cross),
+   msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
   );
 
-  if (typeof reaction !== 'undefined') ch.error(msg.guild, new Error(reaction.message));
+  if (typeof reaction !== 'undefined') {
+   msg.client.util.error(msg.guild, new Error(reaction.message));
+  }
   return;
  }
 
  const canRunCommand = checkCommandPermissions(msg, commandName);
  if (!canRunCommand) {
-  const m = await ch.errorMsg(msg, language.permissions.error.you, language);
+  const m = await msg.client.util.errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
    if (!m) return;
-   if (m && (await ch.isDeleteable(m))) ch.request.channels.deleteMessage(m);
-   if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
+   if (m && (await msg.client.util.isDeleteable(m))) {
+    msg.client.util.request.channels.deleteMessage(m);
+   }
+   if (await msg.client.util.isDeleteable(msg)) msg.client.util.request.channels.deleteMessage(msg);
   });
   return;
  }
 
  if (command.takesFirstArg && !args.length) {
-  const reaction = await ch.request.channels.addReaction(
+  const reaction = await msg.client.util.request.channels.addReaction(
    msg,
-   ch.constants.standard.getEmoteIdentifier(ch.emotes.cross),
+   msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
   );
 
-  if (typeof reaction !== 'undefined') ch.error(msg.guild, new Error(reaction.message));
+  if (typeof reaction !== 'undefined') {
+   msg.client.util.error(msg.guild, new Error(reaction.message));
+  }
   return;
  }
 
  if (
-  ch.cache.cooldown.get(msg.channelId)?.has(commandName) ||
-  ch.cache.cooldown
+  msg.client.util.cache.cooldown.get(msg.channelId)?.has(commandName) ||
+  msg.client.util.cache.cooldown
    .get(msg.channelId)
    ?.has(
-    ch.constants.commands.interactions.find((c) => c.name === commandName) ? 'interactions' : '',
+    msg.client.util.constants.commands.interactions.find((c) => c.name === commandName)
+     ? 'interactions'
+     : '',
    )
  ) {
-  ch.request.channels.addReaction(msg, '⌛');
+  msg.client.util.request.channels.addReaction(msg, '⌛');
   return;
  }
 
@@ -167,9 +178,9 @@ const guildCommand = async (msg: Discord.Message<true>) => {
 };
 
 export const getPrefix = async (msg: Discord.Message) => {
- if (!msg.inGuild()) return ch.constants.standard.prefix;
+ if (!msg.inGuild()) return msg.client.util.constants.standard.prefix;
 
- const customPrefix = await ch.DataBase.guildsettings
+ const customPrefix = await msg.client.util.DataBase.guildsettings
   .findUnique({
    where: {
     guildid: msg.guildId,
@@ -181,8 +192,8 @@ export const getPrefix = async (msg: Discord.Message) => {
   return customPrefix;
  }
 
- if (msg.content.toLowerCase().startsWith(ch.constants.standard.prefix)) {
-  return ch.constants.standard.prefix;
+ if (msg.content.toLowerCase().startsWith(msg.client.util.constants.standard.prefix)) {
+  return msg.client.util.constants.standard.prefix;
  }
 
  return undefined;
@@ -202,7 +213,10 @@ const getComand = async (commandName: string) => {
 };
 
 const getSlashCommand = (guild: Discord.Guild, commandName: string) =>
- ch.getCustomCommand(guild, commandName as Parameters<typeof ch.getCustomCommand>[1]);
+ guild.client.util.getCustomCommand(
+  guild,
+  commandName as Parameters<typeof guild.client.util.getCustomCommand>[1],
+ );
 
 export const checkCommandPermissions = (
  msg: {
@@ -215,7 +229,7 @@ export const checkCommandPermissions = (
  commandName: string,
 ) => {
  const slashCommand =
-  [...(ch.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
+  [...(msg.guild.client.util.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
    (c) => c.name === commandName,
   ) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??
@@ -223,7 +237,9 @@ export const checkCommandPermissions = (
 
  if (!slashCommand) return true;
 
- const commandPerms = ch.cache.commandPermissions.cache.get(msg.guildId)?.get(slashCommand.id);
+ const commandPerms = msg.guild.client.util.cache.commandPermissions.cache
+  .get(msg.guildId)
+  ?.get(slashCommand.id);
  if (
   !commandPerms?.length &&
   (!slashCommand.defaultMemberPermissions ||
@@ -275,7 +291,7 @@ const checkCommandIsEnabled = async (
  command: CT.Command<boolean>,
 ) => {
  const slashCommand =
-  [...(ch.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
+  [...(msg.client.util.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
    (c) => c.name === commandName,
   ) ??
   client.application?.commands.cache.find((c) => c.name === commandName) ??

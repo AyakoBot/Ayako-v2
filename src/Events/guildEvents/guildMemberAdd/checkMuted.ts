@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (member: Discord.GuildMember) => {
  if (!member.communicationDisabledUntil) mute(member);
@@ -7,7 +6,7 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const mute = async (member: Discord.GuildMember) => {
- const allMutes = await ch.DataBase.punish_tempmutes.findMany({
+ const allMutes = await member.client.util.DataBase.punish_tempmutes.findMany({
   where: { guildid: member.guild.id, userid: member.id },
  });
 
@@ -16,7 +15,7 @@ const mute = async (member: Discord.GuildMember) => {
  );
  if (!activeMute) return;
 
- ch.request.guilds.editMember(
+ member.client.util.request.guilds.editMember(
   member,
   {
    communication_disabled_until: new Date(
@@ -28,7 +27,7 @@ const mute = async (member: Discord.GuildMember) => {
 };
 
 const unmute = async (member: Discord.GuildMember) => {
- const allMutes = await ch.DataBase.punish_tempmutes.findMany({
+ const allMutes = await member.client.util.DataBase.punish_tempmutes.findMany({
   where: { guildid: member.guild.id, userid: member.id },
  });
 
@@ -37,7 +36,7 @@ const unmute = async (member: Discord.GuildMember) => {
  );
  if (activeMute) return;
 
- ch.request.guilds.editMember(member, {
+ member.client.util.request.guilds.editMember(member, {
   communication_disabled_until: null,
  });
 };

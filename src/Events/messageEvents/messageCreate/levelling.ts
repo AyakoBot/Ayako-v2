@@ -2,7 +2,6 @@ import Prisma, { LevelType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import ChannelRules from '../../../BaseClient/Other/ChannelRules.js';
 import * as CT from '../../../Typings/Typings.js';
 
@@ -16,19 +15,19 @@ export default async (msg: Discord.Message<true>) => {
 };
 
 const globalLevelling = async (msg: Discord.Message<true>) => {
- if (ch.cache.globalLevellingCD.has(msg.author.id)) return;
+ if (msg.client.util.cache.globalLevellingCD.has(msg.author.id)) return;
 
- const lastMessage = ch.cache.lastMessageGlobal.get(msg.author.id);
+ const lastMessage = msg.client.util.cache.lastMessageGlobal.get(msg.author.id);
  if (lastMessage && StringSimilarity.compareTwoStrings(msg.content, lastMessage) > 0.9) return;
- ch.cache.lastMessageGlobal.set(msg.author.id, msg.content);
+ msg.client.util.cache.lastMessageGlobal.set(msg.author.id, msg.content);
 
- ch.cache.globalLevellingCD.add(msg.author.id);
+ msg.client.util.cache.globalLevellingCD.add(msg.author.id);
 
  Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
-  ch.cache.globalLevellingCD.delete(msg.author.id);
+  msg.client.util.cache.globalLevellingCD.delete(msg.author.id);
  });
 
- const level = await ch.DataBase.level.findFirst({
+ const level = await msg.client.util.DataBase.level.findFirst({
   where: { type: 'global', userid: msg.author.id },
  });
 
@@ -38,15 +37,15 @@ const globalLevelling = async (msg: Discord.Message<true>) => {
 
 const levelling = async (msg: Discord.Message<true>) => {
  await checkLevelRoles(msg);
- if (ch.cache.guildLevellingCD.has(msg.author.id)) return;
+ if (msg.client.util.cache.guildLevellingCD.has(msg.author.id)) return;
 
- const lastMessage = ch.cache.lastMessageGuild.get(msg.author.id);
+ const lastMessage = msg.client.util.cache.lastMessageGuild.get(msg.author.id);
  if (lastMessage && StringSimilarity.compareTwoStrings(msg.content, lastMessage) > 0.9) return;
- ch.cache.lastMessageGuild.set(msg.author.id, msg.content);
- ch.cache.guildLevellingCD.add(msg.author.id);
+ msg.client.util.cache.lastMessageGuild.set(msg.author.id, msg.content);
+ msg.client.util.cache.guildLevellingCD.add(msg.author.id);
 
  Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
-  ch.cache.guildLevellingCD.delete(msg.author.id);
+  msg.client.util.cache.guildLevellingCD.delete(msg.author.id);
  });
 
  const settings = await checkEnabled(msg);
@@ -86,11 +85,11 @@ const levelling = async (msg: Discord.Message<true>) => {
  const rules = await getRules(msg);
  if (rules.length && !checkRules(msg, rules)) return;
 
- const level = await ch.DataBase.level.findUnique({
+ const level = await msg.client.util.DataBase.level.findUnique({
   where: { userid_guildid_type: { userid: msg.author.id, guildid: msg.guildId, type: 'guild' } },
  });
 
- const rewardroles = await ch.DataBase.rolerewards.findMany({
+ const rewardroles = await msg.client.util.DataBase.rolerewards.findMany({
   where: {
    guildid: msg.guildId,
    active: true,
@@ -113,7 +112,7 @@ const levelling = async (msg: Discord.Message<true>) => {
 };
 
 const getRules = async (msg: Discord.Message<true>) => {
- const settings = await ch.DataBase.levelingruleschannels.findMany({
+ const settings = await msg.client.util.DataBase.levelingruleschannels.findMany({
   where: { guildid: msg.guildId },
  });
 
@@ -122,7 +121,7 @@ const getRules = async (msg: Discord.Message<true>) => {
 };
 
 const checkEnabled = async (msg: Discord.Message<true>) =>
- ch.DataBase.leveling.findUnique({ where: { guildid: msg.guildId } });
+ msg.client.util.DataBase.leveling.findUnique({ where: { guildid: msg.guildId } });
 
 const updateLevels = async (
  msg: Discord.Message<true>,
@@ -139,7 +138,7 @@ const updateLevels = async (
 
  const newXP = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
-   .map((m) => Math.floor(ch.getRandom(baseXP, baseXP + 10)) * m)
+   .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
  );
  const oldLevel = Number(level.level);
@@ -162,7 +161,7 @@ const updateLevels = async (
  }
 
  if (type === 'guild') {
-  ch.DataBase.level
+  msg.client.util.DataBase.level
    .update({
     where: { userid_guildid_type: { type, userid: msg.author.id, guildid: msg.guildId } },
     data: {
@@ -174,7 +173,7 @@ const updateLevels = async (
   return;
  }
 
- ch.DataBase.level
+ msg.client.util.DataBase.level
   .update({
    where: { userid_guildid_type: { type, userid: msg.author.id, guildid: '1' } },
    data: {
@@ -195,11 +194,11 @@ const insertLevels = (
 ) => {
  const xp = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
-   .map((m) => Math.floor(ch.getRandom(baseXP, baseXP + 10)) * m)
+   .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
  );
 
- ch.DataBase.level
+ msg.client.util.DataBase.level
   .create({
    data: {
     type,
@@ -215,7 +214,7 @@ const insertLevels = (
 const getRoleMultiplier = async (msg: Discord.Message<true>) => {
  if (!msg.guildId) return 1;
 
- const mps = await ch.DataBase.levelingmultiroles.findMany({
+ const mps = await msg.client.util.DataBase.levelingmultiroles.findMany({
   where: { guildid: msg.guildId },
  });
  if (!mps.length) return 1;
@@ -227,7 +226,7 @@ const getRoleMultiplier = async (msg: Discord.Message<true>) => {
 const getChannelMultiplier = async (msg: Discord.Message<true>) => {
  if (!msg.guildId) return 1;
 
- const mps = await ch.DataBase.levelingmultichannels.findMany({
+ const mps = await msg.client.util.DataBase.levelingmultichannels.findMany({
   where: { guildid: msg.guildId },
  });
  if (!mps.length) return 1;
@@ -369,7 +368,7 @@ const levelUp = async (
  setting: Prisma.leveling | null,
 ) => {
  if (!setting) return;
- const language = await ch.getLanguage(msg.guildId);
+ const language = await msg.client.util.getLanguage(msg.guildId);
 
  switch (setting.lvlupmode) {
   case 'messages': {
@@ -394,7 +393,7 @@ const roleAssign = async (
  newLevel: number,
  language: CT.Language,
 ) => {
- const roles = await ch.DataBase.levelingroles.findMany({
+ const roles = await msg.client.util.DataBase.levelingroles.findMany({
   where: { guildid: msg.guildId, level: { lte: newLevel } },
  });
  if (!roles.length) return;
@@ -453,8 +452,12 @@ const roleAssign = async (
  }
 
  if (!msg.member) return;
- if (add.length) await ch.roleManager.add(msg.member, add, language.autotypes.leveling);
- if (remove.length) await ch.roleManager.remove(msg.member, remove, language.autotypes.leveling);
+ if (add.length) {
+  await msg.client.util.roleManager.add(msg.member, add, language.autotypes.leveling);
+ }
+ if (remove.length) {
+  await msg.client.util.roleManager.remove(msg.member, remove, language.autotypes.leveling);
+ }
 };
 
 const doReact = async (
@@ -465,15 +468,15 @@ const doReact = async (
 ) => {
  const reactions = setting.lvlupemotes.length
   ? setting.lvlupemotes
-  : ch.emotes.levelupemotes.map((e) => (!e.id ? e.name : `${e.name}:${e.id}`));
+  : msg.client.util.emotes.levelupemotes.map((e) => (!e.id ? e.name : `${e.name}:${e.id}`));
 
  if (newLevel === 1) infoEmbed(msg, reactions, language);
 
- await Promise.all(reactions.map((e) => ch.request.channels.addReaction(msg, e)));
+ await Promise.all(reactions.map((e) => msg.client.util.request.channels.addReaction(msg, e)));
 
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
   msg.reactions.cache.forEach((r) =>
-   ch.request.channels.deleteOwnReaction(msg, r.emoji.identifier),
+   msg.client.util.request.channels.deleteOwnReaction(msg, r.emoji.identifier),
   );
  });
 };
@@ -488,21 +491,21 @@ const infoEmbed = async (
   const name = animated ? r.split(/:/g)[1] : r.split(/:/g)[0];
   const id = animated ? r.split(/:/g)[2] : r.split(/:/g)[1];
 
-  return ch.constants.standard.getEmote({ name, id, animated });
+  return msg.client.util.constants.standard.getEmote({ name, id, animated });
  });
 
  const embed: Discord.APIEmbed = {
-  color: ch.getColor(await ch.getBotMemberFromGuild(msg.guild)),
+  color: msg.client.util.getColor(await msg.client.util.getBotMemberFromGuild(msg.guild)),
   description: language.leveling.description(emotes.join(', ')),
  };
 
- const m = await ch.replyMsg(msg, {
+ const m = await msg.client.util.replyMsg(msg, {
   embeds: [embed],
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 30000), async () => {
   if (!m) return;
-  if (await ch.isDeleteable(m)) ch.request.channels.deleteMessage(m);
+  if (await msg.client.util.isDeleteable(m)) msg.client.util.request.channels.deleteMessage(m);
  });
 };
 
@@ -516,7 +519,7 @@ const doEmbed = async (
   author: {
    name: language.leveling.author(msg),
   },
-  color: ch.getColor(await ch.getBotMemberFromGuild(msg.guild)),
+  color: msg.client.util.getColor(await msg.client.util.getBotMemberFromGuild(msg.guild)),
  });
 
  const options = [
@@ -528,14 +531,17 @@ const doEmbed = async (
   ['oldXP', levelData.oldXP],
  ];
 
- let embed = !setting.embed ? ch.dynamicToEmbed(await getDefaultEmbed(), options) : undefined;
+ let embed = !setting.embed
+  ? msg.client.util.dynamicToEmbed(await getDefaultEmbed(), options)
+  : undefined;
  if (setting.embed) {
-  const customEmbed = await ch.DataBase.customembeds.findUnique({
+  const customEmbed = await msg.client.util.DataBase.customembeds.findUnique({
    where: { uniquetimestamp: setting.embed },
   });
 
-  if (customEmbed) embed = ch.dynamicToEmbed(ch.getDiscordEmbed(customEmbed), options);
-  else embed = ch.dynamicToEmbed(await getDefaultEmbed(), options);
+  if (customEmbed) {
+   embed = msg.client.util.dynamicToEmbed(msg.client.util.getDiscordEmbed(customEmbed), options);
+  } else embed = msg.client.util.dynamicToEmbed(await getDefaultEmbed(), options);
  }
 
  if (!embed) return;
@@ -547,7 +553,7 @@ const send = async (
  embed: Discord.APIEmbed,
  setting: Prisma.leveling,
 ) => {
- const messages = (await ch.send(
+ const messages = (await msg.client.util.send(
   {
    id: (setting.lvlupchannels.length ? setting.lvlupchannels : msg.channelId) as never,
    guildId: msg.guildId,
@@ -564,14 +570,16 @@ const send = async (
   ),
   async () => {
    if (Array.isArray(messages)) {
-    const deleteable = await Promise.all(messages.map((m) => ch.isDeleteable(m)));
+    const deleteable = await Promise.all(messages.map((m) => msg.client.util.isDeleteable(m)));
     messages?.forEach((m, i) => {
-     if (deleteable[i]) ch.request.channels.deleteMessage(m);
+     if (deleteable[i]) msg.client.util.request.channels.deleteMessage(m);
     });
     return;
    }
 
-   if (messages && (await ch.isDeleteable(messages))) ch.request.channels.deleteMessage(messages);
+   if (messages && (await msg.client.util.isDeleteable(messages))) {
+    msg.client.util.request.channels.deleteMessage(messages);
+   }
   },
  );
 };
@@ -582,20 +590,25 @@ const checkLevelRoles = async (msg: Discord.Message<true>) => {
  );
  if (msgsFromUserLastHour.size > 2) return;
 
- const level = await ch.DataBase.level.findUnique({
+ const level = await msg.client.util.DataBase.level.findUnique({
   where: { userid_guildid_type: { userid: msg.author.id, guildid: msg.guildId, type: 'guild' } },
  });
  if (!level) return;
 
- const settings = await ch.DataBase.leveling.findUnique({
+ const settings = await msg.client.util.DataBase.leveling.findUnique({
   where: { guildid: msg.guildId, active: true },
  });
  if (!settings) return;
 
- const roles = await ch.DataBase.levelingroles.findMany({
+ const roles = await msg.client.util.DataBase.levelingroles.findMany({
   where: { guildid: msg.guildId, level: { lte: level.level } },
  });
  if (!roles.length) return;
 
- await roleAssign(msg, settings.rolemode, Number(level.level), await ch.getLanguage(msg.guildId));
+ await roleAssign(
+  msg,
+  settings.rolemode,
+  Number(level.level),
+  await msg.client.util.getLanguage(msg.guildId),
+ );
 };

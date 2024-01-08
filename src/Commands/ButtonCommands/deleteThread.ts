@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  if (!cmd.channel) return;
@@ -10,9 +9,9 @@ export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
   return;
  }
 
- const res = await ch.request.channels.delete(cmd.channel);
+ const res = await cmd.guild.client.util.request.channels.delete(cmd.channel);
  if (!('message' in res)) return;
 
- const language = await ch.getLanguage(cmd.guildId);
- ch.errorCmd(cmd, res, language);
+ const language = await cmd.guild.client.util.getLanguage(cmd.guildId);
+ cmd.guild.client.util.errorCmd(cmd, res, language);
 };

@@ -1,22 +1,21 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const inviteOrID = args.shift() as string;
  const isInviteGuild = (args.shift() as string) === 'true';
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const invite = isInviteGuild
   ? await client.fetchInvite(inviteOrID).catch(() => undefined)
   : undefined;
  const serverID = isInviteGuild ? invite?.guild?.id : inviteOrID;
 
  if (!serverID) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
 
- if (invite) ch.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
+ if (invite) cmd.client.util.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
 
  const embed = (await getEmbed(serverID))?.flat()[0];
  const contents: string[][] = [[]];
@@ -37,10 +36,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }));
 
  if (!embeds) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   embeds,
  });
 };
@@ -48,18 +47,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.shard?.broadcastEval(
   async (c, { id }) => {
-   const chEval: typeof ch = await import(
-    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
-   );
-   const g = c.guilds.cache.get(id) ?? chEval.cache.inviteGuilds.get(id);
+   const g = c.guilds.cache.get(id) ?? c.util.cache.inviteGuilds.get(id);
    if (!g) return undefined;
 
-   const language = await chEval.getLanguage(g.id);
+   const language = await c.util.getLanguage(g.id);
    const isInviteGuild = !('members' in g);
 
    return [
     {
-     color: chEval.getColor(isInviteGuild ? undefined : await chEval.getBotMemberFromGuild(g)),
+     color: c.util.getColor(isInviteGuild ? undefined : await c.util.getBotMemberFromGuild(g)),
      description: Object.entries(language.features)
       .map(([k, v]) => `${g.features.includes(k as Discord.GuildFeature) ? '☑️' : '❌'} ${v}`)
       .join('\n'),

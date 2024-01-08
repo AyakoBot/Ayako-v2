@@ -1,32 +1,33 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.reminder;
  const id = cmd.options.getString('id', true);
- const reminder = await ch.DataBase.reminders.delete({
+ const reminder = await cmd.client.util.DataBase.reminders.delete({
   where: { uniquetimestamp: parseInt(id, 36) },
   select: { reason: true, endtime: true },
  });
 
  if (!reminder) {
-  ch.errorCmd(cmd, lan.reminderNotExist, language);
+  cmd.client.util.errorCmd(cmd, lan.reminderNotExist, language);
   return;
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.deleted,
   embeds: [
    {
-    color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
+    color: cmd.client.util.getColor(
+     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+    ),
     description: reminder.reason,
     fields: [
      {
       name: language.t.End,
-      value: ch.constants.standard.getTime(Number(reminder.endtime)),
+      value: cmd.client.util.constants.standard.getTime(Number(reminder.endtime)),
       inline: false,
      },
     ],

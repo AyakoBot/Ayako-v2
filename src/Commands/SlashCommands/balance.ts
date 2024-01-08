@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const user = cmd.options.getUser('user', false) ?? cmd.user;
 
- const bal = await ch.DataBase.balance.findUnique({
+ const bal = await cmd.client.util.DataBase.balance.findUnique({
   where: {
    userid_guildid: {
     userid: user.id,
@@ -15,18 +14,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   },
  });
 
- const settings = await ch.DataBase.shop.findUnique({
+ const settings = await cmd.client.util.DataBase.shop.findUnique({
   where: { guildid: cmd.guildId },
  });
 
- const language = await ch.getLanguage(cmd.guildId);
- const emote = ch.constants.standard.getEmote(
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const emote = cmd.client.util.constants.standard.getEmote(
   settings?.currencyemote
-   ? Discord.parseEmoji(settings.currencyemote) ?? ch.emotes.book
-   : ch.emotes.book,
+   ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+   : cmd.client.util.emotes.book,
  );
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: `> ${bal?.balance ?? 0} ${emote}\n${language.slashCommands.balance.how2Earn(emote)}`,
  });
 };

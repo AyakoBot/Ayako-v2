@@ -1,19 +1,18 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const type = args.shift() as 'member' | 'server';
 
  const guildOrMember =
   type === 'member'
-   ? await ch.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id)
+   ? await cmd.client.util.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id)
    : cmd.guild;
  if ('message' in guildOrMember) {
-  ch.errorCmd(cmd, guildOrMember, language);
+  cmd.client.util.errorCmd(cmd, guildOrMember, language);
   return;
  }
 

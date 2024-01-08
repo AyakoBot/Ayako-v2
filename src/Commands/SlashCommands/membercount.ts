@@ -1,18 +1,17 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.membercount;
 
  const embed: Discord.APIEmbed = {
   author: {
    name: lan.author,
   },
-  color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
-  description: `${language.t.Members} ${ch.util.makeInlineCode(
-   ch.splitByThousand(cmd.guild?.memberCount ?? 0),
+  color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
+  description: `${language.t.Members} ${cmd.client.util.util.makeInlineCode(
+   cmd.client.util.splitByThousand(cmd.guild?.memberCount ?? 0),
   )}`,
   fields: [
    {
@@ -22,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ],
  };
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   embeds: [embed],
  });
 };

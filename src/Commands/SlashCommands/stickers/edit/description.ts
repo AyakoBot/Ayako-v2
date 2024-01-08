@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction<'cached'>,
@@ -8,7 +7,7 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const stickerIDorName = cmd.options.getString('sticker', true);
  const val = cmd.options.getString(type === 'desc' ? 'description' : 'name', true);
 
@@ -16,13 +15,13 @@ export default async (
   (s) => s.name === stickerIDorName || s.id === stickerIDorName,
  );
  if (!sticker) {
-  ch.errorCmd(cmd, language.errors.stickerNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);
   return;
  }
 
  const lan = language.slashCommands.stickers;
 
- const updated = await ch.request.guilds.editSticker(
+ const updated = await cmd.client.util.request.guilds.editSticker(
   cmd.guild,
   sticker.id,
   type === 'desc' ? { description: val } : { name: val },
@@ -30,11 +29,11 @@ export default async (
  );
 
  if ('message' in updated) {
-  ch.errorCmd(cmd, updated.message, language);
+  cmd.client.util.errorCmd(cmd, updated.message, language);
   return;
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: language.slashCommands.stickers.edited(updated),
  });
 };

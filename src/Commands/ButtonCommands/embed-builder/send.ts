@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.send;
 
  cmd.update({
@@ -37,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Primary,
       customId: `embed-builder/back`,
-      emoji: ch.emotes.back,
+      emoji: cmd.client.util.emotes.back,
      },
     ],
    },

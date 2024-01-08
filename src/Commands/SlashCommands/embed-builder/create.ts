@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export const buildEmbed = async (
@@ -9,7 +8,7 @@ export const buildEmbed = async (
   | Discord.StringSelectMenuInteraction<'cached'>,
  selectedOption?: string,
 ) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
  const options = await getOptions(cmd);
 
@@ -92,7 +91,7 @@ export const buildEmbed = async (
 
  if (cmd.isStringSelectMenu() || cmd.isButton()) {
   cmd.update(payload as Discord.InteractionUpdateOptions);
- } else ch.replyCmd(cmd, { ...payload, ephemeral: true });
+ } else cmd.client.util.replyCmd(cmd, { ...payload, ephemeral: true });
 };
 
 export default buildEmbed;
@@ -103,7 +102,7 @@ const getOptions = async (
   | Discord.ButtonInteraction<'cached'>
   | Discord.StringSelectMenuInteraction<'cached'>,
 ) =>
- ch.DataBase.customembeds
+ cmd.client.util.DataBase.customembeds
   .findMany({
    where: { guildid: cmd.guildId },
   })

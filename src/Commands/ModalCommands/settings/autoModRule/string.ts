@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
@@ -12,10 +11,10 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  args.shift();
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const field = cmd.fields.fields.first();
  if (!field) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+  cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
 
@@ -28,36 +27,40 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  };
  const id = getID();
  if (!id) {
-  ch.error(cmd.guild, new Error('No ID found'));
+  cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
  }
 
  const rule = cmd.guild.autoModerationRules.cache.get(id);
  if (!rule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
- const updatedSetting = await ch.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-  actions: [
-   ...getAPIRule(rule).actions.filter(
-    (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
-   ),
-   {
-    type: Discord.AutoModerationActionType.BlockMessage,
-    metadata: {
-     custom_message: newSetting,
+ const updatedSetting = await cmd.client.util.request.guilds.editAutoModerationRule(
+  rule.guild,
+  rule.id,
+  {
+   actions: [
+    ...getAPIRule(rule).actions.filter(
+     (a) => a.type !== Discord.AutoModerationActionType.BlockMessage,
+    ),
+    {
+     type: Discord.AutoModerationActionType.BlockMessage,
+     metadata: {
+      custom_message: newSetting,
+     },
     },
-   },
-  ],
- });
+   ],
+  },
+ );
 
  if ('message' in updatedSetting) {
-  ch.errorCmd(cmd, updatedSetting, language);
+  cmd.client.util.errorCmd(cmd, updatedSetting, language);
   return;
  }
 
- ch.settingsHelpers.updateLog(
+ cmd.client.util.settingsHelpers.updateLog(
   {
    customMessage:
     rule.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)?.metadata
@@ -68,7 +71,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     updatedSetting.actions.find((a) => a.type === Discord.AutoModerationActionType.BlockMessage)
      ?.metadata.customMessage || language.events.logs.automodRule.defaultMessage,
   } as never,
-  'customMessage' as Parameters<(typeof ch)['settingsHelpers']['updateLog']>[2],
+  'customMessage' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,
   cmd.guild,
@@ -76,7 +79,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = (await ch.settingsHelpers.getSettingsFile(
+ const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
@@ -84,7 +87,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  cmd.update({
   embeds: settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    updatedSetting,
    language,
    language.slashCommands.settings.categories[settingName],

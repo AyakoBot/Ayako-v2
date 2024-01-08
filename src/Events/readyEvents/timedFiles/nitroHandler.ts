@@ -1,25 +1,24 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async () => client.guilds.cache.forEach((g) => run(g));
 
 const run = async (guild: Discord.Guild) => {
- const settings = await ch.DataBase.nitrosettings.findUnique({
+ const settings = await client.util.DataBase.nitrosettings.findUnique({
   where: { guildid: guild.id, active: true },
  });
  if (!settings) return;
 
- const users = await ch.DataBase.nitrousers.findMany({ where: { guildid: guild.id } });
+ const users = await client.util.DataBase.nitrousers.findMany({ where: { guildid: guild.id } });
  if (!users.length) return;
 
- const roles = await ch.DataBase.nitroroles.findMany({
+ const roles = await client.util.DataBase.nitroroles.findMany({
   where: { guildid: guild.id, days: { not: 0 } },
  });
  if (!roles.length) return;
 
- const language = await ch.getLanguage(guild.id);
+ const language = await client.util.getLanguage(guild.id);
 
  [...new Set(users.filter((u) => u.userid).map((u) => u.userid))].forEach((u) => {
   const member = guild.members.cache.get(u);
@@ -44,7 +43,12 @@ const run = async (guild: Discord.Guild) => {
   if (settings.rolemode) {
    log(rolesToGive.map((r) => r.roles).flat(), member, settings.logchannels, language, days, true);
 
-   ch.roleManager.add(member, rolesToGive.map((r) => r.roles).flat(), language.autotypes.nitro, 1);
+   client.util.roleManager.add(
+    member,
+    rolesToGive.map((r) => r.roles).flat(),
+    language.autotypes.nitro,
+    1,
+   );
   }
 
   if (!settings.rolemode) {
@@ -54,8 +58,13 @@ const run = async (guild: Discord.Guild) => {
 
    log(closestRolesToGive?.roles ?? [], member, settings.logchannels, language, days, false);
 
-   ch.roleManager.add(member, closestRolesToGive?.roles ?? [], language.autotypes.nitro, 1);
-   ch.roleManager.remove(member, filteredRoles, language.autotypes.nitro, 1);
+   client.util.roleManager.add(
+    member,
+    closestRolesToGive?.roles ?? [],
+    language.autotypes.nitro,
+    1,
+   );
+   client.util.roleManager.remove(member, filteredRoles, language.autotypes.nitro, 1);
   }
  });
 };
@@ -76,7 +85,7 @@ const log = async (
 
  const embed: Discord.APIEmbed = {
   author: {
-   icon_url: ch.constants.events.logs.guild.MemberUpdate,
+   icon_url: client.util.constants.events.logs.guild.MemberUpdate,
    name: language.events.logs.guild.memberUpdate,
   },
   description: stack
@@ -90,8 +99,8 @@ const log = async (
       roles.map((r) => member.guild.roles.cache.get(r)).filter((r): r is Discord.Role => !!r),
       days,
      ),
-  color: ch.getColor(await ch.getBotMemberFromGuild(member.guild)),
+  color: client.util.getColor(await client.util.getBotMemberFromGuild(member.guild)),
  };
 
- ch.send({ id: logs, guildId: member.guild.id }, { embeds: [embed] }, 10000);
+ client.util.send({ id: logs, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };

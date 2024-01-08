@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -8,7 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const enteredID = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;
  const enteredInvite = cmd.options.get('server-invite', false)?.value as string | null;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const inviteArgs = enteredInvite?.split(/\/+/g) ?? [];
  const invite = inviteArgs.length
   ? await client.fetchInvite(inviteArgs.at(-1) as string, {}).catch(() => undefined)
@@ -21,32 +20,32 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (enteredName) serverID = enteredName;
  if (enteredInvite) {
   if (!invite) {
-   ch.errorCmd(cmd, language.errors.inviteNotFound, language);
+   client.util.errorCmd(cmd, language.errors.inviteNotFound, language);
    return;
   }
 
   if (!invite.guild) {
-   ch.errorCmd(cmd, language.errors.inviteNotFound, language);
+   client.util.errorCmd(cmd, language.errors.inviteNotFound, language);
    return;
   }
 
   serverID = invite.guild.id;
-  ch.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
+  client.util.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
  }
 
  if (!serverID || (serverID && serverID.replace(/\D+/g, '').length !== serverID.length)) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
 
  const embeds = (await getEmbed(serverID))?.flat().filter((e) => !!e);
 
  if (!embeds?.length) {
-  ch.errorCmd(cmd, language.errors.serverNotFound, language);
+  client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
 
- ch.replyCmd(cmd, {
+ client.util.replyCmd(cmd, {
   embeds,
   components: [
    {
@@ -74,23 +73,20 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.shard?.broadcastEval(
   async (c, { id }) => {
-   const chEval: typeof ch = await import(
-    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
-   );
-   const g = c.guilds.cache.get(id) ?? chEval.cache.inviteGuilds.get(id);
+   const g = c.guilds.cache.get(id) ?? c.util.cache.inviteGuilds.get(id);
    if (!g) return undefined;
 
-   const language = await chEval.getLanguage(g.id);
+   const language = await c.util.getLanguage(g.id);
    const lan = language.slashCommands.info.server;
    const eventLan = language.events.logs.guild;
    let owner: Discord.GuildMember | undefined;
    const isInviteGuild = !('members' in g);
 
    if (!isInviteGuild) {
-    await chEval.request.guilds.getAutoModerationRules(g);
-    await chEval.request.guilds.getVanityURL(g);
+    await c.util.request.guilds.getAutoModerationRules(g);
+    await c.util.request.guilds.getVanityURL(g);
 
-    owner = await chEval.request.guilds
+    owner = await c.util.request.guilds
      .getMember(g, g.ownerId)
      .then((u) => ('message' in u ? undefined : u));
    }
@@ -110,25 +106,25 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        g.banner?.startsWith('a_') ? 'gif' : 'png'
       }?size=4096`,
      },
-     color: chEval.getColor(isInviteGuild ? undefined : await chEval.getBotMemberFromGuild(g)),
+     color: c.util.getColor(isInviteGuild ? undefined : await c.util.getBotMemberFromGuild(g)),
      fields: [
       {
        name: language.slashCommands.info.basic,
        value: [
         {
-         name: chEval.util.makeBold(language.t.name),
+         name: c.util.util.makeBold(language.t.name),
          value: `\`${g.name}\`\n`,
         },
         {
-         name: chEval.util.makeBold(lan.info.acronym),
+         name: c.util.util.makeBold(lan.info.acronym),
          value: `\`${g.nameAcronym}\`\n`,
         },
         {
-         name: chEval.util.makeBold('ID'),
+         name: c.util.util.makeBold('ID'),
          value: `\`${g.id}\`\n`,
         },
         {
-         name: chEval.util.makeBold(eventLan.vanityUrlCode),
+         name: c.util.util.makeBold(eventLan.vanityUrlCode),
          value: g.vanityURLCode
           ? `[${g.vanityURLCode}](https://discord.gg/${g.vanityURLCode})\n`
           : `${language.t.None}\n`,
@@ -137,39 +133,39 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
          ? []
          : [
             {
-             name: `${chEval.util.makeBold(lan.info.widgetChannel)}\n`,
+             name: `${c.util.util.makeBold(lan.info.widgetChannel)}\n`,
              value: g.widgetChannel
               ? language.languageFunction.getChannel(g.widgetChannel)
               : `${language.t.None}\n`,
             },
             {
-             name: `${chEval.util.makeBold(eventLan.afkChannelId)}\n`,
+             name: `${c.util.util.makeBold(eventLan.afkChannelId)}\n`,
              value: language.languageFunction.getChannel(g.afkChannel),
             },
             {
-             name: `${chEval.util.makeBold(eventLan.systemChannelId)}\n`,
+             name: `${c.util.util.makeBold(eventLan.systemChannelId)}\n`,
              value: language.languageFunction.getChannel(g.systemChannel),
             },
             {
-             name: `${chEval.util.makeBold(eventLan.rulesChannelId)}\n`,
+             name: `${c.util.util.makeBold(eventLan.rulesChannelId)}\n`,
              value: language.languageFunction.getChannel(g.rulesChannel),
             },
             {
-             name: `${chEval.util.makeBold(eventLan.publicUpdatesChannelId)}\n`,
+             name: `${c.util.util.makeBold(eventLan.publicUpdatesChannelId)}\n`,
              value: language.languageFunction.getChannel(g.publicUpdatesChannel),
             },
             {
-             name: chEval.util.makeBold(eventLan.afkTimeout),
+             name: c.util.util.makeBold(eventLan.afkTimeout),
              value:
-              `\`${chEval.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
+              `\`${c.util.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
             },
            ]),
         {
-         name: `${chEval.util.makeBold(eventLan.ownerId)}\n`,
+         name: `${c.util.util.makeBold(eventLan.ownerId)}\n`,
          value: owner ? language.languageFunction.getUser(owner.user) : `${language.t.Unknown}\n`,
         },
         {
-         name: chEval.util.makeBold(lan.info.description),
+         name: c.util.util.makeBold(lan.info.description),
          value: g.description ? `\`\`\`${g.description}\`\`\`` : `${language.t.None}\n`,
         },
        ]
@@ -181,71 +177,71 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
        name: language.slashCommands.info.stats,
        value: [
         {
-         name: chEval.util.makeBold(language.t.createdAt),
-         value: chEval.constants.standard.getTime(g.createdTimestamp),
+         name: c.util.util.makeBold(language.t.createdAt),
+         value: c.util.constants.standard.getTime(g.createdTimestamp),
         },
         ...(isInviteGuild
          ? []
          : [
             {
-             name: chEval.util.makeBold(lan.stats.members),
-             value: `\`${chEval.splitByThousand(g.memberCount)}\`/\`${chEval.splitByThousand(
+             name: c.util.util.makeBold(lan.stats.members),
+             value: `\`${c.util.splitByThousand(g.memberCount)}\`/\`${c.util.splitByThousand(
               g.maximumMembers ?? 500000,
              )}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.bots),
-             value: `\`${chEval.splitByThousand(
+             name: c.util.util.makeBold(lan.stats.bots),
+             value: `\`${c.util.splitByThousand(
               g.members.cache.filter((m) => !!m.user.bot).size,
              )}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.channels),
-             value: `\`${chEval.splitByThousand(g.channels.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.channels),
+             value: `\`${c.util.splitByThousand(g.channels.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.roles),
-             value: `\`${chEval.splitByThousand(g.roles.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.roles),
+             value: `\`${c.util.splitByThousand(g.roles.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.emojis),
-             value: `\`${chEval.splitByThousand(g.emojis.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.emojis),
+             value: `\`${c.util.splitByThousand(g.emojis.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.autoModRules),
-             value: `\`${chEval.splitByThousand(g.autoModerationRules.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.autoModRules),
+             value: `\`${c.util.splitByThousand(g.autoModerationRules.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.invites),
-             value: `\`${chEval.splitByThousand(g.invites.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.invites),
+             value: `\`${c.util.splitByThousand(g.invites.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.vanityUses),
-             value: `\`${chEval.splitByThousand(g.vanityURLUses ?? 0)}\``,
+             name: c.util.util.makeBold(lan.stats.vanityUses),
+             value: `\`${c.util.splitByThousand(g.vanityURLUses ?? 0)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.stickers),
-             value: `\`${chEval.splitByThousand(g.stickers.cache.size)}\``,
+             name: c.util.util.makeBold(lan.stats.stickers),
+             value: `\`${c.util.splitByThousand(g.stickers.cache.size)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.boosters),
-             value: `\`${chEval.splitByThousand(g.premiumSubscriptionCount ?? 0)}\``,
+             name: c.util.util.makeBold(lan.stats.boosters),
+             value: `\`${c.util.splitByThousand(g.premiumSubscriptionCount ?? 0)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.level),
-             value: `\`${chEval.splitByThousand(g.premiumTier ?? 0)}\``,
+             name: c.util.util.makeBold(lan.stats.level),
+             value: `\`${c.util.splitByThousand(g.premiumTier ?? 0)}\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.maximumBitrate),
+             name: c.util.util.makeBold(lan.stats.maximumBitrate),
              value: `\`${g.maximumBitrate / 1000}kbps\``,
             },
             {
-             name: chEval.util.makeBold(lan.stats.maxStageVideoChannelUsers),
-             value: `\`${chEval.splitByThousand(g.maxStageVideoChannelUsers ?? 0)}\``,
+             name: c.util.util.makeBold(lan.stats.maxStageVideoChannelUsers),
+             value: `\`${c.util.splitByThousand(g.maxStageVideoChannelUsers ?? 0)}\``,
             },
             {
-             name: chEval.util.makeBold(language.t.large),
-             value: `${chEval.settingsHelpers.embedParsers.boolean(g.large, language)}`,
+             name: c.util.util.makeBold(language.t.large),
+             value: `${c.util.settingsHelpers.embedParsers.boolean(g.large, language)}`,
             },
            ]),
        ]
@@ -260,28 +256,28 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
          ? []
          : [
             {
-             name: chEval.util.makeBold(eventLan.defaultMessageNotificationsName),
+             name: c.util.util.makeBold(eventLan.defaultMessageNotificationsName),
              value: `\`${eventLan.defaultMessageNotifications[g.defaultMessageNotifications]}\``,
             },
             {
-             name: chEval.util.makeBold(eventLan.explicitContentFilterName),
+             name: c.util.util.makeBold(eventLan.explicitContentFilterName),
              value: `\`${eventLan.explicitContentFilter[g.explicitContentFilter]}\``,
             },
             {
-             name: chEval.util.makeBold(eventLan.mfaLevelName),
+             name: c.util.util.makeBold(eventLan.mfaLevelName),
              value: `\`${eventLan.mfaLevel[g.mfaLevel]}\``,
             },
             {
-             name: chEval.util.makeBold(language.t.regionsName),
+             name: c.util.util.makeBold(language.t.regionsName),
              value: `\`${language.regions[g.preferredLocale as keyof typeof language.regions]}\``,
             },
            ]),
         {
-         name: chEval.util.makeBold(eventLan.nsfwLevelName),
+         name: c.util.util.makeBold(eventLan.nsfwLevelName),
          value: `\`${eventLan.nsfwLevel[g.nsfwLevel]}\``,
         },
         {
-         name: chEval.util.makeBold(eventLan.verificationLevelName),
+         name: c.util.util.makeBold(eventLan.verificationLevelName),
          value: `\`${eventLan.verificationLevel[g.verificationLevel]}\``,
         },
        ]

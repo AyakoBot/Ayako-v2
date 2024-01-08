@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[]) => {
@@ -9,12 +8,14 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
  const ID = args.shift() as string;
  const isUser = args.shift() === 'user';
  const check = isUser
-  ? await ch.request.guilds.getMember(cmd.guild, ID).then((u) => ('message' in u ? undefined : u))
+  ? await cmd.client.util.request.guilds
+     .getMember(cmd.guild, ID)
+     .then((u) => ('message' in u ? undefined : u))
   : cmd.guild.roles.cache.get(ID);
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (!check) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
    isUser ? language.errors.memberNotFound : language.errors.roleNotFound,
    language,
@@ -102,14 +103,18 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
     ...allowedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.constants.standard.getEmote(ch.emotes.enabled)} ${ch.permCalc(perm, language)}`
+       ? `${cmd.client.util.constants.standard.getEmote(
+          cmd.client.util.emotes.enabled,
+         )} ${cmd.client.util.permCalc(perm, language)}`
        : null,
      )
      .filter((r) => !!r),
     ...deniedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.constants.standard.getEmote(ch.emotes.disabled)} ${ch.permCalc(perm, language)}`
+       ? `${cmd.client.util.constants.standard.getEmote(
+          cmd.client.util.emotes.disabled,
+         )} ${cmd.client.util.permCalc(perm, language)}`
        : null,
      )
      .filter((r) => !!r),

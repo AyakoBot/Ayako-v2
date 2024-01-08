@@ -4,8 +4,7 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
 import pack from '../../../../package.json' assert { type: 'json' };
-import { API } from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client, { API } from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 import * as VirusVendorsTypings from '../../../Typings/VirusVendorsTypings.js';
 
@@ -26,7 +25,7 @@ export default async (msg: Discord.Message) => {
  if (msg.author.bot) return;
 
  const settings = msg.inGuild()
-  ? await ch.DataBase.antivirus.findUnique({
+  ? await client.util.DataBase.antivirus.findUnique({
      where: { guildid: msg.guildId, active: true },
     })
   : undefined;
@@ -36,13 +35,13 @@ export default async (msg: Discord.Message) => {
   await API.channels.addMessageReaction(
    msg.channelId,
    msg.id,
-   ch.constants.standard.getEmoteIdentifier(ch.emotes.loading),
+   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
   );
  }
  const result = await run(msg.content);
  if (!('url' in result)) return;
 
- const language = await ch.getLanguage(msg.guildId);
+ const language = await client.util.getLanguage(msg.guildId);
 
  if (!msg.inGuild() || result.triggers) {
   log(
@@ -59,7 +58,7 @@ export default async (msg: Discord.Message) => {
   await API.channels.deleteOwnMessageReaction(
    msg.channelId,
    msg.id,
-   ch.constants.standard.getEmoteIdentifier(ch.emotes.loading),
+   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
   );
  }
 
@@ -112,7 +111,7 @@ const log = (
      {
       name: lan.scanResult,
       value: lan.detectedAs(
-       res.DomainGeneralInfo.Categories.map((c) => ch.util.makeInlineCode(c)).join(', '),
+       res.DomainGeneralInfo.Categories.map((c) => client.util.util.makeInlineCode(c)).join(', '),
       ),
      },
     ];
@@ -124,7 +123,7 @@ const log = (
      {
       name: lan.scanResult,
       value: lan.detectedAs(
-       res.matches.map((m) => ch.util.makeInlineCode(m.threatType)).join(', '),
+       res.matches.map((m) => client.util.util.makeInlineCode(m.threatType)).join(', '),
       ),
      },
     ];
@@ -145,10 +144,10 @@ const log = (
     color: url.triggers ? CT.Colors.Danger : CT.Colors.Success,
     author: {
      name: language.autotypes.antivirus,
-     icon_url: ch.constants.events.logs.invite.create,
+     icon_url: client.util.constants.events.logs.invite.create,
     },
     description: `${language.antivirus.log.value(msg)}\n\n${language.antivirus.log.name}\n${url.urls
-     .map((u) => ch.util.makeInlineCode(u))
+     .map((u) => client.util.util.makeInlineCode(u))
      .join(', ')}`,
     fields: [
      ...(url.url
@@ -159,9 +158,9 @@ const log = (
          },
          {
           name: language.antivirus.malicious(
-           ch.constants.standard.getEmote(ch.emotes.crossWithBackground),
+           client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground),
           ),
-          value: ch.util.makeInlineCode(url.url),
+          value: client.util.util.makeInlineCode(url.url),
          },
          {
           name: '\u200b',
@@ -176,9 +175,9 @@ const log = (
  };
 
  if (msg.inGuild()) {
-  ch.send({ id: channels as string[], guildId: msg.guildId }, payload, 10000);
+  client.util.send({ id: channels as string[], guildId: msg.guildId }, payload, 10000);
  } else {
-  ch.send(channels as Discord.TextBasedChannel, payload);
+  client.util.send(channels as Discord.TextBasedChannel, payload);
  }
 };
 
@@ -229,14 +228,16 @@ const run = async (content: string) => {
 };
 
 const getURLs = async (content: string): Promise<string[]> => {
- if (!content.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray()))) return [];
+ if (!content.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray()))) return [];
 
  const args = content.split(/(\s+|\n+)/g);
  const argsContainingLink = args
   .filter((a) => a.includes('.'))
-  .filter((arg) => arg.match(ch.regexes.urlTester(ch.cache.urlTLDs.toArray())));
+  .filter((arg) => arg.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
 
- return (await Promise.all(argsContainingLink.map((arg) => ch.fetchWithRedirects(arg)))).flat();
+ return (
+  await Promise.all(argsContainingLink.map((arg) => client.util.fetchWithRedirects(arg)))
+ ).flat();
 };
 
 const getTriggersAV = async (
@@ -292,7 +293,7 @@ const checkIfExists = async (url: string) => {
 };
 
 // https://phish.sinking.yachts/
-const inSinkingYachts = (u: string) => ch.cache.sinkingYachts.cache.has(cleanURL(u));
+const inSinkingYachts = (u: string) => client.util.cache.sinkingYachts.cache.has(cleanURL(u));
 
 const inSpamHaus = async (u: string) => {
  const res = await fetch(`https://apibl.spamhaus.net/lookup/v1/dbl/${cleanURL(u)}`, {
@@ -443,7 +444,7 @@ const reportFishFish = (u: string) => {
 const inAllowlist = (url: string) =>
  (
   fs
-   .readFileSync(ch.constants.path.allowlist, {
+   .readFileSync(client.util.constants.path.allowlist, {
     encoding: 'utf8',
    })
    ?.split(/\n+/g)
@@ -453,7 +454,7 @@ const inAllowlist = (url: string) =>
 const inDenylist = (url: string) =>
  (
   fs
-   .readFileSync(ch.constants.path.badLinks, {
+   .readFileSync(client.util.constants.path.badLinks, {
     encoding: 'utf8',
    })
    ?.split(/\n+/g)
@@ -462,16 +463,16 @@ const inDenylist = (url: string) =>
 
 const writeAllowlist = (url: string | undefined) => {
  if (!url) return;
- fs.appendFileSync(ch.constants.path.allowlist, `\n${new URL(url).origin}`);
+ fs.appendFileSync(client.util.constants.path.allowlist, `\n${new URL(url).origin}`);
 };
 
 const writeDenylist = (url: string | undefined) => {
  if (!url) return;
- fs.appendFileSync(ch.constants.path.badLinks, `\n${new URL(url).origin}`);
+ fs.appendFileSync(client.util.constants.path.badLinks, `\n${new URL(url).origin}`);
 };
 
 // https://api.fishfish.gg/v1/docs
-const inFishFish = (u: string) => ch.cache.fishFish.cache.has(cleanURL(u));
+const inFishFish = (u: string) => client.util.cache.fishFish.cache.has(cleanURL(u));
 
 const inKaspersky = async (u: string) => {
  const res = await fetch(
@@ -510,36 +511,36 @@ export const performPunishment = (
 
  switch (settings.action) {
   case 'ban':
-   return ch.mod(msg, CT.ModTypes.BanAdd, {
+   return client.util.mod(msg, CT.ModTypes.BanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'channelban':
-   return ch.mod(msg, CT.ModTypes.ChannelBanAdd, {
+   return client.util.mod(msg, CT.ModTypes.ChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
    });
   case 'kick':
-   return ch.mod(msg, CT.ModTypes.KickAdd, baseOptions);
+   return client.util.mod(msg, CT.ModTypes.KickAdd, baseOptions);
   case 'softban':
-   return ch.mod(msg, CT.ModTypes.SoftBanAdd, {
+   return client.util.mod(msg, CT.ModTypes.SoftBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'strike':
-   return ch.mod(msg, CT.ModTypes.StrikeAdd, baseOptions);
+   return client.util.mod(msg, CT.ModTypes.StrikeAdd, baseOptions);
   case 'warn':
-   return ch.mod(msg, CT.ModTypes.WarnAdd, baseOptions);
+   return client.util.mod(msg, CT.ModTypes.WarnAdd, baseOptions);
   case 'tempban':
-   return ch.mod(msg, CT.ModTypes.TempBanAdd, {
+   return client.util.mod(msg, CT.ModTypes.TempBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
     duration: Number(settings.duration),
    });
   case 'tempchannelban':
-   return ch.mod(msg, CT.ModTypes.TempChannelBanAdd, {
+   return client.util.mod(msg, CT.ModTypes.TempChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -547,7 +548,7 @@ export const performPunishment = (
     duration: Number(settings.duration),
    });
   case 'tempmute':
-   return ch.mod(msg, CT.ModTypes.TempMuteAdd, {
+   return client.util.mod(msg, CT.ModTypes.TempMuteAdd, {
     ...baseOptions,
     duration: Number(settings.duration),
    });

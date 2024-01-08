@@ -1,63 +1,62 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { getButton, getClaimButton, getMessage } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
 
- const giveaway = await ch.DataBase.giveaways.findUnique({
+ const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
   where: { msgid: cmd.message.id, ended: true },
  });
 
- const giveawayCollection = await ch.DataBase.giveawaycollection.findUnique({
+ const giveawayCollection = await cmd.client.util.DataBase.giveawaycollection.findUnique({
   where: { msgid: cmd.message.id },
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.claim;
 
  if (!giveaway || !giveaway.actualprize) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.notFound, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.notFound, language);
   return;
  }
 
  if (!giveaway.winners?.includes(cmd.user.id)) {
-  ch.errorCmd(cmd, lan.notWinner, language);
+  cmd.client.util.errorCmd(cmd, lan.notWinner, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: giveaway.actualprize });
+ cmd.client.util.replyCmd(cmd, { content: giveaway.actualprize });
 
  if (!giveawayCollection?.requiredwinners?.length) return;
  const newWinners = giveawayCollection.requiredwinners.filter((w) => w !== cmd.user.id);
 
- ch.DataBase.giveaways
+ cmd.client.util.DataBase.giveaways
   .update({
    where: { msgid: cmd.message.id },
    data: { claimingdone: !newWinners.length },
   })
   .then();
 
- ch.DataBase.giveawaycollection
+ cmd.client.util.DataBase.giveawaycollection
   .update({
    where: { msgid: cmd.message.id },
    data: { requiredwinners: newWinners },
   })
   .then();
 
- const collection = await ch.DataBase.giveawaycollection.findUnique({
+ const collection = await cmd.client.util.DataBase.giveawaycollection.findUnique({
   where: { msgid: cmd.message.id },
  });
 
  if (newWinners.length) return;
- ch.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } }).then();
- ch.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
+ cmd.client.util.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } }).then();
+ cmd.client.util.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
  giveaway.claimingdone = true;
 
  const giveawayMessage = await getMessage(giveaway);
  if (giveawayMessage) {
-  await ch.request.channels.editMsg(giveawayMessage, {
+  await cmd.client.util.request.channels.editMsg(giveawayMessage, {
    components: [
     {
      type: Discord.ComponentType.ActionRow,
@@ -77,5 +76,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   guildid: giveaway.guildid,
  });
 
- if (msg && (await ch.isDeleteable(msg))) ch.request.channels.deleteMessage(msg);
+ if (msg && (await cmd.client.util.isDeleteable(msg))) {
+  cmd.client.util.request.channels.deleteMessage(msg);
+ }
 };

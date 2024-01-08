@@ -1,14 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
- const member = await ch.request.guilds.getMember(cmd.guild, args.shift() ?? cmd.user.id);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const member = await cmd.client.util.request.guilds.getMember(
+  cmd.guild,
+  args.shift() ?? cmd.user.id,
+ );
  if ('message' in member) {
-  ch.errorCmd(cmd, member, language);
+  cmd.client.util.errorCmd(cmd, member, language);
   return;
  }
 
@@ -45,18 +47,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     ...allowedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.constants.standard.getEmote(ch.emotes.enabled)} ${ch.permCalc(perm, language, true)}`
+       ? `${cmd.client.util.constants.standard.getEmote(
+          cmd.client.util.emotes.enabled,
+         )} ${cmd.client.util.permCalc(perm, language, true)}`
        : null,
      )
      .filter((r) => !!r),
     ...deniedBits
      .map((perm) =>
       new Discord.PermissionsBitField(bit as Discord.PermissionsString).has(perm, false)
-       ? `${ch.constants.standard.getEmote(ch.emotes.disabled)} ${ch.permCalc(
-          perm,
-          language,
-          true,
-         )}`
+       ? `${cmd.client.util.constants.standard.getEmote(
+          cmd.client.util.emotes.disabled,
+         )} ${cmd.client.util.permCalc(perm, language, true)}`
        : null,
      )
      .filter((r) => !!r),

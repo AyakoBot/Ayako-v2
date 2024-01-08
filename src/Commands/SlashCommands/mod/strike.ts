@@ -1,22 +1,21 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
-import getStrike from '../../../BaseClient/ClientHelperModules/mod/getStrike.js';
+import getStrike from '../../../BaseClient/UtilModules/mod/getStrike.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const strike = await ch.DataBase.autopunish.findFirst({
+ const strike = await cmd.client.util.DataBase.autopunish.findFirst({
   where: { guildid: cmd.guildId, active: true },
  });
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (!strike) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
    language.slashCommands.moderation.strike.notEnabled(
-    (await ch.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0',
+    (await cmd.client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0',
    ),
    language,
   );
@@ -35,7 +34,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, CT.ModTypes.StrikeAdd, modOptions);
+ cmd.client.util.mod(cmd, CT.ModTypes.StrikeAdd, modOptions);
 
  const applyingStrike = await getStrike(user, cmd.guild);
  const member = cmd.options.getMember('user');
@@ -43,10 +42,20 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!member) return;
 
  if (applyingStrike?.addroles) {
-  ch.roleManager.add(member, applyingStrike.addroles, language.autotypes.autopunish, 1);
+  cmd.client.util.roleManager.add(
+   member,
+   applyingStrike.addroles,
+   language.autotypes.autopunish,
+   1,
+  );
  }
 
  if (applyingStrike?.removeroles) {
-  ch.roleManager.remove(member, applyingStrike.removeroles, language.autotypes.autopunish, 1);
+  cmd.client.util.roleManager.remove(
+   member,
+   applyingStrike.removeroles,
+   language.autotypes.autopunish,
+   1,
+  );
  }
 };

@@ -1,18 +1,17 @@
 import Prisma from '@prisma/client';
 import { CaptchaGenerator } from 'captcha-canvas';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
 
- const verification = await ch.DataBase.verification.findUnique({
+ const verification = await cmd.client.util.DataBase.verification.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
  if (!verification) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (await isVerified(cmd, verification, language)) return;
 
@@ -31,7 +30,10 @@ const isVerified = async (
  if (!role) return false;
 
  const sendReply = () =>
-  ch.replyCmd(cmd, { content: language.verification.alreadyVerified, ephemeral: true });
+  cmd.client.util.replyCmd(cmd, {
+   content: language.verification.alreadyVerified,
+   ephemeral: true,
+  });
  if (!cmd.member) {
   sendReply();
   return true;
@@ -48,7 +50,7 @@ const isVerified = async (
    (('cache' in cmd.member.roles && cmd.member.roles.cache.has(verification.pendingrole)) ||
     (Array.isArray(cmd.member.roles) && cmd.member.roles.includes(verification.pendingrole)))
   ) {
-   ch.roleManager.remove(
+   cmd.client.util.roleManager.remove(
     cmd.member,
     [verification.pendingrole],
     language.verification.log.finished,
@@ -67,10 +69,10 @@ const log = async (
 ) => {
  if (!verification.logchannel) return;
 
- const channel = await ch.getChannel.guildTextChannel(verification.logchannel);
+ const channel = await cmd.client.util.getChannel.guildTextChannel(verification.logchannel);
  if (!channel) return;
 
- ch.send(channel, {
+ cmd.client.util.send(channel, {
   embeds: [
    {
     author: {
@@ -98,7 +100,7 @@ const verify = async (cmd: Discord.ButtonInteraction, language: CT.Language) => 
   name: `${now}.png`,
  };
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   ephemeral: true,
   embeds: [
    {
@@ -106,7 +108,7 @@ const verify = async (cmd: Discord.ButtonInteraction, language: CT.Language) => 
      url: `attachment://${file.name}`,
     },
     title: language.verification.title,
-    url: ch.constants.standard.invite,
+    url: cmd.client.util.constants.standard.invite,
     description: language.verification.description(cmd.guild),
     fields: [
      {
@@ -114,7 +116,7 @@ const verify = async (cmd: Discord.ButtonInteraction, language: CT.Language) => 
       value: language.verification.hintmsg,
      },
     ],
-    color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+    color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
    },
   ],
   files: [file],

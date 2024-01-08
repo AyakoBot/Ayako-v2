@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -11,13 +10,13 @@ export default async (
  if (!oldState.channel) return;
  if (!member) return;
 
- const channels = await ch.getLogChannels('voiceevents', member.guild);
+ const channels = await state.client.util.getLogChannels('voiceevents', member.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(state.guild.id);
+ const language = await state.client.util.getLanguage(state.guild.id);
  const lan = language.events.logs.voiceState;
- const con = ch.constants.events.logs.voiceState;
- const channelType = ch.getTrueChannelType(state.channel, state.guild);
+ const con = state.client.util.constants.events.logs.voiceState;
+ const channelType = state.client.util.getTrueChannelType(state.channel, state.guild);
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
@@ -36,7 +35,7 @@ export default async (
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  state.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (state.requestToSpeakTimestamp !== oldState.requestToSpeakTimestamp) {
   merge(
@@ -95,5 +94,9 @@ export default async (
 
  if (!embed.fields?.length) return;
 
- ch.send({ id: channels, guildId: state.guild.id }, { embeds: [embed], files }, 10000);
+ state.client.util.send(
+  { id: channels, guildId: state.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

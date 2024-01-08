@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message) => {
@@ -15,16 +14,16 @@ const banHandler = async (msg: Discord.Message) => {
  if (!msg.content.includes('@Known-Scammers ping:')) return;
 
  const isUnban = msg.content.includes('REMOVAL FROM LIST');
- const executor = await ch.getUser('646937666251915264');
+ const executor = await msg.client.util.getUser('646937666251915264');
 
  const ids = msg.content.match(/\d{17,19}/gm);
  if (!ids || !ids.length) return;
 
  ids.forEach(async (id) => {
-  const user = await ch.getUser(id);
+  const user = await msg.client.util.getUser(id);
   if (!user) {
-   const language = await ch.getLanguage(msg.guildId);
-   ch.errorMsg(msg, language.errors.userNotFound, language);
+   const language = await msg.client.util.getLanguage(msg.guildId);
+   msg.client.util.errorMsg(msg, language.errors.userNotFound, language);
    return;
   }
 
@@ -43,7 +42,7 @@ const banHandler = async (msg: Discord.Message) => {
    skipChecks: false,
   };
 
-  ch.mod(undefined, isUnban ? CT.ModTypes.BanRemove : CT.ModTypes.BanAdd, modOptions);
+  msg.client.util.mod(undefined, isUnban ? CT.ModTypes.BanRemove : CT.ModTypes.BanAdd, modOptions);
  });
 };
 
@@ -71,5 +70,5 @@ const rolePing = (msg: Discord.Message) => {
 
  if (!content) return;
 
- ch.replyMsg(msg, { content, allowed_mentions: { roles: [role] } });
+ msg.client.util.replyMsg(msg, { content, allowed_mentions: { roles: [role] } });
 };

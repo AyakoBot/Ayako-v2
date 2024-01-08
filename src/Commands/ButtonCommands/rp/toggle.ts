@@ -1,26 +1,27 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import rp from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  await cmd.deferUpdate();
  cmd.editReply({
   components: [],
-  embeds: [ch.loadingEmbed({ language, lan: { author: language.slashCommands.rp.author } })],
+  embeds: [
+   cmd.client.util.loadingEmbed({ language, lan: { author: language.slashCommands.rp.author } }),
+  ],
  });
 
- const settings = !(await ch.DataBase.guildsettings
+ const settings = !(await cmd.client.util.DataBase.guildsettings
   .findUnique({
    where: { guildid: cmd.guildId },
    select: { enabledrp: true },
   })
   .then((r) => r?.enabledrp));
 
- ch.DataBase.guildsettings
+ cmd.client.util.DataBase.guildsettings
   .upsert({
    where: { guildid: cmd.guildId },
    create: { guildid: cmd.guildId, enabledrp: settings },
@@ -35,26 +36,29 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- await ch.request.commands.bulkOverwriteGuildCommands(
+ await cmd.client.util.request.commands.bulkOverwriteGuildCommands(
   cmd.guild,
   (
-   [...(ch.cache.commands.cache.get(cmd.guild.id)?.values() ?? [])] ??
+   [...(cmd.client.util.cache.commands.cache.get(cmd.guild.id)?.values() ?? [])] ??
    cmd.guild.commands.cache.map((c) => c)
   )
-   .filter((c) => !ch.constants.commands.interactions.find((i) => i.name === c.name) && !c.guildId)
+   .filter(
+    (c) =>
+     !cmd.client.util.constants.commands.interactions.find((i) => i.name === c.name) && !c.guildId,
+   )
    .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  );
 };
 
 export const create = async (guild: Discord.Guild) => {
- const commands = await ch.request.commands.getGuildCommands(guild);
+ const commands = await guild.client.util.request.commands.getGuildCommands(guild);
 
  if ('message' in commands) {
-  ch.error(guild, new Error(commands.message));
+  guild.client.util.error(guild, new Error(commands.message));
   return;
  }
 
- const registerCommands = ch.constants.commands.interactions
+ const registerCommands = guild.client.util.constants.commands.interactions
   .filter((c) => !commands.find((existing) => existing.name === c.name))
   .map((c) => {
    const command = new Discord.SlashCommandBuilder().setName(c.name).setDescription(c.desc);
@@ -100,19 +104,22 @@ export const create = async (guild: Discord.Guild) => {
    return command;
   });
 
- await ch.request.commands.bulkOverwriteGuildCommands(guild, [
+ await guild.client.util.request.commands.bulkOverwriteGuildCommands(guild, [
   ...registerCommands.map((c) => c.toJSON()),
-  ...[...(ch.cache.commands.cache.get(guild.id)?.values() ?? guild.commands.cache.map((c) => c))]
+  ...[
+   ...(guild.client.util.cache.commands.cache.get(guild.id)?.values() ??
+    guild.commands.cache.map((c) => c)),
+  ]
    .filter(
     (c) =>
-     !ch.constants.commands.interactions.find((i) => i.name === c.name) &&
+     !guild.client.util.constants.commands.interactions.find((i) => i.name === c.name) &&
      !c.guildId &&
      !registerCommands.find((r) => r.name === c.name),
    )
    .map((c) => c.toJSON() as Discord.APIApplicationCommand),
  ]);
 
- await ch.DataBase.guildsettings.upsert({
+ await guild.client.util.DataBase.guildsettings.upsert({
   where: { guildid: guild.id },
   update: { rpenableruns: { increment: 1 } },
   create: {

@@ -1,18 +1,17 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.customRole;
 
- const settings = await ch.DataBase.rolerewards.findMany({
+ const settings = await cmd.client.util.DataBase.rolerewards.findMany({
   where: { guildid: cmd.guildId, active: true, customrole: true },
  });
  if (!settings.length) {
-  ch.errorCmd(cmd, language.slashCommands.roles.customRole.notEnabled, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.roles.customRole.notEnabled, language);
   return;
  }
 
@@ -24,7 +23,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if (!applyingSettings.length) {
-  ch.errorCmd(cmd, language.slashCommands.roles.customRole.cantSet, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.roles.customRole.cantSet, language);
   return;
  }
 
@@ -53,12 +52,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   try {
    new URL(iconUrl);
   } catch (e) {
-   ch.errorCmd(cmd, e as Error, await ch.getLanguage(cmd.guildId));
+   cmd.client.util.errorCmd(cmd, e as Error, await cmd.client.util.getLanguage(cmd.guildId));
    return;
   }
  }
 
- const customroleSetting = await ch.DataBase.customroles.findUnique({
+ const customroleSetting = await cmd.client.util.DataBase.customroles.findUnique({
   where: {
    guildid_userid: {
     guildid: cmd.guildId,
@@ -69,7 +68,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const customRole = customroleSetting ? cmd.guild.roles.cache.get(customroleSetting.roleid) : false;
 
  if (customRole) {
-  const role = await ch.request.guilds.editRole(cmd.guild, customRole.id, {
+  const role = await cmd.client.util.request.guilds.editRole(cmd.guild, customRole.id, {
    name: name ? await getContent(cmd.guild, name) : undefined,
    unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: parsedColor ?? undefined,
@@ -80,7 +79,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   });
 
   if ('message' in role) {
-   ch.errorCmd(
+   cmd.client.util.errorCmd(
     cmd,
     role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
     language,
@@ -88,9 +87,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    return;
   }
 
-  ch.replyCmd(cmd, { content: lan.edit(role, { icon: canseticon, color: cansetcolor }) });
+  cmd.client.util.replyCmd(cmd, {
+   content: lan.edit(role, { icon: canseticon, color: cansetcolor }),
+  });
 
-  ch.roleManager.add(
+  cmd.client.util.roleManager.add(
    cmd.member,
    [role.id],
    language.events.guildMemberUpdate.rewards.customRoleName,
@@ -98,7 +99,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const role = await ch.request.guilds.createRole(
+ const role = await cmd.client.util.request.guilds.createRole(
   cmd.guild,
   {
    name: name ?? cmd.member.displayName,
@@ -113,7 +114,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in role) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
    language,
@@ -121,14 +122,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- ch.roleManager.add(
+ cmd.client.util.roleManager.add(
   cmd.member,
   [role.id],
   language.events.guildMemberUpdate.rewards.customRoleName,
  );
- ch.replyCmd(cmd, { content: lan.create(role, { icon: canseticon, color: cansetcolor }) });
+ cmd.client.util.replyCmd(cmd, {
+  content: lan.create(role, { icon: canseticon, color: cansetcolor }),
+ });
 
- ch.DataBase.customroles
+ cmd.client.util.DataBase.customroles
   .create({
    data: {
     userid: cmd.user.id,
@@ -140,7 +143,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const positionRole = positionRoleId ? cmd.guild.roles.cache.get(positionRoleId) : undefined;
  if (positionRole) {
-  await ch.request.guilds.setRolePositions(cmd.guild, [
+  await cmd.client.util.request.guilds.setRolePositions(cmd.guild, [
    {
     position: positionRole.rawPosition,
     id: role.id,

@@ -1,29 +1,28 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
- if (member.client.user.id !== ch.mainID) return;
+ if (member.client.user.id !== member.client.util.mainID) return;
 
- const guildsettings = await ch.DataBase.guildsettings.findUnique({
+ const guildsettings = await member.client.util.DataBase.guildsettings.findUnique({
   where: { guildid: member.guild.id },
  });
  if (!guildsettings?.ptreminderenabled) return;
 
- const user = await ch.DataBase.users.findUnique({
+ const user = await member.client.util.DataBase.users.findUnique({
   where: {
    userid: member.id,
   },
  });
  if (user?.ptremindersent) return;
 
- const dm = await ch.send(member.user, {
+ const dm = await member.client.util.send(member.user, {
   embeds: [
    {
     author: {
      name: "Hi! I don't think we've met before",
-     url: ch.constants.standard.invite,
+     url: member.client.util.constants.standard.invite,
     },
     title: "Here's a quick Guide to my Terms of Service and Privacy Policy",
     description:
@@ -45,7 +44,7 @@ export default async (member: Discord.GuildMember) => {
      },
      {
       name: 'Invite',
-      value: `You can Invite Ayako to your Server using this link: ${ch.constants.standard.invite}`,
+      value: `You can Invite Ayako to your Server using this link: ${member.client.util.constants.standard.invite}`,
       inline: false,
      },
      {
@@ -70,7 +69,7 @@ export default async (member: Discord.GuildMember) => {
      {
       type: Discord.ComponentType.Button,
       label: 'Join Support Server',
-      emoji: ch.emotes.ayakoLove,
+      emoji: member.client.util.emotes.ayakoLove,
       style: Discord.ButtonStyle.Link,
       url: 'https://discord.gg/euTdctganf',
      },
@@ -85,7 +84,7 @@ export default async (member: Discord.GuildMember) => {
   content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/gyGnkTJSyF',
  });
 
- ch.DataBase.users
+ member.client.util.DataBase.users
   .upsert({
    where: { userid: member.id },
    update: {

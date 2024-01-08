@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import { log, pardon } from './one.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.pardon;
 
  const user = cmd.options.getUser('target', true);
@@ -14,8 +13,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawDate2 = cmd.options.getString('date-2', true);
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
- if (ch.regexes.dateTester.test(rawDate1) || ch.regexes.dateTester.test(rawDate2)) {
-  ch.errorCmd(cmd, language.errors.inputNoMatch, language);
+ if (
+  cmd.client.util.regexes.dateTester.test(rawDate1) ||
+  cmd.client.util.regexes.dateTester.test(rawDate2)
+ ) {
+  cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
 
@@ -23,20 +25,20 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   new Date(rawDate1);
   new Date(rawDate2);
  } catch (e) {
-  ch.errorCmd(cmd, e as Error, language);
+  cmd.client.util.errorCmd(cmd, e as Error, language);
   return;
  }
 
  const date1 = new Date(rawDate1).getTime();
  const date2 = new Date(rawDate2).getTime();
- const punishments = await ch.getPunishment(date1, {
+ const punishments = await cmd.client.util.getPunishment(date1, {
   identType: 'between',
   ident: date2,
   guildid: cmd.guild.id,
  });
 
  if (!punishments) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 
@@ -45,7 +47,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   log(cmd, p, language, lan, reason);
  });
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.pardonedMany(
    punishments.map((p) => `\`${Number(p.uniquetimestamp).toString(36)}\``).join(', '),
    user.id,

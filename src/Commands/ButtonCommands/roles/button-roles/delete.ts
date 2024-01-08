@@ -1,6 +1,5 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import {
  Type,
  getBaseSettings,
@@ -17,13 +16,13 @@ export default async (
  if (!cmd.inCachedGuild()) return;
 
  const emoji = args.join('_');
- const language = await ch.getLanguage(cmd.guildId);
- const message = (await ch.getMessage(
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const message = (await cmd.client.util.getMessage(
   cmd.message.embeds[0].url as string,
  )) as Discord.Message<true>;
 
  if (!message || message.guildId !== cmd.guildId) {
-  ch.errorCmd(cmd, language.errors.messageNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
   return;
  }
 
@@ -31,11 +30,11 @@ export default async (
 
  if (baseSettings) {
   if (type === 'button-roles') {
-   await ch.DataBase.buttonroles.deleteMany({
+   await cmd.client.util.DataBase.buttonroles.deleteMany({
     where: { emote: emoji, linkedid: baseSettings.uniquetimestamp.toString() },
    });
   } else {
-   await ch.DataBase.reactionroles.deleteMany({
+   await cmd.client.util.DataBase.reactionroles.deleteMany({
     where: { emote: emoji, linkedid: baseSettings.uniquetimestamp.toString() },
    });
   }
@@ -48,7 +47,7 @@ export default async (
     : await removeReactions(emoji, message);
 
   if (action && 'message' in action && typeof action.message === 'string') {
-   ch.errorCmd(cmd, action, language);
+   cmd.client.util.errorCmd(cmd, action, language);
    return;
   }
  }
@@ -62,5 +61,8 @@ const removeReactions = (emoji: string, message: Discord.Message<true>) => {
  );
 
  if (!reaction) return undefined;
- return ch.request.channels.deleteAllReactionsOfEmoji(message, reaction.emoji.identifier);
+ return message.client.util.request.channels.deleteAllReactionsOfEmoji(
+  message,
+  reaction.emoji.identifier,
+ );
 };

@@ -1,16 +1,15 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const punishmentId = cmd.options.getString('id', true);
- const punishment = await ch.getPunishment(Number.parseInt(punishmentId, 36));
- const language = await ch.getLanguage(cmd.guildId);
+ const punishment = await cmd.client.util.getPunishment(Number.parseInt(punishmentId, 36));
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.edit;
  if (!punishment) {
-  ch.errorCmd(cmd, lan.invalid, language);
+  cmd.client.util.errorCmd(cmd, lan.invalid, language);
   return;
  }
 
@@ -18,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  switch (punishment.type) {
   case 'punish_bans':
-   ch.DataBase.punish_bans
+   cmd.client.util.DataBase.punish_bans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -26,7 +25,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_channelbans':
-   ch.DataBase.punish_channelbans
+   cmd.client.util.DataBase.punish_channelbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -34,7 +33,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_kicks':
-   ch.DataBase.punish_kicks
+   cmd.client.util.DataBase.punish_kicks
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -42,7 +41,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_mutes':
-   ch.DataBase.punish_mutes
+   cmd.client.util.DataBase.punish_mutes
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -50,7 +49,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_tempbans':
-   ch.DataBase.punish_tempbans
+   cmd.client.util.DataBase.punish_tempbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -58,7 +57,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_tempchannelbans':
-   ch.DataBase.punish_tempchannelbans
+   cmd.client.util.DataBase.punish_tempchannelbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -66,7 +65,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_tempmutes':
-   ch.DataBase.punish_tempmutes
+   cmd.client.util.DataBase.punish_tempmutes
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -74,7 +73,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     .then();
    break;
   case 'punish_warns':
-   ch.DataBase.punish_warns
+   cmd.client.util.DataBase.punish_warns
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
      data: { reason },
@@ -85,9 +84,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    break;
  }
 
- const target = await ch.getUser(punishment.userid);
+ const target = await cmd.client.util.getUser(punishment.userid);
  if (!target) {
-  ch.errorCmd(cmd, language.errors.userNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.userNotFound, language);
   return;
  }
 
@@ -105,10 +104,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   color: CT.Colors.Loading,
  };
 
- const logchannels = await ch.getLogChannels('modlog', cmd.guild);
+ const logchannels = await cmd.client.util.getLogChannels('modlog', cmd.guild);
  if (logchannels?.length) {
-  ch.send({ guildId: cmd.guildId, id: logchannels }, { embeds: [embed] }, 10000);
+  cmd.client.util.send({ guildId: cmd.guildId, id: logchannels }, { embeds: [embed] }, 10000);
  }
 
- ch.replyCmd(cmd, { content: lan.success });
+ cmd.client.util.replyCmd(cmd, { content: lan.success });
 };

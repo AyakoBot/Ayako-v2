@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  _oldChannel:
@@ -31,7 +30,7 @@ export default async (
   .map((o) => o);
  if (!perms?.length) return;
 
- const res = await ch.DataBase.punish_tempchannelbans.findMany({
+ const res = await channel.client.util.DataBase.punish_tempchannelbans.findMany({
   where: {
    guildid: channel.guild.id,
    banchannelid: channel.id,
@@ -54,9 +53,9 @@ export default async (
    );
   })
   .forEach(async (data) => {
-   ch.DataBase.punish_tempchannelbans
+   channel.client.util.DataBase.punish_tempchannelbans
     .delete({ where: { uniquetimestamp: data.uniquetimestamp } })
     .then();
-   ch.DataBase.punish_channelbans.create({ data }).then();
+   channel.client.util.DataBase.punish_channelbans.create({ data }).then();
   });
 };

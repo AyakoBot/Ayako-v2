@@ -1,12 +1,11 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { runPunishment } from '../../../Commands/ButtonCommands/antiraid/punish.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
- const settings = await ch.DataBase.antiraid.findUnique({
+ const settings = await member.client.util.DataBase.antiraid.findUnique({
   where: { guildid: member.guild.id, active: true },
  });
  if (!settings) return;
@@ -16,15 +15,15 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const addMember = (member: Discord.GuildMember, settings: Prisma.antiraid) => {
- let cache = ch.cache.antiraid.get(member.guild.id);
+ let cache = member.client.util.cache.antiraid.get(member.guild.id);
 
  if (!cache) {
-  ch.cache.antiraid.set(member.guild.id, new Set());
-  cache = ch.cache.antiraid.get(member.guild.id);
+  member.client.util.cache.antiraid.set(member.guild.id, new Set());
+  cache = member.client.util.cache.antiraid.get(member.guild.id);
  }
 
  if (!cache) {
-  ch.error(member.guild, new Error('Cache cannot be set'));
+  member.client.util.error(member.guild, new Error('Cache cannot be set'));
   return;
  }
 
@@ -32,16 +31,16 @@ const addMember = (member: Discord.GuildMember, settings: Prisma.antiraid) => {
 
  Jobs.scheduleJob(new Date(Date.now() + Number(settings.timeout) * 1000), () => {
   cache?.delete(member);
-  if (!cache?.size) ch.cache.antiraid.delete(member.guild.id);
+  if (!cache?.size) member.client.util.cache.antiraid.delete(member.guild.id);
  });
 };
 
 const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
- const cache = ch.cache.antiraid.get(guild.id);
+ const cache = guild.client.util.cache.antiraid.get(guild.id);
  if (!cache) return;
  if (cache.size < Number(settings.jointhreshold)) return;
- if (ch.cache.antiraidQueued.has(guild.id)) return;
- ch.cache.antiraidQueued.add(guild.id);
+ if (guild.client.util.cache.antiraidQueued.has(guild.id)) return;
+ guild.client.util.cache.antiraidQueued.add(guild.id);
 
  const caughtUsers: Discord.GuildMember[] = Array.from(cache.values());
  const times2Loop = Math.min(150000 / (Number(settings.timeout) * 1000));
@@ -50,21 +49,21 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
  let invitesDisabled: boolean = false;
 
  if (settings.disableinvites && !guild.features.includes(Discord.GuildFeature.InvitesDisabled)) {
-  const res = await ch.request.guilds.edit(guild, {
+  const res = await guild.client.util.request.guilds.edit(guild, {
    features: [...(guild.features as Discord.GuildFeature[]), Discord.GuildFeature.InvitesDisabled],
   });
 
   if (!('message' in res)) {
    invitesDisabled = true;
 
-   ch.DataBase.guildsettings
+   guild.client.util.DataBase.guildsettings
     .update({
      where: { guildid: guild.id },
      data: { enableinvitesat: endTime },
     })
     .then();
 
-   ch.cache.enableInvites.set(
+   guild.client.util.cache.enableInvites.set(
     guild.id,
     Jobs.scheduleJob(new Date(endTime), () => {
      enableInvites(guild);
@@ -75,11 +74,11 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
 
  new Array(times2Loop).fill(null).forEach((_, i) => {
   Jobs.scheduleJob(new Date(Date.now() + timeoutBetweenLoops * i), () => {
-   caughtUsers.push(...(ch.cache.antiraid.get(guild.id)?.values() ?? []));
-   ch.cache.antiraid.delete(guild.id);
+   caughtUsers.push(...(guild.client.util.cache.antiraid.get(guild.id)?.values() ?? []));
+   guild.client.util.cache.antiraid.delete(guild.id);
   });
  });
- await ch.sleep(150000);
+ await guild.client.util.sleep(150000);
 
  const last5mins = guild.members.cache
   .filter((m) => Number(m.joinedTimestamp) > Date.now() - 300000)
@@ -88,7 +87,7 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
  let additionalEmbeds: Discord.APIEmbed[] = [];
 
  if (settings.actiontof && settings.action) {
-  const language = await ch.getLanguage(guild.id);
+  const language = await guild.client.util.getLanguage(guild.id);
   additionalEmbeds = await runPunishment(
    language,
    caughtUsers.map((c) => c.id),
@@ -111,14 +110,14 @@ const postMessage = async (
  invitesDisabled: boolean,
  endTime: number,
 ) => {
- const language = await ch.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.guildMemberAdd.antiraid;
 
  const last5minsLang = last5mins
   .map((m) => language.languageFunction.getUser(m.user))
   .join('')
   .replace(/`/g, '');
- const last5minsIDs = ch
+ const last5minsIDs = guild.client.util
   .getChunks(
    last5mins.map((m) => m.id),
    3,
@@ -129,7 +128,7 @@ const postMessage = async (
   .map((m) => language.languageFunction.getUser(m.user))
   .join('')
   .replace(/`/g, '');
- const caughtUsersIDs = ch
+ const caughtUsersIDs = guild.client.util
   .getChunks(
    caughtUsers.map((m) => m.id),
    3,
@@ -138,7 +137,9 @@ const postMessage = async (
   .join('\n');
 
  const invites = invitesDisabled
-  ? language.events.guildMemberAdd.antiraid.invitesDisabled(ch.constants.standard.getTime(endTime))
+  ? language.events.guildMemberAdd.antiraid.invitesDisabled(
+     guild.client.util.constants.standard.getTime(endTime),
+    )
   : language.events.guildMemberAdd.antiraid.invitesNotDisabled;
 
  const desc = `${
@@ -148,7 +149,7 @@ const postMessage = async (
    .join('\n') ?? invites
  }${`\n${invites}` ?? ''}`;
 
- ch.send(
+ guild.client.util.send(
   { id: settings.postchannels, guildId: guild.id },
   {
    content: `${settings.pingusers.map((u) => `<@${u}>`).join(', ')}\n${settings.pingroles
@@ -160,7 +161,7 @@ const postMessage = async (
    },
    files: await Promise.all(
     [last5minsLang, last5minsIDs, caughtUsersLang, caughtUsersIDs].map((a, i) =>
-     ch.txtFileWriter(
+     guild.client.util.txtFileWriter(
       a,
       undefined,
       ['last_5_mins_users', 'last_5_mins_ids', 'caught_users', 'caught_users_ids'][i],
@@ -215,7 +216,7 @@ const postMessage = async (
                type: Discord.ComponentType.Button,
                label: lan.buttons.kickCaughtUsers,
                style: Discord.ButtonStyle.Secondary,
-               emoji: ch.emotes.crossWithBackground,
+               emoji: guild.client.util.emotes.crossWithBackground,
                custom_id: 'antiraid/punish_kick',
               },
              ]
@@ -224,7 +225,7 @@ const postMessage = async (
            type: Discord.ComponentType.Button,
            label: lan.buttons.banCaughtUsers,
            style: Discord.ButtonStyle.Secondary,
-           emoji: ch.emotes.ban,
+           emoji: guild.client.util.emotes.ban,
            custom_id: 'antiraid/punish_ban',
           },
          ],
@@ -237,17 +238,17 @@ const postMessage = async (
 };
 
 export const enableInvites = (guild: Discord.Guild) => {
- ch.request.guilds.edit(guild, {
+ guild.client.util.request.guilds.edit(guild, {
   features: guild.features.filter(
    (f) => f !== Discord.GuildFeature.InvitesDisabled,
   ) as Discord.GuildFeature[],
  });
 
- ch.cache.enableInvites.delete(guild.id);
+ guild.client.util.cache.enableInvites.delete(guild.id);
 
  if (!guild.features.includes(Discord.GuildFeature.InvitesDisabled)) return;
 
- ch.DataBase.guildsettings.update({
+ guild.client.util.DataBase.guildsettings.update({
   where: { guildid: guild.id },
   data: { enableinvitesat: null },
  });

@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { findBestMatch } from 'string-similarity';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import Emojis from '../../../../BaseClient/Other/Emojis.js';
 import * as CT from '../../../../Typings/Typings.js';
 
@@ -36,11 +35,11 @@ export const emoji = (cmd: Discord.AutocompleteInteraction) => {
   .splice(0, 25);
 };
 
-const stickerName = async (cmd: Discord.AutocompleteInteraction) => {
+const stickerName = async (cmd: Discord.AutocompleteInteraction<'cached'>) => {
  const messageLink = cmd.options.getString('link', true);
  if (!messageLink) return [];
 
- const message = await ch.getMessage(messageLink);
+ const message = await cmd.guild.client.util.getMessage(messageLink);
  if (!message) return [];
 
  return message.stickers

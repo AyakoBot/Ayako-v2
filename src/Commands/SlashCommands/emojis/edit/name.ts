@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,15 +7,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawEmoji = Discord.parseEmoji(cmd.options.getString('emoji', true));
  const emoji = rawEmoji?.id ? cmd.guild.emojis.cache.get(rawEmoji.id) : undefined;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
+  cmd.client.util.errorCmd(
+   cmd,
+   language.errors.emoteNotFound,
+   await cmd.client.util.getLanguage(cmd.guildId),
+  );
   return;
  }
 
- const editedEmote = await ch.request.guilds.editEmoji(
+ const editedEmote = await cmd.client.util.request.guilds.editEmoji(
   cmd.guild,
   emoji.id,
   { name },
@@ -24,9 +27,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in editedEmote) {
-  ch.errorCmd(cmd, editedEmote, language);
+  cmd.client.util.errorCmd(cmd, editedEmote, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.edited(editedEmote) });
+ cmd.client.util.replyCmd(cmd, { content: lan.edited(editedEmote) });
 };

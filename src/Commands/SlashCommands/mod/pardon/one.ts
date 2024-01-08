@@ -1,52 +1,52 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
-import type { Returned } from '../../../../BaseClient/ClientHelperModules/getPunishment.js';
+import type { Returned } from '../../../../BaseClient/UtilModules/getPunishment.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.pardon;
 
  const user = cmd.options.getUser('target', true);
  const rawID = cmd.options.getString('id', true);
  const id = Number.parseInt(rawID, 36);
- const punishment = await ch.getPunishment(id);
+ const punishment = await client.util.getPunishment(id);
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (!punishment) {
-  ch.errorCmd(cmd, language.errors.punishmentNotFound, language);
+  client.util.errorCmd(cmd, language.errors.punishmentNotFound, language);
   return;
  }
 
  await pardon(punishment);
  log(cmd, punishment, language, lan, reason);
 
- ch.replyCmd(cmd, { content: lan.pardoned(rawID, user.id) });
+ client.util.replyCmd(cmd, { content: lan.pardoned(rawID, user.id) });
 };
 
 export const pardon = (
- punishment: NonNullable<CT.DePromisify<ReturnType<typeof ch.getPunishment>>>[number],
+ punishment: NonNullable<CT.DePromisify<ReturnType<typeof client.util.getPunishment>>>[number],
 ) => {
  const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
 
  switch (punishment.type) {
   case 'punish_bans': {
-   return ch.DataBase.punish_bans.deleteMany(where);
+   return client.util.DataBase.punish_bans.deleteMany(where);
   }
   case 'punish_channelbans': {
-   return ch.DataBase.punish_channelbans.deleteMany(where);
+   return client.util.DataBase.punish_channelbans.deleteMany(where);
   }
   case 'punish_kicks': {
-   return ch.DataBase.punish_kicks.deleteMany(where);
+   return client.util.DataBase.punish_kicks.deleteMany(where);
   }
   case 'punish_mutes': {
-   return ch.DataBase.punish_mutes.deleteMany(where);
+   return client.util.DataBase.punish_mutes.deleteMany(where);
   }
   case 'punish_warns': {
-   return ch.DataBase.punish_warns.deleteMany(where);
+   return client.util.DataBase.punish_warns.deleteMany(where);
   }
   default: {
    return undefined;
@@ -61,10 +61,10 @@ export const log = async (
  lan: CT.Language['slashCommands']['pardon'],
  reason: string,
 ) => {
- const logChannel = await ch.getLogChannels('modlog', cmd.guild);
+ const logChannel = await client.util.getLogChannels('modlog', cmd.guild);
  if (!logChannel) return;
 
- ch.send(
+ client.util.send(
   { id: logChannel, guildId: cmd.guildId },
   {
    embeds: [
@@ -73,19 +73,19 @@ export const log = async (
       name: lan.author,
      },
      color: CT.Colors.Success,
-     description: `${ch.util.makeBold(language.t.Reason)}:\n${punishment.reason}`,
+     description: `${client.util.util.makeBold(language.t.Reason)}:\n${punishment.reason}`,
      fields: [
       {
        name: lan.target,
        value: language.languageFunction.getUser(
-        (await ch.getUser(punishment.userid)) as Discord.User,
+        (await client.util.getUser(punishment.userid)) as Discord.User,
        ),
        inline: false,
       },
       {
        name: lan.executor,
        value: `${language.languageFunction.getUser(
-        (await ch.getUser(punishment.executorid)) as Discord.User,
+        (await client.util.getUser(punishment.executorid)) as Discord.User,
        )} - ${lan.channel}: \`${punishment.executorname}\``,
        inline: false,
       },
@@ -94,13 +94,15 @@ export const log = async (
        value: `${
         cmd.guild.channels.cache.get(punishment.channelid)
          ? language.languageFunction.getChannel(cmd.guild.channels.cache.get(punishment.channelid))
-         : ch.util.makeInlineCode(punishment.channelid)
+         : client.util.util.makeInlineCode(punishment.channelid)
        } - ${lan.username}: \`${punishment.executorname}\``,
        inline: false,
       },
       {
        name: lan.punishedAt,
-       value: `${ch.constants.standard.getTime(Number(punishment.uniquetimestamp))}\n${ch.moment(
+       value: `${client.util.constants.standard.getTime(
+        Number(punishment.uniquetimestamp),
+       )}\n${client.util.moment(
         Math.abs(Number(punishment.uniquetimestamp) - Date.now()),
         language,
        )}`,
@@ -110,7 +112,7 @@ export const log = async (
        name: lan.duration,
        value: `${
         'duration' in punishment && punishment.duration
-         ? `${ch.moment(Number(punishment.duration), language)}`
+         ? `${client.util.moment(Number(punishment.duration), language)}`
          : '∞'
        }`,
        inline: false,
@@ -119,9 +121,12 @@ export const log = async (
        name: lan.endedAt,
        value:
         'duration' in punishment && punishment.duration
-         ? `${ch.constants.standard.getTime(
+         ? `${client.util.constants.standard.getTime(
             Number(punishment.uniquetimestamp) + Number(punishment.duration),
-           )}\n${ch.moment(Math.abs(Number(punishment.uniquetimestamp) - Date.now()), language)}`
+           )}\n${client.util.moment(
+            Math.abs(Number(punishment.uniquetimestamp) - Date.now()),
+            language,
+           )}`
          : '-',
        inline: false,
       },
@@ -141,7 +146,11 @@ export const log = async (
       {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Link,
-       url: ch.constants.standard.msgurl(cmd.guildId, punishment.channelid, punishment.msgid),
+       url: client.util.constants.standard.msgurl(
+        cmd.guildId,
+        punishment.channelid,
+        punishment.msgid,
+       ),
        label: language.t.Message,
       },
      ],

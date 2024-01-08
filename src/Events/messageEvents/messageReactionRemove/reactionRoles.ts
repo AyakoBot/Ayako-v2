@@ -1,17 +1,16 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  reaction: Discord.MessageReaction,
  user: Discord.User,
  msg: Discord.Message<true>,
 ) => {
- const settings = await ch.DataBase.reactionrolesettings.findFirst({
+ const settings = await reaction.client.util.DataBase.reactionrolesettings.findFirst({
   where: { msgid: msg.id, active: true, guildid: msg.guildId },
  });
  if (!settings) return;
 
- const reactionroles = await ch.DataBase.reactionroles.findMany({
+ const reactionroles = await reaction.client.util.DataBase.reactionroles.findMany({
   where: { linkedid: settings.uniquetimestamp, active: true, roles: { isEmpty: false } },
  });
  if (!reactionroles.length) return;
@@ -22,7 +21,7 @@ export default async (
   .flat();
  if (!rolesToRemove.length) return;
 
- const member = await ch.request.guilds
+ const member = await reaction.client.util.request.guilds
   .getMember(msg.guild, user.id)
   .then((r) => ('message' in r ? undefined : r));
  if (!member) return;
@@ -37,6 +36,11 @@ export default async (
   rolesToRemove.push(...settings.anyroles);
  }
 
- const language = await ch.getLanguage(msg.guildId);
- ch.roleManager.remove(member, rolesToRemove, language.autotypes.reactionroles, 1);
+ const language = await reaction.client.util.getLanguage(msg.guildId);
+ reaction.client.util.roleManager.remove(
+  member,
+  rolesToRemove,
+  language.autotypes.reactionroles,
+  1,
+ );
 };

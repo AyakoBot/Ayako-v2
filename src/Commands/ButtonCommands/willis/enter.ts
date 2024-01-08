@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -16,7 +15,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- const currentParticipants = await ch.DataBase.stats.findFirst({
+ const currentParticipants = await cmd.client.util.DataBase.stats.findFirst({
   where: {},
   select: { willis: true },
  });
@@ -31,9 +30,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
  }
 
  if (!currentParticipants?.willis) {
-  ch.DataBase.stats.updateMany({ data: { willis: [cmd.user.id] } }).then();
+  cmd.client.util.DataBase.stats.updateMany({ data: { willis: [cmd.user.id] } }).then();
  } else {
-  ch.DataBase.stats
+  cmd.client.util.DataBase.stats
    .updateMany({ data: { willis: [...currentParticipants.willis, cmd.user.id] } })
    .then();
  }

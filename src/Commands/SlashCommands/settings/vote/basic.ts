@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Vote;
@@ -7,7 +7,7 @@ const name = CT.SettingNames.Vote;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const ID = cmd.options.get('id', false)?.value as string;
@@ -24,15 +24,15 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  language,
  lan,
 ) => {
- const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { buttonParsers, embedParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
   .then(
    (r) =>
     r ??
-    (ch.settingsHelpers.setup(
+    (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
@@ -59,8 +59,8 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  language,
  lan,
 ) => {
- const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
+ const { multiRowHelpers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -102,9 +102,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   },
   author: embedParsers.author(language, lan),
   description: `${lan.desc}${
-   ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-    ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-       name as keyof typeof ch.constants.tutorials
+   client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
       ].map((t) => `[${t.name}](${t.link})`)}`
     : ''
   }`,
@@ -126,7 +126,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.token.name,
-    value: settings?.token ? ch.util.makeSpoiler(settings.token) : language.t.None,
+    value: settings?.token ? client.util.util.makeSpoiler(settings.token) : language.t.None,
     inline: false,
    },
   ],

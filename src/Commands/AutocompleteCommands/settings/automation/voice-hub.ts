@@ -1,18 +1,17 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.DataBase.voicehubs.findMany({ where: { guildid: cmd.guild.id } })
+  await cmd.guild.client.util.DataBase.voicehubs.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 
   return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
  });
 
- const language = await ch.getLanguage(cmd.guild.id);
+ const language = await cmd.guild.client.util.getLanguage(cmd.guild.id);
  const lan = language.slashCommands.settings.categories['voice-hubs'];
 
  if (!settings) return [];

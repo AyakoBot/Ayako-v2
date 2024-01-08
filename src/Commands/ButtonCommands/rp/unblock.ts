@@ -1,26 +1,25 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  let user: Discord.User | undefined;
 
  if (cmd instanceof Discord.ButtonInteraction) {
   const userId = new URL(cmd.message.embeds[0].url || 'https://ayakobot.com').searchParams.get(
    'user',
   );
-  user = userId ? await ch.getUser(userId) : undefined;
+  user = userId ? await cmd.client.util.getUser(userId) : undefined;
   if (!userId || !user) {
-   ch.errorCmd(cmd, language.errors.userNotExist, language);
+   cmd.client.util.errorCmd(cmd, language.errors.userNotExist, language);
    return;
   }
  } else {
   user = cmd.options.getUser('user', true);
  }
 
- const unblocked = await ch.DataBase.blockedusers.delete({
+ const unblocked = await cmd.client.util.DataBase.blockedusers.delete({
   where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user.id } },
   select: { userid: true },
  });
@@ -38,5 +37,5 @@ export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandI
   return;
  }
 
- ch.replyCmd(cmd, payload);
+ cmd.client.util.replyCmd(cmd, payload);
 };

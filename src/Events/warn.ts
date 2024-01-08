@@ -1,4 +1,4 @@
-import log from '../BaseClient/ClientHelperModules/logError.js';
+import log from '../BaseClient/UtilModules/logError.js';
 
 const warnEnabled = process.argv.includes('--warn');
 

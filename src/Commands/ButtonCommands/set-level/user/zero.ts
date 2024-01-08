@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import {
  getLevelComponents,
  getXPComponents,
@@ -22,17 +21,17 @@ export default async (
   Number(component[type === 'x' ? 0 : 1].components[3].label?.length) - 2;
  const amountOfZerosOnSecondary =
   Number(component[type === 'l' ? 0 : 1].components[3].label?.length) - 2;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (amountOfZerosOnPrimary > 10) {
-  ch.errorCmd(cmd, language.slashCommands.setLevel.maxZeros, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.maxZeros, language);
   return;
  }
 
  const newAmountOfZeros =
   addOrRemove === '+' ? amountOfZerosOnPrimary + 1 : amountOfZerosOnPrimary - 1;
 
- const components = ch.getChunks(
+ const components = cmd.client.util.getChunks(
   [
    ...getXPComponents(
     userOrRoleId,

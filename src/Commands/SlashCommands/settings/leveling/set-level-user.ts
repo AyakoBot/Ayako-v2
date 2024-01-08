@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
@@ -9,9 +9,9 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const user = cmd instanceof Discord.ButtonInteraction ? u : cmd.options.getUser('user', true);
- const level = await ch.DataBase.level.findUnique({
+ const level = await client.util.DataBase.level.findUnique({
   where: { userid_guildid_type: { guildid: cmd.guildId, userid: user.id, type: 'guild' } },
  });
 
@@ -22,7 +22,7 @@ export default async (
   { xp: Number(level?.xp), level: Number(level?.level) },
  );
 
- const compChunks = ch.getChunks(getComponents(user.id, 0, 0, language), 5);
+ const compChunks = client.util.getChunks(getComponents(user.id, 0, 0, language), 5);
 
  if (cmd instanceof Discord.ButtonInteraction) {
   cmd.update({
@@ -30,7 +30,7 @@ export default async (
    components: compChunks.map((c) => ({ type: Discord.ComponentType.ActionRow, components: c })),
   });
  } else {
-  ch.replyCmd(cmd, {
+  client.util.replyCmd(cmd, {
    embeds: [embed],
    components: compChunks.map((c) => ({ type: Discord.ComponentType.ActionRow, components: c })),
   });
@@ -120,7 +120,7 @@ const getSave = (
     label: language.slashCommands.setLevel.save,
     custom_id: `set-level/${type}/save_${roleOrUserId}`,
     style: Discord.ButtonStyle.Success,
-    emoji: ch.emotes.tickWithBackground,
+    emoji: client.util.emotes.tickWithBackground,
    },
   ] as const
  ).map((b) => ({ type: Discord.ComponentType.Button, ...b }));
@@ -151,12 +151,12 @@ export const getEmbed = (
  fields: [
   {
    name: language.slashCommands.leaderboard.currentXP,
-   value: ch.splitByThousand(xp),
+   value: client.util.splitByThousand(xp),
    inline: true,
   },
   {
    name: language.slashCommands.setLevel.newXP,
-   value: ch.splitByThousand(newXP),
+   value: client.util.splitByThousand(newXP),
    inline: true,
   },
   {
@@ -166,12 +166,12 @@ export const getEmbed = (
   },
   {
    name: language.slashCommands.leaderboard.currentLvl,
-   value: ch.splitByThousand(level),
+   value: client.util.splitByThousand(level),
    inline: true,
   },
   {
    name: language.slashCommands.setLevel.newLvl,
-   value: ch.splitByThousand(newLevel),
+   value: client.util.splitByThousand(newLevel),
    inline: true,
   },
  ],

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import startOver from '../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
@@ -21,7 +20,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   | 'author-url'
   | 'author-icon'
   | 'author-name';
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const newValue = cmd.fields.getTextInputValue('input') || undefined;
  const lan = language.slashCommands.embedbuilder.create.start;
  const selectedField = getSelectedField(cmd);
@@ -64,7 +63,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     if (!newValue) testEmbed.setColor(null);
     else {
      testEmbed.setColor(
-      newValue === 'random' ? 'Random' : (ch.getColor(newValue) as Discord.ColorResolvable),
+      newValue === 'random'
+       ? 'Random'
+       : (cmd.client.util.getColor(newValue) as Discord.ColorResolvable),
      );
     }
     break;
@@ -110,12 +111,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
 
  if (error && 'message' in error) {
-  ch.errorCmd(cmd, error as unknown as Error, language);
+  cmd.client.util.errorCmd(cmd, error as unknown as Error, language);
   return;
  }
  if (error) {
   const { errors } = error.errors[0][1];
-  ch.errorCmd(cmd, errors.at(-1)?.expected as string, language);
+  cmd.client.util.errorCmd(cmd, errors.at(-1)?.expected as string, language);
   return;
  }
 
@@ -163,7 +164,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    if (!newValue) embed.setColor(null);
    else {
     embed.setColor(
-     newValue === 'random' ? 'Random' : (ch.getColor(newValue) as Discord.ColorResolvable),
+     newValue === 'random'
+      ? 'Random'
+      : (cmd.client.util.getColor(newValue) as Discord.ColorResolvable),
     );
    }
    break;

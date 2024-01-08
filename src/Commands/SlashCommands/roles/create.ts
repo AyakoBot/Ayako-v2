@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -12,19 +11,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const permissionRole = cmd.options.getRole('permission-role', false);
  const iconUrl = cmd.options.getString('icon-url', false);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles;
 
  if (
   Number(positionRole?.rawPosition) >=
-  Number((await ch.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
+  Number((await cmd.client.util.getBotMemberFromGuild(cmd.guild))?.roles.highest.rawPosition)
  ) {
-  ch.errorCmd(cmd, language.errors.roleNotManageable, language);
+  cmd.client.util.errorCmd(cmd, language.errors.roleNotManageable, language);
   return;
  }
 
  if (Number(positionRole?.rawPosition) >= cmd.member.roles.highest.rawPosition) {
-  ch.errorCmd(cmd, language.errors.cantManageRole, language);
+  cmd.client.util.errorCmd(cmd, language.errors.cantManageRole, language);
   return;
  }
 
@@ -34,7 +33,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   try {
    new URL(iconUrl);
   } catch (e) {
-   ch.errorCmd(cmd, e as Error, await ch.getLanguage(cmd.guildId));
+   cmd.client.util.errorCmd(cmd, e as Error, await cmd.client.util.getLanguage(cmd.guildId));
    return;
   }
  }
@@ -47,7 +46,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
    : undefined);
 
- const role = await ch.request.guilds.createRole(
+ const role = await cmd.client.util.request.guilds.createRole(
   cmd.guild,
   {
    name,
@@ -69,7 +68,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if ('message' in role) {
-  ch.errorCmd(
+  cmd.client.util.errorCmd(
    cmd,
    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
    language,
@@ -77,10 +76,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.create(role) });
+ cmd.client.util.replyCmd(cmd, { content: lan.create(role) });
 
  if (positionRole) {
-  await ch.request.guilds.setRolePositions(cmd.guild, [
+  await cmd.client.util.request.guilds.setRolePositions(cmd.guild, [
    {
     position: positionRole.rawPosition,
     id: role.id,

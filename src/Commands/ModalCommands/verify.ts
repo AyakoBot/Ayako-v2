@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: string[]) => {
  if (!cmd.isFromMessage()) return;
@@ -7,7 +6,7 @@ export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: strin
 
  const captcha = args.shift() as string;
  const value = cmd.fields.getTextInputValue('-');
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (value.toLowerCase() !== captcha?.toLowerCase()) {
   cmd.update({
@@ -20,7 +19,7 @@ export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: strin
   return;
  }
 
- const settings = await ch.DataBase.verification.findUnique({
+ const settings = await cmd.client.util.DataBase.verification.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
  if (!settings) return;
@@ -31,11 +30,21 @@ export default async (cmd: Discord.ModalSubmitInteraction<'cached'>, args: strin
   : null;
 
  if (pendingRole) {
-  ch.roleManager.remove(cmd.member, [pendingRole.id], language.verification.log.finished, 1);
+  cmd.client.util.roleManager.remove(
+   cmd.member,
+   [pendingRole.id],
+   language.verification.log.finished,
+   1,
+  );
  }
 
  if (verifiedRole) {
-  ch.roleManager.add(cmd.member, [verifiedRole.id], language.verification.log.finished, 1);
+  cmd.client.util.roleManager.add(
+   cmd.member,
+   [verifiedRole.id],
+   language.verification.log.finished,
+   1,
+  );
  }
 
  cmd.update({

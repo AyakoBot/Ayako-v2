@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
  const user = cmd.options.getUser('user', true);
 
- const blocked = await ch.DataBase.blockedusers.upsert({
+ const blocked = await cmd.client.util.DataBase.blockedusers.upsert({
   where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user.id } },
   create: {
    userid: cmd.user.id,
@@ -26,19 +25,21 @@ export const respond = async (
  blocked: { blockedcmd?: string[] },
  lang?: CT.Language,
 ) => {
- const language = lang ?? (await ch.getLanguage(cmd.guildId));
+ const language = lang ?? (await cmd.client.util.getLanguage(cmd.guildId));
  const lan = language.slashCommands.rp;
- const commands = ch.constants.commands.interactions
+ const commands = cmd.client.util.constants.commands.interactions
   .filter((c) => c.users)
   .filter((c) => !c.aliasOf);
 
- const options = ch.getChunks(
+ const options = cmd.client.util.getChunks(
   commands.map((c) => ({
    label: c.name,
    value: c.name,
-   emoji: blocked.blockedcmd?.includes(c.name) ? ch.emotes.minusBG : ch.emotes.plusBG,
+   emoji: blocked.blockedcmd?.includes(c.name)
+    ? cmd.client.util.emotes.minusBG
+    : cmd.client.util.emotes.plusBG,
    description:
-    ch.constants.commands.interactions
+    cmd.client.util.constants.commands.interactions
      .filter((c2) => c2.aliasOf === c.name)
      .map((c2) => c2.name)
      .join(', ') || undefined,
@@ -54,12 +55,12 @@ export const respond = async (
      ? blocked.blockedcmd
      : commands.map((c) => c.name)
     )
-     .map((c) => ch.util.makeInlineCode(c))
+     .map((c) => cmd.client.util.util.makeInlineCode(c))
      .join(', ')}\n\n${lan.availableCmds} ${
      blocked.blockedcmd?.length
       ? commands
          .filter((c) => !blocked.blockedcmd?.includes(c.name))
-         .map((c) => ch.util.makeInlineCode(c.name))
+         .map((c) => cmd.client.util.util.makeInlineCode(c.name))
          .join(', ')
       : language.t.None
     }`,
@@ -95,7 +96,7 @@ export const respond = async (
  };
 
  if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  ch.replyCmd(cmd, payload as Discord.InteractionReplyOptions);
+  cmd.client.util.replyCmd(cmd, payload as Discord.InteractionReplyOptions);
   return;
  }
 

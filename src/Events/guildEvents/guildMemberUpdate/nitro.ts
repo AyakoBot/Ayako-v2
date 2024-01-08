@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  if (oldMember.premiumSinceTimestamp === member.premiumSinceTimestamp) return;
@@ -7,25 +6,29 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  if (!oldMember.premiumSinceTimestamp) startedBoosting(member);
  if (!member.premiumSinceTimestamp) stoppedBoosting(oldMember);
 
- const settings = await ch.DataBase.nitrosettings.findUnique({
+ const settings = await member.client.util.DataBase.nitrosettings.findUnique({
   where: { guildid: member.guild.id, active: true, logchannels: { isEmpty: false } },
  });
  if (!settings) return;
 
  const started = !oldMember.premiumSinceTimestamp;
- const language = await ch.getLanguage(member.guild.id);
+ const language = await member.client.util.getLanguage(member.guild.id);
  const embed: Discord.APIEmbed = {
-  color: ch.getColor(await ch.getBotMemberFromGuild(member.guild)),
+  color: member.client.util.getColor(await member.client.util.getBotMemberFromGuild(member.guild)),
   description: started
    ? language.events.ready.nitro.started(member.user)
    : language.events.ready.nitro.stopped(member.user),
  };
 
- ch.send({ id: settings.logchannels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
+ member.client.util.send(
+  { id: settings.logchannels, guildId: member.guild.id },
+  { embeds: [embed] },
+  10000,
+ );
 };
 
 export const startedBoosting = (m: Discord.GuildMember) => {
- ch.DataBase.nitrousers
+ m.client.util.DataBase.nitrousers
   .create({
    data: {
     guildid: m.guild.id,
@@ -37,7 +40,7 @@ export const startedBoosting = (m: Discord.GuildMember) => {
 };
 
 export const stoppedBoosting = (m: Discord.GuildMember) => {
- ch.DataBase.nitrousers
+ m.client.util.DataBase.nitrousers
   .updateMany({
    where: {
     guildid: m.guild.id,

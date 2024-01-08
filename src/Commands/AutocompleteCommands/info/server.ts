@@ -1,4 +1,3 @@
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
@@ -7,7 +6,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const value = cmd.options.get('server-name', false)?.value as string;
  if (value?.length < 3) return [];
 
- const possibleServers = await ch.findServerByName(value);
+ const possibleServers = await cmd.guild.client.util.findServerByName(value);
 
  return [...new Set(possibleServers.map((u) => u.id))]
   .map((id) => ({

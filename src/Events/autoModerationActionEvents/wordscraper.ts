@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  const presetLength = Number(msg.autoModerationRule?.triggerMetadata.presets.length);
@@ -8,7 +7,7 @@ export default async (msg: Discord.AutoModerationActionExecution) => {
  if (presetLength !== 1) return;
  if (!msg.matchedKeyword) return;
 
- ch.DataBase.filterscraper
+ msg.guild.client.util.DataBase.filterscraper
   .upsert({
    where: {
     keyword_filtertype: {

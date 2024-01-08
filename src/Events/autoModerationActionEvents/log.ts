@@ -1,35 +1,37 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
- const channels = await ch.getLogChannels('automodevents', execution.guild);
+ const channels = await execution.guild.client.util.getLogChannels(
+  'automodevents',
+  execution.guild,
+ );
  if (!channels) return;
 
- const user = await ch.getUser(execution.userId);
+ const user = await execution.guild.client.util.getUser(execution.userId);
  if (!user) return;
 
- const rule = await ch.request.guilds
+ const rule = await execution.guild.client.util.request.guilds
   .getAutoModerationRule(execution.guild, execution.ruleId)
   ?.then((r) => ('message' in r ? undefined : r));
  if (!rule) return;
 
  const channel = execution.channelId
-  ? await ch.getChannel.guildTextChannel(execution.channelId)
+  ? await execution.guild.client.util.getChannel.guildTextChannel(execution.channelId)
   : undefined;
  const msg =
   execution.messageId && channel
-   ? await ch.request.channels
+   ? await execution.guild.client.util.request.channels
       .getMessage(channel, execution.messageId)
       .then((r) => ('message' in r ? undefined : r))
    : undefined;
- const language = await ch.getLanguage(execution.guild.id);
+ const language = await execution.guild.client.util.getLanguage(execution.guild.id);
  const lan = language.events.logs.automodExec;
 
  const files: Discord.AttachmentPayload[] = [];
  const embed: Discord.APIEmbed = {
   author: {
-   icon_url: ch.emotes.userFlags.DiscordCertifiedModerator.link,
+   icon_url: execution.guild.client.util.emotes.userFlags.DiscordCertifiedModerator.link,
    name: lan.name,
    url: msg ? msg.url : undefined,
   },
@@ -60,17 +62,17 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
     execution.action.type === 2
      ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
         language.t.Message
-       }](${ch.constants.standard.msgurl(
+       }](${execution.guild.client.util.constants.standard.msgurl(
         execution.guild.id,
         execution.action.metadata.channelId ?? '',
         execution.alertSystemMessageId ?? '',
        )})`
-     : `${language.t.duration} \`${ch.moment(
+     : `${language.t.duration} \`${execution.guild.client.util.moment(
         execution.action.metadata.durationSeconds
          ? Number(execution.action.metadata.durationSeconds) * 1000
          : 0,
         language,
-       )}\` / ${language.t.End} ${ch.constants.standard.getTime(
+       )}\` / ${language.t.End} ${execution.guild.client.util.constants.standard.getTime(
         Number(execution.action.metadata.durationSeconds) * 1000 + Date.now(),
        )}`,
    inline: true,
@@ -79,7 +81,11 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
 
  if (execution.content) {
   if (execution.content?.length > 1024) {
-   const content = ch.txtFileWriter(execution.content, undefined, language.t.content);
+   const content = execution.guild.client.util.txtFileWriter(
+    execution.content,
+    undefined,
+    language.t.content,
+   );
    if (content) files.push(content);
   } else {
    embed.fields?.push({
@@ -93,7 +99,9 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  if (execution.matchedKeyword) {
   embed.fields?.push({
    name: lan.matchedKeyword,
-   value: ch.util.makeInlineCode(Discord.cleanCodeBlockContent(execution.matchedKeyword)),
+   value: execution.guild.client.util.util.makeInlineCode(
+    Discord.cleanCodeBlockContent(execution.matchedKeyword),
+   ),
    inline: false,
   });
  }
@@ -106,5 +114,9 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   });
  }
 
- ch.send({ id: channels, guildId: execution.guild.id }, { embeds: [embed], files }, 10000);
+ execution.guild.client.util.send(
+  { id: channels, guildId: execution.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 
-import cache from '../ClientHelperModules/cache.js';
-import error from '../ClientHelperModules/error.js';
-import fetchAllEventSubscribers from '../ClientHelperModules/fetchAllEventSubscribers.js';
-import fetchAllGuildMembers from '../ClientHelperModules/fetchAllGuildMembers.js';
-import deleteThread from '../ClientHelperModules/mod/deleteThread.js';
-import { request } from '../ClientHelperModules/requestHandler.js';
+import cache from '../UtilModules/cache.js';
+import error from '../UtilModules/error.js';
+import fetchAllEventSubscribers from '../UtilModules/fetchAllEventSubscribers.js';
+import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
+import deleteThread from '../UtilModules/mod/deleteThread.js';
+import { request } from '../UtilModules/requestHandler.js';
 import DataBase from '../DataBase.js';
 
 export default async (guild: Discord.Guild | null) => {

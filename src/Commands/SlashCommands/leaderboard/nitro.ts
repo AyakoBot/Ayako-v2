@@ -1,23 +1,23 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
  const user = cmd.options.getUser('user', false) ?? cmd.user;
 
- const nitroUsers = await ch.DataBase.nitrousers.findMany({
+ const nitroUsers = await client.util.DataBase.nitrousers.findMany({
   where: { guildid: cmd.guildId },
  });
 
  const daysPerUser = getDaysPerUsers(nitroUsers).sort((a, b) => b.days - a.days);
  const self = daysPerUser.find((d) => d.userId === user.id);
  const position = self ? daysPerUser.findIndex((s) => s.userId === user.id) + 1 : 0;
- const users = await Promise.all(daysPerUser.map((d) => ch.getUser(d.userId)));
+ const users = await Promise.all(daysPerUser.map((d) => client.util.getUser(d.userId)));
 
  const { longestDays, longestUsername } = getLongest({ lan, language }, daysPerUser, users);
 
@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.guild,
  );
 
- ch.replyCmd(cmd, { embeds: [embed] });
+ client.util.replyCmd(cmd, { embeds: [embed] });
 };
 
 const getDaysPerUsers = (nitroUsers: Prisma.nitrousers[]) => {
@@ -84,10 +84,13 @@ export const makeLine = (
   .replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '')
   .replace(/\s+/g, ' ');
 
- return `${ch.spaces(`${ch.splitByThousand(pos + 1)}.`, 7)} | ${ch.spaces(
-  String(days),
-  longestDays,
- )} | ${ch.spaces(name.length > 3 ? name : '-', longestUsername)}`;
+ return `${client.util.spaces(
+  `${client.util.splitByThousand(pos + 1)}.`,
+  7,
+ )} | ${client.util.spaces(String(days), longestDays)} | ${client.util.spaces(
+  name.length > 3 ? name : '-',
+  longestUsername,
+ )}`;
 };
 
 const getEmbed = async (
@@ -109,7 +112,7 @@ const getEmbed = async (
   {
    name: lan.yourPos,
    value: position
-    ? `${ch.util.makeInlineCode(
+    ? `${client.util.util.makeInlineCode(
        makeLine(
         position - 1,
         { days, longestDays },
@@ -119,12 +122,12 @@ const getEmbed = async (
     : lan.notRanked,
   },
  ],
- color: ch.getColor(await ch.getBotMemberFromGuild(guild)),
- description: `${ch.util.makeInlineCode(
-  `${ch.spaces(lan.rank, 6)} | ${ch.spaces(lan.days, longestDays)} |  ${ch.spaces(
-   language.t.User,
-   longestUsername,
-  )}\n${daysPerUser
+ color: client.util.getColor(await client.util.getBotMemberFromGuild(guild)),
+ description: `${client.util.util.makeInlineCode(
+  `${client.util.spaces(lan.rank, 6)} | ${client.util.spaces(
+   lan.days,
+   longestDays,
+  )} |  ${client.util.spaces(language.t.User, longestUsername)}\n${daysPerUser
    .map((l, i) =>
     makeLine(
      i,

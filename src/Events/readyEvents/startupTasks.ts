@@ -1,6 +1,5 @@
 import Jobs from 'node-schedule';
 import client from '../../BaseClient/Client.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 import interactionHandler from '../interaction.js';
 import appealHandler from './startupTasks/appealHandler.js';
@@ -32,10 +31,10 @@ export default async () => {
   cache();
 
   Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
-   if (client.user?.id === ch.mainID) {
-    ch.cache.fishFish.start();
-    ch.cache.sinkingYachts.start();
-    ch.cache.urlTLDs.start();
+   if (client.user?.id === client.util.mainID) {
+    client.util.cache.fishFish.start();
+    client.util.cache.sinkingYachts.start();
+    client.util.cache.urlTLDs.start();
    }
   });
  });
@@ -44,9 +43,9 @@ export default async () => {
   nitroHandler();
   animekosInviteStats();
   rpToggleUses();
-  ch.cache.fishFish.start();
-  ch.cache.sinkingYachts.start();
-  ch.cache.urlTLDs.start();
+  client.util.cache.fishFish.start();
+  client.util.cache.sinkingYachts.start();
+  client.util.cache.urlTLDs.start();
  });
 
  Jobs.scheduleJob('0 * * * * *', async () => {
@@ -57,13 +56,13 @@ export default async () => {
  Jobs.scheduleJob('0 */30 * * *', async () => antivirusBlocklistCacher());
  Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
 
- if (client.user?.id !== ch.mainID) return;
- if (client.shard?.mode !== 'process') return;
+ if (client.user?.id !== client.util.mainID) return;
+ if (client.cluster?.mode !== 'process') return;
  Jobs.scheduleJob('*/1 */1 */1 * *', async () => websiteFetcher());
 };
 
 const rpToggleUses = () =>
- ch.DataBase.guildsettings
+ client.util.DataBase.guildsettings
   .updateMany({
    where: { rpenableruns: { not: 0 } },
    data: { rpenableruns: 0 },
@@ -74,10 +73,10 @@ const animekosInviteStats = async () => {
  const guild = client.guilds.cache.get('298954459172700181');
  if (!guild) return;
 
- const invites = await ch.getAllInvites(guild);
+ const invites = await client.util.getAllInvites(guild);
  if (!invites) return;
 
- const inviteTxt = ch.txtFileWriter(
+ const inviteTxt = client.util.txtFileWriter(
   `${invites
    .map((i) => (Number(i.uses) > 9 ? `${i.code} ${i.uses}` : null))
    .filter((i): i is string => !!i)
@@ -85,5 +84,5 @@ const animekosInviteStats = async () => {
  );
  if (!inviteTxt) return;
 
- ch.send({ id: '958483683856228382', guildId: guild.id }, { files: [inviteTxt] });
+ client.util.send({ id: '958483683856228382', guildId: guild.id }, { files: [inviteTxt] });
 };

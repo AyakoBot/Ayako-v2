@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
-import SH from '../../../../BaseClient/ClientHelperModules/settingsHelpers.js';
+import client from '../../../../BaseClient/Client.js';
+import SH from '../../../../BaseClient/UtilModules/settingsHelpers.js';
 
 const name = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const ID = cmd.options.get('id', false)?.value as string;
@@ -25,11 +25,11 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  language,
  lan,
 ) => {
- const { embedParsers } = ch.settingsHelpers;
+ const { embedParsers } = client.util.settingsHelpers;
  const automodRule = cmd.guild?.autoModerationRules.cache.get(ID);
 
  if (!automodRule) {
-  ch.errorCmd(cmd, language.errors.automodRuleNotFound, language);
+  client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);
   return;
  }
 
@@ -53,7 +53,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  language,
  lan,
 ) => {
- const { multiRowHelpers } = ch.settingsHelpers;
+ const { multiRowHelpers } = client.util.settingsHelpers;
 
  const automodRules = cmd.guild?.autoModerationRules.cache.map((o) => o);
 
@@ -61,15 +61,17 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   name: `${language.t.name}: \`${r.name}\` - ${language.events.logs.automodRule.actions}: ${
    r.actions.length
     ? r.actions
-       .map((a) => ch.util.makeInlineCode(language.events.logs.automodRule.actionsType[a.type]))
+       .map((a) =>
+        client.util.util.makeInlineCode(language.events.logs.automodRule.actionsType[a.type]),
+       )
        .join(', ')
     : language.t.None
   }`,
   value: `${
    r.enabled
-    ? ch.constants.standard.getEmote(ch.emotes.enabled)
-    : ch.constants.standard.getEmote(ch.emotes.disabled)
-  } - ID: ${ch.util.makeInlineCode(r.id)}`,
+    ? client.util.constants.standard.getEmote(client.util.emotes.enabled)
+    : client.util.constants.standard.getEmote(client.util.emotes.disabled)
+  } - ID: ${client.util.util.makeInlineCode(r.id)}`,
  }));
 
  const embeds = multiRowHelpers.embeds(fields, language, lan);
@@ -116,16 +118,17 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
 };
 
 export const getEmbeds = (
- embedParsers: typeof ch.settingsHelpers.embedParsers,
+ embedParsers: typeof client.util.settingsHelpers.embedParsers,
  rule: Discord.AutoModerationRule,
  language: CT.Language,
  lan: CT.Language['slashCommands']['settings']['categories'][typeof name],
 ): Discord.APIEmbed[] => [
  {
   footer: { text: `${language.t.name}: ${rule.name}` },
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   author: embedParsers.author(language, lan),
@@ -139,20 +142,20 @@ export const getEmbeds = (
        },
        {
         name: '\u200b',
-        value: ch.util.makeUnderlined(ch.util.makeBold(language.t.Triggers)),
+        value: client.util.util.makeUnderlined(client.util.util.makeBold(language.t.Triggers)),
        },
        ...([Discord.AutoModerationRuleTriggerType.Keyword, 6].includes(rule.triggerType)
         ? [
            {
             name: language.events.logs.automodRule.keywordFilter,
             value: rule.triggerMetadata.keywordFilter.length
-             ? ch.util.makeCodeBlock(rule.triggerMetadata.keywordFilter.join(', '))
+             ? client.util.util.makeCodeBlock(rule.triggerMetadata.keywordFilter.join(', '))
              : language.t.None,
            },
            {
             name: language.events.logs.automodRule.regexPatterns,
             value: rule.triggerMetadata.regexPatterns.length
-             ? ch.util.makeCodeBlock(rule.triggerMetadata.regexPatterns.join(', '))
+             ? client.util.util.makeCodeBlock(rule.triggerMetadata.regexPatterns.join(', '))
              : language.t.None,
            },
           ]
@@ -185,7 +188,7 @@ export const getEmbeds = (
            {
             name: language.events.logs.automodRule.allowList,
             value: rule.triggerMetadata.allowList.length
-             ? ch.util.makeCodeBlock(rule.triggerMetadata.allowList.join(', '))
+             ? client.util.util.makeCodeBlock(rule.triggerMetadata.allowList.join(', '))
              : language.t.None,
            },
           ]
@@ -207,7 +210,9 @@ export const getEmbeds = (
         : []),
        {
         name: '\u200b',
-        value: ch.util.makeUnderlined(ch.util.makeBold(language.events.logs.automodRule.actions)),
+        value: client.util.util.makeUnderlined(
+         client.util.util.makeBold(language.events.logs.automodRule.actions),
+        ),
        },
        {
         name:
@@ -232,7 +237,7 @@ export const getEmbeds = (
         ? [
            {
             name: language.events.logs.automodRule.warnMessage,
-            value: ch.util.makeCodeBlock(
+            value: client.util.util.makeCodeBlock(
              rule.actions.find(
               (r) =>
                r.metadata.customMessage && r.type === Discord.AutoModerationActionType.BlockMessage,
@@ -261,13 +266,13 @@ export const getEmbeds = (
             name:
              language.events.logs.automodRule.actionsType[Discord.AutoModerationActionType.Timeout],
             value: rule.actions.find((r) => r.type === Discord.AutoModerationActionType.Timeout)
-             ? `${embedParsers.boolean(true, language)} - ${ch.util.makeInlineCode(
+             ? `${embedParsers.boolean(true, language)} - ${client.util.util.makeInlineCode(
                 getActionMetadata(rule, 'Timeout')?.durationSeconds
-                 ? ch.moment(
+                 ? client.util.moment(
                     Number(getActionMetadata(rule, 'Timeout')?.durationSeconds) * 1000,
                     language,
                    )
-                 : ch.moment(60000, language),
+                 : client.util.moment(60000, language),
                )}`
              : embedParsers.boolean(false, language),
            },
@@ -275,7 +280,7 @@ export const getEmbeds = (
         : []),
        {
         name: '\u200b',
-        value: ch.util.makeUnderlined(ch.util.makeBold(language.t.Overrides)),
+        value: client.util.util.makeUnderlined(client.util.util.makeBold(language.t.Overrides)),
        },
        {
         name: language.slashCommands.settings.BLWL.wlroleid,
@@ -323,7 +328,7 @@ export const getComponents = (
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Danger,
      custom_id: `settings/autoModRule/display`,
-     emoji: ch.emotes.back,
+     emoji: client.util.emotes.back,
     },
     {
      type: Discord.ComponentType.Button,
@@ -337,7 +342,7 @@ export const getComponents = (
      label: language.slashCommands.settings.delete,
      style: Discord.ButtonStyle.Danger,
      custom_id: `settings/autoModRule/delete_${rule.id}`,
-     emoji: ch.emotes.minusBG,
+     emoji: client.util.emotes.minusBG,
     },
    ],
   },
@@ -484,8 +489,8 @@ export const getComponents = (
         ? Discord.AutoModerationActionType.BlockMessage
         : 4),
      )
-      ? ch.emotes.enabled
-      : ch.emotes.disabled,
+      ? client.util.emotes.enabled
+      : client.util.emotes.disabled,
      disabled:
       rule.eventType !== Discord.AutoModerationRuleEventType.MessageSend ||
       (rule.actions.length === 1 &&
@@ -521,7 +526,7 @@ export const getComponents = (
          style: Discord.ButtonStyle.Secondary,
          custom_id: `settings/autoModRule/boolean_sendAlertMessage_${rule.id}`,
          emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
-          ? ch.emotes.enabled
+          ? client.util.emotes.enabled
           : undefined,
          disabled:
           rule.actions.length === 1 && !!getActionMetadata(rule, 'SendAlertMessage')?.channelId,
@@ -538,8 +543,8 @@ export const getComponents = (
      style: Discord.ButtonStyle.Secondary,
      custom_id: `settings/autoModRule/channel_${rule.id}`,
      emoji: getActionMetadata(rule, 'SendAlertMessage')?.channelId
-      ? ch.emotes.channelTypes[0]
-      : ch.emotes.disabled,
+      ? client.util.emotes.channelTypes[0]
+      : client.util.emotes.disabled,
     },
    ] as Discord.APIButtonComponentWithCustomId[],
   },
@@ -561,7 +566,9 @@ export const getComponents = (
               ],
              style: Discord.ButtonStyle.Secondary,
              custom_id: `settings/autoModRule/boolean_timeout_${rule.id}`,
-             emoji: getActionMetadata(rule, 'Timeout') ? ch.emotes.enabled : ch.emotes.disabled,
+             emoji: getActionMetadata(rule, 'Timeout')
+              ? client.util.emotes.enabled
+              : client.util.emotes.disabled,
              disabled: rule.actions.length === 1 && !!getActionMetadata(rule, 'Timeout'),
             },
            ]
@@ -573,7 +580,7 @@ export const getComponents = (
           : language.events.logs.automodRule.actionsType[Discord.AutoModerationActionType.Timeout],
          style: Discord.ButtonStyle.Secondary,
          custom_id: `settings/autoModRule/timeoutDuration_${rule.id}`,
-         emoji: getActionMetadata(rule, 'Timeout') ? undefined : ch.emotes.disabled,
+         emoji: getActionMetadata(rule, 'Timeout') ? undefined : client.util.emotes.disabled,
         },
        ] as Discord.APIButtonComponentWithCustomId[],
       },
@@ -587,7 +594,7 @@ export const getComponents = (
      label: language.events.logs.automodRule.exemptRoles,
      style: rule.exemptRoles.size ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
      custom_id: `settings/${CT.AutoModEditorType.Roles}_${rule.id}`,
-     emoji: ch.emotes.Role,
+     emoji: client.util.emotes.Role,
     },
     ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
      ? [
@@ -598,7 +605,7 @@ export const getComponents = (
           ? Discord.ButtonStyle.Secondary
           : Discord.ButtonStyle.Primary,
          custom_id: `settings/${CT.AutoModEditorType.Channels}_${rule.id}`,
-         emoji: ch.emotes.channelTypes[0],
+         emoji: client.util.emotes.channelTypes[0],
         },
        ]
      : []),
@@ -612,31 +619,31 @@ const getAllComponents = (
 ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
  const lan = language.slashCommands.settings.categories[CT.SettingNames.DenylistRules];
 
- const createKeywordRule = ch.settingsHelpers.buttonParsers.create(
+ const createKeywordRule = client.util.settingsHelpers.buttonParsers.create(
   language,
   CT.SettingNames.DenylistRules,
  );
  createKeywordRule.custom_id = 'settings/autoModRule/create_keyword';
  createKeywordRule.label = lan.keyword;
- const createMentionSpamRule = ch.settingsHelpers.buttonParsers.create(
+ const createMentionSpamRule = client.util.settingsHelpers.buttonParsers.create(
   language,
   CT.SettingNames.DenylistRules,
  );
  createMentionSpamRule.custom_id = 'settings/autoModRule/create_mention';
  createMentionSpamRule.label = lan.mention;
- const createSpamRule = ch.settingsHelpers.buttonParsers.create(
+ const createSpamRule = client.util.settingsHelpers.buttonParsers.create(
   language,
   CT.SettingNames.DenylistRules,
  );
  createSpamRule.custom_id = 'settings/autoModRule/create_spam';
  createSpamRule.label = lan.spam;
- const createPresetRule = ch.settingsHelpers.buttonParsers.create(
+ const createPresetRule = client.util.settingsHelpers.buttonParsers.create(
   language,
   CT.SettingNames.DenylistRules,
  );
  createPresetRule.custom_id = 'settings/autoModRule/create_preset';
  createPresetRule.label = lan.preset;
- const createMemberRule = ch.settingsHelpers.buttonParsers.create(
+ const createMemberRule = client.util.settingsHelpers.buttonParsers.create(
   language,
   CT.SettingNames.DenylistRules,
  );

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -10,7 +9,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const duration = cmd.options.getString('duration', true);
  const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const modOptions: CT.ModOptions<CT.ModTypes.TempChannelBanAdd> = {
   reason: reason ?? language.t.noReasonProvided,
@@ -18,10 +17,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   target: user,
   executor: cmd.user,
   dbOnly: false,
-  duration: ch.getDuration(duration) / 1000,
+  duration: cmd.client.util.getDuration(duration) / 1000,
   channel,
   skipChecks: false,
  };
 
- ch.mod(cmd, CT.ModTypes.TempChannelBanAdd, modOptions);
+ cmd.client.util.mod(cmd, CT.ModTypes.TempChannelBanAdd, modOptions);
 };

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  cmd:
@@ -11,7 +10,7 @@ export default async (
 ) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.server;
  const guilds = await cmd.client.shard?.broadcastEval((cl) =>
   cl.guilds.cache.map((g) => ({
@@ -32,7 +31,7 @@ export default async (
   .slice(60 * page - 60, 60 * page)
   .map((g) => ({
    ...g,
-   members: ch.splitByThousand(g.members),
+   members: cmd.client.util.splitByThousand(g.members),
    name: `${g.name
     .replace(/[^\w\s'|\-!"§$%&/()=?`´{[\]}^°<>,;.:-_#+*~]/g, '')
     .replace(/\s+/g, ' ')
@@ -56,19 +55,21 @@ export default async (
   author: {
    name: lan.author,
   },
-  color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
-  description: `${ch.util.makeInlineCode(
-   `${ch.spaces(language.t.name, longestName)} | ${ch.spaces(
+  color: cmd.client.util.getColor(
+   cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+  ),
+  description: `${cmd.client.util.util.makeInlineCode(
+   `${cmd.client.util.spaces(language.t.name, longestName)} | ${cmd.client.util.spaces(
     language.t.Members,
     longestMemberCount,
-   )} | ${ch.spaces(language.t.Invite, longestInvite)} `,
+   )} | ${cmd.client.util.spaces(language.t.Invite, longestInvite)} `,
   )}\n${guildsFlatted
    .map((g) =>
-    ch.util.makeInlineCode(
-     `${ch.spaces(g.name, longestName)} | ${ch.spaces(g.members, longestMemberCount)} | ${ch.spaces(
-      g.invite ?? '-',
-      longestInvite,
-     )} `,
+    cmd.client.util.util.makeInlineCode(
+     `${cmd.client.util.spaces(g.name, longestName)} | ${cmd.client.util.spaces(
+      g.members,
+      longestMemberCount,
+     )} | ${cmd.client.util.spaces(g.invite ?? '-', longestInvite)} `,
     ),
    )
    .join('\n')}`,
@@ -80,7 +81,7 @@ export default async (
    components: [
     {
      type: Discord.ComponentType.Button,
-     emoji: ch.emotes.back,
+     emoji: cmd.client.util.emotes.back,
      style: Discord.ButtonStyle.Secondary,
      disabled: page === 1,
      custom_id: `server/page_${page}_back`,
@@ -94,7 +95,7 @@ export default async (
     },
     {
      type: Discord.ComponentType.Button,
-     emoji: ch.emotes.forth,
+     emoji: cmd.client.util.emotes.forth,
      style: Discord.ButtonStyle.Secondary,
      disabled: Math.ceil(flat.length / 60) === page,
      custom_id: `server/page_${page}_forth`,
@@ -103,6 +104,6 @@ export default async (
   },
  ];
 
- if (cmd.isChatInputCommand()) ch.replyCmd(cmd, { embeds: [embed], components });
+ if (cmd.isChatInputCommand()) cmd.client.util.replyCmd(cmd, { embeds: [embed], components });
  else cmd.update({ embeds: [embed], components } as Discord.InteractionUpdateOptions);
 };

@@ -1,3 +1,3 @@
-import { react } from '../../BaseClient/ClientHelperModules/interactionHelpers.js';
+import { react } from '../../BaseClient/UtilModules/interactionHelpers.js';
 
 export default react;

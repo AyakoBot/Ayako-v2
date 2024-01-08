@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../../BaseClient/ClientHelper.js';
 import { getSelectedField } from '../../../../ModalCommands/embed-builder/editor.js';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
  args: string[],
 ) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
  const maxLength = getLength(args[0]);
 

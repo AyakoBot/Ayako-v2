@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
@@ -10,14 +9,14 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
 
  const type = args.shift() as 'keyword' | 'mention' | 'spam' | 'preset' | 'member' | undefined;
  if (!type) {
-  ch.error(cmd.guild, new Error('No type provided'));
+  cmd.client.util.error(cmd.guild, new Error('No type provided'));
   return;
  }
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.settings.categories[settingName];
 
- const rule = await ch.request.guilds.createAutoModerationRule(
+ const rule = await cmd.client.util.request.guilds.createAutoModerationRule(
   cmd.guild,
   {
    name: lan[type],
@@ -35,11 +34,11 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
  );
 
  if ('message' in rule) {
-  ch.errorCmd(cmd, rule, language);
+  cmd.client.util.errorCmd(cmd, rule, language);
   return;
  }
 
- const settingsFile = (await ch.settingsHelpers.getSettingsFile(
+ const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
   settingName,
   cmd.guild,
  )) as unknown as typeof SettingsFile;
@@ -47,7 +46,7 @@ const f = async (cmd: Discord.ButtonInteraction, args: []) => {
 
  cmd.update({
   embeds: settingsFile.getEmbeds(
-   ch.settingsHelpers.embedParsers,
+   cmd.client.util.settingsHelpers.embedParsers,
    rule,
    language,
    language.slashCommands.settings.categories[settingName],

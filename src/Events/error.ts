@@ -1,4 +1,4 @@
-import log from '../BaseClient/ClientHelperModules/logError.js';
+import log from '../BaseClient/UtilModules/logError.js';
 
 export default (info: Error) => {
  log(info, true);

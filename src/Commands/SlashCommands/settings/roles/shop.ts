@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Shop;
@@ -7,17 +7,17 @@ const name = CT.SettingNames.Shop;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
- const { embedParsers, buttonParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { embedParsers, buttonParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    ch.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[CT.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -37,9 +37,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   fields: [
@@ -51,10 +52,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.currencyemote.name,
     value:
-     ch.constants.standard.getEmote(
+     client.util.constants.standard.getEmote(
       settings.currencyemote
-       ? Discord.parseEmoji(settings.currencyemote) ?? ch.emotes.book
-       : ch.emotes.book,
+       ? Discord.parseEmoji(settings.currencyemote) ?? client.util.emotes.book
+       : client.util.emotes.book,
      ) ?? language.t.None,
     inline: true,
    },

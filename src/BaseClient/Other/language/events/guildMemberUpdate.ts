@@ -1,5 +1,4 @@
 import * as CT from '../../../../Typings/Typings.js';
-import * as ch from '../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  rewards: {
@@ -19,7 +18,7 @@ export default (t: CT.Language) => ({
   currency: (amount: number) =>
    t.stp(t.JSON.events.guildMemberUpdate.rewards.currency, {
     amount,
-    emote: ch.constants.standard.getEmote(ch.emotes.book),
+    emote: t.util.constants.standard.getEmote(t.util.emotes.book),
    }),
  },
 });

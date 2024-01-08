@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
@@ -11,13 +10,13 @@ export default async (
   | Discord.PublicThreadChannel
   | Discord.VoiceChannel,
 ) => {
- const channels = await ch.getLogChannels('channelevents', channel.guild);
+ const channels = await channel.client.util.getLogChannels('channelevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(channel.guild.id);
+ const language = await channel.client.util.getLanguage(channel.guild.id);
  const lan = language.events.logs.channel;
- const con = ch.constants.events.logs.channel;
- const audit = await ch.getAudit(channel.guild, 75);
+ const con = channel.client.util.constants.events.logs.channel;
+ const audit = await channel.client.util.getAudit(channel.guild, 75);
  const auditUser = audit?.executor ?? undefined;
 
  const embed: Discord.APIEmbed = {
@@ -33,5 +32,5 @@ export default async (
   timestamp: new Date().toISOString(),
  };
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
+ channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
 };

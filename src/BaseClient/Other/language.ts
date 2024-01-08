@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import merge from 'lodash.merge';
 import client from '../Client.js';
-import stp from '../ClientHelperModules/stp.js';
+import stp from '../UtilModules/stp.js';
 import languageFunction from './language/languageFunction.js';
 import events from './language/events/events.js';
 import time from './language/time.js';
@@ -49,6 +49,7 @@ export default class Language {
  CURRENT_LANGUAGE: keyof typeof languages = 'en-GB';
  JSON: (typeof languages)['en-GB'] = mergeLang(languages['en-GB']);
  stp = stp;
+ util = client.util;
 
  t: ReturnType<typeof t>;
 

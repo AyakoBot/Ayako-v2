@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
+import client, { API } from '../../../../BaseClient/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.ButtonRoleSettings;
@@ -8,7 +7,7 @@ const name = CT.SettingNames.ButtonRoleSettings;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const ID = cmd.options.get('id', false)?.value as string;
@@ -25,15 +24,15 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  language,
  lan,
 ) => {
- const { buttonParsers, embedParsers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]]
+ const { buttonParsers, embedParsers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
   .then(
    (r) =>
     r ??
-    (ch.settingsHelpers.setup(
+    (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
@@ -60,8 +59,8 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  language,
  lan,
 ) => {
- const { multiRowHelpers } = ch.settingsHelpers;
- const settings = await ch.DataBase[CT.SettingsName2TableName[name]].findMany({
+ const { multiRowHelpers } = client.util.settingsHelpers;
+ const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -69,7 +68,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
   value: `${lan.fields.msgid.name}: ${
    s.guildid && s.channelid && s.msgid
-    ? ch.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
+    ? client.util.constants.standard.msgurl(s.guildid, s.channelid, s.msgid)
     : language.t.None
   }`,
  }));
@@ -101,9 +100,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
-  description: ch.constants.tutorials[name as keyof typeof ch.constants.tutorials]?.length
-   ? `${language.slashCommands.settings.tutorial}\n${ch.constants.tutorials[
-      name as keyof typeof ch.constants.tutorials
+  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
+   ?.length
+   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+      name as keyof typeof client.util.constants.tutorials
      ].map((t) => `[${t.name}](${t.link})`)}`
    : undefined,
   author: embedParsers.author(language, lan),
@@ -117,7 +117,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     name: lan.fields.msgid.name,
     value:
      settings.guildid && settings.channelid && settings.msgid
-      ? ch.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
+      ? client.util.constants.standard.msgurl(settings.guildid, settings.channelid, settings.msgid)
       : language.t.None,
     inline: true,
    },
@@ -195,19 +195,23 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
  switch (changedSettings) {
   case 'active': {
-   const settings = await ch.DataBase.buttonrolesettings.findUnique({
+   const settings = await client.util.DataBase.buttonrolesettings.findUnique({
     where: { uniquetimestamp },
    });
    if (!settings) return;
 
-   const message = (await ch.getMessage(
-    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
+   const message = (await client.util.getMessage(
+    client.util.constants.standard.msgurl(
+     settings.guildid,
+     settings.channelid ?? '',
+     settings.msgid ?? '',
+    ),
    )) as Discord.Message<true> | undefined;
    if (!message) return;
 
    switch (newSettings.active) {
     case true: {
-     const relatedSettings = await ch.DataBase.buttonroles.findMany({
+     const relatedSettings = await client.util.DataBase.buttonroles.findMany({
       where: {
        linkedid: uniquetimestamp,
        active: true,
@@ -218,7 +222,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (!relatedSettings.length) return;
 
      const componentChunks: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] =
-      ch
+      client.util
        .getChunks(
         relatedSettings
          .map((s) => ({
@@ -239,7 +243,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (message?.author.id === guild.client.user.id) {
       API.channels.editMessage(message.channelId, message.id, { components: componentChunks });
      } else {
-      ch.request.channels.editMessage(guild, message.channelId, message.id, {
+      client.util.request.channels.editMessage(guild, message.channelId, message.id, {
        components: componentChunks,
       });
      }
@@ -251,7 +255,9 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (message?.author.id === guild.client.user.id) {
       API.channels.editMessage(message.channelId, message.id, { components: [] });
      } else {
-      ch.request.channels.editMessage(guild, message.channelId, message.id, { components: [] });
+      client.util.request.channels.editMessage(guild, message.channelId, message.id, {
+       components: [],
+      });
      }
      break;
     }
@@ -262,20 +268,27 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    break;
   }
   case 'msgid': {
-   const settings = await ch.DataBase.buttonrolesettings.findUnique({
+   const settings = await client.util.DataBase.buttonrolesettings.findUnique({
     where: { uniquetimestamp },
    });
    if (!settings) return;
 
-   const message = await ch.getMessage(
-    ch.constants.standard.msgurl(settings.guildid, settings.channelid ?? '', settings.msgid ?? ''),
+   const message = await client.util.getMessage(
+    client.util.constants.standard.msgurl(
+     settings.guildid,
+     settings.channelid ?? '',
+     settings.msgid ?? '',
+    ),
    );
 
    if (!message) return;
    if (message.author.id === guild.client.user.id) return;
-   if (message.author.id === (await ch.getBotIdFromGuild(guild))) return;
+   if (message.author.id === (await client.util.getBotIdFromGuild(guild))) return;
 
-   ch.error(guild, new Error("button-roles: Message has to be sent by me, else I can't edit it"));
+   client.util.error(
+    guild,
+    new Error("button-roles: Message has to be sent by me, else I can't edit it"),
+   );
    break;
   }
   default: {

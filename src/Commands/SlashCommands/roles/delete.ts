@@ -1,15 +1,14 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const role = cmd.options.getRole('role', true);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.delete;
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   content: lan.areYouSure(role as Discord.Role),
   components: [
    {
@@ -20,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       label: language.t.Yes,
       style: Discord.ButtonStyle.Danger,
       custom_id: `roles/delete_${role.id}`,
-      emoji: ch.emotes.warning,
+      emoji: cmd.client.util.emotes.warning,
      },
     ],
    },

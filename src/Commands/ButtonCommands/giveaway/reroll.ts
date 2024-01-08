@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import { checkCommandPermissions } from '../../../Events/messageEvents/messageCreate/commandHandler.js';
 import { end } from '../../SlashCommands/giveaway/end.js';
 
@@ -7,14 +6,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const messageID = args.shift() as string;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
- const giveaway = await ch.DataBase.giveaways.findUnique({
+ const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
   where: { msgid: messageID, ended: true },
  });
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
   return;
  }
 
@@ -30,13 +29,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    'giveaway',
   )
  ) {
-  ch.errorCmd(cmd, language.permissions.error.you, language);
+  cmd.client.util.errorCmd(cmd, language.permissions.error.you, language);
   return;
  }
 
- await ch.request.channels.deleteMessage(cmd.message);
+ await cmd.client.util.request.channels.deleteMessage(cmd.message);
 
  await end(giveaway);
 
- ch.replyCmd(cmd, { content: lan.rerolling });
+ cmd.client.util.replyCmd(cmd, { content: lan.rerolling });
 };

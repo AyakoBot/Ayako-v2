@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -8,11 +7,11 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.moderation.permissions;
  const customCommands = await Promise.all(
   Object.keys(lan.buttons).map((k) =>
-   ch.getCustomCommand(cmd.guild, k as keyof (typeof lan)['buttons']),
+   cmd.client.util.getCustomCommand(cmd.guild, k as keyof (typeof lan)['buttons']),
   ),
  );
 
@@ -20,11 +19,11 @@ export default async (
   embeds: [
    {
     description: lan.desc,
-    color: ch.getColor(),
+    color: cmd.client.util.getColor(),
    },
   ],
   components: (
-   ch.getChunks(
+   cmd.client.util.getChunks(
     Object.entries(lan.buttons).map(([key, val], i) => ({
      type: Discord.ComponentType.Button,
      label: val,
@@ -42,5 +41,5 @@ export default async (
  if (response) await response.delete();
 
  if (cmd.isButton()) cmd.editReply({ ...payload, message: cmd.message });
- else ch.replyCmd(cmd, payload);
+ else cmd.client.util.replyCmd(cmd, payload);
 };

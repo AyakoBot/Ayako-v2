@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import rolesContinue from '../../../SlashCommands/emojis/edit/roles.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
@@ -13,13 +12,13 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
  const removeRoles = alreadyExistingRoles.filter((r) => !roles.includes(r));
 
  const newEmoji = emoji
-  ? await ch.request.guilds.editEmoji(cmd.guild, emoji.id, {
+  ? await cmd.client.util.request.guilds.editEmoji(cmd.guild, emoji.id, {
      roles: [...new Set([...addRoles, ...removeRoles])],
     })
   : undefined;
 
  if (newEmoji && 'message' in newEmoji) {
-  ch.errorCmd(cmd, newEmoji, await ch.getLanguage(cmd.guildId));
+  cmd.client.util.errorCmd(cmd, newEmoji, await cmd.client.util.getLanguage(cmd.guildId));
   return;
  }
 

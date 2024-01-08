@@ -1,29 +1,28 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guild?.id);
+ const language = await cmd.client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.stp;
  const string = cmd.options.get('string', true).value as string;
 
  let returned: string | null = null;
 
  try {
-  returned = ch.stp(string, { cmd });
+  returned = cmd.client.util.stp(string, { cmd });
  } catch (e) {
   returned = (e as Error).message;
  }
 
- ch.replyCmd(cmd, {
+ cmd.client.util.replyCmd(cmd, {
   embeds: [
    {
     description: returned,
     fields: [
      {
       name: '\u200b',
-      value: `${language.t.Examples}: ${ch.util.makeCodeBlock(
+      value: `${language.t.Examples}: ${cmd.client.util.util.makeCodeBlock(
        '{{cmd.guild.name}}\n{{cmd.user.username}}\n{{cmd.channel.name}}',
       )}`,
      },

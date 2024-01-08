@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import startOver from '../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
@@ -17,8 +16,8 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  try {
   new Discord.EmbedBuilder(JSON.parse(code) as Discord.APIEmbed);
  } catch (e) {
-  const language = await ch.getLanguage(cmd.guildId);
-  ch.errorCmd(cmd, e as Discord.DiscordjsError, language);
+  const language = await cmd.client.util.getLanguage(cmd.guildId);
+  cmd.client.util.errorCmd(cmd, e as Discord.DiscordjsError, language);
   return;
  }
 

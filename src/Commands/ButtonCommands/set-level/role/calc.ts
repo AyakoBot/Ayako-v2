@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import { getEmbed } from '../../../SlashCommands/settings/leveling/set-level-role.js';
 import {
  getLevelComponents,
@@ -14,10 +13,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const addOrRemove = args.shift() as '+' | '-';
  const roleId = args.shift() as string;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const role = cmd.guild.roles.cache.get(roleId);
  if (!role) {
-  ch.errorCmd(cmd, language.errors.roleNotFound, language);
+  cmd.client.util.errorCmd(cmd, language.errors.roleNotFound, language);
   return;
  }
 
@@ -39,7 +38,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const newXP = type === 'x' ? newXpOrLevel : getXP(newXpOrLevel);
 
  if (newLevel < 0 || newXP < 0) {
-  ch.errorCmd(cmd, language.slashCommands.setLevel.min, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.min, language);
   return;
  }
 
@@ -50,7 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const embed = getEmbed(language, role, newXP, newLevel, roles);
 
- const components = ch.getChunks(
+ const components = cmd.client.util.getChunks(
   [
    ...getXPComponents(
     roleId,

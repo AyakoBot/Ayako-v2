@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default (msg: Discord.Message<true>) => {
  if (
@@ -14,7 +13,7 @@ export default (msg: Discord.Message<true>) => {
   return;
  }
 
- ch.replyMsg(msg, {
+ msg.client.util.replyMsg(msg, {
   content: `<@${msg.author.id}>`,
   allowed_mentions: { users: [msg.author.id] },
  });

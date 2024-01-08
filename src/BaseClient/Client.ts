@@ -1,7 +1,10 @@
+import * as Sharding from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as DiscordCore from '@discordjs/core';
 
 const client = new Discord.Client({
+ shards: Sharding.getInfo().SHARD_LIST,
+ shardCount: Sharding.getInfo().TOTAL_SHARDS,
  allowedMentions: {
   parse: ['users'],
   repliedUser: false,
@@ -54,6 +57,7 @@ const client = new Discord.Client({
  },
 });
 
+client.cluster = new Sharding.ClusterClient(client);
 await client.login(process.env.Token);
 
 export const API = new DiscordCore.API(client.rest);

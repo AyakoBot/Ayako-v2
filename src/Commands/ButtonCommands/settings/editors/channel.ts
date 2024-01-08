@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export enum ChannelTypes {
@@ -28,7 +27,7 @@ export default async (
  };
  const uniquetimestamp = getUniquetimestamp();
 
- const currentSettings = await ch.settingsHelpers.changeHelpers.get(
+ const currentSettings = await cmd.client.util.settingsHelpers.changeHelpers.get(
   settingName,
   cmd.guildId,
   uniquetimestamp,
@@ -38,10 +37,10 @@ export default async (
   | string
   | string[];
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  cmd.update({
   embeds: [
-   await ch.settingsHelpers.changeHelpers.changeEmbed(
+   await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
     language,
     settingName,
     fieldName,
@@ -54,7 +53,7 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.changeSelectGlobal(
+     cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
       CT.EditorTypes.Channel,
       fieldName,
@@ -72,8 +71,8 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     ch.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
-     ch.settingsHelpers.changeHelpers.done(
+     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
       CT.EditorTypes.Channel,

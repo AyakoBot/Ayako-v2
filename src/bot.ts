@@ -2,8 +2,9 @@
 import 'dotenv/config';
 import sms from 'source-map-support';
 import client from './BaseClient/Client.js';
-import * as ch from './BaseClient/ClientHelper.js';
-// import { getReady } from './Events/readyEvents/ready.js';
+import ch from './BaseClient/Util.js';
+
+client.util = ch;
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),
@@ -57,7 +58,3 @@ client.rest.on('rateLimited', (info) => {
  if (processArgs.includes('--debug')) console.log(str);
  ch.logFiles.ratelimits.write(`${str}\n`);
 });
-
-// setTimeout(() => {
-//  if (client.readyTimestamp && !getReady()) client.shard?.respawnAll();
-// }, 5000);

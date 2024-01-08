@@ -1,7 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author.bot) return;
@@ -12,27 +12,30 @@ export default async (msg: Discord.Message<true>) => {
 };
 
 const disboardSent = async (msg: Discord.Message<true>) => {
- ch.cache.disboardBumpReminders.delete(msg.guildId);
+ client.util.cache.disboardBumpReminders.delete(msg.guildId);
 
- const settings = await ch.DataBase.disboard.findUnique({
+ const settings = await client.util.DataBase.disboard.findUnique({
   where: { guildid: msg.guildId, active: true },
  });
  if (!settings) return;
 
- ch.request.channels.addReaction(msg, ch.constants.standard.getEmoteIdentifier(ch.emotes.tick));
+ client.util.request.channels.addReaction(
+  msg,
+  client.util.constants.standard.getEmoteIdentifier(client.util.emotes.tick),
+ );
 
  deleteLastReminder(settings);
 
  if (settings.deletereply) {
   Jobs.scheduleJob(new Date(Date.now() + 5000), async () => {
    if (!msg) return;
-   if (await ch.isDeleteable(msg)) ch.request.channels.deleteMessage(msg);
+   if (await client.util.isDeleteable(msg)) client.util.request.channels.deleteMessage(msg);
   });
  }
 
  const nextbump = Date.now() + 9000000;
 
- ch.DataBase.disboard
+ client.util.DataBase.disboard
   .update({
    where: {
     guildid: msg.guildId,
@@ -44,7 +47,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
   })
   .then();
 
- ch.cache.disboardBumpReminders.set(
+ client.util.cache.disboardBumpReminders.set(
   Jobs.scheduleJob(new Date(nextbump), () => {
    bumpReminder(msg.guild);
   }),
@@ -53,20 +56,20 @@ const disboardSent = async (msg: Discord.Message<true>) => {
 };
 
 export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.disboard) => {
- ch.cache.disboardBumpReminders.delete(guild.id);
+ client.util.cache.disboardBumpReminders.delete(guild.id);
 
  const settings =
   cacheSettings ??
-  (await ch.DataBase.disboard.findUnique({
+  (await client.util.DataBase.disboard.findUnique({
    where: { guildid: guild.id, active: true },
   }));
  if (!settings) return;
  if (!settings.channelid && !settings.tempchannelid) return;
 
  await deleteLastReminder(settings);
- const language = await ch.getLanguage(guild.id);
+ const language = await client.util.getLanguage(guild.id);
 
- const m = await ch.send(
+ const m = await client.util.send(
   { id: (settings.channelid ?? settings.tempchannelid) as string, guildId: guild.id },
   {
    content: `${settings.roles.map((r) => `<@&${r}>`).join(' ')}\n${settings.users
@@ -80,7 +83,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
     {
      author: {
       name: language.events.ready.disboard.title,
-      icon_url: (await guild.client.users.fetch('302050872383242240')).displayAvatarURL(),
+      icon_url: (await client.users.fetch('302050872383242240')).displayAvatarURL(),
      },
      description: language.events.ready.disboard.desc,
     },
@@ -90,7 +93,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
 
  if (!m) return;
 
- ch.DataBase.disboard
+ client.util.DataBase.disboard
   .update({
    where: {
     guildid: guild.id,
@@ -106,7 +109,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
   .then();
 
  if (settings.repeatenabled) {
-  ch.cache.disboardBumpReminders.set(
+  client.util.cache.disboardBumpReminders.set(
    Jobs.scheduleJob(new Date(Date.now() + Number(settings.repeatreminder) * 1000), () => {
     bumpReminder(guild);
    }),
@@ -118,13 +121,13 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
 const deleteLastReminder = async (settings: Prisma.disboard) => {
  if (!settings.tempchannelid || !settings.msgid) return;
 
- const channel = await ch.getChannel.guildTextChannel(settings.tempchannelid);
+ const channel = await client.util.getChannel.guildTextChannel(settings.tempchannelid);
 
  const m = channel
-  ? await ch.request.channels
+  ? await client.util.request.channels
      .getMessage(channel, settings.msgid)
      .then((ms) => ('message' in ms ? undefined : ms))
   : undefined;
 
- if (m && (await ch.isDeleteable(m))) ch.request.channels.deleteMessage(m);
+ if (m && (await client.util.isDeleteable(m))) client.util.request.channels.deleteMessage(m);
 };

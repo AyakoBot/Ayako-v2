@@ -1,12 +1,11 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default (guild: Discord.Guild) => {
- const giveawayClaimTimeouts = ch.cache.giveawayClaimTimeout.cache.get(guild.id);
- const mutes = ch.cache.mutes.cache.get(guild.id);
- const bans = ch.cache.bans.cache.get(guild.id);
- const channelBans = ch.cache.channelBans.cache.get(guild.id);
- const giveaways = ch.cache.giveaways.cache.get(guild.id);
+ const giveawayClaimTimeouts = guild.client.util.cache.giveawayClaimTimeout.cache.get(guild.id);
+ const mutes = guild.client.util.cache.mutes.cache.get(guild.id);
+ const bans = guild.client.util.cache.bans.cache.get(guild.id);
+ const channelBans = guild.client.util.cache.channelBans.cache.get(guild.id);
+ const giveaways = guild.client.util.cache.giveaways.cache.get(guild.id);
 
  if (giveawayClaimTimeouts) {
   Array.from(giveawayClaimTimeouts, ([, i]) => i).forEach((i) => i.cancel());
@@ -24,34 +23,38 @@ export default (guild: Discord.Guild) => {
   );
  }
 
- ch.cache.invites.cache.delete(guild.id);
- ch.cache.webhooks.cache.delete(guild.id);
- ch.cache.integrations.cache.delete(guild.id);
- ch.cache.scheduledEventUsers.cache.delete(guild.id);
- ch.cache.welcomeScreens.delete(guild.id);
- ch.cache.pins.cache.delete(guild.id);
- ch.cache.onboarding.delete(guild.id);
- ch.cache.commandPermissions.cache.delete(guild.id);
- ch.cache.auditLogs.cache.delete(guild.id);
+ guild.client.util.cache.channelBans.cache
+  .get(guild.id)
+  ?.forEach((i) => i.forEach((j) => j.cancel()));
+ guild.client.util.cache.giveaways.cache
+  .get(guild.id)
+  ?.forEach((i) => i.forEach((j) => j.cancel()));
 
- ch.cache.giveawayClaimTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.giveawayClaimTimeout.cache.delete(guild.id);
- ch.cache.mutes.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.mutes.cache.delete(guild.id);
- ch.cache.bans.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.bans.cache.delete(guild.id);
- ch.cache.channelBans.cache.get(guild.id)?.forEach((i) => i.forEach((j) => j.cancel()));
- ch.cache.channelBans.cache.delete(guild.id);
- ch.cache.disboardBumpReminders.cache.get(guild.id)?.cancel();
- ch.cache.disboardBumpReminders.cache.delete(guild.id);
- ch.cache.giveaways.cache.get(guild.id)?.forEach((i) => i.forEach((j) => j.cancel()));
- ch.cache.giveaways.cache.delete(guild.id);
- ch.cache.deleteThreads.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.deleteThreads.cache.delete(guild.id);
- ch.cache.apis.delete(guild.id);
- ch.cache.commands.cache.delete(guild.id);
- ch.cache.deleteSuggestions.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.deleteSuggestions.cache.delete(guild.id);
- ch.cache.vcDeleteTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());
- ch.cache.vcDeleteTimeout.cache.delete(guild.id);
+ guild.client.util.cache.invites.cache.delete(guild.id);
+ guild.client.util.cache.webhooks.cache.delete(guild.id);
+ guild.client.util.cache.integrations.cache.delete(guild.id);
+ guild.client.util.cache.scheduledEventUsers.cache.delete(guild.id);
+ guild.client.util.cache.welcomeScreens.delete(guild.id);
+ guild.client.util.cache.pins.cache.delete(guild.id);
+ guild.client.util.cache.onboarding.delete(guild.id);
+ guild.client.util.cache.commandPermissions.cache.delete(guild.id);
+ guild.client.util.cache.auditLogs.cache.delete(guild.id);
+ guild.client.util.cache.giveawayClaimTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.giveawayClaimTimeout.cache.delete(guild.id);
+ guild.client.util.cache.mutes.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.mutes.cache.delete(guild.id);
+ guild.client.util.cache.bans.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.bans.cache.delete(guild.id);
+ guild.client.util.cache.channelBans.cache.delete(guild.id);
+ guild.client.util.cache.disboardBumpReminders.cache.get(guild.id)?.cancel();
+ guild.client.util.cache.disboardBumpReminders.cache.delete(guild.id);
+ guild.client.util.cache.giveaways.cache.delete(guild.id);
+ guild.client.util.cache.deleteThreads.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.deleteThreads.cache.delete(guild.id);
+ guild.client.util.cache.apis.delete(guild.id);
+ guild.client.util.cache.commands.cache.delete(guild.id);
+ guild.client.util.cache.deleteSuggestions.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.deleteSuggestions.cache.delete(guild.id);
+ guild.client.util.cache.vcDeleteTimeout.cache.get(guild.id)?.forEach((i) => i.cancel());
+ guild.client.util.cache.vcDeleteTimeout.cache.delete(guild.id);
 };

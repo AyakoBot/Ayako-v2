@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -7,19 +6,21 @@ export default async (
  args: string[],
 ) => {
  if (!cmd.inCachedGuild()) return;
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.role;
 
  const role = cmd.guild.roles.cache.get(args.shift() as string);
  if (!role) return;
 
- await ch.replyCmd(cmd, {
+ await cmd.client.util.replyCmd(cmd, {
   embeds:
    role.members.size > 163
     ? []
     : [
        {
-        color: role.color || ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+        color:
+         role.color ||
+         cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
         description: getDescription(role, language),
         author: {
          name: lan.author,

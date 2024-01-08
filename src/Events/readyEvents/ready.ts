@@ -1,5 +1,5 @@
 import client from '../../BaseClient/Client.js';
-import log from '../../BaseClient/ClientHelperModules/logError.js';
+import log from '../../BaseClient/UtilModules/logError.js';
 
 import startupTasks from './startupTasks.js';
 

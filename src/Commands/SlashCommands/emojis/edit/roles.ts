@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
@@ -14,17 +13,21 @@ export default async (
    : Discord.parseEmoji(cmd.options.getString('emoji', true));
  const emoji = e ?? (rawEmoji?.id ? cmd.guild.emojis.cache.get(rawEmoji.id) : undefined);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.emojis;
 
  if (!emoji) {
-  ch.errorCmd(cmd, language.errors.emoteNotFound, await ch.getLanguage(cmd.guildId));
+  cmd.client.util.errorCmd(
+   cmd,
+   language.errors.emoteNotFound,
+   await cmd.client.util.getLanguage(cmd.guildId),
+  );
   return;
  }
 
  const embeds = [
   {
-   color: ch.getColor(await ch.getBotMemberFromGuild(cmd.guild)),
+   color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
    description: emoji.roles.cache.size
     ? emoji.roles.cache
        .sort((a, b) => b.position - a.position)
@@ -58,7 +61,7 @@ export default async (
      color: CT.Colors.Loading,
      author: {
       name: language.t.loading,
-      icon_url: ch.emotes.loading.link,
+      icon_url: cmd.client.util.emotes.loading.link,
      },
     },
    ],
@@ -66,5 +69,5 @@ export default async (
   });
 
   cmd.editReply({ embeds, components });
- } else ch.replyCmd(cmd, { embeds, components });
+ } else cmd.client.util.replyCmd(cmd, { embeds, components });
 };

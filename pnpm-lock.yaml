@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   discord.js@14.14.1:
-    hash: kvzacsilciopxrpoam4g2c2nga
+    hash: 3viul2gqmaoma4rjhivd3q3baq
     path: patches/discord.js@14.14.1.patch
 
 dependencies:
@@ -40,9 +40,12 @@ dependencies:
   discord-api-types:
     specifier: ^0.37.67
     version: 0.37.67
+  discord-hybrid-sharding:
+    specifier: ^2.1.4
+    version: 2.1.4
   discord.js:
     specifier: ^14.14.1
-    version: 14.14.1(patch_hash=kvzacsilciopxrpoam4g2c2nga)
+    version: 14.14.1(patch_hash=3viul2gqmaoma4rjhivd3q3baq)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -1735,7 +1738,15 @@ packages:
     resolution: {integrity: sha512-4HEzUEmwGPXWJdVhGZ/K+9eWs8kurdn5r/I8qD3/0hb14I0MZvx8K/JOyLhKLgcR4/8/jcr6Xej820BNgNXN7A==}
     dev: false
 
-  /discord.js@14.14.1(patch_hash=kvzacsilciopxrpoam4g2c2nga):
+  /discord-hybrid-sharding@2.1.4:
+    resolution: {integrity: sha512-GI6RtF9kEpDEHitqNnxImBf2iArkpfWN7xPQLjxelTDql2sklKRs6lNz1vbE+bkvUmxnqZM9j2uzBBeWRppbIA==}
+    dependencies:
+      node-fetch: 2.7.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /discord.js@14.14.1(patch_hash=3viul2gqmaoma4rjhivd3q3baq):
     resolution: {integrity: sha512-/hUVzkIerxKHyRKopJy5xejp4MYKDPTszAnpYxzVVv4qJYf+Tkt+jnT2N29PIPschicaEEpXwF2ARrTYHYwQ5w==}
     engines: {node: '>=16.11.0'}
     dependencies:

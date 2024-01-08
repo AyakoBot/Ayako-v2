@@ -1,15 +1,14 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (emote: Discord.GuildEmoji) => {
- const channels = await ch.getLogChannels('emojievents', emote.guild);
+ const channels = await emote.client.util.getLogChannels('emojievents', emote.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(emote.guild.id);
+ const language = await emote.client.util.getLanguage(emote.guild.id);
  const lan = language.events.logs.guild;
- const con = ch.constants.events.logs.emoji;
- const audit = await ch.getAudit(emote.guild, 62, emote.id);
+ const con = emote.client.util.constants.events.logs.emoji;
+ const audit = await emote.client.util.getAudit(emote.guild, 62, emote.id);
  const auditUser = audit?.executor ?? undefined;
  const files: Discord.AttachmentPayload[] = [];
 
@@ -23,14 +22,18 @@ export default async (emote: Discord.GuildEmoji) => {
   color: CT.Colors.Danger,
  };
 
- const attachment = (await ch.fileURL2Buffer([emote.url]))?.[0];
+ const attachment = (await emote.client.util.fileURL2Buffer([emote.url]))?.[0];
  if (attachment) {
   files.push(attachment);
 
   embed.thumbnail = {
-   url: `attachment://${ch.getNameAndFileType(emote.url)}`,
+   url: `attachment://${emote.client.util.getNameAndFileType(emote.url)}`,
   };
  }
 
- ch.send({ id: channels, guildId: emote.guild.id }, { embeds: [embed], files }, 10000);
+ emote.client.util.send(
+  { id: channels, guildId: emote.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

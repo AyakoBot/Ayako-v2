@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
+import client from '../../../BaseClient/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true) => {
  if (!cmd.inCachedGuild()) return;
@@ -12,22 +12,22 @@ export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true
   settings.novoteroles.some((r) => cmd.member.roles.cache.has(r)) ||
   settings.novoteusers.includes(cmd.user.id)
  ) {
-  ch.errorCmd(cmd, lan.cannotVote, language);
+  client.util.errorCmd(cmd, lan.cannotVote, language);
   return;
  }
 
- const suggestion = await ch.DataBase.suggestionvotes.findUnique({
+ const suggestion = await client.util.DataBase.suggestionvotes.findUnique({
   where: { msgid: cmd.message.id },
   select: { upvoted: true, downvoted: true },
  });
  if (!suggestion) {
-  ch.errorCmd(cmd, lan.notFound, language);
+  client.util.errorCmd(cmd, lan.notFound, language);
   return;
  }
 
  const data = updateVote(suggestion, cmd.user.id, up);
 
- const updatedSuggestion = await ch.DataBase.suggestionvotes.update({
+ const updatedSuggestion = await client.util.DataBase.suggestionvotes.update({
   where: { msgid: cmd.message.id },
   data,
   select: { upvoted: true, downvoted: true },
@@ -37,9 +37,9 @@ export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true
  embed.fields = [
   {
    name: lan.votes,
-   value: `${ch.constants.standard.getEmote(ch.emotes.tickWithBackground)}: ${
+   value: `${client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)}: ${
     updatedSuggestion.upvoted.length
-   }\n${ch.constants.standard.getEmote(ch.emotes.crossWithBackground)}: ${
+   }\n${client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground)}: ${
     updatedSuggestion.downvoted.length
    }`,
   },
@@ -49,13 +49,13 @@ export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true
 };
 
 export const isValid = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.suggest;
- const settings = await ch.DataBase.suggestionsettings.findUnique({
+ const settings = await client.util.DataBase.suggestionsettings.findUnique({
   where: { guildid: cmd.guildId, active: true },
  });
  if (!settings) {
-  ch.errorCmd(cmd, lan.notEnabled, language);
+  client.util.errorCmd(cmd, lan.notEnabled, language);
   return false;
  }
 
@@ -66,7 +66,7 @@ const updateVote = (
  suggestion: { upvoted: string[]; downvoted: string[] },
  userid: string,
  upvote: boolean,
-): Parameters<(typeof ch)['DataBase']['suggestionvotes']['update']>[0]['data'] => {
+): Parameters<(typeof client.util)['DataBase']['suggestionvotes']['update']>[0]['data'] => {
  switch (true) {
   case suggestion.upvoted.includes(userid) && !upvote:
    return {

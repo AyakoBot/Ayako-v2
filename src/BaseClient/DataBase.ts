@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import log from './ClientHelperModules/logError.js';
+import log from './UtilModules/logError.js';
 
 const prisma = new PrismaClient();
 

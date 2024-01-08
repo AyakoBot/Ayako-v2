@@ -1,18 +1,17 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (oldRole: Discord.Role, role: Discord.Role) => {
  if (oldRole.position !== role.position) return;
  if (oldRole.rawPosition !== role.rawPosition) return;
 
- const channels = await ch.getLogChannels('roleevents', role.guild);
+ const channels = await role.client.util.getLogChannels('roleevents', role.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(role.guild.id);
+ const language = await role.client.util.getLanguage(role.guild.id);
  const lan = language.events.logs.role;
- const con = ch.constants.events.logs.role;
- const audit = await ch.getAudit(role.guild, 31, role.id);
+ const con = role.client.util.constants.events.logs.role;
+ const audit = await role.client.util.getAudit(role.guild, 31, role.id);
  const auditUser = audit?.executor ?? undefined;
  const files: Discord.AttachmentPayload[] = [];
 
@@ -30,7 +29,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
  const embeds = [embed];
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  role.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (role.icon !== oldRole.icon) {
   const getImage = async () => {
@@ -45,13 +44,13 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
     return;
    }
 
-   const attachment = (await ch.fileURL2Buffer([url]))?.[0]?.attachment;
+   const attachment = (await role.client.util.fileURL2Buffer([url]))?.[0]?.attachment;
 
-   merge(url, ch.getNameAndFileType(url), 'icon', lan.icon);
+   merge(url, role.client.util.getNameAndFileType(url), 'icon', lan.icon);
 
    if (attachment) {
     files.push({
-     name: ch.getNameAndFileType(url),
+     name: role.client.util.getNameAndFileType(url),
      attachment,
     });
    }
@@ -90,7 +89,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
  if (role.permissions.bitfield !== oldRole.permissions.bitfield) {
   const oldPermissions = new Discord.PermissionsBitField(oldRole.permissions).serialize();
   const newPermissions = new Discord.PermissionsBitField(role.permissions).serialize();
-  const changedDenied = ch.getDifference(
+  const changedDenied = role.client.util.getDifference(
    Object.entries(newPermissions)
     .filter(([, b]) => !b)
     .map(([p]) => p),
@@ -98,7 +97,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
     .filter(([, b]) => !b)
     .map(([p]) => p),
   ) as (typeof language.permissions.perms)[];
-  const changedAllowed = ch.getDifference(
+  const changedAllowed = role.client.util.getDifference(
    Object.entries(newPermissions)
     .filter(([, b]) => !!b)
     .map(([p]) => p),
@@ -112,14 +111,14 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
    description: `${changedDenied
     .map(
      (p) =>
-      `${ch.constants.standard.getEmote(ch.emotes.disabled)} \`${
+      `${role.client.util.constants.standard.getEmote(role.client.util.emotes.disabled)} \`${
        language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
       }\``,
     )
     .join('\n')}\n${changedAllowed
     .map(
      (p) =>
-      `${ch.constants.standard.getEmote(ch.emotes.enabled)} \`${
+      `${role.client.util.constants.standard.getEmote(role.client.util.emotes.enabled)} \`${
        language.permissions.perms[p as unknown as keyof typeof language.permissions.perms]
       }\``,
     )
@@ -129,5 +128,5 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
   embeds.push(permEmbed);
  }
 
- ch.send({ id: channels, guildId: role.guild.id }, { embeds, files }, 10000);
+ role.client.util.send({ id: channels, guildId: role.guild.id }, { embeds, files }, 10000);
 };

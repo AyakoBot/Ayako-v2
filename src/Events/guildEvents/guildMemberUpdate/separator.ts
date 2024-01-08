@@ -4,7 +4,6 @@ import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import { Worker } from 'worker_threads';
 import client from '../../../BaseClient/Client.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 const UpdateWorker = new Worker(
  `${process.cwd()}${
@@ -22,7 +21,7 @@ UpdateWorker.on(
  ]) => {
   switch (text) {
    case 'NO_SEP': {
-    ch.DataBase.roleseparator
+    client.util.DataBase.roleseparator
      .updateMany({
       where: {
        separator: roleData[0],
@@ -40,9 +39,9 @@ UpdateWorker.on(
     if (!guild) return;
     const member = guild.members.cache.get(userData.userid);
     if (!member) return;
-    const language = await ch.getLanguage(guild.id);
+    const language = await client.util.getLanguage(guild.id);
 
-    ch.roleManager.remove(member, roleData, language.autotypes.separators);
+    client.util.roleManager.remove(member, roleData, language.autotypes.separators);
     break;
    }
    case 'GIVE': {
@@ -51,9 +50,9 @@ UpdateWorker.on(
     if (!guild) return;
     const member = guild.members.cache.get(userData.userid);
     if (!member) return;
-    const language = await ch.getLanguage(guild.id);
+    const language = await client.util.getLanguage(guild.id);
 
-    ch.roleManager.add(member, roleData, language.autotypes.separators);
+    client.util.roleManager.add(member, roleData, language.autotypes.separators);
     break;
    }
    default: {
@@ -89,14 +88,14 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
  Jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
-  const stillrunning = await ch.DataBase.roleseparatorsettings.findFirst({
+  const stillrunning = await client.util.DataBase.roleseparatorsettings.findFirst({
    where: {
     guildid: member.guild.id,
    },
   });
   if (stillrunning) return;
 
-  const roleseparatorRows = await ch.DataBase.roleseparator.findFirst({
+  const roleseparatorRows = await client.util.DataBase.roleseparator.findFirst({
    where: {
     active: true,
     guildid: member.guild.id,
@@ -114,7 +113,7 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
    guildroles: map,
    highest: member.guild.roles.cache.map((r) => r).sort((a, b) => b.position - a.position)[0],
    res: roleseparatorRows,
-   language: await ch.getLanguage(member.guild.id),
+   language: await client.util.getLanguage(member.guild.id),
   });
  });
 };
@@ -140,9 +139,9 @@ export const oneTimeRunner = async (
  lastTime?: boolean,
 ) => {
  if (!m.guild) return;
- const language = await ch.getLanguage(m.guild.id);
+ const language = await client.util.getLanguage(m.guild.id);
 
- const roleseparatorRows = await ch.DataBase.roleseparator.findMany({
+ const roleseparatorRows = await client.util.DataBase.roleseparator.findMany({
   where: {
    active: true,
    guildid: m.guild.id,
@@ -161,7 +160,7 @@ export const oneTimeRunner = async (
   | undefined;
 
  if (
-  (await ch.DataBase.roleseparatorsettings
+  (await client.util.DataBase.roleseparatorsettings
    .findFirst({
     where: {
      guildid: m.guild.id,
@@ -172,7 +171,7 @@ export const oneTimeRunner = async (
  ) {
   membersWithRoles = true;
  } else {
-  ch.DataBase.roleseparatorsettings
+  client.util.DataBase.roleseparatorsettings
    .update({
     where: {
      guildid: m.guild.id,
@@ -189,8 +188,8 @@ export const oneTimeRunner = async (
   name: language.slashCommands.settings.authorType(
    language.slashCommands.settings.categories.separators.name,
   ),
-  icon_url: ch.emotes.settings.link,
-  url: ch.constants.standard.invite,
+  icon_url: client.util.emotes.settings.link,
+  url: client.util.constants.standard.invite,
  };
 
  if (button) await button.deleteReply().catch(() => undefined);
@@ -200,14 +199,14 @@ export const oneTimeRunner = async (
    embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
    if (m instanceof Discord.Message) {
-    ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+    client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
    }
   } else {
    embed.description =
     language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning;
 
    if (m instanceof Discord.Message) {
-    ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+    client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
    }
   }
  } else {
@@ -242,8 +241,8 @@ export const oneTimeRunner = async (
    name: language.slashCommands.settings.authorType(
     language.slashCommands.settings.categories.separators.name,
    ),
-   icon_url: ch.emotes.settings.link,
-   url: ch.constants.standard.invite,
+   icon_url: client.util.emotes.settings.link,
+   url: client.util.constants.standard.invite,
   };
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
    membersWithRoles && membersWithRoles.length ? membersWithRoles.length : 0,
@@ -252,10 +251,10 @@ export const oneTimeRunner = async (
   );
 
   if (m instanceof Discord.Message) {
-   ch.request.channels.editMsg(m, { embeds: [embed], components: [] });
+   client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
   }
 
-  ch.DataBase.roleseparatorsettings
+  client.util.DataBase.roleseparatorsettings
    .update({
     where: {
      guildid: m.guild.id,
@@ -305,7 +304,7 @@ const getMembers = async (
  | undefined
 > => {
  const highestRole = guild.roles.cache.map((o) => o).sort((a, b) => b.position - a.position)[0];
- const clientHighestRole = (await ch.getBotMemberFromGuild(guild))?.roles.highest;
+ const clientHighestRole = (await client.util.getBotMemberFromGuild(guild))?.roles.highest;
  if (!clientHighestRole) return undefined;
 
  const obj: PassObject = {
@@ -421,23 +420,23 @@ const assinger = async (
  lastTime?: boolean,
 ) => {
  if (!msg.guild) return;
- const language = await ch.getLanguage(msg.guild.id);
+ const language = await client.util.getLanguage(msg.guild.id);
 
  if (!membersWithRoles?.length) {
   embed.author = {
    name: language.slashCommands.settings.authorType(
     language.slashCommands.settings.categories.separators.name,
    ),
-   icon_url: ch.emotes.settings.link,
-   url: ch.constants.standard.invite,
+   icon_url: client.util.emotes.settings.link,
+   url: client.util.constants.standard.invite,
   };
 
   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
   if (msg instanceof Discord.Message) {
-   ch.request.channels.editMsg(msg, { embeds: [embed], components: [] });
+   client.util.request.channels.editMsg(msg, { embeds: [embed], components: [] });
   }
 
-  ch.DataBase.roleseparatorsettings
+  client.util.DataBase.roleseparatorsettings
    .update({
     where: {
      guildid: msg.guild.id,
@@ -463,8 +462,8 @@ const assinger = async (
     const member = msg.guild?.members.cache.get(raw.id);
 
     if (member) {
-     ch.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
-     ch.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
+     client.util.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
+     client.util.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
     }
 
     if (index === membersWithRoles.length - 1 && lastTime) {
@@ -472,17 +471,17 @@ const assinger = async (
       name: language.slashCommands.settings.authorType(
        language.slashCommands.settings.categories.separators.name,
       ),
-      icon_url: ch.emotes.settings.link,
-      url: ch.constants.standard.invite,
+      icon_url: client.util.emotes.settings.link,
+      url: client.util.constants.standard.invite,
      };
      embed.description =
       language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
 
      if (msg instanceof Discord.Message) {
-      ch.request.channels.editMsg(msg, { embeds: [embed], components: [] });
+      client.util.request.channels.editMsg(msg, { embeds: [embed], components: [] });
      }
 
-     ch.DataBase.roleseparatorsettings
+     client.util.DataBase.roleseparatorsettings
       .update({
        where: {
         guildid: msg.guild?.id,
@@ -503,7 +502,7 @@ const assinger = async (
      return;
     }
 
-    ch.DataBase.roleseparatorsettings
+    client.util.DataBase.roleseparatorsettings
      .update({
       where: {
        guildid: msg.guild?.id,

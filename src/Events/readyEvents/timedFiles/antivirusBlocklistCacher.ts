@@ -1,10 +1,10 @@
 import type * as Discord from 'discord.js';
 import fs from 'fs';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import sources from '../../../BaseClient/Other/blockListSources.js';
+import client from '../../../BaseClient/Client.js';
 
 export default async () => {
- const responses = (await ch.fileURL2Buffer(sources.antivirus))
+ const responses = (await client.util.fileURL2Buffer(sources.antivirus))
   .filter((res): res is Discord.AttachmentPayload => !!res)
   .map((e) => e.attachment.toString().replace(/\r+/, '\n').split(/\n+/))
   .flat(1)

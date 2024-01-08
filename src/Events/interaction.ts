@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import client from '../BaseClient/Client.js';
-import * as ch from '../BaseClient/ClientHelper.js';
 import * as Classes from '../BaseClient/Other/classes.js';
 import Socket from '../BaseClient/Socket.js';
 import interactionCreate from './interactionEvents/interactionCreate.js';
@@ -9,32 +8,32 @@ export default () => {
  Socket.on('interaction', async (rawInteraction: Discord.APIInteraction) => {
   if (!client.isReady()) return;
 
-  if (rawInteraction.guild_id && !ch.cache.apis.get(rawInteraction.guild_id)) {
+  if (rawInteraction.guild_id && !client.util.cache.apis.get(rawInteraction.guild_id)) {
    const startOfToken = Buffer.from(rawInteraction.application_id)
     .toString('base64')
     .replace(/=+/g, '');
 
-   const guildSettings = await ch.DataBase.guildsettings.findFirst({
+   const guildSettings = await client.util.DataBase.guildsettings.findFirst({
     where: { token: { startsWith: startOfToken } },
    });
    if (!guildSettings) return;
 
-   const api = ch.cache.apis.get(guildSettings?.guildid);
+   const api = client.util.cache.apis.get(guildSettings?.guildid);
    if (!api) return;
 
    await api.interactions
     .reply(rawInteraction.id, rawInteraction.token, {
      embeds: [
       {
-       color: ch.getColor(),
-       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${ch.constants.standard.invite})
-Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${ch.constants.standard.invite})
+       color: client.util.getColor(),
+       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${client.util.constants.standard.invite})
+Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${client.util.constants.standard.invite})
 
 I will now leave this Server`,
        author: {
         icon_url: client.user?.displayAvatarURL(),
         name: client.user?.username ?? 'Ayako',
-        url: ch.constants.standard.invite,
+        url: client.util.constants.standard.invite,
        },
       },
      ],

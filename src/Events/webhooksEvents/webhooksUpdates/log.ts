@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -7,13 +6,13 @@ export default async (
  webhook: Discord.Webhook,
  channel: Discord.GuildTextBasedChannel,
 ) => {
- const channels = await ch.getLogChannels('webhookevents', channel.guild);
+ const channels = await webhook.client.util.getLogChannels('webhookevents', channel.guild);
  if (!channels) return;
 
- const language = await ch.getLanguage(channel.guild.id);
+ const language = await webhook.client.util.getLanguage(channel.guild.id);
  const lan = language.events.logs.webhook;
- const con = ch.constants.events.logs.webhook;
- const audit = await ch.getAudit(channel.guild, 51, webhook.id);
+ const con = webhook.client.util.constants.events.logs.webhook;
+ const audit = await webhook.client.util.getAudit(channel.guild, 51, webhook.id);
  const auditUser = audit?.executor ?? undefined;
  const files: Discord.AttachmentPayload[] = [];
 
@@ -42,7 +41,7 @@ export default async (
  };
 
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
-  ch.mergeLogging(before, after, type, embed, language, name);
+  webhook.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (oldWebhook?.avatar !== webhook?.avatar) {
   const getImage = async () => {
@@ -58,9 +57,9 @@ export default async (
     return;
    }
 
-   const attachment = (await ch.fileURL2Buffer([url]))?.[0];
+   const attachment = (await webhook.client.util.fileURL2Buffer([url]))?.[0];
 
-   merge(url, ch.getNameAndFileType(url), 'icon', lan.avatar);
+   merge(url, webhook.client.util.getNameAndFileType(url), 'icon', lan.avatar);
 
    if (attachment) files.push(attachment);
   };
@@ -85,5 +84,9 @@ export default async (
   );
  }
 
- ch.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed], files }, 10000);
+ webhook.client.util.send(
+  { id: channels, guildId: channel.guild.id },
+  { embeds: [embed], files },
+  10000,
+ );
 };

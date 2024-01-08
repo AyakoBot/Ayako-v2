@@ -1,7 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 import { endTimeIsValid } from './create.js';
 import { end, getGiveawayEmbed, getMessage } from './end.js';
@@ -11,36 +10,36 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const messageID = cmd.options.getString('message-id', true);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.edit;
 
  const giveaway = await update(messageID, cmd, language);
  if (!giveaway) {
-  ch.errorCmd(cmd, lan.noChanges, language);
+  cmd.client.util.errorCmd(cmd, lan.noChanges, language);
   return;
  }
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.notFoundOrEnded, language);
   return;
  }
 
  const msg = await getMessage(giveaway);
  if (!msg) return;
 
- const res = await ch.request.channels.editMsg(msg, {
+ const res = await cmd.client.util.request.channels.editMsg(msg, {
   embeds: [await getGiveawayEmbed(language, giveaway)],
  });
 
  if ('message' in res) {
-  ch.errorCmd(cmd, res, language);
+  cmd.client.util.errorCmd(cmd, res, language);
   return;
  }
 
- ch.replyCmd(cmd, { content: lan.success });
+ cmd.client.util.replyCmd(cmd, { content: lan.success });
 
- ch.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
- ch.cache.giveaways.set(
+ cmd.client.util.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
+ cmd.client.util.cache.giveaways.set(
   Jobs.scheduleJob(new Date(Number(giveaway.endtime)), () => {
    end(giveaway);
   }),
@@ -58,7 +57,7 @@ const update = async (
  const time = cmd.options.getString('time', false);
 
  const prizeDesc = cmd.options.getString('prize-description', false);
- const endTime = time ? Math.abs(ch.getDuration(time)) + Date.now() : null;
+ const endTime = time ? Math.abs(cmd.client.util.getDuration(time)) + Date.now() : null;
  const winners = cmd.options.getInteger('winners', false);
  const role = cmd.options.getRole('role', false);
  const host = cmd.options.getUser('host', false);
@@ -76,63 +75,63 @@ const update = async (
   !claimingTimeout &&
   !claimFailReroll
  ) {
-  ch.errorCmd(cmd, language.slashCommands.giveaway.edit.noOptionsProvided, language);
+  cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.edit.noOptionsProvided, language);
   return undefined;
  }
 
  let lastReturnedGiveaway: Prisma.giveaways | undefined;
 
  if (prizeDesc) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { description: prizeDesc },
   });
  }
 
  if (endTime && endTimeIsValid(endTime, cmd, language)) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { endtime: endTime },
   });
  }
 
  if (winners) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { winnercount: winners },
   });
  }
 
  if (role) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { reqrole: role.id },
   });
  }
 
  if (host) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { host: host.id },
   });
  }
 
  if (prize) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { actualprize: prize },
   });
  }
 
  if (claimingTimeout) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
-   data: { collecttime: Math.abs(ch.getDuration(claimingTimeout)) },
+   data: { collecttime: Math.abs(cmd.client.util.getDuration(claimingTimeout)) },
   });
  }
 
  if (claimFailReroll) {
-  lastReturnedGiveaway = await ch.DataBase.giveaways.update({
+  lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { failreroll: claimFailReroll },
   });

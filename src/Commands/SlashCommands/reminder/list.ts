@@ -1,25 +1,26 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.reminder;
- const reminders = await ch.DataBase.reminders.findMany({
+ const reminders = await cmd.client.util.DataBase.reminders.findMany({
   where: { userid: cmd.user.id },
  });
 
  const embed: Discord.APIEmbed = {
-  description: lan.desc((await ch.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
+  description: lan.desc((await cmd.client.util.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
   fields: reminders.map((r) => ({
-   name: `<#${r.channelid}> | ${ch.constants.standard.getTime(
+   name: `<#${r.channelid}> | ${cmd.client.util.constants.standard.getTime(
     Number(r.endtime) + Date.now(),
    )} | ID: \`${Number(r.uniquetimestamp).toString(36)}\``,
    value: r.reason,
   })),
-  color: ch.getColor(cmd.guild ? await ch.getBotMemberFromGuild(cmd.guild) : undefined),
+  color: cmd.client.util.getColor(
+   cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
+  ),
  };
 
- await ch.replyCmd(cmd, { embeds: [embed] });
+ await cmd.client.util.replyCmd(cmd, { embeds: [embed] });
 };

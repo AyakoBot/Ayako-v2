@@ -1,7 +1,6 @@
 import type * as Discord from 'discord.js';
 import client from '../../../BaseClient/Client.js';
 import * as CT from '../../../Typings/Typings.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (guild: Discord.Guild | undefined) => {
  const webhook = await client.fetchWebhook(
@@ -10,7 +9,7 @@ export default async (guild: Discord.Guild | undefined) => {
  );
 
  const totalguildcount =
-  ((await client.shard?.fetchClientValues('guilds.cache.size')) as number[] | undefined)?.reduce(
+  ((await client.cluster?.fetchClientValues('guilds.cache.size')) as number[] | undefined)?.reduce(
    (acc, count) => acc + count,
    0,
   ) ?? 0;
@@ -28,7 +27,7 @@ export default async (guild: Discord.Guild | undefined) => {
     ],
     timestamp: new Date().toISOString(),
     footer: {
-     text: `Total Guilds: ${ch.splitByThousand(totalguildcount)}`,
+     text: `Total Guilds: ${client.util.splitByThousand(totalguildcount)}`,
     },
    },
   ],

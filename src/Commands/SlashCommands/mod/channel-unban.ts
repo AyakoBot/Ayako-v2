@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -9,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false);
  const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
 
- const language = await ch.getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const modOptions: CT.ModOptions<CT.ModTypes.ChannelBanRemove> = {
   reason: reason ?? language.t.noReasonProvided,
@@ -21,5 +20,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- ch.mod(cmd, CT.ModTypes.ChannelBanRemove, modOptions);
+ cmd.client.util.mod(cmd, CT.ModTypes.ChannelBanRemove, modOptions);
 };

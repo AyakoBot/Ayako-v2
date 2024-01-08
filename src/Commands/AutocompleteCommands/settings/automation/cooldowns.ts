@@ -1,17 +1,16 @@
 import client from '../../../../BaseClient/Client.js';
-import * as ch from '../../../../BaseClient/ClientHelper.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await ch.DataBase.cooldowns.findMany({ where: { guildid: cmd.guild.id } })
+  await cmd.guild.client.util.DataBase.cooldowns.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 
   return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
  });
 
- const language = await ch.getLanguage(cmd.guild.id);
+ const language = await cmd.guild.client.util.getLanguage(cmd.guild.id);
  const lan = language.slashCommands.settings.categories.cooldowns;
 
  if (!settings) return [];
@@ -24,7 +23,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   return {
    name: `${lan.fields.command.name}: ${command ?? language.t.None} - ${
     lan.fields.cooldown.name
-   }: ${ch.settingsHelpers.embedParsers.time(
+   }: ${cmd.guild.client.util.settingsHelpers.embedParsers.time(
     s.cooldown ? Number(s.cooldown) * 1000 : null,
     language,
    )}`,

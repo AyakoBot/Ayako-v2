@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as ch from '../../../BaseClient/ClientHelper.js';
 
 export default async (state: Discord.VoiceState) => {
  if (!state.channel) return;
  if (state.channel.members.size) return;
 
- const vc = await ch.DataBase.voicechannels.update({
+ const vc = await state.client.util.DataBase.voicechannels.update({
   where: {
    guildid_channelid: { guildid: state.guild.id, channelid: state.channel.id },
   },
@@ -17,20 +16,20 @@ export default async (state: Discord.VoiceState) => {
  });
  if (!vc) return;
 
- const settings = await ch.DataBase.voicehubs.findFirst({
+ const settings = await state.client.util.DataBase.voicehubs.findFirst({
   where: { channelid: vc.hubid },
  });
  if (!settings) {
-  ch.DataBase.voicechannels
+  state.client.util.DataBase.voicechannels
    .delete({
     where: { guildid_channelid: { guildid: state.guild.id, channelid: state.channel.id } },
    })
    .then();
   return;
  }
- ch.cache.vcDeleteTimeout.delete(state.guild.id, state.channel.id);
+ state.client.util.cache.vcDeleteTimeout.delete(state.guild.id, state.channel.id);
 
- ch.cache.vcDeleteTimeout.set(
+ state.client.util.cache.vcDeleteTimeout.set(
   Jobs.scheduleJob(new Date(Date.now() + Number(settings.deletetime) * 1000), () =>
    del(state.channel as Discord.VoiceBasedChannel),
   ),
@@ -42,10 +41,10 @@ export default async (state: Discord.VoiceState) => {
 export const del = (channel: Discord.VoiceBasedChannel) => {
  if (channel.members.size) return;
 
- ch.DataBase.voicechannels
+ channel.client.util.DataBase.voicechannels
   .delete({
    where: { guildid_channelid: { guildid: channel.guild.id, channelid: channel.id } },
   })
   .then();
- ch.request.channels.delete(channel);
+ channel.client.util.request.channels.delete(channel);
 };

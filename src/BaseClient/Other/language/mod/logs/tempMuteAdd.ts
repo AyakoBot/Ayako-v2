@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../../Typings/Typings.js';
-import * as ch from '../../../../ClientHelper.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.logs.tempMuteAdd,
@@ -12,6 +11,6 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.logs.tempMuteAdd.description, {
    target: t.languageFunction.getUser(target),
    executor: t.languageFunction.getUser(executor),
-   duration: ch.constants.standard.getTime(Date.now() + options.duration * 1000),
+   duration: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
   }),
 });
