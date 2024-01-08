@@ -1,6 +1,11 @@
 import get from './invites/get.js';
 import del from './invites/delete.js';
 
+interface Invites {
+ get: typeof get;
+ delete: typeof del;
+}
+
 /**
  * Object containing methods for handling invites.
  * @property {Function} get
@@ -8,7 +13,9 @@ import del from './invites/delete.js';
  * @property {Function} delete
  * - Method for deleting an invite.
  */
-export default {
+const invites: Invites = {
  get,
  delete: del,
 };
+
+export default invites;

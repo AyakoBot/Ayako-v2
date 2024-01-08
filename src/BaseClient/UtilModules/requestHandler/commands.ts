@@ -14,6 +14,24 @@ import getGuildCommandPermissions from './commands/getGuildCommandPermissions.js
 import getGuildCommandsPermissions from './commands/getGuildCommandsPermissions.js';
 import editGuildCommandPermissions from './commands/editGuildCommandPermissions.js';
 
+interface Commands {
+ getGlobalCommands: typeof getGlobalCommands;
+ createGlobalCommand: typeof createGlobalCommand;
+ getGlobalCommand: typeof getGlobalCommand;
+ editGlobalCommand: typeof editGlobalCommand;
+ deleteGlobalCommand: typeof deleteGlobalCommand;
+ bulkOverwriteGlobalCommands: typeof bulkOverwriteGlobalCommands;
+ getGuildCommands: typeof getGuildCommands;
+ createGuildCommand: typeof createGuildCommand;
+ getGuildCommand: typeof getGuildCommand;
+ editGuildCommand: typeof editGuildCommand;
+ deleteGuildCommand: typeof deleteGuildCommand;
+ bulkOverwriteGuildCommands: typeof bulkOverwriteGuildCommands;
+ getGuildCommandPermissions: typeof getGuildCommandPermissions;
+ getGuildCommandsPermissions: typeof getGuildCommandsPermissions;
+ editGuildCommandPermissions: typeof editGuildCommandPermissions;
+}
+
 /**
  * Object containing methods for interacting with global and guild commands.
  * @property {Function} getGlobalCommands
@@ -47,7 +65,7 @@ import editGuildCommandPermissions from './commands/editGuildCommandPermissions.
  * @property {Function} editGuildCommandPermissions
  * - Method to edit the permissions for a specific guild command by ID for a specific guild.
  */
-export default {
+const commands: Commands = {
  getGlobalCommands,
  createGlobalCommand,
  getGlobalCommand,
@@ -64,3 +82,5 @@ export default {
  getGuildCommandsPermissions,
  editGuildCommandPermissions,
 };
+
+export default commands;

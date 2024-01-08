@@ -5,6 +5,15 @@ import removeMember from './threads/removeMember.js';
 import getMember from './threads/getMember.js';
 import getAllMembers from './threads/getAllMembers.js';
 
+interface Threads {
+ join: typeof join;
+ addMember: typeof addMember;
+ leave: typeof leave;
+ removeMember: typeof removeMember;
+ getMember: typeof getMember;
+ getAllMembers: typeof getAllMembers;
+}
+
 /**
  * Object containing methods for handling threads.
  * @property {Function} join
@@ -20,7 +29,7 @@ import getAllMembers from './threads/getAllMembers.js';
  * @property {Function} getAllMembers
  * - Method for getting all members from a thread.
  */
-export default {
+const threads: Threads = {
  join,
  addMember,
  leave,
@@ -28,3 +37,5 @@ export default {
  getMember,
  getAllMembers,
 };
+
+export default threads;

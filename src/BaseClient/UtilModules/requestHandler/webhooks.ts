@@ -8,6 +8,18 @@ import getMessage from './webhooks/getMessage.js';
 import editMessage from './webhooks/editMessage.js';
 import deleteMessage from './webhooks/deleteMessage.js';
 
+interface Webhooks {
+ get: typeof get;
+ edit: typeof edit;
+ delete: typeof del;
+ execute: typeof execute;
+ executeSlack: typeof executeSlack;
+ executeGitHub: typeof executeGitHub;
+ getMessage: typeof getMessage;
+ editMessage: typeof editMessage;
+ deleteMessage: typeof deleteMessage;
+}
+
 /**
  * Helper methods for handling webhooks.
  * @property {Function} get
@@ -29,7 +41,7 @@ import deleteMessage from './webhooks/deleteMessage.js';
  * @property {Function} deleteMessage
  * - Deletes a message from a webhook.
  */
-export default {
+const webhooks: Webhooks = {
  get,
  edit,
  delete: del,
@@ -40,3 +52,5 @@ export default {
  editMessage,
  deleteMessage,
 };
+
+export default webhooks;

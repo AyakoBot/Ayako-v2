@@ -9,6 +9,19 @@ import getCurrentConnections from './users/getCurrentConnections.js';
 import getApplicationRoleConnection from './users/getApplicationRoleConnection.js';
 import updateApplicationRoleConnection from './users/updateApplicationRoleConnection.js';
 
+interface Users {
+ get: typeof get;
+ getCurrent: typeof getCurrent;
+ getGuilds: typeof getGuilds;
+ leaveGuild: typeof leaveGuild;
+ edit: typeof edit;
+ editCurrentGuildMember: typeof editCurrentGuildMember;
+ createDM: typeof createDM;
+ getCurrentConnections: typeof getCurrentConnections;
+ getApplicationRoleConnection: typeof getApplicationRoleConnection;
+ updateApplicationRoleConnection: typeof updateApplicationRoleConnection;
+}
+
 /**
  * Object containing methods for handling user-related requests.
  * @property {Function} get
@@ -32,7 +45,7 @@ import updateApplicationRoleConnection from './users/updateApplicationRoleConnec
  * @property {Function} updateApplicationRoleConnection
  * - Method for updating the current user's application role connection.
  */
-export default {
+const users: Users = {
  get,
  getCurrent,
  getGuilds,
@@ -44,3 +57,5 @@ export default {
  getApplicationRoleConnection,
  updateApplicationRoleConnection,
 };
+
+export default users;

@@ -32,9 +32,44 @@ import deletePermissionOverwrite from './channels/deletePermissionOverwrite.js';
 import createWebhook from './channels/createWebhook.js';
 import getMessage from './channels/getMessage.js';
 
+interface Channels {
+ sendMessage: typeof sendMessage;
+ replyMsg: typeof replyMsg;
+ editMsg: typeof editMsg;
+ editMessage: typeof editMessage;
+ getReactions: typeof getReactions;
+ deleteOwnReaction: typeof deleteOwnReaction;
+ deleteUserReaction: typeof deleteUserReaction;
+ deleteAllReactions: typeof deleteAllReactions;
+ deleteAllReactionsOfEmoji: typeof deleteAllReactionsOfEmoji;
+ addReaction: typeof addReaction;
+ edit: typeof edit;
+ get: typeof get;
+ delete: typeof del;
+ getMessages: typeof getMessages;
+ showTyping: typeof showTyping;
+ pin: typeof pin;
+ deleteMessage: typeof deleteMessage;
+ bulkDelete: typeof bulkDelete;
+ crosspostMessage: typeof crosspostMessage;
+ getPins: typeof getPins;
+ unpin: typeof unpin;
+ followAnnouncements: typeof followAnnouncements;
+ createInvite: typeof createInvite;
+ getInvites: typeof getInvites;
+ createThread: typeof createThread;
+ createForumThread: typeof createForumThread;
+ getArchivedThreads: typeof getArchivedThreads;
+ getJoinedPrivateArchivedThreads: typeof getJoinedPrivateArchivedThreads;
+ getWebhooks: typeof getWebhooks;
+ editPermissionOverwrite: typeof editPermissionOverwrite;
+ deletePermissionOverwrite: typeof deletePermissionOverwrite;
+ createWebhook: typeof createWebhook;
+ getMessage: typeof getMessage;
+}
+
 /**
  * An object containing methods for handling channel-related requests.
- * @typedef {Object} ChannelRequestHandler
  * @property {Function} sendMessage
  * - Sends a message to a channel.
  * @property {Function} replyMsg
@@ -71,14 +106,16 @@ import getMessage from './channels/getMessage.js';
  * - Deletes a message from a channel.
  * @property {Function} bulkDelete
  * - Deletes multiple messages from a channel.
- * @property {Function} crosspostMessage - Crossposts a message to another channel.
+ * @property {Function} crosspostMessage
+ * - Crossposts a message to another channel.
  * @property {Function} getPins
  * - Gets pinned messages from a channel.
  * @property {Function} unpin
  * - Unpins a message from a channel.
  * @property {Function} followAnnouncements
  * - Follows announcements in a channel.
- * @property {Function} createInvite - Creates an invite to a channel.
+ * @property {Function} createInvite
+ * - Creates an invite to a channel.
  * @property {Function} getInvites
  * - Gets invites to a channel.
  * @property {Function} createThread
@@ -100,7 +137,7 @@ import getMessage from './channels/getMessage.js';
  * @property {Function} getMessage
  * - Gets a message from a channel.
  */
-export default {
+const channels: Channels = {
  sendMessage,
  replyMsg,
  editMsg,
@@ -135,3 +172,5 @@ export default {
  createWebhook,
  getMessage,
 };
+
+export default channels;

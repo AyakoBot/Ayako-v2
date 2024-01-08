@@ -3,6 +3,13 @@ import get from './stageInstances/get.js';
 import edit from './stageInstances/edit.js';
 import del from './stageInstances/delete.js';
 
+interface StageInstances {
+ create: typeof create;
+ get: typeof get;
+ edit: typeof edit;
+ delete: typeof del;
+}
+
 /**
  * Helper methods for interacting with Stage Instances.
  * @property {Function} create
@@ -14,9 +21,11 @@ import del from './stageInstances/delete.js';
  * @property {Function} delete
  * - Deletes a Stage Instance by ID.
  */
-export default {
+const stageInstances: StageInstances = {
  create,
  get,
  edit,
  delete: del,
 };
+
+export default stageInstances;

@@ -144,18 +144,14 @@ const combineMessages = async (
  embeds: Discord.APIEmbed[],
  timeout: number,
 ) => {
- const ch = (await import(
-  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/ClientHelper.js`
- )) as typeof import('../ClientHelper.js');
-
- let guildQueue = ch.channelQueue.get(channel.guildId);
+ let guildQueue = channel.client.util.channelQueue.get(channel.guildId);
  if (!guildQueue) {
-  ch.channelQueue.set(channel.guildId, new Map());
-  guildQueue = ch.channelQueue.get(channel.guildId);
+  channel.client.util.channelQueue.set(channel.guildId, new Map());
+  guildQueue = channel.client.util.channelQueue.get(channel.guildId);
  }
 
  if (!guildQueue) {
-  ch.send(channel, { embeds });
+  channel.client.util.send(channel, { embeds });
   return;
  }
 
@@ -166,7 +162,7 @@ const combineMessages = async (
  }
 
  if (!channelQueues) {
-  ch.send(channel, { embeds });
+  channel.client.util.send(channel, { embeds });
   return;
  }
 
@@ -174,49 +170,50 @@ const combineMessages = async (
   Number(channelQueues.length) + embeds.length > 10 ||
   getEmbedCharLens([...channelQueues, ...embeds]) > 6000
  ) {
-  ch.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
-  ch.send(channel, { embeds: channelQueues });
+  channel.client.util.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
+  channel.client.util.send(channel, { embeds: channelQueues });
   guildQueue.set(channel.id, []);
   channelQueues = guildQueue.get(channel.id);
  }
 
  if (!channelQueues) {
-  ch.send(channel, { embeds });
+  channel.client.util.send(channel, { embeds });
   return;
  }
 
- ch.channelQueue
+ channel.client.util.channelQueue
   .get(channel.guildId)
   ?.get(channel.id)
   ?.push(...embeds);
 
- if (ch.channelTimeout.get(channel.guildId)?.get(channel.id)) return;
+ if (channel.client.util.channelTimeout.get(channel.guildId)?.get(channel.id)) return;
 
- let timeoutGuild = ch.channelTimeout.get(channel.guildId);
+ let timeoutGuild = channel.client.util.channelTimeout.get(channel.guildId);
  if (!timeoutGuild) {
-  ch.channelTimeout.set(channel.guildId, new Map());
-  timeoutGuild = ch.channelTimeout.get(channel.guildId);
+  channel.client.util.channelTimeout.set(channel.guildId, new Map());
+  timeoutGuild = channel.client.util.channelTimeout.get(channel.guildId);
  }
 
  if (!timeoutGuild) {
-  ch.send(channel, { embeds });
+  channel.client.util.send(channel, { embeds });
   return;
  }
 
  timeoutGuild.set(
   channel.guildId,
   Jobs.scheduleJob(new Date(Date.now() + timeout), () => {
-   const queuedEmbeds = ch.channelQueue.get(channel.guildId)?.get(channel.id) || [];
-   ch.send(channel, { embeds: queuedEmbeds });
+   const queuedEmbeds =
+    channel.client.util.channelQueue.get(channel.guildId)?.get(channel.id) || [];
+   channel.client.util.send(channel, { embeds: queuedEmbeds });
 
-   ch.channelQueue.get(channel.guildId)?.delete(channel.id);
-   ch.channelTimeout.get(channel.guildId)?.delete(channel.id);
+   channel.client.util.channelQueue.get(channel.guildId)?.delete(channel.id);
+   channel.client.util.channelTimeout.get(channel.guildId)?.delete(channel.id);
 
-   if (ch.channelQueue.get(channel.guildId)?.size === 0) {
-    ch.channelQueue.delete(channel.guildId);
+   if (channel.client.util.channelQueue.get(channel.guildId)?.size === 0) {
+    channel.client.util.channelQueue.delete(channel.guildId);
    }
-   if (ch.channelTimeout.get(channel.guildId)?.size === 0) {
-    ch.channelTimeout.delete(channel.guildId);
+   if (channel.client.util.channelTimeout.get(channel.guildId)?.size === 0) {
+    channel.client.util.channelTimeout.delete(channel.guildId);
    }
   }),
  );

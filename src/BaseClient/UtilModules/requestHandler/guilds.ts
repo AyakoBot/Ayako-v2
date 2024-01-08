@@ -70,9 +70,82 @@ import banMember from './guilds/banMember.js';
 import unbanUser from './guilds/unbanUser.js';
 import setRolePositions from './guilds/setRolePositions.js';
 
+interface Guilds {
+ edit: typeof edit;
+ delete: typeof del;
+ getChannels: typeof getChannels;
+ getWidgetImage: typeof getWidgetImage;
+ getVanityURL: typeof getVanityURL;
+ getWelcomeScreen: typeof getWelcomeScreen;
+ editWelcomeScreen: typeof editWelcomeScreen;
+ getWidgetSettings: typeof getWidgetSettings;
+ editWidgetSettings: typeof editWidgetSettings;
+ getWidget: typeof getWidget;
+ getInvites: typeof getInvites;
+ getIntegrations: typeof getIntegrations;
+ deleteIntegration: typeof deleteIntegration;
+ getVoiceRegions: typeof getVoiceRegions;
+ beginPrune: typeof beginPrune;
+ getAuditLogs: typeof getAuditLogs;
+ getAutoModerationRules: typeof getAutoModerationRules;
+ getAutoModerationRule: typeof getAutoModerationRule;
+ createAutoModerationRule: typeof createAutoModerationRule;
+ editAutoModerationRule: typeof editAutoModerationRule;
+ deleteAutoModerationRule: typeof deleteAutoModerationRule;
+ getEmojis: typeof getEmojis;
+ getEmoji: typeof getEmoji;
+ createEmoji: typeof createEmoji;
+ editEmoji: typeof editEmoji;
+ deleteEmoji: typeof deleteEmoji;
+ getMembers: typeof getMembers;
+ getMember: typeof getMember;
+ searchForMembers: typeof searchForMembers;
+ editMember: typeof editMember;
+ removeMember: typeof removeMember;
+ addRoleToMember: typeof addRoleToMember;
+ removeRoleFromMember: typeof removeRoleFromMember;
+ getRoles: typeof getRoles;
+ createRole: typeof createRole;
+ editRole: typeof editRole;
+ deleteRole: typeof deleteRole;
+ getPruneCount: typeof getPruneCount;
+ deleteScheduledEvent: typeof deleteScheduledEvent;
+ editScheduledEvent: typeof editScheduledEvent;
+ createScheduledEvent: typeof createScheduledEvent;
+ getScheduledEvent: typeof getScheduledEvent;
+ getScheduledEvents: typeof getScheduledEvents;
+ getScheduledEventUsers: typeof getScheduledEventUsers;
+ getStickers: typeof getStickers;
+ getSticker: typeof getSticker;
+ createSticker: typeof createSticker;
+ editSticker: typeof editSticker;
+ deleteSticker: typeof deleteSticker;
+ getTemplates: typeof getTemplates;
+ getTemplate: typeof getTemplate;
+ createTemplate: typeof createTemplate;
+ editTemplate: typeof editTemplate;
+ deleteTemplate: typeof deleteTemplate;
+ getWebhooks: typeof getWebhooks;
+ getMemberBans: typeof getMemberBans;
+ getOnboarding: typeof getOnboarding;
+ setVoiceState: typeof setVoiceState;
+ syncTemplate: typeof syncTemplate;
+ editUserVoiceState: typeof editUserVoiceState;
+ editMFALevel: typeof editMFALevel;
+ getPreview: typeof getPreview;
+ create: typeof create;
+ createChannel: typeof createChannel;
+ setChannelPositions: typeof setChannelPositions;
+ getActiveThreads: typeof getActiveThreads;
+ getMemberBan: typeof getMemberBan;
+ banMember: typeof banMember;
+ banUser: typeof banUser;
+ unbanUser: typeof unbanUser;
+ setRolePositions: typeof setRolePositions;
+}
+
 /**
  * This module contains methods for interacting with guilds in Discord.
- * @typedef {Object} GuildMethods
  * @property {Function} edit
  * - Edits a guild.
  * @property {Function} delete
@@ -216,7 +289,7 @@ import setRolePositions from './guilds/setRolePositions.js';
  * @property {Function} getRolePositions
  * - Gets the positions of roles in a guild.
  */
-export default {
+const guilds: Guilds = {
  edit,
  delete: del,
  getChannels,
@@ -289,3 +362,5 @@ export default {
  unbanUser,
  setRolePositions,
 };
+
+export default guilds;
