@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 import * as Jobs from 'node-schedule';
 import * as Sharding from 'discord-hybrid-sharding';
+import * as Discord from 'discord.js';
 import DotENV from 'dotenv';
 import readline from 'readline';
-import { AutoPoster } from 'topgg-autoposter';
+import * as AutoPoster from 'topgg-autoposter';
 import sms from 'source-map-support';
 import log from './BaseClient/UtilModules/logError.js';
 
@@ -26,18 +27,17 @@ log(
  true,
 );
 
-const manager = new Sharding.ClusterManager(
- `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`,
- {
-  totalShards: 'auto',
-  totalClusters: 'auto',
-  token: process.env.Token,
-  shardArgs: process.argv,
-  execArgv: ['--experimental-wasm-modules'],
-  respawn: true,
-  mode: 'process',
- },
-);
+const botPath = `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/bot.js`;
+
+const manager = new Sharding.ClusterManager(botPath, {
+ totalShards: 'auto',
+ totalClusters: 'auto',
+ token: process.env.Token,
+ shardArgs: process.argv,
+ execArgv: ['--experimental-wasm-modules'],
+ respawn: true,
+ mode: 'process',
+});
 
 manager.on('clusterCreate', (cluster) => {
  log(`[Cluster Manager] Launched Shard ${cluster.id}`, true);
@@ -79,8 +79,6 @@ await manager.spawn().catch((e) => {
  process.exit(1);
 });
 
-AutoPoster(process.env.topGGToken ?? '', manager).start();
-
 Jobs.scheduleJob('*/10 * * * *', async () => {
  log(`=> Current Date: ${new Date().toLocaleString()}`, true);
 });
@@ -94,3 +92,18 @@ rl.on('line', async (msg: string) => {
 
  manager.respawnAll({ respawnDelay: 1000 });
 });
+
+new AutoPoster.DJSSharderPoster(
+ process.env.topGGToken ?? '',
+ new Discord.ShardingManager(botPath, {
+  totalShards: manager.totalShards,
+  shardList: manager.shardList,
+  mode: manager.mode,
+  respawn: manager.respawn,
+  shardArgs: manager.shardArgs,
+  execArgv: manager.execArgv,
+ }),
+ {
+  startPosting: true,
+ },
+);
