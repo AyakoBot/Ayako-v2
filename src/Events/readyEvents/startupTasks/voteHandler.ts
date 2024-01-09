@@ -64,10 +64,10 @@ const initSocket = () =>
      const guild = cl.guilds.cache.get(s.guildid);
      if (!guild) return;
 
-     const user = await client.util.getUser(vote.user);
+     const user = await cl.util.getUser(vote.user);
      if (!user) return;
 
-     const member = await client.util.request.guilds
+     const member = await cl.util.request.guilds
       .getMember(guild, vote.user)
       .then((m) => ('message' in m ? undefined : m));
 

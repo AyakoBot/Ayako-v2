@@ -23,12 +23,10 @@ export default async () => {
      guild.id,
     );
 
-    const channel = channelid
-     ? await client.util.getChannel.guildTextChannel(channelid)
-     : undefined;
+    const channel = channelid ? await cl.util.getChannel.guildTextChannel(channelid) : undefined;
     const message =
      messageid && channel
-      ? await client.util.request.channels
+      ? await cl.util.request.channels
          .getMessage(channel, messageid)
          .then((m) => ('message' in m ? undefined : m))
       : undefined;
