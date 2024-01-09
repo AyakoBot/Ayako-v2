@@ -93,17 +93,21 @@ rl.on('line', async (msg: string) => {
  manager.respawnAll({ respawnDelay: 1000 });
 });
 
-new AutoPoster.DJSSharderPoster(
- process.env.topGGToken ?? '',
- new Discord.ShardingManager(botPath, {
-  totalShards: manager.totalShards,
-  shardList: manager.shardList,
-  mode: manager.mode,
-  respawn: manager.respawn,
-  shardArgs: manager.shardArgs,
-  execArgv: manager.execArgv,
- }),
- {
-  startPosting: true,
- },
-);
+if (
+ Buffer.from(process.env.Token?.split('.')[0] ?? '0', 'base64').toString() === process.env.mainID
+) {
+ new AutoPoster.DJSSharderPoster(
+  process.env.topGGToken ?? '',
+  new Discord.ShardingManager(botPath, {
+   totalShards: manager.totalShards,
+   shardList: manager.shardList,
+   mode: manager.mode,
+   respawn: manager.respawn,
+   shardArgs: manager.shardArgs,
+   execArgv: manager.execArgv,
+  }),
+  {
+   startPosting: true,
+  },
+ );
+}
