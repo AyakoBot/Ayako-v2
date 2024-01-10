@@ -14,6 +14,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if the vanity URL is missing or inaccessible.
  */
 export default async (guild: Discord.Guild) => {
+ if (!guild) return new Error('Guild not specified.');
  if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.ManageGuild]);
 
@@ -21,14 +22,14 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .getVanityURL(guild.id)
+ return (cache.apis.get(guild?.id) ?? API).guilds
+  .getVanityURL(guild?.id)
   .then(async (v) => {
    const parsed = v.code
     ? new Classes.Invite(guild.client, {
        code: v.code,
        guild: {
-        id: guild.id,
+        id: guild?.id,
         name: guild.name,
         splash: guild.splash,
         banner: guild.banner,
@@ -40,14 +41,18 @@ export default async (guild: Discord.Guild) => {
         nsfw_level: guild.nsfwLevel,
         premium_subscription_count: guild.premiumSubscriptionCount ?? undefined,
        },
-       channel: guild.rulesChannel
+       channel: (guild.rulesChannel
         ? {
-           id: guild.rulesChannel.id,
+           id: guild.rulesChannel?.id,
            name: guild.rulesChannel.name,
            type: guild.rulesChannel.type,
           }
-        : null,
-       inviter: await (cache.apis.get(guild.id) ?? API).users
+        : {
+           id: guild.systemChannel?.id,
+           name: guild.systemChannel?.name,
+           type: guild.systemChannel?.type,
+          }) as Required<Discord.APIPartialChannel>,
+       inviter: await (cache.apis.get(guild?.id) ?? API).users
         .get(guild.ownerId)
         .catch(() => undefined),
        approximate_presence_count: guild.approximatePresenceCount ?? undefined,
