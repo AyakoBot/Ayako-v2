@@ -12,7 +12,7 @@ const requestHandler = (token: string) =>
 
 requestHandler(process.env.Token ?? '')
  .applicationCommands.bulkOverwriteGlobalCommands(
-  process.env.mainID ?? '',
+  Buffer.from(process.env.Token?.split('.')[0] ?? '0', 'base64').toString() ?? '',
   createCommands.map((c) => c.toJSON()),
  )
  .then((r) => console.log(`[MAIN] Registered ${r.length} Global Commands`));
