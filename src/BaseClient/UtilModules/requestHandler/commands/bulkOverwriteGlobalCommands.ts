@@ -21,7 +21,8 @@ export default async (
   .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
-   if (!cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
+   cache.commands.cache.set(guild.id, new Map());
+
    parsed.forEach((p) => {
     cache.commands.cache.get(guild.id)?.set(p.id, p);
 

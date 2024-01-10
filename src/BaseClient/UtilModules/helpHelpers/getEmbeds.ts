@@ -33,12 +33,12 @@ export default (
  type: CT.CommandCategories,
 ) => {
  const lan = language.slashCommands.help;
- const fetchedCommands = cmd.guildId
-  ? [
-     ...(cache.commands.cache.get(cmd.guildId)?.values() ??
-      cmd.client.application.commands.cache.map((c) => c)),
-    ]
-  : cmd.client.application.commands.cache.map((c) => c);
+ const guildCommands = cmd.guildId
+  ? [...[...(cache.commands.cache.get(cmd.guildId)?.values() ?? [])].filter((c) => !c.guildId)]
+  : [];
+ const globalCommands = cmd.client.application.commands.cache.map((c) => c);
+
+ const fetchedCommands = cmd.guildId && guildCommands.length ? guildCommands : globalCommands;
 
  const embed: Discord.APIEmbed = {
   color: CT.Colors.Base,

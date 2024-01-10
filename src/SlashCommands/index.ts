@@ -272,7 +272,6 @@ export default {
   'stickers_create_from-sticker': [CommandCategories.Utility],
   stickers_delete: [CommandCategories.Utility],
   stickers_edit_name: [CommandCategories.Utility],
-  stickers_edit_roles: [CommandCategories.Utility, CommandCategories.Roles],
  },
  names: [
   'settings',

@@ -7,7 +7,28 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('list')
-   .setDescription('See a list of all Commands and Categories'),
+   .setDescription('See a list of all Commands and Categories')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('type')
+     .setDescription('The Category to list Commands for')
+     .setRequired(false)
+     .addChoices(
+      ...[
+       ['Moderation', 'moderation'],
+       ['Info', 'info'],
+       ['Utility', 'utility'],
+       ['Leveling', 'leveling'],
+       ['Nitro', 'nitro'],
+       ['Vote', 'vote'],
+       ['Roles', 'roles'],
+       ['Channels', 'channels'],
+       ['Shop', 'shop'],
+       ['Automation', 'automation'],
+       ['Fun', 'fun'],
+      ].map((c) => ({ name: c[0], value: c[1] })),
+     ),
+   ),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -55,6 +76,16 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('roles')
    .setDescription('Help for the Role Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('channels')
+   .setDescription('Help for the Channel Commands'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('shop')
+   .setDescription('Help for the Shop Commands'),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()

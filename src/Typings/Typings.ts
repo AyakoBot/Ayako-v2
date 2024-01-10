@@ -5,6 +5,7 @@ export * from './DataBase.js';
 export * from './Settings.js';
 export * from './TopGG.js';
 export * from './Channel.js';
+export * from '../SlashCommands/index.js';
 
 export type Language = import('../BaseClient/Other/language.js').default;
 
@@ -74,18 +75,6 @@ export type Appeal = {
  answers: string[];
  answertypes: Prisma.appealquestions['answertype'][];
 };
-
-export enum CommandCategories {
- Info = 'info',
- Utility = 'utility',
- Moderation = 'moderation',
- Fun = 'fun',
- Nitro = 'nitro',
- Roles = 'roles',
- Vote = 'vote',
- Automation = 'automation',
- Leveling = 'leveling',
-}
 
 export type DePromisify<T> = T extends Promise<infer U> ? U : T;
 

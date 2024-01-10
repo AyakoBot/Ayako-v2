@@ -1970,7 +1970,9 @@
     "vote": "Vote",
     "nitro": "Nitro",
     "automation": "Automation",
-    "leveling": "Leveling"
+    "leveling": "Leveling",
+    "channels": "Channels",
+    "shop": "Shop"
    },
    "parentCommands": "The Parent-Commands in this Category are:",
    "subCommandGroups": "The Sub-Command-Groups in this Category are:",

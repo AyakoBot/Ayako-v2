@@ -18,7 +18,7 @@ export default async (
  selected?: string,
 ) => {
  const rawCommands = Object.entries(SlashCommands.categories)
-  .filter(([, val]) => val === type)
+  .filter(([, val]) => val.includes(type))
   .map(([k]) => k);
  const commandArgs = rawCommands.map((k) => k.split(/_/g));
  const allCommands = commandArgs
@@ -112,8 +112,17 @@ export default async (
       type: Discord.ComponentType.StringSelect,
       custom_id: 'help/select',
       placeholder: language.slashCommands.help.selectPlaceholder,
-      options: [...new Set(Object.values(SlashCommands.categories))].map((c) => ({
-       label: language.slashCommands.help.categories[c as CT.CommandCategories],
+      options: [
+       ...new Set(
+        [...new Set(Object.values(SlashCommands.categories))]
+         .filter((c) => c.includes(type))
+         .flat(),
+       ),
+      ].map((c) => ({
+       label:
+        language.slashCommands.help.categories[
+         c as keyof typeof language.slashCommands.help.categories
+        ],
        value: c,
        default: c === type,
       })),
