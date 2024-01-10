@@ -94,7 +94,8 @@ rl.on('line', async (msg: string) => {
 });
 
 if (
- Buffer.from(process.env.Token?.split('.')[0] ?? '0', 'base64').toString() === process.env.mainID
+ Buffer.from(process.env.Token?.replace('Bot ', '').split('.')[0] ?? '0', 'base64').toString() ===
+ process.env.mainID
 ) {
  new AutoPoster.DJSSharderPoster(
   process.env.topGGToken ?? '',
