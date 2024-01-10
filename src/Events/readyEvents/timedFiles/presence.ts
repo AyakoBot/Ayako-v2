@@ -40,7 +40,7 @@ export default async () => {
   default: {
    activities.push({
     name: 'Stable',
-    state: `Stable | v${pack.version} | Default Prefix: ${client.util.constants.standard.prefix}`,
+    state: `Stable | v${pack.version} | Default Prefix: ${client.util.constants.standard.prefix} | Shard ${client.cluster?.id}}/${client.cluster?.ids.length}`,
     type: Discord.ActivityType.Custom,
    });
    break;
@@ -51,5 +51,6 @@ export default async () => {
   afk: false,
   activities,
   status: Discord.PresenceUpdateStatus.Online,
+  shardId: client.cluster?.id,
  });
 };
