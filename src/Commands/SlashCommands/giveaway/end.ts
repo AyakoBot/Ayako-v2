@@ -30,7 +30,10 @@ export const end = async (g: Prisma.giveaways) => {
    const guild = cl.guilds.cache.get(giveaway.guildid);
    if (!guild) return;
 
-   giveawayCollectTime(guild, giveaway.msgid);
+   cl.util.files['/Commands/SlashCommands/giveaway/end.js'].giveawayCollectTime(
+    guild,
+    giveaway.msgid,
+   );
   },
   { context: { giveaway: g } },
  );
@@ -284,11 +287,14 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
    if (!giveaway.winners.length) return;
 
    if (!giveaway.failreroll) {
-    failReroll(giveaway);
+    cl.util.files['/Commands/SlashCommands/giveaway/end.js'].failReroll(giveaway);
     return;
    }
 
-   giveawayCollectTime(guild, giveaway.msgid);
+   cl.util.files['/Commands/SlashCommands/giveaway/end.js'].giveawayCollectTime(
+    guild,
+    giveaway.msgid,
+   );
   },
   { context: { gID: guildID, mID: msgID } },
  );

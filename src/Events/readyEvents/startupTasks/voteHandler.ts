@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import Socket from '../../../BaseClient/Socket.js';
@@ -79,8 +78,8 @@ const initSocket = () =>
        member,
        {
         ...s,
-        uniquetimestamp: new Prisma.Decimal(s.uniquetimestamp),
-        linkedid: s.linkedid ? new Prisma.Decimal(s.linkedid) : null,
+        uniquetimestamp: new cl.util.files.prisma.Decimal(s.uniquetimestamp),
+        linkedid: s.linkedid ? new cl.util.files.prisma.Decimal(s.linkedid) : null,
        },
       );
      }
@@ -93,8 +92,8 @@ const initSocket = () =>
        member,
        {
         ...s,
-        uniquetimestamp: new Prisma.Decimal(s.uniquetimestamp),
-        linkedid: s.linkedid ? new Prisma.Decimal(s.linkedid) : null,
+        uniquetimestamp: new cl.util.files.prisma.Decimal(s.uniquetimestamp),
+        linkedid: s.linkedid ? new cl.util.files.prisma.Decimal(s.linkedid) : null,
        },
       );
      }

@@ -89,9 +89,10 @@ async function send(
   return null;
  }
 
- const constants = channel.client.util.files['/BaseClient/Other/constants.js'];
  payload.embeds?.forEach((e) => {
-  if (e.author && !e.author.url) e.author.url = constants.standard.invite;
+  if (e.author && !e.author.url) {
+   e.author.url = channel.client.util.files['/BaseClient/Other/constants.js'].standard.invite;
+  }
 
   e.fields?.forEach((f) => {
    if (typeof f.inline !== 'boolean') {
