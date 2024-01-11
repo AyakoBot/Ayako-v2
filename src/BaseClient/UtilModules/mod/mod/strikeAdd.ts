@@ -1,12 +1,13 @@
 import Prisma from '@prisma/client';
 import * as CT from '../../../../Typings/Typings.js';
 
+import client from '../../../Client.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
 import type * as ModTypes from '../../mod.js';
 
-import getStrike from '../getStrike.js';
 import getMembers from '../getMembers.js';
+import getStrike from '../getStrike.js';
 
 import banAdd from './banAdd.js';
 import channelBanAdd from './channelBanAdd.js';
@@ -34,7 +35,7 @@ export default async <T extends CT.ModTypes>(
 
  if (!strike) {
   cache.punishments.delete(options.target.id);
-  (await import(`../../mod.js`)).default(cmd, CT.ModTypes.WarnAdd, options, message);
+  client.util.files['/BaseClient/UtilModules/mod.js'](cmd, CT.ModTypes.WarnAdd, options, message);
   return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
  }
 

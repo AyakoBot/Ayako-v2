@@ -1,5 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as CT from '../../../../Typings/Typings.js';
+import client from '../../../Client.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
@@ -18,12 +19,7 @@ export default async (
 
  cache.channelBans.set(
   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
-   const m: typeof ModTypes = await import(
-    `${process.cwd()}${
-     process.cwd().includes('dist') ? '' : '/dist'
-    }/BaseClient/ClientHelperModules/mod.js`
-   );
-   m.default(undefined, CT.ModTypes.ChannelBanRemove, {
+   client.util.files['/BaseClient/UtilModules/mod.js'](undefined, CT.ModTypes.ChannelBanRemove, {
     dbOnly: false,
     executor: (await getBotMemberFromGuild(options.guild)).user,
     guild: options.guild,

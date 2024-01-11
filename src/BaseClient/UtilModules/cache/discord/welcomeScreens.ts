@@ -35,7 +35,8 @@ const self: WelcomeScreens = {
   const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  const requestHandler = (await import('../../requestHandler.js')).request;
+  const requestHandler =
+   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
   const fetched = await requestHandler.guilds.getWelcomeScreen(guild);
   if (!fetched) return undefined;
   if ('message' in fetched) return undefined;

@@ -89,11 +89,7 @@ async function send(
   return null;
  }
 
- const constants = (
-  await import(
-   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/Other/constants.js`
-  )
- ).default;
+ const constants = channel.client.util.files['/BaseClient/Other/constants.js'];
  payload.embeds?.forEach((e) => {
   if (e.author && !e.author.url) e.author.url = constants.standard.invite;
 

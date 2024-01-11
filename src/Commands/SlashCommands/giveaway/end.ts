@@ -30,15 +30,7 @@ export const end = async (g: Prisma.giveaways) => {
    const guild = cl.guilds.cache.get(giveaway.guildid);
    if (!guild) return;
 
-   const { giveawayCollectTime: gCT } = (await import(
-    `${process.cwd()}${
-     process.cwd().includes('dist') ? '' : '/dist'
-    }/Commands/SlashCommands/giveaway/end.js`
-   )) as {
-    giveawayCollectTime: typeof giveawayCollectTime;
-   };
-
-   gCT(guild, giveaway.msgid);
+   giveawayCollectTime(guild, giveaway.msgid);
   },
   { context: { giveaway: g } },
  );
@@ -291,21 +283,12 @@ export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
 
    if (!giveaway.winners.length) return;
 
-   const { giveawayCollectTime: gCT, failReroll: fR } = (await import(
-    `${process.cwd()}${
-     process.cwd().includes('dist') ? '' : '/dist'
-    }/Commands/SlashCommands/giveaway/end.js`
-   )) as {
-    giveawayCollectTime: typeof giveawayCollectTime;
-    failReroll: typeof failReroll;
-   };
-
    if (!giveaway.failreroll) {
-    fR(giveaway);
+    failReroll(giveaway);
     return;
    }
 
-   gCT(guild, giveaway.msgid);
+   giveawayCollectTime(guild, giveaway.msgid);
   },
   { context: { gID: guildID, mID: msgID } },
  );

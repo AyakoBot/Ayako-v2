@@ -1,6 +1,7 @@
 import * as Jobs from 'node-schedule';
 import * as CT from '../../../../Typings/Typings.js';
 
+import client from '../../../Client.js';
 import DataBase from '../../../DataBase.js';
 
 import cache from '../../cache.js';
@@ -8,11 +9,11 @@ import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import type * as ModTypes from '../../mod.js';
 import { request } from '../../requestHandler.js';
 
+import { canEditMember } from '../../requestHandler/guilds/editMember.js';
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
-import { canEditMember } from '../../requestHandler/guilds/editMember.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.TempMuteAdd>,
@@ -77,12 +78,7 @@ export default async (
   Jobs.scheduleJob(
    new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
    async () => {
-    const m: typeof ModTypes = await import(
-     `${process.cwd()}${
-      process.cwd().includes('dist') ? '' : '/dist'
-     }/BaseClient/ClientHelperModules/mod.js`
-    );
-    m.default(undefined, CT.ModTypes.MuteRemove, {
+    client.util.files['/BaseClient/UtilModules/mod.js'](undefined, CT.ModTypes.MuteRemove, {
      dbOnly: false,
      executor: (await getBotMemberFromGuild(options.guild)).user,
      guild: options.guild,

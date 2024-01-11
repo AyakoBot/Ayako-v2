@@ -48,7 +48,8 @@ const self: Pins = {
 
   if (!('lastPinTimestamp' in channel)) return undefined;
 
-  const requestHandler = (await import('../../requestHandler.js')).request;
+  const requestHandler =
+   channel.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
   const me = await getBotMemberFromGuild(channel.guild);
   const channelBitfield = me?.permissionsIn(channel);
   if (channelBitfield && !channelBitfield?.has(Discord.PermissionFlagsBits.ViewChannel)) {
