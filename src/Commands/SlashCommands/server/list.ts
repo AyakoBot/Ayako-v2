@@ -12,7 +12,7 @@ export default async (
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.server;
- const guilds = await cmd.client.shard?.broadcastEval((cl) =>
+ const guilds = await cmd.client.cluster?.broadcastEval((cl) =>
   cl.guilds.cache.map((g) => ({
    name: g.name,
    id: g.id,

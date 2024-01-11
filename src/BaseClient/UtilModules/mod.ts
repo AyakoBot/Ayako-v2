@@ -36,10 +36,12 @@ export default async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
  replyMessage?: ResponseMessage,
 ) => {
+ console.log(6);
  if (cache.punishments.has(options.target.id)) {
   await alreadyExecuting(cmd, options.executor, options.guild.client, replyMessage);
   return;
  }
+ console.log(7);
  cache.punishments.add(options.target.id);
 
  const basicsResponse = await runBasics1(options, cmd, type, replyMessage);
@@ -47,6 +49,7 @@ export default async <T extends CT.ModTypes>(
   cache.punishments.delete(options.target.id);
   return;
  }
+ console.log(8);
  const { message, language } = basicsResponse;
  if (!options.reason.length) options.reason = language.t.noReasonProvided;
 
@@ -139,9 +142,11 @@ export default async <T extends CT.ModTypes>(
   cache.punishments.delete(options.target.id);
   return;
  }
+ console.log(9);
 
  if (typeof action !== 'boolean') type = action.type as T;
  if (type === CT.ModTypes.StrikeAdd) return;
+ console.log(10);
 
  runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);
  cache.punishments.delete(options.target.id);

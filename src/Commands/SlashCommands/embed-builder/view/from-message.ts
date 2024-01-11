@@ -14,7 +14,7 @@ export default async (cmd: Discord.CommandInteraction) => {
  }
 
  const response = (
-  await client.shard?.broadcastEval(
+  await client.cluster?.broadcastEval(
    async (cl, { gID: guildID, cID: channelID, mID: messageID }) => {
     const guild = cl.guilds.cache.get(guildID);
     if (!guild) return undefined;

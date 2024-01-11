@@ -25,7 +25,7 @@ export default async (
 
 const getServers = async (language: CT.Language) =>
  (
-  await client.shard?.broadcastEval(
+  await client.cluster?.broadcastEval(
    async (c, { lang }) =>
     c.guilds.cache.map((g) => ({
      content: `${c.util.util.makeInlineCode(g.name)}\n> ${c.util.splitByThousand(g.memberCount)} ${

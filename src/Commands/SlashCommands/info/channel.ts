@@ -28,7 +28,7 @@ const getEmbed = async (
  guildID: string,
  userID: string,
 ): Promise<Discord.APIEmbed[] | undefined> =>
- client.shard?.broadcastEval(
+ client.cluster?.broadcastEval(
   async (cl, { id, gid, mid, ViewChannel }) => {
    const g = cl.guilds.cache.get(gid);
    if (!g) return undefined;

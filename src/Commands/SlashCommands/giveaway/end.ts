@@ -25,7 +25,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 export const end = async (g: Prisma.giveaways) => {
- client.shard?.broadcastEval(
+ client.cluster?.broadcastEval(
   async (cl, { giveaway }) => {
    const guild = cl.guilds.cache.get(giveaway.guildid);
    if (!guild) return;
@@ -270,7 +270,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
 };
 
 export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
- client.shard?.broadcastEval(
+ client.cluster?.broadcastEval(
   async (cl, { gID, mID }) => {
    const guild = cl.guilds.cache.get(gID);
    if (!guild) return;

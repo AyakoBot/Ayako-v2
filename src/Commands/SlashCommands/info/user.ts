@@ -162,18 +162,16 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {
  const boostTimes = (
-  user.client.shard
-   ? (
-      await user.client.shard.broadcastEval(
-       (cl, { memberId }) =>
-        cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
-       { context: { memberId: user.id } },
-      )
-     ).flat()
-   : []
- ).filter((t) => !!t);
+  await user.client.cluster?.broadcastEval(
+   (cl, { memberId }) =>
+    cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
+   { context: { memberId: user.id } },
+  )
+ )
+  ?.flat()
+  .filter((t) => !!t);
 
- if (!boostTimes.length) return;
+ if (!boostTimes?.length) return;
  const longestPrem = Math.min(...boostTimes);
  if (!longestPrem) return;
 

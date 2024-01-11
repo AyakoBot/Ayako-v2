@@ -91,7 +91,7 @@ import txtFileWriter from './UtilModules/txtFileWriter.js';
 import userFlagsCalc from './UtilModules/userFlagsCalc.js';
 import * as utils from './UtilModules/util.js';
 
-const mainID = '650691698409734151';
+const mainID = process.env.mainID as string;
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
 type ChannelTimeouts = Map<string, Map<string, Jobs.Job>>;
 const channelQueue: ChannelQueue = new Map();

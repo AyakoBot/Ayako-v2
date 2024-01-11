@@ -13,7 +13,7 @@ export default async (idPair: string) => {
 
  const client = (await import('../Client.js')).default;
 
- const response = (await client.shard?.broadcastEval((c, { id }) => c.emojis.cache.get(id), {
+ const response = (await client.cluster?.broadcastEval((c, { id }) => c.emojis.cache.get(id), {
   context: { id: idPair.split(/:/g).at(-1) as string },
  })) as DirectProperties<Discord.GuildEmoji>[];
 

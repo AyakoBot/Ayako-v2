@@ -69,7 +69,7 @@ export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.
    }
   }
   default: {
-   throw new Error('Unknown Channel Type');
+   throw new Error(`Unknown Channel Type: ${channel.type} / ${Discord.ChannelType[channel.type]}`);
   }
  }
 };

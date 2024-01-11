@@ -109,10 +109,9 @@ const getEmotePayloads = async (
  emote: ReturnType<typeof Discord.parseEmoji>,
  guild?: Discord.Guild | null,
 ) =>
- client.shard?.broadcastEval(
+ client.cluster?.broadcastEval(
   async (cl, { color, e, guildId }) => {
    const ctEval = cl.util.files['/Typings/Typings.js'];
-
    const emoji = e.id ? cl.emojis.cache.get(e.id) ?? e : e;
    const language = await cl.util.getLanguage(guildId);
    const lan = language.slashCommands.info;

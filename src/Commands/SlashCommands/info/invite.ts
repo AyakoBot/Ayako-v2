@@ -22,11 +22,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const invite =
   (
-   (await cmd.client.shard?.broadcastEval(
+   (await cmd.client.cluster?.broadcastEval(
     (cl, { i }) => cl.guilds.cache.find((g) => g.invites.cache.has(i))?.invites.cache.get(i),
     { context: { i: inviteCode } },
    )) as Discord.Invite[]
-  ).find((i): i is Discord.Invite => !!i) ??
+  )?.find((i): i is Discord.Invite => !!i) ??
   (await cmd.client.fetchInvite(inviteCode).catch(() => undefined));
 
  if (!invite) {
