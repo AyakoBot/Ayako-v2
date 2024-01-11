@@ -2884,13 +2884,11 @@
      "oneTimeRunner": {
       "name": "Apply ALL Separators to EVERY Member of your Server",
       "description": "Can only be run if the previous Process is finished.",
-      "cant": "You don't have any Separators set, so you can't uset his function",
+      "cant": "You don't have any Separators set, so you can't use this function",
       "timeout": "The Operation timed out, please contact Support\nhttps://support.ayakobot.com",
       "recommended": "Are you sure you want to run this Function?\nThis can only be run if the previous Process is finished",
-      "stats": "Adding and Removing `{{r}}` Roles from `{{members}}` Server Members\nThis Process may take until {{finishTime}}.\n\nThis Embed will be updated every Hour (+ Calculation delay depending on the size of your Server)",
-      "answers": "`Yes` or `No`",
-      "stillrunning": "The last initiated Process is still running",
-      "finished": "Process finished, all Roles should be up to Date"
+      "stats": "Adding and Removing `{{r}}` Roles from `{{members}}` Server Members\nThis Process may take until {{finishTime}}.",
+      "stillrunning": "The last initiated Process is still running"
      },
      "fields": {
       "separator": {

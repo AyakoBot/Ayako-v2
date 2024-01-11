@@ -4,13 +4,14 @@ import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import { Worker } from 'worker_threads';
 import client from '../../../BaseClient/Client.js';
+import * as Typings from '../../../Typings/Typings.js';
 
+export const separatorAssigner: Map<string, Jobs.Job[]> = new Map();
 const UpdateWorker = new Worker(
  `${process.cwd()}${
   process.cwd().includes('dist') ? '' : '/dist'
  }/Events/guildEvents/guildMemberUpdate/separatorUpdater.js`,
 );
-export const separatorAssigner: Map<string, Jobs.Job[]> = new Map();
 
 UpdateWorker.on(
  'message',
@@ -23,12 +24,8 @@ UpdateWorker.on(
    case 'NO_SEP': {
     client.util.DataBase.roleseparator
      .updateMany({
-      where: {
-       separator: roleData[0],
-      },
-      data: {
-       active: false,
-      },
+      where: { separator: roleData[0] },
+      data: { active: false },
      })
      .then();
     break;
@@ -69,15 +66,14 @@ const isWaiting = new Set();
 
 export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => {
  if (
-  'roles' in oldMember &&
   oldMember.roles.cache
    .sort((a, b) => a.position - b.position)
-   .map((k) => k)
+   .map((k) => k.id)
    .join(' ') ===
-   member.roles.cache
-    .sort((a, b) => a.position - b.position)
-    .map((k) => k)
-    .join(' ')
+  member.roles.cache
+   .sort((a, b) => a.position - b.position)
+   .map((k) => k.id)
+   .join(' ')
  ) {
   return;
  }
@@ -85,192 +81,116 @@ export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => 
  if (isWaiting.has(`${member.id}-${member.guild.id}`)) return;
  isWaiting.add(`${member.id}-${member.guild.id}`);
 
- Jobs.scheduleJob(new Date(Date.now() + 2000), async () => {
+ Jobs.scheduleJob(new Date(Date.now() + 5000), async () => {
   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
   const stillrunning = await client.util.DataBase.roleseparatorsettings.findFirst({
-   where: {
-    guildid: member.guild.id,
-   },
+   where: { guildid: member.guild.id, stillrunning: true },
   });
   if (stillrunning) return;
 
-  const roleseparatorRows = await client.util.DataBase.roleseparator.findFirst({
-   where: {
-    active: true,
-    guildid: member.guild.id,
-   },
+  const rows = await client.util.DataBase.roleseparator.findMany({
+   where: { active: true, guildid: member.guild.id },
   });
-  if (!roleseparatorRows) return;
+  if (!rows) return;
 
-  const map = new Map();
-  member.guild.roles.cache.map((r) => r).forEach((r) => map.set(r.id, r));
+  const map = new Map<string, { position: number; id: string }>();
+  member.guild.roles.cache
+   .map((r) => r)
+   .forEach((r) => map.set(r.id, { position: r.position, id: r.id }));
 
   UpdateWorker.postMessage({
-   roles: member.roles,
+   roles: member.roles.cache.map((r) => r.id),
    guildid: member.guild.id,
    userid: member.user.id,
    guildroles: map,
-   highest: member.guild.roles.cache.map((r) => r).sort((a, b) => b.position - a.position)[0],
-   res: roleseparatorRows,
-   language: await client.util.getLanguage(member.guild.id),
+   highest: { id: member.guild.roles.highest.id, position: member.guild.roles.highest.position },
+   res: rows.map((r) => ({ ...r, uniquetimestamp: Number(r.uniquetimestamp) })),
   });
  });
 };
 
 export const oneTimeRunner = async (
- m:
-  | Discord.Message<true>
-  | {
-     id: string | undefined | null;
-     guild: Discord.Guild;
-     author: Discord.User;
-     channel:
-      | Discord.NewsChannel
-      | Discord.TextChannel
-      | Discord.PrivateThreadChannel
-      | Discord.PublicThreadChannel
-      | Discord.VoiceChannel
-      | Discord.StageChannel
-      | undefined;
-    },
- embed: Discord.APIEmbed,
- button?: Discord.ButtonInteraction,
- lastTime?: boolean,
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | undefined,
+ guild: Discord.Guild,
+ lastRun: boolean = false,
 ) => {
- if (!m.guild) return;
- const language = await client.util.getLanguage(m.guild.id);
+ const language = await client.util.getLanguage(guild.id);
 
- const roleseparatorRows = await client.util.DataBase.roleseparator.findMany({
-  where: {
-   active: true,
-   guildid: m.guild.id,
-  },
+ const rows = await client.util.DataBase.roleseparator.findMany({
+  where: { active: true, guildid: guild.id },
  });
- if (!roleseparatorRows) return;
+ if (!rows) return;
 
- let membersWithRoles:
-  | boolean
-  | {
-     id: string;
-     roles: { id: string; position: number }[];
-     giveTheseRoles: string[];
-     takeTheseRoles: string[];
-    }[]
-  | undefined;
+ const settings =
+  (await client.util.DataBase.roleseparatorsettings.findUnique({
+   where: { guildid: guild.id },
+  })) ??
+  (await client.util.DataBase.roleseparatorsettings.create({
+   data: { guildid: guild.id, stillrunning: false },
+  }));
+ if (!settings) return;
 
- if (
-  (await client.util.DataBase.roleseparatorsettings
-   .findFirst({
-    where: {
-     guildid: m.guild.id,
+ if (settings.stillrunning && cmd) {
+  cmd.reply({
+   embeds: [
+    {
+     description: language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning,
     },
-   })
-   .then((r) => r?.stillrunning)) &&
-  m.author.id !== client.user?.id
- ) {
-  membersWithRoles = true;
- } else {
-  client.util.DataBase.roleseparatorsettings
-   .update({
-    where: {
-     guildid: m.guild.id,
-    },
-    data: {
-     stillrunning: true,
-    },
-   })
-   .then();
-  membersWithRoles = await getMembers(m.guild, roleseparatorRows);
- }
-
- embed.author = {
-  name: language.slashCommands.settings.authorType(
-   language.slashCommands.settings.categories.separators.name,
-  ),
-  icon_url: client.util.emotes.settings.link,
-  url: client.util.constants.standard.invite,
- };
-
- if (button) await button.deleteReply().catch(() => undefined);
-
- if (!Array.isArray(membersWithRoles)) {
-  if (!membersWithRoles) {
-   embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
-
-   if (m instanceof Discord.Message) {
-    client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
-   }
-  } else {
-   embed.description =
-    language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning;
-
-   if (m instanceof Discord.Message) {
-    client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
-   }
-  }
- } else {
-  membersWithRoles.forEach((mem) => {
-   const fakeMember = mem;
-   const realMember = m.guild?.members.cache.get(mem.id);
-
-   if (realMember) {
-    if (fakeMember.giveTheseRoles) {
-     fakeMember.giveTheseRoles.forEach((roleID, rindex) => {
-      if (realMember.roles.cache.has(roleID)) {
-       mem.giveTheseRoles.splice(rindex, 1);
-      }
-     });
-    }
-    if (fakeMember.takeTheseRoles) {
-     fakeMember.takeTheseRoles.forEach((roleID, rindex) => {
-      if (!realMember.roles.cache.has(roleID)) {
-       mem.takeTheseRoles.splice(rindex, 1);
-      }
-     });
-    }
-   }
+   ],
   });
-  const finishTime = Math.floor(
-   Date.now() / 1000 +
-    (membersWithRoles ? membersWithRoles.length * 4 : 0) +
-    ((membersWithRoles ? membersWithRoles.length : 0) / 3600) * 400,
-  );
-
-  embed.author = {
-   name: language.slashCommands.settings.authorType(
-    language.slashCommands.settings.categories.separators.name,
-   ),
-   icon_url: client.util.emotes.settings.link,
-   url: client.util.constants.standard.invite,
-  };
-  embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
-   membersWithRoles && membersWithRoles.length ? membersWithRoles.length : 0,
-   membersWithRoles && membersWithRoles.length ? membersWithRoles.length * 4 : 0,
-   `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
-  );
-
-  if (m instanceof Discord.Message) {
-   client.util.request.channels.editMsg(m, { embeds: [embed], components: [] });
-  }
-
-  client.util.DataBase.roleseparatorsettings
-   .update({
-    where: {
-     guildid: m.guild.id,
-    },
-    data: {
-     stillrunning: true,
-     duration: membersWithRoles.length * 4,
-     startat: Date.now(),
-     channelid: m.channel?.id,
-     messageid: m.id,
-    },
-   })
-   .then();
-
-  assinger(m, membersWithRoles, embed, lastTime);
+  return;
  }
+
+ client.util.DataBase.roleseparatorsettings
+  .update({
+   where: { guildid: guild.id },
+   data: { stillrunning: true },
+  })
+  .then();
+
+ await cmd?.deferReply({ fetchReply: true, ephemeral: true });
+
+ const members = await getMembers(guild, rows);
+
+ const finishTime = Math.floor(
+  Date.now() / 1000 +
+   (members ? members.length * 4 : 0) +
+   ((members ? members.length : 0) / 3600) * 400,
+ );
+
+ cmd?.editReply({
+  embeds: [
+   {
+    author: {
+     name: language.slashCommands.settings.authorType(
+      language.slashCommands.settings.categories.separators.name,
+     ),
+     icon_url: client.util.emotes.settings.link,
+    },
+    description: language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
+     members && members.length ? members.length : 0,
+     members && members.length ? members.length * 4 : 0,
+     `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
+    ),
+   },
+  ],
+ });
+
+ client.util.DataBase.roleseparatorsettings
+  .update({
+   where: {
+    guildid: guild.id,
+   },
+   data: {
+    stillrunning: true,
+    duration: members.length * 4,
+    startat: Date.now(),
+   },
+  })
+  .then();
+
+ assinger(guild, members, lastRun);
 };
 
 type PassObject = {
@@ -290,22 +210,20 @@ type PassObject = {
 
 const getMembers = async (
  guild: Discord.Guild,
- roleseparatorRows: Prisma.roleseparator[],
+ rows: Prisma.roleseparator[],
 ): Promise<
- | {
-    id: string;
-    roles: {
-     id: string;
-     position: number;
-    }[];
-    giveTheseRoles: string[];
-    takeTheseRoles: string[];
-   }[]
- | undefined
+ {
+  id: string;
+  roles: {
+   id: string;
+   position: number;
+  }[];
+  giveTheseRoles: string[];
+  takeTheseRoles: string[];
+ }[]
 > => {
  const highestRole = guild.roles.cache.map((o) => o).sort((a, b) => b.position - a.position)[0];
  const clientHighestRole = (await client.util.getBotMemberFromGuild(guild))?.roles.highest;
- if (!clientHighestRole) return undefined;
 
  const obj: PassObject = {
   members: [],
@@ -339,7 +257,7 @@ const getMembers = async (
   obj.roles.push({ id: role.id, position: role.position });
  });
 
- roleseparatorRows.forEach((r) => {
+ rows.forEach((r) => {
   if (!r.separator) return;
 
   const separator = guild.roles.cache.get(r.separator);
@@ -376,121 +294,79 @@ const getMembers = async (
  });
 
  const worker = new Worker('./dist/Events/guildEvents/guildMemberUpdate/separatorWorker.js', {
-  workerData: { res: roleseparatorRows, obj },
+  workerData: {
+   res: rows.map((r) => ({ ...r, uniquetimestamp: Number(r.uniquetimestamp) })),
+   obj,
+  },
  });
 
- return new Promise((resolve, reject) => {
+ const members = (await new Promise((resolve, reject) => {
   worker.once('message', (result) => {
    resolve(result);
    worker.terminate();
   });
   worker.once('error', (error) => {
    reject();
+   worker.terminate();
    throw error;
   });
+ })) as Typings.DePromisify<ReturnType<typeof getMembers>>;
+
+ members.forEach((fakeMember) => {
+  const realMember = guild?.members.cache.get(fakeMember.id);
+  if (!realMember) return;
+
+  fakeMember.giveTheseRoles
+   .filter((r) => realMember.roles.cache.has(r))
+   .forEach((_, i) => fakeMember.giveTheseRoles.splice(i, 1));
+
+  fakeMember.takeTheseRoles
+   .filter((r) => !realMember.roles.cache.has(r))
+   .forEach((_, i) => fakeMember.takeTheseRoles.splice(i, 1));
  });
+
+ return members;
 };
 
 const assinger = async (
- msg:
-  | Discord.Message<true>
-  | {
-     id: string | undefined | null;
-     guild: Discord.Guild;
-     author: Discord.User;
-     channel:
-      | Discord.NewsChannel
-      | Discord.TextChannel
-      | Discord.PrivateThreadChannel
-      | Discord.PublicThreadChannel
-      | Discord.VoiceChannel
-      | Discord.StageChannel
-      | undefined;
-    },
- membersWithRoles: {
-  id: string;
-  roles: {
-   id: string;
-   position: number;
-  }[];
-  giveTheseRoles: string[];
-  takeTheseRoles: string[];
- }[],
- embed: Discord.APIEmbed,
- lastTime?: boolean,
+ guild: Discord.Guild,
+ membersWithRoles: Typings.DePromisify<ReturnType<typeof getMembers>>,
+ lastRun: boolean = false,
 ) => {
- if (!msg.guild) return;
- const language = await client.util.getLanguage(msg.guild.id);
+ if (!guild) return;
+ const language = await client.util.getLanguage(guild.id);
 
  if (!membersWithRoles?.length) {
-  embed.author = {
-   name: language.slashCommands.settings.authorType(
-    language.slashCommands.settings.categories.separators.name,
-   ),
-   icon_url: client.util.emotes.settings.link,
-   url: client.util.constants.standard.invite,
-  };
-
-  embed.description = language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
-  if (msg instanceof Discord.Message) {
-   client.util.request.channels.editMsg(msg, { embeds: [embed], components: [] });
-  }
-
   client.util.DataBase.roleseparatorsettings
    .update({
-    where: {
-     guildid: msg.guild.id,
-    },
-    data: {
-     stillrunning: false,
-     duration: null,
-     startat: null,
-    },
+    where: { guildid: guild.id },
+    data: { stillrunning: false, duration: null, startat: null },
    })
    .then();
 
   return;
  }
 
- if (!separatorAssigner.get(msg.guild.id)) separatorAssigner.set(msg.guild.id, []);
- const thisMap = separatorAssigner.get(msg.guild.id);
+ if (!separatorAssigner.get(guild.id)) separatorAssigner.set(guild.id, []);
+
+ const thisMap = separatorAssigner.get(guild.id);
  if (!thisMap) return;
 
  membersWithRoles.forEach((raw, index) => {
   thisMap.push(
    Jobs.scheduleJob(new Date(Date.now() + index * 3000), async () => {
-    const member = msg.guild?.members.cache.get(raw.id);
+    const member = guild.members.cache.get(raw.id);
 
     if (member) {
      client.util.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
      client.util.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
     }
 
-    if (index === membersWithRoles.length - 1 && lastTime) {
-     embed.author = {
-      name: language.slashCommands.settings.authorType(
-       language.slashCommands.settings.categories.separators.name,
-      ),
-      icon_url: client.util.emotes.settings.link,
-      url: client.util.constants.standard.invite,
-     };
-     embed.description =
-      language.slashCommands.settings.categories.separators.oneTimeRunner.finished;
-
-     if (msg instanceof Discord.Message) {
-      client.util.request.channels.editMsg(msg, { embeds: [embed], components: [] });
-     }
-
+    if (index === membersWithRoles.length - 1 && lastRun) {
      client.util.DataBase.roleseparatorsettings
       .update({
-       where: {
-        guildid: msg.guild?.id,
-       },
-       data: {
-        stillrunning: false,
-        duration: null,
-        startat: null,
-       },
+       where: { guildid: guild.id },
+       data: { stillrunning: false, duration: null, startat: null },
       })
       .then();
 
@@ -498,19 +374,14 @@ const assinger = async (
     }
 
     if (index === membersWithRoles.length - 1) {
-     oneTimeRunner(msg, embed, undefined, true);
+     oneTimeRunner(undefined, guild, true);
      return;
     }
 
     client.util.DataBase.roleseparatorsettings
      .update({
-      where: {
-       guildid: msg.guild?.id,
-      },
-      data: {
-       index,
-       length: membersWithRoles.length - 1,
-      },
+      where: { guildid: guild.id },
+      data: { index, length: membersWithRoles.length - 1 },
      })
      .then();
    }),

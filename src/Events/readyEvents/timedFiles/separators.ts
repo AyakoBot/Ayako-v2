@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 
@@ -9,7 +8,7 @@ export default async () => {
 
  settings.forEach((s) => {
   client.cluster?.broadcastEval(
-   async (cl, { guildid, channelid, messageid }) => {
+   async (cl, { guildid }) => {
     const guild = cl.guilds.cache.get(guildid);
     if (!guild) return;
 
@@ -23,27 +22,14 @@ export default async () => {
      guild.id,
     );
 
-    const channel = channelid ? await cl.util.getChannel.guildTextChannel(channelid) : undefined;
-    const message =
-     messageid && channel
-      ? await cl.util.request.channels
-         .getMessage(channel, messageid)
-         .then((m) => ('message' in m ? undefined : m))
-      : undefined;
-
     Jobs.scheduleJob(new Date(Date.now() + 300000), () => {
      cl.util.files['/Events/guildEvents/guildMemberUpdate/separator.js'].oneTimeRunner(
-      message ?? {
-       guild,
-       author: cl.user as Discord.User,
-       channel,
-       id: messageid,
-      },
-      {},
+      undefined,
+      guild,
      );
     });
    },
-   { context: s },
+   { context: { guildid: s.guildid } },
   );
  });
 };

@@ -1,4 +1,5 @@
 import Prisma from '@prisma/client';
+import { Serialized } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import { parentPort } from 'worker_threads';
 
@@ -6,9 +7,9 @@ interface Data {
  roles: string[];
  guildid: string;
  userid: string;
- guildroles: Map<string, Discord.Role>;
- highest: Discord.Role;
- res: Prisma.roleseparator[];
+ guildroles: Map<string, { position: number; id: string }>;
+ highest: { position: number; id: string };
+ res: Serialized<Prisma.roleseparator[]>;
 }
 
 parentPort?.on('message', (data: Data) => {
@@ -30,28 +31,22 @@ const start = async (data: Data) => {
    return;
   }
 
-  if (row.isvarying) {
-   handleVarying(row, guildroles, separator, highestRole, roles, giveThese, takeThese);
-  } else handleNonVarying(row, roles, separator, giveThese, takeThese);
+  if (row.isvarying) dynamic(row, guildroles, separator, highestRole, roles, giveThese, takeThese);
+  else constant(row, roles, separator, giveThese, takeThese);
  });
 
  const newRoles = [...roles, ...giveThese];
  takeThese.forEach((r) => newRoles.splice(newRoles.indexOf(r), 1));
 
- if (giveThese.length) {
-  parentPort?.postMessage(['GIVE', { userid, guildid }, giveThese]);
- }
-
- if (takeThese.length) {
-  parentPort?.postMessage(['TAKE', { userid, guildid }, takeThese]);
- }
+ if (giveThese.length) parentPort?.postMessage(['GIVE', { userid, guildid }, giveThese]);
+ if (takeThese.length) parentPort?.postMessage(['TAKE', { userid, guildid }, takeThese]);
 };
 
-const handleVarying = (
- row: Prisma.roleseparator,
- guildroles: Discord.Collection<string, Discord.Role>,
- sep: Discord.Role,
- highestRole: Discord.Role,
+const dynamic = (
+ row: Serialized<Prisma.roleseparator>,
+ guildroles: Discord.Collection<string, { position: number; id: string }>,
+ sep: { position: number; id: string },
+ highestRole: { position: number; id: string },
  roles: string[],
  giveThese: string[],
  takeThese: string[],
@@ -89,10 +84,10 @@ const handleVarying = (
  else if (!has.includes(true) && roles.includes(sep.id)) takeThese.push(sep.id);
 };
 
-const handleNonVarying = (
- row: Prisma.roleseparator,
+const constant = (
+ row: Serialized<Prisma.roleseparator>,
  roles: string[],
- sep: Discord.Role,
+ sep: { position: number; id: string },
  giveThese: string[],
  takeThese: string[],
 ) => {

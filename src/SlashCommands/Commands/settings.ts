@@ -230,6 +230,11 @@ export default new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('separators-apply')
+     .setDescription('Apply Separators to Members'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('sticky')
      .setDescription('Make Roles and Channel Permissions stick to Members across re-joins'),
    )

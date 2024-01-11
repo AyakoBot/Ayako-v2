@@ -1,3 +1,4 @@
+import { Serialized } from 'discord-hybrid-sharding';
 import Prisma from '@prisma/client';
 import Jobs from 'node-schedule';
 import { parentPort, workerData } from 'worker_threads';
@@ -22,7 +23,7 @@ type PassObject = {
  clientHighestRole: { id: string; position: number };
 };
 
-const start = async (wd: { obj: PassObject; res: Prisma.roleseparator[] }) => {
+const start = async (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator[]> }) => {
  const { res, obj } = wd;
  const membersWithRoles: PassObject['members'] = [];
 
@@ -83,8 +84,8 @@ const start = async (wd: { obj: PassObject; res: Prisma.roleseparator[] }) => {
    }
   });
 
-  if (giveThese.length) member.giveTheseRoles = giveThese;
-  if (takeThese.length) member.takeTheseRoles = takeThese;
+  member.giveTheseRoles = giveThese;
+  member.takeTheseRoles = takeThese;
   if (takeThese.length || giveThese.length) membersWithRoles.push(member);
  });
 

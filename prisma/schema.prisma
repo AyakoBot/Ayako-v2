@@ -779,8 +779,6 @@ model roleseparator {
 model roleseparatorsettings {
   guildid      String   @db.VarChar
   stillrunning Boolean  @db.Boolean
-  channelid    String?  @db.VarChar
-  messageid    String?  @db.VarChar
   duration     Decimal? @db.Decimal
   startat      Decimal? @db.Decimal
   index        Decimal? @db.Decimal
