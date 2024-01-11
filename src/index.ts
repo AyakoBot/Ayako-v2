@@ -19,7 +19,7 @@ sms.install({
 console.clear();
 log(
  `+++++++++++++++ Welcome to Ayako ++++++++++++++++
-+       Restart all Shards with "restart"       +
++      Restart all Clusters with "restart"      +
 +                  Arguments:                   +
 +   --debug --debug-db --warn --debug-queries   +
 +                   --silent                    +
@@ -40,15 +40,15 @@ const manager = new Sharding.ClusterManager(botPath, {
 });
 
 manager.on('clusterCreate', (cluster) => {
- log(`[Cluster Manager] Launched Shard ${cluster.id}`, true);
+ log(`[Cluster Manager] Launched Cluster ${cluster.id}`, true);
 
  cluster.setMaxListeners(4);
 
- cluster.on('ready', () => log(`[Cluster Manager] Shard ${cluster.id} is ready`, true));
- cluster.on('death', (cl) => log(`[Cluster Manager] Shard ${cl.id} has died`, true));
+ cluster.on('ready', () => log(`[Cluster Manager] Cluster ${cluster.id} is ready`, true));
+ cluster.on('death', (cl) => log(`[Cluster Manager] Cluster ${cl.id} has died`, true));
  cluster.on('error', (err) =>
   log(
-   `[Cluster Manager] Shard ${cluster.id} has encountered an error\n> ${err.message}\n${err.stack}`,
+   `[Cluster Manager] Cluster ${cluster.id} has encountered an error\n> ${err.message}\n${err.stack}`,
    true,
   ),
  );
