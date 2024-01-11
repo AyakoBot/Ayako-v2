@@ -1,4 +1,6 @@
 import { Prisma } from '@prisma/client';
+import * as Jobs from 'node-schedule';
+
 import * as endGiveaway from '../../Commands/SlashCommands/giveaway/end.js';
 import * as createReminder from '../../Commands/SlashCommands/reminder/create.js';
 import * as separator from '../../Events/guildEvents/guildMemberUpdate/separator.js';
@@ -6,12 +8,13 @@ import voteBotCreate from '../../Events/voteEvents/voteBotEvents/voteBotCreate.j
 import voteGuildCreate from '../../Events/voteEvents/voteGuildEvents/voteGuildCreate.js';
 import * as typings from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';
-import * as requestHandler from './requestHandler.js';
 import mod from './mod.js';
+import * as requestHandler from './requestHandler.js';
 
 export default {
  // Packages
  prisma: Prisma,
+ jobs: Jobs,
 
  // Files
  '/Events/guildEvents/guildMemberUpdate/separator.js': separator,
