@@ -13,7 +13,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   description: lan.desc((await cmd.client.util.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
   fields: reminders.map((r) => ({
    name: `<#${r.channelid}> | ${cmd.client.util.constants.standard.getTime(
-    Number(r.endtime) + Date.now(),
+    Number(r.endtime),
    )} | ID: \`${Number(r.uniquetimestamp).toString(36)}\``,
    value: r.reason,
   })),
