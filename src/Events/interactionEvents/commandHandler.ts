@@ -39,9 +39,9 @@ export default async (cmd: Discord.Interaction) => {
   .get(cmd.channelId)
   ?.get(
    commandName ||
-    cmd.client.util.constants.commands.interactions.find((c) => c.name === commandName)
-    ? 'interactions'
-    : '',
+    (cmd.client.util.constants.commands.interactions.find((c) => c.name === commandName)
+     ? 'interactions'
+     : ''),
   );
 
  if (cooldown) {
