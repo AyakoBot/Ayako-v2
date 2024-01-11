@@ -1,4 +1,5 @@
 import Prisma from '@prisma/client';
+import { Serialized } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
@@ -36,7 +37,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  cmd.client.util.cache.reminders.set(
   Jobs.scheduleJob(new Date(endTime), () => {
-   endReminder(reminder);
+   end(reminder);
   }),
   cmd.user.id,
   endTime,
@@ -47,45 +48,72 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const endReminder = (reminder: Prisma.reminders) => {
- client.shard?.broadcastEval(
-  async (cl, { channelid, userid, uniquetimestamp, reason, endtime }) => {
-   let channel: Discord.TextBasedChannel | Discord.User | undefined = cl.channels.cache.get(
-    channelid,
-   ) as Discord.TextBasedChannel | undefined;
+export enum EndReminderChannelType {
+ User = 'user',
+ Channel = 'channel',
+}
 
-   if (!channel || ('guild' in channel && !channel.guild.members.cache.get(userid))) {
-    channel = await cl.util.getUser(userid);
-   }
+export const endReminder = async (
+ reminder: Prisma.reminders | Serialized<Prisma.reminders>,
+ type: EndReminderChannelType,
+) => {
+ const channel = await (type === EndReminderChannelType.Channel
+  ? client.util.getChannel.guildTextChannel(reminder.channelid)
+  : client.util.getUser(reminder.userid));
 
-   cl.util.DataBase.reminders
-    .delete({
-     where: { uniquetimestamp },
-    })
-    .then();
+ client.util.DataBase.reminders
+  .delete({
+   where: { uniquetimestamp: reminder.uniquetimestamp },
+  })
+  .then();
 
-   cl.util.cache.reminders.delete(userid, Number(endtime));
+ client.util.cache.reminders.delete(reminder.userid, Number(reminder.endtime));
 
-   if (!channel) return;
+ if (!channel) return;
 
-   const language = await cl.util.getLanguage('guildId' in channel ? channel.guildId : undefined);
-   const lan = language.slashCommands.reminder;
+ const language = await client.util.getLanguage('guildId' in channel ? channel.guildId : undefined);
+ const lan = language.slashCommands.reminder;
 
-   cl.util.send(channel as Discord.TextBasedChannel, {
-    content: lan.reminderEnded(userid),
-    allowed_mentions: {
-     users: [userid],
-    },
-    embeds: [
-     {
-      description: reason,
-      color: cl.util.getColor(
-       'guild' in channel ? await cl.util.getBotMemberFromGuild(channel.guild) : undefined,
-      ),
-     },
-    ],
-   });
+ client.util.send(channel as Discord.TextBasedChannel, {
+  content: lan.reminderEnded(reminder.userid),
+  allowed_mentions: {
+   users: [reminder.userid],
   },
-  { context: reminder },
+  embeds: [
+   {
+    description: reminder.reason,
+    color: client.util.getColor(
+     'guild' in channel ? await client.util.getBotMemberFromGuild(channel.guild) : undefined,
+    ),
+   },
+  ],
+ });
+};
+
+export const end = async (reminder: Prisma.reminders) => {
+ const clusterWithChannel = (
+  await client.cluster?.broadcastEval(
+   (cl, { channelid }) => {
+    if (cl.channels.cache.get(channelid)) return cl.cluster?.id;
+    return undefined;
+   },
+   { context: { channelid: reminder.channelid } },
+  )
+ )?.find((id): id is number => typeof id === 'number');
+
+ if (!clusterWithChannel) {
+  endReminder(reminder, EndReminderChannelType.User);
+  return;
+ }
+
+ await client.cluster?.broadcastEval(
+  (cl: typeof client, r: Serialized<Prisma.reminders>) => {
+   const create = cl.util.files['/Commands/SlashCommands/reminder/create.js'];
+   create.endReminder(r, create.EndReminderChannelType.Channel);
+  },
+  {
+   context: reminder,
+   cluster: clusterWithChannel,
+  },
  );
 };

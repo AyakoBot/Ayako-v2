@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
-import * as end from '../../Commands/SlashCommands/giveaway/end.js';
+import * as endGiveaway from '../../Commands/SlashCommands/giveaway/end.js';
+import * as createReminder from '../../Commands/SlashCommands/reminder/create.js';
 import * as separator from '../../Events/guildEvents/guildMemberUpdate/separator.js';
 import voteBotCreate from '../../Events/voteEvents/voteBotEvents/voteBotCreate.js';
 import voteGuildCreate from '../../Events/voteEvents/voteGuildEvents/voteGuildCreate.js';
@@ -20,5 +21,6 @@ export default {
  '/BaseClient/Other/constants.js': constants,
  '/BaseClient/UtilModules/requestHandler.js': requestHandler,
  '/BaseClient/UtilModules/mod.js': mod,
- '/Commands/SlashCommands/giveaway/end.js': end,
+ '/Commands/SlashCommands/giveaway/end.js': endGiveaway,
+ '/Commands/SlashCommands/reminder/create.js': createReminder,
 };

@@ -1,11 +1,13 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
+import { Serialized as Serialize } from 'discord-hybrid-sharding';
 
 export * from './DataBase.js';
 export * from './Settings.js';
 export * from './TopGG.js';
 export * from './Channel.js';
 export * from '../SlashCommands/index.js';
+export type Serialized<T> = Serialize<T>;
 
 export type Language = import('../BaseClient/Other/language.js').default;
 

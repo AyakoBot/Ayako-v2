@@ -3,8 +3,11 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 import { endDeleteSuggestion } from '../../../Commands/ModalCommands/suggestion/accept.js';
-import { end, giveawayCollectTimeExpired } from '../../../Commands/SlashCommands/giveaway/end.js';
-import { endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
+import {
+ end as endGiveaway,
+ giveawayCollectTimeExpired,
+} from '../../../Commands/SlashCommands/giveaway/end.js';
+import { end as endReminder } from '../../../Commands/SlashCommands/reminder/create.js';
 import * as CT from '../../../Typings/Typings.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
@@ -148,7 +151,7 @@ export const tasks = {
     Jobs.scheduleJob(
      new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
      () => {
-      end(g);
+      endGiveaway(g);
      },
     ),
     g.guildid,
