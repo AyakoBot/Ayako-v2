@@ -41,7 +41,7 @@ export default async (
     where: { userid_voted: { userid: user.id, voted: vote.bot } },
     update: {
      removetime: Date.now() + 43200000,
-     votetype: 'guild',
+     votetype: 'bot',
      tier,
      rewardroles: { push: r.rewardroles },
      rewardxp: { increment: Number(r.rewardxp) },
@@ -53,7 +53,7 @@ export default async (
      userid: user.id,
      removetime: Date.now() + 43200000,
      voted: vote.bot,
-     votetype: 'guild',
+     votetype: 'bot',
      tier,
      rewardroles: r.rewardroles,
      rewardxp: r.rewardxp,

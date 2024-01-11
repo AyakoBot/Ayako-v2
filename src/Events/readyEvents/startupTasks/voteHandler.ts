@@ -1,4 +1,4 @@
-import * as Jobs from 'node-schedule';
+import { voters } from '@prisma/client';
 import client from '../../../BaseClient/Client.js';
 import Socket from '../../../BaseClient/Socket.js';
 import * as CT from '../../../Typings/Typings.js';
@@ -11,14 +11,14 @@ export default async () => {
 
 const initReminders = async () => {
  const users = await client.util.DataBase.voters.findMany();
- users.forEach((u) => {
+ users.forEach((user) => {
   client.cluster?.broadcastEval(
-   async (cl) => {
+   async (cl, { u }: { u: CT.Serialized<voters> }) => {
     const guild = cl.guilds.cache.get(u.guildid);
     if (!guild) return;
 
     cl.util.cache.votes.set(
-     Jobs.scheduleJob(
+     cl.util.files.jobs.scheduleJob(
       new Date(Number(u.removetime) > Date.now() ? Number(u.removetime) : Date.now() + 10000),
       () => {
        const vote: CT.TopGGGuildVote | CT.TopGGBotVote = {
@@ -43,7 +43,7 @@ const initReminders = async () => {
      u.userid,
     );
    },
-   { context: u },
+   { context: { u: user } },
   );
  });
 };
