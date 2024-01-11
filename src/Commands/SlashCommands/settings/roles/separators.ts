@@ -75,6 +75,10 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  multiRowHelpers.noFields(embeds, language);
  multiRowHelpers.components(embeds, components, language, name);
 
+ embeds[0].description = lan.oneTimeRunner.notice(
+  (await cmd.client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0',
+ );
+
  if (cmd.isButton()) {
   cmd.update({
    embeds,

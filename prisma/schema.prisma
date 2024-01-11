@@ -784,6 +784,9 @@ model roleseparatorsettings {
   index        Decimal? @db.Decimal
   length       Decimal? @db.Decimal
 
+  channelid    String?  @db.VarChar
+  messageid    String?  @db.VarChar
+
   @@id(guildid, map: "roleseparatorsettings_pkey")
   @@index(guildid)
 }

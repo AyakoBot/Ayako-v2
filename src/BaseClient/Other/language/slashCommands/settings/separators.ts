@@ -4,7 +4,9 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings.categories.separators,
  oneTimeRunner: {
   ...t.JSON.slashCommands.settings.categories.separators.oneTimeRunner,
-  stats: (r: number, members: number, finishTime: string) =>
+  notice: (cmdId: string) =>
+   t.stp(t.JSON.slashCommands.settings.categories.separators.oneTimeRunner.notice, { cmdId }),
+  stats: (members: number | string, r: number | string, finishTime: string) =>
    t.stp(t.JSON.slashCommands.settings.categories.separators.oneTimeRunner.stats, {
     r,
     members,

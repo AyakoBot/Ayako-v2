@@ -120,7 +120,14 @@ export const oneTimeRunner = async (
  const rows = await client.util.DataBase.roleseparator.findMany({
   where: { active: true, guildid: guild.id },
  });
- if (!rows) return;
+ if (!rows) {
+  if (!cmd) return;
+
+  guild.client.util.replyCmd(cmd, {
+   content: language.slashCommands.settings.categories.separators.oneTimeRunner.cant,
+  });
+  return;
+ }
 
  const settings =
   (await client.util.DataBase.roleseparatorsettings.findUnique({
@@ -129,10 +136,9 @@ export const oneTimeRunner = async (
   (await client.util.DataBase.roleseparatorsettings.create({
    data: { guildid: guild.id, stillrunning: false },
   }));
- if (!settings) return;
 
  if (settings.stillrunning && cmd) {
-  cmd.reply({
+  guild.client.util.replyCmd(cmd, {
    embeds: [
     {
      description: language.slashCommands.settings.categories.separators.oneTimeRunner.stillrunning,
@@ -159,23 +165,22 @@ export const oneTimeRunner = async (
    ((members ? members.length : 0) / 3600) * 400,
  );
 
- cmd?.editReply({
-  embeds: [
-   {
-    author: {
-     name: language.slashCommands.settings.authorType(
-      language.slashCommands.settings.categories.separators.name,
-     ),
-     icon_url: client.util.emotes.settings.link,
-    },
-    description: language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
-     members && members.length ? members.length : 0,
-     members && members.length ? members.length * 4 : 0,
-     `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
-    ),
-   },
-  ],
- });
+ const embed: Discord.APIEmbed = {
+  author: {
+   name: language.slashCommands.settings.authorType(
+    language.slashCommands.settings.categories.separators.name,
+   ),
+   icon_url: client.util.emotes.settings.link,
+  },
+  description: language.slashCommands.settings.categories.separators.oneTimeRunner.stats(
+   members && members.length ? members.length : '0',
+   members && members.length ? members.length * 4 : '0',
+   `<t:${finishTime}:F> (<t:${finishTime}:R>)`,
+  ),
+ };
+
+ cmd?.editReply({ embeds: [embed] });
+ notification(guild, embed, language, settings);
 
  client.util.DataBase.roleseparatorsettings
   .update({
@@ -330,19 +335,17 @@ const getMembers = async (
 
 const assinger = async (
  guild: Discord.Guild,
- membersWithRoles: Typings.DePromisify<ReturnType<typeof getMembers>>,
+ members: Typings.DePromisify<ReturnType<typeof getMembers>>,
  lastRun: boolean = false,
 ) => {
  if (!guild) return;
  const language = await client.util.getLanguage(guild.id);
 
- if (!membersWithRoles?.length) {
-  client.util.DataBase.roleseparatorsettings
-   .update({
-    where: { guildid: guild.id },
-    data: { stillrunning: false, duration: null, startat: null },
-   })
-   .then();
+ if (!members.length) {
+  await client.util.DataBase.roleseparatorsettings.update({
+   where: { guildid: guild.id },
+   data: { stillrunning: false, duration: null, startat: null, messageid: null, channelid: null },
+  });
 
   return;
  }
@@ -352,7 +355,7 @@ const assinger = async (
  const thisMap = separatorAssigner.get(guild.id);
  if (!thisMap) return;
 
- membersWithRoles.forEach((raw, index) => {
+ members.forEach((raw, index) => {
   thisMap.push(
    Jobs.scheduleJob(new Date(Date.now() + index * 3000), async () => {
     const member = guild.members.cache.get(raw.id);
@@ -362,18 +365,39 @@ const assinger = async (
      client.util.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
     }
 
-    if (index === membersWithRoles.length - 1 && lastRun) {
-     client.util.DataBase.roleseparatorsettings
+    if (index === members.length - 1 && lastRun) {
+     const settings = await client.util.DataBase.roleseparatorsettings
       .update({
        where: { guildid: guild.id },
-       data: { stillrunning: false, duration: null, startat: null },
+       data: {
+        stillrunning: false,
+        duration: null,
+        startat: null,
+        messageid: null,
+        channelid: null,
+       },
       })
       .then();
+
+     notification(
+      guild,
+      {
+       author: {
+        name: language.slashCommands.settings.authorType(
+         language.slashCommands.settings.categories.separators.name,
+        ),
+        icon_url: client.util.emotes.settings.link,
+       },
+      },
+      language,
+      settings,
+      true,
+     );
 
      return;
     }
 
-    if (index === membersWithRoles.length - 1) {
+    if (index === members.length - 1) {
      oneTimeRunner(undefined, guild, true);
      return;
     }
@@ -381,10 +405,53 @@ const assinger = async (
     client.util.DataBase.roleseparatorsettings
      .update({
       where: { guildid: guild.id },
-      data: { index, length: membersWithRoles.length - 1 },
+      data: { index, length: members.length - 1 },
      })
      .then();
    }),
   );
+ });
+};
+
+const notification = async (
+ guild: Discord.Guild,
+ embed: Discord.APIEmbed,
+ language: Typings.Language,
+ settings: Prisma.roleseparatorsettings,
+ finished: boolean = false,
+) => {
+ const guildSettings = await guild.client.util.DataBase.guildsettings.findUnique({
+  where: { guildid: guild.id, errorchannel: { not: null } },
+ });
+ if (!guildSettings) return;
+
+ const edit = () =>
+  guild.client.util.request.channels.editMessage(
+   guild,
+   settings.channelid as string,
+   settings.messageid as string,
+   { embeds: [embed] },
+  );
+
+ if (finished) return;
+
+ embed.footer = {
+  text: language.slashCommands.settings.categories.separators.oneTimeRunner.update,
+ };
+
+ if (settings.messageid) {
+  edit();
+  return;
+ }
+
+ const msg = await guild.client.util.send(
+  { id: guildSettings.errorchannel as string, guildId: guild.id },
+  { embeds: [embed] },
+ );
+ if (!msg || 'message' in msg) return;
+
+ await guild.client.util.DataBase.roleseparatorsettings.update({
+  where: { guildid: guild.id },
+  data: { messageid: msg.id, channelid: msg.channelId },
  });
 };
