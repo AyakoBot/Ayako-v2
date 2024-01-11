@@ -83,7 +83,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
     {
      author: {
       name: language.events.ready.disboard.title,
-      icon_url: (await client.users.fetch('302050872383242240')).displayAvatarURL(),
+      icon_url: (await client.util.getUser('302050872383242240'))?.displayAvatarURL(),
      },
      description: language.events.ready.disboard.desc,
     },
@@ -91,31 +91,41 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
   },
  );
 
- if (!m) return;
+ if (!m || 'message' in m) return;
+
+ if (!settings.repeatenabled) {
+  client.util.DataBase.disboard
+   .update({
+    where: { guildid: guild.id },
+    data: {
+     msgid: null,
+     tempchannelid: null,
+     nextbump: null,
+    },
+   })
+   .then();
+  return;
+ }
+
+ const nextbump = Date.now() + Number(settings.repeatreminder) * 1000;
 
  client.util.DataBase.disboard
   .update({
-   where: {
-    guildid: guild.id,
-   },
+   where: { guildid: guild.id },
    data: {
     msgid: m.id,
     tempchannelid: m.channelId,
-    nextbump: settings.repeatenabled
-     ? Date.now() + Number(settings.repeatreminder) * 1000
-     : undefined,
+    nextbump,
    },
   })
   .then();
 
- if (settings.repeatenabled) {
-  client.util.cache.disboardBumpReminders.set(
-   Jobs.scheduleJob(new Date(Date.now() + Number(settings.repeatreminder) * 1000), () => {
-    bumpReminder(guild);
-   }),
-   guild.id,
-  );
- }
+ client.util.cache.disboardBumpReminders.set(
+  Jobs.scheduleJob(new Date(nextbump), () => {
+   bumpReminder(guild);
+  }),
+  guild.id,
+ );
 };
 
 const deleteLastReminder = async (settings: Prisma.disboard) => {

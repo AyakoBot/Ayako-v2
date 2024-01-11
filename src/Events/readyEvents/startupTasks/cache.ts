@@ -118,24 +118,22 @@ export const tasks = {
   });
  },
  disboard: async (guild: Discord.Guild) => {
-  const disboardBumpReminders = await client.util.DataBase.disboard.findUnique({
-   where: { guildid: guild.id },
+  const settings = await client.util.DataBase.disboard.findUnique({
+   where: { guildid: guild.id, nextbump: { not: null } },
   });
-  if (disboardBumpReminders) {
-   client.util.cache.disboardBumpReminders.set(
-    Jobs.scheduleJob(
-     new Date(
-      Number(disboardBumpReminders.nextbump) < Date.now()
-       ? Date.now() + 10000
-       : Number(disboardBumpReminders.nextbump),
-     ),
-     () => {
-      bumpReminder(guild);
-     },
+  if (!settings) return;
+
+  client.util.cache.disboardBumpReminders.set(
+   Jobs.scheduleJob(
+    new Date(
+     Number(settings.nextbump) < Date.now() ? Date.now() + 10000 : Number(settings.nextbump),
     ),
-    disboardBumpReminders.guildid,
-   );
-  }
+    () => {
+     bumpReminder(guild);
+    },
+   ),
+   settings.guildid,
+  );
  },
  giveaways: async (guild: Discord.Guild) => {
   const giveaways = await client.util.DataBase.giveaways.findMany({
