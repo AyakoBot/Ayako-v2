@@ -46,8 +46,6 @@ client.rest.on('rateLimited', (info) => {
  ch.logFiles.ratelimits.write(`${str}\n`);
 });
 
-console.log(client.cluster?.maintenance);
-
 const spawnEvents = async () => {
  const eventHandler = (await import('./Events/baseEventHandler.js')).default;
  const events = await ch.getEvents();
