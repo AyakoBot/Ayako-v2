@@ -18,9 +18,6 @@ if (processArgs.includes('--debug-db')) console.log('[DEBUG] Debug mode for data
 if (processArgs.includes('--warn')) console.log('[DEBUG] Warn mode enabled');
 if (processArgs.includes('--silent')) console.log('[DEBUG] Silent mode enabled');
 
-const events = await ch.getEvents();
-client.setMaxListeners(events.length);
-
 process.setMaxListeners(4);
 process.on('unhandledRejection', async (error: string) => {
  console.error(error);
@@ -39,16 +36,6 @@ process.on('experimentalWarning', (error: string) => {
  ch.logFiles.console.write(`${error}\n`);
 });
 
-events.forEach(async (path) => {
- const eventName = path.replace('.js', '').split(/\/+/).pop();
- if (!eventName) return;
-
- const eventHandler = (await import('./Events/baseEventHandler.js')).default;
-
- if (eventName === 'ready') client.once(eventName, (...args) => eventHandler(eventName, args));
- else client.on(eventName, (...args) => eventHandler(eventName, args));
-});
-
 client.rest.on('rateLimited', (info) => {
  const str = `[Ratelimited] ${info.method} ${info.url.replace(
   'https://discord.com/api/v10/',
@@ -58,3 +45,33 @@ client.rest.on('rateLimited', (info) => {
  if (processArgs.includes('--debug')) console.log(str);
  ch.logFiles.ratelimits.write(`${str}\n`);
 });
+
+console.log(client.cluster?.maintenance);
+
+const spawnEvents = async () => {
+ const eventHandler = (await import('./Events/baseEventHandler.js')).default;
+ const events = await ch.getEvents();
+ client.setMaxListeners(events.length);
+
+ events.forEach(async (path) => {
+  const eventName = path.replace('.js', '').split(/\/+/).pop();
+  if (!eventName) return;
+
+  if (eventName === 'ready' && !client.cluster?.maintenance) {
+   client.once(eventName, (...args) => eventHandler(eventName, args));
+   return;
+  }
+  client.on(eventName, (...args) => eventHandler(eventName, args));
+ });
+};
+
+if (client.cluster?.maintenance) {
+ console.log(`[Cluster ${client.cluster.id}] Cluster spawned in Maintenance-Mode`);
+
+ client.cluster?.on('ready', async () => {
+  console.log(`[Cluster ${client.cluster?.id}] Cluster moved into Ready-State`);
+  const eventHandler = (await import('./Events/baseEventHandler.js')).default;
+  spawnEvents();
+  eventHandler('ready', []);
+ });
+} else spawnEvents();

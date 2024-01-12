@@ -39,6 +39,8 @@ const manager = new Sharding.ClusterManager(botPath, {
  mode: 'process',
 });
 
+manager.extend(new Sharding.ReClusterManager({ restartMode: 'rolling' }));
+
 manager.on('clusterCreate', (cluster) => {
  log(`[Cluster Manager] Launched Cluster ${cluster.id}`, true);
 
@@ -90,7 +92,10 @@ rl.on('line', async (msg: string) => {
 
  if (!code.startsWith('restart')) return;
 
- manager.respawnAll({ respawnDelay: 1000 });
+ console.log('[Cluster Manager] Restarting all Clusters...');
+ manager.recluster?.start({
+  restartMode: 'rolling',
+ });
 });
 
 if (
