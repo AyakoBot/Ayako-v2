@@ -4,7 +4,7 @@ import * as Jobs from 'node-schedule';
 import * as endGiveaway from '../../Commands/SlashCommands/giveaway/end.js';
 import * as createReminder from '../../Commands/SlashCommands/reminder/create.js';
 import * as separator from '../../Events/guildEvents/guildMemberUpdate/separator.js';
-import voteBotCreate from '../../Events/voteEvents/voteBotEvents/voteBotCreate.js';
+import * as voteBotCreate from '../../Events/voteEvents/voteBotEvents/voteBotCreate.js';
 import voteGuildCreate from '../../Events/voteEvents/voteGuildEvents/voteGuildCreate.js';
 import * as typings from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';

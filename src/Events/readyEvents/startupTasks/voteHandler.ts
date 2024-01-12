@@ -2,7 +2,6 @@ import { voters } from '@prisma/client';
 import client from '../../../BaseClient/Client.js';
 import Socket from '../../../BaseClient/Socket.js';
 import * as CT from '../../../Typings/Typings.js';
-import { endVote } from '../../voteEvents/voteBotEvents/voteBotCreate.js';
 
 export default async () => {
  initSocket();
@@ -36,7 +35,7 @@ const initReminders = async () => {
 
        if (u.votetype === 'guild') delete (vote as { bot?: string }).bot;
 
-       endVote(vote, guild);
+       cl.util.files['/Events/voteEvents/voteBotEvents/voteBotCreate.js'].endVote(vote, guild);
       },
      ),
      u.voted,
@@ -71,7 +70,7 @@ const initSocket = () =>
       .then((m) => ('message' in m ? undefined : m));
 
      if ('bot' in vote) {
-      cl.util.files['/Events/voteEvents/voteBotEvents/voteBotCreate.js'](
+      cl.util.files['/Events/voteEvents/voteBotEvents/voteBotCreate.js'].default(
        vote,
        guild,
        user,
