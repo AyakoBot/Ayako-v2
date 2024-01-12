@@ -121,12 +121,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
       : language.t.None,
     inline: true,
    },
-   // TODO: Fix this
-   // {
-   //  name: lan.fields.onlyone.name,
-   //  value: embedParsers.boolean(settings?.onlyone, language),
-   //  inline: true,
-   // },
+   {
+    name: lan.fields.onlyone.name,
+    value: embedParsers.boolean(settings?.onlyone, language),
+    inline: true,
+   },
    {
     name: lan.fields.anyroles.name,
     value: embedParsers.roles(settings?.anyroles, language),
@@ -165,13 +164,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings?.uniquetimestamp),
    ),
-   // buttonParsers.boolean(
-   //  language,
-   //  settings?.onlyone,
-   //  'onlyone',
-   //  name,
-   //  Number(settings?.uniquetimestamp),
-   // ),
+   buttonParsers.boolean(
+    language,
+    settings?.onlyone,
+    'onlyone',
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
    buttonParsers.specific(
     language,
     settings?.anyroles,

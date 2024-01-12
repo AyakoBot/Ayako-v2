@@ -38,9 +38,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  if (!member.roles.cache.hasAll(...buttonRoles.roles, ...settings.anyroles)) {
   if (settings.onlyone && relatedSettings.length) {
-   cmd.client.util.roleManager.add(
+   cmd.client.util.roleManager.remove(
     member,
-    relatedSettings.map((r) => r.roles).flat(),
+    relatedSettings
+     .map((r) => r.roles)
+     .flat()
+     .filter((r) => !buttonRoles.roles.includes(r) && !settings.anyroles.includes(r)),
     language.autotypes.buttonroles,
     1,
    );
