@@ -37,7 +37,7 @@ export default async (
    : lan.descButtons((await client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0');
  embed.fields = [
   ...(embed.fields ?? []),
-  ...(findField(value, embed.fields)
+  ...(findField(Discord.parseEmoji(value) as Discord.PartialEmoji, embed.fields)
    ? []
    : [
       {
@@ -51,12 +51,18 @@ export default async (
 
  cmd.update({
   embeds: [embed],
-  components: getComponents(cmd.values[0], lan, language, [], type),
+  components: getComponents(
+   Discord.parseEmoji(value) as Discord.PartialEmoji,
+   lan,
+   language,
+   [],
+   type,
+  ),
  });
 };
 
 export const getComponents = (
- emojiIdentifier: string,
+ emoji: Discord.PartialEmoji,
  lan: CT.Language['slashCommands']['roles']['builders'],
  language: CT.Language,
  roles: string[],
@@ -79,15 +85,15 @@ export const getComponents = (
    {
     type: Discord.ComponentType.Button,
     custom_id: `-2`,
-    label: emojiIdentifier.includes(':') ? emojiIdentifier.split(/:/g)[0] : undefined,
-    emoji: emojiIdentifier.includes(':')
+    label: emoji.name ?? emoji.id,
+    emoji: emoji.name
      ? {
-        id: emojiIdentifier.split(/:/g)[1],
-        name: emojiIdentifier.split(/:/g)[0],
-        animated: emojiIdentifier.startsWith('a:'),
+        id: emoji.id,
+        name: emoji.name,
+        animated: emoji.animated,
        }
      : {
-        name: emojiIdentifier,
+        name: emoji.id,
        },
     style: Discord.ButtonStyle.Secondary,
     disabled: true,
@@ -99,7 +105,7 @@ export const getComponents = (
   components: [
    {
     type: Discord.ComponentType.RoleSelect,
-    custom_id: `roles/${type}_${emojiIdentifier}`,
+    custom_id: `roles/${type}_${client.util.constants.standard.getEmoteIdentifier(emoji)}`,
     placeholder: lan.chooseRoles,
     min_values: 1,
     max_values: 10,
@@ -117,7 +123,7 @@ export const getComponents = (
    },
    {
     type: Discord.ComponentType.Button,
-    custom_id: `roles/${type}/save_${emojiIdentifier}`,
+    custom_id: `roles/${type}/save_${client.util.constants.standard.getEmoteIdentifier(emoji)}`,
     emoji: client.util.emotes.tickWithBackground,
     style: Discord.ButtonStyle.Success,
     label: lan.saveAndExit,
@@ -125,7 +131,7 @@ export const getComponents = (
    },
    {
     type: Discord.ComponentType.Button,
-    custom_id: `roles/${type}/delete_${emojiIdentifier}`,
+    custom_id: `roles/${type}/delete_${client.util.constants.standard.getEmoteIdentifier(emoji)}`,
     emoji: client.util.emotes.trash,
     style: Discord.ButtonStyle.Secondary,
     label: language.t.Delete,
@@ -134,12 +140,22 @@ export const getComponents = (
  },
 ];
 
-export const findField = (emoji: string, fields: Discord.APIEmbedField[] | undefined) =>
+export const findField = (
+ emoji: Discord.PartialEmoji,
+ fields: Discord.APIEmbedField[] | undefined,
+) =>
  fields?.find((f) =>
-  !Discord.parseEmoji(emoji)?.id
-   ? f.name === `${emoji} / ${client.util.util.makeInlineCode(emoji)}`
+  !emoji.id
+   ? f.name ===
+     `${client.util.constants.standard.getEmote(emoji)} / ${client.util.util.makeInlineCode(
+      client.util.constants.standard.getEmoteIdentifier(emoji),
+     )}`
    : [
-      `<${emoji.startsWith('a:') ? '' : ':'}${emoji}> / ${client.util.util.makeInlineCode(emoji)}`,
-      `:${emoji.split(/:/g)[0]}: / ${client.util.util.makeInlineCode(emoji)}`,
+      `${client.util.constants.standard.getEmote(emoji)} / ${client.util.util.makeInlineCode(
+       client.util.constants.standard.getEmoteIdentifier(emoji),
+      )}`,
+      `:${emoji.name}: / ${client.util.util.makeInlineCode(
+       client.util.constants.standard.getEmoteIdentifier(emoji),
+      )}`,
      ].includes(f.name),
  );

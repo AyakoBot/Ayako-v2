@@ -10,7 +10,7 @@ export default async (
 
  const emoji = args.join('_');
  const embed = JSON.parse(JSON.stringify(cmd.message.embeds[0].data)) as Discord.APIEmbed;
- const field = findField(emoji, embed.fields);
+ const field = findField(Discord.parseEmoji(emoji) as Discord.PartialEmoji, embed.fields);
 
  if (field) field.value = cmd.roles.map((r) => `<@&${r.id}>`).join(', ');
 
@@ -20,7 +20,7 @@ export default async (
  cmd.update({
   embeds: [embed],
   components: getComponents(
-   emoji,
+   Discord.parseEmoji(emoji) as Discord.PartialEmoji,
    lan,
    language,
    cmd.roles.map((r) => r.id),

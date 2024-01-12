@@ -55,7 +55,10 @@ export default async (
  }
 
  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp, emoji);
- const field = findField(emoji, cmd.message.embeds[0].fields);
+ const field = findField(
+  Discord.parseEmoji(emoji) as Discord.PartialEmoji,
+  cmd.message.embeds[0].fields,
+ );
  const roles = field?.value.split(/,\s+/g).map((r) => r.replace(/\D+/g, '')) ?? [];
 
  if (settings.length) {
@@ -125,7 +128,9 @@ export default async (
    : await putReactions(allSettings as Prisma.reactionroles[], message);
 
  if (type === 'button-roles') {
-  const reaction = message.reactions.cache.get(emoji.includes(':') ? emoji.split(/:/g)[1] : emoji);
+  const emote = emoji ? Discord.parseEmoji(emoji) : undefined;
+
+  const reaction = message.reactions.cache.get(emote?.id ?? emote?.name ?? '');
   if (reaction) {
    await cmd.client.util.request.channels.deleteAllReactionsOfEmoji(
     message,
@@ -150,19 +155,21 @@ export const putComponents = async (
 ) => {
  const chunks = allSettings
   ? message.client.util.getChunks(
-     allSettings.map(
-      (s): Discord.APIButtonComponentWithCustomId => ({
+     allSettings.map((s): Discord.APIButtonComponentWithCustomId => {
+      const emote = s.emote ? Discord.parseEmoji(s.emote) : undefined;
+
+      return {
        label: s.text || undefined,
        emoji: {
-        id: s.emote?.split(/:/g)[1] ?? undefined,
-        name: s.emote?.split(/:/g)[0] ?? s.emote ?? undefined,
-        animated: s.emote?.startsWith('a:') ?? false,
+        id: emote?.id,
+        name: emote?.name ?? emote?.id ?? undefined,
+        animated: emote?.animated,
        },
        custom_id: `roles/button-roles/takeRole_${s.uniquetimestamp}`,
        style: Discord.ButtonStyle.Secondary,
        type: Discord.ComponentType.Button,
-      }),
-     ),
+      };
+     }),
      5,
     )
   : [];
@@ -183,27 +190,21 @@ const putReactions = async (
 ) => {
  if (!allSettings) return message.client.util.request.channels.deleteAllReactions(message);
 
- const firstSetting = allSettings.find(
-  (s) =>
-   !message.reactions.cache.get(
-    (s?.emote?.includes(':') ? s.emote?.split(/:/g)[1] : s?.emote) as string,
-   )?.me,
- );
+ const firstSetting = allSettings.find((s) => {
+  const emote = s.emote ? Discord.parseEmoji(s.emote) : undefined;
 
- const reaction = message.reactions.cache.get(
-  firstSetting?.emote?.includes(':')
-   ? firstSetting.emote?.split(/:/g)[1]
-   : (firstSetting?.emote as string),
- );
+  return !message.reactions.cache.get(emote?.id ?? emote?.name ?? '')?.me;
+ });
+
+ const emote = firstSetting?.emote ? Discord.parseEmoji(firstSetting.emote) : undefined;
+ const reaction = message.reactions.cache.get(emote?.name ?? emote?.id ?? '');
  const action = reaction
   ? await message.client.util.request.channels.addReaction(message, reaction.emoji.identifier)
   : undefined;
  if (action && 'message' in action && typeof action.message === 'string') return action;
 
  allSettings.forEach((s) => {
-  const emoji = Discord.resolvePartialEmoji(
-   s.emote?.includes(':') ? s.emote?.split(/:/g)[1] : (s.emote as string),
-  );
+  const emoji = s.emote ? Discord.parseEmoji(s.emote) : undefined;
   if (!emoji || !('name' in emoji)) return;
 
   message.client.util.request.channels.addReaction(

@@ -56,9 +56,8 @@ export default async (
 };
 
 const removeReactions = (emoji: string, message: Discord.Message<true>) => {
- const reaction = message.reactions.cache.get(
-  (emoji.includes(':') ? emoji.split(/:/g)[1] : emoji) as string,
- );
+ const emote = emoji ? Discord.parseEmoji(emoji) : undefined;
+ const reaction = message.reactions.cache.get(emote?.id ?? emote?.name ?? '');
 
  if (!reaction) return undefined;
  return message.client.util.request.channels.deleteAllReactionsOfEmoji(
