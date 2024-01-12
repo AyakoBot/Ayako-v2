@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
-import client from '../../Client.js';
 import { makeInlineCode } from '../util.js';
 
 export type MentionTypes =
@@ -60,7 +59,7 @@ export default async (
     (guild as NonNullable<typeof guild>).autoModerationRules.cache.get(value)?.name ?? value,
    );
   case CT.EditorTypes.Commands: {
-   const cmd = client.application?.commands.cache.get(value);
+   const cmd = guild.client.application?.commands.cache.get(value);
 
    if (!cmd) return `\`${value}\``;
    return `</${cmd?.name}:${cmd?.id}>`;

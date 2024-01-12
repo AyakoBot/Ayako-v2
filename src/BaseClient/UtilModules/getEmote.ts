@@ -11,7 +11,7 @@ type DirectProperties<T> = Pick<T, keyof T>;
 export default async (idPair: string) => {
  if (!idPair.includes(':')) return Discord.parseEmoji(idPair);
 
- const client = (await import('../Client.js')).default;
+ const client = (await import('../Bot/Client.js')).default;
 
  const response = (await client.cluster?.broadcastEval((c, { id }) => c.emojis.cache.get(id), {
   context: { id: idPair.split(/:/g).at(-1) as string },

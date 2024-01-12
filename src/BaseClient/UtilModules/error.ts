@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 import objectEmotes from './emotes.js';
 import getLanguage from './getLanguage.js';
 import constants from '../Other/constants.js';
 import * as CT from '../../Typings/Typings.js';
-import client from '../Client.js';
 import { request } from './requestHandler.js';
 import { canSendMessage } from './requestHandler/channels/sendMessage.js';
 
@@ -68,13 +67,16 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
   ],
  };
 
- if (postDebug) sendDebugMessage(payload);
+ if (postDebug) sendDebugMessage(payload, guild.client);
  if (!guild.members.me) return;
  if (!canSendMessage(channel.id, payload, guild.members.me)) return;
  request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };
 
-export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
+export const sendDebugMessage = async (
+ payload: CT.UsualMessagePayload,
+ client: Discord.Client<true>,
+) => {
  const webhook = await client.fetchWebhook(
   process.env.debugWebhookID ?? '',
   process.env.debugWebhookToken ?? '',

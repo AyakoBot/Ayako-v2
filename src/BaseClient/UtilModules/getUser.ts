@@ -25,7 +25,7 @@ interface bEvalUser {
  * @returns A Promise that resolves with the User object if found, otherwise undefined.
  */
 export default async (id: string) => {
- const client = (await import('../Client.js')).default;
+ const client = (await import('../Bot/Client.js')).default;
  if (!client.isReady()) return undefined;
 
  const response = (

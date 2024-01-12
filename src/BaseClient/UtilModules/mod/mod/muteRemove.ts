@@ -1,5 +1,5 @@
 import * as CT from '../../../../Typings/Typings.js';
-import DataBase from '../../../DataBase.js';
+import DataBase from '../../../Bot/DataBase.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';

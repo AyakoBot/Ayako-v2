@@ -1,16 +1,27 @@
 import { glob } from 'glob';
 import * as Discord from 'discord.js';
 
-/**
- * Retrieves all valid event files from the Events directory.
- * @returns A Promise that resolves to an array of filtered event files.
- */
-export default async () => {
- const events = await glob(
-  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Events/**/*`,
- );
+const eventPath = `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Events`;
 
- const filteredEvents = events
+export enum ProcessEvents {
+ experimentalWarning = 'experimentalWarning',
+ promiseRejectionHandledWarning = 'promiseRejectionHandledWarning',
+ uncaughtException = 'uncaughtException',
+ unhandledRejection = 'unhandledRejection',
+}
+
+export enum ClusterEvents {
+ appealCreate = 'appealCreate',
+ interactionCreate = 'interactionCreate',
+ voteCreate = 'voteCreate',
+}
+
+/**
+ * Retrieves the bot events by scanning the specified event path.
+ * @returns {Promise<string[]>} A promise that resolves to an array of bot events.
+ */
+export const getBotEvents = async () =>
+ (await glob(`${eventPath}/BotEvents/**/*`))
   .filter((path) => path.endsWith('.js'))
   .filter((path) => {
    const eventName = path.replace('.js', '').split(/\/+/).pop();
@@ -20,5 +31,45 @@ export default async () => {
    return true;
   });
 
- return filteredEvents;
+/**
+ * Retrieves the process events from the specified event path.
+ * @returns {Promise<string[]>} A promise that resolves to an array of process event paths.
+ */
+export const getProcessEvents = async () =>
+ (await glob(`${eventPath}/ProcessEvents/**/*`))
+  .filter((path) => path.endsWith('.js'))
+  .filter((path) => {
+   const eventName = path.replace('.js', '').split(/\/+/).pop();
+
+   if (!eventName) return false;
+   if (!Object.values(ProcessEvents).includes(eventName as never)) return false;
+   return true;
+  });
+
+/**
+ * Retrieves the cluster events by scanning the specified event path.
+ * @returns {Promise<string[]>} A promise that resolves to an array of cluster events.
+ */
+export const getClusterEvents = async () =>
+ (await glob(`${eventPath}/ClusterEvents/**/*`))
+  .filter((path) => path.endsWith('.js'))
+  .filter((path) => {
+   const eventName = path.replace('.js', '').split(/\/+/).pop();
+
+   if (!eventName) return false;
+   if (!Object.values(ClusterEvents).includes(eventName as never)) return false;
+   return true;
+  });
+
+const events = {
+ ProcessEvents: await getProcessEvents(),
+ ClusterEvents: await getClusterEvents(),
+ BotEvents: await getBotEvents(),
 };
+
+/**
+ * Retrieves and returns the events for the client.
+ * @returns {Promise<{ ProcessEvents: string[], ClusterEvents: string[], BotEvents: string[] }>}
+ * The events for the client.
+ */
+export default events;

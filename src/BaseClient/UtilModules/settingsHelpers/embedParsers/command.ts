@@ -1,5 +1,4 @@
 import * as CT from '../../../../Typings/Typings.js';
-import client from '../../../Client.js';
 
 /**
  * Parser for command type settings.
@@ -7,8 +6,10 @@ import client from '../../../Client.js';
  * @param language - The language object containing translations.
  * @returns A string representation of the command.
  */
-export default (val: string | null, language: CT.Language) => {
+export default async (val: string | null, language: CT.Language) => {
  if (!val) return language.t.None;
+
+ const client = (await import('../../../Bot/Client.js')).default;
 
  const isID = val?.replace(/\D+/g, '').length === val?.length;
  const cmd = isID ? client.application?.commands.cache.get(val) : undefined;

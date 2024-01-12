@@ -7,7 +7,7 @@ import fetchAllEventSubscribers from '../UtilModules/fetchAllEventSubscribers.js
 import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
 import deleteThread from '../UtilModules/mod/deleteThread.js';
 import { request } from '../UtilModules/requestHandler.js';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 
 export default async (guild: Discord.Guild | null) => {
  if (!guild) return;

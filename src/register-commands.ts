@@ -3,7 +3,7 @@ import 'dotenv/config';
 import * as DiscordRest from '@discordjs/rest';
 import * as DiscordCore from '@discordjs/core';
 import commands from './SlashCommands/index.js';
-import DataBase from './BaseClient/DataBase.js';
+import DataBase from './BaseClient/Bot/DataBase.js';
 
 const createCommands = Object.values(commands.public);
 

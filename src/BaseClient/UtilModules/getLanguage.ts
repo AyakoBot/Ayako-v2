@@ -1,4 +1,4 @@
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 import Language, { languages } from '../Other/language.js';
 
 /**

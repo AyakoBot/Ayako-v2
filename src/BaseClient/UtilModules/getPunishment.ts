@@ -1,5 +1,5 @@
 import Prisma from '@prisma/client';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 
 export type Returned = (
  | Prisma.punish_bans

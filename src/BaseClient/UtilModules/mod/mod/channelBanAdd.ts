@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
-import DataBase from '../../../DataBase.js';
+import DataBase from '../../../Bot/DataBase.js';
 
 import objectEmotes from '../../emotes.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';

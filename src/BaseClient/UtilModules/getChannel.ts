@@ -7,7 +7,7 @@ import * as Discord from 'discord.js';
  * or undefined if the channel was not found.
  */
 const getChannel = async (channelId: string) => {
- const client = (await import('../Client.js')).default;
+ const client = (await import('../Bot/Client.js')).default;
  return client.channels.fetch(channelId, { allowUnknownGuild: true }).catch(() => undefined);
 };
 

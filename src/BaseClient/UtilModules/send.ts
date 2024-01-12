@@ -256,7 +256,7 @@ const getChannel = async (
      guildId: string;
     },
 ) => {
- const { default: client, API } = await import('../Client.js');
+ const { default: client, API } = await import('../Bot/Client.js');
 
  if ('username' in channels) {
   const dm = await API.users.createDM(channels.id).catch(() => undefined);

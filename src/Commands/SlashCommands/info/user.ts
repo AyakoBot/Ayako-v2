@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import fetch from 'node-fetch';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 const month = 2629743000;

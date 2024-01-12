@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, _args: string[], up = true) => {
  if (!cmd.inCachedGuild()) return;

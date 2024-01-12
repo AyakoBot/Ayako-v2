@@ -1,4 +1,4 @@
-import DataBase from '../../../DataBase.js';
+import DataBase from '../../../Bot/DataBase.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default (

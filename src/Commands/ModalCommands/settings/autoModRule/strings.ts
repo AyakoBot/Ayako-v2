@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import client from '../../../../BaseClient/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
 import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 

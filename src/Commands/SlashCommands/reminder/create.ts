@@ -2,7 +2,7 @@ import Prisma from '@prisma/client';
 import { Serialized } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;

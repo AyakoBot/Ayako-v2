@@ -1,7 +1,7 @@
 import * as DiscordRest from '@discordjs/rest';
 import * as DiscordCore from '@discordjs/core';
 import cache from './cache.js';
-import { API } from '../Client.js';
+import { API } from '../Bot/Client.js';
 
 import commands from './requestHandler/commands.js';
 import channels from './requestHandler/channels.js';

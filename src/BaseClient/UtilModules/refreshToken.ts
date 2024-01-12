@@ -1,5 +1,5 @@
-import DataBase from '../DataBase.js';
-import * as Client from '../Client.js';
+import DataBase from '../Bot/DataBase.js';
+import * as Client from '../Bot/Client.js';
 
 /**
  * Refreshes the access token using the provided refresh token

@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   discord.js@14.14.1:
-    hash: 3viul2gqmaoma4rjhivd3q3baq
+    hash: 2j64ngi3dbftnm7xidy7uk3jxm
     path: patches/discord.js@14.14.1.patch
 
 dependencies:
@@ -45,7 +45,7 @@ dependencies:
     version: 2.1.4
   discord.js:
     specifier: ^14.14.1
-    version: 14.14.1(patch_hash=3viul2gqmaoma4rjhivd3q3baq)
+    version: 14.14.1(patch_hash=2j64ngi3dbftnm7xidy7uk3jxm)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -1751,7 +1751,7 @@ packages:
       - encoding
     dev: false
 
-  /discord.js@14.14.1(patch_hash=3viul2gqmaoma4rjhivd3q3baq):
+  /discord.js@14.14.1(patch_hash=2j64ngi3dbftnm7xidy7uk3jxm):
     resolution: {integrity: sha512-/hUVzkIerxKHyRKopJy5xejp4MYKDPTszAnpYxzVVv4qJYf+Tkt+jnT2N29PIPschicaEEpXwF2ARrTYHYwQ5w==}
     engines: {node: '>=16.11.0'}
     dependencies:

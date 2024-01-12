@@ -1,6 +1,6 @@
 import DiscordAPI from 'discord-api-types/v10';
 import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
 import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
 import * as CT from '../../../Typings/Typings.js';

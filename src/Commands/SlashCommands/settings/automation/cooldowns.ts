@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Cooldowns;
@@ -94,7 +94,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -117,7 +117,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.command.name,
-    value: embedParsers.command(settings?.command, language),
+    value: await embedParsers.command(settings?.command, language),
     inline: true,
    },
    {

@@ -1,7 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -24,19 +24,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  client.util.replyCmd(cmd, { content: lan.manuallyEnded });
 };
 
-export const end = async (g: Prisma.giveaways) => {
- client.cluster?.broadcastEval(
-  async (cl, { giveaway }) => {
-   const guild = cl.guilds.cache.get(giveaway.guildid);
-   if (!guild) return;
+export const end = async (giveaway: Prisma.giveaways) => {
+ const guild = client.guilds.cache.get(giveaway.guildid);
+ if (!guild) return;
 
-   cl.util.files['/Commands/SlashCommands/giveaway/end.js'].giveawayCollectTime(
-    guild,
-    giveaway.msgid,
-   );
-  },
-  { context: { giveaway: g } },
- );
+ giveawayCollectTime(guild, giveaway.msgid);
 };
 
 export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.giveaways) => {
@@ -269,35 +261,27 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  );
 };
 
-export const giveawayCollectTimeExpired = (msgID: string, guildID: string) => {
- client.cluster?.broadcastEval(
-  async (cl, { gID, mID }) => {
-   const guild = cl.guilds.cache.get(gID);
-   if (!guild) return;
+export const giveawayCollectTimeExpired = async (msgID: string, guildID: string) => {
+ const guild = client.guilds.cache.get(guildID);
+ if (!guild) return;
 
-   const giveaway = await cl.util.DataBase.giveaways.findUnique({
-    where: { msgid: mID },
-   });
+ const giveaway = await client.util.DataBase.giveaways.findUnique({
+  where: { msgid: msgID },
+ });
 
-   if (!giveaway) {
-    client.util.error(guild, new Error('Giveaway not found'));
-    return;
-   }
+ if (!giveaway) {
+  client.util.error(guild, new Error('Giveaway not found'));
+  return;
+ }
 
-   if (!giveaway.winners.length) return;
+ if (!giveaway.winners.length) return;
 
-   if (!giveaway.failreroll) {
-    cl.util.files['/Commands/SlashCommands/giveaway/end.js'].failReroll(giveaway);
-    return;
-   }
+ if (!giveaway.failreroll) {
+  failReroll(giveaway);
+  return;
+ }
 
-   cl.util.files['/Commands/SlashCommands/giveaway/end.js'].giveawayCollectTime(
-    guild,
-    giveaway.msgid,
-   );
-  },
-  { context: { gID: guildID, mID: msgID } },
- );
+ giveawayCollectTime(guild, giveaway.msgid);
 };
 
 export const getMessage = async (giveaway: {

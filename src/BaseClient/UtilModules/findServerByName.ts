@@ -4,7 +4,7 @@
  * @returns An array of guilds whose name includes the given string.
  */
 export default async (name: string) => {
- const client = (await import('../Client.js')).default;
+ const client = (await import('../Bot/Client.js')).default;
 
  const response = (
   await client.cluster?.broadcastEval(

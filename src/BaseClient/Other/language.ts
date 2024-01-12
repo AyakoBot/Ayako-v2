@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import merge from 'lodash.merge';
-import client from '../Client.js';
+import client from '../Bot/Client.js';
 import stp from '../UtilModules/stp.js';
 import languageFunction from './language/languageFunction.js';
 import events from './language/events/events.js';

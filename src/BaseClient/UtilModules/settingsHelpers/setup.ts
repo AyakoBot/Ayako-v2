@@ -1,5 +1,5 @@
 import * as CT from '../../../Typings/Typings.js';
-import DataBase from '../../DataBase.js';
+import DataBase from '../../Bot/DataBase.js';
 
 /**
  * Sets up a database query based on the provided table name,

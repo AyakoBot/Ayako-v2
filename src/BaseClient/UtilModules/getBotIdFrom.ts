@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 
 /**
  * Extracts the bot ID from a Discord bot token.

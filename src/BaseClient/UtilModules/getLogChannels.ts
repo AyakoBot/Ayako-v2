@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 
 /**
  * Returns the log channel ID for the specified column name and guild.

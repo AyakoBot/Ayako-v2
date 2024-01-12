@@ -27,6 +27,7 @@ export default async (
   return false;
  }
 
+ // TODO: Debug this in Cozy using 564052925828038658
  const me = await getBotMemberFromGuild(options.guild);
  if (
   memberRes?.targetMember &&

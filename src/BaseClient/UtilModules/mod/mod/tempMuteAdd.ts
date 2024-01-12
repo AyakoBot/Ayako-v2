@@ -1,8 +1,7 @@
 import * as Jobs from 'node-schedule';
 import * as CT from '../../../../Typings/Typings.js';
 
-import client from '../../../Client.js';
-import DataBase from '../../../DataBase.js';
+import DataBase from '../../../Bot/DataBase.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
@@ -78,14 +77,18 @@ export default async (
   Jobs.scheduleJob(
    new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
    async () => {
-    client.util.files['/BaseClient/UtilModules/mod.js'](undefined, CT.ModTypes.MuteRemove, {
-     dbOnly: false,
-     executor: (await getBotMemberFromGuild(options.guild)).user,
-     guild: options.guild,
-     reason: language.mod.execution.muteRemove.reason,
-     target: options.target,
-     skipChecks: true,
-    });
+    options.guild.client.util.files['/BaseClient/UtilModules/mod.js'](
+     undefined,
+     CT.ModTypes.MuteRemove,
+     {
+      dbOnly: false,
+      executor: (await getBotMemberFromGuild(options.guild)).user,
+      guild: options.guild,
+      reason: language.mod.execution.muteRemove.reason,
+      target: options.target,
+      skipChecks: true,
+     },
+    );
    },
   ),
   options.guild.id,

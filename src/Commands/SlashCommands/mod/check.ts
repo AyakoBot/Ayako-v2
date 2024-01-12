@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { Returned } from '../../../BaseClient/UtilModules/getPunishment.js';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {

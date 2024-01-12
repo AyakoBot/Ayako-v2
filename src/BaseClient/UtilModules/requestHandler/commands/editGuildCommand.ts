@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Client.js';
+import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
 import cache from '../../cache.js';
 import error from '../../error.js';

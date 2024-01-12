@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import StringSimilarity from 'string-similarity';
-import client from '../../../BaseClient/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {

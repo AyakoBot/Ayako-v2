@@ -4,13 +4,13 @@ import * as CT from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';
 import getGif from './getGif.js';
 import replyCmd from './replyCmd.js';
-import DataBase from '../DataBase.js';
+import DataBase from '../Bot/DataBase.js';
 import getColor from './getColor.js';
 import getLanguage from './getLanguage.js';
 import errorMsg from './errorMsg.js';
 import notYours from './notYours.js';
 import type { ReturnType } from './getGif.js';
-import { getPrefix } from '../../Events/messageEvents/messageCreate/commandHandler.js';
+import { getPrefix } from '../../Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
 import getUser from './getUser.js';
 import getChunks from './getChunks.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
@@ -482,7 +482,7 @@ const getDesc = <T extends keyof CT.Language['slashCommands']['interactions']>(
  * @returns An array of Discord.User objects representing the mentioned users in the message.
  */
 const parseMsgUsers = async (msg: Discord.Message<true>) => {
- const client = (await import('../Client.js')).default as Discord.Client;
+ const client = (await import('../Bot/Client.js')).default as Discord.Client;
 
  const mentionedUsers = msg.mentions.users.size
   ? msg.mentions.users

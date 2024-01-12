@@ -12,7 +12,7 @@ type CommandName = (typeof SlashCommands)['names'][number];
  * @returns The custom command with the specified name, or undefined if it does not exist.
  */
 export default async (guild: Discord.Guild | undefined | null, name: CommandName) => {
- const { default: client } = await import('../Client.js');
+ const { default: client } = await import('../Bot/Client.js');
 
  const clientCommand =
   guild?.commands.cache.find((c) => c.name === name) ??

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import client from '../../../../BaseClient/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 import SH from '../../../../BaseClient/UtilModules/settingsHelpers.js';
 
 const name = CT.SettingNames.DenylistRules;

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { getContent } from '../../Events/autoModerationActionEvents/censor.js';
+import { getContent } from '../../Events/BotEvents/autoModerationActionEvents/censor.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (

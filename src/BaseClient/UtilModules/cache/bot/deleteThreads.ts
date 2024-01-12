@@ -1,5 +1,5 @@
 import * as Jobs from 'node-schedule';
-import DataBase from '../../../DataBase.js';
+import DataBase from '../../../Bot/DataBase.js';
 
 /**
  * Interface for managing thread deletion jobs in the cache.

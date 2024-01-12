@@ -4,7 +4,7 @@ import { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getC
 import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
 import { GlobalDescType } from '../BaseClient/UtilModules/settingsHelpers/getGlobalDesc.js';
 
-import type util from '../BaseClient/Util.js';
+import type util from '../BaseClient/Bot/Util.js';
 import * as DB from './DataBase.js';
 
 export { MentionTypes, ChangeSelectType, ChannelTypes, GlobalDescType };

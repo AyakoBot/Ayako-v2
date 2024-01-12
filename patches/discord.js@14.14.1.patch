@@ -1,10 +1,10 @@
 diff --git a/typings/index.d.ts b/typings/index.d.ts
-index ed748734de3859ac50d8683a8ec74349b12485d4..86855d0b13d485d309df3be33f8e08af3cd7a148 100644
+index ed748734de3859ac50d8683a8ec74349b12485d4..6eb787f6331f0ac01db3b39c270b06d5720ec5ff 100644
 --- a/typings/index.d.ts
 +++ b/typings/index.d.ts
 @@ -1,3 +1,5 @@
 +import * as Sharding from 'discord-hybrid-sharding';
-+import Util from '../../../../../../src/BaseClient/Util.js';
++import Util from '../../../../../../src/BaseClient/Bot/Util.js';
  import {
    ActionRowBuilder as BuilderActionRow,
    MessageActionRowComponentBuilder,

@@ -10,7 +10,7 @@ import { request } from './requestHandler.js';
 export default async (link: string): Promise<Discord.Message | undefined> => {
  const [, , , , guildId, channelId, messageId] = link.split('/');
 
- const client = await import('../Client.js').then((m) => m.default);
+ const client = await import('../Bot/Client.js').then((m) => m.default);
 
  const guild = client.guilds.cache.get(guildId);
  if (!guild) return undefined;

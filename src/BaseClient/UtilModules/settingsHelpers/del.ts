@@ -1,5 +1,5 @@
 import * as CT from '../../../Typings/Typings.js';
-import DataBase from '../../DataBase.js';
+import DataBase from '../../Bot/DataBase.js';
 
 /**
  * Deletes a row from the specified table in the database
