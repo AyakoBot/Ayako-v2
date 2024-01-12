@@ -1,4 +1,3 @@
-import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Client.js';
 
 export default async () => {
@@ -22,7 +21,7 @@ export default async () => {
      guild.id,
     );
 
-    Jobs.scheduleJob(new Date(Date.now() + 300000), () => {
+    client.util.files.jobs.scheduleJob(new Date(Date.now() + 300000), () => {
      cl.util.files['/Events/guildEvents/guildMemberUpdate/separator.js'].oneTimeRunner(
       undefined,
       guild,
