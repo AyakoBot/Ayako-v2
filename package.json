@@ -4,7 +4,7 @@
  "scripts": {
   "start": "node --max-old-space-size=20480 ./dist/index.js",
   "build": "npx tsc",
-  "dev": "node --enable-source-maps --experimental-wasm-modules ./dist/bot.js --debug --warn",
+  "dev": "node --enable-source-maps --experimental-wasm-modules ./dist/index.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix",
   "postinstall": "mkdir ./logs",
   "register": "node ./dist/register-commands.js"
