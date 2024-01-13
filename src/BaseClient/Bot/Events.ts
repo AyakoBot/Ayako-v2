@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
-import client from './Client.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
-import { ClusterEvents, ProcessEvents } from '../UtilModules/getEvents.js';
+import type * as Socket from '../Cluster/Socket.js';
+import { ProcessEvents } from '../UtilModules/getEvents.js';
+import client from './Client.js';
 
 const spawnEvents = async () => {
  const util = await import('../UtilModules/getEvents.js');
@@ -21,11 +22,15 @@ const spawnEvents = async () => {
   client.on(eventName, (...args) => baseEventHandler(eventName, args));
  });
 
- events.ClusterEvents.forEach(async (path) => {
-  const eventName = path.replace('.js', '').split(/\/+/).pop() as ClusterEvents;
+ client.cluster?.on('message', (message) => {
+  const m = message as Socket.SocketMessage;
+  if (typeof m !== 'object') return;
+  if (!('type' in m)) return;
+
+  const eventName = m.type;
   if (!eventName) return;
 
-  client.cluster?.on(eventName, (...args) => baseEventHandler(eventName, args));
+  baseEventHandler(eventName, [message]);
  });
 
  events.ProcessEvents.forEach(async (path) => {

@@ -1,10 +1,11 @@
+import type * as Socket from '../../../BaseClient/Cluster/Socket.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import * as Typings from '../../../Typings/Typings.js';
 
 import voteBotCreate, { endVote } from './voteBotCreate.js';
 import voteGuildCreate from './voteGuildCreate.js';
 
-export default async (vote: Typings.TopGGBotVote | Typings.TopGGGuildVote) => {
+export default async ({ vote }: Socket.VoteMessage) => {
  const settings = await client.util.DataBase.votesettings.findMany({
   where: { token: vote.authorization },
  });

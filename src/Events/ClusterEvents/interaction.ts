@@ -5,8 +5,6 @@ import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.
 import * as Typings from '../../Typings/Typings.js';
 
 export default async (message: Typings.InteractionMessage) => {
- if (!message.interaction) return;
-
  const { interaction } = message;
  if (client.cluster?.maintenance) return;
 

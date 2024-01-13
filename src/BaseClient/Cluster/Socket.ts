@@ -12,7 +12,8 @@ const Socket = io('https://api.ayakobot.com', {
  },
 });
 
-export enum MessageType {
+// related to /BaseClient/UtilModules/getEvents.ts
+enum MessageType {
  Appeal = 'appeal',
  Vote = 'vote',
  Interaction = 'interaction',

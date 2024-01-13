@@ -10,10 +10,11 @@ export enum ProcessEvents {
  unhandledRejection = 'unhandledRejection',
 }
 
-export enum ClusterEvents {
- appealCreate = 'appealCreate',
- interactionCreate = 'interactionCreate',
- voteCreate = 'voteCreate',
+// related to /BaseClient/Cluster/Socket.ts
+enum MessageType {
+ Appeal = 'appeal',
+ Vote = 'vote',
+ Interaction = 'interaction',
 }
 
 /**
@@ -57,7 +58,7 @@ export const getClusterEvents = async () =>
    const eventName = path.replace('.js', '').split(/\/+/).pop();
 
    if (!eventName) return false;
-   if (!Object.values(ClusterEvents).includes(eventName as never)) return false;
+   if (!Object.values(MessageType).includes(eventName as never)) return false;
    return true;
   });
 
