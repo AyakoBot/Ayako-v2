@@ -12,9 +12,7 @@ export default async (
  setting: Prisma.votesettings,
 ) => {
  const allRewards = await client.util.DataBase.voterewards.findMany({
-  where: {
-   guildid: guild.id,
-  },
+  where: { guildid: guild.id },
  });
 
  const bot = await client.util.getUser(vote.bot).catch(() => undefined);
@@ -23,7 +21,7 @@ export default async (
  const language = await client.util.getLanguage(guild.id);
 
  if (!allRewards?.length) {
-  doAnnouncement(setting, user, bot, language);
+  doAnnouncement(setting, user, bot, language, []);
   return;
  }
 
@@ -69,6 +67,8 @@ export default async (
   vote.bot,
   user.id,
  );
+
+ doAnnouncement(setting, user, bot, language, rewards);
 };
 
 export const getTier = (rewards: Prisma.voterewards[], member: Discord.GuildMember | undefined) => {
@@ -94,7 +94,7 @@ export const doAnnouncement = async (
  user: Discord.User,
  voted: Discord.User | Discord.Guild,
  language: CT.Language,
- rewards?: Prisma.voterewards[],
+ rewards: Prisma.voterewards[],
 ) => {
  if (!settings.announcementchannel) return;
 

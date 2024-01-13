@@ -17,7 +17,7 @@ export default async (
  const language = await guild.client.util.getLanguage(guild.id);
 
  if (!allRewards?.length) {
-  doAnnouncement(setting, user, guild, language);
+  doAnnouncement(setting, user, guild, language, []);
   return;
  }
 
@@ -59,6 +59,7 @@ export default async (
  });
 
  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
+ doAnnouncement(setting, user, guild, language, rewards);
 };
 
 const roles = async (
