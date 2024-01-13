@@ -30,7 +30,6 @@ const spawnEvents = async () => {
 
  events.ProcessEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
-  console.log(eventName);
   if (!eventName) return;
 
   process.on(eventName, (...args) => baseEventHandler(eventName, args));
