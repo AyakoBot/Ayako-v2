@@ -2,9 +2,10 @@ import type * as Discord from 'discord.js';
 import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
-import DataBase from './DataBase.js';
 import constants from '../Other/constants.js';
 import firstGuildInteraction from '../Other/firstGuildInteraction.js';
+import firstChannelInteraction from '../Other/firstChannelInteraction.js';
+
 import arrayBufferToBuffer from '../UtilModules/arrayBufferToBuffer.js';
 import arrayEquals from '../UtilModules/arrayEquals.js';
 import bitUniques from '../UtilModules/bitUniques.js';
@@ -90,6 +91,7 @@ import txtFileLinkToString from '../UtilModules/txtFileLinkToString.js';
 import txtFileWriter from '../UtilModules/txtFileWriter.js';
 import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import * as utils from '../UtilModules/util.js';
+import DataBase from './DataBase.js';
 
 const mainID = process.env.mainID as string;
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -133,6 +135,7 @@ interface Util {
  findServerByName: typeof findServerByName;
  findUserByName: typeof findUserByName;
  firstGuildInteraction: typeof firstGuildInteraction;
+ firstChannelInteraction: typeof firstChannelInteraction;
  getAllBans: typeof getAllBans;
  getAllInvites: typeof getAllInvites;
  getAudit: typeof getAudit;
@@ -227,6 +230,7 @@ const util: Util = {
  findServerByName,
  findUserByName,
  firstGuildInteraction,
+ firstChannelInteraction,
  getAllBans,
  getAllInvites,
  getAudit,

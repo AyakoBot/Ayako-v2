@@ -65,6 +65,7 @@ const cache: {
  deleteSuggestions: DeleteSuggestions;
  vcDeleteTimeout: VcDeleteTimeout;
  interactedGuilds: Set<string>;
+ interactedChannels: Set<string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -92,6 +93,7 @@ const cache: {
  onboarding,
  commandPermissions,
  interactedGuilds: new Set(),
+ interactedChannels: new Set(),
 
  // Cache
  giveawayClaimTimeout,

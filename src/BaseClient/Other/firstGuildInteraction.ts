@@ -20,11 +20,6 @@ export default async (guild: Discord.Guild | null) => {
 };
 
 const tasks = {
- pins: async (guild: Discord.Guild) => {
-  guild.channels.cache
-   .filter((c): c is Discord.GuildTextBasedChannel => c.isTextBased())
-   .forEach((c) => cache.pins.get('', c));
- },
  deleteThreads: async (guild: Discord.Guild) => {
   if (!guild.rulesChannel) return;
   const deleteThreads = await DataBase.deletethreads.findMany({

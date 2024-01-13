@@ -9,6 +9,7 @@ export default async (eventName: string, args: unknown[]) => {
 
 const botEvents = async (eventName: string, args: unknown[]) => {
  firstGuildInteraction(eventName, args);
+ firstChannelInteraction(eventName, args);
 
  const event = client.util.getEvents.BotEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
@@ -71,6 +72,40 @@ const firstGuildInteraction = (eventName: string, args: unknown[]) => {
    'guild' in (args[1] as Record<'guild', Discord.Guild>): {
    client.util.firstGuildInteraction(
     (args[1] as Record<'guild', Discord.Guild>).guild as Discord.Guild,
+   );
+   break;
+  }
+  default: {
+   break;
+  }
+ }
+};
+
+const firstChannelInteraction = (eventName: string, args: unknown[]) => {
+ if (ignoreEvents.includes(eventName)) return;
+
+ switch (true) {
+  case typeof args[0] === 'object' && args[0] && args[0] instanceof Discord.GuildChannel: {
+   client.util.firstChannelInteraction(args[0] as Discord.GuildChannel);
+   break;
+  }
+  case typeof args[1] === 'object' && args[1] && args[1] instanceof Discord.GuildChannel: {
+   client.util.firstChannelInteraction(args[1] as Discord.GuildChannel);
+   break;
+  }
+  case typeof args[0] === 'object' &&
+   args[0] &&
+   'channel' in (args[0] as Record<'channel', Discord.GuildChannel>): {
+   client.util.firstChannelInteraction(
+    (args[0] as Record<'channel', Discord.GuildChannel>).channel as Discord.GuildChannel,
+   );
+   break;
+  }
+  case typeof args[1] === 'object' &&
+   args[1] &&
+   'channel' in (args[1] as Record<'channel', Discord.GuildChannel>): {
+   client.util.firstChannelInteraction(
+    (args[1] as Record<'channel', Discord.GuildChannel>).channel as Discord.GuildChannel,
    );
    break;
   }
