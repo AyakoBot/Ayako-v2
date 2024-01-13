@@ -1,3 +1,4 @@
+import { getInfo } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import pack from '../../../../../package.json' assert { type: 'json' };
 import client from '../../../../BaseClient/Bot/Client.js';
@@ -40,7 +41,9 @@ export default async () => {
   default: {
    activities.push({
     name: 'Stable',
-    state: `Stable | v${pack.version} | Default Prefix: ${client.util.constants.standard.prefix} | Shard ${client.cluster?.id}}/${client.cluster?.ids.length}`,
+    state: `Stable | v${pack.version} | Default Prefix: ${
+     client.util.constants.standard.prefix
+    } | Shard ${client.cluster?.id}/${getInfo().TOTAL_SHARDS}`,
     type: Discord.ActivityType.Custom,
    });
    break;
