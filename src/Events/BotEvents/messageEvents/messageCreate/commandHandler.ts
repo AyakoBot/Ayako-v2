@@ -238,7 +238,7 @@ export const checkCommandPermissions = async (
  if (
   !commandPerms?.length &&
   (!slashCommand.defaultMemberPermissions ||
-   message.member?.permissions.has(slashCommand.defaultMemberPermissions.toArray()))
+   slashCommand.defaultMemberPermissions.toArray().find((p) => message.member?.permissions.has(p)))
  ) {
   return { can: true, debugNum: 2 };
  }
@@ -267,13 +267,17 @@ export const checkCommandPermissions = async (
  const everyonePermission = rolePermissions.find((p) => p.id === message.guildId);
  const rolePermission = rolePermissions.filter((p) => message.member?.roles.cache.has(p.id));
 
- if (everyonePermission && !everyonePermission.permission) return { can: false, debugNum: 8 };
+ if (rolePermission.find((p) => !p.permission)) return { can: false, debugNum: 9 };
+
  if (
-  ((rolePermission.length && !rolePermission.find((r) => !!r.permission)) ||
-   !rolePermission.length) &&
-  !everyonePermission?.permission
+  !everyonePermission &&
+  slashCommand.defaultMemberPermissions &&
+  !slashCommand.defaultMemberPermissions.toArray().find((p) => message.member?.permissions.has(p))
  ) {
-  return { can: false, debugNum: 9 };
+  return { can: false, debugNum: 12 };
+ }
+ if (everyonePermission && !everyonePermission.permission) {
+  return { can: false, debugNum: 8 };
  }
 
  return { can: true, debugNum: 10 };
