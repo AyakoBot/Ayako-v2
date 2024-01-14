@@ -66,19 +66,6 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   const slashCommand = await getSlashCommand(msg.guild, matchingName);
   if (!slashCommand) return;
 
-  const canUse = checkCommandPermissions(msg, commandName);
-  if (!canUse) {
-   const reaction = await msg.client.util.request.channels.addReaction(
-    msg,
-    msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
-   );
-
-   if (typeof reaction !== 'undefined') {
-    msg.client.util.error(msg.guild, new Error(reaction.message));
-   }
-   return;
-  }
-
   const language = await msg.client.util.getLanguage(msg.author.id);
   const matchingCommands = msg.client.util.constants.standard.getCommand(slashCommand);
   if (!matchingCommands.length) return;
@@ -135,8 +122,8 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   return;
  }
 
- const canRunCommand = checkCommandPermissions(msg, commandName);
- if (!canRunCommand) {
+ const canRunCommand = await checkCommandPermissions(msg, commandName);
+ if (!canRunCommand.can) {
   const m = await msg.client.util.errorMsg(msg, language.permissions.error.you, language);
   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
    if (!m) return;
@@ -218,8 +205,8 @@ const getSlashCommand = (guild: Discord.Guild, commandName: string) =>
   commandName as Parameters<typeof guild.client.util.getCustomCommand>[1],
  );
 
-export const checkCommandPermissions = (
- msg: {
+export const checkCommandPermissions = async (
+ message: {
   guildId: string;
   guild: Discord.Guild;
   author: Discord.User;
@@ -227,62 +214,69 @@ export const checkCommandPermissions = (
   member: Discord.GuildMember | null;
  },
  commandName: string,
-) => {
+): Promise<{ can: boolean; debugNum: number }> => {
  const slashCommand =
-  [...(msg.guild.client.util.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
+  [...(message.guild.client.util.cache.commands.cache.get(message.guildId)?.values() ?? [])].find(
    (c) => c.name === commandName,
   ) ??
-  client.application?.commands.cache.find((c) => c.name === commandName) ??
-  msg.guild.commands.cache.find((c) => c.name === commandName);
+  message.guild.client.application?.commands.cache.find((c) => c.name === commandName) ??
+  message.guild.commands.cache.find((c) => c.name === commandName);
 
- if (!slashCommand) return true;
+ if (!slashCommand) return { can: true, debugNum: 1 };
 
- const commandPerms = msg.guild.client.util.cache.commandPermissions.cache
-  .get(msg.guildId)
-  ?.get(slashCommand.id);
+ const existingGuildPerms = message.guild.client.util.cache.commandPermissions.cache.get(
+  message.guildId,
+ );
+ if (!existingGuildPerms) {
+  await message.guild.client.util.request.commands.getGuildCommandsPermissions(message.guild);
+ }
+
+ const guildPerms = message.guild.client.util.cache.commandPermissions.cache.get(message.guildId);
+ if (!guildPerms) return { can: false, debugNum: 4 };
+
+ const commandPerms = guildPerms.get(slashCommand.id);
  if (
   !commandPerms?.length &&
   (!slashCommand.defaultMemberPermissions ||
-   msg.member?.permissions.has(slashCommand.defaultMemberPermissions.toArray()))
+   message.member?.permissions.has(slashCommand.defaultMemberPermissions.toArray()))
  ) {
-  return true;
+  return { can: true, debugNum: 2 };
  }
 
- if (!commandPerms?.length) return false;
+ if (!commandPerms?.length) return { can: false, debugNum: 5 };
 
  const userPermission = commandPerms.find(
-  (p) => p.type === Discord.ApplicationCommandPermissionType.User && p.id === msg.author.id,
+  (p) => p.type === Discord.ApplicationCommandPermissionType.User && p.id === message.author.id,
  );
-
- if (userPermission) return userPermission.permission;
+ if (userPermission) return { can: userPermission.permission, debugNum: 11 };
 
  const channelPermissions = commandPerms.filter(
   (p) => p.type === Discord.ApplicationCommandPermissionType.Channel,
  );
- const channelPermission = channelPermissions.find((p) => p.id === msg.channelId);
- const allChannelPermission = channelPermissions.find((p) => p.id === msg.guildId);
+ const channelPermission = channelPermissions.find((p) => p.id === message.channelId);
+ const allChannelPermission = channelPermissions.find((p) => p.id === message.guildId);
 
- if (channelPermission && !channelPermission.permission) return false;
+ if (channelPermission && !channelPermission.permission) return { can: false, debugNum: 6 };
  if (allChannelPermission && allChannelPermission.permission && !channelPermission?.permission) {
-  return false;
+  return { can: false, debugNum: 7 };
  }
 
  const rolePermissions = commandPerms.filter(
   (p) => p.type === Discord.ApplicationCommandPermissionType.Role,
  );
- const everyonePermission = rolePermissions.find((p) => p.id === msg.guildId);
- const rolePermission = rolePermissions.filter((p) => msg.member?.roles.cache.has(p.id));
+ const everyonePermission = rolePermissions.find((p) => p.id === message.guildId);
+ const rolePermission = rolePermissions.filter((p) => message.member?.roles.cache.has(p.id));
 
- if (everyonePermission && !everyonePermission.permission) return false;
+ if (everyonePermission && !everyonePermission.permission) return { can: false, debugNum: 8 };
  if (
-  rolePermission.length &&
-  !rolePermission.find((r) => !!r.permission) &&
+  ((rolePermission.length && !rolePermission.find((r) => !!r.permission)) ||
+   !rolePermission.length) &&
   !everyonePermission?.permission
  ) {
-  return false;
+  return { can: false, debugNum: 9 };
  }
 
- return true;
+ return { can: true, debugNum: 10 };
 };
 
 const checkCommandIsEnabled = async (
