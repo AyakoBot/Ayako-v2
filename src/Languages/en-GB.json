@@ -1929,10 +1929,6 @@
     "confirmAuthor": "Confirm Strike",
     "areYouSure": "You are about to strike **{{user}}**\nDue to their Amount of Warns, this will {{punishment}} them\n**Do you want to proceed?**",
     "notEnabled": "The Strike-System is not enabled\nuse </settings moderation auto-punish:{{cmdId}}> to enable it"
-   },
-   "unafk": {
-    "notAfk": "{{user}}is not AFK.",
-    "unAfk": "AFK of\n{{user}}deleted."
    }
   },
   "vote": {
@@ -3649,6 +3645,17 @@
    }
   },
   "execution": {
+   "unafk": {
+    "dm": "Your AFK has been removed",
+    "meNoPerms": "I can't add Roles to this User",
+    "youNoPerms": "You can't remove AFK from this User",
+    "error": "I failed to remove AFK from this User",
+    "alreadyApplied": "{{target}} isn't AFK",
+    "success": "{{target}}'s AFK was removed",
+    "loading": "Removing AFK...",
+    "self": "You can't remove AFK from yourself",
+    "me": "I won't remove AFK from myself"
+   },
    "strikeAdd": {
     "dm": "You have been Striked",
     "meNoPerms": "I can't Strike this User",

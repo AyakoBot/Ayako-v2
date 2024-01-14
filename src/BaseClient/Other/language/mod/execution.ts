@@ -13,6 +13,7 @@ import strikeAdd from './execution/strikeAdd.js';
 import tempBanAdd from './execution/tempBanAdd.js';
 import tempChannelBanAdd from './execution/tempChannelBanAdd.js';
 import tempMuteAdd from './execution/tempMuteAdd.js';
+import unafk from './execution/unAfk.js';
 import warnAdd from './execution/warnAdd.js';
 
 export default (t: CT.Language) => ({
@@ -32,4 +33,5 @@ export default (t: CT.Language) => ({
  tempChannelBanAdd: tempChannelBanAdd(t),
  tempMuteAdd: tempMuteAdd(t),
  warnAdd: warnAdd(t),
+ unafk: unafk(t),
 });

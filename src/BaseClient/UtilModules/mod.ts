@@ -130,6 +130,8 @@ export default async <T extends CT.ModTypes>(
     );
    case CT.ModTypes.BanRemove:
     return mod.banRemove(options, language, message, cmd);
+   case CT.ModTypes.UnAfk:
+    return mod.unAfk(options, language, message, cmd);
    default: {
     throw new Error(`Unknown modType ${type}`);
    }

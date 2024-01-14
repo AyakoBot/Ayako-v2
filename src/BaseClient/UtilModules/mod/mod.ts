@@ -13,6 +13,7 @@ import tempChannelBanAdd from './mod/tempChannelBanAdd.js';
 import strikeAdd from './mod/strikeAdd.js';
 import warnAdd from './mod/warnAdd.js';
 import softWarnAdd from './mod/softWarnAdd.js';
+import unAfk from './mod/unAfk.js';
 
 export default {
  roleAdd,
@@ -30,4 +31,5 @@ export default {
  channelBanRemove,
  tempChannelBanAdd,
  strikeAdd,
+ unAfk,
 };
