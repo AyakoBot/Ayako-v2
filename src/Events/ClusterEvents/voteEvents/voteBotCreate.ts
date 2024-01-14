@@ -125,12 +125,10 @@ export const doAnnouncement = async (
        }
       })
       .filter((r): r is string => !!r)
-      .join(` ${user.client.util.constants.standard.getEmote(user.client.util.emotes.plusBG)} `),
+      .join(` + `),
     )}${
      currencyRewards?.length
-      ? `${user.client.util.constants.standard.getEmote(
-         user.client.util.emotes.plusBG,
-        )} ${currencyRewards
+      ? ` + ${currencyRewards
          ?.map((r) => Number(r.rewardcurrency))
          .reduce((b, a) => b + a, 0)} ${user.client.util.constants.standard.getEmote(
          user.client.util.emotes.book,
@@ -247,11 +245,7 @@ export const currency = (r: Prisma.voterewards, user: Discord.User, guild: Disco
   .upsert({
    where: { userid_guildid: { userid: user.id, guildid: guild.id } },
    update: { balance: { increment: r.rewardcurrency } },
-   create: {
-    userid: user.id,
-    guildid: guild.id,
-    balance: r.rewardcurrency,
-   },
+   create: { userid: user.id, guildid: guild.id, balance: r.rewardcurrency },
   })
   .then();
 };

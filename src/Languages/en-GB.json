@@ -745,7 +745,7 @@
   "vote": {
    "bot": "Thanks to **{{user}}** for voting for [{{bot}}]({{link}})!",
    "guild": "Thanks to **{{user}}** for voting for [{{guild}}]({{link}})!",
-   "reward": "\nYou have received {{reward}} for the next 12 hours.",
+   "reward": "\nYou have received {{reward}} for the next 12 hours",
    "xpmultiplier": "XP Multiplier",
    "botReason": "Voted for {{bot}}",
    "guildReason": "Voted for {{guild}}",
