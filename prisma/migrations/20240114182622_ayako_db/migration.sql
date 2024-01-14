@@ -1,14 +1,26 @@
 -- CreateEnum
-CREATE TYPE "AnswerType" AS ENUM ('paragraph', 'short', 'number', 'boolean', 'multiple_choice', 'single_choice');
+CREATE TYPE "AutoPunishPunishmentType" AS ENUM ('warn', 'kick', 'tempmute', 'ban', 'tempban', 'channelban', 'tempchannelban', 'softban');
+
+-- CreateEnum
+CREATE TYPE "PunishmentType" AS ENUM ('warn', 'kick', 'tempmute', 'ban', 'tempban', 'channelban', 'tempchannelban', 'strike', 'softban');
+
+-- CreateEnum
+CREATE TYPE "AntiRaidPunishmentType" AS ENUM ('kick', 'ban');
+
+-- CreateEnum
+CREATE TYPE "AnswerType" AS ENUM ('paragraph', 'short', 'number', 'boolean', 'multiple_choice', 'single_choice', 'text');
 
 -- CreateEnum
 CREATE TYPE "LevelType" AS ENUM ('guild', 'global');
 
 -- CreateEnum
-CREATE TYPE "PunishmentType" AS ENUM ('warn', 'kick', 'tempmute', 'ban', 'tempban', 'channelban', 'tempchannelban');
+CREATE TYPE "LevelUpMode" AS ENUM ('messages', 'reactions', 'silent');
 
 -- CreateEnum
 CREATE TYPE "VoteType" AS ENUM ('guild', 'bot');
+
+-- CreateEnum
+CREATE TYPE "ShopType" AS ENUM ('command', 'message');
 
 -- CreateTable
 CREATE TABLE "afk" (
@@ -18,22 +30,6 @@ CREATE TABLE "afk" (
     "guildid" VARCHAR NOT NULL,
 
     CONSTRAINT "afk_pkey" PRIMARY KEY ("userid","guildid")
-);
-
--- CreateTable
-CREATE TABLE "antiraid" (
-    "guildid" VARCHAR NOT NULL,
-    "active" BOOLEAN NOT NULL DEFAULT false,
-    "posttof" BOOLEAN NOT NULL DEFAULT false,
-    "postchannel" VARCHAR,
-    "pingroles" VARCHAR[],
-    "pingusers" VARCHAR[],
-    "time" DECIMAL NOT NULL DEFAULT 15000,
-    "jointhreshold" DECIMAL NOT NULL DEFAULT 10,
-    "punishmenttof" BOOLEAN NOT NULL DEFAULT true,
-    "punishment" "PunishmentType" NOT NULL DEFAULT 'kick',
-
-    CONSTRAINT "antiraidsettings_pkey" PRIMARY KEY ("guildid")
 );
 
 -- CreateTable
@@ -48,7 +44,9 @@ CREATE TABLE "antispam" (
     "dupemsgthreshold" DECIMAL NOT NULL DEFAULT 5,
     "timeout" DECIMAL NOT NULL DEFAULT 15,
     "deletespam" BOOLEAN NOT NULL DEFAULT true,
-    "usestrike" BOOLEAN NOT NULL DEFAULT false,
+    "action" "PunishmentType" NOT NULL DEFAULT 'warn',
+    "duration" DECIMAL NOT NULL DEFAULT 3600,
+    "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
 
     CONSTRAINT "antispamsettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -57,13 +55,11 @@ CREATE TABLE "antispam" (
 CREATE TABLE "antivirus" (
     "guildid" VARCHAR NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
-    "minimize" DECIMAL NOT NULL DEFAULT 10000,
-    "delete" DECIMAL NOT NULL DEFAULT 10000,
     "linklogging" BOOLEAN NOT NULL DEFAULT false,
     "linklogchannels" VARCHAR[],
-    "minimizetof" BOOLEAN NOT NULL DEFAULT true,
-    "deletetof" BOOLEAN NOT NULL DEFAULT false,
-    "usestrike" BOOLEAN NOT NULL DEFAULT false,
+    "action" "PunishmentType" NOT NULL DEFAULT 'warn',
+    "duration" DECIMAL NOT NULL DEFAULT 3600,
+    "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
 
     CONSTRAINT "antivirus_pkey" PRIMARY KEY ("guildid")
 );
@@ -74,8 +70,9 @@ CREATE TABLE "appealquestions" (
     "uniquetimestamp" DECIMAL NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "question" TEXT,
-    "answertype" "AnswerType",
+    "answertype" "AnswerType" NOT NULL DEFAULT 'paragraph',
     "required" BOOLEAN NOT NULL DEFAULT true,
+    "options" TEXT[],
 
     CONSTRAINT "appealquestions_pkey" PRIMARY KEY ("uniquetimestamp")
 );
@@ -97,7 +94,7 @@ CREATE TABLE "appealsettings" (
     "guildid" VARCHAR NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "channelid" VARCHAR,
-    "blusers" VARCHAR[],
+    "bluserid" VARCHAR[],
 
     CONSTRAINT "appealsettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -117,14 +114,13 @@ CREATE TABLE "art" (
 CREATE TABLE "autopunish" (
     "guildid" VARCHAR NOT NULL,
     "uniquetimestamp" DECIMAL NOT NULL,
-    "duration" DECIMAL DEFAULT 3600,
+    "duration" DECIMAL NOT NULL DEFAULT 3600,
     "warnamount" DECIMAL,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "addroles" VARCHAR[],
     "removeroles" VARCHAR[],
-    "confirmationreq" BOOLEAN NOT NULL DEFAULT false,
-    "punishmentawaittime" DECIMAL NOT NULL DEFAULT 20,
-    "punishment" "PunishmentType" NOT NULL DEFAULT 'warn',
+    "punishment" "AutoPunishPunishmentType" NOT NULL DEFAULT 'warn',
+    "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
 
     CONSTRAINT "autopunish_pkey" PRIMARY KEY ("uniquetimestamp")
 );
@@ -150,15 +146,49 @@ CREATE TABLE "balance" (
 );
 
 -- CreateTable
-CREATE TABLE "blacklist" (
+CREATE TABLE "censor" (
     "active" BOOLEAN NOT NULL DEFAULT false,
     "guildid" VARCHAR NOT NULL,
-    "usestrike" BOOLEAN NOT NULL DEFAULT false,
-    "repostenabled" BOOLEAN NOT NULL DEFAULT false,
     "repostroles" VARCHAR[],
     "repostrules" VARCHAR[],
 
-    CONSTRAINT "blacklists_pkey" PRIMARY KEY ("guildid")
+    CONSTRAINT "censor_pkey" PRIMARY KEY ("guildid")
+);
+
+-- CreateTable
+CREATE TABLE "customroles" (
+    "guildid" VARCHAR NOT NULL,
+    "userid" VARCHAR NOT NULL,
+    "roleid" VARCHAR NOT NULL,
+
+    CONSTRAINT "customroles_pkey" PRIMARY KEY ("guildid","userid")
+);
+
+-- CreateTable
+CREATE TABLE "newlines" (
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "guildid" VARCHAR NOT NULL,
+    "maxnewlines" DECIMAL,
+    "wlroleid" VARCHAR[],
+    "wlchannelid" VARCHAR[],
+    "action" "PunishmentType" NOT NULL DEFAULT 'warn',
+    "duration" DECIMAL NOT NULL DEFAULT 3600,
+    "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
+
+    CONSTRAINT "newlines_pkey" PRIMARY KEY ("guildid")
+);
+
+-- CreateTable
+CREATE TABLE "invites" (
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "guildid" VARCHAR NOT NULL,
+    "wlroleid" VARCHAR[],
+    "wlchannelid" VARCHAR[],
+    "action" "PunishmentType" NOT NULL DEFAULT 'warn',
+    "duration" DECIMAL NOT NULL DEFAULT 3600,
+    "deletemessageseconds" DECIMAL NOT NULL DEFAULT 604800,
+
+    CONSTRAINT "invites_pkey" PRIMARY KEY ("guildid")
 );
 
 -- CreateTable
@@ -168,10 +198,10 @@ CREATE TABLE "buttonroles" (
     "emote" VARCHAR,
     "text" TEXT,
     "active" BOOLEAN NOT NULL DEFAULT false,
-    "linkedid" VARCHAR,
+    "linkedid" DECIMAL,
     "guildid" VARCHAR NOT NULL,
 
-    CONSTRAINT "rrbuttons_pkey" PRIMARY KEY ("uniquetimestamp")
+    CONSTRAINT "buttonroles_pkey" PRIMARY KEY ("uniquetimestamp")
 );
 
 -- CreateTable
@@ -190,7 +220,7 @@ CREATE TABLE "buttonrolesettings" (
 -- CreateTable
 CREATE TABLE "contributers" (
     "userid" VARCHAR NOT NULL,
-    "roles" TEXT[],
+    "roles" VARCHAR[],
 
     CONSTRAINT "contributers_pkey" PRIMARY KEY ("userid")
 );
@@ -198,7 +228,7 @@ CREATE TABLE "contributers" (
 -- CreateTable
 CREATE TABLE "cooldowns" (
     "command" TEXT,
-    "cooldown" DECIMAL NOT NULL DEFAULT 10000,
+    "cooldown" DECIMAL NOT NULL DEFAULT 10,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "wlchannelid" VARCHAR[],
     "wlroleid" VARCHAR[],
@@ -282,7 +312,7 @@ CREATE TABLE "giveawaycollection" (
     "endtime" DECIMAL NOT NULL,
     "guildid" VARCHAR NOT NULL,
     "replymsgid" VARCHAR NOT NULL,
-    "requiredwinners" VARCHAR[] DEFAULT ARRAY[]::VARCHAR[],
+    "requiredwinners" VARCHAR[],
 
     CONSTRAINT "giveawaycollection_pkey" PRIMARY KEY ("msgid")
 );
@@ -299,10 +329,10 @@ CREATE TABLE "giveaways" (
     "host" VARCHAR NOT NULL,
     "ended" BOOLEAN NOT NULL DEFAULT false,
     "channelid" VARCHAR NOT NULL,
-    "participants" VARCHAR[] DEFAULT ARRAY[]::VARCHAR[],
+    "participants" VARCHAR[],
     "collecttime" DECIMAL,
     "failreroll" BOOLEAN NOT NULL DEFAULT false,
-    "winners" VARCHAR[] DEFAULT ARRAY[]::VARCHAR[],
+    "winners" VARCHAR[],
     "claimingdone" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "giveaways_pkey" PRIMARY KEY ("msgid")
@@ -325,14 +355,20 @@ CREATE TABLE "guildsettings" (
     "guildid" VARCHAR NOT NULL,
     "prefix" TEXT,
     "interactionsmode" BOOLEAN NOT NULL DEFAULT true,
-    "lan" TEXT NOT NULL DEFAULT 'en',
+    "editrpcommands" BOOLEAN NOT NULL DEFAULT true,
+    "lan" TEXT NOT NULL DEFAULT 'en-GB',
     "errorchannel" VARCHAR,
-    "voterole" VARCHAR,
+    "statuschannel" VARCHAR,
+    "updateschannel" TEXT,
     "enabledrp" BOOLEAN NOT NULL DEFAULT false,
     "rpenableruns" DECIMAL NOT NULL DEFAULT 0,
     "lastrpsyncrun" DECIMAL,
     "ptreminderenabled" BOOLEAN NOT NULL DEFAULT true,
     "legacyrp" BOOLEAN NOT NULL DEFAULT false,
+    "token" VARCHAR,
+    "publickey" TEXT,
+    "appid" VARCHAR,
+    "enableinvitesat" DECIMAL,
 
     CONSTRAINT "guildsettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -340,7 +376,7 @@ CREATE TABLE "guildsettings" (
 -- CreateTable
 CREATE TABLE "level" (
     "userid" VARCHAR NOT NULL,
-    "guildid" VARCHAR NOT NULL DEFAULT 1,
+    "guildid" VARCHAR NOT NULL DEFAULT '1',
     "type" "LevelType" NOT NULL,
     "xp" DECIMAL NOT NULL DEFAULT 0,
     "level" DECIMAL NOT NULL DEFAULT 0,
@@ -354,21 +390,22 @@ CREATE TABLE "leveling" (
     "guildid" VARCHAR NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "xpmultiplier" DECIMAL NOT NULL DEFAULT 1,
-    "blchannels" VARCHAR[],
-    "blroles" VARCHAR[],
-    "blusers" VARCHAR[],
-    "wlchannels" VARCHAR[],
-    "wlroles" VARCHAR[],
-    "wlusers" VARCHAR[],
+    "blchannelid" VARCHAR[],
+    "blroleid" VARCHAR[],
+    "bluserid" VARCHAR[],
+    "wlchannelid" VARCHAR[],
+    "wlroleid" VARCHAR[],
+    "wluserid" VARCHAR[],
     "xppermsg" DECIMAL NOT NULL DEFAULT 25,
-    "rolemode" BOOLEAN NOT NULL DEFAULT true,
-    "lvlupmode" DECIMAL NOT NULL DEFAULT 0,
-    "lvlupdeltimeout" DECIMAL NOT NULL DEFAULT 10000,
+    "rolemode" BOOLEAN NOT NULL DEFAULT false,
+    "lvlupmode" "LevelUpMode" NOT NULL DEFAULT 'silent',
+    "lvlupdeltimeout" DECIMAL NOT NULL DEFAULT 10,
     "lvlupchannels" VARCHAR[],
-    "lvlupemotes" VARCHAR[] DEFAULT '{🆙,<:AMayakopeek:924071140257841162>}'::character varying[],
+    "lvlupemotes" VARCHAR[] DEFAULT ARRAY['🆙', 'AMayakopeek:924071140257841162']::VARCHAR[],
     "embed" DECIMAL,
     "ignoreprefixes" BOOLEAN NOT NULL DEFAULT false,
     "prefixes" TEXT[],
+    "minwords" DECIMAL NOT NULL DEFAULT 0,
 
     CONSTRAINT "leveling_pkey" PRIMARY KEY ("guildid")
 );
@@ -452,7 +489,6 @@ CREATE TABLE "logchannels" (
     "modlog" VARCHAR[],
     "reactionevents" VARCHAR[],
     "memberevents" VARCHAR[],
-    "auditlogevents" VARCHAR[],
 
     CONSTRAINT "logchannels_pkey" PRIMARY KEY ("guildid")
 );
@@ -472,7 +508,10 @@ CREATE TABLE "nitrosettings" (
     "guildid" VARCHAR NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "logchannels" VARCHAR[],
-    "rolemode" BOOLEAN DEFAULT false,
+    "rolemode" BOOLEAN NOT NULL DEFAULT true,
+    "notification" BOOLEAN NOT NULL DEFAULT false,
+    "notifchannels" VARCHAR[],
+    "notifembed" DECIMAL,
 
     CONSTRAINT "nitrosettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -616,48 +655,12 @@ CREATE TABLE "punish_warns" (
 );
 
 -- CreateTable
-CREATE TABLE "punishments_antispam" (
-    "uniquetimestamp" DECIMAL NOT NULL,
-    "guildid" VARCHAR NOT NULL,
-    "warnamount" DECIMAL,
-    "punishment" "PunishmentType",
-    "active" BOOLEAN NOT NULL DEFAULT false,
-    "duration" DECIMAL NOT NULL DEFAULT 3600,
-
-    CONSTRAINT "punishments_antispam_pkey" PRIMARY KEY ("uniquetimestamp")
-);
-
--- CreateTable
-CREATE TABLE "punishments_antivirus" (
-    "uniquetimestamp" DECIMAL NOT NULL,
-    "guildid" VARCHAR NOT NULL,
-    "warnamount" DECIMAL,
-    "punishment" "PunishmentType",
-    "active" BOOLEAN NOT NULL DEFAULT false,
-    "duration" DECIMAL NOT NULL DEFAULT 3600,
-
-    CONSTRAINT "punishments_antivirus_pkey" PRIMARY KEY ("uniquetimestamp")
-);
-
--- CreateTable
-CREATE TABLE "punishments_blacklist" (
-    "uniquetimestamp" DECIMAL NOT NULL,
-    "guildid" VARCHAR NOT NULL,
-    "warnamount" DECIMAL,
-    "punishment" "PunishmentType",
-    "active" BOOLEAN NOT NULL DEFAULT false,
-    "duration" DECIMAL NOT NULL DEFAULT 3600,
-
-    CONSTRAINT "punishments_pkey" PRIMARY KEY ("uniquetimestamp")
-);
-
--- CreateTable
 CREATE TABLE "reactionroles" (
     "uniquetimestamp" DECIMAL NOT NULL,
-    "emote" VARCHAR NOT NULL,
+    "emote" VARCHAR,
     "roles" VARCHAR[],
-    "active" BOOLEAN NOT NULL,
-    "linkedid" VARCHAR NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "linkedid" DECIMAL,
     "guildid" VARCHAR NOT NULL,
 
     CONSTRAINT "rrreactions_pkey" PRIMARY KEY ("uniquetimestamp")
@@ -668,7 +671,6 @@ CREATE TABLE "reactionrolesettings" (
     "guildid" VARCHAR NOT NULL,
     "msgid" VARCHAR,
     "uniquetimestamp" DECIMAL NOT NULL,
-    "onlyone" BOOLEAN NOT NULL DEFAULT false,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "anyroles" VARCHAR[],
     "channelid" VARCHAR,
@@ -683,7 +685,6 @@ CREATE TABLE "reminders" (
     "reason" TEXT NOT NULL,
     "uniquetimestamp" DECIMAL NOT NULL,
     "endtime" DECIMAL NOT NULL,
-    "msgid" DECIMAL NOT NULL,
 
     CONSTRAINT "reminders_pkey" PRIMARY KEY ("uniquetimestamp")
 );
@@ -705,12 +706,14 @@ CREATE TABLE "rolerewards" (
     "uniquetimestamp" DECIMAL NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT false,
     "customrole" BOOLEAN NOT NULL DEFAULT false,
-    "roleposition" DECIMAL,
+    "positionrole" TEXT,
     "xpmultiplier" DECIMAL,
     "currency" DECIMAL,
-    "blroles" VARCHAR[],
-    "blusers" VARCHAR[],
-    "roles" VARCHAR,
+    "blroleid" VARCHAR[],
+    "bluserid" VARCHAR[],
+    "roles" VARCHAR[],
+    "cansetcolor" BOOLEAN NOT NULL DEFAULT true,
+    "canseticon" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "rolerewards_pkey" PRIMARY KEY ("uniquetimestamp")
 );
@@ -732,12 +735,12 @@ CREATE TABLE "roleseparator" (
 CREATE TABLE "roleseparatorsettings" (
     "guildid" VARCHAR NOT NULL,
     "stillrunning" BOOLEAN NOT NULL,
-    "channelid" VARCHAR,
-    "messageid" VARCHAR,
     "duration" DECIMAL,
     "startat" DECIMAL,
     "index" DECIMAL,
     "length" DECIMAL,
+    "channelid" VARCHAR,
+    "messageid" VARCHAR,
 
     CONSTRAINT "roleseparatorsettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -748,10 +751,10 @@ CREATE TABLE "selfroles" (
     "roles" VARCHAR[],
     "onlyone" BOOLEAN NOT NULL DEFAULT false,
     "uniquetimestamp" DECIMAL NOT NULL,
-    "blroles" VARCHAR[],
-    "blusers" VARCHAR[],
-    "wlroles" VARCHAR[],
-    "wlusers" VARCHAR[],
+    "blroleid" VARCHAR[],
+    "bluserid" VARCHAR[],
+    "wlroleid" VARCHAR[],
+    "wluserid" VARCHAR[],
     "active" BOOLEAN NOT NULL DEFAULT false,
     "name" TEXT NOT NULL DEFAULT 'Change me',
 
@@ -766,8 +769,6 @@ CREATE TABLE "stats" (
     "rolecount" DECIMAL NOT NULL,
     "allusers" DECIMAL NOT NULL,
     "willis" TEXT[],
-    "antispam" BOOLEAN NOT NULL,
-    "verbosity" BOOLEAN NOT NULL,
     "heartbeat" DECIMAL NOT NULL,
 
     CONSTRAINT "stats_pkey" PRIMARY KEY ("usercount")
@@ -781,7 +782,7 @@ CREATE TABLE "sticky" (
     "stickyrolesactive" BOOLEAN NOT NULL DEFAULT false,
     "stickypermsactive" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "stickyroles_pkey" PRIMARY KEY ("guildid")
+    CONSTRAINT "sticky_pkey" PRIMARY KEY ("guildid")
 );
 
 -- CreateTable
@@ -789,9 +790,9 @@ CREATE TABLE "stickymessages" (
     "guildid" VARCHAR NOT NULL,
     "lastmsgid" VARCHAR NOT NULL,
     "channelid" VARCHAR NOT NULL,
-    "userid" VARCHAR,
+    "userid" VARCHAR NOT NULL,
 
-    CONSTRAINT "primary" PRIMARY KEY ("channelid")
+    CONSTRAINT "stickymessages_pkey" PRIMARY KEY ("channelid")
 );
 
 -- CreateTable
@@ -799,8 +800,8 @@ CREATE TABLE "stickypermmembers" (
     "userid" VARCHAR NOT NULL,
     "guildid" VARCHAR NOT NULL,
     "channelid" VARCHAR NOT NULL,
-    "denybits" BIGINT,
-    "allowbits" BIGINT,
+    "denybits" BIGINT NOT NULL DEFAULT 0,
+    "allowbits" BIGINT NOT NULL DEFAULT 0,
 
     CONSTRAINT "stickypermmembers_pkey" PRIMARY KEY ("userid","channelid")
 );
@@ -828,6 +829,10 @@ CREATE TABLE "suggestionsettings" (
     "anonsuggestion" BOOLEAN NOT NULL DEFAULT false,
     "pingroleid" VARCHAR[],
     "pinguserid" VARCHAR[],
+    "deletedenied" BOOLEAN NOT NULL DEFAULT false,
+    "deleteapproved" BOOLEAN NOT NULL DEFAULT false,
+    "deletedeniedafter" DECIMAL NOT NULL DEFAULT 86400,
+    "deleteapprovedafter" DECIMAL NOT NULL DEFAULT 86400,
 
     CONSTRAINT "suggestionsettings_pkey" PRIMARY KEY ("guildid")
 );
@@ -835,21 +840,21 @@ CREATE TABLE "suggestionsettings" (
 -- CreateTable
 CREATE TABLE "suggestionvotes" (
     "guildid" VARCHAR NOT NULL,
+    "channelid" VARCHAR NOT NULL,
     "msgid" VARCHAR NOT NULL,
     "userid" VARCHAR NOT NULL,
     "downvoted" VARCHAR[],
     "upvoted" VARCHAR[],
-    "ended" BOOLEAN NOT NULL,
+    "approved" BOOLEAN NOT NULL DEFAULT false,
 
-    CONSTRAINT "suggestionvotes_pkey" PRIMARY KEY ("msgid","userid")
+    CONSTRAINT "suggestionvotes_pkey" PRIMARY KEY ("msgid")
 );
 
 -- CreateTable
 CREATE TABLE "users" (
     "userid" VARCHAR NOT NULL,
-    "votereminders" BOOLEAN NOT NULL DEFAULT true,
     "username" TEXT NOT NULL DEFAULT 'Unkown User',
-    "avatar" TEXT NOT NULL,
+    "avatar" TEXT NOT NULL DEFAULT 'https://cdn.discordapp.com/embed/avatars/0.png',
     "socials" TEXT[],
     "socialstype" TEXT[],
     "lastfetch" DECIMAL NOT NULL DEFAULT 1,
@@ -863,6 +868,15 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "blockedusers" (
+    "userid" VARCHAR NOT NULL,
+    "blockeduserid" VARCHAR NOT NULL,
+    "blockedcmd" TEXT[],
+
+    CONSTRAINT "blockedusers_pkey" PRIMARY KEY ("userid","blockeduserid")
+);
+
+-- CreateTable
 CREATE TABLE "verification" (
     "guildid" VARCHAR NOT NULL,
     "logchannel" VARCHAR,
@@ -870,7 +884,7 @@ CREATE TABLE "verification" (
     "pendingrole" VARCHAR,
     "startchannel" VARCHAR,
     "selfstart" BOOLEAN NOT NULL DEFAULT false,
-    "kickafter" DECIMAL NOT NULL DEFAULT 600000,
+    "kickafter" DECIMAL NOT NULL DEFAULT 600,
     "kicktof" BOOLEAN NOT NULL DEFAULT false,
     "active" BOOLEAN NOT NULL DEFAULT false,
 
@@ -882,7 +896,7 @@ CREATE TABLE "voterewards" (
     "guildid" VARCHAR NOT NULL,
     "uniquetimestamp" DECIMAL NOT NULL,
     "tier" DECIMAL,
-    "linkedid" TEXT,
+    "linkedid" DECIMAL,
     "rewardroles" VARCHAR[],
     "rewardxpmultiplier" DECIMAL,
     "rewardcurrency" DECIMAL,
@@ -893,16 +907,26 @@ CREATE TABLE "voterewards" (
 );
 
 -- CreateTable
-CREATE TABLE "voters" (
+CREATE TABLE "votes" (
+    "guildid" VARCHAR NOT NULL,
     "userid" VARCHAR NOT NULL,
-    "removetime" DECIMAL NOT NULL,
-    "voted" VARCHAR NOT NULL,
+    "endtime" DECIMAL NOT NULL,
     "votetype" "VoteType" NOT NULL,
-    "tier" DECIMAL NOT NULL,
+    "voted" VARCHAR NOT NULL,
+    "relatedsetting" DECIMAL NOT NULL,
+
+    CONSTRAINT "votes_pkey" PRIMARY KEY ("guildid","userid","voted")
+);
+
+-- CreateTable
+CREATE TABLE "votesappliedrewards" (
+    "voted" VARCHAR NOT NULL,
+    "userid" VARCHAR NOT NULL,
     "rewardroles" VARCHAR[],
     "rewardxp" DECIMAL,
     "rewardcurrency" DECIMAL,
     "rewardxpmultiplier" DECIMAL,
+    "relatedvote" DECIMAL(65,30) NOT NULL,
 
     CONSTRAINT "voters_pkey" PRIMARY KEY ("userid","voted")
 );
@@ -915,7 +939,7 @@ CREATE TABLE "votesettings" (
     "reminders" BOOLEAN NOT NULL DEFAULT false,
     "announcementchannel" VARCHAR,
     "active" BOOLEAN NOT NULL DEFAULT false,
-    "linkedid" TEXT,
+    "linkedid" DECIMAL,
 
     CONSTRAINT "votesettings_pkey" PRIMARY KEY ("uniquetimestamp")
 );
@@ -933,8 +957,308 @@ CREATE TABLE "welcome" (
     CONSTRAINT "welcome_pkey" PRIMARY KEY ("guildid")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "antispamsettings_guildid_key" ON "antispam"("guildid");
+-- CreateTable
+CREATE TABLE "deletethreads" (
+    "guildid" VARCHAR NOT NULL,
+    "channelid" VARCHAR NOT NULL,
+    "deletetime" DECIMAL NOT NULL,
+
+    CONSTRAINT "deletethreads_pkey" PRIMARY KEY ("guildid")
+);
+
+-- CreateTable
+CREATE TABLE "shop" (
+    "guildid" VARCHAR NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "currencyemote" TEXT,
+
+    CONSTRAINT "shop_pkey" PRIMARY KEY ("guildid")
+);
+
+-- CreateTable
+CREATE TABLE "shopitems" (
+    "guildid" VARCHAR NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "roles" VARCHAR[],
+    "price" DECIMAL,
+    "uniquetimestamp" DECIMAL NOT NULL,
+    "shoptype" "ShopType" NOT NULL DEFAULT 'command',
+    "buttontext" TEXT,
+    "buttonemote" TEXT,
+    "msgid" VARCHAR,
+    "channelid" VARCHAR,
+
+    CONSTRAINT "shopitems_pkey" PRIMARY KEY ("uniquetimestamp")
+);
+
+-- CreateTable
+CREATE TABLE "shopusers" (
+    "userid" VARCHAR NOT NULL,
+    "guildid" VARCHAR NOT NULL,
+    "boughtids" VARCHAR[],
+
+    CONSTRAINT "shopusers_pkey" PRIMARY KEY ("userid","guildid")
+);
+
+-- CreateTable
+CREATE TABLE "voicehubs" (
+    "uniquetimestamp" DECIMAL NOT NULL,
+    "guildid" VARCHAR NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "channelid" VARCHAR,
+    "categoryid" VARCHAR,
+    "deletetime" DECIMAL NOT NULL DEFAULT 3600,
+    "blroleid" VARCHAR[],
+    "bluserid" VARCHAR[],
+    "wlroleid" VARCHAR[],
+    "wluserid" VARCHAR[],
+
+    CONSTRAINT "voicehubs_pkey" PRIMARY KEY ("uniquetimestamp")
+);
+
+-- CreateTable
+CREATE TABLE "voicechannels" (
+    "ownerid" VARCHAR NOT NULL,
+    "guildid" VARCHAR NOT NULL,
+    "channelid" VARCHAR NOT NULL,
+    "hubid" VARCHAR NOT NULL,
+    "everyonelefttime" DECIMAL,
+
+    CONSTRAINT "voicechannels_pkey" PRIMARY KEY ("guildid","channelid")
+);
+
+-- CreateTable
+CREATE TABLE "antiraid" (
+    "guildid" VARCHAR NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
+    "posttof" BOOLEAN NOT NULL DEFAULT false,
+    "postchannels" VARCHAR[],
+    "pingroles" VARCHAR[],
+    "pingusers" VARCHAR[],
+    "timeout" DECIMAL NOT NULL DEFAULT 15,
+    "jointhreshold" DECIMAL NOT NULL DEFAULT 5,
+    "actiontof" BOOLEAN NOT NULL DEFAULT true,
+    "action" "AntiRaidPunishmentType" NOT NULL DEFAULT 'kick',
+    "disableinvites" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "antiraid_pkey" PRIMARY KEY ("guildid")
+);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "guildid,channelid,msgid" ON "reactionrolesettings"("guildid", "channelid", "msgid");
+CREATE INDEX "afk_userid_guildid_idx" ON "afk"("userid", "guildid");
+
+-- CreateIndex
+CREATE INDEX "antispam_guildid_idx" ON "antispam"("guildid");
+
+-- CreateIndex
+CREATE INDEX "antivirus_guildid_idx" ON "antivirus"("guildid");
+
+-- CreateIndex
+CREATE INDEX "appealquestions_guildid_uniquetimestamp_idx" ON "appealquestions"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "appeals_userid_punishmentid_idx" ON "appeals"("userid", "punishmentid");
+
+-- CreateIndex
+CREATE INDEX "appealsettings_guildid_idx" ON "appealsettings"("guildid");
+
+-- CreateIndex
+CREATE INDEX "art_created_idx" ON "art"("created");
+
+-- CreateIndex
+CREATE INDEX "autopunish_guildid_uniquetimestamp_idx" ON "autopunish"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "autoroles_guildid_idx" ON "autoroles"("guildid");
+
+-- CreateIndex
+CREATE INDEX "balance_userid_guildid_idx" ON "balance"("userid", "guildid");
+
+-- CreateIndex
+CREATE INDEX "censor_guildid_idx" ON "censor"("guildid");
+
+-- CreateIndex
+CREATE INDEX "customroles_guildid_userid_idx" ON "customroles"("guildid", "userid");
+
+-- CreateIndex
+CREATE INDEX "newlines_guildid_idx" ON "newlines"("guildid");
+
+-- CreateIndex
+CREATE INDEX "invites_guildid_idx" ON "invites"("guildid");
+
+-- CreateIndex
+CREATE INDEX "buttonroles_guildid_uniquetimestamp_idx" ON "buttonroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "buttonrolesettings_guildid_uniquetimestamp_idx" ON "buttonrolesettings"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "cooldowns_guildid_uniquetimestamp_idx" ON "cooldowns"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "customembeds_guildid_uniquetimestamp_idx" ON "customembeds"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "disboard_guildid_idx" ON "disboard"("guildid");
+
+-- CreateIndex
+CREATE INDEX "expiry_guildid_idx" ON "expiry"("guildid");
+
+-- CreateIndex
+CREATE INDEX "giveawaycollection_msgid_idx" ON "giveawaycollection"("msgid");
+
+-- CreateIndex
+CREATE INDEX "giveaways_msgid_idx" ON "giveaways"("msgid");
+
+-- CreateIndex
+CREATE INDEX "guilds_guildid_idx" ON "guilds"("guildid");
+
+-- CreateIndex
+CREATE INDEX "guildsettings_guildid_idx" ON "guildsettings"("guildid");
+
+-- CreateIndex
+CREATE INDEX "level_guildid_idx" ON "level"("guildid");
+
+-- CreateIndex
+CREATE INDEX "leveling_guildid_idx" ON "leveling"("guildid");
+
+-- CreateIndex
+CREATE INDEX "levelingmultichannels_guildid_uniquetimestamp_idx" ON "levelingmultichannels"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "levelingmultiroles_guildid_uniquetimestamp_idx" ON "levelingmultiroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "levelingroles_guildid_uniquetimestamp_idx" ON "levelingroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "levelingruleschannels_guildid_uniquetimestamp_idx" ON "levelingruleschannels"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "logchannels_guildid_idx" ON "logchannels"("guildid");
+
+-- CreateIndex
+CREATE INDEX "nitroroles_guildid_uniquetimestamp_idx" ON "nitroroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "nitrosettings_guildid_idx" ON "nitrosettings"("guildid");
+
+-- CreateIndex
+CREATE INDEX "nitrousers_guildid_idx" ON "nitrousers"("guildid");
+
+-- CreateIndex
+CREATE INDEX "punish_bans_guildid_uniquetimestamp_userid_idx" ON "punish_bans"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_channelbans_guildid_uniquetimestamp_userid_idx" ON "punish_channelbans"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_kicks_guildid_uniquetimestamp_userid_idx" ON "punish_kicks"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_mutes_guildid_uniquetimestamp_userid_idx" ON "punish_mutes"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_tempbans_guildid_userid_idx" ON "punish_tempbans"("guildid", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_tempchannelbans_guildid_uniquetimestamp_userid_idx" ON "punish_tempchannelbans"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_tempmutes_guildid_userid_idx" ON "punish_tempmutes"("guildid", "userid");
+
+-- CreateIndex
+CREATE INDEX "punish_warns_guildid_uniquetimestamp_userid_idx" ON "punish_warns"("guildid", "uniquetimestamp", "userid");
+
+-- CreateIndex
+CREATE INDEX "reactionroles_guildid_uniquetimestamp_idx" ON "reactionroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "reactionrolesettings_guildid_uniquetimestamp_idx" ON "reactionrolesettings"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "reminders_userid_uniquetimestamp_idx" ON "reminders"("userid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "reviews_userid_idx" ON "reviews"("userid");
+
+-- CreateIndex
+CREATE INDEX "rolerewards_guildid_uniquetimestamp_idx" ON "rolerewards"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "roleseparator_guildid_uniquetimestamp_idx" ON "roleseparator"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "roleseparatorsettings_guildid_idx" ON "roleseparatorsettings"("guildid");
+
+-- CreateIndex
+CREATE INDEX "selfroles_guildid_uniquetimestamp_idx" ON "selfroles"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "sticky_guildid_idx" ON "sticky"("guildid");
+
+-- CreateIndex
+CREATE INDEX "stickymessages_guildid_idx" ON "stickymessages"("guildid");
+
+-- CreateIndex
+CREATE INDEX "stickypermmembers_guildid_idx" ON "stickypermmembers"("guildid");
+
+-- CreateIndex
+CREATE INDEX "stickyrolemembers_guildid_idx" ON "stickyrolemembers"("guildid");
+
+-- CreateIndex
+CREATE INDEX "suggestionsettings_guildid_idx" ON "suggestionsettings"("guildid");
+
+-- CreateIndex
+CREATE INDEX "suggestionvotes_guildid_idx" ON "suggestionvotes"("guildid");
+
+-- CreateIndex
+CREATE INDEX "users_userid_idx" ON "users"("userid");
+
+-- CreateIndex
+CREATE INDEX "blockedusers_userid_idx" ON "blockedusers"("userid");
+
+-- CreateIndex
+CREATE INDEX "verification_guildid_idx" ON "verification"("guildid");
+
+-- CreateIndex
+CREATE INDEX "voterewards_guildid_uniquetimestamp_idx" ON "voterewards"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "votes_endtime_key" ON "votes"("endtime");
+
+-- CreateIndex
+CREATE INDEX "votes_guildid_idx" ON "votes"("guildid");
+
+-- CreateIndex
+CREATE INDEX "votesappliedrewards_relatedvote_idx" ON "votesappliedrewards"("relatedvote");
+
+-- CreateIndex
+CREATE INDEX "votesettings_guildid_uniquetimestamp_idx" ON "votesettings"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "welcome_guildid_idx" ON "welcome"("guildid");
+
+-- CreateIndex
+CREATE INDEX "deletethreads_guildid_idx" ON "deletethreads"("guildid");
+
+-- CreateIndex
+CREATE INDEX "shop_guildid_idx" ON "shop"("guildid");
+
+-- CreateIndex
+CREATE INDEX "shopitems_guildid_uniquetimestamp_idx" ON "shopitems"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "shopusers_userid_guildid_idx" ON "shopusers"("userid", "guildid");
+
+-- CreateIndex
+CREATE INDEX "voicehubs_guildid_uniquetimestamp_idx" ON "voicehubs"("guildid", "uniquetimestamp");
+
+-- CreateIndex
+CREATE INDEX "voicechannels_guildid_channelid_idx" ON "voicechannels"("guildid", "channelid");
+
+-- CreateIndex
+CREATE INDEX "antiraid_guildid_idx" ON "antiraid"("guildid");
+
+-- AddForeignKey
+ALTER TABLE "votesappliedrewards" ADD CONSTRAINT "votesappliedrewards_relatedvote_fkey" FOREIGN KEY ("relatedvote") REFERENCES "votes"("endtime") ON DELETE RESTRICT ON UPDATE CASCADE;

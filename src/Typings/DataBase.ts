@@ -64,7 +64,8 @@ export interface DataBaseTables {
  blockedusers: Prisma.blockedusers;
  verification: Prisma.verification;
  voterewards: Prisma.voterewards;
- voters: Prisma.voters;
+ votesappliedrewards: Prisma.votesappliedrewards;
+ votes: Prisma.votes;
  votesettings: Prisma.votesettings;
  welcome: Prisma.welcome;
  deletethreads: Prisma.deletethreads;

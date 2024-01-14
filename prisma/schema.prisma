@@ -898,7 +898,6 @@ model suggestionvotes {
 
 model users {
   userid         String   @db.VarChar
-  votereminders  Boolean  @db.Boolean @default(true)
   username       String   @db.Text    @default("Unkown User")
   avatar         String   @db.Text    @default("https://cdn.discordapp.com/embed/avatars/0.png")
   socials        String[] @db.Text
@@ -939,6 +938,7 @@ model verification {
   @@index(guildid)
 }
 
+
 model voterewards {
   guildid            String   @db.VarChar
   uniquetimestamp    Decimal  @db.Decimal
@@ -954,20 +954,34 @@ model voterewards {
   @@index([guildid, uniquetimestamp])
 }
 
-model voters {
-  userid             String   @db.VarChar
-  guildid            String   @db.VarChar
-  removetime         Decimal  @db.Decimal
+model votes {
+  guildid         String   @db.VarChar
+  userid          String   @db.VarChar
+  endtime         Decimal  @db.Decimal @unique
+  votetype        VoteType
+  voted           String   @db.VarChar
+  relatedsetting  Decimal  @db.Decimal
+
+  votes           votesappliedrewards[]
+
+  @@id([guildid, userid, voted], map: "votes_pkey")
+  @@index(guildid)
+}
+
+model votesappliedrewards {
   voted              String   @db.VarChar
-  votetype           VoteType
-  tier               Decimal  @db.Decimal
+  userid             String   @db.VarChar
+
   rewardroles        String[] @db.VarChar
   rewardxp           Decimal? @db.Decimal
   rewardcurrency     Decimal? @db.Decimal
   rewardxpmultiplier Decimal? @db.Decimal
+  
+  relatedvote        Decimal
+  vote               votes                 @relation(fields: [relatedvote], references: [endtime])
 
   @@id([userid, voted], map: "voters_pkey")
-  @@index(userid)
+  @@index(relatedvote)
 }
 
 model votesettings {

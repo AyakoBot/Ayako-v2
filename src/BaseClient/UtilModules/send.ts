@@ -10,7 +10,7 @@ export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions,
 }
 
 async function send(
- channels: Discord.User | Discord.GuildMember,
+ channels: Discord.User,
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<Discord.Message | null | void>;
@@ -47,8 +47,7 @@ async function send(
   | Discord.TextBasedChannel[]
   | { id: string[]; guildId: string }
   | { id: string; guildId: string }
-  | Discord.User
-  | Discord.GuildMember,
+  | Discord.User,
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<Discord.Message | (Discord.Message | null | void)[] | null | void> {

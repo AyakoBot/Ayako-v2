@@ -12,6 +12,7 @@ import * as CT from '../../../../Typings/Typings.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
+import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
 
 export default () => {
  reminder();
@@ -41,6 +42,23 @@ const reminder = async () => {
 };
 
 export const tasks = {
+ vote: async (guild: Discord.Guild) => {
+  const votes = await client.util.DataBase.votes.findMany({ where: { guildid: guild.id } });
+
+  votes.forEach((vote) => {
+   client.util.cache.votes.set(
+    Jobs.scheduleJob(
+     new Date(Date.now() > Number(vote.endtime) ? Date.now() + 10000 : Number(vote.endtime)),
+     () => {
+      endVote(vote, guild);
+     },
+    ),
+    guild.id,
+    vote.voted,
+    vote.userid,
+   );
+  });
+ },
  vcDeleteTimeouts: async (guild: Discord.Guild) => {
   const settings = await client.util.DataBase.voicehubs.findMany({
    where: { guildid: guild.id },

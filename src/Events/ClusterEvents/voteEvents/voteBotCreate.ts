@@ -1,7 +1,6 @@
-import Prisma from '@prisma/client';
+import Prisma, { votes } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -11,14 +10,25 @@ export default async (
  member: Discord.GuildMember | undefined,
  setting: Prisma.votesettings,
 ) => {
- const allRewards = await client.util.DataBase.voterewards.findMany({
+ const allRewards = await guild.client.util.DataBase.voterewards.findMany({
   where: { guildid: guild.id },
  });
 
- const bot = await client.util.getUser(vote.bot).catch(() => undefined);
+ const bot = await guild.client.util.getUser(vote.bot).catch(() => undefined);
  if (!bot) return;
 
- const language = await client.util.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
+
+ const reminder = await guild.client.util.DataBase.votes.create({
+  data: {
+   guildid: guild.id,
+   userid: user.id,
+   votetype: 'bot',
+   voted: vote.bot,
+   endtime: Date.now() + 43_200_000, // 12 hours
+   relatedsetting: setting.uniquetimestamp,
+  },
+ });
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, bot, language, []);
@@ -34,36 +44,31 @@ export default async (
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
-  client.util.DataBase.voters
+  guild.client.util.DataBase.votesappliedrewards
    .upsert({
     where: { userid_voted: { userid: user.id, voted: vote.bot } },
     update: {
-     removetime: Date.now() + 43200000,
-     votetype: 'bot',
-     tier,
      rewardroles: { push: r.rewardroles },
      rewardxp: { increment: Number(r.rewardxp) },
      rewardcurrency: { increment: Number(r.rewardcurrency) },
      rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
     },
     create: {
-     guildid: guild.id,
-     userid: user.id,
-     removetime: Date.now() + 43200000,
      voted: vote.bot,
-     votetype: 'bot',
-     tier,
+     userid: user.id,
      rewardroles: r.rewardroles,
      rewardxp: r.rewardxp,
      rewardcurrency: r.rewardcurrency,
      rewardxpmultiplier: r.rewardxpmultiplier,
+     relatedvote: reminder.endtime,
     },
    })
    .then();
  });
 
- client.util.cache.votes.set(
-  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild)),
+ guild.client.util.cache.votes.set(
+  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => end(reminder, guild)),
+  guild.id,
   vote.bot,
   user.id,
  );
@@ -98,7 +103,7 @@ export const doAnnouncement = async (
 ) => {
  if (!settings.announcementchannel) return;
 
- const channel = await client.util.getChannel.guildTextChannel(settings.announcementchannel);
+ const channel = await user.client.util.getChannel.guildTextChannel(settings.announcementchannel);
  if (!channel) return;
 
  const currencyRewards = rewards?.filter((r) => !!r.rewardcurrency);
@@ -109,34 +114,32 @@ export const doAnnouncement = async (
      rewards
       .map((r, i) => {
        switch (i) {
-        case 0 && r.rewardroles?.length: {
+        case 0 && r.rewardroles?.length:
          return r.rewardroles?.map((roleID) => `<@&${roleID}>`).join(', ');
-        }
-        case 1: {
+        case 1:
          return `${r.rewardxp} XP`;
-        }
-        case 2: {
+        case 2:
          return `${r.rewardxpmultiplier}x ${lan.xpmultiplier}`;
-        }
-        default: {
+        default:
          return null;
-        }
        }
       })
       .filter((r): r is string => !!r)
-      .join(` ${client.util.constants.standard.getEmote(client.util.emotes.plusBG)} `),
+      .join(` ${user.client.util.constants.standard.getEmote(user.client.util.emotes.plusBG)} `),
     )}${
      currencyRewards?.length
-      ? `${client.util.constants.standard.getEmote(client.util.emotes.plusBG)} ${currencyRewards
+      ? `${user.client.util.constants.standard.getEmote(
+         user.client.util.emotes.plusBG,
+        )} ${currencyRewards
          ?.map((r) => Number(r.rewardcurrency))
-         .reduce((b, a) => b + a, 0)} ${client.util.constants.standard.getEmote(
-         client.util.emotes.book,
+         .reduce((b, a) => b + a, 0)} ${user.client.util.constants.standard.getEmote(
+         user.client.util.emotes.book,
         )}`
       : ''
     }`
   : '';
 
- client.util.send(channel, {
+ user.client.util.send(channel, {
   content: `${
    'username' in voted
     ? lan.bot(user, voted, `https://top.gg/bot/${voted.id}/vote`)
@@ -145,43 +148,30 @@ export const doAnnouncement = async (
  });
 };
 
-export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Discord.Guild) => {
- client.util.cache.votes.delete('bot' in vote ? vote.bot : vote.guild, vote.user);
+export const end = async (vote: votes, guild: Discord.Guild) => {
+ guild.client.util.cache.votes.delete(guild.id, vote.voted, vote.userid);
 
- const now = Date.now();
- const savedRewards = await client.util.DataBase.voters.findMany({
-  where: {
-   guildid: g.id,
-   userid: vote.user,
-   voted: 'bot' in vote ? vote.bot : vote.guild,
-   removetime: { lt: now },
-  },
+ const appliedRewards = await guild.client.util.DataBase.votesappliedrewards.findMany({
+  where: { voted: vote.voted, userid: vote.userid },
  });
- if (!savedRewards) return;
+ if (!vote) return;
 
- await client.util.DataBase.voters.deleteMany({
-  where: {
-   userid: vote.user,
-   guildid: g.id,
-   voted: 'bot' in vote ? vote.bot : vote.guild,
-   removetime: { lt: now },
-  },
+ await guild.client.util.DataBase.votes.delete({ where: { endtime: vote.endtime } });
+ await guild.client.util.DataBase.votesappliedrewards.deleteMany({
+  where: { voted: vote.voted, userid: vote.userid },
  });
 
- const guild = client.guilds.cache.get(g.id);
- if (!guild) return;
-
- const member = await client.util.request.guilds
-  .getMember(guild, vote.user)
+ const member = await guild.client.util.request.guilds
+  .getMember(guild, vote.userid)
   .then((m) => ('message' in m ? undefined : m));
  if (!member) return;
 
- const language = await client.util.getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.vote;
 
- client.util.roleManager.remove(
+ guild.client.util.roleManager.remove(
   member,
-  savedRewards
+  appliedRewards
    .filter((r) => r.rewardroles?.length)
    .map((r) => r.rewardroles)
    .filter((r): r is string[] => !!r)
@@ -190,23 +180,23 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
   1,
  );
 
- const userSettings = await client.util.DataBase.users.findUnique({
-  where: { userid: member.user.id },
+ const settings = await guild.client.util.DataBase.votesettings.findFirst({
+  where: { uniquetimestamp: vote.relatedsetting },
  });
- if (userSettings && !userSettings.votereminders) return;
+ if (!settings?.reminders) return;
 
  const voted =
-  'bot' in vote
-   ? await client.util.getUser(vote.bot).catch(() => undefined)
-   : client.guilds.cache.get(g.id);
+  vote.votetype === 'bot'
+   ? await guild.client.util.getUser(vote.voted).catch(() => undefined)
+   : guild.client.guilds.cache.get(guild.id);
  if (!voted) return;
 
- client.util.send(member, {
+ guild.client.util.send(member.user, {
   embeds: [
    {
     author: {
      name: lan.reminder.name,
-     icon_url: client.util.emotes.userFlags.EarlySupporter.link,
+     icon_url: guild.client.util.emotes.userFlags.EarlySupporter.link,
     },
     color: CT.Colors.Base,
     description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
@@ -234,23 +224,16 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
         ? `https://top.gg/bot/${voted.id}/vote`
         : `https://top.gg/servers/${guild.id}/vote`,
      },
-     {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Link,
-      label: lan.reminder.voteAyakoButton,
-      url: `https://top.gg/bot/${client.user?.id}/vote`,
-     },
-    ],
-   },
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Danger,
-      label: lan.reminder.disable,
-      custom_id: `voteReminder_${'bot' in vote ? 'bot' : 'guild'}_disable_${voted.id}`,
-     },
+     ...((voted.id === process.env.mainID
+      ? []
+      : [
+         {
+          type: Discord.ComponentType.Button,
+          style: Discord.ButtonStyle.Link,
+          label: lan.reminder.voteAyakoButton,
+          url: `https://top.gg/bot/${process.env.mainID}/vote`,
+         },
+        ]) as Discord.APIButtonComponent[]),
     ],
    },
   ],
@@ -260,12 +243,10 @@ export const endVote = async (vote: CT.TopGGBotVote | CT.TopGGGuildVote, g: Disc
 export const currency = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardcurrency) return;
 
- client.util.DataBase.balance
+ guild.client.util.DataBase.balance
   .upsert({
    where: { userid_guildid: { userid: user.id, guildid: guild.id } },
-   update: {
-    balance: { increment: r.rewardcurrency },
-   },
+   update: { balance: { increment: r.rewardcurrency } },
    create: {
     userid: user.id,
     guildid: guild.id,
@@ -284,19 +265,19 @@ export const roles = async (
  if (!r.rewardroles?.length) return;
  if (!member) return;
 
- const me = await client.util.getBotMemberFromGuild(member.guild);
+ const me = await bot.client.util.getBotMemberFromGuild(member.guild);
  if (!me) {
-  client.util.error(member.guild, new Error("I can't find myself in this guild!"));
+  bot.client.util.error(member.guild, new Error("I can't find myself in this guild!"));
   return;
  }
 
- client.util.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
+ bot.client.util.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
 };
 
 export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardxp) return;
 
- client.util.DataBase.level
+ guild.client.util.DataBase.level
   .upsert({
    where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
    update: {
@@ -316,7 +297,7 @@ export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Gui
 export const xpmultiplier = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
  if (!r.rewardxpmultiplier) return;
 
- client.util.DataBase.level
+ guild.client.util.DataBase.level
   .upsert({
    where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
    update: {

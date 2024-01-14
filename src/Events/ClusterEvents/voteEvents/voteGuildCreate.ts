@@ -2,7 +2,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as CT from '../../../Typings/Typings.js';
-import { doAnnouncement, getTier, endVote, currency, xp, xpmultiplier } from './voteBotCreate.js';
+import { doAnnouncement, getTier, end, currency, xp, xpmultiplier } from './voteBotCreate.js';
 
 export default async (
  vote: CT.TopGGGuildVote,
@@ -15,6 +15,17 @@ export default async (
   where: { guildid: guild.id },
  });
  const language = await guild.client.util.getLanguage(guild.id);
+
+ const reminder = await guild.client.util.DataBase.votes.create({
+  data: {
+   guildid: guild.id,
+   userid: user.id,
+   votetype: 'guild',
+   voted: vote.guild,
+   endtime: Date.now() + 43_200_000, // 12 hours
+   relatedsetting: setting.uniquetimestamp,
+  },
+ });
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, guild, language, []);
@@ -30,35 +41,34 @@ export default async (
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
-  guild.client.util.DataBase.voters
+  guild.client.util.DataBase.votesappliedrewards
    .upsert({
     where: { userid_voted: { userid: user.id, voted: vote.guild } },
     update: {
-     removetime: Date.now() + 43200000,
-     votetype: 'guild',
-     tier,
      rewardroles: { push: r.rewardroles },
      rewardxp: { increment: Number(r.rewardxp) },
      rewardcurrency: { increment: Number(r.rewardcurrency) },
      rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
     },
     create: {
-     guildid: guild.id,
-     userid: user.id,
-     removetime: Date.now() + 43200000,
      voted: vote.guild,
-     votetype: 'guild',
-     tier,
+     userid: user.id,
      rewardroles: r.rewardroles,
      rewardxp: r.rewardxp,
      rewardcurrency: r.rewardcurrency,
      rewardxpmultiplier: r.rewardxpmultiplier,
+     relatedvote: reminder.endtime,
     },
    })
    .then();
  });
 
- Jobs.scheduleJob(new Date(Date.now() + 43200000), () => endVote(vote, guild));
+ guild.client.util.cache.votes.set(
+  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => end(reminder, guild)),
+  guild.id,
+  vote.guild,
+  user.id,
+ );
  doAnnouncement(setting, user, guild, language, rewards);
 };
 
