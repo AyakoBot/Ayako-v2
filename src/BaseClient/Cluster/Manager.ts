@@ -17,17 +17,24 @@ const manager = new Sharding.ClusterManager(`./dist/bot.js`, {
 
 manager.extend(new Sharding.ReClusterManager({ restartMode: 'rolling' }));
 
-await manager.spawn().catch((e) => {
- log(e, true);
+await manager
+ .spawn()
+ .then(() => {
+  setInterval(async () => {
+   await manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
+  }, 60000);
+ })
+ .catch((e) => {
+  log(e, true);
 
- log(
-  `[Cluster Manager] Startup Failed. Retry after: ${
-   Number(e.headers?.get('retry-after') ?? 0) / 60
-  } Minutes`,
-  true,
- );
- process.exit(1);
-});
+  log(
+   `[Cluster Manager] Startup Failed. Retry after: ${
+    Number(e.headers?.get('retry-after') ?? 0) / 60
+   } Minutes`,
+   true,
+  );
+  process.exit(1);
+ });
 
 export default manager;
 
