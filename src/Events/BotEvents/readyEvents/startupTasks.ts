@@ -8,7 +8,6 @@ import separators from './startupTasks/separators.js';
 
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
 import nitroHandler from './timedFiles/nitroHandler.js';
-import presence from './timedFiles/presence.js';
 import timedManager from './timedFiles/timedManager.js';
 import verification from './timedFiles/verification.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
@@ -42,11 +41,7 @@ export default async () => {
   client.util.cache.urlTLDs.start();
  });
 
- Jobs.scheduleJob('0 * * * * *', async () => {
-  presence();
-  verification();
- });
-
+ Jobs.scheduleJob('0 * * * * *', async () => verification());
  Jobs.scheduleJob('0 */30 * * *', async () => antivirusBlocklistCacher());
  Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
 

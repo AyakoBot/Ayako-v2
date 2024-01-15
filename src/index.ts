@@ -25,6 +25,7 @@ sms.install({
   './BaseClient/Cluster/Manager.js',
   './BaseClient/Cluster/Socket.js',
   './BaseClient/Cluster/Events.js',
+  './BaseClient/Cluster/Presence.js',
  ].forEach((f) => import(f));
 })();
 
