@@ -26,6 +26,7 @@ export default async (
    relatedsetting: setting.uniquetimestamp,
   },
  });
+ if (!reminder) return;
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, guild, language, []);
