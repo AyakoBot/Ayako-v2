@@ -274,16 +274,8 @@ export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Gui
  guild.client.util.DataBase.level
   .upsert({
    where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
-   update: {
-    xp: { increment: r.rewardxp },
-   },
-   create: {
-    userid: user.id,
-    guildid: guild.id,
-    type: 'guild',
-    xp: r.rewardxp,
-    level: 0,
-   },
+   update: { xp: { increment: r.rewardxp } },
+   create: { userid: user.id, guildid: guild.id, type: 'guild', xp: r.rewardxp, level: 0 },
   })
   .then();
 };
@@ -294,9 +286,7 @@ export const xpmultiplier = (r: Prisma.voterewards, user: Discord.User, guild: D
  guild.client.util.DataBase.level
   .upsert({
    where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
-   update: {
-    xp: r.rewardxpmultiplier,
-   },
+   update: { xp: r.rewardxpmultiplier },
    create: {
     userid: user.id,
     guildid: guild.id,
