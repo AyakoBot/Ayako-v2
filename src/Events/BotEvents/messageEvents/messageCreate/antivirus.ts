@@ -89,10 +89,10 @@ const log = (
      {
       name: lan.scanResult,
       value: `${lan.vtStats(
-       results.malicious,
-       results.suspicious,
-       results.harmless,
-       results.undetected,
+       String(results.malicious),
+       String(results.suspicious),
+       String(results.harmless),
+       String(results.undetected),
       )}\n\n[${lan.scanLink}](https://www.virustotal.com/gui/url/${res.data.id.split('-')[1]})`,
      },
     ];
@@ -152,20 +152,14 @@ const log = (
     fields: [
      ...(url.url
       ? [
-         {
-          name: '\u200b',
-          value: '\u200b',
-         },
+         { name: '\u200b', value: '\u200b' },
          {
           name: language.antivirus.malicious(
            client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground),
           ),
           value: client.util.util.makeInlineCode(url.url),
          },
-         {
-          name: '\u200b',
-          value: '\u200b',
-         },
+         { name: '\u200b', value: '\u200b' },
         ]
       : []),
      ...getFields(),

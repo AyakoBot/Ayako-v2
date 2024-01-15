@@ -6,7 +6,7 @@ export default (t: CT.Language) => ({
  malicious: (cross: string) => t.stp(t.JSON.antivirus.malicious, { cross }),
  log: {
   ...t.JSON.antivirus.log,
-  vtStats: (m: number, s: number, h: number, u: number) =>
+  vtStats: (m: string, s: string, h: string, u: string) =>
    t.stp(t.JSON.antivirus.log.vtStats, { m, s, h, u }),
   detectedAs: (c: string) => t.stp(t.JSON.antivirus.log.detectedAs, { c }),
   value: (msg: Discord.Message) =>
