@@ -16,7 +16,7 @@ const spawnEvents = async () => {
   if (!eventName) return;
 
   if (eventName === 'ready' && !client.cluster?.maintenance) {
-   client.once(eventName, (...args) => baseEventHandler(eventName, args));
+   client.on(eventName, (...args) => baseEventHandler(eventName, args));
    return;
   }
   client.on(eventName, (...args) => baseEventHandler(eventName, args));
