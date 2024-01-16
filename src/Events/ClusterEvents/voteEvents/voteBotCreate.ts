@@ -29,6 +29,9 @@ export default async (
    relatedsetting: setting.uniquetimestamp,
   },
  });
+ // TODO: upsert reminder? may be interfering with already existing reminders,
+ // currently reminders are not being deleted
+ if (!reminder) return;
 
  if (!allRewards?.length) {
   doAnnouncement(setting, user, bot, language, []);
