@@ -5,9 +5,10 @@ import readline from 'readline';
 import * as AutoPoster from 'topgg-autoposter';
 import log from '../UtilModules/logError.js';
 
-const manager = new Sharding.ClusterManager(`./dist/bot.js`, {
+const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
  totalClusters: 'auto',
+ shardsPerClusters: 10,
  token: process.env.Token,
  shardArgs: process.argv,
  execArgv: ['--experimental-wasm-modules'],
@@ -15,13 +16,12 @@ const manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  mode: 'process',
 });
 
-manager.extend(new Sharding.ReClusterManager({ restartMode: 'rolling' }));
+Manager.extend(new Sharding.ReClusterManager({ restartMode: 'rolling' }));
 
-await manager
- .spawn()
+await Manager.spawn()
  .then(() => {
   setInterval(async () => {
-   await manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
+   await Manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
   }, 60000);
  })
  .catch((e) => {
@@ -36,7 +36,7 @@ await manager
   process.exit(1);
  });
 
-export default manager;
+export default Manager;
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
@@ -46,7 +46,7 @@ rl.on('line', async (msg: string) => {
  if (!code.startsWith('restart')) return;
 
  log('[Cluster Manager] Restarting all Clusters...');
- manager.recluster?.start({ restartMode: 'rolling' });
+ await Manager.recluster?.start({ restartMode: 'rolling' });
 });
 
 if (
@@ -56,12 +56,12 @@ if (
  new AutoPoster.DJSSharderPoster(
   process.env.topGGToken ?? '',
   new Discord.ShardingManager(`./dist/bot.js`, {
-   totalShards: manager.totalShards,
-   shardList: manager.shardList,
-   mode: manager.mode,
-   respawn: manager.respawn,
-   shardArgs: manager.shardArgs,
-   execArgv: manager.execArgv,
+   totalShards: Manager.totalShards,
+   shardList: Manager.shardList,
+   mode: Manager.mode,
+   respawn: Manager.respawn,
+   shardArgs: Manager.shardArgs,
+   execArgv: Manager.execArgv,
   }),
   { startPosting: true },
  );
