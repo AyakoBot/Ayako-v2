@@ -1,15 +1,18 @@
-import embedParsers from './settingsHelpers/embedParsers.js';
 import buttonParsers from './settingsHelpers/buttonParsers.js';
-import multiRowHelpers from './settingsHelpers/multiRowHelpers.js';
-import updateLog from './settingsHelpers/updateLog.js';
 import changeHelpers from './settingsHelpers/changeHelpers.js';
-import getSettingsFile from './settingsHelpers/getSettingsFile.js';
-import setup from './settingsHelpers/setup.js';
 import del from './settingsHelpers/del.js';
-import getStyle from './settingsHelpers/getStyle.js';
+import embedParsers from './settingsHelpers/embedParsers.js';
 import getEmoji from './settingsHelpers/getEmoji.js';
+import getSettingsFile from './settingsHelpers/getSettingsFile.js';
+import getStyle from './settingsHelpers/getStyle.js';
+import multiRowHelpers from './settingsHelpers/multiRowHelpers.js';
+import permissionCheck from './settingsHelpers/permissionCheck.js';
+import setup from './settingsHelpers/setup.js';
+import updateLog from './settingsHelpers/updateLog.js';
 
 /**
+ * Function for checking if a user has permission to change a setting.
+ * @property {Object} permissionCheck
  * Helper functions for managing settings.
  * @property {Object} embedParsers
  * - Functions for parsing embed settings.
@@ -29,6 +32,7 @@ import getEmoji from './settingsHelpers/getEmoji.js';
  * - Function for deleting a setting.
  */
 export default {
+ permissionCheck,
  embedParsers,
  buttonParsers,
  multiRowHelpers,

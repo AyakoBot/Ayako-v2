@@ -3,17 +3,21 @@ import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.AntiRaid;
+// TODO: finish this
+// const requiredPerms = [Discord.PermissionFlagsBits.ManageGuild];
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await client.util.getLanguage(cmd.guild?.id);
+ // if (!cmd.client.util.settingsHelpers.permissionCheck(cmd, language, requiredPerms)) {
+ //  return;
+ // }
+
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
-  .findUnique({
-   where: { guildid: cmd.guildId },
-  })
+  .findUnique({ where: { guildid: cmd.guildId } })
   .then(
    (r) =>
     r ??
