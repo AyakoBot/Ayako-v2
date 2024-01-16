@@ -232,6 +232,13 @@ export const checkCommandPermissions = async (
  }
 
  const guildPerms = message.guild.client.util.cache.commandPermissions.cache.get(message.guildId);
+ if (
+  !guildPerms &&
+  slashCommand.defaultMemberPermissions &&
+  message.member?.permissions.has(slashCommand.defaultMemberPermissions)
+ ) {
+  return { can: true, debugNum: 13 };
+ }
  if (!guildPerms) return { can: false, debugNum: 4 };
 
  const commandPerms = guildPerms.get(slashCommand.id);
