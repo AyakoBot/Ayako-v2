@@ -1248,10 +1248,12 @@
   "noChannelFound": "No Channel found, please report to the Support Server",
   "noRoleFound": "No Role found, please report to the Support Server",
   "noThreadCanBeCreated": "In this Channel, private Threads cannot be created",
-  "cantManage": "You can't manage this Member",
+  "cantManageMember": "You can't manage this Member",
   "cantManageRole": "You can't manage this Role",
   "cantManageChannel": "I can't manage this Channel",
   "cantManageInvite": "I can't manage this Invite",
+  "cantCreateInvite": "I can't create an Invite in this Channel",
+  "cantCreateInviteYou": "You can't create an Invite in this Channel",
   "commandNotFound": "Command not found",
   "timeInPast": "Time is in the Past"
  },
@@ -2252,6 +2254,7 @@
    "placeholder": "Select 1 or more Roles"
   },
   "invites": {
+   "cantDeleteInvite": "You can't delete this Invite",
    "inviteNotFound": "Invite not found",
    "deleted": "{{invite}} was deleted",
    "created": "{{invite}} was created"
