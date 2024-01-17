@@ -8,6 +8,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
  const stats = await cmd.client.util.DataBase.stats.findFirst();
+ const allShards = (
+  await cmd.client.cluster?.broadcastEval((cl) => cl.util.files.sharding.getInfo().SHARD_LIST)
+ )?.flat();
 
  cmd.client.util.replyCmd(cmd, {
   embeds: [
@@ -57,9 +60,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      {
       name: `${cmd.client.util.util.makeInlineCode(
        String(cmd.client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1),
-      )} ${lan.clusters}\n${cmd.client.util.util.makeInlineCode(
-       String(cmd.client.util.files.sharding.getInfo().SHARD_LIST.length ?? 1),
-      )} ${lan.shards}`,
+      )} ${lan.clusters}\n${cmd.client.util.util.makeInlineCode(String(allShards?.length ?? 1))} ${
+       lan.shards
+      }`,
       value: '',
      },
      {
