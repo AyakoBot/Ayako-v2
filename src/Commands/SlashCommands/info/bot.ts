@@ -55,9 +55,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       : []),
 
      {
-      name: `${cmd.client.util.util.makeInlineCode(String(cmd.client.cluster?.ids.length ?? 1))} ${
-       lan.shards
-      }`,
+      name: `${cmd.client.util.util.makeInlineCode(
+       String(cmd.client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1),
+      )} ${lan.clusters}\n${cmd.client.util.util.makeInlineCode(
+       String(cmd.client.util.files.sharding.getInfo().SHARD_LIST.length ?? 1),
+      )} ${lan.shards}`,
       value: '',
      },
      {

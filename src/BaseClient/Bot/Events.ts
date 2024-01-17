@@ -4,6 +4,7 @@ import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
 import type * as Socket from '../Cluster/Socket.js';
 import { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
+import presence from './Presence.js';
 
 const spawnEvents = async () => {
  const util = await import('../UtilModules/getEvents.js');
@@ -33,6 +34,10 @@ const spawnEvents = async () => {
   baseEventHandler(eventName, [message]);
  });
 
+ client.cluster?.on('ready', (cl) => {
+  presence(cl);
+ });
+
  events.ProcessEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
   if (!eventName) return;
@@ -45,9 +50,8 @@ if (client.cluster?.maintenance) {
  console.log(`[Cluster ${client.cluster.id}] Cluster spawned in Maintenance-Mode`);
 
  client.cluster?.on('ready', async () => {
-  console.log(`[Cluster ${client.cluster?.id}] Cluster moved into Ready-State`);
+  console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
   spawnEvents();
-  baseEventHandler('ready', []);
  });
 } else spawnEvents();
 

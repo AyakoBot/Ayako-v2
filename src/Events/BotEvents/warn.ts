@@ -4,7 +4,7 @@ const warnEnabled = process.argv.includes('--warn');
 
 export default (message: string) => {
  if (!warnEnabled) {
-  log(message);
+  log(message, false);
   return;
  }
 

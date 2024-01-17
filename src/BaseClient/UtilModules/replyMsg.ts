@@ -41,7 +41,7 @@ export default async <T extends Discord.Message<boolean>>(
  const sentMessage = await request.channels
   .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
   .catch((err) => {
-   log(err);
+   log(err, true);
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;

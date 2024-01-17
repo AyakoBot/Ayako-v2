@@ -9,7 +9,7 @@ const logFile = fs.createWriteStream(
  },
 );
 
-export default (l: string | Error, logConsole?: true) => {
+export default (l: string | Error, logConsole: boolean) => {
  // eslint-disable-next-line no-console
  if (logConsole) console.log(l);
 
