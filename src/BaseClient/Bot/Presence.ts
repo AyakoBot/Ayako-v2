@@ -1,10 +1,7 @@
 import * as Sharding from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
-import log from '../UtilModules/logError.js';
 
 export default (cluster: Sharding.ClusterClient<Discord.Client<boolean>>) => {
- log(`[Cluster ${Number(cluster?.id) + 1}] Cluster moved into Ready-State`, true);
-
  const getActivities = async (thisShard: number): Promise<Discord.ActivitiesOptions> => {
   const allShards = (
    await cluster?.broadcastEval((cl) => cl.util.files.sharding.getInfo().SHARD_LIST)
