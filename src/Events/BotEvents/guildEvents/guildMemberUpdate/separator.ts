@@ -243,8 +243,8 @@ const getMembers = async (
   obj.members.push({
    id: member.user.id,
    roles,
-   giveTheseRoles: new Set(),
-   takeTheseRoles: new Set(),
+   giveTheseRoles: [],
+   takeTheseRoles: [],
   });
  });
 
@@ -308,7 +308,7 @@ const getMembers = async (
    worker.terminate();
    throw error;
   });
- })) as Typings.DePromisify<ReturnType<typeof getMembers>>;
+ })) as PassObject['members'];
 
  members.forEach((fakeMember) => {
   const realMember = guild?.members.cache.get(fakeMember.id);

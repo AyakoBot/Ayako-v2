@@ -9,8 +9,8 @@ export type PassObject = {
  members: {
   id: string;
   roles: Role[];
-  giveTheseRoles: Set<string>;
-  takeTheseRoles: Set<string>;
+  giveTheseRoles: string[];
+  takeTheseRoles: string[];
  }[];
  separators: {
   separator: Role;
@@ -30,8 +30,8 @@ const start = async (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator
  const membersWithRoles: PassObject['members'] = [];
 
  obj.members.forEach((member) => {
-  const giveThese: Set<string> = new Set();
-  const takeThese: Set<string> = new Set();
+  const giveThese: string[] = [];
+  const takeThese: string[] = [];
   const memberRoleIds = new Set(member.roles.map((o) => o.id));
 
   res.forEach((row) => {
@@ -44,7 +44,7 @@ const start = async (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator
 
   member.giveTheseRoles = giveThese;
   member.takeTheseRoles = takeThese;
-  if (takeThese.size || giveThese.size) membersWithRoles.push(member);
+  if (takeThese.length || giveThese.length) membersWithRoles.push(member);
  });
 
  Jobs.scheduleJob('*/1 * * * * *', () => {
@@ -57,19 +57,19 @@ const handleConstant = (
  row: Serialized<Prisma.roleseparator>,
  sep: Role,
  memberRoleIds: Set<string>,
- giveThese: Set<string>,
- takeThese: Set<string>,
+ giveThese: string[],
+ takeThese: string[],
 ) => {
  const hasRole = row.roles?.some((role) => memberRoleIds.has(role));
 
  if (hasRole && !memberRoleIds.has(sep.id) && obj.clientHighestRole.position > sep.position) {
-  giveThese.add(sep.id);
+  giveThese.push(sep.id);
  } else if (
   !hasRole &&
   memberRoleIds.has(sep.id) &&
   obj.clientHighestRole.position > sep.position
  ) {
-  takeThese.add(sep.id);
+  takeThese.push(sep.id);
  }
 };
 
@@ -78,8 +78,8 @@ const handleDynamic = (
  row: Serialized<Prisma.roleseparator>,
  sep: Role,
  memberRoleIds: Set<string>,
- giveThese: Set<string>,
- takeThese: Set<string>,
+ giveThese: string[],
+ takeThese: string[],
 ) => {
  const roles = obj.roles.map((o) => o);
  const affectedRoles: ({ id: string; position: number } | undefined)[] = [];
@@ -105,13 +105,13 @@ const handleDynamic = (
 
  const hasRole = affectedRoles.some((role) => role && memberRoleIds.has(role.id));
  if (hasRole && !memberRoleIds.has(sep.id) && obj.clientHighestRole.position > sep.position) {
-  giveThese.add(sep.id);
+  giveThese.push(sep.id);
  } else if (
   !hasRole &&
   memberRoleIds.has(sep.id) &&
   obj.clientHighestRole.position > sep.position
  ) {
-  takeThese.add(sep.id);
+  takeThese.push(sep.id);
  }
 };
 
