@@ -21,7 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, _args: string[], enable: b
   components: [
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[0].components,
+    components: cmd.message.components[0].components.map((c) => c.toJSON()),
    },
    {
     type: Discord.ComponentType.ActionRow,
