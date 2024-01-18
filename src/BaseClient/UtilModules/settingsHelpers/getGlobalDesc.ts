@@ -35,7 +35,7 @@ export default (type: GlobalDescType | CT.AutoModEditorType, language: CT.Langua
   case CT.AutoModEditorType.Channels:
    return language.events.logs.automodRule.exemptChannels;
   default:
-   log(new Error(`Unknown Type ${type}`));
+   log(new Error(`Unknown Type ${type}`), true);
    return language.t.Unknown;
  }
 };

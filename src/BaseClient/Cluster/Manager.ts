@@ -11,7 +11,7 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  shardsPerClusters: 10,
  token: process.env.Token,
  shardArgs: process.argv,
- execArgv: ['--experimental-wasm-modules'],
+ execArgv: ['--experimental-wasm-modules', '--no-deprecation', '--no-warnings'],
  respawn: true,
  mode: 'process',
 });
@@ -45,7 +45,7 @@ rl.on('line', async (msg: string) => {
 
  if (!code.startsWith('restart')) return;
 
- log('[Cluster Manager] Restarting all Clusters...');
+ log('[Cluster Manager] Restarting all Clusters...', true);
  await Manager.recluster?.start({ restartMode: 'rolling' });
 });
 

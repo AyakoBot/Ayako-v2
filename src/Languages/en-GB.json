@@ -754,12 +754,10 @@
     "name": "You can vote again!",
     "descBot": "Your Vote time-out for `{{bot}}` has ended",
     "descGuild": "Your Vote time-out for `{{guild}}` has ended",
-    "voteBot": "[Click here to Vote again](https://top.gg/bot/{{bot}}/vote)",
-    "voteGuild": "[Click here to Vote again](https://top.gg/servers/{{guild}}/vote)",
     "voteBotButton": "Vote for {{bot}}",
     "voteGuildButton": "Vote for {{guild}}",
     "voteAyakoButton": "Vote for Ayako",
-    "disable": "Disable all Vote Reminders"
+    "reminders": "Get Vote-Reminders"
    }
   },
   "appeal": {
@@ -1248,10 +1246,12 @@
   "noChannelFound": "No Channel found, please report to the Support Server",
   "noRoleFound": "No Role found, please report to the Support Server",
   "noThreadCanBeCreated": "In this Channel, private Threads cannot be created",
-  "cantManage": "You can't manage this Member",
+  "cantManageMember": "You can't manage this Member",
   "cantManageRole": "You can't manage this Role",
   "cantManageChannel": "I can't manage this Channel",
   "cantManageInvite": "I can't manage this Invite",
+  "cantCreateInvite": "I can't create an Invite in this Channel",
+  "cantCreateInviteYou": "You can't create an Invite in this Channel",
   "commandNotFound": "Command not found",
   "timeInPast": "Time is in the Past"
  },
@@ -2252,6 +2252,7 @@
    "placeholder": "Select 1 or more Roles"
   },
   "invites": {
+   "cantDeleteInvite": "You can't delete this Invite",
    "inviteNotFound": "Invite not found",
    "deleted": "{{invite}} was deleted",
    "created": "{{invite}} was created"
@@ -2299,6 +2300,7 @@
     "author": "{{t.botName}} Info",
     "base": "Ayako {{base}}is a Discord Bot written in [TypeScript](https://www.typescriptlang.org/) using the [Discord.JS Library](https://discord.js.org/)\n\nIt is currently in Version {{version}} and is under the shepherding of <@318453143476371456> (@Lars_und_so), a Full-Time IT Specialist for Application Development from Germany.\n View [Credits](https://ayakobot.com/credits) for more Information.\n Ayako's complete Source-Code is Open-Source and available on [GitHub](https://github.com/AyakoBot).\n For more Information, visit [AyakoBot.com](https://ayakobot.com/).\n Ayako also has a [YouTube Channel](https://www.youtube.com/@AyakoBot) with Tutorials.\n \n Humble in her origins, Ayako first came to light on the Discord Server [Animekos](https://discord.gg/animekos) back in 2019.\n We owe her success to <@267835618032222209> (@Victoria), who pioneered Ayako's journey on her Server, \n and <@244126983489978368> (@PandaFish), whose proficiency in [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) served as a Blueprint for Ayako's creation.",
     "thisBase": "The Base of this Bot",
+    "clusters": "Clusters",
     "shards": "Shards",
     "uptime": "Uptime",
     "CPU": "CPU",

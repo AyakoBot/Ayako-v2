@@ -181,10 +181,15 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
   1,
  );
 
- const settings = await guild.client.util.DataBase.votesettings.findFirst({
+ const settings = await guild.client.util.DataBase.votesettings.findUnique({
   where: { uniquetimestamp: vote.relatedsetting },
  });
  if (!settings?.reminders) return;
+
+ const user = await guild.client.util.DataBase.users.findUnique({
+  where: { userid: vote.userid },
+ });
+ if (user && !user.votereminders) return;
 
  const voted =
   vote.votetype === 'bot'
@@ -201,12 +206,6 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
     },
     color: CT.Colors.Base,
     description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
-    fields: [
-     {
-      name: '\u200b',
-      value: 'username' in voted ? lan.reminder.voteBot(voted) : lan.reminder.voteGuild(voted),
-     },
-    ],
    },
   ],
   components: [
@@ -235,6 +234,18 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
           url: `https://top.gg/bot/${process.env.mainID}/vote`,
          },
         ]) as Discord.APIButtonComponent[]),
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      style: Discord.ButtonStyle.Secondary,
+      label: lan.reminder.reminders,
+      emoji: guild.client.util.emotes.enabled,
+      custom_id: 'voteReminder/disable',
+     },
     ],
    },
   ],

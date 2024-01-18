@@ -13,12 +13,12 @@ export default (message: string) => {
    })
    .then();
 
-  log(message);
+  log(message, false);
   return;
  }
 
  if (!debugEnabled) {
-  log(message);
+  log(message, false);
   return;
  }
 

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
+import { canCreateInvite } from '../../../BaseClient/UtilModules/requestHandler/channels/createInvite.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +12,24 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const temporary = cmd.options.getBoolean('temporary', false);
  const unique = cmd.options.getBoolean('unique', false);
  const reason = cmd.options.getString('reason', false);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+
+ if (!channel) {
+  cmd.client.util.errorCmd(cmd, language.errors.channelNotFound, language);
+  return;
+ }
+
+ if (!canCreateInvite(channel.id, cmd.member)) {
+  cmd.client.util.errorCmd(cmd, language.errors.cantCreateInviteYou, language);
+  return;
+ }
 
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
  if (!me) return;
- const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.invites;
 
- if (!channel?.permissionsFor(me)?.has(Discord.PermissionFlagsBits.CreateInstantInvite)) {
-  cmd.client.util.errorCmd(cmd, language.errors.cantManageChannel, language);
+ if (!canCreateInvite(channel.id, me)) {
+  cmd.client.util.errorCmd(cmd, language.errors.cantCreateInvite, language);
   return;
  }
 

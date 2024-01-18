@@ -908,6 +908,7 @@ model users {
   expires        Decimal? @db.Decimal
   accesstoken    String?  @db.Text
   ptremindersent Boolean  @db.Boolean @default(false)
+  votereminders  Boolean  @db.Boolean @default(true)
 
   @@id(userid, map: "users_pkey")
   @@index(userid)

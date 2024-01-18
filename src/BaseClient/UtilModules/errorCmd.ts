@@ -25,7 +25,7 @@ export default async (
  language: CT.Language,
  m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
- log(typeof content === 'string' ? new Error(content) : content);
+ log(typeof content === 'string' ? new Error(content) : content, false);
 
  const embed: Discord.APIEmbed = {
   author: {

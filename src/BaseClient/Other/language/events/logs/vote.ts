@@ -30,7 +30,7 @@ export default (t: CT.Language) => ({
   }),
  endReason: t.JSON.events.vote.endReason,
  reminder: {
-  name: t.JSON.events.vote.reminder.name,
+  ...t.JSON.events.vote.reminder,
   descBot: (bot: Discord.User) =>
    t.stp(t.JSON.events.vote.reminder.descBot, {
     bot: t.util.constants.standard.user(bot),
@@ -38,14 +38,6 @@ export default (t: CT.Language) => ({
   descGuild: (guild: Discord.Guild) =>
    t.stp(t.JSON.events.vote.reminder.descGuild, {
     guild: guild.name,
-   }),
-  voteBot: (bot: Discord.User) =>
-   t.stp(t.JSON.events.vote.reminder.voteBot, {
-    bot: bot.id,
-   }),
-  voteGuild: (guild: Discord.Guild) =>
-   t.stp(t.JSON.events.vote.reminder.voteGuild, {
-    guild: guild.id,
    }),
   voteBotButton: (bot: Discord.User) =>
    t.stp(t.JSON.events.vote.reminder.voteBotButton, {
@@ -55,7 +47,5 @@ export default (t: CT.Language) => ({
    t.stp(t.JSON.events.vote.reminder.voteGuildButton, {
     guild: guild.name,
    }),
-  voteAyakoButton: t.JSON.events.vote.reminder.voteAyakoButton,
-  disable: t.JSON.events.vote.reminder.disable,
  },
 });
