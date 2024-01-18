@@ -754,12 +754,10 @@
     "name": "You can vote again!",
     "descBot": "Your Vote time-out for `{{bot}}` has ended",
     "descGuild": "Your Vote time-out for `{{guild}}` has ended",
-    "voteBot": "[Click here to Vote again](https://top.gg/bot/{{bot}}/vote)",
-    "voteGuild": "[Click here to Vote again](https://top.gg/servers/{{guild}}/vote)",
     "voteBotButton": "Vote for {{bot}}",
     "voteGuildButton": "Vote for {{guild}}",
     "voteAyakoButton": "Vote for Ayako",
-    "disable": "Disable all Vote Reminders"
+    "reminders": "Get Vote-Reminders"
    }
   },
   "appeal": {
