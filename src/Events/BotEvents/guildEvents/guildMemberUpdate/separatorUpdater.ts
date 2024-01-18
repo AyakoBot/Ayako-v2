@@ -25,14 +25,14 @@ const start = async (data: Data) => {
  const takeThese: string[] = [];
 
  rows.forEach(async (row) => {
-  const separator = row.separator ? guildroles.get(row.separator) : undefined;
-  if (!separator) {
+  const sep = row.separator ? guildroles.get(row.separator) : undefined;
+  if (!sep) {
    parentPort?.postMessage(['NO_SEP', null, [row.separator]]);
    return;
   }
 
-  if (row.isvarying) dynamic(row, guildroles, separator, highestRole, roles, giveThese, takeThese);
-  else constant(row, roles, separator, giveThese, takeThese);
+  if (row.isvarying) handleDynamic(row, guildroles, sep, highestRole, roles, giveThese, takeThese);
+  else handleConstant(row, roles, sep, giveThese, takeThese);
  });
 
  const newRoles = [...roles, ...giveThese];
@@ -42,7 +42,7 @@ const start = async (data: Data) => {
  if (takeThese.length) parentPort?.postMessage(['TAKE', { userid, guildid }, takeThese]);
 };
 
-const dynamic = (
+const handleDynamic = (
  row: Serialized<Prisma.roleseparator>,
  guildroles: Discord.Collection<string, { position: number; id: string }>,
  sep: { position: number; id: string },
@@ -84,7 +84,7 @@ const dynamic = (
  else if (!has.includes(true) && roles.includes(sep.id)) takeThese.push(sep.id);
 };
 
-const constant = (
+const handleConstant = (
  row: Serialized<Prisma.roleseparator>,
  roles: string[],
  sep: { position: number; id: string },

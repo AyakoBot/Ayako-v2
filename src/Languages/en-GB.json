@@ -2893,7 +2893,7 @@
       },
       "stoprole": {
        "name": "Stop Role",
-       "desc": "The Role that marks the end of a Roles Category"
+       "desc": "The Role that marks the end of a Roles Category.\nIf none is set, the first Role in the Server will be used"
       },
       "isvarying": {
        "name": "Dynamic Roles",

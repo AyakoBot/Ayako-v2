@@ -97,7 +97,6 @@ const runJob = async (guild: Discord.Guild) => {
  const endJob = (memberCaches: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
   const index = memberCaches.members.findIndex((m) => m.member.id === memberCache.member.id);
   memberCaches.members.splice(index, 1);
-
   if (!memberCaches.members.length) {
    memberCaches.job.cancel();
    GuildCache.delete(guild.id);

@@ -5,6 +5,7 @@ import Jobs from 'node-schedule';
 import { Worker } from 'worker_threads';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as Typings from '../../../../Typings/Typings.js';
+import type { PassObject } from './separatorWorker.js';
 
 export const separatorAssigner: Map<string, Jobs.Job[]> = new Map();
 const UpdateWorker = new Worker(
@@ -16,12 +17,14 @@ const UpdateWorker = new Worker(
 UpdateWorker.on(
  'message',
  async ([text, userData, roleData]: [
-  text: string,
-  userDate: { userid: string; guildid: string } | undefined,
-  roleData: string[],
+  string,
+  { userid: string; guildid: string } | undefined,
+  string[],
  ]) => {
+  console.log('Response got', roleData);
+
   switch (text) {
-   case 'NO_SEP': {
+   case 'NO_SEP':
     client.util.DataBase.roleseparator
      .updateMany({
       where: { separator: roleData[0] },
@@ -29,7 +32,6 @@ UpdateWorker.on(
      })
      .then();
     break;
-   }
    case 'TAKE': {
     if (!userData) return;
     const guild = client.guilds.cache.get(userData.guildid);
@@ -52,19 +54,19 @@ UpdateWorker.on(
     client.util.roleManager.add(member, roleData, language.autotypes.separators);
     break;
    }
-   default: {
+   default:
     break;
-   }
   }
  },
 );
+
 UpdateWorker.on('error', (error) => {
  throw error;
 });
 
 const isWaiting = new Set();
 
-export default (member: Discord.GuildMember, oldMember: Discord.GuildMember) => {
+export default (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  if (
   oldMember.roles.cache
    .sort((a, b) => a.position - b.position)
@@ -198,21 +200,6 @@ export const oneTimeRunner = async (
  assinger(guild, members, lastRun);
 };
 
-type PassObject = {
- members: { id: string; roles: { id: string; position: number }[] }[];
- separators: {
-  separator: { id: string; position: number };
-  stoprole?: { id: string; position: number };
- }[];
- rowroles: {
-  id: string;
-  position: number;
- }[];
- roles: { id: string; position: number }[];
- highestRole: { id: string; position: number };
- clientHighestRole: { id: string; position: number };
-};
-
 const getMembers = async (
  guild: Discord.Guild,
  rows: Prisma.roleseparator[],
@@ -255,7 +242,12 @@ const getMembers = async (
    roles.push({ id: role.id, position: role.position });
   });
 
-  obj.members.push({ id: member.user.id, roles });
+  obj.members.push({
+   id: member.user.id,
+   roles,
+   giveTheseRoles: new Set(),
+   takeTheseRoles: new Set(),
+  });
  });
 
  guild.roles.cache.forEach((role) => {
