@@ -31,6 +31,9 @@ export default async (msg: Discord.Message) => {
   : undefined;
  if (!settings && msg.inGuild()) return;
 
+ const result = await run(msg.content);
+ if (!('url' in result)) return;
+
  if (!msg.inGuild()) {
   await API.channels.addMessageReaction(
    msg.channelId,
@@ -38,8 +41,6 @@ export default async (msg: Discord.Message) => {
    client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
   );
  }
- const result = await run(msg.content);
- if (!('url' in result)) return;
 
  const language = await client.util.getLanguage(msg.guildId);
 
