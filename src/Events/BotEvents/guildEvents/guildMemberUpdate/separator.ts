@@ -21,8 +21,6 @@ UpdateWorker.on(
   { userid: string; guildid: string } | undefined,
   string[],
  ]) => {
-  console.log('Response got', roleData);
-
   switch (text) {
    case 'NO_SEP':
     client.util.DataBase.roleseparator
