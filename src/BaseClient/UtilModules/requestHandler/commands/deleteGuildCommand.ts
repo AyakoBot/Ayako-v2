@@ -18,8 +18,6 @@ export default async (guild: Discord.Guild, commandId: string) => {
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then(() => {
    cache.commands.delete(guild.id, commandId);
-
-   if (cache.apis.get(guild.id)) return;
    guild.commands.cache.delete(commandId);
   })
   .catch((e) => {
