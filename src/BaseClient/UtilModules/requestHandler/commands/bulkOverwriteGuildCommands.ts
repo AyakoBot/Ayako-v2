@@ -24,6 +24,7 @@ export default async (
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
    );
    cache.commands.cache.set(guild.id, new Map());
+   guild.commands.cache.clear();
 
    parsed.forEach((p) => {
     cache.commands.cache.get(guild.id)?.set(p.id, p);
