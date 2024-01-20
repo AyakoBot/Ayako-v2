@@ -274,7 +274,8 @@ export const checkCommandPermissions = async (
  const everyonePermission = rolePermissions.find((p) => p.id === message.guildId);
  const rolePermission = rolePermissions.filter((p) => message.member?.roles.cache.has(p.id));
 
- if (rolePermission.find((p) => !p.permission)) return { can: false, debugNum: 9 };
+ if (rolePermission.find((p) => p.permission)) return { can: true, debugNum: 9 };
+ if (rolePermission.find((p) => !p.permission)) return { can: false, debugNum: 14 };
 
  if (
   !everyonePermission &&
