@@ -19,8 +19,9 @@ export default async (
 
  const language = await guild.client.util.getLanguage(guild.id);
 
- const reminder = await guild.client.util.DataBase.votes.create({
-  data: {
+ const reminder = await guild.client.util.DataBase.votes.upsert({
+  where: { guildid_userid_voted: { guildid: guild.id, userid: user.id, voted: vote.bot } },
+  create: {
    guildid: guild.id,
    userid: user.id,
    votetype: 'bot',
@@ -28,9 +29,11 @@ export default async (
    endtime: Date.now() + 43_200_000, // 12 hours
    relatedsetting: setting.uniquetimestamp,
   },
+  update: {
+   endtime: Date.now() + 43_200_000, // 12 hours
+   relatedsetting: setting.uniquetimestamp,
+  },
  });
- // TODO: upsert reminder? may be interfering with already existing reminders,
- // currently reminders are not being deleted
  if (!reminder) return;
 
  if (!allRewards?.length) {
@@ -69,6 +72,7 @@ export default async (
    .then();
  });
 
+ guild.client.util.cache.votes.delete(guild.id, vote.bot, user.id);
  guild.client.util.cache.votes.set(
   Jobs.scheduleJob(new Date(Date.now() + 43200000), () => end(reminder, guild)),
   guild.id,
