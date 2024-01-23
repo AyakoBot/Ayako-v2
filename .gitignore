@@ -6,3 +6,4 @@ src/Bot/BaseClient/Other/cache-proxy
 .env
 /rust/target
 /logs
+start.sh
