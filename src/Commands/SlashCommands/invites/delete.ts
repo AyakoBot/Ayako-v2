@@ -29,7 +29,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- if (!me) return;
 
  const channel = cmd.client.channels.cache.get(invite.channelId as string);
  if (!channel || !('permissionsFor' in channel)) {

@@ -60,9 +60,6 @@ const handleRoleUpdate = async (
 ) => {
  if (!roles.length) return;
 
- const me = await getBotMemberFromGuild(member.guild);
- if (!me) return;
-
  const roleGuild = GuildCache.get(member.guild.id);
  if (!roleGuild) {
   GuildCache.set(member.guild.id, {

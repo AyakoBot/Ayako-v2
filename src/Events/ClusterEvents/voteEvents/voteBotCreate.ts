@@ -26,11 +26,11 @@ export default async (
    userid: user.id,
    votetype: 'bot',
    voted: vote.bot,
-   endtime: Date.now() + 43_200_000, // 12 hours
+   endtime: Date.now() + 42_900_000, // 11:55 hours
    relatedsetting: setting.uniquetimestamp,
   },
   update: {
-   endtime: Date.now() + 43_200_000, // 12 hours
+   endtime: Date.now() + 42_900_000, // 11:55 hours
    relatedsetting: setting.uniquetimestamp,
   },
  });
@@ -74,7 +74,7 @@ export default async (
 
  guild.client.util.cache.votes.delete(guild.id, vote.bot, user.id);
  guild.client.util.cache.votes.set(
-  Jobs.scheduleJob(new Date(Date.now() + 43200000), () => end(reminder, guild)),
+  Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () => end(reminder, guild)),
   guild.id,
   vote.bot,
   user.id,
@@ -276,12 +276,6 @@ export const roles = async (
 ) => {
  if (!r.rewardroles?.length) return;
  if (!member) return;
-
- const me = await bot.client.util.getBotMemberFromGuild(member.guild);
- if (!me) {
-  bot.client.util.error(member.guild, new Error("I can't find myself in this guild!"));
-  return;
- }
 
  bot.client.util.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
 };

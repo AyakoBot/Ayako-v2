@@ -16,11 +16,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const lan = language.slashCommands.slowmode;
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
 
- if (!me) {
-  cmd.client.util.error(cmd.guild, new Error("I can't find myself in this guild!"));
-  return;
- }
-
  if (!canEdit(channel, { rate_limit_per_user: 1 }, me)) {
   cmd.client.util.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;

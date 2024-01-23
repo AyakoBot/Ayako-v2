@@ -52,12 +52,6 @@ export default async (
   if (await cmd.client.util.isDeleteable(cmd)) cmd.client.util.request.channels.deleteMessage(cmd);
  }
 
- const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- if (!me) {
-  cmd.client.util.error(cmd.guild, new Error("I can't find myself in this guild!"));
-  return;
- }
-
  if (
   cmd.member &&
   Number(cmd.member?.displayName.length) <= 26 &&

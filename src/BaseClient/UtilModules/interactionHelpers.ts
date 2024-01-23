@@ -16,7 +16,6 @@ import getChunks from './getChunks.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 import { request } from './requestHandler.js';
 import isDeleteable from './isDeleteable.js';
-import error from './error.js';
 import * as getChannel from './getChannel.js';
 import isEditable from './isEditable.js';
 import errorCmd from './errorCmd.js';
@@ -209,12 +208,6 @@ const reply = async (
 
   const realCmd = await request.channels.getMessage(channel, msg.id);
   if (!realCmd || 'message' in realCmd) return;
-
-  const me = await getBotMemberFromGuild(cmd.guild);
-  if (!me) {
-   error(cmd.guild, new Error('Could not find myself in this guild!'));
-   return;
-  }
 
   if (
    (await isDeleteable(realCmd as Discord.Message<true>)) &&

@@ -25,7 +25,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- if (!me) return;
  const lan = language.slashCommands.invites;
 
  if (!canCreateInvite(channel.id, me)) {

@@ -64,12 +64,6 @@ const deleteNick = async (language: CT.Language, member?: Discord.GuildMember | 
  if (!member) return;
  if (!member.nickname || !member.nickname.endsWith(' [AFK]')) return;
 
- const me = await client.util.getBotMemberFromGuild(member.guild);
- if (!me) {
-  client.util.error(member.guild, new Error("I can't find myself in this guild!"));
-  return;
- }
-
  client.util.request.guilds.editMember(
   member,
   {

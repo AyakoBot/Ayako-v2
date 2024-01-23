@@ -115,11 +115,6 @@ const canSend = async (
  language: CT.Language,
 ) => {
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- if (!me) {
-  cmd.client.util.error(cmd.guild, new Error('Cannot find self in guild'));
-  return false;
- }
-
  if (canSendMessage(channelId, { embeds: [], components: [] }, me)) {
   return true;
  }
