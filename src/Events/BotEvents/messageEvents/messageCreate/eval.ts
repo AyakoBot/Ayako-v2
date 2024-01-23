@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import ms from 'ms';
 import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
@@ -12,6 +13,8 @@ fetch.name;
 os.arch;
 // eslint-disable-next-line no-unused-expressions
 antiraid;
+// eslint-disable-next-line no-unused-expressions
+ms;
 
 const reg = new RegExp(process.env.Token ?? '', 'g');
 
