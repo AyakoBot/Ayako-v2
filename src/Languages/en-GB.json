@@ -3647,7 +3647,7 @@
    }
   },
   "execution": {
-   "unafk": {
+   "unAfk": {
     "dm": "Your AFK has been removed",
     "meNoPerms": "I can't add Roles to this User",
     "youNoPerms": "You can't remove AFK from this User",
