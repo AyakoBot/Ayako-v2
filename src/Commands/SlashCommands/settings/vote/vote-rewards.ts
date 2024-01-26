@@ -65,9 +65,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings.map((s) => ({
-  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${lan.fields.tier.name}: \`${
-   s.tier ?? language.t.None
-  }\` - ${lan.fields.linkedid.name}: ${
+  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${lan.fields.linkedid.name}: ${
    s?.linkedid ? Number(s.linkedid).toString(36) : language.t.None
   }`,
   value: `${lan.fields.rewardroles.name}: ${
@@ -124,14 +122,18 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
      inline: false,
     },
     {
-     name: lan.fields.tier.name,
-     value: embedParsers.number(settings.tier, language),
+     name: lan.fields.weekends.name,
+     value: settings.weekends
+      ? language.weekendstype[settings.weekends as keyof typeof language.weekendstype]
+      : language.t.None,
      inline: true,
     },
     {
      name: lan.fields.linkedid.name,
      value: embedParsers.string(
-      settings.linkedid ? Number(settings.linkedid).toString(36) : language.t.None,
+      settings.linkedid
+       ? client.util.util.makeInlineCode(Number(settings.linkedid).toString(36))
+       : language.t.None,
       language,
      ),
      inline: true,
@@ -185,7 +187,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings.tier, 'tier', name, Number(settings.uniquetimestamp)),
+   buttonParsers.specific(
+    language,
+    settings.weekends,
+    'weekends',
+    name,
+    Number(settings.uniquetimestamp),
+   ),
    buttonParsers.setting(
     language,
     Number(settings.linkedid).toString(36) || null,

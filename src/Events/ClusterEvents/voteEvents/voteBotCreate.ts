@@ -41,8 +41,21 @@ export default async (
   return;
  }
 
- const tier = getTier(allRewards, member);
- const rewards = allRewards.filter((r) => Number(r.tier) === tier);
+ const isWeekend = [5, 6, 0].includes(new Date().getDay());
+ const rewards = allRewards.filter(
+  (r) =>
+   r.weekends === 'everyDay' ||
+   (isWeekend ? r.weekends === 'onlyOnWeekend' : r.weekends === 'onlyOnWeekdays'),
+ );
+
+ const existingCache = guild.client.util.cache.votes.cache
+  .get(guild.id)
+  ?.get(vote.bot)
+  ?.get(user.id);
+ if (existingCache) {
+  existingCache.invoke();
+  await guild.client.util.sleep(10000);
+ }
 
  rewards.forEach((r) => {
   currency(r, user, guild);
@@ -72,7 +85,6 @@ export default async (
    .then();
  });
 
- guild.client.util.cache.votes.delete(guild.id, vote.bot, user.id);
  guild.client.util.cache.votes.set(
   Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () => end(reminder, guild)),
   guild.id,
@@ -81,24 +93,6 @@ export default async (
  );
 
  doAnnouncement(setting, user, bot, language, rewards);
-};
-
-export const getTier = (rewards: Prisma.voterewards[], member: Discord.GuildMember | undefined) => {
- if (!member) return 1;
-
- const doesntHave = rewards
-  .filter((r) => r.rewardroles?.length)
-  .sort((a, b) => Number(a.tier) - Number(b.tier))
-  .find((r) => !member.roles.cache.hasAny(...(r.rewardroles as string[])));
-
- const highestTier = Math.max(...rewards.map((r) => Number(r.tier)));
-
- if (doesntHave) {
-  if (Number(doesntHave.tier) > highestTier) return Number(highestTier);
-  return Number(doesntHave.tier);
- }
-
- return 1;
 };
 
 export const doAnnouncement = async (

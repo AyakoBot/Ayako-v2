@@ -15,11 +15,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.announcementchannel.name}: ${
-   s.announcementchannel
-    ? cmd.guild?.channels.cache.get(s.announcementchannel)?.name ?? language.t.None
-    : language.t.None
-  }`,
+  name: `${lan.fields.name.name}: ${s.name ?? language.t.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

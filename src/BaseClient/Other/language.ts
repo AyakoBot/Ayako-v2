@@ -74,6 +74,7 @@ export default class Language {
  scopes: typeof this.JSON.scopes;
  errors: typeof this.JSON.errors;
  lvlupmodes: typeof this.JSON.lvlupmodes;
+ weekendstype: typeof this.JSON.weekendstype;
 
  leveling: ReturnType<typeof leveling>;
  time: ReturnType<typeof time>;
@@ -123,6 +124,7 @@ export default class Language {
   this.scopes = this.JSON.scopes;
   this.errors = this.JSON.errors;
   this.lvlupmodes = this.JSON.lvlupmodes;
+  this.weekendstype = this.JSON.weekendstype;
 
   this.leveling = leveling(this);
   this.time = time(this);

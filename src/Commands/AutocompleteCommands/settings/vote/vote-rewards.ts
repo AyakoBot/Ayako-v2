@@ -15,9 +15,22 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => ({
-  name: `${lan.fields.tier.name}: ${s.tier ?? language.t.None} - ${lan.fields.linkedid.name}: ${
-   s?.linkedid ? Number(s.linkedid).toString(36) : language.t.None
-  }`,
+  name: `${lan.fields.linkedid.name}: ${
+   s.linkedid ? Number(s.linkedid).toString(36) : language.t.None
+  } - ${[
+   s.rewardxp ? `${s.rewardxp}XP` : null,
+   s.rewardxpmultiplier ? `${s.rewardxpmultiplier}x` : null,
+   s.rewardcurrency ? `${s.rewardcurrency} 💶` : null,
+   s.rewardroles.length
+    ? `${lan.fields.rewardroles.name}: ${s.rewardroles
+       .slice(0, 1)
+       .map((r) => cmd.guild.roles.cache.get(r)?.name ?? '-')}${
+       s.rewardroles.length > 1 ? ` + ${s.rewardroles.length - 1}` : ''
+      }`
+    : null,
+  ]
+   .filter((u): u is string => !!u)
+   .join(' - ')}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };

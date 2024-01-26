@@ -54,6 +54,7 @@ export enum EditorTypes {
  Commands = 'commands',
  Questions = 'questions',
  Position = 'position',
+ WeekendsType = 'weekends-type',
 }
 
 export const GlobalType = {

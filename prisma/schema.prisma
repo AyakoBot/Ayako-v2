@@ -66,6 +66,12 @@ enum ShopType {
   message
 }
 
+enum WeekendType {
+  onlyOnWeekend
+  onlyOnWeekdays
+  everyDay
+}
+
 model afk {
   userid  String  @db.VarChar
   text    String?
@@ -941,15 +947,15 @@ model verification {
 
 
 model voterewards {
-  guildid            String   @db.VarChar
-  uniquetimestamp    Decimal  @db.Decimal
-  tier               Decimal? @db.Decimal
-  linkedid           Decimal? @db.Decimal
-  rewardroles        String[] @db.VarChar
-  rewardxpmultiplier Decimal? @db.Decimal
-  rewardcurrency     Decimal? @db.Decimal
-  rewardxp           Decimal? @db.Decimal
-  active             Boolean  @db.Boolean @default(false)
+  guildid            String      @db.VarChar
+  uniquetimestamp    Decimal     @db.Decimal
+  linkedid           Decimal?    @db.Decimal
+  rewardroles        String[]    @db.VarChar
+  rewardxpmultiplier Decimal?    @db.Decimal
+  rewardcurrency     Decimal?    @db.Decimal
+  rewardxp           Decimal?    @db.Decimal
+  active             Boolean     @db.Boolean @default(false)
+  weekends           WeekendType             @default(everyDay)
 
   @@id(uniquetimestamp, map: "voterewards_pkey")
   @@index([guildid, uniquetimestamp])
@@ -987,6 +993,7 @@ model votesappliedrewards {
 
 model votesettings {
   uniquetimestamp     Decimal  @db.Decimal
+  name                String?  @db.Text
   guildid             String   @db.VarChar
   token               String?  @db.Text
   reminders           Boolean  @db.Boolean @default(false)

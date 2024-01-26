@@ -1096,6 +1096,11 @@
   "reactions": "Reactions",
   "silent": "Silent"
  },
+ "weekendstype": {
+  "onlyOnWeekend": "Only applied on Weekends (Fr, Sa, Su)",
+  "onlyOnWeekdays": "Only applied on Weekdays",
+  "everyDay": "Every Day"
+ },
  "punishments": {
   "warn": "Warn",
   "tempmute": "Temp-Mute",
@@ -2456,11 +2461,8 @@
     },
     "vote-rewards": {
      "name": "Vote Rewards",
+     "desc": "If 2 (or more) Vote-Rewards fall on the same Day, they are combined",
      "fields": {
-      "tier": {
-       "name": "Tier",
-       "desc": "The Reward Tier"
-      },
       "rewardxp": {
        "name": "Reward XP",
        "desc": "Amount of XP Rewarded"
@@ -2476,6 +2478,10 @@
       "rewardroles": {
        "name": "Reward Roles",
        "desc": "Roles Rewarded (will be removed when the User can Vote again)"
+      },
+      "weekends": {
+       "name": "Weekends-Type",
+       "desc": "The Type of Days this Reward applies to"
       }
      }
     },
@@ -3144,6 +3150,10 @@
       "announcementchannel": {
        "name": "Announcement Channel",
        "desc": "The Channel to announce Votes in"
+      },
+      "name": {
+       "name": "Name",
+       "desc": "The Name of the Vote\nThis has no effect on the Vote itself, it's just for you to keep track of your Votes"
       }
      }
     },
@@ -3889,7 +3899,6 @@
   "Members": "Members",
   "Role": "Role",
   "Roles": "Roles",
-  "Tier": "Tier",
   "Channel": "Channel",
   "Emoji": "Emoji",
   "User": "User",
@@ -3943,6 +3952,7 @@
   "regionsName": "Regions",
   "defaultAutoArchiveDurationName": "Default Auto-Archive Duration",
   "defaultForumLayoutName": "Forum Layout Type",
-  "defaultSortOrderName": "Default Sort Order"
+  "defaultSortOrderName": "Default Sort Order",
+  "Tier": "Tier"
  }
 }

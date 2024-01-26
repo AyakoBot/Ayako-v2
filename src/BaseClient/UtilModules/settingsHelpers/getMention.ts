@@ -19,7 +19,8 @@ export type MentionTypes =
  | CT.EditorTypes.SettingLink
  | CT.EditorTypes.Embed
  | CT.EditorTypes.Questions
- | CT.EditorTypes.LvlUpMode;
+ | CT.EditorTypes.LvlUpMode
+ | CT.EditorTypes.WeekendsType;
 
 /**
  * Returns a mention string based on the given type and value.
@@ -68,6 +69,8 @@ export default async (
    return language.answertypes[value as keyof typeof language.answertypes];
   case CT.EditorTypes.LvlUpMode:
    return language.lvlupmodes[value as keyof typeof language.lvlupmodes];
+  case CT.EditorTypes.WeekendsType:
+   return language.weekendstype[value as keyof typeof language.weekendstype];
   default:
    return value;
  }
