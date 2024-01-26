@@ -57,7 +57,9 @@ export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.
   case Discord.ChannelType.GuildMedia:
    return 'MediaChannel';
   default:
-   // @ts-ignore
-   throw new Error(`Unknown Channel Type: ${channel.type} / ${Discord.ChannelType[channel.type]}`);
+   throw new Error(
+    // @ts-ignore
+    `Unknown Channel Type: ${channel?.type} / ${channel ? Discord.ChannelType[channel.type] : ''}`,
+   );
  }
 };
