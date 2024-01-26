@@ -115,6 +115,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
+    name: lan.fields.name.name,
+    value: embedParsers.string(settings?.name, language),
+    inline: true,
+   },
+   {
     name: lan.fields.reminders.name,
     value: embedParsers.boolean(settings?.reminders, language),
     inline: true,
@@ -155,6 +160,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
+   buttonParsers.specific(
+    language,
+    settings?.name,
+    'name',
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
    buttonParsers.boolean(
     language,
     settings?.reminders,
@@ -170,6 +182,11 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     Number(settings?.uniquetimestamp),
     CT.EditorTypes.Channel,
    ),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
    buttonParsers.specific(
     language,
     settings?.token,

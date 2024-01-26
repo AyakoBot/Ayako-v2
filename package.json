@@ -1,6 +1,6 @@
 {
  "type": "module",
- "version": "2.0.34",
+ "version": "2.0.35",
  "scripts": {
   "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings ./dist/index.js",
   "build": "npx tsc",
@@ -12,7 +12,7 @@
  "dependencies": {
   "@discordjs/core": "^1.1.1",
   "@discordjs/rest": "^2.2.0",
-  "@prisma/client": "5.7.1",
+  "@prisma/client": "5.8.1",
   "@total-typescript/ts-reset": "^0.5.1",
   "@types/lodash": "^4.14.202",
   "@types/lodash.merge": "^4.6.9",
@@ -74,7 +74,7 @@
   "eslint-plugin-json": "^3.1.0",
   "eslint-plugin-jsx-a11y": "^6.8.0",
   "eslint-plugin-prettier": "^5.1.2",
-  "prisma": "^5.7.1",
+  "prisma": "^5.8.1",
   "source-map-support": "^0.5.21",
   "typescript": "^5.3.3"
  },

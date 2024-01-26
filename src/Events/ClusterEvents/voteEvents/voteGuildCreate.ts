@@ -2,7 +2,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as CT from '../../../Typings/Typings.js';
-import { doAnnouncement, getTier, end, currency, xp, xpmultiplier } from './voteBotCreate.js';
+import { doAnnouncement, end, currency, xp, xpmultiplier } from './voteBotCreate.js';
 
 export default async (
  vote: CT.TopGGGuildVote,
@@ -33,8 +33,21 @@ export default async (
   return;
  }
 
- const tier = getTier(allRewards, member);
- const rewards = allRewards.filter((r) => Number(r.tier) === tier);
+ const isWeekend = [5, 6, 0].includes(new Date().getDay());
+ const rewards = allRewards.filter(
+  (r) =>
+   r.weekends === 'everyDay' ||
+   (isWeekend ? r.weekends === 'onlyOnWeekend' : r.weekends === 'onlyOnWeekdays'),
+ );
+
+ const existingCache = guild.client.util.cache.votes.cache
+  .get(guild.id)
+  ?.get(vote.guild)
+  ?.get(user.id);
+ if (existingCache) {
+  existingCache.invoke();
+  await guild.client.util.sleep(10000);
+ }
 
  rewards.forEach((r) => {
   currency(r, user, guild);

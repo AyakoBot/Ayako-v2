@@ -268,13 +268,14 @@ export default {
   token: CT.EditorTypes.Token,
   reminders: CT.EditorTypes.Boolean,
   announcementchannel: CT.EditorTypes.Channel,
+  name: CT.EditorTypes.String,
  },
  [CT.SettingNames.VoteRewards]: {
-  tier: CT.EditorTypes.Number,
   rewardxp: CT.EditorTypes.Number,
   rewardxpmultiplier: CT.EditorTypes.Number,
   rewardcurrency: CT.EditorTypes.Number,
   rewardroles: CT.EditorTypes.Roles,
+  weekends: CT.EditorTypes.WeekendsType,
  },
  [CT.SettingNames.ReactionRoleSettings]: {
   anyroles: CT.EditorTypes.Roles,
