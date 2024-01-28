@@ -12,7 +12,7 @@ export default async (
  setting: Prisma.votesettings,
 ) => {
  const allRewards = await guild.client.util.DataBase.voterewards.findMany({
-  where: { guildid: guild.id },
+  where: { guildid: guild.id, linkedid: setting.uniquetimestamp },
  });
  const language = await guild.client.util.getLanguage(guild.id);
 

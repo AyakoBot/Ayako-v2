@@ -11,7 +11,7 @@ export default async (
  setting: Prisma.votesettings,
 ) => {
  const allRewards = await guild.client.util.DataBase.voterewards.findMany({
-  where: { guildid: guild.id },
+  where: { guildid: guild.id, linkedid: setting.uniquetimestamp },
  });
 
  const bot = await guild.client.util.getUser(vote.bot).catch(() => undefined);
@@ -107,43 +107,37 @@ export const doAnnouncement = async (
  const channel = await user.client.util.getChannel.guildTextChannel(settings.announcementchannel);
  if (!channel) return;
 
- const currencyRewards = rewards?.filter((r) => !!r.rewardcurrency);
+ const currencyRewards = rewards
+  ?.filter((r) => !!r.rewardcurrency)
+  ?.map((r) => Number(r.rewardcurrency))
+  .reduce((b, a) => b + a, 0);
  const lan = language.events.vote;
 
- const rewardText = rewards?.length
-  ? `${lan.reward(
-     rewards
-      .map((r, i) => {
-       switch (i) {
-        case 0 && r.rewardroles?.length:
-         return r.rewardroles?.map((roleID) => `<@&${roleID}>`).join(', ');
-        case 1:
-         return `${r.rewardxp} XP`;
-        case 2:
-         return `${r.rewardxpmultiplier}x ${lan.xpmultiplier}`;
-        default:
-         return null;
-       }
-      })
-      .filter((r): r is string => !!r)
-      .join(` + `),
-    )}${
-     currencyRewards?.length
-      ? ` + ${currencyRewards
-         ?.map((r) => Number(r.rewardcurrency))
-         .reduce((b, a) => b + a, 0)} ${user.client.util.constants.standard.getEmote(
-         user.client.util.emotes.book,
-        )}`
-      : ''
-    }`
-  : '';
+ const rewardText = rewards
+  .map((r) =>
+   [
+    r.rewardroles
+     ? lan.tempReward(r.rewardroles.map((roleID) => `<@&${roleID}>`).join(', '))
+     : null,
+    r.rewardxpmultiplier ? lan.tempReward(`${r.rewardxpmultiplier}x ${lan.xpmultiplier}`) : null,
+    r.rewardxp ? `${r.rewardxp} XP` : null,
+    currencyRewards
+     ? `${currencyRewards} ${user.client.util.constants.standard.getEmote(
+        user.client.util.emotes.book,
+       )}`
+     : null,
+   ]
+    .filter((u): u is string => !!u)
+    .join(' + '),
+  )
+  .join('\n');
 
  user.client.util.send(channel, {
   content: `${
    'username' in voted
     ? lan.bot(user, voted, `https://top.gg/bot/${voted.id}/vote`)
     : lan.guild(user, voted, `https://top.gg/servers/${voted.id}/vote`)
-  }${rewardText}`,
+  }${rewardText.length ? `${lan.rewards}\n${rewardText}` : ''}`,
  });
 };
 

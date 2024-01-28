@@ -15,8 +15,8 @@ export default (t: CT.Language) => ({
    guild: guild.name,
    link,
   }),
- reward: (reward: string) =>
-  t.stp(t.JSON.events.vote.reward, {
+ tempReward: (reward: string) =>
+  t.stp(t.JSON.events.vote.tempReward, {
    reward,
   }),
  xpmultiplier: t.JSON.events.vote.xpmultiplier,
