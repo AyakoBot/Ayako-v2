@@ -13,4 +13,22 @@ export default {
    link: 'https://youtu.be/hrLPGVnAEeI',
   },
  ],
+ [CT.SettingNames.ButtonRoleSettings]: [
+  {
+   name: 'Tutorial for Button Roles',
+   link: 'https://youtu.be/hrLPGVnAEeI',
+  },
+ ],
+ [CT.SettingNames.VoteRewards]: [
+  {
+   name: 'Tutorial for Vote Rewards',
+   link: 'https://youtu.be/7GKmsirsf0M',
+  },
+ ],
+ [CT.SettingNames.Vote]: [
+  {
+   name: 'Tutorial for Vote Rewards',
+   link: 'https://youtu.be/7GKmsirsf0M',
+  },
+ ],
 };
