@@ -1,14 +1,16 @@
+import * as CT from '../../../Typings/Typings.js';
+
 export default {
- welcome: [
-  {
-   name: "How to restore your Server's Welcome Embed after v1.5 release",
-   link: 'https://www.youtube.com/watch?v=yLKgn-Ecduc',
-  },
- ],
- separators: [
+ [CT.SettingNames.Separators]: [
   {
    name: 'Tutorial for Separators / Category Roles',
-   link: 'https://www.youtube.com/watch?v=NysN4BjXhA4',
+   link: 'https://youtu.be/2q9DjhZMA_Y',
+  },
+ ],
+ [CT.SettingNames.ButtonRoles]: [
+  {
+   name: 'Tutorial for Button Roles',
+   link: 'https://youtu.be/hrLPGVnAEeI',
   },
  ],
 };
