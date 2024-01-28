@@ -10,11 +10,11 @@ export default async () => {
   const guild = client.guilds.cache.get(s.guildid);
   if (!guild) return;
 
-  separator.separatorAssigner.get(guild.id)?.forEach((job) => {
-   job.cancel();
+  client.util.cache.separatorAssigner.get(guild.id)?.forEach((job) => {
+   job?.cancel();
   });
 
-  separator.separatorAssigner.delete(guild.id);
+  client.util.cache.separatorAssigner.delete(guild.id);
 
   client.util.files.jobs.scheduleJob(new Date(Date.now() + 300000), () => {
    separator.oneTimeRunner(undefined, guild);

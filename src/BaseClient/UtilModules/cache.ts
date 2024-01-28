@@ -81,6 +81,7 @@ const cache: {
  antiraid: Map<string, Set<Discord.GuildMember>>;
  antiraidQueued: Set<string>;
  enableInvites: Map<string, Jobs.Job>;
+ separatorAssigner: Map<string, Jobs.Job[]>;
 } = {
  // Discord Cache
  invites,
@@ -128,6 +129,7 @@ const cache: {
  antiraid: new Map(),
  antiraidQueued: new Set(),
  enableInvites: new Map(),
+ separatorAssigner: new Map(),
 };
 
 export default cache;
