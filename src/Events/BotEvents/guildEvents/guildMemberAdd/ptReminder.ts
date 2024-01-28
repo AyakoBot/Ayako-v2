@@ -11,9 +11,7 @@ export default async (member: Discord.GuildMember) => {
  if (!guildsettings?.ptreminderenabled) return;
 
  const user = await member.client.util.DataBase.users.findUnique({
-  where: {
-   userid: member.id,
-  },
+  where: { userid: member.id },
  });
  if (user?.ptremindersent) return;
 
@@ -49,7 +47,7 @@ export default async (member: Discord.GuildMember) => {
      },
      {
       name: 'Opt-out',
-      value: "You can opt-out of Ayako's Features by leaving every Mutual Server with Ayako",
+      value: "You can opt-out of Ayako's Features by leaving every mutual Server with Ayako",
       inline: false,
      },
      {
@@ -81,7 +79,7 @@ export default async (member: Discord.GuildMember) => {
  if (!dm) return;
 
  API.channels.editMessage(dm.channelId, dm.id, {
-  content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/gyGnkTJSyF',
+  content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
  });
 
  member.client.util.DataBase.users
