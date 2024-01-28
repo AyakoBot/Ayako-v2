@@ -114,14 +114,14 @@ export const doAnnouncement = async (
  const lan = language.events.vote;
 
  const rewardText = rewards
-  .map((r) =>
+  .map((r, i) =>
    [
     r.rewardroles
      ? lan.tempReward(r.rewardroles.map((roleID) => `<@&${roleID}>`).join(', '))
      : null,
     r.rewardxpmultiplier ? lan.tempReward(`${r.rewardxpmultiplier}x ${lan.xpmultiplier}`) : null,
     r.rewardxp ? `${r.rewardxp} XP` : null,
-    currencyRewards
+    currencyRewards && i === 0
      ? `${currencyRewards} ${user.client.util.constants.standard.getEmote(
         user.client.util.emotes.book,
        )}`
@@ -137,7 +137,7 @@ export const doAnnouncement = async (
    'username' in voted
     ? lan.bot(user, voted, `https://top.gg/bot/${voted.id}/vote`)
     : lan.guild(user, voted, `https://top.gg/servers/${voted.id}/vote`)
-  }${rewardText.length ? `${lan.rewards}\n${rewardText}` : ''}`,
+  }${rewardText.length ? `\n${lan.rewards}\n${rewardText}` : ''}`,
  });
 };
 
