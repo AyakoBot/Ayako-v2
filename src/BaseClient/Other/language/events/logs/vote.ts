@@ -19,7 +19,6 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.vote.tempReward, {
    reward,
   }),
- xpmultiplier: t.JSON.events.vote.xpmultiplier,
  botReason: (bot: Discord.User) =>
   t.stp(t.JSON.events.vote.botReason, {
    bot: bot.username,
@@ -28,7 +27,6 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.vote.guildReason, {
    guild: guild.name,
   }),
- endReason: t.JSON.events.vote.endReason,
  reminder: {
   ...t.JSON.events.vote.reminder,
   descBot: (bot: Discord.User) =>
