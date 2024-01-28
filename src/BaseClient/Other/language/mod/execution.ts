@@ -33,5 +33,5 @@ export default (t: CT.Language) => ({
  tempChannelBanAdd: tempChannelBanAdd(t),
  tempMuteAdd: tempMuteAdd(t),
  warnAdd: warnAdd(t),
- unafk: unafk(t),
+ unAfk: unafk(t),
 });
