@@ -5,7 +5,7 @@ import cache from '../UtilModules/cache.js';
 import error from '../UtilModules/error.js';
 import fetchAllEventSubscribers from '../UtilModules/fetchAllEventSubscribers.js';
 import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
-import deleteThread from '../UtilModules/mod/deleteThread.js';
+import deleteThread from '../UtilModules/deleteNotificationThread.js';
 import { request } from '../UtilModules/requestHandler.js';
 import DataBase from '../Bot/DataBase.js';
 

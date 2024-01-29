@@ -15,7 +15,7 @@ export default async (member: Discord.GuildMember) => {
  });
  if (user?.ptremindersent) return;
 
- const dm = await member.client.util.send(member.user, {
+ const message = await member.client.util.notificationThread(member, {
   embeds: [
    {
     author: {
@@ -29,20 +29,9 @@ export default async (member: Discord.GuildMember) => {
      `**Privacy Policy** https://ayakobot.com/privacy\nAyako will never share or store sensitive Data or Information about you outside of Discord and outside the Discord Server you sent them in.`,
     fields: [
      {
-      name: 'Premium',
-      value:
-       "Ayako's Service is completely free and will stay free.\nHowever, I do appreciate\nDonations on https://www.patreon.com/Lars_und_so and\nVotes on https://top.gg/bot/650691698409734151/vote",
-      inline: false,
-     },
-     {
       name: 'Support',
       value:
-       'If you have Questions or would like your Stored Data to be deleted, join the Discord Server linked to this Message and use this Channel: <#827302309368561715>',
-      inline: false,
-     },
-     {
-      name: 'Invite',
-      value: `You can Invite Ayako to your Server using this link: ${member.client.util.constants.standard.invite}`,
+       'If you have Questions or would like your Stored Data to be deleted, join the Discord Server linked to this Message and use this Channel: <#996850314357522452>',
       inline: false,
      },
      {
@@ -71,15 +60,30 @@ export default async (member: Discord.GuildMember) => {
       style: Discord.ButtonStyle.Link,
       url: 'https://discord.gg/euTdctganf',
      },
+     {
+      type: Discord.ComponentType.Button,
+      label: 'Invite Ayako',
+      emoji: member.client.util.emotes.plusBG,
+      style: Discord.ButtonStyle.Link,
+      url: member.client.util.constants.standard.invite,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      label: 'Vote for Ayako',
+      emoji: member.client.util.emotes.ayakoLove2,
+      style: Discord.ButtonStyle.Link,
+      url: `https://top.gg/bot/${member.client.user.id}/vote`,
+     },
     ],
    },
   ],
   content: 'Ayako Terms and Privacy Notice',
  });
- if (!dm) return;
 
- API.channels.editMessage(dm.channelId, dm.id, {
-  content: 'This Reminder will only be sent to you __once__\nhttps://discord.gg/euTdctganf',
+ if (!message) return;
+
+ API.channels.editMessage(message.channelId, message.id, {
+  content: 'This Reminder will only be sent to you __once__ [⠀](https://discord.gg/euTdctganf)',
  });
 
  member.client.util.DataBase.users

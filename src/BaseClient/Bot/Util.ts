@@ -3,14 +3,15 @@ import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
 import constants from '../Other/constants.js';
-import firstGuildInteraction from '../Other/firstGuildInteraction.js';
 import firstChannelInteraction from '../Other/firstChannelInteraction.js';
+import firstGuildInteraction from '../Other/firstGuildInteraction.js';
 
 import arrayBufferToBuffer from '../UtilModules/arrayBufferToBuffer.js';
 import arrayEquals from '../UtilModules/arrayEquals.js';
 import bitUniques from '../UtilModules/bitUniques.js';
 import cache from '../UtilModules/cache.js';
 import channelRuleCalc from '../UtilModules/channelRuleCalc.js';
+import deleteNotificationThread from '../UtilModules/deleteNotificationThread.js';
 import disableComponents from '../UtilModules/disableComponents.js';
 import dynamicToEmbed from '../UtilModules/dynamicToEmbed.js';
 import emotes from '../UtilModules/emotes.js';
@@ -73,6 +74,7 @@ import mergeLogging from '../UtilModules/mergeLogging.js';
 import mod from '../UtilModules/mod.js';
 import moment from '../UtilModules/moment.js';
 import notYours from '../UtilModules/notYours.js';
+import notificationThread from '../UtilModules/notificationThread.js';
 import permCalc from '../UtilModules/permCalc.js';
 import permError from '../UtilModules/permError.js';
 import refreshToken from '../UtilModules/refreshToken.js';
@@ -111,6 +113,8 @@ const logFiles = {
 };
 
 interface Util {
+ deleteNotificationThread: typeof deleteNotificationThread;
+ notificationThread: typeof notificationThread;
  DataBase: typeof DataBase;
  arrayBufferToBuffer: typeof arrayBufferToBuffer;
  arrayEquals: typeof arrayEquals;
@@ -206,6 +210,8 @@ interface Util {
 }
 
 const util: Util = {
+ deleteNotificationThread,
+ notificationThread,
  DataBase,
  arrayBufferToBuffer,
  arrayEquals,

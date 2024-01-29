@@ -1,13 +1,8 @@
 import * as Discord from 'discord.js';
-import * as Jobs from 'node-schedule';
 import * as CT from '../../../Typings/Typings.js';
 
-import constants from '../../Other/constants.js';
-import cache from '../cache.js';
 import emotes from '../emotes.js';
-import { request } from '../requestHandler.js';
 import send from '../send.js';
-import deleteThread from './deleteThread.js';
 
 export default async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
@@ -55,30 +50,8 @@ export default async <T extends CT.ModTypes>(
   return;
  }
 
- const thread = await request.channels.createThread(options.guild.rulesChannel, {
-  type: Discord.ChannelType.PrivateThread,
-  invitable: false,
-  name: constants.standard.getEmote(emotes.warning),
- });
+ const member = options.guild.members.cache.get(options.target.id);
+ if (!member) return;
 
- if ('message' in thread) return;
-
- await request.threads.addMember(thread, options.target.id);
- await send(thread, {
-  embeds: [embed],
-  content: `<@${options.target.id}>`,
-  components: appeal,
-  allowed_mentions: {
-   users: [options.target.id],
-  },
- });
- await request.channels.edit(thread, { locked: true });
-
- cache.deleteThreads.set(
-  Jobs.scheduleJob(new Date(Date.now() + (thread.autoArchiveDuration ?? 60) * 60 * 1000), () => {
-   deleteThread(options.guild, thread.id);
-  }),
-  options.guild.id,
-  thread.id,
- );
+ options.guild.client.util.notificationThread(member, { embeds: [embed], components: appeal });
 };

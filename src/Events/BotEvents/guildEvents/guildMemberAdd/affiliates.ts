@@ -20,40 +20,18 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const reiko = async (member: Discord.GuildMember) => {
- const channel = await member.client.util.request.users.createDM(
-  member.guild,
-  member.user.id,
-  member.client,
- );
- if ('message' in channel) return;
-
- member.client.util.request.channels.sendMessage(
-  member.guild,
-  channel.id,
-  {
-   content: `<:RC_Booster:976508507685814313> Check out our lovely Partners:
+ member.client.util.notificationThread(member, {
+  content: `<:RC_Booster:976508507685814313> Check out our lovely Partners:
 
 https://discord.gg/animekos?ref=reiko
 https://discord.gg/twitch?ref=reiko
 https://discord.gg/pocky?ref=reiko`,
-  },
-  member.client,
- );
+ });
 };
 
 const pockytime = async (member: Discord.GuildMember) => {
- const channel = await member.client.util.request.users.createDM(
-  member.guild,
-  member.user.id,
-  member.client,
- );
- if ('message' in channel) return;
-
- member.client.util.request.channels.sendMessage(
-  member.guild,
-  channel.id,
-  {
-   content: `୨  Welcome! Here's some of our partnered discord servers <3
+ member.client.util.notificationThread(member, {
+  content: `୨  Welcome! Here's some of our partnered discord servers <3
 
 ⠀    ୨  -  -  -  -  ︵ ︵ ︵
 ⠀ ⠀\`🍰\`┊[Bee's Nest ( !! HUGE VOUCH !! )]( https://discord.gg/honeybee )
@@ -65,17 +43,11 @@ const pockytime = async (member: Discord.GuildMember) => {
 ⠀ ⠀\`🍰\`︰[Animekos]( https://discord.gg/animekos?ref=pockytime )
 
 ・୨・┈┈┈┈・୨୧・┈┈┈┈・୧・`,
-  },
-  member.client,
- );
+ });
 };
 
 const animekos = async (member: Discord.GuildMember) => {
- // @ts-ignore
- const channel = (await member.createDM()) as Discord.DMChannel;
-
- // @ts-ignore
- channel.send({
+ member.client.util.notificationThread(member, {
   content: `<:AMayakoLove:874102206176034826> Check out our lovely Partners:
   
 https://discord.gg/WGRbUwqkwG?ref=animekos
@@ -86,12 +58,8 @@ https://discord.gg/pocky?ref=animekos`,
 };
 
 const gameverse = async (member: Discord.GuildMember) => {
- // @ts-ignore
- const channel = (await member.createDM()) as Discord.DMChannel;
-
- // @ts-ignore
- channel.send({
+ member.client.util.notificationThread(member, {
   content: `<:AMayakoLove:874102206176034826> Check out our lovely Sister Server:
-https://discord.gg/animekos?ref=gameverse`,
+ https://discord.gg/animekos?ref=gameverse`,
  });
 };

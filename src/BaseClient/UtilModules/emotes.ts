@@ -74,6 +74,12 @@ export default {
   id: '1155535797395673188',
   animated: false,
  },
+ ayakoLove2: {
+  link: 'https://cdn.discordapp.com/emojis/874102206176034826.png',
+  name: 'AMayakoLove',
+  id: '874102206176034826',
+  animated: false,
+ },
  userFlags: {
   ActiveDeveloper: { name: 'ActiveDeveloper', id: '1155170977928454235', animated: false },
   DiscordEmployee: { name: 'DiscordStaff', id: '1155174136377778247', animated: false },

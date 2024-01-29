@@ -189,7 +189,7 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
    : guild.client.guilds.cache.get(guild.id);
  if (!voted) return;
 
- guild.client.util.send(member.user, {
+ guild.client.util.notificationThread(member, {
   embeds: [
    {
     author: {
