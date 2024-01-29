@@ -1,6 +1,5 @@
 import { DjsDiscordClient } from 'discord-hybrid-sharding';
 import { scheduleJob } from 'node-schedule';
-import pack from '../../../package.json' assert { type: 'json' };
 import Manager from './Manager.js';
 
 scheduleJob('0 */10 * * * *', async () => {
@@ -28,6 +27,15 @@ https://ayakobot.com
 https://support.ayakobot.com`,
    });
   },
-  { context: { guilds: guildCount, users: userCount, packVer: pack.version }, cluster: 0 },
+  {
+   context: {
+    guilds: guildCount,
+    users: userCount,
+    packVer: (
+     await import(`../../../package.json?nonce=${Date.now()}`, { assert: { type: 'json' } })
+    ).version,
+   },
+   cluster: 0,
+  },
  );
 });
