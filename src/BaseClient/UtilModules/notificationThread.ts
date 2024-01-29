@@ -60,8 +60,6 @@ export default async (
  const message = await target.client.util.send(thread, payload);
  if (message && 'message' in message) return undefined;
 
- target.client.util.request.channels.edit(thread, { locked: true });
-
  return (message as Discord.Message<true> | void | undefined) || undefined;
 };
 

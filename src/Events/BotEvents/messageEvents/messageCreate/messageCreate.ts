@@ -13,6 +13,7 @@ import other from './other.js';
 import revengePing from './revengePing.js';
 import stickyMessage from './stickyMessage.js';
 import tta from './tta.js';
+import thread from './thread.js';
 
 import dmLog from './dmLog.js';
 
@@ -31,6 +32,7 @@ export default async (msg: Discord.Message) => {
   newlines(msg);
   disboard(msg);
   antispam(msg);
+  thread(msg);
  } else {
   dmLog(msg);
  }
