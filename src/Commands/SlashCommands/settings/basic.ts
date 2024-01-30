@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
 import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
+import commands from '../../../SlashCommands/index.js';
 import * as CT from '../../../Typings/Typings.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
@@ -331,30 +332,37 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     return;
    }
 
-   client.util.send(
-    { id: '1024968281465040957', guildId: '669893888856817665' },
-    {
-     content: `New Custom Client <@318453143476371456>`,
-     allowed_mentions: {
-      users: ['318453143476371456'],
-     },
-     components: [
-      {
-       type: Discord.ComponentType.ActionRow,
-       components: [
-        {
-         type: Discord.ComponentType.Button,
-         style: Discord.ButtonStyle.Link,
-         label: 'Invite',
-         url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
-        },
-       ],
-      },
-     ],
-    },
+   const webhook = await client.fetchWebhook(
+    process.env.alertWebhookId as string,
+    process.env.alertWebhookToken as string,
    );
 
+   webhook.send({
+    content: `New Custom Client <@${process.env.ownerID}>`,
+    allowedMentions: {
+     users: [process.env.ownerID as string],
+    },
+    components: [
+     {
+      type: Discord.ComponentType.ActionRow,
+      components: [
+       {
+        type: Discord.ComponentType.Button,
+        style: Discord.ButtonStyle.Link,
+        label: 'Invite',
+        url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
+       },
+      ],
+     },
+    ],
+   });
+
    const language = new Lang('en-GB');
+
+   await client.util.request.commands.bulkOverwriteGlobalCommands(
+    guild,
+    Object.values(commands.public).map((c) => c.toJSON()),
+   );
 
    const existingCommands = Object.values(language.slashCommands.moderation.permissions.buttons)
     .map((e) => guild.commands.cache.find((c) => c.name === e))
