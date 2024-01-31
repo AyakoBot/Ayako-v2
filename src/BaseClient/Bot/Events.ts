@@ -2,17 +2,16 @@
 import * as Discord from 'discord.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
 import type * as Socket from '../Cluster/Socket.js';
-import { ProcessEvents } from '../UtilModules/getEvents.js';
+import type { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
-import presence from './Presence.js';
 
 const spawnEvents = async () => {
- const util = await import('../UtilModules/getEvents.js');
- const events = util.default;
+ const { default: files } = await import('../UtilModules/files.js');
+ const events = await files.BaseClient.UtilModules.getEvents.get();
 
- client.setMaxListeners(events.BotEvents.length);
+ client.setMaxListeners(events.default.BotEvents.length);
 
- events.BotEvents.forEach(async (path) => {
+ events.default.BotEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as keyof Discord.ClientEvents;
   if (!eventName) return;
 
@@ -34,11 +33,11 @@ const spawnEvents = async () => {
   baseEventHandler(eventName, [message]);
  });
 
- client.cluster?.on('ready', (cl) => {
-  presence(cl);
+ client.cluster?.on('ready', async (cl) => {
+  (await files.BaseClient.Bot.Presence.get()).default(cl);
  });
 
- events.ProcessEvents.forEach(async (path) => {
+ events.default.ProcessEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
   if (!eventName) return;
 

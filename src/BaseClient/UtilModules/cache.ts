@@ -82,6 +82,8 @@ const cache: {
  antiraidQueued: Set<string>;
  enableInvites: Map<string, Jobs.Job>;
  separatorAssigner: Map<string, Jobs.Job[]>;
+ channelQueue: Map<string, Map<string, Discord.APIEmbed[]>>;
+ channelTimeout: Map<string, Map<string, Jobs.Job>>;
 } = {
  // Discord Cache
  invites,
@@ -130,6 +132,8 @@ const cache: {
  antiraidQueued: new Set(),
  enableInvites: new Map(),
  separatorAssigner: new Map(),
+ channelQueue: new Map(),
+ channelTimeout: new Map(),
 };
 
 export default cache;
