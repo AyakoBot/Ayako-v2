@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as util from '../util.js';
 
 /**
  * Returns the description of a command along with its options.
@@ -35,9 +34,9 @@ export default (
    ? `\n${c.options
       ?.map(
        (o) =>
-        `${util.makeInlineCode(o.name + ('required' in o && o.required ? '' : '?'))}: ${
-         o.description
-        }`,
+        `${command.client.util.util.makeInlineCode(
+         o.name + ('required' in o && o.required ? '' : '?'),
+        )}: ${o.description}`,
       )
       .join('\n')}`
    : ''

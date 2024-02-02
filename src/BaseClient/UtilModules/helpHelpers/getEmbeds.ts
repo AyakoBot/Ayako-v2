@@ -1,12 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import constants from '../../Other/constants.js';
-import cache from '../cache.js';
-import emotes from '../emotes.js';
-import * as util from '../util.js';
-
-import getDesc from './getDesc.js';
-import getDescription from './getDescription.js';
+import type { CommandCategories } from 'src/SlashCommands/index.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 /**
  * Returns an array of embeds to be used in a help command response.
@@ -30,18 +24,22 @@ export default (
  commands: CT.HelpCommand[],
  uniqueParentCommands: string[],
  uniqueSubCommandGroupsWithSubCommands: CT.HelpCommand[],
- type: CT.CommandCategories,
+ type: CommandCategories,
 ) => {
  const lan = language.slashCommands.help;
  const guildCommands = cmd.guildId
-  ? [...[...(cache.commands.cache.get(cmd.guildId)?.values() ?? [])].filter((c) => !c.guildId)]
+  ? [
+     ...[...(cmd.client.util.cache.commands.cache.get(cmd.guildId)?.values() ?? [])].filter(
+      (c) => !c.guildId,
+     ),
+    ]
   : [];
  const globalCommands = cmd.client.application.commands.cache.map((c) => c);
 
  const fetchedCommands = cmd.guildId && guildCommands.length ? guildCommands : globalCommands;
 
  const embed: Discord.APIEmbed = {
-  color: CT.Colors.Base,
+  color: cmd.client.util.CT.Colors.Base,
   title: lan.categories[type as keyof typeof lan.categories],
   description: '',
  };
@@ -54,10 +52,14 @@ export default (
    const getCommandMention = () => {
     switch (command.type) {
      case Discord.ApplicationCommandType.Message: {
-      return `${constants.standard.getEmote(emotes.Message)} ${rawCommand.parentCommand}`;
+      return `${cmd.client.util.constants.standard.getEmote(cmd.client.util.emotes.Message)} ${
+       rawCommand.parentCommand
+      }`;
      }
      case Discord.ApplicationCommandType.User: {
-      return `${constants.standard.getEmote(emotes.MemberBright)} ${rawCommand.parentCommand}`;
+      return `${cmd.client.util.constants.standard.getEmote(cmd.client.util.emotes.MemberBright)} ${
+       rawCommand.parentCommand
+      }`;
      }
      case Discord.ApplicationCommandType.ChatInput:
      default: {
@@ -72,7 +74,10 @@ export default (
 
    return {
     name: '\u200b',
-    value: `> ${getCommandMention()}\n${getDesc(command, rawCommand)}`,
+    value: `> ${getCommandMention()}\n${cmd.client.util.importCache.BaseClient.UtilModules.helpHelpers.getDesc.file.default(
+     command,
+     rawCommand,
+    )}`,
     inline: false,
    };
   })
@@ -99,7 +104,7 @@ export default (
   const fieldChunk = fieldChunks.shift();
 
   embeds.push({
-   color: CT.Colors.Base,
+   color: cmd.client.util.CT.Colors.Base,
    description: fieldChunk?.shift()?.value ?? '\u200b',
    fields: fieldChunk ?? [],
    footer: {
@@ -110,7 +115,15 @@ export default (
 
  if (uniqueParentCommands.length) {
   embed.description += `${lan.parentCommands}\n${uniqueParentCommands
-   .map((c) => `${util.makeInlineCode(c)}: ${getDescription(language, c)}`)
+   .map(
+    (c) =>
+     `${cmd.client.util.util.makeInlineCode(
+      c,
+     )}: ${cmd.client.util.importCache.BaseClient.UtilModules.helpHelpers.getDescription.file.default(
+      language,
+      c,
+     )}`,
+   )
    .join('\n')}\n\n`;
  }
 
@@ -118,7 +131,9 @@ export default (
   embed.description += `${lan.subCommandGroups}\n${uniqueSubCommandGroupsWithSubCommands
    .map(
     (c) =>
-     `${util.makeInlineCode(`${c.parentCommand} ${c.subCommandGroup as string}`)}: ${getDescription(
+     `${cmd.client.util.util.makeInlineCode(
+      `${c.parentCommand} ${c.subCommandGroup as string}`,
+     )}: ${cmd.client.util.importCache.BaseClient.UtilModules.helpHelpers.getDescription.file.default(
       language,
       c.parentCommand as string,
       c.subCommandGroup,

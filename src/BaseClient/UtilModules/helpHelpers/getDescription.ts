@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import SlashCommands from '../../../SlashCommands/index.js';
+import type * as CT from '../../../Typings/Typings.js';
+import SlashCommands from '../importCache/SlashCommands.js';
 
 /**
  * Returns the description of a command or subcommand group in the specified language.
@@ -10,7 +10,7 @@ import SlashCommands from '../../../SlashCommands/index.js';
  * @returns The description of the command or subcommand group in the specified language.
  */
 export default (language: CT.Language, command: string, subCommandGroup?: string) => {
- const cJSON = Object.values(SlashCommands.public)
+ const cJSON = Object.values(SlashCommands.file.default.public)
   ?.find((c) => c.name === command)
   ?.toJSON();
  if (!cJSON) return '';
