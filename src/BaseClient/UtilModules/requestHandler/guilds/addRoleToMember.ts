@@ -18,8 +18,8 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canAddRoleToMember(roleId, await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot add role to member`, [
+ if (!canAddRoleToMember(await getBotMemberFromGuild(guild), roleId)) {
+  const e = requestHandlerError(`Cannot add role ${roleId} to member`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 
@@ -41,6 +41,6 @@ export default async (guild: Discord.Guild, userId: string, roleId: string, reas
  * @param me - The guild member performing the action.
  * @returns A boolean indicating whether the role can be added to the member.
  */
-export const canAddRoleToMember = (roleId: string, me: Discord.GuildMember) =>
+export const canAddRoleToMember = (me: Discord.GuildMember, roleId: string) =>
  me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
  me.roles.highest.comparePositionTo(roleId) > 0;

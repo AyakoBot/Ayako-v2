@@ -14,16 +14,11 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @param reason - The reason for removing the role (optional).
  * @returns A promise that resolves with the removed role or rejects with a DiscordAPIError.
  */
-export default async (
- guild: Discord.Guild,
- userId: string,
- role: Discord.Role,
- reason?: string,
-) => {
+export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canRemoveRoleFromMember(await getBotMemberFromGuild(guild), role)) {
-  const e = requestHandlerError(`Cannot remove role ${role.name} / ${role.id}`, [
+ if (!canRemoveRoleFromMember(await getBotMemberFromGuild(guild), roleId)) {
+  const e = requestHandlerError(`Cannot remove role ${roleId} from Member`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 
@@ -32,7 +27,7 @@ export default async (
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
-  .removeRoleFromMember(guild.id, userId, role.id, { reason })
+  .removeRoleFromMember(guild.id, userId, roleId, { reason })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
@@ -42,9 +37,9 @@ export default async (
 /**
  * Checks if the given guild member has the permission to remove roles.
  * @param me - The guild member to check.
- * @param role - The role to remove.
+ * @param roleId - The role ID of the role to remove.
  * @returns True if the guild member has the permission to remove roles, false otherwise.
  */
-export const canRemoveRoleFromMember = (me: Discord.GuildMember, role: Discord.Role) =>
+export const canRemoveRoleFromMember = (me: Discord.GuildMember, roleId: string) =>
  me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) &&
- role.comparePositionTo(me.roles.highest) < 0;
+ me.roles.highest.comparePositionTo(roleId) > 0;
