@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/Typings.js';
+import * as CT from '../../../Typings/Settings.js';
 
 export default {
  [CT.SettingNames.DenylistRules]: {},

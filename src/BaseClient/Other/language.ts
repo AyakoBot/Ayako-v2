@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import merge from 'lodash.merge';
 import client from '../Bot/Client.js';
-import stp from '../UtilModules/stp.js';
+import Util from '../UtilModules/importCache/BaseClient/UtilModules.js';
+
 import languageFunction from './language/languageFunction.js';
 import events from './language/events/events.js';
 import time from './language/time.js';
@@ -29,6 +30,8 @@ export const languages = {
  'en-US': enJSON,
  'de-DE': deJSON,
 };
+
+const stp = Util.stp.file.default;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mergeLang = <T extends Record<string, any>>(lang: T) =>
