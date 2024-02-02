@@ -1,6 +1,6 @@
-import Manager from './Manager.js';
+import ProcessEvents from '../UtilModules/importCache/Events/ProcessEvents.js';
 import log from '../UtilModules/logError.js';
-import warning from '../../Events/ProcessEvents/warning.js';
+import Manager from './Manager.js';
 
 process.setMaxListeners(5);
 
@@ -38,4 +38,4 @@ if (process.argv.includes('--debug')) {
  Manager.on('debug', (debug) => log(`[Cluster Manager] Debug Message: ${debug}`, true));
 }
 
-process.on('warning', warning);
+process.on('warning', ProcessEvents.warning.file.default);

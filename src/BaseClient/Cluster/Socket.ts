@@ -1,5 +1,5 @@
-import * as Discord from 'discord.js';
 import { BaseMessage } from 'discord-hybrid-sharding';
+import * as Discord from 'discord.js';
 import io from 'socket.io-client';
 import type * as Typings from '../../Typings/Typings.js';
 import Manager from './Manager.js';
