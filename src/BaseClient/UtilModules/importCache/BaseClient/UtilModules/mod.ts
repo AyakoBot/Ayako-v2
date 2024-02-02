@@ -1,10 +1,10 @@
 const self = {
- mod: {
-  reload: async () => {
-   self.mod.file = await import(`../../../mod/mod.js?version=${Date.now()}`);
-  },
-  file: await import(`../../../mod/mod.js`),
+ reload: async () => {
+  self.file = await import(`../../../mod.js?version=${Date.now()}`);
+ },
+ file: await import(`../../../mod.js`),
 
+ mod: {
   banAdd: {
    reload: async () => {
     self.mod.banAdd.file = await import(`../../../mod/mod/banAdd.js?version=${Date.now()}`);

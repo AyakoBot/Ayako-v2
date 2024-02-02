@@ -1,16 +1,20 @@
-import cache from './UtilModules/cache.js';
 import helpHelpers from './UtilModules/helpHelpers.js';
 import mod from './UtilModules/mod.js';
 import requestHandler from './UtilModules/requestHandler.js';
 import settingsHelpers from './UtilModules/settingsHelpers.js';
 
 const self = {
- cache,
  helpHelpers,
  mod,
  requestHandler,
  settingsHelpers,
 
+ importCache: {
+  reload: async () => {
+   self.importCache.file = await import(`../../importCache.js?version=${Date.now()}`);
+  },
+  file: await import(`../../importCache.js`),
+ },
  arrayBufferToBuffer: {
   reload: async () => {
    self.arrayBufferToBuffer.file = await import(
@@ -526,6 +530,12 @@ const self = {
    self.files.file = await import(`../../files.js?version=${Date.now()}`);
   },
   file: await import(`../../files.js`),
+ },
+ logError: {
+  reload: async () => {
+   self.logError.file = await import(`../../logError.js?version=${Date.now()}`);
+  },
+  file: await import(`../../logError.js`),
  },
 };
 

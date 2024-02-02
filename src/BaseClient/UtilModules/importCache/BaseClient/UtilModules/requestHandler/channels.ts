@@ -2,7 +2,7 @@ const self = {
  reload: async () => {
   self.file = await import(`../../../../requestHandler/channels.js?version=${Date.now()}`);
  },
- file: import(`../../../../requestHandler/channels.js`),
+ file: await import(`../../../../requestHandler/channels.js`),
 
  sendMessage: {
   reload: async () => {
@@ -10,7 +10,7 @@ const self = {
     `../../../../requestHandler/channels/sendMessage.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/sendMessage.js`),
+  file: await import(`../../../../requestHandler/channels/sendMessage.js`),
  },
  replyMsg: {
   reload: async () => {
@@ -18,7 +18,7 @@ const self = {
     `../../../../requestHandler/channels/replyMsg.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/replyMsg.js`),
+  file: await import(`../../../../requestHandler/channels/replyMsg.js`),
  },
  editMsg: {
   reload: async () => {
@@ -26,7 +26,7 @@ const self = {
     `../../../../requestHandler/channels/editMsg.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/editMsg.js`),
+  file: await import(`../../../../requestHandler/channels/editMsg.js`),
  },
  editMessage: {
   reload: async () => {
@@ -34,7 +34,7 @@ const self = {
     `../../../../requestHandler/channels/editMessage.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/editMessage.js`),
+  file: await import(`../../../../requestHandler/channels/editMessage.js`),
  },
  getReactions: {
   reload: async () => {
@@ -42,7 +42,7 @@ const self = {
     `../../../../requestHandler/channels/getReactions.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getReactions.js`),
+  file: await import(`../../../../requestHandler/channels/getReactions.js`),
  },
  deleteOwnReaction: {
   reload: async () => {
@@ -50,7 +50,7 @@ const self = {
     `../../../../requestHandler/channels/deleteOwnReaction.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deleteOwnReaction.js`),
+  file: await import(`../../../../requestHandler/channels/deleteOwnReaction.js`),
  },
  deleteUserReaction: {
   reload: async () => {
@@ -58,7 +58,7 @@ const self = {
     `../../../../requestHandler/channels/deleteUserReaction.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deleteUserReaction.js`),
+  file: await import(`../../../../requestHandler/channels/deleteUserReaction.js`),
  },
  deleteAllReactions: {
   reload: async () => {
@@ -66,7 +66,7 @@ const self = {
     `../../../../requestHandler/channels/deleteAllReactions.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deleteAllReactions.js`),
+  file: await import(`../../../../requestHandler/channels/deleteAllReactions.js`),
  },
  deleteAllReactionsOfEmoji: {
   reload: async () => {
@@ -74,7 +74,7 @@ const self = {
     `../../../../requestHandler/channels/deleteAllReactionsOfEmoji.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deleteAllReactionsOfEmoji.js`),
+  file: await import(`../../../../requestHandler/channels/deleteAllReactionsOfEmoji.js`),
  },
  addReaction: {
   reload: async () => {
@@ -82,7 +82,7 @@ const self = {
     `../../../../requestHandler/channels/addReaction.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/addReaction.js`),
+  file: await import(`../../../../requestHandler/channels/addReaction.js`),
  },
  edit: {
   reload: async () => {
@@ -90,13 +90,13 @@ const self = {
     `../../../../requestHandler/channels/edit.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/edit.js`),
+  file: await import(`../../../../requestHandler/channels/edit.js`),
  },
  get: {
   reload: async () => {
    self.get.file = await import(`../../../../requestHandler/channels/get.js?version=${Date.now()}`);
   },
-  file: import(`../../../../requestHandler/channels/get.js`),
+  file: await import(`../../../../requestHandler/channels/get.js`),
  },
  delete: {
   reload: async () => {
@@ -104,7 +104,7 @@ const self = {
     `../../../../requestHandler/channels/delete.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/delete.js`),
+  file: await import(`../../../../requestHandler/channels/delete.js`),
  },
  getMessages: {
   reload: async () => {
@@ -112,7 +112,7 @@ const self = {
     `../../../../requestHandler/channels/getMessages.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getMessages.js`),
+  file: await import(`../../../../requestHandler/channels/getMessages.js`),
  },
  showTyping: {
   reload: async () => {
@@ -120,13 +120,13 @@ const self = {
     `../../../../requestHandler/channels/showTyping.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/showTyping.js`),
+  file: await import(`../../../../requestHandler/channels/showTyping.js`),
  },
  pin: {
   reload: async () => {
    self.pin.file = await import(`../../../../requestHandler/channels/pin.js?version=${Date.now()}`);
   },
-  file: import(`../../../../requestHandler/channels/pin.js`),
+  file: await import(`../../../../requestHandler/channels/pin.js`),
  },
  deleteMessage: {
   reload: async () => {
@@ -134,7 +134,7 @@ const self = {
     `../../../../requestHandler/channels/deleteMessage.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deleteMessage.js`),
+  file: await import(`../../../../requestHandler/channels/deleteMessage.js`),
  },
  bulkDelete: {
   reload: async () => {
@@ -142,7 +142,7 @@ const self = {
     `../../../../requestHandler/channels/bulkDelete.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/bulkDelete.js`),
+  file: await import(`../../../../requestHandler/channels/bulkDelete.js`),
  },
  crosspostMessage: {
   reload: async () => {
@@ -150,7 +150,7 @@ const self = {
     `../../../../requestHandler/channels/crosspostMessage.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/crosspostMessage.js`),
+  file: await import(`../../../../requestHandler/channels/crosspostMessage.js`),
  },
  getPins: {
   reload: async () => {
@@ -158,7 +158,7 @@ const self = {
     `../../../../requestHandler/channels/getPins.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getPins.js`),
+  file: await import(`../../../../requestHandler/channels/getPins.js`),
  },
  unpin: {
   reload: async () => {
@@ -166,7 +166,7 @@ const self = {
     `../../../../requestHandler/channels/unpin.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/unpin.js`),
+  file: await import(`../../../../requestHandler/channels/unpin.js`),
  },
  followAnnouncements: {
   reload: async () => {
@@ -174,7 +174,7 @@ const self = {
     `../../../../requestHandler/channels/followAnnouncements.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/followAnnouncements.js`),
+  file: await import(`../../../../requestHandler/channels/followAnnouncements.js`),
  },
  createInvite: {
   reload: async () => {
@@ -182,7 +182,7 @@ const self = {
     `../../../../requestHandler/channels/createInvite.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/createInvite.js`),
+  file: await import(`../../../../requestHandler/channels/createInvite.js`),
  },
  getInvites: {
   reload: async () => {
@@ -190,7 +190,7 @@ const self = {
     `../../../../requestHandler/channels/getInvites.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getInvites.js`),
+  file: await import(`../../../../requestHandler/channels/getInvites.js`),
  },
  createThread: {
   reload: async () => {
@@ -198,7 +198,7 @@ const self = {
     `../../../../requestHandler/channels/createThread.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/createThread.js`),
+  file: await import(`../../../../requestHandler/channels/createThread.js`),
  },
  createForumThread: {
   reload: async () => {
@@ -206,7 +206,7 @@ const self = {
     `../../../../requestHandler/channels/createForumThread.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/createForumThread.js`),
+  file: await import(`../../../../requestHandler/channels/createForumThread.js`),
  },
  getArchivedThreads: {
   reload: async () => {
@@ -214,7 +214,7 @@ const self = {
     `../../../../requestHandler/channels/getArchivedThreads.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getArchivedThreads.js`),
+  file: await import(`../../../../requestHandler/channels/getArchivedThreads.js`),
  },
  getJoinedPrivateArchivedThreads: {
   reload: async () => {
@@ -222,7 +222,7 @@ const self = {
     `../../../../requestHandler/channels/getJoinedPrivateArchivedThreads.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getJoinedPrivateArchivedThreads.js`),
+  file: await import(`../../../../requestHandler/channels/getJoinedPrivateArchivedThreads.js`),
  },
  getWebhooks: {
   reload: async () => {
@@ -230,7 +230,7 @@ const self = {
     `../../../../requestHandler/channels/getWebhooks.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getWebhooks.js`),
+  file: await import(`../../../../requestHandler/channels/getWebhooks.js`),
  },
  editPermissionOverwrite: {
   reload: async () => {
@@ -238,7 +238,7 @@ const self = {
     `../../../../requestHandler/channels/editPermissionOverwrite.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/editPermissionOverwrite.js`),
+  file: await import(`../../../../requestHandler/channels/editPermissionOverwrite.js`),
  },
  deletePermissionOverwrite: {
   reload: async () => {
@@ -246,7 +246,7 @@ const self = {
     `../../../../requestHandler/channels/deletePermissionOverwrite.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/deletePermissionOverwrite.js`),
+  file: await import(`../../../../requestHandler/channels/deletePermissionOverwrite.js`),
  },
  createWebhook: {
   reload: async () => {
@@ -254,7 +254,7 @@ const self = {
     `../../../../requestHandler/channels/createWebhook.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/createWebhook.js`),
+  file: await import(`../../../../requestHandler/channels/createWebhook.js`),
  },
  getMessage: {
   reload: async () => {
@@ -262,7 +262,7 @@ const self = {
     `../../../../requestHandler/channels/getMessage.js?version=${Date.now()}`
    );
   },
-  file: import(`../../../../requestHandler/channels/getMessage.js`),
+  file: await import(`../../../../requestHandler/channels/getMessage.js`),
  },
 };
 

@@ -1,9 +1,4 @@
 const self = {
- reload: async () => {
-  self.file = await import(`../../../../settingsHelpers/changeHelpers.js?version=${Date.now()}`);
- },
- file: await import(`../../../../settingsHelpers/changeHelpers.js`),
-
  back: await import('./buttonParsers.js').then((x) => x.default.back),
  changeEmbed: {
   reload: async () => {

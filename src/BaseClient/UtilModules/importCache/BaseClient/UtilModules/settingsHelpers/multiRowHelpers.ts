@@ -1,9 +1,4 @@
 const self = {
- reload: async () => {
-  self.file = await import(`../../../../settingsHelpers/multiRowHelpers.js?version=${Date.now()}`);
- },
- file: await import(`../../../../settingsHelpers/multiRowHelpers.js`),
-
  components: {
   reload: async () => {
    self.components.file = await import(

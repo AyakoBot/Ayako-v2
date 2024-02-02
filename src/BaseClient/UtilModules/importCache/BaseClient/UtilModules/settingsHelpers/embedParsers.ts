@@ -1,9 +1,4 @@
 const self = {
- reload: async () => {
-  self.file = await import(`../../../../settingsHelpers/embedParsers.js?version=${Date.now()}`);
- },
- file: await import(`../../../../settingsHelpers/embedParsers.js`),
-
  author: {
   reload: async () => {
    self.author.file = await import(
