@@ -71,6 +71,7 @@
   ],
   "no-continue": "off",
   "import/no-cycle": "off",
-  "func-names": "off"
+  "func-names": "off",
+  "max-len": "off"
  }
 }
