@@ -51,13 +51,7 @@ export default async (
  }
 
  if (!targetMember.isCommunicationDisabled() && !options.skipChecks) {
-  options.guild.client.util.mod.actionAlreadyApplied(
-   cmd,
-   message,
-   options.target,
-   language,
-   type,
-  );
+  options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
