@@ -50,9 +50,7 @@ const self: Invites = {
   const cached = self.cache.get(guild.id)?.get(channelId)?.get(code);
   if (cached) return cached;
 
-  const requestHandler =
-   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
-  const fetched = await requestHandler.guilds.getInvites(guild);
+  const fetched = await guild.client.util.request.guilds.getInvites(guild);
   if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => {

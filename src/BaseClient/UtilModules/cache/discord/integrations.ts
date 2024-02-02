@@ -44,9 +44,7 @@ const self: Integrations = {
   const cached = self.cache.get(guild.id)?.get(id);
   if (cached) return cached;
 
-  const requestHandler =
-   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
-  const fetched = await requestHandler.guilds.getIntegrations(guild);
+  const fetched = await guild.client.util.request.guilds.getIntegrations(guild);
   if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f, guild.id));

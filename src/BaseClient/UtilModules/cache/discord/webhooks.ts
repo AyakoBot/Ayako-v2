@@ -48,9 +48,7 @@ const self: Webhooks = {
   const cached = self.cache.get(guild.id)?.get(channelId)?.get(id);
   if (cached) return cached;
 
-  const requestHandler =
-   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
-  const fetched = await requestHandler.guilds.getWebhooks(guild);
+  const fetched = await guild.client.util.request.guilds.getWebhooks(guild);
   if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f));
