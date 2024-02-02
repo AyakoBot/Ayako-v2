@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 import objectEmotes from '../emotes.js';
 import type * as ModTypes from '../mod.js';
@@ -16,7 +16,7 @@ export default async (
  const payload = {
   embeds: [
    {
-    color: CT.Colors.Loading,
+    color: cmd.client.util.CT.Colors.Loading,
     author: {
      icon_url: objectEmotes.loading.link,
      name: language.mod.execution[type as keyof typeof language.mod.execution].loading,

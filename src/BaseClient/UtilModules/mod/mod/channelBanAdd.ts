@@ -1,18 +1,7 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
-import DataBase from '../../../Bot/DataBase.js';
-
-import objectEmotes from '../../emotes.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import type * as ModTypes from '../../mod.js';
-import { request } from '../../requestHandler.js';
-
-import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import err from '../err.js';
-import getMembers from '../getMembers.js';
-import permissionError from '../permissionError.js';
-import { canEdit } from '../../requestHandler/channels/edit.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.ChannelBanAdd>,
@@ -20,7 +9,7 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const type = CT.ModTypes.ChannelBanAdd;
+ const type = options.guild.client.util.CT.ModTypes.ChannelBanAdd;
 
  if (options.channel.id === options.guild.rulesChannelId) {
   if (!message) return false;
@@ -28,33 +17,42 @@ export default async (
   const payload = {
    embeds: [
     {
-     color: CT.Colors.Danger,
+     color: options.guild.client.util.CT.Colors.Danger,
      description: language.mod.execution.channelBanAdd.importantChannel,
      author: {
-      icon_url: objectEmotes.warning.link,
+      icon_url: options.guild.client.util.emotes.warning.link,
       name: language.t.error,
      },
     },
    ],
   };
 
-  if (message instanceof Discord.Message) request.channels.editMsg(message, payload);
-  else if (!(cmd instanceof Discord.Message) && cmd) cmd.editReply(payload);
+  if (message instanceof Discord.Message) {
+   options.guild.client.util.request.channels.editMsg(message, payload);
+  } else if (!(cmd instanceof Discord.Message) && cmd) cmd.editReply(payload);
   return false;
  }
 
- const memberRes = await getMembers(cmd, options, language, message, type);
+ const memberRes = await options.guild.client.util.mod.getMembers(
+  cmd,
+  options,
+  language,
+  message,
+  type,
+ );
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
-  const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+  const sticky = await options.guild.client.util.DataBase.sticky.findUnique({
+   where: { guildid: options.guild.id },
+  });
   if (!sticky?.stickypermsactive) return false;
 
-  const stickyPermSetting = await DataBase.stickypermmembers.findUnique({
+  const stickyPermSetting = await options.guild.client.util.DataBase.stickypermmembers.findUnique({
    where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
   });
 
-  DataBase.stickypermmembers
+  options.guild.client.util.DataBase.stickypermmembers
    .upsert({
     where: { userid_channelid: { userid: options.target.id, channelid: options.channel.id } },
     create: {
@@ -62,15 +60,16 @@ export default async (
      channelid: options.channel.id,
      guildid: options.guild.id,
      allowbits: 0n,
-     denybits: new Discord.PermissionsBitField(CT.ChannelBanBits).bitfield,
+     denybits: new Discord.PermissionsBitField(options.guild.client.util.CT.ChannelBanBits)
+      .bitfield,
     },
     update: {
      denybits: new Discord.PermissionsBitField(
       stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
-     ).add(CT.ChannelBanBits).bitfield,
+     ).add(options.guild.client.util.CT.ChannelBanBits).bitfield,
      allowbits: new Discord.PermissionsBitField(
       stickyPermSetting?.allowbits ? BigInt(stickyPermSetting.allowbits) : 0n,
-     ).remove(CT.ChannelBanBits).bitfield,
+     ).remove(options.guild.client.util.CT.ChannelBanBits).bitfield,
     },
    })
    .then();
@@ -78,22 +77,29 @@ export default async (
   return true;
  }
 
- const me = await getBotMemberFromGuild(options.guild);
- if (canEdit(options.channel, { permission_overwrites: [] }, me) && !options.skipChecks) {
-  permissionError(cmd, message, language, type);
+ const me = await options.guild.client.util.getBotMemberFromGuild(options.guild);
+ if (
+  options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.edit.file.canEdit(
+   options.channel,
+   { permission_overwrites: [] },
+   me,
+  ) &&
+  !options.skipChecks
+ ) {
+  options.guild.client.util.mod.permissionError(cmd, message, language, type);
   return false;
  }
 
  const perm = options.channel?.permissionOverwrites.cache.get(options.target.id);
 
- if (perm && perm.deny.has(CT.ChannelBanBits) && !options.skipChecks) {
-  actionAlreadyApplied(cmd, message, options.target, language, type);
+ if (perm && perm.deny.has(options.guild.client.util.CT.ChannelBanBits) && !options.skipChecks) {
+  options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
- const newPerms = new Discord.PermissionsBitField(CT.ChannelBanBits);
+ const newPerms = new Discord.PermissionsBitField(options.guild.client.util.CT.ChannelBanBits);
 
- const res = await request.channels.editPermissionOverwrite(
+ const res = await options.guild.client.util.request.channels.editPermissionOverwrite(
   options.channel,
   options.target.id,
   {
@@ -105,7 +111,7 @@ export default async (
  );
 
  if (res && 'message' in res) {
-  err(cmd, res, language, message, options.guild);
+  options.guild.client.util.mod.err(cmd, res, language, message, options.guild);
   return false;
  }
 

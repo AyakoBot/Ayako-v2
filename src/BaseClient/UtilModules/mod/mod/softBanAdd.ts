@@ -1,8 +1,5 @@
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-
-import banAdd from './banAdd.js';
-import banRemove from './banRemove.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.SoftBanAdd>,
@@ -10,10 +7,10 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const res = await banAdd(options, language, message, cmd);
+ const res = await options.guild.client.util.mod.mod.banAdd(options, language, message, cmd);
  if (!res) return false;
 
- const res2 = await banRemove(options, language, message, cmd);
+ const res2 = await options.guild.client.util.mod.mod.banRemove(options, language, message, cmd);
  if (!res2) return false;
 
  return true;

@@ -1,15 +1,5 @@
-import * as CT from '../../../../Typings/Typings.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-import { request } from '../../requestHandler.js';
-
-import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import err from '../err.js';
-import getMembers from '../getMembers.js';
-import permissionError from '../permissionError.js';
-import { canBanMember } from '../../requestHandler/guilds/banMember.js';
-import { canBanUser } from '../../requestHandler/guilds/banUser.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.BanAdd>,
@@ -17,37 +7,50 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- console.log(1);
- const type = CT.ModTypes.BanAdd;
+ const type = options.guild.client.util.CT.ModTypes.BanAdd;
 
- const memberRes = await getMembers(cmd, options, language, message, type);
+ const memberRes =
+  await options.guild.client.util.importCache.BaseClient.UtilModules.mod.getMembers.file.default(
+   cmd,
+   options,
+   language,
+   message,
+   type,
+  );
  if (memberRes && !memberRes.canExecute) return false;
- console.log(2);
 
- const me = await getBotMemberFromGuild(options.guild);
+ const me = await options.guild.client.util.getBotMemberFromGuild(options.guild);
  if (
   !options.skipChecks &&
-  ((memberRes && !canBanMember(me, memberRes.targetMember)) || !canBanUser(me))
+  ((memberRes &&
+   !options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.banMember.file.canBanMember(
+    me,
+    memberRes.targetMember,
+   )) ||
+   !options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.banUser.file.canBanUser(
+    me,
+   ))
  ) {
-  permissionError(cmd, message, language, type);
+  options.guild.client.util.mod.permissionError(cmd, message, language, type);
   return false;
  }
- console.log(3);
 
- const existingBan = await request.guilds.getMemberBan(options.guild, options.target.id);
+ const existingBan = await options.guild.client.util.request.guilds.getMemberBan(
+  options.guild,
+  options.target.id,
+ );
  if (!('message' in existingBan) && !options.skipChecks) {
-  actionAlreadyApplied(cmd, message, options.target, language, type);
+  options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
- console.log(4);
 
  const res = await (memberRes
-  ? request.guilds.banMember(
+  ? options.guild.client.util.request.guilds.banMember(
      memberRes.targetMember,
      { delete_message_seconds: options.deleteMessageSeconds },
      options.reason,
     )
-  : request.guilds.banUser(
+  : options.guild.client.util.request.guilds.banUser(
      options.guild,
      options.target.id,
      { delete_message_seconds: options.deleteMessageSeconds },
@@ -55,10 +58,9 @@ export default async (
     ));
 
  if (typeof res !== 'undefined' && 'message' in res) {
-  err(cmd, res, language, message, options.guild);
+  options.guild.client.util.mod.err(cmd, res, language, message, options.guild);
   return false;
  }
- console.log(5);
 
  return true;
 };

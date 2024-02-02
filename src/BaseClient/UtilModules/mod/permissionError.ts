@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 import objectEmotes from '../emotes.js';
 import type * as ModTypes from '../mod.js';
@@ -16,7 +16,7 @@ export default async (
  const payload = {
   embeds: [
    {
-    color: CT.Colors.Danger,
+    color: message.client.util.CT.Colors.Danger,
     author: {
      icon_url: objectEmotes.warning.link,
      name: language.t.error,

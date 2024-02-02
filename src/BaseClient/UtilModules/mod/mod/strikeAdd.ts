@@ -1,22 +1,6 @@
 import Prisma from '@prisma/client';
-import * as CT from '../../../../Typings/Typings.js';
-
-import cache from '../../cache.js';
-import error from '../../error.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-
-import getMembers from '../getMembers.js';
-import getStrike from '../getStrike.js';
-
-import banAdd from './banAdd.js';
-import channelBanAdd from './channelBanAdd.js';
-import kickAdd from './kickAdd.js';
-import softBanAdd from './softBanAdd.js';
-import softWarnAdd from './softWarnAdd.js';
-import tempBanAdd from './tempBanAdd.js';
-import tempChannelBanAdd from './tempChannelBanAdd.js';
-import tempMuteAdd from './tempMuteAdd.js';
-import warnAdd from './warnAdd.js';
 
 export default async <T extends CT.ModTypes>(
  rawOpts: CT.ModOptions<CT.ModTypes.StrikeAdd>,
@@ -25,27 +9,45 @@ export default async <T extends CT.ModTypes>(
  cmd: ModTypes.CmdType,
 ): Promise<{ success: boolean; type: CT.ModTypes; options: CT.ModOptions<T> }> => {
  const options = rawOpts as CT.ModOptions<T>;
- const strike = await getStrike(options.target, options.guild);
+ const strike = await options.guild.client.util.mod.getStrike(options.target, options.guild);
 
- const memberRes = await getMembers(cmd, options, language, message, CT.ModTypes.StrikeAdd);
+ const memberRes = await options.guild.client.util.mod.getMembers(
+  cmd,
+  options,
+  language,
+  message,
+  options.guild.client.util.CT.ModTypes.StrikeAdd,
+ );
  if (memberRes && !memberRes.canExecute) {
-  return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
+  return {
+   success: false,
+   type: options.guild.client.util.CT.ModTypes.StrikeAdd,
+   options: options as CT.ModOptions<T>,
+  };
  }
 
  if (!strike) {
-  cache.punishments.delete(options.target.id);
-  rawOpts.guild.client.util.files['/BaseClient/UtilModules/mod.js'](
+  options.guild.client.util.cache.punishments.delete(options.target.id);
+  options.guild.client.util.mod.file(
    cmd,
-   CT.ModTypes.WarnAdd,
+   options.guild.client.util.CT.ModTypes.WarnAdd,
    options,
    message,
   );
-  return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
+  return {
+   success: false,
+   type: options.guild.client.util.CT.ModTypes.StrikeAdd,
+   options: options as CT.ModOptions<T>,
+  };
  }
 
  if (!cmd) {
-  error(options.guild, new Error('Guild not found'));
-  return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
+  options.guild.client.util.error(options.guild, new Error('Guild not found'));
+  return {
+   success: false,
+   type: options.guild.client.util.CT.ModTypes.StrikeAdd,
+   options: options as CT.ModOptions<T>,
+  };
  }
 
  switch (strike.punishment) {
@@ -57,15 +59,15 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await banAdd(opts, language, message, cmd),
-    type: CT.ModTypes.BanAdd,
+    success: await options.guild.client.util.mod.mod.banAdd(opts, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.BanAdd,
     options: opts,
    };
   }
   case Prisma.$Enums.AutoPunishPunishmentType.channelban: {
    if (!cmd.channel) {
-    error(cmd.guild, new Error('No Channel found in strikeAdd'));
-    return { success: false, type: CT.ModTypes.StrikeAdd, options };
+    options.guild.client.util.error(cmd.guild, new Error('No Channel found in strikeAdd'));
+    return { success: false, type: options.guild.client.util.CT.ModTypes.StrikeAdd, options };
    }
 
    const opts = {
@@ -76,15 +78,15 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await channelBanAdd(opts, language, message, cmd),
-    type: CT.ModTypes.ChannelBanAdd,
+    success: await options.guild.client.util.mod.mod.channelBanAdd(opts, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.ChannelBanAdd,
     options: opts,
    };
   }
   case Prisma.$Enums.AutoPunishPunishmentType.kick:
    return {
-    success: await kickAdd(options, language, message, cmd),
-    type: CT.ModTypes.KickAdd,
+    success: await options.guild.client.util.mod.mod.kickAdd(options, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.KickAdd,
     options,
    };
   case Prisma.$Enums.AutoPunishPunishmentType.tempmute: {
@@ -94,20 +96,20 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await tempMuteAdd(
+    success: await options.guild.client.util.mod.mod.tempMuteAdd(
      { ...options, duration: Number(strike.duration) },
      language,
      message,
      cmd,
     ),
-    type: CT.ModTypes.TempMuteAdd,
+    type: options.guild.client.util.CT.ModTypes.TempMuteAdd,
     options: opts,
    };
   }
   case Prisma.$Enums.AutoPunishPunishmentType.tempchannelban: {
    if (!cmd.channel) {
-    error(cmd.guild, new Error('No channel found in strikeAdd'));
-    return { success: false, type: CT.ModTypes.StrikeAdd, options };
+    options.guild.client.util.error(cmd.guild, new Error('No channel found in strikeAdd'));
+    return { success: false, type: options.guild.client.util.CT.ModTypes.StrikeAdd, options };
    }
 
    const opts = {
@@ -119,15 +121,20 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await tempChannelBanAdd(opts, language, message, cmd),
-    type: CT.ModTypes.TempChannelBanAdd,
+    success: await options.guild.client.util.mod.mod.tempChannelBanAdd(
+     opts,
+     language,
+     message,
+     cmd,
+    ),
+    type: options.guild.client.util.CT.ModTypes.TempChannelBanAdd,
     options: opts,
    };
   }
   case Prisma.$Enums.AutoPunishPunishmentType.warn:
    return {
-    success: await warnAdd(options, language, message, cmd),
-    type: CT.ModTypes.WarnAdd,
+    success: await options.guild.client.util.mod.mod.warnAdd(options, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.WarnAdd,
     options,
    };
   case Prisma.$Enums.AutoPunishPunishmentType.tempban: {
@@ -139,8 +146,8 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await tempBanAdd(opts, language, message, cmd),
-    type: CT.ModTypes.TempBanAdd,
+    success: await options.guild.client.util.mod.mod.tempBanAdd(opts, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.TempBanAdd,
     options: opts,
    };
   }
@@ -152,15 +159,15 @@ export default async <T extends CT.ModTypes>(
    };
 
    return {
-    success: await softBanAdd(opts, language, message, cmd),
-    type: CT.ModTypes.SoftBanAdd,
+    success: await options.guild.client.util.mod.mod.softBanAdd(opts, language, message, cmd),
+    type: options.guild.client.util.CT.ModTypes.SoftBanAdd,
     options: opts,
    };
   }
   default: {
    return {
-    success: await softWarnAdd(),
-    type: CT.ModTypes.SoftWarnAdd,
+    success: await options.guild.client.util.mod.mod.softWarnAdd(),
+    type: options.guild.client.util.CT.ModTypes.SoftWarnAdd,
     options,
    };
   }

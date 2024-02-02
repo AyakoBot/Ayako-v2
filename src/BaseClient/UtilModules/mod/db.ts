@@ -1,5 +1,4 @@
-import * as CT from '../../../Typings/Typings.js';
-import DataBase from '../../Bot/DataBase.js';
+import type * as CT from '../../../Typings/Typings.js';
 import type * as ModTypes from '../mod.js';
 
 export default async <T extends CT.ModTypes>(
@@ -22,50 +21,50 @@ export default async <T extends CT.ModTypes>(
 
  switch (type) {
   case 'banAdd':
-   return DataBase.punish_bans.create({
+   return options.guild.client.util.DataBase.punish_bans.create({
     data: baseData,
    });
   case 'channelBanAdd': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanAdd>;
-   return DataBase.punish_channelbans.create({
+   return options.guild.client.util.DataBase.punish_channelbans.create({
     data: { ...baseData, banchannelid: opts.channel.id },
    });
   }
   case 'kickAdd':
-   return DataBase.punish_kicks.create({
+   return options.guild.client.util.DataBase.punish_kicks.create({
     data: baseData,
    });
   case 'tempBanAdd': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempBanAdd>;
-   return DataBase.punish_tempbans.create({
+   return options.guild.client.util.DataBase.punish_tempbans.create({
     data: { ...baseData, duration: opts.duration },
    });
   }
   case 'tempChannelBanAdd': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempChannelBanAdd>;
-   return DataBase.punish_tempchannelbans.create({
+   return options.guild.client.util.DataBase.punish_tempchannelbans.create({
     data: { ...baseData, banchannelid: opts.channel.id, duration: opts.duration },
    });
   }
   case 'tempMuteAdd': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.TempMuteAdd>;
-   return DataBase.punish_tempmutes.create({
+   return options.guild.client.util.DataBase.punish_tempmutes.create({
     data: { ...baseData, duration: opts.duration },
    });
   }
   case 'warnAdd':
-   return DataBase.punish_warns.create({
+   return options.guild.client.util.DataBase.punish_warns.create({
     data: baseData,
    });
   case 'muteRemove': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.MuteRemove>;
 
-   const prevMute = await DataBase.punish_tempmutes.findFirst({
+   const prevMute = await options.guild.client.util.DataBase.punish_tempmutes.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
    });
 
    if (prevMute) {
-    await DataBase.punish_tempmutes
+    await options.guild.client.util.DataBase.punish_tempmutes
      .delete({
       where: { uniquetimestamp: prevMute.uniquetimestamp },
      })
@@ -73,41 +72,43 @@ export default async <T extends CT.ModTypes>(
    }
 
    return prevMute
-    ? DataBase.punish_mutes.create({
+    ? options.guild.client.util.DataBase.punish_mutes.create({
        data: prevMute,
       })
     : undefined;
   }
   case 'channelBanRemove': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanRemove>;
-   const prevCBan = await DataBase.punish_tempchannelbans.findFirst({
+   const prevCBan = await options.guild.client.util.DataBase.punish_tempchannelbans.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
    });
 
    if (prevCBan) {
-    DataBase.punish_channelbans
+    options.guild.client.util.DataBase.punish_channelbans
      .delete({ where: { uniquetimestamp: prevCBan.uniquetimestamp } })
      .then();
    }
 
    return prevCBan
-    ? DataBase.punish_channelbans.create({
+    ? options.guild.client.util.DataBase.punish_channelbans.create({
        data: prevCBan,
       })
     : undefined;
   }
   case 'banRemove': {
    const opts = options as unknown as CT.ModOptions<CT.ModTypes.BanRemove>;
-   const prevBan = await DataBase.punish_tempbans.findFirst({
+   const prevBan = await options.guild.client.util.DataBase.punish_tempbans.findFirst({
     where: { userid: opts.target.id, guildid: opts.guild.id },
    });
 
    if (prevBan) {
-    DataBase.punish_bans.delete({ where: { uniquetimestamp: prevBan.uniquetimestamp } }).then();
+    options.guild.client.util.DataBase.punish_bans
+     .delete({ where: { uniquetimestamp: prevBan.uniquetimestamp } })
+     .then();
    }
 
    return prevBan
-    ? DataBase.punish_bans.create({
+    ? options.guild.client.util.DataBase.punish_bans.create({
        data: prevBan,
       })
     : undefined;

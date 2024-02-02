@@ -1,8 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-
-import emotes from '../emotes.js';
-import send from '../send.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
@@ -13,14 +10,14 @@ export default async <T extends CT.ModTypes>(
 
  const embed = {
   color: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
-   ? CT.Colors.Success
-   : CT.Colors.Danger,
+   ? options.guild.client.util.CT.Colors.Success
+   : options.guild.client.util.CT.Colors.Danger,
   description: dm(options as never),
   fields: [...(options.reason ? [{ name: language.t.Reason, value: options.reason }] : [])],
   thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
    ? undefined
    : {
-      url: emotes.warning.link,
+      url: options.guild.client.util.emotes.warning.link,
      },
  };
 
@@ -43,7 +40,7 @@ export default async <T extends CT.ModTypes>(
   ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type) ||
   !options.guild.members.cache.has(options.target.id)
  ) {
-  send(options.target, {
+  options.guild.client.util.send(options.target, {
    embeds: [embed],
    components: appeal,
   });

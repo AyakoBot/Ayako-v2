@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-
-import objectEmotes from '../emotes.js';
+import type * as CT from '../../../Typings/Typings.js';
 import type * as ModTypes from '../mod.js';
-import { request } from '../requestHandler.js';
 
 export default (
  cmd: ModTypes.CmdType,
@@ -21,10 +18,10 @@ export default (
  const payload = {
   embeds: [
    {
-    color: CT.Colors.Danger,
+    color: executor.client.util.CT.Colors.Danger,
     author: {
      name: language.t.error,
-     icon_url: objectEmotes.warning.link,
+     icon_url: executor.client.util.emotes.warning.link,
     },
     description: self,
    },
@@ -32,7 +29,9 @@ export default (
  };
 
  if (!(cmd instanceof Discord.Message) && cmd) cmd.editReply(payload);
- else if (message instanceof Discord.Message) request.channels.editMsg(message, payload);
+ else if (message instanceof Discord.Message) {
+  executor.client.util.request.channels.editMsg(message, payload);
+ }
 
  return true;
 };

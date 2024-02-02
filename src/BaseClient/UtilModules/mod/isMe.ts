@@ -1,20 +1,20 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-
-import objectEmotes from '../emotes.js';
-import { guild as getBotIdFromGuild } from '../getBotIdFrom.js';
+import type * as CT from '../../../Typings/Typings.js';
 import type * as ModTypes from '../mod.js';
-import { request } from '../requestHandler.js';
 
 export default async (
  cmd: ModTypes.CmdType,
- client: Discord.User,
  message: ModTypes.ResponseMessage,
  language: CT.Language,
  options: CT.BaseOptions,
  type: CT.ModTypes,
 ) => {
- if (options.target.id !== (cmd?.inGuild() ? await getBotIdFromGuild(cmd.guild) : client.id)) {
+ if (
+  options.target.id !==
+  (cmd?.inGuild()
+   ? await options.guild.client.util.getBotIdFromGuild(cmd.guild)
+   : options.guild.client.user.id)
+ ) {
   return false;
  }
  if (!message) return true;
@@ -24,10 +24,10 @@ export default async (
  const payload = {
   embeds: [
    {
-    color: CT.Colors.Danger,
+    color: options.guild.client.util.CT.Colors.Danger,
     author: {
      name: language.t.error,
-     icon_url: objectEmotes.warning.link,
+     icon_url: options.guild.client.util.emotes.warning.link,
     },
     description: me,
    },
@@ -35,7 +35,9 @@ export default async (
  };
 
  if (!(cmd instanceof Discord.Message) && cmd) cmd.editReply(payload);
- else if (message instanceof Discord.Message) request.channels.editMsg(message, payload);
+ else if (message instanceof Discord.Message) {
+  options.guild.client.util.request.channels.editMsg(message, payload);
+ }
 
  return true;
 };

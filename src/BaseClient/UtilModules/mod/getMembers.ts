@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-
+import type * as CT from '../../../Typings/Typings.js';
 import type * as ModTypes from '../mod.js';
-import { request } from '../requestHandler.js';
-import checkExeCanManage from './checkExeCanManage.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -16,13 +13,28 @@ export default async (
  | { canExecute: false }
  | { executorMember: Discord.GuildMember; targetMember: Discord.GuildMember; canExecute: true }
 > => {
- const executorMember = await request.guilds.getMember(options.guild, options.executor.id);
+ const executorMember = await options.guild.client.util.request.guilds.getMember(
+  options.guild,
+  options.executor.id,
+ );
  if ('message' in executorMember) return undefined;
 
- const targetMember = await request.guilds.getMember(options.guild, options.target.id);
+ const targetMember = await options.guild.client.util.request.guilds.getMember(
+  options.guild,
+  options.target.id,
+ );
  if ('message' in targetMember) return undefined;
 
- if (!(await checkExeCanManage(cmd, targetMember, executorMember, message, language, type))) {
+ if (
+  !(await options.guild.client.util.mod.checkExeCanManage(
+   cmd,
+   targetMember,
+   executorMember,
+   message,
+   language,
+   type,
+  ))
+ ) {
   return { canExecute: false };
  }
 

@@ -1,11 +1,6 @@
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../../Typings/Typings.js';
-
-import cache from '../../cache.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-
-import channelBanAdd from './channelBanAdd.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.TempChannelBanAdd>,
@@ -13,17 +8,17 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const res = await channelBanAdd(options, language, message, cmd);
+ const res = await options.guild.client.util.mod.mod.channelBanAdd(options, language, message, cmd);
  if (!res) return res;
 
- cache.channelBans.set(
+ options.guild.client.util.cache.channelBans.set(
   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
-   options.guild.client.util.files['/BaseClient/UtilModules/mod.js'](
+   options.guild.client.util.mod.file(
     undefined,
-    CT.ModTypes.ChannelBanRemove,
+    options.guild.client.util.CT.ModTypes.ChannelBanRemove,
     {
      dbOnly: false,
-     executor: (await getBotMemberFromGuild(options.guild)).user,
+     executor: (await options.guild.client.util.getBotMemberFromGuild(options.guild)).user,
      guild: options.guild,
      reason: language.mod.execution.muteRemove.reason,
      target: options.target,

@@ -1,16 +1,5 @@
-import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-
-import DataBase from '../../../Bot/DataBase.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-import roleManager from '../../roleManager.js';
-
-import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import getMembers from '../getMembers.js';
-import permissionError from '../permissionError.js';
-import { canEditMember } from '../../requestHandler/guilds/editMember.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.RoleRemove>,
@@ -18,13 +7,21 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const type = CT.ModTypes.RoleRemove;
+ const type = options.guild.client.util.CT.ModTypes.RoleRemove;
 
- const memberRes = await getMembers(cmd, options, language, message, type);
+ const memberRes = await options.guild.client.util.mod.getMembers(
+  cmd,
+  options,
+  language,
+  message,
+  type,
+ );
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
-  const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });
+  const sticky = await options.guild.client.util.DataBase.sticky.findUnique({
+   where: { guildid: options.guild.id },
+  });
   if (!sticky?.stickyrolesactive) return true;
 
   const roles = sticky.stickyrolesmode
@@ -32,7 +29,7 @@ export default async (
    : options.roles.filter((r) => sticky.roles.includes(r.id));
   if (!roles.length) return true;
 
-  const stickyRoleSetting = await DataBase.stickyrolemembers.findUnique({
+  const stickyRoleSetting = await options.guild.client.util.DataBase.stickyrolemembers.findUnique({
    where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
   });
   if (!stickyRoleSetting) return true;
@@ -41,14 +38,14 @@ export default async (
    !stickyRoleSetting.roles.filter((r) => roles.find((r1) => r1.id === r)).length &&
    !options.skipChecks
   ) {
-   actionAlreadyApplied(cmd, message, options.target, language, type);
+   options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
   const newRoles = stickyRoleSetting?.roles.filter((r) => !roles.find((r1) => r1.id === r)) ?? [];
 
   if (!newRoles.length) {
-   DataBase.stickyrolemembers
+   options.guild.client.util.DataBase.stickyrolemembers
     .delete({
      where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
     })
@@ -56,7 +53,7 @@ export default async (
    return true;
   }
 
-  DataBase.stickyrolemembers
+  options.guild.client.util.DataBase.stickyrolemembers
    .update({
     where: { userid_guildid: { userid: options.target.id, guildid: options.guild.id } },
     data: {
@@ -71,24 +68,29 @@ export default async (
  const { targetMember } = memberRes;
 
  if (!targetMember.roles.cache.hasAny(...options.roles.map((r) => r.id)) && !options.skipChecks) {
-  actionAlreadyApplied(cmd, message, options.target, language, type);
+  options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
- const me = await getBotMemberFromGuild(options.guild);
+ const me = await options.guild.client.util.getBotMemberFromGuild(options.guild);
  options.roles = options.roles.filter((r) => r.position < Number(me.roles.highest.position));
-
  if (
-  (!me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !canEditMember(targetMember, me, { roles: [] }) ||
+  (options.roles
+   .map((r) =>
+    options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.removeRoleFromMember.file.canRemoveRoleFromMember(
+     me,
+     r.id,
+    ),
+   )
+   .find((can) => !can) ||
    !options.roles.length) &&
   !options.skipChecks
  ) {
-  permissionError(cmd, message, language, type);
+  options.guild.client.util.mod.permissionError(cmd, message, language, type);
   return false;
  }
 
- await roleManager.remove(
+ await options.guild.client.util.roleManager.remove(
   targetMember,
   options.roles.map((r) => r.id),
   options.reason,

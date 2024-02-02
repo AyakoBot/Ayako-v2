@@ -1,16 +1,5 @@
-import * as CT from '../../../../Typings/Typings.js';
-import DataBase from '../../../Bot/DataBase.js';
-
-import cache from '../../cache.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-import { request } from '../../requestHandler.js';
-import { canEditMember } from '../../requestHandler/guilds/editMember.js';
-
-import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import err from '../err.js';
-import getMembers from '../getMembers.js';
-import permissionError from '../permissionError.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.MuteRemove>,
@@ -18,15 +7,21 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const type = CT.ModTypes.MuteRemove;
+ const type = options.guild.client.util.CT.ModTypes.MuteRemove;
 
- cache.mutes.delete(options.guild.id, options.target.id);
+ options.guild.client.util.cache.mutes.delete(options.guild.id, options.target.id);
 
- const memberRes = await getMembers(cmd, options, language, message, type);
+ const memberRes = await options.guild.client.util.mod.getMembers(
+  cmd,
+  options,
+  language,
+  message,
+  type,
+ );
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
-  const punishments = await DataBase.punish_tempmutes.findMany({
+  const punishments = await options.guild.client.util.DataBase.punish_tempmutes.findMany({
    where: { userid: options.target.id, guildid: options.guild.id },
   });
 
@@ -35,33 +30,43 @@ export default async (
   );
 
   if (!runningPunishment && !options.skipChecks) {
-   actionAlreadyApplied(cmd, message, options.target, language, type);
+   options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
   return true;
  }
  const { targetMember } = memberRes;
 
- const me = await getBotMemberFromGuild(options.guild);
+ const me = await options.guild.client.util.getBotMemberFromGuild(options.guild);
  if (
   !options.skipChecks &&
-  !canEditMember(me, targetMember, { communication_disabled_until: '1' })
+  !options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.editMember.file.canEditMember(
+   me,
+   targetMember,
+   { communication_disabled_until: '1' },
+  )
  ) {
-  permissionError(cmd, message, language, type);
+  options.guild.client.util.mod.permissionError(cmd, message, language, type);
   return false;
  }
 
  if (!targetMember.isCommunicationDisabled() && !options.skipChecks) {
-  actionAlreadyApplied(cmd, message, options.target, language, type);
+  options.guild.client.util.mod.actionAlreadyApplied(
+   cmd,
+   message,
+   options.target,
+   language,
+   type,
+  );
   return false;
  }
 
- const res = await request.guilds.editMember(targetMember, {
+ const res = await options.guild.client.util.request.guilds.editMember(targetMember, {
   communication_disabled_until: null,
  });
 
  if ('message' in res) {
-  err(cmd, res, language, message, options.guild);
+  options.guild.client.util.mod.err(cmd, res, language, message, options.guild);
   return false;
  }
 

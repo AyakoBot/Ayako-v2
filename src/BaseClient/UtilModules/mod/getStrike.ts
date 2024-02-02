@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
 
-import DataBase from '../../Bot/DataBase.js';
-import getPunishment from '../getPunishment.js';
-
 export default async (user: Discord.User, guild: Discord.Guild) => {
- const punishments = await getPunishment(user.id, { identType: 'all-on', guildid: guild.id });
+ const punishments = await user.client.util.getPunishment(user.id, {
+  identType: 'all-on',
+  guildid: guild.id,
+ });
 
- return DataBase.autopunish.findFirst({
+ return user.client.util.DataBase.autopunish.findFirst({
   where: {
    guildid: guild.id,
    active: true,

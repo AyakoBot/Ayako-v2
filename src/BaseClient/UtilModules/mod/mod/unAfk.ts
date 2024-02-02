@@ -1,14 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type * as ModTypes from '../../mod.js';
-
-import { canEditMember } from '../../requestHandler/guilds/editMember.js';
-import actionAlreadyApplied from '../actionAlreadyApplied.js';
-import err from '../err.js';
-import getMembers from '../getMembers.js';
-import permissionError from '../permissionError.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.UnAfk>,
@@ -16,9 +8,15 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const type = CT.ModTypes.UnAfk;
+ const type = options.guild.client.util.CT.ModTypes.UnAfk;
 
- const memberRes = await getMembers(cmd, options, language, message, type);
+ const memberRes = await options.guild.client.util.mod.getMembers(
+  cmd,
+  options,
+  language,
+  message,
+  type,
+ );
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
@@ -27,12 +25,12 @@ export default async (
   });
 
   if (afk && !options.skipChecks) {
-   actionAlreadyApplied(cmd, message, options.target, language, type);
+   options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
   if (afk && !options.skipChecks) {
-   actionAlreadyApplied(cmd, message, options.target, language, type);
+   options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
    return false;
   }
 
@@ -47,12 +45,16 @@ export default async (
 
  const { targetMember } = memberRes;
 
- const me = await getBotMemberFromGuild(options.guild);
+ const me = await options.guild.client.util.getBotMemberFromGuild(options.guild);
  if (
   !options.skipChecks &&
-  !canEditMember(me, targetMember, { communication_disabled_until: '1' })
+  !options.guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.editMember.file.canEditMember(
+   me,
+   targetMember,
+   { communication_disabled_until: '1' },
+  )
  ) {
-  permissionError(cmd, message, language, type);
+  options.guild.client.util.mod.permissionError(cmd, message, language, type);
   return false;
  }
 
@@ -61,7 +63,7 @@ export default async (
  });
 
  if (afk && !options.skipChecks) {
-  actionAlreadyApplied(cmd, message, options.target, language, type);
+  options.guild.client.util.mod.actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
@@ -74,7 +76,7 @@ export default async (
  const res = await updateNickname(options.reason, targetMember);
 
  if ('message' in res) {
-  err(cmd, res, language, message, options.guild);
+  options.guild.client.util.mod.err(cmd, res, language, message, options.guild);
   return false;
  }
 
