@@ -1,97 +1,11 @@
+/* eslint-disable max-len */
 import * as fs from 'fs';
-
-import constants from '../Other/constants.js';
-import firstChannelInteraction from '../Other/firstChannelInteraction.js';
-import firstGuildInteraction from '../Other/firstGuildInteraction.js';
-
-import arrayBufferToBuffer from '../UtilModules/arrayBufferToBuffer.js';
-import arrayEquals from '../UtilModules/arrayEquals.js';
-import bitUniques from '../UtilModules/bitUniques.js';
-import cache from '../UtilModules/cache.js';
-import channelRuleCalc from '../UtilModules/channelRuleCalc.js';
-import deleteNotificationThread from '../UtilModules/deleteNotificationThread.js';
-import disableComponents from '../UtilModules/disableComponents.js';
-import dynamicToEmbed from '../UtilModules/dynamicToEmbed.js';
-import emotes from '../UtilModules/emotes.js';
-import encodeString2BigInt from '../UtilModules/encodeString2BigInt.js';
-import error from '../UtilModules/error.js';
-import errorCmd from '../UtilModules/errorCmd.js';
-import errorMsg from '../UtilModules/errorMsg.js';
-import fetchAllEventSubscribers from '../UtilModules/fetchAllEventSubscribers.js';
-import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
-import fetchMessages from '../UtilModules/fetchMessages.js';
-import fetchWithRedirects from '../UtilModules/fetchWithRedirects.js';
-import fileURL2Buffer from '../UtilModules/fileURL2Buffer.js';
-import files from '../UtilModules/files.js';
-import findServerByName from '../UtilModules/findServerByName.js';
-import findUserByName from '../UtilModules/findUserByName.js';
-import getAllBans from '../UtilModules/getAllBans.js';
-import getAllInvites from '../UtilModules/getAllInvites.js';
-import getAudit from '../UtilModules/getAudit.js';
-import {
- guild as getBotIdFromGuild,
- token as getBotIdFromToken,
-} from '../UtilModules/getBotIdFrom.js';
-import getBotMemberFromGuild from '../UtilModules/getBotMemberFromGuild.js';
-import getChanged from '../UtilModules/getChanged.js';
-import * as getChannel from '../UtilModules/getChannel.js';
-import getChannelWebhook from '../UtilModules/getChannelWebhook.js';
-import getChunks from '../UtilModules/getChunks.js';
-import getColor from '../UtilModules/getColor.js';
-import getCustomCommand from '../UtilModules/getCustomCommand.js';
-import getDifference from '../UtilModules/getDifference.js';
-import getDiscordEmbed from '../UtilModules/getDiscordEmbed.js';
-import getDuration from '../UtilModules/getDuration.js';
-import getEmote from '../UtilModules/getEmote.js';
-import getEvents from '../UtilModules/getEvents.js';
-import getGif from '../UtilModules/getGif.js';
-import getLanguage from '../UtilModules/getLanguage.js';
-import getLogChannels from '../UtilModules/getLogChannels.js';
-import getMessage from '../UtilModules/getMessage.js';
-import getNameAndFileType from '../UtilModules/getNameAndFileType.js';
-import getPunishment from '../UtilModules/getPunishment.js';
-import getRandom from '../UtilModules/getRandom.js';
-import getReferenceMessage from '../UtilModules/getReferenceMessage.js';
-import getSerializedChannelPerms from '../UtilModules/getSerializedChannelPerms.js';
-import getStringChunks from '../UtilModules/getStringChunks.js';
-import getTarget from '../UtilModules/getTarget.js';
-import getTargetChannel from '../UtilModules/getTargetChannel.js';
-import getTrueChannelType from '../UtilModules/getTrueChannelType.js';
-import getUnix from '../UtilModules/getUnix.js';
-import getUser from '../UtilModules/getUser.js';
-import getUserFromUserAndUsernameOptions from '../UtilModules/getUserFromUserAndUsernameOptions.js';
-import helpHelpers from '../UtilModules/helpHelpers.js';
-import interactionHelpers from '../UtilModules/interactionHelpers.js';
-import isDeleteable from '../UtilModules/isDeleteable.js';
-import isEditable from '../UtilModules/isEditable.js';
-import loadingEmbed from '../UtilModules/loadingEmbed.js';
-import log from '../UtilModules/log.js';
-import makeStp from '../UtilModules/makeStp.js';
-import memberBoostCalc from '../UtilModules/memberBoostCalc.js';
-import mergeLogging from '../UtilModules/mergeLogging.js';
-import mod from '../UtilModules/mod.js';
-import moment from '../UtilModules/moment.js';
-import notYours from '../UtilModules/notYours.js';
-import notificationThread from '../UtilModules/notificationThread.js';
-import permCalc from '../UtilModules/permCalc.js';
-import permError from '../UtilModules/permError.js';
-import refreshToken from '../UtilModules/refreshToken.js';
-import regexes from '../UtilModules/regexes.js';
-import replyCmd from '../UtilModules/replyCmd.js';
-import replyMsg from '../UtilModules/replyMsg.js';
-import requestHandler, { request } from '../UtilModules/requestHandler.js';
-import roleManager from '../UtilModules/roleManager.js';
-import send from '../UtilModules/send.js';
-import settingsHelpers from '../UtilModules/settingsHelpers.js';
-import sleep from '../UtilModules/sleep.js';
-import spaces from '../UtilModules/spaces.js';
-import splitByThousand from '../UtilModules/splitByThousands.js';
-import stp from '../UtilModules/stp.js';
-import txtFileLinkToString from '../UtilModules/txtFileLinkToString.js';
-import txtFileWriter from '../UtilModules/txtFileWriter.js';
-import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
-import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
+import cache from '../UtilModules/cache.js';
+
+import importCache from '../UtilModules/importCache.js';
+
+const utilModules = importCache.BaseClient.UtilModules;
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -105,191 +19,387 @@ const logFiles = {
 };
 
 interface Util {
- deleteNotificationThread: typeof deleteNotificationThread;
- notificationThread: typeof notificationThread;
- DataBase: typeof DataBase;
- arrayBufferToBuffer: typeof arrayBufferToBuffer;
- arrayEquals: typeof arrayEquals;
- bitUniques: typeof bitUniques;
- cache: typeof cache;
- channelRuleCalc: typeof channelRuleCalc;
- constants: typeof constants;
- disableComponents: typeof disableComponents;
- dynamicToEmbed: typeof dynamicToEmbed;
- emotes: typeof emotes;
- encodeString2BigInt: typeof encodeString2BigInt;
- error: typeof error;
- errorCmd: typeof errorCmd;
- errorMsg: typeof errorMsg;
- fetchAllEventSubscribers: typeof fetchAllEventSubscribers;
- fetchAllGuildMembers: typeof fetchAllGuildMembers;
- fetchMessages: typeof fetchMessages;
- fetchWithRedirects: typeof fetchWithRedirects;
- fileURL2Buffer: typeof fileURL2Buffer;
- findServerByName: typeof findServerByName;
- findUserByName: typeof findUserByName;
- firstGuildInteraction: typeof firstGuildInteraction;
- firstChannelInteraction: typeof firstChannelInteraction;
- getAllBans: typeof getAllBans;
- getAllInvites: typeof getAllInvites;
- getAudit: typeof getAudit;
- getBotIdFromGuild: typeof getBotIdFromGuild;
- getBotIdFromToken: typeof getBotIdFromToken;
- getBotMemberFromGuild: typeof getBotMemberFromGuild;
- getChanged: typeof getChanged;
- getChannel: typeof getChannel;
- getChannelWebhook: typeof getChannelWebhook;
- getChunks: typeof getChunks;
- getColor: typeof getColor;
- getCustomCommand: typeof getCustomCommand;
- getDifference: typeof getDifference;
- getDiscordEmbed: typeof getDiscordEmbed;
- getDuration: typeof getDuration;
- getEmote: typeof getEmote;
- getEvents: typeof getEvents;
- getGif: typeof getGif;
- getLanguage: typeof getLanguage;
- getLogChannels: typeof getLogChannels;
- getMessage: typeof getMessage;
- getNameAndFileType: typeof getNameAndFileType;
- getPunishment: typeof getPunishment;
- getRandom: typeof getRandom;
- getReferenceMessage: typeof getReferenceMessage;
- getSerializedChannelPerms: typeof getSerializedChannelPerms;
- getStringChunks: typeof getStringChunks;
- getTarget: typeof getTarget;
- getTargetChannel: typeof getTargetChannel;
- getTrueChannelType: typeof getTrueChannelType;
- getUnix: typeof getUnix;
- getUser: typeof getUser;
- getUserFromUserAndUsernameOptions: typeof getUserFromUserAndUsernameOptions;
- helpHelpers: typeof helpHelpers;
- interactionHelpers: typeof interactionHelpers;
- isDeleteable: typeof isDeleteable;
- isEditable: typeof isEditable;
- loadingEmbed: typeof loadingEmbed;
- log: typeof log;
  logFiles: typeof logFiles;
- makeStp: typeof makeStp;
- memberBoostCalc: typeof memberBoostCalc;
- mergeLogging: typeof mergeLogging;
- mod: typeof mod;
- moment: typeof moment;
- notYours: typeof notYours;
- permCalc: typeof permCalc;
- permError: typeof permError;
- refreshToken: typeof refreshToken;
- regexes: typeof regexes;
- replyCmd: typeof replyCmd;
- replyMsg: typeof replyMsg;
- request: typeof request;
- requestHandler: typeof requestHandler;
- roleManager: typeof roleManager;
- send: typeof send;
- settingsHelpers: typeof settingsHelpers;
- sleep: typeof sleep;
- spaces: typeof spaces;
- splitByThousand: typeof splitByThousand;
- stp: typeof stp;
- txtFileLinkToString: typeof txtFileLinkToString;
- txtFileWriter: typeof txtFileWriter;
- userFlagsCalc: typeof userFlagsCalc;
- util: typeof utils;
- files: typeof files;
+ DataBase: typeof DataBase;
+ cache: typeof cache;
+ importCache: typeof importCache.BaseClient.UtilModules.importCache.file.default;
+
+ CT: typeof importCache.Typings.Settings.file & typeof importCache.Typings.Typings.file;
+ files: typeof utilModules.files.file.default;
+ deleteNotificationThread: typeof utilModules.deleteNotificationThread.file.default;
+ notificationThread: typeof utilModules.notificationThread.file.default;
+ arrayBufferToBuffer: typeof utilModules.arrayBufferToBuffer.file.default;
+ arrayEquals: typeof utilModules.arrayEquals.file.default;
+ bitUniques: typeof utilModules.bitUniques.file.default;
+ channelRuleCalc: typeof utilModules.channelRuleCalc.file.default;
+ constants: typeof utilModules.constants.file.default;
+ disableComponents: typeof utilModules.disableComponents.file.default;
+ dynamicToEmbed: typeof utilModules.dynamicToEmbed.file.default;
+ emotes: typeof utilModules.emotes.file.default;
+ encodeString2BigInt: typeof utilModules.encodeString2BigInt.file.default;
+ error: typeof utilModules.error.file.default;
+ errorCmd: typeof utilModules.errorCmd.file.default;
+ errorMsg: typeof utilModules.errorMsg.file.default;
+ fetchAllEventSubscribers: typeof utilModules.fetchAllEventSubscribers.file.default;
+ fetchAllGuildMembers: typeof utilModules.fetchAllGuildMembers.file.default;
+ fetchMessages: typeof utilModules.fetchMessages.file.default;
+ fetchWithRedirects: typeof utilModules.fetchWithRedirects.file.default;
+ fileURL2Buffer: typeof utilModules.fileURL2Buffer.file.default;
+ findServerByName: typeof utilModules.findServerByName.file.default;
+ findUserByName: typeof utilModules.findUserByName.file.default;
+ firstGuildInteraction: typeof utilModules.firstGuildInteraction.file.default;
+ firstChannelInteraction: typeof utilModules.firstChannelInteraction.file.default;
+ getAllBans: typeof utilModules.getAllBans.file.default;
+ getAllInvites: typeof utilModules.getAllInvites.file.default;
+ getAudit: typeof utilModules.getAudit.file.default;
+ getBotIdFromGuild: typeof utilModules.getBotIdFrom.file.guild;
+ getBotIdFromToken: typeof utilModules.getBotIdFrom.file.token;
+ getBotMemberFromGuild: typeof utilModules.getBotMemberFromGuild.file.default;
+ getChanged: typeof utilModules.getChanged.file.default;
+ getChannel: typeof utilModules.getChannel.file;
+ getChannelWebhook: typeof utilModules.getChannelWebhook.file.default;
+ getChunks: typeof utilModules.getChunks.file.default;
+ getColor: typeof utilModules.getColor.file.default;
+ getCustomCommand: typeof utilModules.getCustomCommand.file.default;
+ getDifference: typeof utilModules.getDifference.file.default;
+ getDiscordEmbed: typeof utilModules.getDiscordEmbed.file.default;
+ getDuration: typeof utilModules.getDuration.file.default;
+ getEmote: typeof utilModules.getEmote.file.default;
+ getEvents: typeof utilModules.getEvents.file.default;
+ getGif: typeof utilModules.getGif.file.default;
+ getLanguage: typeof utilModules.getLanguage.file.default;
+ getLogChannels: typeof utilModules.getLogChannels.file.default;
+ getMessage: typeof utilModules.getMessage.file.default;
+ getNameAndFileType: typeof utilModules.getNameAndFileType.file.default;
+ getPunishment: typeof utilModules.getPunishment.file.default;
+ getRandom: typeof utilModules.getRandom.file.default;
+ getReferenceMessage: typeof utilModules.getReferenceMessage.file.default;
+ getSerializedChannelPerms: typeof utilModules.getSerializedChannelPerms.file.default;
+ getStringChunks: typeof utilModules.getStringChunks.file.default;
+ getTarget: typeof utilModules.getTarget.file.default;
+ getTargetChannel: typeof utilModules.getTargetChannel.file.default;
+ getTrueChannelType: typeof utilModules.getTrueChannelType.file.default;
+ getUnix: typeof utilModules.getUnix.file.default;
+ getUser: typeof utilModules.getUser.file.default;
+ getUserFromUserAndUsernameOptions: typeof utilModules.getUserFromUserAndUsernameOptions.file.default;
+ helpHelpers: {
+  getDesc: typeof utilModules.helpHelpers.getDesc.file.default;
+  getDescription: typeof utilModules.helpHelpers.getDescription.file.default;
+  getEmbeds: typeof utilModules.helpHelpers.getEmbeds.file.default;
+ };
+ interactionHelpers: typeof utilModules.interactionHelpers.file.default;
+ isDeleteable: typeof utilModules.isDeleteable.file.default;
+ isEditable: typeof utilModules.isEditable.file.default;
+ loadingEmbed: typeof utilModules.loadingEmbed.file.default;
+ log: typeof utilModules.log.file.default;
+ makeStp: typeof utilModules.makeStp.file.default;
+ memberBoostCalc: typeof utilModules.memberBoostCalc.file.default;
+ mergeLogging: typeof utilModules.mergeLogging.file.default;
+ mod: {
+  file: typeof utilModules.mod.file.default;
+
+  mod: {
+   banAdd: typeof utilModules.mod.mod.banAdd.file.default;
+   banRemove: typeof utilModules.mod.mod.banRemove.file.default;
+   channelBanAdd: typeof utilModules.mod.mod.channelBanAdd.file.default;
+   channelBanRemove: typeof utilModules.mod.mod.channelBanRemove.file.default;
+   kickAdd: typeof utilModules.mod.mod.kickAdd.file.default;
+   muteRemove: typeof utilModules.mod.mod.muteRemove.file.default;
+   roleAdd: typeof utilModules.mod.mod.roleAdd.file.default;
+   roleRemove: typeof utilModules.mod.mod.roleRemove.file.default;
+   softBanAdd: typeof utilModules.mod.mod.softBanAdd.file.default;
+   softWarnAdd: typeof utilModules.mod.mod.softWarnAdd.file.default;
+   strikeAdd: typeof utilModules.mod.mod.strikeAdd.file.default;
+   tempBanAdd: typeof utilModules.mod.mod.tempBanAdd.file.default;
+   tempChannelBanAdd: typeof utilModules.mod.mod.tempChannelBanAdd.file.default;
+   tempMuteAdd: typeof utilModules.mod.mod.tempMuteAdd.file.default;
+   unAfk: typeof utilModules.mod.mod.unAfk.file.default;
+   warnAdd: typeof utilModules.mod.mod.warnAdd.file.default;
+  };
+  actionAlreadyApplied: typeof utilModules.mod.actionAlreadyApplied.file.default;
+  alreadyExecuting: typeof utilModules.mod.alreadyExecuting.file.default;
+  checkExeCanManage: typeof utilModules.mod.checkExeCanManage.file.default;
+  err: typeof utilModules.mod.err.file.default;
+  getMembers: typeof utilModules.mod.getMembers.file.default;
+  getStrike: typeof utilModules.mod.getStrike.file.default;
+  isMe: typeof utilModules.mod.isMe.file.default;
+  isSelf: typeof utilModules.mod.isSelf.file.default;
+  notifyTarget: typeof utilModules.mod.notifyTarget.file.default;
+  permissionError: typeof utilModules.mod.permissionError.file.default;
+  startLoading: typeof utilModules.mod.startLoading.file.default;
+ };
+ moment: typeof utilModules.moment.file.default;
+ notYours: typeof utilModules.notYours.file.default;
+ permCalc: typeof utilModules.permCalc.file.default;
+ permError: typeof utilModules.permError.file.default;
+ refreshToken: typeof utilModules.refreshToken.file.default;
+ regexes: typeof utilModules.regexes.file.default;
+ replyCmd: typeof utilModules.replyCmd.file.default;
+ replyMsg: typeof utilModules.replyMsg.file.default;
+ request: typeof utilModules.requestHandler.file.request;
+ requestHandler: typeof utilModules.requestHandler.file.default;
+ roleManager: typeof utilModules.roleManager.file.default;
+ send: typeof utilModules.send.file.default;
+ settingsHelpers: {
+  buttonParsers: {
+   back: typeof utilModules.settingsHelpers.buttonParsers.back.file.default;
+   delete: typeof utilModules.settingsHelpers.buttonParsers.delete.file.default;
+   global: typeof utilModules.settingsHelpers.buttonParsers.global.file.default;
+   next: typeof utilModules.settingsHelpers.buttonParsers.next.file.default;
+   previous: typeof utilModules.settingsHelpers.buttonParsers.previous.file.default;
+   setting: typeof utilModules.settingsHelpers.buttonParsers.setting.file.default;
+   specific: typeof utilModules.settingsHelpers.buttonParsers.specific.file.default;
+   boolean: typeof utilModules.settingsHelpers.buttonParsers.boolean.file.default;
+  };
+  changeHelpers: {
+   back: typeof utilModules.settingsHelpers.changeHelpers.back.file.default;
+   changeEmbed: typeof utilModules.settingsHelpers.changeHelpers.changeEmbed.file.default;
+   changeModal: typeof utilModules.settingsHelpers.changeHelpers.changeModal.file.default;
+   changeSelect: typeof utilModules.settingsHelpers.changeHelpers.changeSelect.file.default;
+   changeSelectGlobal: typeof utilModules.settingsHelpers.changeHelpers.changeSelectGlobal.file.default;
+   done: typeof utilModules.settingsHelpers.changeHelpers.done.file.default;
+   get: typeof utilModules.settingsHelpers.changeHelpers.get.file.default;
+   getAndInsert: typeof utilModules.settingsHelpers.changeHelpers.getAndInsert.file.default;
+   makeEmpty: typeof utilModules.settingsHelpers.changeHelpers.makeEmpty.file.default;
+   modal: typeof utilModules.settingsHelpers.changeHelpers.modal.file.default;
+  };
+  embedParsers: {
+   author: typeof utilModules.settingsHelpers.embedParsers.author.file.default;
+   boolean: typeof utilModules.settingsHelpers.embedParsers.boolean.file.default;
+   channel: typeof utilModules.settingsHelpers.embedParsers.channel.file.default;
+   channels: typeof utilModules.settingsHelpers.embedParsers.channels.file.default;
+   command: typeof utilModules.settingsHelpers.embedParsers.command.file.default;
+   embed: typeof utilModules.settingsHelpers.embedParsers.embed.file.default;
+   emote: typeof utilModules.settingsHelpers.embedParsers.emote.file.default;
+   number: typeof utilModules.settingsHelpers.embedParsers.number.file.default;
+   role: typeof utilModules.settingsHelpers.embedParsers.role.file.default;
+   roles: typeof utilModules.settingsHelpers.embedParsers.roles.file.default;
+   rules: typeof utilModules.settingsHelpers.embedParsers.rules.file.default;
+   string: typeof utilModules.settingsHelpers.embedParsers.string.file.default;
+   time: typeof utilModules.settingsHelpers.embedParsers.time.file.default;
+   user: typeof utilModules.settingsHelpers.embedParsers.user.file.default;
+   users: typeof utilModules.settingsHelpers.embedParsers.users.file.default;
+  };
+  multiRowHelpers: {
+   components: typeof utilModules.settingsHelpers.multiRowHelpers.components.file.default;
+   options: typeof utilModules.settingsHelpers.multiRowHelpers.options.file.default;
+   embeds: typeof utilModules.settingsHelpers.multiRowHelpers.embeds.file.default;
+   noFields: typeof utilModules.settingsHelpers.multiRowHelpers.noFields.file.default;
+  };
+  del: typeof utilModules.settingsHelpers.del.file.default;
+  getChangeSelectType: typeof utilModules.settingsHelpers.getChangeSelectType.file.default;
+  getEmoji: typeof utilModules.settingsHelpers.getEmoji.file.default;
+  getGlobalDesc: typeof utilModules.settingsHelpers.getGlobalDesc.file.default;
+  getLable: typeof utilModules.settingsHelpers.getLable.file.default;
+  getMention: typeof utilModules.settingsHelpers.getMention.file.default;
+  getPlaceholder: typeof utilModules.settingsHelpers.getPlaceholder.file.default;
+  getSettingsFile: typeof utilModules.settingsHelpers.getSettingsFile.file.default;
+  getStyle: typeof utilModules.settingsHelpers.getStyle.file.default;
+  postUpdate: typeof utilModules.settingsHelpers.postUpdate.file.default;
+  setup: typeof utilModules.settingsHelpers.setup.file.default;
+  updateLog: typeof utilModules.settingsHelpers.updateLog.file.default;
+ };
+ sleep: typeof utilModules.sleep.file.default;
+ spaces: typeof utilModules.spaces.file.default;
+ splitByThousand: typeof utilModules.splitByThousand.file.default;
+ stp: typeof utilModules.stp.file.default;
+ txtFileLinkToString: typeof utilModules.txtFileLinkToString.file.default;
+ txtFileWriter: typeof utilModules.txtFileWriter.file.default;
+ userFlagsCalc: typeof utilModules.userFlagsCalc.file.default;
+ logError: typeof utilModules.logError.file.default;
+ util: typeof utilModules.util.file;
 }
 
 const util: Util = {
- deleteNotificationThread,
- notificationThread,
- DataBase,
- arrayBufferToBuffer,
- arrayEquals,
- bitUniques,
- cache,
- channelRuleCalc,
- constants,
- disableComponents,
- dynamicToEmbed,
- emotes,
- encodeString2BigInt,
- error,
- errorCmd,
- errorMsg,
- fetchAllEventSubscribers,
- fetchAllGuildMembers,
- fetchMessages,
- fetchWithRedirects,
- fileURL2Buffer,
- findServerByName,
- findUserByName,
- firstGuildInteraction,
- firstChannelInteraction,
- getAllBans,
- getAllInvites,
- getAudit,
- getBotIdFromGuild,
- getBotIdFromToken,
- getBotMemberFromGuild,
- getChanged,
- getChannel,
- getChannelWebhook,
- getChunks,
- getColor,
- getCustomCommand,
- getDifference,
- getDiscordEmbed,
- getDuration,
- getEmote,
- getEvents,
- getGif,
- getLanguage,
- getLogChannels,
- getMessage,
- getNameAndFileType,
- getPunishment,
- getRandom,
- getReferenceMessage,
- getSerializedChannelPerms,
- getStringChunks,
- getTarget,
- getTargetChannel,
- getTrueChannelType,
- getUnix,
- getUser,
- getUserFromUserAndUsernameOptions,
- helpHelpers,
- interactionHelpers,
- isDeleteable,
- isEditable,
- loadingEmbed,
- log,
  logFiles,
- makeStp,
- memberBoostCalc,
- mergeLogging,
- mod,
- moment,
- notYours,
- permCalc,
- permError,
- refreshToken,
- regexes,
- replyCmd,
- replyMsg,
- request,
- requestHandler,
- roleManager,
- send,
- settingsHelpers,
- sleep,
- spaces,
- splitByThousand,
- stp,
- txtFileLinkToString,
- txtFileWriter,
- userFlagsCalc,
- util: utils,
- files,
+ DataBase,
+ cache,
+
+ CT: { ...importCache.Typings.Settings.file, ...importCache.Typings.Typings.file },
+ importCache: importCache.BaseClient.UtilModules.importCache.file.default,
+ files: utilModules.files.file.default,
+ deleteNotificationThread: utilModules.deleteNotificationThread.file.default,
+ notificationThread: utilModules.notificationThread.file.default,
+ arrayBufferToBuffer: utilModules.arrayBufferToBuffer.file.default,
+ arrayEquals: utilModules.arrayEquals.file.default,
+ bitUniques: utilModules.bitUniques.file.default,
+ channelRuleCalc: utilModules.channelRuleCalc.file.default,
+ constants: utilModules.constants.file.default,
+ disableComponents: utilModules.disableComponents.file.default,
+ dynamicToEmbed: utilModules.dynamicToEmbed.file.default,
+ emotes: utilModules.emotes.file.default,
+ encodeString2BigInt: utilModules.encodeString2BigInt.file.default,
+ error: utilModules.error.file.default,
+ errorCmd: utilModules.errorCmd.file.default,
+ errorMsg: utilModules.errorMsg.file.default,
+ fetchAllEventSubscribers: utilModules.fetchAllEventSubscribers.file.default,
+ fetchAllGuildMembers: utilModules.fetchAllGuildMembers.file.default,
+ fetchMessages: utilModules.fetchMessages.file.default,
+ fetchWithRedirects: utilModules.fetchWithRedirects.file.default,
+ fileURL2Buffer: utilModules.fileURL2Buffer.file.default,
+ findServerByName: utilModules.findServerByName.file.default,
+ findUserByName: utilModules.findUserByName.file.default,
+ firstGuildInteraction: utilModules.firstGuildInteraction.file.default,
+ firstChannelInteraction: utilModules.firstChannelInteraction.file.default,
+ getAllBans: utilModules.getAllBans.file.default,
+ getAllInvites: utilModules.getAllInvites.file.default,
+ getAudit: utilModules.getAudit.file.default,
+ getBotIdFromGuild: utilModules.getBotIdFrom.file.guild,
+ getBotIdFromToken: utilModules.getBotIdFrom.file.token,
+ getBotMemberFromGuild: utilModules.getBotMemberFromGuild.file.default,
+ getChanged: utilModules.getChanged.file.default,
+ getChannel: utilModules.getChannel.file,
+ getChannelWebhook: utilModules.getChannelWebhook.file.default,
+ getChunks: utilModules.getChunks.file.default,
+ getColor: utilModules.getColor.file.default,
+ getCustomCommand: utilModules.getCustomCommand.file.default,
+ getDifference: utilModules.getDifference.file.default,
+ getDiscordEmbed: utilModules.getDiscordEmbed.file.default,
+ getDuration: utilModules.getDuration.file.default,
+ getEmote: utilModules.getEmote.file.default,
+ getEvents: utilModules.getEvents.file.default,
+ getGif: utilModules.getGif.file.default,
+ getLanguage: utilModules.getLanguage.file.default,
+ getLogChannels: utilModules.getLogChannels.file.default,
+ getMessage: utilModules.getMessage.file.default,
+ getNameAndFileType: utilModules.getNameAndFileType.file.default,
+ getPunishment: utilModules.getPunishment.file.default,
+ getRandom: utilModules.getRandom.file.default,
+ getReferenceMessage: utilModules.getReferenceMessage.file.default,
+ getSerializedChannelPerms: utilModules.getSerializedChannelPerms.file.default,
+ getStringChunks: utilModules.getStringChunks.file.default,
+ getTarget: utilModules.getTarget.file.default,
+ getTargetChannel: utilModules.getTargetChannel.file.default,
+ getTrueChannelType: utilModules.getTrueChannelType.file.default,
+ getUnix: utilModules.getUnix.file.default,
+ getUser: utilModules.getUser.file.default,
+ getUserFromUserAndUsernameOptions: utilModules.getUserFromUserAndUsernameOptions.file.default,
+ helpHelpers: {
+  getDesc: utilModules.helpHelpers.getDesc.file.default,
+  getDescription: utilModules.helpHelpers.getDescription.file.default,
+  getEmbeds: utilModules.helpHelpers.getEmbeds.file.default,
+ },
+ interactionHelpers: utilModules.interactionHelpers.file.default,
+ isDeleteable: utilModules.isDeleteable.file.default,
+ isEditable: utilModules.isEditable.file.default,
+ loadingEmbed: utilModules.loadingEmbed.file.default,
+ log: utilModules.log.file.default,
+ makeStp: utilModules.makeStp.file.default,
+ memberBoostCalc: utilModules.memberBoostCalc.file.default,
+ mergeLogging: utilModules.mergeLogging.file.default,
+ mod: {
+  file: utilModules.mod.file.default,
+
+  mod: {
+   banAdd: utilModules.mod.mod.banAdd.file.default,
+   banRemove: utilModules.mod.mod.banRemove.file.default,
+   channelBanAdd: utilModules.mod.mod.channelBanAdd.file.default,
+   channelBanRemove: utilModules.mod.mod.channelBanRemove.file.default,
+   kickAdd: utilModules.mod.mod.kickAdd.file.default,
+   muteRemove: utilModules.mod.mod.muteRemove.file.default,
+   roleAdd: utilModules.mod.mod.roleAdd.file.default,
+   roleRemove: utilModules.mod.mod.roleRemove.file.default,
+   softBanAdd: utilModules.mod.mod.softBanAdd.file.default,
+   softWarnAdd: utilModules.mod.mod.softWarnAdd.file.default,
+   strikeAdd: utilModules.mod.mod.strikeAdd.file.default,
+   tempBanAdd: utilModules.mod.mod.tempBanAdd.file.default,
+   tempChannelBanAdd: utilModules.mod.mod.tempChannelBanAdd.file.default,
+   tempMuteAdd: utilModules.mod.mod.tempMuteAdd.file.default,
+   unAfk: utilModules.mod.mod.unAfk.file.default,
+   warnAdd: utilModules.mod.mod.warnAdd.file.default,
+  },
+  actionAlreadyApplied: utilModules.mod.actionAlreadyApplied.file.default,
+  alreadyExecuting: utilModules.mod.alreadyExecuting.file.default,
+  checkExeCanManage: utilModules.mod.checkExeCanManage.file.default,
+  err: utilModules.mod.err.file.default,
+  getMembers: utilModules.mod.getMembers.file.default,
+  getStrike: utilModules.mod.getStrike.file.default,
+  isMe: utilModules.mod.isMe.file.default,
+  isSelf: utilModules.mod.isSelf.file.default,
+  notifyTarget: utilModules.mod.notifyTarget.file.default,
+  permissionError: utilModules.mod.permissionError.file.default,
+  startLoading: utilModules.mod.startLoading.file.default,
+ },
+ moment: utilModules.moment.file.default,
+ notYours: utilModules.notYours.file.default,
+ permCalc: utilModules.permCalc.file.default,
+ permError: utilModules.permError.file.default,
+ refreshToken: utilModules.refreshToken.file.default,
+ regexes: utilModules.regexes.file.default,
+ replyCmd: utilModules.replyCmd.file.default,
+ replyMsg: utilModules.replyMsg.file.default,
+ request: utilModules.requestHandler.file.request,
+ requestHandler: utilModules.requestHandler.file.default,
+ roleManager: utilModules.roleManager.file.default,
+ send: utilModules.send.file.default,
+ settingsHelpers: {
+  buttonParsers: {
+   back: utilModules.settingsHelpers.buttonParsers.back.file.default,
+   delete: utilModules.settingsHelpers.buttonParsers.delete.file.default,
+   global: utilModules.settingsHelpers.buttonParsers.global.file.default,
+   next: utilModules.settingsHelpers.buttonParsers.next.file.default,
+   previous: utilModules.settingsHelpers.buttonParsers.previous.file.default,
+   setting: utilModules.settingsHelpers.buttonParsers.setting.file.default,
+   specific: utilModules.settingsHelpers.buttonParsers.specific.file.default,
+   boolean: utilModules.settingsHelpers.buttonParsers.boolean.file.default,
+  },
+  changeHelpers: {
+   back: utilModules.settingsHelpers.changeHelpers.back.file.default,
+   changeEmbed: utilModules.settingsHelpers.changeHelpers.changeEmbed.file.default,
+   changeModal: utilModules.settingsHelpers.changeHelpers.changeModal.file.default,
+   changeSelect: utilModules.settingsHelpers.changeHelpers.changeSelect.file.default,
+   changeSelectGlobal: utilModules.settingsHelpers.changeHelpers.changeSelectGlobal.file.default,
+   done: utilModules.settingsHelpers.changeHelpers.done.file.default,
+   get: utilModules.settingsHelpers.changeHelpers.get.file.default,
+   getAndInsert: utilModules.settingsHelpers.changeHelpers.getAndInsert.file.default,
+   makeEmpty: utilModules.settingsHelpers.changeHelpers.makeEmpty.file.default,
+   modal: utilModules.settingsHelpers.changeHelpers.modal.file.default,
+  },
+  embedParsers: {
+   author: utilModules.settingsHelpers.embedParsers.author.file.default,
+   boolean: utilModules.settingsHelpers.embedParsers.boolean.file.default,
+   channel: utilModules.settingsHelpers.embedParsers.channel.file.default,
+   channels: utilModules.settingsHelpers.embedParsers.channels.file.default,
+   command: utilModules.settingsHelpers.embedParsers.command.file.default,
+   embed: utilModules.settingsHelpers.embedParsers.embed.file.default,
+   emote: utilModules.settingsHelpers.embedParsers.emote.file.default,
+   number: utilModules.settingsHelpers.embedParsers.number.file.default,
+   role: utilModules.settingsHelpers.embedParsers.role.file.default,
+   roles: utilModules.settingsHelpers.embedParsers.roles.file.default,
+   rules: utilModules.settingsHelpers.embedParsers.rules.file.default,
+   string: utilModules.settingsHelpers.embedParsers.string.file.default,
+   time: utilModules.settingsHelpers.embedParsers.time.file.default,
+   user: utilModules.settingsHelpers.embedParsers.user.file.default,
+   users: utilModules.settingsHelpers.embedParsers.users.file.default,
+  },
+  multiRowHelpers: {
+   components: utilModules.settingsHelpers.multiRowHelpers.components.file.default,
+   options: utilModules.settingsHelpers.multiRowHelpers.options.file.default,
+   embeds: utilModules.settingsHelpers.multiRowHelpers.embeds.file.default,
+   noFields: utilModules.settingsHelpers.multiRowHelpers.noFields.file.default,
+  },
+  del: utilModules.settingsHelpers.del.file.default,
+  getChangeSelectType: utilModules.settingsHelpers.getChangeSelectType.file.default,
+  getEmoji: utilModules.settingsHelpers.getEmoji.file.default,
+  getGlobalDesc: utilModules.settingsHelpers.getGlobalDesc.file.default,
+  getLable: utilModules.settingsHelpers.getLable.file.default,
+  getMention: utilModules.settingsHelpers.getMention.file.default,
+  getPlaceholder: utilModules.settingsHelpers.getPlaceholder.file.default,
+  getSettingsFile: utilModules.settingsHelpers.getSettingsFile.file.default,
+  getStyle: utilModules.settingsHelpers.getStyle.file.default,
+  postUpdate: utilModules.settingsHelpers.postUpdate.file.default,
+  setup: utilModules.settingsHelpers.setup.file.default,
+  updateLog: utilModules.settingsHelpers.updateLog.file.default,
+ },
+ sleep: utilModules.sleep.file.default,
+ spaces: utilModules.spaces.file.default,
+ splitByThousand: utilModules.splitByThousand.file.default,
+ stp: utilModules.stp.file.default,
+ txtFileLinkToString: utilModules.txtFileLinkToString.file.default,
+ txtFileWriter: utilModules.txtFileWriter.file.default,
+ userFlagsCalc: utilModules.userFlagsCalc.file.default,
+ logError: utilModules.logError.file.default,
+ util: utilModules.util.file,
 };
 
 export default util;
