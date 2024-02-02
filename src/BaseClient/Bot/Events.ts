@@ -6,12 +6,12 @@ import type { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
 
 const spawnEvents = async () => {
- const { default: files } = await import('../UtilModules/files.js');
- const events = await files.BaseClient.UtilModules.getEvents.get();
+ const { default: cache } = await import('../UtilModules/importCache.js');
+ const events = cache.BaseClient.UtilModules.getEvents.file.default;
 
- client.setMaxListeners(events.default.BotEvents.length);
+ client.setMaxListeners(events.BotEvents.length);
 
- events.default.BotEvents.forEach(async (path) => {
+ events.BotEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as keyof Discord.ClientEvents;
   if (!eventName) return;
 
@@ -34,10 +34,10 @@ const spawnEvents = async () => {
  });
 
  client.cluster?.on('ready', async (cl) => {
-  (await files.BaseClient.Bot.Presence.get()).default(cl);
+  cache.BaseClient.Bot.Presence.file.default(cl);
  });
 
- events.default.ProcessEvents.forEach(async (path) => {
+ events.ProcessEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
   if (!eventName) return;
 
