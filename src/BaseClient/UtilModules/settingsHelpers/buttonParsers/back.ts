@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 /**
  * A button component used for navigating back to the previous menu.
@@ -11,9 +10,10 @@ import emotes from '../../emotes.js';
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  name: T,
  uniquetimestamp: number | undefined | string,
+ client: Discord.Client,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Danger,
  custom_id: `settings/settingsDisplay_${String(name)}_${uniquetimestamp}`,
- emoji: emotes.back,
+ emoji: client.util.emotes.back,
 });

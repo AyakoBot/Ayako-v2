@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
-import * as CT from '../../../Typings/Typings.js';
-import emotes from '../emotes.js';
+import type * as S from '../../../Typings/Settings.js';
+import client from '../../Bot/Client.js';
 
 /**
  * Returns the corresponding emoji based on the setting and type.
@@ -10,19 +10,19 @@ import emotes from '../emotes.js';
  */
 export default (
  setting: string | boolean | string[] | undefined | Prisma.Decimal | null,
- type?: CT.GlobalDescType,
+ type?: S.GlobalDescType,
 ) => {
  switch (type) {
-  case CT.GlobalDescType.BLChannelId:
-  case CT.GlobalDescType.WLChannelId:
-   return emotes.channelTypes[0];
-  case CT.GlobalDescType.BLRoleId:
-  case CT.GlobalDescType.WLRoleId:
-   return emotes.Role;
-  case CT.GlobalDescType.BLUserId:
-  case CT.GlobalDescType.WLUserId:
-   return emotes.Member;
+  case client.util.CT.GlobalDescType.BLChannelId:
+  case client.util.CT.GlobalDescType.WLChannelId:
+   return client.util.emotes.channelTypes[0];
+  case client.util.CT.GlobalDescType.BLRoleId:
+  case client.util.CT.GlobalDescType.WLRoleId:
+   return client.util.emotes.Role;
+  case client.util.CT.GlobalDescType.BLUserId:
+  case client.util.CT.GlobalDescType.WLUserId:
+   return client.util.emotes.Member;
   default:
-   return setting ? emotes.enabled : emotes.disabled;
+   return setting ? client.util.emotes.enabled : client.util.emotes.disabled;
  }
 };

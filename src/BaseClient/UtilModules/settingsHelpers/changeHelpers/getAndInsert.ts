@@ -1,8 +1,8 @@
 import DataBase from '../../../Bot/DataBase.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 export default (
- tableName: keyof typeof CT.SettingsName2TableName,
+ tableName: keyof typeof S.SettingsName2TableName,
  fieldName: string,
  guildid: string,
  newSetting: unknown,

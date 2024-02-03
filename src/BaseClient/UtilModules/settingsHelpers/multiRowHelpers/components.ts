@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import buttonParsers from '../buttonParsers.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Adds pagination buttons to the beginning of the components array
@@ -10,7 +10,7 @@ import buttonParsers from '../buttonParsers.js';
  * @param language - The language object containing the button text.
  * @param name - The name of the setting being paginated.
  */
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  embeds: Discord.APIEmbed[],
  components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[],
  language: CT.Language,
@@ -20,8 +20,16 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   components.unshift({
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.previous(language, name),
-    buttonParsers.next(language, name, undefined, true),
+    language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.buttonParsers.previous.file.default(
+     language,
+     name,
+    ),
+    language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.buttonParsers.next.file.default(
+     language,
+     name,
+     undefined,
+     true,
+    ),
    ],
   });
  }

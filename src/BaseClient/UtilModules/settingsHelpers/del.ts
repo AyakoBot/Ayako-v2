@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/Typings.js';
+import type * as S from '../../../Typings/Settings.js';
 import DataBase from '../../Bot/DataBase.js';
 
 /**
@@ -11,7 +11,7 @@ import DataBase from '../../Bot/DataBase.js';
  * @throws An error if the specified table name is not supported.
  */
 export default (
- tableName: keyof typeof CT.SettingsName2TableName,
+ tableName: keyof typeof S.SettingsName2TableName,
  guildid: string,
  uniquetimestamp: number,
 ) => {

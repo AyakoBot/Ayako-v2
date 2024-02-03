@@ -1,13 +1,13 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
+import type * as S from '../../../../Typings/Settings.js';
 
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  name: T,
  fieldName: string,
+ client: Discord.Client,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Danger,
  custom_id: `settings/modal_${String(name)}_${fieldName}`,
- emoji: emotes.back,
+ emoji: client.util.emotes.back,
 });

@@ -1,5 +1,5 @@
-import * as CT from '../../../Typings/Typings.js';
-import log from '../logError.js';
+import type * as CT from '../../../Typings/Typings.js';
+import type * as S from '../../../Typings/Settings.js';
 
 export enum GlobalDescType {
  BLChannelId = 'blchannelid',
@@ -17,7 +17,7 @@ export enum GlobalDescType {
  * @param language - The language object containing the descriptions.
  * @returns The description for the given type.
  */
-export default (type: GlobalDescType | CT.AutoModEditorType, language: CT.Language) => {
+export default (type: GlobalDescType | S.AutoModEditorType, language: CT.Language) => {
  switch (type) {
   case GlobalDescType.BLChannelId:
   case GlobalDescType.BLRoleId:
@@ -28,14 +28,14 @@ export default (type: GlobalDescType | CT.AutoModEditorType, language: CT.Langua
    return language.slashCommands.settings.BLWL[type];
   case GlobalDescType.Active:
    return language.slashCommands.settings.active;
-  case CT.AutoModEditorType.Channel:
+  case language.client.util.CT.AutoModEditorType.Channel:
    return language.events.logs.automodRule.alertChannel;
-  case CT.AutoModEditorType.Roles:
+  case language.client.util.CT.AutoModEditorType.Roles:
    return language.events.logs.automodRule.exemptRoles;
-  case CT.AutoModEditorType.Channels:
+  case language.client.util.CT.AutoModEditorType.Channels:
    return language.events.logs.automodRule.exemptChannels;
   default:
-   log(new Error(`Unknown Type ${type}`), true);
+   language.client.util.logError(new Error(`Unknown Type ${type}`), true);
    return language.t.Unknown;
  }
 };

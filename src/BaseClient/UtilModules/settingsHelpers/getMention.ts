@@ -1,26 +1,26 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import { makeInlineCode } from '../util.js';
+import type * as CT from '../../../Typings/Typings.js';
+import type * as S from '../../../Typings/Settings.js';
 
 export type MentionTypes =
- | CT.EditorTypes.Channel
- | CT.EditorTypes.Role
- | CT.EditorTypes.User
- | CT.EditorTypes.Emote
- | CT.EditorTypes.ShopType
- | CT.EditorTypes.AutoPunishment
- | CT.EditorTypes.AntiRaidPunishment
- | CT.EditorTypes.Punishment
- | CT.EditorTypes.Language
- | CT.EditorTypes.RoleMode
- | CT.EditorTypes.AutoModRules
- | CT.EditorTypes.Commands
- | CT.EditorTypes.QuestionType
- | CT.EditorTypes.SettingLink
- | CT.EditorTypes.Embed
- | CT.EditorTypes.Questions
- | CT.EditorTypes.LvlUpMode
- | CT.EditorTypes.WeekendsType;
+ | S.EditorTypes.Channel
+ | S.EditorTypes.Role
+ | S.EditorTypes.User
+ | S.EditorTypes.Emote
+ | S.EditorTypes.ShopType
+ | S.EditorTypes.AutoPunishment
+ | S.EditorTypes.AntiRaidPunishment
+ | S.EditorTypes.Punishment
+ | S.EditorTypes.Language
+ | S.EditorTypes.RoleMode
+ | S.EditorTypes.AutoModRules
+ | S.EditorTypes.Commands
+ | S.EditorTypes.QuestionType
+ | S.EditorTypes.SettingLink
+ | S.EditorTypes.Embed
+ | S.EditorTypes.Questions
+ | S.EditorTypes.LvlUpMode
+ | S.EditorTypes.WeekendsType;
 
 /**
  * Returns a mention string based on the given type and value.
@@ -37,39 +37,39 @@ export default async (
  guild: Discord.Guild,
 ) => {
  switch (type) {
-  case CT.EditorTypes.Channel:
+  case language.client.util.CT.EditorTypes.Channel:
    return `<#${value}>`;
-  case CT.EditorTypes.Role:
+  case language.client.util.CT.EditorTypes.Role:
    return `<@&${value}>`;
-  case CT.EditorTypes.User:
+  case language.client.util.CT.EditorTypes.User:
    return `<@${value}>`;
-  case CT.EditorTypes.ShopType:
+  case language.client.util.CT.EditorTypes.ShopType:
    return language.shoptypes[value as keyof typeof language.shoptypes];
-  case CT.EditorTypes.AutoPunishment:
-  case CT.EditorTypes.AntiRaidPunishment:
-  case CT.EditorTypes.Punishment:
+  case language.client.util.CT.EditorTypes.AutoPunishment:
+  case language.client.util.CT.EditorTypes.AntiRaidPunishment:
+  case language.client.util.CT.EditorTypes.Punishment:
    return language.punishments[value as keyof typeof language.punishments];
-  case CT.EditorTypes.Language:
+  case language.client.util.CT.EditorTypes.Language:
    return language.languages[value as keyof typeof language.languages];
-  case CT.EditorTypes.RoleMode:
+  case language.client.util.CT.EditorTypes.RoleMode:
    return language.rolemodes[value as keyof typeof language.rolemodes];
-  case CT.EditorTypes.Emote:
+  case language.client.util.CT.EditorTypes.Emote:
    return value.includes(':') ? `<${value}>` : value;
-  case CT.EditorTypes.AutoModRules:
-   return makeInlineCode(
+  case language.client.util.CT.EditorTypes.AutoModRules:
+   return language.client.util.util.makeInlineCode(
     (guild as NonNullable<typeof guild>).autoModerationRules.cache.get(value)?.name ?? value,
    );
-  case CT.EditorTypes.Commands: {
+  case language.client.util.CT.EditorTypes.Commands: {
    const cmd = guild.client.application?.commands.cache.get(value);
 
    if (!cmd) return `\`${value}\``;
    return `</${cmd?.name}:${cmd?.id}>`;
   }
-  case CT.EditorTypes.QuestionType:
+  case language.client.util.CT.EditorTypes.QuestionType:
    return language.answertypes[value as keyof typeof language.answertypes];
-  case CT.EditorTypes.LvlUpMode:
+  case language.client.util.CT.EditorTypes.LvlUpMode:
    return language.lvlupmodes[value as keyof typeof language.lvlupmodes];
-  case CT.EditorTypes.WeekendsType:
+  case language.client.util.CT.EditorTypes.WeekendsType:
    return language.weekendstype[value as keyof typeof language.weekendstype];
   default:
    return value;

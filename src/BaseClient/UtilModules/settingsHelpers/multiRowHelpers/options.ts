@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import buttonParsers from '../buttonParsers.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Generates an array of action row components for a given setting name.
@@ -8,12 +8,17 @@ import buttonParsers from '../buttonParsers.js';
  * @param name - The name of the setting to generate buttons for.
  * @returns An array of action row components containing a single button.
  */
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
  name: T,
 ): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: [buttonParsers.create(language, name)],
+  components: [
+   language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.buttonParsers.create.file.default(
+    language,
+    name,
+   ),
+  ],
  },
 ];

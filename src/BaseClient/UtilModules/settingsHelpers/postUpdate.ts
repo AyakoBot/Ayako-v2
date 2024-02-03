@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as CT from '../../../Typings/Typings.js';
-import constants from '../../Other/constants.js';
+import type * as S from '../../../Typings/Settings.js';
 
 /**
  * Updates a setting and triggers a post-update action if necessary.
@@ -12,10 +11,10 @@ import constants from '../../Other/constants.js';
  * @param guild The guild where the setting was changed.
  * @param uniquetimestamp A unique timestamp to identify the update.
  */
-export default async <T extends keyof typeof CT.SettingsName2TableName>(
+export default async <T extends keyof typeof S.SettingsName2TableName>(
  oldSetting: unknown,
  newSetting: unknown,
- changedSetting: keyof CT.FieldName<T>,
+ changedSetting: keyof S.FieldName<T>,
  settingName: T,
  guild: Discord.Guild,
  uniquetimestamp: number | string | undefined,
@@ -27,7 +26,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
  const file = files.find((f) =>
   f.endsWith(
    `/${
-    constants.commands.settings.basicSettings.includes(String(settingName))
+    guild.client.util.constants.commands.settings.basicSettings.includes(String(settingName))
      ? `${String(settingName)}/basic`
      : String(settingName)
    }.js`,
@@ -35,7 +34,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
  );
  if (!file) return;
 
- const settingsFile = (await import(file)) as CT.SettingsFile<typeof settingName>;
+ const settingsFile = (await import(file)) as S.SettingsFile<typeof settingName>;
 
  settingsFile.postChange?.(
   oldSetting as never,

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Creates a button component for navigating to the next page of settings.
@@ -10,7 +10,7 @@ import emotes from '../../emotes.js';
  * @param enabled - Whether the button should be enabled or disabled.
  * @returns A Discord API button component.
  */
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
  name: T,
  uniquetimestamp: number | undefined,
@@ -20,6 +20,6 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
  label: language.slashCommands.settings.next,
  style: Discord.ButtonStyle.Success,
  custom_id: `settings/next_${String(name)}_${uniquetimestamp}`,
- emoji: emotes.forth,
+ emoji: language.client.util.emotes.forth,
  disabled: !enabled,
 });

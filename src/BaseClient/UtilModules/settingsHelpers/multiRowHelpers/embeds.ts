@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import embedParsers from '../embedParsers.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Generates an array of embeds for a given setting name.
@@ -9,7 +9,7 @@ import embedParsers from '../embedParsers.js';
  * @param lan - The name of the setting being paginated.
  * @returns An array of APIEmbed objects.
  */
-export default <T extends keyof CT.Categories>(
+export default <T extends keyof S.Categories>(
  fields:
   | {
      name: string;
@@ -17,10 +17,14 @@ export default <T extends keyof CT.Categories>(
     }[]
   | undefined,
  language: CT.Language,
- lan: CT.Categories[T],
+ lan: S.Categories[T],
 ): Discord.APIEmbed[] => [
  {
-  author: embedParsers.author(language, lan),
+  author:
+   language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.embedParsers.author.file.default(
+    language,
+    lan,
+   ),
   fields: fields?.splice(0, 24) ?? [],
  },
 ];

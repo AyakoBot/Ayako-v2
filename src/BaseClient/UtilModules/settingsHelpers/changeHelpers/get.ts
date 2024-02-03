@@ -1,11 +1,12 @@
-import * as CT from '../../../../Typings/Typings.js';
+import * as Discord from 'discord.js';
+import type * as S from '../../../../Typings/Settings.js';
 import DataBase from '../../../Bot/DataBase.js';
-import setup from '../setup.js';
 
 export default async (
- tableName: keyof typeof CT.SettingsName2TableName,
+ tableName: keyof typeof S.SettingsName2TableName,
  guildid: string,
  uniquetimestamp: number | undefined,
+ client: Discord.Client,
 ) => {
  const getDBType = () => {
   if (uniquetimestamp) {
@@ -102,7 +103,13 @@ export default async (
  };
 
  return getDBType().then((r) => {
-  if (!r) setup(tableName, guildid, uniquetimestamp);
+  if (!r) {
+   client.util.importCache.BaseClient.UtilModules.settingsHelpers.setup.file.default(
+    tableName,
+    guildid,
+    uniquetimestamp,
+   );
+  }
 
   return r ?? null;
  });

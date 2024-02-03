@@ -1,10 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import getLogChannels from '../getLogChannels.js';
-import send from '../send.js';
-import { makeCodeBlock, makeInlineCode } from '../util.js';
-
-import postUpdate from './postUpdate.js';
+import type * as S from '../../../Typings/Settings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 /**
  * Updates the settings log with the old and new settings and sends an embed to the log channel.
@@ -17,31 +13,38 @@ import postUpdate from './postUpdate.js';
  * @param language - The language object.
  * @param lan - The settings language object.
  */
-export default async <T extends keyof typeof CT.SettingsName2TableName>(
- oldSetting: { [key in keyof CT.FieldName<T>]: unknown } | undefined,
- newSetting: { [key in keyof CT.FieldName<T>]: unknown } | undefined,
- changedSetting: keyof CT.FieldName<T>,
+export default async <T extends keyof typeof S.SettingsName2TableName>(
+ oldSetting: { [key in keyof S.FieldName<T>]: unknown } | undefined,
+ newSetting: { [key in keyof S.FieldName<T>]: unknown } | undefined,
+ changedSetting: keyof S.FieldName<T>,
  settingName: T,
  uniquetimestamp: number | string | undefined,
  guild: Discord.Guild,
  language: CT.Language,
- lan: CT.Categories[T],
+ lan: S.Categories[T],
 ) => {
- postUpdate(oldSetting, newSetting, changedSetting, settingName, guild, uniquetimestamp);
+ language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.postUpdate.file.default(
+  oldSetting,
+  newSetting,
+  changedSetting,
+  settingName,
+  guild,
+  uniquetimestamp,
+ );
 
- const logs = await getLogChannels('settingslog', guild);
+ const logs = await language.client.util.getLogChannels('settingslog', guild);
  if (!logs) return;
 
  const getColor = () => {
   switch (true) {
    case !oldSetting: {
-    return CT.Colors.Success;
+    return language.client.util.CT.Colors.Success;
    }
    case !newSetting: {
-    return CT.Colors.Danger;
+    return language.client.util.CT.Colors.Danger;
    }
    default: {
-    return CT.Colors.Loading;
+    return language.client.util.CT.Colors.Loading;
    }
   }
  };
@@ -77,18 +80,18 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
     return [
      {
       name: language.t.Before,
-      value: `${makeInlineCode(field.name)}:\n${
+      value: `${language.client.util.util.makeInlineCode(field.name)}:\n${
        oldSetting?.[changedSetting] && oldSetting?.[changedSetting]
-        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
+        ? language.client.util.util.makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
         : language.t.None
       }`,
       inline: false,
      },
      {
       name: language.t.After,
-      value: `${makeInlineCode(field.name)}:\n${
+      value: `${language.client.util.util.makeInlineCode(field.name)}:\n${
        newSetting?.[changedSetting] && newSetting?.[changedSetting]
-        ? makeCodeBlock((newSetting?.[changedSetting] as string) ?? ' ')
+        ? language.client.util.util.makeCodeBlock((newSetting?.[changedSetting] as string) ?? ' ')
         : language.t.None
       }`,
       inline: false,
@@ -104,5 +107,5 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
   fields: getFields(),
  };
 
- send({ id: logs, guildId: guild.id }, { embeds: [embed] });
+ language.client.util.send({ id: logs, guildId: guild.id }, { embeds: [embed] });
 };

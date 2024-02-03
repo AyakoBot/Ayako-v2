@@ -1,6 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
-import constants from '../../../Other/constants.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Parser for boolean type settings.
@@ -10,5 +8,9 @@ import constants from '../../../Other/constants.js';
  */
 export default (val: boolean | undefined, language: CT.Language) =>
  val
-  ? `${constants.standard.getEmote(emotes.enabled)} ${language.t.Enabled}`
-  : `${constants.standard.getEmote(emotes.disabled)} ${language.t.Disabled}`;
+  ? `${language.client.util.constants.standard.getEmote(language.client.util.emotes.enabled)} ${
+     language.t.Enabled
+    }`
+  : `${language.client.util.constants.standard.getEmote(language.client.util.emotes.disabled)} ${
+     language.t.Disabled
+    }`;

@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
  settingName: T,
  fieldName: string,

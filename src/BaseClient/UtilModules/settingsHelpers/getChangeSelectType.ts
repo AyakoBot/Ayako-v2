@@ -1,15 +1,16 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as S from '../../../Typings/Settings.js';
+import client from '../../Bot/Client.js';
 
 export type ChangeSelectType =
- | CT.EditorTypes.Channel
- | CT.EditorTypes.Role
- | CT.EditorTypes.User
- | CT.EditorTypes.Mention
- | CT.EditorTypes.Channels
- | CT.EditorTypes.Roles
- | CT.EditorTypes.Users
- | CT.EditorTypes.Mentions;
+ | S.EditorTypes.Channel
+ | S.EditorTypes.Role
+ | S.EditorTypes.User
+ | S.EditorTypes.Mention
+ | S.EditorTypes.Channels
+ | S.EditorTypes.Roles
+ | S.EditorTypes.Users
+ | S.EditorTypes.Mentions;
 
 /**
  * Returns the corresponding Discord ComponentType for the given select type.
@@ -18,20 +19,16 @@ export type ChangeSelectType =
  */
 export default (type: ChangeSelectType) => {
  switch (type) {
-  case CT.EditorTypes.Channel:
-  case CT.EditorTypes.Channels: {
+  case client.util.CT.EditorTypes.Channel:
+  case client.util.CT.EditorTypes.Channels:
    return Discord.ComponentType.ChannelSelect;
-  }
-  case CT.EditorTypes.User:
-  case CT.EditorTypes.Users: {
+  case client.util.CT.EditorTypes.User:
+  case client.util.CT.EditorTypes.Users:
    return Discord.ComponentType.UserSelect;
-  }
-  case CT.EditorTypes.Role:
-  case CT.EditorTypes.Roles: {
+  case client.util.CT.EditorTypes.Role:
+  case client.util.CT.EditorTypes.Roles:
    return Discord.ComponentType.RoleSelect;
-  }
-  default: {
+  default:
    return Discord.ComponentType.MentionableSelect;
-  }
  }
 };

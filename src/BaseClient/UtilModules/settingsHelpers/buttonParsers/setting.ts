@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Creates a setting button component for the settings editor.
@@ -12,24 +12,24 @@ import emotes from '../../emotes.js';
  * @param uniquetimestamp - A unique timestamp used to identify the button component.
  * @returns A Discord API button component.
  */
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
  setting: string[] | string | boolean | null,
- name: keyof CT.FieldName<T>,
+ name: keyof S.FieldName<T>,
  settingName: T,
- linkName: keyof typeof CT.SettingsName2TableName,
+ linkName: keyof typeof S.SettingsName2TableName,
  uniquetimestamp: number | undefined,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  label: (
   (
-   language.slashCommands.settings.categories[settingName as CT.SettingNames]
-    .fields as CT.FieldName<T>
+   language.slashCommands.settings.categories[settingName as S.SettingNames]
+    .fields as S.FieldName<T>
   )[name] as unknown as Record<string, string>
  ).name,
  style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
  custom_id: `settings/editors/settinglink_${String(name)}_${String(settingName)}_${String(
   linkName,
  )}_${uniquetimestamp}`,
- emoji: emotes.settings,
+ emoji: language.client.util.emotes.settings,
 });

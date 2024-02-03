@@ -1,4 +1,5 @@
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
+import type * as S from '../../../Typings/Settings.js';
 
 /**
  * Returns a placeholder string based on the type of mentionable.
@@ -6,16 +7,16 @@ import * as CT from '../../../Typings/Typings.js';
  * @param language - The language object containing the placeholder strings.
  * @returns The placeholder string.
  */
-export default (type: CT.EditorTypes, language: CT.Language) => {
+export default (type: S.EditorTypes, language: CT.Language) => {
  switch (type) {
-  case CT.EditorTypes.Channel:
-  case CT.EditorTypes.Channels:
+  case language.client.util.CT.EditorTypes.Channel:
+  case language.client.util.CT.EditorTypes.Channels:
    return language.t.Channels;
-  case CT.EditorTypes.User:
-  case CT.EditorTypes.Users:
+  case language.client.util.CT.EditorTypes.User:
+  case language.client.util.CT.EditorTypes.Users:
    return language.t.Users;
-  case CT.EditorTypes.Role:
-  case CT.EditorTypes.Roles:
+  case language.client.util.CT.EditorTypes.Role:
+  case language.client.util.CT.EditorTypes.Roles:
    return language.t.Roles;
   default:
    return language.t.Mentionables;

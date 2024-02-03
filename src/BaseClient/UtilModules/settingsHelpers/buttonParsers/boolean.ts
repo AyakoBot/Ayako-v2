@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import constants from '../../../Other/constants.js';
-import emotes from '../../emotes.js';
+import type * as S from '../../../../Typings/Settings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Creates a boolean button component for the settings editor.
@@ -12,28 +11,30 @@ import emotes from '../../emotes.js';
  * @param uniquetimestamp - A unique timestamp used to identify the button component.
  * @returns A Discord API button component.
  */
-export default <T extends keyof CT.Categories>(
+export default <T extends keyof S.Categories>(
  language: CT.Language,
  setting: boolean | undefined,
- name: keyof CT.FieldName<T>,
+ name: keyof S.FieldName<T>,
  settingName: T,
  uniquetimestamp: number | undefined,
 ): Discord.APIButtonComponent => {
  const constantTypes =
-  constants.commands.settings.types[settingName as keyof typeof constants.commands.settings.types];
+  language.client.util.constants.commands.settings.types[
+   settingName as keyof typeof language.client.util.constants.commands.settings.types
+  ];
 
  return {
   type: Discord.ComponentType.Button,
   label: (
    (
-    language.slashCommands.settings.categories[settingName as CT.SettingNames]
-     .fields as CT.FieldName<T>
+    language.slashCommands.settings.categories[settingName as S.SettingNames]
+     .fields as S.FieldName<T>
    )[name] as unknown as Record<'name', string>
   ).name,
   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
   custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
    name,
   )}_${String(settingName)}_${uniquetimestamp}`,
-  emoji: setting ? emotes.enabled : emotes.disabled,
+  emoji: setting ? language.client.util.emotes.enabled : language.client.util.emotes.disabled,
  };
 };

@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../Bot/DataBase.js';
 
 /**

@@ -1,9 +1,7 @@
 import { Prisma } from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import constants from '../../../Other/constants.js';
-
-import getEmoji from '../getEmoji.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
 /**
  * Creates a specific button component for the settings editor.
@@ -16,17 +14,19 @@ import getEmoji from '../getEmoji.js';
  * @param emoji - The emoji to use for the button component.
  * @returns A Discord API button component.
  */
-export default <T extends keyof CT.Categories>(
+export default <T extends keyof S.Categories>(
  language: CT.Language,
  setting: string[] | string | boolean | null | Prisma.Decimal,
- name: keyof CT.FieldName<T>,
+ name: keyof S.FieldName<T>,
  settingName: T,
  uniquetimestamp: number | undefined,
- type?: CT.EditorTypes.Channel | CT.EditorTypes.Role | CT.EditorTypes.User,
+ type?: S.EditorTypes.Channel | S.EditorTypes.Role | S.EditorTypes.User,
  emoji?: Discord.APIMessageComponentEmoji,
 ): Discord.APIButtonComponent => {
  const constantTypes =
-  constants.commands.settings.types[settingName as keyof typeof constants.commands.settings.types];
+  language.client.util.constants.commands.settings.types[
+   settingName as keyof typeof language.client.util.constants.commands.settings.types
+  ];
 
  if (!constantTypes) {
   throw new Error(
@@ -38,8 +38,8 @@ export default <T extends keyof CT.Categories>(
   type: Discord.ComponentType.Button,
   label: (
    (
-    language.slashCommands.settings.categories[settingName as CT.SettingNames]
-     .fields as CT.FieldName<T>
+    language.slashCommands.settings.categories[settingName as S.SettingNames]
+     .fields as S.FieldName<T>
    )[name] as unknown as Record<string, string>
   ).name,
   style:
@@ -49,6 +49,12 @@ export default <T extends keyof CT.Categories>(
   custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
    name,
   )}_${String(settingName)}_${uniquetimestamp}`,
-  emoji: (type ? getEmoji(setting, `wl${type}id` as CT.GlobalDescType) : undefined) ?? emoji,
+  emoji:
+   (type
+    ? language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.getEmoji.file.default(
+       setting,
+       `wl${type}id` as S.GlobalDescType,
+      )
+    : undefined) ?? emoji,
  };
 };

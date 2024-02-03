@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 /**
  * Parser for command type settings.
@@ -9,10 +9,8 @@ import * as CT from '../../../../Typings/Typings.js';
 export default async (val: string | null, language: CT.Language) => {
  if (!val) return language.t.None;
 
- const client = (await import('../../../Bot/Client.js')).default;
-
  const isID = val?.replace(/\D+/g, '').length === val?.length;
- const cmd = isID ? client.application?.commands.cache.get(val) : undefined;
+ const cmd = isID ? language.client.application?.commands.cache.get(val) : undefined;
  if (cmd) return `</${cmd.name}:${cmd.id}>`;
  return `\`${val}\``;
 };

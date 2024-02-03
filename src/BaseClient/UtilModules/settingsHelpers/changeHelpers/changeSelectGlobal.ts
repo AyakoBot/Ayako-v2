@@ -1,12 +1,10 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
-import getChangeSelectType from '../getChangeSelectType.js';
-import getPlaceholder from '../getPlaceholder.js';
-
-export default <T extends keyof typeof CT.SettingsName2TableName>(
+export default <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
- type: CT.ChangeSelectType,
+ type: S.ChangeSelectType,
  fieldName: string,
  settingName: T,
  uniquetimestamp: number | undefined | string,
@@ -41,8 +39,15 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
      return true;
    }
   }) as never,
-  type: getChangeSelectType(type),
-  placeholder: getPlaceholder(type, language),
+  type:
+   language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.getChangeSelectType.file.default(
+    type,
+   ),
+  placeholder:
+   language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.getPlaceholder.file.default(
+    type,
+    language,
+   ),
  };
 
  if (menu.type === Discord.ComponentType.ChannelSelect) {

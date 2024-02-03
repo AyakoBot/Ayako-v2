@@ -1,30 +1,36 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import emotes from '../../emotes.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
 
-import getGlobalDesc from '../getGlobalDesc.js';
-import getMention from '../getMention.js';
-
-export default async <T extends keyof typeof CT.SettingsName2TableName>(
+export default async <T extends keyof typeof S.SettingsName2TableName>(
  language: CT.Language,
  settingName: T,
  fieldName: string,
  values: string[] | string | undefined,
- type: CT.MentionTypes,
+ type: S.MentionTypes,
  guild: Discord.Guild,
 ): Promise<Discord.APIEmbed> => ({
  author: {
   name: language.slashCommands.settings.authorType(
    language.slashCommands.settings.categories[settingName].name,
   ),
-  icon_url: emotes.settings.link,
+  icon_url: language.client.util.emotes.settings.link,
  },
  title: language.slashCommands.settings.previouslySet,
  description: `${
   (
    await Promise.all(
     (Array.isArray(values) ? values : [values])
-     .map((v) => (v ? getMention(language, type, v, guild) : null))
+     .map((v) =>
+      v
+       ? language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.getMention.file.default(
+          language,
+          type,
+          v,
+          guild,
+         )
+       : null,
+     )
      .filter((v): v is Promise<string> => !!v),
    )
   ).join(', ') || language.t.None
@@ -38,8 +44,12 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
       string,
       string
      >
-    )?.desc ?? getGlobalDesc(fieldName as CT.GlobalDescType | CT.AutoModEditorType, language),
+    )?.desc ??
+    language.client.util.importCache.BaseClient.UtilModules.settingsHelpers.getGlobalDesc.file.default(
+     fieldName as S.GlobalDescType | S.AutoModEditorType,
+     language,
+    ),
   },
  ],
- color: CT.Colors.Ephemeral,
+ color: language.client.util.CT.Colors.Ephemeral,
 });
