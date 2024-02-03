@@ -3,6 +3,7 @@ import Events from './importCache/Events.js';
 import SlashCommands from './importCache/SlashCommands.js';
 import Typings from './importCache/Typings.js';
 import pack from './importCache/package.js';
+import Language from './importCache/Language.js';
 
 export default {
  BaseClient,
@@ -10,4 +11,5 @@ export default {
  SlashCommands,
  Typings,
  Events,
+ Language,
 };

@@ -3,37 +3,15 @@ import merge from 'lodash.merge';
 import client from '../Bot/Client.js';
 import stp from '../UtilModules/stp.js';
 
-import antivirus from './language/antivirus.js';
-import auditLogAction from './language/auditLogAction.js';
-import autotypes from './language/autotypes.js';
-import censor from './language/censor.js';
-import channelRules from './language/channelRules.js';
-import channelTypes from './language/channelTypes.js';
-import defaultAutoArchiveDuration from './language/defaultAutoArchiveDuration.js';
-import defaultForumLayout from './language/defaultForumLayout.js';
-import defaultSortOrder from './language/defaultSortOrder.js';
-import events from './language/events/events.js';
-import expire from './language/expire.js';
-import languageFunction from './language/languageFunction.js';
-import leveling from './language/leveling.js';
-import mod from './language/mod.js';
-import nitro from './language/nitro.js';
-import slashCommands from './language/slashCommands.js';
-import time from './language/time.js';
-import verification from './language/verification.js';
-
-import deJSON from '../../Languages/de-DE.json' assert { type: 'json' };
-import enJSON from '../../Languages/en-GB.json' assert { type: 'json' };
-
-export const languages = {
- 'en-GB': enJSON,
- 'en-US': enJSON,
- 'de-DE': deJSON,
-};
+export const getLangs = () => ({
+ 'en-GB': client.util.importCache.Language.languages.enJSON.file.default,
+ 'en-US': client.util.importCache.Language.languages.enJSON.file.default,
+ 'de-DE': client.util.importCache.Language.languages.deJSON.file.default,
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mergeLang = <T extends Record<string, any>>(lang: T) =>
- merge({}, languages['en-GB'], lang) as T & (typeof languages)['en-GB'];
+ merge({}, getLangs()['en-GB'], lang) as T & ReturnType<typeof getLangs>['en-GB'];
 
 const t = (lan: ReturnType<typeof mergeLang>) => ({
  ...lan.t,
@@ -48,8 +26,8 @@ export default class Language {
  client = client;
  botName = client.user?.username ?? 'Ayako';
  botId = client.user?.id;
- CURRENT_LANGUAGE: keyof typeof languages = 'en-GB';
- JSON: (typeof languages)['en-GB'] = mergeLang(languages['en-GB']);
+ CURRENT_LANGUAGE: keyof ReturnType<typeof getLangs> = 'en-GB';
+ JSON: ReturnType<typeof getLangs>['en-GB'] = mergeLang(getLangs()['en-GB']);
  stp = stp;
  util = client.util;
 
@@ -78,31 +56,39 @@ export default class Language {
  lvlupmodes: typeof this.JSON.lvlupmodes;
  weekendstype: typeof this.JSON.weekendstype;
 
- leveling: ReturnType<typeof leveling>;
- time: ReturnType<typeof time>;
- languageFunction: ReturnType<typeof languageFunction>;
- events: ReturnType<typeof events>;
- channelTypes: ReturnType<typeof channelTypes>;
- verification: ReturnType<typeof verification>;
- expire: ReturnType<typeof expire>;
- slashCommands: ReturnType<typeof slashCommands>;
- nitro: ReturnType<typeof nitro>;
- mod: ReturnType<typeof mod>;
- censor: ReturnType<typeof censor>;
- antivirus: ReturnType<typeof antivirus>;
- autotypes: ReturnType<typeof autotypes>;
- channelRules: ReturnType<typeof channelRules>;
- defaultAutoArchiveDuration: ReturnType<typeof defaultAutoArchiveDuration>;
- defaultForumLayout: ReturnType<typeof defaultForumLayout>;
- defaultSortOrder: ReturnType<typeof defaultSortOrder>;
+ leveling: ReturnType<typeof client.util.importCache.Language.t.leveling.file.default>;
+ time: ReturnType<typeof client.util.importCache.Language.t.time.file.default>;
+ languageFunction: ReturnType<
+  typeof client.util.importCache.Language.t.languageFunction.file.default
+ >;
+ events: ReturnType<typeof client.util.importCache.Language.t.events.file.default>;
+ channelTypes: ReturnType<typeof client.util.importCache.Language.t.channelTypes.file.default>;
+ verification: ReturnType<typeof client.util.importCache.Language.t.verification.file.default>;
+ expire: ReturnType<typeof client.util.importCache.Language.t.expire.file.default>;
+ slashCommands: ReturnType<typeof client.util.importCache.Language.t.slashCommands.file.default>;
+ nitro: ReturnType<typeof client.util.importCache.Language.t.nitro.file.default>;
+ mod: ReturnType<typeof client.util.importCache.Language.t.mod.file.default>;
+ censor: ReturnType<typeof client.util.importCache.Language.t.censor.file.default>;
+ antivirus: ReturnType<typeof client.util.importCache.Language.t.antivirus.file.default>;
+ autotypes: ReturnType<typeof client.util.importCache.Language.t.autotypes.file.default>;
+ channelRules: ReturnType<typeof client.util.importCache.Language.t.channelRules.file.default>;
+ defaultAutoArchiveDuration: ReturnType<
+  typeof client.util.importCache.Language.t.defaultAutoArchiveDuration.file.default
+ >;
+ defaultForumLayout: ReturnType<
+  typeof client.util.importCache.Language.t.defaultForumLayout.file.default
+ >;
+ defaultSortOrder: ReturnType<
+  typeof client.util.importCache.Language.t.defaultSortOrder.file.default
+ >;
  auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string };
 
- constructor(type: keyof typeof languages) {
+ constructor(type: keyof ReturnType<typeof getLangs>) {
   this.client = client;
   this.CURRENT_LANGUAGE = type;
 
-  this.JSON = mergeLang(languages[this.CURRENT_LANGUAGE]);
-  if (!this.JSON) this.JSON = mergeLang(languages['en-GB']);
+  this.JSON = mergeLang(getLangs()[this.CURRENT_LANGUAGE]);
+  if (!this.JSON) this.JSON = mergeLang(getLangs()['en-GB']);
 
   this.t = t(this.JSON);
 
@@ -129,23 +115,25 @@ export default class Language {
   this.lvlupmodes = this.JSON.lvlupmodes;
   this.weekendstype = this.JSON.weekendstype;
 
-  this.leveling = leveling(this);
-  this.time = time(this);
-  this.languageFunction = languageFunction(this);
-  this.events = events(this);
-  this.channelTypes = channelTypes(this);
-  this.verification = verification(this);
-  this.expire = expire(this);
-  this.slashCommands = slashCommands(this);
-  this.nitro = nitro(this);
-  this.mod = mod(this);
-  this.censor = censor(this);
-  this.antivirus = antivirus(this);
-  this.autotypes = autotypes(this);
-  this.channelRules = channelRules(this);
-  this.defaultAutoArchiveDuration = defaultAutoArchiveDuration(this);
-  this.defaultForumLayout = defaultForumLayout(this);
-  this.defaultSortOrder = defaultSortOrder(this);
-  this.auditLogAction = auditLogAction(this);
+  this.leveling = client.util.importCache.Language.t.leveling.file.default(this);
+  this.time = client.util.importCache.Language.t.time.file.default(this);
+  this.languageFunction = client.util.importCache.Language.t.languageFunction.file.default(this);
+  this.events = client.util.importCache.Language.t.events.file.default(this);
+  this.channelTypes = client.util.importCache.Language.t.channelTypes.file.default(this);
+  this.verification = client.util.importCache.Language.t.verification.file.default(this);
+  this.expire = client.util.importCache.Language.t.expire.file.default(this);
+  this.slashCommands = client.util.importCache.Language.t.slashCommands.file.default(this);
+  this.nitro = client.util.importCache.Language.t.nitro.file.default(this);
+  this.mod = client.util.importCache.Language.t.mod.file.default(this);
+  this.censor = client.util.importCache.Language.t.censor.file.default(this);
+  this.antivirus = client.util.importCache.Language.t.antivirus.file.default(this);
+  this.autotypes = client.util.importCache.Language.t.autotypes.file.default(this);
+  this.channelRules = client.util.importCache.Language.t.channelRules.file.default(this);
+  this.defaultAutoArchiveDuration =
+   client.util.importCache.Language.t.defaultAutoArchiveDuration.file.default(this);
+  this.defaultForumLayout =
+   client.util.importCache.Language.t.defaultForumLayout.file.default(this);
+  this.defaultSortOrder = client.util.importCache.Language.t.defaultSortOrder.file.default(this);
+  this.auditLogAction = client.util.importCache.Language.t.auditLogAction.file.default(this);
  }
 }
