@@ -1,9 +1,14 @@
 /* eslint-disable max-len */
 import * as fs from 'fs';
+import { API } from './Client.js';
 import DataBase from './DataBase.js';
-import cache from '../UtilModules/cache.js';
 
+import arrayBufferToBuffer from '../UtilModules/arrayBufferToBuffer.js';
+import cache from '../UtilModules/cache.js';
+import encodeString2BigInt from '../UtilModules/encodeString2BigInt.js';
+import getNameAndFileType from '../UtilModules/getNameAndFileType.js';
 import importCache from '../UtilModules/importCache.js';
+import stp from '../UtilModules/stp.js';
 
 const utilModules = importCache.BaseClient.UtilModules;
 
@@ -28,7 +33,7 @@ interface Util {
  files: typeof utilModules.files.file.default;
  deleteNotificationThread: typeof utilModules.deleteNotificationThread.file.default;
  notificationThread: typeof utilModules.notificationThread.file.default;
- arrayBufferToBuffer: typeof utilModules.arrayBufferToBuffer.file.default;
+ arrayBufferToBuffer: typeof arrayBufferToBuffer;
  arrayEquals: typeof utilModules.arrayEquals.file.default;
  bitUniques: typeof utilModules.bitUniques.file.default;
  channelRuleCalc: typeof utilModules.channelRuleCalc.file.default;
@@ -36,7 +41,7 @@ interface Util {
  disableComponents: typeof utilModules.disableComponents.file.default;
  dynamicToEmbed: typeof utilModules.dynamicToEmbed.file.default;
  emotes: typeof utilModules.emotes.file.default;
- encodeString2BigInt: typeof utilModules.encodeString2BigInt.file.default;
+ encodeString2BigInt: typeof encodeString2BigInt;
  error: typeof utilModules.error.file.default;
  errorCmd: typeof utilModules.errorCmd.file.default;
  errorMsg: typeof utilModules.errorMsg.file.default;
@@ -70,7 +75,7 @@ interface Util {
  getLanguage: typeof utilModules.getLanguage.file.default;
  getLogChannels: typeof utilModules.getLogChannels.file.default;
  getMessage: typeof utilModules.getMessage.file.default;
- getNameAndFileType: typeof utilModules.getNameAndFileType.file.default;
+ getNameAndFileType: typeof getNameAndFileType;
  getPunishment: typeof utilModules.getPunishment.file.default;
  getRandom: typeof utilModules.getRandom.file.default;
  getReferenceMessage: typeof utilModules.getReferenceMessage.file.default;
@@ -127,6 +132,8 @@ interface Util {
   notifyTarget: typeof utilModules.mod.notifyTarget.file.default;
   permissionError: typeof utilModules.mod.permissionError.file.default;
   startLoading: typeof utilModules.mod.startLoading.file.default;
+  db: typeof utilModules.mod.db.file.default;
+  declareSuccess: typeof utilModules.mod.declareSuccess.file.default;
  };
  moment: typeof utilModules.moment.file.default;
  notYours: typeof utilModules.notYours.file.default;
@@ -136,7 +143,20 @@ interface Util {
  regexes: typeof utilModules.regexes.file.default;
  replyCmd: typeof utilModules.replyCmd.file.default;
  replyMsg: typeof utilModules.replyMsg.file.default;
- request: typeof utilModules.requestHandler.file.request;
+ request: {
+  commands: typeof utilModules.requestHandler.commands.file.default;
+  channels: typeof utilModules.requestHandler.channels.file.default;
+  guilds: typeof utilModules.requestHandler.guilds.file.default;
+  webhooks: typeof utilModules.requestHandler.webhooks.file.default;
+  invites: typeof utilModules.requestHandler.invites.file.default;
+  oAuth2: typeof API.oauth2;
+  roleConnections: typeof API.roleConnections;
+  stageInstances: typeof utilModules.requestHandler.stageInstances.file.default;
+  stickers: typeof utilModules.requestHandler.stickers.file.default;
+  threads: typeof utilModules.requestHandler.threads.file.default;
+  users: typeof utilModules.requestHandler.users.file.default;
+  voice: typeof utilModules.requestHandler.voice.file.default;
+ };
  requestHandler: typeof utilModules.requestHandler.file.default;
  requestHandlerError: typeof utilModules.requestHandlerError.file.default;
  roleManager: typeof utilModules.roleManager.file.default;
@@ -203,7 +223,7 @@ interface Util {
  sleep: typeof utilModules.sleep.file.default;
  spaces: typeof utilModules.spaces.file.default;
  splitByThousand: typeof utilModules.splitByThousand.file.default;
- stp: typeof utilModules.stp.file.default;
+ stp: typeof stp;
  txtFileLinkToString: typeof utilModules.txtFileLinkToString.file.default;
  txtFileWriter: typeof utilModules.txtFileWriter.file.default;
  userFlagsCalc: typeof utilModules.userFlagsCalc.file.default;
@@ -221,7 +241,7 @@ const util: Util = {
  files: utilModules.files.file.default,
  deleteNotificationThread: utilModules.deleteNotificationThread.file.default,
  notificationThread: utilModules.notificationThread.file.default,
- arrayBufferToBuffer: utilModules.arrayBufferToBuffer.file.default,
+ arrayBufferToBuffer,
  arrayEquals: utilModules.arrayEquals.file.default,
  bitUniques: utilModules.bitUniques.file.default,
  channelRuleCalc: utilModules.channelRuleCalc.file.default,
@@ -229,7 +249,7 @@ const util: Util = {
  disableComponents: utilModules.disableComponents.file.default,
  dynamicToEmbed: utilModules.dynamicToEmbed.file.default,
  emotes: utilModules.emotes.file.default,
- encodeString2BigInt: utilModules.encodeString2BigInt.file.default,
+ encodeString2BigInt,
  error: utilModules.error.file.default,
  errorCmd: utilModules.errorCmd.file.default,
  errorMsg: utilModules.errorMsg.file.default,
@@ -263,7 +283,7 @@ const util: Util = {
  getLanguage: utilModules.getLanguage.file.default,
  getLogChannels: utilModules.getLogChannels.file.default,
  getMessage: utilModules.getMessage.file.default,
- getNameAndFileType: utilModules.getNameAndFileType.file.default,
+ getNameAndFileType,
  getPunishment: utilModules.getPunishment.file.default,
  getRandom: utilModules.getRandom.file.default,
  getReferenceMessage: utilModules.getReferenceMessage.file.default,
@@ -320,6 +340,8 @@ const util: Util = {
   notifyTarget: utilModules.mod.notifyTarget.file.default,
   permissionError: utilModules.mod.permissionError.file.default,
   startLoading: utilModules.mod.startLoading.file.default,
+  db: utilModules.mod.db.file.default,
+  declareSuccess: utilModules.mod.declareSuccess.file.default,
  },
  moment: utilModules.moment.file.default,
  notYours: utilModules.notYours.file.default,
@@ -329,7 +351,20 @@ const util: Util = {
  regexes: utilModules.regexes.file.default,
  replyCmd: utilModules.replyCmd.file.default,
  replyMsg: utilModules.replyMsg.file.default,
- request: utilModules.requestHandler.file.request,
+ request: {
+  commands: utilModules.requestHandler.commands.file.default,
+  channels: utilModules.requestHandler.channels.file.default,
+  guilds: utilModules.requestHandler.guilds.file.default,
+  webhooks: utilModules.requestHandler.webhooks.file.default,
+  invites: utilModules.requestHandler.invites.file.default,
+  oAuth2: API.oauth2,
+  roleConnections: API.roleConnections,
+  stageInstances: utilModules.requestHandler.stageInstances.file.default,
+  stickers: utilModules.requestHandler.stickers.file.default,
+  threads: utilModules.requestHandler.threads.file.default,
+  users: utilModules.requestHandler.users.file.default,
+  voice: utilModules.requestHandler.voice.file.default,
+ },
  requestHandler: utilModules.requestHandler.file.default,
  requestHandlerError: utilModules.requestHandlerError.file.default,
  roleManager: utilModules.roleManager.file.default,
@@ -396,7 +431,7 @@ const util: Util = {
  sleep: utilModules.sleep.file.default,
  spaces: utilModules.spaces.file.default,
  splitByThousand: utilModules.splitByThousand.file.default,
- stp: utilModules.stp.file.default,
+ stp,
  txtFileLinkToString: utilModules.txtFileLinkToString.file.default,
  txtFileWriter: utilModules.txtFileWriter.file.default,
  userFlagsCalc: utilModules.userFlagsCalc.file.default,
