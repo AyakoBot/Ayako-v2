@@ -1,6 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
-import { emoji } from '../create/from-message.js';
-import sticker from '../delete.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!('options' in cmd)) return [];
@@ -8,9 +6,13 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const focused = cmd.options.getFocused(true);
  switch (focused.name) {
   case 'emoji':
-   return emoji(cmd);
+   return cmd.client.util.importCache.Commands.AutocompleteCommands.stickers.create[
+    'from-message'
+   ].file.default(cmd);
   case 'sticker':
-   return sticker(cmd);
+   return cmd.client.util.importCache.Commands.AutocompleteCommands.stickers.delete.file.default(
+    cmd,
+   );
   default:
    return [];
  }

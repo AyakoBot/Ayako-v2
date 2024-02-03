@@ -1,3 +1,4 @@
-import user from '../info/user.js';
+import type * as CT from '../../../Typings/Typings.js';
 
-export default user;
+export default async (cmd: Parameters<CT.AutoCompleteFile['default']>[0]) =>
+ cmd.client.util.importCache.Commands.AutocompleteCommands.info.user.file.default(cmd);

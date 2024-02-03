@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const automodRules = cmd.guild?.autoModerationRules.cache

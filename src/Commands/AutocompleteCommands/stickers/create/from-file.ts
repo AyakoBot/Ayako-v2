@@ -1,3 +1,6 @@
-import fromMessage from './from-message.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
-export default fromMessage;
+export default async (cmd: Parameters<CT.AutoCompleteFile['default']>[0]) =>
+ cmd.client.util.importCache.Commands.AutocompleteCommands.stickers.create[
+  'from-message'
+ ].file.default(cmd);

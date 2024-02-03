@@ -1,3 +1,4 @@
-import server from '../info/server.js';
+import type * as CT from '../../../Typings/Typings.js';
 
-export default server;
+export default async (cmd: Parameters<CT.AutoCompleteFile['default']>[0]) =>
+ cmd.client.util.importCache.Commands.AutocompleteCommands.info.server.file.default(cmd);

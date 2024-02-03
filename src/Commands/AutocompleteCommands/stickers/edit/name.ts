@@ -1,3 +1,6 @@
-import description from './description.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
-export default description;
+export default async (cmd: Parameters<CT.AutoCompleteFile['default']>[0]) =>
+ cmd.client.util.importCache.Commands.AutocompleteCommands.stickers.edit.description.file.default(
+  cmd,
+ );

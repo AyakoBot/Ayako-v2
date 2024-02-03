@@ -1,10 +1,9 @@
-import * as CT from '../../../../Typings/Typings.js';
-import sticker from '../delete.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!('options' in cmd)) return [];
 
- return sticker(cmd);
+ return cmd.client.util.importCache.Commands.AutocompleteCommands.stickers.delete.file.default(cmd);
 };
 
 export default f;
