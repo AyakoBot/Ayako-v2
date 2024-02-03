@@ -1,23 +1,15 @@
-import get from './webhooks/get.js';
-import edit from './webhooks/edit.js';
-import del from './webhooks/delete.js';
-import execute from './webhooks/execute.js';
-import executeSlack from './webhooks/executeSlack.js';
-import executeGitHub from './webhooks/executeGitHub.js';
-import getMessage from './webhooks/getMessage.js';
-import editMessage from './webhooks/editMessage.js';
-import deleteMessage from './webhooks/deleteMessage.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/webhooks.js';
 
 interface Webhooks {
- get: typeof get;
- edit: typeof edit;
- delete: typeof del;
- execute: typeof execute;
- executeSlack: typeof executeSlack;
- executeGitHub: typeof executeGitHub;
- getMessage: typeof getMessage;
- editMessage: typeof editMessage;
- deleteMessage: typeof deleteMessage;
+ get: typeof importCache.get.file.default;
+ edit: typeof importCache.edit.file.default;
+ delete: typeof importCache.delete.file.default;
+ execute: typeof importCache.execute.file.default;
+ executeSlack: typeof importCache.executeSlack.file.default;
+ executeGitHub: typeof importCache.executeGitHub.file.default;
+ getMessage: typeof importCache.getMessage.file.default;
+ editMessage: typeof importCache.editMessage.file.default;
+ deleteMessage: typeof importCache.deleteMessage.file.default;
 }
 
 /**
@@ -42,15 +34,15 @@ interface Webhooks {
  * - Deletes a message from a webhook.
  */
 const webhooks: Webhooks = {
- get,
- edit,
- delete: del,
- execute,
- executeSlack,
- executeGitHub,
- getMessage,
- editMessage,
- deleteMessage,
+ get: importCache.get.file.default,
+ edit: importCache.edit.file.default,
+ delete: importCache.delete.file.default,
+ execute: importCache.execute.file.default,
+ executeSlack: importCache.executeSlack.file.default,
+ executeGitHub: importCache.executeGitHub.file.default,
+ getMessage: importCache.getMessage.file.default,
+ editMessage: importCache.editMessage.file.default,
+ deleteMessage: importCache.deleteMessage.file.default,
 };
 
 export default webhooks;

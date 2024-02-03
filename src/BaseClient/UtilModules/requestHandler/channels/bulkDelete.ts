@@ -3,9 +3,6 @@ import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
-
 /**
  * Deletes multiple messages in a guild text-based channel.
  * @param channel - The guild text-based channel where the messages are located.
@@ -15,10 +12,11 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildTextBasedChannel, messages: string[]) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canBulkDelete(channel.id, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot bulk-delete messages in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.ManageMessages,
-  ]);
+ if (!canBulkDelete(channel.id, await channel.client.util.getBotMemberFromGuild(channel.guild))) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot bulk-delete messages in ${channel.name} / ${channel.id}`,
+   [Discord.PermissionFlagsBits.ManageMessages],
+  );
 
   error(channel.guild, e);
   return e;

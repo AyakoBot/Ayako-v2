@@ -4,9 +4,6 @@ import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
-
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
  message: Discord.RESTPostAPIGuildForumThreadsJSONBody['message'] & {
   files?: Discord.RawFile[];
@@ -25,10 +22,13 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateForumThread(channel.id, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot create forum post in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.SendMessages,
-  ]);
+ if (
+  !canCreateForumThread(channel.id, await channel.client.util.getBotMemberFromGuild(channel.guild))
+ ) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot create forum post in ${channel.name} / ${channel.id}`,
+   [Discord.PermissionFlagsBits.SendMessages],
+  );
 
   error(channel.guild, e);
   return e;

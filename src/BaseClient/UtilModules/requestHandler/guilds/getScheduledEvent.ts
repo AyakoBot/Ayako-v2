@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -16,7 +14,7 @@ export default async (
  eventId: string,
  query?: Discord.RESTGetAPIGuildScheduledEventQuery,
 ) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getScheduledEvent(guild.id, eventId, query)
   .then((e) => {
    const parsed = new Classes.GuildScheduledEvent(guild.client, e);
@@ -25,6 +23,6 @@ export default async (
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -12,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, emojiId: string) =>
  guild.emojis.cache.get(emojiId) ??
- (cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getEmoji(guild.id, emojiId)
   .then((e) => {
    const parsed = new Classes.GuildEmoji(guild.client, e, guild);
@@ -21,6 +19,6 @@ export default async (guild: Discord.Guild, emojiId: string) =>
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Creates a new channel in the specified guild.
@@ -21,20 +16,20 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateChannel(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot create channel`, [
+ if (!canCreateChannel(await guild.client.util.getBotMemberFromGuild(guild), body)) {
+  const e = guild.client.util.requestHandlerError(`Cannot create channel`, [
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .createChannel(guild.id, body, { reason })
   .then((c) => Classes.Channel(guild.client, c, guild))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

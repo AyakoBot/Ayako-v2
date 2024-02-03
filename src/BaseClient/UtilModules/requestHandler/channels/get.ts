@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -12,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, id: string) =>
  guild.channels.cache.get(id) ??
- (guild ? cache.apis.get(guild.id) ?? API : API).channels
+ (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).channels
   .get(id)
   .then((c) => {
    const parsed = Classes.Channel(guild.client, c, guild);
@@ -25,6 +23,6 @@ export default async (guild: Discord.Guild, id: string) =>
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

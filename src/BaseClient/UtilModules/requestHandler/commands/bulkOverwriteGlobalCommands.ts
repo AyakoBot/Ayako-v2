@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-import error from '../../error.js';
 
 /**
  * Overwrites all global application commands for a guild.
@@ -17,21 +14,21 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).applicationCommands
-  .bulkOverwriteGlobalCommands(await getBotIdFromGuild(guild), body)
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+  .bulkOverwriteGlobalCommands(await guild.client.util.getBotIdFromGuild(guild), body)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(guild.client, cmd));
-   cache.commands.cache.set(guild.id, new Map());
+   guild.client.util.cache.commands.cache.set(guild.id, new Map());
 
    parsed.forEach((p) => {
-    cache.commands.cache.get(guild.id)?.set(p.id, p);
+    guild.client.util.cache.commands.cache.get(guild.id)?.set(p.id, p);
    });
 
    parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

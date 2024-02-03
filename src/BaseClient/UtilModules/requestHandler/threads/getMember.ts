@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -12,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (thread: Discord.ThreadChannel, userId: string) =>
  thread.members.cache.get(userId) ??
- (cache.apis.get(thread.guild.id) ?? API).threads
+ (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
   .getMember(thread.id, userId)
   .then((m) => {
    const parsed = new Classes.ThreadMember(thread, m);
@@ -21,6 +19,6 @@ export default async (thread: Discord.ThreadChannel, userId: string) =>
    return parsed;
   })
   .catch((e) => {
-   error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
+   thread.client.util.error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

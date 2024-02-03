@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes an invite for the given guild and code.
@@ -16,20 +11,22 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, code: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteInvite(await getBotMemberFromGuild(guild), code)) {
-  const e = requestHandlerError(`Cannot delete invite ${code}`, [
+ if (!canDeleteInvite(await guild.client.util.getBotMemberFromGuild(guild), code)) {
+  const e = guild.client.util.requestHandlerError(`Cannot delete invite ${code}`, [
    Discord.PermissionFlagsBits.ManageGuild,
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).invites.delete(code, { reason }).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).invites
+  .delete(code, { reason })
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };
 
 /**

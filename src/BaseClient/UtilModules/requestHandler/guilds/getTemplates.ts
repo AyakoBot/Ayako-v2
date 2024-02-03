@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the templates for a given guild.
@@ -13,18 +8,20 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of GuildTemplate objects.
  */
 export default async (guild: Discord.Guild) => {
- if (!canGetTemplates(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get template`, [Discord.PermissionFlagsBits.KickMembers]);
+ if (!canGetTemplates(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get template`, [
+   Discord.PermissionFlagsBits.KickMembers,
+  ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getTemplates(guild.id)
   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

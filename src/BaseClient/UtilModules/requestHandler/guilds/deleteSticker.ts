@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a sticker from a guild.
@@ -17,19 +12,19 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, stickerId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteSticker(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot delete sticker ${stickerId}`, [
+ if (!canDeleteSticker(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot delete sticker ${stickerId}`, [
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .deleteSticker(guild.id, stickerId, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

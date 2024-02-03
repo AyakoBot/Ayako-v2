@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Sends a message to a Discord channel.
@@ -26,8 +21,11 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot send message`, [
+ if (
+  guild &&
+  !canSendMessage(channelId, payload, await guild.client.util.getBotMemberFromGuild(guild))
+ ) {
+  const e = guild.client.util.requestHandlerError(`Cannot send message`, [
    Discord.PermissionFlagsBits.ViewChannel,
    Discord.PermissionFlagsBits.SendMessages,
    Discord.PermissionFlagsBits.SendMessagesInThreads,
@@ -35,11 +33,11 @@ export default async (
    Discord.PermissionFlagsBits.AttachFiles,
   ]);
 
-  error(guild, e, false);
+  guild.client.util.error(guild, e, false);
   return e;
  }
 
- return (guild ? cache.apis.get(guild.id) ?? API : API).channels
+ return (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).channels
   .createMessage(channelId, {
    ...payload,
    message_reference: payload.message_reference
@@ -48,7 +46,7 @@ export default async (
   })
   .then((m) => new Classes.Message(client, m))
   .catch((e: Discord.DiscordAPIError) => {
-   if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
+   if (guild) guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

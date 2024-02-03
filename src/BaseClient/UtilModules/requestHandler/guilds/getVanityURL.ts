@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the vanity URL for a given guild and returns an invite object with the parsed data.
@@ -15,14 +10,16 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!guild) return new Error('Guild not specified.');
- if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.ManageGuild]);
+ if (!canGetVanityURL(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get vanity URL`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild?.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild?.id) ?? API).guilds
   .getVanityURL(guild?.id)
   .then(async (v) => {
    const parsed = v.code
@@ -52,7 +49,7 @@ export default async (guild: Discord.Guild) => {
            name: guild.systemChannel?.name,
            type: guild.systemChannel?.type,
           }) as Required<Discord.APIPartialChannel>,
-       inviter: await (cache.apis.get(guild?.id) ?? API).users
+       inviter: await (guild.client.util.cache.apis.get(guild?.id) ?? API).users
         .get(guild.ownerId)
         .catch(() => undefined),
        approximate_presence_count: guild.approximatePresenceCount ?? undefined,
@@ -69,7 +66,7 @@ export default async (guild: Discord.Guild) => {
   })
   .catch((e) => {
    if (e.message !== 'Missing Access') {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    }
    return e as Discord.DiscordAPIError;
   });

@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a permission overwrite for a guild-based channel.
@@ -28,10 +23,10 @@ export default async (
    channel.id,
    body,
    overwriteId,
-   await getBotMemberFromGuild(channel.guild),
+   await channel.client.util.getBotMemberFromGuild(channel.guild),
   )
  ) {
-  const e = requestHandlerError(
+  const e = channel.client.util.requestHandlerError(
    `Cannot edit permission overwrite in ${channel.name} / ${channel.id}`,
    [Discord.PermissionFlagsBits.ManageRoles],
   );
@@ -39,10 +34,10 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
   .editPermissionOverwrite(channel.id, overwriteId, body, { reason })
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

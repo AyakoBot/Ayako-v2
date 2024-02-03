@@ -1,11 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 /**
  * Creates a webhook for a given guild and channel with the provided data.
@@ -22,8 +19,8 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateWebhook(channelId, await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create webhook`, [
+ if (!canCreateWebhook(channelId, await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot create webhook`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 

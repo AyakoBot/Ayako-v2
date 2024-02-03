@@ -1,11 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import { canGetMessage } from './getMessage.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Shows typing indicator in the given guild text-based channel.
@@ -16,20 +10,30 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildTextBasedChannel) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canGetMessage(channel, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot show typing indicator in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.ViewChannel,
-   Discord.PermissionFlagsBits.ReadMessageHistory,
-   ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(channel.type)
-    ? [Discord.PermissionFlagsBits.Connect]
-    : []),
-  ]);
+ if (
+  !channel.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.getMessage.file.canGetMessage(
+   channel,
+   await channel.client.util.getBotMemberFromGuild(channel.guild),
+  )
+ ) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot show typing indicator in ${channel.name} / ${channel.id}`,
+   [
+    Discord.PermissionFlagsBits.ViewChannel,
+    Discord.PermissionFlagsBits.ReadMessageHistory,
+    ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(channel.type)
+     ? [Discord.PermissionFlagsBits.Connect]
+     : []),
+   ],
+  );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels.showTyping(channel.id).catch((e) => {
-  error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
- });
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
+  .showTyping(channel.id)
+  .catch((e) => {
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+  });
 };

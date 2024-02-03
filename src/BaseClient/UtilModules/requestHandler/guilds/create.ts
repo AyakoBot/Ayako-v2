@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Creates a new guild.
@@ -16,20 +11,21 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONBody) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreate(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot create guild ${guild.name} / ${guild.id}`, [
-   Discord.PermissionFlagsBits.ManageGuild,
-  ]);
+ if (!canCreate(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(
+   `Cannot create guild ${guild.name} / ${guild.id}`,
+   [Discord.PermissionFlagsBits.ManageGuild],
+  );
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .create(body)
   .then((g) => new Classes.Guild(guild.client, g))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

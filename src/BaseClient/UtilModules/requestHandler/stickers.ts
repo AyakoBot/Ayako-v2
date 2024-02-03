@@ -1,9 +1,8 @@
-import getNitroStickers from './stickers/getNitroStickers.js';
-import get from './stickers/get.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/stickers.js';
 
 interface Stickers {
- getNitroStickers: typeof getNitroStickers;
- get: typeof get;
+ getNitroStickers: typeof importCache.getNitroStickers.file.default;
+ get: typeof importCache.get.file.default;
 }
 
 /**
@@ -14,8 +13,8 @@ interface Stickers {
  * - Function to get a sticker.
  */
 const stickers: Stickers = {
- getNitroStickers,
- get,
+ getNitroStickers: importCache.getNitroStickers.file.default,
+ get: importCache.get.file.default,
 };
 
 export default stickers;

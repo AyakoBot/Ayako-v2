@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 /**
  * Leaves the specified guild.
@@ -11,8 +9,10 @@ import cache from '../../cache.js';
 export default async (guild: Discord.Guild) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).users.leaveGuild(guild.id).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).users
+  .leaveGuild(guild.id)
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };

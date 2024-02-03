@@ -1,9 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Joins a thread in a guild.
@@ -15,19 +11,21 @@ export default async (thread: Discord.ThreadChannel) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  if (!canJoin(thread)) {
-  const e = requestHandlerError(
+  const e = thread.client.util.requestHandlerError(
    `Cannot join thread ${thread.name} / ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,
    [Discord.PermissionFlagsBits.SendMessages],
   );
 
-  error(thread.guild, e);
+  thread.client.util.error(thread.guild, e);
   return e;
  }
 
- return (cache.apis.get(thread.guild.id) ?? API).threads.join(thread.id).catch((e) => {
-  error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
+  .join(thread.id)
+  .catch((e) => {
+   thread.client.util.error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };
 
 /**

@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -10,7 +8,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of parsed scheduled events.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getScheduledEvents(guild.id)
   .then((events) => {
    const parsed = events.map((e) => new Classes.GuildScheduledEvent(guild.client, e));
@@ -21,6 +19,6 @@ export default async (guild: Discord.Guild) =>
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

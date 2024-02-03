@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, userId: string) =>
  guild.client.users.cache.get(userId) ??
- (cache.apis.get(guild.id) ?? API).users
+ (guild.client.util.cache.apis.get(guild.id) ?? API).users
   .get(userId)
   .then((u) => {
    const parsed = new Classes.User(guild.client, u);

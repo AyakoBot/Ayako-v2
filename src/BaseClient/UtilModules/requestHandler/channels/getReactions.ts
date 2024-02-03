@@ -1,12 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import { canGetMessage } from './getMessage.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves a list of users who reacted with a specific emoji to a message.
@@ -20,8 +14,13 @@ export default async (
  emoji: string,
  query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,
 ) => {
- if (!canGetMessage(message.channel, await getBotMemberFromGuild(message.guild))) {
-  const e = requestHandlerError(
+ if (
+  !message.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.getMessage.file.canGetMessage(
+   message.channel,
+   await message.client.util.getBotMemberFromGuild(message.guild),
+  )
+ ) {
+  const e = message.client.util.requestHandlerError(
    `Cannot get reactions of emoji ${emoji} in ${message.guild.name} / ${message.guild.id}`,
    [
     Discord.PermissionFlagsBits.ViewChannel,
@@ -34,7 +33,7 @@ export default async (
    ],
   );
 
-  error(message.guild, e);
+  message.client.util.error(message.guild, e);
   return e;
  }
 
@@ -47,7 +46,7 @@ export default async (
   ) as Discord.DiscordAPIError;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
   .getMessageReactions(
    message.channel.id,
    message.id,
@@ -95,7 +94,7 @@ export default async (
    });
   })
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

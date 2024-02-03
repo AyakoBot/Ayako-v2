@@ -1,13 +1,10 @@
-import create from './stageInstances/create.js';
-import get from './stageInstances/get.js';
-import edit from './stageInstances/edit.js';
-import del from './stageInstances/delete.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/stageInstances.js';
 
 interface StageInstances {
- create: typeof create;
- get: typeof get;
- edit: typeof edit;
- delete: typeof del;
+ create: typeof importCache.create.file.default;
+ get: typeof importCache.get.file.default;
+ edit: typeof importCache.edit.file.default;
+ delete: typeof importCache.delete.file.default;
 }
 
 /**
@@ -22,10 +19,10 @@ interface StageInstances {
  * - Deletes a Stage Instance by ID.
  */
 const stageInstances: StageInstances = {
- create,
- get,
- edit,
- delete: del,
+ create: importCache.create.file.default,
+ get: importCache.get.file.default,
+ edit: importCache.edit.file.default,
+ delete: importCache.delete.file.default,
 };
 
 export default stageInstances;

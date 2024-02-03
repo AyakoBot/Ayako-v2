@@ -1,35 +1,21 @@
-import getGlobalCommands from './commands/getGlobalCommands.js';
-import createGlobalCommand from './commands/createGlobalCommand.js';
-import getGlobalCommand from './commands/getGlobalCommand.js';
-import editGlobalCommand from './commands/editGlobalCommand.js';
-import deleteGlobalCommand from './commands/deleteGlobalCommand.js';
-import bulkOverwriteGlobalCommands from './commands/bulkOverwriteGlobalCommands.js';
-import getGuildCommands from './commands/getGuildCommands.js';
-import createGuildCommand from './commands/createGuildCommand.js';
-import getGuildCommand from './commands/getGuildCommand.js';
-import editGuildCommand from './commands/editGuildCommand.js';
-import deleteGuildCommand from './commands/deleteGuildCommand.js';
-import bulkOverwriteGuildCommands from './commands/bulkOverwriteGuildCommands.js';
-import getGuildCommandPermissions from './commands/getGuildCommandPermissions.js';
-import getGuildCommandsPermissions from './commands/getGuildCommandsPermissions.js';
-import editGuildCommandPermissions from './commands/editGuildCommandPermissions.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/commands.js';
 
 interface Commands {
- getGlobalCommands: typeof getGlobalCommands;
- createGlobalCommand: typeof createGlobalCommand;
- getGlobalCommand: typeof getGlobalCommand;
- editGlobalCommand: typeof editGlobalCommand;
- deleteGlobalCommand: typeof deleteGlobalCommand;
- bulkOverwriteGlobalCommands: typeof bulkOverwriteGlobalCommands;
- getGuildCommands: typeof getGuildCommands;
- createGuildCommand: typeof createGuildCommand;
- getGuildCommand: typeof getGuildCommand;
- editGuildCommand: typeof editGuildCommand;
- deleteGuildCommand: typeof deleteGuildCommand;
- bulkOverwriteGuildCommands: typeof bulkOverwriteGuildCommands;
- getGuildCommandPermissions: typeof getGuildCommandPermissions;
- getGuildCommandsPermissions: typeof getGuildCommandsPermissions;
- editGuildCommandPermissions: typeof editGuildCommandPermissions;
+ getGlobalCommands: typeof importCache.getGlobalCommands.file.default;
+ createGlobalCommand: typeof importCache.createGlobalCommand.file.default;
+ getGlobalCommand: typeof importCache.getGlobalCommand.file.default;
+ editGlobalCommand: typeof importCache.editGlobalCommand.file.default;
+ deleteGlobalCommand: typeof importCache.deleteGlobalCommand.file.default;
+ bulkOverwriteGlobalCommands: typeof importCache.bulkOverwriteGlobalCommands.file.default;
+ getGuildCommands: typeof importCache.getGuildCommands.file.default;
+ createGuildCommand: typeof importCache.createGuildCommand.file.default;
+ getGuildCommand: typeof importCache.getGuildCommand.file.default;
+ editGuildCommand: typeof importCache.editGuildCommand.file.default;
+ deleteGuildCommand: typeof importCache.deleteGuildCommand.file.default;
+ bulkOverwriteGuildCommands: typeof importCache.bulkOverwriteGuildCommands.file.default;
+ getGuildCommandPermissions: typeof importCache.getGuildCommandPermissions.file.default;
+ getGuildCommandsPermissions: typeof importCache.getGuildCommandsPermissions.file.default;
+ editGuildCommandPermissions: typeof importCache.editGuildCommandPermissions.file.default;
 }
 
 /**
@@ -66,21 +52,21 @@ interface Commands {
  * - Method to edit the permissions for a specific guild command by ID for a specific guild.
  */
 const commands: Commands = {
- getGlobalCommands,
- createGlobalCommand,
- getGlobalCommand,
- editGlobalCommand,
- deleteGlobalCommand,
- bulkOverwriteGlobalCommands,
- getGuildCommands,
- createGuildCommand,
- getGuildCommand,
- editGuildCommand,
- deleteGuildCommand,
- bulkOverwriteGuildCommands,
- getGuildCommandPermissions,
- getGuildCommandsPermissions,
- editGuildCommandPermissions,
+ getGlobalCommands: importCache.getGlobalCommands.file.default,
+ createGlobalCommand: importCache.createGlobalCommand.file.default,
+ getGlobalCommand: importCache.getGlobalCommand.file.default,
+ editGlobalCommand: importCache.editGlobalCommand.file.default,
+ deleteGlobalCommand: importCache.deleteGlobalCommand.file.default,
+ bulkOverwriteGlobalCommands: importCache.bulkOverwriteGlobalCommands.file.default,
+ getGuildCommands: importCache.getGuildCommands.file.default,
+ createGuildCommand: importCache.createGuildCommand.file.default,
+ getGuildCommand: importCache.getGuildCommand.file.default,
+ editGuildCommand: importCache.editGuildCommand.file.default,
+ deleteGuildCommand: importCache.deleteGuildCommand.file.default,
+ bulkOverwriteGuildCommands: importCache.bulkOverwriteGuildCommands.file.default,
+ getGuildCommandPermissions: importCache.getGuildCommandPermissions.file.default,
+ getGuildCommandsPermissions: importCache.getGuildCommandsPermissions.file.default,
+ editGuildCommandPermissions: importCache.editGuildCommandPermissions.file.default,
 };
 
 export default commands;

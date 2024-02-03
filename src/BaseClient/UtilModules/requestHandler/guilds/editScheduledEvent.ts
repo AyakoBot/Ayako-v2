@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a scheduled event for a guild.
@@ -24,16 +19,16 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditScheduledEvent(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit scheduled event ${eventId}`, [
+ if (!canEditScheduledEvent(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit scheduled event ${eventId}`, [
    Discord.PermissionFlagsBits.ManageEvents,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .editScheduledEvent(
    guild.id,
    eventId,
@@ -45,7 +40,7 @@ export default async (
   )
   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

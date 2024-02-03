@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -16,7 +14,7 @@ export default async (
  userId: string,
  client?: Discord.Client<true>,
 ) =>
- (guild ? cache.apis.get(guild.id) ?? API : API).users
+ (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).users
   .createDM(userId)
   .then((c) =>
    Classes.Channel<typeof guild extends Discord.Guild ? 0 : 1>(
@@ -28,6 +26,6 @@ export default async (
   .catch((e) => {
    if (!guild) return e as Discord.DiscordAPIError;
 
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

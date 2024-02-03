@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Sets the voice state for the given guild.
@@ -19,19 +14,21 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canSetVoiceState(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot set voice state`, [
+ if (!canSetVoiceState(await guild.client.util.getBotMemberFromGuild(guild), body)) {
+  const e = guild.client.util.requestHandlerError(`Cannot set voice state`, [
    Discord.PermissionFlagsBits.RequestToSpeak,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds.setVoiceState(guild.id, body).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+  .setVoiceState(guild.id, body)
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };
 /**
  * Checks if the user has the necessary permissions to set the voice state.

@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a permission overwrite for a channel in a guild.
@@ -17,20 +12,25 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildBasedChannel, overwriteId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeletePermissionOverwrite(channel.id, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(
+ if (
+  !canDeletePermissionOverwrite(
+   channel.id,
+   await channel.client.util.getBotMemberFromGuild(channel.guild),
+  )
+ ) {
+  const e = channel.client.util.requestHandlerError(
    `Cannot delete permission overwrite in ${channel.name} / ${channel.id}`,
    [Discord.PermissionFlagsBits.ManageRoles],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
   .deletePermissionOverwrite(channel.id, overwriteId, { reason })
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

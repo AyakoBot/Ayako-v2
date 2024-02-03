@@ -1,12 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import { canGetMemberBan } from './getMemberBan.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves a list of bans for the specified guild.
@@ -15,14 +9,20 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of GuildBan objects.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQuery) => {
- if (!canGetMemberBan(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get member bans`, [Discord.PermissionFlagsBits.BanMembers]);
+ if (
+  !guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.getMemberBan.file.canGetMemberBan(
+   await guild.client.util.getBotMemberFromGuild(guild),
+  )
+ ) {
+  const e = guild.client.util.requestHandlerError(`Cannot get member bans`, [
+   Discord.PermissionFlagsBits.BanMembers,
+  ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getMemberBans(guild.id, query)
   .then((bans) => {
    const parsed = bans.map((b) => new Classes.GuildBan(guild.client, b, guild));
@@ -33,7 +33,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQ
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

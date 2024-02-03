@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes all reactions of a specific emoji from a message.
@@ -17,14 +12,17 @@ export default async (message: Discord.Message<true>, emoji: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  if (
-  !canDeleteAllreactionsOfEmoji(message.channel.id, await getBotMemberFromGuild(message.guild))
+  !canDeleteAllreactionsOfEmoji(
+   message.channel.id,
+   await message.client.util.getBotMemberFromGuild(message.guild),
+  )
  ) {
-  const e = requestHandlerError(
+  const e = message.client.util.requestHandlerError(
    `Cannot delete all reactions of emoji ${emoji} in ${message.guild.name} / ${message.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
   );
 
-  error(message.guild, e);
+  message.client.util.error(message.guild, e);
   return e;
  }
 
@@ -37,7 +35,7 @@ export default async (message: Discord.Message<true>, emoji: string) => {
   ) as Discord.DiscordAPIError;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
   .deleteAllMessageReactionsForEmoji(
    message.channel.id,
    message.id,
@@ -46,7 +44,7 @@ export default async (message: Discord.Message<true>, emoji: string) => {
     : (resolvedEmoji.name as string),
   )
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

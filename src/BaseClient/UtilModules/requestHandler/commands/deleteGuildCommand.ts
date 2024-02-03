@@ -1,8 +1,5 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-import cache from '../../cache.js';
-import error from '../../error.js';
 
 /**
  * Deletes a guild command from the Discord API and removes it from the guild's command cache.
@@ -14,14 +11,14 @@ import error from '../../error.js';
 export default async (guild: Discord.Guild, commandId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).applicationCommands
-  .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+  .deleteGuildCommand(await guild.client.util.getBotIdFromGuild(guild), guild.id, commandId)
   .then(() => {
-   cache.commands.delete(guild.id, commandId);
+   guild.client.util.cache.commands.delete(guild.id, commandId);
    guild.commands.cache.delete(commandId);
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

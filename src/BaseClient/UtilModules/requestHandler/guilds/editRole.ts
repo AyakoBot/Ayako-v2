@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a role in a guild.
@@ -23,16 +18,16 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditRole(await getBotMemberFromGuild(guild), roleId)) {
-  const e = requestHandlerError(`Cannot edit role ${roleId}`, [
+ if (!canEditRole(await guild.client.util.getBotMemberFromGuild(guild), roleId)) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit role ${roleId}`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .editRole(
    guild.id,
    roleId,
@@ -41,7 +36,7 @@ export default async (
   )
   .then((r) => new Classes.Role(guild.client, r, guild))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

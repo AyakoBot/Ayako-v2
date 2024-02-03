@@ -1,17 +1,12 @@
-import join from './threads/join.js';
-import addMember from './threads/addMember.js';
-import leave from './threads/leave.js';
-import removeMember from './threads/removeMember.js';
-import getMember from './threads/getMember.js';
-import getAllMembers from './threads/getAllMembers.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/threads.js';
 
 interface Threads {
- join: typeof join;
- addMember: typeof addMember;
- leave: typeof leave;
- removeMember: typeof removeMember;
- getMember: typeof getMember;
- getAllMembers: typeof getAllMembers;
+ join: typeof importCache.join.file.default;
+ addMember: typeof importCache.addMember.file.default;
+ leave: typeof importCache.leave.file.default;
+ removeMember: typeof importCache.removeMember.file.default;
+ getMember: typeof importCache.getMember.file.default;
+ getAllMembers: typeof importCache.getAllMembers.file.default;
 }
 
 /**
@@ -30,12 +25,12 @@ interface Threads {
  * - Method for getting all members from a thread.
  */
 const threads: Threads = {
- join,
- addMember,
- leave,
- removeMember,
- getMember,
- getAllMembers,
+ join: importCache.join.file.default,
+ addMember: importCache.addMember.file.default,
+ leave: importCache.leave.file.default,
+ removeMember: importCache.removeMember.file.default,
+ getMember: importCache.getMember.file.default,
+ getAllMembers: importCache.getAllMembers.file.default,
 };
 
 export default threads;

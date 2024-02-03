@@ -1,10 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 /**
  * Removes a member from a thread in a guild.
  * @param guild - The guild where the thread is located.
@@ -16,20 +12,20 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (thread: Discord.ThreadChannel, userId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canRemoveMember(await getBotMemberFromGuild(thread.guild), thread)) {
-  const e = requestHandlerError(
+ if (!canRemoveMember(await thread.client.util.getBotMemberFromGuild(thread.guild), thread)) {
+  const e = thread.client.util.requestHandlerError(
    `Cannot remove member ${userId} from thread ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,
    [Discord.PermissionFlagsBits.ManageThreads],
   );
 
-  error(thread.guild, e);
+  thread.client.util.error(thread.guild, e);
   return e;
  }
 
- return (cache.apis.get(thread.guild.id) ?? API).threads
+ return (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
   .removeMember(thread.id, userId)
   .catch((e) => {
-   error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
+   thread.client.util.error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

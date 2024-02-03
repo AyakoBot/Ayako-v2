@@ -1,11 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import { canBanUser } from './banUser.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Bans a user from a guild.
@@ -21,19 +15,20 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canBanUser(await getBotMemberFromGuild(member.guild))) {
-  const e = requestHandlerError(`Cannot ban member in ${member.displayName} / ${member.id}`, [
-   Discord.PermissionFlagsBits.BanMembers,
-  ]);
+ if (!canBanMember(await member.client.util.getBotMemberFromGuild(member.guild), member)) {
+  const e = member.client.util.requestHandlerError(
+   `Cannot ban member in ${member.displayName} / ${member.id}\nPlease check role hierarchy`,
+   [Discord.PermissionFlagsBits.BanMembers],
+  );
 
-  error(member.guild, e);
+  member.client.util.error(member.guild, e);
   return e;
  }
 
- return (cache.apis.get(member.guild.id) ?? API).guilds
+ return (member.client.util.cache.apis.get(member.guild.id) ?? API).guilds
   .banUser(member.guild.id, member.id, body, { reason })
   .catch((e) => {
-   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
+   member.client.util.error(member.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };
@@ -45,4 +40,7 @@ export default async (
  */
 export const canBanMember = (me: Discord.GuildMember, member: Discord.GuildMember) =>
  me.guild.ownerId === me.id ||
- (canBanUser(me) && member.roles.highest.comparePositionTo(me.roles.highest) < 0);
+ (me.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.banUser.file.canBanUser(
+  me,
+ ) &&
+  member.roles.highest.comparePositionTo(me.roles.highest) < 0);

@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a webhook in a guild.
@@ -21,19 +16,19 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDelete(await getBotMemberFromGuild(guild), webhook)) {
-  const e = requestHandlerError(`Cannot delete webhook ${webhook.id}`, [
+ if (!canDelete(await guild.client.util.getBotMemberFromGuild(guild), webhook)) {
+  const e = guild.client.util.requestHandlerError(`Cannot delete webhook ${webhook.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).webhooks
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

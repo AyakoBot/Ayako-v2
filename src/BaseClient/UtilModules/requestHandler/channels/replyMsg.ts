@@ -1,8 +1,6 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
 
-import sendMessage from './sendMessage.js';
-
 /**
  * Sends a reply message to a Discord channel.
  * @param message The original message to reply to.
@@ -15,7 +13,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return sendMessage(
+ return message.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.sendMessage.file.default(
   message.guild,
   message.channelId,
   {

@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a guild.
@@ -16,16 +11,16 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONBody) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEdit(await getBotMemberFromGuild(guild), guild, body)) {
-  const e = requestHandlerError(`Cannot edit guild ${guild.name} / ${guild.id}`, [
+ if (!canEdit(await guild.client.util.getBotMemberFromGuild(guild), guild, body)) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit guild ${guild.name} / ${guild.id}`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .edit(guild.id, {
    ...body,
    icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon,
@@ -37,7 +32,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONB
   })
   .then((g) => new Classes.Guild(guild.client, g))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

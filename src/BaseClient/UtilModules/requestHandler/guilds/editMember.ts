@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a member in a guild.
@@ -22,8 +17,8 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditMember(await getBotMemberFromGuild(member.guild), member, body)) {
-  const e = requestHandlerError(
+ if (!canEditMember(await member.client.util.getBotMemberFromGuild(member.guild), member, body)) {
+  const e = member.client.util.requestHandlerError(
    `Cannot edit member ${member.user.username} / ${member.user.id}\nCheck role hierarchy.`,
    [
     Discord.PermissionFlagsBits.ManageGuild,
@@ -34,15 +29,15 @@ export default async (
    ],
   );
 
-  error(member.guild, e);
+  member.client.util.error(member.guild, e);
   return e;
  }
 
- return (cache.apis.get(member.guild.id) ?? API).guilds
+ return (member.client.util.cache.apis.get(member.guild.id) ?? API).guilds
   .editMember(member.guild.id, member.id, body, { reason })
   .then((m) => new Classes.GuildMember(member.client, m, member.guild))
   .catch((e) => {
-   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
+   member.client.util.error(member.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

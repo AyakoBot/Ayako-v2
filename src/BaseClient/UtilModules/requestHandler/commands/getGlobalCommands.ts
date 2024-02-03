@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-import error from '../../error.js';
 
 /**
  * Retrieves the global slash commands for a guild.
@@ -16,22 +13,27 @@ export default async (
  client: Discord.Client<true>,
  query?: Discord.RESTGetAPIApplicationCommandsQuery,
 ) =>
- (guild ? cache.apis.get(guild.id) ?? API : API).applicationCommands
-  .getGlobalCommands(guild ? await getBotIdFromGuild(guild) : client.user.id, query)
+ (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).applicationCommands
+  .getGlobalCommands(
+   guild ? await guild.client.util.getBotIdFromGuild(guild) : client.user.id,
+   query,
+  )
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(client, cmd));
 
-   if (guild && !cache.commands.cache.get(guild.id)) cache.commands.cache.set(guild.id, new Map());
+   if (guild && !guild.client.util.cache.commands.cache.get(guild.id)) {
+    guild.client.util.cache.commands.cache.set(guild.id, new Map());
+   }
    parsed.forEach((p) => {
-    if (guild) cache.commands.cache.get(guild.id)?.set(p.id, p);
+    if (guild) guild.client.util.cache.commands.cache.get(guild.id)?.set(p.id, p);
 
-    if (guild && cache.apis.get(guild.id)) return;
+    if (guild && guild.client.util.cache.apis.get(guild.id)) return;
 
     client.application.commands.cache.set(p.id, p);
    });
    return parsed;
   })
   .catch((e) => {
-   if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
+   if (guild) guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

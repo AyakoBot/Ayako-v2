@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a webhook.
@@ -23,16 +18,16 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEdit(await getBotMemberFromGuild(guild), webhook)) {
-  const e = requestHandlerError(`Cannot edit webhook ${webhook.id}`, [
+ if (!canEdit(await guild.client.util.getBotMemberFromGuild(guild), webhook)) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit webhook ${webhook.id}`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).webhooks
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
   .edit(
    webhook.id,
    {
@@ -43,7 +38,7 @@ export default async (
   )
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

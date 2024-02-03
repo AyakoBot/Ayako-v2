@@ -1,8 +1,5 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-import cache from '../../cache.js';
-import error from '../../error.js';
 
 /**
  * Edits the permissions for a command in a guild.
@@ -21,14 +18,20 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).applicationCommands
-  .editGuildCommandPermissions(userToken, await getBotIdFromGuild(guild), guild.id, commandId, body)
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+  .editGuildCommandPermissions(
+   userToken,
+   await guild.client.util.getBotIdFromGuild(guild),
+   guild.id,
+   commandId,
+   body,
+  )
   .then((res) => {
-   cache.commandPermissions.set(guild.id, commandId, res.permissions);
+   guild.client.util.cache.commandPermissions.set(guild.id, commandId, res.permissions);
    return res.permissions;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

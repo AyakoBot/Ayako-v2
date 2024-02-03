@@ -1,9 +1,8 @@
-import get from './invites/get.js';
-import del from './invites/delete.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/invites.js';
 
 interface Invites {
- get: typeof get;
- delete: typeof del;
+ get: typeof importCache.get.file.default;
+ delete: typeof importCache.delete.file.default;
 }
 
 /**
@@ -14,8 +13,8 @@ interface Invites {
  * - Method for deleting an invite.
  */
 const invites: Invites = {
- get,
- delete: del,
+ get: importCache.get.file.default,
+ delete: importCache.delete.file.default,
 };
 
 export default invites;

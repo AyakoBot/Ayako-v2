@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a user's reaction from a message.
@@ -16,13 +11,18 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteUserReaction(message.channel.id, await getBotMemberFromGuild(message.guild))) {
-  const e = requestHandlerError(
+ if (
+  !canDeleteUserReaction(
+   message.channel.id,
+   await message.client.util.getBotMemberFromGuild(message.guild),
+  )
+ ) {
+  const e = message.client.util.requestHandlerError(
    `Cannot delete user reaction in ${message.guild.name} / ${message.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
   );
 
-  error(message.guild, e);
+  message.client.util.error(message.guild, e);
   return e;
  }
 
@@ -35,7 +35,7 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
   ) as Discord.DiscordAPIError;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
   .deleteUserMessageReaction(
    message.channel.id,
    message.id,
@@ -45,7 +45,7 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
    userId,
   )
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

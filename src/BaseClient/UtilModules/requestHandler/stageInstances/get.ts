@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -11,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (channel: Discord.StageChannel) =>
  channel.guild.stageInstances.cache.find((s) => s.channelId === channel.id) ??
- (cache.apis.get(channel.guild.id) ?? API).stageInstances
+ (channel.client.util.cache.apis.get(channel.guild.id) ?? API).stageInstances
   .get(channel.id)
   .then((s) => {
    const parsed = new Classes.StageInstance(channel.client, s, channel);
@@ -20,6 +18,6 @@ export default async (channel: Discord.StageChannel) =>
    return parsed;
   })
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

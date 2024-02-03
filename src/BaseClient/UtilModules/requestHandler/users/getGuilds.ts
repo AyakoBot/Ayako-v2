@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 /**
  * Returns the guilds for the current user.
@@ -11,7 +9,7 @@ import cache from '../../cache.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPICurrentUserGuildsQuery) =>
- (cache.apis.get(guild.id) ?? API).users.getGuilds(query).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
+ (guild.client.util.cache.apis.get(guild.id) ?? API).users.getGuilds(query).catch((e) => {
+  guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

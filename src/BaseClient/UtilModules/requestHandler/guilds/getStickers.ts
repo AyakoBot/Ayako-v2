@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -10,7 +8,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves with an array of parsed Sticker objects.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getStickers(guild.id)
   .then((stickers) => {
    const parsed = stickers.map((s) => new Classes.Sticker(guild.client, s));
@@ -21,6 +19,6 @@ export default async (guild: Discord.Guild) =>
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

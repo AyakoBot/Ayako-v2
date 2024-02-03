@@ -1,32 +1,30 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Pins a message in a guild text-based channel.
  * @param msg - The message to be pinned.
  * @returns A promise that resolves with the pinned message, or rejects with a DiscordAPIError.
  */
-export default async (msg: Discord.Message<true>) => {
+export default async (message: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canPinMessage(msg.channelId, await getBotMemberFromGuild(msg.guild))) {
-  const e = requestHandlerError(`Cannot pin message in ${msg.channel.name} / ${msg.channel.id}`, [
-   Discord.PermissionFlagsBits.ManageMessages,
-  ]);
+ if (
+  !canPinMessage(message.channelId, await message.client.util.getBotMemberFromGuild(message.guild))
+ ) {
+  const e = message.client.util.requestHandlerError(
+   `Cannot pin message in ${message.channel.name} / ${message.channel.id}`,
+   [Discord.PermissionFlagsBits.ManageMessages],
+  );
 
-  error(msg.channel.guild, e);
+  message.client.util.error(message.channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(msg.guildId) ?? API).channels
-  .pinMessage(msg.channelId, msg.id)
+ return (message.client.util.cache.apis.get(message.guildId) ?? API).channels
+  .pinMessage(message.channelId, message.id)
   .catch((e) => {
-   error(msg.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

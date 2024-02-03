@@ -3,9 +3,6 @@ import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
-
 /**
  * Adds a reaction to a message.
  * @param msg The message to add the reaction to.
@@ -15,8 +12,8 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (msg: Discord.Message<true>, emoji: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!isReactable(msg, emoji, await getBotMemberFromGuild(msg.guild))) {
-  const e = requestHandlerError(
+ if (!isReactable(msg, emoji, await msg.client.util.getBotMemberFromGuild(msg.guild))) {
+  const e = msg.client.util.requestHandlerError(
    `Cannot apply ${emoji} as reaction in ${msg.channel.name} / ${msg.channel.id}`,
    [
     Discord.PermissionFlagsBits.AddReactions,

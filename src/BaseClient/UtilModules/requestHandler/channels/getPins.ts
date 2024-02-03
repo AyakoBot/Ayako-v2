@@ -1,12 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import { canGetMessage } from './getMessage.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the pinned messages in a guild text-based channel.
@@ -14,20 +8,28 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of parsed messages.
  */
 export default async (channel: Discord.GuildTextBasedChannel) => {
- if (!canGetMessage(channel, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot get pinned messages in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.ViewChannel,
-   Discord.PermissionFlagsBits.ReadMessageHistory,
-   ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(channel.type)
-    ? [Discord.PermissionFlagsBits.Connect]
-    : []),
-  ]);
+ if (
+  !channel.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.getMessage.file.canGetMessage(
+   channel,
+   await channel.client.util.getBotMemberFromGuild(channel.guild),
+  )
+ ) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot get pinned messages in ${channel.name} / ${channel.id}`,
+   [
+    Discord.PermissionFlagsBits.ViewChannel,
+    Discord.PermissionFlagsBits.ReadMessageHistory,
+    ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(channel.type)
+     ? [Discord.PermissionFlagsBits.Connect]
+     : []),
+   ],
+  );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (channel.guild ? channel.client.util.cache.apis.get(channel.guild.id) ?? API : API).channels
   .getPins(channel.id)
   .then((msgs) => {
    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));
@@ -38,7 +40,7 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
    return parsed;
   })
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

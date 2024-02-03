@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Follows announcements from a specified channel in a guild text-based channel.
@@ -17,20 +12,26 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildTextBasedChannel, followedChannelId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canFollowAnnouncements(channel.id, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot follow announcements in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.ManageWebhooks,
-  ]);
+ if (
+  !canFollowAnnouncements(
+   channel.id,
+   await channel.client.util.getBotMemberFromGuild(channel.guild),
+  )
+ ) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot follow announcements in ${channel.name} / ${channel.id}`,
+   [Discord.PermissionFlagsBits.ManageWebhooks],
+  );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
   .followAnnouncements(followedChannelId, channel.id)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

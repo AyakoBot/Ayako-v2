@@ -1,11 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import { canPrune } from './beginPrune.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Get the number of members that would be removed in a prune operation.
@@ -15,17 +9,23 @@ import requestHandlerError from '../../requestHandlerError.js';
  * would be removed in the prune operation.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPruneCountQuery) => {
- if (!canPrune(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get prune count`, [
+ if (
+  !guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.beginPrune.file.canPrune(
+   await guild.client.util.getBotMemberFromGuild(guild),
+  )
+ ) {
+  const e = guild.client.util.requestHandlerError(`Cannot get prune count`, [
    Discord.PermissionFlagsBits.KickMembers,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds.getPruneCount(guild.id, query).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+  .getPruneCount(guild.id, query)
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };

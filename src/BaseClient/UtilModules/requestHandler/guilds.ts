@@ -1,147 +1,77 @@
-import edit from './guilds/edit.js';
-import del from './guilds/delete.js';
-import getChannels from './guilds/getChannels.js';
-import getWidgetImage from './guilds/getWidgetImage.js';
-import getVanityURL from './guilds/getVanityURL.js';
-import getWelcomeScreen from './guilds/getWelcomeScreen.js';
-import editWelcomeScreen from './guilds/editWelcomeScreen.js';
-import getWidgetSettings from './guilds/getWidgetSettings.js';
-import editWidgetSettings from './guilds/editWidgetSettings.js';
-import getWidget from './guilds/getWidget.js';
-import getInvites from './guilds/getInvites.js';
-import getIntegrations from './guilds/getIntegrations.js';
-import deleteIntegration from './guilds/deleteIntegration.js';
-import getVoiceRegions from './guilds/getVoiceRegions.js';
-import beginPrune from './guilds/beginPrune.js';
-import getAuditLogs from './guilds/getAuditLogs.js';
-import getAutoModerationRules from './guilds/getAutoModerationRules.js';
-import getAutoModerationRule from './guilds/getAutoModerationRule.js';
-import createAutoModerationRule from './guilds/createAutoModerationRule.js';
-import editAutoModerationRule from './guilds/editAutoModerationRule.js';
-import deleteAutoModerationRule from './guilds/deleteAutoModerationRule.js';
-import getEmojis from './guilds/getEmojis.js';
-import getEmoji from './guilds/getEmoji.js';
-import createEmoji from './guilds/createEmoji.js';
-import editEmoji from './guilds/editEmoji.js';
-import deleteEmoji from './guilds/deleteEmoji.js';
-import getMembers from './guilds/getMembers.js';
-import getMember from './guilds/getMember.js';
-import searchForMembers from './guilds/searchForMembers.js';
-import editMember from './guilds/editMember.js';
-import removeMember from './guilds/removeMember.js';
-import addRoleToMember from './guilds/addRoleToMember.js';
-import removeRoleFromMember from './guilds/removeRoleFromMember.js';
-import getRoles from './guilds/getRoles.js';
-import createRole from './guilds/createRole.js';
-import editRole from './guilds/editRole.js';
-import deleteRole from './guilds/deleteRole.js';
-import getPruneCount from './guilds/getPruneCount.js';
-import deleteScheduledEvent from './guilds/deleteScheduledEvent.js';
-import editScheduledEvent from './guilds/editScheduledEvent.js';
-import createScheduledEvent from './guilds/createScheduledEvent.js';
-import getScheduledEvent from './guilds/getScheduledEvent.js';
-import getScheduledEvents from './guilds/getScheduledEvents.js';
-import getScheduledEventUsers from './guilds/getScheduledEventUsers.js';
-import getStickers from './guilds/getStickers.js';
-import getSticker from './guilds/getSticker.js';
-import createSticker from './guilds/createSticker.js';
-import editSticker from './guilds/editSticker.js';
-import deleteSticker from './guilds/deleteSticker.js';
-import getTemplates from './guilds/getTemplates.js';
-import getTemplate from './guilds/getTemplate.js';
-import createTemplate from './guilds/createTemplate.js';
-import editTemplate from './guilds/editTemplate.js';
-import deleteTemplate from './guilds/deleteTemplate.js';
-import getWebhooks from './guilds/getWebhooks.js';
-import getMemberBans from './guilds/getMemberBans.js';
-import getOnboarding from './guilds/getOnboarding.js';
-import setVoiceState from './guilds/setVoiceState.js';
-import syncTemplate from './guilds/syncTemplate.js';
-import editUserVoiceState from './guilds/editUserVoiceState.js';
-import editMFALevel from './guilds/editMFALevel.js';
-import getPreview from './guilds/getPreview.js';
-import create from './guilds/create.js';
-import createChannel from './guilds/createChannel.js';
-import setChannelPositions from './guilds/setChannelPositions.js';
-import getActiveThreads from './guilds/getActiveThreads.js';
-import getMemberBan from './guilds/getMemberBan.js';
-import banUser from './guilds/banUser.js';
-import banMember from './guilds/banMember.js';
-import unbanUser from './guilds/unbanUser.js';
-import setRolePositions from './guilds/setRolePositions.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/guilds.js';
 
 interface Guilds {
- edit: typeof edit;
- delete: typeof del;
- getChannels: typeof getChannels;
- getWidgetImage: typeof getWidgetImage;
- getVanityURL: typeof getVanityURL;
- getWelcomeScreen: typeof getWelcomeScreen;
- editWelcomeScreen: typeof editWelcomeScreen;
- getWidgetSettings: typeof getWidgetSettings;
- editWidgetSettings: typeof editWidgetSettings;
- getWidget: typeof getWidget;
- getInvites: typeof getInvites;
- getIntegrations: typeof getIntegrations;
- deleteIntegration: typeof deleteIntegration;
- getVoiceRegions: typeof getVoiceRegions;
- beginPrune: typeof beginPrune;
- getAuditLogs: typeof getAuditLogs;
- getAutoModerationRules: typeof getAutoModerationRules;
- getAutoModerationRule: typeof getAutoModerationRule;
- createAutoModerationRule: typeof createAutoModerationRule;
- editAutoModerationRule: typeof editAutoModerationRule;
- deleteAutoModerationRule: typeof deleteAutoModerationRule;
- getEmojis: typeof getEmojis;
- getEmoji: typeof getEmoji;
- createEmoji: typeof createEmoji;
- editEmoji: typeof editEmoji;
- deleteEmoji: typeof deleteEmoji;
- getMembers: typeof getMembers;
- getMember: typeof getMember;
- searchForMembers: typeof searchForMembers;
- editMember: typeof editMember;
- removeMember: typeof removeMember;
- addRoleToMember: typeof addRoleToMember;
- removeRoleFromMember: typeof removeRoleFromMember;
- getRoles: typeof getRoles;
- createRole: typeof createRole;
- editRole: typeof editRole;
- deleteRole: typeof deleteRole;
- getPruneCount: typeof getPruneCount;
- deleteScheduledEvent: typeof deleteScheduledEvent;
- editScheduledEvent: typeof editScheduledEvent;
- createScheduledEvent: typeof createScheduledEvent;
- getScheduledEvent: typeof getScheduledEvent;
- getScheduledEvents: typeof getScheduledEvents;
- getScheduledEventUsers: typeof getScheduledEventUsers;
- getStickers: typeof getStickers;
- getSticker: typeof getSticker;
- createSticker: typeof createSticker;
- editSticker: typeof editSticker;
- deleteSticker: typeof deleteSticker;
- getTemplates: typeof getTemplates;
- getTemplate: typeof getTemplate;
- createTemplate: typeof createTemplate;
- editTemplate: typeof editTemplate;
- deleteTemplate: typeof deleteTemplate;
- getWebhooks: typeof getWebhooks;
- getMemberBans: typeof getMemberBans;
- getOnboarding: typeof getOnboarding;
- setVoiceState: typeof setVoiceState;
- syncTemplate: typeof syncTemplate;
- editUserVoiceState: typeof editUserVoiceState;
- editMFALevel: typeof editMFALevel;
- getPreview: typeof getPreview;
- create: typeof create;
- createChannel: typeof createChannel;
- setChannelPositions: typeof setChannelPositions;
- getActiveThreads: typeof getActiveThreads;
- getMemberBan: typeof getMemberBan;
- banMember: typeof banMember;
- banUser: typeof banUser;
- unbanUser: typeof unbanUser;
- setRolePositions: typeof setRolePositions;
+ edit: typeof importCache.edit.file.default;
+ delete: typeof importCache.delete.file.default;
+ getChannels: typeof importCache.getChannels.file.default;
+ getWidgetImage: typeof importCache.getWidgetImage.file.default;
+ getVanityURL: typeof importCache.getVanityURL.file.default;
+ getWelcomeScreen: typeof importCache.getWelcomeScreen.file.default;
+ editWelcomeScreen: typeof importCache.editWelcomeScreen.file.default;
+ getWidgetSettings: typeof importCache.getWidgetSettings.file.default;
+ editWidgetSettings: typeof importCache.editWidgetSettings.file.default;
+ getWidget: typeof importCache.getWidget.file.default;
+ getInvites: typeof importCache.getInvites.file.default;
+ getIntegrations: typeof importCache.getIntegrations.file.default;
+ deleteIntegration: typeof importCache.deleteIntegration.file.default;
+ getVoiceRegions: typeof importCache.getVoiceRegions.file.default;
+ beginPrune: typeof importCache.beginPrune.file.default;
+ getAuditLogs: typeof importCache.getAuditLogs.file.default;
+ getAutoModerationRules: typeof importCache.getAutoModerationRules.file.default;
+ getAutoModerationRule: typeof importCache.getAutoModerationRule.file.default;
+ createAutoModerationRule: typeof importCache.createAutoModerationRule.file.default;
+ editAutoModerationRule: typeof importCache.editAutoModerationRule.file.default;
+ deleteAutoModerationRule: typeof importCache.deleteAutoModerationRule.file.default;
+ getEmojis: typeof importCache.getEmojis.file.default;
+ getEmoji: typeof importCache.getEmoji.file.default;
+ createEmoji: typeof importCache.createEmoji.file.default;
+ editEmoji: typeof importCache.editEmoji.file.default;
+ deleteEmoji: typeof importCache.deleteEmoji.file.default;
+ getMembers: typeof importCache.getMembers.file.default;
+ getMember: typeof importCache.getMember.file.default;
+ searchForMembers: typeof importCache.searchForMembers.file.default;
+ editMember: typeof importCache.editMember.file.default;
+ removeMember: typeof importCache.removeMember.file.default;
+ addRoleToMember: typeof importCache.addRoleToMember.file.default;
+ removeRoleFromMember: typeof importCache.removeRoleFromMember.file.default;
+ getRoles: typeof importCache.getRoles.file.default;
+ createRole: typeof importCache.createRole.file.default;
+ editRole: typeof importCache.editRole.file.default;
+ deleteRole: typeof importCache.deleteRole.file.default;
+ getPruneCount: typeof importCache.getPruneCount.file.default;
+ deleteScheduledEvent: typeof importCache.deleteScheduledEvent.file.default;
+ editScheduledEvent: typeof importCache.editScheduledEvent.file.default;
+ createScheduledEvent: typeof importCache.createScheduledEvent.file.default;
+ getScheduledEvent: typeof importCache.getScheduledEvent.file.default;
+ getScheduledEvents: typeof importCache.getScheduledEvents.file.default;
+ getScheduledEventUsers: typeof importCache.getScheduledEventUsers.file.default;
+ getStickers: typeof importCache.getStickers.file.default;
+ getSticker: typeof importCache.getSticker.file.default;
+ createSticker: typeof importCache.createSticker.file.default;
+ editSticker: typeof importCache.editSticker.file.default;
+ deleteSticker: typeof importCache.deleteSticker.file.default;
+ getTemplates: typeof importCache.getTemplates.file.default;
+ getTemplate: typeof importCache.getTemplate.file.default;
+ createTemplate: typeof importCache.createTemplate.file.default;
+ editTemplate: typeof importCache.editTemplate.file.default;
+ deleteTemplate: typeof importCache.deleteTemplate.file.default;
+ getWebhooks: typeof importCache.getWebhooks.file.default;
+ getMemberBans: typeof importCache.getMemberBans.file.default;
+ getOnboarding: typeof importCache.getOnboarding.file.default;
+ setVoiceState: typeof importCache.setVoiceState.file.default;
+ syncTemplate: typeof importCache.syncTemplate.file.default;
+ editUserVoiceState: typeof importCache.editUserVoiceState.file.default;
+ editMFALevel: typeof importCache.editMFALevel.file.default;
+ getPreview: typeof importCache.getPreview.file.default;
+ create: typeof importCache.create.file.default;
+ createChannel: typeof importCache.createChannel.file.default;
+ setChannelPositions: typeof importCache.setChannelPositions.file.default;
+ getActiveThreads: typeof importCache.getActiveThreads.file.default;
+ getMemberBan: typeof importCache.getMemberBan.file.default;
+ banMember: typeof importCache.banMember.file.default;
+ banUser: typeof importCache.banUser.file.default;
+ unbanUser: typeof importCache.unbanUser.file.default;
+ setRolePositions: typeof importCache.setRolePositions.file.default;
 }
 
 /**
@@ -290,77 +220,77 @@ interface Guilds {
  * - Gets the positions of roles in a guild.
  */
 const guilds: Guilds = {
- edit,
- delete: del,
- getChannels,
- getWidgetImage,
- getVanityURL,
- getWelcomeScreen,
- editWelcomeScreen,
- getWidgetSettings,
- editWidgetSettings,
- getWidget,
- getInvites,
- getIntegrations,
- deleteIntegration,
- getVoiceRegions,
- beginPrune,
- getAuditLogs,
- getAutoModerationRules,
- getAutoModerationRule,
- createAutoModerationRule,
- editAutoModerationRule,
- deleteAutoModerationRule,
- getEmojis,
- getEmoji,
- createEmoji,
- editEmoji,
- deleteEmoji,
- getMembers,
- getMember,
- searchForMembers,
- editMember,
- removeMember,
- addRoleToMember,
- removeRoleFromMember,
- getRoles,
- createRole,
- editRole,
- deleteRole,
- getPruneCount,
- deleteScheduledEvent,
- editScheduledEvent,
- createScheduledEvent,
- getScheduledEvent,
- getScheduledEvents,
- getScheduledEventUsers,
- getStickers,
- getSticker,
- createSticker,
- editSticker,
- deleteSticker,
- getTemplates,
- getTemplate,
- createTemplate,
- editTemplate,
- deleteTemplate,
- getWebhooks,
- getMemberBans,
- getOnboarding,
- setVoiceState,
- syncTemplate,
- editUserVoiceState,
- editMFALevel,
- getPreview,
- create,
- createChannel,
- setChannelPositions,
- getActiveThreads,
- getMemberBan,
- banMember,
- banUser,
- unbanUser,
- setRolePositions,
+ edit: importCache.edit.file.default,
+ delete: importCache.delete.file.default,
+ getChannels: importCache.getChannels.file.default,
+ getWidgetImage: importCache.getWidgetImage.file.default,
+ getVanityURL: importCache.getVanityURL.file.default,
+ getWelcomeScreen: importCache.getWelcomeScreen.file.default,
+ editWelcomeScreen: importCache.editWelcomeScreen.file.default,
+ getWidgetSettings: importCache.getWidgetSettings.file.default,
+ editWidgetSettings: importCache.editWidgetSettings.file.default,
+ getWidget: importCache.getWidget.file.default,
+ getInvites: importCache.getInvites.file.default,
+ getIntegrations: importCache.getIntegrations.file.default,
+ deleteIntegration: importCache.deleteIntegration.file.default,
+ getVoiceRegions: importCache.getVoiceRegions.file.default,
+ beginPrune: importCache.beginPrune.file.default,
+ getAuditLogs: importCache.getAuditLogs.file.default,
+ getAutoModerationRules: importCache.getAutoModerationRules.file.default,
+ getAutoModerationRule: importCache.getAutoModerationRule.file.default,
+ createAutoModerationRule: importCache.createAutoModerationRule.file.default,
+ editAutoModerationRule: importCache.editAutoModerationRule.file.default,
+ deleteAutoModerationRule: importCache.deleteAutoModerationRule.file.default,
+ getEmojis: importCache.getEmojis.file.default,
+ getEmoji: importCache.getEmoji.file.default,
+ createEmoji: importCache.createEmoji.file.default,
+ editEmoji: importCache.editEmoji.file.default,
+ deleteEmoji: importCache.deleteEmoji.file.default,
+ getMembers: importCache.getMembers.file.default,
+ getMember: importCache.getMember.file.default,
+ searchForMembers: importCache.searchForMembers.file.default,
+ editMember: importCache.editMember.file.default,
+ removeMember: importCache.removeMember.file.default,
+ addRoleToMember: importCache.addRoleToMember.file.default,
+ removeRoleFromMember: importCache.removeRoleFromMember.file.default,
+ getRoles: importCache.getRoles.file.default,
+ createRole: importCache.createRole.file.default,
+ editRole: importCache.editRole.file.default,
+ deleteRole: importCache.deleteRole.file.default,
+ getPruneCount: importCache.getPruneCount.file.default,
+ deleteScheduledEvent: importCache.deleteScheduledEvent.file.default,
+ editScheduledEvent: importCache.editScheduledEvent.file.default,
+ createScheduledEvent: importCache.createScheduledEvent.file.default,
+ getScheduledEvent: importCache.getScheduledEvent.file.default,
+ getScheduledEvents: importCache.getScheduledEvents.file.default,
+ getScheduledEventUsers: importCache.getScheduledEventUsers.file.default,
+ getStickers: importCache.getStickers.file.default,
+ getSticker: importCache.getSticker.file.default,
+ createSticker: importCache.createSticker.file.default,
+ editSticker: importCache.editSticker.file.default,
+ deleteSticker: importCache.deleteSticker.file.default,
+ getTemplates: importCache.getTemplates.file.default,
+ getTemplate: importCache.getTemplate.file.default,
+ createTemplate: importCache.createTemplate.file.default,
+ editTemplate: importCache.editTemplate.file.default,
+ deleteTemplate: importCache.deleteTemplate.file.default,
+ getWebhooks: importCache.getWebhooks.file.default,
+ getMemberBans: importCache.getMemberBans.file.default,
+ getOnboarding: importCache.getOnboarding.file.default,
+ setVoiceState: importCache.setVoiceState.file.default,
+ syncTemplate: importCache.syncTemplate.file.default,
+ editUserVoiceState: importCache.editUserVoiceState.file.default,
+ editMFALevel: importCache.editMFALevel.file.default,
+ getPreview: importCache.getPreview.file.default,
+ create: importCache.create.file.default,
+ createChannel: importCache.createChannel.file.default,
+ setChannelPositions: importCache.setChannelPositions.file.default,
+ getActiveThreads: importCache.getActiveThreads.file.default,
+ getMemberBan: importCache.getMemberBan.file.default,
+ banMember: importCache.banMember.file.default,
+ banUser: importCache.banUser.file.default,
+ unbanUser: importCache.unbanUser.file.default,
+ setRolePositions: importCache.setRolePositions.file.default,
 };
 
 export default guilds;

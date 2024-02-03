@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Crossposts a message to all following channels.
@@ -16,10 +11,10 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (message: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- const me = await getBotMemberFromGuild(message.guild);
+ const me = await message.client.util.getBotMemberFromGuild(message.guild);
 
  if (!canCrosspostMessages(message, me)) {
-  const e = requestHandlerError(
+  const e = message.client.util.requestHandlerError(
    `Cannot crosspost message in ${message.guild.name} / ${message.guild.id}`,
    [
     Discord.PermissionFlagsBits.SendMessages,
@@ -27,15 +22,15 @@ export default async (message: Discord.Message<true>) => {
    ],
   );
 
-  error(message.guild, e);
+  message.client.util.error(message.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
   .crosspostMessage(message.channelId, message.id)
   .then((m) => new Classes.Message(message.client, m))
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

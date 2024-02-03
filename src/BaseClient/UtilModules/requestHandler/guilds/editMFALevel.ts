@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits the MFA level of a guild.
@@ -17,17 +12,19 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditMFALevel(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot edit MFA level`, [Discord.PermissionFlagsBits.ManageGuild]);
+ if (!canEditMFALevel(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit MFA level`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .editMFALevel(guild.id, level, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

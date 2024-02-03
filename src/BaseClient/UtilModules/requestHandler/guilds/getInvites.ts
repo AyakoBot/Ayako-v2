@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the invites for a given guild.
@@ -13,14 +8,16 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of parsed invite objects.
  */
 export default async (guild: Discord.Guild) => {
- if (!canGetInvites(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get invites`, [Discord.PermissionFlagsBits.ManageGuild]);
+ if (!canGetInvites(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get invites`, [
+   Discord.PermissionFlagsBits.ManageGuild,
+  ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getInvites(guild.id)
   .then((invites) => {
    const parsed = invites.map((i) => new Classes.Invite(guild.client, i));
@@ -31,7 +28,7 @@ export default async (guild: Discord.Guild) => {
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

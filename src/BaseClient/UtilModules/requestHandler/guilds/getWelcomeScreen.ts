@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the welcome screen for a guild.
@@ -14,21 +9,21 @@ import requestHandlerError from '../../requestHandlerError.js';
  * or rejects with a DiscordAPIError if unsuccessful.
  */
 export default async (guild: Discord.Guild) => {
- if (!canGetWelcomeScreen(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get welcome screen`, [
+ if (!canGetWelcomeScreen(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get welcome screen`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getWelcomeScreen(guild.id)
   .then((w) => new Classes.WelcomeScreen(guild, w))
   .catch((e) => {
    if (e.code === 10069) return undefined;
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

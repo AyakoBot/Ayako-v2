@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -13,10 +11,10 @@ import * as Classes from '../../../Other/classes.js';
  * or rejects with a `DiscordAPIError`.
  */
 export default async (guild: Discord.Guild, webhookId: string, token?: string) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+ (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
   .get(webhookId, { token })
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

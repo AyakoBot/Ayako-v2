@@ -1,7 +1,7 @@
-import getVoiceRegions from './voice/getVoiceRegions.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/voice.js';
 
 interface Voice {
- getVoiceRegions: typeof getVoiceRegions;
+ getVoiceRegions: typeof importCache.getVoiceRegions.file.default;
 }
 
 /**
@@ -10,7 +10,7 @@ interface Voice {
  * - Retrieves an array of available voice regions.
  */
 const voice: Voice = {
- getVoiceRegions,
+ getVoiceRegions: importCache.getVoiceRegions.file.default,
 };
 
 export default voice;

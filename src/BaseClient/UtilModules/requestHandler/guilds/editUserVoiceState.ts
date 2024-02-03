@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits the voice state of a user in a guild.
@@ -23,19 +18,19 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditUserVoiceState(await getBotMemberFromGuild(guild), body)) {
-  const e = requestHandlerError(`Cannot edit user voice state`, [
+ if (!canEditUserVoiceState(await guild.client.util.getBotMemberFromGuild(guild), body)) {
+  const e = guild.client.util.requestHandlerError(`Cannot edit user voice state`, [
    Discord.PermissionFlagsBits.MuteMembers,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .editUserVoiceState(guild.id, userId, body, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

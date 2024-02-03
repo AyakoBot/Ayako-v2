@@ -1,11 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 /**
  * Creates a thread in a guild text-based channel.
@@ -21,8 +18,10 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateThread(channel.id, body, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(
+ if (
+  !canCreateThread(channel.id, body, await channel.client.util.getBotMemberFromGuild(channel.guild))
+ ) {
+  const e = channel.client.util.requestHandlerError(
    `Cannot create ${
     body.type === Discord.ChannelType.PrivateThread ? 'private' : 'public / announcement'
    } threads in ${channel.name} / ${channel.id}`,

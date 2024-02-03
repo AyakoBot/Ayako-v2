@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Creates a new stage instance associated with a stage channel.
@@ -22,21 +17,21 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreate(await getBotMemberFromGuild(channel.guild), channel.id)) {
-  const e = requestHandlerError(
+ if (!canCreate(await channel.client.util.getBotMemberFromGuild(channel.guild), channel.id)) {
+  const e = channel.client.util.requestHandlerError(
    `Cannot create stage instance in ${channel.guild.name} / ${channel.guild.id}`,
    [Discord.PermissionFlagsBits.ManageChannels],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).stageInstances
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).stageInstances
   .create(body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

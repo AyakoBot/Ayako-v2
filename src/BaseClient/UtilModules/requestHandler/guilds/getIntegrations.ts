@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Returns a promise that resolves with an array of integrations for the given guild.
@@ -14,20 +9,20 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of integrations for the given guild.
  */
 export default async (guild: Discord.Guild) => {
- if (!canGetIntegrations(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get integrations`, [
+ if (!canGetIntegrations(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get integrations`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getIntegrations(guild.id)
   .then((integrations) => integrations.map((i) => new Classes.Integration(guild.client, i, guild)))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

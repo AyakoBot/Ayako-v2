@@ -4,9 +4,6 @@ import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
-
 /**
  * Creates an invite for a guild-based channel.
  * @param channel - The guild-based channel to create the invite for.
@@ -21,10 +18,11 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateInvite(channel.id, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot create invite in ${channel.name} / ${channel.id}`, [
-   Discord.PermissionFlagsBits.CreateInstantInvite,
-  ]);
+ if (!canCreateInvite(channel.id, await channel.client.util.getBotMemberFromGuild(channel.guild))) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot create invite in ${channel.name} / ${channel.id}`,
+   [Discord.PermissionFlagsBits.CreateInstantInvite],
+  );
 
   error(channel.guild, e);
   return e;

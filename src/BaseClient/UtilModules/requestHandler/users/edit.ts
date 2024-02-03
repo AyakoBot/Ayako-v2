@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -13,14 +11,14 @@ import * as Classes from '../../../Other/classes.js';
 export default async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUserJSONBody) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).users
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).users
   .edit({
    ...data,
    avatar: data.avatar ? await Discord.DataResolver.resolveImage(data.avatar) : data.avatar,
   })
   .then((u) => new Classes.User(guild.client, u))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

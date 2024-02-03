@@ -1,71 +1,39 @@
-import sendMessage from './channels/sendMessage.js';
-import replyMsg from './channels/replyMsg.js';
-import editMsg from './channels/editMsg.js';
-import editMessage from './channels/editMessage.js';
-import getReactions from './channels/getReactions.js';
-import deleteOwnReaction from './channels/deleteOwnReaction.js';
-import deleteUserReaction from './channels/deleteUserReaction.js';
-import deleteAllReactions from './channels/deleteAllReactions.js';
-import deleteAllReactionsOfEmoji from './channels/deleteAllReactionsOfEmoji.js';
-import addReaction from './channels/addReaction.js';
-import edit from './channels/edit.js';
-import get from './channels/get.js';
-import del from './channels/delete.js';
-import getMessages from './channels/getMessages.js';
-import showTyping from './channels/showTyping.js';
-import pin from './channels/pin.js';
-import deleteMessage from './channels/deleteMessage.js';
-import bulkDelete from './channels/bulkDelete.js';
-import crosspostMessage from './channels/crosspostMessage.js';
-import getPins from './channels/getPins.js';
-import unpin from './channels/unpin.js';
-import followAnnouncements from './channels/followAnnouncements.js';
-import createInvite from './channels/createInvite.js';
-import getInvites from './channels/getInvites.js';
-import createThread from './channels/createThread.js';
-import createForumThread from './channels/createForumThread.js';
-import getArchivedThreads from './channels/getArchivedThreads.js';
-import getJoinedPrivateArchivedThreads from './channels/getJoinedPrivateArchivedThreads.js';
-import getWebhooks from './channels/getWebhooks.js';
-import editPermissionOverwrite from './channels/editPermissionOverwrite.js';
-import deletePermissionOverwrite from './channels/deletePermissionOverwrite.js';
-import createWebhook from './channels/createWebhook.js';
-import getMessage from './channels/getMessage.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/channels.js';
 
 interface Channels {
- sendMessage: typeof sendMessage;
- replyMsg: typeof replyMsg;
- editMsg: typeof editMsg;
- editMessage: typeof editMessage;
- getReactions: typeof getReactions;
- deleteOwnReaction: typeof deleteOwnReaction;
- deleteUserReaction: typeof deleteUserReaction;
- deleteAllReactions: typeof deleteAllReactions;
- deleteAllReactionsOfEmoji: typeof deleteAllReactionsOfEmoji;
- addReaction: typeof addReaction;
- edit: typeof edit;
- get: typeof get;
- delete: typeof del;
- getMessages: typeof getMessages;
- showTyping: typeof showTyping;
- pin: typeof pin;
- deleteMessage: typeof deleteMessage;
- bulkDelete: typeof bulkDelete;
- crosspostMessage: typeof crosspostMessage;
- getPins: typeof getPins;
- unpin: typeof unpin;
- followAnnouncements: typeof followAnnouncements;
- createInvite: typeof createInvite;
- getInvites: typeof getInvites;
- createThread: typeof createThread;
- createForumThread: typeof createForumThread;
- getArchivedThreads: typeof getArchivedThreads;
- getJoinedPrivateArchivedThreads: typeof getJoinedPrivateArchivedThreads;
- getWebhooks: typeof getWebhooks;
- editPermissionOverwrite: typeof editPermissionOverwrite;
- deletePermissionOverwrite: typeof deletePermissionOverwrite;
- createWebhook: typeof createWebhook;
- getMessage: typeof getMessage;
+ sendMessage: typeof importCache.sendMessage.file.default;
+ replyMsg: typeof importCache.replyMsg.file.default;
+ editMsg: typeof importCache.editMsg.file.default;
+ editMessage: typeof importCache.editMessage.file.default;
+ getReactions: typeof importCache.getReactions.file.default;
+ deleteOwnReaction: typeof importCache.deleteOwnReaction.file.default;
+ deleteUserReaction: typeof importCache.deleteUserReaction.file.default;
+ deleteAllReactions: typeof importCache.deleteAllReactions.file.default;
+ deleteAllReactionsOfEmoji: typeof importCache.deleteAllReactionsOfEmoji.file.default;
+ addReaction: typeof importCache.addReaction.file.default;
+ edit: typeof importCache.edit.file.default;
+ get: typeof importCache.get.file.default;
+ delete: typeof importCache.delete.file.default;
+ getMessages: typeof importCache.getMessages.file.default;
+ showTyping: typeof importCache.showTyping.file.default;
+ pin: typeof importCache.pin.file.default;
+ deleteMessage: typeof importCache.deleteMessage.file.default;
+ bulkDelete: typeof importCache.bulkDelete.file.default;
+ crosspostMessage: typeof importCache.crosspostMessage.file.default;
+ getPins: typeof importCache.getPins.file.default;
+ unpin: typeof importCache.unpin.file.default;
+ followAnnouncements: typeof importCache.followAnnouncements.file.default;
+ createInvite: typeof importCache.createInvite.file.default;
+ getInvites: typeof importCache.getInvites.file.default;
+ createThread: typeof importCache.createThread.file.default;
+ createForumThread: typeof importCache.createForumThread.file.default;
+ getArchivedThreads: typeof importCache.getArchivedThreads.file.default;
+ getJoinedPrivateArchivedThreads: typeof importCache.getJoinedPrivateArchivedThreads.file.default;
+ getWebhooks: typeof importCache.getWebhooks.file.default;
+ editPermissionOverwrite: typeof importCache.editPermissionOverwrite.file.default;
+ deletePermissionOverwrite: typeof importCache.deletePermissionOverwrite.file.default;
+ createWebhook: typeof importCache.createWebhook.file.default;
+ getMessage: typeof importCache.getMessage.file.default;
 }
 
 /**
@@ -138,39 +106,39 @@ interface Channels {
  * - Gets a message from a channel.
  */
 const channels: Channels = {
- sendMessage,
- replyMsg,
- editMsg,
- editMessage,
- getReactions,
- deleteOwnReaction,
- deleteUserReaction,
- deleteAllReactions,
- deleteAllReactionsOfEmoji,
- addReaction,
- edit,
- get,
- delete: del,
- getMessages,
- showTyping,
- pin,
- deleteMessage,
- bulkDelete,
- crosspostMessage,
- getPins,
- unpin,
- followAnnouncements,
- createInvite,
- getInvites,
- createThread,
- createForumThread,
- getArchivedThreads,
- getJoinedPrivateArchivedThreads,
- getWebhooks,
- editPermissionOverwrite,
- deletePermissionOverwrite,
- createWebhook,
- getMessage,
+ sendMessage: importCache.sendMessage.file.default,
+ replyMsg: importCache.replyMsg.file.default,
+ editMsg: importCache.editMsg.file.default,
+ editMessage: importCache.editMessage.file.default,
+ getReactions: importCache.getReactions.file.default,
+ deleteOwnReaction: importCache.deleteOwnReaction.file.default,
+ deleteUserReaction: importCache.deleteUserReaction.file.default,
+ deleteAllReactions: importCache.deleteAllReactions.file.default,
+ deleteAllReactionsOfEmoji: importCache.deleteAllReactionsOfEmoji.file.default,
+ addReaction: importCache.addReaction.file.default,
+ edit: importCache.edit.file.default,
+ get: importCache.get.file.default,
+ delete: importCache.delete.file.default,
+ getMessages: importCache.getMessages.file.default,
+ showTyping: importCache.showTyping.file.default,
+ pin: importCache.pin.file.default,
+ deleteMessage: importCache.deleteMessage.file.default,
+ bulkDelete: importCache.bulkDelete.file.default,
+ crosspostMessage: importCache.crosspostMessage.file.default,
+ getPins: importCache.getPins.file.default,
+ unpin: importCache.unpin.file.default,
+ followAnnouncements: importCache.followAnnouncements.file.default,
+ createInvite: importCache.createInvite.file.default,
+ getInvites: importCache.getInvites.file.default,
+ createThread: importCache.createThread.file.default,
+ createForumThread: importCache.createForumThread.file.default,
+ getArchivedThreads: importCache.getArchivedThreads.file.default,
+ getJoinedPrivateArchivedThreads: importCache.getJoinedPrivateArchivedThreads.file.default,
+ getWebhooks: importCache.getWebhooks.file.default,
+ editPermissionOverwrite: importCache.editPermissionOverwrite.file.default,
+ deletePermissionOverwrite: importCache.deletePermissionOverwrite.file.default,
+ createWebhook: importCache.createWebhook.file.default,
+ getMessage: importCache.getMessage.file.default,
 };
 
 export default channels;

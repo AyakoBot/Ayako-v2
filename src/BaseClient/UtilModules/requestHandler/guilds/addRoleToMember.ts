@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Adds a role to a member in a guild.
@@ -18,19 +13,19 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (guild: Discord.Guild, userId: string, roleId: string, reason?: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canAddRoleToMember(await getBotMemberFromGuild(guild), roleId)) {
-  const e = requestHandlerError(`Cannot add role ${roleId} to member`, [
+ if (!canAddRoleToMember(await guild.client.util.getBotMemberFromGuild(guild), roleId)) {
+  const e = guild.client.util.requestHandlerError(`Cannot add role ${roleId} to member`, [
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .addRoleToMember(guild.id, userId, roleId, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

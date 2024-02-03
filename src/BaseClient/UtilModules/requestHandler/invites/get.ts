@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -13,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
  guild.invites.cache.get(code) ??
- (cache.apis.get(guild.id) ?? API).invites
+ (guild.client.util.cache.apis.get(guild.id) ?? API).invites
   .get(code, query)
   .then((i) => {
    const parsed = new Classes.Invite(guild.client, i);
@@ -22,6 +20,6 @@ export default async (guild: Discord.Guild, code: string, query?: Discord.RESTGe
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

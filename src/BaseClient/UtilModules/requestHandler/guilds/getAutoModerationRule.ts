@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves an auto moderation rule from the cache or API.
@@ -14,18 +9,18 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with the retrieved auto moderation rule.
  */
 export default async (guild: Discord.Guild, ruleId: string) => {
- if (!canGetAutoModerationRule(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get auto moderation rule`, [
+ if (!canGetAutoModerationRule(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get auto moderation rule`, [
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
  return (
   guild.autoModerationRules.cache.get(ruleId) ??
-  (cache.apis.get(guild.id) ?? API).guilds
+  (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
    .getAutoModerationRule(guild.id, ruleId)
    .then((r) => {
     const parsed = new Classes.AutoModerationRule(guild.client, r, guild);
@@ -34,7 +29,7 @@ export default async (guild: Discord.Guild, ruleId: string) => {
     return parsed;
    })
    .catch((e) => {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    })
  );

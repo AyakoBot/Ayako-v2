@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the audit logs for a given guild.
@@ -15,20 +10,20 @@ import requestHandlerError from '../../requestHandlerError.js';
  * representing the audit logs for the guild.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQuery) => {
- if (!canViewAuditLogs(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot view audit logs`, [
+ if (!canViewAuditLogs(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot view audit logs`, [
    Discord.PermissionFlagsBits.ViewAuditLog,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getAuditLogs(guild.id, query)
   .then((a) => new Classes.GuildAuditLogs(guild, a))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

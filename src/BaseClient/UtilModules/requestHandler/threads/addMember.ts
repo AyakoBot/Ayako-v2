@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Adds a member to a thread in a guild.
@@ -15,20 +10,22 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (thread: Discord.ThreadChannel, userId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canAddMember(await getBotMemberFromGuild(thread.guild), thread)) {
-  const e = requestHandlerError(
+ if (!canAddMember(await thread.client.util.getBotMemberFromGuild(thread.guild), thread)) {
+  const e = thread.client.util.requestHandlerError(
    `Cannot add member ${userId} to thread ${thread.name} / ${thread.id} in ${thread.guild.name} / ${thread.guild.id}`,
    [Discord.PermissionFlagsBits.SendMessages],
   );
 
-  error(thread.guild, e);
+  thread.client.util.error(thread.guild, e);
   return e;
  }
 
- return (cache.apis.get(thread.guild.id) ?? API).threads.addMember(thread.id, userId).catch((e) => {
-  error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ return (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
+  .addMember(thread.id, userId)
+  .catch((e) => {
+   thread.client.util.error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });
 };
 /**
  * Checks if the given guild member has the permission to add members to threads.

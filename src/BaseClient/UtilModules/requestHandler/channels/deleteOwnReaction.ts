@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 /**
  * Deletes the reaction of the bot on a message.
@@ -21,7 +19,7 @@ export default async (message: Discord.Message<true>, emoji: string) => {
   ) as Discord.DiscordAPIError;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
   .deleteOwnMessageReaction(
    message.channel.id,
    message.id,
@@ -30,7 +28,7 @@ export default async (message: Discord.Message<true>, emoji: string) => {
     : (resolvedEmoji.name as string),
   )
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

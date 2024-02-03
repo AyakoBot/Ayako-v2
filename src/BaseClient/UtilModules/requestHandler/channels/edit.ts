@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Edits a guild-based channel or thread channel.
@@ -19,22 +14,25 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEdit(channel, body, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot edit channel ${channel.name} / ${channel.id}`, [
-   channel.isThread()
-    ? Discord.PermissionFlagsBits.ManageThreads
-    : Discord.PermissionFlagsBits.ManageChannels,
-  ]);
+ if (!canEdit(channel, body, await channel.client.util.getBotMemberFromGuild(channel.guild))) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot edit channel ${channel.name} / ${channel.id}`,
+   [
+    channel.isThread()
+     ? Discord.PermissionFlagsBits.ManageThreads
+     : Discord.PermissionFlagsBits.ManageChannels,
+   ],
+  );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
   .edit(channel.id, body)
   .then((c) => Classes.Channel(channel.client, c, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

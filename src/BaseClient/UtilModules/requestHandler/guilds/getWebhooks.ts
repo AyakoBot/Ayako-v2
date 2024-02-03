@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Retrieves the webhooks for a given guild.
@@ -13,20 +8,20 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of Webhook objects.
  */
 export default async (guild: Discord.Guild) => {
- if (!canGetWebhooks(await getBotMemberFromGuild(guild))) {
-  const e = requestHandlerError(`Cannot get webhooks`, [
+ if (!canGetWebhooks(await guild.client.util.getBotMemberFromGuild(guild))) {
+  const e = guild.client.util.requestHandlerError(`Cannot get webhooks`, [
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  guild.client.util.error(guild, e);
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
   .getWebhooks(guild.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

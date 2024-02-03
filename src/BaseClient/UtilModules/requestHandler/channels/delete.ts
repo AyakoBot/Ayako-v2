@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
-
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes a channel from the given guild.
@@ -15,26 +10,29 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildBasedChannel) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!isDeleteable(channel, await getBotMemberFromGuild(channel.guild))) {
-  const e = requestHandlerError(`Cannot delete channel ${channel.name} / ${channel.id}`, [
+ if (!isDeleteable(channel, await channel.client.util.getBotMemberFromGuild(channel.guild))) {
+  const e = channel.client.util.requestHandlerError(
+   `Cannot delete channel ${channel.name} / ${channel.id}`,
    [
-    Discord.ChannelType.PrivateThread,
-    Discord.ChannelType.PublicThread,
-    Discord.ChannelType.AnnouncementThread,
-   ].includes(channel.type)
-    ? Discord.PermissionFlagsBits.ManageThreads
-    : Discord.PermissionFlagsBits.ManageChannels,
-  ]);
+    [
+     Discord.ChannelType.PrivateThread,
+     Discord.ChannelType.PublicThread,
+     Discord.ChannelType.AnnouncementThread,
+    ].includes(channel.type)
+     ? Discord.PermissionFlagsBits.ManageThreads
+     : Discord.PermissionFlagsBits.ManageChannels,
+   ],
+  );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
   .delete(channel.id)
   .then((c) => Classes.Channel(channel.guild.client, c, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

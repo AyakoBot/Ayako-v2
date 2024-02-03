@@ -1,25 +1,16 @@
-import get from './users/get.js';
-import getCurrent from './users/getCurrent.js';
-import getGuilds from './users/getGuilds.js';
-import leaveGuild from './users/leaveGuild.js';
-import edit from './users/edit.js';
-import editCurrentGuildMember from './users/editCurrentGuildMember.js';
-import createDM from './users/createDM.js';
-import getCurrentConnections from './users/getCurrentConnections.js';
-import getApplicationRoleConnection from './users/getApplicationRoleConnection.js';
-import updateApplicationRoleConnection from './users/updateApplicationRoleConnection.js';
+import importCache from '../importCache/BaseClient/UtilModules/requestHandler/users.js';
 
 interface Users {
- get: typeof get;
- getCurrent: typeof getCurrent;
- getGuilds: typeof getGuilds;
- leaveGuild: typeof leaveGuild;
- edit: typeof edit;
- editCurrentGuildMember: typeof editCurrentGuildMember;
- createDM: typeof createDM;
- getCurrentConnections: typeof getCurrentConnections;
- getApplicationRoleConnection: typeof getApplicationRoleConnection;
- updateApplicationRoleConnection: typeof updateApplicationRoleConnection;
+ get: typeof importCache.get.file.default;
+ getCurrent: typeof importCache.getCurrent.file.default;
+ getGuilds: typeof importCache.getGuilds.file.default;
+ leaveGuild: typeof importCache.leaveGuild.file.default;
+ edit: typeof importCache.edit.file.default;
+ editCurrentGuildMember: typeof importCache.editCurrentGuildMember.file.default;
+ createDM: typeof importCache.createDM.file.default;
+ getCurrentConnections: typeof importCache.getCurrentConnections.file.default;
+ getApplicationRoleConnection: typeof importCache.getApplicationRoleConnection.file.default;
+ updateApplicationRoleConnection: typeof importCache.updateApplicationRoleConnection.file.default;
 }
 
 /**
@@ -46,16 +37,16 @@ interface Users {
  * - Method for updating the current user's application role connection.
  */
 const users: Users = {
- get,
- getCurrent,
- getGuilds,
- leaveGuild,
- edit,
- editCurrentGuildMember,
- createDM,
- getCurrentConnections,
- getApplicationRoleConnection,
- updateApplicationRoleConnection,
+ get: importCache.get.file.default,
+ getCurrent: importCache.getCurrent.file.default,
+ getGuilds: importCache.getGuilds.file.default,
+ leaveGuild: importCache.leaveGuild.file.default,
+ edit: importCache.edit.file.default,
+ editCurrentGuildMember: importCache.editCurrentGuildMember.file.default,
+ createDM: importCache.createDM.file.default,
+ getCurrentConnections: importCache.getCurrentConnections.file.default,
+ getApplicationRoleConnection: importCache.getApplicationRoleConnection.file.default,
+ updateApplicationRoleConnection: importCache.updateApplicationRoleConnection.file.default,
 };
 
 export default users;
