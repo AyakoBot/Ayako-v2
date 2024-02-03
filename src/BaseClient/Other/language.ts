@@ -47,6 +47,7 @@ const t = (lan: ReturnType<typeof mergeLang>) => ({
 });
 
 export default class Language {
+ client = client;
  botName = client.user?.username ?? 'Ayako';
  botId = client.user?.id;
  CURRENT_LANGUAGE: keyof typeof languages = 'en-GB';
@@ -99,6 +100,7 @@ export default class Language {
  auditLogAction: { [key in Discord.GuildAuditLogsEntry['action']]: string };
 
  constructor(type: keyof typeof languages) {
+  this.client = client;
   this.CURRENT_LANGUAGE = type;
 
   this.JSON = mergeLang(languages[this.CURRENT_LANGUAGE]);
