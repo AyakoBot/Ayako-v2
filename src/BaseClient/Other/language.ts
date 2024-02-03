@@ -1,37 +1,35 @@
 import * as Discord from 'discord.js';
 import merge from 'lodash.merge';
 import client from '../Bot/Client.js';
-import Util from '../UtilModules/importCache/BaseClient/UtilModules.js';
+import stp from '../UtilModules/stp.js';
 
-import languageFunction from './language/languageFunction.js';
-import events from './language/events/events.js';
-import time from './language/time.js';
-import channelTypes from './language/channelTypes.js';
-import verification from './language/verification.js';
-import expire from './language/expire.js';
-import channelRules from './language/channelRules.js';
-import auditLogAction from './language/auditLogAction.js';
-import defaultSortOrder from './language/defaultSortOrder.js';
-import defaultForumLayout from './language/defaultForumLayout.js';
-import defaultAutoArchiveDuration from './language/defaultAutoArchiveDuration.js';
-import autotypes from './language/autotypes.js';
 import antivirus from './language/antivirus.js';
+import auditLogAction from './language/auditLogAction.js';
+import autotypes from './language/autotypes.js';
 import censor from './language/censor.js';
-import slashCommands from './language/slashCommands.js';
-import nitro from './language/nitro.js';
-import mod from './language/mod.js';
+import channelRules from './language/channelRules.js';
+import channelTypes from './language/channelTypes.js';
+import defaultAutoArchiveDuration from './language/defaultAutoArchiveDuration.js';
+import defaultForumLayout from './language/defaultForumLayout.js';
+import defaultSortOrder from './language/defaultSortOrder.js';
+import events from './language/events/events.js';
+import expire from './language/expire.js';
+import languageFunction from './language/languageFunction.js';
 import leveling from './language/leveling.js';
+import mod from './language/mod.js';
+import nitro from './language/nitro.js';
+import slashCommands from './language/slashCommands.js';
+import time from './language/time.js';
+import verification from './language/verification.js';
 
-import enJSON from '../../Languages/en-GB.json' assert { type: 'json' };
 import deJSON from '../../Languages/de-DE.json' assert { type: 'json' };
+import enJSON from '../../Languages/en-GB.json' assert { type: 'json' };
 
 export const languages = {
  'en-GB': enJSON,
  'en-US': enJSON,
  'de-DE': deJSON,
 };
-
-const stp = Util.stp.file.default;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mergeLang = <T extends Record<string, any>>(lang: T) =>
