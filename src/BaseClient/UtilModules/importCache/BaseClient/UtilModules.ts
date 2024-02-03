@@ -501,12 +501,6 @@ const self = {
   },
   file: await import(`../../splitByThousands.js`),
  },
- stp: {
-  reload: async () => {
-   self.stp.file = await import(`../../stp.js?version=${Date.now()}`);
-  },
-  file: await import(`../../stp.js`),
- },
  txtFileLinkToString: {
   reload: async () => {
    self.txtFileLinkToString.file = await import(
