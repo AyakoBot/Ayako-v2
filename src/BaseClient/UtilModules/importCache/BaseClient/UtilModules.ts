@@ -15,6 +15,14 @@ const self = {
   },
   file: await import(`../../importCache.js`),
  },
+ requestHandlerError: {
+  reload: async () => {
+   self.requestHandlerError.file = await import(
+    `../../requestHandlerError.js?version=${Date.now()}`
+   );
+  },
+  file: await import(`../../requestHandlerError.js`),
+ },
  arrayBufferToBuffer: {
   reload: async () => {
    self.arrayBufferToBuffer.file = await import(

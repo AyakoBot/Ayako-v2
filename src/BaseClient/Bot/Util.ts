@@ -138,6 +138,7 @@ interface Util {
  replyMsg: typeof utilModules.replyMsg.file.default;
  request: typeof utilModules.requestHandler.file.request;
  requestHandler: typeof utilModules.requestHandler.file.default;
+ requestHandlerError: typeof utilModules.requestHandlerError.file.default;
  roleManager: typeof utilModules.roleManager.file.default;
  send: typeof utilModules.send.file.default;
  settingsHelpers: {
@@ -330,6 +331,7 @@ const util: Util = {
  replyMsg: utilModules.replyMsg.file.default,
  request: utilModules.requestHandler.file.request,
  requestHandler: utilModules.requestHandler.file.default,
+ requestHandlerError: utilModules.requestHandlerError.file.default,
  roleManager: utilModules.roleManager.file.default,
  send: utilModules.send.file.default,
  settingsHelpers: {
