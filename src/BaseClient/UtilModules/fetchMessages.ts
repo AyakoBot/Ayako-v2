@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { request } from './requestHandler.js';
 
 /**
  * Fetches a specified amount of messages from a guild text-based channel,
@@ -21,7 +20,7 @@ export default async (
 
  for (let i = 0; i < filter.amount / 100; i += 1) {
   // eslint-disable-next-line no-await-in-loop
-  const msgs = await request.channels.getMessages(channel, {
+  const msgs = await channel.client.util.request.channels.getMessages(channel, {
    limit: 100,
    before: messages.at(-1)?.id ?? filter.before,
   });

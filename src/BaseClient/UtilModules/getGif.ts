@@ -2,11 +2,6 @@ import * as Discord from 'discord.js';
 import * as Neko from 'nekos-best.js';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
 import PurrBot from 'purrbot-api';
-import getLanguage from './getLanguage.js';
-import getColor from './getColor.js';
-import replyCmd from './replyCmd.js';
-import objectEmotes from './emotes.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 const neko = new Neko.Client();
 
@@ -363,7 +358,7 @@ export const imageGetter = async (
 
  const imgGetter = gifSelection.find((g) => g.triggers.includes(commandName));
  const img = (await imgGetter?.gifs()) as ReturnType<'img'>;
- const language = await getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.img;
 
  const payload = {
@@ -372,7 +367,9 @@ export const imageGetter = async (
     image: {
      url: img.url,
     },
-    color: cmd.guild ? getColor(await getBotMemberFromGuild(cmd.guild)) : undefined,
+    color: cmd.guild
+     ? cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild))
+     : undefined,
     author: img.artist
      ? {
         name: lan.madeBy,
@@ -391,7 +388,7 @@ export const imageGetter = async (
       label: language.t.Refresh,
       custom_id: `images/${commandName}`,
       style: Discord.ButtonStyle.Primary,
-      emoji: objectEmotes.refresh,
+      emoji: cmd.client.util.emotes.refresh,
      } as Discord.APIButtonComponent,
     ],
    } as Discord.APIActionRowComponent<Discord.APIButtonComponent>,
@@ -417,6 +414,6 @@ export const imageGetter = async (
   ].filter((c): c is Discord.APIActionRowComponent<Discord.APIButtonComponent> => !!c),
  };
 
- if (cmd instanceof Discord.ChatInputCommandInteraction) replyCmd(cmd, payload);
+ if (cmd instanceof Discord.ChatInputCommandInteraction) cmd.client.util.replyCmd(cmd, payload);
  else cmd.update(payload);
 };

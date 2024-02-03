@@ -1,7 +1,5 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import emotes from './emotes.js';
-import constants from '../Other/constants.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Returns a Discord API Embed object for a loading message.
@@ -21,11 +19,11 @@ export default ({
 }): Discord.APIEmbed => ({
  author: {
   name: lan.author,
-  icon_url: emotes.loading.link,
-  url: constants.standard.invite,
+  icon_url: language.client.util.emotes.loading.link,
+  url: language.client.util.constants.standard.invite,
  },
- color: CT.Colors.Loading,
- description: `${constants.standard.getEmote(emotes.loading)} ${
-  lan.loading ? lan.loading : language.t.loading
- }`,
+ color: language.client.util.CT.Colors.Loading,
+ description: `${language.client.util.constants.standard.getEmote(
+  language.client.util.emotes.loading,
+ )} ${lan.loading ? lan.loading : language.t.loading}`,
 });

@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import cache from './cache.js';
-import SlashCommands from '../../SlashCommands/index.js';
+import type SlashCommands from '../../SlashCommands/index.js';
 
 type CommandName = (typeof SlashCommands)['names'][number];
 
@@ -19,7 +18,8 @@ export default async (guild: Discord.Guild | undefined | null, name: CommandName
   client.application?.commands.cache.find((c) => c.name === name);
 
  return guild
-  ? [...(cache.commands.cache.get(guild.id)?.values() ?? [])]?.find((c) => c.name === name) ??
-     clientCommand
+  ? [...(client.util.cache.commands.cache.get(guild.id)?.values() ?? [])]?.find(
+     (c) => c.name === name,
+    ) ?? clientCommand
   : clientCommand;
 };

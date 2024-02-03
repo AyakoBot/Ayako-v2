@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as getChannel from './getChannel.js';
 
 export default async (
  msg: Discord.Message<true>,
@@ -14,7 +13,7 @@ export default async (
    return { channel: msg.channel, reason: args.slice(1).join(' ') };
   }
 
-  channel = await getChannel.guildTextChannel(args[1]);
+  channel = await msg.client.util.getChannel.guildTextChannel(args[1]);
  }
 
  if (!channel) {

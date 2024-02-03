@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { request } from './requestHandler.js';
 
 /**
  * Fetches all members of a guild.
@@ -12,7 +11,7 @@ export default async (guild: Discord.Guild) => {
  const fetches = Math.ceil(guild.memberCount / 1000);
  for (let i = 0; i < fetches; i += 1) {
   // eslint-disable-next-line no-await-in-loop
-  const u = await request.guilds.getMembers(guild, {
+  const u = await guild.client.util.request.guilds.getMembers(guild, {
    limit: 1000,
    after: members.at(-1)?.user?.id,
   });

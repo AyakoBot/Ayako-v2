@@ -1,7 +1,5 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import emotes from './emotes.js';
-import constants from '../Other/constants.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Merges before and after values based on the given type
@@ -68,5 +66,9 @@ export default (
  */
 const boolify = (b: unknown, l: CT.Language) =>
  b
-  ? `${constants.standard.getEmote(emotes.tickWithBackground)} ${l.JSON.t.Enabled}`
-  : `${constants.standard.getEmote(emotes.crossWithBackground)} ${l.JSON.t.Disabled}`;
+  ? `${l.client.util.constants.standard.getEmote(l.client.util.emotes.tickWithBackground)} ${
+     l.JSON.t.Enabled
+    }`
+  : `${l.client.util.constants.standard.getEmote(l.client.util.emotes.crossWithBackground)} ${
+     l.JSON.t.Disabled
+    }`;

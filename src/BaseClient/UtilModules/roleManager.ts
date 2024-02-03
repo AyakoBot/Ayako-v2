@@ -1,7 +1,5 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import { request } from './requestHandler.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 
 type MemberCaches = {
  member: Discord.GuildMember;
@@ -103,7 +101,7 @@ const runJob = async (guild: Discord.Guild) => {
  const memberCaches = GuildCache.get(guild.id);
  if (!memberCaches) return;
 
- const me = await getBotMemberFromGuild(guild);
+ const me = await guild.client.util.getBotMemberFromGuild(guild);
  if (!me?.permissions.has(Discord.PermissionFlagsBits.ManageRoles)) {
   endJob(memberCaches);
   return;
@@ -139,7 +137,7 @@ const runJob = async (guild: Discord.Guild) => {
   return true;
  });
 
- request.guilds.editMember(memberCache.member, { roles }, memberCache.reason);
+ guild.client.util.request.guilds.editMember(memberCache.member, { roles }, memberCache.reason);
 
  endJob(memberCaches);
 };

@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import bitUniques from './bitUniques.js';
-import reply from './replyMsg.js';
-import * as util from './util.js';
-import constants from '../Other/constants.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Checks if the bot or user has the required permissions and sends an error message if not.
@@ -23,9 +18,9 @@ export default async (
  if (!msg.guild) return;
  if (typeof bits === 'number') bits = BigInt(bits);
 
- const clientMember = await getBotMemberFromGuild(msg.guild);
+ const clientMember = await msg.client.util.getBotMemberFromGuild(msg.guild);
  const neededPerms = new Discord.PermissionsBitField(
-  bitUniques(
+  msg.client.util.bitUniques(
    bits,
    me
     ? BigInt(clientMember?.permissions.bitfield || 0)
@@ -36,20 +31,20 @@ export default async (
  const embed: Discord.APIEmbed = {
   author: {
    name: language.t.error,
-   icon_url: constants.standard.error,
-   url: constants.standard.invite,
+   icon_url: msg.client.util.constants.standard.error,
+   url: msg.client.util.constants.standard.invite,
   },
-  color: CT.Colors.Danger,
+  color: msg.client.util.CT.Colors.Danger,
   description: me ? language.permissions.error.msg : language.permissions.error.you,
   fields: [
    {
-    name: util.makeBold(language.permissions.error.needed),
+    name: msg.client.util.util.makeBold(language.permissions.error.needed),
     value: `\u200b${
      neededPerms.has(8n)
-      ? `${util.makeInlineCode(language.permissions.perms.Administrator)}`
+      ? `${msg.client.util.util.makeInlineCode(language.permissions.perms.Administrator)}`
       : Object.entries(neededPerms).map(
          ([name]) =>
-          `${util.makeInlineCode(
+          `${msg.client.util.util.makeInlineCode(
            language.permissions.perms[name as keyof typeof language.permissions.perms],
           )}`,
         )
@@ -59,5 +54,5 @@ export default async (
   ],
  };
 
- reply(msg, { embeds: [embed] });
+ msg.client.util.replyMsg(msg, { embeds: [embed] });
 };

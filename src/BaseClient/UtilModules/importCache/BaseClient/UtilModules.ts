@@ -23,14 +23,6 @@ const self = {
   },
   file: await import(`../../requestHandlerError.js`),
  },
- arrayBufferToBuffer: {
-  reload: async () => {
-   self.arrayBufferToBuffer.file = await import(
-    `../../arrayBufferToBuffer.js?version=${Date.now()}`
-   );
-  },
-  file: await import(`../../arrayBufferToBuffer.js`),
- },
  deleteNotificationThread: {
   reload: async () => {
    self.deleteNotificationThread.file = await import(
@@ -86,14 +78,6 @@ const self = {
    self.emotes.file = await import(`../../emotes.js?version=${Date.now()}`);
   },
   file: await import(`../../emotes.js`),
- },
- encodeString2BigInt: {
-  reload: async () => {
-   self.encodeString2BigInt.file = await import(
-    `../../encodeString2BigInt.js?version=${Date.now()}`
-   );
-  },
-  file: await import(`../../encodeString2BigInt.js`),
  },
  error: {
   reload: async () => {
@@ -296,12 +280,6 @@ const self = {
    self.getMessage.file = await import(`../../getMessage.js?version=${Date.now()}`);
   },
   file: await import(`../../getMessage.js`),
- },
- getNameAndFileType: {
-  reload: async () => {
-   self.getNameAndFileType.file = await import(`../../getNameAndFileType.js?version=${Date.now()}`);
-  },
-  file: await import(`../../getNameAndFileType.js`),
  },
  getPunishment: {
   reload: async () => {

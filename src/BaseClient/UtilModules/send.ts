@@ -1,9 +1,7 @@
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import * as CT from '../../Typings/Typings.js';
-import { request } from './requestHandler.js';
+import type * as CT from '../../Typings/Typings.js';
 import * as Classes from '../Other/classes.js';
-import log from './logError.js';
 
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
@@ -75,7 +73,9 @@ async function send(
  const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
 
- if (channel.type === Discord.ChannelType.DM) log(JSON.stringify(payload), false);
+ if (channel.type === Discord.ChannelType.DM) {
+  channel.client.util.logError(JSON.stringify(payload), false);
+ }
 
  if (!('send' in channel)) return null;
 
@@ -90,7 +90,7 @@ async function send(
 
  payload.embeds?.forEach((e) => {
   if (e.author && !e.author.url) {
-   e.author.url = channel.client.util.files['/BaseClient/Other/constants.js'].standard.invite;
+   e.author.url = channel.client.util.constants.standard.invite;
   }
 
   e.fields?.forEach((f) => {
@@ -110,7 +110,7 @@ async function send(
   files: Discord.RawFile[];
  };
 
- const sentMessage = await request.channels.sendMessage(
+ const sentMessage = await channel.client.util.request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
   { ...body.body, files: body.files },
@@ -140,10 +140,10 @@ const combineMessages = async (
  embeds: Discord.APIEmbed[],
  timeout: number,
 ) => {
- let guildQueue = channel.client.util.channelQueue.get(channel.guildId);
+ let guildQueue = channel.client.util.cache.channelQueue.get(channel.guildId);
  if (!guildQueue) {
-  channel.client.util.channelQueue.set(channel.guildId, new Map());
-  guildQueue = channel.client.util.channelQueue.get(channel.guildId);
+  channel.client.util.cache.channelQueue.set(channel.guildId, new Map());
+  guildQueue = channel.client.util.cache.channelQueue.get(channel.guildId);
  }
 
  if (!guildQueue) {
@@ -166,7 +166,7 @@ const combineMessages = async (
   Number(channelQueues.length) + embeds.length > 10 ||
   getEmbedCharLens([...channelQueues, ...embeds]) > 6000
  ) {
-  channel.client.util.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
+  channel.client.util.cache.channelTimeout.get(channel.guildId)?.get(channel.id)?.cancel();
   channel.client.util.send(channel, { embeds: channelQueues });
   guildQueue.set(channel.id, []);
   channelQueues = guildQueue.get(channel.id);
@@ -177,17 +177,17 @@ const combineMessages = async (
   return;
  }
 
- channel.client.util.channelQueue
+ channel.client.util.cache.channelQueue
   .get(channel.guildId)
   ?.get(channel.id)
   ?.push(...embeds);
 
- if (channel.client.util.channelTimeout.get(channel.guildId)?.get(channel.id)) return;
+ if (channel.client.util.cache.channelTimeout.get(channel.guildId)?.get(channel.id)) return;
 
- let timeoutGuild = channel.client.util.channelTimeout.get(channel.guildId);
+ let timeoutGuild = channel.client.util.cache.channelTimeout.get(channel.guildId);
  if (!timeoutGuild) {
-  channel.client.util.channelTimeout.set(channel.guildId, new Map());
-  timeoutGuild = channel.client.util.channelTimeout.get(channel.guildId);
+  channel.client.util.cache.channelTimeout.set(channel.guildId, new Map());
+  timeoutGuild = channel.client.util.cache.channelTimeout.get(channel.guildId);
  }
 
  if (!timeoutGuild) {
@@ -199,17 +199,17 @@ const combineMessages = async (
   channel.guildId,
   Jobs.scheduleJob(new Date(Date.now() + timeout), () => {
    const queuedEmbeds =
-    channel.client.util.channelQueue.get(channel.guildId)?.get(channel.id) || [];
+    channel.client.util.cache.channelQueue.get(channel.guildId)?.get(channel.id) || [];
    channel.client.util.send(channel, { embeds: queuedEmbeds });
 
-   channel.client.util.channelQueue.get(channel.guildId)?.delete(channel.id);
-   channel.client.util.channelTimeout.get(channel.guildId)?.delete(channel.id);
+   channel.client.util.cache.channelQueue.get(channel.guildId)?.delete(channel.id);
+   channel.client.util.cache.channelTimeout.get(channel.guildId)?.delete(channel.id);
 
-   if (channel.client.util.channelQueue.get(channel.guildId)?.size === 0) {
-    channel.client.util.channelQueue.delete(channel.guildId);
+   if (channel.client.util.cache.channelQueue.get(channel.guildId)?.size === 0) {
+    channel.client.util.cache.channelQueue.delete(channel.guildId);
    }
-   if (channel.client.util.channelTimeout.get(channel.guildId)?.size === 0) {
-    channel.client.util.channelTimeout.delete(channel.guildId);
+   if (channel.client.util.cache.channelTimeout.get(channel.guildId)?.size === 0) {
+    channel.client.util.cache.channelTimeout.delete(channel.guildId);
    }
   }),
  );

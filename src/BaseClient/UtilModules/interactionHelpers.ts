@@ -1,27 +1,11 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import constants from '../Other/constants.js';
-import getGif from './getGif.js';
-import replyCmd from './replyCmd.js';
+import type * as CT from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
-import getColor from './getColor.js';
-import getLanguage from './getLanguage.js';
-import errorMsg from './errorMsg.js';
-import notYours from './notYours.js';
-import type { ReturnType } from './getGif.js';
-import { getPrefix } from '../../Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
-import getUser from './getUser.js';
-import getChunks from './getChunks.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild.js';
-import { request } from './requestHandler.js';
-import isDeleteable from './isDeleteable.js';
-import * as getChannel from './getChannel.js';
-import isEditable from './isEditable.js';
-import errorCmd from './errorCmd.js';
-import replyMsg from './replyMsg.js';
-import encodeString2BigInt from './encodeString2BigInt.js';
 import { Message } from '../Other/classes.js';
+import encodeString2BigInt from './encodeString2BigInt.js';
+import type constants from '../Other/constants.js';
+import type { ReturnType } from './getGif.js';
 
 const cooldown = new Set<string>();
 
@@ -64,19 +48,19 @@ const reply = async (
  const users = allUsers.filter(
   (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id),
  );
- const language = await getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
- const con = constants.commands.interactions.find((c) => c.name === commandName);
+ const con = cmd.client.util.constants.commands.interactions.find((c) => c.name === commandName);
  const desc = getDesc(author, users, language, lan, cmd, !!setting?.legacyrp);
 
  if (!desc || (con?.reqUser && !users.length)) {
   if (cmd instanceof Discord.Message) {
    const realCmd = (
-    await getChannel.guildTextChannel((cmd as Discord.Message).channelId)
+    await cmd.client.util.getChannel.guildTextChannel((cmd as Discord.Message).channelId)
    )?.messages.cache.get((cmd as Discord.Message).id);
    if (!realCmd) return;
 
-   const m = await errorMsg(
+   const m = await cmd.client.util.errorMsg(
     realCmd,
     allUsers.length ? language.slashCommands.rp.cantRP : language.errors.noUserMentioned,
     language,
@@ -85,25 +69,25 @@ const reply = async (
    Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
     if (!m) return;
 
-    if (await isDeleteable(m as Discord.Message<true>)) {
-     request.channels.deleteMessage(m as Discord.Message<true>);
+    if (await cmd.client.util.isDeleteable(m as Discord.Message<true>)) {
+     cmd.client.util.request.channels.deleteMessage(m as Discord.Message<true>);
     }
-    if (await isDeleteable(cmd as Discord.Message<true>)) {
-     request.channels.deleteMessage(cmd as Discord.Message<true>);
+    if (await cmd.client.util.isDeleteable(cmd as Discord.Message<true>)) {
+     cmd.client.util.request.channels.deleteMessage(cmd as Discord.Message<true>);
     }
    });
-  } else errorCmd(cmd, language.slashCommands.rp.cantRP, language);
+  } else cmd.client.util.errorCmd(cmd, language.slashCommands.rp.cantRP, language);
   return;
  }
 
- const gifCallers = getGif.filter((c) => c.triggers.includes(commandName));
+ const gifCallers = cmd.client.util.getGif.filter((c) => c.triggers.includes(commandName));
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
  const gif = (await gifCaller.gifs()) as ReturnType<'gif'> | undefined;
 
  if (!con) return;
 
  const embed: Discord.APIEmbed = {
-  color: getColor(await getBotMemberFromGuild(cmd.guild)),
+  color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,
@@ -184,12 +168,12 @@ const reply = async (
     cooldown.delete(cmd.message.id);
    });
 
-   if (await isDeleteable(cmd.message)) {
-    request.channels.deleteMessage(cmd.message);
+   if (await cmd.client.util.isDeleteable(cmd.message)) {
+    cmd.client.util.request.channels.deleteMessage(cmd.message);
    }
 
    payload.ephemeral = false;
-   replyCmd(cmd, payload, 'interactions');
+   cmd.client.util.replyCmd(cmd, payload, 'interactions');
   }
   return;
  }
@@ -201,27 +185,29 @@ const reply = async (
 
  if (cmd instanceof Discord.Message) {
   const msg = cmd as Discord.Message;
-  const channel = await getChannel
+  const channel = await cmd.client.util.getChannel
    .guildTextChannel(msg.channelId)
    .then((c) => (!c || 'message' in c ? undefined : c));
   if (!channel) return;
 
-  const realCmd = await request.channels.getMessage(channel, msg.id);
+  const realCmd = await cmd.client.util.request.channels.getMessage(channel, msg.id);
   if (!realCmd || 'message' in realCmd) return;
 
   if (
-   (await isDeleteable(realCmd as Discord.Message<true>)) &&
+   (await cmd.client.util.isDeleteable(realCmd as Discord.Message<true>)) &&
    cmd.type !== Discord.MessageType.UserJoin
   ) {
-   await request.channels.deleteMessage(realCmd as Discord.Message<true>);
+   await cmd.client.util.request.channels.deleteMessage(realCmd as Discord.Message<true>);
   }
   const content = String(payload.content);
   delete payload.content;
 
-  const m = (await replyMsg(msg, payload, 'interactions')) as Discord.Message<true>;
-  if (m && (await isEditable(m))) request.channels.editMsg(m as Discord.Message<true>, { content });
+  const m = (await cmd.client.util.replyMsg(msg, payload, 'interactions')) as Discord.Message<true>;
+  if (m && (await cmd.client.util.isEditable(m))) {
+   cmd.client.util.request.channels.editMsg(m as Discord.Message<true>, { content });
+  }
  } else {
-  replyCmd(
+  cmd.client.util.replyCmd(
    cmd,
    { ...payload, ephemeral: false } as Discord.InteractionReplyOptions,
    'interactions',
@@ -242,10 +228,10 @@ export const react = async (cmd: Discord.ButtonInteraction, a: string[]) => {
 
  const args = a[0] === 'everyone' ? ['everyone'] : a.map((u) => String(encodeString2BigInt(u, 36)));
 
- const language = await getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (!args.includes(cmd.user.id) && args[0] !== 'everyone') {
-  notYours(cmd, language);
+  cmd.client.util.notYours(cmd, language);
   return;
  }
 
@@ -265,7 +251,15 @@ const parsers = {
   author: msg.author,
   users: await parseMsgUsers(msg),
   text: msg.content
-   .slice(Number((await getPrefix(msg))?.length))
+   .slice(
+    Number(
+     (
+      await msg.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.commandHandler.file.getPrefix(
+       msg,
+      )
+     )?.length,
+    ),
+   )
    .trim()
    .split(/\s+|\n+/g)
    .filter((w) => (!w.startsWith('<@') || !w.endsWith('>')) && !!w.length)
@@ -274,7 +268,15 @@ const parsers = {
   otherText: '',
   commandName: (
    msg.content
-    .slice(Number((await getPrefix(msg))?.length))
+    .slice(
+     Number(
+      (
+       await msg.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.commandHandler.file.getPrefix(
+        msg,
+       )
+      )?.length,
+     ),
+    )
     .trim()
     .split(/\s+|\n+/g)
     .shift() as string
@@ -298,7 +300,7 @@ const parsers = {
    cmd.options.getUser('user-5', false),
   ].filter((u): u is Discord.User => !!u),
   text: cmd.options.getString('text', false) ?? '',
-  otherText: constants.commands.interactions
+  otherText: cmd.client.util.constants.commands.interactions
    .filter((c) => 'specialOptions' in c)
    .map((c) =>
     (
@@ -486,7 +488,7 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
  if (mentionedUsers?.length) {
   if (mentionedUsers.length < 7) return mentionedUsers;
 
-  const mentionChunks = getChunks(mentionedUsers, 6);
+  const mentionChunks = msg.client.util.getChunks(mentionedUsers, 6);
 
   const messages = new Array(mentionChunks.length)
    .fill(null)
@@ -533,11 +535,11 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
  }
 
  if (!msg.reference) return [];
- const channel = await getChannel.guildTextChannel(msg.reference.channelId);
+ const channel = await msg.client.util.getChannel.guildTextChannel(msg.reference.channelId);
  if (!channel) return [];
 
  const reference = msg.reference
-  ? await request.channels.getMessage(channel, msg.reference.messageId as string)
+  ? await msg.client.util.request.channels.getMessage(channel, msg.reference.messageId as string)
   : undefined;
  if (!reference || 'message' in reference) return [];
 
@@ -550,5 +552,5 @@ const parseMsgUsers = async (msg: Discord.Message<true>) => {
 
  const url = new URL(embed.url as string);
  const executorId = url.searchParams.get('exec') as string;
- return [await getUser(executorId)].filter((u): u is Discord.User => !!u);
+ return [await msg.client.util.getUser(executorId)].filter((u): u is Discord.User => !!u);
 };

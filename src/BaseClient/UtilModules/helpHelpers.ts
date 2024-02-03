@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
-import SlashCommands from '../../SlashCommands/index.js';
-import * as CT from '../../Typings/Typings.js';
-import getLanguage from './getLanguage.js';
-import getEmbeds from './helpHelpers/getEmbeds.js';
-import replyCmd from './replyCmd.js';
+import type * as SlashCommands from '../../SlashCommands/index.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Helper function to generate a message payload for a slash command
@@ -14,10 +11,12 @@ import replyCmd from './replyCmd.js';
  */
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
- type: CT.CommandCategories,
+ type: SlashCommands.CommandCategories,
  selected?: string,
 ) => {
- const rawCommands = Object.entries(SlashCommands.categories)
+ const rawCommands = Object.entries(
+  cmd.client.util.importCache.SlashCommands.file.default.categories,
+ )
   .filter(([, val]) => val.includes(type))
   .map(([k]) => k);
  const commandArgs = rawCommands.map((k) => k.split(/_/g));
@@ -61,10 +60,10 @@ export default async (
    ),
  );
 
- const language = await getLanguage(cmd.guildId);
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const payload: CT.UsualMessagePayload = {
-  embeds: getEmbeds(
+  embeds: cmd.client.util.helpHelpers.getEmbeds(
    cmd,
    language,
    commands,
@@ -114,7 +113,11 @@ export default async (
       placeholder: language.slashCommands.help.selectPlaceholder,
       options: [
        ...new Set(
-        [...new Set(Object.values(SlashCommands.categories))]
+        [
+         ...new Set(
+          Object.values(cmd.client.util.importCache.SlashCommands.file.default.categories),
+         ),
+        ]
          .filter((c) => c.includes(type))
          .flat(),
        ),
@@ -132,7 +135,6 @@ export default async (
   ],
  };
 
- if (cmd instanceof Discord.ChatInputCommandInteraction) {
-  replyCmd(cmd, payload);
- } else cmd.update(payload);
+ if (cmd instanceof Discord.ChatInputCommandInteraction) cmd.client.util.replyCmd(cmd, payload);
+ else cmd.update(payload);
 };

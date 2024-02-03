@@ -1,17 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-
-import getLanguage from './getLanguage.js';
-import log from './log.js';
-import db from './mod/db.js';
-import mod from './mod/mod.js';
-import declareSuccess from './mod/declareSuccess.js';
-import notifyTarget from './mod/notifyTarget.js';
-import isMe from './mod/isMe.js';
-import isSelf from './mod/isSelf.js';
-import startLoading from './mod/startLoading.js';
-import alreadyExecuting from './mod/alreadyExecuting.js';
-import cache from './cache.js';
+import type * as CT from '../../Typings/Typings.js';
 
 export type CmdType =
  | Discord.ChatInputCommandInteraction<'cached'>
@@ -36,17 +24,17 @@ export default async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
  replyMessage?: ResponseMessage,
 ) => {
- if (cache.punishments.has(options.target.id)) {
-  await alreadyExecuting(cmd, options.executor, options.guild.client, replyMessage);
+ if (options.guild.client.util.cache.punishments.has(options.target.id)) {
+  await options.guild.client.util.mod.alreadyExecuting(cmd, options.executor, replyMessage);
   return;
  }
 
  // TODO: Puhishments fail after here
- cache.punishments.add(options.target.id);
+ options.guild.client.util.cache.punishments.add(options.target.id);
 
  const basicsResponse = await runBasics1(options, cmd, type, replyMessage);
  if (!basicsResponse) {
-  cache.punishments.delete(options.target.id);
+  options.guild.client.util.cache.punishments.delete(options.target.id);
   return;
  }
  // and before here
@@ -56,83 +44,83 @@ export default async <T extends CT.ModTypes>(
 
  const runAction = async () => {
   switch (type) {
-   case CT.ModTypes.BanAdd:
-    return mod.banAdd(
+   case options.guild.client.util.CT.ModTypes.BanAdd:
+    return options.guild.client.util.mod.mod.banAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.BanAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.ChannelBanAdd:
-    return mod.channelBanAdd(
+   case options.guild.client.util.CT.ModTypes.ChannelBanAdd:
+    return options.guild.client.util.mod.mod.channelBanAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.SoftBanAdd:
-    return mod.softBanAdd(
+   case options.guild.client.util.CT.ModTypes.SoftBanAdd:
+    return options.guild.client.util.mod.mod.softBanAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.SoftBanAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.KickAdd:
-    return mod.kickAdd(options, language, message, cmd);
-   case CT.ModTypes.TempBanAdd:
-    return mod.tempBanAdd(
+   case options.guild.client.util.CT.ModTypes.KickAdd:
+    return options.guild.client.util.mod.mod.kickAdd(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.TempBanAdd:
+    return options.guild.client.util.mod.mod.tempBanAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.TempBanAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.TempChannelBanAdd:
-    return mod.tempChannelBanAdd(
+   case options.guild.client.util.CT.ModTypes.TempChannelBanAdd:
+    return options.guild.client.util.mod.mod.tempChannelBanAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.TempChannelBanAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.TempMuteAdd:
-    return mod.tempMuteAdd(
+   case options.guild.client.util.CT.ModTypes.TempMuteAdd:
+    return options.guild.client.util.mod.mod.tempMuteAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.TempMuteAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.WarnAdd:
-    return mod.warnAdd(options, language, message, cmd);
-   case CT.ModTypes.StrikeAdd:
-    return mod.strikeAdd(options, language, message, cmd);
-   case CT.ModTypes.SoftWarnAdd:
-    return mod.softWarnAdd();
-   case CT.ModTypes.RoleRemove:
-    return mod.roleRemove(
+   case options.guild.client.util.CT.ModTypes.WarnAdd:
+    return options.guild.client.util.mod.mod.warnAdd(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.StrikeAdd:
+    return options.guild.client.util.mod.mod.strikeAdd(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.SoftWarnAdd:
+    return options.guild.client.util.mod.mod.softWarnAdd();
+   case options.guild.client.util.CT.ModTypes.RoleRemove:
+    return options.guild.client.util.mod.mod.roleRemove(
      options as unknown as CT.ModOptions<CT.ModTypes.RoleRemove>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.RoleAdd:
-    return mod.roleAdd(
+   case options.guild.client.util.CT.ModTypes.RoleAdd:
+    return options.guild.client.util.mod.mod.roleAdd(
      options as unknown as CT.ModOptions<CT.ModTypes.RoleAdd>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.MuteRemove:
-    return mod.muteRemove(options, language, message, cmd);
-   case CT.ModTypes.ChannelBanRemove:
-    return mod.channelBanRemove(
+   case options.guild.client.util.CT.ModTypes.MuteRemove:
+    return options.guild.client.util.mod.mod.muteRemove(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.ChannelBanRemove:
+    return options.guild.client.util.mod.mod.channelBanRemove(
      options as unknown as CT.ModOptions<CT.ModTypes.ChannelBanRemove>,
      language,
      message,
      cmd,
     );
-   case CT.ModTypes.BanRemove:
-    return mod.banRemove(options, language, message, cmd);
-   case CT.ModTypes.UnAfk:
-    return mod.unAfk(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.BanRemove:
+    return options.guild.client.util.mod.mod.banRemove(options, language, message, cmd);
+   case options.guild.client.util.CT.ModTypes.UnAfk:
+    return options.guild.client.util.mod.mod.unAfk(options, language, message, cmd);
    default: {
     throw new Error(`Unknown modType ${type}`);
    }
@@ -142,17 +130,15 @@ export default async <T extends CT.ModTypes>(
  const action = await runAction();
 
  if (!action || (typeof action !== 'boolean' && !action.success)) {
-  cache.punishments.delete(options.target.id);
+  options.guild.client.util.cache.punishments.delete(options.target.id);
   return;
  }
- console.log(9);
 
  if (typeof action !== 'boolean') type = action.type as T;
- if (type === CT.ModTypes.StrikeAdd) return;
- console.log(10);
+ if (type === options.guild.client.util.CT.ModTypes.StrikeAdd) return;
 
  runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);
- cache.punishments.delete(options.target.id);
+ options.guild.client.util.cache.punishments.delete(options.target.id);
 };
 
 /**
@@ -169,18 +155,39 @@ const runBasics1 = async (
  type: CT.ModTypes,
  replyMessage: ResponseMessage,
 ) => {
- const language = await getLanguage(options.guild.id);
+ const language = await options.guild.client.util.getLanguage(options.guild.id);
 
  if (options.dbOnly) {
-  log(options.guild, type, options.target, options.executor, options as never);
-  await db(cmd, options, language, type);
+  options.guild.client.util.log(
+   options.guild,
+   type,
+   options.target,
+   options.executor,
+   options as never,
+  );
+  await options.guild.client.util.mod.db(cmd, options, language, type);
   return false;
  }
 
- const message = replyMessage ?? (await startLoading(cmd, language, type));
+ const message =
+  replyMessage ?? (await options.guild.client.util.mod.startLoading(cmd, language, type));
 
- if (await isMe(cmd, options.guild.client.user, message, language, options, type)) return false;
- if (isSelf(cmd, options.executor, options.target, message, language, type)) return false;
+ if (await options.guild.client.util.mod.isMe(cmd, message, language, options, type)) {
+  return false;
+ }
+
+ if (
+  options.guild.client.util.mod.isSelf(
+   cmd,
+   options.executor,
+   options.target,
+   message,
+   language,
+   type,
+  )
+ ) {
+  return false;
+ }
 
  return { message, language };
 };
@@ -200,8 +207,14 @@ const runBasics2 = async (
  type: CT.ModTypes,
  cmd: CmdType,
 ) => {
- declareSuccess(cmd, message, language, options, type);
- log(options.guild, type, options.target, options.executor, options as never);
- db(cmd, options, language, type).then();
- notifyTarget(options, language, type);
+ options.guild.client.util.mod.declareSuccess(cmd, message, language, options, type);
+ options.guild.client.util.log(
+  options.guild,
+  type,
+  options.target,
+  options.executor,
+  options as never,
+ );
+ options.guild.client.util.mod.db(cmd, options, language, type).then();
+ options.guild.client.util.mod.notifyTarget(options, language, type);
 };

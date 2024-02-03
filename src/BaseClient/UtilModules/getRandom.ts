@@ -11,9 +11,7 @@ export default (min: number, max: number) => {
  const range = max - min + 1;
  const bytesNeeded = Math.ceil(Math.log2(range) / 8);
 
- if (bytesNeeded > 6) {
-  throw new Error('Too many bytes needed');
- }
+ if (bytesNeeded > 6) throw new Error('Too many bytes needed');
 
  const randomBytes = crypto.randomBytes(bytesNeeded);
  let randomValue = 0n;

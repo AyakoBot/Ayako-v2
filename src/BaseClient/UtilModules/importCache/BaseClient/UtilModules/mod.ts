@@ -186,6 +186,18 @@ const self = {
   },
   file: await import(`../../../mod/startLoading.js`),
  },
+ db: {
+  reload: async () => {
+   self.db.file = await import(`../../../mod/db.js?version=${Date.now()}`);
+  },
+  file: await import(`../../../mod/db.js`),
+ },
+ declareSuccess: {
+  reload: async () => {
+   self.declareSuccess.file = await import(`../../../mod/declareSuccess.js?version=${Date.now()}`);
+  },
+  file: await import(`../../../mod/declareSuccess.js`),
+ },
 };
 
 export default self;

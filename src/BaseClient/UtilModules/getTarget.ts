@@ -1,22 +1,19 @@
 import * as Discord from 'discord.js';
-import constants from '../Other/constants.js';
-import getReferenceMessage from './getReferenceMessage.js';
-import { request } from './requestHandler.js';
-import emotes from './emotes.js';
-import getUser from './getUser.js';
-import error from './error.js';
 
 export default async (msg: Discord.Message<true>, args: string[]) => {
  let user = msg.mentions.users.first();
 
- if (msg.reference && user?.id === (await getReferenceMessage(msg.reference))?.author.id) {
+ if (
+  msg.reference &&
+  user?.id === (await msg.client.util.getReferenceMessage(msg.reference))?.author.id
+ ) {
   return react(msg);
  }
 
  if (!user) {
   if (!args?.length) return react(msg);
 
-  user = await getUser(args[0]);
+  user = await msg.client.util.getUser(args[0]);
  }
 
  if (!user) return react(msg);
@@ -25,11 +22,11 @@ export default async (msg: Discord.Message<true>, args: string[]) => {
 };
 
 const react = async (msg: Discord.Message<true>) => {
- const reaction = await request.channels.addReaction(
+ const reaction = await msg.client.util.request.channels.addReaction(
   msg,
-  constants.standard.getEmoteIdentifier(emotes.cross),
+  msg.client.util.constants.standard.getEmoteIdentifier(msg.client.util.emotes.cross),
  );
 
- if (typeof reaction !== 'undefined') error(msg.guild, new Error(reaction.message));
+ if (typeof reaction !== 'undefined') msg.client.util.error(msg.guild, new Error(reaction.message));
  return undefined;
 };

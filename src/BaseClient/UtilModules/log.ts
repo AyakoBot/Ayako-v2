@@ -1,8 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import getLogChannels from './getLogChannels.js';
-import getLanguage from './getLanguage.js';
-import send from './send.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Logs a moderation action in the modlog channel(s) of a guild.
@@ -20,10 +17,10 @@ export default async <T extends CT.ModTypes>(
  executor: Discord.User,
  options: CT.ModOptions<T>,
 ): Promise<void> => {
- const logchannels = await getLogChannels('modlog', guild);
+ const logchannels = await guild.client.util.getLogChannels('modlog', guild);
  if (!logchannels) return;
 
- const language = await getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.mod.logs[type as keyof typeof language.mod.logs];
 
  const embed: Discord.APIEmbed = {
@@ -31,7 +28,7 @@ export default async <T extends CT.ModTypes>(
    name: lan.author,
   },
   description: lan.description(target, executor, options as never),
-  color: CT.ModColors[type],
+  color: guild.client.util.CT.ModColors[type],
   timestamp: new Date().toISOString(),
   fields: [
    options.reason
@@ -43,5 +40,5 @@ export default async <T extends CT.ModTypes>(
   ].filter((f): f is Discord.APIEmbedField => !!f),
  };
 
- send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, 10000);
+ guild.client.util.send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, 10000);
 };

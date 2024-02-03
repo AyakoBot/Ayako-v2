@@ -1,7 +1,4 @@
 import * as Discord from 'discord.js';
-import { guild as getBotIdFromGuild } from './getBotIdFrom.js';
-import { request } from './requestHandler.js';
-import error from './error.js';
 
 /**
  * Retrieves the custom bot member from the given guild.
@@ -9,12 +6,12 @@ import error from './error.js';
  * @returns A Promise that resolves with the custom bot member.
  */
 export default async (guild: Discord.Guild) => {
- const botId = await getBotIdFromGuild(guild);
- const rawMember = await request.guilds.getMember(guild, botId);
+ const botId = await guild.client.util.getBotIdFromGuild(guild);
+ const rawMember = await guild.client.util.request.guilds.getMember(guild, botId);
 
  if ('message' in rawMember) {
-  error(guild, new Error(rawMember.message));
-  return request.guilds.getMember(
+  guild.client.util.error(guild, new Error(rawMember.message));
+  return guild.client.util.request.guilds.getMember(
    undefined,
    guild.client.user.id,
    guild,

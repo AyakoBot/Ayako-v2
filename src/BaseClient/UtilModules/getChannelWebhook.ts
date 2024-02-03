@@ -1,8 +1,4 @@
 import * as Discord from 'discord.js';
-import cache from './cache.js';
-import constants from '../Other/constants.js';
-import { request } from './requestHandler.js';
-import { guildTextChannel } from './getChannel.js';
 
 /**
  * Retrieves or creates a webhook for the given channel.
@@ -14,7 +10,11 @@ export default async (
 ) => {
  let channel =
   typeof rawChannel === 'string'
-   ? ((await guildTextChannel(rawChannel)) as Discord.GuildTextBasedChannel | undefined)
+   ? ((await (
+      await import('../Bot/Client.js')
+     ).default.util.getChannel.guildTextChannel(rawChannel)) as
+      | Discord.GuildTextBasedChannel
+      | undefined)
    : rawChannel;
 
  if (!channel) return undefined;
@@ -22,7 +22,7 @@ export default async (
  if (!channel) return undefined;
 
  const webhooksArray = Array.from(
-  cache.webhooks.cache.get(channel.guild.id)?.get(channel.id)?.values() || [],
+  channel.client.util.cache.webhooks.cache.get(channel.guild.id)?.get(channel.id)?.values() || [],
  );
 
  /**
@@ -39,7 +39,7 @@ export default async (
    | Discord.ForumChannel
    | Discord.MediaChannel,
  ) => {
-  const w = await request.channels.getWebhooks(c);
+  const w = await c.client.util.request.channels.getWebhooks(c);
   if ('message' in w) return [];
 
   return w;
@@ -59,8 +59,8 @@ export default async (
    | Discord.ForumChannel
    | Discord.MediaChannel,
  ) => {
-  const w = await request.channels.createWebhook(c.guild, c.id, {
-   name: constants.standard.user(c.client.user),
+  const w = await c.client.util.request.channels.createWebhook(c.guild, c.id, {
+   name: c.client.util.constants.standard.user(c.client.user),
    avatar: c.client.user.displayAvatarURL({ forceStatic: true, extension: 'png' }),
   });
   if ('message' in w) return undefined;
@@ -74,7 +74,7 @@ export default async (
   webhooks.find((w) => w.owner?.id === channel?.client.user.id) ?? (await createWebhook(channel));
  if (!webhook) return undefined;
 
- cache.webhooks.set(webhook);
+ channel.client.util.cache.webhooks.set(webhook);
 
  return webhook;
 };

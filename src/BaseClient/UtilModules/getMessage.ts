@@ -1,6 +1,4 @@
 import * as Discord from 'discord.js';
-import * as getChannel from './getChannel.js';
-import { request } from './requestHandler.js';
 
 /**
  * Retrieves a Discord message from a given link.
@@ -15,7 +13,7 @@ export default async (link: string): Promise<Discord.Message | undefined> => {
  const guild = client.guilds.cache.get(guildId);
  if (!guild) return undefined;
 
- const channel = await getChannel.guildTextChannel(channelId);
+ const channel = await client.util.getChannel.guildTextChannel(channelId);
  if (!channel) return undefined;
 
  /**
@@ -23,7 +21,7 @@ export default async (link: string): Promise<Discord.Message | undefined> => {
   * @returns The Discord message if found, otherwise undefined.
   */
  const getMessage = async () => {
-  const m = await request.channels.getMessage(channel, messageId);
+  const m = await client.util.request.channels.getMessage(channel, messageId);
   if ('message' in m) return undefined;
 
   return m;
@@ -32,7 +30,7 @@ export default async (link: string): Promise<Discord.Message | undefined> => {
  const message = channel.messages.cache.get(messageId) ?? (await getMessage());
  if (!message) return message;
  if (!message.author || message.partial) {
-  const m = await request.channels.getMessage(message.channel, message.id);
+  const m = await client.util.request.channels.getMessage(message.channel, message.id);
   if ('message' in m) return undefined;
   return m;
  }

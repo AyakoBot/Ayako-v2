@@ -1,7 +1,4 @@
 import * as Discord from 'discord.js';
-import * as replyMsg from './replyMsg.js';
-import constants from '../Other/constants.js';
-import error from './error.js';
 
 type ReturnType<T extends boolean | undefined, K extends Discord.CacheType> = T extends true
  ? K extends 'cached'
@@ -37,7 +34,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
   ?.filter((e) => !!e)
   .forEach((embed) => {
    if ('author' in embed && !embed.author?.url && embed.author?.name) {
-    embed.author = { ...embed.author, url: constants.standard.invite };
+    embed.author = { ...embed.author, url: cmd.client.util.constants.standard.invite };
    }
   });
 
@@ -48,7 +45,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
     !JSON.stringify(e).includes(String(Discord.RESTJSONErrorCodes.UnknownInteraction)) &&
     !JSON.stringify(e).includes('InteractionAlreadyReplied')
    ) {
-    error(cmd.guild, e);
+    cmd.client.util.error(cmd.guild, e);
    }
    return undefined;
   });
@@ -84,7 +81,13 @@ export default async <T extends boolean | undefined, K extends Discord.CacheType
  const sentMessage = await replyCmd(cmd, payload);
  if (!sentMessage) return undefined;
 
- if (commandName) replyMsg.cooldownHandler(cmd, sentMessage, commandName);
+ if (commandName) {
+  cmd.client.util.importCache.BaseClient.UtilModules.replyMsg.file.cooldownHandler(
+   cmd,
+   sentMessage,
+   commandName,
+  );
+ }
 
  return sentMessage;
 };

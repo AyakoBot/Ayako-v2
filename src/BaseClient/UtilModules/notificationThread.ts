@@ -1,7 +1,6 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import deleteThread from './deleteNotificationThread.js';
-import { UsualMessagePayload } from '../../Typings/Typings.js';
+import type { UsualMessagePayload } from '../../Typings/Typings.js';
 
 /**
  * Creates a notification thread for a target guild member.
@@ -68,7 +67,7 @@ export default async (
 const putDel = (target: Discord.GuildMember, thread: Discord.ThreadChannel) =>
  target.client.util.cache.deleteThreads.set(
   Jobs.scheduleJob(new Date(Date.now() + (thread.autoArchiveDuration ?? 60) * 60 * 1000), () => {
-   deleteThread(target.guild, thread.id);
+   target.client.util.deleteNotificationThread(target.guild, thread.id);
   }),
   target.guild.id,
   thread.id,

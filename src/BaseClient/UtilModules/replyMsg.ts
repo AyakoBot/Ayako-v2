@@ -1,13 +1,6 @@
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import * as CT from '../../Typings/Typings.js';
-import DataBase from '../Bot/DataBase.js';
-import constants from '../Other/constants.js';
-import cache from './cache.js';
-import objectEmotes from './emotes.js';
-import error from './error.js';
-import { request } from './requestHandler.js';
-import log from './logError.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Sends a reply message to a Discord message.
@@ -38,10 +31,10 @@ export default async <T extends Discord.Message<boolean>>(
   files: Discord.RawFile[];
  };
 
- const sentMessage = await request.channels
+ const sentMessage = await msg.client.util.request.channels
   .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
   .catch((err) => {
-   log(err, true);
+   msg.client.util.logError(err, true);
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;
@@ -70,7 +63,7 @@ export const cooldownHandler = async (
  if (!msg.guild) return;
 
  const authorId = 'author' in msg ? msg.author.id : msg.user.id;
- const settings = await DataBase.cooldowns.findFirst({
+ const settings = await msg.client.util.DataBase.cooldowns.findFirst({
   where: { guildid: msg.guild.id, command: commandName, active: true },
  });
 
@@ -101,31 +94,31 @@ export const cooldownHandler = async (
 
  let emote: string;
  if (Number(settings.cooldown) <= 60) {
-  const emoteToUse = objectEmotes.timers[Number(settings.cooldown) - 1];
+  const emoteToUse = msg.client.util.emotes.timers[Number(settings.cooldown) - 1];
   emote = `${emoteToUse.name}:${emoteToUse.id}`;
  } else emote = '⌛';
 
  const { channelId } = m;
 
- setCooldown(channelId, commandName, Number(settings.cooldown));
+ setCooldown(channelId, commandName, Number(settings.cooldown), msg.client);
 
- const reaction = await request.channels.addReaction(m, emote);
+ const reaction = await msg.client.util.request.channels.addReaction(m, emote);
  if (reaction) {
-  error(msg.guild, new Error(reaction.message));
+  msg.client.util.error(msg.guild, new Error(reaction.message));
   return;
  }
  const reactions = [emote];
 
  if (emote === '⌛') {
-  const emoteToUse = objectEmotes.timers[59];
-  emote = constants.standard.getEmoteIdentifier(emoteToUse);
+  const emoteToUse = msg.client.util.emotes.timers[59];
+  emote = msg.client.util.constants.standard.getEmoteIdentifier(emoteToUse);
 
   Jobs.scheduleJob(new Date(Date.now() + (Number(settings.cooldown) * 1000 - 60000)), async () => {
    if (!m) return;
 
-   const secondReaction = await request.channels.addReaction(m, emote);
+   const secondReaction = await msg.client.util.request.channels.addReaction(m, emote);
    if (secondReaction) {
-    if (m.guild) error(m.guild, new Error(secondReaction.message));
+    if (m.guild) msg.client.util.error(m.guild, new Error(secondReaction.message));
     return;
    }
 
@@ -135,23 +128,28 @@ export const cooldownHandler = async (
 
  Jobs.scheduleJob(new Date(Date.now() + Number(settings.cooldown) * 1000), async () => {
   reactions.forEach((react) => {
-   request.channels.deleteOwnReaction(m as Discord.Message<true>, react);
-   deleteCooldown(channelId, commandName);
+   msg.client.util.request.channels.deleteOwnReaction(m as Discord.Message<true>, react);
+   deleteCooldown(channelId, commandName, msg.client);
   });
  });
 };
 
-const setCooldown = (channelId: string, commandName: string, cooldown: number) => {
- if (cache.cooldown.has(channelId)) {
-  cache.cooldown.get(channelId)?.get(commandName);
+const setCooldown = (
+ channelId: string,
+ commandName: string,
+ cooldown: number,
+ client: Discord.Client,
+) => {
+ if (client.util.cache.cooldown.has(channelId)) {
+  client.util.cache.cooldown.get(channelId)?.get(commandName);
  }
 
- cache.cooldown.set(channelId, new Map().set(commandName, cooldown * 1000));
+ client.util.cache.cooldown.set(channelId, new Map().set(commandName, cooldown * 1000));
 };
 
-const deleteCooldown = (channelId: string, commandName: string) => {
- if (!cache.cooldown.has(channelId)) return;
+const deleteCooldown = (channelId: string, commandName: string, client: Discord.Client) => {
+ if (!client.util.cache.cooldown.has(channelId)) return;
 
- cache.cooldown.get(channelId)?.delete(commandName);
- if (!cache.cooldown.get(channelId)?.size) cache.cooldown.delete(channelId);
+ client.util.cache.cooldown.get(channelId)?.delete(commandName);
+ if (client.util.cache.cooldown.get(channelId)?.size) client.util.cache.cooldown.delete(channelId);
 };

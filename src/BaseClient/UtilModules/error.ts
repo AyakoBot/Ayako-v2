@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
 import DataBase from '../Bot/DataBase.js';
-import objectEmotes from './emotes.js';
-import getLanguage from './getLanguage.js';
-import constants from '../Other/constants.js';
-import * as CT from '../../Typings/Typings.js';
-import { request } from './requestHandler.js';
-import { canSendMessage } from './requestHandler/channels/sendMessage.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -28,7 +23,7 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
  const channel = await guildTextChannel(errorchannel);
  if (!channel) return;
 
- const language = await getLanguage(guild.id);
+ const language = await guild.client.util.getLanguage(guild.id);
 
  const payload: Omit<CT.UsualMessagePayload, 'files'> = {
   embeds: [
@@ -46,10 +41,10 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
     ],
     author: {
      name: 'Error',
-     icon_url: objectEmotes.warning.link,
+     icon_url: guild.client.util.emotes.warning.link,
     },
     title: language.errors.contactSupport,
-    url: constants.standard.support,
+    url: guild.client.util.constants.standard.support,
    },
   ],
   components: [
@@ -60,7 +55,7 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Link,
       label: language.slashCommands.help.clickMe,
-      url: constants.standard.support,
+      url: guild.client.util.constants.standard.support,
      },
     ],
    },
@@ -69,8 +64,16 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
 
  if (postDebug) sendDebugMessage(payload, guild.client);
  if (!guild.members.me) return;
- if (!canSendMessage(channel.id, payload, guild.members.me)) return;
- request.channels.sendMessage(undefined, channel.id, payload, guild.client);
+ if (
+  !guild.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.sendMessage.file.canSendMessage(
+   channel.id,
+   payload,
+   guild.members.me,
+  )
+ ) {
+  return;
+ }
+ guild.client.util.request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };
 
 export const sendDebugMessage = async (

@@ -1,11 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import constants from '../Other/constants.js';
-import objectEmotes from './emotes.js';
-import isEditable from './isEditable.js';
-import reply from './replyCmd.js';
-import { request } from './requestHandler.js';
-import log from './logError.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Sends an error message to the user in response to an interaction.
@@ -25,26 +19,26 @@ export default async (
  language: CT.Language,
  m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
- log(typeof content === 'string' ? new Error(content) : content, false);
+ cmd.client.util.logError(typeof content === 'string' ? new Error(content) : content, false);
 
  const embed: Discord.APIEmbed = {
   author: {
    name: language.t.error,
-   icon_url: objectEmotes.warning.link,
-   url: constants.standard.invite,
+   icon_url: cmd.client.util.emotes.warning.link,
+   url: cmd.client.util.constants.standard.invite,
   },
-  color: CT.Colors.Danger,
+  color: cmd.client.util.CT.Colors.Danger,
   description:
    typeof content === 'string' ? content : content.message.split(/:+/g).slice(1, 100).join(':'),
  };
 
  if (
-  (m && m instanceof Discord.Message && (await isEditable(m))) ||
+  (m && m instanceof Discord.Message && (await cmd.client.util.isEditable(m))) ||
   m instanceof Discord.InteractionResponse
  ) {
   if (m instanceof Discord.InteractionResponse) m.edit({ embeds: [embed] }).catch(() => undefined);
-  else request.channels.editMsg(m, { embeds: [embed] });
+  else cmd.client.util.request.channels.editMsg(m, { embeds: [embed] });
  }
 
- return reply(cmd, { embeds: [embed], ephemeral: true });
+ return cmd.client.util.replyCmd(cmd, { embeds: [embed], ephemeral: true });
 };

@@ -1,7 +1,5 @@
 import Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import Emotes from './emotes.js';
-import constants from '../Other/constants.js';
+import type * as CT from '../../Typings/Typings.js';
 
 /**
  * Calculates the user flags based on the given bits.
@@ -17,58 +15,76 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
 
  if (bitField.has(1n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.DiscordEmployee) : ''} ${
-    lan.JSON.userFlags.DiscordEmployee
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.DiscordEmployee)
+     : ''
+   } ${lan.JSON.userFlags.DiscordEmployee}`,
   );
  }
  if (bitField.has(2n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.PartneredServerOwner) : ''} ${
-    lan.JSON.userFlags.PartneredServerOwner
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(
+        lan.client.util.emotes.userFlags.PartneredServerOwner,
+       )
+     : ''
+   } ${lan.JSON.userFlags.PartneredServerOwner}`,
   );
  }
  if (bitField.has(4n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.HypesquadEvents) : ''} ${
-    lan.JSON.userFlags.HypesquadEvents
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.HypesquadEvents)
+     : ''
+   } ${lan.JSON.userFlags.HypesquadEvents}`,
   );
  }
  if (bitField.has(8n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.BugHunterLevel1) : ''} ${
-    lan.JSON.userFlags.BugHunterLevel1
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.BugHunterLevel1)
+     : ''
+   } ${lan.JSON.userFlags.BugHunterLevel1}`,
   );
  }
  if (bitField.has(64n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.HouseBravery) : ''} ${
-    lan.JSON.userFlags.HouseBravery
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.HouseBravery)
+     : ''
+   } ${lan.JSON.userFlags.HouseBravery}`,
   );
  }
  if (bitField.has(128n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.HouseBrilliance) : ''} ${
-    lan.JSON.userFlags.HouseBrilliance
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.HouseBrilliance)
+     : ''
+   } ${lan.JSON.userFlags.HouseBrilliance}`,
   );
  }
  if (bitField.has(256n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.HouseBalance) : ''} ${
-    lan.JSON.userFlags.HouseBalance
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.HouseBalance)
+     : ''
+   } ${lan.JSON.userFlags.HouseBalance}`,
   );
  }
  if (bitField.has(512n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.EarlySupporter) : ''} ${
-    lan.JSON.userFlags.EarlySupporter
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.EarlySupporter)
+     : ''
+   } ${lan.JSON.userFlags.EarlySupporter}`,
   );
  }
  if (bitField.has(1024n)) {
@@ -76,46 +92,62 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(2048n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.Bot) : ''} ${lan.JSON.userFlags.Bot}`,
+   `${
+    emotes ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.Bot) : ''
+   } ${lan.JSON.userFlags.Bot}`,
   );
  }
  if (bitField.has(4096n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.Nitro) : ''} ${
-    lan.JSON.userFlags.Nitro
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.Nitro)
+     : ''
+   } ${lan.JSON.userFlags.Nitro}`,
   );
  }
  if (bitField.has(16384n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.BugHunterLevel2) : ''} ${
-    lan.JSON.userFlags.BugHunterLevel2
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.BugHunterLevel2)
+     : ''
+   } ${lan.JSON.userFlags.BugHunterLevel2}`,
   );
  }
  if (bitField.has(65536n)) {
   flags.push(
    `${
     emotes
-     ? `${constants.standard.getEmote(
-        Emotes.userFlags.VerifiedBot[0],
-       )}${constants.standard.getEmote(Emotes.userFlags.VerifiedBot[1])}`
+     ? `${lan.client.util.constants.standard.getEmote(
+        lan.client.util.emotes.userFlags.VerifiedBot[0],
+       )}${lan.client.util.constants.standard.getEmote(
+        lan.client.util.emotes.userFlags.VerifiedBot[1],
+       )}`
      : ''
    } ${lan.JSON.userFlags.VerifiedBot}`,
   );
  }
  if (bitField.has(131072n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.EarlyVerifiedBotDeveloper) : ''} ${
-    lan.JSON.userFlags.VerifiedDeveloper
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(
+        lan.client.util.emotes.userFlags.EarlyVerifiedBotDeveloper,
+       )
+     : ''
+   } ${lan.JSON.userFlags.VerifiedDeveloper}`,
   );
  }
  if (bitField.has(262144n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.DiscordCertifiedModerator) : ''} ${
-    lan.JSON.userFlags.CertifiedModerator
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(
+        lan.client.util.emotes.userFlags.DiscordCertifiedModerator,
+       )
+     : ''
+   } ${lan.JSON.userFlags.CertifiedModerator}`,
   );
  }
  if (bitField.has(524288n)) {
@@ -126,9 +158,11 @@ export default (bits: number, lan: CT.Language, emotes = false) => {
  }
  if (bitField.has(4194304n)) {
   flags.push(
-   `${emotes ? constants.standard.getEmote(Emotes.userFlags.ActiveDeveloper) : ''} ${
-    lan.JSON.userFlags.ActiveDeveloper
-   }`,
+   `${
+    emotes
+     ? lan.client.util.constants.standard.getEmote(lan.client.util.emotes.userFlags.ActiveDeveloper)
+     : ''
+   } ${lan.JSON.userFlags.ActiveDeveloper}`,
   );
  }
  if (bitField.has(17592186044416n)) {
