@@ -63,6 +63,14 @@ const self = {
   },
   file: await import(`../../../../settingsHelpers/buttonParsers/boolean.js`),
  },
+ create: {
+  reload: async () => {
+   self.create.file = await import(
+    `../../../../settingsHelpers/buttonParsers/create.js?version=${Date.now()}`
+   );
+  },
+  file: await import(`../../../../settingsHelpers/buttonParsers/create.js`),
+ },
 };
 
 export default self;
