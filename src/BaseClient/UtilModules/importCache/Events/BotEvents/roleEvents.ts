@@ -34,6 +34,14 @@ const self = {
    },
    file: await import(`../../../../../Events/BotEvents/roleEvents/roleDelete/roleDelete.js`),
   },
+  customRole: {
+   reload: async () => {
+    self.roleDelete.customRole.file = await import(
+     `../../../../../Events/BotEvents/roleEvents/roleDelete/customRole.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/roleEvents/roleDelete/customRole.js`),
+  },
  },
  roleUpdate: {
   log: {
