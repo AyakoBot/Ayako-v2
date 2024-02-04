@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  oldRule: Discord.AutoModerationRule | undefined,
@@ -21,7 +21,7 @@ export default async (
   },
   description: lan.descUpdate(user, rule),
   fields: [],
-  color: CT.Colors.Loading,
+  color: rule.client.util.CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 

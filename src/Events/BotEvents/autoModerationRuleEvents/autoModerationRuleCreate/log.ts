@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (rule: Discord.AutoModerationRule) => {
  const channels = await rule.client.util.getLogChannels('automodevents', rule.guild);
@@ -18,7 +17,7 @@ export default async (rule: Discord.AutoModerationRule) => {
   },
   description: lan.descCreate(user, rule),
   fields: [],
-  color: CT.Colors.Success,
+  color: rule.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 
