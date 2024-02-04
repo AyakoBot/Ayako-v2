@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (invite: Discord.Invite, guild: Discord.Guild) => {
  const channels = await invite.client.util.getLogChannels('inviteevents', guild);
@@ -18,7 +17,7 @@ export default async (invite: Discord.Invite, guild: Discord.Guild) => {
   },
   description: auditUser ? lan.descCreateAudit(auditUser, invite) : lan.descCreate(invite),
   fields: [],
-  color: CT.Colors.Success,
+  color: invite.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

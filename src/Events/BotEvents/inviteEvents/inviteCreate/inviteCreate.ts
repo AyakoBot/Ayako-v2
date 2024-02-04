@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import log from './log.js';
 
 export default async (invite: Discord.Invite) => {
  if (!invite.guild?.id) return;
@@ -10,5 +9,8 @@ export default async (invite: Discord.Invite) => {
 
  invite.client.util.cache.invites.set(invite, invite.guild.id);
 
- log(invite, guild);
+ invite.client.util.importCache.Events.BotEvents.inviteEvents.inviteCreate.log.file.default(
+  invite,
+  guild,
+ );
 };
