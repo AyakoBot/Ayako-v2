@@ -1,18 +1,24 @@
 import type * as Discord from 'discord.js';
-import autocompleteHandler from './autocompleteHandler.js';
-import buttonHandler from './buttonHandler.js';
-import commandHandler from './commandHandler.js';
-import contextCommandHandler from './contextCommandHandler.js';
-import modalHandler from './modalHandler.js';
-import selectHandler from './selectHandler.js';
 
 export default async (cmd: Discord.Interaction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- commandHandler(cmd);
- buttonHandler(cmd);
- modalHandler(cmd);
- contextCommandHandler(cmd);
- selectHandler(cmd);
- autocompleteHandler(cmd);
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.commandHandler.file.default(
+  cmd,
+ );
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.buttonHandler.file.default(
+  cmd,
+ );
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.modalHandler.file.default(
+  cmd,
+ );
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.contextCommandHandler.file.default(
+  cmd,
+ );
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.selectHandler.file.default(
+  cmd,
+ );
+ cmd.client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.autocompleteHandler.file.default(
+  cmd,
+ );
 };
