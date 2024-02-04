@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (role: Discord.Role) => {
  const channels = await role.client.util.getLogChannels('roleevents', role.guild);
@@ -23,7 +22,7 @@ export default async (role: Discord.Role) => {
   },
   description: auditUser ? lan.descCreateAudit(auditUser, role) : lan.descCreate(role),
   fields: [],
-  color: CT.Colors.Success,
+  color: role.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 
@@ -84,7 +83,7 @@ export default async (role: Discord.Role) => {
  }
 
  const permEmbed: Discord.APIEmbed = {
-  color: CT.Colors.Ephemeral,
+  color: role.client.util.CT.Colors.Ephemeral,
   description: Object.entries(new Discord.PermissionsBitField(role.permissions).serialize(false))
    .map(
     ([name, value]) =>

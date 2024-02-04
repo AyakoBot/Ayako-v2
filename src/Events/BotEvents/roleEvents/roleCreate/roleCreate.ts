@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (role: Discord.Role) => {
- log(role);
+ role.client.util.importCache.Events.BotEvents.roleEvents.roleCreate.log.file.default(role);
 };
