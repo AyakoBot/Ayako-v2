@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (stage: Discord.StageInstance) => {
  if (!stage.guild) return;
@@ -20,7 +19,7 @@ export default async (stage: Discord.StageInstance) => {
    name: lan.nameStageCreate,
    icon_url: con.StageCreate,
   },
-  color: CT.Colors.Success,
+  color: stage.client.util.CT.Colors.Success,
   description: auditUser
    ? lan.descCreateStageAudit(stage.channel, language.channelTypes[stage.channel.type], auditUser)
    : lan.descCreateStage(stage.channel, language.channelTypes[stage.channel.type]),

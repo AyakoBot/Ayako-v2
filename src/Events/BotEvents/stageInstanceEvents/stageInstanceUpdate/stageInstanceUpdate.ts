@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (
  oldStage: Discord.StageInstance | undefined,
@@ -8,5 +7,8 @@ export default async (
  if (!oldStage) return;
  if (!stage.guild) return;
 
- log(oldStage, stage);
+ stage.client.util.importCache.Events.BotEvents.stageInstanceEvents.stageInstanceUpdate.log.file.default(
+  oldStage,
+  stage,
+ );
 };
