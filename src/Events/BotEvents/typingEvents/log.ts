@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (typing: Discord.Typing) => {
  if (!typing.inGuild()) return;
@@ -20,7 +19,7 @@ export default async (typing: Discord.Typing) => {
   },
   description: lan.descTyping(user, typing.channel, language.channelTypes[typing.channel.type]),
   fields: [],
-  color: CT.Colors.Loading,
+  color: typing.client.util.CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 
