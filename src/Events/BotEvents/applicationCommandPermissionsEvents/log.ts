@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (
  data: Discord.ApplicationCommandPermissionsUpdateData,
@@ -23,7 +22,7 @@ export default async (
    name: lan.name,
    icon_url: con.BotUpdate,
   },
-  color: CT.Colors.Loading,
+  color: guild.client.util.CT.Colors.Loading,
   description:
    audit.targetId !== application.id
     ? lan.descUpdateCommand(application, auditUser, audit.target as Discord.ApplicationCommand)
@@ -32,7 +31,7 @@ export default async (
  };
 
  const permEmbed = {
-  color: CT.Colors.Ephemeral,
+  color: guild.client.util.CT.Colors.Ephemeral,
   description: `${data.permissions
    .map((permission) => {
     const type = () => {
