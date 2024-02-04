@@ -1,4 +1,4 @@
-import * as CT from '../../Typings/Typings.js';
+import type * as CT from '../../Typings/Typings.js';
 
 export const takesFirstArg = true;
 export const thisGuildOnly = [];
@@ -22,7 +22,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   skipChecks: false,
  };
 
- msg.client.util.mod(msg, CT.ModTypes.MuteRemove, modOptions);
+ msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.MuteRemove, modOptions);
 };
 
 export default cmd;

@@ -1,4 +1,4 @@
-import * as CT from '../../Typings/Typings.js';
+import type * as CT from '../../Typings/Typings.js';
 
 export const takesFirstArg = true;
 export const thisGuildOnly = [];
@@ -27,7 +27,7 @@ const cmd: CT.Command<typeof dmAllowed>['default'] = async (msg, args) => {
   channel: channel.isThread() ? (channel.parent as NonNullable<typeof channel.parent>) : channel,
  };
 
- msg.client.util.mod(msg, CT.ModTypes.ChannelBanRemove, modOptions);
+ msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.ChannelBanRemove, modOptions);
 };
 
 export default cmd;
