@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (webhook: Discord.Webhook, channel: Discord.GuildTextBasedChannel) => {
  const channels = await webhook.client.util.getLogChannels('webhookevents', channel.guild);
@@ -17,7 +16,7 @@ export default async (webhook: Discord.Webhook, channel: Discord.GuildTextBasedC
    name: lan.nameDelete,
    icon_url: con.delete,
   },
-  color: CT.Colors.Danger,
+  color: webhook.client.util.CT.Colors.Danger,
   description: auditUser
    ? lan.descDeleteAudit(
       webhook,

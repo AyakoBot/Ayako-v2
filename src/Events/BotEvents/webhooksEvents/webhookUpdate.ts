@@ -1,7 +1,4 @@
 import type * as Discord from 'discord.js';
-import webhooksCreates from './webhooksCreates/webhooksCreates.js';
-import webhooksDeletes from './webhooksDeletes/webhooksDeletes.js';
-import webhooksUpdates from './webhooksUpdates/webhooksUpdates.js';
 
 export default async (channel: Discord.GuildTextBasedChannel) => {
  const newWebhooks = await channel.client.util.request.channels.getWebhooks(channel);
@@ -19,14 +16,28 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
  const deletedWebhooks = oldWebhooks.filter((w) => !newWebhooks.find((w1) => w1.id === w.id));
  const updatedWebhooks = channel.client.util.getChanged(oldWebhooks, newWebhooks, 'id');
 
- createdWebhooks.forEach((w) => webhooksCreates(w, channel));
- deletedWebhooks.forEach((w) => webhooksDeletes(w, channel));
+ createdWebhooks.forEach((w) =>
+  channel.client.util.importCache.Events.BotEvents.webhooksEvents.webhooksCreates.webhooksCreates.file.default(
+   w,
+   channel,
+  ),
+ );
+ deletedWebhooks.forEach((w) =>
+  channel.client.util.importCache.Events.BotEvents.webhooksEvents.webhooksDeletes.webhooksDeletes.file.default(
+   w,
+   channel,
+  ),
+ );
  updatedWebhooks.forEach((w) => {
   const oldW = oldWebhooks.find((w2) => w2.id === w.id);
   if (!oldW) return;
   const newW = newWebhooks.find((w2) => w2.id === w.id);
   if (!newW) return;
 
-  webhooksUpdates(oldW, newW, channel);
+  channel.client.util.importCache.Events.BotEvents.webhooksEvents.webhooksUpdates.webhooksUpdates.file.default(
+   oldW,
+   newW,
+   channel,
+  );
  });
 };

@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (
  oldWebhook: Discord.Webhook,
@@ -7,5 +6,9 @@ export default async (
  channel: Discord.GuildTextBasedChannel,
 ) => {
  webhook.client.util.cache.webhooks.set(webhook);
- log(oldWebhook, webhook, channel);
+ webhook.client.util.importCache.Events.BotEvents.webhooksEvents.webhooksUpdates.log.file.default(
+  oldWebhook,
+  webhook,
+  channel,
+ );
 };
