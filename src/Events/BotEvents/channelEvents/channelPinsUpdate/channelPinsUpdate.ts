@@ -1,6 +1,4 @@
 import type * as Discord from 'discord.js';
-import channelPinsCreate from './channelPinsCreate/channelPinsCreate.js';
-import channelPinsDelete from './channelPinsDelete/channelPinsDelete.js';
 
 export default async (
  channel:
@@ -28,6 +26,17 @@ export default async (
   ([, p]) => p,
  ).filter((p) => !newPins.find((p1) => p.id === p1.id));
 
- addedPins.forEach(async (p) => channelPinsCreate(p, channel, date));
- removedPins.forEach(async (p) => channelPinsDelete(p, channel));
+ addedPins.forEach(async (p) =>
+  channel.client.util.importCache.Events.BotEvents.channelEvents.channelPinsUpdate.channelPinsCreate.channelPinsCreate.file.default(
+   p,
+   channel,
+   date,
+  ),
+ );
+ removedPins.forEach(async (p) =>
+  channel.client.util.importCache.Events.BotEvents.channelEvents.channelPinsUpdate.channelPinsDelete.channelPinsDelete.file.default(
+   p,
+   channel,
+  ),
+ );
 };

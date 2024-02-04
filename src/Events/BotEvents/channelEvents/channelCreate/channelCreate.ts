@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (channel: Discord.GuildChannel) => {
- log(channel);
+ channel.client.util.importCache.Events.BotEvents.channelEvents.channelCreate.log.file.default(
+  channel,
+ );
 };

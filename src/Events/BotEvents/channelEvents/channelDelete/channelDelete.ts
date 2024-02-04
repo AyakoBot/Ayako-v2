@@ -1,6 +1,4 @@
 import * as Discord from 'discord.js';
-import cache from './cache.js';
-import log from './log.js';
 
 export default async (channel: Discord.Channel) => {
  if (!('guild' in channel)) return;
@@ -13,6 +11,10 @@ export default async (channel: Discord.Channel) => {
   array.forEach((a) => a.reschedule(Date.now() + 10000));
  }
 
- log(channel);
- cache(channel);
+ channel.client.util.importCache.Events.BotEvents.channelEvents.channelDelete.log.file.default(
+  channel,
+ );
+ channel.client.util.importCache.Events.BotEvents.channelEvents.channelDelete.cache.file.default(
+  channel,
+ );
 };

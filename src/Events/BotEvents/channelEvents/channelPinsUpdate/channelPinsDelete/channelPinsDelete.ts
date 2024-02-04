@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (
  pin: Discord.Message,
@@ -10,5 +9,8 @@ export default async (
   | Discord.PublicThreadChannel
   | Discord.VoiceChannel,
 ) => {
- log(pin, channel);
+ pin.client.util.importCache.Events.BotEvents.channelEvents.channelPinsUpdate.channelPinsDelete.log.file.default(
+  pin,
+  channel,
+ );
 };

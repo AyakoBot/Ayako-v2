@@ -1,15 +1,18 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import cache from './cache.js';
-import log from './log.js';
-import stickyPerms from './stickyPerms.js';
 
 export default async (oldChannel: Discord.Channel | undefined, channel: Discord.Channel) => {
  if (!('guild' in channel)) return;
  if (oldChannel && !('guild' in oldChannel)) return;
 
- log(oldChannel, channel);
- cache(oldChannel, channel);
+ channel.client.util.importCache.Events.BotEvents.channelEvents.channelUpdate.log.file.default(
+  oldChannel,
+  channel,
+ );
+ channel.client.util.importCache.Events.BotEvents.channelEvents.channelUpdate.cache.file.default(
+  oldChannel,
+  channel,
+ );
 
  if (
   channel.type === Discord.ChannelType.PublicThread ||
@@ -20,6 +23,9 @@ export default async (oldChannel: Discord.Channel | undefined, channel: Discord.
  }
 
  Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
-  stickyPerms(oldChannel as Discord.GuildChannel, channel as Discord.GuildChannel);
+  channel.client.util.importCache.Events.BotEvents.channelEvents.channelUpdate.stickyPerms.file.default(
+   oldChannel as Discord.GuildChannel,
+   channel as Discord.GuildChannel,
+  );
  });
 };

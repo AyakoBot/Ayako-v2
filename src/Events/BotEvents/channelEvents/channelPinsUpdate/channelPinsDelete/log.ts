@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../../Typings/Typings.js';
 
 export default async (
  msg: Discord.Message,
@@ -28,7 +27,7 @@ export default async (
    ? lan.descPinRemoveAudit(auditUser, msg, language.channelTypes[msg.channel.type])
    : lan.descPinRemove(msg, language.channelTypes[msg.channel.type]),
   fields: [],
-  color: CT.Colors.Danger,
+  color: msg.client.util.CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 
