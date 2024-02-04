@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
-import stickyPerms from '../../channelEvents/channelUpdate/stickyPerms.js';
-import { tasks } from '../../readyEvents/startupTasks/cache.js';
 
 export default (guild: Discord.Guild) => {
- Object.values(tasks).forEach((t) => t(guild));
+ Object.values(
+  guild.client.util.importCache.Events.BotEvents.readyEvents.startupTasks.cache.file.tasks,
+ ).forEach((t) => t(guild));
 
  guild.channels.cache
   .filter(
@@ -12,5 +12,10 @@ export default (guild: Discord.Guild) => {
     c.type !== Discord.ChannelType.PrivateThread &&
     c.type !== Discord.ChannelType.AnnouncementThread,
   )
-  .forEach((c) => stickyPerms(undefined, c as Discord.GuildChannel));
+  .forEach((c) =>
+   guild.client.util.importCache.Events.BotEvents.channelEvents.channelUpdate.stickyPerms.file.default(
+    undefined,
+    c as Discord.GuildChannel,
+   ),
+  );
 };

@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (
  oldEvent: Discord.GuildScheduledEvent,
@@ -7,5 +6,8 @@ export default async (
 ) => {
  if (!event.guild) return;
 
- log(oldEvent, event);
+ event.client.util.importCache.Events.BotEvents.guildEvents.guildScheduledEventEvents.guildScheduledEventUpdate.log.file.default(
+  oldEvent,
+  event,
+ );
 };

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  const channels = await guild.client.util.getLogChannels('guildevents', guild);
@@ -18,7 +18,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   },
   description: auditUser ? lan.descGuildUpdateAudit(auditUser) : lan.descGuildUpdate(),
   fields: [],
-  color: CT.Colors.Loading,
+  color: guild.client.util.CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 

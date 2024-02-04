@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../../Typings/Typings.js';
 
 export default async (
  event: Discord.GuildScheduledEvent,
@@ -46,7 +45,7 @@ export default async (
    name: lan.nameDelete,
    icon_url: con.ScheduledEventDelete,
   },
-  color: CT.Colors.Danger,
+  color: event.client.util.CT.Colors.Danger,
   fields: [],
   description,
   timestamp: new Date().toISOString(),

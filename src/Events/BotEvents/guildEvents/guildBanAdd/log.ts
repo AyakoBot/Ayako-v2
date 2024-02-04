@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (ban: Discord.GuildBan) => {
  const channels = await ban.client.util.getLogChannels('guildevents', ban.guild);
@@ -24,7 +23,7 @@ export default async (ban: Discord.GuildBan) => {
   },
   description: auditUser ? lan.descBanAudit(ban.user, auditUser) : lan.descBan(ban.user),
   fields: [],
-  color: CT.Colors.Success,
+  color: ban.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (guild: Discord.Guild | undefined) => {
  const webhook = await client.fetchWebhook(
@@ -17,7 +16,7 @@ export default async (guild: Discord.Guild | undefined) => {
  webhook?.send({
   embeds: [
    {
-    color: CT.Colors.Danger,
+    color: client.util.CT.Colors.Danger,
     description: '<@&669894051851403294> left a Guild',
     fields: [
      { name: 'Guild Name', value: guild?.name || 'Unknown/Uncached', inline: true },

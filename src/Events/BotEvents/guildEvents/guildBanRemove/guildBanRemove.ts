@@ -1,8 +1,6 @@
 import type * as Discord from 'discord.js';
-import cache from './cache.js';
-import log from './log.js';
 
 export default async (ban: Discord.GuildBan) => {
- log(ban);
- cache(ban);
+ ban.client.util.importCache.Events.BotEvents.guildEvents.guildBanRemove.log.file.default(ban);
+ ban.client.util.importCache.Events.BotEvents.guildEvents.guildBanRemove.cache.file.default(ban);
 };

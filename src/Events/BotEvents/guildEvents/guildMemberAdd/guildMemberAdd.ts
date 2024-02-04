@@ -1,31 +1,42 @@
 import * as Discord from 'discord.js';
-import antiraid from './antiraid.js';
-import autoRoles from './autoroles.js';
-import checkMuted from './checkMuted.js';
-import affiliates from './affiliates.js';
-import log from './log.js';
-import nitro from './nitro.js';
-import ptReminder from './ptReminder.js';
-import stickyPerms from './stickyPerms.js';
-import stickyRoles from './stickyRoles.js';
-import verification from './verification.js';
-import welcome from './welcome.js';
 
 export default async (member: Discord.GuildMember) => {
  if (!member.guild) return;
 
- log(member);
- ptReminder(member);
- welcome(member);
- stickyPerms(member);
- checkMuted(member);
- nitro(member);
- antiraid(member);
- affiliates(member);
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.log.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.ptReminder.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.welcome.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.stickyPerms.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.checkMuted.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.nitro.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.antiraid.file.default(
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.affiliates.file.default(
+  member,
+ );
 
  if (!member.guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
-  autoRoles(member);
-  verification(member);
-  stickyRoles(member);
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.autoroles.file.default(
+   member,
+  );
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.verification.file.default(
+   member,
+  );
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.stickyRoles.file.default(
+   member,
+  );
  }
 };

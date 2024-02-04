@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../../Typings/Typings.js';
+import type * as CT from '../../../../../Typings/Typings.js';
 
 export default async (
  oldEvent: Discord.GuildScheduledEvent,
@@ -51,7 +51,7 @@ export default async (
    name: lan.nameUpdate,
    icon_url: con.ScheduledEventUpdate,
   },
-  color: CT.Colors.Loading,
+  color: event.client.util.CT.Colors.Loading,
   fields: [],
   description,
   timestamp: new Date().toISOString(),

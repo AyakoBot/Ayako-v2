@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../../Typings/Typings.js';
 
 export default async (integration: Discord.Integration) => {
  const channels = await integration.client.util.getLogChannels('guildevents', integration.guild);
@@ -20,7 +19,7 @@ export default async (integration: Discord.Integration) => {
    ? lan.descCreateAudit(integration, auditUser)
    : lan.descCreate(integration),
   fields: [],
-  color: CT.Colors.Success,
+  color: integration.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (event: Discord.GuildScheduledEvent) => {
  const cached = event.client.util.cache.scheduledEventUsers.cache.get(event.guildId)?.get(event.id);
@@ -7,5 +6,8 @@ export default async (event: Discord.GuildScheduledEvent) => {
 
  if (!event.guild) return;
 
- log(event, cached);
+ event.client.util.importCache.Events.BotEvents.guildEvents.guildScheduledEventEvents.guildScheduledEventDelete.log.file.default(
+  event,
+  cached,
+ );
 };

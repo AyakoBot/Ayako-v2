@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
- if (member.client.user.id !== member.client.util.mainID) return;
+ if (member.client.user.id !== process.env.mainID) return;
 
  const guildsettings = await member.client.util.DataBase.guildsettings.findUnique({
   where: { guildid: member.guild.id },
@@ -46,7 +45,7 @@ export default async (member: Discord.GuildMember) => {
       inline: false,
      },
     ],
-    color: CT.Colors.Base,
+    color: member.client.util.CT.Colors.Base,
    },
   ],
   components: [

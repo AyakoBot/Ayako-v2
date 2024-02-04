@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const channels = await member.client.util.getLogChannels('memberevents', member.guild);
@@ -35,7 +34,7 @@ export default async (member: Discord.GuildMember) => {
     value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
    },
   ],
-  color: CT.Colors.Danger,
+  color: member.client.util.CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 

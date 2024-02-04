@@ -1,8 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { runPunishment } from '../../../../Commands/ButtonCommands/antiraid/punish.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const settings = await member.client.util.DataBase.antiraid.findUnique({
@@ -88,12 +86,13 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
 
  if (settings.actiontof && settings.action) {
   const language = await guild.client.util.getLanguage(guild.id);
-  additionalEmbeds = await runPunishment(
-   language,
-   caughtUsers.map((c) => c.id),
-   settings.action,
-   guild,
-  );
+  additionalEmbeds =
+   await guild.client.util.importCache.Commands.ButtonCommands.antiraid.punish.file.runPunishment(
+    language,
+    caughtUsers.map((c) => c.id),
+    settings.action,
+    guild,
+   );
  }
 
  if (settings.posttof && settings.postchannels.length) {
@@ -175,7 +174,7 @@ const postMessage = async (
      },
      title: lan.title,
      description: lan.desc(last5mins.length, caughtUsers.length),
-     color: CT.Colors.Danger,
+     color: guild.client.util.CT.Colors.Danger,
      fields: [
       {
        name: lan.actionsTaken,

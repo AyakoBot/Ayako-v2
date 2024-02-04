@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const channels = await member.client.util.getLogChannels('memberevents', member.guild);
@@ -26,7 +25,7 @@ export default async (member: Discord.GuildMember) => {
   },
   description,
   fields: [],
-  color: CT.Colors.Success,
+  color: member.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 

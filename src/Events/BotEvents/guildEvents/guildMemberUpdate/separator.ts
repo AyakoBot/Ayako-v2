@@ -4,7 +4,7 @@ import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import { Worker } from 'worker_threads';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as Typings from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import type { PassObject } from './separatorWorker.js';
 
 const UpdateWorker = new Worker(
@@ -327,7 +327,7 @@ const getMembers = async (
 
 const assinger = async (
  guild: Discord.Guild,
- members: Typings.DePromisify<ReturnType<typeof getMembers>>,
+ members: CT.DePromisify<ReturnType<typeof getMembers>>,
  lastRun: boolean = false,
 ) => {
  if (!guild) return;
@@ -411,7 +411,7 @@ const assinger = async (
 const notification = async (
  guild: Discord.Guild,
  embed: Discord.APIEmbed,
- language: Typings.Language,
+ language: CT.Language,
  settings: Prisma.roleseparatorsettings,
  finished: boolean = false,
 ) => {

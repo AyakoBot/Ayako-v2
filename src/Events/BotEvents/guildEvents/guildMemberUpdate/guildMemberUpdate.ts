@@ -1,30 +1,46 @@
 import type * as Discord from 'discord.js';
-import autoroles from '../guildMemberAdd/autoroles.js';
-import stickyRoles from '../guildMemberAdd/stickyRoles.js';
-import verification from '../guildMemberAdd/verification.js';
-import welcome from '../guildMemberAdd/welcome.js';
-import boost from './boost.js';
-import cache from './cache.js';
-import log from './log.js';
-import nitro from './nitro.js';
-import rewards from './rewards.js';
-import separator from './separator.js';
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
- log(oldMember, member);
- separator(oldMember, member);
- cache(oldMember, member);
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.log.file.default(
+  oldMember,
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.separator.file.default(
+  oldMember,
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.cache.file.default(
+  oldMember,
+  member,
+ );
 
  if (oldMember.partial) return;
 
- nitro(oldMember, member);
- boost(oldMember, member);
- rewards(oldMember, member);
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.nitro.file.default(
+  oldMember,
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.boost.file.default(
+  oldMember,
+  member,
+ );
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.rewards.file.default(
+  oldMember,
+  member,
+ );
 
  if (oldMember.pending && !member.pending) {
-  welcome(member);
-  autoroles(member);
-  verification(member);
-  stickyRoles(member);
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.welcome.file.default(
+   member,
+  );
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.autoroles.file.default(
+   member,
+  );
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.verification.file.default(
+   member,
+  );
+  member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.stickyRoles.file.default(
+   member,
+  );
  }
 };

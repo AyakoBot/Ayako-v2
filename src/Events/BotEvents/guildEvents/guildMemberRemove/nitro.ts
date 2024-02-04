@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
-import { stoppedBoosting } from '../guildMemberUpdate/nitro.js';
 
 export default async (member: Discord.GuildMember) => {
  if (!member.premiumSinceTimestamp) return;
 
- stoppedBoosting(member);
+ member.client.util.importCache.Events.BotEvents.guildEvents.guildMemberUpdate.nitro.file.stoppedBoosting(
+  member,
+ );
 };

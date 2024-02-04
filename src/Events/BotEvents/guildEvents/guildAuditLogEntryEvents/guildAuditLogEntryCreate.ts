@@ -1,13 +1,17 @@
 import * as Discord from 'discord.js';
-import guildMemberPrune from '../guildMemberPrune/guildMemberPrune.js';
-import cache from './cache.js';
 
 export default async (entry: Discord.GuildAuditLogsEntry, guild: Discord.Guild) => {
- cache(entry, guild);
+ guild.client.util.importCache.Events.BotEvents.guildEvents.guildAuditLogEntryEvents.cache.file.default(
+  entry,
+  guild,
+ );
 
  switch (entry.action) {
   case Discord.AuditLogEvent.MemberPrune:
-   guildMemberPrune(entry, guild);
+   guild.client.util.importCache.Events.BotEvents.guildEvents.guildMemberPrune.guildMemberPrune.file.default(
+    entry,
+    guild,
+   );
    break;
   default:
    break;

@@ -1,9 +1,7 @@
 import Prisma from '@prisma/client';
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
-import * as CT from '../../../../Typings/Typings.js';
-import { canRemoveMember } from '../../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
-import { canAddRoleToMember } from '../../../../BaseClient/UtilModules/requestHandler/guilds/addRoleToMember.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (member: Discord.GuildMember) => {
  const verification = await member.client.util.DataBase.verification.findUnique({
@@ -65,8 +63,22 @@ export const kick = async (
  if (member.user.bot) return;
 
  const me = await member.client.util.getBotMemberFromGuild(member.guild);
- if (!canRemoveMember(me, member)) return;
- if (!canAddRoleToMember(verifyRole.id, me)) return;
+ if (
+  !member.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.removeMember.file.canRemoveMember(
+   me,
+   member,
+  )
+ ) {
+  return;
+ }
+ if (
+  !member.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.addRoleToMember.file.canAddRoleToMember(
+   me,
+   verifyRole.id,
+  )
+ ) {
+  return;
+ }
 
  const dm = async () => {
   member.client.util.send(member.user, {

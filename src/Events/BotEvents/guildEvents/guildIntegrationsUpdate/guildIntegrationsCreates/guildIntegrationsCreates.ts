@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (integration: Discord.Integration) => {
- log(integration);
+ integration.client.util.importCache.Events.BotEvents.guildEvents.guildIntegrationsUpdate.guildIntegrationsCreates.log.file.default(
+  integration,
+ );
 };

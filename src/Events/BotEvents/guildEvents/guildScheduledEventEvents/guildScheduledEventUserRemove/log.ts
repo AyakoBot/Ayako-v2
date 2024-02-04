@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../../Typings/Typings.js';
 
 export default async (event: Discord.GuildScheduledEvent, user: Discord.User) => {
  const guild = event.guild ?? (event.guildId ? client.guilds.cache.get(event.guildId) : undefined);
@@ -25,7 +24,7 @@ export default async (event: Discord.GuildScheduledEvent, user: Discord.User) =>
    name: lan.nameUserRemove,
    icon_url: con.MemberDelete,
   },
-  color: CT.Colors.Danger,
+  color: event.client.util.CT.Colors.Danger,
   fields: [],
   description: channel
    ? lan.descUserRemoveChannel(user, event, channel, language.channelTypes[channel.type])
