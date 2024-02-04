@@ -1,8 +1,5 @@
-import type * as Socket from '../../../BaseClient/Cluster/Socket.js';
 import client from '../../../BaseClient/Bot/Client.js';
-
-import voteBotCreate from './voteBotCreate.js';
-import voteGuildCreate from './voteGuildCreate.js';
+import type * as Socket from '../../../BaseClient/Cluster/Socket.js';
 
 export default async ({ vote }: Socket.VoteMessage) => {
  const settings = await client.util.DataBase.votesettings.findMany({
@@ -22,19 +19,31 @@ export default async ({ vote }: Socket.VoteMessage) => {
    .then((m) => ('message' in m ? undefined : m));
 
   if ('bot' in vote) {
-   voteBotCreate(vote, guild, user, member, {
-    ...s,
-    uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
-    linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
-   });
+   client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.default(
+    vote,
+    guild,
+    user,
+    member,
+    {
+     ...s,
+     uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
+     linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
+    },
+   );
   }
 
   if ('guild' in vote) {
-   voteGuildCreate(vote, guild, user, member, {
-    ...s,
-    uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
-    linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
-   });
+   client.util.importCache.Events.ClusterEvents.voteEvents.voteGuildCreate.file.default(
+    vote,
+    guild,
+    user,
+    member,
+    {
+     ...s,
+     uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
+     linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
+    },
+   );
   }
  });
 };

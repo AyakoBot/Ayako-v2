@@ -1,7 +1,7 @@
 import Prisma, { votes } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (
  vote: CT.TopGGBotVote,
@@ -196,7 +196,7 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
      name: lan.reminder.name,
      icon_url: guild.client.util.emotes.userFlags.EarlySupporter.link,
     },
-    color: CT.Colors.Base,
+    color: guild.client.util.CT.Colors.Base,
     description: 'username' in voted ? lan.reminder.descBot(voted) : lan.reminder.descGuild(voted),
    },
   ],
