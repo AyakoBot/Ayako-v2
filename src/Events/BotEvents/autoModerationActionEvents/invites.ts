@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../BaseClient/Other/classes.js';
-import invites from '../messageEvents/messageCreate/invites.js';
 
 export default async (msg: Discord.AutoModerationActionExecution) => {
  const user = msg.user ?? (await msg.guild.client.util.getUser(msg.userId));
  if (!user) return;
 
- invites(
+ msg.guild.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.invites.file.default(
   new Classes.Message(msg.guild.client, {
    id: msg.messageId ?? msg.alertSystemMessageId ?? msg.ruleId,
    channel_id: msg.channelId ?? msg.ruleId,

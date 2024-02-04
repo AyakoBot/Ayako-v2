@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (execution: Discord.AutoModerationActionExecution) => {
  const channels = await execution.guild.client.util.getLogChannels(
@@ -36,7 +35,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
    url: msg ? msg.url : undefined,
   },
   description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
-  color: CT.Colors.Danger,
+  color: execution.guild.client.util.CT.Colors.Danger,
   fields: [],
   timestamp: new Date().toISOString(),
  };
