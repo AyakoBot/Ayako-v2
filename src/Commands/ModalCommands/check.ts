@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getPayload } from '../SlashCommands/mod/check.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -17,7 +16,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const member = await cmd.client.util.request.guilds.getMember(cmd.guild, cmd.user.id);
  const page = cmd.fields.getTextInputValue('page');
 
- const payload = await getPayload(
+ const payload = await cmd.client.util.importCache.Commands.SlashCommands.mod.check.file.getPayload(
   {
    user,
    language,

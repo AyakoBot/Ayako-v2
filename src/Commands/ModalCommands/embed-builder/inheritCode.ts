@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import startOver from '../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!cmd.isFromMessage()) return;
@@ -21,5 +20,9 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   return;
  }
 
- startOver(cmd, [], JSON.parse(code) as Discord.APIEmbed);
+ cmd.client.util.importCache.Commands.ButtonCommands['embed-builder'].startOver.file.default(
+  cmd,
+  [],
+  JSON.parse(code) as Discord.APIEmbed,
+ );
 };

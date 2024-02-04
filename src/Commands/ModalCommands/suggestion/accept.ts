@@ -2,7 +2,7 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client, { API } from '../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
  if (!cmd.inCachedGuild()) return;
@@ -34,7 +34,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
    name: accept ? lan.accepted : lan.rejected,
    url: client.util.constants.standard.invite,
   },
-  color: accept ? CT.Colors.Success : CT.Colors.Danger,
+  color: accept ? cmd.client.util.CT.Colors.Success : cmd.client.util.CT.Colors.Danger,
   description: paragraph.length ? paragraph : undefined,
   fields: short.length
    ? [
@@ -66,7 +66,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
   ],
  };
 
- if (message.author.id === client.util.mainID) {
+ if (message.author.id === process.env.mainID) {
   API.channels.editMessage(message.channelId, message.id, payload);
  } else if (await client.util.isEditable(message)) {
   client.util.request.channels.editMsg(message, payload);
@@ -125,7 +125,7 @@ export const endDeleteSuggestion = async (suggestion: Prisma.suggestionvotes) =>
   return;
  }
 
- if (message.author.id === client.util.mainID) {
+ if (message.author.id === process.env.mainID) {
   API.channels.deleteMessage(message.channelId, message.id);
  } else if (await client.util.isDeleteable(message)) {
   client.util.request.channels.deleteMessage(message);

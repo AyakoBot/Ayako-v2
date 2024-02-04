@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import ms from 'ms';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -47,6 +47,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import startOver from '../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
@@ -236,7 +235,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   }
  }
 
- startOver(cmd, args, embed.data, selectedField ? Number(selectedField) : null);
+ cmd.client.util.importCache.Commands.ButtonCommands['embed-builder'].startOver.file.default(
+  cmd,
+  args,
+  embed.data,
+  selectedField ? Number(selectedField) : null,
+ );
 };
 
 export const getSelectedField = (
