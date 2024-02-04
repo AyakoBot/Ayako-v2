@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import { respond } from '../../../SlashCommands/rp/block.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -36,5 +35,10 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
   })
   .then();
 
- respond(cmd, user, { blockedcmd: newBlockCmds }, language);
+ cmd.client.util.importCache.Commands.SlashCommands.rp.block.file.respond(
+  cmd,
+  user,
+  { blockedcmd: newBlockCmds },
+  language,
+ );
 };

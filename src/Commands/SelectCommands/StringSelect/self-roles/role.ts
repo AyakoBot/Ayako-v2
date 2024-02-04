@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import selfRoles from '../../../SlashCommands/self-roles.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -28,5 +27,5 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
   );
  }
 
- selfRoles(cmd, args);
+ cmd.client.util.importCache.Commands.SlashCommands['self-roles'].file.default(cmd, args);
 };

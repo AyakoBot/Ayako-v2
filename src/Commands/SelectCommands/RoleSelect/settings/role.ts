@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -19,7 +19,7 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
     settingName,
     fieldName,
     cmd.roles.map((c) => c.id),
-    CT.EditorTypes.Role,
+    cmd.client.util.CT.EditorTypes.Role,
     cmd.guild,
    ),
   ],

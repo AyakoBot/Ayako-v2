@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getSelectedField } from '../../../../ModalCommands/embed-builder/editor.js';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
@@ -67,7 +66,10 @@ const getValue = (
   case 'author-name':
    return embed.author?.name ?? '';
   case 'field-name': {
-   const fieldIndex = getSelectedField(cmd);
+   const fieldIndex =
+    cmd.client.util.importCache.Commands.ModalCommands[
+     'embed-builder'
+    ].editor.file.getSelectedField(cmd);
    if (!fieldIndex) return '';
    return embed.fields[Number(fieldIndex)]?.name ?? '';
   }
@@ -76,7 +78,10 @@ const getValue = (
   case 'description':
    return embed.description ?? '';
   case 'field-value': {
-   const fieldIndex = getSelectedField(cmd);
+   const fieldIndex =
+    cmd.client.util.importCache.Commands.ModalCommands[
+     'embed-builder'
+    ].editor.file.getSelectedField(cmd);
    if (!fieldIndex) return '';
    return embed.fields[Number(fieldIndex)]?.value ?? '';
   }

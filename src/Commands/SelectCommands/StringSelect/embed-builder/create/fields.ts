@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import startOver from '../../../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  const name = cmd.values[0];
@@ -16,5 +15,10 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
   }
  }
 
- startOver(cmd, [], embed.data, selected);
+ cmd.client.util.importCache.Commands.ButtonCommands['embed-builder'].startOver.file.default(
+  cmd,
+  [],
+  embed.data,
+  selected,
+ );
 };

@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import rolesContinue from '../../../SlashCommands/emojis/edit/roles.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -22,5 +21,5 @@ export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
   return;
  }
 
- rolesContinue(cmd, newEmoji);
+ cmd.client.util.importCache.Commands.SlashCommands.emojis.edit.roles.file.default(cmd, newEmoji);
 };

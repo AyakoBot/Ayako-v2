@@ -1,5 +1,8 @@
 import * as Discord from 'discord.js';
-import buttonRoles from './button-roles.js';
 
 export default async (cmd: Discord.RoleSelectMenuInteraction, args: string[]) =>
- buttonRoles(cmd, args, 'reaction-roles');
+ cmd.client.util.importCache.Commands.SelectCommands.RoleSelect.roles['button-roles'].file.default(
+  cmd,
+  args,
+  'reaction-roles',
+ );

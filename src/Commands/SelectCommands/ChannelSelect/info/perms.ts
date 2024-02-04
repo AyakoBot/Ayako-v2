@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -124,7 +123,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
 
  const embed: Discord.APIEmbed = {
   fields: [],
-  color: CT.Colors.Ephemeral,
+  color: cmd.client.util.CT.Colors.Ephemeral,
  };
 
  categories.forEach((perms, name) => {

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import shopCmd from '../../../SlashCommands/shop.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -43,5 +42,5 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
 
  await cmd.client.util.request.guilds.editMember(cmd.member, { roles }, language.autotypes.shop);
 
- shopCmd(cmd);
+ cmd.client.util.importCache.Commands.SlashCommands.shop.file.default(cmd);
 };

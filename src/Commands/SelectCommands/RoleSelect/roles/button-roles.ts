@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { findField, getComponents } from '../../StringSelect/roles/button-roles.js';
 
 export default async (
  cmd: Discord.RoleSelectMenuInteraction,
@@ -10,7 +9,9 @@ export default async (
 
  const emoji = args.join('_');
  const embed = JSON.parse(JSON.stringify(cmd.message.embeds[0].data)) as Discord.APIEmbed;
- const field = findField(Discord.parseEmoji(emoji) as Discord.PartialEmoji, embed.fields);
+ const field = cmd.client.util.importCache.Commands.SelectCommands.StringSelect.roles[
+  'button-roles'
+ ].file.findField(Discord.parseEmoji(emoji) as Discord.PartialEmoji, embed.fields);
 
  if (field) field.value = cmd.roles.map((r) => `<@&${r.id}>`).join(', ');
 
@@ -19,7 +20,9 @@ export default async (
 
  cmd.update({
   embeds: [embed],
-  components: getComponents(
+  components: cmd.client.util.importCache.Commands.SelectCommands.StringSelect.roles[
+   'button-roles'
+  ].file.getComponents(
    Discord.parseEmoji(emoji) as Discord.PartialEmoji,
    lan,
    language,

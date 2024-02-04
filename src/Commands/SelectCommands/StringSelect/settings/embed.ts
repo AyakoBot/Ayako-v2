@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -19,7 +19,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
     settingName,
     fieldName,
     cmd.values,
-    CT.EditorTypes.Embed,
+    cmd.client.util.CT.EditorTypes.Embed,
     cmd.guild,
    ),
   ],
