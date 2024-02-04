@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (oldEmote: Discord.GuildEmoji, emote: Discord.GuildEmoji) => {
- log(oldEmote, emote);
+ emote.client.util.importCache.Events.BotEvents.emojiEvents.emojiUpdate.log.file.default(
+  oldEmote,
+  emote,
+ );
 };
