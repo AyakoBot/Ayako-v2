@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
 import * as Classes from '../../BaseClient/Other/classes.js';
-import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.js';
-import * as Typings from '../../Typings/Typings.js';
+import * as CT from '../../Typings/Typings.js';
 
-export default async (message: Typings.InteractionMessage) => {
+export default async (message: CT.InteractionMessage) => {
  const { interaction } = message;
  if (client.cluster?.maintenance) return;
 
@@ -27,9 +26,9 @@ export default async (message: Typings.InteractionMessage) => {
      {
       color: client.util.getColor(),
       description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${client.util.constants.standard.invite})
-Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${client.util.constants.standard.invite})
-
-I will now leave this Server`,
+      Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${client.util.constants.standard.invite})
+      
+      I will now leave this Server`,
       author: {
        icon_url: client.user?.displayAvatarURL(),
        name: client.user?.username ?? 'Ayako',
@@ -47,7 +46,9 @@ I will now leave this Server`,
 
  const parsedInteraction = getParsedInteraction(interaction);
  if (!parsedInteraction) return;
- interactionCreate(parsedInteraction);
+ client.util.importCache.Events.BotEvents.interactionEvents.interactionCreate.file.default(
+  parsedInteraction,
+ );
 };
 
 const getParsedInteraction = (i: Discord.APIInteraction) => {
