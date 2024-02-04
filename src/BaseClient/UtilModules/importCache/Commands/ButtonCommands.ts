@@ -1,10 +1,10 @@
 import antiraid from './ButtonCommands/antiraid.js';
-import other from './ButtonCommands/other.js';
 import embedBuilder from './ButtonCommands/embed-builder.js';
 import events from './ButtonCommands/events.js';
 import giveaway from './ButtonCommands/giveaway.js';
 import info from './ButtonCommands/info.js';
 import mod from './ButtonCommands/mod.js';
+import other from './ButtonCommands/other.js';
 import resetLevels from './ButtonCommands/reset-levels.js';
 import roles from './ButtonCommands/roles.js';
 import rp from './ButtonCommands/rp.js';
@@ -14,6 +14,7 @@ import settings from './ButtonCommands/settings.js';
 import shop from './ButtonCommands/shop.js';
 import suggestion from './ButtonCommands/suggestion.js';
 import verification from './ButtonCommands/verification.js';
+import voteReminder from './ButtonCommands/voteReminder.js';
 
 const self = {
  antiraid,
@@ -31,6 +32,7 @@ const self = {
  shop,
  suggestion,
  verification,
+ voteReminder,
  ...other,
 };
 
