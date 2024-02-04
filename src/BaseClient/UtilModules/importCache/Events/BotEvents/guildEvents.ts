@@ -120,12 +120,12 @@ const self = {
   },
  },
  guildIntegrationsUpdate: {
-  guildIntegrationsCreate: {
+  guildIntegrationsCreates: {
    guildIntegrationsCreates: {
     reload: async () => {
-     self.guildIntegrationsUpdate.guildIntegrationsCreate.guildIntegrationsCreates.file =
+     self.guildIntegrationsUpdate.guildIntegrationsCreates.guildIntegrationsCreates.file =
       await import(
-       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsCreate/guildIntegrationsCreates.js?version=${Date.now()}`
+       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsCreates/guildIntegrationsCreates.js?version=${Date.now()}`
       );
     },
     file: await import(
@@ -134,8 +134,8 @@ const self = {
    },
    log: {
     reload: async () => {
-     self.guildIntegrationsUpdate.guildIntegrationsCreate.log.file = await import(
-      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsCreates/log.js?version=${Date.now()}`
+     self.guildIntegrationsUpdate.guildIntegrationsCreates.log.file = await import(
+      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsCreates/log.js?version=${Date.now()}`
      );
     },
     file: await import(
@@ -148,7 +148,7 @@ const self = {
     reload: async () => {
      self.guildIntegrationsUpdate.guildIntegrationsDeletes.guildIntegrationsDeletes.file =
       await import(
-       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsDeletes/guildIntegrationsDeletes.js?version=${Date.now()}`
+       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsDeletes/guildIntegrationsDeletes.js?version=${Date.now()}`
       );
     },
     file: await import(
@@ -158,7 +158,7 @@ const self = {
    log: {
     reload: async () => {
      self.guildIntegrationsUpdate.guildIntegrationsDeletes.log.file = await import(
-      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsDeletes/log.js?version=${Date.now()}`
+      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsDeletes/log.js?version=${Date.now()}`
      );
     },
     file: await import(
@@ -171,7 +171,7 @@ const self = {
     reload: async () => {
      self.guildIntegrationsUpdate.guildIntegrationsUpdates.guildIntegrationsUpdates.file =
       await import(
-       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdates/guildIntegrationsUpdates.js?version=${Date.now()}`
+       `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsUpdates/guildIntegrationsUpdates.js?version=${Date.now()}`
       );
     },
     file: await import(
@@ -181,7 +181,7 @@ const self = {
    log: {
     reload: async () => {
      self.guildIntegrationsUpdate.guildIntegrationsUpdates.log.file = await import(
-      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdates/log.js?version=${Date.now()}`
+      `../../../../../Events/BotEvents/guildEvents/guildIntegrationsUpdate/guildIntegrationsUpdates/log.js?version=${Date.now()}`
      );
     },
     file: await import(
