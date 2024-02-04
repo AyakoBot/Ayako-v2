@@ -1,3 +1,4 @@
-import server from '../leaderboard/server.js';
+import * as Discord from 'discord.js';
 
-export default server;
+export default async (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.leaderboard.server.file.default(cmd);

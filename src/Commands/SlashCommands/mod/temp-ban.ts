@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -24,5 +24,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- cmd.client.util.mod(cmd, CT.ModTypes.TempBanAdd, modOptions);
+ cmd.client.util.mod.default(cmd, cmd.client.util.CT.ModTypes.TempBanAdd, modOptions);
 };

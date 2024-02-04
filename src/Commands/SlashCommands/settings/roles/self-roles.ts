@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import * as S from '../../../../Typings/Settings.js';
 
-const name = CT.SettingNames.SelfRoles;
+const name = S.SettingNames.SelfRoles;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -18,14 +18,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  showAll(cmd, language, lan);
 };
 
-export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async (
+export const showID: NonNullable<S.SettingsFile<typeof name>['showID']> = async (
  cmd,
  ID,
  language,
  lan,
 ) => {
  const { buttonParsers, embedParsers } = client.util.settingsHelpers;
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { uniquetimestamp: parseInt(ID, 36) },
   })
@@ -36,7 +36,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
      name,
      cmd.guildId,
      ID ? parseInt(ID, 36) : Date.now(),
-    ) as unknown as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[typeof name]]),
+    ) as unknown as CT.DataBaseTables[(typeof S.SettingsName2TableName)[typeof name]]),
   );
 
  if (cmd.isButton()) {
@@ -54,14 +54,14 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
  });
 };
 
-export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = async (
+export const showAll: NonNullable<S.SettingsFile<typeof name>['showAll']> = async (
  cmd,
  language,
  lan,
 ) => {
  const { multiRowHelpers } = client.util.settingsHelpers;
 
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
  });
 
@@ -89,7 +89,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = (
  embedParsers,
  settings,
  language,
@@ -149,7 +149,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  },
 ];
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -157,11 +157,11 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.back(name, undefined),
+   buttonParsers.back(name, undefined, language.client),
    buttonParsers.global(
     language,
     !!settings?.active,
-    CT.GlobalDescType.Active,
+    S.GlobalDescType.Active,
     name,
     Number(settings?.uniquetimestamp),
    ),
@@ -196,33 +196,33 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'roles',
     name,
     Number(settings?.uniquetimestamp),
-    CT.EditorTypes.Role,
+    S.EditorTypes.Role,
    ),
    buttonParsers.global(
     language,
     settings?.blroleid,
-    CT.GlobalDescType.BLRoleId,
+    S.GlobalDescType.BLRoleId,
     name,
     Number(settings?.uniquetimestamp),
    ),
    buttonParsers.global(
     language,
     settings?.bluserid,
-    CT.GlobalDescType.BLUserId,
+    S.GlobalDescType.BLUserId,
     name,
     Number(settings?.uniquetimestamp),
    ),
    buttonParsers.global(
     language,
     settings?.wlroleid,
-    CT.GlobalDescType.WLRoleId,
+    S.GlobalDescType.WLRoleId,
     name,
     Number(settings?.uniquetimestamp),
    ),
    buttonParsers.global(
     language,
     settings?.wluserid,
-    CT.GlobalDescType.WLUserId,
+    S.GlobalDescType.WLUserId,
     name,
     Number(settings?.uniquetimestamp),
    ),

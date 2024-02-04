@@ -1,3 +1,4 @@
-import sticker from '../info/sticker.js';
+import * as Discord from 'discord.js';
 
-export default sticker;
+export default (cmd: Discord.ChatInputCommandInteraction, args: string[], page: number) =>
+ cmd.client.util.importCache.Commands.SlashCommands.info.sticker.file.default(cmd, args, page);

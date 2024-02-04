@@ -2,8 +2,9 @@ import { LevelUpMode } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
+import * as S from '../../../../Typings/Settings.js';
 
-const name = CT.SettingNames.Leveling;
+const name = S.SettingNames.Leveling;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +12,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    client.util.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[S.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -41,7 +42,7 @@ const getLevelUpMode = (type: LevelUpMode, language: CT.Language) => {
  }
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -190,7 +191,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  return embeds;
 };
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -199,7 +200,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.global(language, !!settings.active, CT.GlobalDescType.Active, name, undefined),
+    buttonParsers.global(language, !!settings.active, S.GlobalDescType.Active, name, undefined),
    ],
   },
   {
@@ -207,7 +208,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    components: [
     buttonParsers.specific(language, settings.xppermsg, 'xppermsg', name, undefined),
     buttonParsers.specific(language, settings.xpmultiplier, 'xpmultiplier', name, undefined),
-    buttonParsers.specific(language, settings.rolemode, CT.EditorTypes.RoleMode, name, undefined),
+    buttonParsers.specific(language, settings.rolemode, S.EditorTypes.RoleMode, name, undefined),
    ],
   },
   {
@@ -223,7 +224,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     buttonParsers.global(
      language,
      settings.blchannelid,
-     CT.GlobalDescType.BLChannelId,
+     S.GlobalDescType.BLChannelId,
      name,
      undefined,
     ),
@@ -232,17 +233,17 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   {
    type: Discord.ComponentType.ActionRow,
    components: [
-    buttonParsers.global(language, settings.blroleid, CT.GlobalDescType.BLRoleId, name, undefined),
-    buttonParsers.global(language, settings.bluserid, CT.GlobalDescType.BLUserId, name, undefined),
+    buttonParsers.global(language, settings.blroleid, S.GlobalDescType.BLRoleId, name, undefined),
+    buttonParsers.global(language, settings.bluserid, S.GlobalDescType.BLUserId, name, undefined),
     buttonParsers.global(
      language,
      settings.wlchannelid,
-     CT.GlobalDescType.WLChannelId,
+     S.GlobalDescType.WLChannelId,
      name,
      undefined,
     ),
-    buttonParsers.global(language, settings.wlroleid, CT.GlobalDescType.WLRoleId, name, undefined),
-    buttonParsers.global(language, settings.wluserid, CT.GlobalDescType.WLUserId, name, undefined),
+    buttonParsers.global(language, settings.wlroleid, S.GlobalDescType.WLRoleId, name, undefined),
+    buttonParsers.global(language, settings.wluserid, S.GlobalDescType.WLUserId, name, undefined),
    ],
   },
  ];
@@ -258,7 +259,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
      'lvlupchannels',
      name,
      undefined,
-     CT.EditorTypes.Channel,
+     S.EditorTypes.Channel,
     ),
    );
    break;

@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import { canCreateInvite } from '../../../BaseClient/UtilModules/requestHandler/channels/createInvite.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const channel =
-  cmd.options.getChannel('channel', false, CT.AllNonThreadGuildChannelTypes) ?? cmd.channel;
+  cmd.options.getChannel('channel', false, cmd.client.util.CT.AllNonThreadGuildChannelTypes) ??
+  cmd.channel;
  const maxUses = cmd.options.getInteger('max-uses', false);
  const maxAge = cmd.options.getString('max-age', false);
  const temporary = cmd.options.getBoolean('temporary', false);
@@ -19,7 +18,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- if (!canCreateInvite(channel.id, cmd.member)) {
+ if (
+  !cmd.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.createInvite.file.canCreateInvite(
+   channel.id,
+   cmd.member,
+  )
+ ) {
   cmd.client.util.errorCmd(cmd, language.errors.cantCreateInviteYou, language);
   return;
  }
@@ -27,7 +31,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
  const lan = language.slashCommands.invites;
 
- if (!canCreateInvite(channel.id, me)) {
+ if (
+  !cmd.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.createInvite.file.canCreateInvite(
+   channel.id,
+   me,
+  )
+ ) {
   cmd.client.util.errorCmd(cmd, language.errors.cantCreateInvite, language);
   return;
  }

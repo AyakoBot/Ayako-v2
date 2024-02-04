@@ -108,7 +108,7 @@ export const end = async (reminder: Prisma.reminders) => {
 
  await client.cluster?.broadcastEval(
   (cl: typeof client, r: Serialized<Prisma.reminders>) => {
-   const create = cl.util.files['/Commands/SlashCommands/reminder/create.js'];
+   const create = cl.util.importCache.Commands.SlashCommands.reminder.create.file;
    create.endReminder(r, create.EndReminderChannelType.Channel);
   },
   {

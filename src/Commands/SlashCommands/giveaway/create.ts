@@ -1,8 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../Typings/Typings.js';
-import { end, getButton, getGiveawayEmbed } from './end.js';
-import { canSendMessage } from '../../../BaseClient/UtilModules/requestHandler/channels/sendMessage.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -86,11 +84,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  await cmd.client.util.request.channels.editMsg(msg, {
-  embeds: [await getGiveawayEmbed(language, giveaway)],
+  embeds: [
+   await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getGiveawayEmbed(
+    language,
+    giveaway,
+   ),
+  ],
   components: [
    {
     type: Discord.ComponentType.ActionRow,
-    components: [getButton(language, giveaway)],
+    components: [
+     cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getButton(
+      language,
+      giveaway,
+     ),
+    ],
    },
   ],
  });
@@ -101,7 +109,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  cmd.client.util.cache.giveaways.set(
   Jobs.scheduleJob(new Date(endTime), () => {
-   end(giveaway);
+   cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.end(giveaway);
   }),
   cmd.guildId as string,
   cmd.channelId,
@@ -115,7 +123,13 @@ const canSend = async (
  language: CT.Language,
 ) => {
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- if (canSendMessage(channelId, { embeds: [], components: [] }, me)) {
+ if (
+  cmd.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.sendMessage.file.canSendMessage(
+   channelId,
+   { embeds: [], components: [] },
+   me,
+  )
+ ) {
   return true;
  }
 

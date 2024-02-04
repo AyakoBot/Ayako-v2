@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../Typings/Typings.js';
+import * as S from '../../../Typings/Settings.js';
 
-const name = CT.SettingNames.Logs;
+const name = S.SettingNames.Logs;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -10,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    client.util.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[S.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -31,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = (
  embedParsers,
  settings,
  language,
@@ -54,7 +54,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  },
 ];
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -68,7 +68,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'applicationevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -76,7 +76,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'automodevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -84,7 +84,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'channelevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -92,7 +92,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'emojievents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -100,7 +100,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'guildevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
   ],
  },
@@ -113,7 +113,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'scheduledeventevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -121,7 +121,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'inviteevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -129,7 +129,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'messageevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -137,7 +137,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'roleevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -145,7 +145,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'stageevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
   ],
  },
@@ -158,7 +158,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'stickerevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -166,7 +166,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'typingevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -174,7 +174,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'userevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -182,7 +182,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'voiceevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -190,7 +190,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'webhookevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
   ],
  },
@@ -203,7 +203,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'reactionevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -211,7 +211,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'memberevents',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -219,7 +219,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'settingslog',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -227,7 +227,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'modlog',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
   ],
  },

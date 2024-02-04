@@ -1,4 +1,4 @@
 import * as Discord from 'discord.js';
-import before from './before.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => before(cmd, 'after');
+export default async (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod.pardon.before.file.default(cmd, 'after');

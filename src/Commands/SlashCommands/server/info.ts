@@ -1,3 +1,4 @@
-import info from '../info/server.js';
+import * as Discord from 'discord.js';
 
-export default info;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.info.server.file.default(cmd);

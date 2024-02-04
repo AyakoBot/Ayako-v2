@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import type { Returned } from '../../../../BaseClient/UtilModules/getPunishment.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -33,24 +33,18 @@ export const pardon = (
  const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
 
  switch (punishment.type) {
-  case 'punish_bans': {
+  case 'punish_bans':
    return client.util.DataBase.punish_bans.deleteMany(where);
-  }
-  case 'punish_channelbans': {
+  case 'punish_channelbans':
    return client.util.DataBase.punish_channelbans.deleteMany(where);
-  }
-  case 'punish_kicks': {
+  case 'punish_kicks':
    return client.util.DataBase.punish_kicks.deleteMany(where);
-  }
-  case 'punish_mutes': {
+  case 'punish_mutes':
    return client.util.DataBase.punish_mutes.deleteMany(where);
-  }
-  case 'punish_warns': {
+  case 'punish_warns':
    return client.util.DataBase.punish_warns.deleteMany(where);
-  }
-  default: {
+  default:
    return undefined;
-  }
  }
 };
 
@@ -72,7 +66,7 @@ export const log = async (
      author: {
       name: lan.author,
      },
-     color: CT.Colors.Success,
+     color: cmd.client.util.CT.Colors.Success,
      description: `${client.util.util.makeBold(language.t.Reason)}:\n${punishment.reason}`,
      fields: [
       {
@@ -134,7 +128,7 @@ export const log = async (
      timestamp: new Date().toISOString(),
     },
     {
-     color: CT.Colors.Ephemeral,
+     color: cmd.client.util.CT.Colors.Ephemeral,
      author: { name: lan.pardonReason },
      description: reason,
     },

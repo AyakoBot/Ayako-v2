@@ -1,3 +1,4 @@
-import { imageGetter } from '../../../BaseClient/UtilModules/getGif.js';
+import * as Discord from 'discord.js';
 
-export default imageGetter;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.BaseClient.UtilModules.getGif.file.imageGetter(cmd);

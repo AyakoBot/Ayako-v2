@@ -1,14 +1,16 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import SlashCommands from '../../../SlashCommands/index.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as SlashCommands from '../../../SlashCommands/index.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction,
  _args: string[],
- t: CT.CommandCategories,
+ t: SlashCommands.CommandCategories,
 ) => {
- const type = (cmd.options.getString('type', false) ?? t ?? 'automation') as CT.CommandCategories;
+ const type = (cmd.options.getString('type', false) ??
+  t ??
+  'automation') as SlashCommands.CommandCategories;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  cmd.client.util.replyCmd(cmd, getPayload(language, type, await getCommands(cmd, type)));
@@ -19,7 +21,7 @@ export const getCommands = async (
   client: Discord.Client<true>;
   guildId: string | null;
  },
- type: CT.CommandCategories,
+ type: SlashCommands.CommandCategories,
 ) => {
  const stringCommandFiles = (await getCommand('StringCommands')).filter((c) =>
   c.endsWith(`${c.split(/\/+/g).at(-1)?.replace('.js', '')}.js`),
@@ -33,7 +35,7 @@ export const getCommands = async (
   ? await cmd.client.util.DataBase.guildsettings.findUnique({ where: { guildid: cmd.guildId } })
   : undefined;
 
- Object.entries(SlashCommands.categories)
+ Object.entries(cmd.client.util.importCache.SlashCommands.file.default.categories)
   .filter(([, values]) => values.includes(type))
   .forEach(([key]) => {
    const [commandName] = key.split(/_/g);
@@ -56,12 +58,12 @@ export const getCommands = async (
 
 export const getPayload = (
  language: CT.Language,
- type: CT.CommandCategories,
+ type: SlashCommands.CommandCategories,
  commands: string[],
 ): Discord.InteractionReplyOptions => ({
  embeds: [
   {
-   color: CT.Colors.Base,
+   color: language.client.util.CT.Colors.Base,
    title:
     language.slashCommands.help.categories[
      type as keyof typeof language.slashCommands.help.categories
@@ -80,7 +82,9 @@ export const getPayload = (
      type: Discord.ComponentType.StringSelect,
      custom_id: 'help/list',
      placeholder: language.slashCommands.help.selectPlaceholder,
-     options: Object.values(CT.CommandCategories).map((value) => ({
+     options: Object.values(
+      language.client.util.importCache.SlashCommands.file.CommandCategories,
+     ).map((value) => ({
       label:
        language.slashCommands.help.categories[
         value as keyof typeof language.slashCommands.help.categories

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
  const link = cmd.options.get('message-link', true).value as string;
@@ -14,7 +13,7 @@ export default async (cmd: Discord.CommandInteraction) => {
  }
 
  const response = (
-  await client.cluster?.broadcastEval(
+  await cmd.client.cluster?.broadcastEval(
    async (cl, { gID: guildID, cID: channelID, mID: messageID }) => {
     const guild = cl.guilds.cache.get(guildID);
     if (!guild) return undefined;

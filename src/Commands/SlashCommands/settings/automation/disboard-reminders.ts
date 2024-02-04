@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import * as S from '../../../../Typings/Settings.js';
 
-const name = CT.SettingNames.DisboardReminders;
+const name = S.SettingNames.DisboardReminders;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -10,14 +10,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    client.util.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[S.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -29,7 +29,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = (
  embedParsers,
  settings,
  language,
@@ -93,7 +93,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  },
 ];
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -101,7 +101,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
+   buttonParsers.global(language, !!settings?.active, S.GlobalDescType.Active, name, undefined),
   ],
  },
  {
@@ -114,7 +114,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'channelid',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.boolean(language, settings?.repeatenabled, 'repeatenabled', name, undefined),
    buttonParsers.specific(language, settings?.repeatreminder, 'repeatreminder', name, undefined),
@@ -123,8 +123,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, CT.EditorTypes.Role),
-   buttonParsers.specific(language, settings?.users, 'users', name, undefined, CT.EditorTypes.User),
+   buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, S.EditorTypes.Role),
+   buttonParsers.specific(language, settings?.users, 'users', name, undefined, S.EditorTypes.User),
   ],
  },
 ];

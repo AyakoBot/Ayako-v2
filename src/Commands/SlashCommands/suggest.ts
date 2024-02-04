@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { colors } from '../../BaseClient/UtilModules/getColor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -47,7 +46,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    embeds: [
     {
      color: cmd.client.util.getColor(
-      Object.keys(colors)[cmd.client.util.getRandom(0, Object.keys(colors).length - 1)],
+      Object.keys(cmd.client.util.importCache.BaseClient.UtilModules.getColor.file.colors)[
+       cmd.client.util.getRandom(
+        0,
+        Object.keys(cmd.client.util.importCache.BaseClient.UtilModules.getColor.file.colors)
+         .length - 1,
+       )
+      ],
      ),
      author: {
       name: `${lan.author}${settings.anonsuggestion ? '' : ` | ${cmd.user.displayName}`}`,

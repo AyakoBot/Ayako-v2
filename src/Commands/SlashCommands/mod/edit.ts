@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -101,7 +100,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     value: reason,
    },
   ],
-  color: CT.Colors.Loading,
+  color: cmd.client.util.CT.Colors.Loading,
  };
 
  const logchannels = await cmd.client.util.getLogChannels('modlog', cmd.guild);

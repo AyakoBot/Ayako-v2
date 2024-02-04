@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getContent } from '../../Events/BotEvents/autoModerationActionEvents/censor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -69,7 +68,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (customRole) {
   const role = await cmd.client.util.request.guilds.editRole(cmd.guild, customRole.id, {
-   name: name ? await getContent(cmd.guild, name) : undefined,
+   name: name
+    ? await cmd.client.util.importCache.Events.BotEvents.autoModerationActionEvents.censor.file.getContent(
+       cmd.guild,
+       name,
+      )
+    : undefined,
    unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: parsedColor ?? undefined,
    icon:

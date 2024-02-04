@@ -1,5 +1,8 @@
 import * as Discord from 'discord.js';
-import fromFile from '../../emojis/create/from-file.js';
 
 export default (cmd: Discord.ChatInputCommandInteraction<'cached'>, args: string[]) =>
- fromFile(cmd, args, 'sticker');
+ cmd.client.util.importCache.Commands.SlashCommands.emojis.create['from-file'].file.default(
+  cmd,
+  args,
+  'sticker',
+ );

@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -111,7 +111,6 @@ const getEmotePayloads = async (
 ) =>
  client.cluster?.broadcastEval(
   async (cl, { color, e, guildId }) => {
-   const ctEval = cl.util.files['/Typings/Typings.js'];
    const emoji = e.id ? cl.emojis.cache.get(e.id) ?? e : e;
    const language = await cl.util.getLanguage(guildId);
    const lan = language.slashCommands.info;
@@ -119,7 +118,7 @@ const getEmotePayloads = async (
    const payload = {
     embeds: [
      {
-      color: color || ctEval.Colors.Base,
+      color: color || cl.util.CT.Colors.Base,
       author: {
        name: lan.emojis.author,
       },

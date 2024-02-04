@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { canDeleteInvite } from '../../../BaseClient/UtilModules/requestHandler/invites/delete.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -60,5 +59,8 @@ const canDelete = (invite: Discord.Invite, user: Discord.User) => {
  const member = invite.guild.members.cache.get(user.id);
  if (!member) return false;
 
- return canDeleteInvite(member, invite.channelId ?? '');
+ return invite.client.util.importCache.BaseClient.UtilModules.requestHandler.invites.delete.file.canDeleteInvite(
+  member,
+  invite.channelId ?? '',
+ );
 };

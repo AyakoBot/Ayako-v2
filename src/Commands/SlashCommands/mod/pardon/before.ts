@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { log, pardon } from './one.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction,
@@ -39,8 +38,14 @@ export default async (
  }
 
  punishments.forEach((p) => {
-  pardon(p);
-  log(cmd, p, language, lan, reason);
+  cmd.client.util.importCache.Commands.SlashCommands.mod.pardon.one.file.pardon(p);
+  cmd.client.util.importCache.Commands.SlashCommands.mod.pardon.one.file.log(
+   cmd,
+   p,
+   language,
+   lan,
+   reason,
+  );
  });
 
  cmd.client.util.replyCmd(cmd, {

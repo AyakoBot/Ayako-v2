@@ -1,3 +1,4 @@
-import user from '../info/user.js';
+import * as Discord from 'discord.js';
 
-export default user;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.info.user.file.default(cmd);

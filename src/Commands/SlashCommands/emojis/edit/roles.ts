@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.RoleSelectMenuInteraction,
@@ -58,7 +57,7 @@ export default async (
   await cmd.update({
    embeds: [
     {
-     color: CT.Colors.Loading,
+     color: cmd.client.util.CT.Colors.Loading,
      author: {
       name: language.t.loading,
       icon_url: cmd.client.util.emotes.loading.link,

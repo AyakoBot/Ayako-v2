@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -9,7 +8,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false);
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
- cmd.client.util.mod(cmd, CT.ModTypes.RoleRemove, {
+ cmd.client.util.mod.default(cmd, cmd.client.util.CT.ModTypes.RoleRemove, {
   roles: [role],
   target: user,
   reason: reason ?? language.t.noReasonProvided,

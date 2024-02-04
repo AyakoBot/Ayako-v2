@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getEmbed, getLongest, getOwnLevel } from './server.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -26,18 +25,30 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const position = higherXpCount ?? undefined;
  const users = await Promise.all(levels.map((l) => cmd.client.util.getUser(l.userid)));
- const ownLevel = self ? await getOwnLevel(self, language, lan) : undefined;
+ const ownLevel = self
+  ? await cmd.client.util.importCache.Commands.SlashCommands.leaderboard.server.file.getOwnLevel(
+     self,
+     language,
+     lan,
+    )
+  : undefined;
 
- const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
+ const { longestLevel, longestXP, longestUsername } =
+  cmd.client.util.importCache.Commands.SlashCommands.leaderboard.server.file.getLongest(
+   { lan, language },
+   levels,
+   users,
+  );
 
- const embed = await getEmbed(
-  { lan, language },
-  Number(position),
-  { levels, longestLevel, level: Number(self?.level) },
-  { xp: Number(self?.xp), longestXP },
-  { displayNames: users.map((u) => u?.displayName || '-'), longestUsername },
-  user,
- );
+ const embed =
+  await cmd.client.util.importCache.Commands.SlashCommands.leaderboard.server.file.getEmbed(
+   { lan, language },
+   Number(position),
+   { levels, longestLevel, level: Number(self?.level) },
+   { xp: Number(self?.xp), longestXP },
+   { displayNames: users.map((u) => u?.displayName || '-'), longestUsername },
+   user,
+  );
 
  embed.fields?.push(...(ownLevel ?? []));
 

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { canEdit } from '../../../BaseClient/UtilModules/requestHandler/channels/edit.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const channel = cmd.options.getChannel('channel', true, [
@@ -16,7 +15,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const lan = language.slashCommands.slowmode;
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
 
- if (!canEdit(channel, { rate_limit_per_user: 1 }, me)) {
+ if (
+  !cmd.client.util.importCache.BaseClient.UtilModules.requestHandler.channels.edit.file.canEdit(
+   channel,
+   { rate_limit_per_user: 1 },
+   me,
+  )
+ ) {
   cmd.client.util.errorCmd(cmd, language.errors.cantManageChannel, language);
   return;
  }

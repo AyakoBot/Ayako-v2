@@ -1,9 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../Typings/Typings.js';
-import { endTimeIsValid } from './create.js';
-import { end, getGiveawayEmbed, getMessage } from './end.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -24,11 +22,17 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const msg = await getMessage(giveaway);
+ const msg =
+  await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getMessage(giveaway);
  if (!msg) return;
 
  const res = await cmd.client.util.request.channels.editMsg(msg, {
-  embeds: [await getGiveawayEmbed(language, giveaway)],
+  embeds: [
+   await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getGiveawayEmbed(
+    language,
+    giveaway,
+   ),
+  ],
  });
 
  if ('message' in res) {
@@ -41,7 +45,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  cmd.client.util.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
  cmd.client.util.cache.giveaways.set(
   Jobs.scheduleJob(new Date(Number(giveaway.endtime)), () => {
-   end(giveaway);
+   cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.end(giveaway);
   }),
   giveaway.guildid,
   giveaway.channelid,
@@ -88,7 +92,14 @@ const update = async (
   });
  }
 
- if (endTime && endTimeIsValid(endTime, cmd, language)) {
+ if (
+  endTime &&
+  cmd.client.util.importCache.Commands.SlashCommands.giveaway.create.file.endTimeIsValid(
+   endTime,
+   cmd,
+   language,
+  )
+ ) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
    where: { msgid: messageID },
    data: { endtime: endTime },

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getButton, getGiveawayEmbed } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -24,10 +23,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const giveawayEmbed = await getGiveawayEmbed(language, giveaway);
+ const giveawayEmbed =
+  await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getGiveawayEmbed(
+   language,
+   giveaway,
+  );
  giveawayEmbed.title = lan.cancelled;
  giveaway.ended = true;
- const participateButton = getButton(language, giveaway);
+ const participateButton =
+  cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getButton(
+   language,
+   giveaway,
+  );
 
  const editRes = await cmd.client.util.request.channels.editMessage(
   cmd.guild,

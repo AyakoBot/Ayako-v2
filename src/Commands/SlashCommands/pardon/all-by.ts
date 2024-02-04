@@ -1,3 +1,4 @@
-import exe from '../mod/pardon/all-by.js';
+import * as Discord from 'discord.js';
 
-export default exe;
+export default async (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod.pardon['all-by'].file.default(cmd);

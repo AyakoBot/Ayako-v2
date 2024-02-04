@@ -1,3 +1,4 @@
-import exe from './mod/soft-warn.js';
+import * as Discord from 'discord.js';
 
-export default exe;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod['soft-warn'].file.default(cmd);

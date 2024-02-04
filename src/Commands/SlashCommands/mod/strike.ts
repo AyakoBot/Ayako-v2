@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import getStrike from '../../../BaseClient/UtilModules/mod/getStrike.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -34,9 +33,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- cmd.client.util.mod(cmd, CT.ModTypes.StrikeAdd, modOptions);
+ cmd.client.util.mod.default(cmd, cmd.client.util.CT.ModTypes.StrikeAdd, modOptions);
 
- const applyingStrike = await getStrike(user, cmd.guild);
+ const applyingStrike =
+  await cmd.client.util.importCache.BaseClient.UtilModules.mod.getStrike.file.default(
+   user,
+   cmd.guild,
+  );
  const member = cmd.options.getMember('user');
 
  if (!member) return;

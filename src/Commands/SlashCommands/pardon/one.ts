@@ -1,3 +1,4 @@
-import exe from '../mod/pardon/one.js';
+import * as Discord from 'discord.js';
 
-export default exe;
+export default async (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod.pardon.one.file.default(cmd);

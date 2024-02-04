@@ -1,3 +1,4 @@
-import check from './mod/check.js';
+import * as Discord from 'discord.js';
 
-export default check;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod.check.file.default(cmd);

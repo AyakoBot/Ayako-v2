@@ -1,3 +1,4 @@
-import invite from '../info/invite.js';
+import * as Discord from 'discord.js';
 
-export default invite;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.info.invite.file.default(cmd);

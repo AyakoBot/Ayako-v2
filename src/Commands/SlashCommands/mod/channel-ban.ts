@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -7,7 +7,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
  const duration = cmd.options.getString('duration', false);
- const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
+ const channel = cmd.options.getChannel(
+  'channel',
+  true,
+  cmd.client.util.CT.AllNonThreadGuildChannelTypes,
+ );
  const deleteMessageDuration = cmd.options.getString('delete-message-duration', false);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -28,9 +32,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (!duration) delete modOptions.duration;
 
- cmd.client.util.mod(
+ cmd.client.util.mod.default(
   cmd,
-  duration ? CT.ModTypes.TempChannelBanAdd : CT.ModTypes.ChannelBanAdd,
+  duration
+   ? cmd.client.util.CT.ModTypes.TempChannelBanAdd
+   : cmd.client.util.CT.ModTypes.ChannelBanAdd,
   modOptions as CT.ModOptions<
    typeof duration extends string ? CT.ModTypes.TempChannelBanAdd : CT.ModTypes.ChannelBanAdd
   >,

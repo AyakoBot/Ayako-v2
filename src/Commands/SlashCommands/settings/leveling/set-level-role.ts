@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import { getComponents } from './set-level-user.js';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -13,7 +12,12 @@ export default async (
  const role = cmd instanceof Discord.ButtonInteraction ? r : cmd.options.getRole('role', true);
  const language = await client.util.getLanguage(cmd.guildId);
 
- const components = client.util.getChunks(getComponents(role.id, 0, 0, language, 'role'), 5);
+ const components = client.util.getChunks(
+  cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+   'set-level-user'
+  ].file.getComponents(role.id, 0, 0, language, 'role'),
+  5,
+ );
  const excluded = getExcludedButton(language, role);
  const embed = getEmbed(language, role, 0, 0, []);
 
@@ -50,7 +54,7 @@ export const getEmbed = (
   name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descRole(role),
- color: CT.Colors.Ephemeral,
+ color: language.client.util.CT.Colors.Ephemeral,
  fields: [
   {
    name: language.slashCommands.setLevel.newXP,

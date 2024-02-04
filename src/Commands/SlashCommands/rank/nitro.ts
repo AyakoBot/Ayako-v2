@@ -1,3 +1,4 @@
-import nitro from '../leaderboard/nitro.js';
+import * as Discord from 'discord.js';
 
-export default nitro;
+export default async (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.leaderboard.nitro.file.default(cmd);

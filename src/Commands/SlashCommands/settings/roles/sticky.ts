@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import * as S from '../../../../Typings/Settings.js';
 
-const name = CT.SettingNames.Sticky;
+const name = S.SettingNames.Sticky;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,14 +11,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.settings.categories[name];
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    client.util.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[S.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = (
  embedParsers,
  settings,
  language,
@@ -76,7 +76,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  },
 ];
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -99,7 +99,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     undefined,
    ),
    buttonParsers.specific(language, settings?.stickyrolesmode, 'stickyrolesmode', name, undefined),
-   buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, CT.EditorTypes.Role),
+   buttonParsers.specific(language, settings?.roles, 'roles', name, undefined, S.EditorTypes.Role),
   ],
  },
 ];

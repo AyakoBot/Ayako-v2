@@ -1,3 +1,4 @@
-import exe from './mod/channel-ban.js';
+import * as Discord from 'discord.js';
 
-export default exe;
+export default (cmd: Discord.ChatInputCommandInteraction) =>
+ cmd.client.util.importCache.Commands.SlashCommands.mod['channel-ban'].file.default(cmd);

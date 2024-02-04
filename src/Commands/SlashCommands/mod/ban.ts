@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -26,9 +26,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (!duration) delete modOptions.duration;
 
- cmd.client.util.mod(
+ cmd.client.util.mod.default(
   cmd,
-  duration ? CT.ModTypes.TempBanAdd : CT.ModTypes.BanAdd,
+  duration ? cmd.client.util.CT.ModTypes.TempBanAdd : cmd.client.util.CT.ModTypes.BanAdd,
   modOptions as CT.ModOptions<
    typeof duration extends string ? CT.ModTypes.TempBanAdd : CT.ModTypes.BanAdd
   >,

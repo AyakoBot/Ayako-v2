@@ -3,11 +3,11 @@ import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
 import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
-import * as CT from '../../../Typings/Typings.js';
+import * as S from '../../../Typings/Settings.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
 
-const name = CT.SettingNames.Basic;
+const name = S.SettingNames.Basic;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -15,14 +15,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
- const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
+ const settings = await client.util.DataBase[S.SettingsName2TableName[name]]
   .findUnique({
    where: { guildid: cmd.guildId },
   })
   .then(
    (r) =>
     r ??
-    client.util.DataBase[CT.SettingsName2TableName[name]].create({
+    client.util.DataBase[S.SettingsName2TableName[name]].create({
      data: { guildid: cmd.guildId },
     }),
   );
@@ -36,7 +36,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
+export const getEmbeds: S.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -110,8 +110,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
        )}\n[${language.t.InviteCustomBot}](${client.util.constants.standard.invite.replace(
-        client.util.mainID,
-        settings.appid ?? client.util.mainID,
+        process.env.mainID ?? '',
+        settings.appid ?? process.env.mainID ?? '',
        )})`
      : language.t.None,
    },
@@ -139,7 +139,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  },
 ];
 
-export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
+export const getComponents: S.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
@@ -179,8 +179,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     disabled: !settings.token,
     url: settings.token
      ? client.util.constants.standard.invite.replace(
-        client.util.mainID,
-        settings.appid ?? client.util.mainID,
+        process.env.mainID ?? '',
+        settings.appid ?? process.env.mainID ?? '',
        )
      : 'https://ayakobot.com',
    },
@@ -195,7 +195,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'errorchannel',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -203,7 +203,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'statuschannel',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
    buttonParsers.specific(
     language,
@@ -211,13 +211,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     'updateschannel',
     name,
     undefined,
-    CT.EditorTypes.Channel,
+    S.EditorTypes.Channel,
    ),
   ],
  },
 ];
 
-export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+export const postChange: S.SettingsFile<typeof name>['postChange'] = async (
  oldSettings,
  newSettings,
  changedSetting,

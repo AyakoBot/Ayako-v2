@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -7,7 +7,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
  const duration = cmd.options.getString('duration', true);
- const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
+ const channel = cmd.options.getChannel(
+  'channel',
+  true,
+  cmd.client.util.CT.AllNonThreadGuildChannelTypes,
+ );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
@@ -22,5 +26,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   skipChecks: false,
  };
 
- cmd.client.util.mod(cmd, CT.ModTypes.TempChannelBanAdd, modOptions);
+ cmd.client.util.mod.default(cmd, cmd.client.util.CT.ModTypes.TempChannelBanAdd, modOptions);
 };
