@@ -2,17 +2,7 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
-import { endDeleteSuggestion } from '../../../../Commands/ModalCommands/suggestion/accept.js';
-import {
- end as endGiveaway,
- giveawayCollectTimeExpired,
-} from '../../../../Commands/SlashCommands/giveaway/end.js';
-import { end as endReminder } from '../../../../Commands/SlashCommands/reminder/create.js';
-import * as CT from '../../../../Typings/Typings.js';
-import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
-import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
-import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
-import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default () => {
  reminder();
@@ -32,7 +22,7 @@ const reminder = async () => {
    Jobs.scheduleJob(
     new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
     () => {
-     endReminder(r);
+     client.util.importCache.Commands.SlashCommands.reminder.create.file.end(r);
     },
    ),
    r.userid,
@@ -50,7 +40,7 @@ export const tasks = {
     Jobs.scheduleJob(
      new Date(Date.now() > Number(vote.endtime) ? Date.now() + 10000 : Number(vote.endtime)),
      () => {
-      endVote(vote, guild);
+      client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.end(vote, guild);
      },
     ),
     guild.id,
@@ -97,7 +87,9 @@ export const tasks = {
 
    client.util.cache.vcDeleteTimeout.set(
     Jobs.scheduleJob(new Date(Date.now() + Number(applyingSetting.deletetime) * 1000), () =>
-     del(channel),
+     client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateDeletes.voiceHub.file.del(
+      channel,
+     ),
     ),
     guild.id,
     channel.id,
@@ -127,7 +119,7 @@ export const tasks = {
         1000,
      ),
      async () => {
-      endDeleteSuggestion(s);
+      client.util.importCache.Commands.ModalCommands.suggestion.accept.file.endDeleteSuggestion(s);
      },
     ),
     guild.id,
@@ -147,7 +139,9 @@ export const tasks = {
      Number(settings.nextbump) < Date.now() ? Date.now() + 10000 : Number(settings.nextbump),
     ),
     () => {
-     bumpReminder(guild);
+     client.util.importCache.Events.BotEvents.messageEvents.messageCreate.disboard.file.bumpReminder(
+      guild,
+     );
     },
    ),
    settings.guildid,
@@ -167,7 +161,7 @@ export const tasks = {
     Jobs.scheduleJob(
      new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
      () => {
-      endGiveaway(g);
+      client.util.importCache.Commands.SlashCommands.giveaway.end.file.end(g);
      },
     ),
     g.guildid,
@@ -183,17 +177,17 @@ export const tasks = {
    {
     rows: () => client.util.DataBase.punish_mutes.findMany(where),
     cache: client.util.cache.mutes,
-    event: CT.ModTypes.MuteRemove,
+    event: client.util.CT.ModTypes.MuteRemove,
    },
    {
     rows: () => client.util.DataBase.punish_tempbans.findMany(where),
     cache: client.util.cache.bans,
-    event: CT.ModTypes.BanRemove,
+    event: client.util.CT.ModTypes.BanRemove,
    },
    {
     rows: () => client.util.DataBase.punish_tempchannelbans.findMany(where),
     cache: client.util.cache.channelBans,
-    event: CT.ModTypes.ChannelBanRemove,
+    event: client.util.CT.ModTypes.ChannelBanRemove,
    },
   ] as const;
 
@@ -216,7 +210,7 @@ export const tasks = {
 
       const channel = await client.util.getChannel.guildTextChannel(m.channelid);
 
-      client.util.mod(
+      client.util.mod.default(
        m.msgid && channel
         ? await client.util.request.channels
            .getMessage(channel, m.msgid)
@@ -262,7 +256,10 @@ export const tasks = {
     Jobs.scheduleJob(
      new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
      () => {
-      giveawayCollectTimeExpired(t.msgid, t.guildid);
+      client.util.importCache.Commands.SlashCommands.giveaway.end.file.giveawayCollectTimeExpired(
+       t.msgid,
+       t.guildid,
+      );
      },
     ),
     t.guildid,
@@ -279,7 +276,9 @@ export const tasks = {
   client.util.cache.enableInvites.set(
    guild.id,
    Jobs.scheduleJob(new Date(Number(settings.enableinvitesat)), () => {
-    enableInvites(guild);
+    client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.antiraid.file.enableInvites(
+     guild,
+    );
    }),
   );
  },

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async () => {
  const settingsRows = await client.util.DataBase.expiry.findMany({
@@ -147,7 +147,7 @@ const logExpire = async <T extends TableName>(
     name: lan.punishmentOf(user),
     url: `https://discord.com/channels/${guild.id}/${p.channelid}/${p.msgid}`,
    },
-   color: CT.Colors.Success,
+   color: client.util.CT.Colors.Success,
    fields: [
     {
      name: lan.punishmentIssue,

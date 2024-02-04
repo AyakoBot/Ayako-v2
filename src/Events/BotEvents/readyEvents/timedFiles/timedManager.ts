@@ -1,9 +1,7 @@
-import expiry from './expiry.js';
-import separatorControl from './separators.js';
-import stats from './stats.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 
 export default async () => {
- expiry();
- stats();
- separatorControl();
+ client.util.importCache.Events.BotEvents.readyEvents.timedFiles.expiry.file.default();
+ client.util.importCache.Events.BotEvents.readyEvents.timedFiles.stats.file.default();
+ client.util.importCache.Events.BotEvents.readyEvents.timedFiles.separators.file.default();
 };

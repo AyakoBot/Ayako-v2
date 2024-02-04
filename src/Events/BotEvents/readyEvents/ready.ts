@@ -1,6 +1,5 @@
 import { getInfo } from 'discord-hybrid-sharding';
 import client from '../../../BaseClient/Bot/Client.js';
-import log from '../../../BaseClient/UtilModules/logError.js';
 
 import startupTasks from './startupTasks.js';
 
@@ -13,7 +12,7 @@ export default async () => {
  ready = true;
  wasReadyBefore = true;
 
- log(
+ client.util.logError(
   `| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${client.user?.id}
 | => Cluster: ${Number(client.cluster?.id) + 1}
 | => Shards: ${getInfo()

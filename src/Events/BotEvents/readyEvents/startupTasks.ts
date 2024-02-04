@@ -1,30 +1,19 @@
 import Jobs from 'node-schedule';
 import client from '../../../BaseClient/Bot/Client.js';
 
-import cache from './startupTasks/cache.js';
-import customAPIsHandler from './startupTasks/customAPIsHandler.js';
-import customBotCommands from './startupTasks/customBotCommands.js';
-import separators from './startupTasks/separators.js';
-
-import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
-import nitroHandler from './timedFiles/nitroHandler.js';
-import timedManager from './timedFiles/timedManager.js';
-import verification from './timedFiles/verification.js';
-import websiteFetcher from './timedFiles/websiteFetcher.js';
-
 export default async () => {
- await customAPIsHandler();
- customBotCommands();
+ await client.util.importCache.Events.BotEvents.readyEvents.startupTasks.customAPIsHandler.file.default();
+ client.util.importCache.Events.BotEvents.readyEvents.startupTasks.customBotCommands.file.default();
+ client.util.importCache.Events.BotEvents.readyEvents.startupTasks.separators.file.default();
 
- antivirusBlocklistCacher();
- nitroHandler();
- separators();
+ client.util.importCache.Events.BotEvents.readyEvents.timedFiles.antivirusBlocklistCacher.file.default();
+ client.util.importCache.Events.BotEvents.readyEvents.timedFiles.nitroHandler.file.default();
 
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
-  cache();
+  client.util.importCache.Events.BotEvents.readyEvents.startupTasks.cache.file.default();
 
   Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
-   if (client.user?.id === client.util.mainID) {
+   if (client.user?.id === process.env.mainID) {
     client.util.cache.fishFish.start();
     client.util.cache.sinkingYachts.start();
     client.util.cache.urlTLDs.start();
@@ -33,7 +22,7 @@ export default async () => {
  });
 
  Jobs.scheduleJob('0 0 0 * * *', async () => {
-  nitroHandler();
+  client.util.importCache.Events.BotEvents.readyEvents.timedFiles.nitroHandler.file.default();
   animekosInviteStats();
   rpToggleUses();
   client.util.cache.fishFish.start();
@@ -41,13 +30,21 @@ export default async () => {
   client.util.cache.urlTLDs.start();
  });
 
- Jobs.scheduleJob('0 * * * * *', async () => verification());
- Jobs.scheduleJob('0 */30 * * *', async () => antivirusBlocklistCacher());
- Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
+ Jobs.scheduleJob('0 * * * * *', async () =>
+  client.util.importCache.Events.BotEvents.readyEvents.timedFiles.verification.file.default(),
+ );
+ Jobs.scheduleJob('0 */30 * * *', async () =>
+  client.util.importCache.Events.BotEvents.readyEvents.timedFiles.antivirusBlocklistCacher.file.default(),
+ );
+ Jobs.scheduleJob('*/2 * * * * *', async () =>
+  client.util.importCache.Events.BotEvents.readyEvents.timedFiles.timedManager.file.default(),
+ );
 
- if (client.user?.id !== client.util.mainID) return;
+ if (client.user?.id !== process.env.mainID) return;
  if (client.cluster?.mode !== 'process') return;
- Jobs.scheduleJob('*/1 */1 */1 * *', async () => websiteFetcher());
+ Jobs.scheduleJob('*/1 */1 */1 * *', async () =>
+  client.util.importCache.Events.BotEvents.readyEvents.timedFiles.websiteFetcher.file.default(),
+ );
 };
 
 const rpToggleUses = () =>

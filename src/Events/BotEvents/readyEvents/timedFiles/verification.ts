@@ -1,5 +1,4 @@
 import client from '../../../../BaseClient/Bot/Client.js';
-import { kick } from '../../guildEvents/guildMemberAdd/verification.js';
 
 export default async () => {
  const verificationRows = await client.util.DataBase.verification.findMany({
@@ -20,6 +19,12 @@ export default async () => {
    .filter(
     (m) => Date.now() - Number(r.kickafter) * 1000 > Number(m.joinedTimestamp) && !m.user.bot,
    )
-   .forEach((m) => kick(m, r, language));
+   .forEach((m) =>
+    client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.verification.file.kick(
+     m,
+     r,
+     language,
+    ),
+   );
  });
 };
