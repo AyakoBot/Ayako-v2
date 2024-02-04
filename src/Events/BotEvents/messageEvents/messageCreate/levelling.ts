@@ -3,7 +3,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';
 import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 type LevelData = { oldXP: number; newXP: number; newLevel: number; oldLevel: number };
 

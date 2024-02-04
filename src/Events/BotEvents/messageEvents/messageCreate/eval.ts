@@ -3,7 +3,6 @@ import ms from 'ms';
 import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
-import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 // eslint-disable-next-line no-unused-expressions
 Discord.APIVersion;
@@ -11,8 +10,6 @@ Discord.APIVersion;
 fetch.name;
 // eslint-disable-next-line no-unused-expressions
 os.arch;
-// eslint-disable-next-line no-unused-expressions
-antiraid;
 // eslint-disable-next-line no-unused-expressions
 ms;
 

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import { Stream } from 'stream';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.id === msg.client.user.id) return;

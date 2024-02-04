@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<boolean>) => {
  const embed: Discord.APIEmbed = {
   description: msg.content,
-  color: CT.Colors.Base,
+  color: msg.client.util.CT.Colors.Base,
   author: {
    name: msg.author.tag,
    icon_url: msg.author.displayAvatarURL(),

@@ -3,10 +3,9 @@ import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import pack from '../../../../../package.json' assert { type: 'json' };
 import client, { API } from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
-import * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
+import type * as CT from '../../../../Typings/Typings.js';
+import type * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -142,7 +141,7 @@ const log = (
  const payload: CT.UsualMessagePayload = {
   embeds: [
    {
-    color: url.triggers ? CT.Colors.Danger : CT.Colors.Success,
+    color: url.triggers ? msg.client.util.CT.Colors.Danger : msg.client.util.CT.Colors.Success,
     author: {
      name: language.autotypes.antivirus,
      icon_url: client.util.constants.events.logs.invite.create,
@@ -391,7 +390,7 @@ const inGoogleSafeBrowsing = async (u: string) => {
    body: JSON.stringify({
     client: {
      clientId: 'Ayako Development',
-     clientVersion: pack.version,
+     clientVersion: client.util.importCache.pack.file.version,
     },
     threatInfo: {
      threatTypes: [
@@ -506,36 +505,36 @@ export const performPunishment = (
 
  switch (settings.action) {
   case 'ban':
-   return client.util.mod(msg, CT.ModTypes.BanAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.BanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'channelban':
-   return client.util.mod(msg, CT.ModTypes.ChannelBanAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.ChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
    });
   case 'kick':
-   return client.util.mod(msg, CT.ModTypes.KickAdd, baseOptions);
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.KickAdd, baseOptions);
   case 'softban':
-   return client.util.mod(msg, CT.ModTypes.SoftBanAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.SoftBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
   case 'strike':
-   return client.util.mod(msg, CT.ModTypes.StrikeAdd, baseOptions);
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.StrikeAdd, baseOptions);
   case 'warn':
-   return client.util.mod(msg, CT.ModTypes.WarnAdd, baseOptions);
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.WarnAdd, baseOptions);
   case 'tempban':
-   return client.util.mod(msg, CT.ModTypes.TempBanAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.TempBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
     duration: Number(settings.duration),
    });
   case 'tempchannelban':
-   return client.util.mod(msg, CT.ModTypes.TempChannelBanAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.TempChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -543,7 +542,7 @@ export const performPunishment = (
     duration: Number(settings.duration),
    });
   case 'tempmute':
-   return client.util.mod(msg, CT.ModTypes.TempMuteAdd, {
+   return client.util.mod.default(msg, language.client.util.CT.ModTypes.TempMuteAdd, {
     ...baseOptions,
     duration: Number(settings.duration),
    });

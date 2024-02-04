@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;
@@ -35,7 +35,7 @@ export default async (msg: Discord.Message<true>) => {
 
  switch (settings.action) {
   case 'ban':
-   msg.client.util.mod(msg, CT.ModTypes.BanAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.BanAdd, {
     ...modOptions,
     deleteMessageSeconds:
      Number(settings.deletemessageseconds) > 604800
@@ -44,7 +44,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'channelban':
-   msg.client.util.mod(msg, CT.ModTypes.ChannelBanAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.ChannelBanAdd, {
     ...modOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
@@ -52,16 +52,16 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'kick':
-   msg.client.util.mod(msg, CT.ModTypes.KickAdd, modOptions);
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.KickAdd, modOptions);
    break;
   case 'tempmute':
-   msg.client.util.mod(msg, CT.ModTypes.TempMuteAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.TempMuteAdd, {
     ...modOptions,
     duration: Number(settings.duration),
    });
    break;
   case 'tempchannelban':
-   msg.client.util.mod(msg, CT.ModTypes.TempChannelBanAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.TempChannelBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
     channel: msg.channel.isThread()
@@ -70,13 +70,13 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'warn':
-   msg.client.util.mod(msg, CT.ModTypes.WarnAdd, modOptions);
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.WarnAdd, modOptions);
    break;
   case 'strike':
-   msg.client.util.mod(msg, CT.ModTypes.StrikeAdd, modOptions);
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.StrikeAdd, modOptions);
    break;
   case 'tempban':
-   msg.client.util.mod(msg, CT.ModTypes.TempBanAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.TempBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
     deleteMessageSeconds:
@@ -86,7 +86,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   case 'softban':
-   msg.client.util.mod(msg, CT.ModTypes.SoftBanAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.SoftBanAdd, {
     ...modOptions,
     deleteMessageSeconds:
      Number(settings.deletemessageseconds) > 604800
@@ -95,7 +95,7 @@ export default async (msg: Discord.Message<true>) => {
    });
    break;
   default: {
-   msg.client.util.mod(msg, CT.ModTypes.SoftWarnAdd, {
+   msg.client.util.mod.default(msg, msg.client.util.CT.ModTypes.SoftWarnAdd, {
     ...modOptions,
     reason: language.censor.warnInvite,
    });

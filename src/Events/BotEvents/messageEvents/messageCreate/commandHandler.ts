@@ -3,7 +3,7 @@ import { glob } from 'glob';
 import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 const { log } = console;
 
@@ -74,7 +74,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
    description: language.slashCommands.useSlashCommands(
     matchingCommands.length > 1 ? `\n${matchingCommands.join('\n')}` : matchingCommands.join('\n'),
    ),
-   color: CT.Colors.Ephemeral,
+   color: msg.client.util.CT.Colors.Ephemeral,
   };
 
   const reply = await msg.client.util.replyMsg(msg, {

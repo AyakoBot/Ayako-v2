@@ -1,6 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
-import reactionRoles from './reactionRoles.js';
 
 export default async (reaction: Discord.MessageReaction, user: Discord.User) => {
  if (!reaction.message.guild) return;
@@ -12,6 +10,14 @@ export default async (reaction: Discord.MessageReaction, user: Discord.User) => 
   .then((m) => ('message' in m ? undefined : m));
  if (!msg) return;
 
- log(reaction, user, msg);
- reactionRoles(reaction, user, msg);
+ user.client.util.importCache.Events.BotEvents.messageEvents.messageReactionRemove.log.file.default(
+  reaction,
+  user,
+  msg,
+ );
+ user.client.util.importCache.Events.BotEvents.messageEvents.messageReactionRemove.reactionRoles.file.default(
+  reaction,
+  user,
+  msg,
+ );
 };

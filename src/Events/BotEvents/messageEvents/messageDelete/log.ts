@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
@@ -24,7 +23,7 @@ export default async (msg: Discord.Message) => {
   },
   description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
   fields: [],
-  color: CT.Colors.Danger,
+  color: msg.client.util.CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 

@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  msg: Discord.Message,
@@ -22,7 +21,7 @@ export default async (
    url: msg.url,
   },
   description: lan.descRemovedAll(msg),
-  color: CT.Colors.Danger,
+  color: msg.client.util.CT.Colors.Danger,
   fields: [],
   timestamp: new Date().toISOString(),
  };

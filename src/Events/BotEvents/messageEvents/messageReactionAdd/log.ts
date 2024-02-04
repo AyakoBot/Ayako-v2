@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  reaction: Discord.MessageReaction,
@@ -24,7 +23,7 @@ export default async (
   },
   description: lan.descAdded(reaction.emoji, user, msg),
   fields: [],
-  color: CT.Colors.Success,
+  color: user.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 
@@ -44,7 +43,7 @@ export default async (
       } ${language.languageFunction.getEmote(r.emoji)}`,
     )
     .join(''),
-   color: CT.Colors.Ephemeral,
+   color: msg.client.util.CT.Colors.Ephemeral,
   });
  }
 

@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message) => {
  rolePing(msg);
@@ -42,7 +42,11 @@ const banHandler = async (msg: Discord.Message) => {
    skipChecks: false,
   };
 
-  msg.client.util.mod(undefined, isUnban ? CT.ModTypes.BanRemove : CT.ModTypes.BanAdd, modOptions);
+  msg.client.util.mod.default(
+   undefined,
+   isUnban ? msg.client.util.CT.ModTypes.BanRemove : msg.client.util.CT.ModTypes.BanAdd,
+   modOptions,
+  );
  });
 };
 

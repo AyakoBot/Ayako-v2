@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (
  msg: Discord.Message,
@@ -7,5 +6,8 @@ export default async (
 ) => {
  if (!msg.inGuild()) return;
 
- log(msg, reactions);
+ msg.client.util.importCache.Events.BotEvents.messageEvents.messageReactionRemoveAll.log.file.default(
+  msg,
+  reactions,
+ );
 };

@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import log from './log.js';
 
 export default async (reaction: Discord.MessageReaction) => {
  if (!('guild' in reaction.message.channel)) return;
@@ -15,5 +14,8 @@ export default async (reaction: Discord.MessageReaction) => {
 
  if ('message' in message) return;
 
- log(reaction, message);
+ reaction.client.util.importCache.Events.BotEvents.messageEvents.messageReactionRemoveEmoji.log.file.default(
+  reaction,
+  message,
+ );
 };

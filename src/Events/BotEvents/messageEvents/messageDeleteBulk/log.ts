@@ -1,6 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import messageDelete from '../messageDelete/messageDelete.js';
 
 export default async (
  msgs: Discord.Collection<Discord.Snowflake, Discord.Message>,
@@ -24,11 +22,15 @@ export default async (
    ? lan.descDeleteBulkAudit(auditUser, msgs.size, channel)
    : lan.descDeleteBulk(msgs.size, channel),
   fields: [],
-  color: CT.Colors.Danger,
+  color: channel.client.util.CT.Colors.Danger,
   timestamp: new Date().toISOString(),
  };
 
  await channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] });
 
- msgs.forEach((m) => messageDelete(m));
+ msgs.forEach((m) =>
+  channel.client.util.importCache.Events.BotEvents.messageEvents.messageDelete.messageDelete.file.default(
+   m,
+  ),
+ );
 };

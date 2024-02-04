@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { performPunishment } from './antivirus.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -68,5 +67,10 @@ export default async (msg: Discord.Message<true>) => {
  }
 
  const language = await msg.client.util.getLanguage(msg.guildId);
- performPunishment(settings.deletespam ? undefined : msg, settings, language, msg);
+ msg.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.antivirus.file.performPunishment(
+  settings.deletespam ? undefined : msg,
+  settings,
+  language,
+  msg,
+ );
 };

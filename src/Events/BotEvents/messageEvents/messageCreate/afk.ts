@@ -1,16 +1,17 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
-import * as CT from '../../../../Typings/Typings.js';
-import { getContent } from '../../autoModerationActionEvents/censor.js';
-import { getPrefix } from './commandHandler.js';
 import client from '../../../../BaseClient/Bot/Client.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
  if (msg.author.bot) return;
 
- const prefix = await getPrefix(msg);
+ const prefix =
+  await msg.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.commandHandler.file.getPrefix(
+   msg,
+  );
  const commandName = prefix
   ? msg.content.slice(prefix.length).split(/\s+/)[0].toLowerCase()
   : undefined;
@@ -32,7 +33,7 @@ const self = async (
  if (Number(afk.since) > Date.now() - 60000) return;
 
  const embed: Discord.APIEmbed = {
-  color: CT.Colors.Loading,
+  color: msg.client.util.CT.Colors.Loading,
   description: language.slashCommands.afk.removed(
    client.util.constants.standard.getTime(Number(afk.since)),
   ),
@@ -91,7 +92,15 @@ const mention = async (
 
  const contents = await Promise.all(
   afk.map((a) =>
-   a.text ? getContent(msg.guild, a.text, undefined, undefined, msg.channel) : null,
+   a.text
+    ? msg.client.util.importCache.Events.BotEvents.autoModerationActionEvents.censor.file.getContent(
+       msg.guild,
+       a.text,
+       undefined,
+       undefined,
+       msg.channel,
+      )
+    : null,
   ),
  );
  contents.forEach((c, i) => {
@@ -111,7 +120,7 @@ const mention = async (
    });
 
    return {
-    color: CT.Colors.Loading,
+    color: msg.client.util.CT.Colors.Loading,
     description: language.slashCommands.afk.isAFK(
      a.userid,
      client.util.constants.standard.getTime(Number(a.since)),
