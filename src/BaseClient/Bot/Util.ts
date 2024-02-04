@@ -102,7 +102,7 @@ interface Util {
  memberBoostCalc: typeof utilModules.memberBoostCalc.file.default;
  mergeLogging: typeof utilModules.mergeLogging.file.default;
  mod: {
-  file: typeof utilModules.mod.file.default;
+  default: typeof utilModules.mod.file.default;
 
   mod: {
    banAdd: typeof utilModules.mod.mod.banAdd.file.default;
@@ -172,6 +172,7 @@ interface Util {
    setting: typeof utilModules.settingsHelpers.buttonParsers.setting.file.default;
    specific: typeof utilModules.settingsHelpers.buttonParsers.specific.file.default;
    boolean: typeof utilModules.settingsHelpers.buttonParsers.boolean.file.default;
+   create: typeof utilModules.settingsHelpers.buttonParsers.create.file.default;
   };
   changeHelpers: {
    back: typeof utilModules.settingsHelpers.changeHelpers.back.file.default;
@@ -311,7 +312,7 @@ const util: Util = {
  memberBoostCalc: utilModules.memberBoostCalc.file.default,
  mergeLogging: utilModules.mergeLogging.file.default,
  mod: {
-  file: utilModules.mod.file.default,
+  default: utilModules.mod.file.default,
 
   mod: {
    banAdd: utilModules.mod.mod.banAdd.file.default,
@@ -381,6 +382,7 @@ const util: Util = {
    setting: utilModules.settingsHelpers.buttonParsers.setting.file.default,
    specific: utilModules.settingsHelpers.buttonParsers.specific.file.default,
    boolean: utilModules.settingsHelpers.buttonParsers.boolean.file.default,
+   create: utilModules.settingsHelpers.buttonParsers.create.file.default,
   },
   changeHelpers: {
    back: utilModules.settingsHelpers.changeHelpers.back.file.default,
