@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as S from '../../../../Typings/Settings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,10 +9,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as CT.SettingNames;
+ const settingName = args.shift() as S.SettingNames;
  if (!settingName) return;
 
- const linkedSettingName = args.shift() as CT.SettingNames;
+ const linkedSettingName = args.shift() as S.SettingNames;
  if (!linkedSettingName) return;
 
  const getUniquetimestamp = () => {
@@ -25,6 +26,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -47,7 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!settingsFile) return;
 
  const linkedSetting = (await import(settingsFile)) as CT.AutoCompleteFile;
- const responses = await linkedSetting.default({ guild: cmd.guild });
+ const responses = await linkedSetting.default({ guild: cmd.guild, client: cmd.client });
  const options = responses?.map((r) => ({
   label: r.name,
   value: r.value,
@@ -61,7 +63,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     fieldName,
     currentSetting?.[fieldName as keyof typeof currentSetting],
-    CT.EditorTypes.SettingLink,
+    cmd.client.util.CT.EditorTypes.SettingLink,
     cmd.guild,
    ),
   ],
@@ -72,7 +74,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      cmd.client.util.settingsHelpers.changeHelpers.changeSelect(
       fieldName,
       settingName,
-      CT.EditorTypes.SettingLink,
+      cmd.client.util.CT.EditorTypes.SettingLink,
       {
        options: options?.length ? options : [{ label: '-', value: '-' }],
        disabled: !options?.length,
@@ -84,11 +86,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      CT.EditorTypes.SettingLink,
+      cmd.client.util.CT.EditorTypes.SettingLink,
       language,
       Number(uniquetimestamp),
      ),

@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
-import { isValid } from './tick.js';
 
 export default async (cmd: Discord.ButtonInteraction, _args: [], accept = true) => {
  if (!cmd.inCachedGuild()) return;
 
- const valid = await isValid(cmd);
+ const valid =
+  await cmd.client.util.importCache.Commands.ButtonCommands.suggestion.tick.file.isValid(cmd);
  if (!valid) return;
  const { language, lan, settings } = valid;
 

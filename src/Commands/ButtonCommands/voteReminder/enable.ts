@@ -1,4 +1,8 @@
 import * as Discord from 'discord.js';
-import disable from './disable.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => disable(cmd, args, true);
+export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
+ cmd.client.util.importCache.Commands.ButtonCommands.voteReminder.disable.file.default(
+  cmd,
+  args,
+  true,
+ );

@@ -1,4 +1,4 @@
 import * as Discord from 'discord.js';
-import tick from './tick.js';
 
-export default (cmd: Discord.ButtonInteraction) => tick(cmd, [], false);
+export default (cmd: Discord.ButtonInteraction) =>
+ cmd.client.util.importCache.Commands.ButtonCommands.suggestion.tick.file.default(cmd, [], false);

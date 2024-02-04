@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -21,6 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -35,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     fieldName,
     currentSetting?.[fieldName as keyof typeof currentSetting],
-    CT.EditorTypes.Embed,
+    cmd.client.util.CT.EditorTypes.Embed,
     cmd.guild,
    ),
   ],
@@ -46,7 +47,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      cmd.client.util.settingsHelpers.changeHelpers.changeSelect(
       fieldName,
       settingName,
-      CT.EditorTypes.Embed,
+      cmd.client.util.CT.EditorTypes.Embed,
       {
        options: embeds.length
         ? embeds.map((e) => ({
@@ -66,11 +67,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      CT.EditorTypes.Embed,
+      cmd.client.util.CT.EditorTypes.Embed,
       language,
       Number(uniquetimestamp),
      ),

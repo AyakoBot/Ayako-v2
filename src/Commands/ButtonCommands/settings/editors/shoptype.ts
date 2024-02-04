@@ -1,27 +1,28 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import * as S from '../../../../Typings/Settings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 type Types =
- | CT.EditorTypes.Punishment
- | CT.EditorTypes.ShopType
- | CT.EditorTypes.Language
- | CT.EditorTypes.AutoPunishment
- | CT.EditorTypes.AntiRaidPunishment
- | CT.EditorTypes.Questions
- | CT.EditorTypes.LvlUpMode
- | CT.EditorTypes.WeekendsType;
+ | S.EditorTypes.Punishment
+ | S.EditorTypes.ShopType
+ | S.EditorTypes.Language
+ | S.EditorTypes.AutoPunishment
+ | S.EditorTypes.AntiRaidPunishment
+ | S.EditorTypes.Questions
+ | S.EditorTypes.LvlUpMode
+ | S.EditorTypes.WeekendsType;
 
 export default async (
  cmd: Discord.ButtonInteraction,
  args: string[],
- type: Types = CT.EditorTypes.ShopType,
+ type: Types = S.EditorTypes.ShopType,
 ) => {
  if (!cmd.inCachedGuild()) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;
 
- const settingName = args.shift() as CT.SettingNames;
+ const settingName = args.shift() as S.SettingNames;
  if (!settingName) return;
 
  const getUniquetimestamp = () => {
@@ -35,6 +36,7 @@ export default async (
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -71,7 +73,11 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
@@ -87,7 +93,7 @@ export default async (
 
 export const getOptions = (type: Types, language: CT.Language) => {
  switch (type) {
-  case CT.EditorTypes.AntiRaidPunishment: {
+  case S.EditorTypes.AntiRaidPunishment: {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],
     'strike' | 'warn' | 'tempmute' | 'tempchannelban' | 'channelban' | 'tempban' | 'softban'
@@ -110,7 +116,7 @@ export const getOptions = (type: Types, language: CT.Language) => {
    delete obj.softban;
    return obj;
   }
-  case CT.EditorTypes.AutoPunishment: {
+  case S.EditorTypes.AutoPunishment: {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],
     'strike'
@@ -121,17 +127,17 @@ export const getOptions = (type: Types, language: CT.Language) => {
    delete obj.strike;
    return obj;
   }
-  case CT.EditorTypes.Punishment:
+  case S.EditorTypes.Punishment:
    return language.punishments;
-  case CT.EditorTypes.ShopType:
+  case S.EditorTypes.ShopType:
    return language.shoptypes;
-  case CT.EditorTypes.Language:
+  case S.EditorTypes.Language:
    return language.languages;
-  case CT.EditorTypes.Questions:
+  case S.EditorTypes.Questions:
    return language.answertypes;
-  case CT.EditorTypes.LvlUpMode:
+  case S.EditorTypes.LvlUpMode:
    return language.lvlupmodes;
-  case CT.EditorTypes.WeekendsType:
+  case S.EditorTypes.WeekendsType:
    return language.weekendstype;
   default:
    return [];

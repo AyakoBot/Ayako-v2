@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../../Typings/Typings.js';
-import * as SettingsFile from '../../../../SlashCommands/settings/moderation/denylist-rules.js';
-import { getAPIRule } from '../../autoModRule/boolean.js';
+import * as CT from '../../../../../Typings/Settings.js';
+import type * as SettingsFile from '../../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 const settingName = CT.SettingNames.DenylistRules;
 
@@ -40,9 +39,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   rule.id,
   {
    actions: [
-    ...getAPIRule(rule).actions.filter(
-     (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
-    ),
+    ...cmd.client.util.importCache.Commands.ButtonCommands.settings.autoModRule.boolean.file
+     .getAPIRule(rule)
+     .actions.filter((a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage),
     ...(channelID
      ? [
         {

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -21,6 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const automodruleText = cmd.message.embeds[0].description?.split(/,\s/g);

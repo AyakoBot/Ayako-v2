@@ -1,6 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

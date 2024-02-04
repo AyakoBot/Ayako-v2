@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -21,6 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -36,7 +37,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       name: language.t.error,
       icon_url: cmd.client.util.emotes.warning.link,
      },
-     color: CT.Colors.Danger,
+     color: cmd.client.util.CT.Colors.Danger,
      description: language.errors.noThreadCanBeCreated,
     },
    ],
@@ -44,7 +45,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     {
      type: Discord.ComponentType.ActionRow,
      components: [
-      cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+      cmd.client.util.settingsHelpers.changeHelpers.back(
+       settingName,
+       Number(uniquetimestamp),
+       cmd.client,
+      ),
      ],
     },
    ],
@@ -75,7 +80,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      settingName,
      fieldName,
      currentSetting?.[fieldName as keyof typeof currentSetting],
-     CT.EditorTypes.Emote,
+     cmd.client.util.CT.EditorTypes.Emote,
      cmd.guild,
     ),
    ],
@@ -116,7 +121,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
     ],
    },
   ],

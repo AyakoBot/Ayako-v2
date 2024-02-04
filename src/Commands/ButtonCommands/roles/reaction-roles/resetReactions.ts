@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
-import resetReactions from '../button-roles/resetReactions.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
- resetReactions(cmd, args, 'reaction-roles');
+ cmd.client.util.importCache.Commands.ButtonCommands.roles[
+  'button-roles'
+ ].resetReactions.file.default(cmd, args, 'reaction-roles');

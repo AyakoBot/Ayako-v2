@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -23,7 +22,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      .sort((a, b) => b.rawPosition - a.rawPosition)
      .map((r) => `${r}`)
      .join('\n')}`,
-    color: CT.Colors.Ephemeral,
+    color: cmd.client.util.CT.Colors.Ephemeral,
    },
   ],
   ephemeral: true,

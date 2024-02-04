@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export enum ChannelTypes {
  Category = 'category',
@@ -31,6 +31,7 @@ export default async (
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const currentSetting = currentSettings?.[fieldName as keyof typeof currentSettings] as
@@ -45,7 +46,7 @@ export default async (
     settingName,
     fieldName,
     currentSettings?.[fieldName as keyof typeof currentSettings],
-    CT.EditorTypes.Channel,
+    cmd.client.util.CT.EditorTypes.Channel,
     cmd.guild,
    ),
   ],
@@ -55,7 +56,7 @@ export default async (
     components: [
      cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      CT.EditorTypes.Channel,
+      cmd.client.util.CT.EditorTypes.Channel,
       fieldName,
       settingName,
       uniquetimestamp,
@@ -71,11 +72,15 @@ export default async (
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      CT.EditorTypes.Channel,
+      cmd.client.util.CT.EditorTypes.Channel,
       language,
       Number(uniquetimestamp),
      ),

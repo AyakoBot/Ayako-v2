@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import shoptype from './shoptype.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
- shoptype(cmd, args, CT.EditorTypes.WeekendsType);
+ cmd.client.util.importCache.Commands.ButtonCommands.settings.done.shoptype.file.default(
+  cmd,
+  args,
+  cmd.client.util.CT.EditorTypes.WeekendsType,
+ );

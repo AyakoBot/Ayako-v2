@@ -1,8 +1,4 @@
 import * as Discord from 'discord.js';
-import {
- getLevelComponents,
- getXPComponents,
-} from '../../../SlashCommands/settings/leveling/set-level-user.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -33,13 +29,17 @@ export default async (
 
  const components = cmd.client.util.getChunks(
   [
-   ...getXPComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getXPComponents(
     userOrRoleId,
     type === 'x' ? newAmountOfZeros : amountOfZerosOnSecondary,
     language,
     cmdType,
    ),
-   ...getLevelComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getLevelComponents(
     userOrRoleId,
     type === 'l' ? newAmountOfZeros : amountOfZerosOnSecondary,
     language,

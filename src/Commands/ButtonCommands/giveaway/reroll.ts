@@ -1,6 +1,4 @@
 import * as Discord from 'discord.js';
-import { checkCommandPermissions } from '../../../Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
-import { end } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -18,7 +16,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  if (
-  !checkCommandPermissions(
+  !cmd.client.util.importCache.Events.BotEvents.messageEvents.messageCreate.commandHandler.file.checkCommandPermissions(
    {
     guildId: cmd.guildId,
     guild: cmd.guild,
@@ -35,7 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  await cmd.client.util.request.channels.deleteMessage(cmd.message);
 
- await end(giveaway);
+ await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.end(giveaway);
 
  cmd.client.util.replyCmd(cmd, { content: lan.rerolling });
 };

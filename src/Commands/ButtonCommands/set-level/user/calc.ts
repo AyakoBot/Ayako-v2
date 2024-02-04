@@ -1,9 +1,4 @@
 import * as Discord from 'discord.js';
-import {
- getEmbed,
- getLevelComponents,
- getXPComponents,
-} from '../../../SlashCommands/settings/leveling/set-level-user.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -45,7 +40,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const embed = getEmbed(
+ const embed = cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+  'set-level-user'
+ ].file.getEmbed(
   user,
   language,
   { xp: Number(level?.xp), level: Number(level?.level) },
@@ -57,12 +54,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const components = cmd.client.util.getChunks(
   [
-   ...getXPComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getXPComponents(
     userId,
     type === 'x' ? amountOfZerosOnPrimary : amountOfZerosOnSecondary,
     language,
    ),
-   ...getLevelComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getLevelComponents(
     userId,
     type === 'l' ? amountOfZerosOnPrimary : amountOfZerosOnSecondary,
     language,

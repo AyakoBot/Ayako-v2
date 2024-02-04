@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -45,7 +45,7 @@ const getEmbed = (
   name: language.autotypes.leveling,
  },
  description: language.slashCommands.setLevel.descFinRole(role),
- color: CT.Colors.Ephemeral,
+ color: language.client.util.CT.Colors.Ephemeral,
  fields: [
   {
    name: language.slashCommands.setLevel.newXP,

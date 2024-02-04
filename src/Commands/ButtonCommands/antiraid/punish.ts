@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import * as CT from '../../../Typings/Typings.js';
-
-import { canBanMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/banMember.js';
-import { canRemoveMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -54,14 +51,14 @@ export const runPunishment = async (
  const embeds = [
   {
    author: loadingEmbed.author,
-   color: CT.Colors.Success,
+   color: guild.client.util.CT.Colors.Success,
    description: language.events.guildMemberAdd.antiraid[
     type === 'kick' ? 'kickingSuccess' : 'banningSuccess'
    ](success.length),
   },
   {
    author: loadingEmbed.author,
-   color: CT.Colors.Danger,
+   color: guild.client.util.CT.Colors.Danger,
    description: language.events.guildMemberAdd.antiraid[
     type === 'kick' ? 'kickingError' : 'banningError'
    ](failed.length),
@@ -105,7 +102,14 @@ export const runPunishment = async (
 
    switch (type) {
     case 'ban': {
-     if (member ? !canBanMember(self, member) : false) {
+     if (
+      member
+       ? !guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.banMember.file.canBanMember(
+          self,
+          member,
+         )
+       : false
+     ) {
       failed.push(id);
       checkDone();
       return;
@@ -119,7 +123,12 @@ export const runPunishment = async (
       return;
      }
 
-     if (!canRemoveMember(self, member)) {
+     if (
+      !guild.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.removeMember.file.canRemoveMember(
+       self,
+       member,
+      )
+     ) {
       failed.push(id);
       checkDone();
       return;

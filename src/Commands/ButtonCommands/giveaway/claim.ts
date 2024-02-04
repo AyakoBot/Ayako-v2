@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { getButton, getClaimButton, getMessage } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
@@ -54,15 +53,24 @@ export default async (cmd: Discord.ButtonInteraction) => {
  cmd.client.util.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
  giveaway.claimingdone = true;
 
- const giveawayMessage = await getMessage(giveaway);
+ const giveawayMessage =
+  await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getMessage(giveaway);
  if (giveawayMessage) {
   await cmd.client.util.request.channels.editMsg(giveawayMessage, {
    components: [
     {
      type: Discord.ComponentType.ActionRow,
      components: [
-      getButton(language, giveaway),
-      giveaway.actualprize && giveaway.collecttime ? getClaimButton(language, giveaway) : undefined,
+      cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getButton(
+       language,
+       giveaway,
+      ),
+      giveaway.actualprize && giveaway.collecttime
+       ? cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getClaimButton(
+          language,
+          giveaway,
+         )
+       : undefined,
      ].filter((r): r is Discord.APIButtonComponent => !!r),
     },
    ],
@@ -70,7 +78,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  }
 
  if (!collection) return;
- const msg = await getMessage({
+ const msg = await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getMessage({
   channelid: giveaway.channelid,
   msgid: collection.replymsgid,
   guildid: giveaway.guildid,

@@ -1,12 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import {
- Type,
- getBaseSettings,
- getSpecificSettings,
-} from '../../../SlashCommands/roles/builders/button-roles.js';
-import refresh from './refresh.js';
-import { putComponents } from './save.js';
+import type { Type } from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -26,7 +20,9 @@ export default async (
   return;
  }
 
- const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
+ const baseSettings = await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+  'button-roles'
+ ].file.getBaseSettings(type, cmd.guildId, message.id);
 
  if (baseSettings) {
   if (type === 'button-roles') {
@@ -39,11 +35,15 @@ export default async (
    });
   }
 
-  const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
+  const settings = await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+   'button-roles'
+  ].file.getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp);
 
   const action =
    type === 'button-roles'
-    ? await putComponents(settings as Prisma.buttonroles[], message)
+    ? await cmd.client.util.importCache.Commands.ButtonCommands.roles[
+       'button-roles'
+      ].save.file.putComponents(settings as Prisma.buttonroles[], message)
     : await removeReactions(emoji, message);
 
   if (action && 'message' in action && typeof action.message === 'string') {
@@ -52,7 +52,11 @@ export default async (
   }
  }
 
- refresh(cmd, [], type);
+ cmd.client.util.importCache.Commands.ButtonCommands.roles['button-roles'].refresh.file.default(
+  cmd,
+  [],
+  type,
+ );
 };
 
 const removeReactions = (emoji: string, message: Discord.Message<true>) => {

@@ -1,4 +1,8 @@
 import * as Discord from 'discord.js';
-import zero from '../user/zero.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => zero(cmd, args, 'role');
+export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
+ cmd.client.util.importCache.Commands.ButtonCommands['set-level'].user.zero.file.default(
+  cmd,
+  args,
+  'role',
+ );

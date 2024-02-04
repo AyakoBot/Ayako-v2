@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import { getOptions } from '../editors/shoptype.js';
+import * as CT from '../../../../Typings/Settings.js';
 
 type Types =
  | CT.EditorTypes.Punishment
@@ -36,12 +35,16 @@ export default async (
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const id = Object.entries(getOptions(type, language)).find(
-  (e) => e[1] === cmd.message.embeds[0].description,
- )?.[0];
+ const id = Object.entries(
+  cmd.client.util.importCache.Commands.ButtonCommands.settings.editors.shoptype.file.getOptions(
+   type,
+   language,
+  ),
+ ).find((e) => e[1] === cmd.message.embeds[0].description)?.[0];
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,

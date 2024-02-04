@@ -1,10 +1,4 @@
 import * as Discord from 'discord.js';
-import { getEmbed } from '../../../SlashCommands/settings/leveling/set-level-role.js';
-import {
- getLevelComponents,
- getXPComponents,
-} from '../../../SlashCommands/settings/leveling/set-level-user.js';
-import { getLevel, getXP } from '../user/calc.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -34,8 +28,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const newXpOrLevel =
   xpOrLevel + (addOrRemove === '+' ? amountToAddOrRemove : -amountToAddOrRemove);
 
- const newLevel = type === 'l' ? newXpOrLevel : getLevel(newXpOrLevel);
- const newXP = type === 'x' ? newXpOrLevel : getXP(newXpOrLevel);
+ const newLevel =
+  type === 'l'
+   ? newXpOrLevel
+   : cmd.client.util.importCache.Commands.ButtonCommands['set-level'].user.calc.file.getLevel(
+      newXpOrLevel,
+     );
+ const newXP =
+  type === 'x'
+   ? newXpOrLevel
+   : cmd.client.util.importCache.Commands.ButtonCommands['set-level'].user.calc.file.getXP(
+      newXpOrLevel,
+     );
 
  if (newLevel < 0 || newXP < 0) {
   cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.min, language);
@@ -47,17 +51,23 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   .map((r) => r.replace(/\D+/g, ''))
   .filter((r) => !!r.length);
 
- const embed = getEmbed(language, role, newXP, newLevel, roles);
+ const embed = cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+  'set-level-role'
+ ].file.getEmbed(language, role, newXP, newLevel, roles);
 
  const components = cmd.client.util.getChunks(
   [
-   ...getXPComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getXPComponents(
     roleId,
     type === 'x' ? amountOfZerosOnPrimary : amountOfZerosOnSecondary,
     language,
     'role',
    ),
-   ...getLevelComponents(
+   ...cmd.client.util.importCache.Commands.SlashCommands.settings.leveling[
+    'set-level-user'
+   ].file.getLevelComponents(
     roleId,
     type === 'l' ? amountOfZerosOnPrimary : amountOfZerosOnSecondary,
     language,

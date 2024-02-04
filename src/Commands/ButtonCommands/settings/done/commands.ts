@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
-import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -22,12 +21,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const commandID = (
   cmd.message.embeds[0].description?.includes('/')
-   ? client.application?.commands.cache.get(
+   ? cmd.client.application?.commands.cache.get(
       cmd.message.embeds[0].description?.replace(/\D+/g, '') as string,
      )?.id
    : (cmd.message.embeds[0].description as string)

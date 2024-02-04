@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
-import channel from './channel.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) =>
- channel(cmd, args, CT.ChannelTypes.Category);
+ cmd.client.util.importCache.Commands.ButtonCommands.settings.editors.channel.file.default(
+  cmd,
+  args,
+  cmd.client.util.CT.ChannelTypes.Category,
+ );

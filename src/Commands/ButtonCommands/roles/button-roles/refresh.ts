@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import run from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -10,5 +9,10 @@ export default async (
 
  const reply = await cmd.deferReply({ ephemeral: true });
 
- run(cmd, [], reply, type);
+ cmd.client.util.importCache.Commands.SlashCommands.roles.builders['button-roles'].file.default(
+  cmd,
+  [],
+  reply,
+  type,
+ );
 };

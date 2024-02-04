@@ -1,6 +1,4 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import { getComponents } from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -44,11 +42,16 @@ export default async (cmd: Discord.ButtonInteraction) => {
  });
 
  await cmd.update({
-  components: getComponents(language, lan, cmd, guildsettings),
+  components: cmd.client.util.importCache.Commands.SlashCommands.rp.manager.file.getComponents(
+   language,
+   lan,
+   cmd,
+   guildsettings,
+  ),
  });
 
  const embed: Discord.APIEmbed = {
-  color: CT.Colors.Loading,
+  color: cmd.client.util.CT.Colors.Loading,
   description: lan.willTake(cmd.client.util.constants.standard.getTime(Date.now() + 3600000)),
   author: {
    name: lan.syncing,

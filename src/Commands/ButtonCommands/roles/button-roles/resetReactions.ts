@@ -1,10 +1,5 @@
 import * as Discord from 'discord.js';
-import {
- Type,
- getBaseSettings,
- getSpecificSettings,
-} from '../../../SlashCommands/roles/builders/button-roles.js';
-import refresh from './refresh.js';
+import type { Type } from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 'button-roles') => {
  if (!cmd.inCachedGuild()) return;
@@ -19,13 +14,17 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
   return;
  }
 
- const baseSettings = await getBaseSettings(type, cmd.guildId, message.id);
+ const baseSettings = await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+  'button-roles'
+ ].file.getBaseSettings(type, cmd.guildId, message.id);
  if (!baseSettings) {
   cmd.client.util.error(cmd.guild, new Error('Failed to find settings'));
   return;
  }
 
- const settings = await getSpecificSettings(type, cmd.guildId, baseSettings?.uniquetimestamp);
+ const settings = await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+  'button-roles'
+ ].file.getSpecificSettings(type, cmd.guildId, baseSettings?.uniquetimestamp);
 
  let action: Discord.Message | Discord.DiscordAPIError | void | undefined | Error;
 
@@ -53,5 +52,9 @@ export default async (cmd: Discord.ButtonInteraction, _: string[], type: Type = 
   return;
  }
 
- refresh(cmd, [], type);
+ cmd.client.util.importCache.Commands.ButtonCommands.roles['button-roles'].refresh.file.default(
+  cmd,
+  [],
+  type,
+ );
 };

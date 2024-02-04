@@ -1,3 +1,4 @@
-import { react } from '../../BaseClient/UtilModules/interactionHelpers.js';
+import * as Discord from 'discord.js';
 
-export default react;
+export default (cmd: Discord.ButtonInteraction, args: string[]) =>
+ cmd.client.util.importCache.BaseClient.UtilModules.interactionHelpers.file.react(cmd, args);

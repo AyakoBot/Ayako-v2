@@ -1,12 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import { findField } from '../../../SelectCommands/StringSelect/roles/button-roles.js';
-import {
- Type,
- getBaseSettings,
- getSpecificSettings,
-} from '../../../SlashCommands/roles/builders/button-roles.js';
-import refresh from './refresh.js';
+import type { Type } from '../../../SlashCommands/roles/builders/button-roles.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -27,7 +21,9 @@ export default async (
  }
 
  const baseSettings =
-  (await getBaseSettings(type, cmd.guildId, message.id)) ??
+  (await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+   'button-roles'
+  ].file.getBaseSettings(type, cmd.guildId, message.id)) ??
   (type === 'reaction-roles'
    ? await cmd.client.util.DataBase.reactionrolesettings.create({
       data: {
@@ -54,11 +50,12 @@ export default async (
   return;
  }
 
- const settings = await getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp, emoji);
- const field = findField(
-  Discord.parseEmoji(emoji) as Discord.PartialEmoji,
-  cmd.message.embeds[0].fields,
- );
+ const settings = await cmd.client.util.importCache.Commands.SlashCommands.roles.builders[
+  'button-roles'
+ ].file.getSpecificSettings(type, cmd.guildId, baseSettings.uniquetimestamp, emoji);
+ const field = cmd.client.util.importCache.Commands.SelectCommands.StringSelect.roles[
+  'button-roles'
+ ].file.findField(Discord.parseEmoji(emoji) as Discord.PartialEmoji, cmd.message.embeds[0].fields);
  const roles = field?.value.split(/,\s+/g).map((r) => r.replace(/\D+/g, '')) ?? [];
 
  if (settings.length) {
@@ -146,7 +143,11 @@ export default async (
   return;
  }
 
- refresh(cmd, [], type);
+ cmd.client.util.importCache.Commands.ButtonCommands.roles['button-roles'].refresh.file.default(
+  cmd,
+  [],
+  type,
+ );
 };
 
 export const putComponents = async (

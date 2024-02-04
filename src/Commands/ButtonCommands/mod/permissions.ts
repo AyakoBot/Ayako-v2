@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import Commands from '../../../SlashCommands/index.js';
-import * as CT from '../../../Typings/Typings.js';
-import permissions from '../../SlashCommands/mod/permissions.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 type CommandType = keyof CT.Language['slashCommands']['moderation']['permissions']['buttons'];
 
@@ -30,7 +28,11 @@ export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
 
  if (command) {
   await cmd.client.util.request.commands.deleteGuildCommand(cmd.guild, command.id);
-  permissions(cmd, [], response);
+  cmd.client.util.importCache.Commands.SlashCommands.mod.permissions.file.default(
+   cmd,
+   [],
+   response,
+  );
   return;
  }
 
@@ -41,11 +43,11 @@ export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
  }
 
  await cmd.client.util.request.commands.createGuildCommand(cmd.guild, submitCmdData);
- permissions(cmd, [], response);
+ cmd.client.util.importCache.Commands.SlashCommands.mod.permissions.file.default(cmd, [], response);
 };
 
 export const registerCmd = (commandName: CommandType, guild: Discord.Guild) => {
- const mainCmd = Commands.public.mod.toJSON();
+ const mainCmd = guild.client.util.importCache.SlashCommands.file.default.public.mod.toJSON();
  const cmdData = mainCmd.options?.find((o) => o.name === commandName);
  if (!cmdData) {
   guild.client.util.error(guild, new Error('Command-Option not found'));

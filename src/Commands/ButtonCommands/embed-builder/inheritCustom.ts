@@ -1,9 +1,10 @@
 import type * as Discord from 'discord.js';
-import { getSelectedField } from './deleteCustom.js';
-import startOver from './startOver.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- const selectedOption = getSelectedField(cmd)?.value;
+ const selectedOption =
+  cmd.client.util.importCache.Commands.ButtonCommands[
+   'embed-builder'
+  ].deleteCustom.file.getSelectedField(cmd)?.value;
  if (!selectedOption) return;
 
  const dbEmbed = await cmd.client.util.DataBase.customembeds.findUnique({
@@ -13,5 +14,9 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  const embed = cmd.client.util.getDiscordEmbed(dbEmbed);
 
- startOver(cmd, [], embed);
+ cmd.client.util.importCache.Commands.ButtonCommands['embed-builder'].startOver.file.default(
+  cmd,
+  [],
+  embed,
+ );
 };

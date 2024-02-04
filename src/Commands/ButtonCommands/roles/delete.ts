@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import { canDeleteRole } from '../../../BaseClient/UtilModules/requestHandler/guilds/deleteRole.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -15,7 +14,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  const me = await cmd.client.util.getBotMemberFromGuild(cmd.guild);
- const canDelete = me ? canDeleteRole(me, role.id) : false;
+ const canDelete = me
+  ? cmd.client.util.importCache.BaseClient.UtilModules.requestHandler.guilds.deleteRole.file.canDeleteRole(
+     me,
+     role.id,
+    )
+  : false;
  if (!canDelete) {
   cmd.client.util.errorCmd(cmd, language.errors.roleNotManageable, language);
   return;

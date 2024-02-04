@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import { buildEmbed } from '../../SlashCommands/embed-builder/create.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -8,7 +7,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  await cmd.client.util.DataBase.customembeds.delete({ where: { uniquetimestamp: selectedOption } });
 
- buildEmbed(cmd);
+ cmd.client.util.importCache.Commands.SlashCommands['embed-builder'].create.file.default(cmd);
 };
 
 export const getSelectedField = (

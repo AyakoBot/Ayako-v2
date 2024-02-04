@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import rp from '../../SlashCommands/rp/manager.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -32,7 +31,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  if (!settings) await deleteAll(cmd);
  else await create(cmd.guild);
 
- rp(cmd, [], true);
+ cmd.client.util.importCache.Commands.SlashCommands.rp.manager.file.default(cmd, [], true);
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {

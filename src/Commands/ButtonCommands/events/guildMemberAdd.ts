@@ -1,5 +1,4 @@
 import Discord from 'discord.js';
-import welcome from '../../../Events/BotEvents/guildEvents/guildMemberAdd/welcome.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,7 +10,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  switch (type) {
   case 'welcome': {
-   welcome(cmd.member);
+   cmd.client.util.importCache.Events.BotEvents.guildEvents.guildMemberAdd.welcome.file.default(
+    cmd.member,
+   );
    break;
   }
   default: {

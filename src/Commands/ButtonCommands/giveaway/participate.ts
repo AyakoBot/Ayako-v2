@@ -1,7 +1,6 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
-import { getGiveawayEmbed } from '../../SlashCommands/giveaway/end.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -90,13 +89,23 @@ const edit = async (
   msg.channel.type !== Discord.ChannelType.GuildAnnouncement
  ) {
   cmd.client.util.request.channels.editMsg(msg, {
-   embeds: [await getGiveawayEmbed(language, giveaway)],
+   embeds: [
+    await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getGiveawayEmbed(
+     language,
+     giveaway,
+    ),
+   ],
   });
   return;
  }
 
  if (Number(msg.editedTimestamp) > Date.now() - 1800000) return;
  cmd.client.util.request.channels.editMsg(msg, {
-  embeds: [await getGiveawayEmbed(language, giveaway)],
+  embeds: [
+   await cmd.client.util.importCache.Commands.SlashCommands.giveaway.end.file.getGiveawayEmbed(
+    language,
+    giveaway,
+   ),
+  ],
  });
 };

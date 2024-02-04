@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Settings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -21,6 +21,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   cmd.guildId,
   uniquetimestamp,
+  cmd.client,
  );
 
  const currentSetting = currentSettings?.[fieldName as keyof typeof currentSettings] as
@@ -35,7 +36,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     settingName,
     fieldName,
     currentSettings?.[fieldName as keyof typeof currentSettings],
-    CT.EditorTypes.Role,
+    cmd.client.util.CT.EditorTypes.Role,
     cmd.guild,
    ),
   ],
@@ -45,7 +46,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      CT.EditorTypes.Role,
+      cmd.client.util.CT.EditorTypes.Role,
       fieldName,
       settingName,
       uniquetimestamp,
@@ -60,11 +61,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [
-     cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.back(
+      settingName,
+      Number(uniquetimestamp),
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      CT.EditorTypes.Position,
+      cmd.client.util.CT.EditorTypes.Position,
       language,
       Number(uniquetimestamp),
      ),
