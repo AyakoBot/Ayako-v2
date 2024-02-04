@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (
  added: Discord.Collection<Discord.Snowflake, Discord.ThreadMember>,
@@ -20,7 +19,7 @@ export default async (
    icon_url: con.update,
   },
   fields: [],
-  color: CT.Colors.Loading,
+  color: thread.client.util.CT.Colors.Loading,
   timestamp: new Date().toISOString(),
  };
 
