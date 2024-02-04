@@ -13,7 +13,7 @@ export default async (
 
  options.guild.client.util.cache.bans.set(
   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
-   options.guild.client.util.mod.file(undefined, options.guild.client.util.CT.ModTypes.BanRemove, {
+   options.guild.client.util.mod.default(undefined, options.guild.client.util.CT.ModTypes.BanRemove, {
     dbOnly: false,
     executor: (await options.guild.client.util.getBotMemberFromGuild(options.guild)).user,
     guild: options.guild,

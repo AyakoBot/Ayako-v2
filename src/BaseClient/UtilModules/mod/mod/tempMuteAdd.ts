@@ -75,7 +75,7 @@ export default async (
   Jobs.scheduleJob(
    new Date(Date.now() + (options.duration > 2419200 ? 2419200000 : options.duration * 1000)),
    async () => {
-    options.guild.client.util.mod.file(
+    options.guild.client.util.mod.default(
      undefined,
      options.guild.client.util.CT.ModTypes.MuteRemove,
      {

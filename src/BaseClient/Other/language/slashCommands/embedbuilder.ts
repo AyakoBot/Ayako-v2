@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import inherit from './embedbuilder/inherit.js';
 import create from './embedbuilder/create.js';
 

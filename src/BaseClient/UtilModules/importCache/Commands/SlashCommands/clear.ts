@@ -65,7 +65,7 @@ const self = {
  },
  images: {
   reload: async () => {
-   self.file = await import(
+   self.images.file = await import(
     `../../../../../Commands/SlashCommands/giveaway/clear/images.js?version=${Date.now()}`
    );
   },
@@ -81,7 +81,7 @@ const self = {
  },
  invites: {
   reload: async () => {
-   self.file = await import(
+   self.invites.file = await import(
     `../../../../../Commands/SlashCommands/giveaway/clear/invites.js?version=${Date.now()}`
    );
   },
@@ -129,7 +129,7 @@ const self = {
  },
  stickers: {
   reload: async () => {
-   self.file = await import(
+   self.stickers.file = await import(
     `../../../../../Commands/SlashCommands/giveaway/clear/stickers.js?version=${Date.now()}`
    );
   },

@@ -1,5 +1,5 @@
 import DataBase from '../Bot/DataBase.js';
-import Language, { languages } from '../Other/language.js';
+// import Language, { languages } from '../Other/language.js';
 
 /**
  * Returns the language object for the specified guild ID.
@@ -8,7 +8,13 @@ import Language, { languages } from '../Other/language.js';
  * @returns A Promise that resolves to the language object for the specified guild ID.
  */
 export default async (guildIDOrLocale: bigint | undefined | null | string) => {
- if (!guildIDOrLocale) return new Language('en-GB');
+ const client = await import('../Bot/Client.js').then((r) => r.default);
+ const Language = client.util.importCache.BaseClient.Other.Language.file.default;
+ const languages = client.util.importCache.BaseClient.Other.Language.file.getLangs();
+
+ if (!guildIDOrLocale) {
+  return new Language('en-GB');
+ }
 
  if (typeof guildIDOrLocale === 'string' && guildIDOrLocale.includes('-')) {
   return new Language(guildIDOrLocale as keyof typeof languages);

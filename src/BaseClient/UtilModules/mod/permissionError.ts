@@ -1,9 +1,6 @@
 import * as Discord from 'discord.js';
 import type * as CT from '../../../Typings/Typings.js';
-
-import objectEmotes from '../emotes.js';
 import type * as ModTypes from '../mod.js';
-import { request } from '../requestHandler.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -18,7 +15,7 @@ export default async (
    {
     color: message.client.util.CT.Colors.Danger,
     author: {
-     icon_url: objectEmotes.warning.link,
+     icon_url: language.client.util.emotes.warning.link,
      name: language.t.error,
     },
     description: language.mod.execution[type as keyof CT.Language['mod']['execution']].meNoPerms,
@@ -27,7 +24,9 @@ export default async (
  };
 
  if (!(cmd instanceof Discord.Message) && cmd) cmd.editReply(payload);
- else if (message instanceof Discord.Message) request.channels.editMsg(message, payload);
+ else if (message instanceof Discord.Message) {
+  language.client.util.request.channels.editMsg(message, payload);
+ }
 
  return false;
 };

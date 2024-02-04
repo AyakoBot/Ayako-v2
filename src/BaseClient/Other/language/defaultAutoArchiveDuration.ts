@@ -1,4 +1,4 @@
-import * as CT from '../../../Typings/Typings.js';
+import type * as CT from '../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  1440: t.JSON.defaultAutoArchiveDuration[1440],

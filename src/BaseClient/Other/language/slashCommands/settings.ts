@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import antiSpam from './settings/anti-spam.js';
 import antiVirus from './settings/anti-virus.js';
 import basic from './settings/basic.js';

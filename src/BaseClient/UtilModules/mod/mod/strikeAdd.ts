@@ -28,7 +28,7 @@ export default async <T extends CT.ModTypes>(
 
  if (!strike) {
   options.guild.client.util.cache.punishments.delete(options.target.id);
-  options.guild.client.util.mod.file(
+  options.guild.client.util.mod.default(
    cmd,
    options.guild.client.util.CT.ModTypes.WarnAdd,
    options,

@@ -1,6 +1,6 @@
 const self = {
- reload: () => {
-  self.file = import(`../../../../requestHandler/commands.js?version=${Date.now()}`);
+ reload: async () => {
+  self.file = await import(`../../../../requestHandler/commands.js?version=${Date.now()}`);
  },
  file: await import(`../../../../requestHandler/commands.js`),
 

@@ -1,7 +1,7 @@
 const self = {
  server: {
   reload: async () => {
-   self.file = await import(
+   self.server.file = await import(
     `../../../../../Commands/AutocompleteCommands/info/server.js?version=${Date.now()}`
    );
   },

@@ -1,4 +1,4 @@
-import * as CT from '../../../../Typings/Typings.js';
+import type * as CT from '../../../../Typings/Typings.js';
 import guildMemberAdd from './guildMemberAdd.js';
 import guildMemberUpdate from './guildMemberUpdate.js';
 import appeal from './logs/appeal.js';

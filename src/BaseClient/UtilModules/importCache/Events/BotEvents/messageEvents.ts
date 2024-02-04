@@ -134,14 +134,6 @@ const self = {
     `../../../../../Events/BotEvents/messageEvents/messageCreate/stickyMessage.js`
    ),
   },
-  thread: {
-   reload: async () => {
-    self.messageCreate.thread.file = await import(
-     `../../../../../Events/BotEvents/messageEvents/messageCreate/thread.js?version=${Date.now()}`
-    );
-   },
-   file: await import(`../../../../../Events/BotEvents/messageEvents/messageCreate/thread.js`),
-  },
   tta: {
    reload: async () => {
     self.messageCreate.tta.file = await import(

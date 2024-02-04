@@ -13,7 +13,7 @@ export default async (
 
  options.guild.client.util.cache.channelBans.set(
   Jobs.scheduleJob(new Date(Date.now() + options.duration * 1000), async () => {
-   options.guild.client.util.mod.file(
+   options.guild.client.util.mod.default(
     undefined,
     options.guild.client.util.CT.ModTypes.ChannelBanRemove,
     {

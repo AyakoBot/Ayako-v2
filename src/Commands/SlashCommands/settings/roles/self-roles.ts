@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
+import * as CT from '../../../../Typings/Typings.js';
 import * as S from '../../../../Typings/Settings.js';
 
 const name = S.SettingNames.SelfRoles;
