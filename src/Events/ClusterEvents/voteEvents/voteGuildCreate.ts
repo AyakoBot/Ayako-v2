@@ -28,7 +28,13 @@ export default async (
  if (!reminder) return;
 
  if (!allRewards?.length) {
-  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.doAnnouncement(setting, user, guild, language, []);
+  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.doAnnouncement(
+   setting,
+   user,
+   guild,
+   language,
+   [],
+  );
   return;
  }
 
@@ -49,10 +55,22 @@ export default async (
  }
 
  rewards.forEach((r) => {
-  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.currency(r, user, guild);
+  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.currency(
+   r,
+   user,
+   guild,
+  );
   roles(r, member, guild, language);
-  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.xp(r, user, guild);
-  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.xpmultiplier(r, user, guild);
+  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.xp(
+   r,
+   user,
+   guild,
+  );
+  guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.xpmultiplier(
+   r,
+   user,
+   guild,
+  );
 
   guild.client.util.DataBase.votesappliedrewards
    .upsert({
@@ -77,12 +95,23 @@ export default async (
  });
 
  guild.client.util.cache.votes.set(
-  Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () => guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.end(reminder, guild)),
+  Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () =>
+   guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.end(
+    reminder,
+    guild,
+   ),
+  ),
   guild.id,
   vote.guild,
   user.id,
  );
- guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.doAnnouncement(setting, user, guild, language, rewards);
+ guild.client.util.importCache.Events.ClusterEvents.voteEvents.voteBotCreate.file.doAnnouncement(
+  setting,
+  user,
+  guild,
+  language,
+  rewards,
+ );
 };
 
 const roles = async (
