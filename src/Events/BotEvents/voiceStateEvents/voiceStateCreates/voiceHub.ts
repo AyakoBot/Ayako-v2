@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { del } from '../voiceStateDeletes/voiceHub.js';
 
 export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
  if (!member) return;
@@ -109,7 +108,9 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
 
  state.client.util.cache.vcDeleteTimeout.set(
   Jobs.scheduleJob(new Date(Date.now() + 300000), () =>
-   del(channel as NonNullable<typeof state.channel>),
+   state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateDeletes.voiceHub.file.del(
+    channel as NonNullable<typeof state.channel>,
+   ),
   ),
   state.guild.id,
   channel.id,

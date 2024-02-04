@@ -1,11 +1,8 @@
 import type * as Discord from 'discord.js';
-import voiceStateCreates from './voiceStateCreates/voiceStateCreates.js';
-import voiceStateDeletes from './voiceStateDeletes/voiceStateDeletes.js';
-import voiceStateUpdates from './voiceStateUpdates/voiceStateUpdates.js';
 
 export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) => {
  if (!oldState.channelId) {
-  voiceStateCreates(
+  state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateCreates.voiceStateCreates.file.default(
    state as Discord.VoiceState,
    await state.client.util.request.guilds
     .getMember(state.guild, state.id ?? oldState.id)
@@ -15,7 +12,7 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
  }
 
  if (!state.channelId) {
-  voiceStateDeletes(
+  state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateDeletes.voiceStateDeletes.file.default(
    oldState as Discord.VoiceState,
    await state.client.util.request.guilds
     .getMember(state.guild, state.id ?? oldState.id)
@@ -24,7 +21,7 @@ export default async (oldState: Discord.VoiceState, state: Discord.VoiceState) =
   return;
  }
 
- voiceStateUpdates(
+ state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateUpdates.voiceStateUpdates.file.default(
   oldState as Discord.VoiceState,
   state as Discord.VoiceState,
   await state.client.util.request.guilds

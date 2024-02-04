@@ -1,8 +1,11 @@
 import type * as Discord from 'discord.js';
-import log from './log.js';
-import voiceHub from './voiceHub.js';
 
 export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
- log(state, member);
- voiceHub(state);
+ state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateDeletes.log.file.default(
+  state,
+  member,
+ );
+ state.client.util.importCache.Events.BotEvents.voiceStateEvents.voiceStateDeletes.voiceHub.file.default(
+  state,
+ );
 };
