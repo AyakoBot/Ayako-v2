@@ -71,6 +71,14 @@ const self = {
   },
   file: await import(`../../../../../Commands/SlashCommands/vote.js`),
  },
+ shop: {
+  reload: async () => {
+   self.shop.file = await import(
+    `../../../../../Commands/SlashCommands/shop.js?version=${Date.now()}`
+   );
+  },
+  file: await import(`../../../../../Commands/SlashCommands/shop.js`),
+ },
 };
 
 export default self;

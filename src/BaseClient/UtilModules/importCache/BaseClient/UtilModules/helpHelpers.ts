@@ -1,4 +1,9 @@
 const self = {
+ reload: async () => {
+  self.file = await import(`../../../helpHelpers.js?version=${Date.now()}`);
+ },
+ file: await import(`../../../helpHelpers.js`),
+
  getDesc: {
   reload: async () => {
    self.getDesc.file = await import(`../../../helpHelpers/getDesc.js?version=${Date.now()}`);

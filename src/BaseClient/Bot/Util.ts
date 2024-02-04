@@ -91,6 +91,7 @@ interface Util {
   getDesc: typeof utilModules.helpHelpers.getDesc.file.default;
   getDescription: typeof utilModules.helpHelpers.getDescription.file.default;
   getEmbeds: typeof utilModules.helpHelpers.getEmbeds.file.default;
+  default: typeof utilModules.helpHelpers.file.default;
  };
  interactionHelpers: typeof utilModules.interactionHelpers.file.default;
  isDeleteable: typeof utilModules.isDeleteable.file.default;
@@ -299,6 +300,7 @@ const util: Util = {
   getDesc: utilModules.helpHelpers.getDesc.file.default,
   getDescription: utilModules.helpHelpers.getDescription.file.default,
   getEmbeds: utilModules.helpHelpers.getEmbeds.file.default,
+  default: utilModules.helpHelpers.file.default,
  },
  interactionHelpers: utilModules.interactionHelpers.file.default,
  isDeleteable: utilModules.isDeleteable.file.default,
