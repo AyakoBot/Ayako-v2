@@ -38,6 +38,14 @@ const self = {
    },
    file: await import(`../../../../../Events/BotEvents/channelEvents/channelDelete/log.js`),
   },
+  cache: {
+   reload: async () => {
+    self.channelDelete.cache.file = await import(
+     `../../../../../Events/BotEvents/channelEvents/channelDelete/cache.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/channelEvents/channelDelete/cache.js`),
+  },
  },
  channelPinsUpdate: {
   channelPinsCreate: {
@@ -95,7 +103,42 @@ const self = {
    ),
   },
  },
- channelUpdate: {},
+ channelUpdate: {
+  cache: {
+   reload: async () => {
+    self.channelUpdate.cache.file = await import(
+     `../../../../../Events/BotEvents/channelEvents/channelUpdate/cache.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/channelEvents/channelUpdate/cache.js`),
+  },
+  channelUpdate: {
+   reload: async () => {
+    self.channelUpdate.channelUpdate.file = await import(
+     `../../../../../Events/BotEvents/channelEvents/channelUpdate/channelUpdate.js?version=${Date.now()}`
+    );
+   },
+   file: await import(
+    `../../../../../Events/BotEvents/channelEvents/channelUpdate/channelUpdate.js`
+   ),
+  },
+  log: {
+   reload: async () => {
+    self.channelUpdate.log.file = await import(
+     `../../../../../Events/BotEvents/channelEvents/channelUpdate/log.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/channelEvents/channelUpdate/log.js`),
+  },
+  stickyPerms: {
+   reload: async () => {
+    self.channelUpdate.stickyPerms.file = await import(
+     `../../../../../Events/BotEvents/channelEvents/channelUpdate/stickyPerms.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/channelEvents/channelUpdate/stickyPerms.js`),
+  },
+ },
 };
 
 export default self;
