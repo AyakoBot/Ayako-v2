@@ -38,6 +38,55 @@ const self = {
    );
   },
   file: await import(`../../../../../Events/BotEvents/interactionEvents/interactionCreate.js`),
+
+  autocompleteHandler: {
+   reload: async () => {
+    self.interactionCreate.autocompleteHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/autocompleteHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/autocompleteHandler.js`),
+  },
+  buttonHandler: {
+   reload: async () => {
+    self.interactionCreate.buttonHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/buttonHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/buttonHandler.js`),
+  },
+  commandHandler: {
+   reload: async () => {
+    self.interactionCreate.commandHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/commandHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/commandHandler.js`),
+  },
+  contextCommandHandler: {
+   reload: async () => {
+    self.interactionCreate.contextCommandHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/contextCommandHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/contextCommandHandler.js`),
+  },
+  modalHandler: {
+   reload: async () => {
+    self.interactionCreate.modalHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/modalHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/modalHandler.js`),
+  },
+  selectHandler: {
+   reload: async () => {
+    self.interactionCreate.selectHandler.file = await import(
+     `../../../../../Events/BotEvents/interactionEvents/selectHandler.js?version=${Date.now()}`
+    );
+   },
+   file: await import(`../../../../../Events/BotEvents/interactionEvents/selectHandler.js`),
+  },
  },
  modalHandler: {
   reload: async () => {
