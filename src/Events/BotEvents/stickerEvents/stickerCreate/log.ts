@@ -1,5 +1,4 @@
 import type * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 
 export default async (sticker: Discord.Sticker) => {
  if (!sticker.guild) return;
@@ -26,7 +25,7 @@ export default async (sticker: Discord.Sticker) => {
   },
   description: auditUser ? lan.descCreateAudit(sticker, auditUser) : lan.descCreate(sticker),
   fields: [],
-  color: CT.Colors.Success,
+  color: sticker.client.util.CT.Colors.Success,
   timestamp: new Date().toISOString(),
  };
 
