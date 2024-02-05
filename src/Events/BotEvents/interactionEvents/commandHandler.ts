@@ -8,9 +8,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isChatInputCommand()) return;
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const files = await glob(
-  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
- );
+ const files = await glob(`${process.cwd()}/dist/Commands/**/*`);
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,
@@ -26,12 +24,12 @@ export default async (cmd: Discord.Interaction) => {
   if (subcommandGroup?.name) pathArgs.push(subcommandGroup?.name);
   if (subcommand?.name) pathArgs.push(subcommand?.name);
 
-  return pathArgs.join('/');
+  return `Commands/SlashCommands/${pathArgs.join('/')}.js`;
  };
 
  log(path());
 
- const command = files.find((f) => f.endsWith(`/SlashCommands/${path()}.js`));
+ const command = files.find((f) => f.endsWith(path()));
  if (!command) return;
 
  const commandName = command.split(/\//g).pop() as string;
@@ -54,5 +52,16 @@ export default async (cmd: Discord.Interaction) => {
   return;
  }
 
- (await import(command)).default(cmd);
+ const pathArray = path().replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = cmd.client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ (
+  tempObj as unknown as {
+   file: { default: (c: typeof cmd) => void };
+  }
+ ).file.default(cmd);
 };

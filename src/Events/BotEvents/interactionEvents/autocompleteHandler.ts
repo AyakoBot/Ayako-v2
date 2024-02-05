@@ -9,9 +9,7 @@ export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
  if (!cmd.inCachedGuild()) return;
 
- const files = await glob(
-  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
- );
+ const files = await glob(`${process.cwd()}/dist/Commands/**/*`);
 
  const subcommandGroup = cmd.options.data.find(
   (c) => c.type === Discord.ApplicationCommandOptionType.SubcommandGroup,
@@ -27,15 +25,22 @@ export default async (cmd: Discord.Interaction) => {
   if (subcommandGroup?.name) pathArgs.push(subcommandGroup?.name);
   if (subcommand?.name) pathArgs.push(subcommand?.name);
 
-  return pathArgs.join('/');
+  return `Commands/AutocompleteCommands/${pathArgs.join('/')}.js`;
  };
 
  log(path());
 
- const command = files.find((f) => f.endsWith(`/AutocompleteCommands/${path()}.js`));
+ const command = files.find((f) => f.endsWith(path()));
  if (!command) return;
 
- const responses = await ((await import(command)) as CT.AutoCompleteFile).default(cmd);
+ const pathArray = path().replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = cmd.client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ const responses = await (tempObj as unknown as { file: CT.AutoCompleteFile }).file.default(cmd);
 
  cmd.respond(responses ?? []);
 };

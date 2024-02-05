@@ -14,6 +14,20 @@ const botEvents = async (eventName: string, args: unknown[]) => {
  const event = client.util.getEvents.BotEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
 
+ const pathArray = event.replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ (
+  tempObj as unknown as {
+   // eslint-disable-next-line @typescript-eslint/ban-types
+   file: { default: Function };
+  }
+ ).file.default(...args);
+
  (await import(event)).default(...args);
 };
 
@@ -21,14 +35,38 @@ const clusterEvents = async (eventName: string, args: unknown[]) => {
  const event = client.util.getEvents.ClusterEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
 
- (await import(event)).default(...args);
+ const pathArray = event.replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ (
+  tempObj as unknown as {
+   // eslint-disable-next-line @typescript-eslint/ban-types
+   file: { default: Function };
+  }
+ ).file.default(...args);
 };
 
 const processEvents = async (eventName: string, args: unknown[]) => {
  const event = client.util.getEvents.ProcessEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
 
- (await import(event)).default(...args);
+ const pathArray = event.replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ (
+  tempObj as unknown as {
+   // eslint-disable-next-line @typescript-eslint/ban-types
+   file: { default: Function };
+  }
+ ).file.default(...args);
 };
 
 const ignoreEvents = [

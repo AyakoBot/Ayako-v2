@@ -7,17 +7,26 @@ const { log } = console;
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isModalSubmit()) return;
 
- const files = await glob(
-  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,
- );
+ const files = await glob(`${process.cwd()}/dist/Commands/**/*`);
 
  const args = cmd.customId.split(/_+/g);
- const path = args.shift();
+ const path = `Commands/ModalCommands/${args.shift()}.js`;
 
  log(path);
 
- const command = files.find((f) => f.endsWith(`/ModalCommands/${path}.js`));
+ const command = files.find((f) => f.endsWith(path));
  if (!command) return;
 
- (await import(command)).default(cmd, args);
+ const pathArray = path.replace(`${process.cwd()}/dist/`, '').slice(0, -3).split(/\//g);
+ type TempObj = { [k: string]: TempObj };
+ let tempObj: TempObj = cmd.client.util.importCache as unknown as TempObj;
+ pathArray.forEach((pathSegment) => {
+  tempObj = tempObj[pathSegment];
+ });
+
+ (
+  tempObj as unknown as {
+   file: { default: (c: typeof cmd, args: string[]) => void };
+  }
+ ).file.default(cmd, args);
 };
