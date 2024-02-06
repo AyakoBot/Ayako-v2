@@ -128,7 +128,7 @@ const getEmbed = async (
    lan.days,
    longestDays,
   )} |  ${client.util.spaces(language.t.User, longestUsername)}\n${daysPerUser
-   .splice(0, 30)
+   .splice(0, 29)
    .map((l, i) =>
     makeLine(
      i,
