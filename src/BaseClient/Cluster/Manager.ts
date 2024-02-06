@@ -11,7 +11,12 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  shardsPerClusters: 10,
  token: process.env.Token,
  shardArgs: process.argv,
- execArgv: ['--experimental-wasm-modules', '--no-deprecation', '--no-warnings'],
+ execArgv: [
+  '--experimental-wasm-modules',
+  '--no-deprecation',
+  '--no-warnings',
+  '--heapsnapshot-near-heap-limit=1',
+ ],
  respawn: true,
  mode: 'process',
 });
