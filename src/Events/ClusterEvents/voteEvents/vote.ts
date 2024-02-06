@@ -6,7 +6,7 @@ import voteGuildCreate from './voteGuildCreate.js';
 
 export default async ({ vote }: Socket.VoteMessage) => {
  const settings = await client.util.DataBase.votesettings.findMany({
-  where: { token: vote.authorization },
+  where: { token: vote.authorization, active: true },
  });
  if (!settings.length) return;
 
