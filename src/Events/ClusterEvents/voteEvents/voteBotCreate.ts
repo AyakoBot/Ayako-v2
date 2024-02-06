@@ -130,6 +130,7 @@ export const doAnnouncement = async (
     .filter((u): u is string => !!u)
     .join(' + '),
   )
+  .map((t) => `> ${t}`)
   .join('\n');
 
  user.client.util.send(channel, {
