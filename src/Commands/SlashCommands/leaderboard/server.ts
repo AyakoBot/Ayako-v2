@@ -162,16 +162,17 @@ export const getEmbed = async (
  fields: [
   {
    name: lan.yourPos,
-   value: position
-    ? `${client.util.util.makeInlineCode(
-       makeLine(
-        position,
-        { level: Number(level), longestLevel },
-        { xp: Number(xp) ?? 0, longestXP },
-        { displayName: user.displayName, longestUsername },
-       ),
-      )}`
-    : lan.notRanked,
+   value:
+    typeof position === 'number'
+     ? `${client.util.util.makeInlineCode(
+        makeLine(
+         position,
+         { level: Number(level), longestLevel },
+         { xp: Number(xp) ?? 0, longestXP },
+         { displayName: user.displayName, longestUsername },
+        ),
+       )}`
+     : lan.notRanked,
   },
  ],
  color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
