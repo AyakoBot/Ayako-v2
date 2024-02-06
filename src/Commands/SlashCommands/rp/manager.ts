@@ -79,6 +79,8 @@ export const getComponents = (
     label: language.t.login,
     style: Discord.ButtonStyle.Link,
     url: 'https://ayakobot.com/login',
+    disabled:
+    !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild)
    },
   ],
  },
