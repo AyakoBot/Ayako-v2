@@ -124,10 +124,11 @@ const getEmbed = async (
  ],
  color: client.util.getColor(await client.util.getBotMemberFromGuild(guild)),
  description: `${client.util.util.makeInlineCode(
-  `${client.util.spaces(lan.rank, 6)} | ${client.util.spaces(
+  `${client.util.spaces(lan.rank, 7)} | ${client.util.spaces(
    lan.days,
    longestDays,
   )} |  ${client.util.spaces(language.t.User, longestUsername)}\n${daysPerUser
+   .splice(0, 30)
    .map((l, i) =>
     makeLine(
      i,
