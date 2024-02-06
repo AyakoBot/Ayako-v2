@@ -38,7 +38,7 @@ export default async (msg: Discord.Message) => {
  }
 
  tta(msg);
- (await import(`./execute.js?nonce=${Date.now()}`)).default(msg);
  commandHandler(msg);
  antivirus(msg);
+ msg.client.util.files.importCache.execute.file.default(msg);
 };

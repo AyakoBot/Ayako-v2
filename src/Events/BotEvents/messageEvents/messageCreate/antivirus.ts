@@ -3,7 +3,6 @@ import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import pack from '../../../../../package.json' assert { type: 'json' };
 import client, { API } from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
@@ -391,7 +390,7 @@ const inGoogleSafeBrowsing = async (u: string) => {
    body: JSON.stringify({
     client: {
      clientId: 'Ayako Development',
-     clientVersion: pack.version,
+     clientVersion: client.util.files.importCache.package.file.version,
     },
     threatInfo: {
      threatTypes: [
