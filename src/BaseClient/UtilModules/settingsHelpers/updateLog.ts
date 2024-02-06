@@ -34,15 +34,12 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
 
  const getColor = () => {
   switch (true) {
-   case !oldSetting: {
+   case !oldSetting:
     return CT.Colors.Success;
-   }
-   case !newSetting: {
+   case !newSetting:
     return CT.Colors.Danger;
-   }
-   default: {
+   default:
     return CT.Colors.Loading;
-   }
   }
  };
 
@@ -57,29 +54,27 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
 
  const getFields = (): Discord.APIEmbedField[] => {
   switch (true) {
-   case !oldSetting: {
+   case !oldSetting:
     return [
      {
       name: language.slashCommands.settings.create,
       value: language.slashCommands.settings.log.created(String(settingName)),
      },
     ];
-   }
-   case !newSetting: {
+   case !newSetting:
     return [
      {
       name: language.slashCommands.settings.delete,
       value: language.slashCommands.settings.log.deleted(String(settingName)),
      },
     ];
-   }
-   default: {
+   default:
     return [
      {
       name: language.t.Before,
       value: `${makeInlineCode(field.name)}:\n${
        oldSetting?.[changedSetting] && oldSetting?.[changedSetting]
-        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? ' ')
+        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? '-')
         : language.t.None
       }`,
       inline: false,
@@ -88,20 +83,22 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
       name: language.t.After,
       value: `${makeInlineCode(field.name)}:\n${
        newSetting?.[changedSetting] && newSetting?.[changedSetting]
-        ? makeCodeBlock((newSetting?.[changedSetting] as string) ?? ' ')
+        ? makeCodeBlock((newSetting?.[changedSetting] as string) ?? '-')
         : language.t.None
       }`,
       inline: false,
      },
     ];
-   }
   }
  };
 
  const embed: Discord.APIEmbed = {
   color: getColor(),
-  description: language.slashCommands.settings.log.desc(field.name, lan.name),
+  description: language.slashCommands.settings.log.desc(field.name ?? '-', lan.name),
   fields: getFields(),
+  footer: {
+   text: `ID: ${uniquetimestamp?.toString(36)}`,
+  },
  };
 
  send({ id: logs, guildId: guild.id }, { embeds: [embed] });
