@@ -50,9 +50,11 @@ export default async (
      return 5;
     };
 
-    return `${type() === 5 ? language.t.Unknown : type()} ${
-     permission.permission ? guild.client.util.emotes.enabled : guild.client.util.emotes.disabled
-    }`;
+    const t = type();
+
+    return `${t === 5 ? language.t.Unknown : t} ${guild.client.util.constants.standard.getEmote(
+     permission.permission ? guild.client.util.emotes.enabled : guild.client.util.emotes.disabled,
+    )}`;
    })
    .join('\n')}`,
  };
