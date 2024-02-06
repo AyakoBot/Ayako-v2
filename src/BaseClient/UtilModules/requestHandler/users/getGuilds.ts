@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Returns the guilds for the current user.
@@ -9,7 +9,9 @@ import { API } from '../../../Bot/Client.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPICurrentUserGuildsQuery) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).users.getGuilds(query).catch((e) => {
-  guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).users
+  .getGuilds(query)
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });

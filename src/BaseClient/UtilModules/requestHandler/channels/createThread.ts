@@ -1,8 +1,6 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
-import error from '../../error.js';
 
 /**
  * Creates a thread in a guild text-based channel.
@@ -32,15 +30,17 @@ export default async (
    ],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .createThread(channel.id, body, messageId)
   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

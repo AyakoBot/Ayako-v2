@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Retrieves the permissions for all the slash commands in a guild.
@@ -7,7 +7,9 @@ import { API } from '../../../Bot/Client.js';
  * @returns A promise that resolves to the permissions for all the slash commands in the guild.
  */
 export default async (guild: Discord.Guild) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+ (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).applicationCommands
   .getGuildCommandsPermissions(await guild.client.util.getBotIdFromGuild(guild), guild.id)
   .then((res) => {
    res.forEach((r) => {

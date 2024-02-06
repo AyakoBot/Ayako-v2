@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a message sent through a webhook.
@@ -19,7 +19,9 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).webhooks
   .deleteMessage(webhookId, token, messageId, query)
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

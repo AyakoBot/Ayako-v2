@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Edits the widget settings for a guild.
@@ -24,7 +24,7 @@ export default async (
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .editWidgetSettings(guild.id, body, { reason })
   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
   .catch((e) => {

@@ -1,6 +1,5 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -27,7 +26,9 @@ export default async (
   return e;
  }
 
- return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
+ return (
+  message.client.util.cache.apis.get(message.guild.id) ?? new DiscordCore.API(message.client.rest)
+ ).channels
   .editMessage(message.channel.id, message.id, payload)
   .then((m) => new Classes.Message(message.client, m))
   .catch((e) => {

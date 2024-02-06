@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a global command from the Discord API and removes it from the cache.
@@ -12,7 +12,9 @@ import { API } from '../../../Bot/Client.js';
 export default async (guild: Discord.Guild, commandId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).applicationCommands
   .deleteGlobalCommand(await guild.client.util.getBotIdFromGuild(guild), commandId)
   .then(() => {
    guild.client.util.cache.commands.delete(guild.id, commandId);

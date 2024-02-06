@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/threads.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/threads.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/threads.js`),
+ file: () => import(`../../../../requestHandler/threads.js`),
 
  join: {
   reload: async () => {

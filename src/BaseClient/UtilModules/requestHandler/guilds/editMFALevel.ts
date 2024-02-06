@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Edits the MFA level of a guild.
@@ -21,7 +21,7 @@ export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .editMFALevel(guild.id, level, { reason })
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

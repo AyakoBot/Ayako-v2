@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes all reactions of a specific emoji from a message.
@@ -35,7 +35,9 @@ export default async (message: Discord.Message<true>, emoji: string) => {
   ) as Discord.DiscordAPIError;
  }
 
- return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
+ return (
+  message.client.util.cache.apis.get(message.guild.id) ?? new DiscordCore.API(message.client.rest)
+ ).channels
   .deleteAllMessageReactionsForEmoji(
    message.channel.id,
    message.id,

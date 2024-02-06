@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Shows typing indicator in the given guild text-based channel.
@@ -31,7 +31,9 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   return e;
  }
 
- return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .showTyping(channel.id)
   .catch((e) => {
    channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));

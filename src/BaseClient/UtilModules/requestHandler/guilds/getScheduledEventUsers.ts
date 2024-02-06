@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -15,7 +15,7 @@ export default async (
  eventId: string,
  query?: Discord.RESTGetAPIGuildScheduledEventUsersQuery,
 ) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .getScheduledEventUsers(guild.id, eventId, query)
   .then((users) => {
    const parsed = users.map((u) => ({

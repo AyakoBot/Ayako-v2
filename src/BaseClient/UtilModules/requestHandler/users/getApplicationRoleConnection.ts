@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Returns the application role connection for the given application ID in the specified guild.
@@ -10,7 +10,7 @@ import { API } from '../../../Bot/Client.js';
  * or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, applicationId: string) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).users
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).users
   .getApplicationRoleConnection(applicationId)
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

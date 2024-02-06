@@ -2,9 +2,11 @@ import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
 
 export default async (eventName: string, args: unknown[]) => {
- processEvents(eventName, args);
- clusterEvents(eventName, args);
- botEvents(eventName, args);
+ if (eventName === 'ready') console.log(eventName);
+
+ // processEvents(eventName, args);
+ // clusterEvents(eventName, args);
+ // botEvents(eventName, args);
 };
 
 const botEvents = async (eventName: string, args: unknown[]) => {
@@ -27,8 +29,6 @@ const botEvents = async (eventName: string, args: unknown[]) => {
    file: { default: Function };
   }
  ).file.default(...args);
-
- (await import(event)).default(...args);
 };
 
 const clusterEvents = async (eventName: string, args: unknown[]) => {

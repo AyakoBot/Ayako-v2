@@ -2,23 +2,26 @@
 import * as Discord from 'discord.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
 import type * as Socket from '../Cluster/Socket.js';
+import events from '../UtilModules/getEvents.js';
 import type { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
 
 const spawnEvents = async () => {
- const { default: cache } = await import('../UtilModules/importCache.js');
- const events = cache.BaseClient.UtilModules.getEvents.file.default;
-
  client.setMaxListeners(events.BotEvents.length);
 
- events.BotEvents.forEach(async (path) => {
+ events.BotEvents.forEach((path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as keyof Discord.ClientEvents;
   if (!eventName) return;
 
   if (eventName === 'ready' && !client.cluster?.maintenance) {
-   client.on(eventName, (...args) => baseEventHandler(eventName, args));
+   client.on('ready', (...args) => {
+    if (client.cluster?.maintenance) return;
+    baseEventHandler(eventName, args);
+   });
+
    return;
   }
+
   client.on(eventName, (...args) => baseEventHandler(eventName, args));
  });
 
@@ -33,11 +36,14 @@ const spawnEvents = async () => {
   baseEventHandler(eventName, [message]);
  });
 
- client.cluster?.on('ready', async (cl) => {
-  cache.BaseClient.Bot.Presence.file.default(cl);
+ client.cluster?.on('ready', (cl) => {
+  import('../UtilModules/importCache/BaseClient/Bot.js').then((e) =>
+   e.default.Presence.file.default(cl),
+  );
  });
 
- events.ProcessEvents.forEach(async (path) => {
+ // eslint-disable-next-line import/no-named-as-default-member
+ events.ProcessEvents.forEach((path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
   if (!eventName) return;
 
@@ -48,7 +54,7 @@ const spawnEvents = async () => {
 if (client.cluster?.maintenance) {
  console.log(`[Cluster ${client.cluster.id}] Cluster spawned in Maintenance-Mode`);
 
- client.cluster?.on('ready', async () => {
+ client.cluster?.on('ready', () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
   spawnEvents();
  });

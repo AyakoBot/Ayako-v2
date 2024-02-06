@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Bans a user from a guild.
@@ -25,7 +25,9 @@ export default async (
   return e;
  }
 
- return (member.client.util.cache.apis.get(member.guild.id) ?? API).guilds
+ return (
+  member.client.util.cache.apis.get(member.guild.id) ?? new DiscordCore.API(member.client.rest)
+ ).guilds
   .banUser(member.guild.id, member.id, body, { reason })
   .catch((e) => {
    member.client.util.error(member.guild, new Error((e as Discord.DiscordAPIError).message));

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Edits a permission overwrite for a guild-based channel.
@@ -34,7 +34,9 @@ export default async (
   return e;
  }
 
- return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .editPermissionOverwrite(channel.id, overwriteId, body, { reason })
   .catch((e) => {
    channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));

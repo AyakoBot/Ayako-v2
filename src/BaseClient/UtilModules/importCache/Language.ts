@@ -3,18 +3,20 @@ const self = {
   enJSON: {
    reload: async () => {
     self.languages.enJSON.file = await import(
-     `../../../../languages/en-GB.json?version=${Date.now()}`
+     `../../../../languages/en-GB.json?version=${Date.now()}`,
+     { assert: { type: 'json' } }
     );
    },
-   file: await import(`../../../Languages/en-GB.json`),
+   file: await import(`../../../Languages/en-GB.json`, { assert: { type: 'json' } }),
   },
   deJSON: {
    reload: async () => {
     self.languages.deJSON.file = await import(
-     `../../../../languages/de-DE.json?version=${Date.now()}`
+     `../../../../languages/de-DE.json?version=${Date.now()}`,
+     { assert: { type: 'json' } }
     );
    },
-   file: await import(`../../../Languages/de-DE.json`),
+   file: await import(`../../../Languages/de-DE.json`, { assert: { type: 'json' } }),
   },
  },
 

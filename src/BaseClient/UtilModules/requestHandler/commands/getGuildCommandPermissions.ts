@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Retrieves the permissions for a specific command in a guild.
@@ -8,7 +8,9 @@ import { API } from '../../../Bot/Client.js';
  * @returns A promise that resolves with the command permissions, or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, commandId: string) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+ (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).applicationCommands
   .getGuildCommandPermissions(await guild.client.util.getBotIdFromGuild(guild), guild.id, commandId)
   .then((res) => {
    guild.client.util.cache.commandPermissions.set(guild.id, commandId, res.permissions);

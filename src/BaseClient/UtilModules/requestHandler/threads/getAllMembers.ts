@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,7 +9,9 @@ import * as Classes from '../../../Other/classes.js';
  * representing the members of the thread.
  */
 export default async (thread: Discord.ThreadChannel) =>
- (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
+ (
+  thread.client.util.cache.apis.get(thread.guild.id) ?? new DiscordCore.API(thread.client.rest)
+ ).threads
   .getAllMembers(thread.id)
   .then((members) => {
    const parsed = members.map((m) => new Classes.ThreadMember(thread, m));

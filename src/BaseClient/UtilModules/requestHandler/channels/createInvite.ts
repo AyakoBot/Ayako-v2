@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -24,15 +22,17 @@ export default async (
    [Discord.PermissionFlagsBits.CreateInstantInvite],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .createInvite(channel.id, body, { reason })
   .then((i) => new Classes.Invite(channel.client, i))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

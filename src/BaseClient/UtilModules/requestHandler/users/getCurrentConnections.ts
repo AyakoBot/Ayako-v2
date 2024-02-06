@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Returns the current connections of the users in the specified guild.
@@ -8,7 +8,9 @@ import { API } from '../../../Bot/Client.js';
  * @returns A promise that resolves to an array of user connections or an error object.
  */
 export default async (guild: Discord.Guild) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).users.getConnections().catch((e) => {
-  guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).users
+  .getConnections()
+  .catch((e) => {
+   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e as Discord.DiscordAPIError;
+  });

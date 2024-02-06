@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -12,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
 export default async (guild: Discord.Guild, data: Discord.RESTPatchAPIGuildMemberJSONBody) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).users
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).users
   .editCurrentGuildMember(guild.id, data)
   .then((m) => new Classes.GuildMember(guild.client, m, guild))
   .catch((e) => {

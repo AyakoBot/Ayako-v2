@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/invites.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/invites.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/invites.js`),
+ file: () => import(`../../../../requestHandler/invites.js`),
 
  get: {
   reload: async () => {

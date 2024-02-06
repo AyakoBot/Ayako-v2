@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
-import client, { API } from '../../../../BaseClient/Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
+import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as S from '../../../../Typings/Settings.js';
 
@@ -241,7 +242,9 @@ export const postChange: S.SettingsFile<typeof name>['postChange'] = async (
        }));
 
      if (message?.author.id === guild.client.user.id) {
-      API.channels.editMessage(message.channelId, message.id, { components: componentChunks });
+      new DiscordCore.API(message.client.rest).channels.editMessage(message.channelId, message.id, {
+       components: componentChunks,
+      });
      } else {
       client.util.request.channels.editMessage(guild, message.channelId, message.id, {
        components: componentChunks,
@@ -253,7 +256,9 @@ export const postChange: S.SettingsFile<typeof name>['postChange'] = async (
      if (!message.components.length) return;
 
      if (message?.author.id === guild.client.user.id) {
-      API.channels.editMessage(message.channelId, message.id, { components: [] });
+      new DiscordCore.API(message.client.rest).channels.editMessage(message.channelId, message.id, {
+       components: [],
+      });
      } else {
       client.util.request.channels.editMessage(guild, message.channelId, message.id, {
        components: [],

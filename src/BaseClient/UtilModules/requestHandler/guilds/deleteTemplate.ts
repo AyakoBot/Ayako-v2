@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a guild template.
@@ -20,7 +20,7 @@ export default async (guild: Discord.Guild, templateCode: string) => {
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .deleteTemplate(guild.id, templateCode)
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

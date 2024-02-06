@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
@@ -30,15 +28,17 @@ export default async (
    [Discord.PermissionFlagsBits.SendMessages],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .createForumThread(channel.id, body)
   .then((t) => Classes.Channel(channel.client, t, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

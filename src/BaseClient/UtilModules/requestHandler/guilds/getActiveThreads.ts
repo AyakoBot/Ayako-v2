@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -8,7 +8,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of parsed thread channels.
  */
 export default async (guild: Discord.Guild) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .getActiveThreads(guild.id)
   .then((threads) => {
    const parsed = threads.threads.map((t) => Classes.Channel<10>(guild.client, t, guild));

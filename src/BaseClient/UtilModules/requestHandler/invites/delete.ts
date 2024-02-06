@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes an invite for the given guild and code.
@@ -21,7 +21,9 @@ export default async (guild: Discord.Guild, code: string, reason?: string) => {
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).invites
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).invites
   .delete(code, { reason })
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

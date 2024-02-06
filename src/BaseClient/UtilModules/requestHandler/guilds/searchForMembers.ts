@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves to an array of GuildMember objects that match the search query.
  */
 export default async (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .searchForMembers(guild.id, query)
   .then((members) => {
    const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
  guild.invites.cache.get(code) ??
- (guild.client.util.cache.apis.get(guild.id) ?? API).invites
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).invites
   .get(code, query)
   .then((i) => {
    const parsed = new Classes.Invite(guild.client, i);

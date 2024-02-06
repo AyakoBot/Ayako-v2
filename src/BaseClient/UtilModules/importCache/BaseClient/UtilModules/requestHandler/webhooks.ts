@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/webhooks.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/webhooks.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/webhooks.js`),
+ file: () => import(`../../../../requestHandler/webhooks.js`),
 
  get: {
   reload: async () => {

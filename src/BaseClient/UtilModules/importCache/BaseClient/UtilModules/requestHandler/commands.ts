@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/commands.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/commands.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/commands.js`),
+ file: () => import(`../../../../requestHandler/commands.js`),
 
  getGlobalCommands: {
   reload: async () => {

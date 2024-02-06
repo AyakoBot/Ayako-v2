@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -10,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, stickerId: string) =>
  guild.stickers.cache.get(stickerId) ??
- (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .getSticker(guild.id, stickerId)
   .then((s) => {
    const parsed = new Classes.Sticker(guild.client, s);

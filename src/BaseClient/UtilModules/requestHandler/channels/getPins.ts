@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -29,7 +29,12 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   return e;
  }
 
- return (channel.guild ? channel.client.util.cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (
+  channel.guild
+   ? channel.client.util.cache.apis.get(channel.guild.id) ??
+     new DiscordCore.API(channel.client.rest)
+   : new DiscordCore.API(channel.client.rest)
+ ).channels
   .getPins(channel.id)
   .then((msgs) => {
    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));

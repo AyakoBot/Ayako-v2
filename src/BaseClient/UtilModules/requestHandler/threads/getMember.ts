@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -10,7 +10,9 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (thread: Discord.ThreadChannel, userId: string) =>
  thread.members.cache.get(userId) ??
- (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
+ (
+  thread.client.util.cache.apis.get(thread.guild.id) ?? new DiscordCore.API(thread.client.rest)
+ ).threads
   .getMember(thread.id, userId)
   .then((m) => {
    const parsed = new Classes.ThreadMember(thread, m);

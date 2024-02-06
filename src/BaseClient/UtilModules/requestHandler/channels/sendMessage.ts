@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -37,7 +37,11 @@ export default async (
   return e;
  }
 
- return (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).channels
+ return (
+  guild
+   ? guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(client.rest)
+   : new DiscordCore.API(client.rest)
+ ).channels
   .createMessage(channelId, {
    ...payload,
    message_reference: payload.message_reference

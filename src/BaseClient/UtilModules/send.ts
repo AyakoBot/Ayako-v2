@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import * as DiscordCore from '@discordjs/core';
 import Jobs from 'node-schedule';
 import type * as CT from '../../Typings/Typings.js';
 import * as Classes from '../Other/classes.js';
@@ -255,10 +256,12 @@ const getChannel = async (
      guildId: string;
     },
 ) => {
- const { default: client, API } = await import('../Bot/Client.js');
+ const { default: client } = await import('../Bot/Client.js');
 
  if ('username' in channels) {
-  const dm = await API.users.createDM(channels.id).catch(() => undefined);
+  const dm = await new DiscordCore.API(client.rest).users
+   .createDM(channels.id)
+   .catch(() => undefined);
   if (!dm) return dm;
 
   return Classes.Channel<Discord.ChannelType.DM>(client, dm, undefined as never);

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Begins pruning of inactive members in a guild.
@@ -25,7 +25,9 @@ export default async (
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).guilds
   .beginPrune(guild.id, body, { reason })
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

@@ -1,7 +1,8 @@
 import Prisma from '@prisma/client';
+import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import client, { API } from '../../../BaseClient/Bot/Client.js';
+import client from '../../../BaseClient/Bot/Client.js';
 import type * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
@@ -67,7 +68,11 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
  };
 
  if (message.author.id === process.env.mainID) {
-  API.channels.editMessage(message.channelId, message.id, payload);
+  new DiscordCore.API(message.client.rest).channels.editMessage(
+   message.channelId,
+   message.id,
+   payload,
+  );
  } else if (await client.util.isEditable(message)) {
   client.util.request.channels.editMsg(message, payload);
  }
@@ -126,7 +131,7 @@ export const endDeleteSuggestion = async (suggestion: Prisma.suggestionvotes) =>
  }
 
  if (message.author.id === process.env.mainID) {
-  API.channels.deleteMessage(message.channelId, message.id);
+  new DiscordCore.API(message.client.rest).channels.deleteMessage(message.channelId, message.id);
  } else if (await client.util.isDeleteable(message)) {
   client.util.request.channels.deleteMessage(message);
  }

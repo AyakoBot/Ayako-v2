@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,12 +9,15 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the created DM channel,
  * or rejects with a DiscordAPIError if the DM creation fails.
  */
-export default async (
- guild: Discord.Guild | undefined,
+export default async <T extends Discord.Guild | undefined>(
+ guild: T,
  userId: string,
- client?: Discord.Client<true>,
+ client: T extends Discord.Guild ? undefined : Discord.Client<true>,
 ) =>
- (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).users
+ (guild
+  ? guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+  : new DiscordCore.API(client!.rest)
+ ).users
   .createDM(userId)
   .then((c) =>
    Classes.Channel<typeof guild extends Discord.Guild ? 0 : 1>(

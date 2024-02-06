@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Leaves a thread in a guild.
@@ -19,7 +19,9 @@ export default async (thread: Discord.ThreadChannel) => {
   return e;
  }
 
- return (thread.client.util.cache.apis.get(thread.guild.id) ?? API).threads
+ return (
+  thread.client.util.cache.apis.get(thread.guild.id) ?? new DiscordCore.API(thread.client.rest)
+ ).threads
   .leave(thread.id)
   .catch((e) => {
    thread.client.util.error(thread.guild, new Error((e as Discord.DiscordAPIError).message));

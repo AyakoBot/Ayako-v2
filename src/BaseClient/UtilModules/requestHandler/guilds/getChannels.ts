@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves with an array of parsed Channel objects.
  */
 export default async (guild: Discord.Guild) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .getChannels(guild.id)
   .then((channels) => {
    const parsed = channels.map((c) => Classes.Channel(guild.client, c, guild));

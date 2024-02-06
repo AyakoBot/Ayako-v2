@@ -1,11 +1,14 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
+import * as DiscordCore from '@discordjs/core';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
-import client, { API } from '../../../../BaseClient/Bot/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 import type * as CT from '../../../../Typings/Typings.js';
 import type * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
+
+const API = new DiscordCore.API(client.rest);
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 

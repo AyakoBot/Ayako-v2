@@ -1,5 +1,6 @@
+import * as DiscordCore from '@discordjs/core';
 import DataBase from '../Bot/DataBase.js';
-import * as Client from '../Bot/Client.js';
+import client from '../Bot/Client.js';
 
 /**
  * Refreshes the access token using the provided refresh token
@@ -8,8 +9,8 @@ import * as Client from '../Bot/Client.js';
  * @returns The new access token.
  */
 export default async (refreshtoken: string) => {
- const res = await Client.API.oauth2.refreshToken({
-  client_id: Client.default.user?.id as string,
+ const res = await new DiscordCore.API(client.rest).oauth2.refreshToken({
+  client_id: client.user?.id as string,
   client_secret: process.env.secret ?? '',
   grant_type: 'refresh_token',
   refresh_token: refreshtoken,

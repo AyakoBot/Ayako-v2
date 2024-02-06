@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes the specified guild.
@@ -20,7 +20,7 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds.delete(guild.id).catch((e) => {
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds.delete(guild.id).catch((e) => {
   guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

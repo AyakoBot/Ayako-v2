@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * representing the current user, or rejects with a DiscordAPIError if an error occurs.
  */
 export default async (guild: Discord.Guild) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).users
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).users
   .getCurrent()
   .then((u) => new Classes.ClientUser(guild.client, u))
   .catch((e) => {

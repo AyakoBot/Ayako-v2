@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a message from a channel.
@@ -19,7 +19,9 @@ export default async (message: Discord.Message<true>) => {
   return e;
  }
 
- return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
+ return (
+  message.client.util.cache.apis.get(message.guild.id) ?? new DiscordCore.API(message.client.rest)
+ ).channels
   .deleteMessage(message.channelId, message.id)
   .catch((e) => {
    message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));

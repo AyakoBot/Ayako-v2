@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/stickers.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/stickers.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/stickers.js`),
+ file: () => import(`../../../../requestHandler/stickers.js`),
 
  getNitroStickers: {
   reload: async () => {

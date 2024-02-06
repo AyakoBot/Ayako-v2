@@ -1,6 +1,5 @@
 import * as Sharding from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
-import * as DiscordCore from '@discordjs/core';
 
 const client = new Discord.Client({
  shards: Sharding.getInfo().SHARD_LIST,
@@ -60,5 +59,4 @@ const client = new Discord.Client({
 client.cluster = new Sharding.ClusterClient(client);
 await client.login(process.env.Token);
 
-export const API = new DiscordCore.API(client.rest);
 export default client;

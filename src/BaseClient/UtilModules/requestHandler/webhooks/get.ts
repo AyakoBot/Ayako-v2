@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -11,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  * or rejects with a `DiscordAPIError`.
  */
 export default async (guild: Discord.Guild, webhookId: string, token?: string) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).webhooks
   .get(webhookId, { token })
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {

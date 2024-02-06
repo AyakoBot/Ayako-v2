@@ -34,7 +34,7 @@
   "forceConsistentCasingInFileNames": true,
   "skipLibCheck": true,
   "allowSyntheticDefaultImports": true,
-  "noErrorTruncation": true
+  "noErrorTruncation": false
  },
  "exclude": ["./node_modules", "./dist"]
 }

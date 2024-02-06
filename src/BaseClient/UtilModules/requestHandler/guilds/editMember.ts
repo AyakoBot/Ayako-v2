@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -33,7 +33,9 @@ export default async (
   return e;
  }
 
- return (member.client.util.cache.apis.get(member.guild.id) ?? API).guilds
+ return (
+  member.client.util.cache.apis.get(member.guild.id) ?? new DiscordCore.API(member.client.rest)
+ ).guilds
   .editMember(member.guild.id, member.id, body, { reason })
   .then((m) => new Classes.GuildMember(member.client, m, member.guild))
   .catch((e) => {

@@ -11,9 +11,9 @@ const self = {
 
  importCache: {
   reload: async () => {
-   self.importCache.file = await import(`../../importCache.js?version=${Date.now()}`);
+   self.importCache.file = () => import(`../../importCache.js?version=${Date.now()}`);
   },
-  file: await import(`../../importCache.js`),
+  file: () => import(`../../importCache.js`),
  },
  requestHandlerError: {
   reload: async () => {

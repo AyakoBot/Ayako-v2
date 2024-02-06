@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -23,7 +23,9 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).webhooks
   .editMessage(webhookId, token, messageId, body)
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {

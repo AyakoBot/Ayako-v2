@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Removes a member from a guild.
@@ -21,7 +21,9 @@ export default async (member: Discord.GuildMember, reason?: string) => {
   return e;
  }
 
- return (member.client.util.cache.apis.get(member.guild.id) ?? API).guilds
+ return (
+  member.client.util.cache.apis.get(member.guild.id) ?? new DiscordCore.API(member.client.rest)
+ ).guilds
   .removeMember(member.guild.id, member.id, { reason })
   .catch((e) => {
    member.client.util.error(member.guild, new Error((e as Discord.DiscordAPIError).message));

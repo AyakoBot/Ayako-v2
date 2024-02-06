@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/voice.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/voice.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/voice.js`),
+ file: () => import(`../../../../requestHandler/voice.js`),
 
  getVoiceRegions: {
   reload: async () => {

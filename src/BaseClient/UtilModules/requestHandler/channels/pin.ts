@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Pins a message in a guild text-based channel.
@@ -21,7 +21,9 @@ export default async (message: Discord.Message<true>) => {
   return e;
  }
 
- return (message.client.util.cache.apis.get(message.guildId) ?? API).channels
+ return (
+  message.client.util.cache.apis.get(message.guildId) ?? new DiscordCore.API(message.client.rest)
+ ).channels
   .pinMessage(message.channelId, message.id)
   .catch((e) => {
    message.client.util.error(message.guild, new Error((e as Discord.DiscordAPIError).message));

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Follows announcements from a specified channel in a guild text-based channel.
@@ -27,7 +27,9 @@ export default async (channel: Discord.GuildTextBasedChannel, followedChannelId:
   return e;
  }
 
- return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .followAnnouncements(followedChannelId, channel.id)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
   .catch((e) => {

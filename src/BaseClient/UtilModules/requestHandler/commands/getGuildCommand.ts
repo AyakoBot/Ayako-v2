@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -10,7 +10,9 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, commandId: string) =>
  guild.commands.cache.get(commandId) ??
- (guild.client.util.cache.apis.get(guild.id) ?? API).applicationCommands
+ (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).applicationCommands
   .getGuildCommand(await guild.client.util.getBotIdFromGuild(guild), guild.id, commandId)
   .then((cmd) => {
    const parsed = new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id);

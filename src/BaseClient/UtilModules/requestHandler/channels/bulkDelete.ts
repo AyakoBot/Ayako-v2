@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes multiple messages in a guild text-based channel.
@@ -18,14 +16,16 @@ export default async (channel: Discord.GuildTextBasedChannel, messages: string[]
    [Discord.PermissionFlagsBits.ManageMessages],
   );
 
-  error(channel.guild, e);
+  channel.client.util.error(channel.guild, e);
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).channels
   .bulkDeleteMessages(channel.id, messages)
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   channel.client.util.error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a webhook in a guild.
@@ -25,7 +25,9 @@ export default async (
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
   .catch((e) => {
    guild.client.util.error(guild, new Error((e as Discord.DiscordAPIError).message));

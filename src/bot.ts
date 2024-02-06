@@ -4,9 +4,11 @@ import sms from 'source-map-support';
 
 import client from './BaseClient/Bot/Client.js';
 import util from './BaseClient/Bot/Util.js';
-import './BaseClient/Bot/Events.js';
 
 client.util = util;
+
+await client.login(process.env.Token);
+await import('./BaseClient/Bot/Events.js');
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),

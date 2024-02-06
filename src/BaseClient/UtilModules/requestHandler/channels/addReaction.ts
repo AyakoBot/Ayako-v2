@@ -1,7 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Adds a reaction to a message.
@@ -22,7 +20,7 @@ export default async (msg: Discord.Message<true>, emoji: string) => {
    ],
   );
 
-  error(msg.guild, e);
+  msg.client.util.error(msg.guild, e);
   return e;
  }
 
@@ -35,7 +33,9 @@ export default async (msg: Discord.Message<true>, emoji: string) => {
   ) as Discord.DiscordAPIError;
  }
 
- return (cache.apis.get(msg.guild.id) ?? API).channels
+ return (
+  msg.client.util.cache.apis.get(msg.guild.id) ?? new DiscordCore.API(msg.client.rest)
+ ).channels
   .addMessageReaction(
    msg.channel.id,
    msg.id,
@@ -44,7 +44,7 @@ export default async (msg: Discord.Message<true>, emoji: string) => {
     : (resolvedEmoji.name as string),
   )
   .catch((e) => {
-   error(msg.guild, new Error((e as Discord.DiscordAPIError).message));
+   msg.client.util.error(msg.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

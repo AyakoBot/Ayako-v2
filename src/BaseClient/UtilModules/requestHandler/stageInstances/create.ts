@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -27,7 +27,9 @@ export default async (
   return e;
  }
 
- return (channel.client.util.cache.apis.get(channel.guild.id) ?? API).stageInstances
+ return (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).stageInstances
   .create(body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
   .catch((e) => {

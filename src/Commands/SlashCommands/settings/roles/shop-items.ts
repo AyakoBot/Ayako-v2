@@ -1,6 +1,7 @@
 import { ShopType } from '@prisma/client';
 import * as Discord from 'discord.js';
-import client, { API } from '../../../../BaseClient/Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
+import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as S from '../../../../Typings/Settings.js';
 
@@ -313,7 +314,7 @@ export const postChange: S.SettingsFile<typeof name>['postChange'] = async (
    switch (newSettings.active) {
     case true: {
      if (message?.author.id === guild.client.user.id) {
-      API.channels.editMessage(message.channelId, message.id, {
+      new DiscordCore.API(message.client.rest).channels.editMessage(message.channelId, message.id, {
        components: componentChunks.map((c) => ({
         type: Discord.ComponentType.ActionRow,
         components: c,
@@ -335,7 +336,7 @@ export const postChange: S.SettingsFile<typeof name>['postChange'] = async (
      if (!message.components.length) return;
 
      if (message?.author.id === guild.client.user.id) {
-      API.channels.editMessage(message.channelId, message.id, {
+      new DiscordCore.API(message.client.rest).channels.editMessage(message.channelId, message.id, {
        components: componentChunks
         .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
         .map((c) => ({

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 
 /**
  * Deletes a user's reaction from a message.
@@ -35,7 +35,9 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
   ) as Discord.DiscordAPIError;
  }
 
- return (message.client.util.cache.apis.get(message.guild.id) ?? API).channels
+ return (
+  message.client.util.cache.apis.get(message.guild.id) ?? new DiscordCore.API(message.client.rest)
+ ).channels
   .deleteUserMessageReaction(
    message.channel.id,
    message.id,

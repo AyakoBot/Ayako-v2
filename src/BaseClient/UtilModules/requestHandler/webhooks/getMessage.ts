@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -18,7 +18,7 @@ export default async (
  messageId: string,
  query?: Discord.RESTGetAPIWebhookWithTokenMessageQuery,
 ) =>
- (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).webhooks
   .getMessage(webhookId, token, messageId, query)
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {

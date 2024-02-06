@@ -1,8 +1,8 @@
 const self = {
  reload: async () => {
-  self.file = await import(`../../../../requestHandler/channels.js?version=${Date.now()}`);
+  self.file = () => import(`../../../../requestHandler/channels.js?version=${Date.now()}`);
  },
- file: await import(`../../../../requestHandler/channels.js`),
+ file: () => import(`../../../../requestHandler/channels.js`),
 
  sendMessage: {
   reload: async () => {

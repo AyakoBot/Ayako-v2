@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -27,7 +27,9 @@ export default async (
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).webhooks
+ return (
+  guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+ ).webhooks
   .edit(
    webhook.id,
    {

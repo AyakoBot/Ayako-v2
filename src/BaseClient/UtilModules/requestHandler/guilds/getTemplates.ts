@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -17,7 +17,7 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (guild.client.util.cache.apis.get(guild.id) ?? API).guilds
+ return (guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)).guilds
   .getTemplates(guild.id)
   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))
   .catch((e) => {

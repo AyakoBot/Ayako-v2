@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -9,7 +9,9 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (channel: Discord.StageChannel) =>
  channel.guild.stageInstances.cache.find((s) => s.channelId === channel.id) ??
- (channel.client.util.cache.apis.get(channel.guild.id) ?? API).stageInstances
+ (
+  channel.client.util.cache.apis.get(channel.guild.id) ?? new DiscordCore.API(channel.client.rest)
+ ).stageInstances
   .get(channel.id)
   .then((s) => {
    const parsed = new Classes.StageInstance(channel.client, s, channel);

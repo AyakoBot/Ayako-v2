@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
+import * as DiscordCore from '@discordjs/core';
 import * as Classes from '../../../Other/classes.js';
 
 /**
@@ -16,7 +16,10 @@ export default async <T extends Discord.Guild | undefined>(
  g?: T extends undefined ? Discord.Guild : undefined,
 ): Promise<Discord.GuildMember | Discord.DiscordAPIError> =>
  (guild ?? g)!.members.cache.get(userId) ??
- (guild ? guild.client.util.cache.apis.get(guild.id) ?? API : API).guilds
+ (guild
+  ? guild.client.util.cache.apis.get(guild.id) ?? new DiscordCore.API(guild.client.rest)
+  : new DiscordCore.API(g!.client.rest)
+ ).guilds
   .getMember((guild ?? g)!.id, userId)
   .then((m) => {
    const parsed = new Classes.GuildMember((guild ?? g)!.client, m, (guild ?? g)!);
