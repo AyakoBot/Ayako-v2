@@ -2064,7 +2064,7 @@
    "blockPlaceholder": "Select Commands to switch their Block-Status",
    "availableCmds": "Allowed Commands:",
    "blockedCmds": "Blocked Commands:",
-   "gifSrc": "Gif Source Anime:",
+   "gifSrc": "GIF Source Anime:",
    "author": "{{t.botName}} Roleplay Command Manager",
    "desc": "{{t.botName}} supports a wide variety of Roleplay Commands.\n\n**This Command serves as a Base-Command for all Roleplay-Commands.**\nEditing the Permissions of this Command will affect all Roleplay-Commands.\nTo be able __to use Permission syncing, please log into {{t.botName}}'s [Website](https://ayakobot.com/login)__ with the Button below.\nAfter you edited the Permissions of this Command, use the `Sync Permissions` Button below to sync them.\n\nAdditionally you can enable (or disable) Server-Roleplay Slash-Commands with the Button `RP-Commands`.\n__You don't need to lock this Command for certain Roles__ as this would affect all RP-Commands, the Buttons below can only be used by Server Managers.\n\n__Notice__: When re-enabling Slash-Commands you will have to re-sync them afterwards.",
    "fields": [
