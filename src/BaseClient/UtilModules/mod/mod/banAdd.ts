@@ -17,12 +17,10 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- console.log(1);
  const type = CT.ModTypes.BanAdd;
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
- console.log(2);
 
  const me = await getBotMemberFromGuild(options.guild);
  if (
@@ -32,14 +30,12 @@ export default async (
   permissionError(cmd, message, language, type);
   return false;
  }
- console.log(3);
 
  const existingBan = await request.guilds.getMemberBan(options.guild, options.target.id);
  if (!('message' in existingBan) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
- console.log(4);
 
  const res = await (memberRes
   ? request.guilds.banMember(
@@ -58,7 +54,6 @@ export default async (
   err(cmd, res, language, message, options.guild);
   return false;
  }
- console.log(5);
 
  return true;
 };
