@@ -10,10 +10,7 @@ const self = {
  execute: {
   reload: async () => {
    self.package.file = await import(
-    `../../Events/BotEvents/messageEvents/messageCreate/execute.js?nonce=${Date.now()}`,
-    {
-     assert: { type: 'json' },
-    }
+    `../../Events/BotEvents/messageEvents/messageCreate/execute.js?nonce=${Date.now()}`
    );
   },
   file: await import('../../Events/BotEvents/messageEvents/messageCreate/execute.js'),
