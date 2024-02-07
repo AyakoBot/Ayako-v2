@@ -57,6 +57,7 @@ export const canCreateThread = (
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
  me: Discord.GuildMember,
 ) =>
- body.type === Discord.ChannelType.PublicThread
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel) &&
+ (body.type === Discord.ChannelType.PublicThread
   ? me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreatePublicThreads)
-  : me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreatePrivateThreads);
+  : me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreatePrivateThreads));
