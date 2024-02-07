@@ -8,6 +8,7 @@ const suggest = new Discord.SlashCommandBuilder()
   new Discord.SlashCommandStringOption()
    .setName('content')
    .setDescription('The Content of the Suggestion')
+   .setMaxLength(4096)
    .setRequired(true),
  );
 
