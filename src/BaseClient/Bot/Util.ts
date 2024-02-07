@@ -69,6 +69,7 @@ import isEditable from '../UtilModules/isEditable.js';
 import loadingEmbed from '../UtilModules/loadingEmbed.js';
 import log from '../UtilModules/log.js';
 import makeStp from '../UtilModules/makeStp.js';
+import makeTable from '../UtilModules/makeTable.js';
 import memberBoostCalc from '../UtilModules/memberBoostCalc.js';
 import mergeLogging from '../UtilModules/mergeLogging.js';
 import mod from '../UtilModules/mod.js';
@@ -113,6 +114,7 @@ const logFiles = {
 };
 
 interface Util {
+ makeTable: typeof makeTable;
  deleteNotificationThread: typeof deleteNotificationThread;
  notificationThread: typeof notificationThread;
  DataBase: typeof DataBase;
@@ -210,6 +212,7 @@ interface Util {
 }
 
 const util: Util = {
+ makeTable,
  deleteNotificationThread,
  notificationThread,
  DataBase,
