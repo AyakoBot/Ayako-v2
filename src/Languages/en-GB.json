@@ -2161,6 +2161,11 @@
       "addField": "Create Field",
       "removeField": "Remove Field"
      },
+     "sendMessage": {
+      "text": "Send a Message in this Thread to apply it to your Embed",
+      "acceptsMentions": "Accepts Mentions",
+      "acceptsEmojis": "Accepts Emojis"
+     },
      "modals": {
       "string": {
        "label": "Insert a String below, can be empty",
@@ -2187,11 +2192,12 @@
      },
      "field-nr": "Field {{fieldNr}}",
      "selectPlaceholder": "Select a Property to edit",
+     "selectFieldPlaceholder": "Select a Field-Property to edit",
      "fieldPlaceholder": "Select or create a Field",
      "fieldSelection": "Field Selection:"
     },
     "yourEmbed": "This is your Embed",
-    "oneRequired": "At least one of the following Properties is required:",
+    "oneRequired": "__At least one of the following Properties is required__:",
     "embedProperties": {
      "title": "Title",
      "description": "Description",
@@ -2200,7 +2206,7 @@
      "author-name": "Author Name"
     },
     "author": "{{t.botName}} Embed Builder",
-    "desc": "Use the Buttons below to edit your embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)",
+    "desc": "Use the Buttons below to edit your Embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)",
     "quick": "Quick Help",
     "fields": [
      "This Part is used in Leveling Settings\n`{{newLevel}}` displays the new Level\n`{{oldLevel}}` displays the old Level\n`{{newXP}}` displays the new XP\n`{{oldXP}}` displays the old XP\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message",

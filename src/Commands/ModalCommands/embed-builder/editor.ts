@@ -1,48 +1,35 @@
 import * as Discord from 'discord.js';
 import startOver from '../../ButtonCommands/embed-builder/startOver.js';
+import { getSelectedField } from '../../ButtonCommands/embed-builder/deleteCustom.js';
+import { EmbedFields } from '../../../BaseClient/Other/constants/customEmbeds.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
 
- const fieldType = args.shift() as
-  | 'field-name'
-  | 'field-value'
-  | 'field-inline'
-  | 'timestamp'
-  | 'footer-icon'
-  | 'footer-text'
-  | 'color'
-  | 'image'
-  | 'description'
-  | 'url'
-  | 'title'
-  | 'thumbnail'
-  | 'author-url'
-  | 'author-icon'
-  | 'author-name';
+ const fieldType = args.shift() as EmbedFields;
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const newValue = cmd.fields.getTextInputValue('input') || undefined;
  const lan = language.slashCommands.embedbuilder.create.start;
- const selectedField = getSelectedField(cmd);
+ const selectedField = getSelectedField(cmd.message);
 
- let error: { errors: [{ errors: { expected: string }[] }[]] } | Error | null = null;
  try {
   const testEmbed = new Discord.EmbedBuilder();
 
   switch (fieldType) {
-   case 'field-name': {
+   case EmbedFields.FieldName: {
     testEmbed.addFields({ name: newValue || '\u200b', value: '\u200b' });
     break;
    }
-   case 'field-inline': {
+   case EmbedFields.FieldInline: {
     testEmbed.addFields({ name: '\u200b', value: '\u200b', inline: newValue === 'true' });
     break;
    }
-   case 'field-value': {
+   case EmbedFields.FieldValue: {
     testEmbed.addFields({ name: '\u200b', value: newValue || '\u200b' });
     break;
    }
-   case 'timestamp': {
+   case EmbedFields.Timestamp: {
     if (!newValue) testEmbed.setTimestamp();
     else if (newValue.toLowerCase() === lan.modals.timestamp.now) testEmbed.setTimestamp();
     else if (!Number.isNaN(+newValue)) testEmbed.setTimestamp(new Date(Number(newValue) * 1000));
@@ -51,15 +38,15 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     } else testEmbed.setTimestamp(new Date(newValue));
     break;
    }
-   case 'footer-icon': {
+   case EmbedFields.FooterIcon: {
     testEmbed.setFooter({ text: '\u200b', iconURL: newValue });
     break;
    }
-   case 'footer-text': {
+   case EmbedFields.FooterText: {
     testEmbed.setFooter({ text: newValue || '\u200b' });
     break;
    }
-   case 'color': {
+   case EmbedFields.Color: {
     if (!newValue) testEmbed.setColor(null);
     else {
      testEmbed.setColor(
@@ -70,35 +57,35 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
     }
     break;
    }
-   case 'image': {
+   case EmbedFields.Image: {
     testEmbed.setImage(newValue ?? null);
     break;
    }
-   case 'description': {
+   case EmbedFields.Description: {
     testEmbed.setDescription(newValue ?? null);
     break;
    }
-   case 'url': {
+   case EmbedFields.URL: {
     testEmbed.setURL(newValue ?? null);
     break;
    }
-   case 'title': {
+   case EmbedFields.Title: {
     testEmbed.setTitle(newValue ?? null);
     break;
    }
-   case 'thumbnail': {
+   case EmbedFields.Thumbnail: {
     testEmbed.setThumbnail(newValue ?? null);
     break;
    }
-   case 'author-url': {
+   case EmbedFields.AuthorURL: {
     testEmbed.setAuthor({ name: '\u200b', url: newValue });
     break;
    }
-   case 'author-icon': {
+   case EmbedFields.AuthorIcon: {
     testEmbed.setAuthor({ name: '\u200b', iconURL: newValue });
     break;
    }
-   case 'author-name': {
+   case EmbedFields.AuthorName: {
     testEmbed.setAuthor({ name: newValue || '\u200b' });
     break;
    }
@@ -107,35 +94,35 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    }
   }
  } catch (e) {
-  error = e as { errors: [{ errors: { expected: string }[] }[]] };
- }
+  cmd.client.util.errorCmd(
+   cmd,
+   JSON.stringify(e, null, 2)
+    .replace(/[{|}|[|\]|"|,]/g, '')
+    .split(/\n+/)
+    .filter((m) => m.includes('given') || m.includes('expected'))
+    .join('\n'),
+   language,
+  );
 
- if (error && 'message' in error) {
-  cmd.client.util.errorCmd(cmd, error as unknown as Error, language);
-  return;
- }
- if (error) {
-  const { errors } = error.errors[0][1];
-  cmd.client.util.errorCmd(cmd, errors.at(-1)?.expected as string, language);
   return;
  }
 
  const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data);
 
  switch (fieldType) {
-  case 'field-name': {
+  case EmbedFields.FieldName: {
    if (!embed.data.fields?.length) return;
    const { fields } = embed.data;
    fields[Number(selectedField)].name = newValue || '\u200b';
    break;
   }
-  case 'field-value': {
+  case EmbedFields.FieldValue: {
    if (!embed.data.fields?.length) return;
    const { fields } = embed.data;
    fields[Number(selectedField)].value = newValue || '\u200b';
    break;
   }
-  case 'timestamp': {
+  case EmbedFields.Timestamp: {
    if (!newValue) embed.setTimestamp();
    else if (newValue.toLowerCase() === lan.modals.timestamp.now) embed.setTimestamp();
    else if (!Number.isNaN(+newValue)) embed.setTimestamp(new Date(Number(newValue) * 1000));
@@ -144,7 +131,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    } else embed.setTimestamp(new Date(newValue));
    break;
   }
-  case 'footer-icon': {
+  case EmbedFields.FooterIcon: {
    if (!embed.data.footer?.text && !embed.data.footer?.icon_url && !newValue) {
     embed.setFooter(null);
    } else {
@@ -155,12 +142,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    }
    break;
   }
-  case 'footer-text': {
+  case EmbedFields.FooterText: {
    if (!newValue && !embed.data.footer?.icon_url) embed.setFooter(null);
    else embed.setFooter({ text: newValue || '\u200b', iconURL: embed.data.footer?.icon_url });
    break;
   }
-  case 'color': {
+  case EmbedFields.Color: {
    if (!newValue) embed.setColor(null);
    else {
     embed.setColor(
@@ -171,31 +158,31 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    }
    break;
   }
-  case 'image': {
+  case EmbedFields.Image: {
    if (!newValue) embed.setImage(null);
    else embed.setImage(newValue);
    break;
   }
-  case 'description': {
+  case EmbedFields.Description: {
    embed.setDescription(newValue || null);
    break;
   }
-  case 'url': {
+  case EmbedFields.URL: {
    if (!newValue) embed.setURL(null);
    else embed.setURL(newValue);
    break;
   }
-  case 'title': {
+  case EmbedFields.Title: {
    if (!newValue) embed.setTitle(null);
    else embed.setTitle(newValue);
    break;
   }
-  case 'thumbnail': {
+  case EmbedFields.Thumbnail: {
    if (!newValue) embed.setThumbnail(null);
    else embed.setThumbnail(newValue);
    break;
   }
-  case 'author-url': {
+  case EmbedFields.AuthorURL: {
    if (!newValue && !embed.data.author?.icon_url && !embed.data.author?.name) {
     embed.setAuthor(null);
    } else {
@@ -207,7 +194,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    }
    break;
   }
-  case 'author-icon': {
+  case EmbedFields.AuthorIcon: {
    if (!newValue && !embed.data.author?.url && !embed.data.author?.name) {
     embed.setAuthor(null);
    } else {
@@ -219,7 +206,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
    }
    break;
   }
-  case 'author-name': {
+  case EmbedFields.AuthorName: {
    if (!newValue && !embed.data.author?.icon_url) {
     embed.setAuthor(null);
    } else {
@@ -238,13 +225,3 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  startOver(cmd, args, embed.data, selectedField ? Number(selectedField) : null);
 };
-
-export const getSelectedField = (
- cmd:
-  | Discord.ModalMessageModalSubmitInteraction
-  | Discord.StringSelectMenuInteraction
-  | Discord.ButtonInteraction,
-) =>
- (cmd.message.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
-  (o) => o.default,
- )?.value;

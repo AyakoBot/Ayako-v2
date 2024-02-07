@@ -4,7 +4,7 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.embedbuilder.create,
  start: {
   ...t.JSON.slashCommands.embedbuilder.create.start,
-  'field-nr': (fieldNr: number) =>
+  'field-nr': (fieldNr: string) =>
    t.stp(t.JSON.slashCommands.embedbuilder.create.start['field-nr'], { fieldNr, t }),
  },
  author: t.stp(t.JSON.slashCommands.embedbuilder.create.author, { t }),

@@ -3,20 +3,17 @@ import { buildEmbed } from '../../SlashCommands/embed-builder/create.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
- const selectedOption = getSelectedField(cmd)?.value;
- if (!selectedOption) return;
 
- await cmd.client.util.DataBase.customembeds.delete({ where: { uniquetimestamp: selectedOption } });
+ await cmd.client.util.DataBase.customembeds.delete({
+  where: { uniquetimestamp: getSelectedField(cmd.message) },
+ });
 
  buildEmbed(cmd);
 };
 
-export const getSelectedField = (
- cmd:
-  | Discord.ModalMessageModalSubmitInteraction
-  | Discord.StringSelectMenuInteraction
-  | Discord.ButtonInteraction,
-) =>
- (cmd.message.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
-  (o) => !!o.default,
+export const getSelectedField = (msg: Discord.Message) =>
+ Number(
+  (msg.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
+   (o) => !!o.default,
+  )?.value,
  );

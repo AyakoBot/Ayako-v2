@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import { EmbedFields } from '../../../../../BaseClient/Other/constants/customEmbeds.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -38,13 +39,13 @@ const getValue = (arg: string, cmd: Discord.StringSelectMenuInteraction) => {
  if (!embed) return '';
 
  switch (arg) {
-  case 'author-icon':
+  case EmbedFields.AuthorIcon:
    return embed.author?.iconURL ?? '';
-  case 'image':
+  case EmbedFields.Image:
    return embed.image?.url ?? '';
-  case 'thumbnail':
+  case EmbedFields.Thumbnail:
    return embed.thumbnail?.url ?? '';
-  case 'footer-icon':
+  case EmbedFields.FooterIcon:
    return embed.footer?.iconURL ?? '';
   default:
    return '';

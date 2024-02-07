@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
-import { getSelectedField } from '../../../../ModalCommands/embed-builder/editor.js';
+import { EmbedFields } from '../../../../../BaseClient/Other/constants/customEmbeds.js';
+import startOver from '../../../../ButtonCommands/embed-builder/startOver.js';
+import { getSelectedField } from '../../../../ButtonCommands/embed-builder/deleteCustom.js';
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
@@ -7,76 +9,106 @@ export default async (
 ) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
- const maxLength = getLength(args[0]);
+ const arg = args[0] as EmbedFields;
+ const maxLength = getLength(arg);
 
- let title = lan.createButtons.selectMenu[args[0] as keyof typeof lan.createButtons.selectMenu];
+ let title = lan.createButtons.selectMenu[arg as keyof typeof lan.createButtons.selectMenu];
  if (!title) {
-  title = lan.createButtons.fieldButtons[args[0] as keyof typeof lan.createButtons.fieldButtons];
+  title = lan.createButtons.fieldButtons[arg as keyof typeof lan.createButtons.fieldButtons];
  }
 
- cmd.showModal({
-  title,
-  customId: `embed-builder/editor_${args[0]}`,
-  components: [
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.TextInput,
-      style: maxLength > 1000 ? Discord.TextInputStyle.Paragraph : Discord.TextInputStyle.Short,
-      customId: 'input',
-      label: lan.modals.string.label,
-      maxLength,
-      minLength: 0,
-      placeholder: lan.modals.string.placeholder,
-      required: false,
-      value: getValue(args[0], cmd),
-     },
-    ],
-   },
-  ],
- });
+ if (!usesMsg(arg)) {
+  cmd.showModal({
+   title,
+   customId: `embed-builder/editor_${arg}`,
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [
+      {
+       type: Discord.ComponentType.TextInput,
+       style: maxLength > 1000 ? Discord.TextInputStyle.Paragraph : Discord.TextInputStyle.Short,
+       customId: 'input',
+       label: lan.modals.string.label,
+       maxLength,
+       minLength: 0,
+       placeholder: lan.modals.string.placeholder,
+       required: false,
+       value: getValue(arg, cmd),
+      },
+     ],
+    },
+   ],
+  });
+
+  return;
+ }
+
+ const selectedField = getSelectedField(cmd.message);
+
+ await startOver(
+  cmd,
+  [],
+  cmd.message.embeds[1].data,
+  typeof selectedField === 'number' ? Number(selectedField) : null,
+  arg,
+ );
 };
 
-const getLength = (arg: string) => {
+export const getLength = (arg: EmbedFields) => {
  switch (arg) {
-  case 'title':
-  case 'author-name':
-  case 'field-name':
+  case EmbedFields.Title:
+  case EmbedFields.AuthorName:
+  case EmbedFields.FieldName:
    return 256;
-  case 'footer-text':
-  case 'description':
+  case EmbedFields.FooterText:
+  case EmbedFields.Description:
    return 2048;
-  case 'field-value':
+  case EmbedFields.FieldValue:
    return 1024;
   default:
-   return 0;
+   throw new Error(`Invalid argument ${arg}`);
+ }
+};
+
+const usesMsg = (arg: EmbedFields) => {
+ switch (arg) {
+  case EmbedFields.AuthorName:
+  case EmbedFields.FooterText:
+   return false;
+  case EmbedFields.Title:
+  case EmbedFields.FieldName:
+  case EmbedFields.FieldValue:
+  case EmbedFields.Description:
+   return true;
+  default:
+   throw new Error(`Invalid argument ${arg}`);
  }
 };
 
 const getValue = (
- arg: string,
+ arg: EmbedFields,
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
 ) => {
  const embed = cmd.message.embeds[1];
  if (!embed) return '';
 
  switch (arg) {
-  case 'title':
+  case EmbedFields.Title:
    return embed.title ?? '';
-  case 'author-name':
+  case EmbedFields.AuthorName:
    return embed.author?.name ?? '';
-  case 'field-name': {
-   const fieldIndex = getSelectedField(cmd);
+  case EmbedFields.FieldName: {
+   const fieldIndex = getSelectedField(cmd.message);
    if (!fieldIndex) return '';
    return embed.fields[Number(fieldIndex)]?.name ?? '';
   }
-  case 'footer-text':
+  case EmbedFields.FooterText:
    return embed.footer?.text ?? '';
-  case 'description':
+  case EmbedFields.Description:
    return embed.description ?? '';
-  case 'field-value': {
-   const fieldIndex = getSelectedField(cmd);
+  case EmbedFields.FieldValue: {
+   const fieldIndex = getSelectedField(cmd.message);
    if (!fieldIndex) return '';
    return embed.fields[Number(fieldIndex)]?.value ?? '';
   }

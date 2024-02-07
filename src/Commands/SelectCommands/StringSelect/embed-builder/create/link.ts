@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import { EmbedFields } from '../../../../../BaseClient/Other/constants/customEmbeds.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -38,9 +39,9 @@ const getValue = (arg: string, cmd: Discord.StringSelectMenuInteraction) => {
  if (!embed) return '';
 
  switch (arg) {
-  case 'author-url':
+  case EmbedFields.AuthorURL:
    return embed.author?.url ?? '';
-  case 'url':
+  case EmbedFields.URL:
    return embed.url ?? '';
   default:
    return '';

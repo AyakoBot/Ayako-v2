@@ -23,9 +23,21 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
       label: lan.modals.hex.label,
       maxLength: 200,
       minLength: 0,
-      placeholder: lan.modals.hex.placeholder,
       required: false,
       value: cmd.message.embeds[1].color ? `#${cmd.message.embeds[1].color?.toString(16)}` : '',
+     },
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.TextInput,
+      style: Discord.TextInputStyle.Paragraph,
+      customId: '-',
+      label: lan.modals.hex.label,
+      required: false,
+      value: lan.modals.hex.placeholder,
      },
     ],
    },

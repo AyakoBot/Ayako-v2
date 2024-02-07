@@ -3,11 +3,8 @@ import { getSelectedField } from './deleteCustom.js';
 import startOver from './startOver.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- const selectedOption = getSelectedField(cmd)?.value;
- if (!selectedOption) return;
-
  const dbEmbed = await cmd.client.util.DataBase.customembeds.findUnique({
-  where: { uniquetimestamp: selectedOption },
+  where: { uniquetimestamp: getSelectedField(cmd.message) },
  });
  if (!dbEmbed) return;
 
