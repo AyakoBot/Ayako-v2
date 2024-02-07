@@ -90,7 +90,7 @@ export default async <T extends CT.ModTypes>(
   case Prisma.$Enums.AutoPunishPunishmentType.tempmute: {
    const opts = {
     ...options,
-    duration: Number(strike.duration) * 1000,
+    duration: Number(strike.duration),
    };
 
    return {
@@ -112,7 +112,7 @@ export default async <T extends CT.ModTypes>(
 
    const opts = {
     ...options,
-    duration: Number(strike.duration) * 1000,
+    duration: Number(strike.duration),
     channel: cmd.channel.isThread()
      ? (cmd.channel.parent as NonNullable<typeof cmd.channel.parent>)
      : cmd.channel,
@@ -133,7 +133,7 @@ export default async <T extends CT.ModTypes>(
   case Prisma.$Enums.AutoPunishPunishmentType.tempban: {
    const opts = {
     ...options,
-    duration: Number(strike.duration) * 1000,
+    duration: Number(strike.duration),
     deleteMessageSeconds:
      Number(strike.deletemessageseconds) > 604800 ? 604800 : Number(strike.deletemessageseconds),
    };
