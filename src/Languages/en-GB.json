@@ -1886,7 +1886,8 @@
    "view": "View Votes",
    "accept": "Accept",
    "reject": "Reject",
-   "sent": "Suggestion submitted\nYou can delete it using the {{trash}} Button on your Suggestion"
+   "sent": "Suggestion submitted\nYou can delete it using the {{trash}} Button on your Suggestion",
+   "missingPermissions": "I can't send or view Messages in this Channel"
   },
   "reminder": {
    "reminderNotExist": "This Reminder doesn't exist",

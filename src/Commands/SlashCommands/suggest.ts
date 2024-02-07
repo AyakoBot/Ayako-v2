@@ -30,10 +30,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const files = await cmd.client.util.fileURL2Buffer(attachments.map((a) => a.url));
 
- cmd.client.util.replyCmd(cmd, {
-  content: lan.sent,
- });
-
  const m = await cmd.client.util.send(
   { id: settings.channelid, guildId: cmd.guildId },
   {
@@ -134,7 +130,18 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   },
  );
 
- if (!m) return;
+ if (!m) {
+  cmd.client.util.replyCmd(cmd, {
+   content: lan.missingPermissions,
+   files: [cmd.client.util.txtFileWriter(content)],
+  });
+
+  return;
+ }
+
+ cmd.client.util.replyCmd(cmd, {
+  content: lan.sent,
+ });
 
  cmd.client.util.DataBase.suggestionvotes
   .create({
