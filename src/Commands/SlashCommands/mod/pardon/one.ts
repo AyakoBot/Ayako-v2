@@ -33,24 +33,18 @@ export const pardon = (
  const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
 
  switch (punishment.type) {
-  case 'punish_bans': {
+  case 'punish_bans':
    return client.util.DataBase.punish_bans.deleteMany(where);
-  }
-  case 'punish_channelbans': {
+  case 'punish_channelbans':
    return client.util.DataBase.punish_channelbans.deleteMany(where);
-  }
-  case 'punish_kicks': {
+  case 'punish_kicks':
    return client.util.DataBase.punish_kicks.deleteMany(where);
-  }
-  case 'punish_mutes': {
+  case 'punish_mutes':
    return client.util.DataBase.punish_mutes.deleteMany(where);
-  }
-  case 'punish_warns': {
+  case 'punish_warns':
    return client.util.DataBase.punish_warns.deleteMany(where);
-  }
-  default: {
+  default:
    return undefined;
-  }
  }
 };
 
@@ -86,7 +80,7 @@ export const log = async (
        name: lan.executor,
        value: `${language.languageFunction.getUser(
         (await client.util.getUser(punishment.executorid)) as Discord.User,
-       )} - ${lan.channel}: \`${punishment.executorname}\``,
+       )} - ${lan.channel}: \`${punishment.channelname}\``,
        inline: false,
       },
       {
