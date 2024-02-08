@@ -8,6 +8,7 @@ import * as Discord from 'discord.js';
  * @throws An error if the channel type is unknown.
  */
 export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.Guild) => {
+ if (!channel) return 'Unknown';
  switch (channel?.type) {
   case Discord.ChannelType.GuildText: {
    switch (true) {
