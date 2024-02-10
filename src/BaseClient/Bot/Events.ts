@@ -44,15 +44,19 @@ const spawnEvents = async () => {
 };
 
 if (client.cluster?.maintenance) {
- console.log(`[Cluster ${client.cluster.id}] Cluster spawned in Maintenance-Mode`);
+ console.log(`[Cluster ${client.cluster.id + 1}] Cluster spawned in Maintenance-Mode`);
 
  client.cluster?.on('ready', async () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
   presence(client.cluster!);
-  ready();
   spawnEvents();
+  ready();
  });
-} else spawnEvents();
+} else {
+ presence(client.cluster!);
+ spawnEvents();
+ ready();
+}
 
 client.rest.on('rateLimited', (info) => {
  const str = `[Ratelimited] ${info.method} ${info.url.replace(

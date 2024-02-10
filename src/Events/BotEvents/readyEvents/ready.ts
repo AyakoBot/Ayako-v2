@@ -7,7 +7,6 @@ import startupTasks from './startupTasks.js';
 let ready = !process.argv.includes('--debug');
 
 export default async () => {
- if (ready) return;
  ready = true;
 
  log(
