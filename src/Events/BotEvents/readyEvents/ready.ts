@@ -5,13 +5,10 @@ import log from '../../../BaseClient/UtilModules/logError.js';
 import startupTasks from './startupTasks.js';
 
 let ready = !process.argv.includes('--debug');
-let wasReadyBefore = false;
 
 export default async () => {
- if (wasReadyBefore) return;
-
+ if (ready) return;
  ready = true;
- wasReadyBefore = true;
 
  log(
   `| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${client.user?.id}

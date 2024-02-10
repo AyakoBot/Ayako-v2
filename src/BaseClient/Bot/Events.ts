@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
+import ready from '../../Events/BotEvents/readyEvents/ready.js';
 import type * as Socket from '../Cluster/Socket.js';
 import { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
@@ -34,10 +35,6 @@ const spawnEvents = async () => {
   baseEventHandler(eventName, [message]);
  });
 
- client.cluster?.on('ready', (cl) => {
-  presence(cl);
- });
-
  events.ProcessEvents.forEach(async (path) => {
   const eventName = path.replace('.js', '').split(/\/+/).pop() as ProcessEvents;
   if (!eventName) return;
@@ -51,6 +48,8 @@ if (client.cluster?.maintenance) {
 
  client.cluster?.on('ready', async () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
+  presence(client.cluster!);
+  ready();
   spawnEvents();
  });
 } else spawnEvents();
