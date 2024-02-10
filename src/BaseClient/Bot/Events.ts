@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import * as Discord from 'discord.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
-import ready from '../../Events/BotEvents/readyEvents/ready.js';
+import ready, { setReady } from '../../Events/BotEvents/readyEvents/ready.js';
 import type * as Socket from '../Cluster/Socket.js';
 import { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
-import presence from './Presence.js';
 
 const spawnEvents = async () => {
  const util = await import('../UtilModules/getEvents.js');
@@ -43,17 +42,17 @@ const spawnEvents = async () => {
  });
 };
 
+setReady();
+
 if (client.cluster?.maintenance) {
  console.log(`[Cluster ${client.cluster.id + 1}] Cluster spawned in Maintenance-Mode`);
 
  client.cluster?.on('ready', async () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
-  presence(client.cluster!);
   spawnEvents();
   ready();
  });
 } else {
- presence(client.cluster!);
  spawnEvents();
  ready();
 }

@@ -1,5 +1,6 @@
 import { getInfo } from 'discord-hybrid-sharding';
 import client from '../../../BaseClient/Bot/Client.js';
+import util from '../../../BaseClient/Bot/Util.js';
 import log from '../../../BaseClient/UtilModules/logError.js';
 
 import startupTasks from './startupTasks.js';
@@ -7,6 +8,8 @@ import startupTasks from './startupTasks.js';
 let ready = !process.argv.includes('--debug');
 
 export default async () => {
+ client.util = util;
+
  if (ready) return;
  ready = true;
 
@@ -24,3 +27,6 @@ export default async () => {
 };
 
 export const getReady = () => ready;
+export const setReady = () => {
+ ready = false;
+};

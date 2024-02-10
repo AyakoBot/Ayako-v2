@@ -22,10 +22,9 @@ export default async () => {
  nitroHandler();
  separators();
 
- presence(client.cluster!);
-
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
+  presence(client.cluster!);
 
   Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
    if (client.user?.id === client.util.mainID) {
