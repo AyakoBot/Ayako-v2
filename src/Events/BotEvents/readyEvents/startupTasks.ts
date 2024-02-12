@@ -12,8 +12,6 @@ import timedManager from './timedFiles/timedManager.js';
 import verification from './timedFiles/verification.js';
 import websiteFetcher from './timedFiles/websiteFetcher.js';
 
-import presence from '../../../BaseClient/Bot/Presence.js';
-
 export default async () => {
  await customAPIsHandler();
  customBotCommands();
@@ -24,7 +22,6 @@ export default async () => {
 
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
-  presence(client.cluster!);
 
   Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
    if (client.user?.id === client.util.mainID) {
