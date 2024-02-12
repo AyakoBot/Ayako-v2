@@ -49,11 +49,11 @@ if (client.cluster?.maintenance) {
 
  client.cluster?.on('ready', async () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
-  spawnEvents();
+  await spawnEvents();
   ready();
  });
 } else {
- spawnEvents();
+ await spawnEvents();
  ready();
 }
 
