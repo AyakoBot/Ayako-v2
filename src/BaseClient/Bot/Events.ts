@@ -42,18 +42,18 @@ const spawnEvents = async () => {
  });
 };
 
-setReady();
-
 if (client.cluster?.maintenance) {
  console.log(`[Cluster ${client.cluster.id + 1}] Cluster spawned in Maintenance-Mode`);
 
  client.cluster?.on('ready', async () => {
   console.log(`[Cluster ${Number(client.cluster?.id) + 1}] Cluster moved into Ready-State`);
   await spawnEvents();
+  setReady();
   ready();
  });
 } else {
  await spawnEvents();
+ setReady();
  ready();
 }
 

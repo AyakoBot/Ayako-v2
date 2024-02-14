@@ -11,6 +11,7 @@ import DataBase from '../Bot/DataBase.js';
 
 export default async (guild: Discord.Guild | null) => {
  if (!guild) return;
+ if (!guild.roles.everyone) return;
  if (!(guild instanceof Discord.Guild)) return;
 
  if (cache.interactedGuilds.has(guild.id)) return;
@@ -55,7 +56,7 @@ const tasks = {
   });
  },
  welcomeScreen: async (guild: Discord.Guild) => {
-  if (guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
+  if (guild.features?.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
    cache.welcomeScreens.get(guild);
   }
  },
