@@ -38,7 +38,7 @@ dependencies:
     specifier: link:prisma/client@latest
     version: link:prisma/client@latest
   discord-api-types:
-    specifier: ^0.37.69
+    specifier: ^0.37.67
     version: 0.37.69
   discord-hybrid-sharding:
     specifier: ^2.1.4
@@ -47,13 +47,13 @@ dependencies:
     specifier: ^14.14.1
     version: 14.14.1(patch_hash=2j64ngi3dbftnm7xidy7uk3jxm)
   dotenv:
-    specifier: ^16.4.2
+    specifier: ^16.3.1
     version: 16.4.2
   express:
     specifier: ^4.18.2
     version: 4.18.2
   fastify:
-    specifier: ^4.26.0
+    specifier: ^4.25.2
     version: 4.26.0
   glob:
     specifier: ^10.3.10
@@ -71,7 +71,7 @@ dependencies:
     specifier: ^2.1.3
     version: 2.1.3
   nanoid:
-    specifier: ^5.0.5
+    specifier: ^5.0.4
     version: 5.0.5
   nekos-best.js:
     specifier: ^6.3.0
@@ -84,7 +84,7 @@ dependencies:
     version: 2.1.1
   os: {specifier: ^0.1.2, version: 0.1.2}
   prettier:
-    specifier: ^3.2.5
+    specifier: ^3.1.1
     version: 3.2.5
   purrbot-api:
     specifier: ^1.3.1
@@ -93,17 +93,17 @@ dependencies:
     specifier: ^2.88.2
     version: 2.88.2
   socket.io-client:
-    specifier: ^4.7.4
+    specifier: ^4.7.3
     version: 4.7.4
   string-similarity:
     specifier: ^4.0.4
     version: 4.0.4
   topgg-autoposter:
-    specifier: ^2.0.2
+    specifier: ^2.0.1
     version: 2.0.2
   undici:
-    specifier: ^6.6.2
-    version: 6.6.2
+    specifier: ^5.28.3
+    version: 5.28.3
   valid-url:
     specifier: ^1.0.9
     version: 1.0.9
@@ -116,7 +116,7 @@ dependencies:
 
 devDependencies:
   '@babel/eslint-parser':
-    specifier: ^7.23.10
+    specifier: ^7.23.3
     version: 7.23.10(@babel/core@7.23.9)(eslint@8.56.0)
   '@babel/eslint-plugin':
     specifier: ^7.23.5
@@ -143,13 +143,13 @@ devDependencies:
     specifier: ^0.7.34
     version: 0.7.34
   '@types/node':
-    specifier: ^20.11.17
+    specifier: ^20.10.7
     version: 20.11.17
   '@types/node-schedule':
-    specifier: ^2.1.6
+    specifier: ^2.1.5
     version: 2.1.6
   '@types/pg':
-    specifier: ^8.11.0
+    specifier: ^8.10.9
     version: 8.11.0
   '@types/request':
     specifier: ^2.48.12
@@ -167,10 +167,10 @@ devDependencies:
     specifier: ^8.5.10
     version: 8.5.10
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.21.0
+    specifier: ^6.18.0
     version: 6.21.0(@typescript-eslint/parser@6.21.0)(eslint@8.56.0)(typescript@5.3.3)
   '@typescript-eslint/parser':
-    specifier: ^6.21.0
+    specifier: ^6.18.0
     version: 6.21.0(eslint@8.56.0)(typescript@5.3.3)
   eslint:
     specifier: ^8.56.0
@@ -194,7 +194,7 @@ devDependencies:
     specifier: ^6.8.0
     version: 6.8.0(eslint@8.56.0)
   eslint-plugin-prettier:
-    specifier: ^5.1.3
+    specifier: ^5.1.2
     version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@8.56.0)(prettier@3.2.5)
   prisma:
     specifier: ^5.9.1
@@ -4568,13 +4568,6 @@ packages:
   /undici@5.28.3:
     resolution: {integrity: sha512-3ItfzbrhDlINjaP0duwnNsKpDQk3acHI3gVJ1z4fmwMK31k5G9OVIAMLSIaP6w4FaGkaAkN6zaQO9LUvZ1t7VA==}
     engines: {node: '>=14.0'}
-    dependencies:
-      '@fastify/busboy': 2.1.0
-    dev: false
-
-  /undici@6.6.2:
-    resolution: {integrity: sha512-vSqvUE5skSxQJ5sztTZ/CdeJb1Wq0Hf44hlYMciqHghvz+K88U0l7D6u1VsndoFgskDcnU+nG3gYmMzJVzd9Qg==}
-    engines: {node: '>=18.0'}
     dependencies:
       '@fastify/busboy': 2.1.0
     dev: false
