@@ -3,6 +3,8 @@ import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (guild: Discord.Guild | undefined) => {
+ if (!guild) return;
+
  const webhook = await client.fetchWebhook(
   process.env.guildActionWebhookID ?? '',
   process.env.guildActionWebhookToken ?? '',

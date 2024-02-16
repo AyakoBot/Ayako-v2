@@ -257,6 +257,7 @@ export const tasks = {
   const claimTimeouts = await client.util.DataBase.giveawaycollection.findMany({
    where: { guildid: guild.id },
   });
+
   claimTimeouts?.forEach((t) => {
    client.util.cache.giveawayClaimTimeout.set(
     Jobs.scheduleJob(

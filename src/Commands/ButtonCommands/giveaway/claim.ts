@@ -2,8 +2,9 @@ import * as Discord from 'discord.js';
 import { getButton, getClaimButton, getMessage } from '../../SlashCommands/giveaway/end.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+ if (!cmd.inCachedGuild()) return;
  if (!cmd.guild) return;
+ console.log('gw', 1);
 
  const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
   where: { msgid: cmd.message.id, ended: true },
@@ -16,11 +17,13 @@ export default async (cmd: Discord.ButtonInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.claim;
 
+ console.log('gw', 2);
  if (!giveaway || !giveaway.actualprize) {
   cmd.client.util.errorCmd(cmd, language.slashCommands.giveaway.notFound, language);
   return;
  }
 
+ console.log('gw', 3);
  if (!giveaway.winners?.includes(cmd.user.id)) {
   cmd.client.util.errorCmd(cmd, lan.notWinner, language);
   return;
@@ -28,6 +31,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
  cmd.client.util.replyCmd(cmd, { content: giveaway.actualprize });
 
+ console.log('gw', 4);
  if (!giveawayCollection?.requiredwinners?.length) return;
  const newWinners = giveawayCollection.requiredwinners.filter((w) => w !== cmd.user.id);
 
@@ -49,9 +53,12 @@ export default async (cmd: Discord.ButtonInteraction) => {
   where: { msgid: cmd.message.id },
  });
 
+ console.log('gw', 5);
  if (newWinners.length) return;
+ console.log('gw', 6);
+
  cmd.client.util.DataBase.giveawaycollection.delete({ where: { msgid: cmd.message.id } }).then();
- cmd.client.util.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
+ cmd.client.util.cache.giveawayClaimTimeout.delete(cmd.guildId, cmd.message.id);
  giveaway.claimingdone = true;
 
  const giveawayMessage = await getMessage(giveaway);
