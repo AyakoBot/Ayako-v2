@@ -3,12 +3,12 @@ import { create as installSlashCommands } from '../../../../Commands/ButtonComma
 import cache from './cache.js';
 import thanks4Adding from './thanks4Adding.js';
 import log from './log.js';
-
-// TODO: Finish this event
+import ayakoRole from './ayakoRole.js';
 
 export default async (guild: Discord.Guild) => {
  thanks4Adding(guild);
  log(guild);
  cache(guild);
  installSlashCommands(guild);
+ ayakoRole(guild);
 };

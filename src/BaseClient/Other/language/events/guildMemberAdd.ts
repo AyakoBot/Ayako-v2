@@ -1,3 +1,4 @@
+import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
@@ -23,5 +24,17 @@ export default (t: CT.Language) => ({
    t.stp(t.JSON.events.guildMemberAdd.antiraid.banningError, { amount: amount || '0' }),
   kickingError: (amount: number) =>
    t.stp(t.JSON.events.guildMemberAdd.antiraid.kickingError, { amount: amount || '0' }),
+ },
+ thanks4Adding: {
+  ...t.JSON.events.guildMemberAdd.thanks4Adding,
+  thanksUser: (u: string) =>
+   t.stp(t.JSON.events.guildMemberAdd.thanks4Adding.thanksUser, { adder: u }),
+  fields: (g: Discord.Guild) =>
+   t.JSON.events.guildMemberAdd.thanks4Adding.fields.map((f) => ({
+    ...f,
+    value: t.stp(f.value, {
+     rulesChannel: g.rulesChannel ?? t.JSON.events.guildMemberAdd.thanks4Adding.needsCommunity,
+    }),
+   })),
  },
 });

@@ -694,6 +694,35 @@
     "embed": "Welcome {{member}} to {{member.guild.name}}!",
     "test": "Test Welcome Message"
    },
+   "thanks4Adding": {
+    "settings": "**Settings**\n\nAll Settings can be found with the `/settings` Command",
+    "rp": "**RP Commands**\n\nBy default, RP-Commands are enabled. To disable them visit </rp manager:1189680079274528811>\nThis Command also allows for bulk-editing Command-Permissions\nCompletely disable single Commands through `Server Settings > Integrations > Ayako` by disabling the Command in All Channels/for All Roles",
+    "mod": "**Mod Commands**\n\nI support a wide variaty of Moderation-Commands. You can find them all in </help moderation:1189680079794610209>\nFor advanced Permission-Setup visit </mod permissions:1189680080276951063>\n\nA limited Amount of Commands is still available as Prefix-Commands (ban, strike, warn, kick). These will only be accessible after their respective Slash-Command has been separated from the `/mod` Command, and are only accessible to users qualifying for their respective Slash-Command\nCheck </mod permissions:1189680080276951063> for more Information",
+    "thanksUser": "<@{{user}}> Thank you for adding me",
+    "thanks": "Thank you for adding me! I was unable to find who added me, but I'm still grateful!",
+    "needsCommunity": "Your Server needs to have Community enabled",
+    "desc": "__Need a hand?__ Quick help can be found in the Buttons below\n__Notice:__ by default, I will notify Users I have not seen before about my Privacy Policy and Terms of Service\nTo disable this Notification, visit </settings basic:1189680078729252884> and un-tick `Privacy & Terms Reminder`",
+    "fields": [
+     {
+      "name": "Notification Systems",
+      "value": "I use 2 important Types of Notification Systems: `Error Notifications` and `User Notifications`"
+     },
+     {
+      "name": "Error Notifications",
+      "value": "If I run into a Permission Issue, or an Error, I will try to notify the Server Staff about it.\nFor this to work, please set a valid `Error Channel` using </settings basic:1189680078729252884>\nIf you run into Issues, or are confused about an Error, join the Support Server linked below."
+     },
+     {
+      "name": "User Notifications",
+      "value": "I will use Private-Threads in your Server's Rules-Channel ({{rulesChannel}}) to notify Users about their Punishment-Actions (Warns, Mutes, Channel-Bans), Vote-Reminders, Appeal Status, and everything else.\n(This excludes Ban, Temp-Ban, Soft-Ban, and Kick Notifications as Users would be unable to view them)\n__I strongly advise you to__ Update your Rules-Channel Permissions to **allow me** to `Create Private Threads`, `Send Messages in Threads`, and `Manage Threads` in it.\nAdditionally, I recommend **disallowing** @everyone `Send Messages in Threads` in your Rules-Channel."
+     }
+    ],
+    "buttons": {
+     "mod": "Mod Commands",
+     "rp": "RP Commands",
+     "settings": "Settings",
+     "support": "Support Server"
+    }
+   },
    "antiraid": {
     "title": "Raid suspected/detected",
     "desc": "In the last 5 Minutes {{totalAmount}} Users have joined the Server, of which {{susAmount}} Users have been flagged as suspicious.",
