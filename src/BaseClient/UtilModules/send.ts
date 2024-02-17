@@ -19,11 +19,7 @@ async function send(
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
-async function send(
- channels: Discord.TextBasedChannel,
- payload: CT.UsualMessagePayload,
- timeout?: number,
-): Promise<Discord.Message | null | void>;
+
 async function send(
  channels: { id: string; guildId: string },
  payload: CT.UsualMessagePayload,
@@ -34,6 +30,11 @@ async function send(
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
+async function send(
+ channels: Discord.TextBasedChannel | Discord.ThreadChannel,
+ payload: CT.UsualMessagePayload,
+ timeout?: number,
+): Promise<Discord.Message | null | void>;
 /**
  * Sends a message to a Discord channel or user.
  * @param channels - The channel or user to send the message to.
