@@ -3,6 +3,7 @@ import { getEmbed, getLongest, getOwnLevel } from './server.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+ await cmd.deferReply({ ephemeral: true });
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
@@ -41,5 +42,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  embed.fields?.push(...(ownLevel ?? []));
 
- cmd.client.util.replyCmd(cmd, { embeds: [embed] });
+ cmd.editReply({ embeds: [embed] });
 };

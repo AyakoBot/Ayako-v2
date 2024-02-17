@@ -5,6 +5,7 @@ import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
+ await cmd.deferReply({ ephemeral: true });
 
  const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.leaderboard;
@@ -30,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.guild,
  );
 
- client.util.replyCmd(cmd, { embeds: [embed] });
+ cmd.editReply({ embeds: [embed] });
 };
 
 const getDaysPerUsers = (nitroUsers: Prisma.nitrousers[]) => {
