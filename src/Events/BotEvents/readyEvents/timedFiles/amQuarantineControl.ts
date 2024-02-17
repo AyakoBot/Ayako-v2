@@ -3,25 +3,31 @@ import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default () => {
- const guild = client.guilds.cache.get('298954459172700181');
- if (!guild) return;
+ const guilds = [
+  client.guilds.cache.get('298954459172700181'),
+  client.guilds.cache.get('266632338883084290'),
+ ];
 
- const members = guild.members.cache.filter((m) => m.user.flags?.has(Discord.UserFlags.Spammer));
+ guilds.forEach((guild) => {
+  if (!guild) return;
 
- members.forEach((m) => {
-  client.util.mod(
-   undefined,
-   CT.ModTypes.BanAdd,
-   {
-    dbOnly: false,
-    deleteMessageSeconds: 0,
-    executor: guild.client.user,
-    guild,
-    reason: 'Suspected Spammer',
-    target: m.user,
-    skipChecks: false,
-   },
-   undefined,
-  );
+  const members = guild.members.cache.filter((m) => m.user.flags?.has(Discord.UserFlags.Spammer));
+
+  members.forEach((m) => {
+   client.util.mod(
+    undefined,
+    CT.ModTypes.BanAdd,
+    {
+     dbOnly: false,
+     deleteMessageSeconds: 0,
+     executor: guild.client.user,
+     guild,
+     reason: 'Suspected Spammer',
+     target: m.user,
+     skipChecks: false,
+    },
+    undefined,
+   );
+  });
  });
 };
