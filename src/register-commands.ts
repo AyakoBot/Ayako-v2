@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-import 'dotenv/config';
-import * as DiscordRest from '@discordjs/rest';
 import * as DiscordCore from '@discordjs/core';
-import commands from './SlashCommands/index.js';
+import * as DiscordRest from '@discordjs/rest';
+import 'dotenv/config';
+import fetch from 'node-fetch';
 import DataBase from './BaseClient/Bot/DataBase.js';
+import commands from './SlashCommands/index.js';
 
 const createCommands = Object.values(commands.public);
 
@@ -17,6 +18,15 @@ requestHandler(process.env.Token ?? '')
   createCommands.map((c) => c.toJSON()),
  )
  .then((r) => console.log(`[MAIN] Registered ${r.length} Global Commands`));
+
+fetch('https://discordbotlist.com/api/v1/bots/650691698409734151/commands', {
+ method: 'post',
+ headers: {
+  Authorization: process.env.DBListToken ?? '',
+  'Content-Type': 'application/json',
+ },
+ body: JSON.stringify(createCommands.map((c) => c.toJSON())),
+});
 
 (
  await DataBase.guildsettings.findMany({ where: { token: { not: null }, appid: { not: null } } })
