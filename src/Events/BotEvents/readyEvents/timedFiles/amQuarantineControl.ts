@@ -8,8 +8,10 @@ export default () => {
   client.guilds.cache.get('266632338883084290'),
  ];
 
- guilds.forEach((guild) => {
+ guilds.forEach(async (guild) => {
   if (!guild) return;
+
+  await guild.client.util.fetchAllGuildMembers(guild);
 
   const members = guild.members.cache.filter((m) => m.user.flags?.has(Discord.UserFlags.Spammer));
 
