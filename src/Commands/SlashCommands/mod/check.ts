@@ -30,6 +30,7 @@ export const getPayload = async (
  const lan = language.slashCommands.check;
  const allPunishments = await client.util.getPunishment(baseInfo.user.id, {
   identType: 'all-on',
+  includeTemp: true,
   guildid: baseInfo.guild.id,
  });
 
@@ -37,7 +38,7 @@ export const getPayload = async (
 
  const punishedOpts = {
   isBanned: !('message' in ban),
-  isMuted: baseInfo.member?.isCommunicationDisabled() ?? false,
+  isMuted: !!baseInfo.member?.isCommunicationDisabled(),
   isChannelBanned: !!baseInfo.guild.channels.cache.find((c) => {
    const perms = c.permissionsFor(baseInfo.user.id)?.serialize();
 
@@ -189,8 +190,9 @@ export const getPayload = async (
       }`,
       options: punishmentsOfPage?.length
        ? punishmentsOfPage.slice(0, 25).map((p) => ({
-          label: `ID: ${Number(p.uniquetimestamp).toString(36)} | ${baseInfo.language?.slashCommands
-           .pardon.executor}: ${p.executorname}`,
+          label: `ID: ${Number(p.uniquetimestamp).toString(36)} | ${
+           baseInfo.language?.slashCommands.pardon.executor
+          }: ${p.executorname}`,
           description: p.reason?.slice(0, 100),
           value: String(p.uniquetimestamp),
           default: selected.values.includes(Number(p.uniquetimestamp)),
