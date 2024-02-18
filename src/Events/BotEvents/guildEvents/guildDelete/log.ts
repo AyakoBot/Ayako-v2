@@ -16,16 +16,16 @@ export default async (guild: Discord.Guild | undefined) => {
    0,
   ) ?? 0;
 
- webhook?.send({
+ const payload = {
   embeds: [
    {
     color: CT.Colors.Danger,
     description: '<@&669894051851403294> left a Guild',
     fields: [
      { name: 'Guild Name', value: guild?.name || 'Unknown/Uncached', inline: true },
-     { name: 'Guild ID', value: String(guild?.id) || 'Unknown/Uncached', inline: true },
-     { name: 'Membercount', value: String(guild?.memberCount) || 'Unknown/Uncached', inline: true },
-     { name: 'Guild Owner ID', value: String(guild?.ownerId) || 'Unknown/Uncached', inline: true },
+     { name: 'Guild ID', value: String(guild?.id), inline: true },
+     { name: 'Membercount', value: String(guild?.memberCount), inline: true },
+     { name: 'Guild Owner ID', value: String(guild?.ownerId), inline: true },
     ],
     timestamp: new Date().toISOString(),
     footer: {
@@ -33,5 +33,9 @@ export default async (guild: Discord.Guild | undefined) => {
     },
    },
   ],
- });
+ };
+
+ if (['Unknown/Uncached', 'undefined'].includes(payload.embeds[0].fields[2].value)) return;
+
+ webhook?.send(payload);
 };
