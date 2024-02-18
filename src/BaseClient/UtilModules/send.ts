@@ -4,6 +4,7 @@ import * as CT from '../../Typings/Typings.js';
 import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
 import log from './logError.js';
+import { getEmbedCharLens, isValidPayload } from './requestHandler/channels/sendMessage.js';
 
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
@@ -19,7 +20,6 @@ async function send(
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<(Discord.Message | null | void)[] | null | void>;
-
 async function send(
  channels: { id: string; guildId: string },
  payload: CT.UsualMessagePayload,
@@ -52,6 +52,7 @@ async function send(
  payload: CT.UsualMessagePayload,
  timeout?: number,
 ): Promise<Discord.Message | (Discord.Message | null | void)[] | null | void> {
+ if (!isValidPayload(payload)) return null;
  if (!channels) return null;
 
  if (Array.isArray(channels)) {
@@ -214,32 +215,6 @@ const combineMessages = async (
    }
   }),
  );
-};
-
-/**
- * Calculates the total character length of all strings in an array of Discord API embeds.
- * @param embeds - An array of Discord API embeds.
- * @returns The total character length of all strings in the embeds.
- */
-const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
- let total = 0;
- embeds.forEach((embed) => {
-  Object.values(embed).forEach((data) => {
-   if (typeof data === 'string') {
-    total += data.length;
-   }
-  });
-
-  for (let i = 0; i < (embed.fields ? embed.fields.length : 0); i += 1) {
-   const field = embed.fields ? embed.fields[i] : null;
-
-   if (!field) return;
-
-   if (typeof field.name === 'string') total += field.name.length;
-   if (typeof field.value === 'string') total += field.value.length;
-  }
- });
- return total;
 };
 
 /**
