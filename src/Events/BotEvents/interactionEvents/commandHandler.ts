@@ -35,22 +35,19 @@ export default async (cmd: Discord.Interaction) => {
  if (!command) return;
 
  const commandName = command.split(/\//g).pop() as string;
- const cooldown = cmd.client.util.cache.cooldown
-  .get(cmd.channelId)
-  ?.get(
-   commandName ||
-    (cmd.client.util.constants.commands.interactions.find((c) => c.name === commandName)
-     ? 'interactions'
-     : ''),
-  );
 
- if (cooldown) {
+ if (
+  cmd.client.util.cache.cooldown.get(cmd.channelId)?.has(commandName) ||
+  cmd.client.util.cache.cooldown
+   .get(cmd.channelId)
+   ?.has(
+    cmd.client.util.constants.commands.interactions.find((c) => c.name === commandName)
+     ? 'interactions'
+     : '',
+   )
+ ) {
   const language = await cmd.client.util.getLanguage(cmd.guildId);
-  cmd.client.util.errorCmd(
-   cmd,
-   language.events.interactionCreate.cooldown(cmd.client.util.moment(cooldown, language)),
-   language,
-  );
+  cmd.client.util.errorCmd(cmd, language.events.interactionCreate.cooldown, language);
   return;
  }
 

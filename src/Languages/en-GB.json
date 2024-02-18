@@ -796,7 +796,7 @@
    "author": "{{t.botName}} Punishment Appeal System"
   },
   "interactionCreate": {
-   "cooldown": "This Command is on Cooldown for {{t}}"
+   "cooldown": "This Command is on Cooldown"
   }
  },
  "punishmentAction": {
