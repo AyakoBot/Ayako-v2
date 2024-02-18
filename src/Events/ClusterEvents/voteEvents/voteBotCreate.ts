@@ -58,8 +58,10 @@ export default async (
  }
 
  rewards.forEach((r) => {
+  const rewardRoles = r.rewardroles?.filter((roleID) => !member?.roles.cache.has(roleID));
+
   currency(r, user, guild);
-  roles(r, member, bot, language);
+  roles(rewardRoles, member, bot, language);
   xp(r, user, guild);
   xpmultiplier(r, user, guild);
 
@@ -67,7 +69,7 @@ export default async (
    .upsert({
     where: { userid_voted: { userid: user.id, voted: vote.bot } },
     update: {
-     rewardroles: { push: r.rewardroles },
+     rewardroles: { push: rewardRoles },
      rewardxp: { increment: Number(r.rewardxp) },
      rewardcurrency: { increment: Number(r.rewardcurrency) },
      rewardxpmultiplier: { increment: Number(r.rewardxpmultiplier) },
@@ -75,7 +77,7 @@ export default async (
     create: {
      voted: vote.bot,
      userid: user.id,
-     rewardroles: r.rewardroles,
+     rewardroles: rewardRoles,
      rewardxp: r.rewardxp,
      rewardcurrency: r.rewardcurrency,
      rewardxpmultiplier: r.rewardxpmultiplier,
@@ -258,15 +260,15 @@ export const currency = (r: Prisma.voterewards, user: Discord.User, guild: Disco
 };
 
 export const roles = async (
- r: Prisma.voterewards,
+ r: string[],
  member: Discord.GuildMember | undefined,
  bot: Discord.User,
  language: CT.Language,
 ) => {
- if (!r.rewardroles?.length) return;
+ if (!r.length) return;
  if (!member) return;
 
- bot.client.util.roleManager.add(member, r.rewardroles, language.events.vote.botReason(bot), 1);
+ bot.client.util.roleManager.add(member, r, language.events.vote.botReason(bot), 1);
 };
 
 export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Guild) => {
