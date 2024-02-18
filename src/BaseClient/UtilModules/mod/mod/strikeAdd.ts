@@ -34,12 +34,7 @@ export default async <T extends CT.ModTypes>(
 
  if (!strike) {
   cache.punishments.delete(options.target.id);
-  rawOpts.guild.client.util.files['/BaseClient/UtilModules/mod.js'](
-   cmd,
-   CT.ModTypes.WarnAdd,
-   options,
-   message,
-  );
+  rawOpts.guild.client.util.mod(cmd, CT.ModTypes.WarnAdd, options, message);
   return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
  }
 

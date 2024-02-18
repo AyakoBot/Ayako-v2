@@ -92,7 +92,7 @@ async function send(
 
  payload.embeds?.forEach((e) => {
   if (e.author && !e.author.url) {
-   e.author.url = channel.client.util.files['/BaseClient/Other/constants.js'].standard.invite;
+   e.author.url = channel.client.util.constants.standard.invite;
   }
 
   e.fields?.forEach((f) => {
