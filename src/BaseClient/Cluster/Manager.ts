@@ -1,8 +1,6 @@
 import * as Sharding from 'discord-hybrid-sharding';
-import * as Discord from 'discord.js';
 import 'dotenv/config';
 import readline from 'readline';
-import * as AutoPoster from 'topgg-autoposter';
 import log from '../UtilModules/logError.js';
 
 const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
@@ -55,21 +53,3 @@ rl.on('line', async (msg: string) => {
  log('[Cluster Manager] Restarting all Clusters...', true);
  await Manager.recluster?.start({ restartMode: 'rolling' });
 });
-
-if (
- Buffer.from(process.env.Token?.replace('Bot ', '').split('.')[0] ?? '0', 'base64').toString() ===
- process.env.mainID
-) {
- new AutoPoster.DJSSharderPoster(
-  process.env.topGGToken ?? '',
-  new Discord.ShardingManager(`./dist/bot.js`, {
-   totalShards: Manager.totalShards,
-   shardList: Manager.shardList,
-   mode: Manager.mode,
-   respawn: Manager.respawn,
-   shardArgs: Manager.shardArgs,
-   execArgv: Manager.execArgv,
-  }),
-  { startPosting: true },
- );
-}

@@ -37,6 +37,7 @@ https://support.ayakobot.com`,
 const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
 const APIDiscords = 'https://discords.com/bots/api/bot/650691698409734151/setservers';
+const APITopGG = 'https://top.gg/api/bots/650691698409734151/stats';
 
 const getAllUsers = async () => {
  const userSize = (await Manager.broadcastEval((c) =>
@@ -50,6 +51,16 @@ const getAllGuilds = async () => {
  const guildSize = (await Manager.broadcastEval((c) => c.guilds.cache.size)) ?? [0];
 
  return guildSize?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
+};
+
+const splitBetweenShards = (x: number, y: number): number[] => {
+ const quotient = Math.floor(x / y);
+ const remainder = x % y;
+ const result = Array(y).fill(quotient);
+ for (let i = 0; i < remainder; i += 1) {
+  result[i] += 1;
+ }
+ return result;
 };
 
 if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.env.mainID) {
@@ -87,6 +98,19 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     'Content-Type': 'application/json',
    },
    body: JSON.stringify({ server_count: guilds }),
+  });
+
+  fetch(APITopGG, {
+   method: 'post',
+   headers: {
+    Authorization: process.env.topGGToken ?? '',
+    'Content-Type': 'application/json',
+   },
+   body: JSON.stringify({
+    server_count: guilds,
+    shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => String(c)),
+    shard_count: Manager.totalShards,
+   }),
   });
  });
 }

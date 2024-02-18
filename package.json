@@ -40,7 +40,6 @@
   "request": "^2.88.2",
   "socket.io-client": "^4.7.3",
   "string-similarity": "^4.0.4",
-  "topgg-autoposter": "^2.0.1",
   "undici": "^6.3.0",
   "valid-url": "^1.0.9",
   "waifu-pics-api": "^1.0.5",
