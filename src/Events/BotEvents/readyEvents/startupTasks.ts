@@ -6,6 +6,7 @@ import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
 import separators from './startupTasks/separators.js';
 
+import amQuarantineControl from './timedFiles/amQuarantineControl.js';
 import antivirusBlocklistCacher from './timedFiles/antivirusBlocklistCacher.js';
 import nitroHandler from './timedFiles/nitroHandler.js';
 import timedManager from './timedFiles/timedManager.js';
@@ -16,6 +17,7 @@ export default async () => {
  customBotCommands();
 
  antivirusBlocklistCacher();
+ amQuarantineControl();
  nitroHandler();
  separators();
 
@@ -41,7 +43,10 @@ export default async () => {
  });
 
  Jobs.scheduleJob('0 * * * * *', async () => verification());
- Jobs.scheduleJob('0 */30 * * *', async () => antivirusBlocklistCacher());
+ Jobs.scheduleJob('0 */30 * * *', async () => {
+  antivirusBlocklistCacher();
+  amQuarantineControl();
+ });
  Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
 };
 
