@@ -33,6 +33,10 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  else payload.flags = Discord.MessageFlags.Ephemeral;
  delete payload.ephemeral;
 
+ if (!payload.flags) {
+  (payload.flags as unknown as number) = Discord.MessageFlags.SuppressNotifications;
+ }
+
  payload.embeds
   ?.filter((e) => !!e)
   .forEach((embed) => {
