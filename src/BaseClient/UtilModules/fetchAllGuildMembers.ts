@@ -7,6 +7,10 @@ import { request } from './requestHandler.js';
  * @returns An array of guild members.
  */
 export default async (guild: Discord.Guild) => {
+ if (guild.memberCount === guild.members.cache.size) {
+  return Array.from(guild.members.cache.values());
+ }
+
  const members: Discord.GuildMember[] = [];
 
  const fetches = Math.ceil(guild.memberCount / 1000);
