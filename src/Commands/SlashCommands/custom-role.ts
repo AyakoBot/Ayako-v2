@@ -109,6 +109,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
      ? parsedIcon
      : undefined,
+   permissions: '0',
   },
   cmd.user.username,
  );
