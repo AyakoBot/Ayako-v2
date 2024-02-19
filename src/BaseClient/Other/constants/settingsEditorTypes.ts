@@ -163,7 +163,6 @@ export default {
   webhookevents: CT.EditorTypes.Channels,
   settingslog: CT.EditorTypes.Channels,
   modlog: CT.EditorTypes.Channels,
-  reactionevents: CT.EditorTypes.Channels,
   memberevents: CT.EditorTypes.Channels,
  },
  [CT.SettingNames.Basic]: {

@@ -3095,10 +3095,6 @@
        "name": "Webhook Events",
        "desc": "The Channel to send Webhook Events in"
       },
-      "reactionevents": {
-       "name": "Reaction Events",
-       "desc": "The Channel to send Reaction Events in"
-      },
       "memberevents": {
        "name": "Member Events",
        "desc": "The Channel to send Member Events in"

@@ -536,7 +536,6 @@ model logchannels {
   webhookevents        String[] @db.VarChar
   settingslog          String[] @db.VarChar
   modlog               String[] @db.VarChar
-  reactionevents       String[] @db.VarChar
   memberevents         String[] @db.VarChar
 
   @@id(guildid, map: "logchannels_pkey")

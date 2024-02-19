@@ -199,14 +199,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: [
    buttonParsers.specific(
     language,
-    settings.reactionevents,
-    'reactionevents',
-    name,
-    undefined,
-    CT.EditorTypes.Channel,
-   ),
-   buttonParsers.specific(
-    language,
     settings.memberevents,
     'memberevents',
     name,

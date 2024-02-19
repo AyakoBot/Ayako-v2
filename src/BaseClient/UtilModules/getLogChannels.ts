@@ -26,7 +26,6 @@ export default async (
   | 'webhookevents'
   | 'settingslog'
   | 'modlog'
-  | 'reactionevents'
   | 'memberevents',
  guild: Discord.Guild,
 ) => DataBase.logchannels.findUnique({ where: { guildid: guild.id } }).then((r) => r?.[columnName]);
