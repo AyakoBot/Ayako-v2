@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 
 const IDSelector = new Discord.SlashCommandStringOption()
  .setAutocomplete(true)
- .setDescription('The ID of the Setting')
+ .setDescription('The ID of the Setting (Remove if you want to create a Setting)')
  .setRequired(false)
  .setName('id');
 
