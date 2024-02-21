@@ -38,6 +38,7 @@ const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/65069169840973
 const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
 const APIDiscords = 'https://discords.com/bots/api/bot/650691698409734151/setservers';
 const APITopGG = 'https://top.gg/api/bots/650691698409734151/stats';
+const APIInfinityBots = 'https://spider.infinitybots.gg/bots/stats';
 
 const getAllUsers = async () => {
  const userSize = (await Manager.broadcastEval((c) =>
@@ -110,6 +111,20 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     server_count: guilds,
     shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => String(c)),
     shard_count: Manager.totalShards,
+   }),
+  });
+
+  fetch(APIInfinityBots, {
+   method: 'post',
+   headers: {
+    Authorization: process.env.infinityBots ? `Bot ${process.env.infinityBots}` : '',
+    'Content-Type': 'application/json',
+   },
+   body: JSON.stringify({
+    servers: guilds,
+    shards: Manager.totalShards,
+    shard_list: Manager.shardList,
+    users,
    }),
   });
  });
