@@ -16,6 +16,7 @@ export const AllNonThreadGuildChannelTypes = [
  Discord.ChannelType.GuildText,
  Discord.ChannelType.GuildVoice,
  Discord.ChannelType.GuildForum,
+ Discord.ChannelType.GuildMedia,
 ] as const;
 
 export const ChannelBanBits = [
