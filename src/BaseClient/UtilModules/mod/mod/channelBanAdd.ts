@@ -79,7 +79,7 @@ export default async (
  }
 
  const me = await getBotMemberFromGuild(options.guild);
- if (canEdit(options.channel, { permission_overwrites: [] }, me) && !options.skipChecks) {
+ if (!canEdit(options.channel, { permission_overwrites: [] }, me) && !options.skipChecks) {
   permissionError(cmd, message, language, type);
   return false;
  }
