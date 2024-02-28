@@ -1,6 +1,6 @@
 {
  "type": "module",
- "version": "2.0.40",
+ "version": "2.0.41",
  "scripts": {
   "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings ./dist/index.js",
   "build": "npx tsc",
