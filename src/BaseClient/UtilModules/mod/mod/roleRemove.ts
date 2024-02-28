@@ -80,7 +80,7 @@ export default async (
 
  if (
   (!me.permissions.has(Discord.PermissionFlagsBits.ManageRoles) ||
-   !canEditMember(targetMember, me, { roles: [] }) ||
+   !canEditMember(me, targetMember, { roles: [] }) ||
    !options.roles.length) &&
   !options.skipChecks
  ) {
