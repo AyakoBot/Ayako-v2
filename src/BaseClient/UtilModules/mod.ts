@@ -138,17 +138,24 @@ export default async <T extends CT.ModTypes>(
   }
  };
 
+ console.log(9);
+
  const action = await runAction();
+ console.log(10);
 
  if (!action || (typeof action !== 'boolean' && !action.success)) {
   cache.punishments.delete(options.target.id);
   return;
  }
+ console.log(11);
 
  if (typeof action !== 'boolean') type = action.type as T;
  if (type === CT.ModTypes.StrikeAdd) return;
+ console.log(12);
 
  runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);
+ console.log(13);
+ 
  cache.punishments.delete(options.target.id);
 };
 
