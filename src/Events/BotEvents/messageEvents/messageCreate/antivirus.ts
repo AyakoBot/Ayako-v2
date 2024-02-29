@@ -224,7 +224,15 @@ const run = async (content: string) => {
 const getURLs = async (content: string): Promise<string[]> => {
  if (!content.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray()))) return [];
 
- const args = content.split(/(\s+|\n+)/g);
+ const args = content
+  .split(/(\s+|\n+)/g)
+  .map((url) => url.trim())
+  .map((url) =>
+   /\[.*\](.*\s?.*)/g.test(url)
+    ? url.replace(/\[|\]|\(|\)/g, '').split(/https:\/\/|http:\/\//g)
+    : url,
+  )
+  .flat();
  const argsContainingLink = args
   .filter((a) => a.includes('.'))
   .filter((arg) => arg.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
