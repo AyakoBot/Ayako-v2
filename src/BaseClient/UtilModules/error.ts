@@ -15,6 +15,7 @@ import { canSendMessage } from './requestHandler/channels/sendMessage.js';
  */
 export default async (guild: Discord.Guild, err: Error, postDebug: boolean = true) => {
  if (process.argv.includes('--silent')) return;
+ if (err.message.includes('Connect Timeout Error')) return;
 
  const errorchannel = await DataBase.guildsettings
   .findUnique({
