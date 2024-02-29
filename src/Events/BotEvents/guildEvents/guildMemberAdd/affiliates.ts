@@ -2,9 +2,6 @@ import * as Discord from 'discord.js';
 
 export default async (member: Discord.GuildMember) => {
  switch (true) {
-  case member.guild.id === '298954459172700181':
-   animekos(member);
-   break;
   case member.guild.id === '366219406776336385':
    gameverse(member);
    break;
@@ -43,17 +40,6 @@ const pockytime = async (member: Discord.GuildMember) => {
 ⠀ ⠀\`🍰\`︰[Animekos]( https://discord.gg/animekos?ref=pockytime )
 
 ・୨・┈┈┈┈・୨୧・┈┈┈┈・୧・`,
- });
-};
-
-const animekos = async (member: Discord.GuildMember) => {
- member.client.util.notificationThread(member, {
-  content: `<:AMayakoLove:874102206176034826> Check out our lovely Partners:
-  
-https://discord.gg/WGRbUwqkwG?ref=animekos
-https://discord.gg/QjMDJTE2ns?ref=animekos
-https://discord.gg/PkqBwtMup4?ref=animekos
-https://discord.gg/pocky?ref=animekos`,
  });
 };
 
