@@ -47,6 +47,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
      Discord.PermissionFlagsBits.PrioritySpeaker,
      Discord.PermissionFlagsBits.DeafenMembers,
      Discord.PermissionFlagsBits.MuteMembers,
+     Discord.PermissionFlagsBits.ManageRoles,
     ]).bitfield.toString(),
    },
    {
