@@ -41,7 +41,7 @@ export default (t: CT.Language) => ({
  getAutoModerationRule: (rule: Discord.AutoModerationRule) =>
   `${t.JSON.t.AutoModRule} ${t.util.util.makeInlineCode(rule.name)} / ${t.util.util.makeInlineCode(
    rule.id,
-  )}`,
+  )}\n`,
  getMessage: (msg: Discord.Message | Discord.MessageReference) =>
   `[${t.JSON.t.thisMessage}](${t.util.constants.standard.msgurl(
    msg.guildId,
