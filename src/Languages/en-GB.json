@@ -156,7 +156,7 @@
    "message": {
     "descDeleteAudit": "{{user}}has deleted\n{{msg}}from\n{{author}}",
     "descDelete": "{{msg}}from\n{{author}}was deleted",
-    "descDeleteBulkAudit": "{{user}}has bulk deleted\n{{size}}Messages in\n{{channel}}",
+    "descDeleteBulkAudit": "{{user}}has bulk deleted\n{{size}} Messages in\n{{channel}}",
     "descDeleteBulk": "{{size}} Messages were deleted in\n{{channel}}",
     "descUpdateMaybe": "{{msg}}may have been updated by\n{{user}}or by a Moderator",
     "descUpdate": "{{msg}}was updated",
