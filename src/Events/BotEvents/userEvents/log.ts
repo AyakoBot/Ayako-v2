@@ -1,6 +1,5 @@
 import type * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
-import logError from '../../../BaseClient/UtilModules/logError.js';
 
 export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.Guild) => {
  const channels = await guild.client.util.getLogChannels('userevents', guild);
@@ -37,6 +36,9 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   );
 
   if (attachment) files.push(attachment);
+ }
+ if (user.globalName !== oldUser.globalName) {
+  merge(oldUser.globalName ?? language.t.Unknown, user.globalName, 'string', lan.globalName);
  }
  if (user.flags !== oldUser.flags) {
   const flagsBefore = oldUser.flags?.toArray() ?? [];
@@ -91,11 +93,6 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   if (attachment) files.push(attachment);
  } else if (user.banner !== oldUser.banner && !user.bannerURL()) {
   embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
- }
-
- if (!embed.fields?.length) {
-  logError(JSON.stringify({ user, oldUser }), true);
-  return;
  }
 
  guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);

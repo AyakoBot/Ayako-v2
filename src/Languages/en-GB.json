@@ -597,7 +597,8 @@
     "flags": "Badges",
     "discriminator": "Tag",
     "bannerRemoved": "Banner Removed",
-    "username": "Username"
+    "username": "Username",
+    "globalName": "Global Name"
    },
    "automodExec": {
     "name": "Auto-Moderation Rule enforced",
