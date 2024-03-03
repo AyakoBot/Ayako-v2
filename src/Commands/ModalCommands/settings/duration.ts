@@ -57,6 +57,8 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
+ console.log(newSetting);
+
  cmd.client.util.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },
   { [fieldName]: updatedSetting?.[fieldName as keyof typeof updatedSetting] },

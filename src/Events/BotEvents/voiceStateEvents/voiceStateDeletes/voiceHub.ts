@@ -29,6 +29,8 @@ export default async (state: Discord.VoiceState) => {
  }
  state.client.util.cache.vcDeleteTimeout.delete(state.guild.id, state.channel.id);
 
+ if (!settings.deletetime) return;
+
  state.client.util.cache.vcDeleteTimeout.set(
   Jobs.scheduleJob(new Date(Date.now() + Number(settings.deletetime) * 1000), () =>
    del(state.channel as Discord.VoiceBasedChannel),

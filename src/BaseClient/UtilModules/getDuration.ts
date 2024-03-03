@@ -26,5 +26,5 @@ export default (duration: string, max?: number) => {
   .reduce((partialSum, arg) => partialSum + arg, 0);
 
  if (max && result > max) return max;
- return result;
+ return Number.isNaN(+result) ? 0 : result;
 };
