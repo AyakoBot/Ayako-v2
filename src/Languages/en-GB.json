@@ -603,6 +603,7 @@
     "name": "Auto-Moderation Rule enforced",
     "descMessage": "{{rule}}was enforced on\nthis {{msg}}from\n{{user}}",
     "desc": "{{rule}}was enforced on\n{{user}}",
+    "descChannel": "{{rule}}was enforced on\n{{user}}in\n{{channel}}",
     "matchedKeyword": "Matched Keyword",
     "matchedContent": "Matched Content",
     "content": "Content",

@@ -19,6 +19,13 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  const channel = execution.channelId
   ? await execution.guild.client.util.getChannel.guildTextChannel(execution.channelId)
   : undefined;
+ const alertChannel =
+  execution.action.type === Discord.AutoModerationActionType.SendAlertMessage &&
+  execution.action.metadata.channelId
+   ? await execution.guild.client.util.getChannel.guildTextChannel(
+      execution.action.metadata.channelId,
+     )
+   : undefined;
  const msg =
   execution.messageId && channel
    ? await execution.guild.client.util.request.channels
@@ -28,6 +35,12 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
  const language = await execution.guild.client.util.getLanguage(execution.guild.id);
  const lan = language.events.logs.automodExec;
 
+ const getDesc = () => {
+  if (msg) return lan.descMessage(rule, msg, user);
+  if (channel) return lan.descChannel(rule, user, channel);
+  return lan.desc(rule, user);
+ };
+
  const files: Discord.AttachmentPayload[] = [];
  const embed: Discord.APIEmbed = {
   author: {
@@ -35,7 +48,7 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
    name: lan.name,
    url: msg ? msg.url : undefined,
   },
-  description: msg ? lan.descMessage(rule, msg, user) : lan.desc(rule, user),
+  description: getDesc(),
   color: CT.Colors.Danger,
   fields: [],
   timestamp: new Date().toISOString(),
@@ -59,8 +72,8 @@ export default async (execution: Discord.AutoModerationActionExecution) => {
   embed.fields?.push({
    name: execution.action.type === 2 ? lan.alert : lan.timeout,
    value:
-    execution.action.type === 2
-     ? `${lan.alertChannel} <#${channel?.id}> / \`${channel?.name}\` / \`${channel?.id}\`\n[${
+    execution.action.type === 2 && alertChannel
+     ? `${lan.alertChannel} <#${alertChannel.id}> / \`${alertChannel.name}\` / \`${alertChannel.id}\`\n[${
         language.t.Message
        }](${execution.guild.client.util.constants.standard.msgurl(
         execution.guild.id,

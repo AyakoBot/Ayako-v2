@@ -14,6 +14,12 @@ export default (t: CT.Language) => ({
    rule: t.languageFunction.getAutoModerationRule(rule),
    user: t.languageFunction.getUser(user),
   }),
+ descChannel: (rule: Discord.AutoModerationRule, user: Discord.User, channel: Discord.Channel) =>
+  t.stp(t.JSON.events.logs.automodExec.descChannel, {
+   rule: t.languageFunction.getAutoModerationRule(rule),
+   user: t.languageFunction.getUser(user),
+   channel: t.languageFunction.getChannel(channel, t.JSON.channelTypes[channel.type]),
+  }),
  ruleTriggerType: {
   1: t.JSON.events.logs.automodExec.ruleTriggerType[1],
   3: t.JSON.events.logs.automodExec.ruleTriggerType[3],

@@ -31,7 +31,7 @@ export default (t: CT.Language) => ({
        ? `${channel.name}`
        : `<@${'recipientId' in channel ? channel.recipientId : null}>`,
      )} / ${t.util.util.makeInlineCode(channel.id)}\n`
-   : t.channelTypes.unknownChannel,
+   : `${t.channelTypes.unknownChannel}\n`,
  getUser: (
   user: Discord.User | { bot: boolean; id: string; username: string; discriminator: string },
  ) =>
