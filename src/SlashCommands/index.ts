@@ -134,7 +134,7 @@ export default {
   'settings_roles_button-role-settings': [CommandCategories.Roles, CommandCategories.Automation],
   'settings_roles_button-roles': [CommandCategories.Roles, CommandCategories.Automation],
   settings_automation_cooldowns: [CommandCategories.Automation],
-  'settings_automation_voice-hub': [CommandCategories.Automation, CommandCategories.Channels],
+  'settings_automation_voice-hubs': [CommandCategories.Automation, CommandCategories.Channels],
   'settings_automation_disboard-reminders': [CommandCategories.Automation],
   settings_automation_suggestions: [CommandCategories.Automation],
   settings_automation_verification: [CommandCategories.Automation],

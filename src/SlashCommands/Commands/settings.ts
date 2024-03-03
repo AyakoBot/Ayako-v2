@@ -300,7 +300,7 @@ export default new Discord.SlashCommandBuilder()
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
-     .setName('voice-hub')
+     .setName('voice-hubs')
      .setDescription('Have Ayako create Voice Channels for your Members')
      .addStringOption(IDSelector),
    ),

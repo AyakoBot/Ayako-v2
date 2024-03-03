@@ -1384,7 +1384,7 @@
   "2": "Gallery View"
  },
  "autotypes": {
-  "voiceHub": "{{t.botName}} Voice-Hub",
+  "voiceHub": "{{t.botName}} Voice-Hubs",
   "verification": "{{t.botName}} Verification",
   "shop": "{{t.botName}} Shop",
   "disboard": "{{t.botName}} DISBOARD Reminder",
@@ -2453,7 +2453,7 @@
       },
       "deletetime": {
        "name": "Delete Timeout",
-       "desc": "How long to wait until a Voice-Hub is deleted after the last Member left (Example: 1h 5 minutes 30 s)"
+       "desc": "How long to wait until a Voice-Channel is deleted after the last Member left (Example: 1h 5 minutes 30 s)"
       }
      }
     },
