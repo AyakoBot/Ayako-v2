@@ -70,7 +70,7 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
 
 export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) => {
  const giveaway = await client.util.DataBase.giveaways.findUnique({
-  where: { msgid: msgID },
+  where: { msgid: msgID, claimingdone: false },
  });
 
  if (!giveaway) {
@@ -266,7 +266,7 @@ export const giveawayCollectTimeExpired = async (msgID: string, guildID: string)
  if (!guild) return;
 
  const giveaway = await client.util.DataBase.giveaways.findUnique({
-  where: { msgid: msgID },
+  where: { msgid: msgID, claimingdone: false },
  });
 
  if (!giveaway) {
