@@ -300,6 +300,7 @@ export default {
   channelid: CT.EditorTypes.Voice,
   categoryid: CT.EditorTypes.Category,
   deletetime: CT.EditorTypes.Duration,
+  private: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.AppealSettings]: {
   channelid: CT.EditorTypes.Channel,

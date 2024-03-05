@@ -1071,6 +1071,7 @@ model voicehubs {
  bluserid        String[] @db.VarChar
  wlroleid        String[] @db.VarChar
  wluserid        String[] @db.VarChar
+ private         Boolean  @db.Boolean @default(true)
 
 
  @@id(uniquetimestamp, map: "voicehubs_pkey")

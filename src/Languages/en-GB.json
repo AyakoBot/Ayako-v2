@@ -2445,6 +2445,10 @@
     "voice-hubs": {
      "name": "Voice-Hubs",
      "fields": {
+      "private": {
+       "name": "Private",
+       "desc": "Whether VCs should be created as private VCs"
+      },
       "channelid": {
        "name": "Voice-Hub Channel",
        "desc": "The Voice-Channel Members have to join to create Voice-Hubs"

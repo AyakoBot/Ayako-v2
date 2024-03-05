@@ -50,13 +50,17 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
      Discord.PermissionFlagsBits.ManageRoles,
     ]).bitfield.toString(),
    },
-   {
-    id: member.guild.roles.everyone.id,
-    type: Discord.OverwriteType.Role,
-    deny: new Discord.PermissionsBitField([
-     Discord.PermissionFlagsBits.Connect,
-    ]).bitfield.toString(),
-   },
+   ...(settings.private
+    ? [
+       {
+        id: member.guild.roles.everyone.id,
+        type: Discord.OverwriteType.Role,
+        deny: new Discord.PermissionsBitField([
+         Discord.PermissionFlagsBits.Connect,
+        ]).bitfield.toString(),
+       },
+      ]
+    : []),
   ],
  })) as Discord.VoiceChannel | Discord.DiscordAPIError;
 

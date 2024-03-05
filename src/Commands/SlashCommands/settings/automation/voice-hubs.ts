@@ -141,6 +141,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: true,
    },
    {
+    name: lan.fields.private.name,
+    value: embedParsers.boolean(settings?.private, language),
+    inline: true,
+   },
+   {
     name: '\u200b',
     value: '\u200b',
     inline: false,
@@ -211,6 +216,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     language,
     settings?.deletetime,
     'deletetime',
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
+   buttonParsers.boolean(
+    language,
+    !!settings?.private,
+    'private',
     name,
     Number(settings?.uniquetimestamp),
    ),
