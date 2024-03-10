@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
-import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const { log } = console;
@@ -217,10 +216,12 @@ export const checkCommandPermissions = async (
 ): Promise<{ can: boolean; debugNum: number }> => {
  const slashCommand =
   [...(message.guild.client.util.cache.commands.cache.get(message.guildId)?.values() ?? [])].find(
-   (c) => c.name === commandName,
+   (c) => c.name.replace(/-/g, '') === commandName,
   ) ??
-  message.guild.client.application?.commands.cache.find((c) => c.name === commandName) ??
-  message.guild.commands.cache.find((c) => c.name === commandName);
+  message.guild.client.application?.commands.cache.find(
+   (c) => c.name.replace(/-/g, '') === commandName,
+  ) ??
+  message.guild.commands.cache.find((c) => c.name.replace(/-/g, '') === commandName);
 
  if (!slashCommand) return { can: true, debugNum: 1 };
 
@@ -298,10 +299,10 @@ const checkCommandIsEnabled = async (
 ) => {
  const slashCommand =
   [...(msg.client.util.cache.commands.cache.get(msg.guildId)?.values() ?? [])].find(
-   (c) => c.name === commandName,
+   (c) => c.name.replace(/-+/g, '') === commandName,
   ) ??
-  client.application?.commands.cache.find((c) => c.name === commandName) ??
-  msg.guild.commands.cache.find((c) => c.name === commandName);
+  msg.client.application?.commands.cache.find((c) => c.name.replace(/-+/g, '') === commandName) ??
+  msg.guild.commands.cache.find((c) => c.name.replace(/-+/g, '') === commandName);
 
  if (!slashCommand && command.requiresSlashCommand) return false;
  return true;
