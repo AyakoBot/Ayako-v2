@@ -393,6 +393,7 @@ model guilds {
   banner      String? @db.Text
   invite      String? @db.Text
   membercount Decimal @db.Decimal @default(2)
+  fetchat     Decimal @db.Decimal
 
   @@id(guildid, map: "guilds_pkey")
   @@index(guildid)
