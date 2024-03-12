@@ -129,12 +129,7 @@ const log = (
     ];
    }
    default:
-    return [
-     {
-      name: lan.scanResult,
-      value: lan.detectedAs(lan.harmless),
-     },
-    ];
+    return [];
   }
  };
 
