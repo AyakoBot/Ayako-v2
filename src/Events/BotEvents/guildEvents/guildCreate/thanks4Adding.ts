@@ -47,7 +47,9 @@ export const getPayload = (
   {
    color: CT.Colors.Base,
    description: language.events.guildMemberAdd.thanks4Adding.desc,
-   fields: language.events.guildMemberAdd.thanks4Adding.fields(guild),
+   fields: language.events.guildMemberAdd.thanks4Adding
+    .fields(guild)
+    .map((f) => ({ ...f, inline: false })),
   },
  ],
  components: [
@@ -111,14 +113,21 @@ const getAdder = async (guild: Discord.Guild) => {
 
 const getChannel = (guild: Discord.Guild, sendable?: true) => {
  const getAnyThreadableChannel = () =>
-  guild.channels.cache.find((c) => guild.members.me?.permissionsIn(c).has(threadPerms)) as
-   | Discord.NewsChannel
-   | Discord.TextChannel
-   | undefined;
+  guild.channels.cache.find(
+   (c) =>
+    guild.members.me?.permissionsIn(c).has(threadPerms) &&
+    [
+     Discord.ChannelType.PublicThread,
+     Discord.ChannelType.AnnouncementThread,
+     Discord.ChannelType.PrivateThread,
+    ].includes(c.type),
+  ) as Discord.NewsChannel | Discord.TextChannel | undefined;
 
  const getAnySendableChannel = () =>
-  guild.channels.cache.find((c) =>
-   guild.members.me?.permissionsIn(c).has(Discord.PermissionFlagsBits.SendMessages),
+  guild.channels.cache.find(
+   (c) =>
+    guild.members.me?.permissionsIn(c).has(Discord.PermissionFlagsBits.SendMessages) &&
+    [Discord.ChannelType.GuildText, Discord.ChannelType.GuildVoice].includes(c.type),
   ) as Discord.GuildTextBasedChannel | undefined;
 
  if (sendable) return { thread: false, channel: getAnySendableChannel() };
