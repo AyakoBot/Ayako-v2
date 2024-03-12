@@ -29,14 +29,17 @@ export default async (cmd: Discord.ButtonInteraction) => {
  }
 
  const perms = (await cmd.client.util.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
- [...(cmd.client.util.cache.commands.cache.get(cmd.guildId)?.values() ?? [])].map((c) =>
-  cmd.client.util.request.commands.editGuildCommandPermissions(
-   cmd.guild as Discord.Guild,
-   user.accesstoken as string,
-   c.id,
-   { permissions: perms },
-  ),
- );
+
+ [...(cmd.client.util.cache.commands.cache.get(cmd.guildId)?.values() ?? [])]
+  .filter((c) => !!cmd.client.util.constants.commands.interactions.find((c2) => c2.name === c.name))
+  .map((c) =>
+   cmd.client.util.request.commands.editGuildCommandPermissions(
+    cmd.guild as Discord.Guild,
+    user.accesstoken as string,
+    c.id,
+    { permissions: perms },
+   ),
+  );
 
  const guildsettings = await cmd.client.util.DataBase.guildsettings.update({
   where: { guildid: cmd.guildId },
