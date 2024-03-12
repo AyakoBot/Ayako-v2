@@ -12,7 +12,7 @@ export default async () => {
      name: g.name,
      banner: g.bannerURL(),
      icon: g.iconURL(),
-     invite: `${g.vanityURLCode}`,
+     invite: g.vanityURLCode,
      membercount: g.memberCount,
     },
    })
