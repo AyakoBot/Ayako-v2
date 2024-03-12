@@ -28,7 +28,7 @@ export default (t: CT.Language) => ({
  thanks4Adding: {
   ...t.JSON.events.guildMemberAdd.thanks4Adding,
   thanksUser: (u: string) =>
-   t.stp(t.JSON.events.guildMemberAdd.thanks4Adding.thanksUser, { adder: u }),
+   t.stp(t.JSON.events.guildMemberAdd.thanks4Adding.thanksUser, { user: u }),
   fields: (g: Discord.Guild) =>
    t.JSON.events.guildMemberAdd.thanks4Adding.fields.map((f) => ({
     ...f,
