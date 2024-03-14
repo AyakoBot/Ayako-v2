@@ -12,6 +12,8 @@ import nitroHandler from './timedFiles/nitroHandler.js';
 import timedManager from './timedFiles/timedManager.js';
 import verification from './timedFiles/verification.js';
 import guilds from './timedFiles/guilds.js';
+import reviews from './timedFiles/reviews.js';
+import users from './timedFiles/users.js';
 
 export default async () => {
  await customAPIsHandler();
@@ -49,7 +51,11 @@ export default async () => {
   amQuarantineControl();
  });
  Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
- Jobs.scheduleJob('0 1 * * *', () => guilds());
+ Jobs.scheduleJob('0 1 * * *', () => {
+  guilds();
+  reviews();
+  users();
+ });
 };
 
 const rpToggleUses = () =>
