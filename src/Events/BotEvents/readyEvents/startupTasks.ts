@@ -17,12 +17,12 @@ import users from './timedFiles/users.js';
 
 export default async () => {
  await customAPIsHandler();
- customBotCommands();
+ await customBotCommands();
 
- antivirusBlocklistCacher();
+ await antivirusBlocklistCacher();
  amQuarantineControl();
- nitroHandler();
- separators();
+ await nitroHandler();
+ await separators();
 
  Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
   cache();
@@ -36,7 +36,7 @@ export default async () => {
   });
  });
 
- Jobs.scheduleJob('0 0 0 * * *', async () => {
+ Jobs.scheduleJob('0 0 23 * * *', () => {
   nitroHandler();
   animekosInviteStats();
   rpToggleUses();
@@ -45,13 +45,16 @@ export default async () => {
   client.util.cache.urlTLDs.start();
  });
 
- Jobs.scheduleJob('0 * * * * *', async () => verification());
- Jobs.scheduleJob('0 */30 * * *', async () => {
+ Jobs.scheduleJob('0 * * * * *', () => verification());
+
+ Jobs.scheduleJob('0 */30 * * *', () => {
   antivirusBlocklistCacher();
   amQuarantineControl();
  });
- Jobs.scheduleJob('*/2 * * * * *', async () => timedManager());
- Jobs.scheduleJob('0 1 * * *', () => {
+
+ Jobs.scheduleJob('*/2 * * * * *', () => timedManager());
+
+ Jobs.scheduleJob('0 0 22 * * *', () => {
   guilds();
   reviews();
   users();
