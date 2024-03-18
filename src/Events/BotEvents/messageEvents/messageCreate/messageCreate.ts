@@ -10,7 +10,6 @@ import invites from './invites.js';
 import levelling from './levelling.js';
 import newlines from './newlines.js';
 import other from './other.js';
-import revengePing from './revengePing.js';
 import stickyMessage from './stickyMessage.js';
 import tta from './tta.js';
 import notificationThread from './notificationThread.js';
@@ -25,7 +24,6 @@ export default async (msg: Discord.Message) => {
  if (msg.inGuild()) {
   _eval(msg);
   other(msg);
-  revengePing(msg);
   stickyMessage(msg);
   afk(msg);
   levelling(msg);
