@@ -1,29 +1,37 @@
-import { users } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
-const getRelevancy = async (user: users) => {
- const isInReviews = await client.util.DataBase.reviews.findUnique({
-  where: { userid: user.userid },
- });
- const isInCredits = await client.util.DataBase.contributers.findUnique({
-  where: { userid: user.userid },
- });
- const isInArt = await client.util.DataBase.art.findFirst({
-  where: { userid: user.userid },
+const getRelevantUserIds = async () => {
+ const art = await client.util.DataBase.art.findMany({
+  where: {},
+  select: { userid: true },
  });
 
- return [!!isInReviews, !!isInCredits, !!isInArt].includes(true);
+ const credits = await client.util.DataBase.contributers.findMany({
+  where: {},
+  select: { userid: true },
+ });
+
+ const reviews = await client.util.DataBase.reviews.findMany({
+  where: {},
+  select: { userid: true },
+ });
+
+ return [
+  ...new Set(
+   [art.map((a) => a.userid), credits.map((c) => c.userid), reviews.map((c) => c.userid)].flat(),
+  ),
+ ];
 };
 
 export default async () => {
+ const relevantUsers = await getRelevantUserIds();
  const expiredUsers = await client.util.DataBase.users.findMany({
-  where: { lastfetch: { lt: Date.now() - 86400000 } },
+  where: { userid: { in: relevantUsers }, lastfetch: { lt: Date.now() - 86400000 } },
+  select: { userid: true },
  });
 
- const relevancy = await Promise.all(expiredUsers.map((u) => getRelevancy(u)));
- const relevantUsers = expiredUsers.filter((_, i) => relevancy[i]);
- const fetchedUsers = await Promise.all(relevantUsers.map((u) => client.util.getUser(u.userid)));
+ const fetchedUsers = await Promise.all(expiredUsers.map((u) => client.util.getUser(u.userid)));
 
  fetchedUsers
   .filter((u): u is Discord.User => !!u)
