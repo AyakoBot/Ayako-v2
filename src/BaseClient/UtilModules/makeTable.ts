@@ -1,14 +1,18 @@
-export default (args: string[][]) => {
- const columnLengths = args[0].map((_, i) => Math.max(...args.map((row) => row[i]?.length || 0)));
+import spaces from './spaces.js';
+import * as util from './util.js';
 
- const finContent = args
-  .map(
-   (xRow) =>
-    `${xRow
-     .map((x, i) => `${x}${' '.repeat(Math.abs((x?.length || 0) - columnLengths[i]))}`)
-     .join(' | ')}\n`,
-  )
-  .join('');
+/**
+ * Creates a formatted table from a 2D array of strings.
+ *
+ * @param args - The 2D array of strings representing the table data.
+ * @returns The formatted table as a string.
+ */
+export default (args: string[][]) => {
+ const columnLengths = args[0].map((a) => Number(a.length));
+
+ const finContent = util.makeCodeBlock(
+  args.map((xRow) => xRow.map((x, i) => spaces(x, columnLengths[i])).join(' | ')).join('\n'),
+ );
 
  return finContent;
 };

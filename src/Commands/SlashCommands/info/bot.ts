@@ -7,6 +7,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
+ const heartbeats = await cmd.client.util.DataBase.heartbeats.findMany({ where: {} });
  const stats = await cmd.client.util.DataBase.stats.findFirst();
  const allShards = (
   await cmd.client.cluster?.broadcastEval((cl) => cl.util.files.sharding.getInfo().SHARD_LIST)
@@ -22,14 +23,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
     ),
     description: `${[
-     ...(stats
+     ...(heartbeats
       ? [
          {
           name: `${pingLan.lastHeartbeat}:`,
-          value: cmd.client.util.util.makeInlineCode(
-           `${stats.heartbeat} ${language.time.milliseconds}`,
-          ),
+          value: cmd.client.util.makeTable([
+           [language.t.Shard, language.time.milliseconds],
+           ...heartbeats.map((s) => [String(s.shard), `${s.ms}ms`]),
+          ]),
          },
+        ]
+      : []),
+     ...(stats
+      ? [
          {
           name: `${cmd.client.util.util.makeInlineCode(
            cmd.client.util.splitByThousand(Number(stats.guildcount)),

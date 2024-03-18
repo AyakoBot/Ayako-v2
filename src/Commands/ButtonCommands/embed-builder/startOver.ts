@@ -113,15 +113,13 @@ export default async (
       .map((f) => ({ name: '\u200b', value: `${lan.quick}\n${f}`, inline: false })),
      {
       name: '\u200b',
-      value: cmd.client.util.util.makeCodeBlock(
-       cmd.client.util.makeTable([
-        ['', lan.start.sendMessage.acceptsEmojis, lan.start.sendMessage.acceptsMentions],
-        [lan.start.createButtons.selectMenu.title, language.t.Yes, language.t.No],
-        [lan.start.createButtons.selectMenu.description, language.t.Yes, language.t.Yes],
-        [lan.start.createButtons.fieldButtons['field-name'], language.t.Yes, language.t.No],
-        [lan.start.createButtons.fieldButtons['field-value'], language.t.Yes, language.t.Yes],
-       ]),
-      ),
+      value: cmd.client.util.makeTable([
+       ['', lan.start.sendMessage.acceptsEmojis, lan.start.sendMessage.acceptsMentions],
+       [lan.start.createButtons.selectMenu.title, language.t.Yes, language.t.No],
+       [lan.start.createButtons.selectMenu.description, language.t.Yes, language.t.Yes],
+       [lan.start.createButtons.fieldButtons['field-name'], language.t.Yes, language.t.No],
+       [lan.start.createButtons.fieldButtons['field-value'], language.t.Yes, language.t.Yes],
+      ]),
      },
     ],
    },
