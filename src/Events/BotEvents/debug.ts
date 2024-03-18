@@ -1,26 +1,19 @@
-import log from '../../BaseClient/UtilModules/logError.js';
 import DataBase from '../../BaseClient/Bot/DataBase.js';
-
-const debugEnabled = process.argv.includes('--debug');
 
 export default (message: string) => {
  if (message.includes('Heartbeat')) {
-  DataBase.stats
-   .updateMany({
-    data: {
-     heartbeat: message.split(' ').at(-1)?.replace(/\D/g, ''),
-    },
+  const shard = message.split(']')[0].split(/\s+/g).at(-1) ?? '';
+  const ms = message.split(' ').at(-1)?.replace(/\D/g, '') ?? '';
+
+  DataBase.heartbeats
+   .upsert({
+    where: { shard },
+    update: { ms },
+    create: { shard, ms },
    })
    .then();
-
-  log(message, false);
-  return;
  }
 
- if (!debugEnabled) {
-  log(message, false);
-  return;
- }
-
- log(message, true);
+ // eslint-disable-next-line no-console
+ console.log(message);
 };
