@@ -40,6 +40,13 @@ const spawnEvents = async () => {
 
   process.on(eventName, (...args) => baseEventHandler(eventName, args));
  });
+
+ events.RestEvents.forEach(async (path) => {
+  const eventName = path.replace('.js', '').split(/\/+/).pop() as keyof Discord.RestEvents;
+  if (!eventName) return;
+
+  client.rest.on(eventName, (...args) => baseEventHandler(eventName, args));
+ });
 };
 
 if (client.cluster?.maintenance) {
@@ -56,13 +63,3 @@ if (client.cluster?.maintenance) {
  setReady();
  ready();
 }
-
-client.rest.on('rateLimited', (info) => {
- const str = `[Ratelimited] ${info.method} ${info.url.replace(
-  'https://discord.com/api/v10/',
-  '',
- )} ${info.timeToReset}ms`;
-
- if (process.argv.includes('--debug')) console.log(str);
- client.util.logFiles.ratelimits.write(`${str}\n`);
-});

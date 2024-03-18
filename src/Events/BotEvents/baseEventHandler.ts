@@ -5,11 +5,14 @@ export default async (eventName: string, args: unknown[]) => {
  processEvents(eventName, args);
  clusterEvents(eventName, args);
  botEvents(eventName, args);
+ restEvents(eventName, args);
 };
 
 const botEvents = async (eventName: string, args: unknown[]) => {
- firstGuildInteraction(eventName, args);
- firstChannelInteraction(eventName, args);
+ if (Number(client.uptime) > 60000) {
+  firstGuildInteraction(eventName, args);
+  firstChannelInteraction(eventName, args);
+ }
 
  const event = client.util.getEvents.BotEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
@@ -26,6 +29,13 @@ const clusterEvents = async (eventName: string, args: unknown[]) => {
 
 const processEvents = async (eventName: string, args: unknown[]) => {
  const event = client.util.getEvents.ProcessEvents.find((e) => e.endsWith(`${eventName}.js`));
+ if (!event) return;
+
+ (await import(event)).default(...args);
+};
+
+const restEvents = async (eventName: string, args: unknown[]) => {
+ const event = client.util.getEvents.RestEvents.find((e) => e.endsWith(`${eventName}.js`));
  if (!event) return;
 
  (await import(event)).default(...args);
