@@ -819,7 +819,6 @@ model stats {
   rolecount    Decimal  @db.Decimal
   allusers     Decimal  @db.Decimal
   willis       String[] @db.Text
-  heartbeat    Decimal  @db.Decimal
 
   @@id(usercount, map: "stats_pkey")
 }
@@ -1105,4 +1104,22 @@ model antiraid {
 
  @@id(guildid, map: "antiraid_pkey")
  @@index([guildid])
+}
+
+model features {
+ title       String @db.VarChar
+ subtitle    String @db.VarChar
+ image       String @db.VarChar
+ placeholder String @db.VarChar
+
+ @@id(title, map: "features_pkey")
+ @@index(title)
+}
+
+model heartbeats {
+ ms    Decimal @db.Decimal
+ shard Decimal @db.Decimal
+
+ @@id(shard, map: "heartbeats_pkey")
+ @@index(shard)
 }
