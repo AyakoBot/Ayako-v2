@@ -31,11 +31,19 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   }
  }
 
+ const channelsWithParent = member.guild.channels.cache.filter(
+  (c) => c.parentId === state.channelId,
+ );
+ const lowestChannel = channelsWithParent
+  .filter((c): c is Discord.VoiceChannel => c.type === Discord.ChannelType.GuildVoice)
+  .sort((a, b) => b.position - a.position)
+  .first();
+
  const channel = (await state.client.util.request.guilds.createChannel(state.guild, {
   parent_id: settings.categoryid,
   name: member.displayName,
   type: Discord.ChannelType.GuildVoice,
-  position: state.channel.position + 1,
+  position: (lowestChannel?.position ?? state.channel.position) - 1,
   permission_overwrites: [
    {
     id: member.id,
