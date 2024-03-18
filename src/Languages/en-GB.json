@@ -3992,6 +3992,7 @@
   "defaultAutoArchiveDurationName": "Default Auto-Archive Duration",
   "defaultForumLayoutName": "Forum Layout Type",
   "defaultSortOrderName": "Default Sort Order",
-  "Tier": "Tier"
+  "Tier": "Tier",
+  "Shard": "Shard"
  }
 }
