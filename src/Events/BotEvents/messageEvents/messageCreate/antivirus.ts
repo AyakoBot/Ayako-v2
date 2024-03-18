@@ -425,6 +425,9 @@ const inGoogleSafeBrowsing = async (u: string) => {
 };
 
 const reportFishFish = (u: string) => {
+ if (client.util.cache.reportedURLs.has(u)) return;
+ client.util.cache.reportedURLs.add(u);
+
  fetch('https://yuri.bots.lostluma.dev/phish/report', {
   method: 'POST',
   headers: {

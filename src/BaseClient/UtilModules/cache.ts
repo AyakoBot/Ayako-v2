@@ -71,6 +71,7 @@ const cache: {
  urlTLDs: UrlTLDs;
  sinkingYachts: SinkingYachts;
  fishFish: FishFish;
+ reportedURLs: Set<string>;
 
  globalLevellingCD: Set<string>;
  guildLevellingCD: Set<string>;
@@ -119,6 +120,7 @@ const cache: {
  urlTLDs,
  sinkingYachts,
  fishFish,
+ reportedURLs: new Set(),
 
  globalLevellingCD: new Set(),
  guildLevellingCD: new Set(),
