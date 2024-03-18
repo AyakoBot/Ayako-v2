@@ -62,7 +62,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       label: language.t.Roles,
       style: Discord.ButtonStyle.Secondary,
       disabled: isInviteGuild,
-      custom_id: `info/roles_server_${isInviteGuild ? invite?.code : serverID}}`,
+      custom_id: `info/roles_server_${isInviteGuild ? invite?.code : serverID}`,
      },
     ],
    },
