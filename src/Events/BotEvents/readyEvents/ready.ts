@@ -1,7 +1,6 @@
 import { getInfo } from 'discord-hybrid-sharding';
 import client from '../../../BaseClient/Bot/Client.js';
 import util from '../../../BaseClient/Bot/Util.js';
-import log from '../../../BaseClient/UtilModules/logError.js';
 
 import startupTasks from './startupTasks.js';
 
@@ -13,14 +12,14 @@ export default async () => {
  if (ready) return;
  ready = true;
 
- log(
+ // eslint-disable-next-line no-console
+ console.log(
   `| => Bot: ${client.user?.username}#${client.user?.discriminator} / ${client.user?.id}
 | => Cluster: ${Number(client.cluster?.id) + 1}
 | => Shards: ${getInfo()
    .SHARD_LIST.map((s) => s + 1)
    .join(', ')}
 | Login at ${new Date(Date.now()).toLocaleString()}`,
-  true,
  );
 
  startupTasks();

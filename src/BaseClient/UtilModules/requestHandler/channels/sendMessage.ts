@@ -4,7 +4,6 @@ import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
-import logError from '../../logError.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -111,8 +110,10 @@ export const canSendMessage = (
  */
 export const isValidPayload = (payload: UsualMessagePayload) => {
  const e = (text: string, log: unknown) => {
-  logError(`> ${text}\n${JSON.stringify(log)}`, false);
-  logError(text, true);
+  // eslint-disable-next-line no-console
+  console.log(`> ${text}\n${JSON.stringify(log)}`);
+  // eslint-disable-next-line no-console
+  console.log(text);
   return false;
  };
 

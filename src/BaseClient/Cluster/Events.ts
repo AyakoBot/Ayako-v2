@@ -1,31 +1,31 @@
+/* eslint-disable no-console */
 import Manager from './Manager.js';
-import log from '../UtilModules/logError.js';
 import warning from '../../Events/ProcessEvents/warning.js';
 
 process.setMaxListeners(5);
 
-process.on('unhandledRejection', async (error: string) => log(error, true));
-process.on('uncaughtException', async (error: string) => log(error, true));
-process.on('promiseRejectionHandledWarning', (error: string) => log(error, true));
-process.on('experimentalWarning', (error: string) => log(error, true));
+process.on('unhandledRejection', async (error: string) => console.log(error));
+process.on('uncaughtException', async (error: string) => console.log(error));
+process.on('promiseRejectionHandledWarning', (error: string) => console.log(error));
+process.on('experimentalWarning', (error: string) => console.log(error));
 
 process.on('SIGINT', () => {
  Manager.broadcastEval((cl) => cl.emit('SIGINT'));
- log('[SIGINT]: Gracefully shutting down...', true);
+ console.log('[SIGINT]: Gracefully shutting down...');
  process.exit(0);
 });
 
 Manager.on('clusterCreate', (cluster) => {
- log(`[Cluster Manager] Launched Cluster ${cluster.id + 1}`, true);
+ console.log(`[Cluster Manager] Launched Cluster ${cluster.id + 1}`);
 
  cluster.setMaxListeners(4);
 
  cluster.on('ready', () =>
-  log(`[Cluster Manager] Cluster ${cluster.id + 1} has moved into Ready-State`, true),
+  console.log(`[Cluster Manager] Cluster ${cluster.id + 1} has moved into Ready-State`),
  );
- cluster.on('death', () => log(`[Cluster Manager] Cluster ${cluster.id + 1} has died`, true));
+ cluster.on('death', () => console.log(`[Cluster Manager] Cluster ${cluster.id + 1} has died`));
  cluster.on('error', (err) =>
-  log(
+  console.log(
    `[Cluster Manager] Cluster ${cluster.id + 1} has encountered an error\n> ${err.message}\n${
     err.stack
    }`,
@@ -35,7 +35,7 @@ Manager.on('clusterCreate', (cluster) => {
 });
 
 if (process.argv.includes('--debug')) {
- Manager.on('debug', (debug) => log(`[Cluster Manager] Debug Message: ${debug}`, true));
+ Manager.on('debug', (debug) => console.log(`[Cluster Manager] Debug Message: ${debug}`));
 }
 
 process.on('warning', warning);

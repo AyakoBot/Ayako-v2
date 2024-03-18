@@ -5,7 +5,6 @@ import objectEmotes from './emotes.js';
 import isEditable from './isEditable.js';
 import reply from './replyCmd.js';
 import { request } from './requestHandler.js';
-import log from './logError.js';
 
 /**
  * Sends an error message to the user in response to an interaction.
@@ -25,7 +24,8 @@ export default async (
  language: CT.Language,
  m?: Discord.InteractionResponse | Discord.Message<true>,
 ) => {
- log(typeof content === 'string' ? new Error(content) : content, false);
+ // eslint-disable-next-line no-console
+ console.log(typeof content === 'string' ? new Error(content) : content);
 
  const embed: Discord.APIEmbed = {
   author: {

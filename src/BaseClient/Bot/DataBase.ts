@@ -1,5 +1,4 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import log from '../UtilModules/logError.js';
 
 const prisma = new PrismaClient();
 
@@ -9,7 +8,8 @@ prisma.$use(async (params, next) => {
   return result;
  } catch (error) {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
-   if (process.argv.includes('--debug-db')) log(`[Prisma] Error: ${error}`, true);
+   // eslint-disable-next-line no-console
+   if (process.argv.includes('--debug-db')) console.log(`[Prisma] Error: ${error}`);
    return null;
   }
   throw error;

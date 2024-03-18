@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import * as CT from '../../Typings/Typings.js';
-import { request } from './requestHandler.js';
 import * as Classes from '../Other/classes.js';
-import log from './logError.js';
+import { request } from './requestHandler.js';
 import { getEmbedCharLens, isValidPayload } from './requestHandler/channels/sendMessage.js';
 
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
@@ -77,7 +76,8 @@ async function send(
  const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
 
- if (channel.type === Discord.ChannelType.DM) log(JSON.stringify(payload), false);
+ // eslint-disable-next-line no-console
+ if (channel.type === Discord.ChannelType.DM) console.log(JSON.stringify(payload));
 
  if (!('send' in channel)) return null;
 

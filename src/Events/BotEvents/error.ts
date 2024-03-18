@@ -1,5 +1,4 @@
-import log from '../../BaseClient/UtilModules/logError.js';
-
 export default (info: Error) => {
- log(info, true);
+ // eslint-disable-next-line no-console
+ console.log(info);
 };

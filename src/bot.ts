@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import 'dotenv/config';
 import sms from 'source-map-support';
+import './BaseClient/UtilModules/console.js';
 
 import client from './BaseClient/Bot/Client.js';
 import util from './BaseClient/Bot/Util.js';

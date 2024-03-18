@@ -64,7 +64,7 @@ const self: Invites = {
  set: (invite, guildId) => {
   if (!invite.channelId) {
    // eslint-disable-next-line no-console
-   console.error('Invite without channel ID found!', invite);
+   console.log('Invite without channel ID found!', invite);
    return;
   }
 

@@ -1,7 +1,7 @@
+/* eslint-disable no-console */
 import * as Sharding from 'discord-hybrid-sharding';
 import 'dotenv/config';
 import readline from 'readline';
-import log from '../UtilModules/logError.js';
 
 const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
@@ -30,13 +30,12 @@ await Manager.spawn()
   }, 60000);
  })
  .catch((e) => {
-  log(e, true);
+  console.log(e);
 
-  log(
+  console.log(
    `[Cluster Manager] Startup Failed. Retry after: ${
     Number(e.headers?.get('retry-after') ?? 0) / 60
    } Minutes`,
-   true,
   );
   process.exit(1);
  });
@@ -50,6 +49,6 @@ rl.on('line', async (msg: string) => {
 
  if (!code.startsWith('restart')) return;
 
- log('[Cluster Manager] Restarting all Clusters...', true);
+ console.log('[Cluster Manager] Restarting all Clusters...');
  await Manager.recluster?.start({ restartMode: 'rolling' });
 });

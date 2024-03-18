@@ -1,5 +1,4 @@
 import * as CT from '../../../Typings/Typings.js';
-import log from '../logError.js';
 
 export enum GlobalDescType {
  BLChannelId = 'blchannelid',
@@ -35,7 +34,8 @@ export default (type: GlobalDescType | CT.AutoModEditorType, language: CT.Langua
   case CT.AutoModEditorType.Channels:
    return language.events.logs.automodRule.exemptChannels;
   default:
-   log(new Error(`Unknown Type ${type}`), true);
+   // eslint-disable-next-line no-console
+   console.log(new Error(`Unknown Type ${type}`));
    return language.t.Unknown;
  }
 };

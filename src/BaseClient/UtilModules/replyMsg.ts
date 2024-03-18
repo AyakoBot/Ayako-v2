@@ -7,7 +7,6 @@ import cache from './cache.js';
 import objectEmotes from './emotes.js';
 import error from './error.js';
 import { request } from './requestHandler.js';
-import log from './logError.js';
 
 /**
  * Sends a reply message to a Discord message.
@@ -41,7 +40,8 @@ export default async <T extends Discord.Message<boolean>>(
  const sentMessage = await request.channels
   .sendMessage(msg.guild, msg.channelId, { ...body.body, files: body.files }, msg.client)
   .catch((err) => {
-   log(err, true);
+   // eslint-disable-next-line no-console
+   console.log(err);
   });
 
  if (typeof sentMessage === 'undefined' || 'message' in sentMessage) return undefined;

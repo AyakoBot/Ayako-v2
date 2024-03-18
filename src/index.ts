@@ -1,17 +1,16 @@
-import sms from 'source-map-support';
+/* eslint-disable no-console */
 import * as Jobs from 'node-schedule';
-import log from './BaseClient/UtilModules/logError.js';
+import sms from 'source-map-support';
+import './BaseClient/UtilModules/console.js';
 
-// eslint-disable-next-line no-console
 console.clear();
-log(
+console.log(
  `+++++++++++++++ Welcome to Ayako ++++++++++++++++
 +      Restart all Clusters with "restart"      +
 +                  Arguments:                   +
 +   --debug --debug-db --warn --debug-queries   +
 +                   --silent                    +
 +++++++++++++++++++++++++++++++++++++++++++++++++`,
- true,
 );
 
 sms.install({
@@ -30,5 +29,5 @@ sms.install({
 })();
 
 Jobs.scheduleJob('*/10 * * * *', async () => {
- log(`=> Current Date: ${new Date().toLocaleString()}`, true);
+ console.log(`=> Current Date: ${new Date().toLocaleString()}`);
 });

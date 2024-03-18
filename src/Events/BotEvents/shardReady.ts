@@ -1,10 +1,10 @@
 import * as Sharding from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
-import log from '../../BaseClient/UtilModules/logError.js';
 
 export default async (id: number, unavailableGuilds?: Set<string>) => {
- log(`[Shard ${id + 1}] Ready - Unavailable Guilds: ${unavailableGuilds?.size ?? '0'}`, true);
+ // eslint-disable-next-line no-console
+ console.log(`[Shard ${id + 1}] Ready - Unavailable Guilds: ${unavailableGuilds?.size ?? '0'}`);
  client.user?.setPresence({
   afk: false,
   activities: [await getActivities(id)],
