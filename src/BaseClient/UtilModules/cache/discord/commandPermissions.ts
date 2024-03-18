@@ -46,9 +46,7 @@ const self: CommandPermissions = {
   const cached = self.cache.get(guild.id)?.get(commandId);
   if (cached) return cached;
 
-  const requestHandler =
-   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
-  const fetched = await requestHandler.commands.getGuildCommandsPermissions(guild);
+  const fetched = await guild.client.util.request.commands.getGuildCommandsPermissions(guild);
   if ('message' in fetched) return undefined;
 
   self.cache.get(guild.id)?.clear();

@@ -36,9 +36,7 @@ const self: Onboarding = {
   const cached = self.cache.get(guild.id);
   if (cached) return cached;
 
-  const requestHandler =
-   guild.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
-  const fetched = await requestHandler.guilds.getOnboarding(guild);
+  const fetched = await guild.client.util.request.guilds.getOnboarding(guild);
   if ('message' in fetched) return undefined;
 
   self.set(guild.id, fetched);

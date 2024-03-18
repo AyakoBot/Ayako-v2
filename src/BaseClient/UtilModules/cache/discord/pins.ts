@@ -48,15 +48,13 @@ const self: Pins = {
 
   if (!('lastPinTimestamp' in channel)) return undefined;
 
-  const requestHandler =
-   channel.client.util.files['/BaseClient/UtilModules/requestHandler.js'].request;
   const me = await getBotMemberFromGuild(channel.guild);
   const channelBitfield = me?.permissionsIn(channel);
   if (channelBitfield && !channelBitfield?.has(Discord.PermissionFlagsBits.ViewChannel)) {
    return undefined;
   }
 
-  const fetched = await requestHandler.channels.getPins(channel);
+  const fetched = await channel.client.util.request.channels.getPins(channel);
   if ('message' in fetched) return undefined;
 
   fetched?.forEach((f) => self.set(f));
