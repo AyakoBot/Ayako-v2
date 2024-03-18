@@ -81,4 +81,5 @@ export default async (guild: Discord.Guild) => {
  * @returns A boolean indicating whether the user can get the vanity URL.
  */
 export const canGetVanityURL = (me: Discord.GuildMember) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuild) &&
+ me.guild.features.includes(Discord.GuildFeature.VanityURL);
