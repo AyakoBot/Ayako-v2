@@ -5,7 +5,6 @@ export type * from '../BaseClient/Cluster/Socket.js';
 export type * from './DataBase.js';
 export * from './Settings.js';
 export type * from './TopGG.js';
-export type * from './Channel.js';
 export * from '../SlashCommands/index.js';
 
 export type Language = import('../BaseClient/Other/language.js').default;

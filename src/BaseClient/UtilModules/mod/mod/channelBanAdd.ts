@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import { ChannelBanBits } from '../../../../Typings/Channel.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 import DataBase from '../../../Bot/DataBase.js';
@@ -8,11 +9,11 @@ import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import type * as ModTypes from '../../mod.js';
 import { request } from '../../requestHandler.js';
 
+import { canEdit } from '../../requestHandler/channels/edit.js';
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
-import { canEdit } from '../../requestHandler/channels/edit.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.ChannelBanAdd>,
@@ -62,15 +63,15 @@ export default async (
      channelid: options.channel.id,
      guildid: options.guild.id,
      allowbits: 0n,
-     denybits: new Discord.PermissionsBitField(CT.ChannelBanBits).bitfield,
+     denybits: new Discord.PermissionsBitField(ChannelBanBits).bitfield,
     },
     update: {
      denybits: new Discord.PermissionsBitField(
       stickyPermSetting?.denybits ? BigInt(stickyPermSetting.denybits) : 0n,
-     ).add(CT.ChannelBanBits).bitfield,
+     ).add(ChannelBanBits).bitfield,
      allowbits: new Discord.PermissionsBitField(
       stickyPermSetting?.allowbits ? BigInt(stickyPermSetting.allowbits) : 0n,
-     ).remove(CT.ChannelBanBits).bitfield,
+     ).remove(ChannelBanBits).bitfield,
     },
    })
    .then();
@@ -86,12 +87,12 @@ export default async (
 
  const perm = options.channel?.permissionOverwrites.cache.get(options.target.id);
 
- if (perm && perm.deny.has(CT.ChannelBanBits) && !options.skipChecks) {
+ if (perm && perm.deny.has(ChannelBanBits) && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
 
- const newPerms = new Discord.PermissionsBitField(CT.ChannelBanBits);
+ const newPerms = new Discord.PermissionsBitField(ChannelBanBits);
 
  const res = await request.channels.editPermissionOverwrite(
   options.channel,

@@ -1,12 +1,12 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../Typings/Typings.js';
 import { canCreateInvite } from '../../../BaseClient/UtilModules/requestHandler/channels/createInvite.js';
+import { AllNonThreadGuildChannelTypes } from '../../../Typings/Channel.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const channel =
-  cmd.options.getChannel('channel', false, CT.AllNonThreadGuildChannelTypes) ?? cmd.channel;
+  cmd.options.getChannel('channel', false, AllNonThreadGuildChannelTypes) ?? cmd.channel;
  const maxUses = cmd.options.getInteger('max-uses', false);
  const maxAge = cmd.options.getString('max-age', false);
  const temporary = cmd.options.getBoolean('temporary', false);

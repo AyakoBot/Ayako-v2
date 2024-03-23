@@ -1,12 +1,13 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
+import { AllNonThreadGuildChannelTypes } from '../../../Typings/Channel.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const user = cmd.options.getUser('user', true);
  const reason = cmd.options.getString('reason', false);
- const channel = cmd.options.getChannel('channel', true, CT.AllNonThreadGuildChannelTypes);
+ const channel = cmd.options.getChannel('channel', true, AllNonThreadGuildChannelTypes);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
