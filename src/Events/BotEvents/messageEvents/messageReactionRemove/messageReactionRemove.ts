@@ -1,4 +1,6 @@
 import type * as Discord from 'discord.js';
+import { scheduleJob } from 'node-schedule';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import log from './log.js';
 import reactionRoles from './reactionRoles.js';
 
@@ -12,6 +14,8 @@ export default async (reaction: Discord.MessageReaction, user: Discord.User) => 
   .then((m) => ('message' in m ? undefined : m));
  if (!msg) return;
 
- log(reaction, user, msg);
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 2000), () => {
+  log(reaction, user, msg);
+ });
  reactionRoles(reaction, user, msg);
 };

@@ -1,4 +1,6 @@
 import * as Discord from 'discord.js';
+import { scheduleJob } from 'node-schedule';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import log from './log.js';
 
 export default async (reaction: Discord.MessageReaction) => {
@@ -15,5 +17,7 @@ export default async (reaction: Discord.MessageReaction) => {
 
  if ('message' in message) return;
 
- log(reaction, message);
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 2000), () => {
+  log(reaction, message);
+ });
 };
