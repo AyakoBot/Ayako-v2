@@ -66,6 +66,7 @@ const cache: {
  vcDeleteTimeout: VcDeleteTimeout;
  interactedGuilds: Set<string>;
  interactedChannels: Set<string>;
+ fastMsgCache: Map<string, { msgs: Discord.Message[]; job: Jobs.Job }>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -115,6 +116,7 @@ const cache: {
  antispam: new Map(),
  deleteSuggestions,
  vcDeleteTimeout,
+ fastMsgCache: new Map(),
 
  // URLs
  urlTLDs,
