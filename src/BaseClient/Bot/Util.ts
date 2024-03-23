@@ -29,6 +29,8 @@ import findServerByName from '../UtilModules/findServerByName.js';
 import findUserByName from '../UtilModules/findUserByName.js';
 import getAllBans from '../UtilModules/getAllBans.js';
 import getAllInvites from '../UtilModules/getAllInvites.js';
+import getAllJobs from '../UtilModules/getAllJobs.js';
+import getPathFromError from '../UtilModules/getPathFromError.js';
 import getAudit from '../UtilModules/getAudit.js';
 import {
  guild as getBotIdFromGuild,
@@ -110,6 +112,8 @@ const logFiles = {
 };
 
 interface Util {
+ getPathFromError: typeof getPathFromError;
+ getAllJobs: typeof getAllJobs;
  makeTable: typeof makeTable;
  deleteNotificationThread: typeof deleteNotificationThread;
  notificationThread: typeof notificationThread;
@@ -208,6 +212,8 @@ interface Util {
 }
 
 const util: Util = {
+ getPathFromError,
+ getAllJobs,
  makeTable,
  deleteNotificationThread,
  notificationThread,
