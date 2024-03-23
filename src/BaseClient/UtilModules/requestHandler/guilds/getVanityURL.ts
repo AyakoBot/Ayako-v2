@@ -15,6 +15,10 @@ import requestHandlerError from '../../requestHandlerError.js';
  */
 export default async (guild: Discord.Guild) => {
  if (!guild) return new Error('Guild not specified.');
+ if (!guild.features.includes(Discord.GuildFeature.VanityURL)) {
+  return new Error('Guild does not have a vanity URL.');
+ }
+
  if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.ManageGuild]);
 
@@ -81,5 +85,4 @@ export default async (guild: Discord.Guild) => {
  * @returns A boolean indicating whether the user can get the vanity URL.
  */
 export const canGetVanityURL = (me: Discord.GuildMember) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageGuild) &&
- me.guild.features.includes(Discord.GuildFeature.VanityURL);
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);
