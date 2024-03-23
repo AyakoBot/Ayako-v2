@@ -6,6 +6,7 @@ import Jobs from 'node-schedule';
 import client, { API } from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -351,7 +352,7 @@ const getAnalyses = async (
  if (i > 5) throw new Error('Too many requests');
 
  return new Promise((resolve) => {
-  Jobs.scheduleJob(new Date(Date.now() + 5000 * i), async () => {
+  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000 * i), async () => {
    const res = await fetch(`https://www.virustotal.com/api/v3/analyses/${id}`, {
     headers: {
      'x-apikey': process.env.VTToken ?? '',

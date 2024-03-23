@@ -1,6 +1,7 @@
 import * as Jobs from 'node-schedule';
 import fetch from 'node-fetch';
 import constants from '../../../Other/constants.js';
+import getPathFromError from '../../getPathFromError.js';
 
 /**
  * Interface for the SinkingYachts cache module.
@@ -39,9 +40,13 @@ const self: SinkingYachts = {
 
   if (!res.ok) throw new Error('Failed to fetch Sinking Yachts API');
 
-  self.refreshJob = Jobs.scheduleJob(new Date(Date.now() + 3600000), () => {
-   self.start();
-  });
+  self.refreshJob = Jobs.scheduleJob(
+   getPathFromError(new Error()),
+   new Date(Date.now() + 3600000),
+   () => {
+    self.start();
+   },
+  );
 
   self.cache = new Set();
   const data = (await res.json()) as string[];

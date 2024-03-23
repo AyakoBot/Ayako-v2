@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import * as Jobs from 'node-schedule';
+import getPathFromError from '../../getPathFromError.js';
 
 /**
  * Interface for the FishFish cache module.
@@ -47,9 +48,13 @@ const self: FishFish = {
   // expires is a Date in seconds
   const authData = (await authRes.json()) as { token: string; expires: number };
   self.sessionToken = authData.token;
-  self.refreshJob = Jobs.scheduleJob(new Date(authData.expires * 1000), () => {
-   self.start();
-  });
+  self.refreshJob = Jobs.scheduleJob(
+   getPathFromError(new Error()),
+   new Date(authData.expires * 1000),
+   () => {
+    self.start();
+   },
+  );
 
   const res = await fetch(`https://api.fishfish.gg/v1/domains?full=false`, {
    headers: {

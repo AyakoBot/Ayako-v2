@@ -1,7 +1,8 @@
-import { Serialized } from 'discord-hybrid-sharding';
 import Prisma from '@prisma/client';
+import { Serialized } from 'discord-hybrid-sharding';
 import Jobs from 'node-schedule';
 import { parentPort, workerData } from 'worker_threads';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 type Role = { id: string; position: number };
 
@@ -47,7 +48,7 @@ const start = async (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator
   if (takeThese.length || giveThese.length) membersWithRoles.push(member);
  });
 
- Jobs.scheduleJob('*/1 * * * * *', () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), '*/1 * * * * *', () => {
   parentPort?.postMessage(membersWithRoles);
  });
 };

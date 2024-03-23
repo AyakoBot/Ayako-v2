@@ -4,6 +4,7 @@ import * as CT from '../../../Typings/Typings.js';
 
 import { canBanMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/banMember.js';
 import { canRemoveMember } from '../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -70,7 +71,7 @@ export const runPunishment = async (
 
  if (cmd) await cmd.client.util.replyCmd(cmd, { embeds });
 
- const job = Jobs.scheduleJob('*/5 * * * * *', () => {
+ const job = Jobs.scheduleJob(getPathFromError(new Error()), '*/5 * * * * *', () => {
   cmd?.editReply({
    embeds: [
     {
@@ -89,9 +90,13 @@ export const runPunishment = async (
   });
  });
 
- const cancelJob = Jobs.scheduleJob(new Date(Date.now() + 120000), () => {
-  job.cancel();
- });
+ const cancelJob = Jobs.scheduleJob(
+  getPathFromError(new Error()),
+  new Date(Date.now() + 120000),
+  () => {
+   job.cancel();
+  },
+ );
 
  // eslint-disable-next-line no-async-promise-executor
  await new Promise(async (resolve) => {

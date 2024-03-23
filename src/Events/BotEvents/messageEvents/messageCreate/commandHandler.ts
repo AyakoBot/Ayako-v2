@@ -3,6 +3,7 @@ import { glob } from 'glob';
 import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
 import * as CT from '../../../../Typings/Typings.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 const { log } = console;
 
@@ -94,7 +95,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   });
   if (!reply) return;
 
-  Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
    if (reply && (await msg.client.util.isDeleteable(reply))) {
     msg.client.util.request.channels.deleteMessage(reply);
    }
@@ -124,7 +125,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  const canRunCommand = await checkCommandPermissions(msg, commandName);
  if (!canRunCommand.can) {
   const m = await msg.client.util.errorMsg(msg, language.permissions.error.you, language);
-  Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
    if (!m) return;
    if (m && (await msg.client.util.isDeleteable(m))) {
     msg.client.util.request.channels.deleteMessage(m);

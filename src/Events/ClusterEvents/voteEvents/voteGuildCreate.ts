@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import Prisma from '@prisma/client';
 import * as CT from '../../../Typings/Typings.js';
 import { doAnnouncement, end, currency, xp, xpmultiplier } from './voteBotCreate.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (
  vote: CT.TopGGGuildVote,
@@ -78,7 +79,9 @@ export default async (
  });
 
  guild.client.util.cache.votes.set(
-  Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () => end(reminder, guild)),
+  Jobs.scheduleJob(getPathFromError(new Error(vote.guild)), new Date(Date.now() + 42_900_000), () =>
+   end(reminder, guild),
+  ),
   guild.id,
   vote.guild,
   user.id,

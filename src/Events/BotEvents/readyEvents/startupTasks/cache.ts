@@ -2,6 +2,7 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import { endDeleteSuggestion } from '../../../../Commands/ModalCommands/suggestion/accept.js';
 import {
  end as endGiveaway,
@@ -9,10 +10,10 @@ import {
 } from '../../../../Commands/SlashCommands/giveaway/end.js';
 import { end as endReminder } from '../../../../Commands/SlashCommands/reminder/create.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
-import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
 
 export default () => {
  reminder();
@@ -30,6 +31,7 @@ const reminder = async () => {
  reminders.forEach((r) => {
   client.util.cache.reminders.set(
    Jobs.scheduleJob(
+    getPathFromError(new Error(String(r.uniquetimestamp))),
     new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
     () => {
      endReminder(r);
@@ -48,6 +50,8 @@ export const tasks = {
   votes.forEach((vote) => {
    client.util.cache.votes.set(
     Jobs.scheduleJob(
+     getPathFromError(new Error(String(vote.endtime))),
+
      new Date(Date.now() > Number(vote.endtime) ? Date.now() + 10000 : Number(vote.endtime)),
      () => {
       endVote(vote, guild);
@@ -96,8 +100,10 @@ export const tasks = {
    }
 
    client.util.cache.vcDeleteTimeout.set(
-    Jobs.scheduleJob(new Date(Date.now() + Number(applyingSetting.deletetime) * 1000), () =>
-     del(channel),
+    Jobs.scheduleJob(
+     getPathFromError(new Error(vc.channelid)),
+     new Date(Date.now() + Number(applyingSetting.deletetime) * 1000),
+     () => del(channel),
     ),
     guild.id,
     channel.id,
@@ -121,6 +127,8 @@ export const tasks = {
   suggestions.forEach((s) => {
    client.util.cache.deleteSuggestions.set(
     Jobs.scheduleJob(
+     getPathFromError(new Error(s.msgid)),
+
      new Date(
       Date.now() +
        (s.approved ? Number(settings.deleteapprovedafter) : Number(settings.deletedeniedafter)) *
@@ -143,6 +151,8 @@ export const tasks = {
 
   client.util.cache.disboardBumpReminders.set(
    Jobs.scheduleJob(
+    getPathFromError(new Error(guild.id)),
+
     new Date(
      Number(settings.nextbump) < Date.now() ? Date.now() + 10000 : Number(settings.nextbump),
     ),
@@ -165,6 +175,8 @@ export const tasks = {
   giveaways.forEach((g) => {
    client.util.cache.giveaways.set(
     Jobs.scheduleJob(
+     getPathFromError(new Error(g.msgid)),
+
      new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
      () => {
       endGiveaway(g);
@@ -202,50 +214,54 @@ export const tasks = {
     const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
 
     table.cache.set(
-     Jobs.scheduleJob(new Date(Date.now() < time ? 1000 : time), async () => {
-      const target = m.userid
-       ? await client.util.getUser(m.userid).catch(() => undefined)
-       : undefined;
-      if (!target) {
-       client.util.error(
-        guild,
-        new Error(`Could not find user to initialize ${table}Remove event.`),
-       );
-       return;
-      }
+     Jobs.scheduleJob(
+      getPathFromError(new Error()),
+      new Date(Date.now() < time ? 1000 : time),
+      async () => {
+       const target = m.userid
+        ? await client.util.getUser(m.userid).catch(() => undefined)
+        : undefined;
+       if (!target) {
+        client.util.error(
+         guild,
+         new Error(`Could not find user to initialize ${table}Remove event.`),
+        );
+        return;
+       }
 
-      const channel = await client.util.getChannel.guildTextChannel(m.channelid);
+       const channel = await client.util.getChannel.guildTextChannel(m.channelid);
 
-      client.util.mod(
-       m.msgid && channel
-        ? await client.util.request.channels
-           .getMessage(channel, m.msgid)
-           .then((s) => ('message' in s ? undefined : s))
-        : undefined,
-       table.event,
-       {
-        executor: m.executorid
-         ? await client.util.getUser(m.executorid).catch(() => undefined)
+       client.util.mod(
+        m.msgid && channel
+         ? await client.util.request.channels
+            .getMessage(channel, m.msgid)
+            .then((s) => ('message' in s ? undefined : s))
          : undefined,
-        target,
-        reason: m.reason ?? language.t.None,
-        guild,
-        skipChecks: true,
-        dbOnly:
-         'banchannelid' in m
-          ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
-          : false,
-        channel:
-         'banchannelid' in m
-          ? (guild.channels.cache.get(
-             (m as Prisma.punish_tempchannelbans).banchannelid,
-            ) as Discord.GuildChannel)
+        table.event,
+        {
+         executor: m.executorid
+          ? await client.util.getUser(m.executorid).catch(() => undefined)
           : undefined,
-       } as CT.ModOptions<
-        CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
-       >,
-      );
-     }),
+         target,
+         reason: m.reason ?? language.t.None,
+         guild,
+         skipChecks: true,
+         dbOnly:
+          'banchannelid' in m
+           ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
+           : false,
+         channel:
+          'banchannelid' in m
+           ? (guild.channels.cache.get(
+              (m as Prisma.punish_tempchannelbans).banchannelid,
+             ) as Discord.GuildChannel)
+           : undefined,
+        } as CT.ModOptions<
+         CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
+        >,
+       );
+      },
+     ),
      guild.id,
      'banchannelid' in m ? m.channelid : m.userid,
      m.userid,
@@ -261,6 +277,7 @@ export const tasks = {
   claimTimeouts?.forEach((t) => {
    client.util.cache.giveawayClaimTimeout.set(
     Jobs.scheduleJob(
+     getPathFromError(new Error(guild.id)),
      new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
      () => {
       giveawayCollectTimeExpired(t.msgid, t.guildid);
@@ -279,9 +296,13 @@ export const tasks = {
 
   client.util.cache.enableInvites.set(
    guild.id,
-   Jobs.scheduleJob(new Date(Number(settings.enableinvitesat)), () => {
-    enableInvites(guild);
-   }),
+   Jobs.scheduleJob(
+    getPathFromError(new Error(guild.id)),
+    new Date(Number(settings.enableinvitesat)),
+    () => {
+     enableInvites(guild);
+    },
+   ),
   );
  },
 };

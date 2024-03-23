@@ -8,6 +8,7 @@ import type * as ModTypes from '../mod.js';
 import replyCmd from '../replyCmd.js';
 import replyMsg from '../replyMsg.js';
 import { request } from '../requestHandler.js';
+import getPathFromError from '../getPathFromError.js';
 
 export default async (
  cmd: ModTypes.CmdType,
@@ -53,7 +54,7 @@ export default async (
  if (!reply) return;
  if (!(reply instanceof Discord.Message)) return;
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
   if (await isDeleteable(reply)) request.channels.deleteMessage(reply);
  });
 };

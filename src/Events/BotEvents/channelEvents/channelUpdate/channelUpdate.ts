@@ -3,6 +3,7 @@ import * as Jobs from 'node-schedule';
 import cache from './cache.js';
 import log from './log.js';
 import stickyPerms from './stickyPerms.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (oldChannel: Discord.Channel | undefined, channel: Discord.Channel) => {
  if (!('guild' in channel)) return;
@@ -19,7 +20,7 @@ export default async (oldChannel: Discord.Channel | undefined, channel: Discord.
   return;
  }
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error(channel.id)), new Date(Date.now() + 10000), () => {
   stickyPerms(oldChannel as Discord.GuildChannel, channel as Discord.GuildChannel);
  });
 };

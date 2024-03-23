@@ -4,6 +4,7 @@ import { scheduleJob } from 'node-schedule';
 import * as CT from '../../../../Typings/Typings.js';
 import { canRemoveMember } from '../../../../BaseClient/UtilModules/requestHandler/guilds/removeMember.js';
 import { canAddRoleToMember } from '../../../../BaseClient/UtilModules/requestHandler/guilds/addRoleToMember.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (member: Discord.GuildMember) => {
  const verification = await member.client.util.DataBase.verification.findUnique({
@@ -44,9 +45,13 @@ const prepKick = async (
  if (!verification.kickafter) return;
  if (member.user.bot) return;
 
- scheduleJob(new Date(Date.now() + Number(verification.kickafter) * 1000), async () => {
-  kick(member, verification, language);
- });
+ scheduleJob(
+  getPathFromError(new Error(verification.guildid)),
+  new Date(Date.now() + Number(verification.kickafter) * 1000),
+  async () => {
+   kick(member, verification, language);
+  },
+ );
 };
 
 export const kick = async (

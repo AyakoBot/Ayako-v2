@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -253,7 +254,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  client.util.cache.giveawayClaimTimeout.delete(giveaway.guildid, giveaway.msgid);
 
  client.util.cache.giveawayClaimTimeout.set(
-  Jobs.scheduleJob(new Date(collectionEnd), () => {
+  Jobs.scheduleJob(getPathFromError(new Error(giveaway.msgid)), new Date(collectionEnd), () => {
    giveawayCollectTimeExpired(giveaway.msgid, giveaway.guildid);
   }),
   giveaway.guildid,
@@ -367,11 +368,23 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
    msgid: collection.replymsgid,
   });
 
-  if (!oldReplyMsg) return;
-  if (await client.util.isDeleteable(oldReplyMsg)) {
+  if (oldReplyMsg && (await client.util.isDeleteable(oldReplyMsg))) {
    client.util.request.channels.deleteMessage(oldReplyMsg);
   }
  }
+
+ client.util.DataBase.giveawaycollection
+  .delete({
+   where: { msgid: giveaway.msgid },
+  })
+  .then();
+
+ client.util.DataBase.giveaways
+  .update({
+   where: { msgid: giveaway.msgid },
+   data: { claimingdone: true },
+  })
+  .then();
 
  const msg = await getMessage(giveaway);
  if (!msg) return;
@@ -391,17 +404,4 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
    },
   ],
  });
-
- client.util.DataBase.giveawaycollection
-  .delete({
-   where: { msgid: giveaway.msgid },
-  })
-  .then();
-
- client.util.DataBase.giveaways
-  .update({
-   where: { msgid: giveaway.msgid },
-   data: { claimingdone: true },
-  })
-  .then();
 };

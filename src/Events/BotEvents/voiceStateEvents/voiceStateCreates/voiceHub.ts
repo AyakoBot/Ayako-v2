@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import { del } from '../voiceStateDeletes/voiceHub.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (state: Discord.VoiceState, member?: Discord.GuildMember) => {
  if (!member) return;
@@ -32,18 +33,18 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
  }
 
  const channelsWithParent = member.guild.channels.cache.filter(
-  (c) => c.parentId === state.channelId,
+  (c) => c.parentId === state.channel!.parentId,
  );
  const lowestChannel = channelsWithParent
   .filter((c): c is Discord.VoiceChannel => c.type === Discord.ChannelType.GuildVoice)
-  .sort((a, b) => b.position - a.position)
+  .sort((a, b) => b.rawPosition - a.rawPosition)
   .first();
 
  const channel = (await state.client.util.request.guilds.createChannel(state.guild, {
   parent_id: settings.categoryid,
   name: member.displayName,
   type: Discord.ChannelType.GuildVoice,
-  position: (lowestChannel?.position ?? state.channel.position) - 1,
+  position: lowestChannel?.rawPosition ?? state.channel.rawPosition,
   permission_overwrites: [
    {
     id: member.id,
@@ -121,7 +122,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
  state.client.util.DataBase.voicechannels.create({ data }).then();
 
  state.client.util.cache.vcDeleteTimeout.set(
-  Jobs.scheduleJob(new Date(Date.now() + 300000), () =>
+  Jobs.scheduleJob(getPathFromError(new Error(data.channelid)), new Date(Date.now() + 300000), () =>
    del(channel as NonNullable<typeof state.channel>),
   ),
   state.guild.id,

@@ -1,10 +1,11 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default (msg: Discord.Message) => {
  if (!msg.inGuild()) return;
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
   msg.client.util.DataBase.reactionrolesettings
    .findMany({
     where: { msgid: msg.id },

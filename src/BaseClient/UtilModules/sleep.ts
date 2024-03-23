@@ -1,4 +1,5 @@
 import * as Jobs from 'node-schedule';
+import getPathFromError from './getPathFromError.js';
 
 /**
  * Delays the execution of the function for a specified number of ms.
@@ -7,7 +8,7 @@ import * as Jobs from 'node-schedule';
  */
 export default async (ms: number): Promise<true> =>
  new Promise((res) => {
-  Jobs.scheduleJob(new Date(Date.now() + ms), () => {
+  Jobs.scheduleJob(getPathFromError(new Error(String(ms))), new Date(Date.now() + ms), () => {
    res(true);
   });
  });

@@ -2,6 +2,7 @@ import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import { request } from './requestHandler.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
+import getPathFromError from './getPathFromError.js';
 
 type MemberCaches = {
  member: Discord.GuildMember;
@@ -63,7 +64,9 @@ const handleRoleUpdate = async (
  const roleGuild = GuildCache.get(member.guild.id);
  if (!roleGuild) {
   GuildCache.set(member.guild.id, {
-   job: Jobs.scheduleJob('*/1 * * * * *', () => runJob(member.guild)),
+   job: Jobs.scheduleJob(getPathFromError(new Error(member.id)), '*/1 * * * * *', () =>
+    runJob(member.guild),
+   ),
    members: [{ member, [type]: roles, reason, prio, added: Date.now() }],
    guild: member.guild,
   });

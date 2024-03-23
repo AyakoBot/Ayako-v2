@@ -1,8 +1,9 @@
 import { DjsDiscordClient } from 'discord-hybrid-sharding';
 import { scheduleJob } from 'node-schedule';
+import getPathFromError from '../UtilModules/getPathFromError.js';
 import Manager from './Manager.js';
 
-scheduleJob('0 */10 * * * *', async () => {
+scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
  const [guildCount, userCount] = await Promise.all(
   [
    'guilds.cache.size',
@@ -65,7 +66,7 @@ const splitBetweenShards = (x: number, y: number): number[] => {
 };
 
 if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.env.mainID) {
- scheduleJob('0 0 */1 * * *', async () => {
+ scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
   const users = await getAllUsers();
   const guilds = await getAllGuilds();
 

@@ -4,6 +4,7 @@ import * as Jobs from 'node-schedule';
 import * as CT from '../../../Typings/Typings.js';
 import { endTimeIsValid } from './create.js';
 import { end, getGiveawayEmbed, getMessage } from './end.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -40,9 +41,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  cmd.client.util.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
  cmd.client.util.cache.giveaways.set(
-  Jobs.scheduleJob(new Date(Number(giveaway.endtime)), () => {
-   end(giveaway);
-  }),
+  Jobs.scheduleJob(
+   getPathFromError(new Error(giveaway.msgid)),
+   new Date(Number(giveaway.endtime)),
+   () => {
+    end(giveaway);
+   },
+  ),
   giveaway.guildid,
   giveaway.channelid,
   giveaway.msgid,

@@ -3,13 +3,15 @@ import { Serialized } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
  const duration = cmd.client.util.getDuration(cmd.options.getString('duration', true));
  const content = cmd.options.getString('content', true);
- const endTime = Date.now() + duration;
+ const now = Date.now();
+ const endTime = now + duration;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.reminder;
 
@@ -22,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   data: {
    channelid: cmd.channelId,
    endtime: endTime,
-   uniquetimestamp: Date.now(),
+   uniquetimestamp: now,
    userid: cmd.user.id,
    reason: content,
   },
@@ -36,7 +38,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  cmd.client.util.cache.reminders.set(
-  Jobs.scheduleJob(new Date(endTime), () => {
+  Jobs.scheduleJob(getPathFromError(new Error(String(now))), new Date(endTime), () => {
    end(reminder);
   }),
   cmd.user.id,

@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (state: Discord.VoiceState) => {
  if (!state.channel) return;
@@ -32,8 +33,10 @@ export default async (state: Discord.VoiceState) => {
  if (!settings.deletetime) return;
 
  state.client.util.cache.vcDeleteTimeout.set(
-  Jobs.scheduleJob(new Date(Date.now() + Number(settings.deletetime) * 1000), () =>
-   del(state.channel as Discord.VoiceBasedChannel),
+  Jobs.scheduleJob(
+   getPathFromError(new Error(settings.channelid ?? undefined)),
+   new Date(Date.now() + Number(settings.deletetime) * 1000),
+   () => del(state.channel as Discord.VoiceBasedChannel),
   ),
   state.guild.id,
   state.channel.id,

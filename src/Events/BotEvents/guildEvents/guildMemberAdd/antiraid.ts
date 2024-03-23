@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import { runPunishment } from '../../../../Commands/ButtonCommands/antiraid/punish.js';
 import * as CT from '../../../../Typings/Typings.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (member: Discord.GuildMember) => {
  const settings = await member.client.util.DataBase.antiraid.findUnique({
@@ -29,10 +30,14 @@ const addMember = (member: Discord.GuildMember, settings: Prisma.antiraid) => {
 
  cache.add(member);
 
- Jobs.scheduleJob(new Date(Date.now() + Number(settings.timeout) * 1000), () => {
-  cache?.delete(member);
-  if (!cache?.size) member.client.util.cache.antiraid.delete(member.guild.id);
- });
+ Jobs.scheduleJob(
+  getPathFromError(new Error(member.id)),
+  new Date(Date.now() + Number(settings.timeout) * 1000),
+  () => {
+   cache?.delete(member);
+   if (!cache?.size) member.client.util.cache.antiraid.delete(member.guild.id);
+  },
+ );
 };
 
 const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
@@ -65,7 +70,7 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
 
    guild.client.util.cache.enableInvites.set(
     guild.id,
-    Jobs.scheduleJob(new Date(endTime), () => {
+    Jobs.scheduleJob(getPathFromError(new Error(guild.id)), new Date(endTime), () => {
      enableInvites(guild);
     }),
    );
@@ -73,10 +78,14 @@ const check = async (guild: Discord.Guild, settings: Prisma.antiraid) => {
  }
 
  new Array(times2Loop).fill(null).forEach((_, i) => {
-  Jobs.scheduleJob(new Date(Date.now() + timeoutBetweenLoops * i), () => {
-   caughtUsers.push(...(guild.client.util.cache.antiraid.get(guild.id)?.values() ?? []));
-   guild.client.util.cache.antiraid.delete(guild.id);
-  });
+  Jobs.scheduleJob(
+   getPathFromError(new Error(guild.id)),
+   new Date(Date.now() + timeoutBetweenLoops * i),
+   () => {
+    caughtUsers.push(...(guild.client.util.cache.antiraid.get(guild.id)?.values() ?? []));
+    guild.client.util.cache.antiraid.delete(guild.id);
+   },
+  );
  });
  await guild.client.util.sleep(150000);
 

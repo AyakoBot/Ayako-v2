@@ -8,6 +8,7 @@ import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
 import deleteThread from '../UtilModules/deleteNotificationThread.js';
 import { request } from '../UtilModules/requestHandler.js';
 import DataBase from '../Bot/DataBase.js';
+import getPathFromError from '../UtilModules/getPathFromError.js';
 
 export default async (guild: Discord.Guild | null) => {
  if (!guild) return;
@@ -29,6 +30,7 @@ const tasks = {
   deleteThreads?.forEach((t) => {
    cache.deleteThreads.set(
     Jobs.scheduleJob(
+     getPathFromError(new Error(t.channelid)),
      new Date(Number(t.deletetime) < Date.now() ? Date.now() + 10000 : Number(t.deletetime)),
      () => {
       deleteThread(guild, t.channelid);

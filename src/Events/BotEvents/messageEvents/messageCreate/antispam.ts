@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import { performPunishment } from './antivirus.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -36,13 +37,17 @@ export default async (msg: Discord.Message<true>) => {
 
  sentMessages?.push(msg);
 
- Jobs.scheduleJob(new Date(Date.now() + Number(settings.timeout) * 1000), () => {
-  const sent = msg.client.util.cache.antispam.get(msg.author.id);
-  if (!sent) return;
+ Jobs.scheduleJob(
+  getPathFromError(new Error(settings.guildid)),
+  new Date(Date.now() + Number(settings.timeout) * 1000),
+  () => {
+   const sent = msg.client.util.cache.antispam.get(msg.author.id);
+   if (!sent) return;
 
-  const replace = sent.filter((m) => m.id !== msg.id);
-  msg.client.util.cache.antispam.set(msg.author.id, replace);
- });
+   const replace = sent.filter((m) => m.id !== msg.id);
+   msg.client.util.cache.antispam.set(msg.author.id, replace);
+  },
+ );
 
  if (!violatesThreshold) return;
 

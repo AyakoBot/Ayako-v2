@@ -6,6 +6,7 @@ import { Worker } from 'worker_threads';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as Typings from '../../../../Typings/Typings.js';
 import type { PassObject } from './separatorWorker.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 const UpdateWorker = new Worker(
  `${process.cwd()}${
@@ -80,33 +81,37 @@ export default (oldMember: Discord.GuildMember, member: Discord.GuildMember) => 
  if (isWaiting.has(`${member.id}-${member.guild.id}`)) return;
  isWaiting.add(`${member.id}-${member.guild.id}`);
 
- Jobs.scheduleJob(new Date(Date.now() + 5000), async () => {
-  isWaiting.delete(`${member.id}-${member.guild.id}`);
+ Jobs.scheduleJob(
+  getPathFromError(new Error(member.guild.id)),
+  new Date(Date.now() + 5000),
+  async () => {
+   isWaiting.delete(`${member.id}-${member.guild.id}`);
 
-  const stillrunning = await client.util.DataBase.roleseparatorsettings.findFirst({
-   where: { guildid: member.guild.id, stillrunning: true },
-  });
-  if (stillrunning) return;
+   const stillrunning = await client.util.DataBase.roleseparatorsettings.findFirst({
+    where: { guildid: member.guild.id, stillrunning: true },
+   });
+   if (stillrunning) return;
 
-  const rows = await client.util.DataBase.roleseparator.findMany({
-   where: { active: true, guildid: member.guild.id },
-  });
-  if (!rows) return;
+   const rows = await client.util.DataBase.roleseparator.findMany({
+    where: { active: true, guildid: member.guild.id },
+   });
+   if (!rows) return;
 
-  const map = new Map<string, { position: number; id: string }>();
-  member.guild.roles.cache
-   .map((r) => r)
-   .forEach((r) => map.set(r.id, { position: r.position, id: r.id }));
+   const map = new Map<string, { position: number; id: string }>();
+   member.guild.roles.cache
+    .map((r) => r)
+    .forEach((r) => map.set(r.id, { position: r.position, id: r.id }));
 
-  UpdateWorker.postMessage({
-   roles: member.roles.cache.map((r) => r.id),
-   guildid: member.guild.id,
-   userid: member.user.id,
-   guildroles: map,
-   highest: { id: member.guild.roles.highest.id, position: member.guild.roles.highest.position },
-   res: rows.map((r) => ({ ...r, uniquetimestamp: Number(r.uniquetimestamp) })),
-  });
- });
+   UpdateWorker.postMessage({
+    roles: member.roles.cache.map((r) => r.id),
+    guildid: member.guild.id,
+    userid: member.user.id,
+    guildroles: map,
+    highest: { id: member.guild.roles.highest.id, position: member.guild.roles.highest.position },
+    res: rows.map((r) => ({ ...r, uniquetimestamp: Number(r.uniquetimestamp) })),
+   });
+  },
+ );
 };
 
 export const oneTimeRunner = async (
@@ -350,58 +355,62 @@ const assinger = async (
  if (!thisMap) return;
 
  members.forEach((raw, index) => {
-  const job = Jobs.scheduleJob(new Date(Date.now() + index * 3000 + 10000), async () => {
-   const member = guild.members.cache.get(raw.id);
+  const job = Jobs.scheduleJob(
+   getPathFromError(new Error(raw.id)),
+   new Date(Date.now() + index * 3000 + 10000),
+   async () => {
+    const member = guild.members.cache.get(raw.id);
 
-   if (member) {
-    client.util.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
-    client.util.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
-   }
+    if (member) {
+     client.util.roleManager.add(member, raw.giveTheseRoles, language.autotypes.separators, 2);
+     client.util.roleManager.remove(member, raw.takeTheseRoles, language.autotypes.separators, 2);
+    }
 
-   if (index === members.length - 1 && lastRun) {
-    const settings = await client.util.DataBase.roleseparatorsettings
+    if (index === members.length - 1 && lastRun) {
+     const settings = await client.util.DataBase.roleseparatorsettings
+      .update({
+       where: { guildid: guild.id },
+       data: {
+        stillrunning: false,
+        duration: null,
+        startat: null,
+        messageid: null,
+        channelid: null,
+       },
+      })
+      .then();
+
+     notification(
+      guild,
+      {
+       author: {
+        name: language.slashCommands.settings.authorType(
+         language.slashCommands.settings.categories.separators.name,
+        ),
+        icon_url: client.util.emotes.settings.link,
+       },
+      },
+      language,
+      settings,
+      true,
+     );
+
+     return;
+    }
+
+    if (index === members.length - 1) {
+     oneTimeRunner(undefined, guild, true);
+     return;
+    }
+
+    client.util.DataBase.roleseparatorsettings
      .update({
       where: { guildid: guild.id },
-      data: {
-       stillrunning: false,
-       duration: null,
-       startat: null,
-       messageid: null,
-       channelid: null,
-      },
+      data: { index, length: members.length - 1 },
      })
      .then();
-
-    notification(
-     guild,
-     {
-      author: {
-       name: language.slashCommands.settings.authorType(
-        language.slashCommands.settings.categories.separators.name,
-       ),
-       icon_url: client.util.emotes.settings.link,
-      },
-     },
-     language,
-     settings,
-     true,
-    );
-
-    return;
-   }
-
-   if (index === members.length - 1) {
-    oneTimeRunner(undefined, guild, true);
-    return;
-   }
-
-   client.util.DataBase.roleseparatorsettings
-    .update({
-     where: { guildid: guild.id },
-     data: { index, length: members.length - 1 },
-    })
-    .then();
-  });
+   },
+  );
 
   if (!job) return;
   thisMap.push(job);

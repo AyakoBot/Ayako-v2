@@ -3,6 +3,7 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client, { API } from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accept = true) => {
  if (!cmd.inCachedGuild()) return;
@@ -102,6 +103,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
 
  client.util.cache.deleteSuggestions.set(
   Jobs.scheduleJob(
+   getPathFromError(new Error(cmd.guildId)),
    new Date(
     Date.now() +
      (Number(settings.deleteapprovedafter) || Number(settings.deletedeniedafter)) * 1000,

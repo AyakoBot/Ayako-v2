@@ -4,6 +4,7 @@ import * as CT from '../../Typings/Typings.js';
 import * as Classes from '../Other/classes.js';
 import { request } from './requestHandler.js';
 import { getEmbedCharLens, isValidPayload } from './requestHandler/channels/sendMessage.js';
+import getPathFromError from './getPathFromError.js';
 
 export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions, 'embeds'> {
  embeds?: Discord.APIEmbed[];
@@ -199,7 +200,7 @@ const combineMessages = async (
 
  timeoutGuild.set(
   channel.guildId,
-  Jobs.scheduleJob(new Date(Date.now() + timeout), () => {
+  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + timeout), () => {
    const queuedEmbeds =
     channel.client.util.channelQueue.get(channel.guildId)?.get(channel.id) || [];
    channel.client.util.send(channel, { embeds: queuedEmbeds });

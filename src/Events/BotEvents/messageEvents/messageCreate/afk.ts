@@ -5,6 +5,7 @@ import * as CT from '../../../../Typings/Typings.js';
 import { getContent } from '../../autoModerationActionEvents/censor.js';
 import { getPrefix } from './commandHandler.js';
 import client from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
@@ -41,7 +42,7 @@ const self = async (
  const m = (await client.util.send(msg.channel, { embeds: [embed] })) as
   | Discord.Message<true>
   | undefined;
- Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
   if (!m) return;
   if (await client.util.isDeleteable(m)) {
    client.util.request.channels.deleteMessage(m as Discord.Message<true>);
@@ -104,7 +105,7 @@ const mention = async (
    if (!afkGuild) client.util.cache.afkCD.set(a.guildid, new Set());
    client.util.cache.afkCD.get(a.guildid)?.add(a.userid);
 
-   Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
     client.util.cache.afkCD.get(a.guildid)?.delete(a.userid);
     if (client.util.cache.afkCD.get(a.guildid)?.size) return;
     client.util.cache.afkCD.delete(a.guildid);
@@ -128,7 +129,7 @@ const mention = async (
   allowed_mentions: { replied_user: true },
  });
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
   if (!m) return;
   if (await client.util.isDeleteable(m)) client.util.request.channels.deleteMessage(m);
  });

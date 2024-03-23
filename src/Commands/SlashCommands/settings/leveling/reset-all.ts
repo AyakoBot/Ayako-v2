@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -19,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   components: [{ type: Discord.ComponentType.ActionRow, components: buttons }],
  });
 
- Jobs.scheduleJob(new Date(now), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(now), () => {
   cmd.editReply({
    content: lan.areYouSure2,
    components: [{ type: Discord.ComponentType.ActionRow, components: getButtons() }],

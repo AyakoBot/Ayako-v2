@@ -2,6 +2,7 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author.bot) return;
@@ -27,10 +28,14 @@ const disboardSent = async (msg: Discord.Message<true>) => {
  deleteLastReminder(settings);
 
  if (settings.deletereply) {
-  Jobs.scheduleJob(new Date(Date.now() + 5000), async () => {
-   if (!msg) return;
-   if (await client.util.isDeleteable(msg)) client.util.request.channels.deleteMessage(msg);
-  });
+  Jobs.scheduleJob(
+   getPathFromError(new Error(msg.guild.id)),
+   new Date(Date.now() + 5000),
+   async () => {
+    if (!msg) return;
+    if (await client.util.isDeleteable(msg)) client.util.request.channels.deleteMessage(msg);
+   },
+  );
  }
 
  const nextbump = Date.now() + 9000000;
@@ -48,7 +53,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
   .then();
 
  client.util.cache.disboardBumpReminders.set(
-  Jobs.scheduleJob(new Date(nextbump), () => {
+  Jobs.scheduleJob(getPathFromError(new Error(msg.guild.id)), new Date(nextbump), () => {
    bumpReminder(msg.guild);
   }),
   msg.guildId,
@@ -121,7 +126,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
   .then();
 
  client.util.cache.disboardBumpReminders.set(
-  Jobs.scheduleJob(new Date(nextbump), () => {
+  Jobs.scheduleJob(getPathFromError(new Error(guild.id)), new Date(nextbump), () => {
    bumpReminder(guild);
   }),
   guild.id,

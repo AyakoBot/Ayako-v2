@@ -7,6 +7,7 @@ import cache from './cache.js';
 import objectEmotes from './emotes.js';
 import error from './error.js';
 import { request } from './requestHandler.js';
+import getPathFromError from './getPathFromError.js';
 
 /**
  * Sends a reply message to a Discord message.
@@ -120,25 +121,33 @@ export const cooldownHandler = async (
   const emoteToUse = objectEmotes.timers[59];
   emote = constants.standard.getEmoteIdentifier(emoteToUse);
 
-  Jobs.scheduleJob(new Date(Date.now() + (Number(settings.cooldown) * 1000 - 60000)), async () => {
-   if (!m) return;
+  Jobs.scheduleJob(
+   getPathFromError(new Error()),
+   new Date(Date.now() + (Number(settings.cooldown) * 1000 - 60000)),
+   async () => {
+    if (!m) return;
 
-   const secondReaction = await request.channels.addReaction(m, emote);
-   if (secondReaction) {
-    if (m.guild) error(m.guild, new Error(secondReaction.message));
-    return;
-   }
+    const secondReaction = await request.channels.addReaction(m, emote);
+    if (secondReaction) {
+     if (m.guild) error(m.guild, new Error(secondReaction.message));
+     return;
+    }
 
-   reactions.push(emote);
-  });
+    reactions.push(emote);
+   },
+  );
  }
 
- Jobs.scheduleJob(new Date(Date.now() + Number(settings.cooldown) * 1000), async () => {
-  reactions.forEach((react) => {
-   request.channels.deleteOwnReaction(m as Discord.Message<true>, react);
-   deleteCooldown(channelId, commandName);
-  });
- });
+ Jobs.scheduleJob(
+  getPathFromError(new Error()),
+  new Date(Date.now() + Number(settings.cooldown) * 1000),
+  async () => {
+   reactions.forEach((react) => {
+    request.channels.deleteOwnReaction(m as Discord.Message<true>, react);
+    deleteCooldown(channelId, commandName);
+   });
+  },
+ );
 };
 
 const setCooldown = (channelId: string, commandName: string, cooldown: number) => {

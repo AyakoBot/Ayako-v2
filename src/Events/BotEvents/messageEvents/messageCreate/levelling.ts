@@ -4,6 +4,7 @@ import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';
 import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
 import * as CT from '../../../../Typings/Typings.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 type LevelData = { oldXP: number; newXP: number; newLevel: number; oldLevel: number };
 
@@ -23,7 +24,7 @@ const globalLevelling = async (msg: Discord.Message<true>) => {
 
  msg.client.util.cache.globalLevellingCD.add(msg.author.id);
 
- Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
   msg.client.util.cache.globalLevellingCD.delete(msg.author.id);
  });
 
@@ -44,7 +45,7 @@ const levelling = async (msg: Discord.Message<true>) => {
  msg.client.util.cache.lastMessageGuild.set(msg.author.id, msg.content);
  msg.client.util.cache.guildLevellingCD.add(msg.author.id);
 
- Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
   msg.client.util.cache.guildLevellingCD.delete(msg.author.id);
  });
 
@@ -474,7 +475,7 @@ const doReact = async (
 
  await Promise.all(reactions.map((e) => msg.client.util.request.channels.addReaction(msg, e)));
 
- Jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
   msg.reactions.cache.forEach((r) =>
    msg.client.util.request.channels.deleteOwnReaction(msg, r.emoji.identifier),
   );
@@ -503,7 +504,7 @@ const infoEmbed = async (
   embeds: [embed],
  });
 
- Jobs.scheduleJob(new Date(Date.now() + 30000), async () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 30000), async () => {
   if (!m) return;
   if (await msg.client.util.isDeleteable(m)) msg.client.util.request.channels.deleteMessage(m);
  });
@@ -564,6 +565,7 @@ const send = async (
  if (!setting.lvlupdeltimeout) return;
 
  Jobs.scheduleJob(
+  getPathFromError(new Error()),
   new Date(
    Date.now() +
     (Number(setting.lvlupdeltimeout) > 5 ? Number(setting.lvlupdeltimeout) * 1000 : 5000) * 100,

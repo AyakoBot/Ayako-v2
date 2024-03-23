@@ -1,5 +1,6 @@
 import Jobs from 'node-schedule';
 import client from '../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 import cache from './startupTasks/cache.js';
 import customAPIsHandler from './startupTasks/customAPIsHandler.js';
@@ -24,10 +25,10 @@ export default async () => {
  await nitroHandler();
  await separators();
 
- Jobs.scheduleJob(new Date(Date.now() + 5000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   cache();
 
-  Jobs.scheduleJob(new Date(Date.now() + 60000), () => {
+  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
    if (client.user?.id === client.util.mainID) {
     client.util.cache.fishFish.start();
     client.util.cache.sinkingYachts.start();
@@ -36,7 +37,7 @@ export default async () => {
   });
  });
 
- Jobs.scheduleJob('0 0 23 * * *', () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), '0 0 23 * * *', () => {
   nitroHandler();
   animekosInviteStats();
   rpToggleUses();
@@ -45,16 +46,16 @@ export default async () => {
   client.util.cache.urlTLDs.start();
  });
 
- Jobs.scheduleJob('0 * * * * *', () => verification());
+ Jobs.scheduleJob(getPathFromError(new Error()), '0 * * * * *', () => verification());
 
- Jobs.scheduleJob('0 */30 * * *', () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), '0 */30 * * *', () => {
   antivirusBlocklistCacher();
   amQuarantineControl();
  });
 
- Jobs.scheduleJob('*/2 * * * * *', () => timedManager());
+ Jobs.scheduleJob(getPathFromError(new Error()), '*/2 * * * * *', () => timedManager());
 
- Jobs.scheduleJob('0 0 22 * * *', () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), '0 0 22 * * *', () => {
   guilds();
   reviews();
   users();

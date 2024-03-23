@@ -1,6 +1,7 @@
 import Discord from 'discord.js';
 import jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.discriminator === '0000') return;
@@ -46,7 +47,7 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
    })
    .then((m) => {
     if (Array.isArray(m)) return;
-    jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+    jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
      if (m) msg.client.util.request.channels.deleteMessage(m as Discord.Message<true>);
     });
    });
@@ -79,7 +80,7 @@ const gvMessageCheck = (msg: Discord.Message<true>) => {
    })
    .then((m) => {
     if (Array.isArray(m)) return;
-    jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+    jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
      if (m) msg.client.util.request.channels.deleteMessage(m as Discord.Message<true>);
     });
    });
@@ -140,7 +141,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
   if (!msg.content.includes(' is now level ') || !msg.content.includes(' leveled up!')) return;
   if (Number(msg.content?.split(/ +/)[4].replace(/!/g, '')) > 39) return;
 
-  jobs.scheduleJob(new Date(Date.now() + 10000), () => {
+  jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
    msg.client.util.request.channels.deleteMessage(msg);
   });
  };
@@ -174,7 +175,7 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
   },
  })) as Discord.Message<true>;
 
- jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+ jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
   if (!m) return;
   if (await msg.client.util.isDeleteable(m)) msg.client.util.request.channels.deleteMessage(m);
  });

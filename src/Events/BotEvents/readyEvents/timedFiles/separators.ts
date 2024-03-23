@@ -1,3 +1,4 @@
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as separator from '../../guildEvents/guildMemberUpdate/separator.js';
 
@@ -16,8 +17,12 @@ export default async () => {
 
   client.util.cache.separatorAssigner.delete(guild.id);
 
-  client.util.files.jobs.scheduleJob(new Date(Date.now() + 300000), () => {
-   separator.oneTimeRunner(undefined, guild);
-  });
+  client.util.files.jobs.scheduleJob(
+   getPathFromError(new Error(s.guildid)),
+   new Date(Date.now() + 300000),
+   () => {
+    separator.oneTimeRunner(undefined, guild);
+   },
+  );
  });
 };

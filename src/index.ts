@@ -2,6 +2,7 @@
 import * as Jobs from 'node-schedule';
 import sms from 'source-map-support';
 import './BaseClient/UtilModules/console.js';
+import getPathFromError from './BaseClient/UtilModules/getPathFromError.js';
 
 console.clear();
 console.log(
@@ -28,6 +29,6 @@ sms.install({
  ].forEach((f) => import(f));
 })();
 
-Jobs.scheduleJob('*/10 * * * *', async () => {
+Jobs.scheduleJob(getPathFromError(new Error()), '*/10 * * * *', async () => {
  console.log(`=> Current Date: ${new Date().toLocaleString()}`);
 });

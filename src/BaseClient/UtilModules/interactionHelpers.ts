@@ -22,6 +22,7 @@ import errorCmd from './errorCmd.js';
 import replyMsg from './replyMsg.js';
 import encodeString2BigInt from './encodeString2BigInt.js';
 import { Message } from '../Other/classes.js';
+import getPathFromError from './getPathFromError.js';
 
 const cooldown = new Set<string>();
 
@@ -82,7 +83,7 @@ const reply = async (
     language,
    );
 
-   Jobs.scheduleJob(new Date(Date.now() + 10000), async () => {
+   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {
     if (!m) return;
 
     if (await isDeleteable(m as Discord.Message<true>)) {
@@ -180,7 +181,7 @@ const reply = async (
    if (cooldown.has(cmd.message.id)) return;
 
    cooldown.add(cmd.message.id);
-   Jobs.scheduleJob(new Date(Date.now() + 500), () => {
+   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 500), () => {
     cooldown.delete(cmd.message.id);
    });
 

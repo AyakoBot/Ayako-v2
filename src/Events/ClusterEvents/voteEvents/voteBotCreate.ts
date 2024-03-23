@@ -1,6 +1,7 @@
 import Prisma, { votes } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
@@ -88,7 +89,9 @@ export default async (
  });
 
  guild.client.util.cache.votes.set(
-  Jobs.scheduleJob(new Date(Date.now() + 42_900_000), () => end(reminder, guild)),
+  Jobs.scheduleJob(getPathFromError(new Error(vote.bot)), new Date(Date.now() + 42_900_000), () =>
+   end(reminder, guild),
+  ),
   guild.id,
   vote.bot,
   user.id,
