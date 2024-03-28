@@ -1,42 +1,60 @@
+import puppeteer, { VanillaPuppeteer } from 'puppeteer-extra';
+import stealth from 'puppeteer-extra-plugin-stealth';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/TopGG.js';
 
+puppeteer.use(stealth());
+let browser: Awaited<ReturnType<VanillaPuppeteer['launch']>> | null = null;
+
+const getContentFromURL = async (url: string) => {
+ const page = await browser!.newPage();
+ await page.goto(url);
+ client.util.sleep(2000);
+ const pageSourceHTML: string = await page.content();
+ page.close();
+
+ return pageSourceHTML;
+};
+
 const getVersion = async () => {
- const res = await fetch('https://top.gg/');
- const t = await res.text();
- return t
+ const content = await getContentFromURL('https://top.gg');
+
+ return content
   .split('https://cdn.top.gg/builds/_next/static/')
   .filter((c) => c.includes('_buildManifest.js'))[0]
   .split('/_buildManifest.js')[0];
 };
 
-const getPages = async () => {
- const res = await fetch(
-  `https://top.gg/_next/data/${await getVersion()}/en/bot/${process.env.mainID}.json`,
+const getPages = async () =>
+ Math.ceil(
+  (
+   JSON.parse(
+    await getContentFromURL(
+     `https://top.gg/_next/data/${await getVersion()}/en/bot/${process.env.mainID}.json`,
+    ),
+   ) as CT.TopGGBotPage
+  ).pageProps.reviewStats.reviewCount / 20,
  );
- const json = (await res.json()) as CT.TopGGBotPage;
- return Math.ceil(json.pageProps.reviewStats.reviewCount / 20);
-};
 
-const getAllReviews = async () => {
- const pages = await getPages();
- return Promise.all(
-  new Array(pages)
+const getAllReviews = async () =>
+ Promise.all(
+  new Array(await getPages())
    .fill(null)
    .map((_, i) =>
-    fetch(`https://top.gg/api/client/entities/${process.env.mainID}/reviews?page=${i + 1}`).then(
-     (r) => r.json() as Promise<CT.TopGGReview[]>,
-    ),
+    getContentFromURL(
+     `https://top.gg/api/client/entities/${process.env.mainID}/reviews?page=${i + 1}`,
+    ).then((r) => JSON.parse(r) as CT.TopGGReview[]),
    ),
  );
-};
 
-const getUser = async (userId: string) => {
- const res = await fetch(`https://top.gg/_next/data/${await getVersion()}/en/user/${userId}.json`);
- return (await res.json()) as CT.TopGGUserPage;
-};
+const getUser = async (userId: string): Promise<CT.TopGGUserPage> =>
+ JSON.parse(
+  await getContentFromURL(`https://top.gg/_next/data/${await getVersion()}/en/user/${userId}.json`),
+ ) as CT.TopGGUserPage;
 
 export default async () => {
+ browser = await puppeteer.launch({ headless: true });
+
  await client.util.DataBase.reviews.deleteMany({
   where: { fetchat: { lt: Date.now() - 60000 } },
  });
@@ -92,4 +110,6 @@ export default async () => {
    })
    .then();
  });
+
+ await browser.close();
 };
