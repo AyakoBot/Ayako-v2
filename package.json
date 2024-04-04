@@ -45,7 +45,7 @@
   "request": "^2.88.2",
   "socket.io-client": "^4.7.4",
   "string-similarity": "^4.0.4",
-  "undici": "^6.6.2",
+  "undici": "^6.11.1",
   "valid-url": "^1.0.9",
   "waifu-pics-api": "^1.0.5",
   "ws": "^8.16.0"
