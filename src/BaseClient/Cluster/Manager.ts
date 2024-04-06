@@ -17,6 +17,7 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
   '--node-memory-debug',
   '--report-on-fatalerror',
   '--inspect',
+  '--heapsnapshot-signal=SIGUSR2',
  ],
  respawn: true,
  mode: 'process',
