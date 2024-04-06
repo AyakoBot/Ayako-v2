@@ -99,7 +99,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
      ],
     },
    ],
-   allowed_mentions: { users: [cmd.user.id] },
   },
   thread.client,
  );

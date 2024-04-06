@@ -100,9 +100,6 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
     .get('809261905855643668')
     ?.members.map((m) => `<@${m.id}>`)
     .join(', '),
-   allowed_mentions: {
-    users: msg.guild?.roles.cache.get('809261905855643668')?.members.map((m) => m.id),
-   },
   });
  };
  staffPing();
@@ -120,9 +117,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
    const reply = (await msg.client.util.replyMsg(msg, {
     content:
      '__We appreciate your enthusiasm, but you have already sent an introduction!__\nIf you want to refresh your intro, please wait a little longer before posting again\nYou have 20 Seconds before your intro is deleted. **Copy and Save it for later.**',
-    allowed_mentions: {
-     replied_user: true,
-    },
+    allowed_mentions: {     replied_user: true,    },
    })) as Discord.Message<true>;
 
    setTimeout(() => {
@@ -170,9 +165,7 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
  const m = (await msg.client.util.replyMsg(msg, {
   content:
    '## If you see any rule violation, please be sure to mention the Staff Role, not a single Staff Member.',
-  allowed_mentions: {
-   replied_user: true,
-  },
+  allowed_mentions: { replied_user: true },
  })) as Discord.Message<true>;
 
  jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), async () => {

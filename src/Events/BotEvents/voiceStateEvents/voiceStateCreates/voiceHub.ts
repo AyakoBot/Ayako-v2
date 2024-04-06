@@ -87,9 +87,6 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
     color: state.client.util.getColor(await state.client.util.getBotIdFromGuild(state.guild)),
    },
   ],
-  allowed_mentions: {
-   users: [member.id],
-  },
  });
 
  state.client.util.DataBase.voicechannels

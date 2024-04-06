@@ -32,12 +32,7 @@ export default async (member: Discord.GuildMember) => {
  member.client.util.send(channel, {
   embeds: [embed],
   content,
-  allowed_mentions: {
-   users: [...settings.pingusers, settings.pingjoin ? member.id : undefined].filter(
-    (r): r is string => !!r,
-   ),
-   roles: settings.pingroles,
-  },
+  allowed_mentions: { roles: settings.pingroles },
  });
 };
 

@@ -116,8 +116,7 @@ async function send(
  body.body.allowed_mentions = {
   parse: [Discord.AllowedMentionsTypes.User],
   roles: payload.allowed_mentions?.roles,
-  users: payload.allowed_mentions?.users,
-  replied_user: false,
+  replied_user: payload.allowed_mentions?.replied_user ?? false,
  };
 
  const sentMessage = await request.channels.sendMessage(

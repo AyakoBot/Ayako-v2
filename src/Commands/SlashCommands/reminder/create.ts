@@ -78,9 +78,6 @@ export const endReminder = async (
 
  client.util.send(channel as Discord.TextBasedChannel, {
   content: lan.reminderEnded(reminder.userid),
-  allowed_mentions: {
-   users: [reminder.userid],
-  },
   embeds: [
    {
     description: reminder.reason,

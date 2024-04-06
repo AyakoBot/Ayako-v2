@@ -80,10 +80,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
    content: `${settings.roles.map((r) => `<@&${r}>`).join(' ')}\n${settings.users
     .map((u) => `<@${u}>`)
     .join(' ')}`,
-   allowed_mentions: {
-    roles: settings.roles,
-    users: settings.users,
-   },
+   allowed_mentions: { roles: settings.roles },
    embeds: [
     {
      author: {

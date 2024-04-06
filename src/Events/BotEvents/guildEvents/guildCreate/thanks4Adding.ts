@@ -39,7 +39,6 @@ export const getPayload = (
  adder: string | undefined,
  language: CT.Language,
 ): CT.UsualMessagePayload => ({
- allowed_mentions: { users: adder ? [adder] : [] },
  content: adder
   ? language.events.guildMemberAdd.thanks4Adding.thanksUser(adder)
   : language.events.guildMemberAdd.thanks4Adding.thanks,

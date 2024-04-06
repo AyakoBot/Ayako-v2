@@ -39,7 +39,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     }${
      settings.pinguserid.length ? `${settings.pinguserid.map((i) => `<@${i}>`).join(' ')}\n` : ''
     }` || undefined,
-   allowed_mentions: { users: settings.pinguserid, roles: settings.pingroleid },
+   allowed_mentions: { roles: settings.pingroleid },
    embeds: [
     {
      color: cmd.client.util.getColor(

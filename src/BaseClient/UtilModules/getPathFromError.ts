@@ -8,4 +8,4 @@ import getRandom from './getRandom.js';
  * or the message of the Error if it has no stack.
  */
 export default (err: Error) =>
- `${err.stack?.split('src/')[1].split(')')[0] ?? err.message} ${err.message ?? ''} ${getRandom(0, Date.now())}`;
+ `${err.stack?.split('src/')[1]?.split(')')[0] ?? err.message} ${err.message ?? ''} ${getRandom(0, Date.now())}`;

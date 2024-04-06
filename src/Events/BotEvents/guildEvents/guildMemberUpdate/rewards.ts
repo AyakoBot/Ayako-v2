@@ -89,9 +89,6 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  await member.client.util.send(thread, {
   embeds: [embed],
   content: `<@${member.id}>`,
-  allowed_mentions: {
-   users: [member.id],
-  },
  });
  await member.client.util.request.channels.edit(thread, { locked: true });
 };

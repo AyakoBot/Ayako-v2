@@ -94,7 +94,6 @@ export default async (
 
  const payload: CT.UsualMessagePayload = {
   content: author.toString(),
-  allowed_mentions: { users: [author.id] },
   embeds: [
    {
     url: `https://ayakobot.com?isEmbedBuilder=true&exec=${author.id}`,
