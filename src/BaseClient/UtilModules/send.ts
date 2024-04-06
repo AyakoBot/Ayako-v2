@@ -113,6 +113,13 @@ async function send(
   files: Discord.RawFile[];
  };
 
+ body.body.allowed_mentions = {
+  parse: [Discord.AllowedMentionsTypes.User],
+  roles: payload.allowed_mentions?.roles,
+  users: payload.allowed_mentions?.users,
+  replied_user: false,
+ };
+
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
