@@ -117,7 +117,7 @@ const amMessageCheck = (msg: Discord.Message<true>) => {
    const reply = (await msg.client.util.replyMsg(msg, {
     content:
      '__We appreciate your enthusiasm, but you have already sent an introduction!__\nIf you want to refresh your intro, please wait a little longer before posting again\nYou have 20 Seconds before your intro is deleted. **Copy and Save it for later.**',
-    allowed_mentions: {     replied_user: true,    },
+    allowed_mentions: { replied_user: true },
    })) as Discord.Message<true>;
 
    setTimeout(() => {

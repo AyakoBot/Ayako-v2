@@ -164,7 +164,7 @@ const postMessage = async (
    content: `${settings.pingusers.map((u) => `<@${u}>`).join(', ')}\n${settings.pingroles
     .map((r) => `<@&${r}>`)
     .join(', ')})}`,
-   allowed_mentions: {    roles: settings.pingroles,   },
+   allowed_mentions: { roles: settings.pingroles },
    files: await Promise.all(
     [last5minsLang, last5minsIDs, caughtUsersLang, caughtUsersIDs].map((a, i) =>
      guild.client.util.txtFileWriter(
