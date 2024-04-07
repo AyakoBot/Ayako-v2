@@ -161,6 +161,7 @@ model art {
   url      String  @db.Text
   type     ArtType             @default(full)
   verified Boolean @db.Boolean @default(false)
+  desc     String? @db.Text
 
   @@id(created, map: "art_pkey")
   @@index(created)
