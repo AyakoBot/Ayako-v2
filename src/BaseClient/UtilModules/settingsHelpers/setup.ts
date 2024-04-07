@@ -100,7 +100,7 @@ export default (
      return DataBase.nitrosettings.create(where);
     case 'anti-raid':
      return DataBase.antiraid.create(where);
-    case 'appeal-settings':
+    case 'appeals':
      return DataBase.appealsettings.create(where);
     default:
      throw new Error(`Unsupported Setting ${tableName}`);

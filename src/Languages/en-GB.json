@@ -2549,7 +2549,7 @@
       }
      }
     },
-    "appeal-settings": {
+    "appeals": {
      "name": "Appeal Settings",
      "fields": {
       "channelid": {

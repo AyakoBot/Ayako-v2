@@ -145,7 +145,7 @@ export enum SettingNames {
  Invites = 'invites',
  Newlines = 'newlines',
  VoiceHubs = 'voice-hubs',
- AppealSettings = 'appeal-settings',
+ Appeals = 'appeals',
  Questions = 'questions',
 }
 
@@ -187,6 +187,6 @@ export const SettingsName2TableName = {
  [SettingNames.Invites]: 'invites',
  [SettingNames.Newlines]: 'newlines',
  [SettingNames.VoiceHubs]: 'voicehubs',
- [SettingNames.AppealSettings]: 'appealsettings',
+ [SettingNames.Appeals]: 'appealsettings',
  [SettingNames.Questions]: 'appealquestions',
 } as const;

@@ -302,7 +302,7 @@ export default {
   deletetime: CT.EditorTypes.Duration,
   private: CT.EditorTypes.Boolean,
  },
- [CT.SettingNames.AppealSettings]: {
+ [CT.SettingNames.Appeals]: {
   channelid: CT.EditorTypes.Channel,
   bluserid: CT.EditorTypes.Users,
  },

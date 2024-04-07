@@ -93,7 +93,7 @@ export default async (
      return DataBase.nitrosettings.findUnique(where);
     case 'anti-raid':
      return DataBase.antiraid.findUnique(where);
-    case 'appeal-settings':
+    case 'appeals':
      return DataBase.appealsettings.findUnique(where);
     default:
      throw new Error(`2 Unsupported Setting ${tableName}`);

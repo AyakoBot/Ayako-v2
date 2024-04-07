@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
-const name = CT.SettingNames.AppealSettings;
+const name = CT.SettingNames.Appeals;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
