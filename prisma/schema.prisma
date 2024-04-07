@@ -72,6 +72,12 @@ enum WeekendType {
   everyDay
 }
 
+enum ArtType {
+ full
+ icon
+ emoji
+}
+
 model afk {
   userid  String  @db.VarChar
   text    String?
@@ -153,7 +159,7 @@ model art {
   userid   String  @db.VarChar
   created  Decimal @db.Decimal
   url      String  @db.Text
-  type     String  @db.Text    @default("full")
+  type     ArtType             @default(full)
   verified Boolean @db.Boolean @default(false)
 
   @@id(created, map: "art_pkey")
