@@ -31,15 +31,25 @@ export default async () => {
   select: { userid: true },
  });
 
- const fetchedUsers = await Promise.all(expiredUsers.map((u) => client.util.getUser(u.userid)));
+ const usersNotInDb = relevantUsers.filter((u) => !expiredUsers.find((e) => e.userid === u));
+
+ const fetchedUsers = await Promise.all(
+  [...expiredUsers.map((u) => u.userid), ...usersNotInDb].map((u) => client.util.getUser(u)),
+ );
 
  fetchedUsers
   .filter((u): u is Discord.User => !!u)
   .forEach((u) => {
    client.util.DataBase.users
-    .update({
+    .upsert({
      where: { userid: u.id },
-     data: { lastfetch: Date.now(), avatar: u?.displayAvatarURL(), username: u?.username },
+     update: { lastfetch: Date.now(), avatar: u.displayAvatarURL(), username: u.username },
+     create: {
+      lastfetch: Date.now(),
+      avatar: u.displayAvatarURL(),
+      username: u.username,
+      userid: u.id,
+     },
     })
     .then();
   });
