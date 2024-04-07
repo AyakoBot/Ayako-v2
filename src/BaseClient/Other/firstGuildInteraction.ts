@@ -66,7 +66,19 @@ const tasks = {
   cache.invites.get('', '', guild);
 
   const vanity = await request.guilds.getVanityURL(guild);
-  if (vanity && !('message' in vanity)) cache.invites.set(vanity, guild.id);
+  if (vanity && !('message' in vanity)) {
+   if (!vanity.channelId) vanity.channelId = guild.channels.cache.first()?.id ?? null;
+   if (!vanity.channel) {
+    vanity.channel =
+     guild.channels.cache
+      .filter(
+       (c): c is Discord.NonThreadGuildBasedChannel =>
+        c.isTextBased() && !c.isThread() && !c.isDMBased(),
+      )
+      .first() ?? null;
+   }
+   cache.invites.set(vanity, guild.id);
+  }
  },
  integrations: async (guild: Discord.Guild) => {
   cache.integrations.get('', guild);
