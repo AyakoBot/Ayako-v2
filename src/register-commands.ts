@@ -19,7 +19,7 @@ requestHandler(process.env.Token ?? '')
  )
  .then((r) => console.log(`[MAIN] Registered ${r.length} Global Commands`));
 
-fetch('https://discordbotlist.com/api/v1/bots/650691698409734151/commands', {
+fetch(`https://discordbotlist.com/api/v1/bots/${process.env.clientID}/commands`, {
  method: 'post',
  headers: {
   Authorization: process.env.DBListToken ?? '',
