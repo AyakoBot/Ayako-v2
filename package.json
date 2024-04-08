@@ -6,7 +6,7 @@
   "build": "npx tsc",
   "dev": "node --enable-source-maps --experimental-wasm-modules --heapsnapshot-near-heap-limit=1 ./dist/index.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix",
-  "postinstall": "mkdir ./logs",
+  "postinstall": "mkdir -p ./logs",
   "register": "node ./dist/register-commands.js"
  },
  "dependencies": {
