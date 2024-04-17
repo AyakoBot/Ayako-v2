@@ -314,18 +314,13 @@ export const getMessage = async (giveaway: {
  const msg = await client.util.request.channels.getMessage(channel, giveaway.msgid);
  if ('message' in msg) {
   client.util.DataBase.giveaways
-   .delete({
-    where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
-   })
+   .delete({ where: { msgid: giveaway.msgid, guildid: giveaway.guildid } })
    .then();
 
   client.util.DataBase.giveawaycollection
-   .delete({
-    where: { msgid: giveaway.msgid, guildid: giveaway.guildid },
-   })
+   .delete({ where: { msgid: giveaway.msgid, guildid: giveaway.guildid } })
    .then();
 
-  client.util.error(guild, msg);
   return undefined;
  }
 
