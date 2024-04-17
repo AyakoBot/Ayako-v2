@@ -18,16 +18,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  }
 
  if (
-  !checkCommandPermissions(
-   {
-    guildId: cmd.guildId,
-    guild: cmd.guild,
-    author: cmd.user,
-    channelId: cmd.channelId,
-    member: cmd.member,
-   },
-   'giveaway',
-  )
+  !(
+   await checkCommandPermissions(
+    {
+     guildId: cmd.guildId,
+     guild: cmd.guild,
+     author: cmd.user,
+     channelId: cmd.channelId,
+     member: cmd.member,
+    },
+    'giveaway',
+   )
+  ).can
  ) {
   cmd.client.util.errorCmd(cmd, language.permissions.error.you, language);
   return;
