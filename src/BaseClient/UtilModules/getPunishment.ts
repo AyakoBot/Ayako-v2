@@ -1,6 +1,8 @@
 import Prisma from '@prisma/client';
 import DataBase from '../Bot/DataBase.js';
 
+type Picked = 'userid' | 'uniquetimestamp' | 'executorid' | 'guildid';
+
 export type Returned = (
  | Prisma.punish_bans
  | Prisma.punish_channelbans
@@ -92,12 +94,13 @@ async function f(
   ) as ReturnType<typeof f>;
  }
 
- const where = (() => {
+ const where: {
+  where: Pick<Prisma.Prisma.punish_warnsWhereInput, Picked>;
+ } = (() => {
   switch (options?.identType) {
-   case 'all-on': {
+   case 'all-on':
     return { where: { userid: String(id), guildid: String(options.guildid) } };
-   }
-   case 'by': {
+   case 'by':
     return {
      where: {
       userid: String(id),
@@ -105,11 +108,9 @@ async function f(
       guildid: String(options.guildid),
      },
     };
-   }
-   case 'all-by': {
+   case 'all-by':
     return { where: { executorid: String(id), guildid: String(options.guildid) } };
-   }
-   case 'between': {
+   case 'between':
     return {
      where: {
       uniquetimestamp: {
@@ -119,13 +120,20 @@ async function f(
       guildid: String(options.guildid),
      },
     };
-   }
-   case 'before': {
-    return { where: { uniquetimestamp: { lt: String(id) }, guildid: String(options.guildid) } };
-   }
-   case 'after': {
-    return { where: { uniquetimestamp: { gt: String(id) }, guildid: String(options.guildid) } };
-   }
+   case 'before':
+    return {
+     where: {
+      uniquetimestamp: { lt: String(id) },
+      guildid: String(options.guildid),
+     },
+    };
+   case 'after':
+    return {
+     where: {
+      uniquetimestamp: { gt: String(id) },
+      guildid: String(options.guildid),
+     },
+    };
    default: {
     asArray = false;
     return { where: { uniquetimestamp: String(id) } };
