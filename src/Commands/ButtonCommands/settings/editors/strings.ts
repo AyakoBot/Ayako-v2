@@ -24,6 +24,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
+ let current = currentSetting?.[fieldName as keyof typeof currentSetting];
+ if (Array.isArray(current)) current = current.join(' # ');
 
  cmd.showModal(
   cmd.client.util.settingsHelpers.changeHelpers.changeModal(
@@ -31,7 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    settingName,
    fieldName,
    'strings',
-   currentSetting?.[fieldName as keyof typeof currentSetting],
+   current,
    false,
    uniquetimestamp,
   ),

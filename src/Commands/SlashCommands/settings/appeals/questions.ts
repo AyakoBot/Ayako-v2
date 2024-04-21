@@ -1,3 +1,4 @@
+import { AnswerType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
@@ -201,13 +202,17 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings?.uniquetimestamp),
    ),
-   buttonParsers.specific(
-    language,
-    settings?.options,
-    'options',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
+   ...([AnswerType.multiple_choice, AnswerType.single_choice].includes(settings.answertype)
+    ? [
+       buttonParsers.specific(
+        language,
+        settings?.options,
+        'options',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+      ]
+    : []),
   ],
  },
 ];

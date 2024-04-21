@@ -39,8 +39,8 @@ export default async (
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const id = Object.entries(getOptions(type, language)).find(
-  (e) => e[1] === cmd.message.embeds[0].description,
+ const id = Object.entries(getOptions(type, language)).find((e) =>
+  e.includes(cmd.message.embeds[0].description ?? ''),
  )?.[0];
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
