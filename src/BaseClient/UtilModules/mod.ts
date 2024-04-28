@@ -40,7 +40,6 @@ export default async <T extends CT.ModTypes>(
   await alreadyExecuting(cmd, options.executor, options.guild.client, replyMessage);
   return;
  }
- console.log(1);
  cache.punishments.add(options.target.id);
 
  const basicsResponse = await runBasics1(options, cmd, type, replyMessage);
@@ -48,7 +47,6 @@ export default async <T extends CT.ModTypes>(
   cache.punishments.delete(options.target.id);
   return;
  }
- console.log(8);
 
  const { message, language } = basicsResponse;
  if (!options.reason.length) options.reason = language.t.noReasonProvided;
@@ -138,24 +136,18 @@ export default async <T extends CT.ModTypes>(
   }
  };
 
- console.log(9);
-
  const action = await runAction();
- console.log(10);
 
  if (!action || (typeof action !== 'boolean' && !action.success)) {
   cache.punishments.delete(options.target.id);
   return;
  }
- console.log(11);
 
  if (typeof action !== 'boolean') type = action.type as T;
  if (type === CT.ModTypes.StrikeAdd) return;
- console.log(12);
 
  runBasics2(typeof action === 'boolean' ? options : action.options, message, language, type, cmd);
- console.log(13);
- 
+
  cache.punishments.delete(options.target.id);
 };
 
@@ -173,24 +165,18 @@ const runBasics1 = async (
  type: CT.ModTypes,
  replyMessage: ResponseMessage,
 ) => {
- console.log(2);
  const language = await getLanguage(options.guild.id);
 
- console.log(3);
  if (options.dbOnly) {
   log(options.guild, type, options.target, options.executor, options as never);
   await db(cmd, options, language, type);
-  console.log(4);
   return false;
  }
 
  const message = replyMessage ?? (await startLoading(cmd, language, type));
- console.log(5);
 
  if (await isMe(cmd, options.guild.client.user, message, language, options, type)) return false;
- console.log(6);
  if (isSelf(cmd, options.executor, options.target, message, language, type)) return false;
- console.log(7);
 
  return { message, language };
 };

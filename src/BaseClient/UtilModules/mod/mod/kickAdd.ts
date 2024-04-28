@@ -27,11 +27,10 @@ export default async (
   return false;
  }
 
- // TODO: Debug this in Cozy using 564052925828038658
  const me = await getBotMemberFromGuild(options.guild);
  if (
   memberRes?.targetMember &&
-  canRemoveMember(me, memberRes.targetMember) &&
+  !canRemoveMember(me, memberRes.targetMember) &&
   !options.skipChecks
  ) {
   permissionError(cmd, message, language, type);
