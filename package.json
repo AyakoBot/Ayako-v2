@@ -3,10 +3,11 @@
  "version": "2.0.45",
  "scripts": {
   "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings ./dist/index.js",
-  "build": "npx tsc",
+  "build": "tsc",
   "dev": "node --enable-source-maps --experimental-wasm-modules --heapsnapshot-near-heap-limit=1 ./dist/index.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix",
   "postinstall": "mkdir -p ./logs",
+  "prestart": "rm -rf dist && pnpm build",
   "register": "node ./dist/register-commands.js"
  },
  "dependencies": {
