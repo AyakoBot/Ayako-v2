@@ -5,6 +5,9 @@ import * as DiscordCore from '@discordjs/core';
 const client = new Discord.Client({
  shards: Sharding.getInfo().SHARD_LIST,
  shardCount: Sharding.getInfo().TOTAL_SHARDS,
+ rest: {
+  api: 'http://127.0.0.1:8080/api',
+ },
  allowedMentions: {
   parse: ['users'],
   repliedUser: false,

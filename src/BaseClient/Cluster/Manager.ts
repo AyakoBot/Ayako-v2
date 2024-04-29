@@ -3,6 +3,8 @@ import * as Sharding from 'discord-hybrid-sharding';
 import 'dotenv/config';
 import readline from 'readline';
 
+Sharding.DefaultOptions.http.api = 'http://127.0.0.1:8080/api';
+
 const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
  totalClusters: 'auto',
