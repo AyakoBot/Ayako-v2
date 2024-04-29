@@ -117,6 +117,10 @@ const runJob = async (guild: Discord.Guild) => {
  const prioFilter = memberCaches?.members.filter((m) => m.prio === highestPrio);
  const dateFilter = prioFilter.sort((a, b) => b.added - a.added);
  const memberCache = dateFilter[0];
+ if (!memberCache) {
+  endJob(memberCaches)
+  return;
+ }
 
  const clientHighestRole = me?.roles.highest;
  if (!clientHighestRole) {
