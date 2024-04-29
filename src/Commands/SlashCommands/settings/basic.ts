@@ -292,10 +292,12 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
   case 'token': {
    if (!newSettings.token?.length) {
     client.util.cache.apis.delete(guild.id);
-    client.util.DataBase.guildsettings.update({
-     where: { guildid: guild.id },
-     data: { publickey: null, appid: null, token: null },
-    });
+    client.util.DataBase.guildsettings
+     .update({
+      where: { guildid: guild.id },
+      data: { publickey: null, appid: null, token: null },
+     })
+     .then();
 
     client.util.request.commands.getGuildCommands(guild);
     client.util.cache.commandPermissions.get(guild, '');
