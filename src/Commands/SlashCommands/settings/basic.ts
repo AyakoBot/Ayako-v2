@@ -290,7 +290,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    return;
   }
   case 'token': {
-   if (!newSettings.token) {
+   if (!newSettings.token?.length) {
     client.util.cache.apis.delete(guild.id);
     client.util.DataBase.guildsettings.update({
      where: { guildid: guild.id },
