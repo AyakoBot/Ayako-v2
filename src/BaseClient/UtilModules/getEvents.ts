@@ -8,6 +8,8 @@ export enum ProcessEvents {
  promiseRejectionHandledWarning = 'promiseRejectionHandledWarning',
  uncaughtException = 'uncaughtException',
  unhandledRejection = 'unhandledRejection',
+ warning = 'warning',
+ SIGUSR2 = 'SIGUSR2',
 }
 
 // related to /BaseClient/Cluster/Socket.ts
