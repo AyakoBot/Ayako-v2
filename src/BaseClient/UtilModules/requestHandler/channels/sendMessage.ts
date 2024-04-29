@@ -17,14 +17,16 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A Promise that resolves to a new Message object if the message was sent successfully,
  * or rejects with a DiscordAPIError if an error occurred.
  */
-export default async (
- guild: Discord.Guild | undefined | null,
+export default async <T extends Discord.Guild | undefined | null>(
+ guild: T,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
   files?: Discord.RawFile[];
  },
  client: Discord.Client<true>,
-) => {
+): Promise<
+ Discord.Message<T extends Discord.Guild ? true : false> | Error | Discord.DiscordAPIError
+> => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
@@ -47,7 +49,9 @@ export default async (
     ? { ...payload.message_reference, fail_if_not_exists: false }
     : undefined,
   })
-  .then((m) => new Classes.Message(client, m))
+  .then(
+   (m) => new Classes.Message(client, m) as Discord.Message<T extends Discord.Guild ? true : false>,
+  )
   .catch((e: Discord.DiscordAPIError) => {
    if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
