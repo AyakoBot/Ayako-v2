@@ -13,7 +13,6 @@ import nitroHandler from './timedFiles/nitroHandler.js';
 import timedManager from './timedFiles/timedManager.js';
 import verification from './timedFiles/verification.js';
 import guilds from './timedFiles/guilds.js';
-import reviews from './timedFiles/reviews.js';
 import users from './timedFiles/users.js';
 
 export default async () => {
@@ -57,7 +56,6 @@ export default async () => {
 
  Jobs.scheduleJob(getPathFromError(new Error()), '0 0 22 * * *', () => {
   guilds();
-  reviews();
   users();
  });
 };
