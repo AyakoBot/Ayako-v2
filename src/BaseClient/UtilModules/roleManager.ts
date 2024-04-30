@@ -94,17 +94,17 @@ export default roleManager;
  * @param guild - The guild to manage roles for.
  */
 const runJob = async (guild: Discord.Guild) => {
- const endJob = (memberCaches: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
-  const index = memberCaches.members.findIndex((m) => m.member.id === memberCache.member.id);
-  memberCaches.members.splice(index, 1);
-  if (!memberCaches.members.length) {
-   memberCaches.job.cancel();
+ const memberCaches = GuildCache.get(guild.id);
+ if (!memberCaches) return;
+
+ const endJob = (mC: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
+  const index = mC.members.findIndex((m) => m.member.id === memberCache.member.id);
+  mC.members.splice(index, 1);
+  if (!mC.members.length) {
+   mC.job.cancel();
    GuildCache.delete(guild.id);
   }
  };
-
- const memberCaches = GuildCache.get(guild.id);
- if (!memberCaches) return;
 
  const me = await getBotMemberFromGuild(guild);
  if (!me?.permissions.has(Discord.PermissionFlagsBits.ManageRoles)) {
@@ -118,7 +118,7 @@ const runJob = async (guild: Discord.Guild) => {
  const dateFilter = prioFilter.sort((a, b) => b.added - a.added);
  const memberCache = dateFilter[0];
  if (!memberCache) {
-  endJob(memberCaches)
+  endJob(memberCaches);
   return;
  }
 
