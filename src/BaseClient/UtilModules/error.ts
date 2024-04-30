@@ -18,6 +18,7 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
  if (err.message.includes('Connect Timeout Error')) return;
  if (err.message.includes('other side closed')) return;
  if (err.message.includes('write EPIPE')) return;
+ if (err.message.includes('No Description')) return;
 
  const errorchannel = await DataBase.guildsettings
   .findUnique({
