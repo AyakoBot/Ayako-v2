@@ -5,11 +5,14 @@ import client from '../../BaseClient/Bot/Client.js';
 export default async (id: number, unavailableGuilds?: Set<string>) => {
  // eslint-disable-next-line no-console
  console.log(`[Shard ${id + 1}] Ready - Unavailable Guilds: ${unavailableGuilds?.size ?? '0'}`);
- client.user?.setPresence({
-  afk: false,
-  activities: [await getActivities(id)],
-  status: Discord.PresenceUpdateStatus.Online,
-  shardId: id,
+
+ Sharding.getInfo().SHARD_LIST.forEach(async (shard) => {
+  client.user?.setPresence({
+   afk: false,
+   activities: [await getActivities(shard)],
+   status: Discord.PresenceUpdateStatus.Online,
+   shardId: shard,
+  });
  });
 };
 
