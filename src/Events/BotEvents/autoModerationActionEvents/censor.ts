@@ -105,7 +105,8 @@ export const getContent = async (
      r.triggerMetadata.keywordFilter
       .map((k) =>
        k
-        .replace(/\*+/g, '*')
+        .replace(/\s*\*\s*/g, '*')
+        .replace(/(?!^)\*(?!$)/gm, '*{1}')
         .replace(/[\\\\.\\+\\?\\^\\$\\[\]\\(\\)\\{\\}\\/\\'\\#\\:\\!\\=\\|]/gi, '\\$&'),
       )
       .map((k) => (k.startsWith('*') ? `\\w*${k.slice(1, k.length)}` : `(\\s|^)${k}`))
