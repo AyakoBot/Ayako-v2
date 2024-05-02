@@ -16,181 +16,113 @@ import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
 
 export default () => {
- reminder();
-
- client.guilds.cache.forEach(async (guild) => {
-  Object.values(tasks).forEach((t) => t(guild));
- });
+ const gIds = client.guilds.cache.map((g) => g.id);
+ Object.values(startupTasks).forEach((t) => t(gIds));
 };
 
-const reminder = async () => {
- const reminders = await client.util.DataBase.reminders.findMany({
-  where: {},
- });
+export const startupTasks = {
+ // eslint-disable-next-line @typescript-eslint/no-unused-vars
+ reminder: async (_: string[]) => {
+  const reminders = await client.util.DataBase.reminders.findMany({
+   where: {},
+  });
 
- reminders.forEach((r) => {
-  client.util.cache.reminders.set(
-   Jobs.scheduleJob(
-    getPathFromError(new Error(String(r.uniquetimestamp))),
-    new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
-    () => {
-     endReminder(r);
-    },
-   ),
-   r.userid,
-   Number(r.endtime),
-  );
- });
-};
-
-export const tasks = {
- vote: async (guild: Discord.Guild) => {
-  const votes = await client.util.DataBase.votes.findMany({ where: { guildid: guild.id } });
-
-  votes.forEach((vote) => {
-   client.util.cache.votes.set(
+  reminders.forEach((r) => {
+   client.util.cache.reminders.set(
     Jobs.scheduleJob(
-     getPathFromError(new Error(String(vote.endtime))),
-
-     new Date(Date.now() > Number(vote.endtime) ? Date.now() + 10000 : Number(vote.endtime)),
+     getPathFromError(new Error(String(r.uniquetimestamp))),
+     new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
      () => {
-      endVote(vote, guild);
+      endReminder(r);
      },
     ),
-    guild.id,
-    vote.voted,
-    vote.userid,
+    r.userid,
+    Number(r.endtime),
    );
   });
  },
- vcDeleteTimeouts: async (guild: Discord.Guild) => {
-  const settings = await client.util.DataBase.voicehubs.findMany({
-   where: { guildid: guild.id },
+ vote: async (gIds: string[]) => {
+  const votes = await client.util.DataBase.votes.findMany({
+   where: { guildid: { in: gIds } },
   });
 
-  const vcs = await client.util.DataBase.voicechannels.findMany({ where: { guildid: guild.id } });
+  votes.forEach((vote) => {
+   const guild = client.guilds.cache.get(vote.guildid);
+   if (!guild) return;
+
+   tasks.vote(vote, guild);
+  });
+ },
+ vcDeleteTimeouts: async (gIds: string[]) => {
+  const settings = await client.util.DataBase.voicehubs.findMany({
+   where: { guildid: { in: gIds } },
+  });
+
+  const vcs = await client.util.DataBase.voicechannels.findMany({
+   where: { guildid: { in: gIds } },
+  });
 
   vcs.forEach(async (vc) => {
-   const delDB = () =>
-    client.util.DataBase.voicechannels
-     .delete({ where: { guildid_channelid: { guildid: vc.guildid, channelid: vc.channelid } } })
-     .then();
+   const guild = client.guilds.cache.get(vc.guildid);
+   if (!guild) return;
 
-   const applyingSetting = settings.find((s) => vc.hubid === s.channelid);
-   if (!applyingSetting) {
-    delDB();
-    return;
-   }
+   const setting = settings.find((s) => s.guildid === guild.id);
 
-   const channel = await client.util.getChannel.guildVoiceChannel(vc.channelid);
-   if (!channel) {
-    delDB();
-    return;
-   }
-
-   if (channel.members.size) return;
-
-   if (!vc.everyonelefttime) {
-    client.util.DataBase.voicechannels
-     .update({
-      where: { guildid_channelid: { guildid: guild.id, channelid: channel.id } },
-      data: { everyonelefttime: Date.now() },
-     })
-     .then();
-   }
-
-   client.util.cache.vcDeleteTimeout.set(
-    Jobs.scheduleJob(
-     getPathFromError(new Error(vc.channelid)),
-     new Date(Date.now() + Number(applyingSetting.deletetime) * 1000),
-     () => del(channel),
-    ),
-    guild.id,
-    channel.id,
-   );
+   tasks.vcDeleteTimeouts(vc, setting, guild);
   });
  },
- deleteSuggestions: async (guild: Discord.Guild) => {
-  const settings = await client.util.DataBase.suggestionsettings.findUnique({
+ deleteSuggestions: async (gIds: string[]) => {
+  const setting = await client.util.DataBase.suggestionsettings.findMany({
    where: {
-    guildid: guild.id,
+    guildid: { in: gIds },
     active: true,
     OR: [{ deleteapproved: true }, { deletedenied: true }],
    },
   });
-  if (!settings) return;
+  if (!setting) return;
 
   const suggestions = await client.util.DataBase.suggestionvotes.findMany({
-   where: { guildid: guild.id },
+   where: { guildid: { in: gIds } },
   });
 
   suggestions.forEach((s) => {
-   client.util.cache.deleteSuggestions.set(
-    Jobs.scheduleJob(
-     getPathFromError(new Error(s.msgid)),
+   const guild = client.guilds.cache.get(s.guildid);
+   if (!guild) return;
 
-     new Date(
-      Date.now() +
-       (s.approved ? Number(settings.deleteapprovedafter) : Number(settings.deletedeniedafter)) *
-        1000,
-     ),
-     async () => {
-      endDeleteSuggestion(s);
-     },
-    ),
-    guild.id,
-    s.msgid,
-   );
+   const settings = setting.find((se) => se.guildid === guild.id);
+   if (!settings) return;
+
+   tasks.deleteSuggestions(s, settings, guild);
   });
  },
- disboard: async (guild: Discord.Guild) => {
-  const settings = await client.util.DataBase.disboard.findUnique({
-   where: { guildid: guild.id, nextbump: { not: null } },
+ disboard: async (gIds: string[]) => {
+  const settings = await client.util.DataBase.disboard.findMany({
+   where: { guildid: { in: gIds }, nextbump: { not: null } },
   });
   if (!settings) return;
 
-  client.util.cache.disboardBumpReminders.set(
-   Jobs.scheduleJob(
-    getPathFromError(new Error(guild.id)),
+  settings.forEach((s) => {
+   const guild = client.guilds.cache.get(s.guildid);
+   if (!guild) return;
 
-    new Date(
-     Number(settings.nextbump) < Date.now() ? Date.now() + 10000 : Number(settings.nextbump),
-    ),
-    () => {
-     bumpReminder(guild);
-    },
-   ),
-   settings.guildid,
-  );
+   tasks.disboard(s, guild);
+  });
  },
- giveaways: async (guild: Discord.Guild) => {
+ giveaways: async (gIds: string[]) => {
   const giveaways = await client.util.DataBase.giveaways.findMany({
    where: {
-    guildid: guild.id,
+    guildid: { in: gIds },
     ended: false,
     claimingdone: false,
    },
   });
 
   giveaways.forEach((g) => {
-   client.util.cache.giveaways.set(
-    Jobs.scheduleJob(
-     getPathFromError(new Error(g.msgid)),
-
-     new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
-     () => {
-      endGiveaway(g);
-     },
-    ),
-    g.guildid,
-    g.channelid,
-    g.msgid,
-   );
+   tasks.giveaways(g);
   });
  },
- punishments: async (guild: Discord.Guild) => {
-  const language = await client.util.getLanguage(guild.id);
-  const where = { where: { guildid: guild.id } };
+ punishments: async (gIds: string[]) => {
+  const where = { where: { guildid: { in: gIds } } };
   const tables = [
    {
     rows: () => client.util.DataBase.punish_mutes.findMany(where),
@@ -211,94 +143,244 @@ export const tasks = {
 
   tables.forEach(async (table) => {
    (await table.rows()).forEach((m) => {
-    const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
+    const guild = client.guilds.cache.get(m.guildid);
+    if (!guild) return;
 
-    table.cache.set(
-     Jobs.scheduleJob(
-      getPathFromError(new Error()),
-      new Date(Date.now() < time ? 1000 : time),
-      async () => {
-       const target = m.userid
-        ? await client.util.getUser(m.userid).catch(() => undefined)
-        : undefined;
-       if (!target) {
-        client.util.error(
-         guild,
-         new Error(`Could not find user to initialize ${table}Remove event.`),
-        );
-        return;
-       }
-
-       const channel = await client.util.getChannel.guildTextChannel(m.channelid);
-
-       client.util.mod(
-        m.msgid && channel
-         ? await client.util.request.channels
-            .getMessage(channel, m.msgid)
-            .then((s) => ('message' in s ? undefined : s))
-         : undefined,
-        table.event,
-        {
-         executor: m.executorid
-          ? await client.util.getUser(m.executorid).catch(() => undefined)
-          : undefined,
-         target,
-         reason: m.reason ?? language.t.None,
-         guild,
-         skipChecks: true,
-         dbOnly:
-          'banchannelid' in m
-           ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
-           : false,
-         channel:
-          'banchannelid' in m
-           ? (guild.channels.cache.get(
-              (m as Prisma.punish_tempchannelbans).banchannelid,
-             ) as Discord.GuildChannel)
-           : undefined,
-        } as CT.ModOptions<
-         CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
-        >,
-       );
-      },
-     ),
-     guild.id,
-     'banchannelid' in m ? m.channelid : m.userid,
-     m.userid,
-    );
+    tasks.punishments(table, m, guild);
    });
   });
  },
- claimTimeouts: async (guild: Discord.Guild) => {
+ claimTimeouts: async (gIds: string[]) => {
   const claimTimeouts = await client.util.DataBase.giveawaycollection.findMany({
-   where: { guildid: guild.id },
+   where: { guildid: { in: gIds } },
   });
 
   claimTimeouts?.forEach((t) => {
-   client.util.cache.giveawayClaimTimeout.set(
-    Jobs.scheduleJob(
-     getPathFromError(new Error(guild.id)),
-     new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
-     () => {
-      giveawayCollectTimeExpired(t.msgid, t.guildid);
-     },
-    ),
-    t.guildid,
-    t.msgid,
-   );
+   const guild = client.guilds.cache.get(t.guildid);
+   if (!guild) return;
+
+   tasks.claimTimeouts(t, guild);
   });
  },
- enableInvites: async (guild: Discord.Guild) => {
-  const settings = await client.util.DataBase.guildsettings.findUnique({
-   where: { guildid: guild.id, enableinvitesat: { not: null } },
+ enableInvites: async (gIds: string[]) => {
+  const settings = await client.util.DataBase.guildsettings.findMany({
+   where: { guildid: { in: gIds }, enableinvitesat: { not: null } },
   });
   if (!settings) return;
 
+  settings.forEach((s) => {
+   const guild = client.guilds.cache.get(s.guildid);
+   if (!guild) return;
+
+   tasks.enableInvites(s, guild);
+  });
+ },
+};
+
+const tasks = {
+ vote: (vote: Prisma.votes, guild: Discord.Guild) => {
+  client.util.cache.votes.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(String(vote.endtime))),
+
+    new Date(Date.now() > Number(vote.endtime) ? Date.now() + 10000 : Number(vote.endtime)),
+    () => {
+     endVote(vote, guild);
+    },
+   ),
+   guild.id,
+   vote.voted,
+   vote.userid,
+  );
+ },
+ vcDeleteTimeouts: async (
+  vc: Prisma.voicechannels,
+  applyingSetting: Prisma.voicehubs | undefined,
+  guild: Discord.Guild,
+ ) => {
+  const delDB = () =>
+   client.util.DataBase.voicechannels
+    .delete({ where: { guildid_channelid: { guildid: vc.guildid, channelid: vc.channelid } } })
+    .then();
+
+  if (!applyingSetting) {
+   delDB();
+   return;
+  }
+
+  const channel = await client.util.getChannel.guildVoiceChannel(vc.channelid);
+  if (!channel) {
+   delDB();
+   return;
+  }
+
+  if (channel.members.size) return;
+
+  if (!vc.everyonelefttime) {
+   client.util.DataBase.voicechannels
+    .update({
+     where: { guildid_channelid: { guildid: guild.id, channelid: channel.id } },
+     data: { everyonelefttime: Date.now() },
+    })
+    .then();
+  }
+
+  client.util.cache.vcDeleteTimeout.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(vc.channelid)),
+    new Date(Date.now() + Number(applyingSetting.deletetime) * 1000),
+    () => del(channel),
+   ),
+   guild.id,
+   channel.id,
+  );
+ },
+ deleteSuggestions: (
+  s: Prisma.suggestionvotes,
+  settings: Prisma.suggestionsettings,
+  guild: Discord.Guild,
+ ) => {
+  client.util.cache.deleteSuggestions.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(s.msgid)),
+
+    new Date(
+     Date.now() +
+      (s.approved ? Number(settings.deleteapprovedafter) : Number(settings.deletedeniedafter)) *
+       1000,
+    ),
+    async () => {
+     endDeleteSuggestion(s);
+    },
+   ),
+   guild.id,
+   s.msgid,
+  );
+ },
+ disboard: (s: Prisma.disboard, guild: Discord.Guild) => {
+  client.util.cache.disboardBumpReminders.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(guild.id)),
+
+    new Date(Number(s.nextbump) < Date.now() ? Date.now() + 10000 : Number(s.nextbump)),
+    () => {
+     bumpReminder(guild);
+    },
+   ),
+   s.guildid,
+  );
+ },
+ giveaways: (g: Prisma.giveaways) => {
+  client.util.cache.giveaways.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(g.msgid)),
+
+    new Date(Number(g.endtime) < Date.now() ? Date.now() + 10000 : Number(g.endtime)),
+    () => {
+     endGiveaway(g);
+    },
+   ),
+   g.guildid,
+   g.channelid,
+   g.msgid,
+  );
+ },
+ punishments: (
+  table:
+   | {
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_mutes[]>;
+      cache: typeof client.util.cache.mutes;
+      event: CT.ModTypes.MuteRemove;
+     }
+   | {
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempbans[]>;
+      cache: typeof client.util.cache.bans;
+      event: CT.ModTypes.BanRemove;
+     }
+   | {
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempchannelbans[]>;
+      cache: typeof client.util.cache.channelBans;
+      event: CT.ModTypes.ChannelBanRemove;
+     },
+  m: Prisma.punish_tempchannelbans | Prisma.punish_tempbans | Prisma.punish_mutes,
+  guild: Discord.Guild,
+ ) => {
+  const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
+
+  table.cache.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error()),
+    new Date(Date.now() < time ? 1000 : time),
+    async () => {
+     const target = m.userid
+      ? await client.util.getUser(m.userid).catch(() => undefined)
+      : undefined;
+
+     if (!target) {
+      client.util.error(
+       guild,
+       new Error(`Could not find user to initialize ${table}Remove event.`),
+      );
+      return;
+     }
+
+     const channel = await client.util.getChannel.guildTextChannel(m.channelid);
+
+     client.util.mod(
+      m.msgid && channel
+       ? await client.util.request.channels
+          .getMessage(channel, m.msgid)
+          .then((s) => ('message' in s ? undefined : s))
+       : undefined,
+      table.event,
+      {
+       executor: m.executorid
+        ? await client.util.getUser(m.executorid).catch(() => undefined)
+        : undefined,
+       target,
+       reason: m.reason ?? '-',
+       guild,
+       skipChecks: true,
+       dbOnly:
+        'banchannelid' in m
+         ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
+         : false,
+       channel:
+        'banchannelid' in m
+         ? (guild.channels.cache.get(
+            (m as Prisma.punish_tempchannelbans).banchannelid,
+           ) as Discord.GuildChannel)
+         : undefined,
+      } as CT.ModOptions<
+       CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
+      >,
+     );
+    },
+   ),
+   guild.id,
+   'banchannelid' in m ? m.channelid : m.userid,
+   m.userid,
+  );
+ },
+ claimTimeouts: (t: Prisma.giveawaycollection, guild: Discord.Guild) => {
+  client.util.cache.giveawayClaimTimeout.set(
+   Jobs.scheduleJob(
+    getPathFromError(new Error(guild.id)),
+    new Date(Number(t.endtime) < Date.now() ? Date.now() + 10000 : Number(t.endtime)),
+    () => {
+     giveawayCollectTimeExpired(t.msgid, t.guildid);
+    },
+   ),
+   t.guildid,
+   t.msgid,
+  );
+ },
+ enableInvites: (s: Prisma.guildsettings, guild: Discord.Guild) => {
   client.util.cache.enableInvites.set(
    guild.id,
    Jobs.scheduleJob(
     getPathFromError(new Error(guild.id)),
-    new Date(Number(settings.enableinvitesat)),
+    new Date(Number(s.enableinvitesat)),
     () => {
      enableInvites(guild);
     },

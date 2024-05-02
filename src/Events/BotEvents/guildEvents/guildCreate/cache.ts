@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 import stickyPerms from '../../channelEvents/channelUpdate/stickyPerms.js';
-import { tasks } from '../../readyEvents/startupTasks/cache.js';
+import { startupTasks } from '../../readyEvents/startupTasks/cache.js';
 
 export default (guild: Discord.Guild) => {
- Object.values(tasks).forEach((t) => t(guild));
+ Object.values(startupTasks).forEach((t) => t([guild.id]));
 
  guild.channels.cache
   .filter(
