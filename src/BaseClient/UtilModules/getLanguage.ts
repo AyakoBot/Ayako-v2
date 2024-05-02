@@ -1,4 +1,5 @@
 import DataBase from '../Bot/DataBase.js';
+import Lang from './cache/bot/language.js';
 import Language, { languages } from '../Other/language.js';
 
 /**
@@ -7,7 +8,12 @@ import Language, { languages } from '../Other/language.js';
  * @param guildIDOrLocale - The ID of the guild to get the language object for or a language locale.
  * @returns A Promise that resolves to the language object for the specified guild ID.
  */
-export default async (guildIDOrLocale: bigint | undefined | null | string) => {
+export default async (guildIDOrLocale: bigint | undefined | null | string) =>
+ guildIDOrLocale && typeof guildIDOrLocale === 'string'
+  ? Lang.cache.get(guildIDOrLocale) ?? Lang.set(await getLanguage(guildIDOrLocale), guildIDOrLocale)
+  : getLanguage(guildIDOrLocale);
+
+export const getLanguage = async (guildIDOrLocale: bigint | undefined | null | string) => {
  if (!guildIDOrLocale) return new Language('en-GB');
 
  if (typeof guildIDOrLocale === 'string' && guildIDOrLocale.includes('-')) {
