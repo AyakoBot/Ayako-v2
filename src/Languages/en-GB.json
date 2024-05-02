@@ -2017,7 +2017,7 @@
    "clickMe": "Click me to join the Support Server"
   },
   "afk": {
-   "updated": "AFK updated",
+   "updated": "`{{user.username}}` AFK updated",
    "setReason": "User went AFK",
    "removeReason": "User returned from AFK",
    "set": "`{{user.username}}` went AFK",

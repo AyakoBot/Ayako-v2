@@ -35,18 +35,18 @@ export default async (
   await cmd.client.util.replyCmd(cmd, {
    embeds,
    ephemeral: false,
-   content: afk ? lan.updated : lan.set(author),
+   content: afk ? lan.updated(author) : lan.set(author),
   });
  } else if (cmd instanceof Discord.ChatInputCommandInteraction) {
   await cmd.client.util.replyCmd(cmd, {
    embeds,
    ephemeral: true,
-   content: afk ? lan.updated : lan.set(author),
+   content: afk ? lan.updated(author) : lan.set(author),
   });
  } else {
   await cmd.client.util.send(cmd.channel, {
    embeds,
-   content: afk ? lan.updated : lan.set(author),
+   content: afk ? lan.updated(author) : lan.set(author),
   });
 
   if (await cmd.client.util.isDeleteable(cmd)) cmd.client.util.request.channels.deleteMessage(cmd);
