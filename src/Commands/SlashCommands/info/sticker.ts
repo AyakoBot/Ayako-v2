@@ -126,9 +126,10 @@ const getEmbeds = async (
    author: {
     name: lan.author,
    },
-   thumbnail: {
-    url: sticker.url,
-   },
+   thumbnail:
+    sticker.format !== Discord.StickerFormatType.Lottie
+     ? { url: cmd.client.util.constants.standard.stickerURL(sticker) }
+     : undefined,
    description: [
     sticker.name
      ? {
@@ -151,7 +152,7 @@ const getEmbeds = async (
     sticker.url
      ? {
         name: `${cmd.client.util.util.makeBold('URL')}:`,
-        value: sticker.url,
+        value: cmd.client.util.constants.standard.stickerURL(sticker),
        }
      : undefined,
     sticker.createdTimestamp

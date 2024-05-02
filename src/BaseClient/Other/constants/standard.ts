@@ -43,6 +43,9 @@ export default {
   `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
  webhookAvatarURL: (webhookId: string, hash: string) =>
   `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
+ stickerURL: (sticker: Discord.Sticker) =>
+  // eslint-disable-next-line no-nested-ternary
+  `https://media.discordapp.net/stickers/${sticker.id}.${sticker.format === Discord.StickerFormatType.GIF ? 'gif' : sticker.format === Discord.StickerFormatType.Lottie ? 'json' : 'png'}`,
  getEmoteIdentifier: (
   e:
    | { animated: boolean; name: string; id: string | null | undefined }
