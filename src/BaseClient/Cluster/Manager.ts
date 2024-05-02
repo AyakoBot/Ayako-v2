@@ -32,8 +32,6 @@ await Manager.spawn()
   }, 60000);
  })
  .catch((e) => {
-  console.log(e);
-
   console.log(
    `[Cluster Manager] Startup Failed. Retry after: ${
     Number(e.headers?.get('retry-after') ?? 0) / 60
