@@ -15,10 +15,7 @@ import { canSendMessage } from './requestHandler/channels/sendMessage.js';
  */
 export default async (guild: Discord.Guild, err: Error, postDebug: boolean = true) => {
  if (process.argv.includes('--silent')) return;
- if (err.message.includes('Connect Timeout Error')) return;
- if (err.message.includes('other side closed')) return;
- if (err.message.includes('write EPIPE')) return;
- if (err.message.includes('No Description')) return;
+ if (!proceed(err.message)) return;
 
  const errorchannel = await DataBase.guildsettings
   .findUnique({
@@ -87,4 +84,20 @@ export const sendDebugMessage = async (
  );
 
  webhook.send(payload);
+};
+
+const proceed = (message: string) => {
+ switch (true) {
+  case message.includes('Connect Timeout Error'):
+  case message.includes('other side closed'):
+  case message.includes('write EPIPE'):
+  case message.includes('No Description'):
+  case message.includes('Unknown Message'):
+  case message.includes('Unknown Member'):
+  case message.includes('Unknown Channel'):
+   return false;
+
+  default:
+   return true;
+ }
 };
