@@ -315,6 +315,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    if (!me || 'message' in me) {
     client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
 
+    client.util.cache.apis.delete(guild.id);
     client.util.DataBase.guildsettings
      .update({
       where: { guildid: guild.id },
@@ -331,6 +332,15 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      guild,
      new Error('Bot is not public, please make it public so it can use external Emojis'),
     );
+
+    client.util.cache.apis.delete(guild.id);
+    client.util.DataBase.guildsettings
+     .update({
+      where: { guildid: guild.id },
+      data: { token: null },
+      select: { enabledrp: true },
+     })
+     .then();
     return;
    }
 
