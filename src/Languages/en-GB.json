@@ -3609,7 +3609,7 @@
   "warnNewlines": "You've exceeded the Newlines limit of {{n}}.\nPlease send less many Newlines"
  },
  "leveling": {
-  "author": "Welcome {{msg.author.username}}#{{msg.author.discriminator}} to {{msg.guild.name}}",
+  "author": "{{msg.author.username}} has levelled up to {{level}} <:AMayakoBirthday:809063075021979668>",
   "description": "{{on}} this Server, Level-Ups are indicated by Reactions on your Message\n{{reactions}}",
   "on": {
    "on": "On",

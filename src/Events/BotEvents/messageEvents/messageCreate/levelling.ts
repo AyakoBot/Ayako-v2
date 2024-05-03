@@ -518,7 +518,7 @@ const doEmbed = async (
 ) => {
  const getDefaultEmbed = async (): Promise<Discord.APIEmbed> => ({
   author: {
-   name: language.leveling.author(msg),
+   name: language.leveling.author(msg, String(levelData.newLevel)),
   },
   color: msg.client.util.getColor(await msg.client.util.getBotMemberFromGuild(msg.guild)),
  });
