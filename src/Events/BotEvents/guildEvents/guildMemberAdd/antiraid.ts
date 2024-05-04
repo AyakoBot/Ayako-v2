@@ -252,10 +252,11 @@ export const enableInvites = (guild: Discord.Guild) => {
 
  guild.client.util.cache.enableInvites.delete(guild.id);
 
- if (!guild.features.includes(Discord.GuildFeature.InvitesDisabled)) return;
-
- guild.client.util.DataBase.guildsettings.update({
-  where: { guildid: guild.id },
-  data: { enableinvitesat: null },
- });
+ guild.client.util.DataBase.guildsettings
+  .update({
+   where: { guildid: guild.id },
+   data: { enableinvitesat: null },
+  })
+  .then();
+ 
 };
