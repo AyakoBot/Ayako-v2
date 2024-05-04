@@ -258,5 +258,4 @@ export const enableInvites = (guild: Discord.Guild) => {
    data: { enableinvitesat: null },
   })
   .then();
- 
 };
