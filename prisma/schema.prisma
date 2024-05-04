@@ -748,10 +748,12 @@ model reminders {
 }
 
 model reviews {
-  userid   String  @db.VarChar
   score    Decimal @db.Decimal @default(1) 
   content  String  @db.Text
   fetchat  Decimal @db.Decimal
+  username String  @db.Text
+  userid   String  @db.VarChar
+  avatar   String? @db.Text
 
   @@id(userid, map: "reviews_pkey")
   @@index(userid)
