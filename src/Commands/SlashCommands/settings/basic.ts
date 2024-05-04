@@ -350,7 +350,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    );
 
    webhook.send({
-    content: `New Custom Client <@${process.env.ownerID}>`,
+    content: `New Custom Client <@${process.env.ownerID}> => ${me.id}`,
     allowedMentions: {
      users: [process.env.ownerID as string],
     },
