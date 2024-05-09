@@ -36,7 +36,7 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
    {
     color: 0xff0000,
     description: `Stack Trace\n\`\`\`${err.stack?.replace(
-     /file:\/\/\/root\/Bots\/Ayako-v2\/dist/g,
+     /file:\/\/\/root\/Ayako-v2\/dist/g,
      '',
     )}\`\`\``,
     fields: [

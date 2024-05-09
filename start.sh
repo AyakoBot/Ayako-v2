@@ -1,2 +1,2 @@
-cd /root/Bots/Ayako-v2
+cd /root/Ayako-v2
 screen -dmS Ayako -d -m pnpm start

@@ -10,6 +10,7 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  token: process.env.Token,
  shardArgs: process.argv,
  execArgv: [
+  '--experimental-json-modules',
   '--experimental-wasm-modules',
   '--no-deprecation',
   '--no-warnings',
