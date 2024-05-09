@@ -458,7 +458,7 @@ model leveling {
   lvlupmode       LevelUpMode             @default(silent)
   lvlupdeltimeout Decimal     @db.Decimal @default(10)
   lvlupchannels   String[]    @db.VarChar
-  lvlupemotes     String[]    @db.VarChar @default(["🆙","AMayakopeek:924071140257841162"])
+  lvlupemotes     String[]    @db.VarChar
   embed           Decimal?    @db.Decimal
   ignoreprefixes  Boolean     @db.Boolean @default(false)
   prefixes        String[]    @db.Text
