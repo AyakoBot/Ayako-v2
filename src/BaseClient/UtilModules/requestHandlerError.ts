@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import enGB from '../../Languages/en-GB.json' assert { type: 'json' };
+import enGB from '../../Languages/en-GB.json' with { type: 'json' };
 
 export default (text: string, requiredPerms: bigint[]) =>
  new Error(

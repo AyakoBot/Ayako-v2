@@ -21,8 +21,8 @@ import nitro from './language/nitro.js';
 import mod from './language/mod.js';
 import leveling from './language/leveling.js';
 
-import enJSON from '../../Languages/en-GB.json' assert { type: 'json' };
-import deJSON from '../../Languages/de-DE.json' assert { type: 'json' };
+import enJSON from '../../Languages/en-GB.json' with { type: 'json' };
+import deJSON from '../../Languages/de-DE.json' with { type: 'json' };
 
 export const languages = {
  'en-GB': enJSON,

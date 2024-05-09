@@ -2,9 +2,9 @@
  "type": "module",
  "version": "2.0.47",
  "scripts": {
-  "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings ./dist/index.js",
+  "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
   "build": "tsc",
-  "dev": "node --enable-source-maps --experimental-wasm-modules --heapsnapshot-near-heap-limit=1 ./dist/index.js --debug --warn",
+  "dev": "node --enable-source-maps --experimental-wasm-modules --heapsnapshot-near-heap-limit=1 --experimental-json-modules ./dist/index.js --debug --warn",
   "lint": "npx eslint 'src/**/*.ts' --fix",
   "postinstall": "mkdir -p ./logs",
   "prestart": "rm -rf dist && pnpm build",
@@ -13,7 +13,7 @@
  "dependencies": {
   "@discordjs/core": "^1.1.1",
   "@discordjs/rest": "^2.2.0",
-  "@prisma/client": "5.11.0",
+  "@prisma/client": "5.13.0",
   "@total-typescript/ts-reset": "^0.5.1",
   "@types/lodash": "^4.14.202",
   "@types/lodash.merge": "^4.6.9",
