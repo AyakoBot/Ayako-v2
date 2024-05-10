@@ -1,5 +1,6 @@
 {
  "type": "module",
+ "name": "@ayako/bot",
  "version": "2.0.47",
  "scripts": {
   "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
@@ -11,28 +12,28 @@
   "register": "node ./dist/register-commands.js"
  },
  "dependencies": {
-  "@discordjs/core": "^1.1.1",
-  "@discordjs/rest": "^2.2.0",
-  "@prisma/client": "5.13.0",
+  "@discordjs/core": "^1.2.0",
+  "@discordjs/rest": "^2.3.0",
+		"@prisma/client": "^5.13.0",
   "@total-typescript/ts-reset": "^0.5.1",
-  "@types/lodash": "^4.14.202",
+  "@types/lodash": "^4.17.1",
   "@types/lodash.merge": "^4.6.9",
   "body-parser": "^1.20.2",
-  "captcha-canvas": "^3.2.1",
+  "captcha-canvas": "^3.2.2",
   "client@latest": "link:prisma/client@latest",
-  "discord-api-types": "^0.37.70",
-  "discord-hybrid-sharding": "^2.1.4",
-  "discord.js": "^14.14.1",
-  "dotenv": "^16.4.4",
+  "discord-api-types": "^0.37.83",
+  "discord-hybrid-sharding": "^2.2.0",
+  "discord.js": "^14.15.2",
+  "dotenv": "^16.4.5",
   "express": "^4.19.2",
-  "fastify": "^4.26.1",
-  "glob": "^10.3.10",
+  "fastify": "^4.27.0",
+  "glob": "^10.3.14",
   "lodash.merge": "^4.6.2",
   "mee6-levels-api": "^1.3.1",
   "moment": "^2.30.1",
   "moment-duration-format": "^2.3.2",
   "ms": "^2.1.3",
-  "nanoid": "^5.0.5",
+  "nanoid": "^5.0.7",
   "nekos-best.js": "^6.3.0",
   "node-fetch": "^3.3.2",
   "node-schedule": "^2.1.1",
@@ -40,16 +41,16 @@
   "prettier": "^3.2.5",
   "purrbot-api": "^1.3.1",
   "request": "^2.88.2",
-  "socket.io-client": "^4.7.4",
+  "socket.io-client": "^4.7.5",
   "string-similarity": "^4.0.4",
-  "undici": "^6.11.1",
+  "undici": "^6.16.1",
   "valid-url": "^1.0.9",
   "waifu-pics-api": "^1.0.5",
-  "ws": "^8.16.0"
+  "ws": "^8.17.0"
  },
  "devDependencies": {
-  "@babel/eslint-parser": "^7.23.10",
-  "@babel/eslint-plugin": "^7.23.5",
+  "@babel/eslint-parser": "^7.24.5",
+  "@babel/eslint-plugin": "^7.24.5",
   "@types/body-parser": "^1.19.5",
   "@types/clone": "^2.1.4",
   "@types/express": "^4.17.21",
@@ -57,17 +58,17 @@
   "@types/lodash.clonedeep": "^4.5.9",
   "@types/moment-duration-format": "^2.2.6",
   "@types/ms": "^0.7.34",
-  "@types/node": "^20.11.19",
-  "@types/node-schedule": "^2.1.6",
-  "@types/pg": "^8.11.0",
+  "@types/node": "^20.12.11",
+  "@types/node-schedule": "^2.1.7",
+  "@types/pg": "^8.11.6",
   "@types/request": "^2.48.12",
   "@types/source-map-support": "^0.5.10",
   "@types/string-similarity": "^4.0.2",
   "@types/valid-url": "^1.0.7",
   "@types/ws": "^8.5.10",
-  "@typescript-eslint/eslint-plugin": "^7.0.1",
-  "@typescript-eslint/parser": "^7.0.1",
-  "eslint": "^8.56.0",
+  "@typescript-eslint/eslint-plugin": "^7.8.0",
+  "@typescript-eslint/parser": "^7.8.0",
+  "eslint": "^9.2.0",
   "eslint-config-airbnb": "^19.0.4",
   "eslint-config-prettier": "^9.1.0",
   "eslint-import-resolver-typescript": "^3.6.1",
@@ -75,13 +76,11 @@
   "eslint-plugin-json": "^3.1.0",
   "eslint-plugin-jsx-a11y": "^6.8.0",
   "eslint-plugin-prettier": "^5.1.3",
-  "prisma": "^5.11.0",
+  "prisma": "^5.13.0",
   "source-map-support": "^0.5.21",
-  "typescript": "^5.3.3"
+  "typescript": "^5.4.5"
  },
- "pnpm": {
-  "patchedDependencies": {
-   "discord.js@14.14.1": "patches/discord.js@14.14.1.patch"
-  }
+ "prisma": {
+  "schema": "../../prisma/schema.prisma"
  }
 }
