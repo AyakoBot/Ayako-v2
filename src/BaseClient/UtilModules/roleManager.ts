@@ -98,6 +98,8 @@ const runJob = async (guild: Discord.Guild) => {
  if (!memberCaches) return;
 
  const endJob = (mC: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
+ if (!memberCaches) return;
+
   const index = mC.members.findIndex((m) => m.member.id === memberCache.member.id);
   mC.members.splice(index, 1);
   if (!mC.members.length) {
