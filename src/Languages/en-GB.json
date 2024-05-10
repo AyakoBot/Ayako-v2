@@ -2087,6 +2087,8 @@
    "viewOriginal": "View Original"
   },
   "rp": {
+   "pleaseWait": "Please wait",
+   "field": "Installing Commands. This may take a while...\nThis Message will be updated once I have finished",
    "allBlockedUsers": "All Users you have blocked",
    "cantRP": "You can't use RP-Commands on this Users as either of you has blocked the other.",
    "notBlocked": "{{user}} is not blocked from using RP-Commands",
