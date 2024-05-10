@@ -76,8 +76,7 @@ const getDisplayAnswer = (
   case 'number':
    return answer;
   case 'boolean':
-   // eslint-disable-next-line no-extra-boolean-cast
-   return Boolean(answer)
+   return answer === 'true'
     ? client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)
     : client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground);
   case 'multiple_choice':
