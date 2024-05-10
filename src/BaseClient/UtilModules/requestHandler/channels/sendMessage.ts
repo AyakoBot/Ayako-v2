@@ -77,29 +77,29 @@ export const canSendMessage = (
  if (!channel) return false;
 
  switch (true) {
-  case !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel):
+  case !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel, true):
    return false;
   case Number(me.communicationDisabledUntilTimestamp) > Date.now():
    return false;
   case channel &&
    !channel?.isThread() &&
-   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessages):
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessages, true):
   case channel &&
    channel?.isThread() &&
-   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessagesInThreads):
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendMessagesInThreads, true):
    return false;
   case payload.tts &&
-   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendTTSMessages): {
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.SendTTSMessages, true): {
    payload.tts = false;
    return true;
   }
   case payload.message_reference &&
-   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ReadMessageHistory): {
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ReadMessageHistory, true): {
    payload.message_reference = undefined;
    return true;
   }
   case payload.files?.length &&
-   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.AttachFiles):
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.AttachFiles, true):
    return false;
 
   default:
