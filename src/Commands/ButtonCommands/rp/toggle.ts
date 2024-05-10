@@ -10,7 +10,19 @@ export default async (cmd: Discord.ButtonInteraction) => {
  cmd.editReply({
   components: [],
   embeds: [
-   cmd.client.util.loadingEmbed({ language, lan: { author: language.slashCommands.rp.author } }),
+   {
+    ...cmd.client.util.loadingEmbed({
+     language,
+     lan: { author: language.slashCommands.rp.author },
+    }),
+    fields: [
+     {
+      name: language.slashCommands.rp.pleaseWait,
+      value: language.slashCommands.rp.field,
+      inline: false,
+     },
+    ],
+   },
   ],
  });
 
@@ -36,18 +48,23 @@ export default async (cmd: Discord.ButtonInteraction) => {
 };
 
 const deleteAll = async (cmd: Discord.ButtonInteraction<'cached'>) => {
- await cmd.client.util.request.commands.bulkOverwriteGuildCommands(
-  cmd.guild,
-  (
-   [...(cmd.client.util.cache.commands.cache.get(cmd.guild.id)?.values() ?? [])] ??
-   cmd.guild.commands.cache.map((c) => c)
-  )
-   .filter(
-    (c) =>
-     !cmd.client.util.constants.commands.interactions.find((i) => i.name === c.name) && !c.guildId,
-   )
-   .map((c) => c.toJSON() as Discord.APIApplicationCommand),
- );
+ const commands = await cmd.guild.client.util.request.commands.getGuildCommands(cmd.guild);
+ if ('message' in commands) {
+  cmd.guild.client.util.error(cmd.guild, new Error(commands.message));
+  return;
+ }
+
+ if (commands.length === cmd.client.util.constants.commands.interactions.length) {
+  await cmd.client.util.request.commands.bulkOverwriteGuildCommands(cmd.guild, []);
+ } else {
+  const commandNames = cmd.client.util.constants.commands.interactions.map((c) => c.name);
+
+  await Promise.all(
+   commands
+    .filter((c) => commandNames.includes(c.name))
+    .map((c) => cmd.guild.client.util.request.commands.deleteGuildCommand(cmd.guild, c.id)),
+  );
+ }
 };
 
 export const create = async (guild: Discord.Guild) => {
@@ -104,28 +121,21 @@ export const create = async (guild: Discord.Guild) => {
    return command;
   });
 
- await guild.client.util.request.commands.bulkOverwriteGuildCommands(guild, [
-  ...registerCommands.map((c) => c.toJSON()),
-  ...[
-   ...(guild.client.util.cache.commands.cache.get(guild.id)?.values() ??
-    guild.commands.cache.map((c) => c)),
-  ]
-   .filter(
-    (c) =>
-     !guild.client.util.constants.commands.interactions.find((i) => i.name === c.name) &&
-     !c.guildId &&
-     !registerCommands.find((r) => r.name === c.name),
-   )
-   .map((c) => c.toJSON() as Discord.APIApplicationCommand),
- ]);
+ const createPayload = [...registerCommands.map((c) => c.toJSON())];
+
+ if (!commands.length) {
+  await guild.client.util.request.commands.bulkOverwriteGuildCommands(guild, createPayload);
+ } else {
+  guild.client.util.cache.interactionInstallmentRunningFor.add(guild.id);
+  await Promise.all(
+   createPayload.map((p) => guild.client.util.request.commands.createGuildCommand(guild, p)),
+  );
+  guild.client.util.cache.interactionInstallmentRunningFor.delete(guild.id);
+ }
 
  await guild.client.util.DataBase.guildsettings.upsert({
   where: { guildid: guild.id },
   update: { rpenableruns: { increment: 1 } },
-  create: {
-   guildid: guild.id,
-   rpenableruns: 1,
-   enabledrp: true,
-  },
+  create: { guildid: guild.id, rpenableruns: 1, enabledrp: true },
  });
 };

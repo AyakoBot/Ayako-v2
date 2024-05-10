@@ -67,6 +67,7 @@ const cache: {
  interactedGuilds: Set<string>;
  interactedChannels: Set<string>;
  fastMsgCache: Map<string, { msgs: Discord.Message[]; job: Jobs.Job }>;
+ interactionInstallmentRunningFor: Set<string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -117,6 +118,7 @@ const cache: {
  deleteSuggestions,
  vcDeleteTimeout,
  fastMsgCache: new Map(),
+ interactionInstallmentRunningFor: new Set(),
 
  // URLs
  urlTLDs,

@@ -61,7 +61,8 @@ export const getComponents = (
      : cmd.client.util.emotes.disabled,
     disabled:
      !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild) ||
-     Number(guildsettings?.rpenableruns) === 2,
+     Number(guildsettings?.rpenableruns) === 2 ||
+     cmd.client.util.cache.interactionInstallmentRunningFor.has(cmd.guildId),
    },
    {
     type: Discord.ComponentType.Button,
@@ -79,8 +80,7 @@ export const getComponents = (
     label: language.t.login,
     style: Discord.ButtonStyle.Link,
     url: 'https://ayakobot.com/login',
-    disabled:
-    !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild)
+    disabled: !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild),
    },
   ],
  },
