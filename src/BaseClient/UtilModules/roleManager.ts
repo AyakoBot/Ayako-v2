@@ -97,20 +97,9 @@ const runJob = async (guild: Discord.Guild) => {
  const memberCaches = GuildCache.get(guild.id);
  if (!memberCaches) return;
 
- const endJob = (mC: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
- if (!memberCaches) return;
-
-  const index = mC.members.findIndex((m) => m.member.id === memberCache.member.id);
-  mC.members.splice(index, 1);
-  if (!mC.members.length) {
-   mC.job.cancel();
-   GuildCache.delete(guild.id);
-  }
- };
-
  const me = await getBotMemberFromGuild(guild);
  if (!me?.permissions.has(Discord.PermissionFlagsBits.ManageRoles)) {
-  endJob(memberCaches);
+  GuildCache.delete(guild.id);
   return;
  }
 
@@ -119,6 +108,16 @@ const runJob = async (guild: Discord.Guild) => {
  const prioFilter = memberCaches?.members.filter((m) => m.prio === highestPrio);
  const dateFilter = prioFilter.sort((a, b) => b.added - a.added);
  const memberCache = dateFilter[0];
+
+ const endJob = (mC: { job: Jobs.Job; members: MemberCaches; guild: Discord.Guild }) => {
+  const index = mC.members.findIndex((m) => m.member.id === memberCache.member.id);
+  mC.members.splice(index, 1);
+  if (!mC.members.length) {
+   mC.job.cancel();
+   GuildCache.delete(guild.id);
+  }
+ };
+
  if (!memberCache) {
   endJob(memberCaches);
   return;
