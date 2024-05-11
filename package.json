@@ -14,7 +14,7 @@
  "dependencies": {
   "@discordjs/core": "^1.2.0",
   "@discordjs/rest": "^2.3.0",
-		"@prisma/client": "^5.13.0",
+  "@prisma/client": "^5.13.0",
   "@total-typescript/ts-reset": "^0.5.1",
   "@types/lodash": "^4.17.1",
   "@types/lodash.merge": "^4.6.9",
