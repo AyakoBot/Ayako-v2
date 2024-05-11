@@ -10,21 +10,27 @@ import * as Classes from '../../../Other/classes.js';
  * @param id The ID of the channel to retrieve.
  * @returns A Promise that resolves with the retrieved channel.
  */
-export default async (guild: Discord.Guild, id: string) =>
- guild.channels.cache.get(id) ??
+export default async <T extends Discord.Guild | undefined>(
+ guild: T,
+ id: string,
+ client: T extends Discord.Guild ? undefined : Discord.Client,
+) =>
+ guild?.channels.cache.get(id) ??
  (guild ? cache.apis.get(guild.id) ?? API : API).channels
   .get(id)
   .then((c) => {
-   const parsed = Classes.Channel(guild.client, c, guild);
+   const g = 'guild_id' in c && c.guild_id ? (guild?.client ?? client)!.guilds.cache.get(c.guild_id) : undefined;
+   if (!g) return new Error('Trying to get a channel without a guild.');
+   const parsed = Classes.Channel(g.client, c, g);
 
-   if (guild.channels.cache.get(parsed.id)) return parsed;
+   if (g.channels.cache.get(parsed.id)) return parsed;
    if (![Discord.ChannelType.DM, Discord.ChannelType.GroupDM].includes(parsed.type)) {
-    guild.channels.cache.set(parsed.id, parsed as Discord.GuildBasedChannel);
+    g.channels.cache.set(parsed.id, parsed as Discord.GuildBasedChannel);
    }
 
    return parsed;
   })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

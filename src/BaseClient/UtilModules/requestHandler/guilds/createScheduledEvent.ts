@@ -34,7 +34,7 @@ export default async (
    guild.id,
    {
     ...body,
-    image: body.image ? await Discord.DataResolver.resolveImage(body.image) : body.image,
+    image: body.image ? await Discord.resolveImage(body.image) : body.image,
    },
    { reason },
   )

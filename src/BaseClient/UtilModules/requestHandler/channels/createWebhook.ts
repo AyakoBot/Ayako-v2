@@ -34,7 +34,7 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).channels
   .createWebhook(channelId, {
    ...body,
-   avatar: body.avatar ? await Discord.DataResolver.resolveImage(body.avatar) : body.avatar,
+   avatar: body.avatar ? await Discord.resolveImage(body.avatar) : body.avatar,
   })
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {

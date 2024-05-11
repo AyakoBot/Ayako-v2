@@ -31,7 +31,7 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).guilds
   .createRole(
    guild.id,
-   { ...body, icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon },
+   { ...body, icon: body.icon ? await Discord.resolveImage(body.icon) : body.icon },
    { reason },
   )
   .then((r) => new Classes.Role(guild.client, r, guild))

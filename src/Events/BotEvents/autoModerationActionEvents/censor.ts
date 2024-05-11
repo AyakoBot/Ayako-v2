@@ -82,7 +82,7 @@ export const getContent = async (
 
  const presetKeywords = presetRule
   ? await guild.client.util.DataBase.filterscraper.findMany({
-     where: { filtertype: { in: presetRule.triggerMetadata.presets } },
+     where: { filtertype: { in: [...presetRule.triggerMetadata.presets] } },
     })
   : [];
 
@@ -95,8 +95,8 @@ export const getContent = async (
  rules.forEach((r) => {
   if (!r.enabled) return;
 
-  if (r.triggerMetadata.regexPatterns) {
-   content = filterContent(r.triggerMetadata.regexPatterns, content);
+  if (r.triggerMetadata.regexPatterns?.length) {
+   content = filterContent([...r.triggerMetadata.regexPatterns], content);
   }
 
   content
@@ -141,7 +141,7 @@ export const getContent = async (
 const getWebhook = async (msg: Discord.AutoModerationActionExecution) => {
  const channelOrThread = msg.channelId
   ? await msg.guild.client.util.request.channels
-     .get(msg.guild, msg.channelId)
+     .get(msg.guild, msg.channelId, undefined)
      .then((r) => ('message' in r ? undefined : r))
   : undefined;
  const isThread = channelOrThread

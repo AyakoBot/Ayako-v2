@@ -31,6 +31,7 @@ export default async (guild: Discord.Guild) => {
   .then(async (v) => {
    const parsed = v.code
     ? new Classes.Invite(guild.client, {
+       type: Discord.InviteType.Guild,
        code: v.code,
        guild: {
         id: guild?.id,

@@ -16,7 +16,7 @@ export default async (guild: Discord.Guild, data: Discord.RESTPatchAPICurrentUse
  return (cache.apis.get(guild.id) ?? API).users
   .edit({
    ...data,
-   avatar: data.avatar ? await Discord.DataResolver.resolveImage(data.avatar) : data.avatar,
+   avatar: data.avatar ? await Discord.resolveImage(data.avatar) : data.avatar,
   })
   .then((u) => new Classes.User(guild.client, u))
   .catch((e) => {

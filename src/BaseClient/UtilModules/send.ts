@@ -108,7 +108,9 @@ async function send(
   return null;
  }
 
- const body = (await new Discord.MessagePayload(channel, payload).resolveBody().resolveFiles()) as {
+ const body = (await new Discord.MessagePayload(channel as Discord.MessageTarget, payload)
+  .resolveBody()
+  .resolveFiles()) as {
   body: Discord.RESTPostAPIChannelMessageJSONBody;
   files: Discord.RawFile[];
  };

@@ -37,5 +37,7 @@ export default async (id: string) => {
   .find((u): u is bEvalUser => !!u);
 
  if (response) return new User(client, response);
- return client.users.fetch(id).catch(() => undefined);
+ return client.util.request.users
+  .get(undefined, id, client)
+  .then((u) => (u && !('message' in u) ? u : undefined));
 };

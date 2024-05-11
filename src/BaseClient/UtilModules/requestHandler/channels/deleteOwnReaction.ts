@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
+import requestHandlerError from '../../requestHandlerError.js';
 
 /**
  * Deletes the reaction of the bot on a message.
@@ -14,11 +15,10 @@ export default async (message: Discord.Message<true>, emoji: string) => {
 
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
-  return new Discord.DiscordjsTypeError(
-   Discord.DiscordjsErrorCodes.EmojiType,
-   'emoji',
-   'EmojiIdentifierResolvable',
-  ) as Discord.DiscordAPIError;
+  const e = requestHandlerError(`Invalid Emoji ${emoji}`, []);
+
+  error(message.guild, e);
+  return e;
  }
 
  return (cache.apis.get(message.guild.id) ?? API).channels

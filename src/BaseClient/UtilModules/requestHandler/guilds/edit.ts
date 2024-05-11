@@ -28,11 +28,11 @@ export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONB
  return (cache.apis.get(guild.id) ?? API).guilds
   .edit(guild.id, {
    ...body,
-   icon: body.icon ? await Discord.DataResolver.resolveImage(body.icon) : body.icon,
-   splash: body.splash ? await Discord.DataResolver.resolveImage(body.splash) : body.splash,
-   banner: body.banner ? await Discord.DataResolver.resolveImage(body.banner) : body.banner,
+   icon: body.icon ? await Discord.resolveImage(body.icon) : body.icon,
+   splash: body.splash ? await Discord.resolveImage(body.splash) : body.splash,
+   banner: body.banner ? await Discord.resolveImage(body.banner) : body.banner,
    discovery_splash: body.discovery_splash
-    ? await Discord.DataResolver.resolveImage(body.discovery_splash)
+    ? await Discord.resolveImage(body.discovery_splash)
     : body.discovery_splash,
   })
   .then((g) => new Classes.Guild(guild.client, g))

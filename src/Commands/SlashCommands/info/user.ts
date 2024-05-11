@@ -14,7 +14,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const { user, language } = userRes;
  const lan = language.slashCommands.info.user;
 
- const flags = await user.fetchFlags(true);
+ const flags = await cmd.client.util.request.users
+  .get(cmd.guild, user.id, cmd.client)
+  .then((u) =>
+   u && !('message' in u)
+    ? u.flags ?? new Discord.UserFlagsBitField()
+    : new Discord.UserFlagsBitField(),
+  );
  if (user.bot && !flags.has(65536)) flags.add(2048);
 
  let botInfo: { info: string; description: string } | null = null;

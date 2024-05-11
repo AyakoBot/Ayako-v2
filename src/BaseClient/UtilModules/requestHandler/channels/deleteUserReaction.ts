@@ -28,11 +28,10 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
 
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
-  return new Discord.DiscordjsTypeError(
-   Discord.DiscordjsErrorCodes.EmojiType,
-   'emoji',
-   'EmojiIdentifierResolvable',
-  ) as Discord.DiscordAPIError;
+  const e = requestHandlerError(`Invalid Emoji ${emoji}`, []);
+
+  error(message.guild, e);
+  return e;
  }
 
  return (cache.apis.get(message.guild.id) ?? API).channels

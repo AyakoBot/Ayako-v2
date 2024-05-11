@@ -33,8 +33,12 @@ export const end = async (giveaway: Prisma.giveaways) => {
 };
 
 export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.giveaways) => {
- const host = await client.users.fetch(giveaway.host).catch(() => undefined);
  const guild = client.guilds.cache.get(giveaway.guildid);
+ const host = await client.util.request.users.get(
+  guild,
+  giveaway.host,
+  client as Discord.Client<true>,
+ );
 
  return {
   author: {
@@ -59,12 +63,13 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
       }
     : undefined,
   ].filter((f): f is Discord.APIEmbedField => !!f),
-  footer: host
-   ? {
-      text: language.slashCommands.giveaway.create.host(host),
-      icon_url: host.displayAvatarURL(),
-     }
-   : undefined,
+  footer:
+   host && !('message' in host)
+    ? {
+       text: language.slashCommands.giveaway.create.host(host),
+       icon_url: host.displayAvatarURL(),
+      }
+    : undefined,
   color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
  };
 };

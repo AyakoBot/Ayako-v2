@@ -344,30 +344,33 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     return;
    }
 
-   const webhook = await client.fetchWebhook(
+   await client.fetchWebhook(
     process.env.alertWebhookId as string,
     process.env.alertWebhookToken as string,
    );
 
-   webhook.send({
-    content: `New Custom Client <@${process.env.ownerID}> => ${me.id}`,
-    allowedMentions: {
-     users: [process.env.ownerID as string],
+   client.util.request.webhooks.execute(
+    guild,
+    process.env.alertWebhookId ?? '',
+    process.env.alertWebhookToken ?? '',
+    {
+     content: `New Custom Client <@${process.env.ownerID}> => ${me.id}`,
+     allowed_mentions: { users: [process.env.ownerID ?? ''] },
+     components: [
+      {
+       type: Discord.ComponentType.ActionRow,
+       components: [
+        {
+         type: Discord.ComponentType.Button,
+         style: Discord.ButtonStyle.Link,
+         label: 'Invite',
+         url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
+        },
+       ],
+      },
+     ],
     },
-    components: [
-     {
-      type: Discord.ComponentType.ActionRow,
-      components: [
-       {
-        type: Discord.ComponentType.Button,
-        style: Discord.ButtonStyle.Link,
-        label: 'Invite',
-        url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
-       },
-      ],
-     },
-    ],
-   });
+   );
 
    const language = new Lang('en-GB');
 

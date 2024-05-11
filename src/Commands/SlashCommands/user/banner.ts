@@ -5,7 +5,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const rawUser = cmd.options.getUser('user', false) || cmd.user;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const user = await rawUser.fetch(true);
+ const user = await cmd.client.util.request.users.get(cmd.guild, rawUser.id, cmd.client);
+ if (!user || 'message' in user) {
+  cmd.client.util.errorCmd(cmd, language.errors.userNotExist, language);
+  return;
+ }
 
  cmd.client.util.replyCmd(cmd, {
   embeds: [

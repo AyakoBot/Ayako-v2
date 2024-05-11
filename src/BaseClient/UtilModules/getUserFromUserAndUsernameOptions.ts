@@ -23,9 +23,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     undefined
   : undefined;
 
- return {
-  user,
-  member,
-  language,
- };
+ return { user, member, language };
 };

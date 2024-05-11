@@ -8,7 +8,9 @@ import * as Discord from 'discord.js';
  */
 const getChannel = async (channelId: string) => {
  const client = (await import('../Bot/Client.js')).default;
- return client.channels.fetch(channelId, { allowUnknownGuild: true }).catch(() => undefined);
+ return client.util.request.channels
+  .get(undefined, channelId, client)
+  .then((r) => (!r || 'message' in r ? undefined : r));
 };
 
 /**

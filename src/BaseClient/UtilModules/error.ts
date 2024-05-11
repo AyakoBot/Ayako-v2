@@ -78,12 +78,13 @@ export const sendDebugMessage = async (
  payload: CT.UsualMessagePayload,
  client: Discord.Client<true>,
 ) => {
- const webhook = await client.fetchWebhook(
+ client.util.request.webhooks.execute(
+  undefined,
   process.env.debugWebhookID ?? '',
   process.env.debugWebhookToken ?? '',
+  payload,
+  client as Discord.Client<true>,
  );
-
- webhook.send(payload);
 };
 
 const proceed = (message: string) => {

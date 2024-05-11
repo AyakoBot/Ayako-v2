@@ -87,15 +87,24 @@ const updateSetting = (
  switch (type) {
   case 'allowList':
    return client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, allow_list: newSetting },
+    trigger_metadata: {
+     ...getAPIRule(rule).trigger_metadata,
+     allow_list: newSetting,
+    } as Discord.APIAutoModerationRuleTriggerMetadata,
    });
   case 'regex':
    return client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, regex_patterns: newSetting },
+    trigger_metadata: {
+     ...getAPIRule(rule).trigger_metadata,
+     regex_patterns: newSetting,
+    } as Discord.APIAutoModerationRuleTriggerMetadata,
    });
   case 'keywordFilter':
    return client.util.request.guilds.editAutoModerationRule(rule.guild, rule.id, {
-    trigger_metadata: { ...getAPIRule(rule).trigger_metadata, keyword_filter: newSetting },
+    trigger_metadata: {
+     ...getAPIRule(rule).trigger_metadata,
+     keyword_filter: newSetting,
+    } as Discord.APIAutoModerationRuleTriggerMetadata,
    });
   default: {
    client.util.error(rule.guild, new Error(`Invalid type ${type}`));

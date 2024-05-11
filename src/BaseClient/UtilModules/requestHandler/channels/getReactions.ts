@@ -16,51 +16,50 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A promise that resolves with an array of users who reacted with the specified emoji.
  */
 export default async (
- message: Discord.Message<true>,
+ msg: Discord.Message<true>,
  emoji: string,
  query?: Discord.RESTGetAPIChannelMessageReactionUsersQuery,
 ) => {
- if (!canGetMessage(message.channel, await getBotMemberFromGuild(message.guild))) {
+ if (!canGetMessage(msg.channel, await getBotMemberFromGuild(msg.guild))) {
   const e = requestHandlerError(
-   `Cannot get reactions of emoji ${emoji} in ${message.guild.name} / ${message.guild.id}`,
+   `Cannot get reactions of emoji ${emoji} in ${msg.guild.name} / ${msg.guild.id}`,
    [
     Discord.PermissionFlagsBits.ViewChannel,
     Discord.PermissionFlagsBits.ReadMessageHistory,
     ...([Discord.ChannelType.GuildVoice, Discord.ChannelType.GuildStageVoice].includes(
-     message.channel.type,
+     msg.channel.type,
     )
      ? [Discord.PermissionFlagsBits.Connect]
      : []),
    ],
   );
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
  const resolvedEmoji = Discord.resolvePartialEmoji(emoji) as Discord.PartialEmoji;
  if (!resolvedEmoji) {
-  return new Discord.DiscordjsTypeError(
-   Discord.DiscordjsErrorCodes.EmojiType,
-   'emoji',
-   'EmojiIdentifierResolvable',
-  ) as Discord.DiscordAPIError;
+  const e = requestHandlerError(`Invalid Emoji ${emoji}`, []);
+
+  error(msg.guild, e);
+  return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (cache.apis.get(msg.guild.id) ?? API).channels
   .getMessageReactions(
-   message.channel.id,
-   message.id,
+   msg.channel.id,
+   msg.id,
    resolvedEmoji.id
     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
     : (resolvedEmoji.name as string),
    query,
   )
   .then((users) => {
-   const parsed = users.map((u) => new Classes.User(message.client, u));
+   const parsed = users.map((u) => new Classes.User(msg.client, u));
    parsed.forEach((p) => {
     if (
-     message.reactions.cache
+     msg.reactions.cache
       .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
       ?.users.cache.get(p.id)
     ) {
@@ -69,12 +68,12 @@ export default async (
 
     if (
      (resolvedEmoji.id ?? resolvedEmoji.name) &&
-     !message.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
+     !msg.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
     ) {
-     message.reactions.cache.set(
+     msg.reactions.cache.set(
       resolvedEmoji.id ?? resolvedEmoji.name ?? '',
       new Classes.MessageReaction(
-       message.client,
+       msg.client,
        {
         count: parsed.length,
         emoji: {
@@ -83,19 +82,25 @@ export default async (
          animated: resolvedEmoji.animated,
         },
         me: false,
+        me_burst: false,
+        burst_colors: [],
+        count_details: {
+         burst: 0,
+         normal: parsed.length,
+        },
        },
-       message,
+       msg,
       ),
      );
     }
 
-    message.reactions.cache
+    msg.reactions.cache
      .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
      ?.users.cache.set(p.id, p);
    });
   })
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(msg.guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

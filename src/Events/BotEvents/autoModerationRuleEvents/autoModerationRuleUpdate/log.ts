@@ -132,16 +132,16 @@ export default async (
  ) {
   const beforeContent = rule.client.util
    .getDifference(
-    rule.triggerMetadata?.keywordFilter ?? [],
-    oldRule?.triggerMetadata?.keywordFilter ?? [],
+    [...(rule.triggerMetadata?.keywordFilter ?? [])],
+    [...(oldRule?.triggerMetadata?.keywordFilter ?? [])],
    )
    .map((r) => `\`${r}\``)
    .join(', ');
 
   const afterContent = rule.client.util
    .getDifference(
-    oldRule?.triggerMetadata?.keywordFilter ?? [],
-    rule.triggerMetadata?.keywordFilter ?? [],
+    [...(oldRule?.triggerMetadata?.keywordFilter ?? [])],
+    [...(rule.triggerMetadata?.keywordFilter ?? [])],
    )
    .map((r) => `\`${r}\``)
    .join(', ');
@@ -159,12 +159,12 @@ export default async (
    JSON.stringify(oldRule?.triggerMetadata?.presets)
  ) {
   const beforeContent = rule.client.util
-   .getDifference(rule.triggerMetadata?.presets ?? [], oldRule?.triggerMetadata?.presets ?? [])
+   .getDifference([...(rule.triggerMetadata?.presets ?? [])], [...(oldRule?.triggerMetadata?.presets ?? [])])
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
 
   const afterContent = rule.client.util
-   .getDifference(oldRule?.triggerMetadata?.presets ?? [], rule.triggerMetadata?.presets ?? [])
+   .getDifference([...(oldRule?.triggerMetadata?.presets ?? [])], [...(rule.triggerMetadata?.presets ?? [])])
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
 
@@ -181,12 +181,12 @@ export default async (
    JSON.stringify(oldRule?.triggerMetadata?.allowList)
  ) {
   const beforeContent = rule.client.util
-   .getDifference(rule.triggerMetadata?.allowList ?? [], oldRule?.triggerMetadata?.allowList ?? [])
+   .getDifference([...(rule.triggerMetadata?.allowList ?? [])], [...(oldRule?.triggerMetadata?.allowList ?? [])])
    .map((r) => `\`${r}\``)
    .join(', ');
 
   const afterContent = rule.client.util
-   .getDifference(oldRule?.triggerMetadata?.allowList ?? [], rule.triggerMetadata?.allowList ?? [])
+   .getDifference([...(oldRule?.triggerMetadata?.allowList ?? [])], [...(rule.triggerMetadata?.allowList ?? [])])
    .map((r) => `\`${r}\``)
    .join(', ');
 
@@ -204,16 +204,16 @@ export default async (
  ) {
   const beforeContent = rule.client.util
    .getDifference(
-    rule.triggerMetadata?.regexPatterns ?? [],
-    oldRule?.triggerMetadata?.regexPatterns ?? [],
+    [...(rule.triggerMetadata?.regexPatterns ?? [])],
+    [...(oldRule?.triggerMetadata?.regexPatterns ?? [])],
    )
    .map((r) => `\`${r}\``)
    .join(', ');
 
   const afterContent = rule.client.util
    .getDifference(
-    oldRule?.triggerMetadata?.regexPatterns ?? [],
-    rule.triggerMetadata?.regexPatterns ?? [],
+    [...(oldRule?.triggerMetadata?.regexPatterns ?? [])],
+    [...(rule.triggerMetadata?.regexPatterns ?? [])],
    )
    .map((r) => `\`${r}\``)
    .join(', ');

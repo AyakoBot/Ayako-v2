@@ -325,11 +325,12 @@ const parsers = {
   author: cmd.user,
   users: [
    (cmd.message.interaction?.user as Discord.User) ??
-    (await cmd.client.users.fetch(
+    (await cmd.client.util.request.users.get(
+     cmd.guild,
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('exec') ??
       cmd.client.user.id,
     )),
-  ].filter((u) => !!u),
+  ].filter((u) => !!u && !('message' in u)),
   text: '',
   otherText: '',
   commandName: cmd.customId.split('_')[0].toLowerCase(),

@@ -1120,7 +1120,8 @@
    "ManageChannel": "Manage Channel",
    "ReadMessages": "Read Messages",
    "ViewChannels": "View Channels",
-   "ManagePermissions": "Manage Permissions"
+   "ManagePermissions": "Manage Permissions",
+   "SendPolls": "Send Polls"
   }
  },
  "lvlupmodes": {
@@ -1368,7 +1369,12 @@
   "144": "Auto Moderation Flag To Channel",
   "145": "Auto Moderation User Communication Disabled",
   "150": "Creator Monetization Request Created",
-  "151": "Creator Monetization Terms Accepted"
+  "151": "Creator Monetization Terms Accepted",
+  "163": "Onboarding Prompt Create",
+  "164": "Onboarding Prompt Updated",
+  "165": "Onboarding Prompt Deleted",
+  "166": "Onboarding Created",
+  "167": "Onboarding Updated"
  },
  "defaultSortOrder": {
   "0": "Latest Activity",

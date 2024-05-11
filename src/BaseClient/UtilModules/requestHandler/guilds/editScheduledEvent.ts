@@ -39,7 +39,7 @@ export default async (
    eventId,
    {
     ...body,
-    image: body.image ? await Discord.DataResolver.resolveImage(body.image) : body.image,
+    image: body.image ? await Discord.resolveImage(body.image) : body.image,
    },
    { reason },
   )
