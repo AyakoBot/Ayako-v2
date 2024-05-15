@@ -1,10 +1,10 @@
-import type * as Socket from '../../../BaseClient/Cluster/Socket.js';
+import type * as PG from '../../../BaseClient/Cluster/PG.js';
 import client from '../../../BaseClient/Bot/Client.js';
 
 import voteBotCreate from './voteBotCreate.js';
 import voteGuildCreate from './voteGuildCreate.js';
 
-export default async ({ vote }: Socket.VoteMessage) => {
+export default async ({ vote }: PG.VoteMessage) => {
  const settings = await client.util.DataBase.votesettings.findMany({
   where: { token: vote.authorization, active: true },
  });

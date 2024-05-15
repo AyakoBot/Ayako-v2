@@ -2,7 +2,7 @@
 import * as Discord from 'discord.js';
 import baseEventHandler from '../../Events/BotEvents/baseEventHandler.js';
 import ready, { setReady } from '../../Events/BotEvents/readyEvents/ready.js';
-import type * as Socket from '../Cluster/Socket.js';
+import type * as PG from '../Cluster/PG.js';
 import { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
 
@@ -24,7 +24,7 @@ const spawnEvents = async () => {
  });
 
  client.cluster?.on('message', (message) => {
-  const m = message as Socket.SocketMessage;
+  const m = message as PG.PGMessage;
   if (typeof m !== 'object') return;
   if (!('type' in m)) return;
 

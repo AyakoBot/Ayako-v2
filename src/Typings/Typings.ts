@@ -1,7 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 
-export type * from '../BaseClient/Cluster/Socket.js';
+export type * from '../BaseClient/Cluster/PG.js';
 export type * from './DataBase.js';
 export * from './Settings.js';
 export type * from './TopGG.js';
