@@ -7,8 +7,8 @@ import tutorials from './constants/tutorials.js';
 
 export default {
  path: {
-  allowlist: '/root/Ayako-VueJS/Website-CDN/antivirus/allowlisted.txt',
-  badLinks: '/root/Ayako-VueJS/Website-CDN/antivirus/badLinks.txt',
+  allowlist: '/root/Ayako/packages/CDN/antivirus/allowlisted.txt',
+  badLinks: '/root/Ayako/packages/CDN/antivirus/badLinks.txt',
  },
  events,
  discordMsgUrls: [
