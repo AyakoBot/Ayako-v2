@@ -3183,7 +3183,7 @@
     },
     "vote": {
      "name": "Vote",
-     "desc": "Announce Votes for your Server or Bot on Top.gg\nVisit your Servers/Bots Page, click `Edit`, then enter the `Webhooks` Page\nCopy `https://api.ayakobot.com/topggvotes` into the `Webhook URL` Text-Box and the Auto-Generated `Token` from below into the `Authorization` Text-Box",
+     "desc": "Announce Votes for your Server or Bot on Top.gg\nVisit your Servers/Bots Page, click `Edit`, then enter the `Webhooks` Page\nCopy `https://api.ayakobot.com/votes/topgg` into the `Webhook URL` Text-Box and the Auto-Generated `Token` from below into the `Authorization` Text-Box",
      "linkedId": "Linked ID",
      "fields": {
       "token": {

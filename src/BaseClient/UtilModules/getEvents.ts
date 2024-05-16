@@ -12,7 +12,7 @@ export enum ProcessEvents {
  SIGUSR2 = 'SIGUSR2',
 }
 
-// related to /BaseClient/Cluster/Socket.ts
+// related to /BaseClient/Cluster/PG.ts
 enum MessageType {
  Appeal = 'appeal',
  Vote = 'vote',
