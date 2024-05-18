@@ -1,4 +1,3 @@
-import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 
 export type * from '../BaseClient/Cluster/PG.js';
@@ -68,12 +67,9 @@ export type RawUser = {
 };
 
 export type Appeal = {
- userid: string;
- guildid: string;
- punishmentid: string;
- questions: string[];
- answers: string[];
- answertypes: Prisma.appealquestions['answertype'][];
+ userId: string;
+ guildId: string;
+ punishmentId: string;
 };
 
 export type DePromisify<T> = T extends Promise<infer U> ? U : T;
@@ -202,3 +198,15 @@ type SpecificOpts = {
 type SpecificOptions = { [K in ModTypes]: SpecificOpts[K] };
 
 export type ModOptions<T extends ModTypes> = BaseOptions & SpecificOptions[T];
+
+export enum PunishmentType {
+ Warn = 'warn',
+ Kick = 'kick',
+ Mute = 'mute',
+ Tempmute = 'tempmute',
+ Ban = 'ban',
+ Tempban = 'tempban',
+ Channelban = 'channelban',
+ Tempchannelban = 'tempchannelban',
+ Softban = 'softban',
+}

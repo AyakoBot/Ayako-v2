@@ -73,10 +73,10 @@ export const getPayload = async (
     description: lan.desc(
      baseInfo.user,
      {
-      w: allPunishments?.filter((p) => p.type === 'punish_warns').length ?? 0,
-      m: allPunishments?.filter((p) => p.type === 'punish_mutes').length ?? 0,
-      cb: allPunishments?.filter((p) => p.type === 'punish_channelbans').length ?? 0,
-      b: allPunishments?.filter((p) => p.type === 'punish_bans').length ?? 0,
+      w: allPunishments?.filter((p) => p.type === CT.PunishmentType.Warn).length ?? 0,
+      m: allPunishments?.filter((p) => p.type === CT.PunishmentType.Mute).length ?? 0,
+      cb: allPunishments?.filter((p) => p.type === CT.PunishmentType.Channelban).length ?? 0,
+      b: allPunishments?.filter((p) => p.type === CT.PunishmentType.Ban).length ?? 0,
       r: allPunishments?.filter((p) => p.type.includes('temp')).length ?? 0,
      },
      punishedOpts,

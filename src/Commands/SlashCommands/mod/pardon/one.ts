@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import type { Returned } from '../../../../BaseClient/UtilModules/getPunishment.js';
 import client from '../../../../BaseClient/Bot/Client.js';
+import type { Returned } from '../../../../BaseClient/UtilModules/getPunishment.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -33,15 +33,15 @@ export const pardon = (
  const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
 
  switch (punishment.type) {
-  case 'punish_bans':
+  case CT.PunishmentType.Ban:
    return client.util.DataBase.punish_bans.deleteMany(where);
-  case 'punish_channelbans':
+  case CT.PunishmentType.Channelban:
    return client.util.DataBase.punish_channelbans.deleteMany(where);
-  case 'punish_kicks':
+  case CT.PunishmentType.Kick:
    return client.util.DataBase.punish_kicks.deleteMany(where);
-  case 'punish_mutes':
+  case CT.PunishmentType.Mute:
    return client.util.DataBase.punish_mutes.deleteMany(where);
-  case 'punish_warns':
+  case CT.PunishmentType.Warn:
    return client.util.DataBase.punish_warns.deleteMany(where);
   default:
    return undefined;

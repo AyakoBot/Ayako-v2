@@ -22,47 +22,47 @@ export default async () => {
   if (!client.guilds.cache.get(settingsRow.guildid)) return;
 
   if (settingsRow.warns && settingsRow.warnstime) {
-   expire({ expire: settingsRow.warnstime, guildid: settingsRow.guildid }, 'punish_warns');
+   expire({ expire: settingsRow.warnstime, guildid: settingsRow.guildid }, CT.PunishmentType.Warn);
   }
   if (settingsRow.mutes && settingsRow.mutestime) {
-   expire({ expire: settingsRow.mutestime, guildid: settingsRow.guildid }, 'punish_mutes');
+   expire({ expire: settingsRow.mutestime, guildid: settingsRow.guildid }, CT.PunishmentType.Mute);
   }
   if (settingsRow.kicks && settingsRow.kickstime) {
-   expire({ expire: settingsRow.kickstime, guildid: settingsRow.guildid }, 'punish_kicks');
+   expire({ expire: settingsRow.kickstime, guildid: settingsRow.guildid }, CT.PunishmentType.Kick);
   }
   if (settingsRow.bans && settingsRow.banstime) {
-   expire({ expire: settingsRow.banstime, guildid: settingsRow.guildid }, 'punish_bans');
+   expire({ expire: settingsRow.banstime, guildid: settingsRow.guildid }, CT.PunishmentType.Ban);
   }
   if (settingsRow.channelbans && settingsRow.channelbanstime) {
    expire(
     { expire: settingsRow.channelbanstime, guildid: settingsRow.guildid },
-    'punish_channelbans',
+    CT.PunishmentType.Channelban,
    );
   }
  });
 };
 
 type TableName =
- | 'punish_warns'
- | 'punish_mutes'
- | 'punish_kicks'
- | 'punish_bans'
- | 'punish_channelbans';
+ | CT.PunishmentType.Warn
+ | CT.PunishmentType.Mute
+ | CT.PunishmentType.Kick
+ | CT.PunishmentType.Ban
+ | CT.PunishmentType.Channelban;
 
 const findTable = {
- punish_warns: (
+ [CT.PunishmentType.Warn]: (
   findWhere: Parameters<(typeof client.util)['DataBase']['punish_warns']['findMany']>[0],
  ) => client.util.DataBase.punish_warns.findMany(findWhere),
- punish_mutes: (
+ [CT.PunishmentType.Mute]: (
   findWhere: Parameters<(typeof client.util)['DataBase']['punish_mutes']['findMany']>[0],
  ) => client.util.DataBase.punish_mutes.findMany(findWhere),
- punish_kicks: (
+ [CT.PunishmentType.Kick]: (
   findWhere: Parameters<(typeof client.util)['DataBase']['punish_kicks']['findMany']>[0],
  ) => client.util.DataBase.punish_kicks.findMany(findWhere),
- punish_bans: (
+ [CT.PunishmentType.Ban]: (
   findWhere: Parameters<(typeof client.util)['DataBase']['punish_bans']['findMany']>[0],
  ) => client.util.DataBase.punish_bans.findMany(findWhere),
- punish_channelbans: (
+ [CT.PunishmentType.Channelban]: (
   findWhere: Parameters<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>[0],
  ) => client.util.DataBase.punish_channelbans.findMany(findWhere),
 };
@@ -88,11 +88,12 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
   };
 
   const deleteTable = {
-   punish_warns: () => client.util.DataBase.punish_warns.deleteMany(deleteWhere),
-   punish_mutes: () => client.util.DataBase.punish_mutes.deleteMany(deleteWhere),
-   punish_kicks: () => client.util.DataBase.punish_kicks.deleteMany(deleteWhere),
-   punish_bans: () => client.util.DataBase.punish_bans.deleteMany(deleteWhere),
-   punish_channelbans: () => client.util.DataBase.punish_channelbans.deleteMany(deleteWhere),
+   [CT.PunishmentType.Warn]: () => client.util.DataBase.punish_warns.deleteMany(deleteWhere),
+   [CT.PunishmentType.Mute]: () => client.util.DataBase.punish_mutes.deleteMany(deleteWhere),
+   [CT.PunishmentType.Kick]: () => client.util.DataBase.punish_kicks.deleteMany(deleteWhere),
+   [CT.PunishmentType.Ban]: () => client.util.DataBase.punish_bans.deleteMany(deleteWhere),
+   [CT.PunishmentType.Channelban]: () =>
+    client.util.DataBase.punish_channelbans.deleteMany(deleteWhere),
   };
   deleteTable[tableName]().then();
  });
@@ -101,15 +102,15 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
 };
 
 const logExpire = async <T extends TableName>(
- rows: T extends 'punish_warns'
+ rows: T extends CT.PunishmentType.Warn
   ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_warns']['findMany']>>
-  : T extends 'punish_mutes'
+  : T extends CT.PunishmentType.Mute
     ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_mutes']['findMany']>>
-    : T extends 'punish_kicks'
+    : T extends CT.PunishmentType.Kick
       ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_kicks']['findMany']>>
-      : T extends 'punish_bans'
+      : T extends CT.PunishmentType.Ban
         ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_bans']['findMany']>>
-        : T extends 'punish_channelbans'
+        : T extends CT.PunishmentType.Channelban
           ? CT.DePromisify<
              ReturnType<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>
             >

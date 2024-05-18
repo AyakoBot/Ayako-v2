@@ -16,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', true);
 
  switch (punishment.type) {
-  case 'punish_bans':
+  case CT.PunishmentType.Ban:
    cmd.client.util.DataBase.punish_bans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_channelbans':
+  case CT.PunishmentType.Channelban:
    cmd.client.util.DataBase.punish_channelbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -32,7 +32,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_kicks':
+  case CT.PunishmentType.Kick:
    cmd.client.util.DataBase.punish_kicks
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -40,7 +40,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_mutes':
+  case CT.PunishmentType.Mute:
    cmd.client.util.DataBase.punish_mutes
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -48,7 +48,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_tempbans':
+  case CT.PunishmentType.Tempban:
    cmd.client.util.DataBase.punish_tempbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -56,7 +56,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_tempchannelbans':
+  case CT.PunishmentType.Tempchannelban:
    cmd.client.util.DataBase.punish_tempchannelbans
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -64,7 +64,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_tempmutes':
+  case CT.PunishmentType.Tempmute:
    cmd.client.util.DataBase.punish_tempmutes
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
@@ -72,7 +72,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     })
     .then();
    break;
-  case 'punish_warns':
+  case CT.PunishmentType.Warn:
    cmd.client.util.DataBase.punish_warns
     .update({
      where: { uniquetimestamp: punishment.uniquetimestamp },
