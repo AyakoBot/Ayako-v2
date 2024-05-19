@@ -32,7 +32,7 @@ export default async <T extends CT.ModTypes>(
      type: Discord.ComponentType.Button,
      style: Discord.ButtonStyle.Link,
      label: language.mod.appeal,
-     url: `https://ayakobot.com/appeals/${options.guild.id}`,
+     url: `https://ayakobot.com/guilds/${options.guild.id}/appeals`,
     },
    ],
   },
