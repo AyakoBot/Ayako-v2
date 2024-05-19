@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import { getPayload } from '../../SlashCommands/mod/check.js';
+import { PunishmentType } from 'src/Typings/Typings.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -13,7 +14,7 @@ export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) 
  }
 
  const page = args.shift();
- const type = args.shift() as 'warns' | 'bans' | 'mutes' | 'channelbans' | 'kicks';
+ const type = args.shift() as PunishmentType.Warn | PunishmentType.Kick | PunishmentType.Mute | PunishmentType.Ban | PunishmentType.Channelban;
  const member = await cmd.client.util.request.guilds.getMember(cmd.guild, cmd.user.id);
 
  const payload = await getPayload(

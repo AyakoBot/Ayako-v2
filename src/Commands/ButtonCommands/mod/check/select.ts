@@ -1,10 +1,11 @@
 import * as Discord from 'discord.js';
+import { PunishmentType } from 'src/Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const type = args.shift() as 'warns' | 'bans' | 'mutes' | 'channelbans' | 'kicks';
+ const type = args.shift() as PunishmentType.Warn | PunishmentType.Kick | PunishmentType.Mute | PunishmentType.Ban | PunishmentType.Channelban;
  const userId = args.shift() as string;
  const page = Number(args.shift() as string);
  const maxPages = Number(args.shift() as string);
