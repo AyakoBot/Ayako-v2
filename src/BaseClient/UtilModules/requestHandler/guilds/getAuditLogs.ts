@@ -39,4 +39,4 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQu
  * @returns True if the guild member has permission to view audit logs, false otherwise.
  */
 export const canViewAuditLogs = (me: Discord.GuildMember) =>
- me.permissions.has(Discord.PermissionFlagsBits.ViewAuditLog);
+ me.permissions?.has(Discord.PermissionFlagsBits.ViewAuditLog);
