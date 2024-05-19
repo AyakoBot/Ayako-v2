@@ -45,7 +45,7 @@ export default async ({ appeal }: CT.AppealMessage) => {
   color: client.util.getColor(await client.util.getBotMemberFromGuild(guild)),
   fields: appealAnswers
    .map((a) => {
-    const question = questions.find((q) => q.uniquetimestamp === a.questionid);
+    const question = questions.find((q) => q.uniquetimestamp.equals(a.questionid));
     if (!question) return undefined;
 
     const getAnswer = () => {

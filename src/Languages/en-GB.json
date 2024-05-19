@@ -803,11 +803,15 @@
    "appealNotFound": "Appeal not found",
    "acceptInstructions": "Appeal accepted. The Punishment-Entry has been deleted from {{t.botName}}'s Database\nPlease make sure to revoke their applied Punishment manually (eg. unban, unmute, unchannelban etc. them",
    "rejectInstructions": "Appeal rejected. The User can never appeal this Punishment again.",
+   "willBeShared": "This Reason will be shared with the appealing User",
    "notifications": {
     "accTitle": "Appeal Accepted",
     "rejTitle": "Appeal Rejected",
     "rejDesc": "Your Appeal for the Punishment `{{id}}` has been rejected\nYou will not be able to submit an appeal again.",
-    "accDesc": "Your Appeal for the Punishment `{{id}}` has been accepted\nThe Punishment has been revoked but you still need to be manually unbanned/unmuted/unchannelbanned etc."
+    "accDesc": "Your Appeal for the Punishment `{{id}}` has been accepted\nThe Punishment has been revoked but you still need to be manually unbanned/unmuted/unchannelbanned etc.",
+    "punReason": "Appealed Punishment Reason",
+    "rejReason": "Rejection Reason",
+    "accReason": "Acception Reason"
    }
   },
   "interactionCreate": {
@@ -1481,11 +1485,11 @@
   },
   "check": {
    "punishmentTypes": {
-    "warns": "Warns",
-    "bans": "Bans",
-    "mutes": "Mutes",
-    "channelbans": "Channel-Bans",
-    "kicks": "Kicks"
+    "warn": "Warns",
+    "ban": "Bans",
+    "mute": "Mutes",
+    "channelban": "Channel-Bans",
+    "kick": "Kicks"
    },
    "placeholder": "Select up to 9 Punishments",
    "date": "Date of Punishment",
