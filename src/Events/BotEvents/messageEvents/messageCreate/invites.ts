@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { PunishmentType } from '@prisma/client';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;
@@ -34,7 +35,7 @@ export default async (msg: Discord.Message<true>) => {
  };
 
  switch (settings.action) {
-  case 'ban':
+  case PunishmentType.ban:
    msg.client.util.mod(msg, CT.ModTypes.BanAdd, {
     ...modOptions,
     deleteMessageSeconds:
@@ -43,7 +44,7 @@ export default async (msg: Discord.Message<true>) => {
       : Number(settings.deletemessageseconds),
    });
    break;
-  case 'channelban':
+  case PunishmentType.channelban:
    msg.client.util.mod(msg, CT.ModTypes.ChannelBanAdd, {
     ...modOptions,
     channel: msg.channel.isThread()
@@ -51,16 +52,16 @@ export default async (msg: Discord.Message<true>) => {
      : msg.channel,
    });
    break;
-  case 'kick':
+  case PunishmentType.kick:
    msg.client.util.mod(msg, CT.ModTypes.KickAdd, modOptions);
    break;
-  case 'tempmute':
+  case PunishmentType.tempmute:
    msg.client.util.mod(msg, CT.ModTypes.TempMuteAdd, {
     ...modOptions,
     duration: Number(settings.duration),
    });
    break;
-  case 'tempchannelban':
+  case PunishmentType.tempchannelban:
    msg.client.util.mod(msg, CT.ModTypes.TempChannelBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
@@ -69,13 +70,13 @@ export default async (msg: Discord.Message<true>) => {
      : msg.channel,
    });
    break;
-  case 'warn':
+  case PunishmentType.warn:
    msg.client.util.mod(msg, CT.ModTypes.WarnAdd, modOptions);
    break;
-  case 'strike':
+  case PunishmentType.strike:
    msg.client.util.mod(msg, CT.ModTypes.StrikeAdd, modOptions);
    break;
-  case 'tempban':
+  case PunishmentType.tempban:
    msg.client.util.mod(msg, CT.ModTypes.TempBanAdd, {
     ...modOptions,
     duration: Number(settings.duration),
@@ -85,7 +86,7 @@ export default async (msg: Discord.Message<true>) => {
       : Number(settings.deletemessageseconds),
    });
    break;
-  case 'softban':
+  case PunishmentType.softban:
    msg.client.util.mod(msg, CT.ModTypes.SoftBanAdd, {
     ...modOptions,
     deleteMessageSeconds:

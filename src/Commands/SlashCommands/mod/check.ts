@@ -21,7 +21,12 @@ export const getPayload = async (
   member?: Discord.GuildMember;
  },
  selected: {
-  type?: 'warns' | 'bans' | 'mutes' | 'channelbans' | 'kicks';
+  type?:
+   | CT.PunishmentType.Warn
+   | CT.PunishmentType.Ban
+   | CT.PunishmentType.Mute
+   | CT.PunishmentType.Channelban
+   | CT.PunishmentType.Kick;
   page: number;
   values: number[];
  } = { page: 1, values: [] },
@@ -171,7 +176,7 @@ export const getPayload = async (
      type: Discord.ComponentType.Button,
      style: selected.type === key ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
      disabled: !allPunishments?.filter((p) =>
-      [`punish_${key}`, `punish_temp${key}`].includes(p.type),
+      [key, `temp${key}`].includes(p.type),
      ).length,
     })),
    },

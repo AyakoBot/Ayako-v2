@@ -184,17 +184,22 @@ export default f;
  */
 const getWithType = (
  id: string,
- type: 'warn' | 'mute' | 'ban' | 'channelban' | 'kick',
+ type:
+  | PunishmentType.Warn
+  | PunishmentType.Mute
+  | PunishmentType.Ban
+  | PunishmentType.Channelban
+  | PunishmentType.Kick,
  includeTemp: boolean,
  guildid: string,
 ) => {
  switch (type) {
-  case 'warn': {
+  case PunishmentType.Warn: {
    return DataBase.punish_warns
     .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Warn })));
   }
-  case 'mute': {
+  case PunishmentType.Mute: {
    const perm = DataBase.punish_mutes
     .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Mute })));
@@ -207,7 +212,7 @@ const getWithType = (
       ]).then((r) => r.flat())
     : perm;
   }
-  case 'ban': {
+  case PunishmentType.Ban: {
    const perm = DataBase.punish_bans
     .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Ban })));
@@ -220,7 +225,7 @@ const getWithType = (
       ]).then((r) => r.flat())
     : perm;
   }
-  case 'channelban': {
+  case PunishmentType.Channelban: {
    const perm = DataBase.punish_channelbans
     .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Channelban })));
@@ -233,7 +238,7 @@ const getWithType = (
       ]).then((r) => r.flat())
     : perm;
   }
-  case 'kick': {
+  case PunishmentType.Kick: {
    return DataBase.punish_kicks
     .findMany({ where: { userid: id, guildid } })
     .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Kick })));

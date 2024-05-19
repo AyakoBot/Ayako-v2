@@ -25,6 +25,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], accept: bo
   ephemeral: true,
  });
 
+ const mainEmbed = cmd.message.embeds[0].toJSON();
+ const embed = {
+  title: accept ? lan.accepted : lan.rejected,
+  color: accept ? CT.Colors.Success : CT.Colors.Danger,
+ } as Discord.APIEmbed;
+
  cmd.client.util.request.channels.editMsg(cmd.message, {
   components: [
    {

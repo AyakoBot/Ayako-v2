@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma, { PunishmentType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
@@ -511,36 +511,36 @@ export const performPunishment = (
  };
 
  switch (settings.action) {
-  case 'ban':
+  case PunishmentType.ban:
    return client.util.mod(msg, CT.ModTypes.BanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
-  case 'channelban':
+  case PunishmentType.channelban:
    return client.util.mod(msg, CT.ModTypes.ChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
      ? (msg.channel.parent as NonNullable<typeof msg.channel.parent>)
      : msg.channel,
    });
-  case 'kick':
+  case PunishmentType.kick:
    return client.util.mod(msg, CT.ModTypes.KickAdd, baseOptions);
-  case 'softban':
+  case PunishmentType.softban:
    return client.util.mod(msg, CT.ModTypes.SoftBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
    });
-  case 'strike':
+  case PunishmentType.strike:
    return client.util.mod(msg, CT.ModTypes.StrikeAdd, baseOptions);
-  case 'warn':
+  case PunishmentType.warn:
    return client.util.mod(msg, CT.ModTypes.WarnAdd, baseOptions);
-  case 'tempban':
+  case PunishmentType.tempban:
    return client.util.mod(msg, CT.ModTypes.TempBanAdd, {
     ...baseOptions,
     deleteMessageSeconds: Number(settings.deletemessageseconds),
     duration: Number(settings.duration),
    });
-  case 'tempchannelban':
+  case PunishmentType.tempchannelban:
    return client.util.mod(msg, CT.ModTypes.TempChannelBanAdd, {
     ...baseOptions,
     channel: msg.channel.isThread()
@@ -548,7 +548,7 @@ export const performPunishment = (
      : msg.channel,
     duration: Number(settings.duration),
    });
-  case 'tempmute':
+  case PunishmentType.tempmute:
    return client.util.mod(msg, CT.ModTypes.TempMuteAdd, {
     ...baseOptions,
     duration: Number(settings.duration),
