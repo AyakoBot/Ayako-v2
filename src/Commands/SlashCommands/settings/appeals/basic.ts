@@ -47,16 +47,21 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: language.slashCommands.settings.active,
     value: embedParsers.boolean(settings?.active, language),
-    inline: false,
+    inline: true,
    },
    {
     name: lan.fields.channelid.name,
     value: embedParsers.channel(settings?.channelid, language),
-    inline: false,
+    inline: true,
    },
    {
     name: language.slashCommands.settings.BLWL.bluserid,
     value: embedParsers.users(settings?.bluserid, language),
+    inline: false,
+   },
+   {
+    name: lan.fields.reviewroleid.name,
+    value: embedParsers.roles(settings?.reviewroleid, language),
     inline: false,
    },
   ],
@@ -86,6 +91,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     CT.EditorTypes.Channel,
    ),
    buttonParsers.global(language, settings?.bluserid, CT.GlobalDescType.BLUserId, name, undefined),
+   buttonParsers.specific(language, settings?.reviewroleid, 'reviewroleid', name, undefined),
   ],
  },
 ];

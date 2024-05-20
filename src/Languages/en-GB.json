@@ -794,6 +794,7 @@
   },
   "appeal": {
    "title": "New Appeal",
+   "notEnabled": "Appeals are not enabled on this Server",
    "description": "{{user}}has appealed their Punishment\n{{punishment}}",
    "author": "{{t.botName}} Punishment Appeal System",
    "accept": "Accept",
@@ -801,7 +802,7 @@
    "reject": "Reject",
    "rejected": "Appeal rejected",
    "appealNotFound": "Appeal not found",
-   "acceptInstructions": "Appeal accepted. The Punishment-Entry has been deleted from {{t.botName}}'s Database\nPlease make sure to revoke their applied Punishment manually (eg. unban, unmute, unchannelban etc. them",
+   "acceptInstructions": "Appeal accepted. The Punishment-Entry has been deleted from {{t.botName}}'s Database\nPlease make sure to revoke their applied Punishment manually (eg. unban, unmute, unchannelban etc. them)",
    "rejectInstructions": "Appeal rejected. The User can never appeal this Punishment again.",
    "willBeShared": "This Reason will be shared with the appealing User",
    "notifications": {
@@ -2580,6 +2581,10 @@
       "channelid": {
        "name": "Appeal Channel",
        "desc": "The Channel to send Appeals to"
+      },
+      "reviewroleid": {
+       "name": "Reviewer Roles",
+       "desc": "Users with one of these Roles will be able to review Appeals"
       }
      }
     },

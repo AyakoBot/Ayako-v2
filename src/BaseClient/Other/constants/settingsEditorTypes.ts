@@ -305,6 +305,7 @@ export default {
  [CT.SettingNames.Appeals]: {
   channelid: CT.EditorTypes.Channel,
   bluserid: CT.EditorTypes.Users,
+  reviewroleid: CT.EditorTypes.Roles,
  },
  [CT.SettingNames.Questions]: {
   question: CT.EditorTypes.String,

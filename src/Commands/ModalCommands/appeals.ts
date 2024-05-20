@@ -66,7 +66,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   userId: appeal.userid,
   punishmentId: String(appeal.punishmentid),
  });
- if (accept) await deletePunishment(punishmentid);
+ if (!punishment) return;
+
+ if (accept) await deletePunishment(punishment);
  notifyUser(
   cmd,
   {
@@ -81,19 +83,30 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  pardon(punishment as Parameters<typeof pardon>[0]);
 };
 
-const deletePunishment = async (punishmentId: string) => {
- const where = { where: { uniquetimestamp: punishmentId }, select: {} };
+const deletePunishment = async (pun: NonNullable<Awaited<ReturnType<typeof getPunishment>>>) => {
+ const where = { where: { uniquetimestamp: Number(pun.uniquetimestamp) } };
 
- await client.util.DataBase.$transaction([
-  client.util.DataBase.punish_bans.delete(where),
-  client.util.DataBase.punish_channelbans.delete(where),
-  client.util.DataBase.punish_kicks.delete(where),
-  client.util.DataBase.punish_mutes.delete(where),
-  client.util.DataBase.punish_warns.delete(where),
-  client.util.DataBase.punish_tempchannelbans.delete(where),
-  client.util.DataBase.punish_tempbans.delete(where),
-  client.util.DataBase.punish_tempmutes.delete(where),
- ]);
+ switch (pun.type) {
+  case CT.PunishmentType.Softban:
+  case CT.PunishmentType.Ban:
+   return client.util.DataBase.punish_bans.delete(where);
+  case CT.PunishmentType.Channelban:
+   return client.util.DataBase.punish_channelbans.delete(where);
+  case CT.PunishmentType.Kick:
+   return client.util.DataBase.punish_kicks.delete(where);
+  case CT.PunishmentType.Mute:
+   return client.util.DataBase.punish_mutes.delete(where);
+  case CT.PunishmentType.Warn:
+   return client.util.DataBase.punish_warns.delete(where);
+  case CT.PunishmentType.Tempban:
+   return client.util.DataBase.punish_tempbans.delete(where);
+  case CT.PunishmentType.Tempchannelban:
+   return client.util.DataBase.punish_tempchannelbans.delete(where);
+  case CT.PunishmentType.Tempmute:
+   return client.util.DataBase.punish_tempmutes.delete(where);
+  default:
+   return undefined;
+ }
 };
 
 const notifyUser = async (

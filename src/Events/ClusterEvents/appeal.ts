@@ -117,46 +117,46 @@ export default async ({ appeal }: CT.AppealMessage) => {
  });
 };
 
-export const getPunishment = async ({ guildId, userId, punishmentId }: CT.Appeal) => {
+export const getPunishment = async ({ punishmentId }: CT.Appeal) => {
  const where = {
-  where: { userid: userId, guildid: guildId, uniquetimestamp: punishmentId },
-  orderBy: { uniquetimestamp: 'desc' } as const,
+  where: { uniquetimestamp: Number(punishmentId) },
  };
 
  const results = await client.util.DataBase.$transaction([
-  client.util.DataBase.punish_bans.findMany(where),
-  client.util.DataBase.punish_channelbans.findMany(where),
-  client.util.DataBase.punish_kicks.findMany(where),
-  client.util.DataBase.punish_mutes.findMany(where),
-  client.util.DataBase.punish_warns.findMany(where),
-  client.util.DataBase.punish_tempchannelbans.findMany(where),
-  client.util.DataBase.punish_tempbans.findMany(where),
-  client.util.DataBase.punish_tempmutes.findMany(where),
+  client.util.DataBase.punish_bans.findUnique(where),
+  client.util.DataBase.punish_channelbans.findUnique(where),
+  client.util.DataBase.punish_kicks.findUnique(where),
+  client.util.DataBase.punish_mutes.findUnique(where),
+  client.util.DataBase.punish_warns.findUnique(where),
+  client.util.DataBase.punish_tempchannelbans.findUnique(where),
+  client.util.DataBase.punish_tempbans.findUnique(where),
+  client.util.DataBase.punish_tempmutes.findUnique(where),
  ]);
 
  return results
-  .filter((p) => !!p.length)
   .map((r, i) => {
+   if (!r) return undefined;
+
    switch (i) {
     case 0:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Ban }));
+     return { ...r, type: CT.PunishmentType.Ban };
     case 1:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Channelban }));
+     return { ...r, type: CT.PunishmentType.Channelban };
     case 2:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Kick }));
+     return { ...r, type: CT.PunishmentType.Kick };
     case 3:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Mute }));
+     return { ...r, type: CT.PunishmentType.Mute };
     case 4:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Warn }));
+     return { ...r, type: CT.PunishmentType.Warn };
     case 5:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Tempchannelban }));
+     return { ...r, type: CT.PunishmentType.Tempchannelban };
     case 6:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Tempban }));
+     return { ...r, type: CT.PunishmentType.Tempban };
     case 7:
-     return r.map((p) => ({ ...p, type: CT.PunishmentType.Tempmute }));
+     return { ...r, type: CT.PunishmentType.Tempmute };
     default:
-     return [];
+     return undefined;
    }
   })
-  .flat()[0];
+  .find((r) => !!r);
 };
