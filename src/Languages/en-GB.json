@@ -532,6 +532,7 @@
     "namePin": "Message pinned",
     "nameUnpin": "Message un-pinned",
     "nameJoin": "Channel joined",
+    "nameLeave": "Channel left",
     "join": "Joined Users",
     "left": "Left Users",
     "topic": "Description",

@@ -16,7 +16,7 @@ export default async (
 
  const embed: Discord.APIEmbed = {
   author: {
-   name: lan.nameJoin,
+   name: '-',
    icon_url: con.update,
   },
   fields: [],
@@ -30,14 +30,10 @@ export default async (
   if (userMentions.length > 1024) {
    const content = thread.client.util.txtFileWriter(userMentions, undefined, language.t.Added);
    if (content) files.push(content);
-  } else {
-   embed.fields?.push({
-    name: lan.join,
-    value: userMentions,
-   });
-  }
+  } else embed.fields?.push({ name: lan.join, value: userMentions });
 
   embed.description = lan.descJoinMember(thread, language.channelTypes[thread.type]);
+  embed.author!.name = lan.nameJoin;
  }
 
  if (removed?.size) {
@@ -54,6 +50,7 @@ export default async (
   }
 
   embed.description = lan.descLeaveMember(thread, language.channelTypes[thread.type]);
+  embed.author!.name = lan.nameLeave;
  }
 
  thread.client.util.send(
