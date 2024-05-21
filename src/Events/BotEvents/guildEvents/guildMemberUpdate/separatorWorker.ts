@@ -3,8 +3,11 @@ import { Serialized } from 'discord-hybrid-sharding';
 import Jobs from 'node-schedule';
 import { parentPort, workerData } from 'worker_threads';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
+import getUnix from '../../../../BaseClient/UtilModules/getUnix.js';
 
 type Role = { id: string; position: number };
+
+const cache = new Map<string, { give: string[]; take: string[] }>();
 
 export type PassObject = {
  members: {
@@ -26,22 +29,34 @@ export type PassObject = {
  clientHighestRole: Role;
 };
 
-const start = async (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator[]> }) => {
+const start = (wd: { obj: PassObject; res: Serialized<Prisma.roleseparator[]> }) => {
  const { res, obj } = wd;
  const membersWithRoles: PassObject['members'] = [];
 
  obj.members.forEach((member) => {
-  const giveThese: string[] = [];
-  const takeThese: string[] = [];
   const memberRoleIds = new Set(member.roles.map((o) => o.id));
 
-  res.forEach((row) => {
-   const sep = obj.separators.find((s) => s.separator.id === row.separator)?.separator;
-   if (!sep) return;
+  const possibleCache = cache.get(
+   [...memberRoleIds].sort((a, b) => getUnix(a) - getUnix(b)).join('-'),
+  );
 
-   if (row.isvarying) handleDynamic(obj, row, sep, memberRoleIds, giveThese, takeThese);
-   else handleConstant(obj, row, sep, memberRoleIds, giveThese, takeThese);
-  });
+  const giveThese: string[] = possibleCache?.give ?? [];
+  const takeThese: string[] = possibleCache?.take ?? [];
+
+  if (!possibleCache) {
+   res.forEach((row) => {
+    const sep = obj.separators.find((s) => s.separator.id === row.separator)?.separator;
+    if (!sep) return;
+
+    if (row.isvarying) handleDynamic(obj, row, sep, memberRoleIds, giveThese, takeThese);
+    else handleConstant(obj, row, sep, memberRoleIds, giveThese, takeThese);
+   });
+
+   cache.set([...memberRoleIds].sort((a, b) => getUnix(a) - getUnix(b)).join('-'), {
+    give: giveThese,
+    take: takeThese,
+   });
+  }
 
   member.giveTheseRoles = giveThese;
   member.takeTheseRoles = takeThese;
