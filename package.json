@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
     "build": "tsc",
-    "dev": "node --enable-source-maps --experimental-wasm-modules --heapsnapshot-near-heap-limit=1 --experimental-json-modules ./dist/index.js --debug --warn --dev",
+    "dev": "pnpm prestart && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev",
     "lint": "npx eslint 'src/**/*.ts' --fix",
     "postinstall": "mkdir -p ./logs",
     "prestart": "rm -rf dist && pnpm build",
