@@ -59,7 +59,9 @@ const client = new Discord.Client({
 });
 
 client.cluster = new Sharding.ClusterClient(client);
-await client.login(process.env.Token);
+await client.login(
+ (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',
+);
 
 export const API = new DiscordCore.API(client.rest);
 export default client;

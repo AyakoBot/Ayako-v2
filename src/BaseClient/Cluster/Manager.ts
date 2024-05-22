@@ -7,7 +7,7 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
  totalClusters: 'auto',
  shardsPerClusters: 10,
- token: process.env.Token,
+ token: (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',
  shardArgs: process.argv,
  execArgv: [
   '--experimental-json-modules',

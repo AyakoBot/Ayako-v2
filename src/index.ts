@@ -10,7 +10,7 @@ console.log(
 +      Restart all Clusters with "restart"      +
 +                  Arguments:                   +
 +   --debug --debug-db --warn --debug-queries   +
-+                   --silent                    +
++                --silent --dev                 +
 +++++++++++++++++++++++++++++++++++++++++++++++++`,
 );
 

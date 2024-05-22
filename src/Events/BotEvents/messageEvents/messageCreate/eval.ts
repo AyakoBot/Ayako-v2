@@ -16,7 +16,10 @@ antiraid;
 // eslint-disable-next-line no-unused-expressions
 ms;
 
-const reg = new RegExp(process.env.Token ?? '', 'g');
+const reg = new RegExp(
+ (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',
+ 'g',
+);
 
 // eslint-disable-next-line no-console
 const { log } = console;

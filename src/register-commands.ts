@@ -7,14 +7,14 @@ import DataBase from './BaseClient/Bot/DataBase.js';
 import commands from './SlashCommands/index.js';
 
 const createCommands = Object.values(commands.public);
+const token = (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '';
 
-const requestHandler = (token: string) =>
- new DiscordCore.API(new DiscordRest.REST({ version: '10' }).setToken(token.replace('Bot ', '')));
+const requestHandler = (t: string) =>
+ new DiscordCore.API(new DiscordRest.REST({ version: '10' }).setToken(t.replace('Bot ', '')));
 
-requestHandler(process.env.Token ?? '')
+requestHandler(token)
  .applicationCommands.bulkOverwriteGlobalCommands(
-  Buffer.from(process.env.Token?.replace('Bot ', '')?.split('.')[0] ?? '0', 'base64').toString() ??
-   '',
+  Buffer.from(token.replace('Bot ', '')?.split('.')[0] ?? '0', 'base64').toString() ?? '',
   createCommands.map((c) => c.toJSON()),
  )
  .then((r) => console.log(`[MAIN] Registered ${r.length} Global Commands`));
