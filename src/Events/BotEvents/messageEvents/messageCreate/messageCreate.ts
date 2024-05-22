@@ -18,6 +18,7 @@ import stickyMessage from './stickyMessage.js';
 import tta from './tta.js';
 
 import dmLog from './dmLog.js';
+import dmResponse from './dmResponse.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg) return;
@@ -34,6 +35,8 @@ export default async (msg: Discord.Message) => {
   antispam(msg);
   notificationThread(msg);
   customEmbedThread(msg);
+
+  dmResponse(msg);
  } else {
   dmLog(msg);
  }
