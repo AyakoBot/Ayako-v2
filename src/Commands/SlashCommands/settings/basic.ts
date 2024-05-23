@@ -312,9 +312,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     .then((a) => a as DiscordAPI.APIApplication)
     .catch((e: Discord.DiscordAPIError) => e);
 
-   if (!me || 'message' in me) {
-    client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
-
+   const deleteEntry = () => {
     client.util.cache.apis.delete(guild.id);
     client.util.DataBase.guildsettings
      .update({
@@ -323,7 +321,22 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
       select: { enabledrp: true },
      })
      .then();
+   };
 
+   if (!me || 'message' in me) {
+    client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
+
+    deleteEntry();
+    return;
+   }
+
+   if (me.bot_require_code_grant) {
+    client.util.error(
+     guild,
+     new Error('Bot requires Code Grant, please disable this in the Developer Portal'),
+    );
+
+    deleteEntry();
     return;
    }
 
@@ -333,14 +346,8 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      new Error('Bot is not public, please make it public so it can use external Emojis'),
     );
 
-    client.util.cache.apis.delete(guild.id);
-    client.util.DataBase.guildsettings
-     .update({
-      where: { guildid: guild.id },
-      data: { token: null },
-      select: { enabledrp: true },
-     })
-     .then();
+    deleteEntry();
+
     return;
    }
 
