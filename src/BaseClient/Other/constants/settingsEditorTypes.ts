@@ -49,7 +49,7 @@ export default {
   xpmultiplier: CT.EditorTypes.Number,
   rolemode: CT.EditorTypes.Boolean,
   lvlupmode: CT.EditorTypes.LvlUpMode,
-  lvlupemotes: CT.EditorTypes.Emote,
+  lvlupemotes: CT.EditorTypes.Emotes,
   lvlupdeltimeout: CT.EditorTypes.Number,
   embed: CT.EditorTypes.Embed,
   lvlupchannels: CT.EditorTypes.Channels,

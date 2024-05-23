@@ -54,11 +54,9 @@ export default async (
   case CT.EditorTypes.RoleMode:
    return language.rolemodes[value as keyof typeof language.rolemodes];
   case CT.EditorTypes.Emote:
-   return value.includes(':') ? `<${value}>` : value;
+   return value.includes(':') ? `<${value.includes('a:') ? '' : ':'}${value}>` : value;
   case CT.EditorTypes.AutoModRules:
-   return makeInlineCode(
-    (guild as NonNullable<typeof guild>).autoModerationRules.cache.get(value)?.name ?? value,
-   );
+   return makeInlineCode(guild!.autoModerationRules.cache.get(value)?.name ?? value);
   case CT.EditorTypes.Commands: {
    const cmd = guild.client.application?.commands.cache.get(value);
 

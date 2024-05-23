@@ -40,6 +40,7 @@ export enum EditorTypes {
  Message = 'message',
  ShopType = 'shoptype',
  Emote = 'emote',
+ Emotes = 'emotes',
  Command = 'command',
  AutoModRules = 'automodrules',
  SettingLink = 'settinglink',

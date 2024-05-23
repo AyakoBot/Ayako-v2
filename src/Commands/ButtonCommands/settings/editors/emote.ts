@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boolean = false) => {
  if (!cmd.inCachedGuild()) return;
 
  const fieldName = args.shift();
@@ -93,7 +93,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       {
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Success,
-       custom_id: `settings/done/emote_${settingName}_${fieldName}_${uniquetimestamp}`,
+       custom_id: `settings/done/emote${multi ? 's' : ''}_${settingName}_${fieldName}_${uniquetimestamp}`,
        label: language.t.Detect,
       },
      ],

@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
-export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
+export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boolean = false) => {
  if (!cmd.inCachedGuild()) return;
 
  const settingName = args.shift() as CT.SettingNames;
@@ -49,7 +49,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  emoteContent ? emote?.identifier : null,
+  (multi && emote ? [emote.identifier] : emote?.identifier) ?? null,
   uniquetimestamp,
  );
 

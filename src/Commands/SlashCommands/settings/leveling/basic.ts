@@ -113,14 +113,19 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    embeds[0].fields?.push(
     {
      name: lan.fields.lvlupemotes.name,
-     value: settings.lvlupemotes?.length
-      ? (await Promise.all(settings.lvlupemotes.map((e) => client.util.getEmote(e))))
-         .filter((e): e is Discord.GuildEmoji => !!e)
-         .join(', ')
+     value: (settings.lvlupemotes?.length
+      ? (await Promise.all(settings.lvlupemotes.map((e) => client.util.getEmote(e)))).filter(
+         (e): e is Discord.GuildEmoji => !!e,
+        )
       : client.util.emotes.levelupemotes
-         .map((e) => client.util.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''))
-         .map((e) => embedParsers.emote(e, language))
-         .join(', '),
+     )
+      .map((e) =>
+       embedParsers.emote(
+        client.util.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''),
+        language,
+       ),
+      )
+      .join(', '),
      inline: true,
     },
     {
@@ -129,7 +134,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
      inline: true,
     },
    );
-
    break;
   }
   default: {
