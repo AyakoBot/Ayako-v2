@@ -20,9 +20,15 @@ const run = async (guild: Discord.Guild) => {
 
  const language = await client.util.getLanguage(guild.id);
 
- [...new Set(users.filter((u) => u.userid).map((u) => u.userid))].forEach((u) => {
-  const member = guild.members.cache.get(u);
-  if (!member) return;
+ [...new Set(users.filter((u) => u.userid).map((u) => u.userid))].forEach(async (u) => {
+  const member = await guild.client.util.request.guilds.getMember(guild, u);
+  if ('message' in member) {
+   await client.util.DataBase.nitrousers.updateMany({
+    where: { boostend: null, userid: u, guildid: guild.id },
+    data: { boostend: Date.now() },
+   });
+   return;
+  }
 
   const days = users
    .filter((us) => Number(us.userid) === Number(u))

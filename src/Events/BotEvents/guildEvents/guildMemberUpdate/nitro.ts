@@ -28,15 +28,21 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
 };
 
 export const startedBoosting = (m: Discord.GuildMember) => {
- m.client.util.DataBase.nitrousers
-  .create({
-   data: {
+ m.client.util.DataBase.$transaction([
+  m.client.util.DataBase.nitrousers.updateMany({
+   where: { guildid: m.guild.id, userid: m.id, boostend: null },
+   data: { boostend: Date.now() },
+  }),
+  m.client.util.DataBase.nitrousers.upsert({
+   where: { guildid: m.guild.id, userid: m.id, booststart: m.premiumSinceTimestamp as number },
+   update: {},
+   create: {
     guildid: m.guild.id,
     userid: m.id,
     booststart: m.premiumSinceTimestamp as number,
    },
-  })
-  .then();
+  }),
+ ]).then();
 };
 
 export const stoppedBoosting = (m: Discord.GuildMember) => {
