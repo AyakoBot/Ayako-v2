@@ -52,7 +52,7 @@ export default async (msg: Discord.Message<true>) => {
  startOver(initMessage, [], embed, getSelectedField(initMessage), editType);
 };
 
-const getSelectedProperty = (msg: Discord.Message<true>) =>
+export const getSelectedProperty = (msg: Discord.Message<true>) =>
  (msg.components[0].components[0] as Discord.StringSelectMenuComponent).data.options
   .find((o) => o.default)
   ?.value.split(/_+/g)[1] as EmbedFields | undefined;

@@ -2213,6 +2213,7 @@
        "field-value": "Field Value",
        "field-inline": "Field Inline"
       },
+      "empty": "Empty",
       "send": "Send",
       "save": "Save",
       "edit": "Edit",
@@ -2265,11 +2266,11 @@
     },
     "author": "{{t.botName}} Embed Builder",
     "desc": "Use the Buttons below to edit your Embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)",
-    "quick": "Quick Help",
+    "quick": "### Quick Help",
     "fields": [
-     "This Part is used in Leveling Settings\n`{{newLevel}}` displays the new Level\n`{{oldLevel}}` displays the old Level\n`{{newXP}}` displays the new XP\n`{{oldXP}}` displays the old XP\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message",
-     "This Part is used in Welcome Settings and Nitro Notifications\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember",
-     "You can use </stp:{{cmdId}}> to test the `{{msg}}` Templates"
+     "This Part is used in __Leveling Settings__\n`{{newLevel}}` displays the new Level\n`{{oldLevel}}` displays the old Level\n`{{newXP}}` displays the new XP\n`{{oldXP}}` displays the old XP\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message",
+     "This Part is used in __Welcome Settings__ and __Nitro Notifications__\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember",
+     "You can use </stp:{{cmdId}}> to test the `{{msg}}` Templates\n**Add Content via Modal or by sending a Message if no Modal pops up.**"
     ],
     "editButtons": [
      {

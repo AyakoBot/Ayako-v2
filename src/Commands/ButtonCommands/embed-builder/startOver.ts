@@ -196,6 +196,17 @@ export default async (
     components: [
      {
       type: Discord.ComponentType.Button,
+      label: lan.start.createButtons.empty,
+      style: Discord.ButtonStyle.Secondary,
+      custom_id: 'embed-builder/empty',
+     },
+    ],
+   },
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
       label: lan.start.createButtons.save,
       style: Discord.ButtonStyle.Success,
       custom_id: 'embed-builder/save',
