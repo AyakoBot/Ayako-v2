@@ -51,6 +51,7 @@ export default {
    | Discord.GuildEmoji
    | Discord.ReactionEmoji,
  ) => `${e.animated ? 'a:' : ''}${e.name}${e.id ? `:${e.id}` : ''}`,
+ getBotAddURL: (id: string) => `https://discord.com/oauth2/authorize?client_id=${id}`,
  getCommand: (cmd: Discord.ApplicationCommand<NonNullable<unknown>>) =>
   cmd.options
    .filter(

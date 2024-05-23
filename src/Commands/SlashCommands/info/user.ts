@@ -163,7 +163,7 @@ const getBotInfo = async (bot: Discord.User, language: CT.Language) => {
   .catch(() => undefined);
 
  if (!res || 'error' in res) return null;
- return { info: language.slashCommands.info.user.botInfo(res), description: res.shortdesc };
+ return { info: language.slashCommands.info.user.botInfo(res, bot.id), description: res.shortdesc };
 };
 
 const getBoosting = async (flags: string[], user: Discord.User, language: CT.Language) => {

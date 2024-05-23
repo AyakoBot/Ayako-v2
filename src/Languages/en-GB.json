@@ -2401,7 +2401,7 @@
     "viewBasicPermissions": "View Basic Permissions",
     "viewChannelPermissions": "View Channel Permissions",
     "rolesWithoutSep": "Roles without Separator",
-    "botInfo": "\n**__Basic Info:__**\n**Prefix:** `{{res.prefix}}`\n**Server Count:** {{serverCount}}\n**Tags:** {{tags}}\n\n**__Links:__**\n**Website:** {{website}}\n**Support Server:** {{support}}\n**Invite Link:** [Click to Invite]({{res.invite}})\n**GitHub:** {{github}}\n\n**__Votes:__**\n**All Time Votes:** {{res.points}}\n**This Months Votes:** {{res.monthlyPoints}}",
+    "botInfo": "\n**__Basic Info:__**\n**Prefix:** {{prefix}}\n**Server Count:** {{serverCount}}\n**Tags:** {{tags}}\n\n**__Links:__**\n**Website:** {{website}}\n**Support Server:** {{support}}\n**Invite Link:** [Click to Invite]({{invite}})\n**GitHub:** {{github}}\n\n**__Votes:__**\n**All Time Votes:** {{allVotes}}\n**This Months Votes:** {{monthVotes}}",
     "browser": "Try Opening Profile | Browser",
     "desktop": "Try Opening Profile | Desktop App",
     "mobile": "Try Opening Profile | Mobile"

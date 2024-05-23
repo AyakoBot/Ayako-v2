@@ -15,13 +15,16 @@ export default (t: CT.Language) => ({
     ? `\`${user.accentColor}\`/\`${user.hexAccentColor}\``
     : t.JSON.t.None,
   }),
- botInfo: (res: CT.TopGGResponse<true>) =>
+ botInfo: (res: CT.TopGGResponse<true>, id: string) =>
   t.stp(t.JSON.slashCommands.info.user.botInfo, {
    serverCount: res.server_count ?? t.JSON.t.Unknown,
    tags: res.tags?.map((tag) => `\`${tag}\``).join(', ') ?? t.JSON.t.None,
    website: res.website ?? t.JSON.t.None,
    support: res.support ? `https://discord.gg/${res.support}` : t.JSON.t.None,
    github: res.github ?? t.JSON.t.None,
-   res,
+   prefix: res.prefix ? Discord.inlineCode(res.prefix) : t.JSON.t.Unknown,
+   invite: res.invite ?? t.util.constants.standard.getBotAddURL(id),
+   allVotes: res.points ?? '0',
+   monthVotes: res.monthlyPoints ?? '0',
   }),
 });
