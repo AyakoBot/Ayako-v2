@@ -130,12 +130,12 @@ const getMemberEmbed = (
     value: `${client.util.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
    },
    {
-    name: `${client.util.constants.standard.getEmote(getBoostEmote(member))} ${lan.boosting}`,
+    name: lan.boosting,
     value: `${
      member.premiumSinceTimestamp
       ? `${client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)} ${
          language.t.Yes
-        }\n${lan.boostingSince} ${client.util.constants.standard.getTime(
+        }\n${client.util.constants.standard.getEmote(getBoostEmote(member))} ${lan.boostingSince} ${client.util.constants.standard.getTime(
          member.premiumSinceTimestamp,
         )}`
       : `${client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground)} ${
