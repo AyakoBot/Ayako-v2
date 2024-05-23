@@ -235,7 +235,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      ...(client.util.cache.webhooks.cache.get(guild.id)?.get(oldSettings.statuschannel)?.values() ??
       []),
     ]
-     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '827312892982198272')
+     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === process.env.statusChannelId)
      .map((w) => client.util.request.webhooks.delete(guild, w));
     return;
    }
@@ -245,7 +245,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
    const response = await client.util.request.channels.followAnnouncements(
     channel,
-    '827312892982198272',
+    process.env.statusChannelId ?? '',
    );
    if (!('message' in response)) return;
 
@@ -267,7 +267,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
       ?.get(oldSettings.updateschannel)
       ?.values() ?? []),
     ]
-     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === '765743834118225961')
+     .filter((w) => w.isChannelFollower() && w.sourceChannel.id === process.env.updatesChannelId)
      .map((w) => client.util.request.webhooks.delete(guild, w));
     return;
    }
@@ -277,7 +277,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
    const response = await client.util.request.channels.followAnnouncements(
     channel,
-    '765743834118225961',
+    process.env.updatesChannelId ?? '',
    );
    if (!('message' in response)) return;
 
