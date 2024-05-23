@@ -7,6 +7,7 @@ import commands from '../../../SlashCommands/index.js';
 import * as CT from '../../../Typings/Typings.js';
 import { registerCmd } from '../../ButtonCommands/mod/permissions.js';
 import { create } from '../../ButtonCommands/rp/toggle.js';
+import languageCache from '../../../BaseClient/UtilModules/cache/bot/language.js';
 
 const name = CT.SettingNames.Basic;
 
@@ -403,6 +404,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
    client.util.request.commands.getGuildCommands(guild);
    client.util.cache.commandPermissions.get(guild, '');
+   break;
+  }
+  case 'lan': {
+   languageCache.delete(guild);
    break;
   }
   default:
