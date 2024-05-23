@@ -80,7 +80,7 @@ export const sendDebugMessage = async (
 ) => {
  client.util.request.webhooks.execute(
   undefined,
-  process.env.debugWebhookID ?? '',
+  process.env.debugWebhookId ?? '',
   process.env.debugWebhookToken ?? '',
   payload,
   client as Discord.Client<true>,

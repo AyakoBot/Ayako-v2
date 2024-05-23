@@ -135,12 +135,12 @@ const mention = async (
  });
 };
 
-const getAFK = (guildID: string, userID: string) =>
+const getAFK = (guildId: string, userId: string) =>
  client.util.DataBase.afk.findUnique({
   where: {
    userid_guildid: {
-    guildid: guildID,
-    userid: userID,
+    guildid: guildId,
+    userid: userId,
    },
   },
  });

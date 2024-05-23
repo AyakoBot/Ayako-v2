@@ -10,24 +10,24 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
- const ID = cmd.options.get('id', false)?.value as string;
- if (ID) {
-  showID(cmd, ID, language, lan);
+ const id = cmd.options.get('id', false)?.value as string;
+ if (id) {
+  showId(cmd, id, language, lan);
   return;
  }
  showAll(cmd, language, lan);
 };
 
-export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async (
+export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async (
  cmd,
- ID,
+ id,
  language,
  lan,
 ) => {
  const { buttonParsers, embedParsers } = client.util.settingsHelpers;
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]
   .findUnique({
-   where: { uniquetimestamp: parseInt(ID, 36) },
+   where: { uniquetimestamp: parseInt(id, 36) },
   })
   .then(
    (r) =>
@@ -35,7 +35,7 @@ export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async
     (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
-     ID ? parseInt(ID, 36) : Date.now(),
+     id ? parseInt(id, 36) : Date.now(),
     ) as unknown as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[typeof name]]),
   );
 

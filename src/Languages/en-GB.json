@@ -1950,8 +1950,8 @@
    "deleted": "Reminder deleted",
    "tooShort": "The Duration must be at least 10 Seconds",
    "edited": "Reminder edited",
-   "created": "Reminder created\nView your Reminders with </reminder list:{{reminderID}}>",
-   "desc": "To create a Reminder use </reminder create:{{reminderID}}>\nto edit one, use </reminder edit:{{reminderID}}>\nand to delete one, use </reminder delete:{{reminderID}}>",
+   "created": "Reminder created\nView your Reminders with </reminder list:{{reminderId}}>",
+   "desc": "To create a Reminder use </reminder create:{{reminderId}}>\nto edit one, use </reminder edit:{{reminderId}}>\nand to delete one, use </reminder delete:{{reminderdD}}>",
    "reminderEnded": "<@{{userId}}> Your Reminder has ended."
   },
   "clear": {
@@ -2010,9 +2010,9 @@
    "punishedAt": "Punished at",
    "duration": "Duration",
    "endedAt": "Ended at",
-   "pardoned": "Punishment with ID `{{id}}` was pardoned from <@{{targetID}}>",
-   "pardonedMany": "Punishments with IDs {{ids}} were pardoned from <@{{targetID}}>",
-   "pardonedManyBy": "Punishments with IDs {{ids}} executed by <@{{targetID}}> were pardoned",
+   "pardoned": "Punishment with ID `{{id}}` was pardoned from <@{{targetId}}>",
+   "pardonedMany": "Punishments with IDs {{ids}} were pardoned from <@{{targetId}}>",
+   "pardonedManyBy": "Punishments with IDs {{ids}} executed by <@{{targetId}}> were pardoned",
    "pardonReason": "Pardon Reason",
    "username": "Username at execution Time",
    "channel": "Channel Name at execution Time"

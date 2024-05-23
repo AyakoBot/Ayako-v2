@@ -91,9 +91,9 @@ export interface SettingsFile<K extends MatchingCategoryKeys> {
   language: Language,
   lan: Categories[K],
  ) => Promise<void>;
- showID?: (
+ showId?: (
   cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
-  ID: string,
+  id: string,
   language: Language,
   lan: Categories[K],
  ) => Promise<void>;

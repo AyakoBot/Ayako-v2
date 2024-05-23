@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { makePayload } from './dmLog.js';
 
 export default async (msg: Discord.Message<true>) => {
- if (msg.author.id !== process.env.ownerID) return;
+ if (msg.author.id !== process.env.ownerId) return;
  if (!msg.channel.isThread()) return;
 
  const dbUser = await msg.client.util.DataBase.dmLog.findFirst({

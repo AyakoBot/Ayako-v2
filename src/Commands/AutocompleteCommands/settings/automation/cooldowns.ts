@@ -16,9 +16,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!settings) return [];
 
  return settings?.map((s) => {
-  const isID = s.command?.length === s.command?.replace(/\D+/g, '').length;
+  const isId = s.command?.length === s.command?.replace(/\D+/g, '').length;
   const command =
-   isID && s.command ? client.application?.commands.cache.get(s.command)?.name : s.command;
+   isId && s.command ? client.application?.commands.cache.get(s.command)?.name : s.command;
 
   return {
    name: `${lan.fields.command.name}: ${command ?? language.t.None} - ${

@@ -6,20 +6,20 @@ const settingName = CT.SettingNames.DenylistRules;
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const getID = () => {
+ const getId = () => {
   const arg = args.shift();
   if (arg) return arg;
   return undefined;
  };
- const id = getID();
+ const id = getId();
 
  const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
  if (!settingsFile) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
- if (settingsFile.showID && id) {
-  settingsFile.showID(
+ if (settingsFile.showId && id) {
+  settingsFile.showId(
    cmd,
    id,
    language,

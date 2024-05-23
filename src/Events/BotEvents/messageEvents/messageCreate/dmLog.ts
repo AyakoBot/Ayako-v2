@@ -41,7 +41,7 @@ export default async (msg: Discord.Message<boolean>) => {
  if (msg.content.length || msg.embeds.length || msg.attachments.size) {
   await msg.client.util.request.webhooks.execute(
    channel.guild,
-   process.env.dmWebhookID ?? '',
+   process.env.dmWebhookId ?? '',
    process.env.dmWebhookToken ?? '',
    {
     ...(await makePayload(msg)),
@@ -54,7 +54,7 @@ export default async (msg: Discord.Message<boolean>) => {
  if (msg.poll) {
   msg.client.util.request.webhooks.execute(
    channel.guild,
-   process.env.dmWebhookID ?? '',
+   process.env.dmWebhookId ?? '',
    process.env.dmWebhookToken ?? '',
    {
     embeds: [
@@ -80,7 +80,7 @@ export default async (msg: Discord.Message<boolean>) => {
  if (msg.stickers.size) {
   msg.client.util.request.webhooks.execute(
    channel.guild,
-   process.env.dmWebhookID ?? '',
+   process.env.dmWebhookId ?? '',
    process.env.dmWebhookToken ?? '',
    {
     embeds: msg.stickers.map((s) => ({

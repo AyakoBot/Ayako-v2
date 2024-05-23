@@ -5,7 +5,7 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.info.bot,
  author: t.stp(t.JSON.slashCommands.info.bot.author, { t }),
  base: t.stp(t.JSON.slashCommands.info.bot.base, {
-  base: t.botId === t.util.mainID ? ' ' : `(${t.JSON.slashCommands.info.bot.thisBase}) `,
+  base: t.botId === process.env.mainId ? ' ' : `(${t.JSON.slashCommands.info.bot.thisBase}) `,
   version: t.util.files.importCache.package.file.version,
  }),
 });

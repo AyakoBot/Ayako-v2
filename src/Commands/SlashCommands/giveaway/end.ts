@@ -8,11 +8,11 @@ import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.j
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const messageID = cmd.options.getString('message-id', true);
+ const messageId = cmd.options.getString('message-id', true);
  const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
  const giveaway = await client.util.DataBase.giveaways.findUnique({
-  where: { msgid: messageID, ended: false },
+  where: { msgid: messageId, ended: false },
  });
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {
@@ -74,9 +74,9 @@ export const getGiveawayEmbed = async (language: CT.Language, giveaway: Prisma.g
  };
 };
 
-export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) => {
+export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) => {
  const giveaway = await client.util.DataBase.giveaways.findUnique({
-  where: { msgid: msgID, claimingdone: false },
+  where: { msgid: msgId, claimingdone: false },
  });
 
  if (!giveaway) {
@@ -267,12 +267,12 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgID: string) =
  );
 };
 
-export const giveawayCollectTimeExpired = async (msgID: string, guildID: string) => {
- const guild = client.guilds.cache.get(guildID);
+export const giveawayCollectTimeExpired = async (msgId: string, guildId: string) => {
+ const guild = client.guilds.cache.get(guildId);
  if (!guild) return;
 
  const giveaway = await client.util.DataBase.giveaways.findUnique({
-  where: { msgid: msgID, claimingdone: false },
+  where: { msgid: msgId, claimingdone: false },
  });
 
  if (!giveaway) {

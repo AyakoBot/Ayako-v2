@@ -5,7 +5,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const stickerIDorName = cmd.options.getString('sticker', true);
+ const stickerIdOrName = cmd.options.getString('sticker', true);
  const emoji = cmd.options.getString('emoji', true);
 
  const selectedEmoji = Emojis.find((e) => e === emoji.replace(/:/g, ''));
@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  }
 
  const sticker = cmd.guild.stickers.cache.find(
-  (s) => s.name === stickerIDorName || s.id === stickerIDorName,
+  (s) => s.name === stickerIdOrName || s.id === stickerIdOrName,
  );
  if (!sticker) {
   cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);

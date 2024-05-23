@@ -1,6 +1,5 @@
 import * as Jobs from 'node-schedule';
 import fetch from 'node-fetch';
-import constants from '../../../Other/constants.js';
 import getPathFromError from '../../getPathFromError.js';
 
 /**
@@ -34,7 +33,7 @@ const self: SinkingYachts = {
  start: async () => {
   const res = await fetch('https://phish.sinking.yachts/v2/all', {
    headers: {
-    'X-Identity': `Discord Bot - Owner ID ${constants.standard.ownerID}`,
+    'X-Identity': `Discord Bot - Owner ID ${process.env.ownerId}`,
    },
   });
 

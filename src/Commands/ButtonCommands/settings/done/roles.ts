@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const roleText = cmd.message.embeds[0].description?.split(/,\s/g);
- const roleIDs = roleText
+ const roleIds = roleText
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c);
 
@@ -32,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  roleIDs,
+  roleIds,
   uniquetimestamp,
  );
 

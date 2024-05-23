@@ -112,8 +112,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
        )}\n[${language.t.InviteCustomBot}](${client.util.constants.standard.invite.replace(
-        client.util.mainID,
-        settings.appid ?? client.util.mainID,
+        process.env.mainId ?? '',
+        settings.appid ?? process.env.mainId ?? '',
        )})`
      : language.t.None,
    },
@@ -181,8 +181,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     disabled: !settings.token,
     url: settings.token
      ? client.util.constants.standard.invite.replace(
-        client.util.mainID,
-        settings.appid ?? client.util.mainID,
+        process.env.mainId ?? '',
+        settings.appid ?? process.env.mainId ?? '',
        )
      : 'https://ayakobot.com',
    },
@@ -362,8 +362,8 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     process.env.alertWebhookId ?? '',
     process.env.alertWebhookToken ?? '',
     {
-     content: `New Custom Client <@${process.env.ownerID}> => ${me.id}`,
-     allowed_mentions: { users: [process.env.ownerID ?? ''] },
+     content: `New Custom Client <@${process.env.ownerId}> => ${me.id}`,
+     allowed_mentions: { users: [process.env.ownerId ?? ''] },
      components: [
       {
        type: Discord.ComponentType.ActionRow,

@@ -24,13 +24,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const embedID = cmd.message.embeds[0].description;
+ const embedId = cmd.message.embeds[0].description;
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  embedID === language.t.None ? null : embedID,
+  embedId === language.t.None ? null : embedId,
   uniquetimestamp,
  );
 

@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const automodruleText = cmd.message.embeds[0].description?.split(/,\s/g);
- const automodruleIDs =
+ const automodruleIds =
   automodruleText
    ?.filter((c) => c.startsWith('`') && c.endsWith('`'))
    .map((c) => c.slice(1, -1))
@@ -35,7 +35,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  automodruleIDs,
+  automodruleIds,
   uniquetimestamp,
  );
 

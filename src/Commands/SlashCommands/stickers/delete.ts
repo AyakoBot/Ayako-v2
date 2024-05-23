@@ -4,9 +4,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const stickerIDorName = cmd.options.getString('sticker', true);
+ const stickerIdOrName = cmd.options.getString('sticker', true);
  const sticker = cmd.guild.stickers.cache.find(
-  (s) => s.id === stickerIDorName || s.name === stickerIDorName,
+  (s) => s.id === stickerIdOrName || s.name === stickerIdOrName,
  );
  if (!sticker) {
   cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);

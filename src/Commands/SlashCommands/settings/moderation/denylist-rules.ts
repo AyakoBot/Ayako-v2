@@ -11,22 +11,22 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.settings.categories[name];
 
- const ID = cmd.options.get('id', false)?.value as string;
- if (ID) {
-  showID(cmd, ID, language, lan);
+ const id = cmd.options.get('id', false)?.value as string;
+ if (id) {
+  showId(cmd, id, language, lan);
   return;
  }
  showAll(cmd, language, lan);
 };
 
-export const showID: NonNullable<CT.SettingsFile<typeof name>['showID']> = async (
+export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async (
  cmd,
- ID,
+ id,
  language,
  lan,
 ) => {
  const { embedParsers } = client.util.settingsHelpers;
- const automodRule = cmd.guild?.autoModerationRules.cache.get(ID);
+ const automodRule = cmd.guild?.autoModerationRules.cache.get(id);
 
  if (!automodRule) {
   client.util.errorCmd(cmd, language.errors.automodRuleNotFound, language);

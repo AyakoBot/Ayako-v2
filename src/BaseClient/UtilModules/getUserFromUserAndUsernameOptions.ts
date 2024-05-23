@@ -5,17 +5,17 @@ import getLanguage from './getLanguage.js';
 import { request } from './requestHandler.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- const userID = cmd.options.get('user-name', false)?.value as string | null;
+ const userId = cmd.options.get('user-name', false)?.value as string | null;
  const language = await getLanguage(cmd.guild?.id);
 
- if (userID && userID.replace(/\D+/g, '').length !== userID.length) {
+ if (userId && userId.replace(/\D+/g, '').length !== userId.length) {
   errorCmd(cmd, language.errors.userNotFound, language);
   return undefined;
  }
 
  const user =
   cmd.options.getUser('user', false) ??
-  (userID ? await getUser(userID).catch(() => undefined) : cmd.user) ??
+  (userId ? await getUser(userId).catch(() => undefined) : cmd.user) ??
   cmd.user;
 
  const member = cmd.guild

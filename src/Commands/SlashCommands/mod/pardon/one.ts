@@ -11,8 +11,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.pardon;
 
  const user = cmd.options.getUser('target', true);
- const rawID = cmd.options.getString('id', true);
- const id = Number.parseInt(rawID, 36);
+ const rawId = cmd.options.getString('id', true);
+ const id = Number.parseInt(rawId, 36);
  const punishment = await client.util.getPunishment(id);
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  await pardon(punishment);
  log(cmd, punishment, language, lan, reason);
 
- client.util.replyCmd(cmd, { content: lan.pardoned(rawID, user.id) });
+ client.util.replyCmd(cmd, { content: lan.pardoned(rawId, user.id) });
 };
 
 export const pardon = (

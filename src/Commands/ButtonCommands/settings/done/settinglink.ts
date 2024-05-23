@@ -23,13 +23,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   uniquetimestamp,
  );
 
- const settingsID = parseInt(cmd.message.embeds[0].description as string, 36);
+ const settingsId = parseInt(cmd.message.embeds[0].description as string, 36);
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  settingsID,
+  settingsId,
   uniquetimestamp,
  );
 

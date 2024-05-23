@@ -9,12 +9,12 @@ import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.j
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const messageID = cmd.options.getString('message-id', true);
+ const messageId = cmd.options.getString('message-id', true);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.edit;
 
- const giveaway = await update(messageID, cmd, language);
+ const giveaway = await update(messageId, cmd, language);
  if (!giveaway) {
   cmd.client.util.errorCmd(cmd, lan.noChanges, language);
   return;
@@ -55,7 +55,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 const update = async (
- messageID: string,
+ messageId: string,
  cmd: Discord.ChatInputCommandInteraction,
  language: CT.Language,
 ) => {
@@ -88,56 +88,56 @@ const update = async (
 
  if (prizeDesc) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { description: prizeDesc },
   });
  }
 
  if (endTime && endTimeIsValid(endTime, cmd, language)) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { endtime: endTime },
   });
  }
 
  if (winners) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { winnercount: winners },
   });
  }
 
  if (role) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { reqrole: role.id },
   });
  }
 
  if (host) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { host: host.id },
   });
  }
 
  if (prize) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { actualprize: prize },
   });
  }
 
  if (claimingTimeout) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { collecttime: Math.abs(cmd.client.util.getDuration(claimingTimeout)) },
   });
  }
 
  if (claimFailReroll) {
   lastReturnedGiveaway = await cmd.client.util.DataBase.giveaways.update({
-   where: { msgid: messageID },
+   where: { msgid: messageId },
    data: { failreroll: claimFailReroll },
   });
  }

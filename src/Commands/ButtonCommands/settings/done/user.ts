@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const userText = cmd.message.embeds[0].description?.split(/,\s/g);
- const userIDs = userText
+ const userIds = userText
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c)?.[0];
 
@@ -32,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  userIDs,
+  userIds,
   uniquetimestamp,
  );
 

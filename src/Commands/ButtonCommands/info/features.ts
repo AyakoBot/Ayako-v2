@@ -2,22 +2,22 @@ import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
- const inviteOrID = args.shift() as string;
+ const inviteOrId = args.shift() as string;
  const isInviteGuild = (args.shift() as string) === 'true';
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const invite = isInviteGuild
-  ? await client.fetchInvite(inviteOrID).catch(() => undefined)
+  ? await client.fetchInvite(inviteOrId).catch(() => undefined)
   : undefined;
- const serverID = isInviteGuild ? invite?.guild?.id : inviteOrID;
+ const serverId = isInviteGuild ? invite?.guild?.id : inviteOrId;
 
- if (!serverID) {
+ if (!serverId) {
   cmd.client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
 
- if (invite) cmd.client.util.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
+ if (invite) cmd.client.util.cache.inviteGuilds.set(serverId, invite.guild as Discord.InviteGuild);
 
- const embed = (await getEmbed(serverID))?.flat()[0];
+ const embed = (await getEmbed(serverId))?.flat()[0];
  const contents: string[][] = [[]];
  let lastIndex = 0;
 
@@ -44,7 +44,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  });
 };
 
-const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefined> =>
+const getEmbed = async (serverId: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.cluster?.broadcastEval(
   async (c, { id }) => {
    const g = c.guilds.cache.get(id) ?? c.util.cache.inviteGuilds.get(id);
@@ -63,6 +63,6 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    ];
   },
   {
-   context: { id: serverID },
+   context: { id: serverId },
   },
  ) as Promise<Discord.APIEmbed[] | undefined>;

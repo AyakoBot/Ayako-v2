@@ -98,7 +98,6 @@ import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
 
-const mainID = process.env.mainID as string;
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
 type ChannelTimeouts = Map<string, Map<string, Jobs.Job>>;
 const channelQueue: ChannelQueue = new Map();
@@ -182,7 +181,6 @@ interface Util {
  loadingEmbed: typeof loadingEmbed;
  log: typeof log;
  logFiles: typeof logFiles;
- mainID: string;
  makeStp: typeof makeStp;
  memberBoostCalc: typeof memberBoostCalc;
  mergeLogging: typeof mergeLogging;
@@ -282,7 +280,6 @@ const util: Util = {
  loadingEmbed,
  log,
  logFiles,
- mainID,
  makeStp,
  memberBoostCalc,
  mergeLogging,

@@ -15,7 +15,7 @@ export default async (guild: Discord.Guild | undefined) => {
 
  guild.client.util.request.webhooks.execute(
   guild,
-  process.env.guildActionWebhookID ?? '',
+  process.env.guildActionWebhookId ?? '',
   process.env.guildActionWebhookToken ?? '',
   {
    embeds: [

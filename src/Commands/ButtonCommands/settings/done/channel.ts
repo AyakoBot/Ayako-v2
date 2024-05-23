@@ -24,7 +24,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const channelText = cmd.message.embeds[0].description?.split(/,\s/g);
- const channelIDs =
+ const channelIds =
   channelText?.map((c) => c.replace(/\D/g, '') || undefined).filter((c): c is string => !!c)?.[0] ??
   null;
 
@@ -32,7 +32,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   settingName,
   fieldName,
   cmd.guildId,
-  channelIDs,
+  channelIds,
   uniquetimestamp,
  );
 

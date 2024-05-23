@@ -5,11 +5,11 @@ import { end } from '../../SlashCommands/giveaway/end.js';
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const messageID = args.shift() as string;
+ const messageId = args.shift() as string;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.giveaway.end;
  const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
-  where: { msgid: messageID, ended: true },
+  where: { msgid: messageId, ended: true },
  });
 
  if (!giveaway || giveaway.guildid !== cmd.guildId) {

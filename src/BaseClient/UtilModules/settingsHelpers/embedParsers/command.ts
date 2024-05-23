@@ -11,8 +11,8 @@ export default async (val: string | null, language: CT.Language) => {
 
  const client = (await import('../../../Bot/Client.js')).default;
 
- const isID = val?.replace(/\D+/g, '').length === val?.length;
- const cmd = isID ? client.application?.commands.cache.get(val) : undefined;
+ const isId = val?.replace(/\D+/g, '').length === val?.length;
+ const cmd = isId ? client.application?.commands.cache.get(val) : undefined;
  if (cmd) return `</${cmd.name}:${cmd.id}>`;
  return `\`${val}\``;
 };

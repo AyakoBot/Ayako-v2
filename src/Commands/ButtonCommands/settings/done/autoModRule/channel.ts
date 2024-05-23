@@ -8,12 +8,12 @@ const settingName = CT.SettingNames.DenylistRules;
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const getID = () => {
+ const getId = () => {
   const arg = args.pop();
   if (arg) return arg;
   return undefined;
  };
- const id = getID();
+ const id = getId();
  if (!id) {
   cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
@@ -31,7 +31,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  )?.metadata.channelId;
 
  const channelText = cmd.message.embeds[0].description?.split(/,\s/g);
- const channelID = channelText
+ const channelId = channelText
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c)?.[0];
 
@@ -43,12 +43,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     ...getAPIRule(rule).actions.filter(
      (a) => a.type !== Discord.AutoModerationActionType.SendAlertMessage,
     ),
-    ...(channelID
+    ...(channelId
      ? [
         {
          type: Discord.AutoModerationActionType.SendAlertMessage,
          metadata: {
-          channel_id: channelID,
+          channel_id: channelId,
          },
         },
        ]
@@ -64,7 +64,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.client.util.settingsHelpers.updateLog(
   { alertChannel: oldSetting } as never,
-  { alertChannel: channelID } as never,
+  { alertChannel: channelId } as never,
   'alertChannel' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,

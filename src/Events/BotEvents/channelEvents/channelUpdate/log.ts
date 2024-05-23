@@ -37,7 +37,7 @@ export default async (
  const lan = language.events.logs.channel;
  const con = channel.client.util.constants.events.logs.channel;
  const channelType = `${channel.client.util.getTrueChannelType(channel, channel.guild)}Update`;
- let typeID = [10, 11, 12].includes(channel.type) ? 111 : 11;
+ let typeId = [10, 11, 12].includes(channel.type) ? 111 : 11;
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -308,9 +308,9 @@ export default async (
   const removedPerms = oldPerms.filter((p) => !perms.find((p2) => p2.id === p.id));
   const changedPerms = perms.filter((p) => oldPerms.find((p2) => p2.id === p.id));
 
-  if (addedPerms.length) typeID = 13;
-  if (changedPerms.length) typeID = 14;
-  if (removedPerms.length) typeID = 15;
+  if (addedPerms.length) typeId = 13;
+  if (changedPerms.length) typeId = 14;
+  if (removedPerms.length) typeId = 15;
 
   const getEmoji = ({ denied, allowed }: { denied: boolean; allowed: boolean }) => {
    if (denied) {
@@ -446,7 +446,7 @@ export default async (
   if (atLeastOneRemoved) embeds.push(removeEmbed);
  }
 
- const audit = await channel.client.util.getAudit(channel.guild, typeID, channel.id);
+ const audit = await channel.client.util.getAudit(channel.guild, typeId, channel.id);
  const getChannelOwner = () => {
   if (audit?.executor) return audit.executor;
   if ('ownerId' in channel && channel.ownerId) {

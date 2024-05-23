@@ -20,12 +20,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const newSetting = field.value;
 
- const getID = () => {
+ const getId = () => {
   const arg = args.shift();
   if (arg) return arg;
   return undefined;
  };
- const id = getID();
+ const id = getId();
  if (!id) {
   cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;

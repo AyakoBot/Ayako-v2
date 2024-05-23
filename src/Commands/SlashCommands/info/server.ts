@@ -4,7 +4,7 @@ import client from '../../../BaseClient/Bot/Client.js';
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
- const enteredID = cmd.options.get('server-id', false)?.value as string | null;
+ const enteredId = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;
  const enteredInvite = cmd.options.get('server-invite', false)?.value as string | null;
  const language = await client.util.getLanguage(cmd.guildId);
@@ -14,10 +14,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   : undefined;
  const isInviteGuild = invite?.guild ? !('members' in invite.guild) : false;
 
- let serverID: string | null = null;
- if (!enteredID && !enteredName && !enteredInvite) serverID = cmd.guildId;
- if (enteredID) serverID = enteredID;
- if (enteredName) serverID = enteredName;
+ let serverId: string | null = null;
+ if (!enteredId && !enteredName && !enteredInvite) serverId = cmd.guildId;
+ if (enteredId) serverId = enteredId;
+ if (enteredName) serverId = enteredName;
  if (enteredInvite) {
   if (!invite) {
    client.util.errorCmd(cmd, language.errors.inviteNotFound, language);
@@ -29,16 +29,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    return;
   }
 
-  serverID = invite.guild.id;
-  client.util.cache.inviteGuilds.set(serverID, invite.guild as Discord.InviteGuild);
+  serverId = invite.guild.id;
+  client.util.cache.inviteGuilds.set(serverId, invite.guild as Discord.InviteGuild);
  }
 
- if (!serverID || (serverID && serverID.replace(/\D+/g, '').length !== serverID.length)) {
+ if (!serverId || (serverId && serverId.replace(/\D+/g, '').length !== serverId.length)) {
   client.util.errorCmd(cmd, language.errors.serverNotFound, language);
   return;
  }
 
- const embeds = (await getEmbed(serverID))?.flat().filter((e) => !!e);
+ const embeds = (await getEmbed(serverId))?.flat().filter((e) => !!e);
 
  if (!embeds?.length) {
   client.util.errorCmd(cmd, language.errors.serverNotFound, language);
@@ -55,14 +55,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       type: Discord.ComponentType.Button,
       label: language.t.featuresName,
       style: Discord.ButtonStyle.Secondary,
-      custom_id: `info/features_${isInviteGuild ? invite?.code : serverID}_${isInviteGuild}`,
+      custom_id: `info/features_${isInviteGuild ? invite?.code : serverId}_${isInviteGuild}`,
      },
      {
       type: Discord.ComponentType.Button,
       label: language.t.Roles,
       style: Discord.ButtonStyle.Secondary,
       disabled: isInviteGuild,
-      custom_id: `info/roles_server_${isInviteGuild ? invite?.code : serverID}`,
+      custom_id: `info/roles_server_${isInviteGuild ? invite?.code : serverId}`,
      },
     ],
    },
@@ -70,7 +70,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 };
 
-const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefined> =>
+const getEmbed = async (serverId: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.cluster?.broadcastEval(
   async (c, { id }) => {
    const g = c.guilds.cache.get(id) ?? c.util.cache.inviteGuilds.get(id);
@@ -293,6 +293,6 @@ const getEmbed = async (serverID: string): Promise<Discord.APIEmbed[] | undefine
    ];
   },
   {
-   context: { id: serverID },
+   context: { id: serverId },
   },
  ) as Promise<Discord.APIEmbed[] | undefined>;

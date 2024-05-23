@@ -126,7 +126,7 @@ const postMessage = async (
   .map((m) => language.languageFunction.getUser(m.user))
   .join('')
   .replace(/`/g, '');
- const last5minsIDs = guild.client.util
+ const last5minsIds = guild.client.util
   .getChunks(
    last5mins.map((m) => m.id),
    3,
@@ -137,7 +137,7 @@ const postMessage = async (
   .map((m) => language.languageFunction.getUser(m.user))
   .join('')
   .replace(/`/g, '');
- const caughtUsersIDs = guild.client.util
+ const caughtUsersIds = guild.client.util
   .getChunks(
    caughtUsers.map((m) => m.id),
    3,
@@ -166,7 +166,7 @@ const postMessage = async (
     .join(', ')})}`,
    allowed_mentions: { roles: settings.pingroles },
    files: await Promise.all(
-    [last5minsLang, last5minsIDs, caughtUsersLang, caughtUsersIDs].map((a, i) =>
+    [last5minsLang, last5minsIds, caughtUsersLang, caughtUsersIds].map((a, i) =>
      guild.client.util.txtFileWriter(
       a,
       undefined,

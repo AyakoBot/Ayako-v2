@@ -24,9 +24,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 const getEmbed = async (
- channelID: string,
- guildID: string,
- userID: string,
+ channelId: string,
+ guildId: string,
+ userId: string,
 ): Promise<Discord.APIEmbed[] | undefined> =>
  client.cluster?.broadcastEval(
   async (cl, { id, gid, mid, ViewChannel }) => {
@@ -321,9 +321,9 @@ const getEmbed = async (
   },
   {
    context: {
-    id: channelID,
-    gid: guildID,
-    mid: userID,
+    id: channelId,
+    gid: guildId,
+    mid: userId,
     ViewChannel: String(Discord.PermissionsBitField.Flags.ViewChannel),
    },
   },

@@ -19,8 +19,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
- if (settingsFile.showID && uniquetimestamp) {
-  settingsFile.showID(
+ if (settingsFile.showId && uniquetimestamp) {
+  settingsFile.showId(
    cmd,
    uniquetimestamp.toString(36),
    language,

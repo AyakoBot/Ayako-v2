@@ -7,12 +7,12 @@ const settingName = CT.SettingNames.DenylistRules;
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const getID = () => {
+ const getId = () => {
   const arg = args.pop();
   if (arg) return arg;
   return undefined;
  };
- const id = getID();
+ const id = getId();
  if (!id) {
   cmd.client.util.error(cmd.guild, new Error('No ID found'));
   return;
@@ -27,13 +27,13 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  const oldSetting = structuredClone(rule.exemptRoles.map((o) => o.id));
  const roleText = cmd.message.embeds[0].description?.split(/,\s/g);
- const roleIDs =
+ const roleIds =
   roleText?.map((c) => c.replace(/\D/g, '') || undefined).filter((r): r is string => !!r) ?? [];
  const updatedRule = await cmd.client.util.request.guilds.editAutoModerationRule(
   cmd.guild,
   rule.id,
   {
-   exempt_roles: roleIDs,
+   exempt_roles: roleIds,
   },
  );
 
@@ -44,7 +44,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.client.util.settingsHelpers.updateLog(
   { exemptRoles: oldSetting } as never,
-  { exemptRoles: roleIDs } as never,
+  { exemptRoles: roleIds } as never,
   'exemptRoles' as Parameters<(typeof cmd.client.util)['settingsHelpers']['updateLog']>[2],
   settingName,
   id,

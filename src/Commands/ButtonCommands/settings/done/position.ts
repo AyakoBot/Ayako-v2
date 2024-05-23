@@ -24,10 +24,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  );
 
  const roleText = cmd.message.embeds[0].description?.split(/,\s/g);
- const roleID = roleText
+ const roleId = roleText
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c)?.[0];
- const role = roleID ? cmd.guild?.roles.cache.get(roleID) : undefined;
+ const role = roleId ? cmd.guild?.roles.cache.get(roleId) : undefined;
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,

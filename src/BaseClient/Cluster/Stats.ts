@@ -65,7 +65,7 @@ const splitBetweenShards = (x: number, y: number): number[] => {
  return result;
 };
 
-if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.env.mainID) {
+if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.env.mainId) {
  scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
   const users = await getAllUsers();
   const guilds = await getAllGuilds();

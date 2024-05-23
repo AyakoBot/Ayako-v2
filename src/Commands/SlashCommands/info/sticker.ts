@@ -8,13 +8,13 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
- const messageLinkOrStickerID =
+ const messageLinkOrStickerId =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.getString('sticker', false)
    : undefined;
  const language = await cmd.client.util.getLanguage(cmd.locale);
 
- if (messageLinkOrStickerID) single(cmd as Discord.ChatInputCommandInteraction<'cached'>, language);
+ if (messageLinkOrStickerId) single(cmd as Discord.ChatInputCommandInteraction<'cached'>, language);
  else multiple(cmd, language, page);
 };
 
@@ -22,24 +22,24 @@ const single = async (
  cmd: Discord.ChatInputCommandInteraction<'cached'>,
  language: CT.Language,
 ) => {
- let stickerIDs: string[] = [];
+ let stickerIds: string[] = [];
 
- const messageLinkOrStickerID = cmd.options.getString('sticker', true);
+ const messageLinkOrStickerId = cmd.options.getString('sticker', true);
 
- if (messageLinkOrStickerID.includes('discord.com')) {
-  const message = await cmd.client.util.getMessage(messageLinkOrStickerID);
+ if (messageLinkOrStickerId.includes('discord.com')) {
+  const message = await cmd.client.util.getMessage(messageLinkOrStickerId);
   if (!message) {
    cmd.client.util.errorCmd(cmd, language.errors.messageNotFound, language);
    return;
   }
 
-  stickerIDs = message.stickers.map((s) => s.id);
+  stickerIds = message.stickers.map((s) => s.id);
  } else {
-  stickerIDs = [messageLinkOrStickerID];
+  stickerIds = [messageLinkOrStickerId];
  }
 
  const stickers = (
-  await Promise.all(stickerIDs.map((s) => cmd.client.fetchSticker(s).catch(() => undefined)))
+  await Promise.all(stickerIds.map((s) => cmd.client.fetchSticker(s).catch(() => undefined)))
  ).filter((s): s is Discord.Sticker => !!s);
  if (!stickers.length) {
   cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);

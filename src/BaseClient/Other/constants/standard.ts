@@ -7,8 +7,6 @@ export default {
  image: 'https://ayakobot.com/DefaultEmbedImage',
  support: 'https://discord.gg/euTdctganf',
  permissionsViewer: (permission: bigint) => `https://discordapi.com/permissions.html#${permission}`,
- suggestionsDataChannel: '968628817688133662',
- ownerID: '318453143476371456',
  patreon: 'https://www.patreon.com/Lars_und_so',
  error: 'https://cdn.ayakobot.com/Ayako_Assets/Warning.png',
  appURL: (user: Discord.User) => `discord://-/users/${user.id}`,

@@ -28,7 +28,7 @@ export default async () => {
   cache();
 
   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
-   if (client.user?.id === client.util.mainID) {
+   if (client.user?.id === process.env.ownerId) {
     client.util.cache.fishFish.start();
     client.util.cache.sinkingYachts.start();
     client.util.cache.urlTLDs.start();

@@ -25,7 +25,7 @@ const reg = new RegExp(
 const { log } = console;
 
 export default async (msg: Discord.Message<true>) => {
- if (msg.author.id !== process.env.ownerID) return;
+ if (msg.author.id !== process.env.ownerId) return;
  if (!msg.content.startsWith('eval')) return;
 
  const args = msg.content.split(/\s+/g);

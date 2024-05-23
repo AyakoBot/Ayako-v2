@@ -33,7 +33,7 @@ export const makeSpoiler = (text: string) => `||${text}||`;
  * @param text The webhook URL to extract from.
  * @returns An object containing the ID and token.
  */
-export const webhookURLToIDAndToken = (text: string) => {
+export const webhookURLToIdAndToken = (text: string) => {
  const [id, token] = text.substring(text.indexOf('webhooks/') + 9).split('/');
  return { id, token };
 };

@@ -4,10 +4,10 @@ import { getButton, getGiveawayEmbed } from './end.js';
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const messageID = cmd.options.getString('message-id', true);
+ const messageId = cmd.options.getString('message-id', true);
 
  const giveaway = await cmd.client.util.DataBase.giveaways.findUnique({
-  where: { msgid: messageID },
+  where: { msgid: messageId },
  });
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -50,7 +50,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  cmd.client.util.DataBase.giveaways
-  .update({ where: { msgid: messageID }, data: { ended: true } })
+  .update({ where: { msgid: messageId }, data: { ended: true } })
   .then();
  cmd.client.util.cache.giveaways.delete(giveaway.guildid, giveaway.channelid, giveaway.msgid);
 

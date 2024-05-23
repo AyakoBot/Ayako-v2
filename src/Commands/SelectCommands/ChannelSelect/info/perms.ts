@@ -4,14 +4,14 @@ import * as CT from '../../../../Typings/Typings.js';
 export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const channelID = cmd.values[0];
- const ID = args.shift() as string;
+ const channelId = cmd.values[0];
+ const id = args.shift() as string;
  const isUser = args.shift() === 'user';
  const check = isUser
   ? await cmd.client.util.request.guilds
-     .getMember(cmd.guild, ID)
+     .getMember(cmd.guild, id)
      .then((u) => ('message' in u ? undefined : u))
-  : cmd.guild.roles.cache.get(ID);
+  : cmd.guild.roles.cache.get(id);
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  if (!check) {
@@ -23,7 +23,7 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
   return;
  }
 
- const channel = cmd.guild?.channels.cache.get(channelID);
+ const channel = cmd.guild?.channels.cache.get(channelId);
  if (!channel) return;
 
  const permissions = channel.permissionsFor(check);

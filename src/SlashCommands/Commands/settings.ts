@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 
-const IDSelector = new Discord.SlashCommandStringOption()
+const idSelector = new Discord.SlashCommandStringOption()
  .setAutocomplete(true)
  .setDescription('The ID of the Setting (Remove if you want to create a Setting)')
  .setRequired(false)
@@ -24,7 +24,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('questions')
      .setDescription('The Questions of the Appeal-Form')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommandGroup(
@@ -50,7 +50,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('auto-punish')
      .setDescription('Help Moderators punish consistently')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -66,7 +66,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('denylist-rules')
      .setDescription('The Rules of the Denylist')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -87,25 +87,25 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('multi-channels')
      .setDescription('Increase or decrease XP rewarded by Channel')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('multi-roles')
      .setDescription('Increase or decrease XP rewarded by Role')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('level-roles')
      .setDescription('Reward Activity with Level-Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('rule-channels')
      .setDescription('Apply conditional XP rewarded by Action in a Channel')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -170,7 +170,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('booster-roles')
      .setDescription(`Reward Members for continuously boosting your Server`)
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommandGroup(
@@ -181,13 +181,13 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('basic')
      .setDescription(`Basic Settings for Voting on Top.gg`)
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('vote-rewards')
      .setDescription(`Reward Members for Voting for your Bot/Server`)
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommandGroup(
@@ -203,13 +203,13 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('shop-items')
      .setDescription('The Roles you can buy in the Server-Shop')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('role-rewards')
      .setDescription('Give Rewards to Members for achieving a Role')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -220,13 +220,13 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('self-roles')
      .setDescription('Let Members pick their own Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('separators')
      .setDescription('Separate Roles into Categories using Category Roles / Role Separators')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -242,25 +242,25 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('reaction-role-settings')
      .setDescription('Let Members pick their own Roles through Reactions')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('reaction-roles')
      .setDescription('Here you define the Reactions and their associated Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('button-role-settings')
      .setDescription('Let Members pick their own Roles through Buttons')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('button-roles')
      .setDescription('Here you define the Buttons and their associated Roles')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommandGroup(
@@ -276,7 +276,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('cooldowns')
      .setDescription(`Assign custom defined Cooldowns to Commands of ${process.env.mainName}`)
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
@@ -302,7 +302,7 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('voice-hubs')
      .setDescription('Have Ayako create Voice Channels for your Members')
-     .addStringOption(IDSelector),
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommand(

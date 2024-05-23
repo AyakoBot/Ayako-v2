@@ -67,7 +67,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[], accep
   ],
  };
 
- if (message.author.id === client.util.mainID) {
+ if (message.author.id === process.env.mainId) {
   API.channels.editMessage(message.channelId, message.id, payload);
  } else if (await client.util.isEditable(message)) {
   client.util.request.channels.editMsg(message, payload);
@@ -127,7 +127,7 @@ export const endDeleteSuggestion = async (suggestion: Prisma.suggestionvotes) =>
   return;
  }
 
- if (message.author.id === client.util.mainID) {
+ if (message.author.id === process.env.mainId) {
   API.channels.deleteMessage(message.channelId, message.id);
  } else if (await client.util.isDeleteable(message)) {
   client.util.request.channels.deleteMessage(message);

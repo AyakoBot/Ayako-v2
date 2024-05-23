@@ -59,7 +59,7 @@ export default async (
  }
 
  rewards.forEach((r) => {
-  const rewardRoles = r.rewardroles?.filter((roleID) => !member?.roles.cache.has(roleID));
+  const rewardRoles = r.rewardroles?.filter((roleId) => !member?.roles.cache.has(roleId));
 
   currency(r, user, guild);
   roles(rewardRoles, member, bot, language);
@@ -122,7 +122,7 @@ export const doAnnouncement = async (
   .map((r, i) =>
    [
     r.rewardroles
-     ? lan.tempReward(r.rewardroles.map((roleID) => `<@&${roleID}>`).join(', '))
+     ? lan.tempReward(r.rewardroles.map((roleId) => `<@&${roleId}>`).join(', '))
      : null,
     r.rewardxpmultiplier ? lan.tempReward(`${r.rewardxpmultiplier}x ${lan.xpmultiplier}`) : null,
     r.rewardxp ? `${r.rewardxp} XP` : null,
@@ -222,14 +222,14 @@ export const end = async (vote: votes, guild: Discord.Guild) => {
         ? `https://top.gg/bot/${voted.id}/vote`
         : `https://top.gg/servers/${guild.id}/vote`,
      },
-     ...((voted.id === process.env.mainID
+     ...((voted.id === process.env.mainId
       ? []
       : [
          {
           type: Discord.ComponentType.Button,
           style: Discord.ButtonStyle.Link,
           label: lan.reminder.voteAyakoButton,
-          url: `https://top.gg/bot/${process.env.mainID}/vote`,
+          url: `https://top.gg/bot/${process.env.mainId}/vote`,
          },
         ]) as Discord.APIButtonComponent[]),
     ],
