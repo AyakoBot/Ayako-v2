@@ -130,7 +130,7 @@ const getMemberEmbed = (
     value: `${client.util.constants.standard.getTime(member.joinedTimestamp ?? 0)}`,
    },
    {
-    name: `${getBoostEmote(member)} ${lan.boosting}`,
+    name: `${client.util.constants.standard.getEmote(getBoostEmote(member))} ${lan.boosting}`,
     value: `${
      member.premiumSinceTimestamp
       ? `${client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground)} ${
@@ -203,7 +203,7 @@ const getBoosting = async (flags: string[], user: Discord.User, language: CT.Lan
 };
 
 const getBoostEmote = (member: Discord.GuildMember) => {
- if (!member.premiumSinceTimestamp) return '';
+ if (!member.premiumSinceTimestamp) return client.util.emotes.invis;
  const time = Math.abs(member.premiumSinceTimestamp - Date.now());
 
  if (time < month * 2) return client.util.emotes.userFlags.Boost1;
