@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import { Colors } from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<boolean>) => {
+ if (!msg.author?.id) return;
  if (msg.author.id === msg.client.user?.id) return;
 
  const channel = msg.client.channels.cache.get(
