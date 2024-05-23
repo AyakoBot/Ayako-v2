@@ -56,7 +56,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    },
    {
     name: lan.fields.rolemode.name,
-    value: settings?.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
+    value: settings?.rolemode ? language.rolemodes.stack : language.rolemodes.replace,
     inline: true,
    },
    {
