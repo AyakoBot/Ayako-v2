@@ -20,7 +20,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return;
  if (!guild && !postDebug) return;
- if (!err.message.includes('DiscordAPIError')) postDebug = false;
+ if (!(err instanceof Discord.DiscordAPIError)) postDebug = false;
 
  const language = await getLanguage(guild?.id ?? 'en-GB');
 
