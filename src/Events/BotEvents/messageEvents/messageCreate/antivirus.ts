@@ -493,7 +493,7 @@ const inKaspersky = async (u: string) => {
  return { triggered: false, type: 'Kaspersky', result: json };
 };
 
-export const performPunishment = (
+export const performPunishment = async (
  rawMessage: Discord.Message<true> | undefined,
  settings: Prisma.antivirus | Prisma.antispam,
  language: CT.Language,
@@ -504,7 +504,7 @@ export const performPunishment = (
  const baseOptions = {
   dbOnly: false,
   reason: language.autotypes.antivirus,
-  executor: msg.client.user,
+  executor: (await msg.client.util.getBotMemberFromGuild(msg.guild)).user,
   target: msg.author,
   guild: msg.guild,
   skipChecks: false,

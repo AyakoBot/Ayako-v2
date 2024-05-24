@@ -24,7 +24,7 @@ export default async (msg: Discord.Message<true>) => {
   reason: language.censor.reasonNewlines,
   guild: msg.guild,
   target: msg.author,
-  executor: msg.client.user,
+  executor: (await msg.client.util.getBotMemberFromGuild(msg.guild)).user,
   dbOnly: false,
   skipChecks: false,
  };
