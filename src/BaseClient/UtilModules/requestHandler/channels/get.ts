@@ -18,9 +18,9 @@ type Response = Promise<
  * @param id The ID of the channel to retrieve.
  * @returns A Promise that resolves with the retrieved channel.
  */
-function fn(guild: Discord.Guild, id: string, client: Discord.Client<true>): Response;
+function fn(guild: Discord.Guild | null | undefined, id: string, client: Discord.Client<true>): Response;
 function fn(guild: Discord.Guild, id: string, client?: undefined): Response;
-async function fn(guild: Discord.Guild, id: string, client?: Discord.Client<true>): Response {
+async function fn(guild: Discord.Guild | null | undefined, id: string, client?: Discord.Client<true>): Response {
  const c = (guild?.client ?? client)!;
 
  return (
@@ -30,9 +30,9 @@ async function fn(guild: Discord.Guild, id: string, client?: Discord.Client<true
    .then((channel) => {
     const parsed = Classes.Channel(c, channel, guild);
 
-    if (guild.channels.cache.get(parsed.id)) return parsed;
+    if (guild?.channels.cache.get(parsed.id)) return parsed;
     if (![Discord.ChannelType.DM, Discord.ChannelType.GroupDM].includes(parsed.type)) {
-     guild.channels.cache.set(parsed.id, parsed as Discord.GuildBasedChannel);
+     guild?.channels.cache.set(parsed.id, parsed as Discord.GuildBasedChannel);
     }
 
     return parsed;

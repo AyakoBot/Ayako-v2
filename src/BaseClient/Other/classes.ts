@@ -149,7 +149,7 @@ export class ApplicationCommand extends Discord.ApplicationCommand {
 export const Channel = <T extends Discord.ChannelType>(
  client: Discord.Client,
  c: Discord.APIChannel | Discord.APIThreadChannel,
- guild: Discord.Guild,
+ guild: Discord.Guild | null | undefined,
 ): T extends 0
  ? Discord.TextChannel
  : T extends 1
@@ -175,6 +175,7 @@ export const Channel = <T extends Discord.ChannelType>(
                      : never => {
  switch (c.type) {
   case Discord.ChannelType.GuildText: {
+   if (!guild) throw new Error('GuildText type requires Guild')
    // @ts-ignore
    return new Discord.TextChannel(guild, c, client);
   }
@@ -183,29 +184,35 @@ export const Channel = <T extends Discord.ChannelType>(
    return new Discord.DMChannel(client, c);
   }
   case Discord.ChannelType.GuildVoice: {
-   // @ts-ignore
+   if (!guild) throw new Error('GuildVoice type requires Guild')
+    // @ts-ignore
    return new Discord.VoiceChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildCategory: {
-   // @ts-ignore
+   if (!guild) throw new Error('GuildCategory type requires Guild')
+    // @ts-ignore
    return new Discord.CategoryChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildAnnouncement: {
-   // @ts-ignore
+   if (!guild) throw new Error('GuildAnnouncement type requires Guild')
+    // @ts-ignore
    return new Discord.NewsChannel(guild, c, client);
   }
   case Discord.ChannelType.AnnouncementThread:
   case Discord.ChannelType.PublicThread:
   case Discord.ChannelType.PrivateThread: {
-   // @ts-ignore
+   if (!guild) throw new Error('Thread type requires Guild')
+    // @ts-ignore
    return new Discord.ThreadChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildStageVoice: {
-   // @ts-ignore
+   if (!guild) throw new Error('GuildStageVoice type requires Guild')
+    // @ts-ignore
    return new Discord.StageChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildForum: {
-   // @ts-ignore
+   if (!guild) throw new Error('GuildForum type requires Guild')
+    // @ts-ignore
    return new Discord.ForumChannel(guild, c, client);
   }
   default: {
