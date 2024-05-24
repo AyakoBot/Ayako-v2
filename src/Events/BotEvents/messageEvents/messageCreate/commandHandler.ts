@@ -241,9 +241,8 @@ export const checkCommandPermissions = async (
  ) {
   return { can: true, debugNum: 13 };
  }
- if (!guildPerms) return { can: false, debugNum: 4 };
 
- const commandPerms = guildPerms.get(slashCommand.id);
+ const commandPerms = guildPerms?.get(slashCommand.id);
  if (
   !commandPerms?.length &&
   (!slashCommand.defaultMemberPermissions ||
