@@ -8,9 +8,12 @@ import * as Discord from 'discord.js';
  */
 const getChannel = async (channelId: string) => {
  const client = (await import('../Bot/Client.js')).default;
- return client.util.request.channels
-  .get(undefined, channelId, client as Discord.Client<true>)
-  .then((r) => (!r || 'message' in r ? undefined : r));
+ return (
+  client.channels.cache.get(channelId) ??
+  client.util.request.channels
+   .get(undefined, channelId, client as Discord.Client<true>)
+   .then((r) => (!r || 'message' in r ? undefined : r))
+ );
 };
 
 /**
