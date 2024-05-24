@@ -39,4 +39,4 @@ export default async (guild: Discord.Guild) => {
  * indicating whether the guild member can manage guild integrations.
  */
 export const canGetIntegrations = (me: Discord.GuildMember) =>
- me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);
+ me.permissions?.has(Discord.PermissionFlagsBits.ManageGuild);
