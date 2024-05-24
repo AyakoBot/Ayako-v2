@@ -3532,7 +3532,7 @@
       },
       "token": {
        "name": "Token",
-       "desc": "The Token of your Custom Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n __Please make sure you do the following AFTER you set your Token here__:\n - (**Important**) insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section __after setting the Token__\n - enable the `Public Bot` Switch under the `Bot` Section\n - enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n - invite your Bot to your Server using the provided Invite URL"
+       "desc": "The Token of your Custom Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n\n __Please make sure you do the following__:\n - (**Important**) insert `https://api.ayakobot.com/interactions` as your Bots `Interactions Endpoint URL` under the `General Information` Section __after setting the Token__\n - enable the `Public Bot` Switch under the `Bot` Section\n - enable the `Message Content` and `Guild Member` `Privileged Gateway Intents` under the `Bot` Section\n - invite your Bot to your Server using the provided Invite URL\n- __Do NOT remove Ayako from your Server__. Your Custom-Client relies on her to function"
       }
      }
     }
