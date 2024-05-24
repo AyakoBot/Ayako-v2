@@ -90,6 +90,6 @@ const getParsedInteraction = (i: Discord.APIInteraction) => {
   case Discord.InteractionType.ModalSubmit:
    return new Classes.ModalSubmit(client, i);
   default:
-   throw new Error('Unhandled Interaction Type');
+   throw new Error(`Unhandled Interaction Type ${i.type} ${Discord.ComponentType[i.type]}`);
  }
 };

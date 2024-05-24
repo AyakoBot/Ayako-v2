@@ -23,7 +23,7 @@ sms.install({
 (async () => {
  [
   './BaseClient/Cluster/Manager.js',
-  './BaseClient/Cluster/PG.js',
+  './BaseClient/Cluster/Redis.js',
   './BaseClient/Cluster/Events.js',
   './BaseClient/Cluster/Stats.js',
  ].forEach((f) => import(f));

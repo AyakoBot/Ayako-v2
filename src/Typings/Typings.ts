@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 
-export type * from '../BaseClient/Cluster/PG.js';
+export type * from '../BaseClient/Cluster/Redis.js';
 export type * from './DataBase.js';
 export * from './Settings.js';
 export type * from './TopGG.js';
