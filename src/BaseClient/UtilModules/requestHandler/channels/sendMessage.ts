@@ -44,6 +44,8 @@ async function fn(
  client?: Discord.Client<true>,
 ): Promise<Discord.Message | Error | Discord.DiscordAPIError> {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+ if (!payload) return new Error('No payload provided');
+
  const c = (guild?.client ?? client)!;
 
  if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
