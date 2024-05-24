@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -38,5 +38,5 @@ export default async (guild: Discord.Guild) => {
  * @returns A promise that resolves to a boolean,
  * indicating whether the guild member can manage guild integrations.
  */
-export const canGetIntegrations = async (me: Discord.GuildMember) =>
- me.permissions?.has(Discord.PermissionFlagsBits.ManageGuild);
+export const canGetIntegrations = (me: Discord.GuildMember) =>
+ me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);

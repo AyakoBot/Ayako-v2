@@ -41,5 +41,5 @@ export default async (guild: Discord.Guild) => {
  * @returns A promise that resolves to a boolean,
  * indicating whether the guild member can get guild invites.
  */
-export const canGetInvites = async (me: Discord.GuildMember) =>
+export const canGetInvites = (me: Discord.GuildMember) =>
  me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);
