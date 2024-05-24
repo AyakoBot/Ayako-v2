@@ -20,6 +20,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return;
  if (!guild && !postDebug) return;
+ if (!err.message.includes('DiscordAPIError')) postDebug = false;
 
  const language = await getLanguage(guild?.id ?? 'en-GB');
 
@@ -34,7 +35,7 @@ export default async (
     fields: [
      {
       name: 'Message',
-      value: err.message.split(/:+/g).slice(1, 100).join(':'),
+      value: err.message,
      },
     ],
     author: {
