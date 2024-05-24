@@ -233,7 +233,21 @@ export const checkCommandPermissions = async (
   await message.guild.client.util.request.commands.getGuildCommandsPermissions(message.guild);
  }
 
- const guildPerms = message.guild.client.util.cache.commandPermissions.cache.get(message.guildId);
+ let guildPerms = message.guild.client.util.cache.commandPermissions.cache.get(message.guildId);
+ if (!guildPerms) {
+  const perms = await message.guild.client.util.request.commands.getGuildCommandsPermissions(
+   message.guild,
+  );
+
+  if (!('message' in perms)) {
+   perms.forEach((p) => {
+    message.guild.client.util.cache.commandPermissions.set(message.guildId, p.id, p.permissions);
+   });
+
+   guildPerms = message.guild.client.util.cache.commandPermissions.cache.get(message.guildId);
+  }
+ }
+
  if (
   !guildPerms &&
   slashCommand.defaultMemberPermissions &&
