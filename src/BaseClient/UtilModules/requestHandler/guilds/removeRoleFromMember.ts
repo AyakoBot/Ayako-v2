@@ -34,7 +34,7 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).guilds
   .removeRoleFromMember(guild.id, userId, role.id, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

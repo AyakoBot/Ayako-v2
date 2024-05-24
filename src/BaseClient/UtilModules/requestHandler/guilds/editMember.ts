@@ -42,7 +42,7 @@ export default async (
   .editMember(member.guild.id, member.id, body, { reason })
   .then((m) => new Classes.GuildMember(member.client, m, member.guild))
   .catch((e) => {
-   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(member.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

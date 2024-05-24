@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
+import error from '../../error.js';
 
 /**
  * Updates the application role connection for the given guild.
@@ -11,17 +11,19 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the updated role connection information,
  * or rejects with an error.
  */
-export default async (
- guild: Discord.Guild,
+async function fn(
+ guild: undefined | null | Discord.Guild,
  applicationId: string,
  body: Discord.RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
-) => {
+): Promise<Discord.APIApplicationRoleConnection | Discord.DiscordAPIError | Error> {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).users
+ return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
   .updateApplicationRoleConnection(applicationId, body)
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e;
   });
-};
+}
+
+export default fn;

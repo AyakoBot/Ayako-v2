@@ -36,7 +36,7 @@ export default async (
   .create(body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

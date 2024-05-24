@@ -10,6 +10,6 @@ import cache from '../../cache.js';
  */
 export default async (guild: Discord.Guild) =>
  (cache.apis.get(guild.id) ?? API).stickers.getNitroStickers().catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  error(guild, e);
   return e as Discord.DiscordAPIError;
  });

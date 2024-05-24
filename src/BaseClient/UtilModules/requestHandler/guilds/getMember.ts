@@ -7,22 +7,39 @@ import * as Classes from '../../../Other/classes.js';
  * Retrieves a member from a guild by their user ID.
  * @param guild The guild to retrieve the member from, undefined if no custom API should be used
  * @param userId The ID of the user to retrieve.
- * @param g The guild to retrieve the member from, in case no custom API should be used
+ * @param saveGuild - The guild to use if guild is not defined.
  * @returns A Promise that resolves with the GuildMember object,
  * or rejects with a DiscordAPIError if an error occurs.
  */
-export default async <T extends Discord.Guild | undefined>(
- guild: T,
+function fn(
+ guild: undefined | null | Discord.Guild,
  userId: string,
- g?: T extends undefined ? Discord.Guild : undefined,
-): Promise<Discord.GuildMember | Discord.DiscordAPIError> =>
- (guild ?? g)!.members.cache.get(userId) ??
- (guild ? cache.apis.get(guild.id) ?? API : API).guilds
-  .getMember((guild ?? g)!.id, userId)
-  .then((m) => {
-   const parsed = new Classes.GuildMember((guild ?? g)!.client, m, (guild ?? g)!);
-   if ((guild ?? g)!.members.cache.get(parsed.id)) return parsed;
-   (guild ?? g)!.members.cache.set(parsed.id, parsed);
-   return parsed;
-  })
-  .catch((e) => e as Discord.DiscordAPIError);
+ saveGuild: Discord.Guild,
+): Promise<Discord.GuildMember | Discord.DiscordAPIError | Error>;
+function fn(
+ guild: Discord.Guild,
+ userId: string,
+ saveGuild?: undefined,
+): Promise<Discord.GuildMember | Discord.DiscordAPIError | Error>;
+async function fn(
+ guild: undefined | null | Discord.Guild,
+ userId: string,
+ saveGuild?: Discord.Guild,
+): Promise<Discord.GuildMember | Discord.DiscordAPIError> {
+ const g = (guild ?? saveGuild)!;
+
+ return (
+  g.members.cache.get(userId) ??
+  ((guild ? cache.apis.get(guild.id) : undefined) ?? API).guilds
+   .getMember((guild ?? g)!.id, userId)
+   .then((m) => {
+    const parsed = new Classes.GuildMember(g.client, m, (guild ?? g)!);
+    if (g.members.cache.get(parsed.id)) return parsed;
+    g.members.cache.set(parsed.id, parsed);
+    return parsed;
+   })
+   .catch((e) => e as Discord.DiscordAPIError)
+ );
+}
+
+export default fn;

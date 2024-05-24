@@ -27,7 +27,7 @@ export default async (message: Discord.Message<true>) => {
  return (cache.apis.get(message.guild.id) ?? API).channels
   .unpinMessage(message.channelId, message.id)
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(message.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

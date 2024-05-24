@@ -9,11 +9,11 @@ import * as Classes from '../../../Other/classes.js';
  * @param guild - The guild to retrieve the voice regions for.
  * @returns A promise that resolves with an array of available voice regions.
  */
-export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).voice
+export default async (guild?: Discord.Guild) =>
+ ((guild ? cache.apis.get(guild.id) : undefined) ?? API).voice
   .getVoiceRegions()
   .then((regions) => regions.map((r) => new Classes.VoiceRegion(r)))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });

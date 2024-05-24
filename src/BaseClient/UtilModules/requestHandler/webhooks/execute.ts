@@ -64,7 +64,7 @@ async function fn(
   })
   .then((m) => new Classes.Message(c, m))
   .catch((e) => {
-   if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 }

@@ -27,7 +27,7 @@ export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason
  return (cache.apis.get(guild.id) ?? API).guilds
   .editMFALevel(guild.id, level, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

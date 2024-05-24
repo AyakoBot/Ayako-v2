@@ -27,7 +27,7 @@ export default async (channel: Discord.GuildTextBasedChannel, messages: string[]
  return (cache.apis.get(channel.guild.id) ?? API).channels
   .bulkDeleteMessages(channel.id, messages)
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

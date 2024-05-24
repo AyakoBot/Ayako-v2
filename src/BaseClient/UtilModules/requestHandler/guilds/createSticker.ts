@@ -36,17 +36,16 @@ export default async (
   .createSticker(guild.id, body, { reason })
   .then((s) => new Classes.Sticker(guild.client, s))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };
 
-// TODO: CreateGuildExpressions should be coming to D.js soon.
 /**
  * Checks if the given guild member has the permission to create an sticker.
  * @param me - The guild member to check.
  * @returns True if the guild member has the permission to create an sticker, false otherwise.
  */
 export const canCreateSticker = (me: Discord.GuildMember) =>
- me.permissions.has(8796093022208n) ||
+ me.permissions.has(Discord.PermissionFlagsBits.CreateGuildExpressions) ||
  me.permissions.has(Discord.PermissionFlagsBits.ManageGuildExpressions);

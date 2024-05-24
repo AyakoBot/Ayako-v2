@@ -36,7 +36,7 @@ export default async (
   .editSticker(guild.id, stickerId, body, { reason })
   .then((s) => new Classes.Sticker(guild.client, s))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

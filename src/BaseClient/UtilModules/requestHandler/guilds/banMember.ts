@@ -33,7 +33,7 @@ export default async (
  return (cache.apis.get(member.guild.id) ?? API).guilds
   .banUser(member.guild.id, member.id, body, { reason })
   .catch((e) => {
-   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(member.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

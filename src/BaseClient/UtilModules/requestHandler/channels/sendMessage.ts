@@ -17,7 +17,7 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @returns A Promise that resolves to a new Message object if the message was sent successfully,
  * or rejects with a DiscordAPIError if an error occurred.
  */
-export default async <T extends Discord.Guild | undefined | null>(
+function fn<T extends Discord.Guild | undefined | null>(
  guild: T,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
@@ -26,8 +26,25 @@ export default async <T extends Discord.Guild | undefined | null>(
  client: Discord.Client<true>,
 ): Promise<
  Discord.Message<T extends Discord.Guild ? true : false> | Error | Discord.DiscordAPIError
-> => {
+>;
+function fn(
+ guild: Discord.Guild,
+ channelId: string,
+ payload: Discord.RESTPostAPIChannelMessageJSONBody & {
+  files?: Discord.RawFile[];
+ },
+ client?: undefined,
+): Promise<Discord.Message<true> | Error | Discord.DiscordAPIError>;
+async function fn(
+ guild: Discord.Guild | undefined | null,
+ channelId: string,
+ payload: Discord.RESTPostAPIChannelMessageJSONBody & {
+  files?: Discord.RawFile[];
+ },
+ client?: Discord.Client<true>,
+): Promise<Discord.Message | Error | Discord.DiscordAPIError> {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+ const c = (guild?.client ?? client)!;
 
  if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot send message`, [
@@ -49,14 +66,14 @@ export default async <T extends Discord.Guild | undefined | null>(
     ? { ...payload.message_reference, fail_if_not_exists: false }
     : undefined,
   })
-  .then(
-   (m) => new Classes.Message(client, m) as Discord.Message<T extends Discord.Guild ? true : false>,
-  )
+  .then((m) => new Classes.Message(c, m))
   .catch((e: Discord.DiscordAPIError) => {
-   if (guild) error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
-};
+}
+
+export default fn;
 
 /**
  * Determines whether the user can send a message in a channel.

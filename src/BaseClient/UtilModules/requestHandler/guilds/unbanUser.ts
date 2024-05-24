@@ -28,7 +28,7 @@ export default async (guild: Discord.Guild, userId: string, reason?: string) => 
  return (cache.apis.get(guild.id) ?? API).guilds
   .unbanUser(guild.id, userId, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

@@ -29,7 +29,7 @@ export default async (guild: Discord.Guild, roleId: string, reason?: string) => 
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteRole(guild.id, roleId, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

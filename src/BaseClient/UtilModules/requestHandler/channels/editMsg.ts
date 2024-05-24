@@ -34,7 +34,7 @@ export default async (
   .editMessage(message.channel.id, message.id, payload)
   .then((m) => new Classes.Message(message.client, m))
   .catch((e) => {
-   error(message.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(message.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

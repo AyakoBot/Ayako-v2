@@ -28,7 +28,7 @@ export default async (guild: Discord.Guild) => {
   .then((w) => new Classes.WelcomeScreen(guild, w))
   .catch((e) => {
    if (e.code === 10069) return undefined;
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

@@ -25,7 +25,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPrune
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds.getPruneCount(guild.id, query).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  error(guild, e);
   return e as Discord.DiscordAPIError;
  });
 };

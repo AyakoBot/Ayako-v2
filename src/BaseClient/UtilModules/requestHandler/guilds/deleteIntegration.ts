@@ -29,7 +29,7 @@ export default async (guild: Discord.Guild, integrationId: string, reason?: stri
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteIntegration(guild.id, integrationId, { reason })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

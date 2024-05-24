@@ -13,23 +13,15 @@ import { canSendMessage } from './requestHandler/channels/sendMessage.js';
  * @param err - The error object to be sent.
  * @returns Promise<void>
  */
-export default async (guild: Discord.Guild, err: Error, postDebug: boolean = true) => {
+export default async (
+ guild: Discord.Guild | undefined | null,
+ err: Error | Discord.DiscordAPIError,
+ postDebug: boolean = true,
+) => {
  if (process.argv.includes('--silent')) return;
- if (!proceed(err.message)) return;
+ if (!guild && !postDebug) return;
 
- const errorchannel = await DataBase.guildsettings
-  .findUnique({
-   where: { guildid: guild.id },
-   select: { errorchannel: true },
-  })
-  .then((r) => r?.errorchannel);
- if (!errorchannel) return;
-
- const { guildTextChannel } = await import('./getChannel.js');
- const channel = await guildTextChannel(errorchannel);
- if (!channel) return;
-
- const language = await getLanguage(guild.id);
+ const language = await getLanguage(guild?.id ?? 'en-GB');
 
  const payload: Omit<CT.UsualMessagePayload, 'files'> = {
   embeds: [
@@ -68,16 +60,29 @@ export default async (guild: Discord.Guild, err: Error, postDebug: boolean = tru
   ],
  };
 
- if (postDebug) sendDebugMessage(payload, guild.client);
+ if (postDebug) sendDebugMessage(payload);
+ if (!guild) return;
+ if (!proceed(err.message)) return;
+
+ const errorchannel = await DataBase.guildsettings
+  .findUnique({
+   where: { guildid: guild.id },
+   select: { errorchannel: true },
+  })
+  .then((r) => r?.errorchannel);
+ if (!errorchannel) return;
+
+ const channel = await guild.client.util.getChannel.guildTextChannel(errorchannel);
+ if (!channel) return;
+
  if (!guild.members.me) return;
  if (!canSendMessage(channel.id, payload, guild.members.me)) return;
  request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };
 
-export const sendDebugMessage = async (
- payload: CT.UsualMessagePayload,
- client: Discord.Client<true>,
-) => {
+export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
+ const client = await import('../Bot/Client.js').then((c) => c.default);
+
  client.util.request.webhooks.execute(
   undefined,
   process.env.debugWebhookId ?? '',

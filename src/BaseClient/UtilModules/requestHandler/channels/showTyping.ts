@@ -30,6 +30,6 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
  }
 
  return (cache.apis.get(channel.guild.id) ?? API).channels.showTyping(channel.id).catch((e) => {
-  error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+  error(channel.guild, e);
  });
 };

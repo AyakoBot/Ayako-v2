@@ -29,7 +29,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildsJSONB
   .create(body)
   .then((g) => new Classes.Guild(guild.client, g))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

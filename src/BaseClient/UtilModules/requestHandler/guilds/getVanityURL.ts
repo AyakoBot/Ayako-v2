@@ -74,7 +74,7 @@ export default async (guild: Discord.Guild) => {
   })
   .catch((e) => {
    if (e.message !== 'Missing Access') {
-    error(guild, new Error((e as Discord.DiscordAPIError).message));
+    error(guild, e);
    }
    return e as Discord.DiscordAPIError;
   });

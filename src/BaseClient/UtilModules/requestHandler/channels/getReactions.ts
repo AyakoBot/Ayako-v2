@@ -100,7 +100,7 @@ export default async (
    });
   })
   .catch((e) => {
-   error(msg.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

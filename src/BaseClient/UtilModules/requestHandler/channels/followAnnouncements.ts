@@ -30,7 +30,7 @@ export default async (channel: Discord.GuildTextBasedChannel, followedChannelId:
   .followAnnouncements(followedChannelId, channel.id)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

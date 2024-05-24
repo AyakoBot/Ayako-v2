@@ -33,7 +33,7 @@ export default async (channel: Discord.GuildBasedChannel) => {
    return parsed;
   })
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

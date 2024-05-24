@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
+import error from '../../error.js';
 
 /**
  * Returns the guilds for the current user.
@@ -10,8 +10,16 @@ import cache from '../../cache.js';
  * @returns A promise that resolves with the guilds for the current user,
  * or rejects with a DiscordAPIError.
  */
-export default async (guild: Discord.Guild, query?: Discord.RESTGetAPICurrentUserGuildsQuery) =>
- (cache.apis.get(guild.id) ?? API).users.getGuilds(query).catch((e) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
- });
+async function fn(
+ guild: undefined | null | Discord.Guild,
+ query?: Discord.RESTGetAPICurrentUserGuildsQuery,
+): Promise<Discord.RESTGetAPICurrentUserGuildsResult | Discord.DiscordAPIError> {
+ return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+  .getGuilds(query)
+  .catch((e) => {
+   error(guild, e);
+   return e as Discord.DiscordAPIError;
+  });
+}
+
+export default fn;

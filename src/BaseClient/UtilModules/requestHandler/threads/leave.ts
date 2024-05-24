@@ -25,7 +25,7 @@ export default async (thread: Discord.ThreadChannel) => {
  }
 
  return (cache.apis.get(thread.guild.id) ?? API).threads.leave(thread.id).catch((e) => {
-  error(thread.guild, new Error((e as Discord.DiscordAPIError).message));
+  error(thread.guild, e);
   return e as Discord.DiscordAPIError;
  });
 };

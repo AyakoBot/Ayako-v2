@@ -38,7 +38,7 @@ export default async (
   .createForumThread(channel.id, body)
   .then((t) => Classes.Channel(channel.client, t, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

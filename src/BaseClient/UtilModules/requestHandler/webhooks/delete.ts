@@ -33,7 +33,7 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };
@@ -45,7 +45,7 @@ export default async (
  * @returns A boolean indicating whether the guild member can delete webhooks.
  */
 export const canDelete = (me: Discord.GuildMember, webhook: Discord.Webhook) =>
- !webhook.token
+ webhook.token
   ? true
   : me.permissions.has(Discord.PermissionFlagsBits.ManageWebhooks) ||
     me.permissionsIn(webhook.channelId).has(Discord.PermissionFlagsBits.ManageWebhooks);

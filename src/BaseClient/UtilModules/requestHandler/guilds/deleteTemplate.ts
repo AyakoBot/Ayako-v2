@@ -28,7 +28,7 @@ export default async (guild: Discord.Guild, templateCode: string) => {
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteTemplate(guild.id, templateCode)
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

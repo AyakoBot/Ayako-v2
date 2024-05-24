@@ -41,7 +41,7 @@ export default async (
   .createThread(channel.id, body, messageId)
   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
   .catch((e) => {
-   error(channel.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

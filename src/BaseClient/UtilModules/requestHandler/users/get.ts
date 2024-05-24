@@ -1,14 +1,14 @@
 import * as Discord from 'discord.js';
+import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
 
-// TODO: use this as template for all request handlers
 /**
  * Retrieves a user from the cache or from the API if not found in cache.
  * @param guild - The guild where the user is located.
  * @param userId - The ID of the user to retrieve.
- * @param client - The client to use to retrieve the user if guild is not defined.
+ * @param client - The client to use if guild is not defined.
  * @returns A Promise that resolves to the user object.
  */
 function fn(
@@ -35,10 +35,14 @@ async function fn(
    .then((u) => {
     const parsed = new Classes.User(c, u);
     if (c.users.cache.get(parsed.id)) return parsed;
+
     c.users.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => e as Discord.DiscordAPIError)
+   .catch((e) => {
+    error(guild, e);
+    return e as Discord.DiscordAPIError;
+   })
  );
 }
 

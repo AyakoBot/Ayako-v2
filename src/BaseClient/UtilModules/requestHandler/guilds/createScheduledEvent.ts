@@ -40,17 +40,16 @@ export default async (
   )
   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };
 
-// TODO: CreateEvents should be coming to D.js soon.
 /**
  * Checks if the given guild member has the necessary permissions to create a scheduled event.
  * @param me - The Discord guild member.
  * @returns True if the guild member has the "Manage Events" permission, false otherwise.
  */
 export const canCreateScheduledEvent = (me: Discord.GuildMember) =>
- me.permissions.has(17592186044416n) ||
+ me.permissions.has(Discord.PermissionFlagsBits.CreateEvents) ||
  me.permissions.has(Discord.PermissionFlagsBits.ManageEvents);

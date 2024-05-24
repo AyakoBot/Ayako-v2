@@ -36,7 +36,7 @@ export default async (
   )
   .then((r) => new Classes.Role(guild.client, r, guild))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

@@ -29,7 +29,7 @@ export default async (member: Discord.GuildMember, reason?: string) => {
  return (cache.apis.get(member.guild.id) ?? API).guilds
   .removeMember(member.guild.id, member.id, { reason })
   .catch((e) => {
-   error(member.guild, new Error((e as Discord.DiscordAPIError).message));
+   error(member.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

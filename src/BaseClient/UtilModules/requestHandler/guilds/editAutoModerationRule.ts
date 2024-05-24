@@ -37,7 +37,7 @@ export default async (
   .editAutoModerationRule(guild.id, ruleId, body, { reason })
   .then((r) => new Classes.AutoModerationRule(guild.client, r, guild))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

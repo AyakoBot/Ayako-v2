@@ -35,7 +35,7 @@ export default async (
   .editWelcomeScreen(guild.id, body, { reason })
   .then((w) => new Classes.WelcomeScreen(guild, w))
   .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   error(guild, e);
    return e as Discord.DiscordAPIError;
   });
 };
