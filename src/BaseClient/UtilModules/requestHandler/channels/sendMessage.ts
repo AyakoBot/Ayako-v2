@@ -3,10 +3,11 @@ import { UsualMessagePayload } from '../../../../Typings/Typings.js';
 import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
 import cache from '../../cache.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import txtFileWriter from '../../txtFileWriter.js';
 
 /**
  * Sends a message to a Discord channel.
@@ -70,6 +71,7 @@ async function fn(
   })
   .then((m) => new Classes.Message(c, m))
   .catch((e: Discord.DiscordAPIError) => {
+   sendDebugMessage({ files: [txtFileWriter(JSON.stringify(payload, null, 2))] });
    error(guild, e);
    return e as Discord.DiscordAPIError;
   });

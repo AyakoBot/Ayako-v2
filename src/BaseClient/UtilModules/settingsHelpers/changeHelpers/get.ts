@@ -2,103 +2,19 @@ import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../Bot/DataBase.js';
 import setup from '../setup.js';
 
-export default async (
- tableName: keyof typeof CT.SettingsName2TableName,
+export default async <T extends keyof typeof CT.SettingsName2TableName>(
+ tableName: T,
  guildid: string,
  uniquetimestamp: number | undefined,
-) => {
+): CT.CRUDResult<T> => {
  const getDBType = () => {
-  if (uniquetimestamp) {
-   const where = { where: { uniquetimestamp } };
+  const where = uniquetimestamp ? { where: { uniquetimestamp } } : { where: { guildid } };
 
-   switch (tableName) {
-    case 'questions':
-     return DataBase.appealquestions.findUnique(where);
-    case 'shop-items':
-     return DataBase.shopitems.findUnique(where);
-    case 'vote-rewards':
-     return DataBase.voterewards.findUnique(where);
-    case 'auto-punish':
-     return DataBase.autopunish.findUnique(where);
-    case 'role-rewards':
-     return DataBase.rolerewards.findUnique(where);
-    case 'cooldowns':
-     return DataBase.cooldowns.findUnique(where);
-    case 'self-roles':
-     return DataBase.selfroles.findUnique(where);
-    case 'separators':
-     return DataBase.roleseparator.findUnique(where);
-    case 'vote':
-     return DataBase.votesettings.findUnique(where);
-    case 'multi-channels':
-     return DataBase.levelingmultichannels.findUnique(where);
-    case 'multi-roles':
-     return DataBase.levelingmultiroles.findUnique(where);
-    case 'level-roles':
-     return DataBase.levelingroles.findUnique(where);
-    case 'rule-channels':
-     return DataBase.levelingruleschannels.findUnique(where);
-    case 'button-role-settings':
-     return DataBase.buttonrolesettings.findUnique(where);
-    case 'reaction-role-settings':
-     return DataBase.reactionrolesettings.findUnique(where);
-    case 'reaction-roles':
-     return DataBase.reactionroles.findUnique(where);
-    case 'button-roles':
-     return DataBase.buttonroles.findUnique(where);
-    case 'booster-roles':
-     return DataBase.nitroroles.findUnique(where);
-    case 'voice-hubs':
-     return DataBase.voicehubs.findUnique(where);
-    default:
-     throw new Error(`1 Unsupported Setting ${tableName}`);
+  return (
+   DataBase[CT.SettingsName2TableName[tableName]] as never as {
+    findUnique: (x: typeof where) => CT.CRUDResult<T>;
    }
-  } else {
-   const where = { where: { guildid } };
-
-   switch (tableName) {
-    case 'basic':
-     return DataBase.guildsettings.findUnique(where);
-    case 'shop':
-     return DataBase.shop.findUnique(where);
-    case 'anti-spam':
-     return DataBase.antispam.findUnique(where);
-    case 'anti-virus':
-     return DataBase.antivirus.findUnique(where);
-    case 'censor':
-     return DataBase.censor.findUnique(where);
-    case 'newlines':
-     return DataBase.newlines.findUnique(where);
-    case 'invites':
-     return DataBase.invites.findUnique(where);
-    case 'expiry':
-     return DataBase.expiry.findUnique(where);
-    case 'auto-roles':
-     return DataBase.autoroles.findUnique(where);
-    case 'disboard-reminders':
-     return DataBase.disboard.findUnique(where);
-    case 'sticky':
-     return DataBase.sticky.findUnique(where);
-    case 'suggestions':
-     return DataBase.suggestionsettings.findUnique(where);
-    case 'logs':
-     return DataBase.logchannels.findUnique(where);
-    case 'verification':
-     return DataBase.verification.findUnique(where);
-    case 'leveling':
-     return DataBase.leveling.findUnique(where);
-    case 'welcome':
-     return DataBase.welcome.findUnique(where);
-    case 'nitro':
-     return DataBase.nitrosettings.findUnique(where);
-    case 'anti-raid':
-     return DataBase.antiraid.findUnique(where);
-    case 'appeals':
-     return DataBase.appealsettings.findUnique(where);
-    default:
-     throw new Error(`2 Unsupported Setting ${tableName}`);
-   }
-  }
+  ).findUnique(where);
  };
 
  return getDBType().then((r) => {

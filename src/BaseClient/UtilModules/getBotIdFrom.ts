@@ -14,8 +14,9 @@ export const token = (t: string) => Buffer.from(t.split('.')[0], 'base64').toStr
  * @returns The bot ID for the guild.
  */
 export const guild = async (g: Discord.Guild) => {
- const settings = await DataBase.guildsettings.findUnique({
+ const settings = await DataBase.customclients.findUnique({
   where: { guildid: g.id, token: { not: null } },
+  select: { token: true },
  });
  if (!settings) return g.client.user.id;
  if (!settings.token) return g.client.user.id;

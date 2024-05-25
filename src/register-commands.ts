@@ -29,7 +29,7 @@ fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/commands`, {
 });
 
 (
- await DataBase.guildsettings.findMany({ where: { token: { not: null }, appid: { not: null } } })
+ await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
 ).forEach(async (s) => {
  const api = requestHandler(s.token ?? '');
 

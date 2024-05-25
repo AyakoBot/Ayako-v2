@@ -28,10 +28,11 @@ export default async (
   embeds: [
    {
     color: 0xff0000,
-    description: `Stack Trace\n\`\`\`${err.stack?.replace(
-     /file:\/\/\/root\/Ayako-v2\/dist/g,
-     '',
-    )}\`\`\``,
+    description: `Stack Trace\n\`\`\`${err.stack
+     ?.replace(/file:\/\/\/root\/Ayako\/packages\/Bot/g, '')
+     .split(/\n+/g)
+     .filter((l) => !l.includes('node_modules') && !l.includes('node:internal'))
+     .join('\n')}\`\`\``,
     fields: [
      {
       name: 'Message',

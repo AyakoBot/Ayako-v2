@@ -312,6 +312,11 @@ export default new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('custom-client')
+   .setDescription(`Change ${process.env.mainName}'s appearance using your own Bot Client`),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('logs')
    .setDescription('Log all kinds of Discord Events into a Channel'),
  );

@@ -10,57 +10,16 @@ import DataBase from '../../Bot/DataBase.js';
  * @returns A promise that resolves to the number of rows deleted from the table.
  * @throws An error if the specified table name is not supported.
  */
-export default (
- tableName: keyof typeof CT.SettingsName2TableName,
+export default <T extends keyof typeof CT.SettingsName2TableName>(
+ tableName: T,
  guildid: string,
  uniquetimestamp: number,
-) => {
- const getDBType = () => {
-  const where = { where: { uniquetimestamp, guildid } };
+): CT.CRUDResult<T> => {
+ const where = { where: { uniquetimestamp, guildid } };
 
-  switch (tableName) {
-   case 'questions':
-    return DataBase.appealquestions.delete(where);
-   case 'shop-items':
-    return DataBase.shopitems.delete(where);
-   case 'vote-rewards':
-    return DataBase.voterewards.delete(where);
-   case 'auto-punish':
-    return DataBase.autopunish.delete(where);
-   case 'role-rewards':
-    return DataBase.rolerewards.delete(where);
-   case 'cooldowns':
-    return DataBase.cooldowns.delete(where);
-   case 'self-roles':
-    return DataBase.selfroles.delete(where);
-   case 'separators':
-    return DataBase.roleseparator.delete(where);
-   case 'vote':
-    return DataBase.votesettings.delete(where);
-   case 'multi-channels':
-    return DataBase.levelingmultichannels.delete(where);
-   case 'multi-roles':
-    return DataBase.levelingmultiroles.delete(where);
-   case 'level-roles':
-    return DataBase.levelingroles.delete(where);
-   case 'rule-channels':
-    return DataBase.levelingruleschannels.delete(where);
-   case 'button-role-settings':
-    return DataBase.buttonrolesettings.delete(where);
-   case 'reaction-role-settings':
-    return DataBase.reactionrolesettings.delete(where);
-   case 'reaction-roles':
-    return DataBase.reactionroles.delete(where);
-   case 'button-roles':
-    return DataBase.buttonroles.delete(where);
-   case 'booster-roles':
-    return DataBase.nitroroles.delete(where);
-   case 'voice-hubs':
-    return DataBase.voicehubs.delete(where);
-   default:
-    throw new Error(`Unsupported Setting ${tableName}`);
+ return (
+  DataBase[CT.SettingsName2TableName[tableName]] as never as {
+   delete: (x: typeof where) => CT.CRUDResult<T>;
   }
- };
-
- return getDBType();
+ ).delete(where);
 };

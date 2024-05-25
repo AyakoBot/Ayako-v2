@@ -13,7 +13,7 @@ export default async (message: Typings.InteractionMessage) => {
    .toString('base64')
    .replace(/=+/g, '');
 
-  const guildSettings = await client.util.DataBase.guildsettings.findFirst({
+  const guildSettings = await client.util.DataBase.customclients.findFirst({
    where: { token: { startsWith: startOfToken } },
   });
   if (!guildSettings) return;

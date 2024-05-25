@@ -3,6 +3,7 @@ import { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMenti
 import { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
 import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
 import { GlobalDescType } from '../BaseClient/UtilModules/settingsHelpers/getGlobalDesc.js';
+import type { DataBaseTables } from './DataBase.js';
 
 import type util from '../BaseClient/Bot/Util.js';
 import * as DB from './DataBase.js';
@@ -148,6 +149,7 @@ export enum SettingNames {
  VoiceHubs = 'voice-hubs',
  Appeals = 'appeals',
  Questions = 'questions',
+ CustomClient = 'customclient',
 }
 
 export const SettingsName2TableName = {
@@ -190,4 +192,9 @@ export const SettingsName2TableName = {
  [SettingNames.VoiceHubs]: 'voicehubs',
  [SettingNames.Appeals]: 'appealsettings',
  [SettingNames.Questions]: 'appealquestions',
+ [SettingNames.CustomClient]: 'customclients',
 } as const;
+
+export type CRUDResult<T extends keyof typeof SettingsName2TableName> = Promise<
+ DataBaseTables[(typeof SettingsName2TableName)[T]]
+>;

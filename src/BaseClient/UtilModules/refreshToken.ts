@@ -15,7 +15,7 @@ export default async (refreshtoken: string) => {
   refresh_token: refreshtoken,
  });
 
- DataBase.users
+ DataBase.tokens
   .updateMany({
    where: { refreshtoken },
    data: {

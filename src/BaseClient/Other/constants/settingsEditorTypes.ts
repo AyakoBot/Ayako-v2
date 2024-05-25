@@ -178,6 +178,10 @@ export default {
   ptreminderenabled: CT.EditorTypes.Boolean,
   token: CT.EditorTypes.BotToken,
  },
+ [CT.SettingNames.CustomClient]: {
+  token: CT.EditorTypes.BotToken,
+  secret: CT.EditorTypes.BotToken,
+ },
  [CT.SettingNames.DisboardReminders]: {
   repeatreminder: CT.EditorTypes.Duration,
   channelid: CT.EditorTypes.Channel,

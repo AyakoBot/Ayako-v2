@@ -75,4 +75,5 @@ export interface DataBaseTables {
  voicehubs: Prisma.voicehubs;
  voicechannels: Prisma.voicechannels;
  antiraid: Prisma.antiraid;
+ customclients: Prisma.customclients;
 }
