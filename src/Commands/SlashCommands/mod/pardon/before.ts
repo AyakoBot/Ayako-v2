@@ -15,7 +15,7 @@ export default async (
  const rawDate = cmd.options.getString('date', true);
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
- if (cmd.client.util.regexes.dateTester.test(rawDate)) {
+ if (!rawDate.match(cmd.client.util.regexes.dateTester)?.length) {
   cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }

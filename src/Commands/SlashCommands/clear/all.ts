@@ -122,7 +122,7 @@ const getMessages = async (
    );
   case 'links':
    return (await cmd.client.util.fetchMessages(channel, { amount: 500 })).filter((m) =>
-    cmd.client.util.regexes.urlTester(cmd.client.util.cache.urlTLDs.toArray()).test(m.content),
+    !!m.content.match(cmd.client.util.regexes.urlTester(cmd.client.util.cache.urlTLDs.toArray()))?.length,
    );
   case 'mentions':
    return (await cmd.client.util.fetchMessages(channel, { amount: 500 })).filter(

@@ -14,8 +14,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false) ?? language.t.noReasonProvided;
 
  if (
-  cmd.client.util.regexes.dateTester.test(rawDate1) ||
-  cmd.client.util.regexes.dateTester.test(rawDate2)
+  !rawDate1.match(cmd.client.util.regexes.dateTester)?.length ||
+  !rawDate2.match(cmd.client.util.regexes.dateTester)?.length
  ) {
   cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
