@@ -178,9 +178,16 @@ export const isValidPayload = (payload: UsualMessagePayload) => {
  }
 
  if (payload.components) {
+  const customIds = payload.components
+   .map((a) => a.components.map((c) => ('custom_id' in c ? c.custom_id : undefined)))
+   .flat()
+   .filter((s): s is string => !!s);
+  if (customIds.length !== new Set(customIds).size) return e('Duplicate Custom IDs', customIds);
+
   const check = payload.components
    .map((actionRow) => {
     if (!actionRow.components.length) return e('Empty Action Row', actionRow);
+
     const check1 = actionRow.components
      .map((c) => {
       switch (c.type) {
@@ -233,11 +240,11 @@ export const isValidPayload = (payload: UsualMessagePayload) => {
       return true;
      })
      .every((f) => !!f);
-    if (!check1) return check1;
+    if (!check1) return false;
     return true;
    })
    .every((f) => !!f);
-  if (!check) return check;
+  if (!check) return false;
  }
 
  return true;
