@@ -71,6 +71,15 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  if (!settings) return;
  if (!settings.channelid && !settings.tempchannelid) return;
 
+ if (settings.channelid && !guild.client.channels.cache.get(settings.channelid)) {
+  client.util.DataBase.disboard
+   .update({
+    where: { guildid: settings.guildid },
+    data: { msgid: null, channelid: null },
+   })
+   .then();
+ }
+
  await deleteLastReminder(settings);
  const language = await client.util.getLanguage(guild.id);
 
@@ -93,7 +102,15 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
   },
  );
 
- if (!m || 'message' in m) return;
+ if (!m || 'message' in m) {
+  client.util.DataBase.disboard
+   .update({
+    where: { guildid: settings.guildid },
+    data: { msgid: null, tempchannelid: null, nextbump: null },
+   })
+   .then();
+  return;
+ }
 
  if (!settings.repeatenabled) {
   client.util.DataBase.disboard
@@ -139,7 +156,7 @@ const deleteLastReminder = async (settings: Prisma.disboard) => {
   client.util.DataBase.disboard
    .update({
     where: { guildid: settings.guildid },
-    data: { msgid: null, tempchannelid: null, channelid: null },
+    data: { msgid: null, tempchannelid: null },
    })
    .then();
   return;
