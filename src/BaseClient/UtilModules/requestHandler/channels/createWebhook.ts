@@ -27,7 +27,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -38,7 +38,7 @@ export default async (
   })
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -28,7 +28,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -36,7 +36,7 @@ export default async (
   .editSticker(guild.id, stickerId, body, { reason })
   .then((s) => new Classes.Sticker(guild.client, s))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

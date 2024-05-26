@@ -25,7 +25,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageEvents,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -40,7 +40,7 @@ export default async (
   )
   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

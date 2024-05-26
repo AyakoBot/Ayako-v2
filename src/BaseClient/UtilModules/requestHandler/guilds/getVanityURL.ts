@@ -22,7 +22,7 @@ export default async (guild: Discord.Guild) => {
  if (!canGetVanityURL(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get vanity URL`, [Discord.PermissionFlagsBits.ManageGuild]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -74,7 +74,7 @@ export default async (guild: Discord.Guild) => {
   })
   .catch((e) => {
    if (e.message !== 'Missing Access') {
-    error(guild, e);
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
    }
    return e as Discord.DiscordAPIError;
   });

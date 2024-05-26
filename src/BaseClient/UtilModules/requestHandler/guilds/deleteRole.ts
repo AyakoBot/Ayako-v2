@@ -22,14 +22,14 @@ export default async (guild: Discord.Guild, roleId: string, reason?: string) => 
    Discord.PermissionFlagsBits.ManageRoles,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteRole(guild.id, roleId, { reason })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

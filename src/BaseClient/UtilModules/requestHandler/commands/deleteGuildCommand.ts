@@ -3,6 +3,8 @@ import { API } from '../../../Bot/Client.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
+import requestHandlerError from '../../requestHandlerError.js';
+import { canGetCommands } from './getGlobalCommand.js';
 
 /**
  * Deletes a guild command from the Discord API and removes it from the guild's command cache.
@@ -13,6 +15,15 @@ import error from '../../error.js';
  */
 export default async (guild: Discord.Guild, commandId: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+ if (!canGetCommands(guild)) {
+  const e = requestHandlerError(
+   `Cannot get own Commands. Please make sure you don't have more than 50 Bots in your Server`,
+   [],
+  );
+
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e;
+ }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
@@ -26,7 +37,7 @@ export default async (guild: Discord.Guild, commandId: string) => {
     guild.commands.cache.delete(commandId);
     return true;
    }
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -19,7 +19,7 @@ export default async (guild: Discord.Guild) => {
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -27,7 +27,7 @@ export default async (guild: Discord.Guild) => {
   .getIntegrations(guild.id)
   .then((integrations) => integrations.map((i) => new Classes.Integration(guild.client, i, guild)))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

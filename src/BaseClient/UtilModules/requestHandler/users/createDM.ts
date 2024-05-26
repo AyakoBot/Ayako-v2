@@ -33,7 +33,7 @@ async function fn(
   .createDM(userId)
   .then((dm) => Classes.Channel<typeof guild extends Discord.Guild ? 0 : 1>(c, dm, guild as never))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 }

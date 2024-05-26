@@ -25,7 +25,7 @@ async function fn(
  const g = (guild ?? saveGuild)!;
 
  return (cache.apis.get(g.id) ?? API).users.getConnections().catch((e) => {
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });
 }

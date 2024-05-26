@@ -27,7 +27,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -35,7 +35,7 @@ export default async (
   .editTemplate(guild.id, templateCode, body)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

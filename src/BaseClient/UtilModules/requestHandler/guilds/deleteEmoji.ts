@@ -21,14 +21,14 @@ export default async (guild: Discord.Guild, emojiId: string, reason?: string) =>
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteEmoji(guild.id, emojiId, { reason })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

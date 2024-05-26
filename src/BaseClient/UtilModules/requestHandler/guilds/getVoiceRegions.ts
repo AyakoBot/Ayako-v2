@@ -14,6 +14,6 @@ export default async (guild: Discord.Guild) =>
   .getVoiceRegions(guild.id)
   .then((voiceRegions) => voiceRegions.map((vR) => new Classes.VoiceRegion(vR)))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

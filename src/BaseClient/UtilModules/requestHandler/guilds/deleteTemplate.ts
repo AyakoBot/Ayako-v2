@@ -21,14 +21,14 @@ export default async (guild: Discord.Guild, templateCode: string) => {
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteTemplate(guild.id, templateCode)
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

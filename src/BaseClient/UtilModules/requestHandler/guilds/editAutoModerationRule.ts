@@ -29,7 +29,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -37,7 +37,7 @@ export default async (
   .editAutoModerationRule(guild.id, ruleId, body, { reason })
   .then((r) => new Classes.AutoModerationRule(guild.client, r, guild))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

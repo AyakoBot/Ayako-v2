@@ -16,7 +16,7 @@ export default async (guild: Discord.Guild) => {
  if (!canGetTemplates(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get template`, [Discord.PermissionFlagsBits.KickMembers]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -24,7 +24,7 @@ export default async (guild: Discord.Guild) => {
   .getTemplates(guild.id)
   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

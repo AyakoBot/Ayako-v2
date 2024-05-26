@@ -28,14 +28,14 @@ export default async (
    Discord.PermissionFlagsBits.MuteMembers,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .editUserVoiceState(guild.id, userId, body, { reason })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

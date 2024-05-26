@@ -21,7 +21,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONB
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -37,7 +37,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONB
   })
   .then((g) => new Classes.Guild(guild.client, g))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

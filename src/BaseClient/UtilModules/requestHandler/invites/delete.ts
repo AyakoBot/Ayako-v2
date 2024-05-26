@@ -22,12 +22,12 @@ export default async (guild: Discord.Guild, code: string, reason?: string) => {
    Discord.PermissionFlagsBits.ManageChannels,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).invites.delete(code, { reason }).catch((e) => {
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });
 };

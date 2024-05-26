@@ -16,6 +16,6 @@ export default async (guild: Discord.Guild) =>
   .getTemplate(guild.id)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

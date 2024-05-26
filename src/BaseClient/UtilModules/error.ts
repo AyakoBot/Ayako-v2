@@ -24,15 +24,19 @@ export default async (
 
  const language = await getLanguage(guild?.id ?? 'en-GB');
 
+ const filteredStack = err.stack
+  ?.replace(/file:\/\/\/root\/Ayako\/packages\/Bot/g, '')
+  .split(/\n+/g)
+  .filter((l) => !l.includes('node_modules') && !l.includes('node:internal'));
+
  const payload: Omit<CT.UsualMessagePayload, 'files'> = {
   embeds: [
    {
+    footer: {
+     text: `Filtered stacktrace size: ${filteredStack?.length ?? 0}`
+    },
     color: 0xff0000,
-    description: `Stack Trace\n\`\`\`${err.stack
-     ?.replace(/file:\/\/\/root\/Ayako\/packages\/Bot/g, '')
-     .split(/\n+/g)
-     .filter((l) => !l.includes('node_modules') && !l.includes('node:internal'))
-     .join('\n')}\`\`\``,
+    description: `Stack Trace\n\`\`\`${Number(filteredStack?.length) < 3 ? err.stack : filteredStack?.join('\n')}\`\`\``,
     fields: [
      {
       name: 'Message',
@@ -103,6 +107,7 @@ const proceed = (message: string) => {
   case message.includes('Unknown Message'):
   case message.includes('Unknown Member'):
   case message.includes('Unknown Channel'):
+  case message.includes('Cannot send messages to this user'):
    return false;
 
   default:

@@ -4,6 +4,8 @@ import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
+import requestHandlerError from '../../requestHandlerError.js';
+import { canGetCommands } from './getGlobalCommand.js';
 
 /**
  * Overwrites all existing global commands for this application in this guild.
@@ -16,6 +18,15 @@ export default async (
  body: Discord.RESTPutAPIApplicationGuildCommandsJSONBody,
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+ if (!canGetCommands(guild)) {
+  const e = requestHandlerError(
+   `Cannot get own Commands. Please make sure you don't have more than 50 Bots in your Server`,
+   [],
+  );
+
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e;
+ }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .bulkOverwriteGuildCommands(await getBotIdFromGuild(guild), guild.id, body)
@@ -36,7 +47,7 @@ export default async (
    return parsed;
   })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

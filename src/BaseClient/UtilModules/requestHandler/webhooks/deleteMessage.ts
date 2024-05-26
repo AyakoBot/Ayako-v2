@@ -24,7 +24,7 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).webhooks
   .deleteMessage(webhookId, token, messageId, query)
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
 };

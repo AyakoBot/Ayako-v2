@@ -24,7 +24,7 @@ export default async (
  if (!canCreateRole(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot create role`, [Discord.PermissionFlagsBits.ManageRoles]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -36,7 +36,7 @@ export default async (
   )
   .then((r) => new Classes.Role(guild.client, r, guild))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -27,7 +27,7 @@ export default async (guild: Discord.Guild, commandId: string) => {
     guild.client.application.commands.cache.delete(commandId);
     return true;
    }
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

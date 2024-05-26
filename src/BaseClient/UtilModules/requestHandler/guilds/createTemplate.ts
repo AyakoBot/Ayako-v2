@@ -22,7 +22,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTempla
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -30,7 +30,7 @@ export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTempla
   .createTemplate(guild.id, body)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 
@@ -26,6 +26,9 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
  }
 
  return (cache.apis.get(thread.guild.id) ?? API).threads.addMember(thread.id, userId).catch((e) => {
+  sendDebugMessage({
+   content: `${thread.id} - ${thread.guild.id} - ${thread.guild.members.me?.permissions.toJSON()}`,
+  });
   error(thread.guild, e);
   return e as Discord.DiscordAPIError;
  });

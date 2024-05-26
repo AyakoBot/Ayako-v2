@@ -20,7 +20,7 @@ export default async (guild: Discord.Guild, templateCode: string) => {
  if (!canSyncTemplate(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot sync template`, [Discord.PermissionFlagsBits.ManageGuild]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -28,7 +28,7 @@ export default async (guild: Discord.Guild, templateCode: string) => {
   .syncTemplate(guild.id, templateCode)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

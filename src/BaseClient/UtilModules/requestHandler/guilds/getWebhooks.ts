@@ -18,7 +18,7 @@ export default async (guild: Discord.Guild) => {
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -26,7 +26,7 @@ export default async (guild: Discord.Guild) => {
   .getWebhooks(guild.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

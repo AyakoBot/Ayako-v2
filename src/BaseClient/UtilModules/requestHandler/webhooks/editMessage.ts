@@ -29,7 +29,7 @@ export default async (
   .editMessage(webhookId, token, messageId, body)
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });
 };

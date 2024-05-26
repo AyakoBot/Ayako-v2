@@ -15,7 +15,7 @@ export default async (guild: Discord.Guild, client: boolean = false) => {
  return ((!client ? cache.apis.get(guild.id) : undefined) ?? API).users
   .leaveGuild(guild.id)
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

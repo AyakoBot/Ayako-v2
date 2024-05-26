@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 type Response = Promise<
  | Discord.DMChannel
@@ -18,9 +18,17 @@ type Response = Promise<
  * @param id The ID of the channel to retrieve.
  * @returns A Promise that resolves with the retrieved channel.
  */
-function fn(guild: Discord.Guild | null | undefined, id: string, client: Discord.Client<true>): Response;
+function fn(
+ guild: Discord.Guild | null | undefined,
+ id: string,
+ client: Discord.Client<true>,
+): Response;
 function fn(guild: Discord.Guild, id: string, client?: undefined): Response;
-async function fn(guild: Discord.Guild | null | undefined, id: string, client?: Discord.Client<true>): Response {
+async function fn(
+ guild: Discord.Guild | null | undefined,
+ id: string,
+ client?: Discord.Client<true>,
+): Response {
  const c = (guild?.client ?? client)!;
 
  return (
@@ -38,7 +46,7 @@ async function fn(guild: Discord.Guild | null | undefined, id: string, client?: 
     return parsed;
    })
    .catch((e) => {
-    error(guild, e);
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    })
  );

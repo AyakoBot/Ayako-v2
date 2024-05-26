@@ -7,7 +7,6 @@ import error, { sendDebugMessage } from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
-import txtFileWriter from '../../txtFileWriter.js';
 
 /**
  * Sends a message to a Discord channel.
@@ -45,7 +44,7 @@ async function fn(
  client?: Discord.Client<true>,
 ): Promise<Discord.Message | Error | Discord.DiscordAPIError> {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
- if (!payload) return new Error('No payload provided');
+ if (!payload || String(payload) === 'undefined') return new Error('No payload provided');
 
  const c = (guild?.client ?? client)!;
 
@@ -71,8 +70,10 @@ async function fn(
   })
   .then((m) => new Classes.Message(c, m))
   .catch((e: Discord.DiscordAPIError) => {
-   sendDebugMessage({ files: [txtFileWriter(JSON.stringify(payload, null, 2))] });
-   error(guild, e);
+   sendDebugMessage({
+    content: `${guild?.id} - ${channelId}\n${JSON.stringify(payload, null, 2)}`,
+   });
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 }
@@ -122,7 +123,9 @@ export const canSendMessage = (
   case payload.files?.length &&
    !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.AttachFiles, true):
    return false;
-
+  case payload.embeds?.length &&
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.EmbedLinks, true):
+   return false;
   default:
    return true;
  }

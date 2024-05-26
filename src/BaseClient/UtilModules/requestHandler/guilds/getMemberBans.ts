@@ -18,7 +18,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQ
  if (!canGetMemberBan(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get member bans`, [Discord.PermissionFlagsBits.BanMembers]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -33,7 +33,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQ
    return parsed;
   })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

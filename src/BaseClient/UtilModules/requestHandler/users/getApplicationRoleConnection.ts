@@ -18,7 +18,7 @@ async function fn(
  return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
   .getApplicationRoleConnection(applicationId)
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 }

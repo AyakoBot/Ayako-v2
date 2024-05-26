@@ -26,14 +26,14 @@ export default async (
    Discord.PermissionFlagsBits.ManageWebhooks,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

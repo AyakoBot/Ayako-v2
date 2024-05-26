@@ -22,14 +22,14 @@ export default async (guild: Discord.Guild, stickerId: string, reason?: string) 
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .deleteSticker(guild.id, stickerId, { reason })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

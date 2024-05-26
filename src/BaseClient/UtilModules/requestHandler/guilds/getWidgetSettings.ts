@@ -18,7 +18,7 @@ export default async (guild: Discord.Guild) => {
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -26,7 +26,7 @@ export default async (guild: Discord.Guild) => {
   .getWidgetSettings(guild.id)
   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -18,7 +18,7 @@ export default async (guild: Discord.Guild, userId: string) => {
  if (!canGetMemberBan(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get member ban`, [Discord.PermissionFlagsBits.BanMembers]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 

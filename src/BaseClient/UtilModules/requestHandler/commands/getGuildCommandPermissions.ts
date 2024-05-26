@@ -3,6 +3,8 @@ import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
+import requestHandlerError from '../../requestHandlerError.js';
+import { canGetCommands } from './getGlobalCommand.js';
 
 /**
  * Retrieves the permissions for a specific command in a guild.
@@ -10,14 +12,25 @@ import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
  * @param commandId - The ID of the command to retrieve permissions for.
  * @returns A promise that resolves with the command permissions, or rejects with a DiscordAPIError.
  */
-export default async (guild: Discord.Guild, commandId: string) =>
- (cache.apis.get(guild.id) ?? API).applicationCommands
+export default async (guild: Discord.Guild, commandId: string) => {
+ if (!canGetCommands(guild)) {
+  const e = requestHandlerError(
+   `Cannot get own Commands. Please make sure you don't have more than 50 Bots in your Server`,
+   [],
+  );
+
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e;
+ }
+
+ return (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandPermissions(await getBotIdFromGuild(guild), guild.id, commandId)
   .then((res) => {
    cache.commandPermissions.set(guild.id, commandId, res.permissions);
    return res.permissions;
   })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+};

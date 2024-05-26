@@ -21,14 +21,14 @@ export default async (guild: Discord.Guild, userId: string, reason?: string) => 
    Discord.PermissionFlagsBits.BanMembers,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds
   .unbanUser(guild.id, userId, { reason })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

@@ -28,7 +28,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageGuildExpressions,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -36,7 +36,7 @@ export default async (
   .editEmoji(guild.id, emojiId, body, { reason })
   .then((e) => new Classes.GuildEmoji(guild.client, e, guild))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

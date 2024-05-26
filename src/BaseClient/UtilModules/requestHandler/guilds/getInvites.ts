@@ -16,7 +16,7 @@ export default async (guild: Discord.Guild) => {
  if (!canGetInvites(await getBotMemberFromGuild(guild))) {
   const e = requestHandlerError(`Cannot get invites`, [Discord.PermissionFlagsBits.ManageGuild]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -31,7 +31,7 @@ export default async (guild: Discord.Guild) => {
    return parsed;
   })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

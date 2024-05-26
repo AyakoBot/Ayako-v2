@@ -27,6 +27,16 @@ export default async (guild: Discord.Guild, commandId: string) =>
    return parsed;
   })
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
+
+/**
+ * Checks if the guild can get commands.
+ * A guild can get commands if the number of bot members in the guild is less than or equal to 50.
+ *
+ * @param guild - The Discord guild to check.
+ * @returns A boolean indicating whether the guild can get commands.
+ */
+export const canGetCommands = (guild: Discord.Guild) =>
+ !(guild.members.cache.filter((m) => m.user.bot).size > 50);

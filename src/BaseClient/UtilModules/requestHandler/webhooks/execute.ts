@@ -5,6 +5,13 @@ import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
 import * as CT from '../../../../Typings/Typings.js';
 
+type body =
+ | (Discord.RESTPostAPIWebhookWithTokenJSONBody &
+    Discord.RESTPostAPIWebhookWithTokenQuery & {
+     files?: Discord.RawFile[];
+    })
+ | CT.UsualMessagePayload;
+
 /**
  * Executes a webhook with the given parameters
  * and returns a Promise that resolves with a new Message object.
@@ -18,36 +25,21 @@ function fn(
  guild: undefined | null | Discord.Guild,
  webhookId: string,
  token: string,
- body:
-  | (Discord.RESTPostAPIWebhookWithTokenJSONBody &
-     Discord.RESTPostAPIWebhookWithTokenQuery & {
-      files?: Discord.RawFile[];
-     })
-  | CT.UsualMessagePayload,
+ body: body,
  client: Discord.Client<true>,
 ): Promise<Classes.Message | Discord.DiscordAPIError>;
 function fn(
  guild: Discord.Guild,
  webhookId: string,
  token: string,
- body:
-  | (Discord.RESTPostAPIWebhookWithTokenJSONBody &
-     Discord.RESTPostAPIWebhookWithTokenQuery & {
-      files?: Discord.RawFile[];
-     })
-  | CT.UsualMessagePayload,
+ body: body,
  client?: undefined,
 ): Promise<Classes.Message | Discord.DiscordAPIError>;
 async function fn(
  guild: Discord.Guild | undefined | null,
  webhookId: string,
  token: string,
- body:
-  | (Discord.RESTPostAPIWebhookWithTokenJSONBody &
-     Discord.RESTPostAPIWebhookWithTokenQuery & {
-      files?: Discord.RawFile[];
-     })
-  | CT.UsualMessagePayload,
+ body: body,
  client?: Discord.Client<true>,
 ) {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
@@ -64,7 +56,7 @@ async function fn(
   })
   .then((m) => new Classes.Message(c, m))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 }

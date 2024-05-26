@@ -27,7 +27,7 @@ export default async (
    Discord.PermissionFlagsBits.ManageGuild,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
@@ -35,7 +35,7 @@ export default async (
   .editWelcomeScreen(guild.id, body, { reason })
   .then((w) => new Classes.WelcomeScreen(guild, w))
   .catch((e) => {
-   error(guild, e);
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
 };

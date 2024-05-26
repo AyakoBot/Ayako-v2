@@ -20,12 +20,12 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPrune
    Discord.PermissionFlagsBits.KickMembers,
   ]);
 
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
  }
 
  return (cache.apis.get(guild.id) ?? API).guilds.getPruneCount(guild.id, query).catch((e) => {
-  error(guild, e);
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });
 };
