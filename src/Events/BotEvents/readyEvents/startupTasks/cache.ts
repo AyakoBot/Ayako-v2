@@ -137,20 +137,33 @@ export const startupTasks = {
   });
  },
  punishments: async (gIds: string[]) => {
-  const where = { where: { guildid: { in: gIds } } };
+  const where: Parameters<
+   | typeof client.util.DataBase.punish_tempmutes.findMany
+   | typeof client.util.DataBase.punish_tempbans.findMany
+   | typeof client.util.DataBase.punish_tempchannelbans.findMany
+  >[0] = { where: { guildid: { in: gIds } } };
   const tables = [
    {
-    rows: () => client.util.DataBase.punish_mutes.findMany(where),
+    rows: () =>
+     client.util.DataBase.punish_tempmutes.findMany(
+      where as Parameters<typeof client.util.DataBase.punish_tempmutes.findMany>[0],
+     ),
     cache: client.util.cache.mutes,
     event: CT.ModTypes.MuteRemove,
    },
    {
-    rows: () => client.util.DataBase.punish_tempbans.findMany(where),
+    rows: () =>
+     client.util.DataBase.punish_tempbans.findMany(
+      where as Parameters<typeof client.util.DataBase.punish_tempbans.findMany>[0],
+     ),
     cache: client.util.cache.bans,
     event: CT.ModTypes.BanRemove,
    },
    {
-    rows: () => client.util.DataBase.punish_tempchannelbans.findMany(where),
+    rows: () =>
+     client.util.DataBase.punish_tempchannelbans.findMany(
+      where as Parameters<typeof client.util.DataBase.punish_tempchannelbans.findMany>[0],
+     ),
     cache: client.util.cache.channelBans,
     event: CT.ModTypes.ChannelBanRemove,
    },
@@ -303,7 +316,7 @@ const tasks = {
  punishments: (
   table:
    | {
-      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_mutes[]>;
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempmutes[]>;
       cache: typeof client.util.cache.mutes;
       event: CT.ModTypes.MuteRemove;
      }
@@ -317,7 +330,7 @@ const tasks = {
       cache: typeof client.util.cache.channelBans;
       event: CT.ModTypes.ChannelBanRemove;
      },
-  m: Prisma.punish_tempchannelbans | Prisma.punish_tempbans | Prisma.punish_mutes,
+  m: Prisma.punish_tempchannelbans | Prisma.punish_tempbans | Prisma.punish_tempmutes,
   guild: Discord.Guild,
  ) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
@@ -325,7 +338,7 @@ const tasks = {
   table.cache.set(
    Jobs.scheduleJob(
     getPathFromError(new Error()),
-    new Date(Date.now() < time ? 1000 : time),
+    new Date(Date.now() > time ? Date.now() + 10000 : time),
     async () => {
      const target = m.userid
       ? await client.util.getUser(m.userid).catch(() => undefined)

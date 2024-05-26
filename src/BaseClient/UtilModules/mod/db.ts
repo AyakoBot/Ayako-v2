@@ -103,7 +103,7 @@ export default async <T extends CT.ModTypes>(
    });
 
    if (prevBan) {
-    DataBase.punish_bans.delete({ where: { uniquetimestamp: prevBan.uniquetimestamp } }).then();
+    DataBase.punish_tempbans.delete({ where: { uniquetimestamp: prevBan.uniquetimestamp } }).then();
    }
 
    return prevBan
