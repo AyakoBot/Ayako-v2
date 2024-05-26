@@ -2144,7 +2144,8 @@
    "delay": "This Operation might take a while to finish, please be patient",
    "syncing": "Syncing Permissions...",
    "willTake": "This will finish {{time}}",
-   "synced": "Synced"
+   "synced": "Synced",
+   "syncRunning": "There's a Command-Permission-Sync running already. If you can't see it, run </rp manager:{{cmdId}}> to view it"
   },
   "stp": {
    "button": "Click here to view all invokable Properties",

@@ -5,6 +5,22 @@ import { getComponents } from '../../SlashCommands/rp/manager.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const lan = language.slashCommands.rp;
+
+ const guildSettings = await cmd.client.util.DataBase.guildsettings.findUnique({
+  where: { guildid: cmd.guildId },
+  select: { lastrpsyncrun: true },
+ });
+ if (Number(guildSettings?.lastrpsyncrun) > Date.now() - 3600000) {
+  cmd.client.util.errorCmd(
+   cmd,
+   lan.syncRunning((await cmd.client.util.getCustomCommand(cmd.guild, 'rp'))?.id ?? '0'),
+   language,
+  );
+  return;
+ }
+
  const customClient = await cmd.client.util.DataBase.customclients.findUnique({
   where: { guildid: cmd.guildId },
  });
@@ -13,8 +29,6 @@ export default async (cmd: Discord.ButtonInteraction) => {
    userid_botid: { userid: cmd.user.id, botid: customClient?.appid ?? process.env.mainId ?? '' },
   },
  });
- const language = await cmd.client.util.getLanguage(cmd.guildId);
- const lan = language.slashCommands.rp;
 
  if (!tokens) {
   cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
