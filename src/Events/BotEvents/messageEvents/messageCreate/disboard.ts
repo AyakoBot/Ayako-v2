@@ -135,6 +135,16 @@ const deleteLastReminder = async (settings: Prisma.disboard) => {
 
  const channel = await client.util.getChannel.guildTextChannel(settings.tempchannelid);
 
+ if (!channel) {
+  client.util.DataBase.disboard
+   .update({
+    where: { guildid: settings.guildid },
+    data: { msgid: null, tempchannelid: null, channelid: null },
+   })
+   .then();
+  return;
+ }
+
  const m = channel
   ? await client.util.request.channels
      .getMessage(channel, settings.msgid)
