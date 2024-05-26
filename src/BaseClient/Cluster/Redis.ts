@@ -52,3 +52,5 @@ client.subscribe(MessageType.Appeal, (message) => {
 
  Manager.broadcast(new BaseMessage({ appeal: data, type: MessageType.Appeal }));
 });
+
+export default client;

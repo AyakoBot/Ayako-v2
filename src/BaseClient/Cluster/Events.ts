@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import Manager from './Manager.js';
 import warning from '../../Events/ProcessEvents/warning.js';
+import redis from './Redis.js';
 
 process.setMaxListeners(5);
 
@@ -9,9 +10,12 @@ process.on('uncaughtException', async (error: string) => console.log(error));
 process.on('promiseRejectionHandledWarning', (error: string) => console.log(error));
 process.on('experimentalWarning', (error: string) => console.log(error));
 
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
  Manager.broadcastEval((cl) => cl.emit('SIGINT'));
  console.log('[SIGINT]: Gracefully shutting down...');
+
+ await redis.disconnect();
+
  process.exit(0);
 });
 
