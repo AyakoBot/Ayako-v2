@@ -149,7 +149,7 @@ export enum SettingNames {
  VoiceHubs = 'voice-hubs',
  Appeals = 'appeals',
  Questions = 'questions',
- CustomClient = 'customclient',
+ CustomClient = 'custom-client',
 }
 
 export const SettingsName2TableName = {

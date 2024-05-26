@@ -5,19 +5,31 @@ import { getComponents } from '../../SlashCommands/rp/manager.js';
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const user = await cmd.client.util.DataBase.users.findUnique({ where: { userid: cmd.user.id } });
+ const customClient = await cmd.client.util.DataBase.customclients.findUnique({
+  where: { guildid: cmd.guildId },
+ });
+ const tokens = await cmd.client.util.DataBase.tokens.findUnique({
+  where: {
+   userid_botid: { userid: cmd.user.id, botid: customClient?.appid ?? process.env.mainId ?? '' },
+  },
+ });
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- if (!user?.refreshtoken || !user?.accesstoken || !user?.expires) {
+ if (!tokens) {
   cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
   return;
  }
 
- if (Number(user.expires) < Date.now()) {
-  user.accesstoken = await cmd.client.util.refreshToken(user.refreshtoken);
+ if (!tokens.scopes.includes(Discord.OAuth2Scopes.ApplicationCommandsPermissionsUpdate)) {
+  cmd.client.util.errorCmd(cmd, lan.badScopes, language);
+  return;
  }
- if (!user.accesstoken) {
+
+ if (Number(tokens.expires) < Date.now()) {
+  tokens.accesstoken = await cmd.client.util.refreshToken(tokens.refreshtoken ?? '');
+ }
+ if (!tokens.accesstoken) {
   cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
   return;
  }
@@ -35,16 +47,23 @@ export default async (cmd: Discord.ButtonInteraction) => {
   .map((c) =>
    cmd.client.util.request.commands.editGuildCommandPermissions(
     cmd.guild as Discord.Guild,
-    user.accesstoken as string,
+    tokens.accesstoken ?? '',
     c.id,
     { permissions: perms },
    ),
   );
 
- const guildsettings = await cmd.client.util.DataBase.guildsettings.update({
-  where: { guildid: cmd.guildId },
-  data: { lastrpsyncrun: Date.now() },
- });
+ const guildsettings = await cmd.client.util.DataBase.$transaction([
+  cmd.client.util.DataBase.guildsettings.upsert({
+   where: { guildid: cmd.guildId },
+   update: { lastrpsyncrun: Date.now() },
+   create: { guildid: cmd.guildId, lastrpsyncrun: Date.now() },
+  }),
+  cmd.client.util.DataBase.customclients.findUnique({
+   where: { guildid: cmd.guildId },
+   select: { appid: true },
+  }),
+ ]).then(([g, c]) => ({ ...g, appid: c?.appid ?? null }));
 
  await cmd.update({
   components: getComponents(language, lan, cmd, guildsettings),

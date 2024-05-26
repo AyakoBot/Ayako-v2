@@ -11,16 +11,22 @@ export default async (
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- const guildsettings = await cmd.client.util.DataBase.guildsettings.findUnique({
-  where: { guildid: cmd.guildId },
- });
+ const guildsettings = await cmd.client.util.DataBase.$transaction([
+  cmd.client.util.DataBase.guildsettings.upsert({
+   where: { guildid: cmd.guildId },
+   update: {},
+   create: { guildid: cmd.guildId },
+  }),
+  cmd.client.util.DataBase.customclients.findUnique({
+   where: { guildid: cmd.guildId },
+   select: { appid: true },
+  }),
+ ]).then(([g, c]) => ({ ...g, appid: c?.appid ?? null }));
 
  const payload = {
   embeds: [
    {
-    author: {
-     name: lan.author,
-    },
+    author: { name: lan.author },
     description: `${lan.desc}`,
     color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
     fields: lan.fields(
@@ -31,7 +37,7 @@ export default async (
     ),
    },
   ],
-  components: getComponents(language, lan, cmd, guildsettings),
+  components: getComponents(language, lan, cmd, guildsettings ?? undefined),
  };
 
  if (isReplied) {
@@ -44,9 +50,7 @@ export const getComponents = (
  language: CT.Language,
  lan: CT.Language['slashCommands']['rp'],
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
- guildsettings?: CT.DePromisify<
-  ReturnType<(typeof cmd.client.util)['DataBase']['guildsettings']['findUnique']>
- >,
+ guildsettings?: CT.DataBaseTables['guildsettings'] & { appid: string | null },
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent>[] => [
  {
   type: Discord.ComponentType.ActionRow,
@@ -79,7 +83,11 @@ export const getComponents = (
     type: Discord.ComponentType.Button,
     label: language.t.login,
     style: Discord.ButtonStyle.Link,
-    url: 'https://ayakobot.com/login',
+    url: `https://discord.com/oauth2/authorize?client_id=${
+     guildsettings?.appid ?? process.env.mainId
+    }&response_type=code&redirect_uri=https%3A%2F%2Fayakobot.com%2Flogin&scope=${
+     Discord.OAuth2Scopes.ApplicationCommandsPermissionsUpdate
+    }+${Discord.OAuth2Scopes.Identify}${guildsettings?.appid ? `&state=${cmd.guildId}` : ''}`,
     disabled: !cmd.member.permissions.has(Discord.PermissionsBitField.Flags.ManageGuild),
    },
   ],

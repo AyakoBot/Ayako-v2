@@ -6,13 +6,15 @@ import * as Discord from 'discord.js';
  * @returns A Promise that resolves with the fetched channel,
  * or undefined if the channel was not found.
  */
-const getChannel = async (channelId: string) => {
+const getChannel = async (channelId: string, fetch: boolean = false) => {
  const client = (await import('../Bot/Client.js')).default;
  return (
   client.channels.cache.get(channelId) ??
-  client.util.request.channels
-   .get(undefined, channelId, client as Discord.Client<true>)
-   .then((r) => (!r || 'message' in r ? undefined : r))
+  (fetch
+   ? client.util.request.channels
+      .get(undefined, channelId, client as Discord.Client<true>)
+      .then((r) => (!r || 'message' in r ? undefined : r))
+   : undefined)
  );
 };
 
@@ -22,7 +24,7 @@ const getChannel = async (channelId: string) => {
  * @returns The thread channel if found, otherwise undefined.
  */
 export const threadChannel = async (channelId: string) => {
- const channel = await getChannel(channelId);
+ const channel = await getChannel(channelId, true);
  if (!channel) return undefined;
  if (!channel.isThread()) return undefined;
  return channel;

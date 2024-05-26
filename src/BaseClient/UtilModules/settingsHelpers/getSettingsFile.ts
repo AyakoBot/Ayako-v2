@@ -30,7 +30,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
   ),
  );
  if (!file) {
-  error(guild, new Error('No file found for settings'));
+  error(guild, new Error(`No file found for settings ${settingName}`));
   return undefined;
  }
 

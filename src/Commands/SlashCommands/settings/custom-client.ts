@@ -56,23 +56,17 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
    {
     name: lan.fields.token.name,
     value: settings.token
-     ? `${client.util.util.makeInlineCode(
+     ? client.util.util.makeInlineCode(
         `${settings.token.split('.')[0]}.${'*'.repeat(
          settings.token.split('.')[1].length,
         )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
-       )}\n[${language.t.InviteCustomBot}](${client.util.constants.standard.invite.replace(
-        process.env.mainId ?? '',
-        settings.appid ?? process.env.mainId ?? '',
-       )})`
+       )
      : language.t.None,
    },
    {
     name: lan.fields.secret.name,
     value: settings.secret
-     ? `${client.util.util.makeInlineCode('*'.repeat(settings.secret.length))}\n[${language.t.InviteCustomBot}](${client.util.constants.standard.invite.replace(
-        process.env.mainId ?? '',
-        settings.appid ?? process.env.mainId ?? '',
-       )})`
+     ? client.util.util.makeInlineCode('*'.repeat(settings.secret.length))
      : language.t.None,
    },
   ],

@@ -4,8 +4,7 @@ import * as CT from '../../../../Typings/Typings.js';
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
- const fieldName =
-  args.shift() as keyof typeof language.slashCommands.settings.categories.customclient.fields;
+ const fieldName = args.shift();
  if (!fieldName) return;
 
  const settingName = args.shift() as CT.SettingNames;
@@ -49,7 +48,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Success,
       custom_id: `settings/editors/string_${fieldName}_${settingName}_${uniquetimestamp}`,
-      label: language.slashCommands.settings.categories.customclient.fields[fieldName]!.name,
+      label: (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      )?.name,
      },
     ],
    },
