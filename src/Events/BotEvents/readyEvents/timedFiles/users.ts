@@ -25,6 +25,8 @@ const getRelevantUserIds = async () => {
 };
 
 export default async () => {
+ if (client.user?.id !== process.env.mainId) return;
+
  const relevantUsers = await getRelevantUserIds();
  const expiredUsers = await client.util.DataBase.users.findMany({
   where: { userid: { in: relevantUsers }, lastfetch: { lt: Date.now() - 86400000 } },
