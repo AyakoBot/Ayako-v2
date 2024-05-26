@@ -1,3 +1,4 @@
+import { BaseMessage } from 'discord-hybrid-sharding';
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
@@ -11,6 +12,7 @@ import {
 import { end as endReminder } from '../../../../Commands/SlashCommands/reminder/create.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
+import appeal from '../../../ClusterEvents/appeal.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
@@ -21,6 +23,20 @@ export default () => {
 };
 
 export const startupTasks = {
+ appeals: async (gIds: string[]) => {
+  const appeals = await client.util.DataBase.appeals.findMany({
+   where: { guildid: { in: gIds }, received: false },
+  });
+
+  appeals.forEach((a) => {
+   appeal(
+    new BaseMessage({
+     type: CT.MessageType.Appeal,
+     appeal: { userId: a.userid, guildId: a.guildid, punishmentId: a.punishmentid },
+    }) as CT.AppealMessage,
+   );
+  });
+ },
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  reminder: async (_: string[]) => {
   const reminders = await client.util.DataBase.reminders.findMany({

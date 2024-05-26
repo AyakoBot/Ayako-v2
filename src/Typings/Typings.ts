@@ -210,3 +210,9 @@ export enum PunishmentType {
  Tempchannelban = 'tempchannelban',
  Softban = 'softban',
 }
+
+export enum MessageType {
+ Appeal = 'appeal',
+ Vote = 'vote',
+ Interaction = 'interaction',
+}

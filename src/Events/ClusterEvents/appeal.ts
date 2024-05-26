@@ -4,6 +4,11 @@ import client from '../../BaseClient/Bot/Client.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async ({ appeal }: CT.AppealMessage) => {
+ await client.util.DataBase.appeals.update({
+  where: { punishmentid: appeal.punishmentId },
+  data: { received: true },
+ });
+
  const settings = await client.util.DataBase.appealsettings.findUnique({
   where: { guildid: appeal.guildId, active: true },
  });
