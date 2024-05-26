@@ -333,23 +333,23 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (!message) return;
      if (!message.components.length) return;
 
+     const components = componentChunks
+      .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
+      .map((c) => ({
+       type: Discord.ComponentType.ActionRow,
+       components: c,
+      }))
+      .filter(
+       (c) => c.components.length,
+      ) as Discord.APIActionRowComponent<Discord.APIButtonComponent>[];
+
      if (message?.author.id === guild.client.user.id) {
       API.channels.editMessage(message.channelId, message.id, {
-       components: componentChunks
-        .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
-        .map((c) => ({
-         type: Discord.ComponentType.ActionRow,
-         components: c,
-        })),
+       components,
       });
      } else {
       client.util.request.channels.editMessage(guild, message.channelId, message.id, {
-       components: componentChunks
-        .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
-        .map((c) => ({
-         type: Discord.ComponentType.ActionRow,
-         components: c,
-        })),
+       components,
       });
      }
      break;
