@@ -39,9 +39,8 @@ export const startupTasks = {
  },
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  reminder: async (_: string[]) => {
-  const reminders = await client.util.DataBase.reminders.findMany({
-   where: {},
-  });
+  if (client.user?.id !== process.env.mainId) return;
+  const reminders = await client.util.DataBase.reminders.findMany({ where: {} });
 
   reminders.forEach((r) => {
    client.util.cache.reminders.set(
