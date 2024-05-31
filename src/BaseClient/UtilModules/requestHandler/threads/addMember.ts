@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -26,9 +26,15 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
  }
 
  return (cache.apis.get(thread.guild.id) ?? API).threads.addMember(thread.id, userId).catch((e) => {
-  sendDebugMessage({
-   content: `${thread.id} - ${thread.guild.id} - ${thread.guild.members.me?.permissions.toJSON()}`,
-  });
+  if (e.message.includes('Missing Access')) {
+   const e = requestHandlerError(
+    `Cannot add User ${userId} to thread ${thread.name} / ${thread.id} because they are not a member`,
+    [Discord.PermissionFlagsBits.SendMessages],
+   );
+
+   error(thread.guild, e);
+   return e as Discord.DiscordAPIError;
+  }
   error(thread.guild, e);
   return e as Discord.DiscordAPIError;
  });
