@@ -46,6 +46,7 @@ export default async (
    }
   >);
  if (!channel) return undefined;
+ if (!target) return;
 
  const thread = await target.client.util.request.channels.createThread(channel, {
   type: Discord.ChannelType.PrivateThread,
