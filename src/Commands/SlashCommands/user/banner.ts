@@ -5,7 +5,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const rawUser = cmd.options.getUser('user', false) || cmd.user;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const user = await cmd.client.util.request.users.get(cmd.guild, rawUser.id, cmd.client);
+ const user = await cmd.client.util.request.users
+  .get(cmd.guild, rawUser.id, cmd.client)
+  .then((u) =>
+   !('message' in u) && !u.banner
+    ? cmd.client.util.request.users.get(cmd.guild, rawUser.id, cmd.client, { force: true })
+    : u,
+  );
  if (!user || 'message' in user) {
   cmd.client.util.errorCmd(cmd, language.errors.userNotExist, language);
   return;
@@ -30,3 +36,4 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ],
  });
 };
+
