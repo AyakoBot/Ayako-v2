@@ -7,7 +7,7 @@ import DataBase from '../Bot/DataBase.js';
  * @param guild The guild to retrieve the log channel ID for.
  * @returns The log channel ID for the specified column name and guild, or undefined if not found.
  */
-export default async (
+export default (
  columnName:
   | 'applicationevents'
   | 'automodevents'
@@ -28,4 +28,7 @@ export default async (
   | 'modlog'
   | 'memberevents',
  guild: Discord.Guild,
-) => DataBase.logchannels.findUnique({ where: { guildid: guild.id } }).then((r) => r?.[columnName]);
+) =>
+ DataBase.logchannels
+  .findUnique({ where: { guildid: guild.id }, select: { [columnName]: true } })
+  .then((r) => ((r?.[columnName] as undefined | string[])?.length ? r?.[columnName] : undefined));
