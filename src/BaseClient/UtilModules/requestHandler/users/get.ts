@@ -15,21 +15,24 @@ function fn(
  guild: undefined | null | Discord.Guild,
  userId: string,
  client: Discord.Client<true>,
+ options?: { force: true },
 ): Promise<Classes.User | Discord.DiscordAPIError>;
 function fn(
  guild: Discord.Guild,
  userId: string,
  client?: undefined,
+ options?: { force: true },
 ): Promise<Classes.User | Discord.DiscordAPIError>;
 async function fn(
  guild: undefined | null | Discord.Guild,
  userId: string,
  client?: Discord.Client<true>,
+ options?: { force: true },
 ): Promise<Classes.User | Discord.DiscordAPIError> {
  const c = (guild?.client ?? client)!;
 
  return (
-  c!.users.cache.get(userId) ??
+  (!options?.force ? c!.users.cache.get(userId) : undefined) ??
   ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
    .get(userId)
    .then((u) => {
