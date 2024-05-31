@@ -4,6 +4,7 @@ import cache from './cache.js';
 import thanks4Adding from './thanks4Adding.js';
 import log from './log.js';
 import ayakoRole from './ayakoRole.js';
+import nitro from './nitro.js';
 
 export default async (guild: Discord.Guild) => {
  thanks4Adding(guild);
@@ -11,4 +12,5 @@ export default async (guild: Discord.Guild) => {
  cache(guild);
  installSlashCommands(guild);
  ayakoRole(guild);
+ nitro(guild);
 };
