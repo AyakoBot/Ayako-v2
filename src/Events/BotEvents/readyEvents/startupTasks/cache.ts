@@ -354,34 +354,49 @@ const tasks = {
 
      const channel = await client.util.getChannel.guildTextChannel(m.channelid);
 
-     client.util.mod(
-      m.msgid && channel
-       ? await client.util.request.channels
-          .getMessage(channel, m.msgid)
-          .then((s) => ('message' in s ? undefined : s))
-       : undefined,
-      table.event,
-      {
-       executor: m.executorid
-        ? await client.util.getUser(m.executorid).catch(() => undefined)
+     const options: CT.ModOptions<
+      CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
+     > = {
+      executor: m.executorid
+       ? await client.util.getUser(m.executorid).catch(() => undefined)
+       : await client.util.getBotMemberFromGuild(guild),
+      target,
+      reason: m.reason ?? '-',
+      guild,
+      skipChecks: true,
+      dbOnly: false,
+      channel: undefined,
+     } as typeof options;
+
+     if (
+      !('banchannelid' in m) ||
+      guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
+     ) {
+      client.util.mod(
+       m.msgid && channel
+        ? await client.util.request.channels
+           .getMessage(channel, m.msgid)
+           .then((s) => ('message' in s ? undefined : s))
         : undefined,
-       target,
-       reason: m.reason ?? '-',
-       guild,
-       skipChecks: true,
-       dbOnly:
-        'banchannelid' in m
-         ? !!guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
-         : false,
-       channel:
-        'banchannelid' in m
-         ? (guild.channels.cache.get(
-            (m as Prisma.punish_tempchannelbans).banchannelid,
-           ) as Discord.GuildChannel)
+       table.event,
+       options,
+      );
+     }
+
+     Jobs.scheduleJob(
+      guild.client.util.getPathFromError(new Error()),
+      new Date(Date.now() + 10000),
+      async () => {
+       client.util.mod(
+        m.msgid && channel
+         ? await client.util.request.channels
+            .getMessage(channel, m.msgid)
+            .then((s) => ('message' in s ? undefined : s))
          : undefined,
-      } as CT.ModOptions<
-       CT.ModTypes.ChannelBanRemove | CT.ModTypes.BanRemove | CT.ModTypes.MuteRemove
-      >,
+        table.event,
+        { ...options, dbOnly: true },
+       );
+      },
      );
     },
    ),
