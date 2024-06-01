@@ -2806,7 +2806,7 @@
      }
     },
     "expiry": {
-     "desc": "⚠️ Note: ⚠️\nAll of these Settings are {{t.botName}}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:{{cmdId}}>",
+     "desc": "⚠️ Note: ⚠️\nAll of these Settings are {{t.botName}}-Internal!\nExample: Setting Bans to expire after 5 Months will not lead to an Auto-Unban after 5 Months, the entry will just be deleted from Commands like </check:{{cmdId}}>\nNote that an expired Punishment is also unappealable",
      "name": "Expiry",
      "fields": {
       "bans": {
