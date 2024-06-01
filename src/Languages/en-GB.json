@@ -3516,6 +3516,10 @@
        "name": "Language",
        "desc": "The Language {{t.botName}} displays in"
       },
+      "notifychannel": {
+       "name": "Notification Channel",
+       "desc": "The Channel in which to notify Users about Punishments and other Messages of similar urgency.\nPlease make sure everyone can view this Channel so they can see important Notifications\nDefaults to the Server's Rules-Channel"
+      },
       "errorchannel": {
        "name": "Error Channel",
        "desc": "The Channel to post Error Messages in"

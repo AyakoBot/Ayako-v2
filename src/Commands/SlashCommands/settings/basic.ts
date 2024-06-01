@@ -104,6 +104,19 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     inline: false,
    },
    {
+    name: lan.fields.notifychannel.name,
+    value:
+     settings.notifychannel || guild.rulesChannel || guild.rulesChannelId
+      ? embedParsers.channel(
+         settings?.notifychannel ??
+          guild.rulesChannel?.id ??
+          (guild.rulesChannelId ? `<#${guild.rulesChannelId}>` : null),
+         language,
+        )
+      : language.t.None,
+    inline: true,
+   },
+   {
     name: lan.fields.errorchannel.name,
     value: embedParsers.channel(settings?.errorchannel, language),
     inline: true,
@@ -154,6 +167,14 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
+   buttonParsers.specific(
+    language,
+    settings?.notifychannel,
+    'notifychannel',
+    name,
+    undefined,
+    CT.EditorTypes.Channel,
+   ),
    buttonParsers.specific(
     language,
     settings?.errorchannel,

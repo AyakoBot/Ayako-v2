@@ -172,6 +172,7 @@ export default {
   editrpcommands: CT.EditorTypes.Boolean,
   lan: CT.EditorTypes.Language,
   errorchannel: CT.EditorTypes.Channel,
+  notifychannel: CT.EditorTypes.Channel,
   statuschannel: CT.EditorTypes.Channel,
   updateschannel: CT.EditorTypes.Channel,
   vanity: CT.EditorTypes.String,

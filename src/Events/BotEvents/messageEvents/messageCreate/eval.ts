@@ -3,6 +3,7 @@ import ms from 'ms';
 import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
+import * as CT from '../../../../Typings/Typings.js';
 import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
 // eslint-disable-next-line no-unused-expressions
@@ -15,6 +16,8 @@ os.arch;
 antiraid;
 // eslint-disable-next-line no-unused-expressions
 ms;
+// eslint-disable-next-line no-unused-expressions
+CT;
 
 const reg = new RegExp(
  (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',

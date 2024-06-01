@@ -14,7 +14,13 @@ export default async (
  target: Discord.GuildMember,
  payload: UsualMessagePayload,
 ): Promise<undefined | Discord.Message<true>> => {
+ const settings = await target.client.util.DataBase.guildsettings.findUnique({
+  where: { guildid: target.guild.id },
+  select: { notifychannel: true },
+ });
+
  const channel =
+  (settings?.notifychannel ? target.guild.channels.cache.get(settings.notifychannel)  as Discord.GuildTextBasedChannel: null) ??
   target.guild.rulesChannel ??
   target.guild.systemChannel ??
   (target.guild.channels.cache.find(
