@@ -32,7 +32,7 @@ export const startupTasks = {
    appeal(
     new BaseMessage({
      type: CT.MessageType.Appeal,
-     appeal: { userId: a.userid, guildId: a.guildid, punishmentId: a.punishmentid },
+     appeal: { userId: String(a.userid), guildId: String(a.guildid), punishmentId: String(a.punishmentid) },
     }) as CT.AppealMessage,
    );
   });

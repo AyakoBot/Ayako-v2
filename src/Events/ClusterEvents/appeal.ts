@@ -50,7 +50,7 @@ export default async ({ appeal }: CT.AppealMessage) => {
   color: client.util.getColor(await client.util.getBotMemberFromGuild(guild)),
   fields: appealAnswers
    .map((a) => {
-    const question = questions.find((q) => q.uniquetimestamp.equals(a.questionid));
+    const question = questions.find((q) => String(q.uniquetimestamp) === String(a.questionid));
     if (!question) return undefined;
 
     const getAnswer = () => {
@@ -93,9 +93,7 @@ export default async ({ appeal }: CT.AppealMessage) => {
     };
    })
    .filter((f): f is { name: string; value: string; inline: boolean } => !!f?.value),
-  author: {
-   name: lan.author,
-  },
+  author: { name: lan.author },
  };
 
  client.util.send(channel, {
