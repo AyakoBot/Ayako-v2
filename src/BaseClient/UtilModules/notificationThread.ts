@@ -1,7 +1,7 @@
 import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
 import deleteThread from './deleteNotificationThread.js';
-import { UsualMessagePayload } from '../../Typings/Typings.js';
+import { Colors, UsualMessagePayload } from '../../Typings/Typings.js';
 import getPathFromError from './getPathFromError.js';
 
 /**
@@ -20,7 +20,9 @@ export default async (
  });
 
  const channel =
-  (settings?.notifychannel ? target.guild.channels.cache.get(settings.notifychannel)  as Discord.GuildTextBasedChannel: null) ??
+  (settings?.notifychannel
+   ? (target.guild.channels.cache.get(settings.notifychannel) as Discord.GuildTextBasedChannel)
+   : null) ??
   target.guild.rulesChannel ??
   target.guild.systemChannel ??
   (target.guild.channels.cache.find(
@@ -65,8 +67,13 @@ export default async (
  const member = await target.client.util.request.threads.addMember(thread, target.id);
  if (member && 'message' in member) return undefined;
 
- const message = await target.client.util.send(thread, payload);
+ const finishedPayload = convertLinkButtons2EmbedLinks(payload);
+ const message = await target.client.util.send(thread, finishedPayload);
  if (message && 'message' in message) return undefined;
+
+ if (!finishedPayload.components?.length) {
+  target.client.util.request.channels.edit(thread, { locked: true });
+ }
 
  return (message as Discord.Message<true> | void | undefined) || undefined;
 };
@@ -83,3 +90,38 @@ const putDel = (target: Discord.GuildMember, thread: Discord.ThreadChannel) =>
   target.guild.id,
   thread.id,
  );
+
+// TODO: check status https://github.com/discord/discord-api-docs/issues/6907
+const convertLinkButtons2EmbedLinks = (payload: UsualMessagePayload): UsualMessagePayload => {
+ const linkButtons = payload.components
+  ?.map((c) =>
+   c.components.filter(
+    (b) => b.type === Discord.ComponentType.Button && b.style === Discord.ButtonStyle.Link,
+   ),
+  )
+  .flat() as Discord.APIButtonComponentWithURL[] | undefined;
+ if (!linkButtons?.length) return payload;
+
+ const newComponents:
+  | Discord.APIActionRowComponent<Discord.APIButtonComponent | Discord.APISelectMenuComponent>[]
+  | undefined = (
+  payload.components?.map((c) => ({
+   type: Discord.ComponentType.ActionRow,
+   components: c.components.filter(
+    (b) =>
+     b.type !== Discord.ComponentType.Button ||
+     (b.type === Discord.ComponentType.Button && b.style !== Discord.ButtonStyle.Link),
+   ),
+  })) as
+   | Discord.APIActionRowComponent<Discord.APIButtonComponent | Discord.APISelectMenuComponent>[]
+   | undefined
+ )?.filter((c) => c.components.length);
+
+ if (!payload.embeds?.length) payload.embeds = [];
+ payload.embeds.push({
+  description: linkButtons.map((b) => `🔗 [${b.label}](${b.url})`).join(' | '),
+  color: Colors.Ephemeral,
+ });
+
+ return { ...payload, components: newComponents };
+};
