@@ -31,7 +31,7 @@ async function fn(
  return (
   g.members.cache.get(userId) ??
   ((guild ? cache.apis.get(guild.id) : undefined) ?? API).guilds
-   .getMember((guild ?? g)!.id, userId)
+   .getMember(g.id, userId)
    .then((m) => {
     const parsed = new Classes.GuildMember(g.client, m, (guild ?? g)!);
     if (g.members.cache.get(parsed.id)) return parsed;
