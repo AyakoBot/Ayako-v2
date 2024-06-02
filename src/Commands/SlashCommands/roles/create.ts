@@ -1,4 +1,6 @@
 import * as Discord from 'discord.js';
+import { canCreateRole } from '../../../BaseClient/UtilModules/requestHandler/guilds/createRole.js';
+import { canEditRole } from '../../../BaseClient/UtilModules/requestHandler/guilds/editRole.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -22,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- if (Number(positionRole?.rawPosition) >= cmd.member.roles.highest.rawPosition) {
+ if (!canCreateRole(cmd.member) || (positionRole ? !canEditRole(cmd.member, positionRole.id) : false)) {
   cmd.client.util.errorCmd(cmd, language.errors.cantManageRole, language);
   return;
  }
