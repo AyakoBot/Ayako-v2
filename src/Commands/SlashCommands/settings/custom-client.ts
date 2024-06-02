@@ -216,7 +216,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     client.util.DataBase.customclients.update({
      where: { guildid: guild.id },
      data: { publickey: me.verify_key, appid: me.id },
-     select: {},
+     select: { guildid: true },
     }),
     client.util.DataBase.guildsettings.findUnique({
      where: { guildid: guild.id },
