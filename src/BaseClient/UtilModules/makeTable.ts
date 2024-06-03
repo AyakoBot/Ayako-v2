@@ -1,5 +1,4 @@
-import spaces from './spaces.js';
-import * as util from './util.js';
+import * as Discord from 'discord.js';
 
 /**
  * Creates a formatted table from a 2D array of strings.
@@ -8,10 +7,14 @@ import * as util from './util.js';
  * @returns The formatted table as a string.
  */
 export default (args: string[][]) => {
- const columnLengths = args[0].map((a) => Number(a.length));
+ const lengths = args[0].map((_, i) =>
+  args.reduce((maxLen, row) => Math.max(maxLen, row[i].length), 0),
+ );
 
- const finContent = util.makeCodeBlock(
-  args.map((xRow) => xRow.map((x, i) => spaces(x, columnLengths[i])).join(' | ')).join('\n'),
+ const finContent = Discord.codeBlock(
+  args
+   .map((xRow) => xRow.map((x, i) => (x.length ? x : ' ').padEnd(lengths[i])).join(' | '))
+   .join('\n'),
  );
 
  return finContent;
