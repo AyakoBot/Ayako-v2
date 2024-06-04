@@ -21,7 +21,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canCreateThread(channel.id, body, await getBotMemberFromGuild(channel.guild))) {
+ if (!canCreateThread(channel, body, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(
    `Cannot create ${
     body.type === Discord.ChannelType.PrivateThread ? 'private' : 'public / announcement'
@@ -48,16 +48,22 @@ export default async (
 
 /**
  * Checks if the given user has permission to create a thread in the specified channel.
- * @param channelId - The ID of the guild text-based channel to check.
+ * @param channel - The guild text-based channel to check.
  * @param me - The guild member representing the user.
  * @returns True if the user has permission to create a thread, false otherwise.
  */
 export const canCreateThread = (
- channelId: string,
+ channel: Discord.GuildTextBasedChannel,
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
  me: Discord.GuildMember,
 ) =>
- me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel) &&
+ [
+  Discord.ChannelType.GuildAnnouncement,
+  Discord.ChannelType.GuildStageVoice,
+  Discord.ChannelType.GuildText,
+  Discord.ChannelType.GuildVoice,
+ ].includes(channel.type) &&
+ me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ViewChannel) &&
  (body.type === Discord.ChannelType.PublicThread
-  ? me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreatePublicThreads)
-  : me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.CreatePrivateThreads));
+  ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePublicThreads)
+  : me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePrivateThreads));

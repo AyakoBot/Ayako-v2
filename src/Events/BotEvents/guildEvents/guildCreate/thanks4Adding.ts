@@ -126,7 +126,12 @@ const getChannel = (guild: Discord.Guild, sendable?: true) => {
   guild.channels.cache.find(
    (c) =>
     guild.members.me?.permissionsIn(c).has(Discord.PermissionFlagsBits.SendMessages) &&
-    [Discord.ChannelType.GuildText, Discord.ChannelType.GuildVoice].includes(c.type),
+    [Discord.ChannelType.GuildText, Discord.ChannelType.GuildVoice].includes(c.type) &&
+    ![
+     Discord.ChannelType.GuildNewsThread,
+     Discord.ChannelType.GuildPublicThread,
+     Discord.ChannelType.GuildPrivateThread,
+    ].includes(c.type),
   ) as Discord.GuildTextBasedChannel | undefined;
 
  if (sendable) return { thread: false, channel: getAnySendableChannel() };
