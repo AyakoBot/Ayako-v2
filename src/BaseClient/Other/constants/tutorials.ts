@@ -16,4 +16,7 @@ export default {
  [CT.SettingNames.Vote]: [
   { name: 'Tutorial for Vote Rewards', link: 'https://youtu.be/7GKmsirsf0M' },
  ],
+ [CT.SettingNames.CustomClient]: [
+  { name: 'Tutorial for Custom Clients', link: 'https://youtu.be/wrdg6xi8Wpo' },
+ ],
 };
