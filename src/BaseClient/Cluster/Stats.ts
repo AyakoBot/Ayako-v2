@@ -79,7 +79,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     'Content-Type': 'application/json',
     Authorization: process.env.DBToken ?? '',
    },
-  });
+  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
 
   fetch(APIDiscordBotList, {
    method: 'post',
@@ -91,7 +91,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     'Content-Type': 'application/json',
     Authorization: process.env.DBListToken ?? '',
    },
-  });
+  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
 
   fetch(APIDiscords, {
    method: 'post',
@@ -100,7 +100,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     'Content-Type': 'application/json',
    },
    body: JSON.stringify({ server_count: guilds }),
-  });
+  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
 
   fetch(APITopGG, {
    method: 'post',
@@ -113,7 +113,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => String(c)),
     shard_count: Manager.totalShards,
    }),
-  });
+  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
 
   fetch(APIInfinityBots, {
    method: 'post',
@@ -127,6 +127,6 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
     shard_list: Manager.shardList,
     users,
    }),
-  });
+  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
  });
 }
