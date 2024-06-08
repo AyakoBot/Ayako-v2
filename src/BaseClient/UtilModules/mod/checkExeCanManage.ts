@@ -13,6 +13,7 @@ export default async (
  language: CT.Language,
  type: CT.ModTypes,
 ): Promise<boolean> => {
+ if (executor.id === executor.guild.ownerId) return true;
  if (target.roles.highest.position < executor.roles.highest.position) return true;
  if (!message) return false;
 
