@@ -54,6 +54,7 @@ export default async (
 
  if (
   cmd.member &&
+  cmd.member.id !== cmd.guild.ownerId &&
   Number(cmd.member?.displayName.length) <= 26 &&
   !cmd.member?.displayName.endsWith(' [AFK]')
  ) {
@@ -73,10 +74,7 @@ export default async (
     text,
     since: Date.now(),
    },
-   update: {
-    text,
-    since: Date.now(),
-   },
+   update: { text, since: Date.now() },
   })
   .then();
 };
