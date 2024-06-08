@@ -9,8 +9,9 @@ export default async (member: Discord.GuildMember) => {
  if (!member.guild.members.me) return;
 
  if (
+  member.guild.rulesChannel &&
   !canCreateThread(
-   member.guild.rulesChannelId,
+   member.guild.rulesChannel,
    { type: Discord.ChannelType.PrivateThread, name: '' },
    member.guild.members.me,
   )
