@@ -32,7 +32,11 @@ export const startupTasks = {
    appeal(
     new BaseMessage({
      type: CT.MessageType.Appeal,
-     appeal: { userId: String(a.userid), guildId: String(a.guildid), punishmentId: String(a.punishmentid) },
+     appeal: {
+      userId: String(a.userid),
+      guildId: String(a.guildid),
+      punishmentId: String(a.punishmentid),
+     },
     }) as CT.AppealMessage,
    );
   });
@@ -365,7 +369,7 @@ const tasks = {
       guild,
       skipChecks: true,
       dbOnly: false,
-      channel: undefined,
+      channel: 'banchannelid' in m ? guild.channels.cache.get(m.banchannelid) : undefined,
      } as typeof options;
 
      if (
