@@ -87,6 +87,10 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
  const language = await client.util.getLanguage(giveaway.guildid);
  const embed = await getGiveawayEmbed(language, giveaway);
 
+ if (guild.memberCount - guild.memberCount / 10 > guild.members.cache.size) {
+  await guild.client.util.fetchAllGuildMembers(guild);
+ }
+
  embed.author.name += ` | ${language.slashCommands.giveaway.end.ended}`;
 
  if (!giveaway.participants?.length) {
@@ -102,7 +106,9 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
    .fill(0)
    .map(() => {
     const random = client.util.getRandom(0, Number(giveaway.participants?.length || 1) - 1);
-    const winner = giveaway.participants[random];
+    const winner = giveaway.participants.filter((p) =>
+     giveaway.reqrole ? guild.members.cache.get(p)?.roles.cache.has(giveaway.reqrole) : true,
+    )[random];
     giveaway.participants.splice(giveaway.participants.indexOf(winner), 1);
 
     return winner;

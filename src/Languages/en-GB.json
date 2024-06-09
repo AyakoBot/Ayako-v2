@@ -3619,9 +3619,9 @@
     "reroll": "Reroll"
    },
    "participate": {
-    "cantEnter": "You don't meet the Requirements to participate in this Giveaway",
-    "entered": "You are now participating in this Giveaway",
-    "left": "You are no longer participating in this Giveaway",
+    "reqNotMet": "**Giveaway joined!**\nYou don't currently meet the Requirements to participate in this Giveaway,\n__but__ I saved your Entry in case you meet the Requirements when the Giveaway ends",
+    "entered": "**Giveaway joined!**",
+    "left": "**Giveaway left!**",
     "participants": "{{n}} Participants",
     "notFound": "Either the Giveaway ended or it was deleted"
    },

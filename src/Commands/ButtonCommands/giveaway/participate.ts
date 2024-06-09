@@ -25,11 +25,6 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
- if (giveaway.reqrole && !member.roles?.cache.has(giveaway.reqrole)) {
-  cmd.client.util.errorCmd(cmd, lan.cantEnter, language);
-  return;
- }
-
  switch (true) {
   case giveaway.participants?.includes(cmd.user.id): {
    cmd.client.util.replyCmd(cmd, { content: lan.left });
@@ -38,7 +33,12 @@ export default async (cmd: Discord.ButtonInteraction) => {
    break;
   }
   case !giveaway.participants?.includes(cmd.user.id): {
-   cmd.client.util.replyCmd(cmd, { content: lan.entered });
+   cmd.client.util.replyCmd(cmd, {
+    content:
+     giveaway.reqrole && !cmd.member.roles.cache.has(giveaway.reqrole)
+      ? lan.reqNotMet
+      : lan.entered,
+   });
 
    if (!giveaway.participants) giveaway.participants = [cmd.user.id];
    else giveaway.participants.push(cmd.user.id);
