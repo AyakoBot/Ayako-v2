@@ -87,7 +87,6 @@ const mention = async (
   create: { guildid: msg.guildId },
   update: {},
  });
- if (settings && !settings.active) return;
 
  const afk = (
   await Promise.all(
@@ -103,13 +102,7 @@ const mention = async (
   ),
  );
  contents.forEach((c, i) => {
-  afk[i].text = c
-   ? c
-      .slice(0, Number(settings?.maxLetters))
-      .split(/\n/g)
-      .splice(0, Number(settings?.maxNewlines))
-      .join('\n')
-   : null;
+  afk[i].text = c ? c.slice(0, Number(settings?.maxLetters)) : null;
  });
 
  const embeds = afk

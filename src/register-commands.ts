@@ -38,7 +38,8 @@ fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/commands`, {
    s.appid ?? '',
    createCommands.map((c) => c.toJSON()),
   )
-  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`));
+  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
+  .catch(() => console.log(`Unauthorized for ${s.appid}`));
 });
 
 setTimeout(async () => {

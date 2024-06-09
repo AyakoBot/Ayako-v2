@@ -3501,10 +3501,6 @@
       "maxLetters": {
        "name": "Max. Letters/Symbols",
        "desc": "The Amount of maximum allowed Letters/Symbols in an AFK-Status"
-      },
-      "maxNewlines": {
-       "name": "Max Newlines",
-       "desc": "The Amount of maximum allowed Newlines in an AFK-Status"
       }
      }
     },

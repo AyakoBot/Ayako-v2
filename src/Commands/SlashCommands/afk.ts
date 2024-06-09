@@ -12,27 +12,6 @@ export default async (
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.afk;
-
- const settings = await cmd.client.util.DataBase.afksettings.upsert({
-  where: { guildid: cmd.guildId },
-  create: { guildid: cmd.guildId },
-  update: {},
- });
- if (!settings.active) {
-  cmd instanceof Discord.ChatInputCommandInteraction
-   ? cmd.client.util.errorCmd(
-      cmd,
-      lan.disabled((await cmd.client.util.getCustomCommand(cmd.guild, 'settings'))?.id ?? '0'),
-      language,
-     )
-   : cmd.client.util.request.channels.addReaction(
-      cmd,
-      cmd.client.util.constants.standard.getEmoteIdentifier(
-       cmd.client.util.emotes.crossWithBackground,
-      ),
-     );
- }
-
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
 
  const afk = await cmd.client.util.DataBase.afk.findUnique({

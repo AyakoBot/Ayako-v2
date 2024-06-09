@@ -37,26 +37,17 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
-   ?.length
-   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
-      name as keyof typeof client.util.constants.tutorials
-     ].map((t) => `[${t.name}](${t.link})`)}`
-   : undefined,
+  description: `${lan.desc}\n\n${
+   client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
+      ].map((t) => `[${t.name}](${t.link})`)}`
+    : ''
+  }`,
   fields: [
-   {
-    name: language.slashCommands.settings.active,
-    value: embedParsers.boolean(settings?.active, language),
-    inline: false,
-   },
    {
     name: lan.fields.maxLetters.name,
     value: embedParsers.number(settings?.maxLetters, language),
-    inline: true,
-   },
-   {
-    name: lan.fields.maxNewlines.name,
-    value: embedParsers.number(settings?.maxNewlines, language),
     inline: true,
    },
   ],
@@ -71,14 +62,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, !!settings?.active, CT.GlobalDescType.Active, name, undefined),
-  ],
- },
- {
-  type: Discord.ComponentType.ActionRow,
-  components: [
    buttonParsers.specific(language, settings?.maxLetters, 'maxLetters', name, undefined),
-   buttonParsers.specific(language, settings?.maxNewlines, 'maxNewlines', name, undefined),
   ],
  },
 ];

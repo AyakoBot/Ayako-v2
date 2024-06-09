@@ -320,6 +320,5 @@ export default {
  },
  [CT.SettingNames.Afk]: {
   maxLetters: CT.EditorTypes.Number,
-  maxNewlines: CT.EditorTypes.Number,
  }
 };
