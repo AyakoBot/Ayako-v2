@@ -69,7 +69,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
  scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
   const users = await getAllUsers();
   const guilds = await getAllGuilds();
-  console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`)
+  console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`);
 
   fetch(APIDiscordBots, {
    method: 'post',
@@ -111,7 +111,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
    },
    body: JSON.stringify({
     server_count: guilds,
-    shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => String(c)),
+    shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => c),
     shard_count: Manager.totalShards,
    }),
   }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
