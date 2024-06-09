@@ -69,6 +69,7 @@ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.e
  scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
   const users = await getAllUsers();
   const guilds = await getAllGuilds();
+  console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`)
 
   fetch(APIDiscordBots, {
    method: 'post',
