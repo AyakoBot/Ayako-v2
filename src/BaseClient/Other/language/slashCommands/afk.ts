@@ -8,4 +8,5 @@ export default (t: CT.Language) => ({
  removed: (time: string) => t.stp(t.JSON.slashCommands.afk.removed, { time }),
  isAFK: (user: string, since: string, text: string) =>
   t.stp(t.JSON.slashCommands.afk.isAFK, { user, since, text }),
+ disabled: (cmdId: string) => t.stp(t.JSON.slashCommands.afk.disabled, { cmdId }),
 });

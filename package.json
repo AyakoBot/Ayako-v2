@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@ayako/bot",
-  "version": "2.0.53",
+  "version": "2.1.0",
   "scripts": {
     "start": "pnpm run run",
     "run": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",

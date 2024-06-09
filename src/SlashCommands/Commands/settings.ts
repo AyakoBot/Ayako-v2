@@ -319,4 +319,9 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('logs')
    .setDescription('Log all kinds of Discord Events into a Channel'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('afk')
+   .setDescription('Make adjustments to the AFK-Command and what can be set as AFK-Status'),
  );

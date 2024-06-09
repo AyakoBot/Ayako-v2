@@ -82,6 +82,13 @@ const mention = async (
  if (commandName === 'unafk') return;
  if (msg.mentions.members.size > 10) return;
 
+ const settings = await msg.client.util.DataBase.afksettings.upsert({
+  where: { guildid: msg.guildId },
+  create: { guildid: msg.guildId },
+  update: {},
+ });
+ if (settings && !settings.active) return;
+
  const afk = (
   await Promise.all(
    msg.mentions.members.filter((m) => m.id !== msg.author.id).map((m) => getAFK(m.guild.id, m.id)),
@@ -96,7 +103,13 @@ const mention = async (
   ),
  );
  contents.forEach((c, i) => {
-  afk[i].text = c;
+  afk[i].text = c
+   ? c
+      .slice(0, Number(settings?.maxLetters))
+      .split(/\n/g)
+      .splice(0, Number(settings?.maxNewlines))
+      .join('\n')
+   : null;
  });
 
  const embeds = afk

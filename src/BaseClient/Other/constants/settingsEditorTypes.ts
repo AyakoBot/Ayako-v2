@@ -318,4 +318,8 @@ export default {
   required: CT.EditorTypes.Boolean,
   options: CT.EditorTypes.Strings,
  },
+ [CT.SettingNames.Afk]: {
+  maxLetters: CT.EditorTypes.Number,
+  maxNewlines: CT.EditorTypes.Number,
+ }
 };

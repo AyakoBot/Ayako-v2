@@ -2047,7 +2047,8 @@
    "removeReason": "User returned from AFK",
    "set": "`{{user.username}}` went AFK",
    "removed": "Welcome Back!\nYou've been AFK since {{time}}",
-   "isAFK": "<@{{user}}> is AFK since {{since}}{{text}}"
+   "isAFK": "<@{{user}}> is AFK since {{since}}{{text}}",
+   "disabled": "Setting AFK is disabled on this Server.\nAsk an Administrator to re-enable it using </settings afk:{{cmdId}}>"
   },
   "roles": {
    "shop": {
@@ -3490,6 +3491,20 @@
       "days": {
        "name": "Days",
        "desc": "The Days required to gain the Roles"
+      }
+     }
+    },
+    "afk": {
+     "name": "AFK",
+     "desc": "Manage Command-Access-Permissions via `Server Settings` > `Integrations` > `Ayako` > `afk`",
+     "fields": {
+      "maxLetters": {
+       "name": "Max. Letters/Symbols",
+       "desc": "The Amount of maximum allowed Letters/Symbols in an AFK-Status"
+      },
+      "maxNewlines": {
+       "name": "Max Newlines",
+       "desc": "The Amount of maximum allowed Newlines in an AFK-Status"
       }
      }
     },

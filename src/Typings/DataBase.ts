@@ -76,4 +76,5 @@ export interface DataBaseTables {
  voicechannels: Prisma.voicechannels;
  antiraid: Prisma.antiraid;
  customclients: Prisma.customclients;
+ afksettings: Prisma.afksettings;
 }

@@ -150,6 +150,7 @@ export enum SettingNames {
  Appeals = 'appeals',
  Questions = 'questions',
  CustomClient = 'custom-client',
+ Afk = "afk"
 }
 
 export const SettingsName2TableName = {
@@ -193,6 +194,7 @@ export const SettingsName2TableName = {
  [SettingNames.Appeals]: 'appealsettings',
  [SettingNames.Questions]: 'appealquestions',
  [SettingNames.CustomClient]: 'customclients',
+ [SettingNames.Afk]: 'afksettings',
 } as const;
 
 export type CRUDResult<T extends keyof typeof SettingsName2TableName> = Promise<
