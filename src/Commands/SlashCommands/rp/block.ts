@@ -3,13 +3,13 @@ import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  if (!cmd.inCachedGuild()) return;
- const user = cmd.options.getUser('user', true);
+ const user = cmd.options.getUser('user', false);
 
  const blocked = await cmd.client.util.DataBase.blockedusers.upsert({
-  where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user.id } },
+  where: { userid_blockeduserid: { userid: cmd.user.id, blockeduserid: user?.id ?? '0' } },
   create: {
    userid: cmd.user.id,
-   blockeduserid: user.id,
+   blockeduserid: user?.id ?? '0',
    blockedcmd: [],
   },
   update: {},
@@ -21,7 +21,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
 
 export const respond = async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.StringSelectMenuInteraction<'cached'>,
- user: Discord.User,
+ user: Discord.User | null,
  blocked: { blockedcmd?: string[] },
  lang?: CT.Language,
 ) => {
@@ -48,11 +48,11 @@ export const respond = async (
  );
 
  const payload = {
-  content: lan.blocked(user),
+  content: user ? lan.blocked(user) : lan.globalBlocked,
   embeds: [
    {
-    description: `${lan.blockedCmds} ${(blocked.blockedcmd?.length
-     ? blocked.blockedcmd
+    description: `${lan.blockedCmds} ${(blocked.blockedcmd?.length || !user
+     ? blocked.blockedcmd ?? []
      : commands.map((c) => c.name)
     )
      .map((c) => cmd.client.util.util.makeInlineCode(c))
@@ -62,9 +62,14 @@ export const respond = async (
          .filter((c) => !blocked.blockedcmd?.includes(c.name))
          .map((c) => cmd.client.util.util.makeInlineCode(c.name))
          .join(', ')
-      : language.t.None
+      : user
+        ? ''
+        : commands
+           .filter((c) => !blocked.blockedcmd?.includes(c.name))
+           .map((c) => cmd.client.util.util.makeInlineCode(c.name))
+           .join(', ')
     }`,
-    url: `https://ayakobot.com?user=${user.id}`,
+    url: `https://ayakobot.com?user=${user?.id ?? '0'}`,
    },
   ],
   components: [
@@ -81,17 +86,21 @@ export const respond = async (
      },
     ],
    })),
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: [
-     {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Danger,
-      customId: 'rp/unblock',
-      label: lan.unblock,
-     },
-    ],
-   },
+   ...(user
+    ? [
+       {
+        type: Discord.ComponentType.ActionRow,
+        components: [
+         {
+          type: Discord.ComponentType.Button,
+          style: Discord.ButtonStyle.Danger,
+          customId: 'rp/unblock',
+          label: lan.unblock,
+         },
+        ],
+       },
+      ]
+    : []),
   ],
  };
 

@@ -8,8 +8,8 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
  const userId = new URL(cmd.message.embeds[0].url || 'https://ayakobot.com').searchParams.get(
   'user',
  );
- const user = userId ? await cmd.client.util.getUser(userId) : undefined;
- if (!userId || !user) {
+ const user = userId && userId !== '0' ? await cmd.client.util.getUser(userId) : undefined;
+ if ((!userId || !user) && userId !== '0') {
   cmd.client.util.errorCmd(cmd, language.errors.userNotExist, language);
   return;
  }
@@ -36,5 +36,5 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
   })
   .then();
 
- respond(cmd, user, { blockedcmd: newBlockCmds }, language);
+ respond(cmd, user ?? null, { blockedcmd: newBlockCmds }, language);
 };

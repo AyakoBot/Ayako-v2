@@ -57,13 +57,18 @@ const reply = async (
  const blockedUsers = await DataBase.blockedusers.findMany({
   where: {
    userid: { in: [...allUsers.map((u) => u.id), author.id] },
-   blockeduserid: { in: [...allUsers.map((u) => u.id), author.id] },
-   OR: [{ blockedcmd: { has: commandName } }, { blockedcmd: { isEmpty: true } }],
+   OR: [
+    {
+     blockeduserid: { in: [...allUsers.map((u) => u.id), author.id] },
+     OR: [{ blockedcmd: { has: commandName } }, { blockedcmd: { isEmpty: true } }],
+    },
+    { blockeduserid: '0', blockedcmd: { has: commandName } },
+   ],
   },
  });
 
  const users = allUsers.filter(
-  (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id),
+  (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id || b.blockeduserid === '0'),
  );
  const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
