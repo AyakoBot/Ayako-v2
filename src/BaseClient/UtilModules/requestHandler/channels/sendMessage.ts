@@ -70,9 +70,12 @@ async function fn(
   })
   .then((m) => new Classes.Message(c, m))
   .catch((e: Discord.DiscordAPIError) => {
-   sendDebugMessage({
-    content: `${guild?.id} - ${channelId}\n${JSON.stringify(payload, null, 2)}`,
-   });
+   if (!e.message.includes('to this user')) {
+    sendDebugMessage({
+     content: `${guild?.id} - ${channelId}\n${JSON.stringify(payload, null, 2)}`,
+    });
+   }
+
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

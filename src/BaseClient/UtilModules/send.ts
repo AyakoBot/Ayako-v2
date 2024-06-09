@@ -77,9 +77,6 @@ async function send(
  const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
 
- // eslint-disable-next-line no-console
- if (channel.type === Discord.ChannelType.DM) console.log(JSON.stringify(payload));
-
  if (!('send' in channel)) return null;
 
  if (
