@@ -476,9 +476,9 @@ const doReact = async (
  await Promise.all(reactions.map((e) => msg.client.util.request.channels.addReaction(msg, e)));
 
  Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 10000), () => {
-  msg.reactions.cache.forEach((r) =>
-   msg.client.util.request.channels.deleteOwnReaction(msg, r.emoji.identifier),
-  );
+  msg.reactions.cache.forEach((r) => {
+   if (msg) msg.client.util.request.channels.deleteOwnReaction(msg, r.emoji.identifier);
+  });
  });
 };
 

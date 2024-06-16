@@ -143,12 +143,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .then();
 
  const positionRole = positionRoleId ? cmd.guild.roles.cache.get(positionRoleId) : undefined;
+ if (cmd.guild.id === '672546390915940405') console.log(positionRole?.id);
  if (positionRole) {
-  await cmd.client.util.request.guilds.setRolePositions(cmd.guild, [
-   {
-    position: positionRole.rawPosition,
-    id: role.id,
-   },
-  ]);
+  await cmd.client.util.request.guilds
+   .setRolePositions(cmd.guild, [{ position: positionRole.rawPosition, id: role.id }])
+   .catch((e) => console.log(e));
  }
 };
