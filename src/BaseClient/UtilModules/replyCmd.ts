@@ -1,7 +1,9 @@
 import * as Discord from 'discord.js';
 import * as replyMsg from './replyMsg.js';
 import constants from '../Other/constants.js';
-import error from './error.js';
+import error, { sendDebugMessage } from './error.js';
+import { isValidPayload } from './requestHandler/channels/sendMessage.js';
+import { UsualMessagePayload } from 'src/Typings/Typings.js';
 
 type ReturnType<T extends boolean | undefined, K extends Discord.CacheType> = T extends true
  ? K extends 'cached'
@@ -28,6 +30,10 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  },
 ): Promise<ReturnType<T, K>> => {
  if ('respond' in cmd) return Promise.resolve(undefined);
+ if (!isValidPayload(payload as UsualMessagePayload)) {
+  sendDebugMessage({ content: `bad payload:\n${JSON.stringify(payload)}` });
+  return;
+ }
 
  if (payload.ephemeral === false) payload.flags = undefined;
  else payload.flags = Discord.MessageFlags.Ephemeral;
