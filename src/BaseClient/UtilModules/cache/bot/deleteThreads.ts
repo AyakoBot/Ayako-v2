@@ -18,7 +18,7 @@ export interface DeleteThreads {
   * @param guildId - The ID of the guild the job is associated with.
   * @param channelId - The ID of the channel the job is associated with.
   */
- delete: (guildId: string, channelIdF: string) => void;
+ delete: (guildId: string, channelId: string) => void;
 
  /**
   * The cache of thread deletion jobs, organized by guild ID and channel ID.

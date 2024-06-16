@@ -53,8 +53,20 @@ export default async (
      | Discord.ChannelType.PublicThread;
    }
   >);
- if (!channel) return undefined;
+ if (!channel || !('threads' in channel)) return undefined;
  if (!target) return;
+
+ if (channel.threads.cache.filter((t) => !t.archived).size > 900) {
+  const oldestThread = await channel.client.util.DataBase.deletethreads.findFirst({
+   where: { channelid: { in: channel.threads.cache.map((c) => c.id) } },
+   orderBy: { deletetime: 'asc' },
+  });
+
+  if (!oldestThread) return;
+
+  channel.client.util.cache.deleteThreads.delete(oldestThread.guildid, oldestThread.channelid);
+  await deleteThread(channel.guild, oldestThread.channelid);
+ }
 
  const thread = await target.client.util.request.channels.createThread(channel, {
   type: Discord.ChannelType.PrivateThread,
