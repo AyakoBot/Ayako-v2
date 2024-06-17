@@ -44,6 +44,13 @@ const reply = async (
  if (!cmd.guild) return;
  if (!cmd.inGuild()) return;
 
+ if (cmd instanceof Discord.ButtonInteraction) {
+  while (cooldown.has(cmd.message.id)) {
+   await new Promise((r) => setTimeout(r, 500));
+  }
+  cooldown.add(cmd.message.id);
+ }
+
  const parse = async () => {
   if (cmd instanceof Discord.ChatInputCommandInteraction) return parsers.cmdParser(cmd);
   if (cmd instanceof Discord.ButtonInteraction) return parsers.buttonParser(cmd);
@@ -68,7 +75,10 @@ const reply = async (
  });
 
  const users = allUsers.filter(
-  (u) => !blockedUsers.find((b) => b.userid === u.id || b.blockeduserid === u.id || b.blockeduserid === '0'),
+  (u) =>
+   !blockedUsers.find(
+    (b) => b.userid === u.id || b.blockeduserid === u.id || b.blockeduserid === '0',
+   ),
  );
  const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
@@ -99,6 +109,7 @@ const reply = async (
     }
    });
   } else errorCmd(cmd, language.slashCommands.rp.cantRP, language);
+  if (cmd instanceof Discord.ButtonInteraction) cooldown.delete(cmd.message.id);
   return;
  }
 
@@ -106,7 +117,10 @@ const reply = async (
  const gifCaller = gifCallers[Math.ceil(Math.random() * (gifCallers.length - 1))];
  const gif = (await gifCaller.gifs()) as ReturnType<'gif'> | undefined;
 
- if (!con) return;
+ if (!con) {
+  if (cmd instanceof Discord.ButtonInteraction) cooldown.delete(cmd.message.id);
+  return;
+ }
 
  const embed: Discord.APIEmbed = {
   color: getColor(await getBotMemberFromGuild(cmd.guild)),
@@ -183,20 +197,13 @@ const reply = async (
 
    cmd.update(payload as Discord.InteractionUpdateOptions);
   } else {
-   if (cooldown.has(cmd.message.id)) return;
-
-   cooldown.add(cmd.message.id);
-   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 500), () => {
-    cooldown.delete(cmd.message.id);
-   });
-
-   if (await isDeleteable(cmd.message)) {
-    request.channels.deleteMessage(cmd.message);
-   }
+   if (await isDeleteable(cmd.message)) request.channels.deleteMessage(cmd.message);
 
    payload.ephemeral = false;
    replyCmd(cmd, payload, 'interactions');
   }
+
+  if (cmd instanceof Discord.ButtonInteraction) cooldown.delete(cmd.message.id);
   return;
  }
 
