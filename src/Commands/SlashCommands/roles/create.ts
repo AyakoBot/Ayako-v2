@@ -24,7 +24,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- if (!canCreateRole(cmd.member) || (positionRole ? !canEditRole(cmd.member, positionRole.id) : false)) {
+ if (
+  !canCreateRole(cmd.member) ||
+  (positionRole ? !canEditRole(cmd.member, positionRole.id) : false)
+ ) {
   cmd.client.util.errorCmd(cmd, language.errors.cantManageRole, language);
   return;
  }
@@ -72,7 +75,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if ('message' in role) {
   cmd.client.util.errorCmd(
    cmd,
-   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
+   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
    language,
   );
   return;

@@ -81,7 +81,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   if ('message' in role) {
    cmd.client.util.errorCmd(
     cmd,
-    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
+    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
     language,
    );
    return;
