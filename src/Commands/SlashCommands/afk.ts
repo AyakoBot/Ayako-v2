@@ -40,7 +40,7 @@ export default async (
  } else if (cmd instanceof Discord.ChatInputCommandInteraction) {
   await cmd.client.util.replyCmd(cmd, {
    embeds,
-   ephemeral: true,
+   ephemeral: false,
    content: afk ? lan.updated(author) : lan.set(author),
   });
  } else {

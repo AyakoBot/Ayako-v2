@@ -2042,7 +2042,7 @@
    "clickMe": "Click me to join the Support Server"
   },
   "afk": {
-   "updated": "`{{user.username}}` AFK updated",
+   "updated": "`{{user.username}}` updated their AFK",
    "setReason": "User went AFK",
    "removeReason": "User returned from AFK",
    "set": "`{{user.username}}` went AFK",
