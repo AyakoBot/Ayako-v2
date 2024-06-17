@@ -281,11 +281,7 @@ export const giveawayCollectTimeExpired = async (msgId: string, guildId: string)
   where: { msgid: msgId, claimingdone: false },
  });
 
- if (!giveaway) {
-  client.util.error(guild, new Error('Giveaway not found'));
-  return;
- }
-
+ if (!giveaway) return;
  if (!giveaway.winners.length) return;
 
  if (!giveaway.failreroll) {
