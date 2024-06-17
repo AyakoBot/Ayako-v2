@@ -283,7 +283,7 @@ export const getEmbeds = (
         value: client.util.util.makeUnderlined(client.util.util.makeBold(language.t.Overrides)),
        },
        {
-        name: language.slashCommands.settings.BLWL.wlroleid,
+        name: language.events.logs.automodRule.exemptRoles,
         value: embedParsers.roles(
          rule.exemptRoles.map((o) => o.id),
          language,
@@ -292,7 +292,7 @@ export const getEmbeds = (
        ...(rule.eventType === Discord.AutoModerationRuleEventType.MessageSend
         ? [
            {
-            name: language.slashCommands.settings.BLWL.wlchannelid,
+            name: language.events.logs.automodRule.exemptChannels,
             value: embedParsers.channels(
              rule.exemptChannels.map((o) => o.id),
              language,
