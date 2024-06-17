@@ -29,11 +29,11 @@ const getServers = async (language: CT.Language) =>
    async (c, { lang }) =>
     c.guilds.cache.map((g) => ({
      content: `${c.util.util.makeInlineCode(g.name)}\n> ${c.util.splitByThousand(g.memberCount)} ${
-      lang.t.Members
-     } ${g.vanityURLCode ? ` - [${lang.t.Join}](https://discord.gg/${g.vanityURLCode})` : ''}`,
+      lang.members
+     } ${g.vanityURLCode ? ` - [${lang.join}](https://discord.gg/${g.vanityURLCode})` : ''}`,
      count: g.memberCount,
     })),
-   { context: { lang: language } },
+   { context: { lang: { join: language.t.Join, members: language.t.Members } } },
   )
  )
   ?.flat()
