@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
+import Prisma from '@prisma/client';
 
 import cache from '../UtilModules/cache.js';
 import error from '../UtilModules/error.js';
@@ -18,7 +19,12 @@ export default async (guild: Discord.Guild | null) => {
  if (cache.interactedGuilds.has(guild.id)) return;
  cache.interactedGuilds.add(guild.id);
 
+ const settings = await guild.client.util.DataBase.logchannels.findUnique({
+  where: { guildid: guild.id },
+ });
+
  Object.values(tasks).forEach((t) => t(guild));
+ Object.values(tasksWithSettings).forEach((t) => t(guild, settings));
 };
 
 const tasks = {
@@ -44,7 +50,28 @@ const tasks = {
  autoModRules: async (guild: Discord.Guild) => {
   request.guilds.getAutoModerationRules(guild);
  },
- scheduledEvents: async (guild: Discord.Guild) => {
+ commands: async (guild: Discord.Guild) => {
+  request.commands.getGuildCommands(guild);
+ },
+ members: async (guild: Discord.Guild) => {
+  fetchAllGuildMembers(guild);
+ },
+ commandPermissions: async (guild: Discord.Guild) => {
+  cache.commandPermissions.get(guild, '');
+ },
+};
+
+export const tasksWithSettings = {
+ welcomeScreen: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
+  if (!settings?.guildevents?.length) return;
+
+  if (guild.features?.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
+   cache.welcomeScreens.get(guild);
+  }
+ },
+ scheduledEvents: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
+  if (!settings?.scheduledeventevents?.length) return;
+
   const scheduledEvents = await request.guilds.getScheduledEvents(guild);
   if ('message' in scheduledEvents) {
    error(guild, scheduledEvents);
@@ -57,12 +84,19 @@ const tasks = {
    });
   });
  },
- welcomeScreen: async (guild: Discord.Guild) => {
-  if (guild.features?.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
-   cache.welcomeScreens.get(guild);
-  }
+ webhooks: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
+  if (!settings?.webhookevents?.length) return;
+
+  cache.webhooks.get('', '', guild);
  },
- invites: async (guild: Discord.Guild) => {
+ integrations: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
+  if (!settings?.guildevents?.length) return;
+
+  cache.integrations.get('', guild);
+ },
+ invites: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
+  if (!settings?.inviteevents?.length && !settings?.memberevents?.length) return;
+
   cache.invites.get('', '', guild);
 
   const vanity = await request.guilds.getVanityURL(guild);
@@ -79,20 +113,5 @@ const tasks = {
    }
    cache.invites.set(vanity, guild.id);
   }
- },
- integrations: async (guild: Discord.Guild) => {
-  cache.integrations.get('', guild);
- },
- commands: async (guild: Discord.Guild) => {
-  request.commands.getGuildCommands(guild);
- },
- members: async (guild: Discord.Guild) => {
-  fetchAllGuildMembers(guild);
- },
- commandPermissions: async (guild: Discord.Guild) => {
-  cache.commandPermissions.get(guild, '');
- },
- webhooks: async (guild: Discord.Guild) => {
-  cache.webhooks.get('', '', guild);
  },
 };
