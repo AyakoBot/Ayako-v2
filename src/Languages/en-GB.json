@@ -2748,7 +2748,7 @@
      "preset": "Preset Rule",
      "member": "Member Rule",
      "actionsRequired": "Requires at least 1 Action",
-     "desc": "{{kF}} of 6 Keyword Filters\n{{msF}} of 1 Mention Spam Filters\n{{mF}} of 1 Member Filters\n{{sF}} of 1 Spam Filters\n{{kpF}} of 1 Preset Filters",
+     "desc": "{{kF}} of 6 Keyword Filters\n> Take Action against Messages containing certain Keywords\n{{msF}} of 1 Mention Spam Filters\n> Take Action Messages containing Mention-Spam\n{{mF}} of 1 Member Filters\n> Take Action against Users-Profiles containing certain Keywords\n{{sF}} of 1 Spam Filters\n> Take Action against Messages containing general Spam-Content\n{{kpF}} of 1 Preset Filters\n> Take Action against Messages containing Keywords in, by Discord provided, Presets",
      "fields": {
       "keywordFilter": {
        "name": "Keyword Filter",
