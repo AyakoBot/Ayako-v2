@@ -17,9 +17,9 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  cmd.client.util.DataBase.level
   .upsert({
-   where: { userid_guildid_type: { guildid: cmd.guildId, userid: cmd.user.id, type: 'guild' } },
+   where: { userid_guildid_type: { guildid: cmd.guildId, userid: user.id, type: 'guild' } },
    update: { xp: newXP, level: newLevel },
-   create: { xp: newXP, level: newLevel, userid: cmd.user.id, guildid: cmd.guildId, type: 'guild' },
+   create: { xp: newXP, level: newLevel, userid: user.id, guildid: cmd.guildId, type: 'guild' },
   })
   .then();
 
