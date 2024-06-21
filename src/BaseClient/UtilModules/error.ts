@@ -33,7 +33,7 @@ export default async (
   embeds: [
    {
     footer: {
-     text: `Filtered stacktrace size: ${filteredStack?.length ?? 0}`
+     text: `Filtered stacktrace size: ${filteredStack?.length ?? 0}`,
     },
     color: 0xff0000,
     description: `Stack Trace\n\`\`\`${Number(filteredStack?.length) < 3 ? err.stack : filteredStack?.join('\n')}\`\`\``,
@@ -68,7 +68,7 @@ export default async (
 
  if (postDebug) sendDebugMessage(payload);
  if (!guild) return;
- if (!proceed(err.message)) return;
+ if (!proceed(err.message, err.stack)) return;
 
  const errorchannel = await DataBase.guildsettings
   .findUnique({
@@ -98,7 +98,7 @@ export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
  );
 };
 
-const proceed = (message: string) => {
+const proceed = (message: string, stack: string | undefined) => {
  switch (true) {
   case message.includes('Connect Timeout Error'):
   case message.includes('other side closed'):
@@ -108,6 +108,7 @@ const proceed = (message: string) => {
   case message.includes('Unknown Member'):
   case message.includes('Unknown Channel'):
   case message.includes('Cannot send messages to this user'):
+  case stack?.includes('ptReminder.ts'):
    return false;
 
   default:

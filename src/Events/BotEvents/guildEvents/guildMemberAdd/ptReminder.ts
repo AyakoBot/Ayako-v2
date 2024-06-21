@@ -97,7 +97,7 @@ export default async (member: Discord.GuildMember) => {
  if (!message) return;
 
  API.channels.editMessage(message.channelId, message.id, {
-  content: 'This Reminder will only be sent to you __once__ [⠀](https://discord.gg/euTdctganf)',
+  content: 'This Reminder will only be sent to you __once__ [⠀]( https://discord.gg/euTdctganf )',
  });
 
  member.client.util.DataBase.users
