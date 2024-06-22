@@ -1,4 +1,4 @@
-import Redis from 'redis';
+import Redis from 'ioredis';
 import { BaseMessage } from 'discord-hybrid-sharding';
 import { APIInteraction } from 'discord.js';
 import * as Typings from '../../Typings/Typings.js';
@@ -6,46 +6,35 @@ import Manager from './Manager.js';
 
 // related to /BaseClient/UtilModules/getEvents.ts
 
-export interface AppealMessage extends BaseMessage {
- type: Typings.MessageType.Appeal;
- appeal: Typings.Appeal;
+export interface Message<
+ T extends Typings.MessageType.Vote | Typings.MessageType.Appeal | Typings.MessageType.Interaction,
+> extends BaseMessage {
+ data: T extends Typings.MessageType.Vote
+  ? Typings.TopGGVote
+  : T extends Typings.MessageType.Appeal
+    ? Typings.Appeal
+    : T extends Typings.MessageType.Interaction
+      ? APIInteraction
+      : never;
 }
 
-export interface VoteMessage extends BaseMessage {
- type: Typings.MessageType.Vote;
- vote: Typings.TopGGGuildVote | Typings.TopGGBotVote;
-}
+const client = new Redis();
 
-export interface InteractionMessage extends BaseMessage {
- type: Typings.MessageType.Interaction;
- interaction: APIInteraction;
-}
+client.subscribe(
+ Typings.MessageType.Interaction,
+ Typings.MessageType.Vote,
+ Typings.MessageType.Appeal,
+ (err, count) => {
+  if (err) throw err;
+  console.log(`| => Subscription service listening to ${count} channels`);
+ },
+);
 
-export type Message = VoteMessage | AppealMessage | InteractionMessage;
+client.on('message', (channel, message) => {
+ const parse = JSON.parse(message) as Message<Typings.MessageType>;
+ const data = (typeof parse === 'string' ? JSON.parse(parse) : parse) as typeof parse;
 
-const client = await Redis.createClient().duplicate().connect();
-
-client.subscribe(Typings.MessageType.Vote, (message) => {
- const parse1 = JSON.parse(message);
- const data = (typeof parse1 === 'string' ? JSON.parse(parse1) : parse1) as VoteMessage['vote'];
-
- Manager.broadcast(new BaseMessage({ vote: data, type: Typings.MessageType.Vote }));
-});
-
-client.subscribe(Typings.MessageType.Interaction, (message) => {
- const parse1 = JSON.parse(message);
- const data = (
-  typeof parse1 === 'string' ? JSON.parse(parse1) : parse1
- ) as InteractionMessage['interaction'];
-
- Manager.broadcast(new BaseMessage({ interaction: data, type: Typings.MessageType.Interaction }));
-});
-
-client.subscribe(Typings.MessageType.Appeal, (message) => {
- const parse1 = JSON.parse(message);
- const data = (typeof parse1 === 'string' ? JSON.parse(parse1) : parse1) as AppealMessage['appeal'];
-
- Manager.broadcast(new BaseMessage({ appeal: data, type: Typings.MessageType.Appeal }));
+ Manager.broadcast(new BaseMessage({ data: data, type: channel }));
 });
 
 export default client;

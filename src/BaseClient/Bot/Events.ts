@@ -5,6 +5,7 @@ import ready, { setReady } from '../../Events/BotEvents/readyEvents/ready.js';
 import type * as Redis from '../Cluster/Redis.js';
 import { ProcessEvents } from '../UtilModules/getEvents.js';
 import client from './Client.js';
+import { MessageType } from '../../Typings/Typings.js';
 
 const spawnEvents = async () => {
  const util = await import('../UtilModules/getEvents.js');
@@ -24,7 +25,7 @@ const spawnEvents = async () => {
  });
 
  client.cluster?.on('message', (message) => {
-  const m = message as Redis.Message;
+  const m = message as Redis.Message<MessageType>;
   if (typeof m !== 'object') return;
   if (!('type' in m)) return;
 

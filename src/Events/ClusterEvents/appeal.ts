@@ -3,23 +3,23 @@ import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
 import * as CT from '../../Typings/Typings.js';
 
-export default async ({ appeal }: CT.AppealMessage) => {
+export default async ({ data }: CT.Message<CT.MessageType.Appeal>) => {
  await client.util.DataBase.appeals.update({
-  where: { punishmentid: appeal.punishmentId },
+  where: { punishmentid: data.punishmentId },
   data: { received: true },
  });
 
  const settings = await client.util.DataBase.appealsettings.findUnique({
-  where: { guildid: appeal.guildId, active: true },
+  where: { guildid: data.guildId, active: true },
  });
  if (!settings) return;
  if (!settings.channelid) return;
- if (settings.bluserid?.includes(appeal.userId)) return;
+ if (settings.bluserid?.includes(data.userId)) return;
 
- const punishment = await getPunishment(appeal);
+ const punishment = await getPunishment(data);
  if (!punishment) return;
 
- const guild = client.guilds.cache.get(appeal.guildId);
+ const guild = client.guilds.cache.get(data.guildId);
  if (!guild) return;
 
  await client.util.firstGuildInteraction(guild);
@@ -27,17 +27,17 @@ export default async ({ appeal }: CT.AppealMessage) => {
  const channel = await client.util.getChannel.guildTextChannel(settings.channelid);
  if (!channel) return;
 
- const user = await client.util.getUser(appeal.userId).catch(() => undefined);
+ const user = await client.util.getUser(data.userId).catch(() => undefined);
  if (!user) return;
 
  const language = await client.util.getLanguage(guild.id);
  const lan = language.events.appeal;
 
  const appealAnswers = await client.util.DataBase.appealanswers.findMany({
-  where: { punishmentid: appeal.punishmentId },
+  where: { punishmentid: data.punishmentId },
  });
  const questions = await client.util.DataBase.appealquestions.findMany({
-  where: { guildid: appeal.guildId },
+  where: { guildid: data.guildId },
  });
 
  const embed: Discord.APIEmbed = {
@@ -106,13 +106,13 @@ export default async ({ appeal }: CT.AppealMessage) => {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Danger,
       label: lan.reject,
-      custom_id: `appeals/reject_${appeal.punishmentId}`,
+      custom_id: `appeals/reject_${data.punishmentId}`,
      },
      {
       type: Discord.ComponentType.Button,
       style: Discord.ButtonStyle.Success,
       label: lan.accept,
-      custom_id: `appeals/accept_${appeal.punishmentId}`,
+      custom_id: `appeals/accept_${data.punishmentId}`,
      },
     ],
    },

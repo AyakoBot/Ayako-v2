@@ -1,12 +1,11 @@
-import { VoteMessage } from '../../../Typings/Typings.js';
+import { Message, MessageType } from '../../../Typings/Typings.js';
 import client from '../../../BaseClient/Bot/Client.js';
 
 import voteBotCreate from './voteBotCreate.js';
-import voteGuildCreate from './voteGuildCreate.js';
 
-export default async ({ vote }: VoteMessage) => {
+export default async ({ data }: Message<MessageType.Vote>) => {
  const settings = await client.util.DataBase.votesettings.findMany({
-  where: { token: vote.authorization, active: true },
+  where: { token: data.authorization, active: true },
  });
  if (!settings.length) return;
 
@@ -14,27 +13,17 @@ export default async ({ vote }: VoteMessage) => {
   const guild = client.guilds.cache.get(s.guildid);
   if (!guild) return;
 
-  const user = await client.util.getUser(vote.user);
+  const user = await client.util.getUser(data.user);
   if (!user) return;
 
   const member = await client.util.request.guilds
-   .getMember(guild, vote.user)
+   .getMember(guild, data.user)
    .then((m) => ('message' in m ? undefined : m));
 
-  if ('bot' in vote) {
-   voteBotCreate(vote, guild, user, member, {
-    ...s,
-    uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
-    linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
-   });
-  }
-
-  if ('guild' in vote) {
-   voteGuildCreate(vote, guild, user, member, {
-    ...s,
-    uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
-    linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
-   });
-  }
+  voteBotCreate(data, guild, user, member, {
+   ...s,
+   uniquetimestamp: new client.util.files.prisma.Decimal(s.uniquetimestamp),
+   linkedid: s.linkedid ? new client.util.files.prisma.Decimal(s.linkedid) : null,
+  });
  });
 };

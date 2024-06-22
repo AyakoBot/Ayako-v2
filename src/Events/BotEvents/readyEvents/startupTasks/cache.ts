@@ -37,7 +37,7 @@ export const startupTasks = {
       guildId: String(a.guildid),
       punishmentId: String(a.punishmentid),
      },
-    }) as CT.AppealMessage,
+    }) as CT.Message<CT.MessageType.Appeal>,
    );
   });
  },

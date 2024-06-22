@@ -1,16 +1,8 @@
-export interface TopGGBotVote {
+export interface TopGGVote {
  bot: string;
  user: string;
  type: 'upvote' | 'test';
  isWeekend: boolean;
- query?: string;
- authorization: string;
-}
-
-export interface TopGGGuildVote {
- guild: string;
- user: string;
- type: 'upvote' | 'test';
  query?: string;
  authorization: string;
 }

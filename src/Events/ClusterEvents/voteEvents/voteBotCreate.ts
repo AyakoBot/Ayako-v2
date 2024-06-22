@@ -5,7 +5,7 @@ import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.j
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (
- vote: CT.TopGGBotVote,
+ vote: CT.TopGGVote,
  guild: Discord.Guild,
  user: Discord.User,
  member: Discord.GuildMember | undefined,

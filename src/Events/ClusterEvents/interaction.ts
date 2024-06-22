@@ -4,8 +4,8 @@ import * as Classes from '../../BaseClient/Other/classes.js';
 import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.js';
 import * as Typings from '../../Typings/Typings.js';
 
-export default async (message: Typings.InteractionMessage) => {
- const { interaction } = message;
+export default async (message: Typings.Message<Typings.MessageType.Interaction>) => {
+ const interaction = message.data;
  if (client.cluster?.maintenance) return;
 
  if (interaction.guild_id && !client.util.cache.apis.get(interaction.guild_id)) {
