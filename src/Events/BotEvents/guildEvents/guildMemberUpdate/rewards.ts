@@ -27,16 +27,6 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
 
  doCurrency(settings, member);
 
- if (!member.guild.rulesChannel) return;
-
- const thread = await member.client.util.request.channels.createThread(member.guild.rulesChannel, {
-  type: Discord.ChannelType.PrivateThread,
-  invitable: false,
-  name: member.client.util.constants.standard.getEmote(member.client.util.emotes.warning),
- });
-
- if ('message' in thread) return;
-
  const xpRewards = settings
   .filter((s) => s.xpmultiplier)
   .map((s) => Number(s.xpmultiplier))
@@ -85,12 +75,10 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   ],
  };
 
- await member.client.util.request.threads.addMember(thread, member.id);
- await member.client.util.send(thread, {
+ member.client.util.notificationThread(member, {
   embeds: [embed],
   content: `<@${member.id}>`,
  });
- await member.client.util.request.channels.edit(thread, { locked: true });
 };
 
 const doCurrency = (settings: Prisma.rolerewards[], member: Discord.GuildMember) => {
