@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
+import { isBlocked } from './ban.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -10,6 +11,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const deleteMessageDuration = cmd.options.getString('delete-message-duration', false);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
+ if (await isBlocked(cmd, user, CT.ModTypes.TempBanAdd, language)) return;
 
  const modOptions: CT.ModOptions<CT.ModTypes.TempBanAdd> = {
   reason: reason ?? language.t.noReasonProvided,

@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import getStrike from '../../../BaseClient/UtilModules/mod/getStrike.js';
 import * as CT from '../../../Typings/Typings.js';
+import { isBlocked } from './ban.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -23,6 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const user = cmd.options.getUser('user', true);
+ if (await isBlocked(cmd, user, CT.ModTypes.StrikeAdd, language)) return;
  const reason = cmd.options.getString('reason', false);
 
  const modOptions: CT.ModOptions<CT.ModTypes.StrikeAdd> = {

@@ -3678,11 +3678,13 @@
  },
  "mod": {
   "appeal": "Appeal",
-  "alreadyExecuting": "There currently is a Moderation-Command being executed on this User",
   "warning": {
-   "text": "You just issued a **Moderation Command** on a User with a **Mod Role**.\nAre you sure you want to **proceed**!",
-   "proceed": "Proceed"
+   "desc": "This irrevokable Action is about to be executed on a User who also has Permissions to execute this Command\nAre you sure you want to proceed?",
+   "author": "Command blocked",
+   "commandUnblocked": "This Command is now unblocked on this User.",
+   "commandUnblockedDesc": "__If you are absolutely sure you want to execute this Command on this User, run the Command again.__"
   },
+  "alreadyExecuting": "There currently is a Moderation-Command being executed on this User",
   "logs": {
    "roleAdd": {
     "author": "Role given to Member",
