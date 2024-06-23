@@ -1743,10 +1743,6 @@
     "noOne": "shrugs",
     "others": "shrugs at"
    },
-   "sigh": {
-    "self": "*sigh*",
-    "others": "sighs at"
-   },
    "sleep": {
     "self": "sleeps alone tonight >~>",
     "noOne": "sleeps",

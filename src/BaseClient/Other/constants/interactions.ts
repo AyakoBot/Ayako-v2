@@ -252,7 +252,6 @@ export default [
  { name: 'scream', desc: 'Scream', users: true, reqUser: false, buttons: ['shake'] },
  { name: 'shake', desc: 'Shake someone', users: true, reqUser: true, buttons: ['scream', 'cry'] },
  { name: 'shrug', desc: 'Shrug', users: true, reqUser: false, buttons: [] },
- { name: 'sigh', desc: 'Sigh', users: true, reqUser: false, buttons: [] },
  { name: 'sleep', desc: 'Sleep', users: true, reqUser: false, buttons: ['sleep', 'nope'] },
  {
   aliasOf: 'sleep',
