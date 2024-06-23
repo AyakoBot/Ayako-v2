@@ -47,6 +47,7 @@ await Manager.spawn()
 
 export default Manager;
 
+// @ts-ignore
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 rl.on('line', async (msg: string) => {
  const parts = msg.trim().split(/\s+/);

@@ -11,6 +11,7 @@ const spawnEvents = async () => {
  const util = await import('../UtilModules/getEvents.js');
  const events = util.default;
 
+ // @ts-ignore
  client.setMaxListeners(events.BotEvents.length);
 
  events.BotEvents.forEach(async (path) => {
