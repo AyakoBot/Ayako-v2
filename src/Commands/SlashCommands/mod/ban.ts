@@ -49,21 +49,39 @@ export const isBlocked = async (
   user.id,
  );
 
- if (
-  !unblocked &&
-  (
-   await checkCommandPermissions(
-    {
-     guildId: cmd.guildId,
-     author: user,
-     member: cmd.options.getMember('user'),
-     channelId: cmd.channelId,
-     guild: cmd.guild,
-    },
-    'ban',
-   )
-  ).can
- ) {
+ const can = async () => {
+  const canRun = async (name: string) =>
+   (
+    await checkCommandPermissions(
+     {
+      guildId: cmd.guildId,
+      author: user,
+      member: cmd.options.getMember('user'),
+      channelId: cmd.channelId,
+      guild: cmd.guild,
+     },
+     name,
+    )
+   ).can;
+
+  switch (type) {
+   case CT.ModTypes.BanAdd:
+    return (await canRun('mod')) || (await canRun('ban'));
+   case CT.ModTypes.KickAdd:
+    return (await canRun('mod')) || (await canRun('kick'));
+   case CT.ModTypes.SoftBanAdd:
+    return (await canRun('mod')) || (await canRun('soft-ban'));
+   case CT.ModTypes.StrikeAdd:
+    return (await canRun('mod')) || (await canRun('strike'));
+   case CT.ModTypes.TempBanAdd:
+    return (await canRun('mod')) || (await canRun('temp-ban'));
+
+   default:
+    return await canRun('mod');
+  }
+ };
+
+ if (!unblocked && (await can())) {
   cmd.client.util.replyCmd(cmd, {
    embeds: [
     {
