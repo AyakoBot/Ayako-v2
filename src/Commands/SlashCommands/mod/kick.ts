@@ -9,7 +9,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const reason = cmd.options.getString('reason', false);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- if (await isBlocked(cmd, user, CT.ModTypes.KickAdd, language)) return;
+ if (await isBlocked(cmd, user, cmd.options.getMember('user'), CT.ModTypes.KickAdd, language)) {
+  return;
+ }
 
  const modOptions: CT.ModOptions<CT.ModTypes.KickAdd> = {
   reason: reason ?? language.t.noReasonProvided,

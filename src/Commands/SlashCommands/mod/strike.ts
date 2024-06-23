@@ -24,7 +24,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const user = cmd.options.getUser('user', true);
- if (await isBlocked(cmd, user, CT.ModTypes.StrikeAdd, language)) return;
+ if (await isBlocked(cmd, user, cmd.options.getMember('user'), CT.ModTypes.StrikeAdd, language)) {
+  return;
+ }
  const reason = cmd.options.getString('reason', false);
 
  const modOptions: CT.ModOptions<CT.ModTypes.StrikeAdd> = {

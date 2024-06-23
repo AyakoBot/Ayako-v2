@@ -11,7 +11,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const deleteMessageDuration = cmd.options.getString('delete-message-duration', false);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- if (await isBlocked(cmd, user, CT.ModTypes.BanAdd, language)) return;
+ if (await isBlocked(cmd, user, cmd.options.getMember('user'), CT.ModTypes.BanAdd, language)) {
+  return;
+ }
 
  const modOptions = {
   reason: reason ?? language.t.noReasonProvided,
@@ -38,51 +40,62 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 export const isBlocked = async (
- cmd: Discord.ChatInputCommandInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true>,
  user: Discord.User,
+ member: Discord.GuildMember | null,
  type: CT.ModTypes,
  language: CT.Language,
 ) => {
  const unblocked = cmd.client.util.cache.unblockedModUsers.has(
-  { ...cmd, authorId: cmd.user.id },
+  { ...cmd, authorId: ('user' in cmd ? cmd.user : cmd.author).id },
   type,
   user.id,
  );
 
  const can = async () => {
-  const canRun = async (name: string) =>
-   (
-    await checkCommandPermissions(
-     {
-      guildId: cmd.guildId,
-      author: user,
-      member: cmd.options.getMember('user'),
-      channelId: cmd.channelId,
-      guild: cmd.guild,
-     },
-     name,
-    )
-   ).can;
+  const canRun = (name: string) =>
+   checkCommandPermissions(
+    {
+     guildId: cmd.guildId,
+     author: user,
+     member,
+     channelId: cmd.channelId,
+     guild: cmd.guild,
+    },
+    name,
+   );
+
+  const canMod = (await canRun('mod')).can;
 
   switch (type) {
-   case CT.ModTypes.BanAdd:
-    return (await canRun('mod')) || (await canRun('ban'));
-   case CT.ModTypes.KickAdd:
-    return (await canRun('mod')) || (await canRun('kick'));
-   case CT.ModTypes.SoftBanAdd:
-    return (await canRun('mod')) || (await canRun('soft-ban'));
-   case CT.ModTypes.StrikeAdd:
-    return (await canRun('mod')) || (await canRun('strike'));
-   case CT.ModTypes.TempBanAdd:
-    return (await canRun('mod')) || (await canRun('temp-ban'));
+   case CT.ModTypes.BanAdd: {
+    const canCmd = await canRun('ban');
+    return canMod && canCmd.can && canCmd.debugNum !== 1;
+   }
+   case CT.ModTypes.KickAdd: {
+    const canCmd = await canRun('kick');
+    return canMod && canCmd.can && canCmd.debugNum !== 1;
+   }
+   case CT.ModTypes.SoftBanAdd: {
+    const canCmd = await canRun('soft-ban');
+    return canMod && canCmd.can && canCmd.debugNum !== 1;
+   }
+   case CT.ModTypes.StrikeAdd: {
+    const canCmd = await canRun('strike');
+    return canMod && canCmd.can && canCmd.debugNum !== 1;
+   }
+   case CT.ModTypes.TempBanAdd: {
+    const canCmd = await canRun('temp-ban');
+    return canMod && canCmd.can && canCmd.debugNum !== 1;
+   }
 
    default:
-    return await canRun('mod');
+    return canMod;
   }
  };
 
  if (!unblocked && (await can())) {
-  cmd.client.util.replyCmd(cmd, {
+  const payload = {
    embeds: [
     {
      author: {
@@ -103,12 +116,23 @@ export const isBlocked = async (
      ],
     },
    ],
-  });
+  };
 
-  cmd.client.util.cache.unblockedModUsers.set({ ...cmd, authorId: cmd.user.id }, type, user.id);
+  if ('user' in cmd) cmd.client.util.replyCmd(cmd, payload);
+  else cmd.client.util.replyMsg(cmd, payload);
+
+  cmd.client.util.cache.unblockedModUsers.set(
+   { ...cmd, authorId: ('user' in cmd ? cmd.user : cmd.author).id },
+   type,
+   user.id,
+  );
   return true;
  }
 
- cmd.client.util.cache.unblockedModUsers.delete({ ...cmd, authorId: cmd.user.id }, type, user.id);
+ cmd.client.util.cache.unblockedModUsers.delete(
+  { ...cmd, authorId: ('user' in cmd ? cmd.user : cmd.author).id },
+  type,
+  user.id,
+ );
  return false;
 };
