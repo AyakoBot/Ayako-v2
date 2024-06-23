@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
-import { checkCommandPermissions } from 'src/Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
+import { checkCommandPermissions } from '../../../Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -89,6 +89,7 @@ export const isBlocked = async (
       name: language.mod.warning.author,
       icon_url: cmd.client.util.emotes.warning.link,
      },
+     color: CT.Colors.Danger,
      description: language.mod.warning.desc,
      fields: [
       {
