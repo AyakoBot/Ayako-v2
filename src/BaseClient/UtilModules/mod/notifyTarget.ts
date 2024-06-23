@@ -45,7 +45,7 @@ export default async <T extends CT.ModTypes>(
  ) {
   send(options.target, {
    embeds: [embed],
-   components: appeal,
+   components: [CT.ModTypes.RoleAdd, CT.ModTypes.RoleRemove].includes(type) ? [] : appeal,
   });
   return;
  }
