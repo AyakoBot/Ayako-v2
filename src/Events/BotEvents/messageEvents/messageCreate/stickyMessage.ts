@@ -55,7 +55,7 @@ export default async (msg: Discord.Message<true>) => {
     const payload: CT.UsualMessagePayload = {
      content: message.content,
      embeds: message.embeds
-      .filter((e) => !e.url || !message.content.includes(e.url))
+      .filter((e) => !e.url || !message.content?.includes(e.url))
       .map((e) => e.data) as Discord.APIEmbed[],
      files: message.attachments
       .map((a) => a)
