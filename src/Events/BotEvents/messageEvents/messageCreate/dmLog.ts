@@ -4,6 +4,7 @@ import { Colors } from '../../../../Typings/Typings.js';
 export default async (msg: Discord.Message<boolean>) => {
  if (!msg.author?.id) return;
  if (msg.author.id === msg.client.user?.id) return;
+ if (msg.client.user?.id !== process.env.mainId) return;
 
  const channel = msg.client.channels.cache.get(
   process.env.dmChannelId ?? '',
