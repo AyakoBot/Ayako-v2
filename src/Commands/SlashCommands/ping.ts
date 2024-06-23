@@ -6,7 +6,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const lan = language.slashCommands.ping;
 
  const heartbeat = `**${lan.lastHeartbeat}**: ${cmd.client.util.makeTable([
-  [language.t.Shard, language.time.milliseconds],
+  [language.t.Shard, 'ms'],
   ...stats.map((s) => [String(s.shard), `${s.ms}ms`]),
  ])}`;
 
