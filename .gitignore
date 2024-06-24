@@ -7,3 +7,4 @@ src/Bot/BaseClient/Other/cache-proxy
 /rust/target
 /logs
 ./start.sh
+src/Commands/StringCommands/randomize.ts
