@@ -5,10 +5,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.ping;
 
- const heartbeat = `**${lan.lastHeartbeat}**: ${cmd.client.util.makeTable([
-  [language.t.Shard, 'ms'],
-  ...stats.map((s) => [String(s.shard), `${s.ms}ms`]),
- ])}`;
+ const heartbeat = `**${lan.lastHeartbeat}**: ${cmd.client.util
+  .makeTable([
+   [language.t.Shard, 'ms'],
+   ...stats
+    .sort((a, b) => Number(a.shard) - Number(b.shard))
+    .map((s) => [String(s.shard), String(s.ms)]),
+  ])
+  .replace(/`+/g, '`')}`;
 
  const sent = await cmd.client.util.replyCmd(cmd, {
   embeds: [
