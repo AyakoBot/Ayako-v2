@@ -11,8 +11,10 @@ export default async (
 
  const language = await client.util.getLanguage(cmd.guildId);
  const user = cmd instanceof Discord.ButtonInteraction ? u : cmd.options.getUser('user', true);
- const level = await client.util.DataBase.level.findUnique({
+ const level = await client.util.DataBase.level.upsert({
   where: { userid_guildid_type: { guildid: cmd.guildId, userid: user.id, type: 'guild' } },
+  update: {},
+  create: { userid: user.id, type: 'guild', guildid: cmd.guildId, xp: 0 },
  });
 
  const embed = getEmbed(
