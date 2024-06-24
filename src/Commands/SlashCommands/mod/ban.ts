@@ -70,23 +70,23 @@ export const isBlocked = async (
   switch (type) {
    case CT.ModTypes.BanAdd: {
     const canCmd = await canRun('ban');
-    return canMod && canCmd.can && canCmd.debugNum !== 1;
+    return canMod || (canCmd.can && canCmd.debugNum !== 1);
    }
    case CT.ModTypes.KickAdd: {
     const canCmd = await canRun('kick');
-    return canMod && canCmd.can && canCmd.debugNum !== 1;
+    return canMod || (canCmd.can && canCmd.debugNum !== 1);
    }
    case CT.ModTypes.SoftBanAdd: {
     const canCmd = await canRun('soft-ban');
-    return canMod && canCmd.can && canCmd.debugNum !== 1;
+    return canMod || (canCmd.can && canCmd.debugNum !== 1);
    }
    case CT.ModTypes.StrikeAdd: {
     const canCmd = await canRun('strike');
-    return canMod && canCmd.can && canCmd.debugNum !== 1;
+    return canMod || (canCmd.can && canCmd.debugNum !== 1);
    }
    case CT.ModTypes.TempBanAdd: {
     const canCmd = await canRun('temp-ban');
-    return canMod && canCmd.can && canCmd.debugNum !== 1;
+    return canMod || (canCmd.can && canCmd.debugNum !== 1);
    }
 
    default:
