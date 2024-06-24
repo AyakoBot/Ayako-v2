@@ -17,7 +17,13 @@ export default async <T extends CT.ModTypes>(
    : CT.Colors.Danger,
   description: dm(options as never),
   fields: [...(options.reason ? [{ name: language.t.Reason, value: options.reason }] : [])],
-  thumbnail: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
+  thumbnail: [
+   CT.ModTypes.RoleAdd,
+   CT.ModTypes.RoleRemove,
+   CT.ModTypes.BanRemove,
+   CT.ModTypes.MuteRemove,
+   CT.ModTypes.ChannelBanRemove,
+  ].includes(type)
    ? undefined
    : {
       url: emotes.warning.link,
@@ -45,7 +51,15 @@ export default async <T extends CT.ModTypes>(
  ) {
   send(options.target, {
    embeds: [embed],
-   components: [CT.ModTypes.RoleAdd, CT.ModTypes.RoleRemove].includes(type) ? [] : appeal,
+   components: [
+    CT.ModTypes.RoleAdd,
+    CT.ModTypes.RoleRemove,
+    CT.ModTypes.BanRemove,
+    CT.ModTypes.MuteRemove,
+    CT.ModTypes.ChannelBanRemove,
+   ].includes(type)
+    ? []
+    : appeal,
   });
   return;
  }
