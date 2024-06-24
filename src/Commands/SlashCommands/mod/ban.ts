@@ -110,7 +110,7 @@ export const isBlocked = async (
        value: language.mod.warning.commandUnblockedDesc,
       },
       {
-       name: language.t.User,
+       name: '\u200b',
        value: language.languageFunction.getUser(user),
       },
      ],
