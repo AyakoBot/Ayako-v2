@@ -233,9 +233,9 @@ const getURLs = async (content: string): Promise<string[]> => {
   .filter((a) => a.includes('.'))
   .filter((arg) => arg.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
 
- return (
-  await Promise.all(argsContainingLink.map((arg) => client.util.fetchWithRedirects(arg)))
- ).flat();
+ return (await Promise.all(argsContainingLink.map((arg) => client.util.fetchWithRedirects(arg))))
+  .flat()
+  .filter((u) => u.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
 };
 
 const getTriggersAV = async (

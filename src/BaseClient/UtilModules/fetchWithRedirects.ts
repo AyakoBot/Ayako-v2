@@ -9,6 +9,8 @@ import fetch from 'node-fetch';
 const self = async (url: string, visited: string[] = []): Promise<string[]> => {
  if (!url.startsWith('http')) url = `http://${url}`;
 
+ visited.push(url);
+
  const response = await fetch(url, { redirect: 'manual' }).catch(() => undefined);
  const symbols = response ? Object.getOwnPropertySymbols(response) : [];
  const resInternals =
@@ -18,15 +20,17 @@ const self = async (url: string, visited: string[] = []): Promise<string[]> => {
 
  if (response && [301, 302, 307, 308].includes(response.status)) {
   const location = response.headers.get('location');
+  visited.push(url);
   if (location && !visited.includes(location)) return self(location, visited);
  }
 
  if (resInternals && [301, 302, 307, 308].includes(resInternals.status)) {
   const location = resInternals.headers.get('location');
+  visited.push(url);
   if (location && !visited.includes(location)) return self(location, visited);
  }
 
- return visited;
+ return [...new Set(visited)];
 };
 
 export default self;
