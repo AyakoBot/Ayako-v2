@@ -1,7 +1,6 @@
 import Prisma, { PunishmentType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
-import fetch from 'node-fetch';
 import Jobs from 'node-schedule';
 import client, { API } from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
@@ -35,11 +34,11 @@ export default async (msg: Discord.Message) => {
  if (!('url' in result)) return;
 
  if (!msg.inGuild()) {
-  await API.channels.addMessageReaction(
-   msg.channelId,
-   msg.id,
-   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
-  );
+  // await API.channels.addMessageReaction(
+  //  msg.channelId,
+  //  msg.id,
+  //  client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+  // );
  }
 
  const language = await client.util.getLanguage(msg.guildId);
@@ -251,6 +250,7 @@ const getTriggersAV = async (
  triggers: boolean;
 }> => {
  const websiteResponse = await checkIfExists(url);
+ console.log(websiteResponse);
  if (!websiteResponse) return { url, triggers: false };
 
  if (inAllowlist(url)) return { url, triggers: false };
@@ -284,7 +284,9 @@ const getTriggersAV = async (
 
 const checkIfExists = async (url: string) => {
  try {
-  return (await fetch(url.startsWith('http') ? url : `http://${url}`, { method: 'HEAD' })).ok;
+  const get = await fetch(url.startsWith('http') ? url : `http://${url}`, { method: 'GET' });
+  const text = await get.text();
+  return !!text;
  } catch {
   return false;
  }
