@@ -57,9 +57,9 @@ const filterFastMessages = (msg: Discord.Message) => {
 
  msg.client.util.cache.fastMsgCache.set(msg.author.id, {
   msgs: [msg],
-  job: scheduleJob(getPathFromError(new Error(msg.author.id)), '*/5 * * * * *', () => {
+  job: scheduleJob(getPathFromError(new Error(msg.author.id)), '*/10 * * * * *', () => {
    const message = msg.client.util.cache.fastMsgCache.get(msg.author.id)?.msgs.shift();
-   if (message) {
+   if (message && (!msg.inGuild() || msg.member)) {
     if (msg.inGuild()) invites(msg);
     antivirus(msg);
     return;

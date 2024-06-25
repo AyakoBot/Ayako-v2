@@ -34,11 +34,11 @@ export default async (msg: Discord.Message) => {
  if (!('url' in result)) return;
 
  if (!msg.inGuild()) {
-  // await API.channels.addMessageReaction(
-  //  msg.channelId,
-  //  msg.id,
-  //  client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
-  // );
+  await API.channels.addMessageReaction(
+   msg.channelId,
+   msg.id,
+   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+  );
  }
 
  const language = await client.util.getLanguage(msg.guildId);
@@ -250,7 +250,6 @@ const getTriggersAV = async (
  triggers: boolean;
 }> => {
  const websiteResponse = await checkIfExists(url);
- console.log(websiteResponse);
  if (!websiteResponse) return { url, triggers: false };
 
  if (inAllowlist(url)) return { url, triggers: false };
