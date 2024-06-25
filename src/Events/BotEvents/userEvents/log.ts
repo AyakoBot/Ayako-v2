@@ -78,22 +78,6 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  if (user.username !== oldUser.username) {
   merge(oldUser.username ?? language.t.Unknown, user.username, 'string', lan.username);
  }
- if (user.banner !== oldUser.banner && user.bannerURL()) {
-  const attachment = (
-   await guild.client.util.fileURL2Buffer([user.bannerURL({ size: 4096 }) as string])
-  )?.[0];
-
-  merge(
-   user.bannerURL({ size: 4096 }),
-   guild.client.util.getNameAndFileType(user.bannerURL({ size: 4096 }) as string),
-   'image',
-   lan.banner,
-  );
-
-  if (attachment) files.push(attachment);
- } else if (user.banner !== oldUser.banner && !user.bannerURL()) {
-  embed.fields?.push({ name: lan.banner, value: lan.bannerRemoved });
- }
 
  guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
 };
