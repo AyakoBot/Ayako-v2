@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 import getLogChannels from '../getLogChannels.js';
 import send from '../send.js';
-import { makeCodeBlock, makeInlineCode } from '../util.js';
+import { makeCodeBlock } from '../util.js';
 
 import postUpdate from './postUpdate.js';
 
@@ -49,7 +49,11 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
    name:
     language.slashCommands.settings[
      changedSetting as keyof CT.Language['slashCommands']['settings']
-    ] ?? lan[changedSetting as keyof typeof lan],
+    ] ??
+    lan[changedSetting as keyof typeof lan] ??
+    language.slashCommands.settings.BLWL[
+     changedSetting as keyof typeof language.slashCommands.settings.BLWL
+    ],
   } as { name: string });
 
  const getFields = (): Discord.APIEmbedField[] => {
@@ -72,20 +76,24 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
     return [
      {
       name: language.t.Before,
-      value: `${makeInlineCode(field.name)}:\n${
-       oldSetting?.[changedSetting] && oldSetting?.[changedSetting]
-        ? makeCodeBlock((oldSetting?.[changedSetting] as string) ?? '-')
-        : language.t.None
-      }`,
+      value: makeCodeBlock(
+       (typeof oldSetting?.[changedSetting] === 'string' ||
+        Array.isArray(oldSetting?.[changedSetting])) &&
+        (oldSetting?.[changedSetting] as string[] | string).length
+        ? (oldSetting?.[changedSetting] as string)
+        : '-',
+      ),
       inline: false,
      },
      {
       name: language.t.After,
-      value: `${makeInlineCode(field.name)}:\n${
-       newSetting?.[changedSetting] && newSetting?.[changedSetting]
-        ? makeCodeBlock((newSetting?.[changedSetting] as string) ?? '-')
-        : language.t.None
-      }`,
+      value: makeCodeBlock(
+       (typeof newSetting?.[changedSetting] === 'string' ||
+        Array.isArray(newSetting?.[changedSetting])) &&
+        (newSetting?.[changedSetting] as string[] | string).length
+        ? (newSetting?.[changedSetting] as string)
+        : '-',
+      ),
       inline: false,
      },
     ];
@@ -97,7 +105,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
   description: language.slashCommands.settings.log.desc(field.name ?? '-', lan.name),
   fields: getFields(),
   footer: {
-   text: `ID: ${uniquetimestamp?.toString(36)}`,
+   text: `ID: ${Number.isNaN(uniquetimestamp) ? language.t.None : uniquetimestamp?.toString(36)}`,
   },
  };
 

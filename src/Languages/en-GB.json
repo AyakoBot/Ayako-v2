@@ -2466,7 +2466,7 @@
     "name": "Emote-Collector"
    },
    "log": {
-    "desc": "{{n}} of Setting {{setting}} updated",
+    "desc": "`{{n}}` of Setting `{{setting}}` updated",
     "created": "New {{setting}} Setting created",
     "deleted": "{{setting}} Setting deleted"
    },
