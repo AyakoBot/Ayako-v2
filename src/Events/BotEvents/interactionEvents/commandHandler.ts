@@ -34,8 +34,10 @@ export default async (cmd: Discord.Interaction) => {
  const command = files.find((f) => f.endsWith(`/SlashCommands/${path()}.js`));
  if (!command) return;
 
- const commandName = command.split(/\//g).pop() as string;
+ const commandName = command.split(/\//g).pop()?.split(/\./g).shift() as string;
 
+ console.log(commandName);
+ console.log(cmd.client.util.cache.cooldown.get(cmd.channelId));
  if (
   cmd.client.util.cache.cooldown.get(cmd.channelId)?.has(commandName) ||
   cmd.client.util.cache.cooldown
