@@ -73,15 +73,20 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
  if (user.bot) return undefined;
 
  const oldInvites = Array.from(guild.client.util.cache.invites.cache.get(guild.id) ?? [], ([, i]) =>
-  Array.from(i, ([c, i2]) => ({ uses: i2, code: c })),
+  Array.from(i, ([c, i2]) => ({ uses: i2.uses, code: c })),
  ).flat();
  const newInvites = await guild.client.util.request.guilds
   .getInvites(guild)
   .then((invites) => ('message' in invites ? undefined : invites.map((i) => i)));
  if (!newInvites) return undefined;
 
- newInvites.forEach((i) => guild.client.util.cache.invites.set(i, guild.id));
- if (!oldInvites) return undefined;
+ const setInvites = () =>
+  newInvites.forEach((i) => guild.client.util.cache.invites.set(i, guild.id));
+
+ if (!oldInvites) {
+  setInvites();
+  return undefined;
+ }
 
  const inv = oldInvites
   .map((oldInvite) => {
@@ -89,7 +94,9 @@ const getUsedInvite = async (guild: Discord.Guild, user: Discord.User) => {
    if (newInvite && Number(oldInvite.uses) < Number(newInvite.uses)) return newInvite;
    return undefined;
   })
-  .filter((i): i is Discord.Invite => !!i)[0];
+  .find((i): i is Discord.Invite => !!i);
+
+ setInvites();
  if (inv) return inv;
 
  const vanity = await guild.client.util.request.guilds.getVanityURL(guild);
