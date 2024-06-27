@@ -3,6 +3,7 @@ import * as DiscordCore from '@discordjs/core';
 import cache from './cache.js';
 import { API } from '../Bot/Client.js';
 
+import applications from './requestHandler/applications.js';
 import commands from './requestHandler/commands.js';
 import channels from './requestHandler/channels.js';
 import guilds from './requestHandler/guilds.js';
@@ -26,6 +27,7 @@ export default async (guildId: string, token: string) => {
 };
 
 export const request = {
+ applications,
  commands,
  channels,
  guilds,

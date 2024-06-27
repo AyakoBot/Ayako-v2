@@ -2,6 +2,7 @@ import { DjsDiscordClient } from 'discord-hybrid-sharding';
 import { scheduleJob } from 'node-schedule';
 import getPathFromError from '../UtilModules/getPathFromError.js';
 import Manager from './Manager.js';
+import { glob } from 'glob';
 
 scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
  const [guildCount, userCount] = await Promise.all(
@@ -26,108 +27,34 @@ https://support.ayakobot.com`,
    });
   },
   {
-   context: {
-    guilds: guildCount,
-    users: userCount,
-   },
+   context: { guilds: guildCount, users: userCount },
    cluster: 0,
   },
  );
 });
 
-const APIDiscordBotList = 'https://discordbotlist.com/api/v1/bots/650691698409734151/stats';
-const APIDiscordBots = 'https://discord.bots.gg/api/v1/bots/650691698409734151/stats';
-const APIDiscords = 'https://discords.com/bots/api/bot/650691698409734151/setservers';
-const APITopGG = 'https://top.gg/api/bots/650691698409734151/stats';
-const APIInfinityBots = 'https://spider.infinitybots.gg/bots/stats';
+const getAllUsers = async () =>
+ (
+  (await Manager.broadcastEval((c) =>
+   c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+  )) ?? [0]
+ )?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
 
-const getAllUsers = async () => {
- const userSize = (await Manager.broadcastEval((c) =>
-  c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
- )) ?? [0];
+const getAllGuilds = async () =>
+ ((await Manager.broadcastEval((c) => c.guilds.cache.size)) ?? [0])?.reduce(
+  (acc, guildCount) => acc + guildCount,
+  0,
+ ) ?? null;
 
- return userSize?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
-};
+const run = () => {
+ if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() !== process.env.mainId) return;
 
-const getAllGuilds = async () => {
- const guildSize = (await Manager.broadcastEval((c) => c.guilds.cache.size)) ?? [0];
-
- return guildSize?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
-};
-
-const splitBetweenShards = (x: number, y: number): number[] => {
- const quotient = Math.floor(x / y);
- const remainder = x % y;
- const result = Array(y).fill(quotient);
- for (let i = 0; i < remainder; i += 1) {
-  result[i] += 1;
- }
- return result;
-};
-
-if (Buffer.from(Manager.token!.split('.')[0], 'base64').toString() === process.env.mainId) {
  scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
-  const users = await getAllUsers();
-  const guilds = await getAllGuilds();
+  const [users, guilds] = await Promise.all([getAllUsers(), getAllGuilds()]);
   console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`);
 
-  fetch(APIDiscordBots, {
-   method: 'post',
-   body: JSON.stringify({
-    guildCount: guilds,
-   }),
-   headers: {
-    'Content-Type': 'application/json',
-    Authorization: process.env.DBToken ?? '',
-   },
-  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-
-  fetch(APIDiscordBotList, {
-   method: 'post',
-   body: JSON.stringify({
-    users,
-    guilds,
-   }),
-   headers: {
-    'Content-Type': 'application/json',
-    Authorization: process.env.DBListToken ?? '',
-   },
-  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-
-  fetch(APIDiscords, {
-   method: 'post',
-   headers: {
-    Authorization: process.env.discords ?? '',
-    'Content-Type': 'application/json',
-   },
-   body: JSON.stringify({ server_count: guilds }),
-  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-
-  fetch(APITopGG, {
-   method: 'post',
-   headers: {
-    Authorization: process.env.topGGToken ?? '',
-    'Content-Type': 'application/json',
-   },
-   body: JSON.stringify({
-    server_count: guilds,
-    shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => c),
-    shard_count: Manager.totalShards,
-   }),
-  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-
-  fetch(APIInfinityBots, {
-   method: 'post',
-   headers: {
-    Authorization: process.env.infinityBots ? `Bot ${process.env.infinityBots}` : '',
-    'Content-Type': 'application/json',
-   },
-   body: JSON.stringify({
-    servers: guilds,
-    shards: Manager.totalShards,
-    shard_list: Manager.shardList,
-    users,
-   }),
-  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
+  glob.sync('./Stats/*.js').forEach((f) => import(f).then((r) => r.default(guilds, users)));
  });
-}
+};
+
+run();

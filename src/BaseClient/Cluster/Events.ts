@@ -14,8 +14,7 @@ process.on('SIGINT', async () => {
  Manager.broadcastEval((cl) => cl.emit('SIGINT'));
  console.log('[SIGINT]: Gracefully shutting down...');
 
- await redis.disconnect();
-
+ redis.disconnect();
  process.exit(0);
 });
 

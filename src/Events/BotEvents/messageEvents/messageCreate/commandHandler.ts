@@ -104,8 +104,8 @@ const guildCommand = async (msg: Discord.Message<true>) => {
  }
 
  if (command.thisGuildOnly?.length && command.thisGuildOnly?.includes(msg.guildId)) return;
-  if (command.type === 'owner' && msg.author.id !== process.env.ownerId) return;
-  if (command.dmOnly) return;
+ if (command.type === 'owner' && msg.author.id !== process.env.ownerId) return;
+ if (command.dmOnly) return;
 
  const language = await msg.client.util.getLanguage(msg.guildId);
 

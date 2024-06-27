@@ -1,4 +1,3 @@
-import DiscordAPI from 'discord-api-types/v10';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
@@ -109,128 +108,171 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 
  switch (changedSetting) {
   case 'token': {
-   if (!newSettings.token?.length) {
-    client.util.cache.apis.delete(guild.id);
-    client.util.DataBase.customclients
-     .update({
-      where: { guildid: guild.id },
-      data: { publickey: null, appid: null, token: null },
-     })
-     .then();
-
-    client.util.request.commands.getGuildCommands(guild);
-    client.util.cache.commandPermissions.get(guild, '');
-    return;
-   }
-
-   requestHandler(guild.id, newSettings.token);
-
-   const me = await client.util.cache.apis
-    .get(guild.id)
-    ?.rest.get(`/applications/${client.util.getBotIdFromToken(newSettings.token)}`)
-    .then((a) => a as DiscordAPI.APIApplication)
-    .catch((e: Discord.DiscordAPIError) => e);
-
-   const deleteEntry = () => {
-    client.util.cache.apis.delete(guild.id);
-    client.util.DataBase.customclients
-     .update({
-      where: { guildid: guild.id },
-      data: { token: null },
-     })
-     .then();
-   };
-
-   if (!me || 'message' in me) {
-    client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
-
-    deleteEntry();
-    return;
-   }
-
-   if (me.bot_require_code_grant) {
-    client.util.error(
-     guild,
-     new Error('Bot requires Code Grant, please disable this in the Developer Portal'),
-    );
-
-    deleteEntry();
-    return;
-   }
-
-   if (!me.bot_public) {
-    client.util.error(
-     guild,
-     new Error('Bot is not public, please make it public so it can use external Emojis'),
-    );
-
-    deleteEntry();
-
-    return;
-   }
-
-   await client.fetchWebhook(
-    process.env.alertWebhookId as string,
-    process.env.alertWebhookToken as string,
-   );
-
-   client.util.request.webhooks.execute(
-    guild,
-    process.env.alertWebhookId ?? '',
-    process.env.alertWebhookToken ?? '',
-    {
-     content: `New Custom Client <@${process.env.ownerId}> => ${me.id}`,
-     allowed_mentions: { users: [process.env.ownerId ?? ''] },
-     components: [
-      {
-       type: Discord.ComponentType.ActionRow,
-       components: [
-        {
-         type: Discord.ComponentType.Button,
-         style: Discord.ButtonStyle.Link,
-         label: 'Invite',
-         url: `https://discord.com/api/oauth2/authorize?client_id=${me.id}&scope=bot`,
-        },
-       ],
-      },
-     ],
-    },
-   );
-
-   const language = new Lang('en-GB');
-
-   await client.util.request.commands.bulkOverwriteGlobalCommands(
-    guild,
-    Object.values(commands.public).map((c) => c.toJSON()),
-   );
-
-   const existingCommands = Object.values(language.slashCommands.moderation.permissions.buttons)
-    .map((e) => guild.commands.cache.find((c) => c.name === e))
-    .filter((c): c is Discord.ApplicationCommand => !!c)
-    .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))
-    .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
-
-   await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
-
-   const [, settings] = await client.util.DataBase.$transaction([
-    client.util.DataBase.customclients.update({
-     where: { guildid: guild.id },
-     data: { publickey: me.verify_key, appid: me.id },
-     select: { guildid: true },
-    }),
-    client.util.DataBase.guildsettings.findUnique({
-     where: { guildid: guild.id },
-     select: { enabledrp: true },
-    }),
-   ]);
-   if (settings?.enabledrp) await create(guild);
-
-   client.util.request.commands.getGuildCommands(guild);
-   client.util.cache.commandPermissions.get(guild, '');
+   if (!newSettings.token?.length) tokenDelete(guild);
+   else tokenCreate(guild, newSettings as Parameters<typeof tokenCreate>[1]);
    break;
   }
-
   default:
    break;
  }
+};
+
+const tokenDelete = (guild: Discord.Guild) => {
+ client.util.cache.apis.delete(guild.id);
+ client.util.DataBase.customclients
+  .update({
+   where: { guildid: guild.id },
+   data: { publickey: null, appid: null, token: null },
+  })
+  .then();
+
+ client.util.request.commands.getGuildCommands(guild);
+ client.util.cache.commandPermissions.get(guild, '');
+};
+
+const tokenCreate = async (
+ guild: Discord.Guild,
+ newSettings: CT.MakeRequired<
+  NonNullable<Parameters<NonNullable<CT.SettingsFile<typeof name>['postChange']>>[1]>,
+  'token'
+ >,
+) => {
+ requestHandler(guild.id, newSettings.token);
+
+ const me = await getMe(guild);
+ if (!meIsValid(guild, me)) return;
+
+ await updateApp(guild);
+
+ sendWebhookRequest(guild, me.id);
+ doCommands(guild, me);
+};
+
+const updateApp = (guild: Discord.Guild) => {
+ client.util.request.applications.editCurrent(guild, {
+  custom_install_url: process.env.customInstallURL,
+  interactions_endpoint_url: process.env.customInteractionsEndpointURL,
+  flags:
+   Discord.ApplicationFlags.GatewayMessageContentLimited |
+   Discord.ApplicationFlags.GatewayGuildMembersLimited |
+   Discord.ApplicationFlags.GatewayPresenceLimited,
+ });
+};
+
+const getMe = (guild: Discord.Guild) => client.util.request.applications.getCurrent(guild);
+
+const deleteEntry = (guildId: string) => {
+ client.util.cache.apis.delete(guildId);
+
+ client.util.DataBase.customclients
+  .update({
+   where: { guildid: guildId },
+   data: { token: null },
+  })
+  .then();
+};
+
+const meIsValid = (
+ guild: Discord.Guild,
+ me: Awaited<ReturnType<typeof getMe>>,
+): me is Discord.APIApplication => {
+ if (!me || 'message' in me) {
+  client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
+
+  deleteEntry(guild.id);
+  return false;
+ }
+
+ if (me.bot_require_code_grant) {
+  client.util.error(
+   guild,
+   new Error('Bot requires Code Grant, please disable this in the Developer Portal'),
+  );
+
+  deleteEntry(guild.id);
+  return false;
+ }
+
+ if (!me.bot_public) {
+  client.util.error(
+   guild,
+   new Error('Bot is not public, please make it public so it can use external Emojis'),
+  );
+
+  deleteEntry(guild.id);
+  return false;
+ }
+
+ return true;
+};
+
+const sendWebhookRequest = (guild: Discord.Guild, meId: string) =>
+ client.util.request.webhooks.execute(
+  guild,
+  process.env.alertWebhookId ?? '',
+  process.env.alertWebhookToken ?? '',
+  {
+   content: `New Custom Client <@${process.env.ownerId}> => ${meId}`,
+   allowed_mentions: { users: [process.env.ownerId ?? ''] },
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Link,
+       label: 'Invite 1',
+       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155150048393441411`,
+      },
+
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Link,
+       label: 'Invite 2',
+       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155145303167602838`,
+      },
+
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Link,
+       label: 'Invite 3',
+       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155145225459744780`,
+      },
+     ],
+    },
+   ],
+  },
+ );
+
+const doCommands = async (guild: Discord.Guild, me: Discord.APIApplication) => {
+ const language = new Lang('en-GB');
+
+ await client.util.request.commands.bulkOverwriteGlobalCommands(
+  guild,
+  Object.values(commands.public).map((c) => c.toJSON()),
+ );
+
+ const existingCommands = Object.values(language.slashCommands.moderation.permissions.buttons)
+  .map((e) => guild.commands.cache.find((c) => c.name === e))
+  .filter((c): c is Discord.ApplicationCommand => !!c)
+  .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))
+  .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
+
+ await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
+
+ const [, settings] = await client.util.DataBase.$transaction([
+  client.util.DataBase.customclients.update({
+   where: { guildid: guild.id },
+   data: { publickey: me.verify_key, appid: me.id },
+   select: { guildid: true },
+  }),
+  client.util.DataBase.guildsettings.findUnique({
+   where: { guildid: guild.id },
+   select: { enabledrp: true },
+  }),
+ ]);
+ if (settings?.enabledrp) await create(guild);
+
+ client.util.request.commands.getGuildCommands(guild);
+ client.util.cache.commandPermissions.get(guild, '');
 };

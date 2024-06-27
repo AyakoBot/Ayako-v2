@@ -50,14 +50,14 @@ const self: Pins = {
 
   const me = await getBotMemberFromGuild(channel.guild);
   const channelBitfield = me?.permissionsIn(channel);
-  if (channelBitfield && !channelBitfield?.has(Discord.PermissionFlagsBits.ViewChannel)) {
+  if (channelBitfield && !channelBitfield.has(Discord.PermissionFlagsBits.ViewChannel)) {
    return undefined;
   }
 
   const fetched = await channel.client.util.request.channels.getPins(channel);
   if ('message' in fetched) return undefined;
 
-  fetched?.forEach((f) => self.set(f));
+  fetched.forEach((f) => self.set(f));
 
   return fetched.find((f) => f.id === id);
  },
