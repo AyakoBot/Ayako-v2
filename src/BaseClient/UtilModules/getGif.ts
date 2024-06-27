@@ -7,8 +7,11 @@ import getColor from './getColor.js';
 import replyCmd from './replyCmd.js';
 import objectEmotes from './emotes.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
+import { scheduleJob } from 'node-schedule';
+import getPathFromError from './getPathFromError.js';
+import { sendDebugMessage } from './error.js';
 
-const neko = new Neko.Client();
+const nekoClient = new Neko.Client();
 
 const hardcodedGifs = {
  ayaya: [
@@ -167,6 +170,8 @@ export type ReturnType<T extends 'gif' | 'img'> = {
  gif: { anime_name?: string; url: string };
 }[T];
 
+type Type = 'purr' | 'neko' | 'hardcoded' | 'waifu';
+
 /**
  * Returns a random GIF or image based on the provided parameters.
  * @param gifName - The name of the GIF to retrieve.
@@ -182,65 +187,97 @@ export type ReturnType<T extends 'gif' | 'img'> = {
  */
 const getGif = async <T extends 'gif' | 'img'>(
  gifName: string,
- type: ('purr' | 'neko' | 'hardcoded' | 'waifu')[],
+ type: Type[],
 ): Promise<ReturnType<T>> => {
  switch (type[Math.ceil(Math.random() * (type.length - 1))]) {
-  case 'purr': {
-   const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
-   const url = await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
-    functionToCall as 'gif' | 'img',
-   ).catch(() => undefined);
-
-   if (type.length > 2 && !url) {
-    return getGif(
-     gifName,
-     type.filter((t) => t !== 'purr'),
-    );
-   }
-
-   return { url: url ?? '' };
-  }
-  case 'neko': {
-   const res = (await neko.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
-    ?.results[0];
-
-   if (type.length > 2 && !res) {
-    return getGif(
-     gifName,
-     type.filter((t) => t !== 'neko'),
-    );
-   }
-
-   if (!res) return { url: '' };
-
-   return 'anime_name' in res
-    ? { url: res.url, anime_name: res.anime_name }
-    : {
-       url: res.url,
-       artist: res.artist_name,
-       source: res.source_url,
-       artistUrl: res.artist_href,
-      };
-  }
-  case 'waifu': {
-   const url = await WaifuPics(gifName as WaifuGifNames).catch(() => undefined);
-
-   if (type.length > 2 && !url) {
-    return getGif(
-     gifName,
-     type.filter((t) => t !== 'waifu'),
-    );
-   }
-
-   return { url: url ?? '' };
-  }
-  case 'hardcoded': {
+  case 'purr':
+   return purr(gifName, type);
+  case 'neko':
+   return neko(gifName, type);
+  case 'waifu':
+   return waifu(gifName, type);
+  case 'hardcoded':
    return { url: getRandom(hardcodedGifs[gifName as keyof typeof hardcodedGifs]) };
-  }
-  default: {
+  default:
    throw new Error('Invalid type');
-  }
  }
+};
+
+const neko = async (gifName: string, type: Type[]) => {
+ let resolved = false;
+
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+  if (resolved) return;
+  sendDebugMessage({ content: `Neko took too long to respond!` });
+ });
+
+ const res = (await nekoClient.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
+  ?.results[0];
+ resolved = true;
+
+ if (type.length > 2 && !res) {
+  return getGif(
+   gifName,
+   type.filter((t) => t !== 'neko'),
+  );
+ }
+
+ if (!res) return { url: '' };
+
+ return 'anime_name' in res
+  ? { url: res.url, anime_name: res.anime_name }
+  : {
+     url: res.url,
+     artist: res.artist_name,
+     source: res.source_url,
+     artistUrl: res.artist_href,
+    };
+};
+
+const purr = async (gifName: string, type: Type[]) => {
+ const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
+
+ let resolved = false;
+
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+  if (resolved) return;
+  sendDebugMessage({ content: `Purr took too long to respond!` });
+ });
+
+ const url = await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
+  functionToCall as 'gif' | 'img',
+ ).catch(() => undefined);
+ resolved = true;
+
+ if (type.length > 2 && !url) {
+  return getGif(
+   gifName,
+   type.filter((t) => t !== 'purr'),
+  );
+ }
+
+ return { url: url ?? '' };
+};
+
+const waifu = async (gifName: string, type: Type[]) => {
+ let resolved = false;
+
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+  if (resolved) return;
+  sendDebugMessage({ content: `Waifu took too long to respond!` });
+ });
+
+ const url = await WaifuPics(gifName as WaifuGifNames).catch(() => undefined);
+ resolved = true;
+
+ if (type.length > 2 && !url) {
+  return getGif(
+   gifName,
+   type.filter((t) => t !== 'waifu'),
+  );
+ }
+
+ return { url: url ?? '' };
 };
 
 /**
@@ -369,15 +406,9 @@ export const imageGetter = async (
  const payload = {
   embeds: [
    {
-    image: {
-     url: img.url,
-    },
+    image: { url: img.url },
     color: cmd.guild ? getColor(await getBotMemberFromGuild(cmd.guild)) : undefined,
-    author: img.artist
-     ? {
-        name: lan.madeBy,
-       }
-     : undefined,
+    author: img.artist ? { name: lan.madeBy } : undefined,
     title: img.artist as string,
     url: img.source as string,
    },
