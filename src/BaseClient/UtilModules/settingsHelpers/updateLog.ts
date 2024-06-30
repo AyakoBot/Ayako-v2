@@ -81,7 +81,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
         Array.isArray(oldSetting?.[changedSetting])) &&
         (oldSetting?.[changedSetting] as string[] | string).length
         ? (oldSetting?.[changedSetting] as string)
-        : '-',
+        : (oldSetting?.[changedSetting] as string),
       ),
       inline: false,
      },
@@ -92,7 +92,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
         Array.isArray(newSetting?.[changedSetting])) &&
         (newSetting?.[changedSetting] as string[] | string).length
         ? (newSetting?.[changedSetting] as string)
-        : '-',
+        : (newSetting?.[changedSetting] as string),
       ),
       inline: false,
      },
