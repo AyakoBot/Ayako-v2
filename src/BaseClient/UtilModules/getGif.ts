@@ -206,7 +206,7 @@ const getGif = async <T extends 'gif' | 'img'>(
 const neko = async (gifName: string, type: Type[]) => {
  let resolved = false;
 
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   if (resolved) return;
   sendDebugMessage({ content: `Neko took too long to respond!` });
  });
@@ -239,7 +239,7 @@ const purr = async (gifName: string, type: Type[]) => {
 
  let resolved = false;
 
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   if (resolved) return;
   sendDebugMessage({ content: `Purr took too long to respond!` });
  });
@@ -262,7 +262,7 @@ const purr = async (gifName: string, type: Type[]) => {
 const waifu = async (gifName: string, type: Type[]) => {
  let resolved = false;
 
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 1000), () => {
+ scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   if (resolved) return;
   sendDebugMessage({ content: `Waifu took too long to respond!` });
  });
