@@ -2656,22 +2656,6 @@
     "anti-virus": {
      "name": "Anti-Virus",
      "fields": {
-      "minimize": {
-       "name": "Minimize Timeout (in Seconds)",
-       "desc": "Timeout until the Mod-Response is minimized"
-      },
-      "delete": {
-       "name": "Delete Timeout",
-       "desc": "Timeout until the Mod-Response is deleted"
-      },
-      "minimizetof": {
-       "name": "Minimize",
-       "desc": "Whether to Minimize the Mod-Response"
-      },
-      "deletetof": {
-       "name": "Delete",
-       "desc": "Whether to Delete the Mod-Response"
-      },
       "linklogging": {
        "name": "Log Links",
        "desc": "Whether to Log posted Links"
@@ -2679,6 +2663,10 @@
       "linklogchannels": {
        "name": "Links Log-Channels",
        "desc": "Where to Log posted Links"
+      },
+      "deletemsg": {
+       "name": "Delete Message",
+       "desc": "Whether to delete the Message if it contains a malicious Link"
       }
      }
     },

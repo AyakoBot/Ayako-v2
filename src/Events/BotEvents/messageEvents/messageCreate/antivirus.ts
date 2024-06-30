@@ -62,6 +62,10 @@ export default async (msg: Discord.Message) => {
   );
  }
 
+ if (msg.inGuild() && settings?.deletemsg) {
+  await msg.client.util.request.channels.deleteMessage(msg);
+ }
+
  if (!result.triggers) {
   writeAllowlist(result.url);
   return;

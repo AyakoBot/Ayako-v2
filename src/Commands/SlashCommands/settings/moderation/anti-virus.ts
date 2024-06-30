@@ -73,7 +73,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         inline: true,
        },
       ]
-    : []),
+    : [
+       {
+        name: lan.fields.deletemsg.name,
+        value: embedParsers.boolean(settings?.deletemsg, language),
+        inline: true,
+       },
+      ]),
    {
     name: lan.fields.linklogging.name,
     value: embedParsers.boolean(settings?.linklogging, language),
@@ -117,7 +123,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         undefined,
        ),
       ]
-    : []),
+    : [buttonParsers.boolean(language, settings?.deletemsg, 'deletemsg', name, undefined)]),
   ],
  },
  {

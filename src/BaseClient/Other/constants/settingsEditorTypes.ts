@@ -43,6 +43,7 @@ export default {
   deletemessageseconds: CT.EditorTypes.Duration,
   duration: CT.EditorTypes.Duration,
   action: CT.EditorTypes.Punishment,
+  deletemsg: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.Leveling]: {
   xppermsg: CT.EditorTypes.Number,
@@ -320,5 +321,5 @@ export default {
  },
  [CT.SettingNames.Afk]: {
   maxLetters: CT.EditorTypes.Number,
- }
+ },
 };
