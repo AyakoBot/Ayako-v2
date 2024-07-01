@@ -62,14 +62,15 @@ export default async (msg: Discord.Message) => {
   );
  }
 
- if (msg.inGuild() && settings?.deletemsg) {
-  await msg.client.util.request.channels.deleteMessage(msg);
- }
-
  if (!result.triggers) {
   writeAllowlist(result.url);
   return;
  }
+
+ if (msg.inGuild() && settings?.deletemsg) {
+  await msg.client.util.request.channels.deleteMessage(msg);
+ }
+
  writeDenylist(result.url);
 
  if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
@@ -333,9 +334,7 @@ const inVT = async (u: string) => {
 
  const urlsRes = await fetch('https://www.virustotal.com/api/v3/urls', {
   method: 'POST',
-  headers: {
-   'x-apikey': process.env.VTToken ?? '',
-  },
+  headers: { 'x-apikey': process.env.VTToken ?? '' },
   body,
  });
 
@@ -376,6 +375,7 @@ const getAnalyses = async (
 
 const getSeverity = (result: VirusVendorsTypings.VirusTotalAnalyses | false) => {
  if (!result) return false;
+
  if (
   Object.entries(result.data.attributes.results).find(
    ([, v]) =>
