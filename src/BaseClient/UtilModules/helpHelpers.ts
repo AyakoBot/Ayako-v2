@@ -112,20 +112,16 @@ export default async (
       type: Discord.ComponentType.StringSelect,
       custom_id: 'help/select',
       placeholder: language.slashCommands.help.selectPlaceholder,
-      options: [
-       ...new Set(
-        [...new Set(Object.values(SlashCommands.categories))]
-         .filter((c) => c.includes(type))
-         .flat(),
-       ),
-      ].map((c) => ({
-       label:
-        language.slashCommands.help.categories[
-         c as keyof typeof language.slashCommands.help.categories
-        ],
-       value: c,
-       default: c === type,
-      })),
+      options: [...new Set([...new Set(Object.values(SlashCommands.categories))].flat())].map(
+       (c) => ({
+        label:
+         language.slashCommands.help.categories[
+          c as keyof typeof language.slashCommands.help.categories
+         ],
+        value: c,
+        default: c === type,
+       }),
+      ),
      },
     ],
    },
