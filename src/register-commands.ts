@@ -2,7 +2,6 @@
 import * as DiscordCore from '@discordjs/core';
 import * as DiscordRest from '@discordjs/rest';
 import 'dotenv/config';
-import fetch from 'node-fetch';
 import DataBase from './BaseClient/Bot/DataBase.js';
 import commands from './SlashCommands/index.js';
 

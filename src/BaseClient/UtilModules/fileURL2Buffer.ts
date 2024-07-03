@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-shadow
-import fetch from 'node-fetch';
 import type * as Discord from 'discord.js';
 import arrayBufferToBuffer from './arrayBufferToBuffer.js';
 import getNameAndFileType from './getNameAndFileType.js';

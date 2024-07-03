@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
-import fetch from 'node-fetch';
 import * as os from 'os';
 import util from 'util';
 import * as CT from '../../../../Typings/Typings.js';

@@ -1,5 +1,4 @@
 import * as Jobs from 'node-schedule';
-import fetch from 'node-fetch';
 import getPathFromError from '../../getPathFromError.js';
 
 /**

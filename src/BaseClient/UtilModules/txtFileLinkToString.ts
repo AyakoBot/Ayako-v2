@@ -1,6 +1,3 @@
-// eslint-disable-next-line no-shadow
-import fetch from 'node-fetch';
-
 /**
  * Fetches the contents of a text file from a given URL and returns it as a string.
  * @param url - The URL of the text file to fetch.

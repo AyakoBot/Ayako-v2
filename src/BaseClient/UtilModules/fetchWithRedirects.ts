@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 /**
  * Recursively fetches a URL and its redirects, returning an array of visited URLs.
  * @param url - The URL to fetch.

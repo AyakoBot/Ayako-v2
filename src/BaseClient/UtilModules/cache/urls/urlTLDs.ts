@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 /**
  * Interface for UrlTLDs cache module.
  */
