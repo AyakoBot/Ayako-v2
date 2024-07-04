@@ -1992,7 +1992,7 @@
   },
   "vote": {
    "desc": "Vote for Ayako",
-   "content": "You can vote for me on\n- [Top.gg](https://top.gg/bot/650691698409734151/vote) (preferred & rewarded)\n- [DBL](https://discordbotlist.com/bots/tmh/upvote)\n- [Wumpus.Store](https://wumpus.store/bot/650691698409734151/vote)\n- [Discords.com](https://discords.com/bots/bot/650691698409734151/vote)\n- [Rovelstars](https://discord.rovelstars.com/bots/650691698409734151/vote)\n- ~~[Botlist.me](https://botlist.me/bots/650691698409734151/vote)~~"
+   "content": "You can vote for me on\n- [Top.gg](https://top.gg/bot/650691698409734151/vote) (preferred & rewarded)\n- [DBL](https://discordbotlist.com/bots/tmh/upvote)\n- [Wumpus.Store](https://wumpus.store/bot/650691698409734151/vote)\n- [Discords.com](https://discords.com/bots/bot/650691698409734151/vote)\n- [Rovelstars](https://discord.rovelstars.com/bots/650691698409734151/vote)\n- [Infinity Bots](https://infinitybots.gg/bot/650691698409734151/vote)\n- [Botlist.me](https://botlist.me/bots/650691698409734151/vote)"
   },
   "slowmode": {
    "deleted": "Slowmode of Channel {{channel}} deleted",
