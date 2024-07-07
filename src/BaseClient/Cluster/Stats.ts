@@ -7,7 +7,7 @@ import { glob } from 'glob';
 scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
  const [guildCount, userCount] = await Promise.all(
   [
-   'guilds.cache.size',
+   'guilds?.cache.size',
    (c: DjsDiscordClient) => c.guilds.cache.reduce((a, g) => a + g.memberCount, 0),
   ]
    .map((v) => (typeof v !== 'string' ? Manager.broadcastEval(v) : Manager.fetchClientValues(v)))
@@ -36,12 +36,12 @@ https://support.ayakobot.com`,
 const getAllUsers = async () =>
  (
   (await Manager.broadcastEval((c) =>
-   c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+   c.guilds?.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
   )) ?? [0]
  )?.reduce((acc, guildCount) => acc + guildCount, 0) ?? null;
 
 const getAllGuilds = async () =>
- ((await Manager.broadcastEval((c) => c.guilds.cache.size)) ?? [0])?.reduce(
+ ((await Manager.broadcastEval((c) => c.guilds?.cache.size)) ?? [0])?.reduce(
   (acc, guildCount) => acc + guildCount,
   0,
  ) ?? null;

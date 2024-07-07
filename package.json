@@ -5,7 +5,7 @@
   "packageManager": "pnpm@9.2.0",
   "scripts": {
     "start": "pnpm run run",
-    "run": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
+    "run": "clinic heapprofiler --collect-only --open=false -- node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
     "build": "tsc",
     "dev": "node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev",
     "lint": "npx eslint 'src/**/*.ts' --fix",

@@ -27,7 +27,7 @@ const getServers = async (language: CT.Language) =>
  (
   await client.cluster?.broadcastEval(
    async (c, { lang }) =>
-    c.guilds.cache.map((g) => ({
+    c.guilds?.cache.map((g) => ({
      content: `${c.util.util.makeInlineCode(g.name)}\n> ${c.util.splitByThousand(g.memberCount)} ${
       lang.members
      } ${g.vanityURLCode ? ` - [${lang.join}](https://discord.gg/${g.vanityURLCode})` : ''}`,

@@ -9,9 +9,7 @@ export default async (name: string) =>
    await import('../Bot/Client.js')
   ).default.cluster?.broadcastEval(
    (cl, { n }) =>
-    cl.users.cache.filter((u) => u.username?.toLowerCase().includes(n?.toLowerCase())),
-   {
-    context: { n: name },
-   },
+    cl.users?.cache.filter((u) => u.username?.toLowerCase().includes(n?.toLowerCase())),
+   { context: { n: name } },
   )
  )?.flat() ?? [];

@@ -8,10 +8,8 @@ export default async (name: string) => {
 
  const response = (
   await client.cluster?.broadcastEval(
-   (cl, { n }) => cl.guilds.cache.filter((g) => g.name.toLowerCase().includes(n.toLowerCase())),
-   {
-    context: { n: name },
-   },
+   (cl, { n }) => cl.guilds?.cache.filter((g) => g.name.toLowerCase().includes(n.toLowerCase())),
+   { context: { n: name } },
   )
  )?.flat();
 

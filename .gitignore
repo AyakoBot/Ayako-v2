@@ -8,3 +8,6 @@ src/Bot/BaseClient/Other/cache-proxy
 /logs
 ./start.sh
 src/Commands/StringCommands/randomize.ts
+report.*
+Heap.*
+.clinic

@@ -29,7 +29,7 @@ export default async (id: string) => {
  if (!client.isReady()) return undefined;
 
  const response = (
-  await client.cluster?.broadcastEval((cl, { id: userId }) => cl.users.cache.get(userId), {
+  await client.cluster?.broadcastEval((cl, { id: userId }) => cl.users?.cache.get(userId), {
    context: { id },
   })
  )

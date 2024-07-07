@@ -93,7 +93,7 @@ export const end = async (reminder: Prisma.reminders) => {
  const clusterWithChannel = (
   await client.cluster?.broadcastEval(
    (cl, { channelid }) => {
-    if (cl.channels.cache.get(channelid)) return cl.cluster?.id;
+    if (cl.channels?.cache.get(channelid)) return cl.cluster?.id;
     return undefined;
    },
    { context: { channelid: reminder.channelid } },

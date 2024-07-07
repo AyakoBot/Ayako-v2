@@ -30,13 +30,13 @@ const getEmbed = async (
 ): Promise<Discord.APIEmbed[] | undefined> =>
  client.cluster?.broadcastEval(
   async (cl, { id, gid, mid, ViewChannel }) => {
-   const g = cl.guilds.cache.get(gid);
+   const g = cl.guilds?.cache.get(gid);
    if (!g) return undefined;
 
    const rawMember = await cl.util.request.guilds.getMember(g, mid);
    const member = 'message' in rawMember ? undefined : rawMember;
 
-   const c = cl.channels.cache.get(id) as Discord.GuildBasedChannel;
+   const c = cl.channels?.cache.get(id) as Discord.GuildBasedChannel;
    if (!c) return undefined;
 
    const language = await cl.util.getLanguage(gid);

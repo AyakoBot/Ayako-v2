@@ -47,7 +47,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 const getEmbed = async (serverId: string): Promise<Discord.APIEmbed[] | undefined> =>
  client.cluster?.broadcastEval(
   async (c, { id }) => {
-   const g = c.guilds.cache.get(id) ?? c.util.cache.inviteGuilds.get(id);
+   const g = c.guilds?.cache.get(id) ?? c.util?.cache.inviteGuilds.get(id);
    if (!g) return undefined;
 
    const language = await c.util.getLanguage(g.id);

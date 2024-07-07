@@ -16,10 +16,10 @@ export default async (cmd: Discord.CommandInteraction) => {
  const response = (
   await client.cluster?.broadcastEval(
    async (cl, { gId: guildId, cId: channelId, mId: messageId }) => {
-    const guild = cl.guilds.cache.get(guildId);
+    const guild = cl.guilds?.cache.get(guildId);
     if (!guild) return undefined;
 
-    const channel = cl.channels.cache.get(channelId) as Discord.GuildTextBasedChannel;
+    const channel = cl.channels?.cache.get(channelId) as Discord.GuildTextBasedChannel;
     if (!channel) return undefined;
     if (!('messages' in channel)) return undefined;
 

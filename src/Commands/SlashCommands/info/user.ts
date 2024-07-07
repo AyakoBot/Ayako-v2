@@ -169,7 +169,7 @@ const getBoosting = async (flags: string[], user: Discord.User, language: CT.Lan
  const boostTimes = (
   await user.client.cluster?.broadcastEval(
    (cl, { memberId }) =>
-    cl.guilds.cache.map((g) => g.members.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
+    cl.guilds?.cache.map((g) => g.members?.cache.get(memberId)?.premiumSinceTimestamp ?? 0),
    { context: { memberId: user.id } },
   )
  )

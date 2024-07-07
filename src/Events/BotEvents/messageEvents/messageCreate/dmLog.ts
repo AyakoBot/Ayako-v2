@@ -21,7 +21,7 @@ export default async (msg: Discord.Message<boolean>) => {
  const mutuals = await msg.client.cluster
   ?.broadcastEval(
    (cl, u) =>
-    cl.guilds.cache.filter((g) => g.members.cache.has(u)).map((g) => `\`${g.id} - ${g.name} \``),
+    cl.guilds?.cache.filter((g) => g.members?.cache.has(u)).map((g) => `\`${g.id} - ${g.name} \``),
    { context: user.userId },
   )
   .then((r) =>
