@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
-import { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMention.js';
-import { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
+import type { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMention.js';
+import type { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
 import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
 import { GlobalDescType } from '../BaseClient/UtilModules/settingsHelpers/getGlobalDesc.js';
 import type { DataBaseTables } from './DataBase.js';
@@ -150,7 +150,7 @@ export enum SettingNames {
  Appeals = 'appeals',
  Questions = 'questions',
  CustomClient = 'custom-client',
- Afk = "afk"
+ Afk = 'afk',
 }
 
 export const SettingsName2TableName = {

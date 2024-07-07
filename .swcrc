@@ -10,12 +10,15 @@
    "topLevelAwait": true,
    "resolveFully": true
   },
-  "target": "esnext"
+  "target": "esnext",
+  "experimental": {
+   "keepImportAttributes": true
+  }
  },
  "module": {
-  "type": "es6"
+  "type": "nodenext"
  },
- "minify": true,
+ "minify": false,
  "sourceMaps": true,
  "isModule": true
 }
