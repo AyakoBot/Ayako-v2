@@ -66,4 +66,5 @@ export const canCreateThread = (
  me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.ViewChannel) &&
  (body.type === Discord.ChannelType.PublicThread
   ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePublicThreads)
-  : me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePrivateThreads));
+  : me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePrivateThreads) &&
+    channel.type !== Discord.ChannelType.GuildAnnouncement);
