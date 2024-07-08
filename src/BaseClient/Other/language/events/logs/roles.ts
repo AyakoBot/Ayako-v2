@@ -13,21 +13,21 @@ export default (t: CT.Language) => ({
    role: t.languageFunction.getRole(role),
   }),
  descDeleteAudit: (user: Discord.User, role: Discord.Role) =>
-  t.stp(t.JSON.events.logs.role.descCreateAudit, {
+  t.stp(t.JSON.events.logs.role.descDeleteAudit, {
    role: t.languageFunction.getRole(role),
    user: t.languageFunction.getUser(user),
   }),
  descDelete: (role: Discord.Role) =>
-  t.stp(t.JSON.events.logs.role.descCreate, {
+  t.stp(t.JSON.events.logs.role.descDelete, {
    role: t.languageFunction.getRole(role),
   }),
  descUpdateAudit: (role: Discord.Role, user: Discord.User) =>
-  t.stp(t.JSON.events.logs.role.descCreateAudit, {
+  t.stp(t.JSON.events.logs.role.descUpdateAudit, {
    role: t.languageFunction.getRole(role),
    user: t.languageFunction.getUser(user),
   }),
  descUpdate: (role: Discord.Role) =>
-  t.stp(t.JSON.events.logs.role.descCreate, {
+  t.stp(t.JSON.events.logs.role.descUpdate, {
    role: t.languageFunction.getRole(role),
   }),
 });
