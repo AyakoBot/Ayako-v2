@@ -125,7 +125,7 @@ export default async (oldRole: Discord.Role, role: Discord.Role) => {
     .join('\n')}`,
   };
 
-  embeds.push(permEmbed);
+  if (permEmbed.description?.trim().length) embeds.push(permEmbed);
  }
 
  role.client.util.send({ id: channels, guildId: role.guild.id }, { embeds, files }, 10000);
