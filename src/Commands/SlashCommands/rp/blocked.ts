@@ -1,8 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inCachedGuild()) return;
-
  const blocked = await cmd.client.util.DataBase.blockedusers.findMany({
   where: { userid: cmd.user.id },
  });
@@ -28,7 +26,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
        } ${b.blockedcmd?.length || allCommands.length}/${allCommands.length}\n`,
    )
    .join('\n')}`,
-  color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
+  color: cmd.guild
+   ? cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild))
+   : cmd.client.util.Colors.Base,
  };
 
  cmd.client.util.replyCmd(cmd, { embeds: [embed] });

@@ -1,6 +1,8 @@
 import type * as Discord from 'discord.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
+ if (!cmd.inCachedGuild()) return;
+
  const value = cmd.options.get('embed', true).value as string;
 
  const embedData = await cmd.client.util.DataBase.customembeds.findUnique({

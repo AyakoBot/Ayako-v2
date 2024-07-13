@@ -337,7 +337,7 @@ export const getMessage = async (giveaway: {
 export const getButton = (
  language: CT.Language,
  giveaway: Prisma.giveaways,
-): Discord.APIButtonComponent => ({
+): Discord.APIButtonComponentWithCustomId => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Primary,
  custom_id: 'giveaway/participate',

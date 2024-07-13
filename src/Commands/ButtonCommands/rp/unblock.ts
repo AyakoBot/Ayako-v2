@@ -1,8 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ButtonInteraction | Discord.ChatInputCommandInteraction) => {
- if (!cmd.inCachedGuild()) return;
-
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  let user: Discord.User | undefined;
 

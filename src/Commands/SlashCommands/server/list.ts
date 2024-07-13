@@ -8,8 +8,6 @@ export default async (
  _: string[],
  page = 1,
 ) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.server;
  const guilds = await cmd.client.cluster?.broadcastEval((cl) =>

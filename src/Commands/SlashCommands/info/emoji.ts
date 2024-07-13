@@ -18,8 +18,6 @@ export default async (
   return;
  }
 
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info;
 

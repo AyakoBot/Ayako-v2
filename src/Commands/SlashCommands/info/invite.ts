@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inCachedGuild()) return;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.invite;
  const eventLan = language.events.logs.invite;
@@ -27,7 +26,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     { context: { i: inviteCode } },
    )) as Discord.Invite[]
   )?.find((i): i is Discord.Invite => !!i) ??
-  (await cmd.client.fetchInvite(inviteCode).catch(() => undefined));
+  (await cmd.client.util.request.invites
+   .get(cmd.guild, inviteCode, undefined, cmd.client)
+   .then((e) => ('message' in e ? undefined : e)));
 
  if (!invite) {
   cmd.client.util.replyCmd(cmd, { content: lan.invalidInvite });
@@ -40,7 +41,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   author: {
    name: lan.author,
   },
-  color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
+  color: cmd.guild
+   ? cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild))
+   : cmd.client.util.Colors.Base,
   description: [
    {
     name: lan.code,

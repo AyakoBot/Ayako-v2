@@ -1,8 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const rawUser = cmd.options.getUser('user', false) || cmd.user;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const user = await cmd.client.util.request.users
@@ -36,4 +34,3 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ],
  });
 };
-

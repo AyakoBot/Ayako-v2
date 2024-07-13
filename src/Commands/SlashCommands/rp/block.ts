@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
- if (!cmd.inCachedGuild()) return;
+export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const user = cmd.options.getUser('user', false);
 
  const blocked = await cmd.client.util.DataBase.blockedusers.upsert({
@@ -20,7 +19,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
 };
 
 export const respond = async (
- cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.StringSelectMenuInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
  user: Discord.User | null,
  blocked: { blockedcmd?: string[] },
  lang?: CT.Language,

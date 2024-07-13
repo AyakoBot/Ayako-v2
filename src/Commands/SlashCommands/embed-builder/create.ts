@@ -3,11 +3,13 @@ import * as CT from '../../../Typings/Typings.js';
 
 export const buildEmbed = async (
  cmd:
-  | Discord.CommandInteraction<'cached'>
-  | Discord.ButtonInteraction<'cached'>
-  | Discord.StringSelectMenuInteraction<'cached'>,
+  | Discord.ChatInputCommandInteraction
+  | Discord.ButtonInteraction
+  | Discord.StringSelectMenuInteraction,
  selectedOption?: string,
 ) => {
+ if (!cmd.inCachedGuild()) return;
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create;
  const options = await getOptions(cmd);

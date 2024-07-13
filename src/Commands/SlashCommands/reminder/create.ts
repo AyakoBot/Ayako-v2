@@ -6,8 +6,6 @@ import client from '../../../BaseClient/Bot/Client.js';
 import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const duration = cmd.client.util.getDuration(cmd.options.getString('duration', true));
  const content = cmd.options.getString('content', true);
  const now = Date.now();

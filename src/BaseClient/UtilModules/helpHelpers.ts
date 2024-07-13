@@ -17,6 +17,8 @@ export default async (
  type: CT.CommandCategories,
  selected?: string,
 ) => {
+ if (cmd.inGuild() && !cmd.inCachedGuild()) return;
+
  const rawCommands = Object.entries(SlashCommands.categories)
   .filter(([, val]) => val.includes(type))
   .map(([k]) => k);

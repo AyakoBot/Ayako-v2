@@ -2,17 +2,18 @@ import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const enteredId = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;
  const enteredInvite = cmd.options.get('server-invite', false)?.value as string | null;
  const language = await client.util.getLanguage(cmd.guildId);
  const inviteArgs = enteredInvite?.split(/\/+/g) ?? [];
  const invite = inviteArgs.length
-  ? await client.fetchInvite(inviteArgs.at(-1) as string, {}).catch(() => undefined)
+  ? await client.util.request.invites
+     .get(cmd.guild, inviteArgs.at(-1) as string, {}, cmd.client)
+     .catch(() => undefined)
   : undefined;
- const isInviteGuild = invite?.guild ? !('members' in invite.guild) : false;
+ const isInviteGuild =
+  invite && 'guild' in invite && invite.guild ? !('members' in invite.guild) : false;
 
  let serverId: string | null = null;
  if (!enteredId && !enteredName && !enteredInvite) serverId = cmd.guildId;
@@ -24,7 +25,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    return;
   }
 
-  if (!invite.guild) {
+  if (!('guild' in invite) || !invite.guild) {
    client.util.errorCmd(cmd, language.errors.inviteNotFound, language);
    return;
   }

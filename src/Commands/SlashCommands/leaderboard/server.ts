@@ -4,7 +4,10 @@ import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inCachedGuild()) return;
+ if (!cmd.inCachedGuild()) {
+  client.util.guildOnly(cmd);
+  return;
+ }
  await cmd.deferReply({ ephemeral: true });
 
  const language = await client.util.getLanguage(cmd.guildId);
