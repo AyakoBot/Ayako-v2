@@ -3928,6 +3928,7 @@
   }
  },
  "t": {
+  "guildOnly": "This Command requires me to be part of this Server",
   "welcome": "Welcome {{user.username}}#{{user.discriminator}} to {{guild.name}} <:AMayakowave:924071188957913108>",
   "defaultValuesLog": "__Before:__\n{{oldValue}}\n\n__After:__\n{{newValue}}",
   "pageBetween": "A Number from {{x}} to {{y}}",
