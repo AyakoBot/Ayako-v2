@@ -20,7 +20,7 @@ export default async (
    {
     description: lan.desc,
     color: cmd.client.util.getColor(
-     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined
+     cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
     ),
    },
   ],
