@@ -7,8 +7,6 @@ import modalHandler from './modalHandler.js';
 import selectHandler from './selectHandler.js';
 
 export default async (cmd: Discord.Interaction) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  commandHandler(cmd);
  buttonHandler(cmd);
  modalHandler(cmd);
