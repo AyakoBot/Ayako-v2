@@ -11,3 +11,4 @@ src/Commands/StringCommands/randomize.ts
 report.*
 Heap.*
 .clinic
+/patches
