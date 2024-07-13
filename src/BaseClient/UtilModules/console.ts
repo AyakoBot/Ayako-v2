@@ -24,15 +24,12 @@ const file = fs.createWriteStream(
 const { stdout } = process;
 
 const stringify = (d: unknown) => {
- switch (typeof d) {
-  case 'string':
-  case 'number':
-  case 'bigint':
-  case 'boolean':
-  case 'undefined':
-   return d;
-  default:
-   return JSON.stringify(d, null, 2);
+ if (typeof d === 'string') return d;
+
+ try {
+  return JSON.stringify(d, null, 2);
+ } catch {
+  return JSON.stringify(d, (_, v) => (typeof v === 'bigint' ? v.toString() : v), 2);
  }
 };
 
