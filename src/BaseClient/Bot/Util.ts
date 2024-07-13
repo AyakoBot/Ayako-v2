@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
 import constants from '../Other/constants.js';
+import { Colors } from '../../Typings/Typings.js';
 import firstChannelInteraction from '../Other/firstChannelInteraction.js';
 import firstGuildInteraction from '../Other/firstGuildInteraction.js';
 
@@ -209,6 +210,7 @@ interface Util {
  util: typeof utils;
  files: typeof files;
  guildOnly: typeof guildOnly;
+ Colors: typeof Colors;
 }
 
 const util: Util = {
@@ -309,6 +311,7 @@ const util: Util = {
  util: utils,
  files,
  guildOnly,
+ Colors,
 };
 
 export default util;
