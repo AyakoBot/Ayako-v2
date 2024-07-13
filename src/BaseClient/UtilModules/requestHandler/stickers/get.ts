@@ -10,14 +10,18 @@ import * as Classes from '../../../Other/classes.js';
  * @param stickerId The ID of the sticker to retrieve.
  * @returns A promise that resolves with the retrieved sticker, or rejects with an error.
  */
-export default async (guild: Discord.Guild, stickerId: string) =>
- guild.stickers.cache.get(stickerId) ??
- (cache.apis.get(guild.id) ?? API).stickers
+export default async <T extends Discord.Guild | null>(
+ guild: T,
+ stickerId: string,
+ client: T extends null ? Discord.Client<true> : undefined,
+) =>
+ guild?.stickers.cache.get(stickerId) ??
+ ((guild ? cache.apis.get(guild.id) : API) ?? API).stickers
   .get(stickerId)
   .then((s) => {
-   const parsed = new Classes.Sticker(guild.client, s);
-   if (guild.stickers.cache.get(parsed.id)) return parsed;
-   guild.stickers.cache.set(parsed.id, parsed);
+   const parsed = new Classes.Sticker((guild?.client ?? client)!, s);
+   if (guild?.stickers.cache.get(parsed.id)) return parsed;
+   guild?.stickers.cache.set(parsed.id, parsed);
    return parsed;
   })
   .catch((e) => {

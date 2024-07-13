@@ -3,6 +3,7 @@ import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import { RawInviteData } from 'discord.js/typings/rawDataTypes.js';
 
 /**
  * Retrieves an invite for a guild with the given code and optional query parameters.
@@ -11,14 +12,19 @@ import * as Classes from '../../../Other/classes.js';
  * @param query - Optional query parameters to include in the request.
  * @returns A Promise that resolves with the retrieved invite, or rejects with an error.
  */
-export default async (guild: Discord.Guild, code: string, query?: Discord.RESTGetAPIInviteQuery) =>
- guild.invites.cache.get(code) ??
- (cache.apis.get(guild.id) ?? API).invites
+export default async <T extends Discord.Guild | null>(
+ guild: T,
+ code: string,
+ query?: Discord.RESTGetAPIInviteQuery,
+ client?: T extends null ? Discord.Client<true> : undefined,
+) =>
+ guild?.invites.cache.get(code) ??
+ ((guild ? cache.apis.get(guild.id) : API) ?? API).invites
   .get(code, query)
   .then((i) => {
-   const parsed = new Classes.Invite(guild.client, i);
-   if (guild.invites.cache.get(parsed.code)) return parsed;
-   guild.invites.cache.set(parsed.code, parsed);
+   const parsed = new Classes.Invite((guild?.client ?? client)!, i as RawInviteData);
+   if (guild?.invites.cache.get(parsed.code)) return parsed;
+   guild?.invites.cache.set(parsed.code, parsed);
    return parsed;
   })
   .catch((e) => {
