@@ -56,7 +56,8 @@ export const registerCmd = (commandName: CommandType, guild: Discord.Guild) => {
   .setName(cmdData.name)
   .setDescription(cmdData.description)
   .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
-  .setDMPermission(false);
+  .setContexts([Discord.InteractionContextType.Guild])
+  .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall]);
 
  if (cmdData.name_localizations) submitCmd.setNameLocalizations(cmdData.name_localizations);
 

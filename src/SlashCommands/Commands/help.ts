@@ -3,7 +3,8 @@ import * as Discord from 'discord.js';
 export default new Discord.SlashCommandBuilder()
  .setName('help')
  .setDescription('Get Help for the Bot')
- .setDMPermission(true)
+ .setContexts([Discord.InteractionContextType.BotDM, Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('list')
