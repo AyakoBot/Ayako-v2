@@ -81,7 +81,8 @@
     "pnpm": "^9.5.0"
   },
   "overrides": {
-    "@discordjs/builders": "dev"
+    "@discordjs/builders": "dev",
+    "discord-api-types": "next"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"
