@@ -1188,7 +1188,8 @@
   "textCommands": "Text-Commands"
  },
  "languages": {
-  "en-GB": "English | Finished"
+  "en-GB": "English",
+  "de-DE": "German"
  },
  "deleteReasons": {
   "deleteCommand": "Delete Commands",
