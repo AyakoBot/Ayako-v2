@@ -35,14 +35,16 @@ type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
  * @returns void
  */
 const reply = async (
- cmd:
-  | Discord.ChatInputCommandInteraction<'cached'>
-  | Discord.Message<true>
-  | Discord.ButtonInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction | Discord.Message<true> | Discord.ButtonInteraction,
+ isActionSubCommand?: boolean,
+ isReply?: boolean,
 ) => {
- if ('inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
- if (!cmd.guild) return;
- if (!cmd.inGuild()) return;
+ if (!isReply && !isActionSubCommand && 'inCachedGuild' in cmd && !cmd.inCachedGuild()) return;
+ if (!isReply && isActionSubCommand && 'inCachedGuild' in cmd && cmd.inCachedGuild()) {
+  const language = await cmd.client.util.getLanguage(cmd.guild.id);
+  cmd.client.util.errorCmd(cmd, language.t.useDefaultRP, language);
+  return;
+ }
 
  if (cmd instanceof Discord.ButtonInteraction) {
   while (cooldown.has(cmd.message.id)) {
@@ -57,10 +59,14 @@ const reply = async (
   return parsers.msgParser(cmd);
  };
 
- const setting = await DataBase.guildsettings.findUnique({
-  where: { guildid: cmd.guild.id },
- });
+ const setting = cmd.guild
+  ? await DataBase.guildsettings.findUnique({
+     where: { guildid: cmd.guild?.id },
+    })
+  : undefined;
+
  const { author, users: allUsers, text, otherText, commandName } = await parse();
+
  const blockedUsers = await DataBase.blockedusers.findMany({
   where: {
    userid: { in: [...allUsers.map((u) => u.id), author.id] },
@@ -123,7 +129,7 @@ const reply = async (
  }
 
  const embed: Discord.APIEmbed = {
-  color: getColor(await getBotMemberFromGuild(cmd.guild)),
+  color: getColor(cmd.guild ? await getBotMemberFromGuild(cmd.guild) : undefined),
   url: `https://ayakobot.com?exec=${author.id}&cmd=${commandName}&initial=${!(
    cmd instanceof Discord.ButtonInteraction
   )}`,
@@ -159,7 +165,9 @@ const reply = async (
   !replyUsers.length &&
   'request' in
    language.slashCommands.interactions[
-    (cmd.message.interaction?.commandName ??
+    ((cmd.inCachedGuild()
+     ? cmd.message.interaction?.commandName
+     : new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('cmd')) ??
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
       'cmd',
      )) as InteractionKeys
@@ -197,7 +205,8 @@ const reply = async (
 
    cmd.update(payload as Discord.InteractionUpdateOptions);
   } else {
-   if (await isDeleteable(cmd.message)) request.channels.deleteMessage(cmd.message);
+   if (await isDeleteable((cmd as Discord.ButtonInteraction<'cached'>).message))
+    request.channels.deleteMessage((cmd as Discord.ButtonInteraction<'cached'>).message);
 
    payload.ephemeral = false;
    replyCmd(cmd, payload, 'interactions');
@@ -251,8 +260,6 @@ export default reply;
  * @returns A Promise that resolves when the reaction is complete.
  */
 export const react = async (cmd: Discord.ButtonInteraction, a: string[]) => {
- if (!cmd.inCachedGuild()) return;
-
  const args = a[0] === 'everyone' ? ['everyone'] : a.map((u) => String(encodeString2BigInt(u, 36)));
 
  const language = await getLanguage(cmd.guildId);
@@ -262,7 +269,7 @@ export const react = async (cmd: Discord.ButtonInteraction, a: string[]) => {
   return;
  }
 
- reply(cmd);
+ reply(cmd, false, true);
 };
 
 /**
@@ -325,7 +332,9 @@ const parsers = {
     ).specialOptions.map((o) => cmd.options.getString(o.name, false) ?? ''),
    )
    .flat(1),
-  commandName: cmd.commandName.toLowerCase(),
+  commandName: !cmd.inCachedGuild()
+   ? cmd.options.data.find((c) => c.type === Discord.ApplicationCommandOptionType.Subcommand)!.name
+   : cmd.commandName.toLowerCase(),
  }),
 
  /**
@@ -333,7 +342,7 @@ const parsers = {
   * @param cmd The button interaction to parse.
   * @returns An object containing the parsed data.
   */
- buttonParser: async (cmd: Discord.ButtonInteraction<'cached'>) => ({
+ buttonParser: async (cmd: Discord.ButtonInteraction) => ({
   author: cmd.user,
   users: [
    (cmd.message.interaction?.user as Discord.User) ??
@@ -341,6 +350,7 @@ const parsers = {
      cmd.guild,
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('exec') ??
       cmd.client.user.id,
+     cmd.client,
     )),
   ].filter((u) => !!u && !('message' in u)),
   text: '',
