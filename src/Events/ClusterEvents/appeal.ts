@@ -78,11 +78,11 @@ export default async ({ data }: CT.Message<CT.MessageType.Appeal>) => {
       case AnswerType.boolean:
       case AnswerType.number:
       case AnswerType.single_choice:
-       return false;
+       return true;
       case AnswerType.paragraph:
       case AnswerType.multiple_choice:
       default:
-       return true;
+       return false;
      }
     };
 
