@@ -14,12 +14,21 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!code) return;
 
  try {
-  new Discord.EmbedBuilder(JSON.parse(code) as Discord.APIEmbed);
+  const embedOrEmbeds = JSON.parse(code) as Discord.APIEmbed | Discord.APIEmbed[];
+
+  new Discord.EmbedBuilder(Array.isArray(embedOrEmbeds) ? embedOrEmbeds[0] : embedOrEmbeds);
  } catch (e) {
   const language = await cmd.client.util.getLanguage(cmd.guildId);
-  cmd.client.util.errorCmd(cmd, e as Discord.DiscordjsError, language);
+
+  cmd.client.util.errorCmd(
+   cmd,
+   (e as Discord.DiscordjsError)?.message ??
+    language.slashCommands.embedbuilder.inherit.invalidJSON,
+   language,
+  );
   return;
  }
 
- startOver(cmd, [], JSON.parse(code) as Discord.APIEmbed);
+ const embedOrEmbeds = JSON.parse(code) as Discord.APIEmbed | Discord.APIEmbed[];
+ startOver(cmd, [], Array.isArray(embedOrEmbeds) ? embedOrEmbeds[0] : embedOrEmbeds);
 };

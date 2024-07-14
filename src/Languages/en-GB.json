@@ -2170,6 +2170,7 @@
    "inherit": {
     "title": "Embed Code",
     "label": "Past your Embed Code below",
+    "invalidJSON": "Invalid JSON-Code provided",
     "placeholder0": "Embed Code can be split into all displayed Fields",
     "placeholder1": "Please do not escape the Code",
     "placeholder2": "{{t.botName}} will merge the code of all Fields together",
