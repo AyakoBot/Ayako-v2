@@ -19,8 +19,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const component = cmd.message
-  .components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[];
+ const component = getComponents(cmd.message.components);
  const xpOrLevel = Number(
   cmd.message.embeds[0].fields[type === 'x' ? 1 : 4].value.replace(/,/g, ''),
  );
@@ -100,3 +99,16 @@ export const getLevel = (y: number) =>
  ) || 0;
 
 export const getXP = (y: number) => Math.floor((5 / 6) * y * (2 * y * y + 27 * y + 91));
+
+export const getComponents = (
+ components:
+  | Discord.ButtonInteraction<'cached'>['message']['components']
+  | Discord.APIActionRowComponent<Discord.APIButtonComponent>[],
+) =>
+ (components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[]).map((c) => ({
+  ...c,
+  components: c.components.filter(
+   (b): b is Discord.APIButtonComponentWithCustomId =>
+    'custom_id' in b && b.type === Discord.ComponentType.Button,
+  ),
+ }));

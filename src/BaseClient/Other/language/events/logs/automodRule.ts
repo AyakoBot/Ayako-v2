@@ -33,6 +33,7 @@ export default (t: CT.Language) => ({
   3: t.JSON.events.logs.automodRule.triggerType[3],
   4: t.JSON.events.logs.automodRule.triggerType[4],
   5: t.JSON.events.logs.automodRule.triggerType[5],
+  6: t.JSON.events.logs.automodRule.triggerType[6],
  },
  actionsType: {
   1: t.JSON.events.logs.automodRule.actionsType[1],

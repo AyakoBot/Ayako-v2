@@ -6,8 +6,11 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const isInviteGuild = (args.shift() as string) === 'true';
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const invite = isInviteGuild
-  ? await client.fetchInvite(inviteOrId).catch(() => undefined)
+  ? await client.util.request.invites
+     .get(cmd.guild, inviteOrId, undefined, cmd.client)
+     .then((i) => ('message' in i ? undefined : i))
   : undefined;
+
  const serverId = isInviteGuild ? invite?.guild?.id : inviteOrId;
 
  if (!serverId) {

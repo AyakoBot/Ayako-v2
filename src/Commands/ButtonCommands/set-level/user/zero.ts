@@ -3,6 +3,7 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
+import { getComponents } from './calc.js';
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -14,9 +15,8 @@ export default async (
  const type = args.shift() as 'x' | 'l';
  const addOrRemove = args.shift() as '+' | '-';
  const userOrRoleId = args.shift() as string;
+ const component = getComponents(cmd.message.components);
 
- const component = cmd.message
-  .components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[];
  const amountOfZerosOnPrimary =
   Number(component[type === 'x' ? 0 : 1].components[3].label?.length) - 2;
  const amountOfZerosOnSecondary =

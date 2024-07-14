@@ -64,7 +64,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
      components: [
       getButton(language, giveaway),
       giveaway.actualprize && giveaway.collecttime ? getClaimButton(language, giveaway) : undefined,
-     ].filter((r): r is Discord.APIButtonComponent => !!r),
+     ].filter((r): r is Discord.APIButtonComponentWithCustomId => !!r),
     },
    ],
   });

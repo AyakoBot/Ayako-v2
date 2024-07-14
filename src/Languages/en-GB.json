@@ -229,7 +229,11 @@
      "29": "Stage Speaker",
      "30": "Stage Raise Hand",
      "31": "Stage Topic",
-     "32": "Guild Application Premium Subscription"
+     "32": "Guild Application Premium Subscription",
+     "36": "Guild Incident Alert Mode Enabled",
+     "37": "Guild Incident Alert Mode Disabled",
+     "38": "Guild Incident Report Raid",
+     "39": "Guild Incident False Alarm"
     },
     "embeds": "Embeds",
     "isFromBot": "From Bot",
@@ -662,7 +666,8 @@
      "2": "Harmful Link",
      "3": "Spam",
      "4": "Keyword Preset",
-     "5": "Spam"
+     "5": "Spam",
+     "6": "Member Profile"
     },
     "exemptRoles": "Exempt Roles",
     "exemptChannels": "Exempt Channels",
@@ -1140,7 +1145,8 @@
    "ReadMessages": "Read Messages",
    "ViewChannels": "View Channels",
    "ManagePermissions": "Manage Permissions",
-   "SendPolls": "Send Polls"
+   "SendPolls": "Send Polls",
+   "UseExternalApps": "Use External Apps"
   }
  },
  "lvlupmodes": {
@@ -1393,7 +1399,9 @@
   "164": "Onboarding Prompt Updated",
   "165": "Onboarding Prompt Deleted",
   "166": "Onboarding Created",
-  "167": "Onboarding Updated"
+  "167": "Onboarding Updated",
+  "190": "Home Settings Created",
+  "191": "Home Settings Updated"
  },
  "defaultSortOrder": {
   "0": "Latest Activity",

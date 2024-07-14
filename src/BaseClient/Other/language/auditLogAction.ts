@@ -62,4 +62,6 @@ export default (t: CT.Language) => ({
  165: t.JSON.auditLogAction[165],
  166: t.JSON.auditLogAction[166],
  167: t.JSON.auditLogAction[167],
+ 190: t.JSON.auditLogAction[190],
+ 191: t.JSON.auditLogAction[191],
 });

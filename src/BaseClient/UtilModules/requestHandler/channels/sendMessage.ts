@@ -195,6 +195,7 @@ export const isValidPayload = (payload: UsualMessagePayload) => {
      .map((c) => {
       switch (c.type) {
        case Discord.ComponentType.Button: {
+        if (c.style === Discord.ButtonStyle.Premium) break;
         if (Number(c.label?.length) > 80) return e('Button Label too long', c.label);
         if ('custom_id' in c && Number(c.custom_id?.length) > 100) {
          return e('Button Custom ID too long', c.custom_id);

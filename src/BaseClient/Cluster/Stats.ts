@@ -16,7 +16,7 @@ scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
 
  Manager.broadcastEval(
   (cl: DjsDiscordClient, { guilds, users }: { guilds: number; users: number }) => {
-   cl.application?.edit({
+   cl.util.request.applications.editCurrent(undefined, {
     description: `\`${cl.util.splitByThousand(guilds)} Servers\` | \`${cl.util.splitByThousand(
      users,
     )} Users\` | \`v${cl.util.files.importCache.package.file.version}\`

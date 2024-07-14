@@ -290,7 +290,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    );
    if (!message) return;
 
-   const componentChunks: Discord.APIButtonComponentWithCustomId[][] = client.util.getChunks(
+   const componentChunks: Discord.APIMessageActionRowComponent[][] = client.util.getChunks(
     [
      ...message.components
       .map((c) =>
@@ -334,7 +334,11 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      if (!message.components.length) return;
 
      const components = componentChunks
-      .map((c) => c.filter((c2) => !c2.custom_id.endsWith(String(settings.uniquetimestamp))))
+      .map((c) =>
+       c.filter(
+        (c2) => 'custom_id' in c2 && !c2.custom_id.endsWith(String(settings.uniquetimestamp)),
+       ),
+      )
       .map((c) => ({
        type: Discord.ComponentType.ActionRow,
        components: c,

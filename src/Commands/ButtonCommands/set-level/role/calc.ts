@@ -4,7 +4,7 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
-import { getLevel, getXP } from '../user/calc.js';
+import { getComponents, getLevel, getXP } from '../user/calc.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -20,8 +20,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const component = cmd.message
-  .components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[];
+ const component = getComponents(cmd.message.components);
  const xpOrLevel = Number(
   cmd.message.embeds[0].fields[type === 'x' ? 0 : 1].value.replace(/,/g, ''),
  );

@@ -149,7 +149,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
     components: [
      getButton(language, giveaway),
      giveaway.actualprize && giveaway.collecttime ? getClaimButton(language, giveaway) : undefined,
-    ].filter((r): r is Discord.APIButtonComponent => !!r),
+    ].filter((r): r is Discord.APIButtonComponentWithCustomId => !!r),
    },
   ],
  });
@@ -349,7 +349,7 @@ export const getButton = (
 export const getClaimButton = (
  language: CT.Language,
  giveaway: Prisma.giveaways,
-): Discord.APIButtonComponent => ({
+): Discord.APIButtonComponentWithCustomId => ({
  type: Discord.ComponentType.Button,
  style: giveaway.claimingdone ? Discord.ButtonStyle.Secondary : Discord.ButtonStyle.Primary,
  custom_id: 'giveaway/claim',
@@ -401,7 +401,7 @@ export const failReroll = async (giveaway: Prisma.giveaways) => {
    {
     type: Discord.ComponentType.ActionRow,
     components: [getButton(language, giveaway), claimButton].filter(
-     (r): r is Discord.APIButtonComponent => !!r,
+     (r): r is Discord.APIButtonComponentWithCustomId => !!r,
     ),
    },
   ],
