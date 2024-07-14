@@ -3,7 +3,8 @@ import * as Discord from 'discord.js';
 export default new Discord.SlashCommandBuilder()
  .setName('embed-builder')
  .setDescription('Everything around Embeds and custom Embeds')
- .setDMPermission(false)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('view')

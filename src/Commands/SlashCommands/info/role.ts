@@ -1,7 +1,11 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (!cmd.inCachedGuild()) return;
+ if (!cmd.inCachedGuild()) {
+  cmd.client.util.guildOnly(cmd);
+  return;
+ }
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.role;
  const eventLan = language.events.logs.role;

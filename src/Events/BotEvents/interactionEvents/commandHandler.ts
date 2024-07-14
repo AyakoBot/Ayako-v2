@@ -6,7 +6,6 @@ const { log } = console;
 
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isChatInputCommand()) return;
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
 
  const files = await glob(
   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,

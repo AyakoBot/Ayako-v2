@@ -2,8 +2,9 @@ import * as Discord from 'discord.js';
 
 export default new Discord.SlashCommandBuilder()
  .setName('custom-role')
- .setDMPermission(false)
  .setDescription('Create a custom Role')
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addStringOption(
   new Discord.SlashCommandStringOption()
    .setName('name')

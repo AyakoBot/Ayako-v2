@@ -6,22 +6,17 @@ export default async (
  _args: string[],
  page?: number,
 ) => {
- if (!cmd.inCachedGuild()) return;
-
  const messageLinkOrStickerId =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.getString('sticker', false)
    : undefined;
  const language = await cmd.client.util.getLanguage(cmd.locale);
 
- if (messageLinkOrStickerId) single(cmd as Discord.ChatInputCommandInteraction<'cached'>, language);
+ if (messageLinkOrStickerId) single(cmd as Discord.ChatInputCommandInteraction, language);
  else multiple(cmd, language, page);
 };
 
-const single = async (
- cmd: Discord.ChatInputCommandInteraction<'cached'>,
- language: CT.Language,
-) => {
+const single = async (cmd: Discord.ChatInputCommandInteraction, language: CT.Language) => {
  let stickerIds: string[] = [];
 
  const messageLinkOrStickerId = cmd.options.getString('sticker', true);
@@ -39,7 +34,13 @@ const single = async (
  }
 
  const stickers = (
-  await Promise.all(stickerIds.map((s) => cmd.client.fetchSticker(s).catch(() => undefined)))
+  await Promise.all(
+   stickerIds.map((s) =>
+    cmd.client.util.request.stickers
+     .get(cmd.guild, s, cmd.client)
+     .then((e) => ('message' in e ? undefined : e)),
+   ),
+  )
  ).filter((s): s is Discord.Sticker => !!s);
  if (!stickers.length) {
   cmd.client.util.errorCmd(cmd, language.errors.stickerNotFound, language);
@@ -50,10 +51,15 @@ const single = async (
 };
 
 export const multiple = async (
- cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  language: CT.Language,
  page: number = 1,
 ) => {
+ if (!cmd.inCachedGuild()) {
+  cmd.client.util.guildOnly(cmd);
+  return;
+ }
+
  const embeds = await getEmbeds(
   cmd.guild.stickers.cache.map((s) => s).slice((page - 1) * 10, page * 10),
   cmd,
@@ -99,19 +105,22 @@ export const multiple = async (
 
 const getEmbeds = async (
  stickers: Discord.Sticker[],
- cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
+ cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  language: CT.Language,
 ): Promise<Discord.APIEmbed[]> => {
  const lan = language.slashCommands.info.stickers;
  const packs = stickers.find((s) => s.packId)
-  ? await cmd.client.fetchPremiumStickerPacks()
+  ? await cmd.client.util.request.stickers.getStickers(cmd.guild)
   : undefined;
  const color = cmd.client.util.getColor(
   cmd.guild ? await cmd.client.util.getBotMemberFromGuild(cmd.guild) : undefined,
  );
 
  return stickers.map((sticker) => {
-  const pack = packs?.find((p) => p.id === sticker.packId);
+  const pack =
+   packs && 'message' in packs
+    ? undefined
+    : packs?.sticker_packs.find((p) => p.id === sticker.packId);
   const partialEmoji = sticker.tags ? Discord.resolvePartialEmoji(sticker.tags) : undefined;
   const emoji = partialEmoji?.id
    ? sticker.guild?.emojis.cache.get(partialEmoji.id)
@@ -219,10 +228,10 @@ const getEmbeds = async (
              value: `${cmd.client.util.util.makeInlineCode(pack.id)}`,
             }
           : undefined,
-         pack.createdTimestamp
+         pack.id
           ? {
              name: `${cmd.client.util.util.makeBold(language.t.createdAt)}:`,
-             value: `${cmd.client.util.constants.standard.getTime(pack.createdTimestamp)}`,
+             value: `${cmd.client.util.constants.standard.getTime(cmd.client.util.getUnix(pack.id))}`,
             }
           : undefined,
         ]
@@ -232,12 +241,6 @@ const getEmbeds = async (
        },
       ]
     : undefined,
-   image:
-    pack && pack.bannerId
-     ? {
-        url: pack.bannerURL({ size: 4096 }) as string,
-       }
-     : undefined,
   };
  });
 };

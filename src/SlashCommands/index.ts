@@ -28,6 +28,7 @@ import stp from './Commands/stp.js';
 import suggest from './Commands/suggest.js';
 import user from './Commands/user.js';
 import vote from './Commands/vote.js';
+import actions from './Commands/actions.js';
 
 export enum CommandCategories {
  Utility = 'utility',
@@ -75,6 +76,9 @@ export default {
   bypass,
   clear,
   sticker,
+  actions0: actions[0],
+  actions1: actions[1],
+  actions2: actions[2],
  },
  categories: {
   'settings_moderation_anti-spam': [CommandCategories.Moderation],

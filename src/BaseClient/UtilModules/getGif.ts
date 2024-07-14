@@ -390,8 +390,6 @@ export default gifSelection;
 export const imageGetter = async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
 ) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const commandName =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.data.find((c) => c.type === Discord.ApplicationCommandOptionType.Subcommand)?.name

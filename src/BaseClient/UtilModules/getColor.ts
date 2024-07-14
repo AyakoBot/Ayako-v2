@@ -172,8 +172,10 @@ export const colors = {
  * @param color - A string, number or Discord.GuildMember object representing the color.
  * @returns A number representing the color.
  */
-export default (color?: string | number | Discord.GuildMember | null | undefined): number => {
- if (!color) return 0xb0ff00;
+export default (
+ color?: string | number | Discord.GuildMember | null | undefined | keyof typeof colors,
+): number => {
+ if (!color) return CT.Colors.Base;
 
  if (color instanceof Discord.GuildMember) {
   if (!color) return CT.Colors.Base;

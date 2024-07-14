@@ -3,7 +3,15 @@ import * as Discord from 'discord.js';
 export default new Discord.SlashCommandBuilder()
  .setName('rp')
  .setDescription('Allows Admins to manage RP-Commands and Users to block others')
- .setDMPermission(false)
+ .setContexts([
+  Discord.InteractionContextType.BotDM,
+  Discord.InteractionContextType.Guild,
+  Discord.InteractionContextType.PrivateChannel,
+ ])
+ .setIntegrationTypes([
+  Discord.ApplicationIntegrationType.GuildInstall,
+  Discord.ApplicationIntegrationType.UserInstall,
+ ])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('manager')

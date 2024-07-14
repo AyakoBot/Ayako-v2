@@ -3,8 +3,9 @@ import * as Discord from 'discord.js';
 export default new Discord.SlashCommandBuilder()
  .setName('roles')
  .setDescription('Everything about Roles')
- .setDMPermission(false)
  .setDefaultMemberPermissions(Discord.PermissionsBitField.Flags.ManageRoles)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()
    .setName('builders')

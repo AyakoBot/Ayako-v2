@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
 import constants from '../Other/constants.js';
+import { Colors } from '../../Typings/Typings.js';
 import firstChannelInteraction from '../Other/firstChannelInteraction.js';
 import firstGuildInteraction from '../Other/firstGuildInteraction.js';
 
@@ -30,7 +31,6 @@ import findUserByName from '../UtilModules/findUserByName.js';
 import getAllBans from '../UtilModules/getAllBans.js';
 import getAllInvites from '../UtilModules/getAllInvites.js';
 import getAllJobs from '../UtilModules/getAllJobs.js';
-import getPathFromError from '../UtilModules/getPathFromError.js';
 import getAudit from '../UtilModules/getAudit.js';
 import {
  guild as getBotIdFromGuild,
@@ -53,6 +53,7 @@ import getLanguage from '../UtilModules/getLanguage.js';
 import getLogChannels from '../UtilModules/getLogChannels.js';
 import getMessage from '../UtilModules/getMessage.js';
 import getNameAndFileType from '../UtilModules/getNameAndFileType.js';
+import getPathFromError from '../UtilModules/getPathFromError.js';
 import getPunishment from '../UtilModules/getPunishment.js';
 import getRandom from '../UtilModules/getRandom.js';
 import getReferenceMessage from '../UtilModules/getReferenceMessage.js';
@@ -64,6 +65,7 @@ import getTrueChannelType from '../UtilModules/getTrueChannelType.js';
 import getUnix from '../UtilModules/getUnix.js';
 import getUser from '../UtilModules/getUser.js';
 import getUserFromUserAndUsernameOptions from '../UtilModules/getUserFromUserAndUsernameOptions.js';
+import guildOnly from '../UtilModules/guildOnly.js';
 import helpHelpers from '../UtilModules/helpHelpers.js';
 import interactionHelpers from '../UtilModules/interactionHelpers.js';
 import isDeleteable from '../UtilModules/isDeleteable.js';
@@ -207,6 +209,8 @@ interface Util {
  userFlagsCalc: typeof userFlagsCalc;
  util: typeof utils;
  files: typeof files;
+ guildOnly: typeof guildOnly;
+ Colors: typeof Colors;
 }
 
 const util: Util = {
@@ -306,6 +310,8 @@ const util: Util = {
  userFlagsCalc,
  util: utils,
  files,
+ guildOnly,
+ Colors,
 };
 
 export default util;

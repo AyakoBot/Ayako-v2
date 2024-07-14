@@ -1,20 +1,20 @@
-import getNitroStickers from './stickers/getNitroStickers.js';
+import getStickers from './stickers/getStickers.js';
 import get from './stickers/get.js';
 
 interface Stickers {
- getNitroStickers: typeof getNitroStickers;
+ getStickers: typeof getStickers;
  get: typeof get;
 }
 
 /**
  * Sticker request handler module.
- * @property {Function} getNitroStickers
+ * @property {Function} getStickers
  * - Function to get Nitro stickers.
  * @property {Function} get
  * - Function to get a sticker.
  */
 const stickers: Stickers = {
- getNitroStickers,
+ getStickers,
  get,
 };
 

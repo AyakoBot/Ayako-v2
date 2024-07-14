@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import * as DiscordCore from '@discordjs/core';
 import * as DiscordRest from '@discordjs/rest';
+import * as Discord from 'discord.js';
 import 'dotenv/config';
 import DataBase from './BaseClient/Bot/DataBase.js';
 import commands from './SlashCommands/index.js';
@@ -27,19 +28,28 @@ fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/commands`, {
  body: JSON.stringify(createCommands.map((c) => c.toJSON())),
 });
 
-(
- await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
-).forEach(async (s) => {
- const api = requestHandler(s.token ?? '');
+if (!process.argv.includes('--dev')) {
+ (
+  await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
+ ).forEach(async (s) => {
+  const api = requestHandler(s.token ?? '');
 
- await api.applicationCommands
-  .bulkOverwriteGlobalCommands(
-   s.appid ?? '',
-   createCommands.map((c) => c.toJSON()),
-  )
-  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
-  .catch(() => console.log(`Unauthorized for ${s.appid}`));
-});
+  await api.applicationCommands
+   .bulkOverwriteGlobalCommands(
+    s.appid ?? '',
+    createCommands
+     .filter((c) => !c.name.includes('action'))
+     .map((c) =>
+      c
+       .setContexts(Discord.InteractionContextType.Guild)
+       .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
+       .toJSON(),
+     ),
+   )
+   .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
+   .catch(() => console.log(`Unauthorized for ${s.appid}`));
+ });
+}
 
 setTimeout(async () => {
  console.log('Finished. Exiting...');

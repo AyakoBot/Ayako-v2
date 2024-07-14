@@ -8,7 +8,15 @@ const User = new Discord.SlashCommandUserOption()
 export default new Discord.SlashCommandBuilder()
  .setName('rank')
  .setDescription('Leaderboard and Rank Commands')
- .setDMPermission(false)
+ .setContexts([
+  Discord.InteractionContextType.BotDM,
+  Discord.InteractionContextType.Guild,
+  Discord.InteractionContextType.PrivateChannel,
+ ])
+ .setIntegrationTypes([
+  Discord.ApplicationIntegrationType.GuildInstall,
+  Discord.ApplicationIntegrationType.UserInstall,
+ ])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('nitro')

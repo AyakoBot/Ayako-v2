@@ -21,9 +21,10 @@ const RelatedEmoji = new Discord.SlashCommandStringOption()
 
 export default new Discord.SlashCommandBuilder()
  .setName('stickers')
- .setDMPermission(false)
  .setDescription('Detailed Information and Utilities about Sticker')
  .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('info')

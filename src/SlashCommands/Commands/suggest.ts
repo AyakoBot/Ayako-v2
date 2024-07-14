@@ -3,7 +3,8 @@ import * as Discord from 'discord.js';
 const suggest = new Discord.SlashCommandBuilder()
  .setName('suggest')
  .setDescription('Submit a new Suggestion')
- .setDMPermission(false)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addStringOption(
   new Discord.SlashCommandStringOption()
    .setName('content')

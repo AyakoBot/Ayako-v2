@@ -6,7 +6,10 @@ export default async (
  _: string[],
  isReplied = false,
 ) => {
- if (!cmd.inCachedGuild()) return;
+ if (!cmd.inCachedGuild()) {
+  cmd.client.util.guildOnly(cmd);
+  return;
+ }
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;

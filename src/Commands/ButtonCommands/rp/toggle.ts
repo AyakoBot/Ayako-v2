@@ -75,53 +75,11 @@ export const create = async (guild: Discord.Guild) => {
   return;
  }
 
- const registerCommands = guild.client.util.constants.commands.interactions
-  .filter((c) => !commands.find((existing) => existing.name === c.name))
-  .map((c) => {
-   const command = new Discord.SlashCommandBuilder().setName(c.name).setDescription(c.desc);
+ const registerCommands = getRegisterCommands(
+  guild.client.util.constants.commands.interactions,
+ ).filter((c) => !commands.find((existing) => existing.name === c.name));
 
-   if (c.users) {
-    command.addUserOption(
-     new Discord.SlashCommandUserOption()
-      .setDescription('The User to interact with')
-      .setRequired(c.reqUser)
-      .setName('user'),
-    );
-   }
-
-   command.addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('text')
-     .setDescription('The text to Display')
-     .setRequired(false),
-   );
-
-   if ('specialOptions' in c && c.specialOptions) {
-    c.specialOptions.forEach((o) =>
-     command.addStringOption(
-      new Discord.SlashCommandStringOption()
-       .setName(o.name)
-       .setDescription(o.desc)
-       .setRequired(false),
-     ),
-    );
-   }
-
-   if (c.users) {
-    new Array(5).fill(null).forEach((_, i) => {
-     command.addUserOption(
-      new Discord.SlashCommandUserOption()
-       .setDescription(`Another User to interact with`)
-       .setRequired(false)
-       .setName(`user-${i}`),
-     );
-    });
-   }
-
-   return command;
-  });
-
- const createPayload = [...registerCommands.map((c) => c.toJSON())];
+ const createPayload = registerCommands.map((c) => c.toJSON());
 
  if (!commands.length) {
   await guild.client.util.request.commands.bulkOverwriteGuildCommands(guild, createPayload);
@@ -139,3 +97,50 @@ export const create = async (guild: Discord.Guild) => {
   create: { guildid: guild.id, rpenableruns: 1, enabledrp: true },
  });
 };
+
+export const getRegisterCommands = (
+ interactions: Discord.Client<true>['util']['constants']['commands']['interactions'],
+) =>
+ interactions.map((c) => {
+  const command = new Discord.SlashCommandBuilder().setName(c.name).setDescription(c.desc);
+
+  if (c.users) {
+   command.addUserOption(
+    new Discord.SlashCommandUserOption()
+     .setDescription('The User to interact with')
+     .setRequired(c.reqUser)
+     .setName('user'),
+   );
+  }
+
+  command.addStringOption(
+   new Discord.SlashCommandStringOption()
+    .setName('text')
+    .setDescription('The text to Display')
+    .setRequired(false),
+  );
+
+  if ('specialOptions' in c && c.specialOptions) {
+   c.specialOptions.forEach((o) =>
+    command.addStringOption(
+     new Discord.SlashCommandStringOption()
+      .setName(o.name)
+      .setDescription(o.desc)
+      .setRequired(false),
+    ),
+   );
+  }
+
+  if (c.users) {
+   new Array(5).fill(null).forEach((_, i) => {
+    command.addUserOption(
+     new Discord.SlashCommandUserOption()
+      .setDescription(`Another User to interact with`)
+      .setRequired(false)
+      .setName(`user-${i}`),
+    );
+   });
+  }
+
+  return command;
+ });

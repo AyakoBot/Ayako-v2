@@ -7,8 +7,6 @@ export default async (
  _args: string[],
  page = 1,
 ) => {
- if (cmd.inGuild() && !cmd.inCachedGuild()) return;
-
  const language = await client.util.getLanguage(cmd.guildId);
  const servers = await getServers(language);
  if (!servers) {

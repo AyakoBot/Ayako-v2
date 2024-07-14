@@ -9,9 +9,10 @@ const EmojiName = new Discord.SlashCommandStringOption()
 
 export default new Discord.SlashCommandBuilder()
  .setName('emojis')
- .setDMPermission(false)
  .setDescription('Detailed Information and Utilities about Emojis')
  .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('info')

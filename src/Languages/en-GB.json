@@ -3928,6 +3928,8 @@
   }
  },
  "t": {
+  "useDefaultRP": "Please use the Default RP-Commands (`/hug`, `/pat` etc) if enabled\n`/actions` Commands are for DMs and Servers that don't have Ayako added\n\nIf they aren't enabled, consider asking a Server Administrator to enable them via `/rp manager`",
+  "guildOnly": "This Command requires me to be part of this Server",
   "welcome": "Welcome {{user.username}}#{{user.discriminator}} to {{guild.name}} <:AMayakowave:924071188957913108>",
   "defaultValuesLog": "__Before:__\n{{oldValue}}\n\n__After:__\n{{newValue}}",
   "pageBetween": "A Number from {{x}} to {{y}}",

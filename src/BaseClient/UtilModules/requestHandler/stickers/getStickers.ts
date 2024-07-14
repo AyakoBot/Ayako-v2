@@ -8,8 +8,8 @@ import cache from '../../cache.js';
  * @param guild - The guild to retrieve Nitro stickers for.
  * @returns A promise that resolves with the Nitro stickers, or rejects with a DiscordAPIError.
  */
-export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).stickers.getNitroStickers().catch((e) => {
+export default async (guild: Discord.Guild | null) =>
+ ((guild ? cache.apis.get(guild.id) : API) ?? API).stickers.getStickers().catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

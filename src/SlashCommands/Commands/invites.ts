@@ -4,7 +4,8 @@ import { AllNonThreadGuildChannelTypes } from '../../Typings/Channel.js';
 export default new Discord.SlashCommandBuilder()
  .setName('invites')
  .setDescription('Detailed Information and Utilities about Invites')
- .setDMPermission(false)
+ .setContexts([Discord.InteractionContextType.Guild])
+ .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('info')
