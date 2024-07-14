@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import { ephemeral } from './images.js';
 
 export default new Discord.SlashCommandBuilder()
  .setName('info')
@@ -20,7 +21,8 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandStringOption()
      .setName('invite')
      .setDescription('The Invite you want to get Information about'),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -41,12 +43,14 @@ export default new Discord.SlashCommandBuilder()
      .setRequired(false)
      .setMinLength(2)
      .setAutocomplete(true),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('servers')
-   .setDescription(`Display all servers ${process.env.mainName} is part of`),
+   .setDescription(`Display all servers ${process.env.mainName} is part of`)
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -74,7 +78,8 @@ export default new Discord.SlashCommandBuilder()
      .setDescription('Invite to the Server')
      .setRequired(false)
      .setMinLength(1),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -85,7 +90,8 @@ export default new Discord.SlashCommandBuilder()
      .setName('channel')
      .setDescription('The Channel you want to get Information about')
      .setRequired(true),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -96,17 +102,20 @@ export default new Discord.SlashCommandBuilder()
      .setName('role')
      .setDescription('The Role you want to get Information about')
      .setRequired(true),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('bot')
-   .setDescription(`Display Information about a ${process.env.mainName}`),
+   .setDescription(`Display Information about a ${process.env.mainName}`)
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('badges')
-   .setDescription('Display Information about the Discord Badges Members of this Server have'),
+   .setDescription('Display Information about the Discord Badges Members of this Server have')
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -117,7 +126,8 @@ export default new Discord.SlashCommandBuilder()
      .setName('emoji')
      .setDescription('The Emoji you want to get Information about')
      .setRequired(false),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
@@ -128,5 +138,6 @@ export default new Discord.SlashCommandBuilder()
      .setName('sticker')
      .setDescription('A Message Link to the Sticker you want info about (can also be a Sticker ID)')
      .setRequired(false),
-   ),
+   )
+   .addBooleanOption(ephemeral),
  );

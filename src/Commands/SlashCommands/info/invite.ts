@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ const ephemeral = cmd.options.getBoolean('hide', false) ?? true;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.invite;
  const eventLan = language.events.logs.invite;
@@ -38,9 +39,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const inviter = invite.inviterId ? await cmd.client.util.getUser(invite.inviterId) : undefined;
 
  const embed: Discord.APIEmbed = {
-  author: {
-   name: lan.author,
-  },
+  author: { name: lan.author },
   color: cmd.guild
    ? cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild))
    : cmd.client.util.Colors.Base,
@@ -123,5 +122,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    .join('\n'),
  };
 
- cmd.client.util.replyCmd(cmd, { embeds: [embed] });
+ cmd.client.util.replyCmd(cmd, {
+  ephemeral,
+  embeds: [embed],
+ });
 };

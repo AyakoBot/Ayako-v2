@@ -6,6 +6,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
+ const ephemeral = cmd.options.getBoolean('hide', false) ?? true;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.role;
  const eventLan = language.events.logs.role;
@@ -123,6 +124,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  cmd.client.util.replyCmd(cmd, {
+  ephemeral,
   embeds: [embed],
   components: [
    {

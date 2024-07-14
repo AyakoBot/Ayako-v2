@@ -1,6 +1,26 @@
 import * as Discord from 'discord.js';
 
-export default new Discord.SlashCommandBuilder()
+export const ephemeral = new Discord.SlashCommandBooleanOption()
+ .setName('hide')
+ .setDescription('Whether to hide the Response and make it ephemeral')
+ .setRequired(false);
+
+const categories = {
+ neko: 'Get a random Neko Image',
+ husbando: 'Get a random Husbando Image',
+ kitsune: 'Get a random Kitsune Image',
+ waifu: 'Get a random Waifu Image',
+ shinobu: 'Get a random Shinobu Image',
+ megumin: 'Get a random Megumin Image',
+ eevee: 'Get a random Eevee Image',
+ holo: 'Get a random Holo Image',
+ icon: 'Get a random Anime Icon',
+ okami: 'Get a random Okami Image',
+ senko: 'Get a random Senko Image',
+ shiro: 'Get a random Shiro Image',
+};
+
+const images = new Discord.SlashCommandBuilder()
  .setName('images')
  .setDescription('Get a random Image')
  .setContexts([
@@ -11,64 +31,15 @@ export default new Discord.SlashCommandBuilder()
  .setIntegrationTypes([
   Discord.ApplicationIntegrationType.GuildInstall,
   Discord.ApplicationIntegrationType.UserInstall,
- ])
- .addSubcommand(
+ ]);
+
+Object.entries(categories).forEach(([name, description]) => {
+ images.addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
-   .setName('neko')
-   .setDescription('Get a random Neko Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('husbando')
-   .setDescription('Get a random Husbando Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('kitsune')
-   .setDescription('Get a random Kitsune Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('waifu')
-   .setDescription('Get a random Waifu Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('shinobu')
-   .setDescription('Get a random Shinobu Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('megumin')
-   .setDescription('Get a random Megumin Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('eevee')
-   .setDescription('Get a random Eevee Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('holo')
-   .setDescription('Get a random Holo Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('icon')
-   .setDescription('Get a random Anime Icon'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('okami')
-   .setDescription('Get a random Okami Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('senko')
-   .setDescription('Get a random Senko Image'),
- )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('shiro')
-   .setDescription('Get a random Shiro Image'),
+   .setName(name)
+   .setDescription(description)
+   .addBooleanOption(ephemeral),
  );
+});
+
+export default images;

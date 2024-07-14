@@ -7,6 +7,10 @@ export default async (
  _args: string[],
  page = 1,
 ) => {
+ const ephemeral =
+  cmd instanceof Discord.ChatInputCommandInteraction
+   ? cmd.options.getBoolean('hide', false) ?? true
+   : true;
  const language = await client.util.getLanguage(cmd.guildId);
  const servers = await getServers(language);
  if (!servers) {
@@ -18,7 +22,7 @@ export default async (
  const payload = await getPayload(content, language, cmd.guild, page);
 
  if (cmd.isButton()) cmd.update(payload as Discord.InteractionUpdateOptions).catch(() => undefined);
- else client.util.replyCmd(cmd, payload);
+ else client.util.replyCmd(cmd, { ...payload, ephemeral });
 };
 
 const getServers = async (language: CT.Language) =>

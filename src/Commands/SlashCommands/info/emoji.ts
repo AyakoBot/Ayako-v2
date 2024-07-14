@@ -18,6 +18,10 @@ export default async (
   return;
  }
 
+ const ephemeral =
+  cmd instanceof Discord.ChatInputCommandInteraction
+   ? cmd.options.getBoolean('hide', false) ?? true
+   : true;
  const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info;
 
@@ -41,7 +45,7 @@ export default async (
  }
 
  if (cmd instanceof Discord.ButtonInteraction) cmd.update(payload);
- else client.util.replyCmd(cmd, payload);
+ else client.util.replyCmd(cmd, { ...payload, ephemeral });
 };
 
 const getEmotesPayload = async (

@@ -15,7 +15,10 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   (m) => m.user.avatar?.startsWith('a_') || m.user.banner || m.avatar?.startsWith('a_'),
  );
 
+ const ephemeral = cmd.options.getBoolean('hide', false) ?? true;
+
  cmd.client.util.replyCmd(cmd, {
+  ephemeral,
   embeds: [
    {
     author: {

@@ -10,13 +10,22 @@ export default async (
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.getString('sticker', false)
    : undefined;
+ const ephemeral =
+  cmd instanceof Discord.ChatInputCommandInteraction
+   ? cmd.options.getBoolean('hide', false) ?? true
+   : true;
  const language = await cmd.client.util.getLanguage(cmd.locale);
 
- if (messageLinkOrStickerId) single(cmd as Discord.ChatInputCommandInteraction, language);
- else multiple(cmd, language, page);
+ if (messageLinkOrStickerId)
+  single(cmd as Discord.ChatInputCommandInteraction, language, ephemeral);
+ else multiple(cmd, language, page, ephemeral);
 };
 
-const single = async (cmd: Discord.ChatInputCommandInteraction, language: CT.Language) => {
+const single = async (
+ cmd: Discord.ChatInputCommandInteraction,
+ language: CT.Language,
+ ephemeral: boolean,
+) => {
  let stickerIds: string[] = [];
 
  const messageLinkOrStickerId = cmd.options.getString('sticker', true);
@@ -47,13 +56,14 @@ const single = async (cmd: Discord.ChatInputCommandInteraction, language: CT.Lan
   return;
  }
 
- cmd.client.util.replyCmd(cmd, { embeds: await getEmbeds(stickers, cmd, language) });
+ cmd.client.util.replyCmd(cmd, { embeds: await getEmbeds(stickers, cmd, language), ephemeral });
 };
 
 export const multiple = async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  language: CT.Language,
  page: number = 1,
+ ephemeral: boolean,
 ) => {
  if (!cmd.inCachedGuild()) {
   cmd.client.util.guildOnly(cmd);
@@ -100,7 +110,7 @@ export const multiple = async (
   return;
  }
 
- cmd.client.util.replyCmd(cmd, { embeds, components });
+ cmd.client.util.replyCmd(cmd, { embeds, components, ephemeral });
 };
 
 const getEmbeds = async (

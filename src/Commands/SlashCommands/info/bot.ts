@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as os from 'os';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ const ephemeral = cmd.options.getBoolean('hide', false) ?? true;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
@@ -12,6 +13,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  )?.flat();
 
  cmd.client.util.replyCmd(cmd, {
+  ephemeral,
   embeds: [
    {
     author: {

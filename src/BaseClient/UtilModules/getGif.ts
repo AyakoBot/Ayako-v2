@@ -396,12 +396,17 @@ export const imageGetter = async (
    : cmd.customId.split(/\//g)[1];
  if (!commandName) return;
 
+ const ephemeral =
+  cmd instanceof Discord.ChatInputCommandInteraction
+   ? cmd.options.getBoolean('hide', false) ?? true
+   : true;
  const imgGetter = gifSelection.find((g) => g.triggers.includes(commandName));
  const img = (await imgGetter?.gifs()) as ReturnType<'img'>;
  const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.img;
 
  const payload = {
+  ephemeral,
   embeds: [
    {
     image: { url: img.url },
