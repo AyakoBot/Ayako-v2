@@ -1,23 +1,18 @@
 {
-  "type": "module",
   "name": "@ayako/bot",
   "version": "2.2.3",
   "private": true,
-  "packageManager": "pnpm@9.5.0",
-  "engines": {
-    "node": "^22.3.0",
-    "pnpm": "^9.5.0"
-  },
+  "type": "module",
   "scripts": {
-    "start": "pnpm run run",
-    "run": "clinic heapprofiler --collect-only --open=false -- node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
     "build": "swc src -d dist --strip-leading-paths --copy-files",
-    "watch": "swc src -d dist --strip-leading-paths --copy-files --watch",
     "dev": "node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev",
-    "lint": "npx eslint 'src/**/*.ts' --fix",
     "postinstall": "mkdir -p ./logs",
+    "lint": "npx eslint 'src/**/*.ts' --fix",
+    "register": "node ./dist/register-commands.js",
+    "run": "clinic heapprofiler --collect-only --open=false -- node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
     "prestart": "rm -rf dist && pnpm build",
-    "register": "node ./dist/register-commands.js"
+    "start": "pnpm run run",
+    "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
   },
   "dependencies": {
     "@discordjs/builders": "1.9.0-dev.1720743039-be04acd53",
@@ -31,7 +26,7 @@
     "client@latest": "link:prisma/client@latest",
     "discord-api-types": "^0.37.92",
     "discord-hybrid-sharding": "^2.2.0",
-    "discord.js": "14.16.0-dev.1720743028-be04acd53",
+    "discord.js": "14.16.0-dev.1720915912-efa16a609",
     "dotenv": "^16.4.5",
     "glob": "^10.4.5",
     "ioredis": "^5.4.1",
@@ -80,10 +75,15 @@
     "source-map-support": "^0.5.21",
     "typescript": "^5.5.3"
   },
-  "prisma": {
-    "schema": "../../prisma/schema.prisma"
+  "packageManager": "pnpm@9.5.0",
+  "engines": {
+    "node": "^22.3.0",
+    "pnpm": "^9.5.0"
   },
   "overrides": {
     "@discordjs/builders": "dev"
+  },
+  "prisma": {
+    "schema": "../../prisma/schema.prisma"
   }
 }
