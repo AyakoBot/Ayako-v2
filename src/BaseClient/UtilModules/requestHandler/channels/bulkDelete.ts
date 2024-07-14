@@ -15,7 +15,7 @@ import requestHandlerError from '../../requestHandlerError.js';
 export default async (channel: Discord.GuildTextBasedChannel, messages: string[]) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canBulkDelete(channel.id, await getBotMemberFromGuild(channel.guild))) {
+ if (!canBulkDelete(channel.id, await getBotMemberFromGuild(channel.guild), messages.length)) {
   const e = requestHandlerError(`Cannot bulk-delete messages in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,
   ]);
@@ -38,5 +38,7 @@ export default async (channel: Discord.GuildTextBasedChannel, messages: string[]
  * @param me - The guild member representing the user.
  * @returns A boolean indicating whether the user has the necessary permissions.
  */
-export const canBulkDelete = (channelId: string, me: Discord.GuildMember) =>
- me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageMessages);
+export const canBulkDelete = (channelId: string, me: Discord.GuildMember, amount: number) =>
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageMessages) &&
+ amount > 1 &&
+ amount < 101;
