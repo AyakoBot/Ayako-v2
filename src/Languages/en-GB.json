@@ -1814,7 +1814,7 @@
    "tickle": {
     "self": "tickles themself, being able to tickle yourself is very rare",
     "others": "tickles",
-    "buttons": ["Scream °O°", "Run away!"]
+    "buttons": ["Laugh ^-^", "Scream °O°", "Run away!"]
    },
    "wave": {
     "self": "waves at Chat <:AMayakowave:924071188957913108>",

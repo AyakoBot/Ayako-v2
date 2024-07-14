@@ -293,7 +293,7 @@ export default [
   desc: 'Tickle someone',
   users: true,
   reqUser: true,
-  buttons: ['scream', 'run'],
+  buttons: ['laugh', 'scream', 'run'],
  },
  { name: 'wave', desc: 'Wave', users: true, reqUser: false, buttons: ['wave', 'boop'] },
  { name: 'wink', desc: 'Wink', users: true, reqUser: false, buttons: [] },
