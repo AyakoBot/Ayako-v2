@@ -28,6 +28,7 @@ import suggest from './Commands/suggest.js';
 import user from './Commands/user.js';
 import vote from './Commands/vote.js';
 import actions from './Commands/actions.js';
+import viewRaw from './Commands/view-raw.js';
 
 export enum CommandCategories {
  Utility = 'utility',
@@ -77,6 +78,7 @@ export default {
   actions0: actions[0],
   actions1: actions[1],
   actions2: actions[2],
+  'View Raw': viewRaw,
  },
  categories: {
   'settings_moderation_anti-spam': [CommandCategories.Moderation],
@@ -161,6 +163,7 @@ export default {
   'embed-builder_create': [CommandCategories.Utility],
   check: [CommandCategories.Moderation, CommandCategories.Utility],
   'Stick Message': [CommandCategories.Utility],
+  'View Raw': [CommandCategories.Utility],
   stp: [CommandCategories.Utility],
   membercount: [CommandCategories.Info],
   ping: [CommandCategories.Info],
@@ -330,5 +333,6 @@ export default {
   'rank',
   'bypass',
   'clear',
+  'View Raw',
  ],
 } as const;
