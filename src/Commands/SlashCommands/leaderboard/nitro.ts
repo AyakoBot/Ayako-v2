@@ -18,7 +18,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   where: { guildid: cmd.guildId },
  });
 
- const daysPerUser = getDaysPerUsers(nitroUsers).sort((a, b) => b.days - a.days);
+ const daysPerUser = getDaysPerUsers(nitroUsers)
+  .sort((a, b) => b.days - a.days)
+  .splice(0, 29);
  const self = daysPerUser.find((d) => d.userId === user.id);
  const position = self ? daysPerUser.findIndex((s) => s.userId === user.id) + 1 : 0;
  const users = await Promise.all(daysPerUser.map((d) => client.util.getUser(d.userId)));
@@ -132,7 +134,6 @@ const getEmbed = async (
    lan.days,
    longestDays,
   )} |  ${client.util.spaces(language.t.User, longestUsername)}\n${daysPerUser
-   .splice(0, 29)
    .map((l, i) =>
     makeLine(
      i,
