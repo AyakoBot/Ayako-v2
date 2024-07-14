@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
-import all from './all.js';
+import clear from '../mod/clear/starts-with.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => all(cmd, [], 'starts-with');
+export default clear;

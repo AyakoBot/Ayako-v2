@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
-import all from './all.js';
+import clear from '../mod/clear/bots.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => all(cmd, [], 'bots');
+export default clear;

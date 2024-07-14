@@ -1,4 +1,3 @@
-import * as Discord from 'discord.js';
-import all from './all.js';
+import clear from '../mod/clear/audio.js';
 
-export default async (cmd: Discord.ChatInputCommandInteraction) => all(cmd, [], 'audio');
+export default clear;
