@@ -37,12 +37,14 @@ if (!process.argv.includes('--dev')) {
   await api.applicationCommands
    .bulkOverwriteGlobalCommands(
     s.appid ?? '',
-    createCommands.map((c) =>
-     c
-      .setContexts(Discord.InteractionContextType.Guild)
-      .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
-      .toJSON(),
-    ),
+    createCommands
+     .filter((c) => !c.name.includes('action'))
+     .map((c) =>
+      c
+       .setContexts(Discord.InteractionContextType.Guild)
+       .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
+       .toJSON(),
+     ),
    )
    .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
    .catch(() => console.log(`Unauthorized for ${s.appid}`));
