@@ -31,7 +31,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
 ): Promise<ReturnType<T, K>> => {
  if ('respond' in cmd) return Promise.resolve(undefined);
  if (!isValidPayload(payload as UsualMessagePayload)) {
-  sendDebugMessage({ content: `bad payload:\n${JSON.stringify(payload)}` });
+  sendDebugMessage({ content: `bad payload`, files: [cmd.client.util.txtFileWriter(JSON.stringify(payload, null, 2))] });
   return;
  }
 
