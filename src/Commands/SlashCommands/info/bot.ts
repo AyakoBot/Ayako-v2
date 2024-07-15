@@ -6,11 +6,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.bot;
  const pingLan = language.slashCommands.ping;
- const heartbeats = await cmd.client.util.DataBase.heartbeats.findMany({ where: {} });
- const stats = await cmd.client.util.DataBase.stats.findFirst();
- const allShards = (
-  await cmd.client.cluster?.broadcastEval((cl) => cl.util.files.sharding.getInfo().SHARD_LIST)
- )?.flat();
+ const stats = await cmd.client.util.DataBase.stats.findFirst({ orderBy: { timestamp: 'desc' } });
+ const rawHeartbeats = await cmd.client.util.DataBase.heartbeats.findMany({
+  where: {},
+  orderBy: { timestamp: 'desc' },
+  take: Number(stats?.shardCount) ?? 100,
+ });
+
+ const sampleTimestamp = Number(rawHeartbeats[0]?.timestamp);
+
+ const heartbeats = rawHeartbeats.filter(
+  (v) =>
+   Number(v.timestamp) < sampleTimestamp + 30000 && Number(v.timestamp) > sampleTimestamp - 30000,
+ );
 
  cmd.client.util.replyCmd(cmd, {
   ephemeral,
@@ -38,25 +46,25 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       ? [
          {
           name: `${cmd.client.util.util.makeInlineCode(
-           cmd.client.util.splitByThousand(Number(stats.guildcount)),
+           cmd.client.util.splitByThousand(Number(stats.guildCount)),
           )} ${language.t.Servers}`,
           value: '',
          },
          {
           name: `${cmd.client.util.util.makeInlineCode(
-           cmd.client.util.splitByThousand(Number(stats.channelcount)),
+           cmd.client.util.splitByThousand(Number(stats.channelCount)),
           )} ${language.t.Channels}`,
           value: '',
          },
          {
           name: `${cmd.client.util.util.makeInlineCode(
-           cmd.client.util.splitByThousand(Number(stats.rolecount)),
+           cmd.client.util.splitByThousand(Number(stats.roleCount)),
           )} ${language.t.Roles}`,
           value: '',
          },
          {
           name: `${cmd.client.util.util.makeInlineCode(
-           cmd.client.util.splitByThousand(Number(stats.allusers)),
+           cmd.client.util.splitByThousand(Number(stats.allUsers)),
           )} ${language.t.Users}`,
           value: '',
          },
@@ -66,7 +74,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      {
       name: `${cmd.client.util.util.makeInlineCode(
        String(cmd.client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1),
-      )} ${lan.clusters}\n${cmd.client.util.util.makeInlineCode(String(allShards?.length ?? 1))} ${
+      )} ${lan.clusters}\n${cmd.client.util.util.makeInlineCode(String(stats?.shardCount ?? 1))} ${
        lan.shards
       }`,
       value: '',

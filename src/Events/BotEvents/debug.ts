@@ -6,10 +6,8 @@ export default (message: string) => {
   const ms = message.split(' ').at(-1)?.replace(/\D/g, '') ?? '';
 
   DataBase.heartbeats
-   .upsert({
-    where: { shard },
-    update: { ms },
-    create: { shard, ms },
+   .create({
+    data: { shard, ms, timestamp: Date.now() },
    })
    .then();
  }
