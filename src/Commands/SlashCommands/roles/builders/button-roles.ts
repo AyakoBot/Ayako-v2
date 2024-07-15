@@ -27,7 +27,7 @@ export default async (
   return;
  }
 
- if (message.author.id !== cmd.client.user.id) {
+ if (message.author.id !== (await cmd.client.util.getBotIdFromGuild(cmd.guild))) {
   client.util.errorCmd(
    cmd,
    lan.messageNotFromMe(
