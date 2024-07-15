@@ -35,6 +35,18 @@ export default async (cmd: Discord.Interaction) => {
  const command = files.find((f) => f.endsWith(`/AutocompleteCommands/${path()}.js`));
  if (!command) return;
 
+ cmd.client.util.DataBase.commandUsage
+  .create({
+   data: {
+    command: path(),
+    timestamp: Date.now(),
+    type: cmd.type,
+    guildId: cmd.guildId,
+    userId: cmd.user.id,
+   },
+  })
+  .then();
+
  const responses = await ((await import(command)) as CT.AutoCompleteFile).default(cmd);
 
  cmd.respond(responses ?? []);

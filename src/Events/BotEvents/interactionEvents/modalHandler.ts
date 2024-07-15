@@ -17,7 +17,19 @@ export default async (cmd: Discord.Interaction) => {
  log(path);
 
  const command = files.find((f) => f.endsWith(`/ModalCommands/${path}.js`));
- if (!command) return;
+ if (!command || !path) return;
+
+ cmd.client.util.DataBase.commandUsage
+  .create({
+   data: {
+    command: path,
+    timestamp: Date.now(),
+    type: cmd.type,
+    guildId: cmd.guildId,
+    userId: cmd.user.id,
+   },
+  })
+  .then();
 
  (await import(command)).default(cmd, args);
 };

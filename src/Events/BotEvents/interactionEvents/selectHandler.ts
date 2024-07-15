@@ -9,24 +9,18 @@ export default async (cmd: Discord.Interaction) => {
 
  const getType = () => {
   switch (true) {
-   case cmd.isChannelSelectMenu(): {
+   case cmd.isChannelSelectMenu():
     return 'Channel';
-   }
-   case cmd.isRoleSelectMenu(): {
+   case cmd.isRoleSelectMenu():
     return 'Role';
-   }
-   case cmd.isUserSelectMenu(): {
+   case cmd.isUserSelectMenu():
     return 'User';
-   }
-   case cmd.isStringSelectMenu(): {
+   case cmd.isStringSelectMenu():
     return 'String';
-   }
-   case cmd.isMentionableSelectMenu(): {
+   case cmd.isMentionableSelectMenu():
     return 'Mention';
-   }
-   default: {
+   default:
     throw new Error(`Unknown Select Menu\n${JSON.stringify(cmd, null, 2)}`);
-   }
   }
  };
 
@@ -40,7 +34,19 @@ export default async (cmd: Discord.Interaction) => {
 
  log(path);
 
- if (!command) return;
+ if (!command || !path) return;
+
+ cmd.client.util.DataBase.commandUsage
+  .create({
+   data: {
+    command: path,
+    timestamp: Date.now(),
+    type: cmd.type,
+    guildId: cmd.guildId,
+    userId: cmd.user.id,
+   },
+  })
+  .then();
 
  (await import(command)).default(cmd, args);
 };
