@@ -26,6 +26,18 @@ const dmCommand = async (msg: Discord.Message) => {
  if (!command) return;
  if (!command.dmAllowed) return;
 
+ msg.client.util.DataBase.commandUsage
+  .create({
+   data: {
+    command: commandName,
+    timestamp: Date.now(),
+    type: 0,
+    guildId: msg.guildId,
+    userId: msg.author?.id,
+   },
+  })
+  .then();
+
  const language = await msg.client.util.getLanguage(msg.author.id);
  command.default(msg, args, { language, command, prefix });
 };
