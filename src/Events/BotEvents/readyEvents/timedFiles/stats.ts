@@ -2,8 +2,12 @@ import client from '../../../../BaseClient/Bot/Client.js';
 
 type ReturnType = Promise<number[] | undefined>;
 
+let run = 0;
+
 export default async () => {
+ run += 1;
  if (process.argv.includes('--dev')) return;
+ if (run % 30 !== 0) return;
 
  const [emoteCount, userCount, allUsers, roleCount, channelCount, guildCount, stickerCount] = (
   await Promise.all([
