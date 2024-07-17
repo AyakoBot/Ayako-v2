@@ -6,6 +6,7 @@ import * as Classes from '../../../Other/classes.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import getActiveThreads from '../guilds/getActiveThreads.js';
 
 /**
  * Creates a thread in a guild text-based channel.
@@ -52,7 +53,7 @@ export default async (
  * @param me - The guild member representing the user.
  * @returns True if the user has permission to create a thread, false otherwise.
  */
-export const canCreateThread = (
+export const canCreateThread = async (
  channel: Discord.GuildTextBasedChannel,
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
  me: Discord.GuildMember,
@@ -67,4 +68,9 @@ export const canCreateThread = (
  (body.type === Discord.ChannelType.PublicThread
   ? me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePublicThreads)
   : me.permissionsIn(channel.id).has(Discord.PermissionFlagsBits.CreatePrivateThreads) &&
-    channel.type !== Discord.ChannelType.GuildAnnouncement);
+    channel.type !== Discord.ChannelType.GuildAnnouncement) &&
+ Number(
+  (await getActiveThreads(channel.guild).then((m) => ('message' in m ? undefined : m)))?.filter(
+   (t) => t.parentId === channel.id,
+  ).length,
+ ) < 1000;

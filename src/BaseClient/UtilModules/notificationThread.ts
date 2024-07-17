@@ -56,7 +56,13 @@ export default async (
  if (!channel || !('threads' in channel)) return undefined;
  if (!target) return;
 
- if (channel.threads.cache.filter((t) => !t.archived).size > 900) {
+ const active = await target.client.util.request.guilds
+  .getActiveThreads(target.guild)
+  .then((m) => ('message' in m ? undefined : m));
+ if (
+  channel.threads.cache.filter((t) => !t.archived).size > 900 ||
+  Number(active?.filter((t) => t.parentId === channel.id).length) > 900
+ ) {
   const oldestThread = await channel.client.util.DataBase.deletethreads.findFirst({
    where: { channelid: { in: channel.threads.cache.map((c) => c.id) } },
    orderBy: { deletetime: 'asc' },
