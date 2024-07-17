@@ -2,14 +2,18 @@ import type * as Discord from 'discord.js';
 
 export default async (cmd: Discord.CommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const value = cmd.options.get('embed', true).value as string;
+ if (Number.isNaN(parseInt(value))) {
+  cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
+  return;
+ }
 
  const embedData = await cmd.client.util.DataBase.customembeds.findUnique({
   where: { uniquetimestamp: value },
  });
 
- const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.view['custom-embeds'];
 
  if (!embedData) {

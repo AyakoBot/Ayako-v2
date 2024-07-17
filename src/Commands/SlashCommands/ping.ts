@@ -1,14 +1,20 @@
 import type * as Discord from 'discord.js';
+import * as sharding from 'discord-hybrid-sharding';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- const stats = await cmd.client.util.DataBase.heartbeats.findMany({ where: {} });
+ const heartbeats = await cmd.client.util.DataBase.heartbeats.findMany({
+  where: {},
+  orderBy: { timestamp: 'desc' },
+  take: sharding.getInfo().TOTAL_SHARDS ?? 0,
+ });
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.ping;
 
  const heartbeat = `**${lan.lastHeartbeat}**: ${cmd.client.util
   .makeTable([
    [language.t.Shard, 'ms'],
-   ...stats
+   ...heartbeats
     .sort((a, b) => Number(a.shard) - Number(b.shard))
     .map((s) => [String(s.shard), String(s.ms)]),
   ])
