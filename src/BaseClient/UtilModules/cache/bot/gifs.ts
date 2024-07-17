@@ -9,16 +9,31 @@ import getRandom from '../../getRandom.js';
 const nekoClient = new Neko.Client();
 
 /**
- * Interface for managing gifs.
+ * Represents the Gifs interface.
  */
 export interface Gifs {
+ /**
+  * Retrieves a gif or image by name and type.
+  * @param name - The name of the gif or image.
+  * @param type - The type of the gif or image.
+  * @returns A promise that resolves to the requested gif or image.
+  */
  get: <T extends 'gif' | 'img'>(
   name: string,
   type: Type[],
  ) => Promise<ReturnType<T>> | ReturnType<T>;
 
+ /**
+  * Retrieves a new gif or image by name and type.
+  * @param gif - The name of the gif or image.
+  * @param type - The type of the gif or image.
+  * @returns A promise that resolves to the requested gif or image.
+  */
  getNew: (gif: string, type: Type[]) => Promise<ReturnType<'gif' | 'img'>>;
 
+ /**
+  * A cache map that stores the cached gifs or images.
+  */
  cache: Map<string, ReturnType<'img' | 'gif'>[]>;
 }
 
@@ -101,11 +116,23 @@ const fetchGif = async <T extends 'gif' | 'img'>(
  }
 };
 
+/**
+ * Retrieves a GIF or image based on the provided name and type.
+ * @param gifName - The name of the GIF or image to retrieve.
+ * @param type - An array of types to specify whether to retrieve a GIF or an image.
+ * @returns A promise that resolves to the retrieved GIF or image.
+ */
 const getGif = async <T extends 'gif' | 'img'>(
  gifName: string,
  type: Type[],
 ): Promise<ReturnType<T>> => self.get(gifName, type);
 
+/**
+ * Fetches a neko gif based on the given gifName and type.
+ * @param gifName - The name of the gif to fetch.
+ * @param type - An array of types to filter the gif search.
+ * @returns A promise that resolves to an object containing the URL of the gif, and optionally the anime name, artist name, source URL, and artist URL.
+ */
 const neko = async (gifName: string, type: Type[]) => {
  const res = (await nekoClient.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
   ?.results[0];
@@ -129,6 +156,12 @@ const neko = async (gifName: string, type: Type[]) => {
     };
 };
 
+/**
+ * Retrieves a random purr GIF or image URL based on the given gifName and type.
+ * @param gifName - The name of the GIF category.
+ * @param type - An array of types to filter the GIFs.
+ * @returns An object containing the URL of the purr GIF or image.
+ */
 const purr = async (gifName: string, type: Type[]) => {
  const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
 
@@ -146,6 +179,13 @@ const purr = async (gifName: string, type: Type[]) => {
  return { url: url ?? '' };
 };
 
+/**
+ * Retrieves a waifu GIF URL based on the given GIF name and type.
+ * If the GIF name is not found or the type array contains more than 2 types and no URL is found, it falls back to getGif.
+ * @param gifName - The name of the GIF.
+ * @param type - An array of types.
+ * @returns An object containing the GIF URL, or an empty string if no URL is found.
+ */
 const waifu = async (gifName: string, type: Type[]) => {
  const url = await WaifuPics(gifName as WaifuGifNames).catch(() => undefined);
 
