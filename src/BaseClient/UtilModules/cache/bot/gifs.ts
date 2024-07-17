@@ -3,7 +3,6 @@ import { scheduleJob } from 'node-schedule';
 import PurrBot from 'purrbot-api';
 import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
 import hardcodedGifs from '../../../../BaseClient/Other/constants/gifs.js';
-import { sendDebugMessage } from '../../error.js';
 import getPathFromError from '../../getPathFromError.js';
 import getRandom from '../../getRandom.js';
 
@@ -108,16 +107,8 @@ const getGif = async <T extends 'gif' | 'img'>(
 ): Promise<ReturnType<T>> => self.get(gifName, type);
 
 const neko = async (gifName: string, type: Type[]) => {
- let resolved = false;
-
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-  if (resolved) return;
-  sendDebugMessage({ content: `Neko took too long to respond!` });
- });
-
  const res = (await nekoClient.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
   ?.results[0];
- resolved = true;
 
  if (type.length > 2 && !res) {
   return getGif(
@@ -141,17 +132,9 @@ const neko = async (gifName: string, type: Type[]) => {
 const purr = async (gifName: string, type: Type[]) => {
  const functionToCall = ['img', 'gif'][Math.floor(Math.random() * 2)] ?? 'img';
 
- let resolved = false;
-
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-  if (resolved) return;
-  sendDebugMessage({ content: `Purr took too long to respond!` });
- });
-
  const url = await PurrBot.sfw.categories[gifName as keyof typeof PurrBot.sfw.categories](
   functionToCall as 'gif' | 'img',
  ).catch(() => undefined);
- resolved = true;
 
  if (type.length > 2 && !url) {
   return getGif(
@@ -164,15 +147,7 @@ const purr = async (gifName: string, type: Type[]) => {
 };
 
 const waifu = async (gifName: string, type: Type[]) => {
- let resolved = false;
-
- scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-  if (resolved) return;
-  sendDebugMessage({ content: `Waifu took too long to respond!` });
- });
-
  const url = await WaifuPics(gifName as WaifuGifNames).catch(() => undefined);
- resolved = true;
 
  if (type.length > 2 && !url) {
   return getGif(
