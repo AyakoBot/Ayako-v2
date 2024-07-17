@@ -65,6 +65,7 @@ async function fn(
  return (guild ? cache.apis.get(guild.id) ?? API : API).channels
   .createMessage(channelId, {
    ...payload,
+   attachments: [],
    message_reference: payload.message_reference
     ? { ...payload.message_reference, fail_if_not_exists: false }
     : undefined,
