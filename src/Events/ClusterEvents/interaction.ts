@@ -7,6 +7,7 @@ import * as Typings from '../../Typings/Typings.js';
 export default async (message: Typings.Message<Typings.MessageType.Interaction>) => {
  const interaction = message.data;
  if (client.cluster?.maintenance) return;
+ if (process.argv.includes('--dev')) return;
 
  if (interaction.guild_id && !client.util.cache.apis.get(interaction.guild_id)) {
   const startOfToken = Buffer.from(interaction.application_id)
