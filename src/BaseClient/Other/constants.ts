@@ -2,6 +2,7 @@ import settingsEditorTypes from './constants/settingsEditorTypes.js';
 import events from './constants/events.js';
 import standard from './constants/standard.js';
 import interactions from './constants/interactions.js';
+import gifs from './constants/gifs.js';
 import customembeds from './constants/customEmbeds.js';
 import tutorials from './constants/tutorials.js';
 
@@ -24,6 +25,7 @@ export default {
     'Stick a Message to a Channel. The sticked Message will be re-posted with a Delay of 1 Minute after another Message is sent\nUn-Stick the Message by deleting it.',
   },
   interactions,
+  gifs,
   settings: {
    basicSettings: ['vote', 'leveling', 'nitro', 'appeals'],
    types: settingsEditorTypes,

@@ -48,7 +48,6 @@ import getDiscordEmbed from '../UtilModules/getDiscordEmbed.js';
 import getDuration from '../UtilModules/getDuration.js';
 import getEmote from '../UtilModules/getEmote.js';
 import getEvents from '../UtilModules/getEvents.js';
-import getGif from '../UtilModules/getGif.js';
 import getLanguage from '../UtilModules/getLanguage.js';
 import getLogChannels from '../UtilModules/getLogChannels.js';
 import getMessage from '../UtilModules/getMessage.js';
@@ -160,7 +159,6 @@ interface Util {
  getDuration: typeof getDuration;
  getEmote: typeof getEmote;
  getEvents: typeof getEvents;
- getGif: typeof getGif;
  getLanguage: typeof getLanguage;
  getLogChannels: typeof getLogChannels;
  getMessage: typeof getMessage;
@@ -261,7 +259,6 @@ const util: Util = {
  getDuration,
  getEmote,
  getEvents,
- getGif,
  getLanguage,
  getLogChannels,
  getMessage,

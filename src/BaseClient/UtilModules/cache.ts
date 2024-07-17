@@ -27,6 +27,7 @@ import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
 import deleteSuggestions, { DeleteSuggestions } from './cache/bot/deleteSuggestions.js';
 import vcDeleteTimeout, { VcDeleteTimeout } from './cache/bot/vcDeleteTimeout.js';
 import unblockedModUsers, { UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
+import gifs from './cache/bot/gifs.js';
 
 import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
 import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
@@ -70,6 +71,7 @@ const cache: {
  fastMsgCache: Map<string, { msgs: Discord.Message[]; job: Jobs.Job }>;
  interactionInstallmentRunningFor: Set<string>;
  unblockedModUsers: UnblockedModUsers;
+ gifs: typeof gifs;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -121,7 +123,8 @@ const cache: {
  vcDeleteTimeout,
  fastMsgCache: new Map(),
  interactionInstallmentRunningFor: new Set(),
- unblockedModUsers: unblockedModUsers,
+ unblockedModUsers,
+ gifs,
 
  // URLs
  urlTLDs,
