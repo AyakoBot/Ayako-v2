@@ -26,7 +26,7 @@ const isValid = async (cmd: Discord.ButtonInteraction<'cached'>) => {
  });
 
  if (
-  suggestion?.userid !== cmd.user.id ||
+  suggestion?.userid !== cmd.user.id &&
   !cmd.member.roles.cache.hasAny(...(settings?.approverroleid ?? []))
  ) {
   cmd.client.util.errorCmd(cmd, lan.notOwner, language);
