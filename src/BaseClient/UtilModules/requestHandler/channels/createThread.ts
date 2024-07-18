@@ -48,10 +48,11 @@ export default async (
 };
 
 /**
- * Checks if the given user has permission to create a thread in the specified channel.
- * @param channel - The guild text-based channel to check.
- * @param me - The guild member representing the user.
- * @returns True if the user has permission to create a thread, false otherwise.
+ * Checks if the bot can create a thread in the specified channel.
+ * @param channel - The guild text-based channel.
+ * @param body - The REST API channel threads JSON body.
+ * @param me - The guild member representing the bot.
+ * @returns A boolean indicating whether the bot can create a thread in the channel.
  */
 export const canCreateThread = async (
  channel: Discord.GuildTextBasedChannel,
