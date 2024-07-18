@@ -1,7 +1,7 @@
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import deleteThread from './deleteNotificationThread.js';
+import * as Jobs from 'node-schedule';
 import { Colors, UsualMessagePayload } from '../../Typings/Typings.js';
+import deleteThread from './deleteNotificationThread.js';
 import getPathFromError from './getPathFromError.js';
 
 /**
