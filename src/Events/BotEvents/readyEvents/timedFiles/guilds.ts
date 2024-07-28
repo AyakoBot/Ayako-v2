@@ -1,11 +1,28 @@
+import { Guild } from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
 export default async () => {
  if (client.user?.id !== process.env.mainId) return;
 
- await client.util.DataBase.guilds.deleteMany({ where: { fetchat: { lt: Date.now() - 60000 } } });
+ const [oldGuilds] = await client.util.DataBase.$transaction([
+  client.util.DataBase.guilds.findMany({
+   where: { fetchat: { lt: Date.now() - 6000000 } },
+  }),
+  client.util.DataBase.guilds.deleteMany({ where: { fetchat: { lt: Date.now() - 6000000 } } }),
+ ]);
 
- client.guilds.cache.forEach((g) => {
+ const guildIds = oldGuilds.map((g) => g.guildid);
+ const guildsToFetch = client.guilds.cache.filter((g) => guildIds.includes(g.id)).map((g) => g);
+ const guilds = [
+  ...guildsToFetch.filter((g) => g.memberCount < 10000),
+  ...(await Promise.all(
+   guildsToFetch
+    .filter((g) => g.memberCount < 10000)
+    .map((g) => client.guilds.fetch({ guild: g.id, withCounts: true }) as Promise<Guild>),
+  )),
+ ];
+
+ guilds.forEach((g) => {
   client.util.DataBase.guilds
    .create({
     data: {
@@ -16,6 +33,7 @@ export default async () => {
      icon: g.iconURL(),
      invite: g.vanityURLCode,
      membercount: g.memberCount,
+     presencecount: g.memberCount,
     },
    })
    .then();
