@@ -10,5 +10,6 @@ src/Bot/BaseClient/Other/cache-proxy
 src/Commands/StringCommands/randomize.ts
 report.*
 Heap.*
+isolate-*
 .clinic
 /patches
