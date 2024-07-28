@@ -97,6 +97,7 @@ import txtFileLinkToString from '../UtilModules/txtFileLinkToString.js';
 import txtFileWriter from '../UtilModules/txtFileWriter.js';
 import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import * as utils from '../UtilModules/util.js';
+import userMiddleware from '../UtilModules/userMiddleware.js';
 import DataBase from './DataBase.js';
 
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
@@ -209,6 +210,7 @@ interface Util {
  files: typeof files;
  guildOnly: typeof guildOnly;
  Colors: typeof Colors;
+ userMiddleware: typeof userMiddleware;
 }
 
 const util: Util = {
@@ -309,6 +311,7 @@ const util: Util = {
  files,
  guildOnly,
  Colors,
+ userMiddleware
 };
 
 export default util;

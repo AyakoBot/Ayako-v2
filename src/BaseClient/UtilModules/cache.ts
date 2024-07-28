@@ -72,6 +72,7 @@ const cache: {
  interactionInstallmentRunningFor: Set<string>;
  unblockedModUsers: UnblockedModUsers;
  gifs: typeof gifs;
+ latelySavedUsers: Map<string, number>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -125,6 +126,7 @@ const cache: {
  interactionInstallmentRunningFor: new Set(),
  unblockedModUsers,
  gifs,
+ latelySavedUsers: new Map(),
 
  // URLs
  urlTLDs,
