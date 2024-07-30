@@ -20,6 +20,7 @@ export default (args: unknown[]) => {
 export const handleUser = (user: User) => {
  if (!('client' in user)) return;
  if (!(user instanceof User)) return;
+ if (!user.username) return;
 
  const lastFetch = user.client.util.cache.latelySavedUsers.get(user.id);
  if (lastFetch && lastFetch > Date.now() - 86400000) return;
