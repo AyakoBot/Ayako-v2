@@ -12,7 +12,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
 
  switch (type) {
   case 'all': {
-   cmd.client.util.DataBase.level.deleteMany({ where: { guildid: cmd.guildId } }).then();
+   cmd.client.util.DataBase.$transaction([
+    cmd.client.util.DataBase.level.deleteMany({ where: { guildid: cmd.guildId } }),
+    cmd.client.util.DataBase.levelchannels.deleteMany({ where: { guildid: cmd.guildId } }),
+   ]).then();
    content = lan.all;
    break;
   }
@@ -23,9 +26,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     return;
    }
 
-   cmd.client.util.DataBase.level
-    .deleteMany({ where: { guildid: cmd.guildId, userid: { in: role.members.map((m) => m.id) } } })
-    .then();
+   cmd.client.util.DataBase.$transaction([
+    cmd.client.util.DataBase.level.deleteMany({
+     where: { guildid: cmd.guildId, userid: { in: role.members.map((m) => m.id) } },
+    }),
+    cmd.client.util.DataBase.levelchannels.deleteMany({
+     where: { guildid: cmd.guildId, userid: { in: role.members.map((m) => m.id) } },
+    }),
+   ]).then();
 
    content = lan.role(role, role.members.size);
    break;
@@ -37,11 +45,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     return;
    }
 
-   cmd.client.util.DataBase.level
-    .delete({
+   cmd.client.util.DataBase.$transaction([
+    cmd.client.util.DataBase.level.delete({
      where: { userid_guildid_type: { userid: user.id, guildid: cmd.guildId, type: 'guild' } },
-    })
-    .then();
+    }),
+    cmd.client.util.DataBase.levelchannels.deleteMany({
+     where: { guildid: cmd.guildId, userid: user.id },
+    }),
+   ]).then();
 
    content = lan.user(user);
    break;

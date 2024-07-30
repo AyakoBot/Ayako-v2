@@ -165,9 +165,25 @@ const updateLevels = async (
   msg.client.util.DataBase.level
    .update({
     where: { userid_guildid_type: { type, userid: msg.author.id, guildid: msg.guildId } },
-    data: {
-     level: newLevel,
-     xp,
+    data: { level: newLevel, xp },
+   })
+   .then();
+
+  msg.client.util.DataBase.levelchannels
+   .upsert({
+    where: {
+     userid_guildid_channelid: {
+      userid: msg.author.id,
+      guildid: msg.guildId,
+      channelid: msg.channelId,
+     },
+    },
+    update: { xp: { increment: newXP } },
+    create: {
+     xp: newXP,
+     userid: msg.author.id,
+     guildid: msg.guildId,
+     channelid: msg.channelId,
     },
    })
    .then();
@@ -210,6 +226,19 @@ const insertLevels = (
    },
   })
   .then();
+
+ if (type !== 'global') {
+  msg.client.util.DataBase.levelchannels
+   .create({
+    data: {
+     guildid: msg.guildId,
+     xp,
+     userid: msg.author.id,
+     channelid: msg.channelId,
+    },
+   })
+   .then();
+ }
 };
 
 const getRoleMultiplier = async (msg: Discord.Message<true>) => {
