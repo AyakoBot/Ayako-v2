@@ -8,23 +8,23 @@ export default async () => {
   client.util.DataBase.guilds.findMany({
    where: { fetchat: { lt: Date.now() - 6000000 } },
   }),
-  client.util.DataBase.guilds.deleteMany({ where: { fetchat: { lt: Date.now() - 6000000 } } }),
+  client.util.DataBase.guilds.deleteMany({ where: { fetchat: { gte: Date.now() - 6000000 } } }),
  ]);
 
  const guildIds = oldGuilds.map((g) => g.guildid);
- const guildsToFetch = client.guilds.cache.filter((g) => guildIds.includes(g.id)).map((g) => g);
- const guilds = [
-  ...guildsToFetch.filter((g) => g.memberCount < 10000),
-  ...(await Promise.all(
-   guildsToFetch
-    .filter((g) => g.memberCount < 10000)
-    .map((g) => client.guilds.fetch({ guild: g.id, withCounts: true }) as Promise<Guild>),
-  )),
- ];
+ const guildsToFetch = client.guilds.cache.filter((g) => !guildIds.includes(g.id)).map((g) => g);
+ const guildsNoCounts = guildsToFetch.filter((g) => g.memberCount <= 10000);
+ const guildsCounts = await Promise.all(
+  guildsToFetch
+   .filter((g) => g.memberCount > 10000)
+   .map((g) => client.guilds.cache.get(g.id)?.fetch() as Promise<Guild>),
+ );
 
- guilds.forEach((g) => {
-  client.util.DataBase.guilds
-   .create({
+ const guilds = [...guildsNoCounts, ...guildsCounts];
+
+ client.util.DataBase.$transaction(
+  guilds.map((g) =>
+   client.util.DataBase.guilds.create({
     data: {
      fetchat: Date.now(),
      guildid: g.id,
@@ -33,10 +33,10 @@ export default async () => {
      icon: g.iconURL(),
      invite: g.vanityURLCode,
      membercount: g.memberCount,
-     presencecount: g.memberCount,
+     presencecount: g.approximatePresenceCount ?? Math.round(g.memberCount / 6),
      features: g.features,
     },
-   })
-   .then();
- });
+   }),
+  ),
+ ).then();
 };
