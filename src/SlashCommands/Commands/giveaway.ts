@@ -84,6 +84,18 @@ export default new Discord.SlashCommandBuilder()
    ),
  )
  .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('reroll')
+   .setDescription('Reroll a Giveaway (Please default to the Reroll Button if possible)')
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('message-id')
+     .setDescription('The Message ID of the Giveaway')
+     .setAutocomplete(true)
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder().setName('list').setDescription('List all Giveaways'),
  )
  .addSubcommand(
