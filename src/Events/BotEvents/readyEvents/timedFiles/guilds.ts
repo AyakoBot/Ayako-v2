@@ -34,6 +34,7 @@ export default async () => {
      invite: g.vanityURLCode,
      membercount: g.memberCount,
      presencecount: g.memberCount,
+     features: g.features,
     },
    })
    .then();
