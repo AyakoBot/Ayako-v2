@@ -102,13 +102,15 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
    value: language.slashCommands.giveaway.end.noValidEntries,
   });
  } else {
+  const validParticipants = giveaway.participants.filter((p) =>
+   giveaway.reqrole ? guild.members.cache.get(p)?.roles.cache.has(giveaway.reqrole) : true,
+  );
+
   const winners = new Array(giveaway.winners.length || Number(giveaway.winnercount))
    .fill(0)
    .map(() => {
-    const random = client.util.getRandom(0, Number(giveaway.participants?.length || 1) - 1);
-    const winner = giveaway.participants.filter((p) =>
-     giveaway.reqrole ? guild.members.cache.get(p)?.roles.cache.has(giveaway.reqrole) : true,
-    )[random];
+    const random = client.util.getRandom(0, Number(validParticipants.length || 1) - 1);
+    const winner = validParticipants[random];
     giveaway.participants.splice(giveaway.participants.indexOf(winner), 1);
 
     return winner;
@@ -120,10 +122,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
   client.util.DataBase.giveaways
    .update({
     where: { msgid: giveaway.msgid },
-    data: {
-     winners,
-     ended: true,
-    },
+    data: { winners, ended: true },
    })
    .then();
 
@@ -254,11 +253,7 @@ export const giveawayCollectTime = async (guild: Discord.Guild, msgId: string) =
     replymsgid: replyMsg.id,
     requiredwinners: giveaway.winners,
    },
-   update: {
-    endtime: collectionEnd,
-    replymsgid: replyMsg.id,
-    requiredwinners: giveaway.winners,
-   },
+   update: { endtime: collectionEnd, replymsgid: replyMsg.id, requiredwinners: giveaway.winners },
   })
   .then();
 
