@@ -48,7 +48,22 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  embed.fields?.push(...(ownLevel ?? []));
 
- cmd.editReply({ embeds: [embed] });
+ cmd.editReply({
+  embeds: [embed],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      url: `https://ayakobot.com/guilds/${cmd.guildId}/leaderboard`,
+      label: lan.fullLeaderboard,
+      style: Discord.ButtonStyle.Link,
+     },
+    ],
+   },
+  ],
+ });
 };
 
 export const getOwnLevel = async (
@@ -57,9 +72,7 @@ export const getOwnLevel = async (
  lan: CT.Language['slashCommands']['leaderboard'],
 ): Promise<{ name: string; value: string; inline: boolean }[]> => {
  const settings = await client.util.DataBase.leveling.findUnique({
-  where: {
-   guildid: self.guildid,
-  },
+  where: { guildid: self.guildid },
  });
 
  const gain = Number(settings?.xpmultiplier ?? 1);

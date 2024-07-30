@@ -36,7 +36,22 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.guild,
  );
 
- cmd.editReply({ embeds: [embed] });
+ cmd.editReply({
+  embeds: [embed],
+  // components: [
+  //  {
+  //   type: Discord.ComponentType.ActionRow,
+  //   components: [
+  //    {
+  //     type: Discord.ComponentType.Button,
+  //     url: `https://ayakobot.com/guilds/${cmd.guildId}/leaderboard#nitro`,
+  //     label: lan.fullLeaderboard,
+  //     style: Discord.ButtonStyle.Link,
+  //    },
+  //   ],
+  //  },
+  // ],
+ });
 };
 
 const getDaysPerUsers = (nitroUsers: Prisma.nitrousers[]) => {

@@ -1492,7 +1492,8 @@
    "currentXP": "Current XP:",
    "nextLevelXP": "Next Level XP:",
    "xpDifference": "XP Difference:",
-   "thisWillTake": "This will take an average of about\n{{msgs}} counted Messages or\n{{duration}}\nsince only 1 Message per Minute is counted"
+   "thisWillTake": "This will take an average of about\n{{msgs}} counted Messages or\n{{duration}}\nsince only 1 Message per Minute is counted",
+   "fullLeaderboard": "Full Leaderboard"
   },
   "check": {
    "punishmentTypes": {

@@ -41,5 +41,20 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  embed.fields?.push(...(ownLevel ?? []));
 
- cmd.editReply({ embeds: [embed] });
+ cmd.editReply({
+  embeds: [embed],
+  components: [
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      url: `https://ayakobot.com/guilds/1/leaderboard`,
+      label: lan.fullLeaderboard,
+      style: Discord.ButtonStyle.Link,
+     },
+    ],
+   },
+  ],
+ });
 };
