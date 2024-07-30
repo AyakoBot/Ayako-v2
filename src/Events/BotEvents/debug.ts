@@ -10,6 +10,8 @@ export default (message: string) => {
     data: { shard, ms, timestamp: Date.now() },
    })
    .then();
+
+  if (!process.argv.includes('--debug')) return;
  }
 
  // eslint-disable-next-line no-console
