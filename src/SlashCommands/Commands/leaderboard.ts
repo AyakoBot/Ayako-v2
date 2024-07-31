@@ -1,9 +1,16 @@
 import * as Discord from 'discord.js';
+import { GuildTextChannelTypes } from '../../Typings/Channel.js';
 
 const User = new Discord.SlashCommandUserOption()
  .setName('user')
  .setDescription('The User')
  .setRequired(false);
+
+const Channel = new Discord.SlashCommandChannelOption()
+ .setName('channel')
+ .setDescription('The Channel')
+ .setRequired(false)
+ .addChannelTypes(...GuildTextChannelTypes);
 
 export default new Discord.SlashCommandBuilder()
  .setName('leaderboard')
@@ -33,5 +40,12 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('server')
    .setDescription('Shows the server Leaderboard and Rank')
+   .addUserOption(User),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('channel')
+   .setDescription('Shows the Channel Leaderboard and Rank')
+   .addChannelOption(Channel)
    .addUserOption(User),
  );

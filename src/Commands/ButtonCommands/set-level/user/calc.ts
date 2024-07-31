@@ -89,16 +89,18 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  });
 };
 
-export const getLevel = (y: number) =>
+export const getLevel = (xp: number) =>
  Math.round(
-  (3 ** 0.5 * (3888 * y ** 2 + 233280 * y - 3366425) ** 0.5 + 108 * y + 3240) ** (1 / 3) /
+  (3 ** 0.5 * (3888 * xp ** 2 + 233280 * xp - 3366425) ** 0.5 + 108 * xp + 3240) ** (1 / 3) /
    (2 * 3 ** (2 / 3) * 5 ** (1 / 3)) +
    (65 * (5 / 3) ** (1 / 3)) /
-    (2 * (3 ** 0.5 * (3888 * y ** 2 + 233280 * y - 3366425) ** 0.5 + 108 * y + 3240) ** (1 / 3)) -
+    (2 *
+     (3 ** 0.5 * (3888 * xp ** 2 + 233280 * xp - 3366425) ** 0.5 + 108 * xp + 3240) ** (1 / 3)) -
    9 / 2,
  ) || 0;
 
-export const getXP = (y: number) => Math.floor((5 / 6) * y * (2 * y * y + 27 * y + 91));
+export const getXP = (level: number) =>
+ Math.floor((5 / 6) * level * (2 * level * level + 27 * level + 91));
 
 export const getComponents = (
  components:
