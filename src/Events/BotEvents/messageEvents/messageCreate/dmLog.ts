@@ -12,9 +12,7 @@ export default async (msg: Discord.Message<boolean>) => {
  if (!channel) return;
 
  const user = await msg.client.util.DataBase.dmLog
-  .findUnique({
-   where: { userId: msg.author.id },
-  })
+  .findUnique({ where: { userId: msg.author.id } })
   .then(async (r) => r ?? createDMLog(msg.author, channel));
  if ('message' in user) throw new Error(user.message);
 
@@ -30,14 +28,6 @@ export default async (msg: Discord.Message<boolean>) => {
     .filter((s): s is string => !!s)
     .join('\n'),
   );
-
- const err = await msg.client.util.request.channels.editMessage(
-  channel.guild,
-  user.threadId,
-  user.infoId,
-  { content: mutuals?.length ? mutuals : 'Uncached' },
- );
- if ('message' in err) throw new Error(err.message);
 
  if (msg.content.length || msg.embeds.length || msg.attachments.size) {
   await msg.client.util.request.webhooks.execute(
@@ -97,6 +87,14 @@ export default async (msg: Discord.Message<boolean>) => {
    },
   );
  }
+
+ const err = await msg.client.util.request.channels.editMessage(
+  channel.guild,
+  user.threadId,
+  user.infoId,
+  { content: mutuals?.length ? mutuals : 'Uncached' },
+ );
+ if ('message' in err) throw new Error(err.message);
 };
 
 const createDMLog = async (user: Discord.User, channel: Discord.GuildTextBasedChannel) => {
