@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -35,6 +35,12 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
    error(thread.guild, e);
    return e as Discord.DiscordAPIError;
   }
+
+  if (e.message.includes('Missing Permissions')) {
+   sendDebugMessage({ content: JSON.stringify(e) });
+   return e as Discord.DiscordAPIError;
+  }
+
   error(thread.guild, e);
   return e as Discord.DiscordAPIError;
  });
