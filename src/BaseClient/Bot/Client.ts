@@ -20,17 +20,6 @@ const client = new Discord.Client({
   Discord.Partials.ThreadMember,
  ],
  failIfNotExists: false,
- presence: {
-  status: Discord.PresenceUpdateStatus.Idle,
-  afk: false,
-  activities: [
-   {
-    state: 'Starting up...',
-    name: 'Starting up...',
-    type: Discord.ActivityType.Custom,
-   },
-  ],
- },
  intents: [
   Discord.IntentsBitField.Flags.Guilds,
   Discord.IntentsBitField.Flags.GuildMembers,
@@ -56,6 +45,20 @@ const client = new Discord.Client({
    lifetime: 1_209_600, // 14 days
   },
  },
+ ws: {
+  presence: {
+   since: Date.now() - process.uptime() * 1000,
+   status: Discord.PresenceUpdateStatus.Idle,
+   afk: true,
+   activities: [
+    {
+     state: 'Starting up...',
+     name: 'Starting up...',
+     type: Discord.ActivityType.Custom,
+    },
+   ],
+  }
+ }
 });
 
 client.cluster = new Sharding.ClusterClient(client);
