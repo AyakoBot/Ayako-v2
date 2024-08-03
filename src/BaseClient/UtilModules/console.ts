@@ -18,7 +18,7 @@ export const getDebugInfo = () => {
 const file = fs.createWriteStream(
  `${process.cwd()}${
   process.cwd().includes('dist') ? '/..' : ''
- }/logs/console_${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+ }/logs/console_${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}.log`,
  { flags: 'a' },
 );
 const { stdout } = process;

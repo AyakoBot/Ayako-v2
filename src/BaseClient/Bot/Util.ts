@@ -107,7 +107,7 @@ const channelTimeout: ChannelTimeouts = new Map();
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
-  `${process.cwd()}/logs/ratelimits-${new Date().getDate()}-${new Date().getMonth()}-${new Date().getFullYear()}.log`,
+  `${process.cwd()}/logs/ratelimits-${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}.log`,
   { flags: 'a' },
  ),
 };
@@ -311,7 +311,7 @@ const util: Util = {
  files,
  guildOnly,
  Colors,
- userMiddleware
+ userMiddleware,
 };
 
 export default util;
