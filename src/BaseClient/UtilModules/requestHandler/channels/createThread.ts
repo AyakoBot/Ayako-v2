@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
-import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -83,4 +83,4 @@ export const canCreateThread = async (
   (await getActiveThreads(channel.guild).then((m) => ('message' in m ? undefined : m)))?.filter(
    (t) => t.parentId === channel.id,
   ).length,
- ) < 1000;
+ ) < 800; // should be 1000, but we should be safe
