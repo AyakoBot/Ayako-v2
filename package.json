@@ -15,7 +15,7 @@
     "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
   },
   "dependencies": {
-    "@discordjs/builders": "1.9.0-dev.1722600277-bb459d95e",
+    "@discordjs/builders": "1.9.0-dev.1722730281-f623e7a31",
     "@discordjs/core": "^1.2.0",
     "@discordjs/rest": "^2.3.0",
     "@prisma/client": "^5.17.0",
@@ -26,7 +26,7 @@
     "client@latest": "link:prisma/client@latest",
     "discord-api-types": "0.37.93-next.588140c.1721481579",
     "discord-hybrid-sharding": "^2.2.0",
-    "discord.js": "14.16.0-dev.1722600269-bb459d95e",
+    "discord.js": "14.16.0-dev.1722730287-f623e7a31",
     "dotenv": "^16.4.5",
     "glob": "^10.4.5",
     "ioredis": "^5.4.1",
