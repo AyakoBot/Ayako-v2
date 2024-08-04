@@ -305,17 +305,20 @@ const inSpamHaus = async (u: string) => {
    Authorization: `Bearer ${process.env.spamhausToken}`,
    'Content-Type': 'application/json',
   },
+ }).catch((r: Error) => {
+  console.error('Failed to query Spamhaus for', cleanURL(u));
+  return r;
  });
 
- return res.status === 200;
+ return 'status' in res && res.status === 200;
 };
 
 const ageCheck = async (u: string) => {
  const res = await fetch(`https://api.promptapi.com/whois/query?domain=${cleanURL(u)}`, {
   headers: { apikey: process.env.promptAPIToken ?? '' },
- });
+ }).catch((r: Error) => r);
 
- if (!res.ok) return { triggers: false };
+ if (!('ok' in res) || !res.ok) return { triggers: false };
 
  const json = (await res.json()) as VirusVendorsTypings.PromptAPI;
  if (json.result === 'not found') return { triggers: false, type: 'PromptAPI' };
@@ -332,15 +335,15 @@ const inVT = async (u: string) => {
  const body = new FormData();
  body.set('url', u);
 
- const urlsRes = await fetch('https://www.virustotal.com/api/v3/urls', {
+ const res = await fetch('https://www.virustotal.com/api/v3/urls', {
   method: 'POST',
   headers: { 'x-apikey': process.env.VTToken ?? '' },
   body,
- });
+ }).catch((r: Error) => r);
 
- if (!urlsRes.ok) return { triggers: false };
+ if (!('ok' in res) || !res.ok) return { triggers: false };
 
- const urlsData = (await urlsRes.json()) as VirusVendorsTypings.VirusTotalURLs;
+ const urlsData = (await res.json()) as VirusVendorsTypings.VirusTotalURLs;
  const analysesData = await getAnalyses(urlsData.data.id);
  if (typeof analysesData === 'string') return { triggers: false };
 
@@ -361,7 +364,9 @@ const getAnalyses = async (
     headers: {
      'x-apikey': process.env.VTToken ?? '',
     },
-   });
+   }).catch((r: Error) => r);
+
+   if (!('ok' in res)) return resolve(await getAnalyses(id, i + 1));
    if (!res.ok) return resolve((await res.text()) as string);
 
    const data = (await res.json()) as VirusVendorsTypings.VirusTotalAnalyses;
@@ -418,9 +423,9 @@ const inGoogleSafeBrowsing = async (u: string) => {
     },
    }),
   },
- );
+ ).catch((e: Error) => e);
 
- if (!res.ok) return { triggers: false, type: 'Google Safe Browsing' };
+ if (!('ok' in res) || !res.ok) return { triggers: false, type: 'Google Safe Browsing' };
 
  const json = (await res.json()) as VirusVendorsTypings.GoogleSafeBrowsing;
  if (json.matches?.length) {
@@ -444,7 +449,7 @@ const reportFishFish = (u: string) => {
    reason:
     'Reported by at least one of the following Vendors: Google Safe Browsing, SpamHaus, VirusTotal, Sinking Yachts, PromptAPI, FishFish',
   }),
- });
+ }).catch(() => {});
 };
 
 const inAllowlist = (url: string) =>
@@ -488,9 +493,9 @@ const inKaspersky = async (u: string) => {
     'x-api-key': process.env.kasperskyToken ?? '',
    },
   },
- );
+ ).catch((e: Error) => e);
 
- if (!res.ok) return { triggered: false };
+ if (!('ok' in res) || !res.ok) return { triggered: false };
 
  const json = (await res.json()) as VirusVendorsTypings.Kaspersky;
  if (json.Zone === 'Red') return { triggered: true, type: 'Kaspersky', result: json };
