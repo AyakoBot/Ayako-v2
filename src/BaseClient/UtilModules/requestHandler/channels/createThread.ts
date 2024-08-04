@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
@@ -43,6 +43,15 @@ export default async (
   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
   .catch((e) => {
    error(channel.guild, e);
+   e.message += ` in ${channel.id} - Reported ${
+    channel.guild.channels.cache.filter(
+     (c) =>
+      (c.type === Discord.ChannelType.PrivateThread ||
+       c.type === Discord.ChannelType.PublicThread) &&
+      c.parentId === channel.id,
+    ).size
+   } threads`;
+
    return e as Discord.DiscordAPIError;
   });
 };
