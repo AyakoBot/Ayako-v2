@@ -80,8 +80,8 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
        (typeof oldSetting?.[changedSetting] === 'string' ||
         Array.isArray(oldSetting?.[changedSetting])) &&
         (oldSetting?.[changedSetting] as string[] | string).length
-        ? (oldSetting?.[changedSetting] as string)
-        : (oldSetting?.[changedSetting] as string),
+        ? filterTokens(oldSetting?.[changedSetting] as string, guild)
+        : filterTokens(oldSetting?.[changedSetting] as string, guild),
       ),
       inline: false,
      },
@@ -91,8 +91,8 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
        (typeof newSetting?.[changedSetting] === 'string' ||
         Array.isArray(newSetting?.[changedSetting])) &&
         (newSetting?.[changedSetting] as string[] | string).length
-        ? (newSetting?.[changedSetting] as string)
-        : (newSetting?.[changedSetting] as string),
+        ? filterTokens(newSetting?.[changedSetting] as string, guild)
+        : filterTokens(newSetting?.[changedSetting] as string, guild),
       ),
       inline: false,
      },
@@ -105,9 +105,27 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
   description: language.slashCommands.settings.log.desc(field.name ?? '-', lan.name),
   fields: getFields(),
   footer: {
-   text: `ID: ${Number.isNaN(uniquetimestamp) ? language.t.None : uniquetimestamp?.toString(36)}`,
+   text: `ID: ${(Number.isNaN(uniquetimestamp) ? language.t.None : uniquetimestamp?.toString(36)) || language.t.None}`,
   },
  };
 
  send({ id: logs, guildId: guild.id }, { embeds: [embed] });
+};
+
+const filterTokens = (str: string, guild: Discord.Guild) => {
+ if (typeof str !== 'string') return str;
+ if (!str.includes('.')) return str;
+
+ const sepByDot = str.split('.');
+ if (sepByDot.length !== 3) return str;
+
+ const [first, second, third] = sepByDot;
+ if (![22, 24, 26].includes(first.length)) return str;
+ if (second.length !== 6) return str;
+ if (third.length !== 38) return str;
+
+ const id = guild.client.util.getBotIdFromToken(str);
+ if (!id) return str;
+ if (!id.match(/\d{17,19}/gm)?.length) return str;
+ return `${first}.${'*'.repeat(second.length)}.${'*'.repeat(third.length)}`;
 };
