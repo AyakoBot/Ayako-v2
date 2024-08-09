@@ -140,9 +140,9 @@ const tokenCreate = async (
  requestHandler(guild.id, newSettings.token);
 
  const me = await getMe(guild);
+ updateApp(guild);
  if (!meIsValid(guild, me)) return;
 
- await updateApp(guild);
 
  sendWebhookRequest(guild, me.id);
  doCommands(guild, me);

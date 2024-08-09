@@ -77,4 +77,5 @@ export interface DataBaseTables {
  antiraid: Prisma.antiraid;
  customclients: Prisma.customclients;
  afksettings: Prisma.afksettings;
+ linkedRolesDeco: Prisma.linkedRolesDeco;
 }

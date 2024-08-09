@@ -23,7 +23,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   | Discord.APIUserSelectComponent
   | Discord.APIMentionableSelectComponent = {
   min_values: 0,
-  max_values: type.includes('s') ? 25 : 1,
+  max_values: type.endsWith('s') ? 25 : 1,
   custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
    uniquetimestamp ? `_${uniquetimestamp}` : ''
   }`,

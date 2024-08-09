@@ -2483,6 +2483,32 @@
     "deleted": "{{setting}} Setting deleted"
    },
    "categories": {
+    "linked-roles-deco": {
+     "name": "Linked-Roles-Decoration",
+     "desc": "## Step-by-Step Setup Guide:\n1. Select your Bot using the `Bot` Button below\n2. Insert your Bot Token using the `Bot Token` Button below.\n> You can obtain it in [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n> In your App's Settings Page under `Bot` using the `Reset Token` Button\n3. Insert your Bot Secret using the `Bot Secret` Button below.\n> You can obtain it in [Discord's Developer Portal](https://discordapp.com/developers/applications/)\n> In your App's Settings Page under `OAuth2` using the `Reset Secret` Button\n4. Insert ```https://api.ayakobot.com/v1/guilds/{{guildId}}/linked-roles/{{settingsId}}/decoration``` as a Redirect URL under the `OAuth2` Section using the `Add Redirect` Button\n5. Enter a Description under `General Information`. Text entered here will be displayed on User-Profiles after linking the Role (max. 100 Characters)",
+     "fields": {
+      "botId": {
+       "name": "Bot",
+       "desc": "The Bot that manages this Setting"
+      },
+      "roleId": {
+       "name": "Role",
+       "desc": "The Role managed by this Setting"
+      },
+      "allowedUsers": {
+       "name": "Allowed Users",
+       "desc": "Users that can take this Role"
+      },
+      "botSecret": {
+       "name": "Bot Secret",
+       "desc": "The Secret of your Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/) under the \"OAuth2\" Section"
+      },
+      "botToken": {
+       "name": "Bot Token",
+       "desc": "The Token of your Custom Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/) under the \"Bot\" Section"
+      }
+     }
+    },
     "voice-hubs": {
      "name": "Voice-Hubs",
      "fields": {

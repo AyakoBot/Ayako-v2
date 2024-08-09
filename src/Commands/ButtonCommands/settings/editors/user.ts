@@ -51,7 +51,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       uniquetimestamp,
       (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
        id: o,
-       type: Discord.SelectMenuDefaultValueType.Channel,
+       type: Discord.SelectMenuDefaultValueType.User,
       })),
       cmd.guild,
      ),
