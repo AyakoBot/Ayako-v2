@@ -234,10 +234,47 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    tokenCreate(guild, newSettings as Parameters<typeof tokenCreate>[1]);
    return;
   }
+  case 'allowedUsers': {
+   if (!newSettings.botId) return;
+   if (!newSettings.botSecret) return;
+
+   const removedUsers = _oldSettings?.allowedUsers?.filter(
+    (u) => !newSettings.allowedUsers?.includes(u),
+   );
+
+   removedUsers?.forEach((u) => {
+    revokeToken(guild, u, { id: newSettings.botId!, secret: newSettings.botSecret! });
+   });
+
+   return;
+  }
   default: {
    break;
   }
  }
+};
+
+const revokeToken = async (
+ guild: Discord.Guild,
+ userId: string,
+ bot: { id: string; secret: string },
+) => {
+ const tokens = await guild.client.util.DataBase.linkedRoleTokens.findUnique({
+  where: { botId_userId: { botId: bot.id, userId } },
+ });
+
+ guild.client.rest.post(Discord.Routes.oauth2TokenRevocation(), {
+  headers: {
+   'Content-Type': 'application/x-www-form-urlencoded',
+   Authorization: `Basic ${Buffer.from(`${bot.id}:${bot.secret}`).toString('base64')}`,
+  },
+  body: Discord.makeURLSearchParams({
+   token: tokens?.token,
+   token_type_hint: 'refresh_token',
+  }),
+  auth: false,
+  passThroughBody: true,
+ });
 };
 
 const tokenCreate = async (
