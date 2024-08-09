@@ -2,7 +2,7 @@ export interface TopGGVote {
  bot: string;
  user: string;
  type: 'upvote' | 'test';
- isWeekend: boolean;
+ isWeekend?: boolean;
  query?: string;
  authorization: string;
 }
