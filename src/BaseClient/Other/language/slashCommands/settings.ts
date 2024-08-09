@@ -15,6 +15,7 @@ import reactionRoles from './settings/reaction-roles.js';
 import roleRewards from './settings/role-rewards.js';
 import separators from './settings/separators.js';
 import voteRewards from './settings/vote-rewards.js';
+import linkedRolesDeco from './settings/linked-roles-deco.js';
 
 const self = (t: CT.Language) => ({
  ...t.JSON.slashCommands.settings,
@@ -48,6 +49,7 @@ const self = (t: CT.Language) => ({
   'role-rewards': roleRewards(t),
   separators: separators(t),
   'vote-rewards': voteRewards(t),
+  'linked-roles-deco': linkedRolesDeco(t),
  },
 });
 

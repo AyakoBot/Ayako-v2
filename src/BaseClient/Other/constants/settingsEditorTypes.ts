@@ -322,4 +322,11 @@ export default {
  [CT.SettingNames.Afk]: {
   maxLetters: CT.EditorTypes.Number,
  },
+ [CT.SettingNames.LinkedRolesDeco]: {
+  roleId: CT.EditorTypes.Role,
+  botId: CT.EditorTypes.User,
+  botToken: CT.EditorTypes.BotToken,
+  botSecret: CT.EditorTypes.BotToken,
+  allowedUsers: CT.EditorTypes.Users,
+ },
 };

@@ -197,6 +197,12 @@ export default new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${process.env.mainName}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('linked-roles-deco')
+     .setDescription('Useage of Linked-Roles purely for aesthetic purposes')
+     .addStringOption(idSelector),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('shop')
      .setDescription('Create a Server-Shop Members can buy Roles in using their Server-Currency'),
    )
