@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { API } from '@discordjs/core';
+import { sendDebugMessage } from '../../../../BaseClient/UtilModules/error.js';
 
 const name = CT.SettingNames.LinkedRolesDeco;
 
@@ -263,18 +264,26 @@ const revokeToken = async (
   where: { botId_userId: { botId: bot.id, userId } },
  });
 
- guild.client.rest.post(Discord.Routes.oauth2TokenRevocation(), {
-  headers: {
-   'Content-Type': 'application/x-www-form-urlencoded',
-   Authorization: `Basic ${Buffer.from(`${bot.id}:${bot.secret}`).toString('base64')}`,
-  },
-  body: Discord.makeURLSearchParams({
-   token: tokens?.token,
-   token_type_hint: 'refresh_token',
-  }),
-  auth: false,
-  passThroughBody: true,
- });
+ guild.client.rest
+  .post(Discord.Routes.oauth2TokenRevocation(), {
+   headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Authorization: `Basic ${Buffer.from(`${bot.id}:${bot.secret}`).toString('base64')}`,
+   },
+   body: Discord.makeURLSearchParams({
+    token: tokens?.token,
+    token_type_hint: 'refresh_token',
+   }),
+   auth: false,
+   passThroughBody: true,
+  })
+  .catch((e) => sendDebugMessage({ content: JSON.stringify(e, null, 2) }));
+
+ guild.client.util.DataBase.linkedRoleTokens
+  .delete({
+   where: { botId_userId: { botId: bot.id, userId } },
+  })
+  .then();
 };
 
 const tokenCreate = async (
