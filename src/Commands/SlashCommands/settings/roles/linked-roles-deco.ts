@@ -202,7 +202,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 ];
 
 export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
- _oldSettings,
+ oldSettings,
  newSettings,
  changedSetting,
  guild,
@@ -239,7 +239,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    if (!newSettings.botId) return;
    if (!newSettings.botSecret) return;
 
-   const removedUsers = _oldSettings?.allowedUsers?.filter(
+   const removedUsers = oldSettings?.allowedUsers?.filter(
     (u) => !newSettings.allowedUsers?.includes(u),
    );
 
@@ -263,21 +263,27 @@ const revokeToken = async (
  const tokens = await guild.client.util.DataBase.linkedRoleTokens.findUnique({
   where: { botId_userId: { botId: bot.id, userId } },
  });
+ if (!tokens) return;
 
- guild.client.rest
+ const success = await new Discord.REST({ version: '10' })
   .post(Discord.Routes.oauth2TokenRevocation(), {
    headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
     Authorization: `Basic ${Buffer.from(`${bot.id}:${bot.secret}`).toString('base64')}`,
    },
    body: Discord.makeURLSearchParams({
-    token: tokens?.token,
+    token: tokens.token,
     token_type_hint: 'refresh_token',
    }),
    auth: false,
    passThroughBody: true,
   })
-  .catch((e) => sendDebugMessage({ content: JSON.stringify(e, null, 2) }));
+  .catch((e) => {
+   sendDebugMessage({ content: JSON.stringify(e, null, 2) });
+   return false;
+  });
+
+ if (!success) return;
 
  guild.client.util.DataBase.linkedRoleTokens
   .delete({
