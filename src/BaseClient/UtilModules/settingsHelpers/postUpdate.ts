@@ -37,10 +37,16 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
 
  const settingsFile = (await import(file)) as CT.SettingsFile<typeof settingName>;
 
+ const settings = await guild.client.util.settingsHelpers.changeHelpers.get(
+  settingName,
+  guild.id,
+  uniquetimestamp ? Number(uniquetimestamp) : undefined,
+ );
+
  settingsFile.postChange?.(
-  oldSetting as never,
-  newSetting as never,
-  changedSetting as never,
+  { ...settings, ...(oldSetting as Object) },
+  { ...settings, ...(newSetting as Object) },
+  changedSetting as Parameters<typeof settingsFile.postChange>[2],
   guild,
   uniquetimestamp,
  );
