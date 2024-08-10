@@ -199,6 +199,18 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    ),
   ],
  },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   {
+    label: language.slashCommands.settings.categories['linked-roles-deco'].apply.apply,
+    type: Discord.ComponentType.Button,
+    custom_id: `linked-roles/deco_${settings?.uniquetimestamp}`,
+    style: Discord.ButtonStyle.Success,
+    disabled: !settings?.roleId || !settings?.botId || !settings?.botSecret || !settings?.botToken,
+   },
+  ],
+ },
 ];
 
 export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
