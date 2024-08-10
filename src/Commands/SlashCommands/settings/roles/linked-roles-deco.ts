@@ -265,15 +265,16 @@ const revokeToken = async (
  });
  if (!tokens) return;
 
- const success = await new Discord.REST({ version: '10' })
+ const success = await guild.client.rest
   .post(Discord.Routes.oauth2TokenRevocation(), {
    headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
-    Authorization: `Basic ${Buffer.from(`${bot.id}:${bot.secret}`).toString('base64')}`,
    },
    body: Discord.makeURLSearchParams({
     token: tokens.token,
     token_type_hint: 'refresh_token',
+    client_id: bot.id,
+    client_secret: bot.secret,
    }),
    auth: false,
    passThroughBody: true,
