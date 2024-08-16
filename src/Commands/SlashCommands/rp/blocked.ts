@@ -20,7 +20,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
     b.blockeduserid === '0'
      ? `${lan.globalBlocked}\n${
         lan.blockedCmds
-       } ${b.blockedcmd?.length || allCommands.length}/${allCommands.length}\n`
+       } ${b.blockedcmd?.length || 0}/${allCommands.length}\n`
      : `<@${b.blockeduserid}> / ${cmd.client.util.util.makeInlineCode(b.blockeduserid)}\n${
         lan.blockedCmds
        } ${b.blockedcmd?.length || allCommands.length}/${allCommands.length}\n`,
