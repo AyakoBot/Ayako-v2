@@ -1276,6 +1276,7 @@
   "replace": "Replace"
  },
  "errors": {
+  "invalidColor": "Color is not a valid HEX Code",
   "fileNotFound": "File not found or empty",
   "stickerNotFound": "The Mentioned Sticker could not be found",
   "cantFetch": "Can't fetch Messages in this Channel",
