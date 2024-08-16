@@ -154,6 +154,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
+   buttonParsers.delete(language, name, Number(settings?.uniquetimestamp)),
    buttonParsers.specific(
     language,
     settings?.roleId,
