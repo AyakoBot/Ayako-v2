@@ -198,6 +198,6 @@ export default (
 
 const hexToNumber = (hex: string): number => {
  const hexWithoutHash = hex.replace('#', '');
- if (!hexWithoutHash.match(/[^0-9A-Fa-f]/g)?.length) return CT.Colors.Base;
+ if (!hexWithoutHash.match(/[0-9a-f]+/i)?.length) return CT.Colors.Base;
  return parseInt(hexWithoutHash, 16);
 };
