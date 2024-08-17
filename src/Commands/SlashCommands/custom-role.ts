@@ -38,7 +38,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const iconEmoji = canseticon ? cmd.options.getString('icon-emoji', false) : undefined;
  const iconUrl = canseticon ? cmd.options.getString('icon-url', false) : undefined;
 
- if (color && !color.match(/[^a-zA-Z0-9\s]/g)?.length) {
+ if (color && !color.match(/[0-9a-f]+/i)?.length) {
   cmd.client.util.errorCmd(cmd, language.errors.invalidColor, language);
   return;
  }
