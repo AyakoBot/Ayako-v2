@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
-export default async (msg: Discord.Message) => {
+export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | boolean = false) => {
  if (!msg.inGuild()) return;
  if (msg.author?.id === (await msg.client.util.getBotIdFromGuild(msg.guild))) return;
  if (!msg.author) return;
@@ -151,6 +151,14 @@ export default async (msg: Discord.Message) => {
     inline: false,
    });
   }
+ }
+
+ if (isBulk && Array.isArray(isBulk)) {
+  embed.fields?.push({
+   name: lan.bulkDelete,
+   value: isBulk.map((m) => m.url).join('\n'),
+   inline: false,
+  });
  }
 
  if (msg.attachments?.size) {

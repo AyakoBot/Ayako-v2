@@ -28,7 +28,7 @@ export default async (
   timestamp: new Date().toISOString(),
  };
 
- await channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] });
+ const msg = await channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }).then((m) => m && 'message' in m ? undefined : m);
 
- msgs.forEach((m) => messageDelete(m));
+ msgs.sort((a, b) => a.createdTimestamp - b.createdTimestamp).forEach((m) => messageDelete(m, msg ? msg.filter((m): m is Discord.Message<true> => !!m) : false));
 };

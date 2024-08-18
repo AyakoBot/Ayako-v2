@@ -163,6 +163,7 @@
     "descUpdateAuthor": "{{msg}}was updated by\n{{user}}",
     "nameDelete": "Message Deleted",
     "nameUpdate": "Message Updated",
+    "bulkDelete": "This Log is part of a Bulk delete. View the main Log via the Link below",
     "flags": {
      "Crossposted": "Published",
      "IsCrosspost": "Received from a News Channel",
