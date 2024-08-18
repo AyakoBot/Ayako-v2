@@ -130,4 +130,23 @@ export default {
   'https://cdn.discordapp.com/attachments/760152457799401532/825773982321737768/tenor_60.gif',
   'https://cdn.discordapp.com/attachments/760152457799401532/825773984963756072/tenor_58.gif',
  ],
+ nom: [
+  'https://media1.tenor.com/m/4U2-K7XUIJUAAAAC/pain-ellenoar.gif',
+  'https://media1.tenor.com/m/4j3hMz-dUz0AAAAC/anime-love.gif',
+  'https://media1.tenor.com/m/H2bi31hpZnYAAAAC/re-zero-rem.gif',
+  'https://media1.tenor.com/m/BVFbvCZKNEsAAAAC/princess-connect-anime-bite.gif',
+  'https://media1.tenor.com/m/dOgAemyv1VwAAAAC/kancolle-nibble.gif',
+  'https://media1.tenor.com/m/zE16ArpiSD8AAAAC/arknights-pet-head.gif',
+  'https://media1.tenor.com/m/eQYan9dHVIkAAAAC/chuuu.gif',
+  'https://media1.tenor.com/m/_AkeqheWU-4AAAAC/anime-bite.gif',
+  'https://media1.tenor.com/m/8Q9PcM5GL2QAAAAC/anime-ear-ear-bite.gif',
+  'https://media1.tenor.com/m/IjFUX_QqUaQAAAAd/neko-gaming.gif',
+  'https://media1.tenor.com/m/72KXBuH1vQgAAAAC/anime-acchi-kocchi.gif',
+  'https://media1.tenor.com/m/BOaUJB-g6UEAAAAC/nom-furrie.gif',
+  'https://media1.tenor.com/m/jQ1anSa1FekAAAAC/bite-me.gif',
+  'https://media1.tenor.com/m/iIAvibfzzFYAAAAC/demichan-wa-kataritai-nom-nom.gif',
+  'https://media1.tenor.com/m/DQxlU5Geyf0AAAAC/hungry-cute.gif',
+  'https://media1.tenor.com/m/diRQGFt9T1EAAAAC/nom-kiwi-nom.gif',
+  'https://media1.tenor.com/m/6mvKb4vf0SoAAAAC/wholesome-nom-nom-nom-nom.gif',
+ ]
 };
