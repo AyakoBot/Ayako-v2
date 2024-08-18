@@ -45,6 +45,7 @@ export default async (cmd: Discord.Interaction) => {
     type: cmd.type,
     guildId: cmd.guildId,
     userId: cmd.user.id,
+    context: cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1,
    },
   })
   .then();
