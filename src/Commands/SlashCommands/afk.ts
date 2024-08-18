@@ -10,19 +10,13 @@ export default async (
  if (!cmd.inGuild()) return;
  if (!cmd.channel) return;
 
- if (cmd.guildId === '672546390915940405') console.log(1);
-
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.afk;
  const author = cmd instanceof Discord.ChatInputCommandInteraction ? cmd.user : cmd.author;
 
- if (cmd.guildId === '672546390915940405') console.log(2);
-
  const afk = await cmd.client.util.DataBase.afk.findUnique({
   where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
  });
-
- if (cmd.guildId === '672546390915940405') console.log(3);
 
  if (cmd instanceof Discord.ChatInputCommandInteraction) {
   text = cmd.options.getString('reason', false) ?? undefined;
@@ -36,8 +30,6 @@ export default async (
      },
     ]
   : [];
-
- if (cmd.guildId === '672546390915940405') console.log(4);
 
  if (cmd instanceof Discord.ChatInputCommandInteraction && !afk) {
   await cmd.client.util.replyCmd(cmd, {
@@ -59,8 +51,6 @@ export default async (
 
   if (await cmd.client.util.isDeleteable(cmd)) cmd.client.util.request.channels.deleteMessage(cmd);
  }
-
- if (cmd.guildId === '672546390915940405') console.log(5);
 
  if (
   cmd.member &&
