@@ -181,6 +181,7 @@ export default {
   token: CT.EditorTypes.BotToken,
  },
  [CT.SettingNames.CustomClient]: {
+  appid: CT.EditorTypes.User,
   token: CT.EditorTypes.BotToken,
   secret: CT.EditorTypes.BotToken,
  },
