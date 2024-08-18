@@ -285,7 +285,7 @@ export const getEmbeds = (
        {
         name: language.events.logs.automodRule.exemptRoles,
         value: embedParsers.roles(
-         rule.exemptRoles.map((o) => o.id),
+         rule.exemptRoles.map((o) => o.id).filter((o): o is string => !!o),
          language,
         ),
        },
@@ -294,7 +294,7 @@ export const getEmbeds = (
            {
             name: language.events.logs.automodRule.exemptChannels,
             value: embedParsers.channels(
-             rule.exemptChannels.map((o) => o.id),
+             rule.exemptChannels.map((o) => o?.id).filter((o): o is string => !!o),
              language,
             ),
            },
