@@ -36,7 +36,7 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
     (client.util.settingsHelpers.setup(
      name,
      cmd.guildId,
-     id ? parseInt(id, 36) : Date.now(),
+     client.util.settingsHelpers.getUniquetimestampFromId(id),
     ) as unknown as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[typeof name]]),
   );
 

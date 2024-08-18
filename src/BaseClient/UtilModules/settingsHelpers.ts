@@ -9,6 +9,7 @@ import multiRowHelpers from './settingsHelpers/multiRowHelpers.js';
 import permissionCheck from './settingsHelpers/permissionCheck.js';
 import setup from './settingsHelpers/setup.js';
 import updateLog from './settingsHelpers/updateLog.js';
+import getUniquetimestampFromId from './settingsHelpers/getUniquetimestampFromId.js';
 
 /**
  * Function for checking if a user has permission to change a setting.
@@ -30,6 +31,8 @@ import updateLog from './settingsHelpers/updateLog.js';
  * - Function for setting up the settings file.
  * @property {Function} del
  * - Function for deleting a setting.
+ * @property {Function} getUniquetimestampFromId
+ * - Function for getting the uniquetimestamp from an id.
  */
 export default {
  permissionCheck,
@@ -43,4 +46,5 @@ export default {
  del,
  getStyle,
  getEmoji,
+ getUniquetimestampFromId,
 };
