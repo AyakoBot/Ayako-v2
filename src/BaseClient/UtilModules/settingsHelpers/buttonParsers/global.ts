@@ -4,6 +4,7 @@ import * as CT from '../../../../Typings/Typings.js';
 import getEmoji from '../getEmoji.js';
 import getLable from '../getLable.js';
 import getStyle from '../getStyle.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a global button component for the settings editor.
@@ -24,6 +25,9 @@ export default (
  type: Discord.ComponentType.Button,
  label: getLable(language, type),
  style: getStyle(setting),
- custom_id: `settings/editors/${CT.GlobalType[type]}_${type}_${settingName}_${uniquetimestamp}`,
+ custom_id: getWithUTS(
+  `settings/editors/${CT.GlobalType[type]}_${type}_${settingName}`,
+  uniquetimestamp,
+ ),
  emoji: getEmoji(setting, type),
 });

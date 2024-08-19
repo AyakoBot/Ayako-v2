@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { getWithUTS } from '../buttonParsers/back.js';
 
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  fieldName: string,
@@ -17,9 +18,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
  const menu: Discord.APIStringSelectComponent = {
   min_values: options.min_values || 1,
   max_values: options.max_values || 1,
-  custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
-   uniquetimestamp ? `_${uniquetimestamp}` : ''
-  }`,
+  custom_id: getWithUTS(`settings/${type}_${fieldName}_${String(settingName)}`, uniquetimestamp),
   type: Discord.ComponentType.StringSelect,
   options: (options.options.length ? options.options : [{ label: '-', value: '-' }]) ?? [
    { label: '-', value: '-' },

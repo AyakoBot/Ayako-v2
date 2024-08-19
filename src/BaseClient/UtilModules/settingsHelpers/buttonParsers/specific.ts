@@ -4,6 +4,7 @@ import * as CT from '../../../../Typings/Typings.js';
 import constants from '../../../Other/constants.js';
 
 import getEmoji from '../getEmoji.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a specific button component for the settings editor.
@@ -46,9 +47,12 @@ export default <T extends keyof CT.Categories>(
    (typeof setting !== 'boolean' && setting && String(setting).length) || !!setting
     ? Discord.ButtonStyle.Primary
     : Discord.ButtonStyle.Danger,
-  custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
-   name,
-  )}_${String(settingName)}_${uniquetimestamp}`,
+  custom_id: getWithUTS(
+   `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
+    name,
+   )}_${String(settingName)}`,
+   uniquetimestamp,
+  ),
   emoji: (type ? getEmoji(setting, `wl${type}id` as CT.GlobalDescType) : undefined) ?? emoji,
  };
 };

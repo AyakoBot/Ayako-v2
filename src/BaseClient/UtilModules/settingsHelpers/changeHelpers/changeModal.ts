@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
 import * as CT from '../../../../Typings/Typings.js';
+import { getWithUTS } from '../buttonParsers/back.js';
 
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
@@ -26,9 +27,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
    string
   >
  ).name,
- custom_id: `settings/${type}_${String(settingName)}${
-  uniquetimestamp ? `_${uniquetimestamp}` : ''
- }`,
+ custom_id: getWithUTS(`settings/${type}_${String(settingName)}`, uniquetimestamp),
  components: [
   {
    type: Discord.ComponentType.ActionRow,

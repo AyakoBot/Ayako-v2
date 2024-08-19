@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { getWithUTS } from '../buttonParsers/back.js';
 
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  name: T,
@@ -10,6 +11,6 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  style: Discord.ButtonStyle.Success,
- custom_id: `settings/done/${type}_${String(name)}_${fieldName}_${uniquetimestamp}`,
+ custom_id: getWithUTS(`settings/done/${type}_${String(name)}_${fieldName}`, uniquetimestamp),
  label: language.t.Done,
 });

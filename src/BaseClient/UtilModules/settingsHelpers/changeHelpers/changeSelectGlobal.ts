@@ -3,6 +3,7 @@ import * as CT from '../../../../Typings/Typings.js';
 
 import getChangeSelectType from '../getChangeSelectType.js';
 import getPlaceholder from '../getPlaceholder.js';
+import { getWithUTS } from '../buttonParsers/back.js';
 
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
@@ -24,9 +25,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   | Discord.APIMentionableSelectComponent = {
   min_values: 0,
   max_values: type.endsWith('s') ? 25 : 1,
-  custom_id: `settings/${type}_${fieldName}_${String(settingName)}${
-   uniquetimestamp ? `_${uniquetimestamp}` : ''
-  }`,
+  custom_id: getWithUTS(`settings/${type}_${fieldName}_${String(settingName)}`, uniquetimestamp),
   default_values: values.filter((v) => {
    if (!v.id) return false;
 

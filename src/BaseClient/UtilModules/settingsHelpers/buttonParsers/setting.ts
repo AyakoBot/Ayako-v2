@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a setting button component for the settings editor.
@@ -28,8 +29,9 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
   )[name] as unknown as Record<string, string>
  ).name,
  style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
- custom_id: `settings/editors/settinglink_${String(name)}_${String(settingName)}_${String(
-  linkName,
- )}_${uniquetimestamp}`,
+ custom_id: getWithUTS(
+  `settings/editors/settinglink_${String(name)}_${String(settingName)}_${String(linkName)}`,
+  uniquetimestamp,
+ ),
  emoji: emotes.settings,
 });

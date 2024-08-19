@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import constants from '../../../Other/constants.js';
 import emotes from '../../emotes.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a boolean button component for the settings editor.
@@ -31,9 +32,12 @@ export default <T extends keyof CT.Categories>(
    )[name] as unknown as Record<'name', string>
   ).name,
   style: setting ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Danger,
-  custom_id: `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
-   name,
-  )}_${String(settingName)}_${uniquetimestamp}`,
+  custom_id: getWithUTS(
+   `settings/editors/${constantTypes[name as keyof typeof constantTypes]}_${String(
+    name,
+   )}_${String(settingName)}`,
+   uniquetimestamp,
+  ),
   emoji: setting ? emotes.enabled : emotes.disabled,
  };
 };

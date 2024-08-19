@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a button component for navigating to the next page of settings.
@@ -19,7 +20,7 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
  type: Discord.ComponentType.Button,
  label: language.slashCommands.settings.next,
  style: Discord.ButtonStyle.Success,
- custom_id: `settings/next_${String(name)}_${uniquetimestamp}`,
+ custom_id: getWithUTS(`settings/next_${String(name)}`, uniquetimestamp),
  emoji: emotes.forth,
  disabled: !enabled,
 });

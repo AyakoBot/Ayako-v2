@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import emotes from '../../emotes.js';
+import { getWithUTS } from './back.js';
 
 /**
  * Creates a button component for deleting a setting.
@@ -17,6 +18,6 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
  type: Discord.ComponentType.Button,
  label: language.slashCommands.settings.delete,
  style: Discord.ButtonStyle.Danger,
- custom_id: `settings/delete_${String(name)}_${uniquetimestamp}`,
+ custom_id: getWithUTS(`settings/delete_${String(name)}`, uniquetimestamp),
  emoji: emotes.minusBG,
 });
