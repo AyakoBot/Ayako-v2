@@ -2,7 +2,7 @@ import Manager from '../Manager.js';
 
 const APIInfinityBots = 'https://spider.infinitybots.gg/bots/stats';
 
-export default (guilds: number, users: number) => {
+export default (guilds: number, users: number) =>
  fetch(APIInfinityBots, {
   method: 'post',
   headers: {
@@ -16,4 +16,3 @@ export default (guilds: number, users: number) => {
    users,
   }),
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-};

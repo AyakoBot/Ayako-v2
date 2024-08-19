@@ -2,7 +2,7 @@ import Manager from '../Manager.js';
 
 const api = 'https://api.botlist.me/api/v1/bots/650691698409734151/stats';
 
-export default (guilds: number) => {
+export default (guilds: number) =>
  fetch(api, {
   method: 'post',
   headers: {
@@ -14,4 +14,3 @@ export default (guilds: number) => {
    shard_count: Manager.totalShards,
   }),
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-};

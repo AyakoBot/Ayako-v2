@@ -53,7 +53,16 @@ const run = () => {
   const [users, guilds] = await Promise.all([getAllUsers(), getAllGuilds()]);
   console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`);
 
-  glob.sync('./Stats/*.js').forEach((f) => import(f).then((r) => r.default(guilds, users)));
+  (await glob(`${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/Cluster/Stats/**/*`))
+   .filter((f) => f.endsWith('.js'))
+   .forEach(async (f) => {
+    console.log('Running stats', f);
+
+    const file = await import(f);
+    console.log(!!file);
+
+    file.default(guilds, users);
+   });
  });
 };
 
