@@ -69,7 +69,8 @@ export const canEditMember = (
   case !!body.communication_disabled_until:
    return (
     !member.permissions.has(Discord.PermissionFlagsBits.Administrator) &&
-    me.permissions.has(Discord.PermissionFlagsBits.ModerateMembers)
+    me.permissions.has(Discord.PermissionFlagsBits.ModerateMembers) &&
+    member.roles.highest.comparePositionTo(me.roles.highest) < 0
    );
   case !!body.mute:
    return !!member.voice.channelId && me.permissions.has(Discord.PermissionFlagsBits.MuteMembers);
