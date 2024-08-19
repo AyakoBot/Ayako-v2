@@ -42,4 +42,5 @@ export default async (channel: Discord.GuildTextBasedChannel, followedChannelId:
  * @returns A boolean indicating whether the user can follow announcements in the channel.
  */
 export const canFollowAnnouncements = (channelId: string, me: Discord.GuildMember) =>
- me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks);
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks) &&
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel);
