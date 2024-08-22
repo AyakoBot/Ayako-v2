@@ -10,7 +10,7 @@ import deleteThread from '../UtilModules/deleteNotificationThread.js';
 import { request } from '../UtilModules/requestHandler.js';
 import DataBase from '../Bot/DataBase.js';
 import getPathFromError from '../UtilModules/getPathFromError.js';
-import { gatewayMetricsCollector } from '../Bot/Metrics.js';
+import { metricsCollector } from '../Bot/Metrics.js';
 
 export default async (guild: Discord.Guild | null, eventName: string) => {
  if (!guild) return;
@@ -123,7 +123,7 @@ const metrics = async (guild: Discord.Guild, eventName: string) => {
  const botId = await guild.client.util.getBotIdFromGuild(guild);
  const bot = await guild.client.util.getUser(botId);
 
- gatewayMetricsCollector.dispatchEventsReceived(
+ metricsCollector.dispatchEventsReceived(
   bot?.username ?? 'Unknown',
   eventName,
   guild.client.cluster?.id ?? 0,

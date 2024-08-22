@@ -21,17 +21,25 @@ const shardEventsReceived = new Counter({
  labelNames: ['clientName', 'opCode', 'shard'],
 });
 
+const dbQuery = new Counter({
+ name: 'ayako_db_query_execute',
+ help: 'Individual DB queries executed',
+ labelNames: ['modelName', 'action', 'where'],
+});
+
 registry.registerMetric(dispatchEventsReceived);
 registry.registerMetric(shardLatency);
 registry.registerMetric(shardEventsReceived);
+registry.registerMetric(dbQuery);
 
 export const metrics = {
  dispatchEventsReceived,
  shardLatency,
  shardEventsReceived,
+ dbQuery,
 };
 
-export const gatewayMetricsCollector = {
+export const metricsCollector = {
  dispatchEventsReceived: (clientName: string, eventType: string, shard: number) => {
   metrics.dispatchEventsReceived.labels(clientName, eventType, String(shard)).inc();
  },
@@ -40,6 +48,9 @@ export const gatewayMetricsCollector = {
  },
  shardEventsReceived: (clientName: string, opCode: string, shard: number) => {
   metrics.shardEventsReceived.labels(clientName, opCode, String(shard)).inc();
+ },
+ dbQuery: (modelName: string, action: string, where: string) => {
+  metrics.dbQuery.labels(modelName, action, where);
  },
 };
 
@@ -50,5 +61,5 @@ scheduleJob('metrics', '*/5 * * * * *', async () => {
   method: 'POST',
   body: JSON.stringify({ metrics, instanceId: 'Ayako - Manager' }),
   headers: { authorization: process.env.MetricsSecret ?? '', 'Content-Type': 'application/json' },
- }).then(async (res) => res.ok ? undefined : console.log(await res.text()))
+ }).then(async (res) => (res.ok ? undefined : console.log(await res.text())));
 });

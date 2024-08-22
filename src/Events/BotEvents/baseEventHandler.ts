@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
-import { gatewayMetricsCollector } from '../../BaseClient/Bot/Metrics.js';
+import { metricsCollector } from '../../BaseClient/Bot/Metrics.js';
 
 export default async (eventName: string, args: unknown[]) => {
  processEvents(eventName, args);
@@ -61,7 +61,7 @@ const ignoreEvents = [
 
 const firstGuildInteraction = (eventName: string, args: unknown[]) => {
  if (ignoreEvents.includes(eventName)) {
-  gatewayMetricsCollector.shardEventsReceived(
+  metricsCollector.shardEventsReceived(
    'Ayako - Manager',
    eventName,
    client.cluster?.id ?? 0,
