@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
+import { gatewayMetricsCollector } from '../../BaseClient/Bot/Metrics.js';
 
 export default async (eventName: string, args: unknown[]) => {
  processEvents(eventName, args);
@@ -59,15 +60,23 @@ const ignoreEvents = [
 ];
 
 const firstGuildInteraction = (eventName: string, args: unknown[]) => {
- if (ignoreEvents.includes(eventName)) return;
+ if (ignoreEvents.includes(eventName)) {
+  gatewayMetricsCollector.shardEventsReceived(
+   'Ayako - Manager',
+   eventName,
+   client.cluster?.id ?? 0,
+  );
+
+  return;
+ }
 
  switch (true) {
   case typeof args[0] === 'object' && args[0] && args[0] instanceof Discord.Guild: {
-   client.util.firstGuildInteraction(args[0] as Discord.Guild);
+   client.util.firstGuildInteraction(args[0] as Discord.Guild, eventName);
    break;
   }
   case typeof args[1] === 'object' && args[1] && args[1] instanceof Discord.Guild: {
-   client.util.firstGuildInteraction(args[1] as Discord.Guild);
+   client.util.firstGuildInteraction(args[1] as Discord.Guild, eventName);
    break;
   }
   case typeof args[0] === 'object' &&
@@ -75,6 +84,7 @@ const firstGuildInteraction = (eventName: string, args: unknown[]) => {
    'guild' in (args[0] as Record<'guild', Discord.Guild>): {
    client.util.firstGuildInteraction(
     (args[0] as Record<'guild', Discord.Guild>).guild as Discord.Guild,
+    eventName,
    );
    break;
   }
@@ -83,6 +93,7 @@ const firstGuildInteraction = (eventName: string, args: unknown[]) => {
    'guild' in (args[1] as Record<'guild', Discord.Guild>): {
    client.util.firstGuildInteraction(
     (args[1] as Record<'guild', Discord.Guild>).guild as Discord.Guild,
+    eventName,
    );
    break;
   }
@@ -131,4 +142,4 @@ const userMiddleware = (args: unknown[]) => {
  if (typeof args[0] !== 'object') return;
 
  client.util.userMiddleware(args);
-}
+};

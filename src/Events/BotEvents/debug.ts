@@ -1,3 +1,4 @@
+import { gatewayMetricsCollector } from '../../BaseClient/Bot/Metrics.js';
 import DataBase from '../../BaseClient/Bot/DataBase.js';
 
 export default (message: string) => {
@@ -10,6 +11,8 @@ export default (message: string) => {
     data: { shard, ms, timestamp: Date.now() },
    })
    .then();
+
+   gatewayMetricsCollector.shardLatency('Ayako - Manager', Number(shard), Number(ms));
 
   if (!process.argv.includes('--debug')) return;
  }

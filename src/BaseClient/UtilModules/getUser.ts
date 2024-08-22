@@ -28,6 +28,8 @@ export default async (id: string) => {
  const client = (await import('../Bot/Client.js')).default;
  if (!client.isReady()) return undefined;
 
+ if (client.user.id === id) return client.user;
+
  const response = (
   await client.cluster?.broadcastEval((cl, { id: userId }) => cl.users?.cache.get(userId), {
    context: { id },

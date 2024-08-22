@@ -6,7 +6,10 @@ import log from './log.js';
 export default async (reaction: Discord.MessageReaction) => {
  if (!('guild' in reaction.message.channel)) return;
 
- await reaction.client.util.firstGuildInteraction(reaction.message.channel.guild);
+ await reaction.client.util.firstGuildInteraction(
+  reaction.message.channel.guild,
+  Discord.Events.MessageReactionRemoveEmoji,
+ );
 
  const message = reaction.message.partial
   ? await reaction.client.util.request.channels.getMessage(
