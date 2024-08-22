@@ -20,6 +20,8 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
  guild: Discord.Guild,
  uniquetimestamp: number | string | undefined,
 ) => {
+ if (String(uniquetimestamp)?.length > 16) return;
+
  const files = await glob(
   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/SlashCommands/**/*`,
  );
