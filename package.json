@@ -18,7 +18,7 @@
     "@discordjs/builders": "1.9.0-dev.1722730281-f623e7a31",
     "@discordjs/core": "^1.2.0",
     "@discordjs/rest": "^2.3.0",
-    "@prisma/client": "^5.17.0",
+    "@prisma/client": "^5.18.0",
     "@total-typescript/ts-reset": "^0.5.1",
     "@types/lodash": "^4.17.6",
     "@types/lodash.merge": "^4.6.9",
@@ -72,7 +72,7 @@
     "eslint-plugin-jsx-a11y": "^6.9.0",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.3.2",
-    "prisma": "^5.17.0",
+    "prisma": "^5.18.0",
     "source-map-support": "^0.5.21",
     "typescript": "^5.5.3"
   },
