@@ -1,5 +1,8 @@
+import Redis from 'ioredis';
 import { scheduleJob } from 'node-schedule';
 import { Counter, Gauge, Registry } from 'prom-client';
+
+const redis = new Redis();
 
 export const registry = new Registry();
 
@@ -55,11 +58,5 @@ export const metricsCollector = {
 };
 
 scheduleJob('metrics', '*/5 * * * * *', async () => {
- const metrics = await registry.metrics();
-
- fetch('https://api.ayakobot.com/metrics', {
-  method: 'POST',
-  body: JSON.stringify({ metrics, instanceId: 'Ayako - Manager' }),
-  headers: { authorization: process.env.MetricsSecret ?? '', 'Content-Type': 'application/json' },
- }).then(async (res) => (res.ok ? undefined : console.log(await res.text())));
+ redis.set(`metrics:Ayako - Manager`, await registry.metrics());
 });
