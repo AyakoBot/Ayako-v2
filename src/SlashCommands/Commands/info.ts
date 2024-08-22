@@ -20,7 +20,8 @@ export default new Discord.SlashCommandBuilder()
    .addStringOption(
     new Discord.SlashCommandStringOption()
      .setName('invite')
-     .setDescription('The Invite you want to get Information about'),
+     .setDescription('The Invite you want to get Information about')
+     .setRequired(true),
    )
    .addBooleanOption(ephemeral),
  )
