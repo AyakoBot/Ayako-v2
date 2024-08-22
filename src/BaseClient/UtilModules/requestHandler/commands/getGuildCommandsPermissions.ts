@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
@@ -34,6 +34,7 @@ export default async (guild: Discord.Guild) => {
   })
   .catch((e) => {
    if (e.message.includes('Missing Access')) return e as Discord.DiscordAPIError;
+   sendDebugMessage({ content: `${canGetCommands(guild)}- ${guild.id}` });
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

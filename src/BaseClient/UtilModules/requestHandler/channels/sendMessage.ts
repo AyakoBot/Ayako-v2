@@ -43,9 +43,10 @@ async function fn(
  },
  client?: Discord.Client<true>,
 ): Promise<Discord.Message | Error | Discord.DiscordAPIError> {
- const origin = new Error();
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
  if (!payload || String(payload) === 'undefined') return new Error('No payload provided');
+
+ const debugStack = new Error().stack;
 
  const c = (guild?.client ?? client)!;
 
@@ -74,8 +75,11 @@ async function fn(
   .catch((e: Discord.DiscordAPIError) => {
    if (!e.message.includes('to this user')) {
     sendDebugMessage({
-     content: `${guild?.id} - ${channelId}\n${e.message}\n${origin.stack}`,
-     files: [c.util.txtFileWriter(JSON.stringify(payload, null, 2))],
+     content: `${guild?.id} - ${channelId}\n${e.message}`,
+     files: [
+      c.util.txtFileWriter(JSON.stringify(payload, null, 2)),
+      c.util.txtFileWriter(JSON.stringify(debugStack, null, 2)),
+     ],
     });
    }
 
