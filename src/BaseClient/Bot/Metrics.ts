@@ -50,7 +50,7 @@ export const metricsCollector = {
   metrics.shardEventsReceived.labels(clientName, opCode, String(shard)).inc();
  },
  dbQuery: (modelName: string, action: string, where: string) => {
-  metrics.dbQuery.labels(modelName, action, where);
+  metrics.dbQuery.labels(modelName, action, where).inc();
  },
 };
 
