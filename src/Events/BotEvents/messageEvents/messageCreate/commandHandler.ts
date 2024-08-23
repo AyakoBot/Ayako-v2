@@ -4,6 +4,7 @@ import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
 import * as CT from '../../../../Typings/Typings.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
+import { metricsCollector } from '../../../../BaseClient/Bot/Metrics.js';
 
 const { log } = console;
 
@@ -26,17 +27,7 @@ const dmCommand = async (msg: Discord.Message) => {
  if (!command) return;
  if (!command.dmAllowed) return;
 
- msg.client.util.DataBase.commandUsage
-  .create({
-   data: {
-    command: commandName,
-    timestamp: Date.now(),
-    type: 0,
-    guildId: msg.guildId,
-    userId: msg.author?.id,
-   },
-  })
-  .then();
+ metricsCollector.cmdExecuted(commandName, 0, 1, msg.author?.id || '-', msg.guildId ?? undefined);
 
  const language = await msg.client.util.getLanguage(msg.author.id);
  command.default(msg, args, { language, command, prefix });
@@ -172,6 +163,8 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   msg.client.util.request.channels.addReaction(msg, '⌛');
   return;
  }
+
+ metricsCollector.cmdExecuted(commandName, 0, 0, msg.author?.id || '-', msg.guildId ?? undefined);
 
  command.default(msg, args, { language, command, prefix });
 };

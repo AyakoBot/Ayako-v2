@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import { handleUser } from '../../../BaseClient/UtilModules/userMiddleware.js';
+import { metricsCollector } from '../../../BaseClient/Bot/Metrics.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;
@@ -37,18 +38,13 @@ export default async (cmd: Discord.Interaction) => {
  const command = files.find((f) => f.endsWith(`/SlashCommands/${path()}.js`));
  if (!command) return;
 
- cmd.client.util.DataBase.commandUsage
-  .create({
-   data: {
-    command: path(),
-    timestamp: Date.now(),
-    type: cmd.type,
-    guildId: cmd.guildId,
-    userId: cmd.user.id,
-    context: cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1,
-   },
-  })
-  .then();
+ metricsCollector.cmdExecuted(
+  path(),
+  cmd.type,
+  cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1,
+  cmd.user.id,
+  cmd.guildId || undefined,
+ );
 
  const commandName = command.split(/\//g).pop()?.split(/\./g).shift() as string;
 

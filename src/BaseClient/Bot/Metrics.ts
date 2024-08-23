@@ -1,10 +1,10 @@
+import { InteractionType } from 'discord.js';
 import Redis from 'ioredis';
 import { scheduleJob } from 'node-schedule';
 import { Counter, Gauge, Registry } from 'prom-client';
 
 const redis = new Redis();
-
-export const registry = new Registry();
+const registry = new Registry();
 
 const dispatchEventsReceived = new Counter({
  name: 'ayako_gateway_dispatch_events',
@@ -27,34 +27,86 @@ const shardEventsReceived = new Counter({
 const dbQuery = new Counter({
  name: 'ayako_db_query_execute',
  help: 'Individual DB queries executed',
- labelNames: ['modelName', 'action', 'where'],
+ labelNames: ['modelName', 'action', 'Guild', 'User', 'Executor', 'UTS', 'Channel'],
+});
+
+const cmdExecuted = new Counter({
+ name: 'ayako_command_executed',
+ help: 'Individual commands executed',
+ labelNames: ['command', 'type', 'context', 'guild', 'user'],
 });
 
 registry.registerMetric(dispatchEventsReceived);
 registry.registerMetric(shardLatency);
 registry.registerMetric(shardEventsReceived);
 registry.registerMetric(dbQuery);
-
-export const metrics = {
- dispatchEventsReceived,
- shardLatency,
- shardEventsReceived,
- dbQuery,
-};
+registry.registerMetric(cmdExecuted);
 
 export const metricsCollector = {
- dispatchEventsReceived: (clientName: string, eventType: string, shard: number) => {
-  metrics.dispatchEventsReceived.labels(clientName, eventType, String(shard)).inc();
- },
- shardLatency: (clientName: string, shard: number, latency: number) => {
-  metrics.shardLatency.labels(clientName, String(shard)).set(latency);
- },
- shardEventsReceived: (clientName: string, opCode: string, shard: number) => {
-  metrics.shardEventsReceived.labels(clientName, opCode, String(shard)).inc();
- },
- dbQuery: (modelName: string, action: string, where: string) => {
-  metrics.dbQuery.labels(modelName, action, where).inc();
- },
+ dispatchEventsReceived: (clientName: string, eventType: string, shard: number) =>
+  dispatchEventsReceived.labels(clientName, eventType, String(shard)).inc(),
+
+ shardLatency: (clientName: string, shard: number, latency: number) =>
+  shardLatency.labels(clientName, String(shard)).set(latency),
+
+ shardEventsReceived: (clientName: string, opCode: string, shard: number) =>
+  shardEventsReceived.labels(clientName, opCode, String(shard)).inc(),
+
+ dbQuery: (
+  modelName: string,
+  action: string,
+  guild?: string,
+  user?: string,
+  executor?: string,
+  uts?: string,
+  channel?: string,
+ ) =>
+  dbQuery
+   .labels(
+    modelName,
+    action,
+    guild ?? '-',
+    user ?? '-',
+    executor ?? '-',
+    uts ?? '-',
+    channel ?? '-',
+   )
+   .inc(),
+
+ cmdExecuted: (
+  command: string,
+  type: InteractionTypeExtended,
+  context: 0 | 1,
+  user: string,
+  guild?: string,
+ ) =>
+  cmdExecuted
+   .labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User', guild ?? '-', user)
+   .inc(),
+};
+
+type InteractionTypeExtended = InteractionType | ExtendedTypes;
+enum ExtendedTypes {
+ StringCommand = 0,
+}
+
+const getInteractionType = (type: InteractionTypeExtended) => {
+ switch (type) {
+  case ExtendedTypes.StringCommand:
+   return 'String-Command';
+  case InteractionType.ApplicationCommand:
+   return 'Slash-Command';
+  case InteractionType.ApplicationCommandAutocomplete:
+   return 'Auto-Complete';
+  case InteractionType.MessageComponent:
+   return 'Message-Component';
+  case InteractionType.ModalSubmit:
+   return 'Modal-Submit';
+  case InteractionType.Ping:
+   return 'Ping';
+  default:
+   return '-';
+ }
 };
 
 scheduleJob('metrics', '*/5 * * * * *', async () => {

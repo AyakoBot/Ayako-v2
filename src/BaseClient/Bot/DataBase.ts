@@ -4,10 +4,16 @@ import { metricsCollector } from './Metrics.js';
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {
+ const where = getInterestingWhereClause(params);
+
  metricsCollector.dbQuery(
   params.model ?? '-',
   params.action,
-  'where' in params.args ? getInterestingWhereClause(params.args.where) : '-',
+  where.guild,
+  where.user,
+  where.executor,
+  where.uts,
+  where.channel,
  );
 
  try {
@@ -23,45 +29,46 @@ prisma.$use(async (params, next) => {
  }
 });
 
-type Where = { [key: string]: string | unknown[] };
+type Where = { [key: string]: string | unknown[] } & { [key: string]: Where };
 
-const getInterestingWhereClause = (
- where: (Where & { [key: string]: Where }) | null | undefined,
-) => {
- if (!where) return '-';
+const getInterestingWhereClause = (args: Prisma.MiddlewareParams['args']) => {
+ if (!('where' in args)) return '-';
+ if (!args.where) return '-';
 
- const isArray = (val: Where[string]) => (Array.isArray(val) ? 'Array' : val);
+ const where: Where = args.where;
 
- return Object.keys(where)
-  .map((k) => {
-   switch (true) {
-    case k === 'guildId':
-    case k === 'guildid':
-     return `Guild ${isArray(where.guildid || where.guildId)}`;
-    case k === 'userid':
-     return `User ${isArray(where.userid)}`;
-    case k === 'executorid':
-     return `Executor ${isArray(where.executorid)}`;
-    case k === 'uniquetimestamp':
-     return `ID ${where.uniquetimestamp}`;
-    case k === 'channelid':
-     return `Channel ${isArray(where.channelid)}`;
-    default: {
-     const val = where[k];
+ const isArray = (val: Where[string]) => (typeof val !== 'string' ? 'Array' : (val as string));
 
-     switch (true) {
-      case k.includes('guildid'):
-      case k.includes('guildId'):
-       return `Guild ${isArray(val.guildid || val.guildId)}`;
-      case k.includes('userid'):
-       return `User ${isArray(val.userid)}`;
-      default:
-       return '';
-     }
+ const values = Object.keys(where).map((k) => {
+  switch (true) {
+   case k === 'guildId':
+   case k === 'guildid':
+    return { guild: isArray(where.guildid || where.guildId) };
+   case k === 'userid':
+    return { user: isArray(where.userid) };
+   case k === 'executorid':
+    return { executor: isArray(where.executorid) };
+   case k === 'uniquetimestamp':
+    return { uts: where.uniquetimestamp as string };
+   case k === 'channelid':
+    return { channel: isArray(where.channelid) };
+   default: {
+    const val = where[k];
+
+    switch (true) {
+     case k.includes('guildid'):
+     case k.includes('guildId'):
+      return { guild: isArray(val.guildid || val.guildId) };
+     case k.includes('userid'):
+      return { user: isArray(val.userid) };
+     default:
+      return {};
     }
    }
-  })
-  .join(' ');
+  }
+ });
+
+ return Object.assign({}, ...values);
 };
 
 export default prisma;
