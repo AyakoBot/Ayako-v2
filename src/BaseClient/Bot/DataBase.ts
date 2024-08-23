@@ -4,7 +4,7 @@ import { metricsCollector } from './Metrics.js';
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {
- const where = getInterestingWhereClause(params);
+ const where = getInterestingWhereClause(params.args);
 
  metricsCollector.dbQuery(
   params.model ?? '-',
