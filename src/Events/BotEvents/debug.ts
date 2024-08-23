@@ -7,12 +7,14 @@ export default (message: string) => {
   const ms = message.split(' ').at(-1)?.replace(/\D/g, '') ?? '';
 
   DataBase.heartbeats
-   .create({
-    data: { shard, ms, timestamp: Date.now() },
+   .upsert({
+    where: { shard },
+    create: { shard, ms, timestamp: Date.now() },
+    update: { ms, timestamp: Date.now() },
    })
    .then();
 
-   metricsCollector.shardLatency('Ayako - Manager', Number(shard), Number(ms));
+  metricsCollector.shardLatency('Ayako - Manager', Number(shard), Number(ms));
 
   if (!process.argv.includes('--debug')) return;
  }

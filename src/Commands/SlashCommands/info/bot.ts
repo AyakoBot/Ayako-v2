@@ -10,7 +10,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const rawHeartbeats = await cmd.client.util.DataBase.heartbeats.findMany({
   where: {},
   orderBy: { timestamp: 'desc' },
-  take: Number(stats?.shardCount) ?? 100,
  });
 
  const sampleTimestamp = Number(rawHeartbeats[0]?.timestamp);

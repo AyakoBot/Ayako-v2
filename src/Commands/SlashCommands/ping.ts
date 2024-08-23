@@ -1,11 +1,9 @@
 import type * as Discord from 'discord.js';
-import * as sharding from 'discord-hybrid-sharding';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const heartbeats = await cmd.client.util.DataBase.heartbeats.findMany({
   where: {},
   orderBy: { timestamp: 'desc' },
-  take: sharding.getInfo().TOTAL_SHARDS ?? 0,
  });
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
