@@ -65,8 +65,6 @@ export default async (
   );
  }
 
- if (cmd.guildId === '672546390915940405') console.log(6);
-
  cmd.client.util.DataBase.afk
   .upsert({
    where: { userid_guildid: { userid: author.id, guildid: cmd.guildId } },
