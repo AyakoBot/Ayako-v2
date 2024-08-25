@@ -80,8 +80,8 @@ async function fn(
   return e;
  }
 
- return getAPI(guild)
-  .channels.createMessage(channelId, {
+ return (await getAPI(guild)).channels
+  .createMessage(channelId, {
    ...payload,
    files,
    attachments: [],
