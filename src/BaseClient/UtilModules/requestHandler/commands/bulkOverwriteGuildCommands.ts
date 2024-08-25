@@ -52,11 +52,21 @@ export default async (
   });
 };
 
+/**
+ * Checks if a guild has missing scopes for commands.
+ * @param guild - The Discord guild to check.
+ * @returns A promise that resolves to the guild with missing scopes, or undefined if no guild is found.
+ */
 export const hasMissingScopes = (guild: Discord.Guild) =>
  guild.client.util.DataBase.noCommandsGuilds.findUnique({
   where: { guildId: guild.id },
  });
 
+/**
+ * Sets the "hasMissingScopes" flag for a guild if the error message includes "Missing Access".
+ * @param error - The error message.
+ * @param guild - The Discord guild.
+ */
 export const setHasMissingScopes = (error: string, guild: Discord.Guild) => {
  if (!error.includes('Missing Access')) return;
 
