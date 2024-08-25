@@ -51,3 +51,20 @@ export default async (
    return e as Discord.DiscordAPIError;
   });
 };
+
+export const hasMissingScopes = (guild: Discord.Guild) =>
+ guild.client.util.DataBase.noCommandsGuilds.findUnique({
+  where: { guildId: guild.id },
+ });
+
+export const setHasMissingScopes = (error: string, guild: Discord.Guild) => {
+ if (!error.includes('Missing Access')) return;
+
+ guild.client.util.DataBase.noCommandsGuilds
+  .upsert({
+   where: { guildId: guild.id },
+   create: { guildId: guild.id },
+   update: {},
+  })
+  .then();
+};

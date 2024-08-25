@@ -5,6 +5,7 @@ import error from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
 
 /**
  * Retrieves the permissions for a specific command in a guild.
@@ -23,10 +24,7 @@ export default async (guild: Discord.Guild, commandId: string) => {
   return e;
  }
 
- const isExcluded = await guild.client.util.DataBase.noCommandsGuilds.findUnique({
-  where: { guildId: guild.id },
- });
- if (isExcluded) return [];
+ if (await hasMissingScopes(guild)) return [];
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandPermissions(await getBotIdFromGuild(guild), guild.id, commandId)
@@ -35,17 +33,7 @@ export default async (guild: Discord.Guild, commandId: string) => {
    return res.permissions;
   })
   .catch((e) => {
-   if ((e as Discord.DiscordAPIError).message.includes('Missing Access')) {
-    guild.client.util.DataBase.noCommandsGuilds
-     .upsert({
-      where: { guildId: guild.id },
-      create: { guildId: guild.id },
-      update: {},
-     })
-     .then();
-    return [];
-   }
-
+   setHasMissingScopes(e.message, guild);
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

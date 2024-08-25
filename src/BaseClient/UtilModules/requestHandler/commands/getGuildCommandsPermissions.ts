@@ -1,10 +1,11 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
-import error, { sendDebugMessage } from '../../error.js';
+import error from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
 
 /**
  * Retrieves the permissions for all the slash commands in a guild.
@@ -22,6 +23,8 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
+ if (await hasMissingScopes(guild)) return [];
+
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandsPermissions(await getBotIdFromGuild(guild), guild.id)
   .then((res) => {
@@ -33,8 +36,7 @@ export default async (guild: Discord.Guild) => {
    return res;
   })
   .catch((e) => {
-   if (e.message.includes('Missing Access')) return e as Discord.DiscordAPIError;
-   sendDebugMessage({ content: `${guild.memberCount} vs ${guild.members.cache.size} - ${guild.id}` });
+   setHasMissingScopes(e.message, guild);
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

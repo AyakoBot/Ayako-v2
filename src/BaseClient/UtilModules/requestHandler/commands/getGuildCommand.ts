@@ -6,6 +6,7 @@ import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
 
 /**
  * Retrieves a guild command by ID from the cache or API.
@@ -24,6 +25,8 @@ export default async (guild: Discord.Guild, commandId: string) => {
   return e;
  }
 
+ if (await hasMissingScopes(guild)) return [];
+
  return (
   guild.commands.cache.get(commandId) ??
   (cache.apis.get(guild.id) ?? API).applicationCommands
@@ -38,6 +41,8 @@ export default async (guild: Discord.Guild, commandId: string) => {
     return parsed;
    })
    .catch((e) => {
+    setHasMissingScopes(e.message, guild);
+
     error(guild, new Error((e as Discord.DiscordAPIError).message));
     return e as Discord.DiscordAPIError;
    })

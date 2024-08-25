@@ -5,6 +5,7 @@ import cache from '../../cache.js';
 import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
 
 /**
  * Edits the permissions for a command in a guild.
@@ -32,6 +33,8 @@ export default async (
   return e;
  }
 
+ if (await hasMissingScopes(guild)) return [];
+
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .editGuildCommandPermissions(userToken, await getBotIdFromGuild(guild), guild.id, commandId, body)
   .then((res) => {
@@ -39,6 +42,8 @@ export default async (
    return res.permissions;
   })
   .catch((e) => {
+   setHasMissingScopes(e.message, guild);
+
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });

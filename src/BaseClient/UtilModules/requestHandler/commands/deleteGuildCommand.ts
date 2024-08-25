@@ -5,6 +5,7 @@ import cache from '../../cache.js';
 import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
 
 /**
  * Deletes a guild command from the Discord API and removes it from the guild's command cache.
@@ -25,6 +26,8 @@ export default async (guild: Discord.Guild, commandId: string) => {
   return e;
  }
 
+ if (await hasMissingScopes(guild)) return [];
+
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then(() => {
@@ -32,6 +35,8 @@ export default async (guild: Discord.Guild, commandId: string) => {
    guild.commands.cache.delete(commandId);
   })
   .catch((e) => {
+   setHasMissingScopes(e.message, guild);
+
    if (JSON.stringify(e).includes('Unknown application command')) {
     cache.commands.delete(guild.id, commandId);
     guild.commands.cache.delete(commandId);
