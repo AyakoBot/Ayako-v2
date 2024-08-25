@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
@@ -41,7 +41,12 @@ export default async (
  return (cache.apis.get(member.guild.id) ?? API).guilds
   .editMember(member.guild.id, member.id, body, { reason })
   .then((m) => new Classes.GuildMember(member.client, m, member.guild))
-  .catch((e) => {
+  .catch(async (e) => {
+   sendDebugMessage({
+    content: `${member.id} - ${member.guild.id} - ${(await getBotMemberFromGuild(member.guild)).permissions.bitfield}`,
+    files: [member.client.util.txtFileWriter(JSON.stringify(body, null, 2))],
+   });
+
    error(member.guild, e);
    return e as Discord.DiscordAPIError;
   });
