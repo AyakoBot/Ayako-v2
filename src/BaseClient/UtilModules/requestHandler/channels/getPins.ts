@@ -40,7 +40,7 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   .catch((e) => {
    if (e.message.includes('Unknown Channel')) {
     sendDebugMessage({
-     content: `${channel.id} - ${channel.name}`,
+     content: `${channel.id} - ${channel.name} - ${channel.guildId} - ${channel.parentId}`,
      files: [channel.client.util.txtFileWriter(JSON.stringify(channel, null, 2))],
     });
    }

@@ -95,8 +95,10 @@ async function fn(
    if (!e.message.includes('to this user')) {
     sendDebugMessage({
      content: `${guild?.id} - ${channelId}\n${e.message}\n${debugStack}`,
+     files: [
+      c.util.txtFileWriter(JSON.stringify({ ...payload, files: payload.files?.length }, null, 2)),
+     ],
     });
-    console.log(payload);
    }
 
    error(guild, new Error((e as Discord.DiscordAPIError).message));
