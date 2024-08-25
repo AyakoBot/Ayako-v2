@@ -36,11 +36,13 @@ export default async (guild: Discord.Guild, commandId: string) => {
   })
   .catch((e) => {
    if ((e as Discord.DiscordAPIError).message.includes('Missing Access')) {
-    guild.client.util.DataBase.noCommandsGuilds.upsert({
-     where: { guildId: guild.id },
-     create: { guildId: guild.id },
-     update: {},
-    });
+    guild.client.util.DataBase.noCommandsGuilds
+     .upsert({
+      where: { guildId: guild.id },
+      create: { guildId: guild.id },
+      update: {},
+     })
+     .then();
     return [];
    }
 
