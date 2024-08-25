@@ -1,5 +1,4 @@
 import * as Discord from 'discord.js';
-import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 
 /**
  * Interface for managing pinned messages in a Discord guild text-based channel.
@@ -47,12 +46,6 @@ const self: Pins = {
   if (cached) return cached;
 
   if (!('lastPinTimestamp' in channel)) return undefined;
-
-  const me = await getBotMemberFromGuild(channel.guild);
-  const channelBitfield = me?.permissionsIn(channel);
-  if (channelBitfield && !channelBitfield.has(Discord.PermissionFlagsBits.ViewChannel)) {
-   return undefined;
-  }
 
   const fetched = await channel.client.util.request.channels.getPins(channel);
   if ('message' in fetched) return undefined;
