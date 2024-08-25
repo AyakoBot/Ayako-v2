@@ -34,7 +34,7 @@ export default async (guild: Discord.Guild) => {
   })
   .catch((e) => {
    if (e.message.includes('Missing Access')) return e as Discord.DiscordAPIError;
-   sendDebugMessage({ content: `${canGetCommands(guild)}- ${guild.id}` });
+   sendDebugMessage({ content: `${guild.memberCount} vs ${guild.members.cache.size} - ${guild.id}` });
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
