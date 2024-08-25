@@ -69,19 +69,13 @@ async function send(
   return sentMessages;
  }
 
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(1);
-
  if (payload.files?.length) timeout = undefined;
  if (Number(payload.embeds?.length) > 1) timeout = undefined;
  if (payload.components?.length) timeout = undefined;
  if (payload.content?.length) timeout = undefined;
 
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(2);
-
  const channel = await getChannel(channels as Parameters<typeof getChannel>[0]);
  if (!channel) return null;
-
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(3);
 
  if (!('send' in channel)) return null;
 
@@ -111,9 +105,6 @@ async function send(
   return null;
  }
 
-
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(4);
-
  const body = (await new Discord.MessagePayload(channel as Discord.MessageTarget, payload)
   .resolveBody()
   .resolveFiles()) as {
@@ -127,8 +118,6 @@ async function send(
   replied_user: payload.allowed_mentions?.replied_user ?? false,
  };
 
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(5);
-
  const sentMessage = await request.channels.sendMessage(
   'guild' in channel ? channel.guild : undefined,
   channel.id,
@@ -136,8 +125,6 @@ async function send(
   channel.client,
  );
  if ('message' in sentMessage) return null;
-
- if ('guildId' in channels && channels.guildId === '672546390915940405') console.log(6);
 
  return sentMessage;
 }
