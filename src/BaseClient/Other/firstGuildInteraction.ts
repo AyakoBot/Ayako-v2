@@ -19,6 +19,11 @@ export default async (guild: Discord.Guild | null, eventName: string) => {
 
  metrics(guild, eventName);
 
+ await guild.client.util.request.guilds.getMember(
+  guild,
+  await guild.client.util.getBotIdFromGuild(guild),
+ );
+
  if (cache.interactedGuilds.has(guild.id)) return;
  cache.interactedGuilds.add(guild.id);
 
