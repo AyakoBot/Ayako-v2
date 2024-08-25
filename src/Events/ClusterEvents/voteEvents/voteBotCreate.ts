@@ -27,11 +27,11 @@ export default async (
    userid: user.id,
    votetype: 'bot',
    voted: vote.bot,
-   endtime: Date.now() + 42_900_000, // 11:55 hours
+   endtime: Date.now() + 43190000, // 11:59:50
    relatedsetting: setting.uniquetimestamp,
   },
   update: {
-   endtime: Date.now() + 42_900_000, // 11:55 hours
+   endtime: Date.now() + 43190000, // 11:59:50
    relatedsetting: setting.uniquetimestamp,
   },
  });
