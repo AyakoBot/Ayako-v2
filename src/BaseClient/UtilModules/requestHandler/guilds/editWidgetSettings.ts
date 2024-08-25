@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Edits the widget settings for a guild.
@@ -29,7 +28,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .editWidgetSettings(guild.id, body, { reason })
   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
   .catch((e) => {

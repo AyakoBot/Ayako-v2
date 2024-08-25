@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the users for a scheduled event in a guild.
@@ -17,7 +16,7 @@ export default async (
  eventId: string,
  query?: Discord.RESTGetAPIGuildScheduledEventUsersQuery,
 ) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getScheduledEventUsers(guild.id, eventId, query)
   .then((users) => {
    const parsed = users.map((u) => ({

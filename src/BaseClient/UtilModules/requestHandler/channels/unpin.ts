@@ -1,35 +1,31 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Unpins a message from a channel.
- * @param message The message to unpin.
+ * @param msg The message to unpin.
  * @returns A promise that resolves with the unpinned message, or rejects with an error.
  */
-export default async (message: Discord.Message<true>) => {
+export default async (msg: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canUnPinMessage(message.channelId, await getBotMemberFromGuild(message.guild))) {
-  const e = requestHandlerError(
-   `Cannot unpin message in ${message.guild.name} / ${message.guild.id}`,
-   [Discord.PermissionFlagsBits.ManageMessages],
-  );
+ if (!canUnPinMessage(msg.channelId, await getBotMemberFromGuild(msg.guild))) {
+  const e = requestHandlerError(`Cannot unpin message in ${msg.guild.name} / ${msg.guild.id}`, [
+   Discord.PermissionFlagsBits.ManageMessages,
+  ]);
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
-  .unpinMessage(message.channelId, message.id)
-  .catch((e) => {
-   error(message.guild, e);
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(msg.guild)).channels.unpinMessage(msg.channelId, msg.id).catch((e) => {
+  error(msg.guild, e);
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

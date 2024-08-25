@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes a message sent through a webhook.
@@ -21,7 +20,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).webhooks
+ return (await getAPI(guild)).webhooks
   .deleteMessage(webhookId, token, messageId, query)
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));

@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Edits the current guild member with the given data.
@@ -31,13 +30,13 @@ async function fn(
 
  const g = (guild ?? saveGuild)!;
 
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+ return (await getAPI(guild)).users
   .editCurrentGuildMember(g.id, data)
   .then((m) => new Classes.GuildMember(g.client, m, g))
   .catch((e) => {
    error(g, e);
    return e as Discord.DiscordAPIError;
   });
-};
+}
 
 export default fn;

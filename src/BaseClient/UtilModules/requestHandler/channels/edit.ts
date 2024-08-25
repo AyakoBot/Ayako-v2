@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Edits a guild-based channel or thread channel.
@@ -30,7 +29,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (await getAPI(channel.guild)).channels
   .edit(channel.id, body)
   .then((c) => Classes.Channel(channel.client, c, channel.guild))
   .catch((e) => {

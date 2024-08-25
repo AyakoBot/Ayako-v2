@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Edits a stage instance in a stage channel.
@@ -32,7 +31,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).stageInstances
+ return (await getAPI(channel.guild)).stageInstances
   .edit(channel.id, body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
   .catch((e) => {

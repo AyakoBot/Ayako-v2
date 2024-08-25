@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from './addReaction.js';
 
 type Response = Promise<
  | Discord.DMChannel
@@ -33,7 +32,7 @@ async function fn(
 
  return (
   guild?.channels.cache.get(id) ??
-  (guild ? cache.apis.get(guild.id) ?? API : API).channels
+  (await getAPI(guild)).channels
    .get(id)
    .then((channel) => {
     const parsed = Classes.Channel(c, channel, guild);

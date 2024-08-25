@@ -1,21 +1,20 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Deletes multiple messages in a guild text-based channel.
  * @param channel - The guild text-based channel where the messages are located.
- * @param messages - An array of message IDs to delete.
+ * @param msgs - An array of message IDs to delete.
  * @returns A promise that resolves with the deleted messages or rejects with a DiscordAPIError.
  */
-export default async (channel: Discord.GuildTextBasedChannel, messages: string[]) => {
+export default async (channel: Discord.GuildTextBasedChannel, msgs: string[]) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canBulkDelete(channel.id, await getBotMemberFromGuild(channel.guild), messages.length)) {
+ if (!canBulkDelete(channel.id, await getBotMemberFromGuild(channel.guild), msgs.length)) {
   const e = requestHandlerError(`Cannot bulk-delete messages in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,
   ]);
@@ -24,12 +23,10 @@ export default async (channel: Discord.GuildTextBasedChannel, messages: string[]
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
-  .bulkDeleteMessages(channel.id, messages)
-  .catch((e) => {
-   error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(channel.guild)).channels.bulkDeleteMessages(channel.id, msgs).catch((e) => {
+  error(channel.guild, e);
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

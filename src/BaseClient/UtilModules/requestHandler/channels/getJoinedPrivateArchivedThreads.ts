@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Retrieves the joined private archived threads for a given channel.
@@ -27,7 +26,7 @@ export default async (
   return e;
  }
 
- return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (await getAPI(channel.guild)).channels
   .getJoinedPrivateArchivedThreads(channel.id, query)
   .then((res) => {
    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));

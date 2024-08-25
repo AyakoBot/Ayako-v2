@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Follows announcements from a specified channel in a guild text-based channel.
@@ -26,7 +25,7 @@ export default async (channel: Discord.GuildTextBasedChannel, followedChannelId:
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (await getAPI(channel.guild)).channels
   .followAnnouncements(followedChannelId, channel.id)
   .then((c) => ({ sourceChannelId: c.channel_id, createdWebhookId: c.webhook_id }))
   .catch((e) => {

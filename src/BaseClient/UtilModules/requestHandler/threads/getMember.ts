@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Get the member object for a given thread and user ID.
@@ -12,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (thread: Discord.ThreadChannel, userId: string) =>
  thread.members.cache.get(userId) ??
- (cache.apis.get(thread.guild.id) ?? API).threads
+ (await getAPI(thread.guild)).threads
   .getMember(thread.id, userId)
   .then((m) => {
    const parsed = new Classes.ThreadMember(thread, m);

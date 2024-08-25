@@ -1,24 +1,23 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import getActiveThreads from '../guilds/getActiveThreads.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Creates a thread in a guild text-based channel.
  * @param channel - The guild text-based channel where the thread will be created.
  * @param body - The REST API JSON body for creating the thread.
- * @param messageId - The ID of the message to create the thread from.
+ * @param msgId - The ID of the message to create the thread from.
  * @returns A promise that resolves with the created thread or rejects with a DiscordAPIError.
  */
 export default async (
  channel: Discord.GuildTextBasedChannel,
  body: Discord.RESTPostAPIChannelThreadsJSONBody,
- messageId?: string,
+ msgId?: string,
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
@@ -38,8 +37,8 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
-  .createThread(channel.id, body, messageId)
+ return (await getAPI(channel.guild)).channels
+  .createThread(channel.id, body, msgId)
   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
   .catch((e) => {
    error(channel.guild, e);

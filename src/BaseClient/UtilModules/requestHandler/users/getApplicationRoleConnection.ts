@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Returns the application role connection for the given application ID in the specified guild.
@@ -15,12 +14,10 @@ async function fn(
  guild: undefined | null | Discord.Guild,
  applicationId: string,
 ): Promise<Discord.APIApplicationRoleConnection | Discord.DiscordAPIError> {
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
-  .getApplicationRoleConnection(applicationId)
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(guild)).users.getApplicationRoleConnection(applicationId).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e as Discord.DiscordAPIError;
+ });
 }
 
 export default fn;

@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 type Message =
  | Discord.Message<true>
@@ -17,26 +16,25 @@ type Message =
 
 /**
  * Deletes a message from a channel.
- * @param message The message to be deleted.
+ * @param msg The message to be deleted.
  * @returns A promise that resolves with the deleted message, or rejects with a DiscordAPIError.
  */
-export default async (message: Message) => {
+export default async (msg: Message) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteMessages(message, await getBotMemberFromGuild(message.guild))) {
-  const e = requestHandlerError(
-   `Cannot delete message in ${message.guild.name} / ${message.guild.id}`,
-   [Discord.PermissionFlagsBits.ManageMessages],
-  );
+ if (!canDeleteMessages(msg, await getBotMemberFromGuild(msg.guild))) {
+  const e = requestHandlerError(`Cannot delete message in ${msg.guild.name} / ${msg.guild.id}`, [
+   Discord.PermissionFlagsBits.ManageMessages,
+  ]);
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
-  .deleteMessage(message.channelId, 'messageId' in message ? message.messageId! : message.id)
+ return (await getAPI(msg.guild)).channels
+  .deleteMessage(msg.channelId, 'messageId' in msg ? msg.messageId! : msg.id)
   .catch((e) => {
-   error(message.guild, e);
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

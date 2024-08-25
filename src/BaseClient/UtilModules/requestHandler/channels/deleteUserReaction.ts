@@ -1,28 +1,27 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Deletes a user's reaction from a message.
- * @param message The message object from which the reaction is to be deleted.
+ * @param msg The message object from which the reaction is to be deleted.
  * @param userId The ID of the user whose reaction is to be deleted.
  * @param emoji The emoji to be deleted.
  * @returns A promise that resolves with the deleted reaction, or rejects with an error.
  */
-export default async (message: Discord.Message<true>, userId: string, emoji: string) => {
+export default async (msg: Discord.Message<true>, userId: string, emoji: string) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteUserReaction(message.channel.id, await getBotMemberFromGuild(message.guild))) {
+ if (!canDeleteUserReaction(msg.channel.id, await getBotMemberFromGuild(msg.guild))) {
   const e = requestHandlerError(
-   `Cannot delete user reaction in ${message.guild.name} / ${message.guild.id}`,
+   `Cannot delete user reaction in ${msg.guild.name} / ${msg.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
   );
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
@@ -30,21 +29,21 @@ export default async (message: Discord.Message<true>, userId: string, emoji: str
  if (!resolvedEmoji) {
   const e = requestHandlerError(`Invalid Emoji ${emoji}`, []);
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
+ return (await getAPI(msg.guild)).channels
   .deleteUserMessageReaction(
-   message.channel.id,
-   message.id,
+   msg.channel.id,
+   msg.id,
    resolvedEmoji.id
     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
     : (resolvedEmoji.name as string),
    userId,
   )
   .catch((e) => {
-   error(message.guild, e);
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

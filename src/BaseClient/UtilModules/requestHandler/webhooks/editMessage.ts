@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 import { resolveFiles } from './execute.js';
 
 /**
@@ -26,7 +25,7 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).webhooks
+ return (await getAPI(guild)).webhooks
   .editMessage(webhookId, token, messageId, {
    ...body,
    files: await resolveFiles(body.files),

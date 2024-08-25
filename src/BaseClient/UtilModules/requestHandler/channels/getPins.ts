@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import error, { sendDebugMessage } from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error, { sendDebugMessage } from '../../error.js';
 
-import { canGetMessage } from './getMessage.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
+import { canGetMessage } from './getMessage.js';
 
 /**
  * Retrieves the pinned messages in a guild text-based channel.
@@ -27,7 +26,7 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   return e;
  }
 
- return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (await getAPI(channel.guild)).channels
   .getPins(channel.id)
   .then((msgs) => {
    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));

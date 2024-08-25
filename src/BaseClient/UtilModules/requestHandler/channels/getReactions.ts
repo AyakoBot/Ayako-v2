@@ -1,16 +1,15 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
-import { canGetMessage } from './getMessage.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
+import { canGetMessage } from './getMessage.js';
 
 /**
  * Retrieves a list of users who reacted with a specific emoji to a message.
- * @param message The message to retrieve reactions from.
+ * @param msg The message to retrieve reactions from.
  * @param emoji The emoji to retrieve reactions for.
  * @param query Optional query parameters to filter the results.
  * @returns A promise that resolves with an array of users who reacted with the specified emoji.
@@ -46,7 +45,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(msg.guild.id) ?? API).channels
+ return (await getAPI(msg.guild)).channels
   .getMessageReactions(
    msg.channel.id,
    msg.id,
@@ -59,9 +58,7 @@ export default async (
    const parsed = users.map((u) => new Classes.User(msg.client, u));
    parsed.forEach((p) => {
     if (
-     msg.reactions.cache
-      .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
-      ?.users.cache.get(p.id)
+     msg.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')?.users.cache.get(p.id)
     ) {
      return;
     }
@@ -94,9 +91,7 @@ export default async (
      );
     }
 
-    msg.reactions.cache
-     .get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')
-     ?.users.cache.set(p.id, p);
+    msg.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')?.users.cache.set(p.id, p);
    });
   })
   .catch((e) => {

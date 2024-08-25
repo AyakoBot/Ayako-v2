@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Retrieves the webhooks for a given guild text-based channel or forum channel.
@@ -24,7 +23,7 @@ export default async (
   return e;
  }
 
- return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (await getAPI(channel.guild)).channels
   .getWebhooks(channel.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(channel.client, w)))
   .catch((e) => {

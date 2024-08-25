@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Edits a scheduled event for a guild.
@@ -33,7 +32,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .editScheduledEvent(
    guild.id,
    eventId,

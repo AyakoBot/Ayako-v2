@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the available voice regions for a given guild.
@@ -10,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of available voice regions.
  */
 export default async (guild?: Discord.Guild) =>
- ((guild ? cache.apis.get(guild.id) : undefined) ?? API).voice
+ (await getAPI(guild)).voice
   .getVoiceRegions()
   .then((regions) => regions.map((r) => new Classes.VoiceRegion(r)))
   .catch((e) => {

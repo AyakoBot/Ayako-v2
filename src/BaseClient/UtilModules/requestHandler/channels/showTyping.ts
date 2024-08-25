@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
-import { canGetMessage } from './getMessage.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
+import { canGetMessage } from './getMessage.js';
 
 /**
  * Shows typing indicator in the given guild text-based channel.
@@ -29,7 +28,7 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels.showTyping(channel.id).catch((e) => {
+ return (await getAPI(channel.guild)).channels.showTyping(channel.id).catch((e) => {
   error(channel.guild, e);
  });
 };

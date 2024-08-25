@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Sets the positions of a batch of channels for a guild.
@@ -30,12 +29,10 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .setChannelPositions(guild.id, body, { reason })
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(guild)).guilds.setChannelPositions(guild.id, body, { reason }).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

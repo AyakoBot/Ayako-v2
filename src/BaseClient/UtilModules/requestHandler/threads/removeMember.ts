@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 /**
  * Removes a member from a thread in a guild.
  * @param guild - The guild where the thread is located.
@@ -26,12 +25,10 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
   return e;
  }
 
- return (cache.apis.get(thread.guild.id) ?? API).threads
-  .removeMember(thread.id, userId)
-  .catch((e) => {
-   error(thread.guild, e);
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(thread.guild)).threads.removeMember(thread.id, userId).catch((e) => {
+  error(thread.guild, e);
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

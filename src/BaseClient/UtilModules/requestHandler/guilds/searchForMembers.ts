@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Searches for members in a guild based on the provided query.
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A Promise that resolves to an array of GuildMember objects that match the search query.
  */
 export default async (guild: Discord.Guild, query: Discord.RESTGetAPIGuildMembersSearchQuery) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .searchForMembers(guild.id, query)
   .then((members) => {
    const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));

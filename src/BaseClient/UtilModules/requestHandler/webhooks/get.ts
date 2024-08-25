@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves a webhook from the Discord API and returns a new instance of the `Webhook` class.
@@ -13,7 +12,7 @@ import * as Classes from '../../../Other/classes.js';
  * or rejects with a `DiscordAPIError`.
  */
 export default async (guild: Discord.Guild, webhookId: string, token?: string) =>
- (cache.apis.get(guild.id) ?? API).webhooks
+ (await getAPI(guild)).webhooks
   .get(webhookId, { token })
   .then((w) => new Classes.Webhook(guild.client, w))
   .catch((e) => {

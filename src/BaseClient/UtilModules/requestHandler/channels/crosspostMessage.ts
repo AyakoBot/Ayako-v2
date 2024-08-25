@@ -1,41 +1,37 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Crossposts a message to all following channels.
- * @param message - The message to crosspost.
+ * @param msg - The message to crosspost.
  * @returns A promise that resolves with the new message object if successful,
  * or rejects with an error.
  */
-export default async (message: Discord.Message<true>) => {
+export default async (msg: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- const me = await getBotMemberFromGuild(message.guild);
+ const me = await getBotMemberFromGuild(msg.guild);
 
- if (!canCrosspostMessages(message, me)) {
-  const e = requestHandlerError(
-   `Cannot crosspost message in ${message.guild.name} / ${message.guild.id}`,
-   [
-    Discord.PermissionFlagsBits.SendMessages,
-    ...(message.author.id === me.id ? [Discord.PermissionFlagsBits.ManageMessages] : []),
-   ],
-  );
+ if (!canCrosspostMessages(msg, me)) {
+  const e = requestHandlerError(`Cannot crosspost message in ${msg.guild.name} / ${msg.guild.id}`, [
+   Discord.PermissionFlagsBits.SendMessages,
+   ...(msg.author.id === me.id ? [Discord.PermissionFlagsBits.ManageMessages] : []),
+  ]);
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
-  .crosspostMessage(message.channelId, message.id)
-  .then((m) => new Classes.Message(message.client, m))
+ return (await getAPI(msg.guild)).channels
+  .crosspostMessage(msg.channelId, msg.id)
+  .then((m) => new Classes.Message(msg.client, m))
   .catch((e) => {
-   error(message.guild, e);
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

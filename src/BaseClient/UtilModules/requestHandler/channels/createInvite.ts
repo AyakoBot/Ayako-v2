@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Creates an invite for a guild-based channel.
@@ -30,7 +29,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (await getAPI(channel.guild)).channels
   .createInvite(channel.id, body, { reason })
   .then((i) => new Classes.Invite(channel.client, i))
   .catch((e) => {

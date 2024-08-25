@@ -1,11 +1,12 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the vanity URL for a given guild and returns an invite object with the parsed data.
@@ -26,7 +27,7 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (cache.apis.get(guild?.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .getVanityURL(guild?.id)
   .then(async (v) => {
    const parsed = v.code

@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
-import { canPrune } from './beginPrune.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
+import { canPrune } from './beginPrune.js';
 
 /**
  * Get the number of members that would be removed in a prune operation.
@@ -24,7 +23,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPrune
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds.getPruneCount(guild.id, query).catch((e) => {
+ return (await getAPI(guild)).guilds.getPruneCount(guild.id, query).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

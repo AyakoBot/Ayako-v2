@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves members from a guild.
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of GuildMember objects.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getMembers(guild.id, query)
   .then((members) => {
    const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));

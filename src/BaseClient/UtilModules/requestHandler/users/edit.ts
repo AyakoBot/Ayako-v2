@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Edits the current user's profile in the specified guild.
@@ -30,7 +29,7 @@ async function fn(
 
  const c = (guild?.client ?? client)!;
 
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+ return (await getAPI(guild)).users
   .edit({
    ...data,
    avatar: data.avatar ? await Discord.resolveImage(data.avatar) : data.avatar,

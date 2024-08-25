@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
-import { canGetMemberBan } from './getMemberBan.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
+import { canGetMemberBan } from './getMemberBan.js';
 
 /**
  * Retrieves a list of bans for the specified guild.
@@ -22,7 +21,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildBansQ
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .getMemberBans(guild.id, query)
   .then((bans) => {
    const parsed = bans.map((b) => new Classes.GuildBan(guild.client, b, guild));

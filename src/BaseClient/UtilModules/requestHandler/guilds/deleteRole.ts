@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes a role from a guild.
@@ -26,12 +25,10 @@ export default async (guild: Discord.Guild, roleId: string, reason?: string) => 
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .deleteRole(guild.id, roleId, { reason })
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(guild)).guilds.deleteRole(guild.id, roleId, { reason }).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

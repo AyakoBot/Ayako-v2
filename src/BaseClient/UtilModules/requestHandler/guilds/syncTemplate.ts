@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Syncs a guild template with the given template code.
@@ -24,7 +23,7 @@ export default async (guild: Discord.Guild, templateCode: string) => {
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .syncTemplate(guild.id, templateCode)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
   .catch((e) => {

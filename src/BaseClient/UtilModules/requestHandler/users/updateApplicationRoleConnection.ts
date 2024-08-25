@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Updates the application role connection for the given guild.
@@ -18,7 +17,7 @@ async function fn(
 ): Promise<Discord.APIApplicationRoleConnection | Discord.DiscordAPIError | Error> {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+ return (await getAPI(guild)).users
   .updateApplicationRoleConnection(applicationId, body)
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));

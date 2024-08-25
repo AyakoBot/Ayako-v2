@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the audit logs for a given guild.
@@ -24,7 +23,7 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQu
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
+ return (await getAPI(guild)).guilds
   .getAuditLogs(guild.id, query)
   .then((a) => new Classes.GuildAuditLogs(guild, a))
   .catch((e) => {

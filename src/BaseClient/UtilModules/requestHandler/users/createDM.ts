@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Creates a direct message channel between the bot and the specified user.
@@ -29,7 +28,7 @@ async function fn(
 ): Promise<Discord.DMChannel | Discord.DiscordAPIError> {
  const c = (guild?.client ?? client)!;
 
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+ return (await getAPI(guild)).users
   .createDM(userId)
   .then((dm) => Classes.Channel<typeof guild extends Discord.Guild ? 0 : 1>(c, dm, guild as never))
   .catch((e) => {

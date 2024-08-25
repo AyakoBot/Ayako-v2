@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves a member from a guild by their user ID.
@@ -30,7 +29,7 @@ async function fn(
 
  return (
   g.members.cache.get(userId) ??
-  ((guild ? cache.apis.get(guild.id) : undefined) ?? API).guilds
+  (await getAPI(guild)).guilds
    .getMember(g.id, userId)
    .then((m) => {
     const parsed = new Classes.GuildMember(g.client, m, (guild ?? g)!);

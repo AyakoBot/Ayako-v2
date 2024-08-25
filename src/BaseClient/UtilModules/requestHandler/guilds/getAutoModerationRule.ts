@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves an auto moderation rule from the cache or API.
@@ -25,7 +24,7 @@ export default async (guild: Discord.Guild, ruleId: string) => {
 
  return (
   guild.autoModerationRules.cache.get(ruleId) ??
-  (cache.apis.get(guild.id) ?? API).guilds
+  (await getAPI(guild)).guilds
    .getAutoModerationRule(guild.id, ruleId)
    .then((r) => {
     const parsed = new Classes.AutoModerationRule(guild.client, r, guild);

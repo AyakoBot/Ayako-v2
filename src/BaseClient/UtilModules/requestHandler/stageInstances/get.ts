@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the stage instance associated with the given stage channel.
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (channel: Discord.StageChannel) =>
  channel.guild.stageInstances.cache.find((s) => s.channelId === channel.id) ??
- (cache.apis.get(channel.guild.id) ?? API).stageInstances
+ (await getAPI(channel.guild)).stageInstances
   .get(channel.id)
   .then((s) => {
    const parsed = new Classes.StageInstance(channel.client, s, channel);

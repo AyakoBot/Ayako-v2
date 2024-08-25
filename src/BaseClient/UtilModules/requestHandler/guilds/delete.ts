@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes the specified guild.
@@ -24,7 +23,7 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds.delete(guild.id).catch((e) => {
+ return (await getAPI(guild)).guilds.delete(guild.id).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

@@ -1,33 +1,32 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Deletes all reactions from a message in a channel.
- * @param message The message to delete reactions from.
+ * @param msg The message to delete reactions from.
  * @returns A promise that resolves with the deleted message, or rejects with a DiscordAPIError.
  */
-export default async (message: Discord.Message<true>) => {
+export default async (msg: Discord.Message<true>) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canDeleteAllReactions(message.channel.id, await getBotMemberFromGuild(message.guild))) {
+ if (!canDeleteAllReactions(msg.channel.id, await getBotMemberFromGuild(msg.guild))) {
   const e = requestHandlerError(
-   `Cannot delete all reactions of messages in ${message.guild.name} / ${message.guild.id}`,
+   `Cannot delete all reactions of messages in ${msg.guild.name} / ${msg.guild.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],
   );
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
-  .deleteAllMessageReactions(message.channel.id, message.id)
+ return (await getAPI(msg.guild)).channels
+  .deleteAllMessageReactions(msg.channel.id, msg.id)
   .catch((e) => {
-   error(message.guild, e);
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

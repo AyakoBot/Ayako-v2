@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes an invite for the given guild and code.
@@ -26,7 +25,7 @@ export default async (guild: Discord.Guild, code: string, reason?: string) => {
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).invites.delete(code, { reason }).catch((e) => {
+ return (await getAPI(guild)).invites.delete(code, { reason }).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

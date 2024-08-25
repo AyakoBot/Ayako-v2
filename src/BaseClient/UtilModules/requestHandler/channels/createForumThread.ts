@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 interface StartForumThreadOptions extends Discord.RESTPostAPIGuildForumThreadsJSONBody {
  message: Discord.RESTPostAPIGuildForumThreadsJSONBody['message'] & {
@@ -34,7 +33,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(channel.guild.id) ?? API).channels
+ return (await getAPI(channel.guild)).channels
   .createForumThread(channel.id, body)
   .then((t) => Classes.Channel(channel.client, t, channel.guild))
   .catch((e) => {

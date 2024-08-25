@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Joins a thread in a guild.
@@ -24,7 +23,7 @@ export default async (thread: Discord.ThreadChannel) => {
   return e;
  }
 
- return (cache.apis.get(thread.guild.id) ?? API).threads.join(thread.id).catch((e) => {
+ return (await getAPI(thread.guild)).threads.join(thread.id).catch((e) => {
   error(thread.guild, e);
   return e as Discord.DiscordAPIError;
  });

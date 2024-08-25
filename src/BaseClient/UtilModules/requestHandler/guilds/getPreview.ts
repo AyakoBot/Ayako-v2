@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Returns the preview of a guild.
@@ -10,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with the guild preview.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getPreview(guild.id)
   .then((p) => new Classes.GuildPreview(guild.client, p))
   .catch((e) => {

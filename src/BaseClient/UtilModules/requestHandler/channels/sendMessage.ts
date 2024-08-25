@@ -1,12 +1,11 @@
 import * as Discord from 'discord.js';
 import { UsualMessagePayload } from '../../../../Typings/Typings.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error, { sendDebugMessage } from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Sends a message to a Discord channel.
@@ -81,8 +80,8 @@ async function fn(
   return e;
  }
 
- return (guild ? cache.apis.get(guild.id) ?? API : API).channels
-  .createMessage(channelId, {
+ return getAPI(guild)
+  .channels.createMessage(channelId, {
    ...payload,
    files,
    attachments: [],

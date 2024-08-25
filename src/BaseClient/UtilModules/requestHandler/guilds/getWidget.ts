@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves the widget for a given guild.
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * or rejects with a DiscordAPIError if unsuccessful.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getWidget(guild.id)
   .then((w) => new Classes.Widget(guild.client, w))
   .catch((e) => {

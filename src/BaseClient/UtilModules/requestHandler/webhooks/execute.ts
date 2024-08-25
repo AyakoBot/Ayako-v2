@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-import * as Classes from '../../../Other/classes.js';
 import * as CT from '../../../../Typings/Typings.js';
+import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 type Body =
  | (Omit<
@@ -45,7 +44,7 @@ async function fn(
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
  const c = (guild?.client ?? client)!;
 
- return (guild ? cache.apis.get(guild.id) ?? API : API).webhooks
+ return (await getAPI(guild)).webhooks
   .execute(webhookId, token, {
    ...body,
    files: await resolveFiles(body.files),

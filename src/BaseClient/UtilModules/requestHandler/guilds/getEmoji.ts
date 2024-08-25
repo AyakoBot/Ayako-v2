@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves an emoji from the given guild by its ID.
@@ -12,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, emojiId: string) =>
  guild.emojis.cache.get(emojiId) ??
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getEmoji(guild.id, emojiId)
   .then((e) => {
    const parsed = new Classes.GuildEmoji(guild.client, e, guild);

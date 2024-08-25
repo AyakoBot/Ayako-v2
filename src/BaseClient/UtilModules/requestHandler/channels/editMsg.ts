@@ -1,40 +1,38 @@
 import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Edits a message in a channel.
- * @param message - The message to edit.
+ * @param msg - The message to edit.
  * @param payload - The new message content and options.
  * @returns A promise that resolves with the edited message, or rejects with a DiscordAPIError.
  */
 export default async (
- message: Discord.Message<true>,
+ msg: Discord.Message<true>,
  payload: Parameters<DiscordCore.ChannelsAPI['editMessage']>[2],
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canEditMessage(message, payload, await getBotMemberFromGuild(message.guild))) {
-  const e = requestHandlerError(
-   `Cannot edit message in ${message.guild.name} / ${message.guild.id}`,
-   [Discord.PermissionFlagsBits.ManageMessages],
-  );
+ if (!canEditMessage(msg, payload, await getBotMemberFromGuild(msg.guild))) {
+  const e = requestHandlerError(`Cannot edit message in ${msg.guild.name} / ${msg.guild.id}`, [
+   Discord.PermissionFlagsBits.ManageMessages,
+  ]);
 
-  error(message.guild, e);
+  error(msg.guild, e);
   return e;
  }
 
- return (cache.apis.get(message.guild.id) ?? API).channels
-  .editMessage(message.channel.id, message.id, payload)
-  .then((m) => new Classes.Message(message.client, m))
+ return (await getAPI(msg.guild)).channels
+  .editMessage(msg.channel.id, msg.id, payload)
+  .then((m) => new Classes.Message(msg.client, m))
   .catch((e) => {
-   error(message.guild, e);
+   error(msg.guild, e);
    return e as Discord.DiscordAPIError;
   });
 };

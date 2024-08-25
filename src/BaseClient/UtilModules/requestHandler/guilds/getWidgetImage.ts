@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Get the widget image of a guild with the specified style.
@@ -10,7 +9,7 @@ import cache from '../../cache.js';
  * @returns A Promise that resolves with the widget image, or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild, style?: Discord.GuildWidgetStyle) =>
- (cache.apis.get(guild.id) ?? API).guilds.getWidgetImage(guild.id, style).catch((e) => {
+ (await getAPI(guild)).guilds.getWidgetImage(guild.id, style).catch((e) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e as Discord.DiscordAPIError;
  });

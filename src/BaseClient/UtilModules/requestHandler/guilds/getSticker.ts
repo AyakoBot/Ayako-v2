@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves a sticker from the cache or the Discord API.
@@ -12,7 +11,7 @@ import * as Classes from '../../../Other/classes.js';
  */
 export default async (guild: Discord.Guild, stickerId: string) =>
  guild.stickers.cache.get(stickerId) ??
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getSticker(guild.id, stickerId)
   .then((s) => {
    const parsed = new Classes.Sticker(guild.client, s);

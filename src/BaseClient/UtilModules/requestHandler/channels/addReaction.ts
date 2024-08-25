@@ -39,7 +39,7 @@ export default async (msg: Discord.Message<true>, emoji: string) => {
   return e;
  }
 
- return (cache.apis.get(msg.guild.id) ?? API).channels
+ return (await getAPI(msg.guild)).channels
   .addMessageReaction(
    msg.channel.id,
    msg.id,
@@ -76,18 +76,12 @@ export const isReactable = (msg: Discord.Message<true>, emoji: string, me: Disco
  * @returns A boolean indicating whether the user has blocked the bot.
  */
 const hasBlocked = async (user: Discord.User | { id: string; client: Discord.Client<true> }) => {
- const u = await user.client.util.DataBase.blockingUsers.findUnique({
-  where: { userId: user.id },
- });
+ const u = await user.client.util.DataBase.blockingUsers.findUnique({ where: { userId: user.id } });
 
  if (!u) return false;
 
  if (Number(u.created) < Date.now() - 2592000000) {
-  user.client.util.DataBase.blockingUsers
-   .delete({
-    where: { userId: user.id },
-   })
-   .then();
+  user.client.util.DataBase.blockingUsers.delete({ where: { userId: user.id } }).then();
 
   return false;
  }
@@ -115,3 +109,6 @@ const saveBlocked = async (
   })
   .then();
 };
+
+export const getAPI = async (guild: Discord.Guild | undefined | null) =>
+ guild ? ((await getBotMemberFromGuild(guild)) ? cache.apis.get(guild.id) ?? API : API) : API;

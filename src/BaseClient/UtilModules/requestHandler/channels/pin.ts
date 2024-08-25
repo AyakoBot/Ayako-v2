@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Pins a message in a guild text-based channel.
@@ -23,12 +22,10 @@ export default async (msg: Discord.Message<true>) => {
   return e;
  }
 
- return (cache.apis.get(msg.guildId) ?? API).channels
-  .pinMessage(msg.channelId, msg.id)
-  .catch((e) => {
-   error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(msg.guild)).channels.pinMessage(msg.channelId, msg.id).catch((e) => {
+  error(msg.guild, e);
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

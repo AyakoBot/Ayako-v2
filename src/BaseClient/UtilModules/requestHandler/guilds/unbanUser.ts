@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Unbans a user from the specified guild.
@@ -25,12 +24,10 @@ export default async (guild: Discord.Guild, userId: string, reason?: string) => 
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .unbanUser(guild.id, userId, { reason })
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(guild)).guilds.unbanUser(guild.id, userId, { reason }).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e as Discord.DiscordAPIError;
+ });
 };
 
 /**

@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes a webhook in a guild.
@@ -30,7 +29,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).webhooks
+ return (await getAPI(guild)).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));

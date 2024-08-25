@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Fetches the emojis of a guild and adds them to the guild's cache.
@@ -11,7 +10,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of GuildEmoji objects.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getEmojis(guild.id)
   .then((emojis) => {
    const parsed = emojis.map((e) => new Classes.GuildEmoji(guild.client, e, guild));

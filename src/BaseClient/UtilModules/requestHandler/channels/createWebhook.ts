@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Creates a webhook for a given guild and channel with the provided data.
@@ -31,7 +30,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).channels
+ return (await getAPI(guild)).channels
   .createWebhook(channelId, {
    ...body,
    avatar: body.avatar ? await Discord.resolveImage(body.avatar) : body.avatar,

@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Executes a GitHub webhook for a guild.
@@ -22,10 +21,8 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (cache.apis.get(guild.id) ?? API).webhooks
-  .executeGitHub(webhookId, token, body, query)
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e;
-  });
+ return (await getAPI(guild)).webhooks.executeGitHub(webhookId, token, body, query).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e;
+ });
 };

@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
 import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Returns the current user for the given guild.
@@ -25,7 +24,7 @@ async function fn(
 ): Promise<Discord.ClientUser | Discord.DiscordAPIError> {
  const c = (guild?.client ?? client)!;
 
- return ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+ return (await getAPI(guild)).users
   .getCurrent()
   .then((u) => new Classes.ClientUser(c, u))
   .catch((e) => {

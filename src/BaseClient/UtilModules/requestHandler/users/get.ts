@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
-import cache from '../../cache.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves a user from the cache or from the API if not found in cache.
@@ -33,7 +32,7 @@ async function fn(
 
  return (
   (!options?.force ? c!.users.cache.get(userId) : undefined) ??
-  ((guild ? cache.apis.get(guild.id) : undefined) ?? API).users
+  (await getAPI(guild)).users
    .get(userId)
    .then((u) => {
     const parsed = new Classes.User(c, u);

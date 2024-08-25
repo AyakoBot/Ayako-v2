@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves scheduled events for a given guild.
@@ -10,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of parsed scheduled events.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getScheduledEvents(guild.id)
   .then((events) => {
    const parsed = events.map((e) => new Classes.GuildScheduledEvent(guild.client, e));

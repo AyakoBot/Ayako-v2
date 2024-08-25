@@ -1,9 +1,8 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
-import * as Classes from '../../../Other/classes.js';
 import { RawInviteData } from 'discord.js/typings/rawDataTypes.js';
+import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves an invite for a guild with the given code and optional query parameters.
@@ -19,7 +18,7 @@ export default async <T extends Discord.Guild | null>(
  client?: T extends null ? Discord.Client<true> : undefined,
 ) =>
  guild?.invites.cache.get(code) ??
- ((guild ? cache.apis.get(guild.id) : API) ?? API).invites
+ (await getAPI(guild)).invites
   .get(code, query)
   .then((i) => {
    const parsed = new Classes.Invite((guild?.client ?? client)!, i as RawInviteData);

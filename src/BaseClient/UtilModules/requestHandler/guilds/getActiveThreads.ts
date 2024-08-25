@@ -1,8 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Retrieves active threads for a given guild.
@@ -10,7 +9,7 @@ import * as Classes from '../../../Other/classes.js';
  * @returns A promise that resolves with an array of parsed thread channels.
  */
 export default async (guild: Discord.Guild) =>
- (cache.apis.get(guild.id) ?? API).guilds
+ (await getAPI(guild)).guilds
   .getActiveThreads(guild.id)
   .then((threads) => {
    const parsed = threads.threads.map((t) => Classes.Channel<10>(guild.client, t, guild));

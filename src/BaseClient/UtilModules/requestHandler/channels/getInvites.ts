@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from './addReaction.js';
 
 /**
  * Retrieves the invites for a given guild-based channel.
@@ -22,7 +21,7 @@ export default async (channel: Discord.GuildBasedChannel) => {
   return e;
  }
 
- return (channel.guild ? cache.apis.get(channel.guild.id) ?? API : API).channels
+ return (await getAPI(channel.guild)).channels
   .getInvites(channel.id)
   .then((invites) => {
    const parsed = invites.map((i) => new Classes.Invite(channel.client, i));

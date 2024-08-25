@@ -1,11 +1,10 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
-import { canBanUser } from './banUser.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
+import { canBanUser } from './banUser.js';
 
 /**
  * Bans a user from a guild.
@@ -30,7 +29,7 @@ export default async (
   return e;
  }
 
- return (cache.apis.get(member.guild.id) ?? API).guilds
+ return (await getAPI(member.guild)).guilds
   .banUser(member.guild.id, member.id, body, { reason })
   .catch((e) => {
    error(member.guild, e);

@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Deletes a sticker from a guild.
@@ -26,12 +25,10 @@ export default async (guild: Discord.Guild, stickerId: string, reason?: string) 
   return e;
  }
 
- return (cache.apis.get(guild.id) ?? API).guilds
-  .deleteSticker(guild.id, stickerId, { reason })
-  .catch((e) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
-  });
+ return (await getAPI(guild)).guilds.deleteSticker(guild.id, stickerId, { reason }).catch((e) => {
+  error(guild, new Error((e as Discord.DiscordAPIError).message));
+  return e as Discord.DiscordAPIError;
+ });
 };
 /**
  * Checks if the given guild member has the permission to delete stickers.

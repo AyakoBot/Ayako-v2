@@ -1,10 +1,9 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
-import { API } from '../../../Bot/Client.js';
-import cache from '../../cache.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import { getAPI } from '../channels/addReaction.js';
 
 /**
  * Removes a member from a guild.
@@ -26,7 +25,7 @@ export default async (member: Discord.GuildMember, reason?: string) => {
   return e;
  }
 
- return (cache.apis.get(member.guild.id) ?? API).guilds
+ return (await getAPI(member.guild)).guilds
   .removeMember(member.guild.id, member.id, { reason })
   .catch((e) => {
    error(member.guild, e);
