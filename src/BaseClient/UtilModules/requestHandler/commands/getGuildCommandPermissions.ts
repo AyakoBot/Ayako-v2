@@ -23,6 +23,11 @@ export default async (guild: Discord.Guild, commandId: string) => {
   return e;
  }
 
+ const isExcluded = await guild.client.util.DataBase.noCommandsGuilds.findUnique({
+  where: { guildId: guild.id },
+ });
+ if (isExcluded) return [];
+
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandPermissions(await getBotIdFromGuild(guild), guild.id, commandId)
   .then((res) => {
@@ -30,6 +35,15 @@ export default async (guild: Discord.Guild, commandId: string) => {
    return res.permissions;
   })
   .catch((e) => {
+   if ((e as Discord.DiscordAPIError).message.includes('Missing Access')) {
+    guild.client.util.DataBase.noCommandsGuilds.upsert({
+     where: { guildId: guild.id },
+     create: { guildId: guild.id },
+     update: {},
+    });
+    return [];
+   }
+
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
