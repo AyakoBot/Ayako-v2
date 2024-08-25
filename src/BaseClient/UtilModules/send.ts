@@ -89,14 +89,10 @@ async function send(
  }
 
  payload.embeds?.forEach((e) => {
-  if (e.author && !e.author.url) {
-   e.author.url = channel.client.util.constants.standard.invite;
-  }
+  if (e.author && !e.author.url) e.author.url = channel.client.util.constants.standard.invite;
 
   e.fields?.forEach((f) => {
-   if (typeof f.inline !== 'boolean') {
-    f.inline = true;
-   }
+   if (typeof f.inline !== 'boolean') f.inline = true;
   });
  });
 

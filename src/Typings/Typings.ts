@@ -84,7 +84,7 @@ export type UsualMessagePayload = {
  components?: Discord.APIActionRowComponent<
   Discord.APIButtonComponent | Discord.APISelectMenuComponent
  >[];
- files?: (Discord.AttachmentPayload | Discord.Attachment)[];
+ files?: Discord.AttachmentPayload[];
  ephemeral?: boolean;
  allowed_mentions?: Discord.APIAllowedMentions;
 };

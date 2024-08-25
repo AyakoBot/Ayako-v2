@@ -21,7 +21,7 @@ function fn<T extends Discord.Guild | undefined | null>(
  guild: T,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
-  files?: Discord.RawFile[];
+  files?: (Discord.RawFile | Discord.AttachmentPayload)[];
  },
  client: Discord.Client<true>,
 ): Promise<
@@ -31,7 +31,7 @@ function fn(
  guild: Discord.Guild,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
-  files?: Discord.RawFile[];
+  files?: (Discord.RawFile | Discord.AttachmentPayload)[];
  },
  client?: undefined,
 ): Promise<Discord.Message<true> | Error | Discord.DiscordAPIError>;
@@ -39,7 +39,7 @@ async function fn(
  guild: Discord.Guild | undefined | null,
  channelId: string,
  payload: Discord.RESTPostAPIChannelMessageJSONBody & {
-  files?: Discord.RawFile[];
+  files?: (Discord.RawFile | Discord.AttachmentPayload)[];
  },
  client?: Discord.Client<true>,
 ): Promise<Discord.Message | Error | Discord.DiscordAPIError> {
@@ -47,10 +47,28 @@ async function fn(
  if (!payload || String(payload) === 'undefined') return new Error('No payload provided');
 
  const debugStack = new Error().stack;
-
  const c = (guild?.client ?? client)!;
 
- if (guild && !canSendMessage(channelId, payload, await getBotMemberFromGuild(guild))) {
+ const files = payload.files
+  ? ([
+     ...(
+      await Promise.all(
+       payload.files
+        .filter((f): f is Discord.AttachmentPayload => 'attachment' in f)
+        .map((f) => Discord.resolveFile(f.attachment)),
+      )
+     ).map((f, i) => ({
+      ...f,
+      name: String(Date.now() + i),
+     })),
+     ...payload.files.filter((f): f is Discord.RawFile => !('attachment' in f)),
+    ] as Discord.RawFile[])
+  : undefined;
+
+ if (
+  guild &&
+  !canSendMessage(channelId, { ...payload, files }, await getBotMemberFromGuild(guild))
+ ) {
   const e = requestHandlerError(`Cannot send message`, [
    Discord.PermissionFlagsBits.ViewChannel,
    Discord.PermissionFlagsBits.SendMessages,
@@ -66,6 +84,7 @@ async function fn(
  return (guild ? cache.apis.get(guild.id) ?? API : API).channels
   .createMessage(channelId, {
    ...payload,
+   files,
    attachments: [],
    message_reference: payload.message_reference
     ? { ...payload.message_reference, fail_if_not_exists: false }

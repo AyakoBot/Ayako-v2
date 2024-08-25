@@ -136,9 +136,12 @@ export const makePayload = async (msg: Discord.Message) => ({
  embeds: msg.embeds.map((e) => e.data).filter((e) => !('provider' in e)),
  files: (await msg.client.util.fileURL2Buffer(msg.attachments.map((o) => o.url)))
   ?.filter((a): a is Discord.AttachmentPayload => !!a)
-  .map((attachment) => ({
-   data: attachment.attachment as Buffer,
-   name: attachment.name ?? 'attachment',
-   description: attachment.description,
-  })),
+  .map(
+   (attachment) =>
+    ({
+     attachment: attachment.attachment as Buffer,
+     name: attachment.name ?? 'attachment',
+     description: attachment.description,
+    }) as Discord.AttachmentPayload,
+  ),
 });

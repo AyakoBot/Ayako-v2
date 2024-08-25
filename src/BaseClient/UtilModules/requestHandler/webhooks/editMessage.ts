@@ -3,6 +3,7 @@ import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import { resolveFiles } from './execute.js';
 
 /**
  * Edits a message sent by a webhook.
@@ -19,14 +20,17 @@ export default async (
  token: string,
  messageId: string,
  body: Discord.RESTPatchAPIWebhookWithTokenMessageJSONBody & {
-  files?: Discord.RawFile[];
+  files?: Discord.AttachmentPayload[];
   thread_id?: string;
  },
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
  return (cache.apis.get(guild.id) ?? API).webhooks
-  .editMessage(webhookId, token, messageId, body)
+  .editMessage(webhookId, token, messageId, {
+   ...body,
+   files: await resolveFiles(body.files),
+  })
   .then((m) => new Classes.Message(guild.client, m))
   .catch((e) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
