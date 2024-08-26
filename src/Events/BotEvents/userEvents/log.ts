@@ -1,5 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
+import { sendDebugMessage } from 'src/BaseClient/UtilModules/error.js';
 
 export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.Guild) => {
  const channels = await guild.client.util.getLogChannels('userevents', guild);
@@ -77,6 +78,15 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
  }
  if (user.username !== oldUser.username) {
   merge(oldUser.username ?? language.t.Unknown, user.username, 'string', lan.username);
+ }
+
+ if (!embed.fields?.length) {
+  sendDebugMessage({
+   files: [
+    user.client.util.txtFileWriter(JSON.stringify([oldUser.toJSON(), user.toJSON()], null, 2)),
+   ],
+  });
+  return;
  }
 
  guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
