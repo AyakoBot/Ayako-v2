@@ -142,8 +142,8 @@
     "descUpdate": "> {{role}}> was updated"
    },
    "reaction": {
-    "descAdded": "> {{user}}> has reacted with\n> {{emoji}}to\n> {{msg}}",
-    "descRemoved": "> Reaction on\n> {{msg}}with\n> {{emoji}}by\n> {{user}}> was removed.> Either by the Reactor themselves, by a Bot or by a Moderator",
+    "descAdded": "> {{user}}> has reacted with\n> {{emoji}}\nto\n> {{msg}}",
+    "descRemoved": "> Reaction on\n> {{msg}}\nwith\n> {{emoji}}\nby\n> {{user}}> was removed.> Either by the Reactor themselves, by a Bot or by a Moderator",
     "descRemovedAll": "> All Reactions on\n> {{msg}}> were removed",
     "descRemoveEmoji": "> Reaction with\n> {{emoji}}> was removed from\n> {{msg}}",
     "nameRemoveAll": "All Reactions removed",
