@@ -63,6 +63,6 @@ export const resolveFiles = async (files: Discord.AttachmentPayload[] | undefine
  files
   ? (await Promise.all(files.map((f) => Discord.resolveFile(f.attachment)))).map((f, i) => ({
      ...f,
-     name: String(Date.now() + i),
+     name: files[i].name ?? String(Date.now() + i),
     }))
   : undefined;
