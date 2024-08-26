@@ -70,22 +70,28 @@ export const canEditMember = (
 
    return me.permissionsIn(body.channel_id).has(Discord.PermissionFlagsBits.Connect);
   }
-  case !!body.communication_disabled_until:
+  case 'communication_disabled_until' in body:
    return (
     !member.permissions.has(Discord.PermissionFlagsBits.Administrator) &&
     me.permissions.has(Discord.PermissionFlagsBits.ModerateMembers) &&
     member.roles.highest.comparePositionTo(me.roles.highest) < 0
    );
-  case !!body.mute:
+  case 'mute' in body:
    return !!member.voice.channelId && me.permissions.has(Discord.PermissionFlagsBits.MuteMembers);
-  case !!body.deaf:
+  case 'deaf' in body:
    return !!member.voice.channelId && me.permissions.has(Discord.PermissionFlagsBits.DeafenMembers);
-  case !!body.nick:
+  case 'nick' in body:
    return (
     me.permissions.has(Discord.PermissionFlagsBits.ManageNicknames) &&
     member.roles.highest.comparePositionTo(me.roles.highest) < 0
    );
-  case !!body.roles: {
+  case 'roles' in body: {
+   if (!body.roles) {
+    delete body.roles;
+    if (Object.keys(body).length) return true;
+    return false;
+   }
+
    const removedRoles = member.roles.cache.filter((r) => !body.roles?.includes(r.id));
    const addedRoles = body.roles.filter((r) => !member.roles.cache.has(r));
 
