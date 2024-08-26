@@ -31,7 +31,10 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
 ): Promise<ReturnType<T, K>> => {
  if ('respond' in cmd) return Promise.resolve(undefined);
  if (!isValidPayload(payload as UsualMessagePayload)) {
-  sendDebugMessage({ content: `bad payload`, files: [cmd.client.util.txtFileWriter(JSON.stringify(payload, null, 2))] });
+  sendDebugMessage({
+   content: `bad payload`,
+   files: [cmd.client.util.txtFileWriter(JSON.stringify(payload, null, 2))],
+  });
   return;
  }
 
@@ -56,7 +59,8 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
    if (
     cmd.guild &&
     !JSON.stringify(e).includes(String(Discord.RESTJSONErrorCodes.UnknownInteraction)) &&
-    !JSON.stringify(e).includes('InteractionAlreadyReplied')
+    !JSON.stringify(e).includes('InteractionAlreadyReplied') &&
+    !JSON.stringify(e).includes('Interaction has already been acknowledged')
    ) {
     error(cmd.guild, e);
    }
