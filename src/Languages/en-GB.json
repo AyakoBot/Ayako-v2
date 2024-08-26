@@ -2,12 +2,12 @@
  "events": {
   "logs": {
    "sticker": {
-    "descUpdateAudit": "{{user}}has updated\n{{sticker}}",
-    "descUpdate": "{{sticker}}was updated",
-    "descDeleteAudit": "{{user}}has deleted\n{{sticker}}",
-    "descDelete": "{{sticker}}was deleted",
-    "descCreateAudit": "{{user}}has created\n{{sticker}}",
-    "descCreate": "{{sticker}}was created",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{sticker}}",
+    "descUpdate": "> {{sticker}}> was updated",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{sticker}}",
+    "descDelete": "> {{sticker}}> was deleted",
+    "descCreateAudit": "> {{user}}> has created\n> {{sticker}}",
+    "descCreate": "> {{sticker}}> was created",
     "nameCreate": "Sticker created",
     "nameDelete": "Sticker deleted",
     "nameUpdate": "Sticker updated",
@@ -25,26 +25,26 @@
     "name": "Application-Command-Permissions updated",
     "permissionTypeName": "Permission Type",
     "allChannels": "All Channels",
-    "descUpdateCommand": "{{user}}has updated Permissions of\n{{command}}from\n{{application}}",
-    "descUpdateAll": "{{user}}has updated Permissions of\nall Commands\nfrom\n{{application}}"
+    "descUpdateCommand": "> {{user}}> has updated Permissions of\n> {{command}}> from\n> {{application}}",
+    "descUpdateAll": "> {{user}}> has updated Permissions of\n> all Commands\n> from\n> {{application}}"
    },
    "scheduledEvent": {
-    "descUserRemoveChannel": "{{user}}has left\n{{event}}planned in\n{{channel}}",
-    "descUserRemove": "{{user}}has left\n{{event}}",
-    "descUserAddChannel": "{{user}}has joined\n{{event}}planned in\n{{channel}}",
-    "descUserAdd": "{{user}}has joined\n{{event}}",
-    "descDeleteChannelAudit": "{{user}}has deleted\n{{event}}from\n{{channel}}",
-    "descDeleteAudit": "{{user}}has deleted\n{{event}}",
-    "descDeleteChannel": "{{event}}was deleted from\n{{channel}}",
-    "descDelete": "{{event}}was deleted",
-    "descCreateChannelAudit": "{{user}}has created\n{{event}}in\n{{channel}}",
-    "descCreateAudit": "{{user}}has created\n{{event}}",
-    "descCreateChannel": "{{event}}was created in\n{{channel}}",
-    "descCreate": "{{event}}was created",
-    "descUpdateChannelAudit": "{{user}}has updated\n{{event}}in\n{{channel}}",
-    "descUpdateAudit": "{{user}}has updated\n{{event}}",
-    "descUpdateChannel": "{{event}}in\n{{channel}}was updated",
-    "descUpdate": "{{event}}was updated",
+    "descUserRemoveChannel": "> {{user}}> has left\n> {{event}}> planned in\n> {{channel}}",
+    "descUserRemove": "> {{user}}> has left\n> {{event}}",
+    "descUserAddChannel": "> {{user}}> has joined\n> {{event}}> planned in\n> {{channel}}",
+    "descUserAdd": "> {{user}}> has joined\n> {{event}}",
+    "descDeleteChannelAudit": "> {{user}}> has deleted\n> {{event}}from\n> {{channel}}",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{event}}",
+    "descDeleteChannel": "> {{event}}> was deleted from\n> {{channel}}",
+    "descDelete": "> {{event}}> was deleted",
+    "descCreateChannelAudit": "> {{user}}> has created\n> {{event}}in\n> {{channel}}",
+    "descCreateAudit": "> {{user}}> has created\n> {{event}}",
+    "descCreateChannel": "> {{event}}> was created in\n> {{channel}}",
+    "descCreate": "> {{event}}> was created",
+    "descUpdateChannelAudit": "> {{user}}> has updated\n> {{event}}in\n> {{channel}}",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{event}}",
+    "descUpdateChannel": "> {{event}}in\n> {{channel}}> was updated",
+    "descUpdate": "> {{event}}> was updated",
     "nameUserRemove": "Scheduled Event Member removed",
     "nameUserAdd": "Scheduled Event Member added",
     "nameDelete": "Scheduled Event deleted",
@@ -77,10 +77,10 @@
     "imageRemoved": "Image removed"
    },
    "voiceState": {
-    "descCreate": "{{user}}has joined\n{{channel}}",
-    "descUpdateChannel": "{{user}}has moved from\n{{oldChannel}}to\n{{newChannel}}",
-    "descUpdate": "The Voice-State of\n{{user}}in{{channel}}has changed",
-    "descDelete": "{{user}}has left\n{{channel}}",
+    "descCreate": "> {{user}}> has joined\n> {{channel}}",
+    "descUpdateChannel": "> {{user}}> has moved from\n> {{oldChannel}}> to\n> {{newChannel}}",
+    "descUpdate": "> The Voice-State of\n> {{user}}> in\n> {{channel}}> has changed",
+    "descDelete": "> {{user}}> has left\n> {{channel}}",
     "nameUpdate": "Voice State updated",
     "LockedVoiceJoin": "Locked Voice Channel joined",
     "LockedVoiceLeave": "Locked Voice Channel left",
@@ -100,12 +100,12 @@
     "selfVideo": "Camera"
    },
    "webhook": {
-    "descCreateAudit": "{{user}}has created\n{{webhook}}in\n{{channel}}",
-    "descCreate": "{{webhook}}was created in\n{{channel}}",
-    "descDeleteAudit": "{{user}}has deleted\n{{webhook}}in\n{{channel}}",
-    "descDelete": "{{webhook}}was deleted in\n{{channel}}",
-    "descUpdateAudit": "{{user}}has updated\n{{webhook}}in\n{{channel}}",
-    "descUpdate": "{{webhook}}was updated in\n{{channel}}",
+    "descCreateAudit": "> {{user}}> has created\n> {{webhook}}> in\n> {{channel}}",
+    "descCreate": "> {{webhook}}> was created in\n> {{channel}}",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{webhook}}> in\n> {{channel}}",
+    "descDelete": "> {{webhook}}> was deleted in\n> {{channel}}",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{webhook}}> in\n> {{channel}}",
+    "descUpdate": "> {{webhook}}> was updated in\n> {{channel}}",
     "nameCreate": "Webhook created",
     "nameUpdate": "Webhook updated",
     "nameDelete": "Webhook deleted",
@@ -134,18 +134,18 @@
     "availableForPurchase": "Available for Purchase",
     "guildConnections": "Requires Connection",
     "inOnboarding": "In Onboarding",
-    "descCreateAudit": "{{user}}has created\n{{role}}",
-    "descCreate": "{{role}}was created",
-    "descDeleteAudit": "{{user}}has deleted\n{{role}}",
-    "descDelete": "{{role}}was deleted",
-    "descUpdateAudit": "{{user}}has updated\n{{role}}",
-    "descUpdate": "{{role}}was updated"
+    "descCreateAudit": "> {{user}}> has created\n> {{role}}",
+    "descCreate": "> {{role}}> was created",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{role}}",
+    "descDelete": "> {{role}}> was deleted",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{role}}",
+    "descUpdate": "> {{role}}> was updated"
    },
    "reaction": {
-    "descAdded": "{{user}}has reacted with\n{{emoji}}to\n{{msg}}",
-    "descRemoved": "Reaction on\n{{msg}}with\n{{emoji}}by\n{{user}}was removed. Either by the Reactor themselves or by a Moderator",
-    "descRemovedAll": "All Reactions on\n{{msg}}were removed",
-    "descRemoveEmoji": "Reaction with\n{{emoji}}was removed from\n{{msg}}",
+    "descAdded": "> {{user}}> has reacted with\n> {{emoji}}to\n> {{msg}}",
+    "descRemoved": "> Reaction on\n> {{msg}}with\n> {{emoji}}by\n> {{user}}> was removed.> Either by the Reactor themselves, by a Bot or by a Moderator",
+    "descRemovedAll": "> All Reactions on\n> {{msg}}> were removed",
+    "descRemoveEmoji": "> Reaction with\n> {{emoji}}> was removed from\n> {{msg}}",
     "nameRemoveAll": "All Reactions removed",
     "nameAdd": "Reaction added",
     "nameRemove": "Reaction removed",
@@ -154,16 +154,16 @@
     "count": "Reaction count"
    },
    "message": {
-    "descDeleteAudit": "{{user}}has deleted\n{{msg}}from\n{{author}}",
-    "descDelete": "{{msg}}from\n{{author}}was deleted",
-    "descDeleteBulkAudit": "{{user}}has bulk deleted\n{{size}} Messages in\n{{channel}}",
-    "descDeleteBulk": "{{size}} Messages were deleted in\n{{channel}}",
-    "descUpdateMaybe": "{{msg}}may have been updated by\n{{user}}or by a Moderator",
-    "descUpdate": "{{msg}}was updated",
-    "descUpdateAuthor": "{{msg}}was updated by\n{{user}}",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{msg}}from\n> {{author}}",
+    "descDelete": "> {{msg}}from\n> {{author}}> was deleted",
+    "descDeleteBulkAudit": "> {{user}}> has bulk deleted\n> {{size}} Messages in\n> {{channel}}",
+    "descDeleteBulk": "> {{size}} Messages were deleted in\n> {{channel}}",
+    "descUpdateMaybe": "> {{msg}}may have been updated by\n> {{user}}or by a Moderator",
+    "descUpdate": "> {{msg}}> was updated",
+    "descUpdateAuthor": "> {{msg}}> was updated by\n> {{user}}",
     "nameDelete": "Message Deleted",
     "nameUpdate": "Message Updated",
-    "bulkDelete": "This Log is part of a Bulk delete. View the main Log via the Link below",
+    "bulkDelete": "This Log is part of a Bulk delete.",
     "flags": {
      "Crossposted": "Published",
      "IsCrosspost": "Received from a News Channel",
@@ -250,10 +250,10 @@
     "isRemix": "Is Remix"
    },
    "invite": {
-    "descCreateAudit": "{{user}}has created\n{{invite}}",
-    "descCreate": "{{invite}}was created",
-    "descDeleteAudit": "{{user}}has deleted\n{{invite}}",
-    "descDelete": "{{invite}}was deleted",
+    "descCreateAudit": "> {{user}}> has created\n> {{invite}}",
+    "descCreate": "> {{invite}}> was created",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{invite}}",
+    "descDelete": "> {{invite}}> was deleted",
     "nameCreate": "Invite created",
     "nameDelete": "Invite deleted",
     "inviter": "Inviter",
@@ -270,13 +270,13 @@
     "expiresAt": "Expires at"
    },
    "integration": {
-    "descCreateAudit": "{{user}}has created\n{{integration}}",
-    "descCreate": "{{integration}}was created",
-    "descDeleteIntegrationAudit": "{{user}}has deleted\n{{integration}}from{{app}}",
-    "descDeleteAudit": "{{user}}has deleted\n{{integration}}",
-    "descDeleteIntegration": "{{integration}}was deleted",
-    "descUpdateAudit": "{{user}}has updated\n{{integration}}",
-    "descUpdate": "{{integration}}was updated",
+    "descCreateAudit": "> {{user}}> has created\n> {{integration}}",
+    "descCreate": "> {{integration}}> was created",
+    "descDeleteIntegrationAudit": "> {{user}}> has deleted\n> {{integration}}from{{app}}",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{integration}}",
+    "descDeleteIntegration": "> {{integration}}> was deleted",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{integration}}",
+    "descUpdate": "> {{integration}}> was updated",
     "nameCreate": "Integration created",
     "nameDelete": "Integration deleted",
     "nameUpdate": "Integration updated",
@@ -296,47 +296,47 @@
     "getAccount": "Account `{{name}}` / `{{id}}`"
    },
    "guild": {
-    "descBan": "{{user}}was banned",
-    "descBanAudit": "{{executor}}has banned\n{{user}}",
-    "descUnban": "{{user}}was un-banned",
-    "descUnbanAudit": "{{executor}}has un-banned\n{{user}}",
-    "descEmojiCreateAudit": "{{user}}has created\n{{emoji}}",
-    "descEmojiCreate": "{{emoji}}was created",
-    "descEmojiDeleteAudit": "{{user}}has deleted\n{{emoji}}",
-    "descEmojiDelete": "{{emoji}}was deleted",
-    "descEmojiUpdateAudit": "{{user}}has updated\n{{emoji}}",
-    "descEmojiUpdate": "{{emoji}}was updated",
-    "descJoinAudit": "{{executor}}has added\n{{user}}",
-    "descMemberJoin": "{{user}}has joined",
-    "descBotJoin": "{{user}}was added",
-    "descBotLeave": "{{user}}has left the Server",
-    "descBotLeaveAudit": "{{executor}}has kicked\n{{user}}",
-    "descMemberLeave": "{{user}}has left the Server",
-    "descMemberLeaveAudit": "{{executor}}has kicked\n{{user}}",
-    "descBotUpdate": "{{user}}was updated",
-    "descBotUpdateAudit": "{{executor}}has updated\n{{user}}",
-    "descMemberUpdate": "{{user}}was updated",
-    "descMemberUpdateAudit": "{{executor}}has updated\n{{user}}",
-    "descGuildUpdate": "The Server was updated",
-    "descGuildUpdateAudit": "{{executor}}has updated the Server",
-    "descAuditLogCreate": "New \n{{audit}}created {{executor}}",
-    "descAuditLogCreateGuild": "New \n{{audit}}created {{executor}}for\n{{guild}}",
-    "descAuditLogCreateChannel": "New \n{{audit}}created {{executor}}for\n{{channel}}",
-    "descAuditLogCreateUser": "New \n{{audit}}created {{executor}}for\n{{user}}",
-    "descAuditLogCreateRole": "New \n{{audit}}created {{executor}}for\n{{role}}",
-    "descAuditLogCreateInvite": "New \n{{audit}}created {{executor}}for\n{{invite}}",
-    "descAuditLogCreateWebhook": "New \n{{audit}}created {{executor}}for\n{{webhook}}",
-    "descAuditLogCreateEmoji": "New \n{{audit}}created {{executor}}for\n{{emoji}}",
-    "descAuditLogCreateMessage": "New \n{{audit}}created {{executor}}for\n{{message}}",
-    "descAuditLogCreateIntegration": "New \n{{audit}}created {{executor}}for\n{{integration}}",
-    "descAuditLogCreateStageInstance": "New \n{{audit}}created {{executor}}for\n{{stageInstance}}",
-    "descAuditLogCreateSticker": "New \n{{audit}}created {{executor}}for\n{{sticker}}",
-    "descAuditLogCreateThread": "New \n{{audit}}created {{executor}}for\n{{thread}}",
-    "descAuditLogCreateGuildScheduledEvent": "New \n{{audit}}created {{executor}}for\n{{guildScheduledEvent}}",
-    "descAuditLogCreateApplicationCommand": "New {{audit}}created {{executor}}for\n{{applicationCommand}}",
-    "descAuditLogCreateAutoModerationRule": "New \n{{audit}}created {{executor}}for\n{{autoModerationRule}}",
-    "descAuditLogCreateAutoModeration": "New \n{{audit}}created by\n{{autoModerationRule}}for\n{{user}}",
-    "descMemberPrune": "{{executor}}pruned `{{amount}}` Members\nfor `{{days}}` Days of inactivity",
+    "descBan": "> {{user}}> was banned",
+    "descBanAudit": "> {{executor}}> has banned\n> {{user}}",
+    "descUnban": "> {{user}}> was un-banned",
+    "descUnbanAudit": "> {{executor}}> has un-banned\n> {{user}}",
+    "descEmojiCreateAudit": "> {{user}}> has created\n> {{emoji}}",
+    "descEmojiCreate": "> {{emoji}}> was created",
+    "descEmojiDeleteAudit": "> {{user}}> has deleted\n> {{emoji}}",
+    "descEmojiDelete": "> {{emoji}}> was deleted",
+    "descEmojiUpdateAudit": "> {{user}}> has updated\n> {{emoji}}",
+    "descEmojiUpdate": "> {{emoji}}> was updated",
+    "descJoinAudit": "> {{executor}}> has added\n> {{user}}",
+    "descMemberJoin": "> {{user}}> has joined",
+    "descBotJoin": "> {{user}}> was added",
+    "descBotLeave": "> {{user}}> has left the Server",
+    "descBotLeaveAudit": "> {{executor}}> has kicked\n> {{user}}",
+    "descMemberLeave": "> {{user}}> has left the Server",
+    "descMemberLeaveAudit": "> {{executor}}> has kicked\n> {{user}}",
+    "descBotUpdate": "> {{user}}> was updated",
+    "descBotUpdateAudit": "> {{executor}}> has updated\n> {{user}}",
+    "descMemberUpdate": "> {{user}}> was updated",
+    "descMemberUpdateAudit": "> {{executor}}> has updated\n> {{user}}",
+    "descGuildUpdate": "> The Server was updated",
+    "descGuildUpdateAudit": "> {{executor}}> has updated the Server",
+    "descAuditLogCreate": "> New \n> {{audit}}> created {{executor}}",
+    "descAuditLogCreateGuild": "> New \n> {{audit}}> created {{executor}}> for\n> {{guild}}",
+    "descAuditLogCreateChannel": "> New \n> {{audit}}> created {{executor}}> for\n> {{channel}}",
+    "descAuditLogCreateUser": "> New \n> {{audit}}> created {{executor}}> for\n> {{user}}",
+    "descAuditLogCreateRole": "> New \n> {{audit}}> created {{executor}}> for\n> {{role}}",
+    "descAuditLogCreateInvite": "> New \n> {{audit}}> created {{executor}}> for\n> {{invite}}",
+    "descAuditLogCreateWebhook": "> New \n> {{audit}}> created {{executor}}> for\n> {{webhook}}",
+    "descAuditLogCreateEmoji": "> New \n> {{audit}}> created {{executor}}> for\n> {{emoji}}",
+    "descAuditLogCreateMessage": "New \n> {{audit}}> created {{executor}}> for\n> {{message}}",
+    "descAuditLogCreateIntegration": "> New \n> {{audit}}> created {{executor}}> for\n> {{integration}}",
+    "descAuditLogCreateStageInstance": "> New \n> {{audit}}> created {{executor}}> for\n> {{stageInstance}}",
+    "descAuditLogCreateSticker": "> New \n> {{audit}}> created {{executor}}> for\n> {{sticker}}",
+    "descAuditLogCreateThread": "> New \n> {{audit}}> created {{executor}}> for\n> {{thread}}",
+    "descAuditLogCreateGuildScheduledEvent": "> New \n> {{audit}}> created {{executor}}> for\n> {{guildScheduledEvent}}",
+    "descAuditLogCreateApplicationCommand": "> New {{audit}}> created {{executor}}> for\n> {{applicationCommand}}",
+    "descAuditLogCreateAutoModerationRule": "> New \n> {{audit}}> created {{executor}}> for\n> {{autoModerationRule}}",
+    "descAuditLogCreateAutoModeration": "> New \n> {{audit}}> created by\n> {{autoModerationRule}}> for\n> {{user}}",
+    "descMemberPrune": "> {{executor}}> pruned `{{amount}}` Members\nfor `{{days}}` Days of inactivity",
     "auditLogChangeKeys": {
      "$add": "Added",
      "$remove": "Removed",
@@ -502,7 +502,7 @@
     "welcomeChannelAdded": "Welcome Channel added",
     "welcomeChannelRemoved": "Welcome Channel removed",
     "welcomeChannelChanged": "Welcome Channel changed",
-    "welcomeChannelEmoji": "Welcome Channel Emoji of \n{{channel}}",
+    "welcomeChannelEmoji": "Welcome Channel Emoji of \n> {{channel}}",
     "togglesNameRemoved": "Server Features Removed",
     "togglesNameAdded": "Server Features Added",
     "systemChannelFlagsNameRemoved": "Disabled System Channel Features",
@@ -575,29 +575,29 @@
     "moderated": "Moderated",
     "defaultReactionEmoji": "Default Reaction Emoji",
     "defaultThreadRateLimitPerUser": "Default Thread Rate Limit per User",
-    "descCreateAudit": "{{user}}has created\n{{channel}}",
-    "descCreate": "{{channel}}was created",
-    "descDeleteAudit": "{{user}}has deleted\n{{channel}}",
-    "descDelete": "{{channel}}was deleted",
-    "descUpdateAudit": "{{user}}has updated\n{{channel}}",
-    "descUpdate": "{{channel}}was updated",
-    "descJoinMember": "Users have joined\n{{channel}}",
-    "descLeaveMember": "Users have left\n{{channel}}",
-    "descUpdateStageAudit": "{{user}}has changed\n{{channel}}",
-    "descUpdateStage": "{{channel}}was changed",
-    "descCreateStageAudit": "{{user}}has started\n{{channel}}",
-    "descCreateStage": "{{channel}}was started",
-    "descDeleteStageAudit": "{{user}}has ended\n{{channel}}",
-    "descDeleteStage": "{{channel}}was ended",
-    "descPinCreateAudit": "{{user}}has pinned\n{{msg}}in\n{{channel}}",
-    "descPinCreate": "{{msg}}was pinned in\n{{channel}}",
-    "descPinRemoveAudit": "{{user}}has unpinned\n{{msg}}in\n{{channel}}",
-    "descPinRemove": "{{msg}}was unpinned in\n{{channel}}",
-    "descTyping": "{{user}}has started typing in\n{{channel}}"
+    "descCreateAudit": "> {{user}}> has created\n> {{channel}}",
+    "descCreate": "> {{channel}}> was created",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{channel}}",
+    "descDelete": "> {{channel}}> was deleted",
+    "descUpdateAudit": "> {{user}}> has updated\n> {{channel}}",
+    "descUpdate": "> {{channel}}> was updated",
+    "descJoinMember": "> Users have joined\n> {{channel}}",
+    "descLeaveMember": "> Users have left\n> {{channel}}",
+    "descUpdateStageAudit": "> {{user}}> has changed\n> {{channel}}",
+    "descUpdateStage": "> {{channel}}> was changed",
+    "descCreateStageAudit": "> {{user}}> has started\n> {{channel}}",
+    "descCreateStage": "> {{channel}}> was started",
+    "descDeleteStageAudit": "> {{user}}> has ended\n> {{channel}}",
+    "descDeleteStage": "> {{channel}}> was ended",
+    "descPinCreateAudit": "> {{user}}> has pinned\n> {{msg}}in\n> {{channel}}",
+    "descPinCreate": "> {{msg}}> was pinned in\n> {{channel}}",
+    "descPinRemoveAudit": "> {{user}}> has unpinned\n> {{msg}}in\n> {{channel}}",
+    "descPinRemove": "> {{msg}}> was unpinned in\n> {{channel}}",
+    "descTyping": "> {{user}}> has started typing in\n> {{channel}}"
    },
    "user": {
     "name": "User updated",
-    "desc": "{{user}}has updated",
+    "desc": "> {{user}}> has updated",
     "avatar": "Avatar",
     "banner": "Banner",
     "flags": "Badges",
@@ -608,9 +608,9 @@
    },
    "automodExec": {
     "name": "Auto-Moderation Rule enforced",
-    "descMessage": "{{rule}}was enforced on\nthis {{msg}}from\n{{user}}",
-    "desc": "{{rule}}was enforced on\n{{user}}",
-    "descChannel": "{{rule}}was enforced on\n{{user}}in\n{{channel}}",
+    "descMessage": "> {{rule}}> was enforced on\n> this {{msg}}> from\n> {{user}}",
+    "desc": "> {{rule}}> was enforced on\n> {{user}}",
+    "descChannel": "> {{rule}}> was enforced on\n> {{user}}> in\n> {{channel}}",
     "matchedKeyword": "Matched Keyword",
     "matchedContent": "Matched Content",
     "content": "Content",
@@ -634,9 +634,9 @@
     "alertChannel": "Alert Channel"
    },
    "automodRule": {
-    "descCreate": "{{user}}created\n{{rule}}",
-    "descDelete": "{{user}}deleted\n{{rule}}",
-    "descUpdate": "{{user}}updated\n{{rule}}",
+    "descCreate": "> {{user}}> created\n> {{rule}}",
+    "descDelete": "> {{user}}> deleted\n> {{rule}}",
+    "descUpdate": "> {{user}}> updated\n> {{rule}}",
     "nameCreate": "Auto-Moderation Rule created",
     "nameDelete": "Auto-Moderation Rule deleted",
     "nameUpdate": "Auto-Moderation Rule updated",
@@ -766,7 +766,7 @@
     "title": "{{t.botName}} DISBOARD Bump Reminder"
    },
    "reminder": {
-    "description": "Your reminder is due!",
+    "description": "Your Reminder is due!",
     "failedMsg": "I tried to send a Message in the Channel you set the Reminder in <#{{channel.id}}>, but I failed."
    },
    "vote": {
@@ -774,10 +774,10 @@
     "description": "If you want to keep your multiplier streak up, ([click and vote](https://top.gg/bot/650691698409734151/vote))\nYour multiplyer is currently {{votegain}}x"
    },
    "nitro": {
-    "stackRoles": "{{user}}has been given\n{{roles}}for boosting longer than {{days}} days",
-    "replaceRoles": "The Booster-Roles of\n{{user}}have been replaced with\n{{roles}}for boosting longer than {{days}} days",
-    "started": "{{user}}has started boosting the Server",
-    "stopped": "{{user}}has stopped boosting the Server"
+    "stackRoles": "> {{user}}> has been given\n> {{roles}}> for boosting longer than {{days}} days",
+    "replaceRoles": "> The Booster-Roles of\n> {{user}}> have been replaced with\n> {{roles}}> for boosting longer than {{days}} days",
+    "started": "> {{user}}> has started boosting the Server",
+    "stopped": "> {{user}}> has stopped boosting the Server"
    }
   },
   "vote": {
@@ -791,8 +791,8 @@
    "endReason": "Vote ran out",
    "reminder": {
     "name": "You can vote again!",
-    "descBot": "Your Vote time-out for `{{bot}}` has ended",
-    "descGuild": "Your Vote time-out for `{{guild}}` has ended",
+    "descBot": "> Your Vote time-out for `{{bot}}` has ended",
+    "descGuild": "> Your Vote time-out for `{{guild}}` has ended",
     "voteBotButton": "Vote for {{bot}}",
     "voteGuildButton": "Vote for {{guild}}",
     "voteAyakoButton": "Vote for Ayako",
@@ -802,7 +802,7 @@
   "appeal": {
    "title": "New Appeal",
    "notEnabled": "Appeals are not enabled on this Server",
-   "description": "{{user}}has appealed their Punishment\n{{punishment}}",
+   "description": "> {{user}}> has appealed their Punishment\n> {{punishment}}",
    "author": "{{t.botName}} Punishment Appeal System",
    "accept": "Accept",
    "accepted": "Appeal Accepted",
@@ -867,8 +867,8 @@
   "log": {
    "started": "Verification Started",
    "finished": "Verification Finished",
-   "start": "{{user}}started Verification",
-   "end": "{{user}}finished Verification"
+   "start": "> {{user}}started Verification",
+   "end": "> {{user}}finished Verification"
   }
  },
  "expire": {
@@ -1457,10 +1457,10 @@
    "newLvl": "New Level",
    "newXP": "New XP",
    "excluded": "Excluded Roles",
-   "descUser": "Editing Level of\n{{user}}Hitting the `Save` Button will overwrite and replace their current Levels",
-   "descFinUser": "Saved new Level for\n{{user}}",
-   "descRole": "Editing Levels for all Members of\n{{role}}excluding Members who have any of the Roles listed below.\nHitting the `Save` Button will overwrite and replace their current Levels",
-   "descFinRole": "Edited the Levels of all Members of\n{{role}}excluding Members who have any of the Roles listed below"
+   "descUser": "> Editing Level of\n> {{user}}Hitting the `Save` Button will overwrite and replace their current Levels",
+   "descFinUser": "> Saved new Level for\n> {{user}}",
+   "descRole": "> Editing Levels for all Members of\n> {{role}}> excluding Members who have any of the Roles listed below.\nHitting the `Save` Button will overwrite and replace their current Levels",
+   "descFinRole": "> Edited the Levels of all Members of\n> {{role}}> excluding Members who have any of the Roles listed below"
   },
   "bypass": {
    "notEnabled": "The Verification-System is not enabled",
@@ -1470,16 +1470,16 @@
    "areYouSure2": "Are you sure you want to reset all Levels?\n**This cannot be un-done!**",
    "all": "All Levels have been reset",
    "areYouSure": "Are you sure you want to reset all Levels?\n**This cannot be un-done!**\n__Notice__: This will not un-assign Level-Roles\n\nThe Buttons will unlock {{t}}",
-   "confirmUser": "Confirm Reset of Levels of\n{{user}}",
-   "confirmRole": "Confirm Reset of Levels of all {{amount}} Members in\n{{role}}",
-   "user": "The Levels of\n{{user}}have been reset",
-   "role": "The Levels of all {{amount}} Members in\n{{role)}}have been reset"
+   "confirmUser": "> Confirm Reset of Levels of\n> {{user}}",
+   "confirmRole": "> Confirm Reset of Levels of all {{amount}} Members in\n> {{role}}",
+   "user": "> The Levels of\n> {{user}}have been reset",
+   "role": "> The Levels of all {{amount}} Members in\n> {{role)}}have been reset"
   },
   "edit": {
    "invalid": "Invalid Punishment ID",
    "success": "Reason updated",
    "author": "Punishment Reason Edited",
-   "desc": "{{user}}has updated\nReason of Punishment with ID {{punId}}\nof\n{{target}}"
+   "desc": "> {{user}}> has updated\nReason of Punishment with ID {{punId}}\nof\n> {{target}}"
   },
   "leaderboard": {
    "lleaderboard": "{{t.botName}} Leveling Leaderboard",
@@ -1494,7 +1494,7 @@
    "currentXP": "Current XP:",
    "nextLevelXP": "Next Level XP:",
    "xpDifference": "XP Difference:",
-   "thisWillTake": "This will take an average of about\n{{msgs}} counted Messages or\n{{duration}}\nsince only 1 Message per Minute is counted",
+   "thisWillTake": "> This will take an average of about\n> {{msgs}} counted Messages or\n> {{duration}}\n> since only 1 Message per Minute is counted",
    "fullLeaderboard": "Full Leaderboard"
   },
   "check": {
@@ -1516,7 +1516,7 @@
    "banChannel": "Ban Channel",
    "cantPardon": "This Punishment can't be pardoned until it ends.\nWait for it to end or end it manually using the respective Un-Punish-Command (Un-Mute/Un-Ban/Channel-Unban)",
    "name": "{{t.botName}} Moderation-Management",
-   "desc": "Punishments of\n{{user}}\n \n They currently have \n {{w}} Warns\n {{m}} Mutes\n {{cb}} Channel-Bans\n {{b}} Bans\n of which {{r}} are temporary and currently running\n\n{{isBanned}}\n{{isMuted}}\n{{isChannelBanned}}",
+   "desc": "> Punishments of\n> {{user}}\n\n> They currently have\n> {{w}} Warns\n> {{m}} Mutes\n> {{cb}} Channel-Bans\n> {{b}} Bans\n> of which {{r}} are temporary and currently running\n\n> {{isBanned}}\n> {{isMuted}}\n> {{isChannelBanned}}",
    "status": {
     "banned": "They are **currently banned**",
     "notBanned": "They are **currently not banned**",
@@ -1935,7 +1935,7 @@
    "accepted": "Suggestion accepted",
    "rejected": "Suggestion rejected",
    "notOwner": "Only the Submitter of the Suggestion and Suggestion-Approvers can use this Button\nOr this Suggestion couldn't be found",
-   "banned": "{{user}}was banned from submitting Suggestions",
+   "banned": "> {{user}}> was banned from submitting Suggestions",
    "cantBan": "**You can't ban this User**\nEither because Suggestions aren't enabled on this Server\nbecause you are lacking the Permissions to\nor because they are already banned\n\nUnban Users in </settings automation suggestions:{{cmdId}}>",
    "tldr": "TL;DR",
    "downvotes": "Downvotes",
@@ -1959,7 +1959,7 @@
    "tooShort": "The Duration must be at least 10 Seconds",
    "edited": "Reminder edited",
    "created": "Reminder created\nView your Reminders with </reminder list:{{reminderId}}>",
-   "desc": "To create a Reminder use </reminder create:{{reminderId}}>\nto edit one, use </reminder edit:{{reminderId}}>\nand to delete one, use </reminder delete:{{reminderId}}>",
+   "desc": "> To create a Reminder use </reminder create:{{reminderId}}>\n> to edit one, use </reminder edit:{{reminderId}}>\n> and to delete one, use </reminder delete:{{reminderId}}>",
    "reminderEnded": "<@{{userId}}> Your Reminder has ended."
   },
   "clear": {
@@ -2073,7 +2073,7 @@
     "buyThisFor": "Buy this Role for {{amount}}",
     "selRoleToBuy": "Select a Role to buy",
     "selRoleToEquip": "Select a Role to un/equip",
-    "description": "Your current Balance is {{balance}} {{emote}}\nYou can check your Balance at any time using </balance:{{cId}}>\n\nBuy Roles through the Select-Menu below",
+    "description": "> Your current Balance is {{balance}} {{emote}}\n> You can check your Balance at any time using </balance:{{cId}}>\n\nBuy Roles through the Select-Menu below",
     "notEnabled": "Role Shop is not enabled or there are no Roles in the Shop",
     "oneRole": "This Role can be bought [here]({{link}})",
     "manyRoles": "These Roles can be bought [here]({{link}})"
@@ -2081,8 +2081,8 @@
    "customRole": {
     "notEnabled": "Setting Custom-Roles is not enabled",
     "cantSet": "You don't qualify to set a Custom-Role",
-    "edit": "{{role}}was edited\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
-    "create": "{{role}}was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}"
+    "edit": "> {{role}}> was edited\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
+    "create": "> {{role}}> was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}"
    },
    "builders": {
     "descReactions": "React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:{{cmdId}}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove {{t.botName}}'s Reaction",
@@ -2341,8 +2341,8 @@
   "invites": {
    "cantDeleteInvite": "You can't delete this Invite",
    "inviteNotFound": "Invite not found",
-   "deleted": "{{invite}} was deleted",
-   "created": "{{invite}} was created"
+   "deleted": "> {{invite}} was deleted",
+   "created": "> {{invite}} was created"
   },
   "info": {
    "basic": "__Basic Info__",
@@ -2778,7 +2778,7 @@
      "preset": "Preset Rule",
      "member": "Member Rule",
      "actionsRequired": "Requires at least 1 Action",
-     "desc": "{{kF}} of 6 Keyword Filters\n> Take Action against Messages containing certain Keywords\n{{msF}} of 1 Mention Spam Filters\n> Take Action Messages containing Mention-Spam\n{{mF}} of 1 Member Filters\n> Take Action against Users-Profiles containing certain Keywords\n{{sF}} of 1 Spam Filters\n> Take Action against Messages containing general Spam-Content\n{{kpF}} of 1 Preset Filters\n> Take Action against Messages containing Keywords in, by Discord provided, Presets",
+     "desc": "> {{kF}} of 6 Keyword Filters\n> Take Action against Messages containing certain Keywords\n> {{msF}} of 1 Mention Spam Filters\n> Take Action Messages containing Mention-Spam\n> {{mF}} of 1 Member Filters\n> Take Action against Users-Profiles containing certain Keywords\n> {{sF}} of 1 Spam Filters\n> Take Action against Messages containing general Spam-Content\n> {{kpF}} of 1 Preset Filters\n> Take Action against Messages containing Keywords in, by Discord provided, Presets",
      "fields": {
       "keywordFilter": {
        "name": "Keyword Filter",
@@ -3675,8 +3675,8 @@
   }
  },
  "nitro": {
-  "given": "<@{{user.id}}> has been given\n{{r}}\nfor boosting {{days}} Days",
-  "taken": "<@{{user.id}}> had\n{{r}}\ntaken from"
+  "given": "> <@{{user.id}}> has been given\n> {{r}}\n> for boosting {{days}} Days",
+  "taken": "> <@{{user.id}}> had\n> {{r}}\n> taken from"
  },
  "antivirus": {
   "malicious": "{{cross}} This Link __is__ malicious",
@@ -3700,7 +3700,7 @@
  },
  "leveling": {
   "author": "{{msg.author.username}} has levelled up to {{level}} <:AMayakoBirthday:809063075021979668>",
-  "description": "{{on}} this Server, Level-Ups are indicated by Reactions on your Message\n{{reactions}}",
+  "description": "> {{on}} this Server, Level-Ups are indicated by Reactions on your Message\n> {{reactions}}",
   "on": {
    "on": "On",
    "normally": "Normally, on"
@@ -3722,69 +3722,69 @@
   "logs": {
    "roleAdd": {
     "author": "Role given to Member",
-    "description": "{{roles}}{{wasWere}} given to\n{{target}} by\n{{executor}}",
+    "description": "> {{roles}} {{wasWere}} given to\n> {{target}} by\n> {{executor}}",
     "was": "was",
     "were": "were"
    },
    "roleRemove": {
     "author": "Role removed from Member",
-    "description": "{{roles}}{{wasWere}} removed from\n{{target}} by\n{{executor}}"
+    "description": "> {{roles}} {{wasWere}} removed from\n> {{target}}> by\n> {{executor}}"
    },
    "tempMuteAdd": {
     "author": "Member Muted",
-    "description": "{{target}} was Muted by\n{{executor}} until\n{{duration}}"
+    "description": "> {{target}}> was Muted by\n> {{executor}}> until\n> {{duration}}"
    },
    "muteRemove": {
     "author": "Member Un-Muted",
-    "description": "{{target}} was Un-Muted by\n{{executor}}"
+    "description": "> {{target}}> was Un-Muted by\n> {{executor}}"
    },
    "unAfk": {
     "author": "Member AFK-Status removed",
-    "description": "AFK-Status of\n{{target}} was removed by\n{{executor}}"
+    "description": "> AFK-Status of\n> {{target}}> was removed by\n> {{executor}}"
    },
    "banAdd": {
     "author": "User Banned",
-    "description": "{{target}} was Banned by\n{{executor}}"
+    "description": "> {{target}}> was Banned by\n> {{executor}}"
    },
    "softBanAdd": {
     "author": "User Soft-Banned",
-    "description": "{{target}} was soft-Banned by\n{{executor}}"
+    "description": "> {{target}}> was soft-Banned by\n> {{executor}}"
    },
    "tempBanAdd": {
     "author": "User Temp-Banned",
-    "description": "{{target}} was Temp-Banned by\n{{executor}} until\n{{duration}}"
+    "description": "> {{target}}> was Temp-Banned by\n> {{executor}}> until\n> {{duration}}"
    },
    "channelBanAdd": {
     "author": "Member Channel-Banned",
-    "description": "{{target}} was Channel-Banned by\n{{executor}} from\n{{options}}"
+    "description": "> {{target}}> was Channel-Banned by\n> {{executor}}> from\n> {{options}}"
    },
    "tempChannelBanAdd": {
     "author": "Member Temp-Channel-Banned",
-    "description": "{{target}} was Temp-Channel-Banned by\n{{executor}} from\n{{channel}} until\n{{time}}"
+    "description": "> {{target}}> was Temp-Channel-Banned by\n> {{executor}}> from\n> {{channel}}> until\n> {{time}}"
    },
    "strikeAdd": {
     "author": "Member striked",
-    "description": "{{target}} was striked by\n{{executor}}"
+    "description": "> {{target}}> was striked by\n> {{executor}}"
    },
    "channelBanRemove": {
     "author": "Member Channel-Un-Banned",
-    "description": "{{target}} was Channel-Un-Banned by\n{{executor}} from\n{{channel}}"
+    "description": "> {{target}}> was Channel-Un-Banned by\n> {{executor}}> from\n> {{channel}}"
    },
    "banRemove": {
     "author": "User Un-Banned",
-    "description": "{{target}} was Un-Banned by\n{{executor}}"
+    "description": "> {{target}}> was Un-Banned by\n> {{executor}}"
    },
    "kickAdd": {
     "author": "Member Kicked",
-    "description": "{{target}} was Kicked by\n{{executor}}"
+    "description": "> {{target}}> was Kicked by\n> {{executor}}"
    },
    "warnAdd": {
     "author": "User Warned",
-    "description": "{{target}} was Warned by\n{{executor}}"
+    "description": "> {{target}}> was Warned by\n> {{executor}}"
    },
    "softWarnAdd": {
     "author": "User Soft-Warned",
-    "description": "{{target}} was Soft-Warned by\n{{executor}}"
+    "description": "> {{target}}> was Soft-Warned by\n> {{executor}}"
    }
   },
   "execution": {
@@ -3793,8 +3793,8 @@
     "meNoPerms": "I can't add Roles to this User",
     "youNoPerms": "You can't remove AFK from this User",
     "error": "I failed to remove AFK from this User",
-    "alreadyApplied": "{{target}} isn't AFK",
-    "success": "{{target}}'s AFK was removed",
+    "alreadyApplied": "> {{target}} isn't AFK",
+    "success": "> {{target}}'s AFK was removed",
     "loading": "Removing AFK...",
     "self": "You can't remove AFK from yourself",
     "me": "I won't remove AFK from myself"
@@ -3804,19 +3804,19 @@
     "meNoPerms": "I can't Strike this User",
     "youNoPerms": "You can't Strike this User",
     "error": "I failed to Strike this User",
-    "alreadyApplied": "{{target}} isn't Striked",
-    "success": "{{target}} was Striked",
+    "alreadyApplied": "> {{target}} isn't Striked",
+    "success": "> {{target}} was Striked",
     "loading": "Striking User...",
     "self": "You can't Strike yourself",
     "me": "I won't Strike myself"
    },
    "roleAdd": {
-    "dm": "{{roles}} {{haveHas}} been added to your Roles",
+    "dm": "> {{roles}} {{haveHas}} been added to your Roles",
     "meNoPerms": "I can't add Roles to this User",
     "youNoPerms": "You can't add Roles to this User",
     "error": "I failed to add these Roles to the User",
-    "alreadyApplied": "{{target}} already has these Roles",
-    "success": "{{roles}} {{wasWere}} added to {{target}}",
+    "alreadyApplied": "> {{target}} already has these Roles",
+    "success": "> {{roles}} {{wasWere}} added to {{target}}",
     "loading": "Adding Role to User...",
     "self": "You can't add Roles to yourself",
     "me": "I won't add Roles to myself",
@@ -3826,12 +3826,12 @@
     "were": "were"
    },
    "roleRemove": {
-    "dm": "{{roles}} {{haveHas}} been removed from your Roles",
+    "dm": "> {{roles}} {{haveHas}} been removed from your Roles",
     "meNoPerms": "I can't remove Roles from this User",
     "youNoPerms": "You can't remove Roles from this User",
     "error": "I failed to remove these Roles from the User",
-    "alreadyApplied": "{{target}} doesn't have that Role",
-    "success": "{{roles}} {{wasWere}} removed from {{target}}",
+    "alreadyApplied": "> {{target}} doesn't have that Role",
+    "success": "> {{roles}} {{wasWere}} removed from {{target}}",
     "loading": "Removing Role from User...",
     "self": "You can't remove Roles from yourself",
     "me": "I won't remove Roles from myself"
@@ -3841,8 +3841,8 @@
     "meNoPerms": "I can't Mute this User",
     "youNoPerms": "You can't Mute this User",
     "error": "I failed to Mute this User",
-    "alreadyApplied": "{{target}} is already Muted",
-    "success": "{{target}} was Muted",
+    "alreadyApplied": "> {{target}} is already Muted",
+    "success": "> {{target}} was Muted",
     "loading": "Muting User...",
     "self": "You can't Mute yourself",
     "me": "I won't Mute myself",
@@ -3853,98 +3853,98 @@
     "meNoPerms": "I can't Un-Mute this User",
     "youNoPerms": "You can't Un-Mute this User",
     "error": "I failed to Un-Mute this User",
-    "alreadyApplied": "{{target}} isn't Muted",
-    "success": "{{target}} was Un-Muted",
+    "alreadyApplied": "> {{target}} isn't Muted",
+    "success": "> {{target}} was Un-Muted",
     "loading": "Un-Muting User...",
     "self": "You can't Un-Mute yourself",
     "me": "I won't Un-Mute myself",
     "reason": "Mute ended"
    },
    "banAdd": {
-    "dm": "You have been Banned from\n{{guild}}",
+    "dm": "You have been Banned from\n> {{guild}}",
     "meNoPerms": "I can't Ban this User",
     "youNoPerms": "You can't Ban this User",
     "error": "I failed to Ban this User",
-    "alreadyApplied": "{{target}} is already Banned",
-    "success": "{{target}} was Banned",
+    "alreadyApplied": "> {{target}} is already Banned",
+    "success": "> {{target}} was Banned",
     "loading": "Banning User...",
     "self": "You can't Ban yourself",
     "me": "I won't Ban myself"
    },
    "softBanAdd": {
-    "dm": "You have been Soft-Banned from\n{{guild}}",
+    "dm": "You have been Soft-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Soft-Ban this User",
     "youNoPerms": "You can't Soft-Ban this User",
     "error": "I failed to Soft-Ban this User",
-    "alreadyApplied": "{{target}} is already Soft-Banned",
-    "success": "{{target}} was Soft-Banned",
+    "alreadyApplied": "> {{target}} is already Soft-Banned",
+    "success": "> {{target}} was Soft-Banned",
     "loading": "Soft-Banning User...",
     "self": "You can't Soft-Ban yourself",
     "me": "I won't Soft-Ban myself"
    },
    "tempBanAdd": {
-    "dm": "You have been Temp-Banned from\n{{guild}}",
+    "dm": "You have been Temp-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Temp-Ban this User",
     "youNoPerms": "You can't Temp-Ban this User",
     "error": "I failed to Temp-Ban this User",
-    "alreadyApplied": "{{target}} is already Temp-Banned",
-    "success": "{{target}} was Temp-Banned",
+    "alreadyApplied": "> {{target}} is already Temp-Banned",
+    "success": "> {{target}} was Temp-Banned",
     "loading": "Temp-Banning User...",
     "self": "You can't Temp-Ban yourself",
     "me": "I won't Temp-Ban myself"
    },
    "channelBanAdd": {
-    "dm": "You have been Channel-Banned from\n{{channel}}",
+    "dm": "You have been Channel-Banned from\n> {{channel}}",
     "meNoPerms": "I can't Channel-Ban this User",
     "youNoPerms": "You can't Channel-Ban this User",
     "error": "I failed to Channel-Ban this User",
-    "alreadyApplied": "{{target}} is already Channel-Banned",
-    "success": "{{target}} was Channel-Banned",
+    "alreadyApplied": "> {{target}} is already Channel-Banned",
+    "success": "> {{target}} was Channel-Banned",
     "loading": "Channel-Banning User...",
     "self": "You can't Channel-Ban yourself",
     "me": "I won't Channel-Ban myself",
     "importantChannel": "You can't Channel-Ban Members from the Server's Rules-Channel"
    },
    "tempChannelBanAdd": {
-    "dm": "You have been Temp-Channel-Banned from\n{{channel}}",
+    "dm": "You have been Temp-Channel-Banned from\n> {{channel}}",
     "meNoPerms": "I can't Temp-Channel-Ban this User",
     "youNoPerms": "You can't Temp-Channel-Ban this User",
     "error": "I failed to Temp-Channel-Ban this User",
-    "alreadyApplied": "{{target}} is already Temp-Channel-Banned",
-    "success": "{{target}} was Temp-Channel-Banned",
+    "alreadyApplied": "> {{target}} is already Temp-Channel-Banned",
+    "success": "> {{target}} was Temp-Channel-Banned",
     "loading": "Temp-Channel-Banning User...",
     "self": "You can't Temp-Channel-Ban yourself",
     "me": "I won't Temp-Channel-Ban myself"
    },
    "channelBanRemove": {
-    "dm": "You have been Channel-Unbanned from\n{{channel}}",
+    "dm": "You have been Channel-Unbanned from\n> {{channel}}",
     "meNoPerms": "I can't Channel-Unban this User",
     "youNoPerms": "You can't Channel-Unban this User",
     "error": "I failed to Channel-Unban this User",
-    "alreadyApplied": "{{target}} isn't Channel-Banned",
-    "success": "{{target}} was Channel-Unbanned",
+    "alreadyApplied": "> {{target}} isn't Channel-Banned",
+    "success": "> {{target}} was Channel-Unbanned",
     "loading": "Channel-Unbanning User...",
     "self": "You can't Channel-Unban yourself",
     "me": "I won't Channel-Unban myself"
    },
    "banRemove": {
-    "dm": "You have been Un-Banned from\n{{guild}}",
+    "dm": "You have been Un-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Un-Ban this User",
     "youNoPerms": "You can't Un-Ban this User",
     "error": "I failed to Un-Ban this User",
-    "alreadyApplied": "{{target}} isn't Banned",
-    "success": "{{target}} was Un-Banned",
+    "alreadyApplied": "> {{target}} isn't Banned",
+    "success": "> {{target}} was Un-Banned",
     "loading": "Un-Banning User...",
     "self": "You can't Un-Ban yourself",
     "me": "I won't Un-Ban myself"
    },
    "kickAdd": {
-    "dm": "You have been Kicked from\n{{guild}}",
+    "dm": "You have been Kicked from\n> {{guild}}",
     "meNoPerms": "I can't Kick this User",
     "youNoPerms": "You can't Kick this User",
     "error": "I failed to Kick this User",
-    "alreadyApplied": "{{target}} is not a Member",
-    "success": "{{target}} was Kicked",
+    "alreadyApplied": "> {{target}} is not a Member",
+    "success": "> {{target}} was Kicked",
     "loading": "Kicking User...",
     "self": "You can't Kick yourself",
     "me": "I won't Kick myself"
@@ -3954,8 +3954,8 @@
     "meNoPerms": "I can't Warn this User",
     "youNoPerms": "You can't Warn this User",
     "error": "I failed to Warn this User",
-    "alreadyApplied": "{{target}} is already Warned",
-    "success": "{{target}} was Warned",
+    "alreadyApplied": "> {{target}} is already Warned",
+    "success": "> {{target}} was Warned",
     "loading": "Warning User...",
     "self": "You can't Warn yourself",
     "me": "I won't Warn myself"
@@ -3965,8 +3965,8 @@
     "meNoPerms": "I can't Soft-Warn this User",
     "youNoPerms": "You can't Soft-Warn this User",
     "error": "I failed to Soft-Warn this User",
-    "alreadyApplied": "{{target}} is already Soft-Warned",
-    "success": "{{target}} was Soft-Warned",
+    "alreadyApplied": "> {{target}} is already Soft-Warned",
+    "success": "> {{target}} was Soft-Warned",
     "loading": "Soft-Warning User...",
     "self": "You can't Soft-Warn yourself",
     "me": "I won't Soft-Warn myself"
@@ -3977,7 +3977,7 @@
   "useDefaultRP": "Please use the Default RP-Commands (`/hug`, `/pat` etc) if enabled\n`/actions` Commands are for DMs and Servers that don't have Ayako added\n\nIf they aren't enabled, consider asking a Server Administrator to enable them via `/rp manager`",
   "guildOnly": "This Command requires me to be part of this Server",
   "welcome": "Welcome {{user.username}}#{{user.discriminator}} to {{guild.name}} <:AMayakowave:924071188957913108>",
-  "defaultValuesLog": "__Before:__\n{{oldValue}}\n\n__After:__\n{{newValue}}",
+  "defaultValuesLog": "> __Before:__\n{{oldValue}}\n\n> __After:__\n{{newValue}}",
   "pageBetween": "A Number from {{x}} to {{y}}",
   "voiceHub": "Welcome, {{u}}, to your personal Voice-Channel\n\nYou have full access to Permission management here,\nmeaning you can manually add people to your Voice-Channel and change its behavior as you wish.\n\nTo do so, simply open the Channel-Settings",
   "unknown": "unknown",
