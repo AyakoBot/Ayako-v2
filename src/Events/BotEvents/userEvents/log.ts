@@ -1,6 +1,6 @@
 import type * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
-import { sendDebugMessage } from 'src/BaseClient/UtilModules/error.js';
+import { sendDebugMessage } from '../../../BaseClient/UtilModules/error.js';
 
 export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.Guild) => {
  const channels = await guild.client.util.getLogChannels('userevents', guild);
