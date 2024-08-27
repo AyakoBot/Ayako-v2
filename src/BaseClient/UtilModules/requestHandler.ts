@@ -21,7 +21,11 @@ import voice from './requestHandler/voice.js';
  * @param token - The token to use for authentication.
  */
 export default async (guildId: string, token: string) => {
- const rest = new DiscordRest.REST({ version: '10' }).setToken(token);
+ const rest = new DiscordRest.REST({
+  version: '10',
+  api: 'http://127.0.0.1:8080/api',
+  timeout: 60000,
+ }).setToken(token);
  const api = new DiscordCore.API(rest);
  cache.apis.set(guildId, api);
 };
