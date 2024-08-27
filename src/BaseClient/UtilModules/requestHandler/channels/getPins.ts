@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
-import error, { sendDebugMessage } from '../../error.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -37,14 +37,6 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
    return parsed;
   })
   .catch((e) => {
-   if (e.message.includes('Unknown Channel')) {
-    sendDebugMessage({
-     content: `${channel.id} - ${channel.name} - ${channel.guildId} - ${channel.parentId}`,
-     files: [channel.client.util.txtFileWriter(JSON.stringify(channel, null, 2))],
-    });
-   }
-
-   e.message += ` ${channel.id}`;
    error(channel.guild, e);
    return e as Discord.DiscordAPIError;
   });
