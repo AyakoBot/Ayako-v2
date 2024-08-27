@@ -73,6 +73,7 @@ const cache: {
  unblockedModUsers: UnblockedModUsers;
  gifs: typeof gifs;
  latelySavedUsers: Map<string, number>;
+ hasFetchedAllMembers: Set<string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -127,6 +128,7 @@ const cache: {
  unblockedModUsers,
  gifs,
  latelySavedUsers: new Map(),
+ hasFetchedAllMembers: new Set(),
 
  // URLs
  urlTLDs,

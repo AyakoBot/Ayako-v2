@@ -3,8 +3,6 @@ import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
 import { getAPI } from '../channels/addReaction.js';
 
-const guilds = new Set<string>();
-
 /**
  * Retrieves members from a guild.
  * @param guild - The guild to retrieve members from.
@@ -13,6 +11,8 @@ const guilds = new Set<string>();
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) => {
  if (guild.members.cache.size === guild.memberCount) return guild.members.cache.map((m) => m);
+
+ const guilds = guild.client.util.cache.hasFetchedAllMembers;
  if (guilds.has(guild.id)) return [];
  guilds.add(guild.id);
 
