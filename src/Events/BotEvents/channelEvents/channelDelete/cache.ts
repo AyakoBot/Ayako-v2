@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import log from '../../messageEvents/messageDelete/log.js';
 
 export default async (channel: Discord.Channel) => {
  if (channel.isDMBased()) return;
@@ -63,4 +64,13 @@ export default async (channel: Discord.Channel) => {
 
  channel.client.util.cache.vcDeleteTimeout.delete(channel.guildId, channel.id);
  channel.client.util.DataBase.voicechannels.deleteMany({ where: { channelid: channel.id } }).then();
+
+ const guildPins = channel.client.util.cache.pins.cache.get(channel.guildId);
+ const pins = guildPins?.get(channel.id);
+
+ guildPins?.delete(channel.id);
+ if (pins?.size) Array.from(pins.values()).forEach((m) => log(m));
+ if (!guildPins?.size) channel.client.util.cache.pins.cache.delete(channel.guildId);
+
+ channel.client.channels.cache.delete(channel.id);
 };
