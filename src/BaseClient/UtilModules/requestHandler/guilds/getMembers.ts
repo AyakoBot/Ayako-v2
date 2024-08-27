@@ -12,14 +12,16 @@ const guilds = new Set<string>();
  * @returns A promise that resolves with an array of GuildMember objects.
  */
 export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembersQuery) => {
- if (guild.members.cache.size === guild.memberCount) return guild.members.cache.map((m) => m); 
+ if (guild.members.cache.size === guild.memberCount) return guild.members.cache.map((m) => m);
  if (guilds.has(guild.id)) return [];
  guilds.add(guild.id);
 
  return (await getAPI(guild)).guilds
   .getMembers(guild.id, query)
   .then((members) => {
-   const parsed = members.map((m) => new Classes.GuildMember(guild.client, m, guild));
+   const parsed = members.map(
+    (m) => new Classes.GuildMember(guild.client, m as Discord.APIGuildMember, guild),
+   );
    parsed.forEach((p) => {
     if (guild.members.cache.get(p.id)) return;
     guild.members.cache.set(p.id, p);
@@ -33,4 +35,4 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembe
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e as Discord.DiscordAPIError;
   });
-}
+};
