@@ -36,8 +36,7 @@ async function fn(
   (forceMainAPI ? API : await getAPI(guild)).guilds
    .getMember(g.id, userId)
    .then((m) => {
-    // TODO: fix type error
-    const parsed = new Classes.GuildMember(g.client, m, (guild ?? g)!);
+    const parsed = new Classes.GuildMember(g.client, m as Discord.APIGuildMember, (guild ?? g)!);
     if (g.members.cache.get(parsed.id)) return parsed;
     g.members.cache.set(parsed.id, parsed);
     return parsed;
