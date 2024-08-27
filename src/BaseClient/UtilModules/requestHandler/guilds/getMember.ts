@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import * as Classes from '../../../Other/classes.js';
 import { getAPI } from '../channels/addReaction.js';
+import { API } from '../../../Bot/Client.js';
 
 /**
  * Retrieves a member from a guild by their user ID.
@@ -14,24 +15,28 @@ function fn(
  guild: undefined | null | Discord.Guild,
  userId: string,
  saveGuild: Discord.Guild,
+ forceMainAPI?: boolean,
 ): Promise<Discord.GuildMember | Discord.DiscordAPIError | Error>;
 function fn(
  guild: Discord.Guild,
  userId: string,
  saveGuild?: undefined,
+ forceMainAPI?: boolean,
 ): Promise<Discord.GuildMember | Discord.DiscordAPIError | Error>;
 async function fn(
  guild: undefined | null | Discord.Guild,
  userId: string,
  saveGuild?: Discord.Guild,
+ forceMainAPI: boolean = false,
 ): Promise<Discord.GuildMember | Discord.DiscordAPIError> {
  const g = (guild ?? saveGuild)!;
 
  return (
   g.members.cache.get(userId) ??
-  (await getAPI(guild)).guilds
+  (forceMainAPI ? API : await getAPI(guild)).guilds
    .getMember(g.id, userId)
    .then((m) => {
+    // TODO: fix type error
     const parsed = new Classes.GuildMember(g.client, m, (guild ?? g)!);
     if (g.members.cache.get(parsed.id)) return parsed;
     g.members.cache.set(parsed.id, parsed);

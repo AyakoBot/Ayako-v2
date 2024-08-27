@@ -10,7 +10,7 @@ import error from './error.js';
  */
 export default async (guild: Discord.Guild) => {
  const botId = await getBotIdFromGuild(guild);
- const rawMember = await request.guilds.getMember(guild, botId);
+ const rawMember = await request.guilds.getMember(guild, botId, undefined, true);
 
  if ('message' in rawMember) {
   error(guild, new Error(rawMember.message));
@@ -18,6 +18,7 @@ export default async (guild: Discord.Guild) => {
    undefined,
    guild.client.user.id,
    guild,
+   true,
   ) as Promise<Discord.GuildMember>;
  }
 
