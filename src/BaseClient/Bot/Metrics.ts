@@ -27,13 +27,13 @@ const shardEventsReceived = new Counter({
 const dbQuery = new Counter({
  name: 'ayako_db_query_execute',
  help: 'Individual DB queries executed',
- labelNames: ['modelName', 'action', 'Guild'],
+ labelNames: ['modelName', 'action'],
 });
 
 const cmdExecuted = new Counter({
  name: 'ayako_command_executed',
  help: 'Individual commands executed',
- labelNames: ['command', 'type', 'context', 'guild'],
+ labelNames: ['command', 'type', 'context'],
 });
 
 registry.registerMetric(dispatchEventsReceived);
