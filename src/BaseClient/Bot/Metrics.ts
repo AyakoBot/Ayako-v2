@@ -52,18 +52,10 @@ export const metricsCollector = {
  shardEventsReceived: (clientName: string, opCode: string, shard: number) =>
   shardEventsReceived.labels(clientName, opCode, String(shard)).inc(),
 
- dbQuery: (modelName: string, action: string, guild?: string) =>
-  dbQuery.labels(modelName, action, guild ?? '-').inc(),
+ dbQuery: (modelName: string, action: string) => dbQuery.labels(modelName, action).inc(),
 
- cmdExecuted: (
-  command: string,
-  type: InteractionTypeExtended,
-  context: 0 | 1,
-  guild?: string,
- ) =>
-  cmdExecuted
-   .labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User', guild ?? '-')
-   .inc(),
+ cmdExecuted: (command: string, type: InteractionTypeExtended, context: 0 | 1) =>
+  cmdExecuted.labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User').inc(),
 };
 
 type InteractionTypeExtended = InteractionType | ExtendedTypes;

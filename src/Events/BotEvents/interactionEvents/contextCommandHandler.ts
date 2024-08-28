@@ -22,12 +22,7 @@ export default async (cmd: Discord.Interaction) => {
  const command = files.find((f) => f.endsWith(`/ContextCommands/${path}.js`));
  if (!command) return;
 
- metricsCollector.cmdExecuted(
-  path,
-  cmd.type,
-  cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1,
-  cmd.guildId ?? undefined,
- );
+ metricsCollector.cmdExecuted(path, cmd.type, cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1);
 
  (await import(command)).default(cmd);
 };

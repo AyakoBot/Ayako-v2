@@ -4,9 +4,7 @@ import { metricsCollector } from './Metrics.js';
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {
- const where = getInterestingWhereClause(params.args);
-
- metricsCollector.dbQuery(params.model ?? '-', params.action, where.guild);
+ metricsCollector.dbQuery(params.model ?? '-', params.action);
 
  try {
   const result = await next(params);
@@ -20,37 +18,5 @@ prisma.$use(async (params, next) => {
   throw error;
  }
 });
-
-type Where = { [key: string]: string | unknown[] } & { [key: string]: Where };
-
-const getInterestingWhereClause = (args: Prisma.MiddlewareParams['args']) => {
- if (!('where' in args)) return '-';
- if (!args.where) return '-';
-
- const where: Where = args.where;
-
- const isArray = (val: Where[string]) => (typeof val !== 'string' ? 'Array' : (val as string));
-
- const values = Object.keys(where).map((k) => {
-  switch (true) {
-   case k === 'guildId':
-   case k === 'guildid':
-    return { guild: isArray(where.guildid || where.guildId) };
-   default: {
-    const val = where[k];
-
-    switch (true) {
-     case k.includes('guildid'):
-     case k.includes('guildId'):
-      return { guild: isArray(val.guildid || val.guildId) };
-     default:
-      return {};
-    }
-   }
-  }
- });
-
- return Object.assign({}, ...values);
-};
 
 export default prisma;
