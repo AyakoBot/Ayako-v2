@@ -178,7 +178,7 @@ const updateApp = (guild: Discord.Guild) => {
  });
 };
 
-const getMe = (guild: Discord.Guild) => client.util.request.applications.getCurrent(guild);
+export const getMe = (guild: Discord.Guild) => client.util.request.applications.getCurrent(guild);
 
 const deleteEntry = (guildId: string) => {
  client.util.cache.apis.delete(guildId);
@@ -263,7 +263,18 @@ const sendWebhookRequest = (guild: Discord.Guild, meId: string) =>
   },
  );
 
-const doCommands = async (guild: Discord.Guild, me: Discord.APIApplication) => {
+export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplication) => {
+ if (!guild.members.cache.has(me.id)) {
+  guild.client.util.DataBase.awaitJoinCC
+   .upsert({
+    where: { guildId: guild.id },
+    create: { botId: me.id, guildId: guild.id },
+    update: { botId: me.id },
+   })
+   .then();
+  return;
+ }
+
  const language = new Lang('en-GB');
 
  await client.util.request.commands.bulkOverwriteGlobalCommands(

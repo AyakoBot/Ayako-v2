@@ -5,6 +5,7 @@ import thanks4Adding from './thanks4Adding.js';
 import log from './log.js';
 import ayakoRole from './ayakoRole.js';
 import nitro from './nitro.js';
+import customClient from './customClient.js';
 
 export default async (guild: Discord.Guild) => {
  thanks4Adding(guild);
@@ -13,4 +14,5 @@ export default async (guild: Discord.Guild) => {
  installSlashCommands(guild);
  ayakoRole(guild);
  nitro(guild);
+ customClient(guild);
 };
