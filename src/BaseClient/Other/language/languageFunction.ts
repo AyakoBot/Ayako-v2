@@ -66,7 +66,7 @@ export default (t: CT.Language) => ({
  getIntegration: (integration: Discord.Integration) =>
   `**${t.JSON.t.Integration} \`${integration.name}\` / \`${integration.id}\`**\n`,
  getRole: (role: Discord.Role | { id: string; name: string }) =>
-  `**${t.JSON.t.Role} <@&${role.id}> / \`${role.name}\` / \`${role.id}\`**\n**`,
+  `**${t.JSON.t.Role} <@&${role.id}> / \`${role.name}\` / \`${role.id}\`**\n`,
  getApplication: (application: Discord.Application | Discord.IntegrationApplication | bigint) =>
   `**${t.JSON.t.Application} ${
    typeof application === 'bigint'

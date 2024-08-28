@@ -33,7 +33,7 @@
     "descUserRemove": "> {{user}}> has left\n> {{event}}",
     "descUserAddChannel": "> {{user}}> has joined\n> {{event}}> planned in\n> {{channel}}",
     "descUserAdd": "> {{user}}> has joined\n> {{event}}",
-    "descDeleteChannelAudit": "> {{user}}> has deleted\n> {{event}}from\n> {{channel}}",
+    "descDeleteChannelAudit": "> {{user}}> has deleted\n> {{event}}> from\n> {{channel}}",
     "descDeleteAudit": "> {{user}}> has deleted\n> {{event}}",
     "descDeleteChannel": "> {{event}}> was deleted from\n> {{channel}}",
     "descDelete": "> {{event}}> was deleted",
@@ -142,8 +142,8 @@
     "descUpdate": "> {{role}}> was updated"
    },
    "reaction": {
-    "descAdded": "> {{user}}> has reacted with\n> {{emoji}}\nto\n> {{msg}}",
-    "descRemoved": "> Reaction on\n> {{msg}}\nwith\n> {{emoji}}\nby\n> {{user}}> was removed.> Either by the Reactor themselves, by a Bot or by a Moderator",
+    "descAdded": "> {{user}}> has reacted with\n> {{emoji}}\n> to\n> {{msg}}",
+    "descRemoved": "> Reaction on\n> {{msg}}\n> with\n> {{emoji}}\n> by\n> {{user}}> was removed.\n> Either by the Reactor themselves, by a Bot or by a Moderator",
     "descRemovedAll": "> All Reactions on\n> {{msg}}> were removed",
     "descRemoveEmoji": "> Reaction with\n> {{emoji}}> was removed from\n> {{msg}}",
     "nameRemoveAll": "All Reactions removed",
@@ -154,8 +154,8 @@
     "count": "Reaction count"
    },
    "message": {
-    "descDeleteAudit": "> {{user}}> has deleted\n> {{msg}}from\n> {{author}}",
-    "descDelete": "> {{msg}}from\n> {{author}}> was deleted",
+    "descDeleteAudit": "> {{user}}> has deleted\n> {{msg}}> from\n> {{author}}",
+    "descDelete": "> {{msg}}> from\n> {{author}}> was deleted",
     "descDeleteBulkAudit": "> {{user}}> has bulk deleted\n> {{size}} Messages in\n> {{channel}}",
     "descDeleteBulk": "> {{size}} Messages were deleted in\n> {{channel}}",
     "descUpdateMaybe": "> {{msg}}may have been updated by\n> {{user}}or by a Moderator",
@@ -272,7 +272,7 @@
    "integration": {
     "descCreateAudit": "> {{user}}> has created\n> {{integration}}",
     "descCreate": "> {{integration}}> was created",
-    "descDeleteIntegrationAudit": "> {{user}}> has deleted\n> {{integration}}from{{app}}",
+    "descDeleteIntegrationAudit": "> {{user}}> has deleted\n> {{integration}}> from\n> {{app}}",
     "descDeleteAudit": "> {{user}}> has deleted\n> {{integration}}",
     "descDeleteIntegration": "> {{integration}}> was deleted",
     "descUpdateAudit": "> {{user}}> has updated\n> {{integration}}",
@@ -775,7 +775,7 @@
    },
    "nitro": {
     "stackRoles": "> {{user}}> has been given\n> {{roles}}> for boosting longer than {{days}} days",
-    "replaceRoles": "> The Booster-Roles of\n> {{user}}> have been replaced with\n> {{roles}}> for boosting longer than {{days}} days",
+    "replaceRoles": "> The Booster-Roles of\n> {{user}}> have been replaced with\n{{roles}}> for boosting longer than {{days}} days",
     "started": "> {{user}}> has started boosting the Server",
     "stopped": "> {{user}}> has stopped boosting the Server"
    }
@@ -3865,8 +3865,8 @@
     "meNoPerms": "I can't Ban this User",
     "youNoPerms": "You can't Ban this User",
     "error": "I failed to Ban this User",
-    "alreadyApplied": "> {{target}} is already Banned",
-    "success": "> {{target}} was Banned",
+    "alreadyApplied": "> {{target}}> is already Banned",
+    "success": "> {{target}}> was Banned",
     "loading": "Banning User...",
     "self": "You can't Ban yourself",
     "me": "I won't Ban myself"
@@ -3876,8 +3876,8 @@
     "meNoPerms": "I can't Soft-Ban this User",
     "youNoPerms": "You can't Soft-Ban this User",
     "error": "I failed to Soft-Ban this User",
-    "alreadyApplied": "> {{target}} is already Soft-Banned",
-    "success": "> {{target}} was Soft-Banned",
+    "alreadyApplied": "> {{target}}> is already Soft-Banned",
+    "success": "> {{target}}> was Soft-Banned",
     "loading": "Soft-Banning User...",
     "self": "You can't Soft-Ban yourself",
     "me": "I won't Soft-Ban myself"
@@ -3887,8 +3887,8 @@
     "meNoPerms": "I can't Temp-Ban this User",
     "youNoPerms": "You can't Temp-Ban this User",
     "error": "I failed to Temp-Ban this User",
-    "alreadyApplied": "> {{target}} is already Temp-Banned",
-    "success": "> {{target}} was Temp-Banned",
+    "alreadyApplied": "> {{target}}> is already Temp-Banned",
+    "success": "> {{target}}> was Temp-Banned",
     "loading": "Temp-Banning User...",
     "self": "You can't Temp-Ban yourself",
     "me": "I won't Temp-Ban myself"
@@ -3898,8 +3898,8 @@
     "meNoPerms": "I can't Channel-Ban this User",
     "youNoPerms": "You can't Channel-Ban this User",
     "error": "I failed to Channel-Ban this User",
-    "alreadyApplied": "> {{target}} is already Channel-Banned",
-    "success": "> {{target}} was Channel-Banned",
+    "alreadyApplied": "> {{target}}> is already Channel-Banned",
+    "success": "> {{target}}> was Channel-Banned",
     "loading": "Channel-Banning User...",
     "self": "You can't Channel-Ban yourself",
     "me": "I won't Channel-Ban myself",
@@ -3910,8 +3910,8 @@
     "meNoPerms": "I can't Temp-Channel-Ban this User",
     "youNoPerms": "You can't Temp-Channel-Ban this User",
     "error": "I failed to Temp-Channel-Ban this User",
-    "alreadyApplied": "> {{target}} is already Temp-Channel-Banned",
-    "success": "> {{target}} was Temp-Channel-Banned",
+    "alreadyApplied": "> {{target}}> is already Temp-Channel-Banned",
+    "success": "> {{target}}> was Temp-Channel-Banned",
     "loading": "Temp-Channel-Banning User...",
     "self": "You can't Temp-Channel-Ban yourself",
     "me": "I won't Temp-Channel-Ban myself"
@@ -3921,8 +3921,8 @@
     "meNoPerms": "I can't Channel-Unban this User",
     "youNoPerms": "You can't Channel-Unban this User",
     "error": "I failed to Channel-Unban this User",
-    "alreadyApplied": "> {{target}} isn't Channel-Banned",
-    "success": "> {{target}} was Channel-Unbanned",
+    "alreadyApplied": "> {{target}}> isn't Channel-Banned",
+    "success": "> {{target}}> was Channel-Unbanned",
     "loading": "Channel-Unbanning User...",
     "self": "You can't Channel-Unban yourself",
     "me": "I won't Channel-Unban myself"
@@ -3932,8 +3932,8 @@
     "meNoPerms": "I can't Un-Ban this User",
     "youNoPerms": "You can't Un-Ban this User",
     "error": "I failed to Un-Ban this User",
-    "alreadyApplied": "> {{target}} isn't Banned",
-    "success": "> {{target}} was Un-Banned",
+    "alreadyApplied": "> {{target}}> isn't Banned",
+    "success": "> {{target}}> was Un-Banned",
     "loading": "Un-Banning User...",
     "self": "You can't Un-Ban yourself",
     "me": "I won't Un-Ban myself"
@@ -3943,8 +3943,8 @@
     "meNoPerms": "I can't Kick this User",
     "youNoPerms": "You can't Kick this User",
     "error": "I failed to Kick this User",
-    "alreadyApplied": "> {{target}} is not a Member",
-    "success": "> {{target}} was Kicked",
+    "alreadyApplied": "> {{target}}> is not a Member",
+    "success": "> {{target}}> was Kicked",
     "loading": "Kicking User...",
     "self": "You can't Kick yourself",
     "me": "I won't Kick myself"
@@ -3954,8 +3954,8 @@
     "meNoPerms": "I can't Warn this User",
     "youNoPerms": "You can't Warn this User",
     "error": "I failed to Warn this User",
-    "alreadyApplied": "> {{target}} is already Warned",
-    "success": "> {{target}} was Warned",
+    "alreadyApplied": "> {{target}}> is already Warned",
+    "success": "> {{target}}> was Warned",
     "loading": "Warning User...",
     "self": "You can't Warn yourself",
     "me": "I won't Warn myself"
@@ -3965,8 +3965,8 @@
     "meNoPerms": "I can't Soft-Warn this User",
     "youNoPerms": "You can't Soft-Warn this User",
     "error": "I failed to Soft-Warn this User",
-    "alreadyApplied": "> {{target}} is already Soft-Warned",
-    "success": "> {{target}} was Soft-Warned",
+    "alreadyApplied": "> {{target}}> is already Soft-Warned",
+    "success": "> {{target}}> was Soft-Warned",
     "loading": "Soft-Warning User...",
     "self": "You can't Soft-Warn yourself",
     "me": "I won't Soft-Warn myself"

@@ -22,7 +22,7 @@ export default (t: CT.Language) => ({
   stackRoles: (user: Discord.User, r: Discord.Role[], days: string | number) =>
    t.stp(t.JSON.events.ready.nitro.stackRoles, {
     user: t.languageFunction.getUser(user),
-    roles: r.map((r2) => t.languageFunction.getRole(r2)).join(''),
+    roles: r.map((r2) => `> ${t.languageFunction.getRole(r2)}`).join('\n'),
     days,
    }),
   replaceRoles: (user: Discord.User, r: Discord.Role[], days: string | number) =>
