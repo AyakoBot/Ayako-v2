@@ -27,7 +27,7 @@ const shardEventsReceived = new Counter({
 const dbQuery = new Counter({
  name: 'ayako_db_query_execute',
  help: 'Individual DB queries executed',
- labelNames: ['modelName', 'action', 'Guild', 'User', 'Executor', 'UTS', 'Channel'],
+ labelNames: ['modelName', 'action', 'Guild'],
 });
 
 const cmdExecuted = new Counter({
@@ -52,26 +52,8 @@ export const metricsCollector = {
  shardEventsReceived: (clientName: string, opCode: string, shard: number) =>
   shardEventsReceived.labels(clientName, opCode, String(shard)).inc(),
 
- dbQuery: (
-  modelName: string,
-  action: string,
-  guild?: string,
-  user?: string,
-  executor?: string,
-  uts?: string,
-  channel?: string,
- ) =>
-  dbQuery
-   .labels(
-    modelName,
-    action,
-    guild ?? '-',
-    user ?? '-',
-    executor ?? '-',
-    uts ?? '-',
-    channel ?? '-',
-   )
-   .inc(),
+ dbQuery: (modelName: string, action: string, guild?: string) =>
+  dbQuery.labels(modelName, action, guild ?? '-').inc(),
 
  cmdExecuted: (
   command: string,

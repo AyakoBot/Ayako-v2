@@ -6,15 +6,7 @@ const prisma = new PrismaClient();
 prisma.$use(async (params, next) => {
  const where = getInterestingWhereClause(params.args);
 
- metricsCollector.dbQuery(
-  params.model ?? '-',
-  params.action,
-  where.guild,
-  where.user,
-  where.executor,
-  where.uts,
-  where.channel,
- );
+ metricsCollector.dbQuery(params.model ?? '-', params.action, where.guild);
 
  try {
   const result = await next(params);
@@ -44,14 +36,6 @@ const getInterestingWhereClause = (args: Prisma.MiddlewareParams['args']) => {
    case k === 'guildId':
    case k === 'guildid':
     return { guild: isArray(where.guildid || where.guildId) };
-   case k === 'userid':
-    return { user: isArray(where.userid) };
-   case k === 'executorid':
-    return { executor: isArray(where.executorid) };
-   case k === 'uniquetimestamp':
-    return { uts: where.uniquetimestamp as string };
-   case k === 'channelid':
-    return { channel: isArray(where.channelid) };
    default: {
     const val = where[k];
 
@@ -59,8 +43,6 @@ const getInterestingWhereClause = (args: Prisma.MiddlewareParams['args']) => {
      case k.includes('guildid'):
      case k.includes('guildId'):
       return { guild: isArray(val.guildid || val.guildId) };
-     case k.includes('userid'):
-      return { user: isArray(val.userid) };
      default:
       return {};
     }
