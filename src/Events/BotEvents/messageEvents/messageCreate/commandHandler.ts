@@ -27,7 +27,7 @@ const dmCommand = async (msg: Discord.Message) => {
  if (!command) return;
  if (!command.dmAllowed) return;
 
- metricsCollector.cmdExecuted(commandName, 0, 1, msg.author?.id || '-', msg.guildId ?? undefined);
+ metricsCollector.cmdExecuted(commandName, 0, 1, msg.guildId ?? undefined);
 
  const language = await msg.client.util.getLanguage(msg.author.id);
  command.default(msg, args, { language, command, prefix });
@@ -164,7 +164,7 @@ const guildCommand = async (msg: Discord.Message<true>) => {
   return;
  }
 
- metricsCollector.cmdExecuted(commandName, 0, 0, msg.author?.id || '-', msg.guildId ?? undefined);
+ metricsCollector.cmdExecuted(commandName, 0, 0, msg.guildId ?? undefined);
 
  command.default(msg, args, { language, command, prefix });
 };

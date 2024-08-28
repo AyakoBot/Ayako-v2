@@ -24,7 +24,6 @@ export default async (cmd: Discord.Interaction) => {
   path,
   cmd.type,
   cmd.inCachedGuild() && cmd.inGuild() ? 0 : 1,
-  cmd.user.id,
   cmd.guildId ?? undefined,
  );
 

@@ -33,7 +33,7 @@ const dbQuery = new Counter({
 const cmdExecuted = new Counter({
  name: 'ayako_command_executed',
  help: 'Individual commands executed',
- labelNames: ['command', 'type', 'context', 'guild', 'user'],
+ labelNames: ['command', 'type', 'context', 'guild'],
 });
 
 registry.registerMetric(dispatchEventsReceived);
@@ -59,11 +59,10 @@ export const metricsCollector = {
   command: string,
   type: InteractionTypeExtended,
   context: 0 | 1,
-  user: string,
   guild?: string,
  ) =>
   cmdExecuted
-   .labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User', guild ?? '-', user)
+   .labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User', guild ?? '-')
    .inc(),
 };
 
