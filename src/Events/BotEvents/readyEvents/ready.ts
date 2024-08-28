@@ -3,7 +3,6 @@ import client from '../../../BaseClient/Bot/Client.js';
 import util from '../../../BaseClient/Bot/Util.js';
 
 import startupTasks from './startupTasks.js';
-import { scheduleJob } from 'node-schedule';
 
 let ready = !process.argv.includes('--debug');
 
@@ -24,13 +23,6 @@ export default async () => {
  );
 
  startupTasks();
-
- if (!process.argv.includes('--dev')) return;
-
- scheduleJob('Dev-Version-Killer', new Date(Date.now() + 1000 * 60 * 5), async () => {
-  await client.cluster?.broadcastEval(() => process.exit(0));
-  await client.cluster?.evalOnManager('process.exit(0)');
- });
 };
 
 export const getReady = () => ready;
