@@ -31,7 +31,7 @@ export default async (member: Discord.GuildMember) => {
   description,
   fields: [
    {
-    name: language.t.roles,
+    name: language.t.Roles,
     value: member.roles.cache.map((r) => `<@&${r.id}>`).join(', '),
    },
   ],
