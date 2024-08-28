@@ -136,6 +136,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
 };
 
 const tokenDelete = (guild: Discord.Guild) => {
+ client.util.cache.customClients.delete(guild.id);
  client.util.cache.apis.delete(guild.id);
  client.util.DataBase.customclients
   .update({
@@ -161,9 +162,9 @@ const tokenCreate = async (
  updateApp(guild);
  if (!meIsValid(guild, me)) return;
 
-
  sendWebhookRequest(guild, me.id);
  doCommands(guild, me);
+ guild.client.util.cache.customClients.delete(guild.id);
 };
 
 const updateApp = (guild: Discord.Guild) => {

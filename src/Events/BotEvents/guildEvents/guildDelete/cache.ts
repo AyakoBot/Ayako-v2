@@ -58,6 +58,7 @@ export default (guild: Discord.Guild) => {
  cache.deleteSuggestions.cache.delete(guild.id);
  cache.vcDeleteTimeout.cache.get(guild.id)?.forEach((i) => i?.cancel());
  cache.vcDeleteTimeout.cache.delete(guild.id);
+ cache.customClients.delete(guild.id);
 
  const { DataBase } = guild.client.util;
  DataBase.guilds.delete({ where: { guildid: guild.id } }).then();

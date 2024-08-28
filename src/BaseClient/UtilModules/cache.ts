@@ -74,6 +74,7 @@ const cache: {
  gifs: typeof gifs;
  latelySavedUsers: Map<string, number>;
  hasFetchedAllMembers: Set<string>;
+ customClients: Map<string, string>;
 
  // URLs
  urlTLDs: UrlTLDs;
@@ -104,6 +105,7 @@ const cache: {
  commandPermissions,
  interactedGuilds: new Set(),
  interactedChannels: new Set(),
+ customClients: new Map(),
 
  // Cache
  giveawayClaimTimeout,

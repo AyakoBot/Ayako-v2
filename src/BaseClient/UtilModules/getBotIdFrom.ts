@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import DataBase from '../Bot/DataBase.js';
+import cache from './cache.js';
 
 /**
  * Extracts the bot ID from a Discord bot token.
@@ -20,12 +21,19 @@ export const guild = async (g: Discord.Guild) => {
   return client.user!.id;
  }
 
+ if (cache.customClients.get(g.id)) return cache.customClients.get(g.id)!;
+
  const settings = await DataBase.customclients.findUnique({
   where: { guildid: g.id, token: { not: null } },
   select: { token: true },
  });
- if (!settings) return g.client.user.id;
- if (!settings.token) return g.client.user.id;
+ if (!settings || !settings.token) {
+  cache.customClients.set(g.id, g.client.user.id);
+  return g.client.user.id;
+ }
 
- return token(settings.token) ?? g.client.user.id;
+ const id = token(settings.token);
+ cache.customClients.set(g.id, id);
+
+ return id;
 };
