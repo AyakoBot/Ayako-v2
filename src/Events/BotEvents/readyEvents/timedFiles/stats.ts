@@ -1,3 +1,4 @@
+import { metricsCollector } from 'src/BaseClient/Bot/Metrics.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
 type ReturnType = Promise<number[] | undefined>;
@@ -32,6 +33,15 @@ export default async () => {
  const shardList = await client.cluster?.broadcastEval(
   (cl) => cl.util.files.sharding.getInfo().SHARD_LIST,
  );
+
+ metricsCollector.guildCount(guildCount);
+ metricsCollector.userCount(allUsers);
+ metricsCollector.emojiCount(emoteCount);
+ metricsCollector.roleCount(allUsers);
+ metricsCollector.channelCount(channelCount);
+ metricsCollector.stickerCount(stickerCount);
+ metricsCollector.clusterCount(client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1);
+ metricsCollector.shardCount((shardList?.flat() ?? [1]).reduce((v, v2) => v2 + v, 0));
 
  client.util.DataBase.stats
   .create({

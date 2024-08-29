@@ -36,11 +36,75 @@ const cmdExecuted = new Counter({
  labelNames: ['command', 'type', 'context'],
 });
 
+const dbLatency = new Gauge({
+ name: 'ayako_db_query_latency',
+ help: 'Latency of each DB query',
+ labelNames: ['modelName', 'action'],
+});
+
+const guildCount = new Gauge({
+ name: 'ayako_guild_count',
+ help: 'Amount of Guilds Ayako is in',
+ labelNames: [],
+});
+
+const userCount = new Gauge({
+ name: 'ayako_user_count',
+ help: 'Amount of Users Ayako manages',
+ labelNames: [],
+});
+
+const emojiCount = new Gauge({
+ name: 'ayako_emoji_count',
+ help: 'Amount of Emojis Ayako has access to',
+ labelNames: [],
+});
+
+const roleCount = new Gauge({
+ name: 'ayako_role_count',
+ help: 'Amount of Roles Ayako has access to',
+ labelNames: [],
+});
+
+const channelCount = new Gauge({
+ name: 'ayako_channel_count',
+ help: 'Amount of Channels Ayako has access to',
+ labelNames: [],
+});
+
+const stickerCount = new Gauge({
+ name: 'ayako_sticker_count',
+ help: 'Amount of Stickers Ayako has access to',
+ labelNames: [],
+});
+
+const clusterCount = new Gauge({
+ name: 'ayako_cluster_count',
+ help: 'Amount of Clusters Ayako is running',
+ labelNames: [],
+});
+
+const shardCount = new Gauge({
+ name: 'ayako_shard_count',
+ help: 'Amount of Shards Ayako is running',
+ labelNames: [],
+});
+
 registry.registerMetric(dispatchEventsReceived);
 registry.registerMetric(shardLatency);
 registry.registerMetric(shardEventsReceived);
 registry.registerMetric(dbQuery);
 registry.registerMetric(cmdExecuted);
+registry.registerMetric(dbLatency);
+registry.registerMetric(dbLatency);
+registry.registerMetric(guildCount);
+registry.registerMetric(userCount);
+registry.registerMetric(emojiCount);
+registry.registerMetric(roleCount);
+registry.registerMetric(channelCount);
+registry.registerMetric(guildCount);
+registry.registerMetric(clusterCount);
+registry.registerMetric(shardCount);
 
 export const metricsCollector = {
  dispatchEventsReceived: (clientName: string, eventType: string, shard: number) =>
@@ -56,6 +120,18 @@ export const metricsCollector = {
 
  cmdExecuted: (command: string, type: InteractionTypeExtended, context: 0 | 1) =>
   cmdExecuted.labels(command, getInteractionType(type), context === 0 ? 'Guild' : 'User').inc(),
+
+ dbLatency: (modelName: string, action: string, latency: number) =>
+  dbLatency.labels(modelName, action).set(latency),
+
+ guildCount: (count: number) => guildCount.labels().set(count),
+ userCount: (count: number) => userCount.labels().set(count),
+ emojiCount: (count: number) => emojiCount.labels().set(count),
+ roleCount: (count: number) => roleCount.labels().set(count),
+ channelCount: (count: number) => channelCount.labels().set(count),
+ stickerCount: (count: number) => stickerCount.labels().set(count),
+ clusterCount: (count: number) => clusterCount.labels().set(count),
+ shardCount: (count: number) => shardCount.labels().set(count),
 };
 
 type InteractionTypeExtended = InteractionType | ExtendedTypes;

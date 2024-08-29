@@ -1,22 +1,28 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { metricsCollector } from './Metrics.js';
 
-const prisma = new PrismaClient();
+type OperationsArgs = {
+ model: string;
+ operation: string;
+ args: any;
+ query: (args: any) => Promise<any>;
+};
 
-prisma.$use(async (params, next) => {
- metricsCollector.dbQuery(params.model ?? '-', params.action);
+const prisma = new PrismaClient().$extends({
+ name: 'Metrics Middleware',
+ model: {
+  $allModels: {
+   $allOperations: async ({ model, operation, args, query }: OperationsArgs) => {
+    metricsCollector.dbQuery(model ?? '-', operation);
 
- try {
-  const result = await next(params);
-  return result;
- } catch (error) {
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-   // eslint-disable-next-line no-console
-   if (process.argv.includes('--debug-db')) console.log(`[Prisma] Error: ${error}`);
-   return null;
-  }
-  throw error;
- }
+    const start = Date.now();
+    const result = await query(args);
+    metricsCollector.dbLatency(model ?? '-', operation, Date.now() - start);
+
+    return result;
+   },
+  },
+ },
 });
 
 export default prisma;
