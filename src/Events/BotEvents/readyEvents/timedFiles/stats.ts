@@ -30,9 +30,7 @@ export default async () => {
   ])
  ).map((v) => (v ?? []).reduce((acc, count) => acc + count, 0));
 
- const shardList = await client.cluster?.broadcastEval(
-  (cl) => cl.util.files.sharding.getInfo().SHARD_LIST,
- );
+ const shardList = (client.util.files.sharding.getInfo().SHARD_LIST?.flat() ?? [1]).length;
 
  metricsCollector.guildCount(guildCount);
  metricsCollector.userCount(allUsers);
@@ -41,7 +39,7 @@ export default async () => {
  metricsCollector.channelCount(channelCount);
  metricsCollector.stickerCount(stickerCount);
  metricsCollector.clusterCount(client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1);
- metricsCollector.shardCount((shardList?.flat() ?? [1]).reduce((v, v2) => v2 + v, 0));
+ metricsCollector.shardCount(shardList);
 
  client.util.DataBase.stats
   .create({
@@ -54,7 +52,7 @@ export default async () => {
     emoteCount,
     stickerCount,
     clusterCount: client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1,
-    shardCount: (shardList?.flat() ?? [1]).reduce((v, v2) => v2 + v, 0),
+    shardCount: shardList,
     timestamp: Date.now(),
    },
   })
