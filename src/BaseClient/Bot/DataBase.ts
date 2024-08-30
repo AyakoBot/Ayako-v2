@@ -1,18 +1,31 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { metricsCollector } from './Metrics.js';
 
-type OperationsArgs = {
- model: string;
- operation: string;
- args: any;
- query: (args: any) => Promise<any>;
-};
+import logchannels from './DataBase/logchannels.js';
+import guildsettings from './DataBase/guildsettings.js';
+import customclients from './DataBase/customclients.js';
 
-const prisma = new PrismaClient().$extends({
- name: 'Metrics Middleware',
- model: {
-  $allModels: {
-   $allOperations: async ({ model, operation, args, query }: OperationsArgs) => {
+const prisma = new PrismaClient();
+
+prisma.$use(async (params, next) => {
+ try {
+  const result = await next(params);
+  return result;
+ } catch (error) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+   // eslint-disable-next-line no-console
+   if (process.argv.includes('--debug-db')) console.log(`[Prisma] Error: ${error}`);
+   return null;
+  }
+  throw error;
+ }
+});
+
+export default prisma
+ .$extends({
+  name: 'Metrics Middleware',
+  query: {
+   $allOperations: async ({ model, operation, args, query }) => {
     metricsCollector.dbQuery(model ?? '-', operation);
 
     const start = Date.now();
@@ -22,7 +35,12 @@ const prisma = new PrismaClient().$extends({
     return result;
    },
   },
- },
-});
-
-export default prisma;
+ })
+ .$extends({
+  name: 'Cache Middleware',
+  query: {
+   ...(logchannels as any),
+   ...(guildsettings as any),
+   ...(customclients as any),
+  },
+ });

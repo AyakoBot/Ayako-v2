@@ -1,0 +1,117 @@
+import { Prisma } from '@prisma/client';
+import { ExtensionArgs, ModelQueryOptionsCbArgs } from '@prisma/client/runtime/library.js';
+import { DataBaseTables, MaybeArray, RequiredOnly } from 'src/Typings/Typings.js';
+import Redis from '../Redis.js';
+
+const name = 'guildsettings';
+
+export default {
+ [name]: {
+  $allOperations: async (data) => {
+   const guildIds = getKey<typeof name>(
+    data.args.where as Prisma.guildsettingsWhereUniqueInput,
+    'guildid',
+   );
+
+   if (!guildIds?.length) return data.query(data.args);
+   const keys = guildIds.map((guildId) => `${process.env.mainId}:${name}:${guildId}`);
+
+   switch (data.operation) {
+    case 'findMany':
+    case 'findFirst':
+    case 'findUnique':
+     return handleFind(data, keys, name, 'guildid');
+    case 'update':
+    case 'updateMany':
+    case 'upsert':
+    case 'create':
+    case 'delete':
+    case 'deleteMany':
+    case 'create':
+    case 'createMany':
+    case 'createManyAndReturn':
+     keys.forEach((key) => Redis.del(key));
+     return data.query(data.args);
+    default:
+     return data.query(data.args);
+   }
+  },
+ },
+} as ExtensionArgs['query'];
+
+type Operations<T extends keyof Prisma.TypeMap['model']> = Prisma.TypeMap['model'][T]['operations'];
+type Args<
+ T extends keyof Prisma.TypeMap['model'],
+ K extends keyof Operations<T>,
+> = Operations<T>[K];
+
+export const getKey = <T extends keyof Prisma.TypeMap['model']>(
+ where: Args<T, 'findUnique'>['args']['where'],
+ keyName: keyof RequiredOnly<Args<T, 'findUnique'>['args']['where']>,
+) => {
+ if (!where) return null;
+ if (!(keyName in where)) return null;
+
+ const keyVal = where[keyName as keyof typeof where];
+
+ if (!keyVal) return null;
+ if (typeof keyVal === 'string') return [keyVal];
+ if (typeof keyVal !== 'object') return null;
+ if ('in' in keyVal && keyVal.in) {
+  if (!Array.isArray(keyVal.in)) return null;
+  return keyVal.in;
+ }
+
+ return null;
+};
+
+export const handleFind = async <T extends keyof DataBaseTables>(
+ data: ModelQueryOptionsCbArgs,
+ keys: string[],
+ tableName: T,
+ keyName: keyof DataBaseTables[T],
+) => {
+ {
+  const cached = await Promise.all(keys.map((key) => Redis.get(key)));
+
+  if (cached.some((c) => c === null) || !cached.length) {
+   return cacheNewEntry(
+    (await data.query(data.args)) as MaybeArray<DataBaseTables[T]>,
+    tableName,
+    keyName,
+   );
+  }
+
+  if (!isValid(cached as string[])) return data.query(data.args);
+  const validCached = (cached as string[]).map((c) => JSON.parse(c) as DataBaseTables[T]);
+
+  return ['findUnique', 'findFirst'].includes(data.operation) ? validCached[0] : validCached;
+ }
+};
+
+export const cacheNewEntry = <T extends keyof DataBaseTables>(
+ res: MaybeArray<DataBaseTables[T]>,
+ tableName: T,
+ keyName: keyof DataBaseTables[T],
+) => {
+ if ((Array.isArray(res) && !res.length) || !res) return res;
+
+ if (Array.isArray(res)) {
+  res.forEach((r) =>
+   Redis.set(`${process.env.mainId}:${tableName}:${r[keyName]}`, JSON.stringify(r)),
+  );
+ } else {
+  Redis.set(`${process.env.mainId}:${tableName}:${res[keyName]}`, JSON.stringify(res));
+ }
+
+ return res;
+};
+
+export const isValid = (cached: string[]) => {
+ try {
+  cached.forEach((c) => JSON.parse(c));
+  return true;
+ } catch {
+  return false;
+ }
+};

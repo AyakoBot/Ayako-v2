@@ -220,3 +220,11 @@ export enum MessageType {
 export type MakeRequired<T, K extends keyof T> = T & {
  [P in K]-?: Exclude<T[P], null>;
 };
+
+export type MaybeArray<T = unknown> = T | T[];
+
+type RequiredKeys<T> = {
+ [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
+}[keyof T];
+
+export type RequiredOnly<T> = Pick<T, RequiredKeys<T>>;
