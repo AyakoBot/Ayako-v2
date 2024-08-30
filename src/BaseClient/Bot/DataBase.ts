@@ -23,6 +23,14 @@ prisma.$use(async (params, next) => {
 
 export default prisma
  .$extends({
+  name: 'Cache Middleware',
+  query: {
+   ...(logchannels as any),
+   ...(guildsettings as any),
+   ...(customclients as any),
+  },
+ })
+ .$extends({
   name: 'Metrics Middleware',
   query: {
    $allOperations: async ({ model, operation, args, query }) => {
@@ -34,13 +42,5 @@ export default prisma
 
     return result;
    },
-  },
- })
- .$extends({
-  name: 'Cache Middleware',
-  query: {
-   ...(logchannels as any),
-   ...(guildsettings as any),
-   ...(customclients as any),
   },
  });
