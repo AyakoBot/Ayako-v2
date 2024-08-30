@@ -1,4 +1,4 @@
-import { metricsCollector } from 'src/BaseClient/Bot/Metrics.js';
+import { metricsCollector } from '../../../../BaseClient/Bot/Metrics.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
 type ReturnType = Promise<number[] | undefined>;
