@@ -37,7 +37,7 @@ export default async () => {
  metricsCollector.guildCount(guildCount);
  metricsCollector.userCount(allUsers);
  metricsCollector.emojiCount(emoteCount);
- metricsCollector.roleCount(allUsers);
+ metricsCollector.roleCount(roleCount);
  metricsCollector.channelCount(channelCount);
  metricsCollector.stickerCount(stickerCount);
  metricsCollector.clusterCount(client.util.files.sharding.getInfo().CLUSTER_COUNT ?? 1);
