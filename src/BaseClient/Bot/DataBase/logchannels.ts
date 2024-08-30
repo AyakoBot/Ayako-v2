@@ -8,8 +8,6 @@ const name = 'logchannels';
 export default {
  [name]: {
   $allOperations: async (data) => {
-   console.log();
-
    const guildIds = getKey<typeof name>(
     data.args.where as Prisma.logchannelsWhereUniqueInput,
     'guildid',

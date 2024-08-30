@@ -97,10 +97,12 @@ export const cacheNewEntry = <T extends keyof DataBaseTables>(
  if ((Array.isArray(res) && !res.length) || !res) return res;
 
  if (Array.isArray(res)) {
-  res.forEach((r) =>
-   Redis.set(`${process.env.mainId}:${tableName}:${r[keyName]}`, JSON.stringify(r)),
-  );
- } else {
+  res
+   .filter((r) => !!r[keyName])
+   .forEach((r) =>
+    Redis.set(`${process.env.mainId}:${tableName}:${r[keyName]}`, JSON.stringify(r)),
+   );
+ } else if (res[keyName]) {
   Redis.set(`${process.env.mainId}:${tableName}:${res[keyName]}`, JSON.stringify(res));
  }
 
