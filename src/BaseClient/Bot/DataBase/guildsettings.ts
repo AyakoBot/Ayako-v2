@@ -1,43 +1,49 @@
 import { Prisma } from '@prisma/client';
-import { ExtensionArgs, ModelQueryOptionsCbArgs } from '@prisma/client/runtime/library.js';
+import {
+ DefaultArgs,
+ DynamicQueryExtensionCb,
+ InternalArgs,
+} from '@prisma/client/runtime/library.js';
 import { DataBaseTables, MaybeArray, RequiredOnly } from 'src/Typings/Typings.js';
 import Redis from '../Redis.js';
 
 const name = 'guildsettings';
 
-export default {
- [name]: {
-  $allOperations: async (data) => {
-   const guildIds = getKey<typeof name>(
-    data.args.where as Prisma.guildsettingsWhereUniqueInput,
-    'guildid',
-   );
+export default Prisma.defineExtension({
+ query: {
+  [name]: {
+   $allOperations: async (data) => {
+    if (!('where' in data.args) || !data.args.where) return data.query(data.args);
+    if (!data.args.where) return data.query(data.args);
 
-   if (!guildIds?.length) return data.query(data.args);
-   const keys = guildIds.map((guildId) => `${process.env.mainId}:${name}:${guildId}`);
+    const guildIds = getKey<typeof name>(data.args.where, 'guildid');
 
-   switch (data.operation) {
-    case 'findMany':
-    case 'findFirst':
-    case 'findUnique':
-     return handleFind(data, keys, name, 'guildid');
-    case 'update':
-    case 'updateMany':
-    case 'upsert':
-    case 'create':
-    case 'delete':
-    case 'deleteMany':
-    case 'create':
-    case 'createMany':
-    case 'createManyAndReturn':
-     keys.forEach((key) => Redis.del(key));
-     return data.query(data.args);
-    default:
-     return data.query(data.args);
-   }
+    if (!guildIds?.length) return data.query(data.args);
+    const keys = guildIds.map((guildId) => `${process.env.mainId}:${name}:${guildId}`);
+
+    switch (data.operation) {
+     case 'findMany':
+     case 'findFirst':
+     case 'findUnique':
+      return handleFind(data, keys, name, 'guildid');
+     case 'update':
+     case 'updateMany':
+     case 'upsert':
+     case 'create':
+     case 'delete':
+     case 'deleteMany':
+     case 'create':
+     case 'createMany':
+     case 'createManyAndReturn':
+      keys.forEach((key) => Redis.del(key));
+      return data.query(data.args);
+     default:
+      return data.query(data.args);
+    }
+   },
   },
  },
-} as ExtensionArgs['query'];
+});
 
 type Operations<T extends keyof Prisma.TypeMap['model']> = Prisma.TypeMap['model'][T]['operations'];
 type Args<
@@ -46,12 +52,13 @@ type Args<
 > = Operations<T>[K];
 
 export const getKey = <T extends keyof Prisma.TypeMap['model']>(
- where: Args<T, 'findUnique'>['args']['where'],
+ where: Args<T, 'findMany'>['args']['where'] | Prisma.StringFilter | undefined,
  keyName: keyof RequiredOnly<Args<T, 'findUnique'>['args']['where']>,
-) => {
+): string[] | null => {
  if (!where) return null;
  if (!(keyName in where)) return null;
 
+ // @ts-expect-error
  const keyVal = where[keyName as keyof typeof where];
 
  if (!keyVal) return null;
@@ -66,7 +73,29 @@ export const getKey = <T extends keyof Prisma.TypeMap['model']>(
 };
 
 export const handleFind = async <T extends keyof DataBaseTables>(
- data: ModelQueryOptionsCbArgs,
+ data: Parameters<
+  DynamicQueryExtensionCb<
+   Prisma.TypeMap<InternalArgs & DefaultArgs, Prisma.PrismaClientOptions>,
+   'model',
+   'guildsettings',
+   | 'findUnique'
+   | 'findUniqueOrThrow'
+   | 'findFirst'
+   | 'findFirstOrThrow'
+   | 'findMany'
+   | 'create'
+   | 'createMany'
+   | 'createManyAndReturn'
+   | 'delete'
+   | 'update'
+   | 'deleteMany'
+   | 'updateMany'
+   | 'upsert'
+   | 'aggregate'
+   | 'groupBy'
+   | 'count'
+  >
+ >[0],
  keys: string[],
  tableName: T,
  keyName: keyof DataBaseTables[T],
