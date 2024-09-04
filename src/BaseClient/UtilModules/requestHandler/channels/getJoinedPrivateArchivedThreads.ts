@@ -32,16 +32,13 @@ export default async (
    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
    parsed.forEach((p) => {
     if (channel.threads.cache.get(p.id)) return;
-    channel.threads.cache.set(
-     p.id,
-     p as Discord.ThreadChannel<true> & Discord.ThreadChannel<false>,
-    );
+    channel.threads.cache.set(p.id, p as any);
    });
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

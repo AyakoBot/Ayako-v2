@@ -33,9 +33,9 @@ export default async (
  return (await getAPI(guild)).guilds
   .setRolePositions(guild.id, body, { reason })
   .then((roles) => roles.map((r) => new Classes.Role(guild.client, r, guild)))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

@@ -23,9 +23,9 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
- return (await getAPI(guild)).guilds.delete(guild.id).catch((e) => {
+ return (await getAPI(guild)).guilds.delete(guild.id).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };
 

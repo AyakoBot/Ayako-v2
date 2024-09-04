@@ -155,7 +155,7 @@ const setCooldown = (channelId: string, commandName: string, cooldown: number) =
   cache.cooldown.get(channelId)?.get(commandName);
  }
 
- cache.cooldown.set(channelId, new Map().set(commandName, cooldown * 1000));
+ cache.cooldown.set(channelId, new Map<string, number>().set(commandName, cooldown * 1000));
 };
 
 const deleteCooldown = (channelId: string, commandName: string) => {

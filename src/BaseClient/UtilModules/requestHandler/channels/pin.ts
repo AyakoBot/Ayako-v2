@@ -22,10 +22,12 @@ export default async (msg: Discord.Message<true>) => {
   return e;
  }
 
- return (await getAPI(msg.guild)).channels.pinMessage(msg.channelId, msg.id).catch((e) => {
-  error(msg.guild, e);
-  return e as Discord.DiscordAPIError;
- });
+ return (await getAPI(msg.guild)).channels
+  .pinMessage(msg.channelId, msg.id)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(msg.guild, e);
+   return e;
+  });
 };
 
 /**

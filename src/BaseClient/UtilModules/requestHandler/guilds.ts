@@ -1,5 +1,6 @@
 import edit from './guilds/edit.js';
 import del from './guilds/delete.js';
+import get from './guilds/get.js';
 import getChannels from './guilds/getChannels.js';
 import getWidgetImage from './guilds/getWidgetImage.js';
 import getVanityURL from './guilds/getVanityURL.js';
@@ -73,6 +74,7 @@ import setRolePositions from './guilds/setRolePositions.js';
 interface Guilds {
  edit: typeof edit;
  delete: typeof del;
+ get: typeof get;
  getChannels: typeof getChannels;
  getWidgetImage: typeof getWidgetImage;
  getVanityURL: typeof getVanityURL;
@@ -150,6 +152,8 @@ interface Guilds {
  * - Edits a guild.
  * @property {Function} delete
  * - Deletes a guild.
+ * @property {Function} get
+ * - Gets a guild.
  * @property {Function} getChannels
  * - Gets the channels in a guild.
  * @property {Function} getWidgetImage
@@ -292,6 +296,7 @@ interface Guilds {
 const guilds: Guilds = {
  edit,
  delete: del,
+ get,
  getChannels,
  getWidgetImage,
  getVanityURL,

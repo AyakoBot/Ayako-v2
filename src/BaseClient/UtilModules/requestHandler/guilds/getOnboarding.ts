@@ -12,7 +12,7 @@ export default async (guild: Discord.Guild) =>
  (await getAPI(guild)).guilds
   .getOnboarding(guild.id)
   .then((o) => new Classes.GuildOnboarding(guild.client, o))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });

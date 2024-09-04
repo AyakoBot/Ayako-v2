@@ -8,7 +8,7 @@ import { getAPI } from '../channels/addReaction.js';
  * @returns A promise that resolves with the Nitro stickers, or rejects with a DiscordAPIError.
  */
 export default async (guild: Discord.Guild | null) =>
- (await getAPI(guild)).stickers.getStickers().catch((e) => {
+ (await getAPI(guild)).stickers.getStickers().catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });

@@ -28,9 +28,9 @@ export default async (guild: Discord.Guild, body: Discord.RESTPostAPIGuildTempla
  return (await getAPI(guild)).guilds
   .createTemplate(guild.id, body)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

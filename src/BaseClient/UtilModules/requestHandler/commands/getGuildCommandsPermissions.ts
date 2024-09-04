@@ -35,9 +35,9 @@ export default async (guild: Discord.Guild) => {
 
    return res;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    setHasMissingScopes(e.message, guild);
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

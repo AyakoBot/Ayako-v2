@@ -30,8 +30,8 @@ export default async (
    parsed.forEach((p) => guild.client.application.commands.cache.set(p.id, p));
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

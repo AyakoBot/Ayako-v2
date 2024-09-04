@@ -19,7 +19,7 @@ export default async (thread: Discord.ThreadChannel, userId: string) =>
    thread.members.cache.set(parsed.id, parsed);
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(thread.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });

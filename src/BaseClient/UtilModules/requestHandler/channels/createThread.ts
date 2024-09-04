@@ -40,7 +40,7 @@ export default async (
  return (await getAPI(channel.guild)).channels
   .createThread(channel.id, body, msgId)
   .then((t) => Classes.Channel<10>(channel.client, t, channel.guild))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
    e.message += ` in ${channel.id} - Reported ${
     channel.guild.channels.cache.filter(
@@ -51,7 +51,7 @@ export default async (
     ).size
    } threads`;
 
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

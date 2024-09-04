@@ -28,9 +28,9 @@ export default async (guild: Discord.Guild, userId: string, roleId: string, reas
 
  return (await getAPI(guild)).guilds
   .addRoleToMember(guild.id, userId, roleId, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

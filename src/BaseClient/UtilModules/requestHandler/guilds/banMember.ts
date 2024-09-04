@@ -31,9 +31,9 @@ export default async (
 
  return (await getAPI(member.guild)).guilds
   .banUser(member.guild.id, member.id, body, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(member.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

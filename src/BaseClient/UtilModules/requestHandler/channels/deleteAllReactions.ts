@@ -25,9 +25,9 @@ export default async (msg: Discord.Message<true>) => {
 
  return (await getAPI(msg.guild)).channels
   .deleteAllMessageReactions(msg.channel.id, msg.id)
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

@@ -137,7 +137,7 @@ export default send;
  */
 const combineMessages = async (
  channel:
-  | Discord.AnyThreadChannel<boolean>
+  | Discord.AnyThreadChannel
   | Discord.NewsChannel
   | Discord.TextChannel
   | Discord.VoiceChannel,

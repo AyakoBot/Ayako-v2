@@ -35,9 +35,9 @@ export default async (guild: Discord.Guild, body: Discord.RESTPatchAPIGuildJSONB
     : body.discovery_splash,
   })
   .then((g) => new Classes.Guild(guild.client, g))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

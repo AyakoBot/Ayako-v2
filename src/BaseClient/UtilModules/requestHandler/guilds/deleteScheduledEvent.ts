@@ -26,9 +26,9 @@ export default async (guild: Discord.Guild, eventId: string, reason?: string) =>
 
  return (await getAPI(guild)).guilds
   .deleteScheduledEvent(guild.id, eventId, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

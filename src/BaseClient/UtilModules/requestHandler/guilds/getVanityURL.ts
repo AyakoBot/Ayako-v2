@@ -73,11 +73,11 @@ export default async (guild: Discord.Guild) => {
    if (parsed) guild.invites.cache.set(parsed.code, parsed);
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    if (e.message !== 'Missing Access') {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
    }
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

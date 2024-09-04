@@ -34,9 +34,9 @@ export default async (
  return (await getAPI(guild)).guilds
   .createSticker(guild.id, body, { reason })
   .then((s) => new Classes.Sticker(guild.client, s))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

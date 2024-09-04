@@ -31,7 +31,7 @@ export default async (
    files: await resolveFiles(body.files),
   })
   .then((m) => new Classes.Message(guild.client, m))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });

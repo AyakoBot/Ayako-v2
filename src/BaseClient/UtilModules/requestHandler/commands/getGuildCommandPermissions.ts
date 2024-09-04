@@ -32,9 +32,9 @@ export default async (guild: Discord.Guild, commandId: string) => {
    cache.commandPermissions.set(guild.id, commandId, res.permissions);
    return res.permissions;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    setHasMissingScopes(e.message, guild);
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

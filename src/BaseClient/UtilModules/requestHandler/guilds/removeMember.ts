@@ -27,9 +27,9 @@ export default async (member: Discord.GuildMember, reason?: string) => {
 
  return (await getAPI(member.guild)).guilds
   .removeMember(member.guild.id, member.id, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(member.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

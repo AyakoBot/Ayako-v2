@@ -26,7 +26,7 @@ await Manager.spawn()
    await Manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
   }, 60000);
  })
- .catch((e) => {
+ .catch((e: Response) => {
   console.log(
    `[Cluster Manager] Startup Failed. Retry after: ${
     Number(e.headers?.get('retry-after') ?? 0) / 60

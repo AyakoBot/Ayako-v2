@@ -33,9 +33,9 @@ export default async (msg: Message) => {
 
  return (await getAPI(msg.guild)).channels
   .deleteMessage(msg.channelId, 'messageId' in msg ? msg.messageId! : msg.id)
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

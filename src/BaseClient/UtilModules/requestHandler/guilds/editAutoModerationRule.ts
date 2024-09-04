@@ -35,9 +35,9 @@ export default async (
  return (await getAPI(guild)).guilds
   .editAutoModerationRule(guild.id, ruleId, body, { reason })
   .then((r) => new Classes.AutoModerationRule(guild.client, r, guild))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

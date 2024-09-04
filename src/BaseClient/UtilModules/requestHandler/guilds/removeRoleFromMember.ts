@@ -32,9 +32,9 @@ export default async (
 
  return (await getAPI(guild)).guilds
   .removeRoleFromMember(guild.id, userId, role.id, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

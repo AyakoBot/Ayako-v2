@@ -34,9 +34,9 @@ export default async (
  return (await getAPI(channel.guild)).stageInstances
   .edit(channel.id, body, { reason })
   .then((s) => new Classes.StageInstance(channel.client, s, channel))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

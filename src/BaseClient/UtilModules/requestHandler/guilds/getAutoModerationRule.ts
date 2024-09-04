@@ -32,9 +32,9 @@ export default async (guild: Discord.Guild, ruleId: string) => {
     guild.autoModerationRules.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => {
+   .catch((e: Discord.DiscordAPIError) => {
     error(guild, new Error((e as Discord.DiscordAPIError).message));
-    return e as Discord.DiscordAPIError;
+    return e;
    })
  );
 };

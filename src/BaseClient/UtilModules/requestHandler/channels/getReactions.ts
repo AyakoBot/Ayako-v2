@@ -94,8 +94,8 @@ export default async (
     msg.reactions.cache.get(resolvedEmoji.id ?? resolvedEmoji.name ?? '')?.users.cache.set(p.id, p);
    });
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

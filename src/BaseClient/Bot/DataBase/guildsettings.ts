@@ -77,7 +77,7 @@ export const handleFind = async <T extends keyof DataBaseTables>(
   DynamicQueryExtensionCb<
    Prisma.TypeMap<InternalArgs & DefaultArgs, Prisma.PrismaClientOptions>,
    'model',
-   'guildsettings',
+   T,
    | 'findUnique'
    | 'findUniqueOrThrow'
    | 'findFirst'
@@ -105,13 +105,16 @@ export const handleFind = async <T extends keyof DataBaseTables>(
 
   if (cached.some((c) => c === null) || !cached.length) {
    return cacheNewEntry(
-    (await data.query(data.args)) as MaybeArray<DataBaseTables[T]>,
+    (await data.query(data.args as any)) as MaybeArray<
+     DataBaseTables[T]
+    >,
     tableName,
     keyName,
    );
   }
 
-  if (!isValid(cached as string[])) return data.query(data.args);
+  if (!isValid(cached as string[]))
+   return data.query(data.args as any);
   const validCached = (cached as string[]).map((c) => JSON.parse(c) as DataBaseTables[T]);
 
   return ['findUnique', 'findFirst'].includes(data.operation) ? validCached[0] : validCached;

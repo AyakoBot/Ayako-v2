@@ -32,9 +32,9 @@ export default async (channel: Discord.GuildBasedChannel) => {
  return (await getAPI(channel.guild)).channels
   .delete(channel.id)
   .then((c) => Classes.Channel(channel.guild.client, c, channel.guild))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

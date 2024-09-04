@@ -40,9 +40,9 @@ export default async (
 
  return (await getAPI(channel.guild)).channels
   .editPermissionOverwrite(channel.id, overwriteId, body, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

@@ -27,9 +27,9 @@ export default async (guild: Discord.Guild, integrationId: string, reason?: stri
 
  return (await getAPI(guild)).guilds
   .deleteIntegration(guild.id, integrationId, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

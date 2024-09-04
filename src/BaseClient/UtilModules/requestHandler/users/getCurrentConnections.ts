@@ -11,7 +11,7 @@ import { getAPI } from '../channels/addReaction.js';
 export default async (
  guild: Discord.Guild,
 ): Promise<Discord.RESTGetAPICurrentUserConnectionsResult | Discord.DiscordAPIError> =>
- (await getAPI(guild)).users.getConnections().catch((e) => {
+ (await getAPI(guild)).users.getConnections().catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });

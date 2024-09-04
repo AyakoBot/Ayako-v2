@@ -30,9 +30,9 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildMembe
    guilds.delete(guild.id);
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    guilds.delete(guild.id);
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

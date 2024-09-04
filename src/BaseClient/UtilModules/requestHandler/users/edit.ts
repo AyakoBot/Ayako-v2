@@ -35,9 +35,9 @@ async function fn(
    avatar: data.avatar ? await Discord.resolveImage(data.avatar) : data.avatar,
   })
   .then((u) => new Classes.User(c, u))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 }
 

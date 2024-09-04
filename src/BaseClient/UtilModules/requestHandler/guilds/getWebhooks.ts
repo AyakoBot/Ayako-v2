@@ -24,9 +24,9 @@ export default async (guild: Discord.Guild) => {
  return (await getAPI(guild)).guilds
   .getWebhooks(guild.id)
   .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

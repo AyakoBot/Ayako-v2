@@ -79,12 +79,14 @@ const reply = async (
   },
  });
 
- const users = allUsers.filter(
-  (u) =>
-   !blockedUsers.find(
-    (b) => b.userid === u.id || b.blockeduserid === u.id || b.blockeduserid === '0',
-   ),
- );
+ const users = allUsers
+  .filter(
+   (u) =>
+    !blockedUsers.find(
+     (b) => b.userid === u?.id || b.blockeduserid === u?.id || b.blockeduserid === '0',
+    ),
+  )
+  .filter((u): u is Discord.User => u instanceof Discord.User);
  const language = await getLanguage(cmd.guildId);
  const lan = language.slashCommands.interactions[commandName as InteractionKeys];
  const con = constants.commands.interactions.find((c) => c.name === commandName);
@@ -165,7 +167,9 @@ const reply = async (
   'request' in
    language.slashCommands.interactions[
     ((cmd.inCachedGuild()
-     ? cmd.message.interaction?.commandName
+     ? // TODO: fix this
+       // @ts-expect-error
+       cmd.message.interaction?.commandName
      : new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('cmd')) ??
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
       'cmd',
@@ -344,14 +348,16 @@ const parsers = {
  buttonParser: async (cmd: Discord.ButtonInteraction) => ({
   author: cmd.user,
   users: [
-   (cmd.message.interaction?.user as Discord.User) ??
-    (await cmd.client.util.request.users.get(
-     cmd.guild,
-     new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('exec') ??
-      cmd.client.user.id,
-     cmd.client,
-    )),
-  ].filter((u) => !!u && !('message' in u)),
+   cmd.message.interactionMetadata?.user ??
+    (await cmd.client.util.request.users
+     .get(
+      cmd.guild,
+      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('exec') ??
+       cmd.client.user.id,
+      cmd.client,
+     )
+     .then((u) => ('message' in u ? undefined : u))),
+  ].filter((u): u is Discord.User => !!u && !('message' in u)),
   text: '',
   otherText: '',
   commandName: cmd.customId.split('_')[0].toLowerCase(),

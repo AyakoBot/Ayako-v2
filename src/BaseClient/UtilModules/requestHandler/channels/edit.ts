@@ -32,9 +32,9 @@ export default async (
  return (await getAPI(channel.guild)).channels
   .edit(channel.id, body)
   .then((c) => Classes.Channel(channel.client, c, channel.guild))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

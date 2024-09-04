@@ -31,9 +31,9 @@ export default async (
 
  return (await getAPI(guild)).webhooks
   .delete(webhook.id, { ...data, token: webhook.token ?? data?.token })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

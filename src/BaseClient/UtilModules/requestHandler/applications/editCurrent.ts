@@ -13,7 +13,7 @@ export default async (
  guild: Discord.Guild | undefined,
  body: Parameters<typeof API.applications.editCurrent>[0],
 ) =>
- (guild ? cache.apis.get(guild.id) ?? API : API).applications.editCurrent(body).catch((e) => {
+ (guild ? cache.apis.get(guild.id) ?? API : API).applications.editCurrent(body).catch((e: Discord.DiscordAPIError) => {
   if (guild) error(guild, e);
-  return e as Discord.DiscordAPIError;
+  return e;
  });

@@ -27,9 +27,9 @@ export default async (guild: Discord.Guild, ruleId: string, reason?: string) => 
 
  return (await getAPI(guild)).guilds
   .deleteAutoModerationRule(guild.id, ruleId, { reason })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

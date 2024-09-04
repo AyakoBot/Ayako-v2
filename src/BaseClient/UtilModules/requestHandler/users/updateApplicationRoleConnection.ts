@@ -19,7 +19,7 @@ async function fn(
 
  return (await getAPI(guild)).users
   .updateApplicationRoleConnection(applicationId, body)
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;
   });

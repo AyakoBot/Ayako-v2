@@ -101,7 +101,7 @@ async function fn(
    }
 
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 }
 

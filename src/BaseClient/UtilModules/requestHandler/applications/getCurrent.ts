@@ -9,7 +9,9 @@ import error from '../../error.js';
  * @returns A Promise that resolves with a DiscordAPIError if the application cannot be found.
  */
 export default async (guild?: Discord.Guild) =>
- (guild ? cache.apis.get(guild.id) ?? API : API).applications.getCurrent().catch((e) => {
-  error(guild, e);
-  return e as Discord.DiscordAPIError;
- });
+ (guild ? (cache.apis.get(guild.id) ?? API) : API).applications
+  .getCurrent()
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, e);
+   return e;
+  });

@@ -13,9 +13,9 @@ async function fn(
  guild: undefined | null | Discord.Guild,
  query?: Discord.RESTGetAPICurrentUserGuildsQuery,
 ): Promise<Discord.RESTGetAPICurrentUserGuildsResult | Discord.DiscordAPIError> {
- return (await getAPI(guild)).users.getGuilds(query).catch((e) => {
+ return (await getAPI(guild)).users.getGuilds(query).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 }
 

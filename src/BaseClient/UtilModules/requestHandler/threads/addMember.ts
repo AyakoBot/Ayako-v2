@@ -24,25 +24,27 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
   return e;
  }
 
- return (await getAPI(thread.guild)).threads.addMember(thread.id, userId).catch((e) => {
-  if (e.message.includes('Missing Access')) {
-   const e = requestHandlerError(
-    `Cannot add User ${userId} to thread ${thread.name} / ${thread.id} because they are not a member`,
-    [Discord.PermissionFlagsBits.SendMessages],
-   );
+ return (await getAPI(thread.guild)).threads
+  .addMember(thread.id, userId)
+  .catch((e: Discord.DiscordAPIError) => {
+   if (e.message.includes('Missing Access')) {
+    const e = requestHandlerError(
+     `Cannot add User ${userId} to thread ${thread.name} / ${thread.id} because they are not a member`,
+     [Discord.PermissionFlagsBits.SendMessages],
+    );
+
+    error(thread.guild, e);
+    return e;
+   }
+
+   if (e.message.includes('Missing Permissions')) {
+    sendDebugMessage({ content: JSON.stringify(e) });
+    return e;
+   }
 
    error(thread.guild, e);
-   return e as Discord.DiscordAPIError;
-  }
-
-  if (e.message.includes('Missing Permissions')) {
-   sendDebugMessage({ content: JSON.stringify(e) });
-   return e as Discord.DiscordAPIError;
-  }
-
-  error(thread.guild, e);
-  return e as Discord.DiscordAPIError;
- });
+   return e;
+  });
 };
 /**
  * Checks if the given guild member has the permission to add members to threads.

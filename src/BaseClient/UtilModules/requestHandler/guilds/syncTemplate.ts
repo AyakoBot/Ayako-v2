@@ -26,9 +26,9 @@ export default async (guild: Discord.Guild, templateCode: string) => {
  return (await getAPI(guild)).guilds
   .syncTemplate(guild.id, templateCode)
   .then((t) => new Classes.GuildTemplate(guild.client, t))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

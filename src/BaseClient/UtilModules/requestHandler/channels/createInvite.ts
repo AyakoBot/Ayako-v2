@@ -32,9 +32,9 @@ export default async (
  return (await getAPI(channel.guild)).channels
   .createInvite(channel.id, body, { reason })
   .then((i) => new Classes.Invite(channel.client, i))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

@@ -23,10 +23,12 @@ export default async (thread: Discord.ThreadChannel) => {
   return e;
  }
 
- return (await getAPI(thread.guild)).threads.leave(thread.id).catch((e) => {
-  error(thread.guild, e);
-  return e as Discord.DiscordAPIError;
- });
+ return (await getAPI(thread.guild)).threads
+  .leave(thread.id)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(thread.guild, e);
+   return e;
+  });
 };
 
 /**

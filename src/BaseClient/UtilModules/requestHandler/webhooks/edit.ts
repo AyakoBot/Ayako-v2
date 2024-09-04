@@ -41,9 +41,9 @@ export default async (
    { ...data, token: webhook.token ?? data?.token },
   )
   .then((w) => new Classes.Webhook(guild.client, w))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

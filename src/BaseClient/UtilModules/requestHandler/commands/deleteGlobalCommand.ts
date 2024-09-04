@@ -21,13 +21,13 @@ export default async (guild: Discord.Guild, commandId: string) => {
    cache.commands.delete(guild.id, commandId);
    guild.client.application.commands.cache.delete(commandId);
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    if (JSON.stringify(e).includes('Unknown application command')) {
     cache.commands.delete(guild.id, commandId);
     guild.client.application.commands.cache.delete(commandId);
     return true;
    }
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

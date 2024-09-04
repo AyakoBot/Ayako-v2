@@ -45,20 +45,17 @@ const client = new Discord.Client({
    lifetime: 1_209_600, // 14 days
   },
  },
- ws: {
-  presence: {
-   since: Date.now() - process.uptime() * 1000,
-   status: Discord.PresenceUpdateStatus.Idle,
-   afk: true,
-   activities: [
-    {
-     state: 'Starting up...',
-     name: 'Starting up...',
-     type: Discord.ActivityType.Custom,
-    },
-   ],
-  }
- }
+ presence: {
+  status: Discord.PresenceUpdateStatus.Idle,
+  afk: true,
+  activities: [
+   {
+    state: 'Starting up...',
+    name: 'Starting up...',
+    type: Discord.ActivityType.Custom,
+   },
+  ],
+ },
 });
 
 client.cluster = new Sharding.ClusterClient(client);

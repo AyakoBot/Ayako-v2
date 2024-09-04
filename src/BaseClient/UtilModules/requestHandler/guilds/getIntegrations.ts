@@ -25,9 +25,9 @@ export default async (guild: Discord.Guild) => {
  return (await getAPI(guild)).guilds
   .getIntegrations(guild.id)
   .then((integrations) => integrations.map((i) => new Classes.Integration(guild.client, i, guild)))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

@@ -12,8 +12,8 @@ import { getAPI } from '../channels/addReaction.js';
 export default async (guild: Discord.Guild, client: boolean = false) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return ((!client ? await getAPI(guild) : API) ?? API).users.leaveGuild(guild.id).catch((e) => {
+ return ((!client ? await getAPI(guild) : API) ?? API).users.leaveGuild(guild.id).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };

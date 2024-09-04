@@ -23,7 +23,7 @@ export default async <T extends Discord.Guild | null>(
    guild?.stickers.cache.set(parsed.id, parsed);
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });

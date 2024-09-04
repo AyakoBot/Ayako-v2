@@ -26,9 +26,9 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQu
  return (await getAPI(guild)).guilds
   .getAuditLogs(guild.id, query)
   .then((a) => new Classes.GuildAuditLogs(guild, a))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

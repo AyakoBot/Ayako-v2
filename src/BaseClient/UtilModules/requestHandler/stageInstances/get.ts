@@ -18,7 +18,7 @@ export default async (channel: Discord.StageChannel) =>
    channel.guild.stageInstances.cache.set(parsed.id, parsed);
    return parsed;
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });

@@ -25,9 +25,9 @@ export default async (guild: Discord.Guild, stickerId: string, reason?: string) 
   return e;
  }
 
- return (await getAPI(guild)).guilds.deleteSticker(guild.id, stickerId, { reason }).catch((e) => {
+ return (await getAPI(guild)).guilds.deleteSticker(guild.id, stickerId, { reason }).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };
 /**

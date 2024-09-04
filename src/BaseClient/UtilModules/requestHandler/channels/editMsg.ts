@@ -31,9 +31,9 @@ export default async (
  return (await getAPI(msg.guild)).channels
   .editMessage(msg.channel.id, msg.id, payload)
   .then((m) => new Classes.Message(msg.client, m))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

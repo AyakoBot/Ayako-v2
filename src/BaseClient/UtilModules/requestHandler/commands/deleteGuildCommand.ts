@@ -34,7 +34,7 @@ export default async (guild: Discord.Guild, commandId: string) => {
    cache.commands.delete(guild.id, commandId);
    guild.commands.cache.delete(commandId);
   })
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    setHasMissingScopes(e.message, guild);
 
    if (JSON.stringify(e).includes('Unknown application command')) {
@@ -43,6 +43,6 @@ export default async (guild: Discord.Guild, commandId: string) => {
     return true;
    }
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };

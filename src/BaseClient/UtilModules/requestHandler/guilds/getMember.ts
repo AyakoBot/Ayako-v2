@@ -41,7 +41,7 @@ async function fn(
     g.members.cache.set(parsed.id, parsed);
     return parsed;
    })
-   .catch((e) => e as Discord.DiscordAPIError)
+   .catch((e: Discord.DiscordAPIError) => e as Discord.DiscordAPIError)
  );
 }
 

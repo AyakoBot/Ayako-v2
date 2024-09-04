@@ -55,7 +55,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
   });
 
  if ('reply' in cmd && cmd.isRepliable()) {
-  const m = await cmd.reply(payload).catch((e) => {
+  const m = await cmd.reply(payload).catch((e: Discord.DiscordAPIError) => {
    if (
     cmd.guild &&
     !JSON.stringify(e).includes(String(Discord.RESTJSONErrorCodes.UnknownInteraction)) &&

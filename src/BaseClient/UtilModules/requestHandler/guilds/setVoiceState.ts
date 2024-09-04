@@ -27,9 +27,9 @@ export default async (
   return e;
  }
 
- return (await getAPI(guild)).guilds.setVoiceState(guild.id, body).catch((e) => {
+ return (await getAPI(guild)).guilds.setVoiceState(guild.id, body).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };
 /**

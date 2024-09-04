@@ -22,9 +22,9 @@ export default async (guild: Discord.Guild) => {
  return (await getAPI(guild)).guilds
   .getTemplates(guild.id)
   .then((templates) => templates.map((t) => new Classes.GuildTemplate(guild.client, t)))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

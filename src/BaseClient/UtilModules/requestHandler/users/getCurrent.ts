@@ -27,9 +27,9 @@ async function fn(
  return (await getAPI(guild)).users
   .getCurrent()
   .then((u) => new Classes.ClientUser(c, u))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 }
 

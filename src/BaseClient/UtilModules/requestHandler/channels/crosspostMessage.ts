@@ -30,9 +30,9 @@ export default async (msg: Discord.Message<true>) => {
  return (await getAPI(msg.guild)).channels
   .crosspostMessage(msg.channelId, msg.id)
   .then((m) => new Classes.Message(msg.client, m))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

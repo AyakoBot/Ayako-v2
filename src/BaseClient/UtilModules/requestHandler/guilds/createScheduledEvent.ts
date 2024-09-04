@@ -38,9 +38,9 @@ export default async (
    { reason },
   )
   .then((e) => new Classes.GuildScheduledEvent(guild.client, e))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

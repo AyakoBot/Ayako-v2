@@ -47,11 +47,11 @@ export default async (msg: Discord.Message<true>, emoji: string) => {
     ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
     : (resolvedEmoji.name as string),
   )
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    saveBlocked(e.message, msg.author);
 
    error(msg.guild, e);
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 
@@ -111,4 +111,4 @@ const saveBlocked = async (
 };
 
 export const getAPI = async (guild: Discord.Guild | undefined | null) =>
- guild ? ((await getBotMemberFromGuild(guild)) ? cache.apis.get(guild.id) ?? API : API) : API;
+ guild ? ((await getBotMemberFromGuild(guild)) ? (cache.apis.get(guild.id) ?? API) : API) : API;

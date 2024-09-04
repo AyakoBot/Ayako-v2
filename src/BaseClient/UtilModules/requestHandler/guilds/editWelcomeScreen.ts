@@ -33,9 +33,9 @@ export default async (
  return (await getAPI(guild)).guilds
   .editWelcomeScreen(guild.id, body, { reason })
   .then((w) => new Classes.WelcomeScreen(guild, w))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 /**

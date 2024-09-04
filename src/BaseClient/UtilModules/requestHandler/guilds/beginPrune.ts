@@ -27,9 +27,9 @@ export default async (
   return e;
  }
 
- return (await getAPI(guild)).guilds.beginPrune(guild.id, body, { reason }).catch((e) => {
+ return (await getAPI(guild)).guilds.beginPrune(guild.id, body, { reason }).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };
 /**

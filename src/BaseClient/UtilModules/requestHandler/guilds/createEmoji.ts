@@ -40,9 +40,9 @@ export default async (
    { reason },
   )
   .then((e) => new Classes.GuildEmoji(guild.client, e, guild))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

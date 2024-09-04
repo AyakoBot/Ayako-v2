@@ -31,9 +31,9 @@ export default async (
  return (await getAPI(guild)).guilds
   .editWidgetSettings(guild.id, body, { reason })
   .then((w) => ({ enabled: w.enabled, channelId: w.channel_id }))
-  .catch((e) => {
+  .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e as Discord.DiscordAPIError;
+   return e;
   });
 };
 

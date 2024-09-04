@@ -33,9 +33,9 @@ async function fn(
  return (await getAPI(guild)).users
   .editCurrentGuildMember(g.id, data)
   .then((m) => new Classes.GuildMember(g.client, m, g))
-  .catch((e) => {
-   error(g, e);
-   return e as Discord.DiscordAPIError;
+  .catch((e: Discord.DiscordAPIError) => {
+   error(g, e as Discord.DiscordAPIError);
+   return e;
   });
 }
 

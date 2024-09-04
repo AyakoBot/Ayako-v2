@@ -23,9 +23,9 @@ export default async (guild: Discord.Guild, level: Discord.GuildMFALevel, reason
   return e;
  }
 
- return (await getAPI(guild)).guilds.editMFALevel(guild.id, level, { reason }).catch((e) => {
+ return (await getAPI(guild)).guilds.editMFALevel(guild.id, level, { reason }).catch((e: Discord.DiscordAPIError) => {
   error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e as Discord.DiscordAPIError;
+  return e;
  });
 };
 

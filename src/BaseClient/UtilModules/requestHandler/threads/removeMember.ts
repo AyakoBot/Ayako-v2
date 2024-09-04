@@ -25,9 +25,9 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
   return e;
  }
 
- return (await getAPI(thread.guild)).threads.removeMember(thread.id, userId).catch((e) => {
-  error(thread.guild, e);
-  return e as Discord.DiscordAPIError;
+ return (await getAPI(thread.guild)).threads.removeMember(thread.id, userId).catch((e: Discord.DiscordAPIError) => {
+  error(thread.guild, e as Discord.DiscordAPIError);
+  return e;
  });
 };
 

@@ -23,10 +23,12 @@ export default async (channel: Discord.GuildTextBasedChannel, msgs: string[]) =>
   return e;
  }
 
- return (await getAPI(channel.guild)).channels.bulkDeleteMessages(channel.id, msgs).catch((e) => {
-  error(channel.guild, e);
-  return e as Discord.DiscordAPIError;
- });
+ return (await getAPI(channel.guild)).channels
+  .bulkDeleteMessages(channel.id, msgs)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(channel.guild, e);
+   return e;
+  });
 };
 
 /**

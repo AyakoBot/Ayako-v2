@@ -28,7 +28,9 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   return e;
  }
 
- return (await getAPI(channel.guild)).channels.showTyping(channel.id).catch((e) => {
-  error(channel.guild, e);
- });
+ return (await getAPI(channel.guild)).channels
+  .showTyping(channel.id)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(channel.guild, e);
+  });
 };
