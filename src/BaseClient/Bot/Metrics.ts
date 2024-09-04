@@ -48,6 +48,12 @@ const guildCount = new Gauge({
  labelNames: [],
 });
 
+const userInstallCount = new Gauge({
+ name: 'ayako_user_install_count',
+ help: 'Amount of Users Ayako is installed on',
+ labelNames: [],
+});
+
 const userCount = new Gauge({
  name: 'ayako_user_count',
  help: 'Amount of Users Ayako manages',
@@ -105,6 +111,8 @@ registry.registerMetric(channelCount);
 registry.registerMetric(guildCount);
 registry.registerMetric(clusterCount);
 registry.registerMetric(shardCount);
+registry.registerMetric(userInstallCount);
+
 
 export const metricsCollector = {
  dispatchEventsReceived: (clientName: string, eventType: string, shard: number) =>
@@ -132,6 +140,7 @@ export const metricsCollector = {
  stickerCount: (count: number) => stickerCount.labels().set(count),
  clusterCount: (count: number) => clusterCount.labels().set(count),
  shardCount: (count: number) => shardCount.labels().set(count),
+ userInstallCount: (count: number) => userInstallCount.labels().set(count),
 };
 
 type InteractionTypeExtended = InteractionType | ExtendedTypes;

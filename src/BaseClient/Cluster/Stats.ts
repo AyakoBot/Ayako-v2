@@ -5,31 +5,24 @@ import Manager from './Manager.js';
 import { glob } from 'glob';
 
 scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
- const [guildCount, userCount] = await Promise.all(
-  [
-   'guilds?.cache.size',
-   (c: DjsDiscordClient) => c.guilds.cache.reduce((a, g) => a + g.memberCount, 0),
-  ]
-   .map((v) => (typeof v !== 'string' ? Manager.broadcastEval(v) : Manager.fetchClientValues(v)))
-   .map(async (v) => ((await v) as number[] | undefined)?.reduce((a, c) => a + c, 0) ?? 0),
- );
+ const guildCount = await Manager.fetchClientValues('guilds?.cache.size');
 
  Manager.broadcastEval(
-  (cl: DjsDiscordClient, { guilds, users }: { guilds: number; users: number }) => {
+  async (cl: DjsDiscordClient, { guilds }: { guilds: number }) => {
+   const app = await cl.util.request.applications
+    .getCurrent(undefined)
+    .then((r) => ('message' in r ? undefined : r));
+
    cl.util.request.applications.editCurrent(undefined, {
-    description: `\`${cl.util.splitByThousand(guilds)} Servers\` | \`${cl.util.splitByThousand(
-     users,
-    )} Users\` | \`v${cl.util.files.importCache.package.file.version}\`
+    description: `Helping \`${cl.util.splitByThousand(guilds)} Servers\` / \`${cl.util.splitByThousand(app?.approximate_user_install_count ?? 0)} Users\` 
+Current Version: \`v${cl.util.files.importCache.package.file.version}\`
 **Your go-to, free-to-access, management, and automation Discord Bot!**
 
 https://ayakobot.com
 https://support.ayakobot.com`,
    });
   },
-  {
-   context: { guilds: guildCount, users: userCount },
-   cluster: 0,
-  },
+  { context: { guilds: guildCount }, cluster: 0 },
  );
 });
 
@@ -53,7 +46,11 @@ const run = () => {
   const [users, guilds] = await Promise.all([getAllUsers(), getAllGuilds()]);
   console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`);
 
-  (await glob(`${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/Cluster/Stats/**/*`))
+  (
+   await glob(
+    `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/BaseClient/Cluster/Stats/**/*`,
+   )
+  )
    .filter((f) => f.endsWith('.js'))
    .forEach(async (f) => {
     console.log('Running stats', f);
