@@ -34,18 +34,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  const duration = maxAge ? cmd.client.util.getDuration(maxAge, 604800000) : undefined;
 
- const invite = await cmd.client.util.request.channels
-  .createInvite(
-   channel,
-   {
-    max_age: duration ? duration / 1000 : undefined,
-    max_uses: maxUses ?? undefined,
-    temporary: !!temporary,
-    unique: !!unique,
-   },
-   `${cmd.user.displayName}${reason ? `: ${reason}` : ''}`,
-  )
-  .catch((e) => e);
+ const invite = await cmd.client.util.request.channels.createInvite(
+  channel,
+  {
+   max_age: duration ? duration / 1000 : undefined,
+   max_uses: maxUses ?? undefined,
+   temporary: !!temporary,
+   unique: !!unique,
+  },
+  `${cmd.user.displayName}${reason ? `: ${reason}` : ''}`,
+ );
 
  if ('message' in invite) {
   cmd.client.util.errorCmd(cmd, invite.message, language);

@@ -37,7 +37,9 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   msg.pinned ? lan.pinned : null,
   msg.editedTimestamp ? lan.edited : null,
   msg.activity ? `${lan.activityName} ${lan.activity[msg.activity.type]}` : null,
-  msg.interaction ? `${lan.interactionName} ${lan.interaction[msg.interaction.type]}` : null,
+  msg.interactionMetadata
+   ? `${lan.interactionName} ${lan.interaction[msg.interactionMetadata.type]}`
+   : null,
   msg.type ? lan.type[msg.type] : null,
   msg.author.bot ? lan.isFromBot : null,
  ]

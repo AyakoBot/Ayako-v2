@@ -41,11 +41,13 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const response = await cmd.client.util.request.invites
-  .delete(cmd.guild, invite.code, `${cmd.user.displayName}${reason ? `: ${reason}` : ''}`)
-  .catch((e) => e);
+ const response = await cmd.client.util.request.invites.delete(
+  cmd.guild,
+  invite.code,
+  `${cmd.user.displayName}${reason ? `: ${reason}` : ''}`,
+ );
 
- if (undefined && 'message' in response) {
+ if (response && 'message' in response) {
   cmd.client.util.errorCmd(cmd, response.message, language);
   return;
  }

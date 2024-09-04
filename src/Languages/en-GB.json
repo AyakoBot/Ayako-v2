@@ -143,7 +143,7 @@
    },
    "reaction": {
     "descAdded": "> {{user}}> has reacted with\n> {{emoji}}\n> to\n> {{msg}}",
-    "descRemoved": "> Reaction on\n> {{msg}}\n> with\n> {{emoji}}\n> by\n> {{user}}> was removed.\n> Either by the Reactor themselves, by a Bot or by a Moderator",
+    "descRemoved": "> Reaction on\n> {{msg}}> with\n> {{emoji}}> by\n> {{user}}> was removed.\n> Either by the Reactor themselves, by a Bot or by a Moderator",
     "descRemovedAll": "> All Reactions on\n> {{msg}}> were removed",
     "descRemoveEmoji": "> Reaction with\n> {{emoji}}> was removed from\n> {{msg}}",
     "nameRemoveAll": "All Reactions removed",

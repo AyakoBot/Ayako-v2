@@ -25,7 +25,7 @@ export default async (
  const addedPins = newPins.filter((p) => !channel.client.util.cache.pins.find(p.id));
  const removedPins = Array.from(
   channel.client.util.cache.pins.cache.get(channel.guildId)?.get(channel.id) ?? new Map(),
-  ([, p]) => p,
+  ([, p]) => p as Discord.Message<boolean>,
  ).filter((p) => !newPins.find((p1) => p.id === p1.id));
 
  addedPins.forEach(async (p) => channelPinsCreate(p, channel, date));

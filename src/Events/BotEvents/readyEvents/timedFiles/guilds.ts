@@ -17,7 +17,7 @@ export default async () => {
  const guildsCounts = await Promise.all(
   guildsToFetch
    .filter((g) => g.memberCount > 10000)
-   .map((g) => client.guilds.cache.get(g.id)?.fetch() as Promise<Guild>),
+   .map((g) => client.util.request.guilds.get(g, g.id, { with_counts: true }) as Promise<Guild>),
  );
 
  const guilds = [...guildsNoCounts, ...guildsCounts];

@@ -17,7 +17,7 @@ export default async (
   | Discord.NewsChannel
   | Discord.StageChannel
   | Discord.TextChannel
-  | Discord.AnyThreadChannel<boolean>
+  | Discord.AnyThreadChannel
   | Discord.VoiceChannel
   | Discord.MediaChannel
   | Discord.ForumChannel,
