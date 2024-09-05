@@ -10,7 +10,7 @@
       "lint": "npx eslint 'src/**/*.ts' --fix",
       "register": "node ./dist/register-commands.js",
       "run": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
-      "prestart": "rm -rf dist && pnpm build",
+      "prestart": "rm -rf dist && pnpm build && pnpx prisma db push",
       "start": "pnpm run run",
       "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
    },
@@ -21,7 +21,7 @@
       "@total-typescript/ts-reset": "^0.6.1",
       "@types/lodash": "^4.17.7",
       "@types/lodash.merge": "^4.6.9",
-      "captcha-canvas": "github:Larsundso/captcha-canvas",
+      "captcha-canvas": "^2.3.1",
       "client@latest": "link:prisma/client@latest",
       "discord-api-types": "0.37.99",
       "discord-hybrid-sharding": "^2.2.0",
