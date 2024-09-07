@@ -12,12 +12,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
 COPY . .
+COPY ./.env /app/packages/Bot/.env
 RUN pnpm install
-
-WORKDIR /app/apps/Website
-RUN pnpm link ../../packages/Server
-
 WORKDIR /app/packages/Bot
-RUN pnpm link ../Server
 RUN pnpm build
-COPY ./packages/Bot/.env /app/packages/Bot/.env.template

@@ -23,7 +23,7 @@ import voice from './requestHandler/voice.js';
 export default async (guildId: string, token: string) => {
  const rest = new DiscordRest.REST({
   version: '10',
-  api: 'http://127.0.0.1:8080/api',
+  api: 'http://nirn:8080/api',
   timeout: 60000,
  }).setToken(token);
  const api = new DiscordCore.API(rest);

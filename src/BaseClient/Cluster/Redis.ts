@@ -18,7 +18,7 @@ export interface Message<
       : never;
 }
 
-const client = new Redis();
+const client = new Redis({ host: 'redis'});
 
 client.subscribe(
  Typings.MessageType.Interaction,

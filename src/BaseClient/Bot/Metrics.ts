@@ -1,9 +1,8 @@
 import { InteractionType } from 'discord.js';
-import Redis from 'ioredis';
 import { scheduleJob } from 'node-schedule';
 import { Counter, Gauge, Registry } from 'prom-client';
+import redis from './Redis.js';
 
-const redis = new Redis();
 const registry = new Registry();
 
 const dispatchEventsReceived = new Counter({

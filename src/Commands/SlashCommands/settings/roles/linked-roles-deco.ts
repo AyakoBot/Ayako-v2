@@ -323,7 +323,7 @@ const tokenCreate = async (
 
 const getMe = async (token: string) => {
  const api = new API(
-  new Discord.REST({ version: '10', api: 'http://localhost:8080/api' }).setToken(token),
+  new Discord.REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(token),
  );
 
  return { api, current: await api.applications.getCurrent() };
