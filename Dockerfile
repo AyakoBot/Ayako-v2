@@ -2,7 +2,7 @@ FROM node:22
 RUN corepack enable
 COPY . /app
 
-RUN apt-get update && apt-get install libjemalloc-dev
+RUN apt-get update && apt-get install -y libjemalloc-dev
 RUN echo "/usr/lib/x86_64-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload
 
 RUN apt-get update && apt-get install -y \
