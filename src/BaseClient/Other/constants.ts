@@ -8,8 +8,8 @@ import tutorials from './constants/tutorials.js';
 
 export default {
  path: {
-  allowlist: `${process.cwd()}/../CDN/antivirus/allowlisted.txt`,
-  badLinks: `${process.cwd()}/../CDN/antivirus/badLinks.txt,
+  allowlist: `/app/Ayako/packages/CDN/antivirus/allowlisted.txt`,
+  badLinks: `/app/Ayako/packages/CDN/antivirus/badLinks.txt`,
  },
  events,
  discordMsgUrls: [
