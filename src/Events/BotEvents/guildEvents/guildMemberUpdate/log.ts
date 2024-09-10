@@ -112,14 +112,20 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   const oldFlags = new Discord.GuildMemberFlagsBitField(oldMember.flags).toArray();
   const newFlags = new Discord.GuildMemberFlagsBitField(member.flags).toArray();
 
-  const addedFlags = member.client.util.getDifference(newFlags, oldFlags);
-  const removedFlags = member.client.util.getDifference(oldFlags, newFlags);
+  const addedFlags = member.client.util.getDifference(
+   newFlags,
+   oldFlags,
+  ) as unknown as typeof oldFlags;
+  const removedFlags = member.client.util.getDifference(
+   oldFlags,
+   newFlags,
+  ) as unknown as typeof newFlags;
 
   if (addedFlags.length) {
    embed.fields?.push({
     name: lan.memberFlagsName,
     value: addedFlags
-     .map((t) => lan.memberFlags[t as unknown as Discord.GuildMemberFlagsString])
+     .map((t) => lan.memberFlags[t])
      .join(', '),
    });
   }
@@ -128,7 +134,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
    embed.fields?.push({
     name: lan.memberFlagsName,
     value: removedFlags
-     .map((t) => lan.memberFlags[t as unknown as Discord.GuildMemberFlagsString])
+     .map((t) => lan.memberFlags[t])
      .join(', '),
    });
   }
