@@ -25,7 +25,9 @@ export default async (
   components: [
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[0].components.map((c) => c.toJSON()),
+    components: cmd.message.components[0].components
+     .map((c) => c.toJSON())
+     .filter((c) => ('custom_id' in c ? !c.custom_id.includes('voteReminder') : true)),
    },
    {
     type: Discord.ComponentType.ActionRow,
