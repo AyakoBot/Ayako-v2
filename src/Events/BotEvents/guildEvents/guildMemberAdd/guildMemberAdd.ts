@@ -10,6 +10,7 @@ import stickyPerms from './stickyPerms.js';
 import stickyRoles from './stickyRoles.js';
 import verification from './verification.js';
 import welcome from './welcome.js';
+import awaitJoinCC from './awaitJoinCC.js';
 
 export default async (member: Discord.GuildMember) => {
  if (!member.guild) return;
@@ -22,6 +23,7 @@ export default async (member: Discord.GuildMember) => {
  nitro(member);
  antiraid(member);
  affiliates(member);
+ awaitJoinCC(member);
 
  if (!member.guild.features.includes(Discord.GuildFeature.WelcomeScreenEnabled)) {
   autoRoles(member);
