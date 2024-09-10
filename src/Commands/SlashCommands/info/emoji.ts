@@ -20,7 +20,7 @@ export default async (
 
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction
-   ? cmd.options.getBoolean('hide', false) ?? true
+   ? (cmd.options.getBoolean('hide', false) ?? true)
    : true;
  const language = await client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info;
@@ -49,11 +49,25 @@ export default async (
 };
 
 const getEmotesPayload = async (
- emotes: (Discord.Emoji | Discord.GuildEmoji)[],
+ emotes: (Discord.Emoji | Discord.GuildEmoji)[], 
  language: CT.Language,
  lan: CT.Language['slashCommands']['info'],
  page = 1,
 ): Promise<CT.UsualMessagePayload> => {
+ if (!emotes.length) {
+  const embed: Discord.APIEmbed = {
+   author: {
+    name: language.t.error,
+    icon_url: client.util.emotes.warning.link,
+    url: client.util.constants.standard.invite,
+   },
+   color: CT.Colors.Danger,
+   description: language.errors.emoteNotFound,
+  };
+
+  return { embeds: [embed] };
+ }
+
  const chunks = client.util.getStringChunks(
   emotes.map(
    (e) =>
@@ -114,7 +128,7 @@ const getEmotePayloads = async (
  client.cluster?.broadcastEval(
   async (cl, { color, e, guildId }) => {
    const ctEval = cl.util.files['/Typings/Typings.js'];
-   const emoji = e.id ? cl.emojis?.cache.get(e.id) ?? e : e;
+   const emoji = e.id ? (cl.emojis?.cache.get(e.id) ?? e) : e;
    const language = await cl.util.getLanguage(guildId);
    const lan = language.slashCommands.info;
 
@@ -129,7 +143,7 @@ const getEmotePayloads = async (
        ? {
           url:
            'url' in emoji && emoji.url
-            ? emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
+            ? (emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji))
             : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji),
          }
        : undefined,
@@ -151,7 +165,7 @@ const getEmotePayloads = async (
            name: `${cl.util.util.makeBold('URL')}:`,
            value: `${
             'url' in emoji && emoji.url
-             ? emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
+             ? (emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji))
              : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)
            }`,
           }
