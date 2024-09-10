@@ -69,7 +69,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const fields = settings?.map((s) => ({
   name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${
    lan.fields.roleId.name
-  }: \`${embedParsers.role(s.roleId, language)}\``,
+  }: ${embedParsers.role(s.roleId, language)}`,
   value: `${lan.fields.botId.name}: ${embedParsers.user(s.botId, language)}`,
  }));
 
