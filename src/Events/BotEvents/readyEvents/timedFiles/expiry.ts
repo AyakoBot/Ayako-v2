@@ -71,7 +71,7 @@ const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableNam
  const findWhere = {
   where: {
    guildid: row.guildid,
-   uniquetimestamp: { lt: Math.abs(Date.now() - Number(row.expire)) },
+   uniquetimestamp: { lt: Math.abs(Date.now() - Number(row.expire) * 1000) },
   },
  };
 
