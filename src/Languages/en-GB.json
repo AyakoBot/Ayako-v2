@@ -3722,13 +3722,13 @@
   "logs": {
    "roleAdd": {
     "author": "Role given to Member",
-    "description": "> {{roles}} {{wasWere}} given to\n> {{target}} by\n> {{executor}}",
+    "description": "> {{roles}}> {{wasWere}} given to\n> {{target}}> by\n> {{executor}}",
     "was": "was",
     "were": "were"
    },
    "roleRemove": {
     "author": "Role removed from Member",
-    "description": "> {{roles}} {{wasWere}} removed from\n> {{target}}> by\n> {{executor}}"
+    "description": "> {{roles}}> {{wasWere}} removed from\n> {{target}}> by\n> {{executor}}"
    },
    "tempMuteAdd": {
     "author": "Member Muted",
