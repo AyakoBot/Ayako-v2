@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .get(cmd.guild, user.id, cmd.client)
   .then((u) =>
    u && !('message' in u)
-    ? u.flags ?? new Discord.UserFlagsBitField()
+    ? (u.flags ?? new Discord.UserFlagsBitField())
     : new Discord.UserFlagsBitField(),
   );
  if (user.bot && !flags.has(65536)) flags.add(2048);
@@ -140,6 +140,17 @@ const getMemberEmbed = (
         }`
     }`,
    },
+   ...(member.flags.bitfield === 0
+    ? []
+    : [
+       {
+        name: lan.flags,
+        value: member.flags
+         .toArray()
+         .map((f) => Discord.inlineCode(language.events.logs.guild.memberFlags[f]))
+         .join(', '),
+       },
+      ]),
   ],
  };
 
