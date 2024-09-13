@@ -19,4 +19,10 @@ export default {
  [CT.SettingNames.CustomClient]: [
   { name: 'Tutorial for Custom Clients', link: 'https://youtu.be/wrdg6xi8Wpo' },
  ],
+ [CT.SettingNames.Welcome]: [
+  { name: 'Tutorial for Welcome Messages', link: 'https://youtu.be/Fwh_7hKEo0M' },
+ ],
+ [CT.SettingNames.LinkedRolesDeco]: [
+  { name: 'Tutorial for Decoration Linked-Roles', link: 'https://youtu.be/QV8QDHvwNk4' },
+ ]
 };
