@@ -1,4 +1,5 @@
 import buttonParsers from './buttonParsers.js';
+import changeButtonUsers from './changeHelpers/changeButtonUsers.js';
 import changeEmbed from './changeHelpers/changeEmbed.js';
 import changeModal from './changeHelpers/changeModal.js';
 import changeSelect from './changeHelpers/changeSelect.js';
@@ -15,6 +16,7 @@ export default {
  changeModal,
  changeSelect,
  changeSelectGlobal,
+ changeButtonUsers,
  done,
  get,
  getAndInsert,

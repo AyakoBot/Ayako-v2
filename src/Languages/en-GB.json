@@ -2467,6 +2467,9 @@
     "wluserid": "Allowlisted Users",
     "bluserid": "Denylisted Users"
    },
+   "addById": "Add by ID",
+   "addByIdInstructionsSingle": "Insert a Users ID",
+   "addByIdInstructionsMulti": "Insert User IDs separated by a space or comma",
    "create": "Create",
    "delete": "Delete",
    "previous": "Previous",

@@ -51,9 +51,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       uniquetimestamp,
       (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
        id: o,
-       type: Discord.SelectMenuDefaultValueType.Channel,
+       type: Discord.SelectMenuDefaultValueType.User,
       })),
-      cmd.guild,
      ),
     ],
    },
@@ -61,6 +60,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     type: Discord.ComponentType.ActionRow,
     components: [
      cmd.client.util.settingsHelpers.changeHelpers.back(settingName, Number(uniquetimestamp)),
+     cmd.client.util.settingsHelpers.changeHelpers.changeButtonUsers(
+      language,
+      settingName,
+      fieldName,
+      cmd.client,
+     ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
