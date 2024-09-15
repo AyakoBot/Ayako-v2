@@ -53,7 +53,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
        id: o,
        type: Discord.SelectMenuDefaultValueType.Role,
       })),
-      cmd.guild,
      ),
     ],
    },

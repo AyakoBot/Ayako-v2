@@ -63,7 +63,6 @@ export default async (
        id: o,
        type: Discord.SelectMenuDefaultValueType.Channel,
       })),
-      cmd.guild,
       channelTypes,
      ),
     ],
