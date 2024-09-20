@@ -49,10 +49,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       fieldName,
       settingName,
       uniquetimestamp,
-      (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
-       id: o,
-       type: Discord.SelectMenuDefaultValueType.Role,
-      })),
+      currentSetting
+       ? (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
+          id: o,
+          type: Discord.SelectMenuDefaultValueType.Role,
+         }))
+       : [],
      ),
     ],
    },

@@ -59,10 +59,12 @@ export default async (
       fieldName,
       settingName,
       uniquetimestamp,
-      (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
-       id: o,
-       type: Discord.SelectMenuDefaultValueType.Channel,
-      })),
+      currentSetting
+       ? (Array.isArray(currentSetting) ? currentSetting : [currentSetting]).map((o) => ({
+          id: o,
+          type: Discord.SelectMenuDefaultValueType.Channel,
+         }))
+       : [],
       channelTypes,
      ),
     ],
