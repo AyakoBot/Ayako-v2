@@ -14,7 +14,7 @@ import { getAPI } from './addReaction.js';
 export default async (channel: Discord.GuildBasedChannel) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!isDeleteable(channel, await getBotMemberFromGuild(channel.guild))) {
+ if (!canDelete(channel, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot delete channel ${channel.name} / ${channel.id}`, [
    [
     Discord.ChannelType.PrivateThread,
@@ -43,7 +43,7 @@ export default async (channel: Discord.GuildBasedChannel) => {
  * @param me - The user's guild member object.
  * @returns A boolean indicating whether the channel is deleteable.
  */
-export const isDeleteable = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
+export const canDelete = (channel: Discord.GuildBasedChannel, me: Discord.GuildMember) =>
  [
   Discord.ChannelType.PrivateThread,
   Discord.ChannelType.PublicThread,

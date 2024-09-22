@@ -10,7 +10,7 @@
       "lint": "npx eslint 'src/**/*.ts' --fix",
       "register": "node ./dist/register-commands.js",
       "run": "node --max-old-space-size=10240 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
-      "start": "pnpm run run",
+      "start": "pnpm run register && pnpm run run",
       "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
    },
    "dependencies": {

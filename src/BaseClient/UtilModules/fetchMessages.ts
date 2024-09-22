@@ -18,6 +18,7 @@ export default async (
  },
 ) => {
  const messages: Discord.Message<true>[] = [];
+ let lastAmount = 0;
 
  for (let i = 0; i < filter.amount / 100; i += 1) {
   // eslint-disable-next-line no-await-in-loop
@@ -27,7 +28,10 @@ export default async (
   });
 
   if ('message' in msgs) return [];
-  msgs.forEach((m) => messages.push(m));
+  msgs.filter((m) => !messages.find((m2) => m2.id === m.id)).forEach((m) => messages.push(m));
+
+  if (msgs.length === lastAmount) i = filter.amount / 100;
+  lastAmount = msgs.length;
  }
 
  return messages;

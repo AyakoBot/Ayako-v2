@@ -29,6 +29,7 @@ import user from './Commands/user.js';
 import vote from './Commands/vote.js';
 import actions from './Commands/actions.js';
 import viewRaw from './Commands/view-raw.js';
+import vc from './Commands/vc.js';
 
 export enum CommandCategories {
  Utility = 'utility',
@@ -46,6 +47,7 @@ export enum CommandCategories {
 
 export default {
  public: {
+  vc,
   leaderboard,
   balance,
   user,
@@ -288,6 +290,7 @@ export default {
   'stickers_create_from-sticker': [CommandCategories.Utility],
   stickers_delete: [CommandCategories.Utility],
   stickers_edit_name: [CommandCategories.Utility],
+  vc: [CommandCategories.Utility, CommandCategories.Automation],
  },
  names: [
   'settings',
@@ -334,5 +337,6 @@ export default {
   'bypass',
   'clear',
   'View Raw',
+  'vc',
  ],
 } as const;

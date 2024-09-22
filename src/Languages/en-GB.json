@@ -1448,6 +1448,31 @@
  },
  "slashCommands": {
   "useSlashCommands": "Unknown Command. Did you mean {{c}}",
+  "vc": {
+   "notEnabled": "Voice-Hubs are not enabled on this Server",
+   "notVH": "This Channel is not a Voice-Hub",
+   "notVC": "This Channel is not a Voice-Channel created by a Voice-Hub\nPlease use this Command in a Voice-Channel created by a Voice-Hub or provide a valid `channel` Option",
+   "youNoPerms": "You don't have Permissions to use this Command",
+   "meNoPerms": "I don't have the Permissions to execute this Command. Please give me `Manage Roles` and `Manage Channels` Permissions",
+   "addedMember": "> Added {{member}}> as a Member of {{channel}}\n> They can now see, join and speak in the Voice-Channel, as well as use its Text-Channel\n-# To remove them again, use </vc remove member:{{cmdId}}>\n-# To promote them to a Voice-Channel Manager, use </vc add manager:{{cmdId}}>",
+   "removedMember": "> Removed {{member}}> as a Member of {{channel}}\n> They can no longer see, join or speak in the Voice-Channel, nor use its Text-Channel\n-# To add them again, use </vc add member:{{cmdId}}>\n-# To quickly remove all Members, use </vc remove all-members:{{cmdId}}>",
+   "addedManager": "> Added {{member}}> as a Manager of {{channel}}\n> They can now add and remove other Members, as well as promote Members to Managers\n-# To demote them again, use </vc remove manager:{{cmdId}}>",
+   "removedManager": "> Removed {{member}}> as a Manager of {{channel}}\n> They can no longer add or remove other Members, nor promote Members to Managers\n-# To promote them again, use </vc add manager:{{cmdId}}>\n-# To quickly remove all Managers, use </vc remove all-managers:{{cmdId}}>",
+   "removedAll": "Removed all Members and Managers from {{channel}}",
+   "removedAllManagers": "removed all Managers from {{channel}}",
+   "removedAllMembers": "removed all Members from {{channel}}",
+   "excluded": "You are excluded from creating Voice-Channels",
+   "notIncluded": "You are not permitted to create Voice-Channels",
+   "created": "Successfully created {{channel}}",
+   "reason": "VC Command executed by {{user}}",
+   "deleted": "Voice-Channel successfully deleted",
+   "helpEmbed": {
+    "managers": "Voice-Channel Managers",
+    "members": "Voice-Channel Members",
+    "help": "Welcome to your personal Voice-Channel\n\nYou have full access to Permission-Management here,\nmeaning you can manually add people to your Voice-Channel and change its Behavior as you wish.\nTo do so, simply open the Channel-Settings or use the Commands below\n\n-# - Add Members with </vc add member:{{cmdId}}>\n-# - Remove Members with </vc remove member:{{cmdId}}>\n-# - Add Managers with </vc add manager:{{cmdId}}>\n-# - Remove Managers with </vc remove manager:{{cmdId}}>\n-# - Remove all Members with </vc remove all-members:{{cmdId}}>\n-# - Remove all Managers with </vc remove all-managers:{{cmdId}}>\n-# - Remove everyone but the Voice-Channel Owner with </vc remove all:{{cmdId}}>",
+    "owner": "Voice-Channel Owner"
+   }
+  },
   "setLevel": {
    "reset": "Reset",
    "save": "Save and Apply",
@@ -3982,7 +4007,6 @@
   "welcome": "Welcome {{user.username}}#{{user.discriminator}} to {{guild.name}} <:AMayakowave:924071188957913108>",
   "defaultValuesLog": "> __Before:__\n{{oldValue}}\n\n> __After:__\n{{newValue}}",
   "pageBetween": "A Number from {{x}} to {{y}}",
-  "voiceHub": "Welcome, {{u}}, to your personal Voice-Channel\n\nYou have full access to Permission management here,\nmeaning you can manually add people to your Voice-Channel and change its behavior as you wish.\n\nTo do so, simply open the Channel-Settings",
   "unknown": "unknown",
   "Unknown": "Unknown",
   "None": "None",

@@ -24,9 +24,11 @@ import setLevel from './slashCommands/setLevel.js';
 import settings from './slashCommands/settings.js';
 import slowmode from './slashCommands/slowmode.js';
 import suggest from './slashCommands/suggest.js';
+import vc from './slashCommands/vc.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands,
+ vc: vc(t),
  setLevel: setLevel(t),
  resetLevels: resetLevels(t),
  edit: edit(t),
