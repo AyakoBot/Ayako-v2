@@ -90,7 +90,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
  embedParsers,
  settings,
  language,
@@ -118,7 +118,10 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: lan.fields.emote.name,
-    value: embedParsers.emote(settings?.emote, language),
+    value: settings?.emote
+     ? (client.util.constants.standard.getEmote(await client.util.getEmote(settings.emote)) ??
+       language.t.None)
+     : language.t.None,
     inline: true,
    },
    {

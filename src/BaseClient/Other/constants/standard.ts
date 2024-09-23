@@ -16,11 +16,15 @@ export default {
  getEmote: (
   emoji:
    | Discord.Emoji
-   | { name: string | undefined; id?: string | null | undefined; animated?: boolean | null },
+   | { name: string | undefined; id?: string | null | undefined; animated?: boolean | null }
+   | null
+   | undefined,
  ) =>
-  emoji.id
-   ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`
-   : `${/\w/g.test(emoji.name ?? '') ? `:${emoji.name}:` : emoji.name}`,
+  emoji
+   ? emoji.id
+     ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`
+     : `${/\w/g.test(emoji.name ?? '') ? `:${emoji.name}:` : emoji.name}`
+   : undefined,
  getTime: (time: number) =>
   `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,
  msgurl: (g: string | undefined | null, c: string, m: string) =>

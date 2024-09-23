@@ -4,7 +4,6 @@ import channel from './embedParsers/channel.js';
 import channels from './embedParsers/channels.js';
 import command from './embedParsers/command.js';
 import embed from './embedParsers/embed.js';
-import emote from './embedParsers/emote.js';
 import number from './embedParsers/number.js';
 import role from './embedParsers/role.js';
 import roles from './embedParsers/roles.js';
@@ -24,7 +23,6 @@ export default {
  channels,
  command,
  embed,
- emote,
  number,
  role,
  roles,

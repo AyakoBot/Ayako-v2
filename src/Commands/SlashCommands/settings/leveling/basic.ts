@@ -119,12 +119,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
         )
       : client.util.emotes.levelupemotes
      )
-      .map((e) =>
-       embedParsers.emote(
-        client.util.constants.standard.getEmote(e).replace(/<:|>|<a:/g, ''),
-        language,
-       ),
-      )
+      .map((e) => client.util.constants.standard.getEmote(e))
       .join(', '),
      inline: true,
     },

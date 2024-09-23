@@ -25,8 +25,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boo
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lastMessage = cmd.channel
-  ? cmd.channel.lastMessage ??
-    (await cmd.client.util.request.channels.getMessages(cmd.channel, { limit: 1 }))
+  ? (cmd.channel.lastMessage ??
+    (await cmd.client.util.request.channels.getMessages(cmd.channel, { limit: 1 })))
   : undefined;
 
  if (cmd.channel?.type === Discord.ChannelType.PrivateThread) {
@@ -41,15 +41,34 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boo
  const emoteMessage = Array.isArray(lastMessage) ? lastMessage[0] : lastMessage;
  const emoteContent = emoteMessage?.author.bot ? undefined : emoteMessage?.content;
 
- const emote = emoteContent?.match(cmd.client.util.regexes.emojiTester)?.length
-  ? { identifier: emoteContent?.trim() }
-  : { identifier: emoteContent?.replace(/<:/g, '').replace(/</g, '').replace(/>/g, '') };
+ const emotes = emoteContent
+  ?.split(/\s+/g)
+  .filter((emote) => !!emote.length)
+  .map((emote) =>
+   emote.match(cmd.client.util.regexes.emojiTester)?.length
+    ? { identifier: emote.trim() }
+    : { identifier: emote.replace(/<:/g, '').replace(/</g, '').replace(/>/g, '') },
+  );
+
+ const validEmotes = emotes?.filter((emote) => {
+  if (
+   emote.identifier.includes(':') &&
+   !emote.identifier.match(cmd.client.util.regexes.emojiTester)?.length
+  ) {
+   return [2, 3].includes(emote.identifier.split(/:/g).length);
+  }
+
+  return !(
+   emote.identifier.match(cmd.client.util.regexes.emojiTester)?.length &&
+   emote.identifier.match(/\w/g)?.length
+  );
+ });
 
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  (multi && emote ? [emote.identifier] : emote?.identifier) ?? null,
+  (multi && validEmotes ? validEmotes.map((e) => e.identifier) : validEmotes?.[0].identifier) ?? null,
   uniquetimestamp,
  );
 
