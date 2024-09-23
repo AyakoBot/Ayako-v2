@@ -3308,7 +3308,7 @@
       },
       "lvlupemotes": {
        "name": "Level-up Emotes",
-       "desc": "The Emotes I will react with to Messages that triggered a Level-up"
+       "desc": "Send a Message containing the Emotes I will react with to Messages that triggered a Level-up. Split multiple Emotes with a Space."
       },
       "lvlupdeltimeout": {
        "name": "Level-up Deletion Timeout",
