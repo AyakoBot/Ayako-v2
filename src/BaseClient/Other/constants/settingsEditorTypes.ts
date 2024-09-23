@@ -51,7 +51,7 @@ export default {
   rolemode: CT.EditorTypes.Boolean,
   lvlupmode: CT.EditorTypes.LvlUpMode,
   lvlupemotes: CT.EditorTypes.Emotes,
-  lvlupdeltimeout: CT.EditorTypes.Number,
+  lvlupdeltimeout: CT.EditorTypes.Duration,
   embed: CT.EditorTypes.Embed,
   lvlupchannels: CT.EditorTypes.Channels,
   ignoreprefixes: CT.EditorTypes.Boolean,
