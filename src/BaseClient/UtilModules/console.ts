@@ -35,18 +35,8 @@ const stringify = (d: unknown) => {
 
 // eslint-disable-next-line no-console
 console.log = (...d) => {
- file.write(
-  `${getDebugInfo()}\n${d
-   .map((a) => stringify(a))
-   .join(' ')
-   .replace('\n', '\n\r')}\n`,
- );
- stdout.write(
-  `${d
-   .map((a) => stringify(a))
-   .join(' ')
-   .replace('\n', '\n\r')}\n`,
- );
+ file.write(`${getDebugInfo()}\n${d.map((a) => stringify(a)).join(' ')}\n`);
+ stdout.write(`${d.map((a) => stringify(a)).join(' ')}\n`);
 };
 
 export default {};
