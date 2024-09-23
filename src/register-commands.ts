@@ -47,9 +47,10 @@ if (!process.argv.includes('--dev')) {
      ),
    )
    .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
-   .catch((e) => {
+   .catch((e: Error) => {
+    if (!e.message.includes('401')) return;
     console.log(`Unauthorized for ${s.appid}`, e);
-    // DataBase.customclients.delete({ where: { guildid: s.guildid } }).then();
+    DataBase.customclients.delete({ where: { guildid: s.guildid } }).then();
    });
  });
 }
