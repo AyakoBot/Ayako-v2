@@ -39,12 +39,15 @@ export default async (cmd: Discord.ChannelSelectMenuInteraction, args: string[])
 
  let usedPermissions = new Discord.PermissionsBitField(Discord.PermissionsBitField.All);
  switch (channel.type) {
-  case 0 || 11 || 12: {
+  case 0:
+  case 11:
+  case 12: {
    usedPermissions = new Discord.PermissionsBitField(535529258065n);
    categoryBits = [categoryBits[0], categoryBits[1], categoryBits[2]];
    break;
   }
-  case 5 || 10: {
+  case 5:
+  case 10: {
    usedPermissions = new Discord.PermissionsBitField(466809781329n);
    categoryBits = [categoryBits[0], categoryBits[1], categoryBits[2]];
    break;

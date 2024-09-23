@@ -40,7 +40,6 @@ const t = (lan: ReturnType<typeof mergeLang>) => ({
  defaultValuesLog: (oldValue: string, newValue: string) =>
   stp(lan.t.welcome, { oldValue, newValue }),
  pageBetween: (x: number, y: number) => stp(lan.t.pageBetween, { x, y }),
- voiceHub: (u: Discord.User) => stp(lan.t.voiceHub, { u }),
 });
 
 export default class Language {

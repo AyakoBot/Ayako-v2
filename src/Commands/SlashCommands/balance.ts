@@ -21,11 +21,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const emote = cmd.client.util.constants.standard.getEmote(
   settings?.currencyemote
-   ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+   ? (Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book)
    : cmd.client.util.emotes.book,
  );
 
  cmd.client.util.replyCmd(cmd, {
-  content: `> ${bal?.balance ?? 0} ${emote}\n${language.slashCommands.balance.how2Earn(emote)}`,
+  content: `> ${bal?.balance ?? 0} ${emote}\n${language.slashCommands.balance.how2Earn(emote ?? '💶')}`,
  });
 };

@@ -155,8 +155,8 @@ const postMessage = async (
   additionalEmbeds
    .map((e) => e.description)
    .filter((d): d is string => !!d)
-   .join('\n') ?? invites
- }${`\n${invites}` ?? ''}`;
+   .join('\n') || invites
+ }\n${invites}`;
 
  guild.client.util.send(
   { id: settings.postchannels, guildId: guild.id },

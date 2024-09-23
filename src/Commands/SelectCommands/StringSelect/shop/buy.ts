@@ -46,9 +46,9 @@ export default async (cmd: Discord.StringSelectMenuInteraction) => {
    lan.notEnoughMoney(
     cmd.client.util.constants.standard.getEmote(
      shop.currencyemote
-      ? Discord.parseEmoji(shop.currencyemote) ?? cmd.client.util.emotes.book
+      ? (Discord.parseEmoji(shop.currencyemote) ?? cmd.client.util.emotes.book)
       : cmd.client.util.emotes.book,
-    ),
+    ) ?? '💶',
    ),
    language,
   );

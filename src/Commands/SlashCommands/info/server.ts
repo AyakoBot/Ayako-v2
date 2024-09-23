@@ -160,7 +160,7 @@ const getEmbed = async (serverId: string): Promise<Discord.APIEmbed[] | undefine
             {
              name: c.util.util.makeBold(eventLan.afkTimeout),
              value:
-              `\`${c.util.moment(g.afkTimeout * 1000, language)}\`\n` ?? `${language.t.None}\n`,
+              `\`${c.util.moment(g.afkTimeout * 1000, language)}\`\n` || `${language.t.None}\n`,
             },
            ]),
         {

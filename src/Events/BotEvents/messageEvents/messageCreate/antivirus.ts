@@ -155,7 +155,7 @@ const log = (
          { name: '\u200b', value: '\u200b' },
          {
           name: language.antivirus.malicious(
-           client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground),
+           client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground) ?? '❌',
           ),
           value: client.util.util.makeInlineCode(url.url),
          },

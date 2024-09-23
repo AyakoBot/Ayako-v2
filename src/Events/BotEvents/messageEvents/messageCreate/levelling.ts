@@ -140,7 +140,7 @@ const updateLevels = async (
  const newXP = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
    .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
-   .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
+   .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
  const oldLevel = Number(level.level);
  const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
@@ -212,7 +212,7 @@ const insertLevels = (
  const xp = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
    .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
-   .reduce((a, b) => a + b) / xpMultiplier.length ?? 1,
+   .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
 
  msg.client.util.DataBase.level

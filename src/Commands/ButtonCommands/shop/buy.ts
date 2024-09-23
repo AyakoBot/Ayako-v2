@@ -58,9 +58,9 @@ const buy = async (
    language.slashCommands.roles.shop.notEnoughMoney(
     cmd.client.util.constants.standard.getEmote(
      settings.currencyemote
-      ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+      ? (Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book)
       : cmd.client.util.emotes.book,
-    ),
+    ) ?? '💶',
    ),
    language,
   );

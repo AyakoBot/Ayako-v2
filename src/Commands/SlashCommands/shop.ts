@@ -31,7 +31,7 @@ export default async (
 
  const currencyEmote = cmd.client.util.constants.standard.getEmote(
   settings.currencyemote
-   ? Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book
+   ? (Discord.parseEmoji(settings.currencyemote) ?? cmd.client.util.emotes.book)
    : cmd.client.util.emotes.book,
  );
 
@@ -97,7 +97,7 @@ export default async (
     },
     description: lan.description(
      Number(balance?.balance ?? 0),
-     currencyEmote,
+     currencyEmote ?? '',
      (await cmd.client.util.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
     ),
     fields: shopItems.map((s, i) => ({

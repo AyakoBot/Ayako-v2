@@ -156,9 +156,9 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
        {
         name: lan.fields.buttonemote.name,
         value: settings.buttonemote
-         ? client.util.constants.standard.getEmote(
+         ? (client.util.constants.standard.getEmote(
             Discord.parseEmoji(settings.buttonemote) ?? client.util.emotes.book,
-           )
+           ) ?? '')
          : language.t.None,
         inline: true,
        },

@@ -77,7 +77,7 @@ export default async (
  const thread = await target.client.util.request.channels.createThread(channel, {
   type: Discord.ChannelType.PrivateThread,
   invitable: false,
-  name: target.client.util.constants.standard.getEmote(target.client.util.emotes.warning),
+  name: target.client.util.constants.standard.getEmote(target.client.util.emotes.warning) ?? '⚠️',
  });
  if ('message' in thread) return undefined;
  putDel(target, thread);
