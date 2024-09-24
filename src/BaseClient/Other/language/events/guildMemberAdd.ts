@@ -31,8 +31,8 @@ export default (t: CT.Language) => ({
    t.stp(t.JSON.events.guildMemberAdd.thanks4Adding.thanksUser, { user: u }),
   fields: (g: Discord.Guild) =>
    t.JSON.events.guildMemberAdd.thanks4Adding.fields.map((f) => ({
-    ...f,
-    value: t.stp(f.value, {
+    name: '\u200b',
+    value: t.stp(f, {
      rulesChannel: g.rulesChannel ?? t.JSON.events.guildMemberAdd.thanks4Adding.needsCommunity,
     }),
    })),
