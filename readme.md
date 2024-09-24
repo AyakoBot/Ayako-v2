@@ -1,11 +1,3 @@
-# Prequisits
-### 
-`screen -dmS Discord-Proxy -d -m docker run -e REQUEST_TIMEOUT=15000 -p 127.0.0.1:8080:8080 -p 127.0.0.1:9000:9000 ghcr.io/germanoeich/nirn-proxy:v1.3.3`
-
-### 
-`apt-get update && apt-get install -y libjemalloc-dev` <br />
-`echo "/usr/lib/x86_64-linux-gnu/libjemalloc.so" >> /etc/ld.so.preload`
-
 # Installation
 
 ## With Docker Compose (recommended)
