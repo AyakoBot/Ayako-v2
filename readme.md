@@ -6,7 +6,7 @@
 ## Just Ayako
 ### Prerequisits
 
-- Docker
+- [Docker](https://www.docker.com/)
 - [Postgres Database](https://www.postgresql.org/) (at 5432) ([schema](https://github.com/AyakoBot/Ayako/blob/main/prisma/schema.prisma))
 - [Redis](https://redis.io/) (at 6379) (You will have to change the connection string of the [redis client](https://github.com/AyakoBot/Ayako-v2/blob/main/src/BaseClient/Cluster/Redis.ts#L21))
 - [Jemalloc](https://jemalloc.net/) (optional)
