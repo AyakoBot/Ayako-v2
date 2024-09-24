@@ -25,13 +25,13 @@ ENV PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
 
 COPY . /app
 WORKDIR /app
-COPY ./.env /app/packages/Bot/.env
+COPY ./.env /app/.env
 
 RUN export NVM_DIR="$HOME/.nvm" && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
     pnpm install
 
-WORKDIR /app/packages/Bot
+WORKDIR /app
 
 RUN export NVM_DIR="$HOME/.nvm" && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
