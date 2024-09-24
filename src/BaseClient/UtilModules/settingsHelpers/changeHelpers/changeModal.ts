@@ -21,12 +21,16 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
  uniquetimestamp: number | string | undefined,
  required?: boolean,
 ): Discord.APIModalInteractionResponseCallbackData => ({
- title: (
-  language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
-   string,
-   string
-  >
- ).name,
+ title:
+  language.slashCommands.settings.BLWL[
+   fieldName as keyof typeof language.slashCommands.settings.BLWL
+  ] ||
+  (
+   language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+    string,
+    string
+   >
+  ).name,
  custom_id: getWithUTS(`settings/${type}_${String(settingName)}`, uniquetimestamp),
  components: [
   {
@@ -53,24 +57,38 @@ export default <T extends keyof typeof CT.SettingsName2TableName>(
      style: Discord.TextInputStyle.Paragraph,
      label: language.slashCommands.settings.acceptedValue,
      custom_id: '-',
-     value: (
-      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
-       string,
-       string
-      >
-     ).desc,
+     value:
+      language.slashCommands.settings.BLWL[
+       fieldName as keyof typeof language.slashCommands.settings.BLWL
+      ] ||
+      (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc,
      max_length: (
-      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
-       string,
-       string
-      >
-     ).desc.length,
+      language.slashCommands.settings.BLWL[
+       fieldName as keyof typeof language.slashCommands.settings.BLWL
+      ] ||
+      (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc
+     ).length,
      min_length: (
-      language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
-       string,
-       string
-      >
-     ).desc.length,
+      language.slashCommands.settings.BLWL[
+       fieldName as keyof typeof language.slashCommands.settings.BLWL
+      ] ||
+      (
+       language.slashCommands.settings.categories[settingName].fields[fieldName as never] as Record<
+        string,
+        string
+       >
+      ).desc
+     ).length,
     },
    ],
   },
