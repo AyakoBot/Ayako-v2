@@ -51,7 +51,7 @@ export const respond = async (
   embeds: [
    {
     description: `${lan.blockedCmds} ${(blocked.blockedcmd?.length || !user
-     ? blocked.blockedcmd ?? []
+     ? (blocked.blockedcmd ?? [])
      : commands.map((c) => c.name)
     )
      .map((c) => cmd.client.util.util.makeInlineCode(c))
@@ -61,12 +61,11 @@ export const respond = async (
          .filter((c) => !blocked.blockedcmd?.includes(c.name))
          .map((c) => cmd.client.util.util.makeInlineCode(c.name))
          .join(', ')
-      : user
-        ? ''
-        : commands
-           .filter((c) => !blocked.blockedcmd?.includes(c.name))
-           .map((c) => cmd.client.util.util.makeInlineCode(c.name))
-           .join(', ')
+      : (user && '') ||
+        commands
+         .filter((c) => !blocked.blockedcmd?.includes(c.name))
+         .map((c) => cmd.client.util.util.makeInlineCode(c.name))
+         .join(', ')
     }`,
     url: `https://ayakobot.com?user=${user?.id ?? '0'}`,
    },

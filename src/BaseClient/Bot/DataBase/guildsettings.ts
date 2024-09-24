@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
-import {
+import type {
  DefaultArgs,
  DynamicQueryExtensionCb,
  InternalArgs,
 } from '@prisma/client/runtime/library.js';
-import { DataBaseTables, MaybeArray, RequiredOnly } from 'src/Typings/Typings.js';
+import type { DataBaseTables, MaybeArray, RequiredOnly } from 'src/Typings/Typings.js';
 import Redis from '../Redis.js';
 
 const name = 'guildsettings';
@@ -32,7 +32,6 @@ export default Prisma.defineExtension({
      case 'create':
      case 'delete':
      case 'deleteMany':
-     case 'create':
      case 'createMany':
      case 'createManyAndReturn':
       keys.forEach((key) => Redis.del(key));
@@ -100,25 +99,25 @@ export const handleFind = async <T extends keyof DataBaseTables>(
  tableName: T,
  keyName: keyof DataBaseTables[T],
 ) => {
- {
-  const cached = await Promise.all(keys.map((key) => Redis.get(key)));
+ const cached = await Promise.all(keys.map((key) => Redis.get(key)));
 
-  if (cached.some((c) => c === null) || !cached.length) {
-   return cacheNewEntry(
-    (await data.query(data.args as any)) as MaybeArray<
-     DataBaseTables[T]
-    >,
-    tableName,
-    keyName,
-   );
-  }
-
-  if (!isValid(cached as string[]))
-   return data.query(data.args as any);
-  const validCached = (cached as string[]).map((c) => JSON.parse(c) as DataBaseTables[T]);
-
-  return ['findUnique', 'findFirst'].includes(data.operation) ? validCached[0] : validCached;
+ if (cached.some((c) => c === null) || !cached.length) {
+  return cacheNewEntry(
+   (await data.query(data.args as Parameters<typeof data.query>[0])) as MaybeArray<
+    DataBaseTables[T]
+   >,
+   tableName,
+   keyName,
+  );
  }
+
+ if (!isValid(cached as string[])) {
+  return data.query(data.args as Parameters<typeof data.query>[0]);
+ }
+
+ const validCached = (cached as string[]).map((c) => JSON.parse(c) as DataBaseTables[T]);
+
+ return ['findUnique', 'findFirst'].includes(data.operation) ? validCached[0] : validCached;
 };
 
 export const cacheNewEntry = <T extends keyof DataBaseTables>(

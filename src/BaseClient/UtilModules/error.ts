@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
-import DataBase from '../Bot/DataBase.js';
-import objectEmotes from './emotes.js';
-import getLanguage from './getLanguage.js';
-import constants from '../Other/constants.js';
 import * as CT from '../../Typings/Typings.js';
+import DataBase from '../Bot/DataBase.js';
+import constants from '../Other/constants.js';
+import objectEmotes from './emotes.js';
+import { getLanguage } from './getLanguage.js';
 import { request } from './requestHandler.js';
 import { canSendMessage } from './requestHandler/channels/sendMessage.js';
 

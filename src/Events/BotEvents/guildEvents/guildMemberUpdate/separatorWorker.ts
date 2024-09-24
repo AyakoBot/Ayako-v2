@@ -1,5 +1,5 @@
 import Prisma from '@prisma/client';
-import { Serialized } from 'discord-hybrid-sharding';
+import { type Serialized } from 'discord-hybrid-sharding';
 import Jobs from 'node-schedule';
 import { parentPort, workerData } from 'worker_threads';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';

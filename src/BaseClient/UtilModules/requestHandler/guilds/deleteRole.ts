@@ -25,10 +25,12 @@ export default async (guild: Discord.Guild, roleId: string, reason?: string) => 
   return e;
  }
 
- return (await getAPI(guild)).guilds.deleteRole(guild.id, roleId, { reason }).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).guilds
+  .deleteRole(guild.id, roleId, { reason })
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };
 
 /**

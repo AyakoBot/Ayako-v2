@@ -46,7 +46,7 @@ export default (t: CT.Language) => ({
   `**[${t.JSON.t.thisMessage}](${t.util.constants.standard.msgurl(
    msg.guildId,
    msg.channelId,
-   'id' in msg ? msg.id : msg.messageId ?? '',
+   'id' in msg ? msg.id : (msg.messageId ?? ''),
   )})**\n`,
  getEmote: (emoji: Discord.Emoji) =>
   `**${t.JSON.t.Emoji} ${t.util.constants.standard.getEmote(emoji)} / \`${

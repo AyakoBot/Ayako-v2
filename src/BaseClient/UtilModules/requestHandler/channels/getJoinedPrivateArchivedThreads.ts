@@ -32,7 +32,10 @@ export default async (
    const parsed = res.threads.map((t) => Classes.Channel<10>(channel.client, t, channel.guild));
    parsed.forEach((p) => {
     if (channel.threads.cache.get(p.id)) return;
-    channel.threads.cache.set(p.id, p as any);
+    channel.threads.cache.set(
+     p.id,
+     p as Discord.PublicThreadChannel<false> & Discord.ForumThreadChannel,
+    );
    });
    return parsed;
   })

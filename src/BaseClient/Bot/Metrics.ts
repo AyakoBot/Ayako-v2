@@ -112,8 +112,7 @@ registry.registerMetric(clusterCount);
 registry.registerMetric(shardCount);
 registry.registerMetric(userInstallCount);
 
-
-export const metricsCollector = {
+export default {
  dispatchEventsReceived: (clientName: string, eventType: string, shard: number) =>
   dispatchEventsReceived.labels(clientName, eventType, String(shard)).inc(),
 

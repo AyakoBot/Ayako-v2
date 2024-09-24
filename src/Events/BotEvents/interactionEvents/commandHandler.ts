@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
 import { handleUser } from '../../../BaseClient/UtilModules/userMiddleware.js';
-import { metricsCollector } from '../../../BaseClient/Bot/Metrics.js';
+import metricsCollector from '../../../BaseClient/Bot/Metrics.js';
 
 // eslint-disable-next-line no-console
 const { log } = console;

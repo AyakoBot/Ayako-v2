@@ -8,5 +8,5 @@ export default async (
  member?: Discord.GuildMember,
 ) => {
  log(oldState, state, member);
- voiceHub(state, member)
+ voiceHub(state, member);
 };

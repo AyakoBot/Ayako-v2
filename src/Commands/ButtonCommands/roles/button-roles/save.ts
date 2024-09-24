@@ -2,7 +2,7 @@ import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import { findField } from '../../../SelectCommands/StringSelect/roles/button-roles.js';
 import {
- Type,
+ type Type,
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';

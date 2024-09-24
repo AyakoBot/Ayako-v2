@@ -16,7 +16,7 @@ import {
  managerPermissions,
  memberPermissions,
 } from '../../../../Events/BotEvents/voiceStateEvents/voiceStateCreates/voiceHub.js';
-import { Language } from '../../../../Typings/Typings.js';
+import { type Language } from '../../../../Typings/Typings.js';
 
 export default async (
  cmd: ChatInputCommandInteraction,
@@ -92,7 +92,8 @@ const getLanFN = (
      return lan.addedManager;
    }
   }
-  case 'member': {
+  case 'member':
+  default: {
    switch (action) {
     case 'demote':
      return lan.removedMember;
@@ -124,7 +125,8 @@ const getPerms = (
      };
    }
   }
-  case 'member': {
+  case 'member':
+  default: {
    switch (action) {
     case 'promote':
      return {

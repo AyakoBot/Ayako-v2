@@ -1,8 +1,8 @@
 import * as Neko from 'nekos-best.js';
 import { scheduleJob } from 'node-schedule';
 import PurrBot from 'purrbot-api';
-import WaifuPics, { SFWCategories as WaifuGifNames } from 'waifu-pics-api';
-import hardcodedGifs from '../../../../BaseClient/Other/constants/gifs.js';
+import WaifuPics, { type SFWCategories as WaifuGifNames } from 'waifu-pics-api';
+import hardcodedGifs from '../../../Other/constants/gifs.js';
 import getPathFromError from '../../getPathFromError.js';
 import getRandom from '../../getRandom.js';
 
@@ -44,7 +44,7 @@ export const self: Gifs = {
 
   if (!store.length) {
    scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i += 1) {
      self.getNew(name, type);
     }
    });
@@ -131,7 +131,8 @@ const getGif = async <T extends 'gif' | 'img'>(
  * Fetches a neko gif based on the given gifName and type.
  * @param gifName - The name of the gif to fetch.
  * @param type - An array of types to filter the gif search.
- * @returns A promise that resolves to an object containing the URL of the gif, and optionally the anime name, artist name, source URL, and artist URL.
+ * @returns A promise that resolves to an object containing the URL of the gif,
+ * and optionally the anime name, artist name, source URL, and artist URL.
  */
 const neko = async (gifName: string, type: Type[]) => {
  const res = (await nekoClient.fetch(gifName as Neko.NbCategories, 1).catch(() => undefined))
@@ -181,7 +182,8 @@ const purr = async (gifName: string, type: Type[]) => {
 
 /**
  * Retrieves a waifu GIF URL based on the given GIF name and type.
- * If the GIF name is not found or the type array contains more than 2 types and no URL is found, it falls back to getGif.
+ * If the GIF name is not found or the type array contains more than 2 types and no URL is found,
+ * it falls back to getGif.
  * @param gifName - The name of the GIF.
  * @param type - An array of types.
  * @returns An object containing the GIF URL, or an empty string if no URL is found.

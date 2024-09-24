@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
-import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
-import cache from '../../cache.js';
 import * as Classes from '../../../Other/classes.js';
+import cache from '../../cache.js';
 import error from '../../error.js';
+import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 
@@ -55,7 +55,8 @@ export default async (
 /**
  * Checks if a guild has missing scopes for commands.
  * @param guild - The Discord guild to check.
- * @returns A promise that resolves to the guild with missing scopes, or undefined if no guild is found.
+ * @returns A promise that resolves to the guild with missing scopes,
+ * or undefined if no guild is found.
  */
 export const hasMissingScopes = (guild: Discord.Guild) =>
  guild.client.util.DataBase.noCommandsGuilds.findUnique({
@@ -64,11 +65,11 @@ export const hasMissingScopes = (guild: Discord.Guild) =>
 
 /**
  * Sets the "hasMissingScopes" flag for a guild if the error message includes "Missing Access".
- * @param error - The error message.
+ * @param err - The error message.
  * @param guild - The Discord guild.
  */
-export const setHasMissingScopes = (error: string, guild: Discord.Guild) => {
- if (!error.includes('Missing Access')) return;
+export const setHasMissingScopes = (err: string, guild: Discord.Guild) => {
+ if (!err.includes('Missing Access')) return;
 
  guild.client.util.DataBase.noCommandsGuilds
   .upsert({

@@ -49,7 +49,7 @@ export default async (
 };
 
 const getEmotesPayload = async (
- emotes: (Discord.Emoji | Discord.GuildEmoji)[], 
+ emotes: (Discord.Emoji | Discord.GuildEmoji)[],
  language: CT.Language,
  lan: CT.Language['slashCommands']['info'],
  page = 1,

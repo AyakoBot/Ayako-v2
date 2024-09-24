@@ -12,13 +12,13 @@ export default async (
    : undefined;
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction
-   ? cmd.options.getBoolean('hide', false) ?? true
+   ? (cmd.options.getBoolean('hide', false) ?? true)
    : true;
  const language = await cmd.client.util.getLanguage(cmd.locale);
 
- if (messageLinkOrStickerId)
+ if (messageLinkOrStickerId) {
   single(cmd as Discord.ChatInputCommandInteraction, language, ephemeral);
- else multiple(cmd, language, page, ephemeral);
+ } else multiple(cmd, language, page, ephemeral);
 };
 
 const single = async (
@@ -63,7 +63,7 @@ export const multiple = async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
  language: CT.Language,
  page: number = 1,
- ephemeral: boolean,
+ ephemeral: boolean = true,
 ) => {
  if (!cmd.inCachedGuild()) {
   cmd.client.util.guildOnly(cmd);

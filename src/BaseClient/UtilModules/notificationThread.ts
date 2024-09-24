@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { Colors, UsualMessagePayload } from '../../Typings/Typings.js';
+import { Colors, type UsualMessagePayload } from '../../Typings/Typings.js';
 import deleteThread from './deleteNotificationThread.js';
 import getPathFromError from './getPathFromError.js';
 
@@ -54,7 +54,7 @@ export default async (
    }
   >);
  if (!channel || !('threads' in channel)) return undefined;
- if (!target) return;
+ if (!target) return undefined;
 
  const active = await target.client.util.request.guilds
   .getActiveThreads(target.guild)
@@ -68,7 +68,7 @@ export default async (
    orderBy: { deletetime: 'asc' },
   });
 
-  if (!oldestThread) return;
+  if (!oldestThread) return undefined;
 
   channel.client.util.cache.deleteThreads.delete(oldestThread.guildid, oldestThread.channelid);
   await deleteThread(channel.guild, oldestThread.channelid);

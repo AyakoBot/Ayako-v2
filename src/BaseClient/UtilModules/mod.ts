@@ -1,17 +1,17 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/Typings.js';
 
-import getLanguage from './getLanguage.js';
+import cache from './cache.js';
+import { getLanguage } from './getLanguage.js';
 import log from './log.js';
+import alreadyExecuting from './mod/alreadyExecuting.js';
 import db from './mod/db.js';
-import mod from './mod/mod.js';
 import declareSuccess from './mod/declareSuccess.js';
-import notifyTarget from './mod/notifyTarget.js';
 import isMe from './mod/isMe.js';
 import isSelf from './mod/isSelf.js';
+import mod from './mod/mod.js';
+import notifyTarget from './mod/notifyTarget.js';
 import startLoading from './mod/startLoading.js';
-import alreadyExecuting from './mod/alreadyExecuting.js';
-import cache from './cache.js';
 
 export type CmdType =
  | Discord.ChatInputCommandInteraction<'cached'>

@@ -2,36 +2,42 @@ import * as DiscordCore from '@discordjs/core';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 
-import auditLogs, { AuditLogs } from './cache/discord/auditLogs.js';
-import commandPermissions, { CommandPermissions } from './cache/discord/commandPermissions.js';
-import integrations, { Integrations } from './cache/discord/integrations.js';
-import inviteGuilds, { InviteGuilds } from './cache/discord/inviteGuilds.js';
-import pins, { Pins } from './cache/discord/pins.js';
-import scheduledEventUsers, { ScheduledEventUsers } from './cache/discord/scheduledEventUsers.js';
-import webhooks, { Webhooks } from './cache/discord/webhooks.js';
-import welcomeScreens, { WelcomeScreens } from './cache/discord/welcomeScreens.js';
-import onboarding, { Onboarding } from './cache/discord/onboarding.js';
-import invites, { Invites } from './cache/discord/invites.js';
-import commands, { Commands } from './cache/discord/commands.js';
+import auditLogs, { type AuditLogs } from './cache/discord/auditLogs.js';
+import commandPermissions, { type CommandPermissions } from './cache/discord/commandPermissions.js';
+import commands, { type Commands } from './cache/discord/commands.js';
+import integrations, { type Integrations } from './cache/discord/integrations.js';
+import inviteGuilds, { type InviteGuilds } from './cache/discord/inviteGuilds.js';
+import invites, { type Invites } from './cache/discord/invites.js';
+import onboarding, { type Onboarding } from './cache/discord/onboarding.js';
+import pins, { type Pins } from './cache/discord/pins.js';
+import scheduledEventUsers, {
+ type ScheduledEventUsers,
+} from './cache/discord/scheduledEventUsers.js';
+import webhooks, { type Webhooks } from './cache/discord/webhooks.js';
+import welcomeScreens, { type WelcomeScreens } from './cache/discord/welcomeScreens.js';
 
-import giveawayClaimTimeout, { GiveawayClaimTimeout } from './cache/bot/giveawayClaimTimeout.js';
-import mutes, { Mutes } from './cache/bot/mutes.js';
-import bans, { Bans } from './cache/bot/bans.js';
-import channelBans, { ChannelBans } from './cache/bot/channelBans.js';
-import reminders, { Reminders } from './cache/bot/reminders.js';
-import disboardBumpReminders, { DisboardBumpReminders } from './cache/bot/disboardBumpReminders.js';
-import votes, { Votes } from './cache/bot/votes.js';
-import giveaways, { Giveaways } from './cache/bot/giveaways.js';
-import stickyTimeouts, { StickyTimeouts } from './cache/bot/stickyTimeouts.js';
-import deleteThreads, { DeleteThreads } from './cache/bot/deleteThreads.js';
-import deleteSuggestions, { DeleteSuggestions } from './cache/bot/deleteSuggestions.js';
-import vcDeleteTimeout, { VcDeleteTimeout } from './cache/bot/vcDeleteTimeout.js';
-import unblockedModUsers, { UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
+import bans, { type Bans } from './cache/bot/bans.js';
+import channelBans, { type ChannelBans } from './cache/bot/channelBans.js';
+import deleteSuggestions, { type DeleteSuggestions } from './cache/bot/deleteSuggestions.js';
+import deleteThreads, { type DeleteThreads } from './cache/bot/deleteThreads.js';
+import disboardBumpReminders, {
+ type DisboardBumpReminders,
+} from './cache/bot/disboardBumpReminders.js';
 import gifs from './cache/bot/gifs.js';
+import giveawayClaimTimeout, {
+ type GiveawayClaimTimeout,
+} from './cache/bot/giveawayClaimTimeout.js';
+import giveaways, { type Giveaways } from './cache/bot/giveaways.js';
+import mutes, { type Mutes } from './cache/bot/mutes.js';
+import reminders, { type Reminders } from './cache/bot/reminders.js';
+import stickyTimeouts, { type StickyTimeouts } from './cache/bot/stickyTimeouts.js';
+import unblockedModUsers, { type UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
+import vcDeleteTimeout, { type VcDeleteTimeout } from './cache/bot/vcDeleteTimeout.js';
+import votes, { type Votes } from './cache/bot/votes.js';
 
-import urlTLDs, { UrlTLDs } from './cache/urls/urlTLDs.js';
-import sinkingYachts, { SinkingYachts } from './cache/urls/sinkingYachts.js';
-import fishFish, { FishFish } from './cache/urls/fishFish.js';
+import fishFish, { type FishFish } from './cache/urls/fishFish.js';
+import sinkingYachts, { type SinkingYachts } from './cache/urls/sinkingYachts.js';
+import urlTLDs, { type UrlTLDs } from './cache/urls/urlTLDs.js';
 
 /**
  * Discord and Cache data stored in the client.

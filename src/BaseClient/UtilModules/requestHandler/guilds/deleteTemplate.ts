@@ -24,10 +24,12 @@ export default async (guild: Discord.Guild, templateCode: string) => {
   return e;
  }
 
- return (await getAPI(guild)).guilds.deleteTemplate(guild.id, templateCode).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).guilds
+  .deleteTemplate(guild.id, templateCode)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };
 export const canDeleteTemplate = (me: Discord.GuildMember) =>
  me.permissions.has(Discord.PermissionFlagsBits.ManageGuild);

@@ -18,7 +18,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  return settings?.map((s) => ({
   name: `${lan.fields.question.name}: ${
-   s.question ? s.question?.slice(0, 50) ?? language.t.None : language.t.None
+   s.question ? (s.question?.slice(0, 50) ?? language.t.None) : language.t.None
   } - ${lan.fields.answertype.name}: ${
    language.answertypes[s.answertype as keyof typeof language.answertypes]
   }`,

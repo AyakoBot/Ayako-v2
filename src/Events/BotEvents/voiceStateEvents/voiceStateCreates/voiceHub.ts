@@ -1,8 +1,8 @@
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import { del } from '../voiceStateDeletes/voiceHub.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
-import { Language } from '../../../../Typings/Typings.js';
+import { type Language } from '../../../../Typings/Typings.js';
+import { del } from '../voiceStateDeletes/voiceHub.js';
 
 export const memberPermissions = [
  Discord.PermissionFlagsBits.Connect,

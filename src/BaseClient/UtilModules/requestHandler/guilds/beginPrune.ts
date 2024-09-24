@@ -27,10 +27,12 @@ export default async (
   return e;
  }
 
- return (await getAPI(guild)).guilds.beginPrune(guild.id, body, { reason }).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).guilds
+  .beginPrune(guild.id, body, { reason })
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };
 /**
  * Checks if the user has the necessary permissions to prune members from a guild.

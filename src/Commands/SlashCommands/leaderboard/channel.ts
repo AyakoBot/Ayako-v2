@@ -1,7 +1,7 @@
 import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import { getLevel } from '../../../Commands/ButtonCommands/set-level/user/calc.js';
+import { getLevel } from '../../ButtonCommands/set-level/user/calc.js';
 import { GuildTextChannelTypes } from '../../../Typings/Channel.js';
 import * as CT from '../../../Typings/Typings.js';
 

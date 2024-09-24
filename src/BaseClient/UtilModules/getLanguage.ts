@@ -10,7 +10,8 @@ import Language, { languages } from '../Other/language.js';
  */
 export default async (guildIdOrLocale: bigint | undefined | null | string) =>
  guildIdOrLocale && typeof guildIdOrLocale === 'string'
-  ? Lang.cache.get(guildIdOrLocale) ?? Lang.set(await getLanguage(guildIdOrLocale), guildIdOrLocale)
+  ? (Lang.cache.get(guildIdOrLocale) ??
+    Lang.set(await getLanguage(guildIdOrLocale), guildIdOrLocale))
   : getLanguage(guildIdOrLocale);
 
 export const getLanguage = async (guildIdOrLocale: bigint | undefined | null | string) => {

@@ -227,7 +227,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
          .map((s) => ({
           label: s.text ?? undefined,
           style: Discord.ButtonStyle.Secondary,
-          emoji: s.emote ? Discord.parseEmoji(s.emote) ?? undefined : undefined,
+          emoji: s.emote ? (Discord.parseEmoji(s.emote) ?? undefined) : undefined,
           type: Discord.ComponentType.Button,
           custom_id: `roles/button-roles/takeRole_${s.uniquetimestamp}`,
          }))

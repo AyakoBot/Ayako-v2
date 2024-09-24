@@ -21,8 +21,10 @@ export default async (
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- return (await getAPI(guild)).webhooks.executeSlack(webhookId, token, body, query).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).webhooks
+  .executeSlack(webhookId, token, body, query)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };

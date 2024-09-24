@@ -24,5 +24,5 @@ export default {
  ],
  [CT.SettingNames.LinkedRolesDeco]: [
   { name: 'Tutorial for Decoration Linked-Roles', link: 'https://youtu.be/QV8QDHvwNk4' },
- ]
+ ],
 };

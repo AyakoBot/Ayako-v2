@@ -16,7 +16,7 @@ export default async (
  client: Discord.Client<true>,
  query?: Discord.RESTGetAPIApplicationCommandsQuery,
 ) =>
- (guild ? cache.apis.get(guild.id) ?? API : API).applicationCommands
+ (guild ? (cache.apis.get(guild.id) ?? API) : API).applicationCommands
   .getGlobalCommands(guild ? await getBotIdFromGuild(guild) : client.user.id, query)
   .then((cmds) => {
    const parsed = cmds.map((cmd) => new Classes.ApplicationCommand(client, cmd));

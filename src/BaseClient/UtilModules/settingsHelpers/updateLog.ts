@@ -56,7 +56,7 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
     ],
   } as { name: string });
 
- const types = guild.client.util.constants.commands.settings.types;
+ const { types } = guild.client.util.constants.commands.settings;
  const setting = types[settingName as keyof typeof types];
  const key = setting[changedSetting as keyof typeof setting];
 

@@ -1,8 +1,8 @@
-import { DjsDiscordClient } from 'discord-hybrid-sharding';
+import { type DjsDiscordClient } from 'discord-hybrid-sharding';
+import { glob } from 'glob';
 import { scheduleJob } from 'node-schedule';
 import getPathFromError from '../UtilModules/getPathFromError.js';
 import Manager from './Manager.js';
-import { glob } from 'glob';
 
 scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
  const guildCount = await Manager.fetchClientValues('guilds?.cache.size');
@@ -44,6 +44,7 @@ const run = () => {
 
  scheduleJob(getPathFromError(new Error()), '0 0 */1 * * *', async () => {
   const [users, guilds] = await Promise.all([getAllUsers(), getAllGuilds()]);
+  // eslint-disable-next-line no-console
   console.log(`| Stats: ${users} Users, ${guilds} Guilds, ${Manager.totalShards} Shards`);
 
   (
@@ -53,10 +54,10 @@ const run = () => {
   )
    .filter((f) => f.endsWith('.js'))
    .forEach(async (f) => {
+    // eslint-disable-next-line no-console
     console.log('Running stats', f);
 
     const file = await import(f);
-    console.log(!!file);
 
     file.default(guilds, users);
    });

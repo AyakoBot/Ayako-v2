@@ -5,7 +5,7 @@ export default async (cmd: Discord.CommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  const value = cmd.options.get('embed', true).value as string;
- if (Number.isNaN(parseInt(value))) {
+ if (Number.isNaN(parseInt(value, 10))) {
   cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }

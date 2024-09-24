@@ -9,7 +9,7 @@ export default async (
 ) => {
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction
-   ? cmd.options.getBoolean('hide', false) ?? true
+   ? (cmd.options.getBoolean('hide', false) ?? true)
    : true;
  const language = await client.util.getLanguage(cmd.guildId);
  const servers = await getServers(language);

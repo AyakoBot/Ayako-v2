@@ -1,6 +1,6 @@
 import { ChannelType, ChatInputCommandInteraction, StageChannel, VoiceChannel } from 'discord.js';
 import { createVC } from '../../../Events/BotEvents/voiceStateEvents/voiceStateCreates/voiceHub.js';
-import { Language } from '../../../Typings/Typings.js';
+import { type Language } from '../../../Typings/Typings.js';
 
 export default async (cmd: ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;

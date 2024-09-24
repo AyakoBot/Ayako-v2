@@ -30,7 +30,6 @@ export default Prisma.defineExtension({
      case 'create':
      case 'delete':
      case 'deleteMany':
-     case 'create':
      case 'createMany':
      case 'createManyAndReturn':
       keys.forEach((key) => Redis.del(key));

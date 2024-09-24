@@ -19,7 +19,7 @@ export default async (guild: Discord.Guild | undefined | null, name: CommandName
   client.application?.commands.cache.find((c) => c.name === name);
 
  return guild
-  ? [...(cache.commands.cache.get(guild.id)?.values() ?? [])]?.find((c) => c.name === name) ??
-     clientCommand
+  ? ([...(cache.commands.cache.get(guild.id)?.values() ?? [])]?.find((c) => c.name === name) ??
+     clientCommand)
   : clientCommand;
 };

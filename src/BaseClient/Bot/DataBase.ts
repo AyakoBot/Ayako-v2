@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Prisma, PrismaClient } from '@prisma/client';
-import { metricsCollector } from './Metrics.js';
+import metricsCollector from './Metrics.js';
 
 import logchannels from './DataBase/logchannels.js';
 import guildsettings from './DataBase/guildsettings.js';

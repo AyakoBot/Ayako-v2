@@ -1,6 +1,6 @@
 import Redis from 'ioredis';
 import { BaseMessage } from 'discord-hybrid-sharding';
-import { APIInteraction } from 'discord.js';
+import { type APIInteraction } from 'discord.js';
 import * as Typings from '../../Typings/Typings.js';
 import Manager from './Manager.js';
 
@@ -18,7 +18,7 @@ export interface Message<
       : never;
 }
 
-const client = new Redis({ host: 'redis'});
+const client = new Redis({ host: 'redis' });
 
 client.subscribe(
  Typings.MessageType.Interaction,
@@ -26,6 +26,7 @@ client.subscribe(
  Typings.MessageType.Appeal,
  (err, count) => {
   if (err) throw err;
+  // eslint-disable-next-line no-console
   console.log(`| => Subscription service listening to ${count} channels`);
  },
 );
@@ -34,7 +35,7 @@ client.on('message', (channel, message) => {
  const parse = JSON.parse(message) as Message<Typings.MessageType>;
  const data = (typeof parse === 'string' ? JSON.parse(parse) : parse) as typeof parse;
 
- Manager.broadcast(new BaseMessage({ data: data, type: channel }));
+ Manager.broadcast(new BaseMessage({ data, type: channel }));
 });
 
 export default client;

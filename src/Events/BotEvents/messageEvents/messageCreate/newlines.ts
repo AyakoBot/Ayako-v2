@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
-import * as CT from '../../../../Typings/Typings.js';
 import { PunishmentType } from '@prisma/client';
+import * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {
  if (msg.author.bot) return;

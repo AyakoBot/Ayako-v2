@@ -1,8 +1,8 @@
 import { AppealStatus } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
-import * as CT from '../../Typings/Typings.js';
 import { getPunishment } from '../../Events/ClusterEvents/appeal.js';
+import * as CT from '../../Typings/Typings.js';
 import { pardon } from '../SlashCommands/mod/pardon/one.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
@@ -148,7 +148,10 @@ const notifyUser = async (
  };
 
  const member = await cmd.client.util.request.guilds.getMember(cmd.guild, pun.targetId);
- if ('message' in member) return dmNotify();
+ if ('message' in member) {
+  dmNotify();
+  return;
+ }
 
  const user = await cmd.client.util.request.users.get(cmd.guild, pun.targetId);
  if ('message' in user) return;

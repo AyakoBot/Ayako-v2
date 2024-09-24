@@ -124,18 +124,14 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   if (addedFlags.length) {
    embed.fields?.push({
     name: lan.memberFlagsName,
-    value: addedFlags
-     .map((t) => lan.memberFlags[t])
-     .join(', '),
+    value: addedFlags.map((t) => lan.memberFlags[t]).join(', '),
    });
   }
 
   if (removedFlags.length) {
    embed.fields?.push({
     name: lan.memberFlagsName,
-    value: removedFlags
-     .map((t) => lan.memberFlags[t])
-     .join(', '),
+    value: removedFlags.map((t) => lan.memberFlags[t]).join(', '),
    });
   }
  }

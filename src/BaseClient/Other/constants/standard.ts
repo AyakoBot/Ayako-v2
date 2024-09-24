@@ -21,9 +21,8 @@ export default {
    | undefined,
  ) =>
   emoji
-   ? emoji.id
-     ? `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`
-     : `${/\w/g.test(emoji.name ?? '') ? `:${emoji.name}:` : emoji.name}`
+   ? (emoji.id && `<${emoji.animated ? 'a:' : ':'}${emoji.name}:${emoji.id}>`) ||
+     `${/\w/g.test(emoji.name ?? '') ? `:${emoji.name}:` : emoji.name}`
    : undefined,
  getTime: (time: number) =>
   `<t:${String(time).slice(0, -3)}:f> (<t:${String(time).slice(0, -3)}:R>)`,

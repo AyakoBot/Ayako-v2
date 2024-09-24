@@ -3,7 +3,7 @@ import baseEventHandler from '../../../Events/BotEvents/baseEventHandler.js';
 import events from '../../UtilModules/getEvents.js';
 import client from '../Client.js';
 
-//@ts-ignore
+// @ts-ignore
 client.setMaxListeners(events.BotEvents.length);
 
 events.BotEvents.forEach((path: string) => {

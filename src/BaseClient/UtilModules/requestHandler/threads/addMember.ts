@@ -28,12 +28,12 @@ export default async (thread: Discord.ThreadChannel, userId: string) => {
   .addMember(thread.id, userId)
   .catch((e: Discord.DiscordAPIError) => {
    if (e.message.includes('Missing Access')) {
-    const e = requestHandlerError(
+    const e2 = requestHandlerError(
      `Cannot add User ${userId} to thread ${thread.name} / ${thread.id} because they are not a member`,
      [Discord.PermissionFlagsBits.SendMessages],
     );
 
-    error(thread.guild, e);
+    error(thread.guild, e2);
     return e;
    }
 

@@ -35,7 +35,7 @@ const setOptions = (
       .setDescription(o.description)
       .setDescriptionLocalizations(o.description_localizations ?? {}),
     );
-    return;
+    break;
    case Discord.ApplicationCommandOptionType.User:
     subcommand.addUserOption(
      new Discord.SlashCommandUserOption()
@@ -44,7 +44,7 @@ const setOptions = (
       .setDescription(o.description)
       .setDescriptionLocalizations(o.description_localizations ?? {}),
     );
-    return;
+    break;
    default:
     break;
   }

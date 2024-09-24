@@ -159,12 +159,18 @@ export default async (
    JSON.stringify(oldRule?.triggerMetadata?.presets)
  ) {
   const beforeContent = rule.client.util
-   .getDifference([...(rule.triggerMetadata?.presets ?? [])], [...(oldRule?.triggerMetadata?.presets ?? [])])
+   .getDifference(
+    [...(rule.triggerMetadata?.presets ?? [])],
+    [...(oldRule?.triggerMetadata?.presets ?? [])],
+   )
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
 
   const afterContent = rule.client.util
-   .getDifference([...(oldRule?.triggerMetadata?.presets ?? [])], [...(rule.triggerMetadata?.presets ?? [])])
+   .getDifference(
+    [...(oldRule?.triggerMetadata?.presets ?? [])],
+    [...(rule.triggerMetadata?.presets ?? [])],
+   )
    .map((r) => `\`${lan.presets[r as keyof typeof lan.presets]}\``)
    .join(', ');
 
@@ -181,12 +187,18 @@ export default async (
    JSON.stringify(oldRule?.triggerMetadata?.allowList)
  ) {
   const beforeContent = rule.client.util
-   .getDifference([...(rule.triggerMetadata?.allowList ?? [])], [...(oldRule?.triggerMetadata?.allowList ?? [])])
+   .getDifference(
+    [...(rule.triggerMetadata?.allowList ?? [])],
+    [...(oldRule?.triggerMetadata?.allowList ?? [])],
+   )
    .map((r) => `\`${r}\``)
    .join(', ');
 
   const afterContent = rule.client.util
-   .getDifference([...(oldRule?.triggerMetadata?.allowList ?? [])], [...(rule.triggerMetadata?.allowList ?? [])])
+   .getDifference(
+    [...(oldRule?.triggerMetadata?.allowList ?? [])],
+    [...(rule.triggerMetadata?.allowList ?? [])],
+   )
    .map((r) => `\`${r}\``)
    .join(', ');
 

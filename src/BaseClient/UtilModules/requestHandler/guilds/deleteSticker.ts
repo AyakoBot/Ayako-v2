@@ -25,10 +25,12 @@ export default async (guild: Discord.Guild, stickerId: string, reason?: string) 
   return e;
  }
 
- return (await getAPI(guild)).guilds.deleteSticker(guild.id, stickerId, { reason }).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).guilds
+  .deleteSticker(guild.id, stickerId, { reason })
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };
 /**
  * Checks if the given guild member has the permission to delete stickers.

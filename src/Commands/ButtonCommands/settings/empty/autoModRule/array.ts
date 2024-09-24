@@ -33,19 +33,20 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    ? rule.exemptChannels.map((o) => o.id)
    : rule.exemptRoles.map((o) => o.id),
  );
- const updatedRule = await (fieldName === 'exemptChannels'
-  ? cmd.client.util.request.guilds.editAutoModerationRule(
-     cmd.guild,
-     rule.id,
-     { exempt_channels: [] },
-     cmd.user.username,
-    )
-  : cmd.client.util.request.guilds.editAutoModerationRule(
-     cmd.guild,
-     rule.id,
-     { exempt_roles: [] },
-     cmd.user.username,
-    )
+ const updatedRule = await (
+  fieldName === 'exemptChannels'
+   ? cmd.client.util.request.guilds.editAutoModerationRule(
+      cmd.guild,
+      rule.id,
+      { exempt_channels: [] },
+      cmd.user.username,
+     )
+   : cmd.client.util.request.guilds.editAutoModerationRule(
+      cmd.guild,
+      rule.id,
+      { exempt_roles: [] },
+      cmd.user.username,
+     )
  ).catch((e) => e as Discord.DiscordAPIError);
 
  if ('message' in updatedRule) {

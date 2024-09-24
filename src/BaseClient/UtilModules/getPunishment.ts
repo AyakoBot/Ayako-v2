@@ -1,13 +1,4 @@
-import Prisma, {
- punish_bans,
- punish_channelbans,
- punish_kicks,
- punish_mutes,
- punish_tempbans,
- punish_tempchannelbans,
- punish_tempmutes,
- punish_warns,
-} from '@prisma/client';
+import Prisma from '@prisma/client';
 import { PunishmentType } from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
 
@@ -146,39 +137,53 @@ async function f(
  return Promise.all([
   DataBase.punish_bans
    .findMany(where as never)
-   .then((r) => (r as punish_bans[]).map((r2) => ({ ...r2, type: PunishmentType.Ban }) as const)),
+   .then((r) =>
+    (r as Prisma.punish_bans[]).map((r2) => ({ ...r2, type: PunishmentType.Ban }) as const),
+   ),
   DataBase.punish_channelbans
    .findMany(where as never)
    .then((r) =>
-    (r as punish_channelbans[]).map((r2) => ({ ...r2, type: PunishmentType.Channelban }) as const),
+    (r as Prisma.punish_channelbans[]).map(
+     (r2) => ({ ...r2, type: PunishmentType.Channelban }) as const,
+    ),
    ),
   DataBase.punish_kicks
    .findMany(where as never)
-   .then((r) => (r as punish_kicks[]).map((r2) => ({ ...r2, type: PunishmentType.Kick }) as const)),
+   .then((r) =>
+    (r as Prisma.punish_kicks[]).map((r2) => ({ ...r2, type: PunishmentType.Kick }) as const),
+   ),
   DataBase.punish_mutes
    .findMany(where as never)
-   .then((r) => (r as punish_mutes[]).map((r2) => ({ ...r2, type: PunishmentType.Mute }) as const)),
+   .then((r) =>
+    (r as Prisma.punish_mutes[]).map((r2) => ({ ...r2, type: PunishmentType.Mute }) as const),
+   ),
   DataBase.punish_warns
    .findMany(where as never)
-   .then((r) => (r as punish_warns[]).map((r2) => ({ ...r2, type: PunishmentType.Warn }) as const)),
+   .then((r) =>
+    (r as Prisma.punish_warns[]).map((r2) => ({ ...r2, type: PunishmentType.Warn }) as const),
+   ),
   ...(options?.includeTemp
    ? [
       DataBase.punish_tempchannelbans
        .findMany(where as never)
        .then((r) =>
-        (r as punish_tempchannelbans[]).map(
+        (r as Prisma.punish_tempchannelbans[]).map(
          (r2) => ({ ...r2, type: PunishmentType.Tempchannelban }) as const,
         ),
        ),
       DataBase.punish_tempbans
        .findMany(where as never)
        .then((r) =>
-        (r as punish_tempbans[]).map((r2) => ({ ...r2, type: PunishmentType.Tempban }) as const),
+        (r as Prisma.punish_tempbans[]).map(
+         (r2) => ({ ...r2, type: PunishmentType.Tempban }) as const,
+        ),
        ),
       DataBase.punish_tempmutes
        .findMany(where as never)
        .then((r) =>
-        (r as punish_tempmutes[]).map((r2) => ({ ...r2, type: PunishmentType.Tempmute }) as const),
+        (r as Prisma.punish_tempmutes[]).map(
+         (r2) => ({ ...r2, type: PunishmentType.Tempmute }) as const,
+        ),
        ),
      ]
    : []),

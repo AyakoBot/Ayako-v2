@@ -10,7 +10,7 @@ import deleteThread from '../UtilModules/deleteNotificationThread.js';
 import { request } from '../UtilModules/requestHandler.js';
 import DataBase from '../Bot/DataBase.js';
 import getPathFromError from '../UtilModules/getPathFromError.js';
-import { metricsCollector } from '../Bot/Metrics.js';
+import metricsCollector from '../Bot/Metrics.js';
 
 export default async (guild: Discord.Guild | null, eventName: string) => {
  if (!guild) return;

@@ -1,8 +1,8 @@
+import { API } from '@discordjs/core';
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../../Typings/Typings.js';
-import { API } from '@discordjs/core';
 import { sendDebugMessage } from '../../../../BaseClient/UtilModules/error.js';
+import * as CT from '../../../../Typings/Typings.js';
 
 const name = CT.SettingNames.LinkedRolesDeco;
 
@@ -259,12 +259,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    removedUsers?.forEach((u) => {
     revokeToken(guild, u, { id: newSettings.botId!, secret: newSettings.botSecret! });
    });
-
-   return;
-  }
-  default: {
    break;
   }
+  default:
+   break;
  }
 };
 

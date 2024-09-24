@@ -121,8 +121,10 @@ const getMessages = async (
     m.content.startsWith(cmd.options.getString('content', true)),
    );
   case 'links':
-   return (await cmd.client.util.fetchMessages(channel, { amount: 500 })).filter((m) =>
-    !!m.content.match(cmd.client.util.regexes.urlTester(cmd.client.util.cache.urlTLDs.toArray()))?.length,
+   return (await cmd.client.util.fetchMessages(channel, { amount: 500 })).filter(
+    (m) =>
+     !!m.content.match(cmd.client.util.regexes.urlTester(cmd.client.util.cache.urlTLDs.toArray()))
+      ?.length,
    );
   case 'mentions':
    return (await cmd.client.util.fetchMessages(channel, { amount: 500 })).filter(

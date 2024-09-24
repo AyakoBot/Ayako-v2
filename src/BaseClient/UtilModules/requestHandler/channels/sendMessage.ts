@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { UsualMessagePayload } from '../../../../Typings/Typings.js';
+import { type UsualMessagePayload } from '../../../../Typings/Typings.js';
 import * as Classes from '../../../Other/classes.js';
 import error, { sendDebugMessage } from '../../error.js';
 

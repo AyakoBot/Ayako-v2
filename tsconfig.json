@@ -1,5 +1,6 @@
 {
  "compilerOptions": {
+  "moduleDetection": "force",
   "types": ["node"],
   "target": "ESNext",
   "module": "ESNext",
@@ -34,7 +35,9 @@
   "forceConsistentCasingInFileNames": true,
   "skipLibCheck": true,
   "allowSyntheticDefaultImports": true,
-  "noErrorTruncation": true
+  "noErrorTruncation": true,
+  "isolatedModules": true,
+  "verbatimModuleSyntax": true
  },
- "exclude": ["./node_modules", "./dist", "./patches"]
+ "exclude": ["node_modules/**/**", "dist/**/**", "patches/**/**", "rust/**/**"]
 }

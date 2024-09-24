@@ -23,8 +23,10 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIGuildPrune
   return e;
  }
 
- return (await getAPI(guild)).guilds.getPruneCount(guild.id, query).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).guilds
+  .getPruneCount(guild.id, query)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 };

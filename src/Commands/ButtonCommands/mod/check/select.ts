@@ -5,7 +5,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
- const type = args.shift() as PunishmentType.Warn | PunishmentType.Kick | PunishmentType.Mute | PunishmentType.Ban | PunishmentType.Channelban;
+ const type = args.shift() as
+  | PunishmentType.Warn
+  | PunishmentType.Kick
+  | PunishmentType.Mute
+  | PunishmentType.Ban
+  | PunishmentType.Channelban;
  const userId = args.shift() as string;
  const page = Number(args.shift() as string);
  const maxPages = Number(args.shift() as string);

@@ -1,4 +1,4 @@
-import { metricsCollector } from '../../../../BaseClient/Bot/Metrics.js';
+import metricsCollector from '../../../../BaseClient/Bot/Metrics.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
 type ReturnType = Promise<number[] | undefined>;
@@ -27,14 +27,14 @@ export default async () => {
     c.guilds?.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
    ) as ReturnType,
    client.cluster?.broadcastEval((c) =>
-    c.guilds?.cache.reduce((acc, guild) => acc + guild.roles?.cache.size, 0),
+    c.guilds?.cache.reduce((acc, guild) => acc + Number(guild.roles?.cache.size), 0),
    ) as ReturnType,
    client.cluster?.broadcastEval((c) =>
-    c.guilds?.cache.reduce((acc, guild) => acc + guild.channels?.cache.size, 0),
+    c.guilds?.cache.reduce((acc, guild) => acc + Number(guild.channels?.cache.size), 0),
    ) as ReturnType,
    client.cluster?.fetchClientValues('guilds?.cache.size') as ReturnType,
    client.cluster?.broadcastEval((c) =>
-    c.guilds?.cache.reduce((acc, guild) => acc + guild.stickers?.cache.size, 0),
+    c.guilds?.cache.reduce((acc, guild) => acc + Number(guild.stickers?.cache.size), 0),
    ) as ReturnType,
    client.util.request.applications
     .getCurrent(undefined)

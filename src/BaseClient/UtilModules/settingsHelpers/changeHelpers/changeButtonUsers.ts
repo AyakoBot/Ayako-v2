@@ -1,5 +1,10 @@
-import { APIButtonComponentWithCustomId, ButtonStyle, Client, ComponentType } from 'discord.js';
-import { Language, SettingsName2TableName } from '../../../../Typings/Typings.js';
+import {
+ type APIButtonComponentWithCustomId,
+ ButtonStyle,
+ Client,
+ ComponentType,
+} from 'discord.js';
+import { type Language, SettingsName2TableName } from '../../../../Typings/Typings.js';
 import { getWithUTS } from '../buttonParsers/back.js';
 
 export default <T extends keyof typeof SettingsName2TableName>(

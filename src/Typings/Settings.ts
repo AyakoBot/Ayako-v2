@@ -1,14 +1,14 @@
 import type * as Discord from 'discord.js';
-import type { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMention.js';
 import type { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
-import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
 import { GlobalDescType } from '../BaseClient/UtilModules/settingsHelpers/getGlobalDesc.js';
+import type { MentionTypes } from '../BaseClient/UtilModules/settingsHelpers/getMention.js';
+import { ChannelTypes } from '../Commands/ButtonCommands/settings/editors/channel.js';
 import type { DataBaseTables } from './DataBase.js';
 
 import type util from '../BaseClient/Bot/Util.js';
 import * as DB from './DataBase.js';
 
-export { MentionTypes, ChangeSelectType, ChannelTypes, GlobalDescType };
+export { ChannelTypes, GlobalDescType, type ChangeSelectType, type MentionTypes };
 
 type Language = import('../BaseClient/Other/language.js').default;
 

@@ -29,10 +29,10 @@ export default async (
   {
    color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
    description: emoji.roles.cache.size
-    ? emoji.roles.cache
+    ? (emoji.roles.cache
        .sort((a, b) => b.position - a.position)
        .map((r) => r)
-       .join(', ') ?? language.t.None
+       .join(', ') ?? language.t.None)
     : language.t.None,
    footer: {
     text: lan.explain,

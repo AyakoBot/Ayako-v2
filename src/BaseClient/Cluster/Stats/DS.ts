@@ -8,4 +8,5 @@ export default (guilds: number) =>
    'Content-Type': 'application/json',
   },
   body: JSON.stringify({ server_count: guilds }),
+  // eslint-disable-next-line no-console
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));

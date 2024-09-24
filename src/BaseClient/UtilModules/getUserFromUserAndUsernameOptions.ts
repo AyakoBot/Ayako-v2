@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import errorCmd from './errorCmd.js';
+import { getLanguage } from './getLanguage.js';
 import getUser from './getUser.js';
-import getLanguage from './getLanguage.js';
 import { request } from './requestHandler.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -19,8 +19,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.user;
 
  const member = cmd.guild
-  ? (await request.guilds.getMember(cmd.guild, user.id).then((m) => ('message' in m ? null : m))) ??
-    undefined
+  ? ((await request.guilds
+     .getMember(cmd.guild, user.id)
+     .then((m) => ('message' in m ? null : m))) ?? undefined)
   : undefined;
 
  return { user, member, language };

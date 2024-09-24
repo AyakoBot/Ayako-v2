@@ -3,9 +3,9 @@ import * as Discord from 'discord.js';
 import * as fs from 'fs';
 import Jobs from 'node-schedule';
 import client, { API } from '../../../../BaseClient/Bot/Client.js';
+import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as VirusVendorsTypings from '../../../../Typings/VirusVendorsTypings.js';
-import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 type VendorType = 'Kaspersky' | 'Google Safe Browsing' | 'PromptAPI' | 'VirusTotal';
 
@@ -306,6 +306,7 @@ const inSpamHaus = async (u: string) => {
    'Content-Type': 'application/json',
   },
  }).catch((r: Error) => {
+  // eslint-disable-next-line no-console
   console.error('Failed to query Spamhaus for', cleanURL(u));
   return r;
  });

@@ -16,7 +16,7 @@ export const token = (t: string) => Buffer.from(t.split('.')[0], 'base64').toStr
  */
 export const guild = async (g: Discord.Guild) => {
  if (!g) {
-  const { default: client } = await import('../../BaseClient/Bot/Client.js');
+  const { default: client } = await import('../Bot/Client.js');
 
   return client.user!.id;
  }

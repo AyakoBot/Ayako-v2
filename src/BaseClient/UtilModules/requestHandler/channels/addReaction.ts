@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import error from '../../error.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
+import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
@@ -96,10 +96,10 @@ const hasBlocked = async (user: Discord.User | { id: string; client: Discord.Cli
  * @param user - The user who triggered the error.
  */
 const saveBlocked = async (
- error: string,
+ err: string,
  user: Discord.User | { id: string; client: Discord.Client<true> },
 ) => {
- if (!error.includes('Reaction blocked')) return;
+ if (!err.includes('Reaction blocked')) return;
 
  user.client.util.DataBase.blockingUsers
   .upsert({
@@ -111,4 +111,4 @@ const saveBlocked = async (
 };
 
 export const getAPI = async (guild: Discord.Guild | undefined | null) =>
- guild ? ((await getBotMemberFromGuild(guild)) ? (cache.apis.get(guild.id) ?? API) : API) : API;
+ guild ? ((await getBotMemberFromGuild(guild)) && (cache.apis.get(guild.id) ?? API)) || API : API;

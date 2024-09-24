@@ -68,7 +68,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boo
   settingName,
   fieldName,
   cmd.guildId,
-  (multi && validEmotes ? validEmotes.map((e) => e.identifier) : validEmotes?.[0].identifier) ?? null,
+  (multi && validEmotes ? validEmotes.map((e) => e.identifier) : validEmotes?.[0].identifier) ??
+   null,
   uniquetimestamp,
  );
 

@@ -1,10 +1,10 @@
 import * as Discord from 'discord.js';
 import error from '../../error.js';
 
+import { Guild } from '../../../Other/classes.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { getAPI } from '../channels/addReaction.js';
-import { Guild } from '../../../../BaseClient/Other/classes.js';
 
 /**
  * Retrieves a guild from the API using the provided guild ID and query parameters.
@@ -47,7 +47,8 @@ export default async (
  * Checks if the given guild member has permission to get information about a guild.
  * @param me - The Discord guild member.
  * @param guildId - The ID of the guild.
- * @returns A boolean indicating whether the guild member has permission to get information about the guild.
+ * @returns A boolean indicating whether the guild member has permission to get
+ * information about the guild.
  */
 export const canGet = (me: Discord.GuildMember, guildId: string) => {
  if (me.id === me.client.user.id && me.client.guilds.cache.has(guildId)) return true;

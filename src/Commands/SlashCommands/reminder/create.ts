@@ -1,5 +1,5 @@
 import Prisma from '@prisma/client';
-import { Serialized } from 'discord-hybrid-sharding';
+import { type Serialized } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../BaseClient/Bot/Client.js';

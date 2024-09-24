@@ -10,6 +10,6 @@ import DataBase from '../../../Bot/DataBase.js';
  */
 export default async (val: Prisma.Decimal | null, language: CT.Language) =>
  val
-  ? (await DataBase.customembeds.findUnique({ where: { uniquetimestamp: val } }))?.name ??
-    language.t.None
+  ? ((await DataBase.customembeds.findUnique({ where: { uniquetimestamp: val } }))?.name ??
+    language.t.None)
   : language.t.None;

@@ -148,5 +148,5 @@ export default {
   'https://media1.tenor.com/m/DQxlU5Geyf0AAAAC/hungry-cute.gif',
   'https://media1.tenor.com/m/diRQGFt9T1EAAAAC/nom-kiwi-nom.gif',
   'https://media1.tenor.com/m/6mvKb4vf0SoAAAAC/wholesome-nom-nom-nom-nom.gif',
- ]
+ ],
 };

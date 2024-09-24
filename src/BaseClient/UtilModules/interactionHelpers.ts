@@ -1,27 +1,27 @@
-import * as Jobs from 'node-schedule';
 import * as Discord from 'discord.js';
-import * as CT from '../../Typings/Typings.js';
-import constants from '../Other/constants.js';
-import getGif, { ReturnType } from './cache/bot/gifs.js';
-import replyCmd from './replyCmd.js';
-import DataBase from '../Bot/DataBase.js';
-import getColor from './getColor.js';
-import getLanguage from './getLanguage.js';
-import errorMsg from './errorMsg.js';
-import notYours from './notYours.js';
+import * as Jobs from 'node-schedule';
 import { getPrefix } from '../../Events/BotEvents/messageEvents/messageCreate/commandHandler.js';
-import getUser from './getUser.js';
-import getChunks from './getChunks.js';
-import getBotMemberFromGuild from './getBotMemberFromGuild.js';
-import { request } from './requestHandler.js';
-import isDeleteable from './isDeleteable.js';
-import * as getChannel from './getChannel.js';
-import isEditable from './isEditable.js';
-import errorCmd from './errorCmd.js';
-import replyMsg from './replyMsg.js';
-import encodeString2BigInt from './encodeString2BigInt.js';
+import * as CT from '../../Typings/Typings.js';
+import DataBase from '../Bot/DataBase.js';
 import { Message } from '../Other/classes.js';
+import constants from '../Other/constants.js';
+import getGif, { type ReturnType } from './cache/bot/gifs.js';
+import encodeString2BigInt from './encodeString2BigInt.js';
+import errorCmd from './errorCmd.js';
+import errorMsg from './errorMsg.js';
+import getBotMemberFromGuild from './getBotMemberFromGuild.js';
+import * as getChannel from './getChannel.js';
+import getChunks from './getChunks.js';
+import getColor from './getColor.js';
+import { getLanguage } from './getLanguage.js';
 import getPathFromError from './getPathFromError.js';
+import getUser from './getUser.js';
+import isDeleteable from './isDeleteable.js';
+import isEditable from './isEditable.js';
+import notYours from './notYours.js';
+import replyCmd from './replyCmd.js';
+import replyMsg from './replyMsg.js';
+import { request } from './requestHandler.js';
 
 const cooldown = new Set<string>();
 
@@ -47,6 +47,7 @@ const reply = async (
 
  if (cmd instanceof Discord.ButtonInteraction) {
   while (cooldown.has(cmd.message.id)) {
+   // eslint-disable-next-line no-await-in-loop, no-promise-executor-return
    await new Promise((r) => setTimeout(r, 500));
   }
   cooldown.add(cmd.message.id);
@@ -208,8 +209,9 @@ const reply = async (
 
    cmd.update(payload as Discord.InteractionUpdateOptions);
   } else {
-   if (await isDeleteable((cmd as Discord.ButtonInteraction<'cached'>).message))
+   if (await isDeleteable((cmd as Discord.ButtonInteraction<'cached'>).message)) {
     request.channels.deleteMessage((cmd as Discord.ButtonInteraction<'cached'>).message);
+   }
 
    payload.ephemeral = false;
    replyCmd(cmd, payload, 'interactions');

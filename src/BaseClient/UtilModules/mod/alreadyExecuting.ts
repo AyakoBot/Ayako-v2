@@ -2,13 +2,13 @@ import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as CT from '../../../Typings/Typings.js';
 
-import getLanguage from '../getLanguage.js';
+import { getLanguage } from '../getLanguage.js';
+import getPathFromError from '../getPathFromError.js';
 import isDeleteable from '../isDeleteable.js';
 import type * as ModTypes from '../mod.js';
 import replyCmd from '../replyCmd.js';
 import replyMsg from '../replyMsg.js';
 import { request } from '../requestHandler.js';
-import getPathFromError from '../getPathFromError.js';
 
 export default async (
  cmd: ModTypes.CmdType,

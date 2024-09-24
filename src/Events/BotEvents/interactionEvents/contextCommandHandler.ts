@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import { metricsCollector } from '../../../BaseClient/Bot/Metrics.js';
+import metricsCollector from '../../../BaseClient/Bot/Metrics.js';
 
 // TODO: Fix this
 // eslint-disable-next-line no-console

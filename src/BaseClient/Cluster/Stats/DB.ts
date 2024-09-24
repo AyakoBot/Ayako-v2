@@ -10,4 +10,5 @@ export default (guilds: number) =>
    'Content-Type': 'application/json',
    Authorization: process.env.DBToken ?? '',
   },
+  // eslint-disable-next-line no-console
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));

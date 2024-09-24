@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import * as CT from '../../../Typings/Typings.js';
 import { tasksWithSettings } from '../../../BaseClient/Other/firstGuildInteraction.js';
+import * as CT from '../../../Typings/Typings.js';
 
 const name = CT.SettingNames.Logs;
 
@@ -235,25 +235,20 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  if (!newSettings) return;
 
  switch (changedSetting) {
-  case 'guildevents': {
+  case 'guildevents':
    tasksWithSettings.welcomeScreen(guild, newSettings);
    tasksWithSettings.integrations(guild, newSettings);
    return;
-  }
-  case 'scheduledeventevents': {
+  case 'scheduledeventevents':
    tasksWithSettings.scheduledEvents(guild, newSettings);
    return;
-  }
-  case 'webhookevents': {
+  case 'webhookevents':
    tasksWithSettings.webhooks(guild, newSettings);
    return;
-  }
   case 'memberevents':
-  case 'inviteevents': {
+  case 'inviteevents':
    tasksWithSettings.invites(guild, newSettings);
-   return;
-  }
-
+   break;
   default:
    break;
  }

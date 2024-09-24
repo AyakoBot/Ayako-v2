@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, OverwriteType, PermissionsBitField } from 'discord.js';
-import { getVCSettings, isValidChannel, meIsPermittedDel, validateSuccess } from '../add/member.js';
 import {
  managerPermissions,
  memberPermissions,
 } from 'src/Events/BotEvents/voiceStateEvents/voiceStateCreates/voiceHub.js';
+import { getVCSettings, isValidChannel, meIsPermittedDel, validateSuccess } from '../add/member.js';
 
 export default async (cmd: ChatInputCommandInteraction, filterBy: bigint = 0n) => {
  if (!cmd.inCachedGuild()) return;

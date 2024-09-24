@@ -11,4 +11,5 @@ export default (guilds: number, users: number) =>
    'Content-Type': 'application/json',
    Authorization: process.env.DBListToken ?? '',
   },
+  // eslint-disable-next-line no-console
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));

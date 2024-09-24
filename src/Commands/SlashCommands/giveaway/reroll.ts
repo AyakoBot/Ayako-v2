@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { end } from '../../SlashCommands/giveaway/end.js';
+import { end } from './end.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;

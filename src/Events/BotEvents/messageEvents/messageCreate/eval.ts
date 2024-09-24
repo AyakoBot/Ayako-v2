@@ -1,21 +1,11 @@
 import * as Discord from 'discord.js';
 import ms from 'ms';
-import * as os from 'os';
 import util from 'util';
 import * as CT from '../../../../Typings/Typings.js';
-import antiraid from '../../guildEvents/guildMemberAdd/antiraid.js';
 
-// eslint-disable-next-line no-unused-expressions
-Discord.APIVersion;
-// eslint-disable-next-line no-unused-expressions
-fetch.name;
-// eslint-disable-next-line no-unused-expressions
-os.arch;
-// eslint-disable-next-line no-unused-expressions
-antiraid;
-// eslint-disable-next-line no-unused-expressions
+// eslint-disable-next-line  @typescript-eslint/no-unused-expressions
 ms;
-// eslint-disable-next-line no-unused-expressions
+// eslint-disable-next-line  @typescript-eslint/no-unused-expressions
 CT;
 
 const reg = new RegExp(

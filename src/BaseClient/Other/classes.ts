@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+// eslint-disable-next-line import/extensions, import/no-unresolved
 import * as RawData from 'discord.js/typings/rawDataTypes.js';
 
 export default undefined;
@@ -175,7 +176,7 @@ export const Channel = <T extends Discord.ChannelType>(
                      : never => {
  switch (c.type) {
   case Discord.ChannelType.GuildText: {
-   if (!guild) throw new Error('GuildText type requires Guild')
+   if (!guild) throw new Error('GuildText type requires Guild');
    // @ts-ignore
    return new Discord.TextChannel(guild, c, client);
   }
@@ -184,35 +185,35 @@ export const Channel = <T extends Discord.ChannelType>(
    return new Discord.DMChannel(client, c);
   }
   case Discord.ChannelType.GuildVoice: {
-   if (!guild) throw new Error('GuildVoice type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('GuildVoice type requires Guild');
+   // @ts-ignore
    return new Discord.VoiceChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildCategory: {
-   if (!guild) throw new Error('GuildCategory type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('GuildCategory type requires Guild');
+   // @ts-ignore
    return new Discord.CategoryChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildAnnouncement: {
-   if (!guild) throw new Error('GuildAnnouncement type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('GuildAnnouncement type requires Guild');
+   // @ts-ignore
    return new Discord.NewsChannel(guild, c, client);
   }
   case Discord.ChannelType.AnnouncementThread:
   case Discord.ChannelType.PublicThread:
   case Discord.ChannelType.PrivateThread: {
-   if (!guild) throw new Error('Thread type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('Thread type requires Guild');
+   // @ts-ignore
    return new Discord.ThreadChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildStageVoice: {
-   if (!guild) throw new Error('GuildStageVoice type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('GuildStageVoice type requires Guild');
+   // @ts-ignore
    return new Discord.StageChannel(guild, c, client);
   }
   case Discord.ChannelType.GuildForum: {
-   if (!guild) throw new Error('GuildForum type requires Guild')
-    // @ts-ignore
+   if (!guild) throw new Error('GuildForum type requires Guild');
+   // @ts-ignore
    return new Discord.ForumChannel(guild, c, client);
   }
   default: {

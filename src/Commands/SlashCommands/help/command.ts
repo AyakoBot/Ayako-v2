@@ -35,9 +35,9 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    title: lan.clickMe,
    url: client.util.constants.standard.support,
    description: `# ${client.util.util.makeInlineCode(command?.name ?? '')}${
-    client.util.constants.commands.help[
+    (client.util.constants.commands.help[
      command?.name as keyof typeof client.util.constants.commands.help
-    ] ?? command?.description
+    ] ?? command?.description)
      ? `\n> ${
         client.util.constants.commands.help[
          command?.name as keyof typeof client.util.constants.commands.help

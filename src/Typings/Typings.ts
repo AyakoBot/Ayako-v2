@@ -224,6 +224,7 @@ export type MakeRequired<T, K extends keyof T> = T & {
 export type MaybeArray<T = unknown> = T | T[];
 
 type RequiredKeys<T> = {
+ // eslint-disable-next-line @typescript-eslint/no-empty-object-type
  [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
 }[keyof T];
 

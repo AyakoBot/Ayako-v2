@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import {
- Type,
+ type Type,
  getBaseSettings,
  getSpecificSettings,
 } from '../../../SlashCommands/roles/builders/button-roles.js';

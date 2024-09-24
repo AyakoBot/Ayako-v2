@@ -4,7 +4,7 @@ import * as Jobs from 'node-schedule';
 import * as stringSimilarity from 'string-similarity';
 import * as CT from '../../../../Typings/Typings.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
-import { metricsCollector } from '../../../../BaseClient/Bot/Metrics.js';
+import metricsCollector from '../../../../BaseClient/Bot/Metrics.js';
 
 const { log } = console;
 

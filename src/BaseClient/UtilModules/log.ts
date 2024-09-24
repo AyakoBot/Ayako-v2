@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../Typings/Typings.js';
+import { getLanguage } from './getLanguage.js';
 import getLogChannels from './getLogChannels.js';
-import getLanguage from './getLanguage.js';
 import send from './send.js';
 
 /**

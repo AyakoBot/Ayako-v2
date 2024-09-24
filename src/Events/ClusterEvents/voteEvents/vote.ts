@@ -1,5 +1,5 @@
-import { Message, MessageType } from '../../../Typings/Typings.js';
 import client from '../../../BaseClient/Bot/Client.js';
+import { type Message, MessageType } from '../../../Typings/Typings.js';
 
 import voteBotCreate from './voteBotCreate.js';
 

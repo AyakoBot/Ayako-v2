@@ -2,8 +2,8 @@ import type * as Discord from 'discord.js';
 import * as fs from 'fs';
 import type Jobs from 'node-schedule';
 
-import constants from '../Other/constants.js';
 import { Colors } from '../../Typings/Typings.js';
+import constants from '../Other/constants.js';
 import firstChannelInteraction from '../Other/firstChannelInteraction.js';
 import firstGuildInteraction from '../Other/firstGuildInteraction.js';
 
@@ -48,7 +48,7 @@ import getDiscordEmbed from '../UtilModules/getDiscordEmbed.js';
 import getDuration from '../UtilModules/getDuration.js';
 import getEmote from '../UtilModules/getEmote.js';
 import getEvents from '../UtilModules/getEvents.js';
-import getLanguage from '../UtilModules/getLanguage.js';
+import { getLanguage } from '../UtilModules/getLanguage.js';
 import getLogChannels from '../UtilModules/getLogChannels.js';
 import getMessage from '../UtilModules/getMessage.js';
 import getNameAndFileType from '../UtilModules/getNameAndFileType.js';
@@ -96,8 +96,8 @@ import stp from '../UtilModules/stp.js';
 import txtFileLinkToString from '../UtilModules/txtFileLinkToString.js';
 import txtFileWriter from '../UtilModules/txtFileWriter.js';
 import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
-import * as utils from '../UtilModules/util.js';
 import userMiddleware from '../UtilModules/userMiddleware.js';
+import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
 
 type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;

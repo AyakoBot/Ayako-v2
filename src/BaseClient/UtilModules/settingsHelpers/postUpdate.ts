@@ -46,8 +46,8 @@ export default async <T extends keyof typeof CT.SettingsName2TableName>(
  );
 
  settingsFile.postChange?.(
-  { ...settings, ...(oldSetting as Object) },
-  { ...settings, ...(newSetting as Object) },
+  { ...settings, ...(oldSetting as object) },
+  { ...settings, ...(newSetting as object) },
   changedSetting as Parameters<typeof settingsFile.postChange>[2],
   guild,
   uniquetimestamp,

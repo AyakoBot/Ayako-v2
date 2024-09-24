@@ -14,10 +14,12 @@ async function fn(
  guild: undefined | null | Discord.Guild,
  applicationId: string,
 ): Promise<Discord.APIApplicationRoleConnection | Discord.DiscordAPIError> {
- return (await getAPI(guild)).users.getApplicationRoleConnection(applicationId).catch((e: Discord.DiscordAPIError) => {
-  error(guild, new Error((e as Discord.DiscordAPIError).message));
-  return e;
- });
+ return (await getAPI(guild)).users
+  .getApplicationRoleConnection(applicationId)
+  .catch((e: Discord.DiscordAPIError) => {
+   error(guild, new Error((e as Discord.DiscordAPIError).message));
+   return e;
+  });
 }
 
 export default fn;

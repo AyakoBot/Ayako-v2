@@ -34,7 +34,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     author: embed.author,
     color: embed.color,
     description: lan.apply.desc(
-     settings.roleId ? cmd.guild.roles.cache.get(settings.roleId)?.name ?? '' : '',
+     settings.roleId ? (cmd.guild.roles.cache.get(settings.roleId)?.name ?? '') : '',
     ),
    },
   ],

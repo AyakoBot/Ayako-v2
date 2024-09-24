@@ -1,9 +1,9 @@
 import * as Discord from 'discord.js';
-import gifSelection, { ReturnType } from './cache/bot/gifs.js';
+import gifSelection, { type ReturnType } from './cache/bot/gifs.js';
 import objectEmotes from './emotes.js';
 import getBotMemberFromGuild from './getBotMemberFromGuild.js';
 import getColor from './getColor.js';
-import getLanguage from './getLanguage.js';
+import { getLanguage } from './getLanguage.js';
 import replyCmd from './replyCmd.js';
 
 /**
@@ -12,9 +12,7 @@ import replyCmd from './replyCmd.js';
  * @param cmd - The chat input command or button interaction that triggered the function.
  * @returns A Promise that resolves with the sent message.
  */
-export const imageGetter = async (
- cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
-) => {
+export default async (cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction) => {
  const commandName =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.data.find((c) => c.type === Discord.ApplicationCommandOptionType.Subcommand)?.name
@@ -23,7 +21,7 @@ export const imageGetter = async (
 
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction
-   ? cmd.options.getBoolean('hide', false) ?? true
+   ? (cmd.options.getBoolean('hide', false) ?? true)
    : true;
  const imgGetter = gifSelection.find((g) => g.triggers.includes(commandName));
  const img = (await imgGetter?.gifs()) as ReturnType<'img'>;

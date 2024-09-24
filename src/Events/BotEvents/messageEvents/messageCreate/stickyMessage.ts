@@ -96,7 +96,7 @@ export default async (msg: Discord.Message<true>) => {
     const m =
      webhook && webhook.token
       ? await msg.client.util.request.webhooks.execute(msg.guild, webhook.id, webhook.token, {
-         username: user?.bot ? user.username : user?.displayName ?? msg.client.user.username,
+         username: user?.bot ? user.username : (user?.displayName ?? msg.client.user.username),
          avatar_url: user?.displayAvatarURL() ?? msg.client.user.displayAvatarURL(),
          ...(payload as Omit<CT.UsualMessagePayload, 'files'>),
         })
