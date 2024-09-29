@@ -19,15 +19,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const component = getComponents(cmd.message.components);
+ const relevantButtonX = cmd.message.components[type === 'x' ? 0 : 1]
+  .components[3] as Discord.ButtonComponent;
+ const relevantButtonL = cmd.message.components[type === 'l' ? 0 : 1]
+  .components[3] as Discord.ButtonComponent;
+
  const xpOrLevel = Number(
   cmd.message.embeds[0].fields[type === 'x' ? 1 : 4].value.replace(/,/g, ''),
  );
- const amountToAddOrRemove = Number(component[type === 'x' ? 0 : 1].components[3].label);
- const amountOfZerosOnPrimary =
-  Number(component[type === 'x' ? 0 : 1].components[3].label?.length) - 2;
- const amountOfZerosOnSecondary =
-  Number(component[type === 'l' ? 0 : 1].components[3].label?.length) - 2;
+ const amountToAddOrRemove = Number(relevantButtonX.label);
+ const amountOfZerosOnPrimary = Number(relevantButtonX.label?.length) - 2;
+ const amountOfZerosOnSecondary = Number(relevantButtonL.label?.length) - 2;
 
  const newXpOrLevel =
   xpOrLevel + (addOrRemove === '+' ? amountToAddOrRemove : -amountToAddOrRemove);
@@ -54,7 +56,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   },
  );
 
- const components = cmd.client.util.getChunks(
+ const c = cmd.client.util.getChunks(
   [
    ...getXPComponents(
     userId,
@@ -75,15 +77,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   components: [
    {
     type: Discord.ComponentType.ActionRow,
-    components: components[0],
+    components: c[0],
    },
    {
     type: Discord.ComponentType.ActionRow,
-    components: components[1],
+    components: c[1],
    },
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[2].components.map((c) => c.data),
+    components: cmd.message.components[2].components.map((c2) => c2.data),
    },
   ],
  });
@@ -101,16 +103,3 @@ export const getLevel = (xp: number) =>
 
 export const getXP = (level: number) =>
  Math.floor((5 / 6) * level * (2 * level * level + 27 * level + 91));
-
-export const getComponents = (
- components:
-  | Discord.ButtonInteraction<'cached'>['message']['components']
-  | Discord.APIActionRowComponent<Discord.APIButtonComponent>[],
-) =>
- (components as Discord.APIActionRowComponent<Discord.APIButtonComponent>[]).map((c) => ({
-  ...c,
-  components: c.components.filter(
-   (b): b is Discord.APIButtonComponentWithCustomId =>
-    'custom_id' in b && b.type === Discord.ComponentType.Button,
-  ),
- }));

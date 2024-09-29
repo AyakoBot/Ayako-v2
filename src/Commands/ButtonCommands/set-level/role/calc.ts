@@ -4,7 +4,7 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
-import { getComponents, getLevel, getXP } from '../user/calc.js';
+import { getLevel, getXP } from '../user/calc.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -20,15 +20,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const component = getComponents(cmd.message.components);
+ const relevantButtonX = cmd.message.components[type === 'x' ? 0 : 1]
+  .components[3] as Discord.ButtonComponent;
+ const relevantButtonL = cmd.message.components[type === 'l' ? 0 : 1]
+  .components[3] as Discord.ButtonComponent;
+
  const xpOrLevel = Number(
   cmd.message.embeds[0].fields[type === 'x' ? 0 : 1].value.replace(/,/g, ''),
  );
- const amountToAddOrRemove = Number(component[type === 'x' ? 0 : 1].components[3].label);
- const amountOfZerosOnPrimary =
-  Number(component[type === 'x' ? 0 : 1].components[3].label?.length) - 2;
- const amountOfZerosOnSecondary =
-  Number(component[type === 'l' ? 0 : 1].components[3].label?.length) - 2;
+ const amountToAddOrRemove = Number(relevantButtonX.label);
+ const amountOfZerosOnPrimary = Number(relevantButtonX.label?.length) - 2;
+ const amountOfZerosOnSecondary = Number(relevantButtonL.label?.length) - 2;
 
  const newXpOrLevel =
   xpOrLevel + (addOrRemove === '+' ? amountToAddOrRemove : -amountToAddOrRemove);
