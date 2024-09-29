@@ -6,7 +6,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 
-  return id ? Number(s.uniquetimestamp).toString(36).includes(id) : true;
+  return id
+   ? Number(s.uniquetimestamp).toString(36).includes(id) || String(s.level).includes(id)
+   : true;
  });
 
  const language = await cmd.guild.client.util.getLanguage(cmd.guild.id);
