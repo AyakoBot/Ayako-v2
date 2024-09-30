@@ -9,9 +9,10 @@ export default (t: CT.Language) => ({
     roleName,
    }),
  },
- desc: (guildId: string, settingsId: number) =>
+ desc: (guildId: string, settingsId: number, roleId: string) =>
   t.stp(t.JSON.slashCommands.settings.categories['linked-roles-deco'].desc, {
    guildId,
    settingsId,
+   roleId,
   }),
 });
