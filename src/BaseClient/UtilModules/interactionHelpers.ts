@@ -140,8 +140,9 @@ const reply = async (
    ? { text: `${language.slashCommands.rp.gifSrc} ${gif.anime_name}` }
    : undefined,
  };
- if ((!setting || setting?.interactionsmode) && gif) embed.thumbnail = { url: gif.url };
- else if (gif) embed.image = { url: gif.url };
+ if ((!setting || setting?.interactionsmode) && gif) {
+  embed.thumbnail = gif.url ? { url: gif.url } : undefined;
+ } else if (gif) embed.image = gif.url ? { url: gif.url } : undefined;
 
  const replyUsers =
   cmd instanceof Discord.ButtonInteraction

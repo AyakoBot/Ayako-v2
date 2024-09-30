@@ -29,7 +29,7 @@ export interface Gifs {
   * @param type - The type of the gif or image.
   * @returns A promise that resolves to the requested gif or image.
   */
- getNew: (gif: string, type: Type[]) => Promise<ReturnType<'gif' | 'img'>>;
+ getNew: (gif: string, type: Type[], iteration?: number) => Promise<ReturnType<'gif' | 'img'>>;
 
  /**
   * A cache map that stores the cached gifs or images.
@@ -54,8 +54,11 @@ export const self: Gifs = {
 
   return store.shift()!;
  },
- getNew: async (name, type) => {
+ getNew: async (name, type, iteration = 0) => {
+  if (iteration >= 10) return { url: undefined };
+
   const gif = await fetchGif(name, type);
+  if (!gif) return self.getNew(name, type, iteration + 1);
   const store = self.cache.get(name) ?? self.cache.set(name, []).get(name)!;
   store.push(gif);
 
@@ -76,8 +79,8 @@ export const self: Gifs = {
  * @property gif.url - The URL of the GIF.
  */
 export type ReturnType<T extends 'gif' | 'img'> = {
- img: { artist?: string; source?: string; url: string; artistUrl?: string };
- gif: { anime_name?: string; url: string };
+ img: { artist?: string; source?: string; url: string | undefined; artistUrl?: string };
+ gif: { anime_name?: string; url: string | undefined };
 }[T];
 
 type Type = 'purr' | 'neko' | 'hardcoded' | 'waifu';

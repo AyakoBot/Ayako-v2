@@ -32,7 +32,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction | Discord.ButtonI
   ephemeral,
   embeds: [
    {
-    image: { url: img.url },
+    image: img.url ? { url: img.url } : undefined,
     color: cmd.guild ? getColor(await getBotMemberFromGuild(cmd.guild)) : undefined,
     author: img.artist ? { name: lan.madeBy } : undefined,
     title: img.artist as string,
