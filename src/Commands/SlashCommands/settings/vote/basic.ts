@@ -15,7 +15,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   showId(cmd, id, language, lan);
   return;
  }
- showAll(cmd, language, lan);
+ showAll(cmd, language, lan, 0);
 };
 
 export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async (
@@ -58,6 +58,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  cmd,
  language,
  lan,
+ page,
 ) => {
  const { multiRowHelpers } = client.util.settingsHelpers;
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
@@ -71,10 +72,10 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   value: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
  }));
 
- const embeds = multiRowHelpers.embeds(fields, language, lan);
+ const embeds = multiRowHelpers.embeds(fields, language, lan, page);
  const components = multiRowHelpers.options(language, name);
  multiRowHelpers.noFields(embeds, language);
- multiRowHelpers.components(embeds, components, language, name);
+ multiRowHelpers.components(embeds, components, language, name, page);
 
  if (cmd.isButton()) {
   cmd.update({

@@ -44,5 +44,5 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- settingsFile.showAll?.(cmd, language, lan as never);
+ settingsFile.showAll?.(cmd, language, lan as never, 0);
 };

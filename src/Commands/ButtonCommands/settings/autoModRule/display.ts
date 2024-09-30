@@ -33,6 +33,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    cmd,
    language,
    language.slashCommands.settings.categories[settingName as CT.SettingNames] as never,
+   0,
   );
   return;
  }

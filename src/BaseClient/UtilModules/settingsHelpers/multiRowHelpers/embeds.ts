@@ -18,9 +18,10 @@ export default <T extends keyof CT.Categories>(
   | undefined,
  language: CT.Language,
  lan: CT.Categories[T],
+ page: number,
 ): Discord.APIEmbed[] => [
  {
   author: embedParsers.author(language, lan),
-  fields: fields?.splice(0, 24) ?? [],
+  fields: fields?.splice(page * 25, 25) || [],
  },
 ];

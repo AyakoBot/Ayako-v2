@@ -17,7 +17,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   showId(cmd, id, language, lan);
   return;
  }
- showAll(cmd, language, lan);
+ showAll(cmd, language, lan, 0);
 };
 
 export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async (
@@ -60,6 +60,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  cmd,
  language,
  lan,
+ page,
 ) => {
  const { embedParsers, multiRowHelpers } = client.util.settingsHelpers;
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
@@ -67,16 +68,16 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings?.map((s) => ({
-  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\` - ${
+  name: `ID: \`${Number(s.uniquetimestamp).toString(36)}\``,
+  value: `${lan.fields.botId.name}: ${embedParsers.user(s.botId, language)} - ${
    lan.fields.roleId.name
   }: ${embedParsers.role(s.roleId, language)}`,
-  value: `${lan.fields.botId.name}: ${embedParsers.user(s.botId, language)}`,
  }));
 
- const embeds = multiRowHelpers.embeds(fields, language, lan);
+ const embeds = multiRowHelpers.embeds(fields, language, lan, page);
  const components = multiRowHelpers.options(language, name);
  multiRowHelpers.noFields(embeds, language);
- multiRowHelpers.components(embeds, components, language, name);
+ multiRowHelpers.components(embeds, components, language, name, page);
 
  if (cmd.isButton()) {
   cmd.update({
@@ -100,7 +101,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 ) => [
  {
   footer: { text: `ID: ${Number(settings.uniquetimestamp).toString(36)}` },
-  description: `${lan.desc(settings.guildid, Number(settings.uniquetimestamp))}\n\n${
+  description: `${lan.desc(settings.guildid, Number(settings.uniquetimestamp), settings.roleId || '0')}\n\n${
    client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
     ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
        name as keyof typeof client.util.constants.tutorials

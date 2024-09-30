@@ -12,12 +12,12 @@ import emotes from '../../emotes.js';
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  name: T,
- enabled = false,
+ page: number = 0,
 ): Discord.APIButtonComponent => ({
  type: Discord.ComponentType.Button,
  label: language.slashCommands.settings.previous,
- style: Discord.ButtonStyle.Success,
- custom_id: `settings/previous_${String(name)}`,
+ style: Discord.ButtonStyle.Secondary,
+ custom_id: `settings/previous_${String(name)}_${page - 1}`,
  emoji: emotes.back,
- disabled: !enabled,
+ disabled: page === 0,
 });

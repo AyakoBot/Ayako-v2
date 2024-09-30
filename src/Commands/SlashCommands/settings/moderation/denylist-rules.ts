@@ -16,7 +16,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   showId(cmd, id, language, lan);
   return;
  }
- showAll(cmd, language, lan);
+ showAll(cmd, language, lan, 0);
 };
 
 export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async (
@@ -52,6 +52,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  cmd,
  language,
  lan,
+ page,
 ) => {
  const { multiRowHelpers } = client.util.settingsHelpers;
 
@@ -74,7 +75,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
   } - ID: ${client.util.util.makeInlineCode(r.id)}`,
  }));
 
- const embeds = multiRowHelpers.embeds(fields, language, lan);
+ const embeds = multiRowHelpers.embeds(fields, language, lan, page);
  embeds[0].description = lan.desc(
   String(
    automodRules?.filter((r) => r.triggerType === Discord.AutoModerationRuleTriggerType.Keyword)

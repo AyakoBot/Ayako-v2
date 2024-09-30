@@ -11,18 +11,20 @@ import buttonParsers from '../buttonParsers.js';
  * @param name - The name of the setting being paginated.
  */
 export default <T extends keyof typeof CT.SettingsName2TableName>(
- embeds: Discord.APIEmbed[],
+ options: unknown[],
  components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[],
  language: CT.Language,
  name: T,
+ page: number,
 ) => {
- if (Number(embeds[0].fields?.length) > 25) {
-  components.unshift({
-   type: Discord.ComponentType.ActionRow,
-   components: [
-    buttonParsers.previous(language, name),
-    buttonParsers.next(language, name, undefined, true),
-   ],
-  });
- }
+ if (!options) return;
+ if (Number(options?.length) <= 25) return;
+
+ components.unshift({
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.previous(language, name, page),
+   buttonParsers.next(language, name, Math.ceil(options.length / 25) !== page + 1, page),
+  ],
+ });
 };
