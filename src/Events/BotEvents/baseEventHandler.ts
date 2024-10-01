@@ -10,7 +10,7 @@ export default async (eventName: string, args: unknown[]) => {
 };
 
 const botEvents = async (eventName: string, args: unknown[]) => {
- if (Number(client.uptime) > 60000) {
+ if (Number(client.uptime) > 60000 || process.argv.includes('--dev')) {
   firstGuildInteraction(eventName, args);
   firstChannelInteraction(eventName, args);
   userMiddleware(args);
