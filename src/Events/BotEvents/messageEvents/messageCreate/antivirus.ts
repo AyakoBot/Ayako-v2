@@ -93,20 +93,21 @@ const log = (
       ? [
          { name: '\u200b', value: '\u200b' },
          {
-          name: url.triggers
-           ? language.antivirus.malicious(
-              client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground) ??
-               '❌',
-             )
-           : language.antivirus.clean(
-              client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground) ??
-               '✅',
-             ),
+          name: language.antivirus.malicious(
+           client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground) ?? '❌',
+          ),
           value: client.util.util.makeInlineCode(url.url),
          },
          { name: '\u200b', value: '\u200b' },
         ]
-      : []),
+      : [
+         {
+          name: language.antivirus.clean(
+           client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground) ?? '✅',
+          ),
+          value: url.urls.map((u) => client.util.util.makeInlineCode(u)).join(', '),
+         },
+        ]),
     ],
    },
   ],
