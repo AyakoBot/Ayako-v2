@@ -3698,7 +3698,8 @@
   "taken": "> <@{{user.id}}> had\n> {{r}}\n> taken from"
  },
  "antivirus": {
-  "malicious": "{{cross}} This Link __is__ malicious",
+  "malicious": "{{cross}} This Link is __malicious__",
+  "clean": "{{check}} This Link is __clean__",
   "log": {
    "vtStats": "Malicious: {{m}} out of 5 minimum required to block this Link\nSuspicious: {{s}} out of 5 required to block this Link\nUndetected: {{u}}\nHarmless: {{h}}",
    "detectedAs": "The URL was detected as {{c}}",
