@@ -11,8 +11,14 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  if (!settings) return [];
 
+ const language = await cmd.guild.client.util.getLanguage(cmd.guild.id);
+
  return settings?.map((s) => ({
-  name: `ID: ${Number(s.uniquetimestamp).toString(36)}`,
+  name: `ID: ${Number(s.uniquetimestamp).toString(36)} - ${language.t.Role}: ${
+   s.separator
+    ? cmd.guild.roles.cache.get(s.separator)?.name.replace(/\W/g, '').trim().slice(0, 20)
+    : language.t.None
+  }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));
 };
