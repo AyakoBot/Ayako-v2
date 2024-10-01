@@ -24,7 +24,17 @@ export default async (member: Discord.GuildMember) => {
   ? manageableRoles.filter((r) => !settings.roles.includes(r.id))
   : manageableRoles.filter((r) => settings.roles.includes(r.id));
 
- member.client.util.request.guilds.editMember(member, {
-  roles: rolesToAdd.map((r) => r.id),
- });
+ const newRoles = [
+  ...new Set([...rolesToAdd.map((r) => r.id), ...member.roles.cache.map((r) => r.id)]),
+ ];
+
+ if (newRoles.every((r) => member.roles.cache.has(r))) return;
+
+ const language = await member.client.util.getLanguage(member.guild.id);
+
+ member.client.util.request.guilds.editMember(
+  member,
+  { roles: newRoles },
+  language.autotypes.stickyroles,
+ );
 };
