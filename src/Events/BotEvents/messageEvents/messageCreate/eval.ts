@@ -7,6 +7,8 @@ import * as CT from '../../../../Typings/Typings.js';
 ms;
 // eslint-disable-next-line  @typescript-eslint/no-unused-expressions
 CT;
+// eslint-disable-next-line  @typescript-eslint/no-unused-expressions
+Discord;
 
 const reg = new RegExp(
  (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',
