@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, OverwriteType, PermissionsBitField } from 
 import {
  managerPermissions,
  memberPermissions,
-} from 'src/Events/BotEvents/voiceStateEvents/voiceStateCreates/voiceHub.js';
+} from '../../../../Events/BotEvents/voiceStateEvents/voiceStateCreates/voiceHub.js';
 import { getVCSettings, isValidChannel, meIsPermittedDel, validateSuccess } from '../add/member.js';
 
 export default async (cmd: ChatInputCommandInteraction, filterBy: bigint = 0n) => {

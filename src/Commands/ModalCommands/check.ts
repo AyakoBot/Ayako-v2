@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { PunishmentType } from 'src/Typings/Typings.js';
+import { PunishmentType } from '../../Typings/Typings.js';
 import { getPayload } from '../SlashCommands/mod/check.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {

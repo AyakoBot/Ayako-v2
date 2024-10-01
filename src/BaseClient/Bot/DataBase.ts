@@ -6,7 +6,7 @@ import type {
  DynamicQueryExtensionCb,
  InternalArgs,
 } from '@prisma/client/runtime/library.js';
-import type { DataBaseTables, MaybeArray, RequiredOnly } from 'src/Typings/Typings.js';
+import type { DataBaseTables, MaybeArray, RequiredOnly } from '../../Typings/Typings.js';
 import metricsCollector from './Metrics.js';
 import Redis from './Redis.js';
 
