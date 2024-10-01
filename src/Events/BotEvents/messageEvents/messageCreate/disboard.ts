@@ -12,7 +12,9 @@ export default async (msg: Discord.Message<true>) => {
  disboardSent(msg);
 };
 
-const disboardSent = async (msg: Discord.Message<true>) => {
+export const disboardSent = async (
+ msg: Discord.Message<true> | Discord.ButtonInteraction<'cached'>,
+) => {
  client.util.cache.disboardBumpReminders.delete(msg.guildId);
 
  const settings = await client.util.DataBase.disboard.findUnique({
@@ -20,23 +22,7 @@ const disboardSent = async (msg: Discord.Message<true>) => {
  });
  if (!settings) return;
 
- client.util.request.channels.addReaction(
-  msg,
-  client.util.constants.standard.getEmoteIdentifier(client.util.emotes.tick),
- );
-
  deleteLastReminder(settings);
-
- if (settings.deletereply) {
-  Jobs.scheduleJob(
-   getPathFromError(new Error(msg.guild.id)),
-   new Date(Date.now() + 5000),
-   async () => {
-    if (!msg) return;
-    if (await client.util.isDeleteable(msg)) client.util.request.channels.deleteMessage(msg);
-   },
-  );
- }
 
  const nextbump = Date.now() + 9000000;
 
@@ -58,6 +44,24 @@ const disboardSent = async (msg: Discord.Message<true>) => {
   }),
   msg.guildId,
  );
+
+ if (msg instanceof Discord.ButtonInteraction) return;
+
+ client.util.request.channels.addReaction(
+  msg,
+  client.util.constants.standard.getEmoteIdentifier(client.util.emotes.tick),
+ );
+
+ if (settings.deletereply) {
+  Jobs.scheduleJob(
+   getPathFromError(new Error(msg.guild.id)),
+   new Date(Date.now() + 5000),
+   async () => {
+    if (!msg) return;
+    if (await client.util.isDeleteable(msg)) client.util.request.channels.deleteMessage(msg);
+   },
+  );
+ }
 };
 
 export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.disboard) => {
@@ -97,6 +101,19 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
       icon_url: (await client.util.getUser('302050872383242240'))?.displayAvatarURL(),
      },
      description: language.events.ready.disboard.desc,
+    },
+   ],
+   components: [
+    {
+     type: Discord.ComponentType.ActionRow,
+     components: [
+      {
+       type: Discord.ComponentType.Button,
+       style: Discord.ButtonStyle.Secondary,
+       label: language.events.ready.disboard.button,
+       custom_id: 'disboard/bump',
+      },
+     ],
     },
    ],
   },

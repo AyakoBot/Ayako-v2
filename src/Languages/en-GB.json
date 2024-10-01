@@ -754,7 +754,8 @@
    "unmute": "Automatically Un-Muted",
    "disboard": {
     "desc": "You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>",
-    "title": "{{t.botName}} DISBOARD Bump Reminder"
+    "title": "{{t.botName}} DISBOARD Bump Reminder",
+    "button": "Mark Server as bumped"
    },
    "reminder": {
     "description": "Your Reminder is due!",
