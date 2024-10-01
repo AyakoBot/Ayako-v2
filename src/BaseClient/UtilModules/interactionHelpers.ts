@@ -28,10 +28,18 @@ const cooldown = new Set<string>();
 type InteractionKeys = keyof CT.Language['slashCommands']['interactions'];
 
 /**
- * Replies to a Discord interaction or message with an embed and optional components.
- * @param cmd The interaction or message to reply to.
- * @param guild The guild the interaction or message belongs to.
- * @returns void
+ * Handles the reply logic for various types of Discord interactions, including chat input commands,
+ * messages, and button interactions.
+ * This function processes the interaction, checks for blocked users,
+ * retrieves necessary settings and language data,
+ * and constructs an appropriate reply or error message.
+ *
+ * @param cmd - The Discord interaction to handle.
+ * Can be a ChatInputCommandInteraction, Message, or ButtonInteraction.
+ * @param isActionSubCommand - Optional flag indicating if the interaction is an action sub-command.
+ * @param isReply - Optional flag indicating if the interaction is a reply.
+ *
+ * @returns A promise that resolves when the reply handling is complete.
  */
 const reply = async (
  cmd: Discord.ChatInputCommandInteraction | Discord.Message<true> | Discord.ButtonInteraction,
