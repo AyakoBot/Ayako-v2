@@ -4,6 +4,8 @@ import webhooksDeletes from './webhooksDeletes/webhooksDeletes.js';
 import webhooksUpdates from './webhooksUpdates/webhooksUpdates.js';
 
 export default async (channel: Discord.GuildTextBasedChannel) => {
+ if (channel.isThread()) return;
+
  const newWebhooks = await channel.client.util.request.channels.getWebhooks(channel);
  if ('message' in newWebhooks) {
   channel.client.util.error(channel.guild, new Error(newWebhooks.message));

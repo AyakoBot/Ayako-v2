@@ -92,10 +92,8 @@ export const tasksWithSettings = {
    });
   });
  },
- webhooks: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
-  if (!settings?.webhookevents?.length) return;
-
-  cache.webhooks.get('', '', guild);
+ webhooks: async (guild: Discord.Guild) => {
+  guild.client.util.request.guilds.getWebhooks(guild);
  },
  integrations: async (guild: Discord.Guild, settings: Prisma.logchannels | null) => {
   if (!settings?.guildevents?.length) return;

@@ -21,9 +21,19 @@ export default async (guild: Discord.Guild) => {
   return e;
  }
 
+ const me = await guild.client.util.getBotMemberFromGuild(guild);
+
  return (await getAPI(guild)).guilds
   .getWebhooks(guild.id)
-  .then((webhooks) => webhooks.map((w) => new Classes.Webhook(guild.client, w)))
+  .then((raw) => {
+   const webhooks = raw.map((w) => new Classes.Webhook(guild.client, w));
+
+   webhooks
+    .filter((w) => w.owner?.id === me.id)
+    .forEach((w) => guild.client.util.cache.webhooks.set(w));
+
+   return webhooks;
+  })
   .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;

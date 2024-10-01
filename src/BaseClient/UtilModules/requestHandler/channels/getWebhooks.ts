@@ -12,7 +12,12 @@ import { getAPI } from './addReaction.js';
  * @returns A promise that resolves with an array of webhooks for the given channel.
  */
 export default async (
- channel: Discord.GuildTextBasedChannel | Discord.ForumChannel | Discord.MediaChannel,
+ channel:
+  | Discord.NewsChannel
+  | Discord.StageChannel
+  | Discord.TextChannel
+  | Discord.VoiceChannel
+  | Discord.ThreadOnlyChannel,
 ) => {
  if (!canGetWebhooks(channel.id, await getBotMemberFromGuild(channel.guild))) {
   const e = requestHandlerError(`Cannot get webhooks in ${channel.name} / ${channel.id}`, [
@@ -23,9 +28,19 @@ export default async (
   return e;
  }
 
+ const me = await channel.client.util.getBotMemberFromGuild(channel.guild);
+
  return (await getAPI(channel.guild)).channels
   .getWebhooks(channel.id)
-  .then((webhooks) => webhooks.map((w) => new Classes.Webhook(channel.client, w)))
+  .then((raw) => {
+   const webhooks = raw.map((w) => new Classes.Webhook(channel.client, w));
+
+   webhooks
+    .filter((w) => w.owner?.id === me.id)
+    .forEach((w) => channel.client.util.cache.webhooks.set(w));
+
+   return webhooks;
+  })
   .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
    return e;

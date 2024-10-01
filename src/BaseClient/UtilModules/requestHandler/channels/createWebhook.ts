@@ -49,4 +49,5 @@ export default async (
  * @returns A boolean indicating whether the user can create a webhook in the channel.
  */
 export const canCreateWebhook = (channelId: string, me: Discord.GuildMember) =>
- me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks);
+ me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks) &&
+ Number(me.client.util.cache.webhooks.cache.get(me.guild.id)?.get(channelId)?.size) < 15;
