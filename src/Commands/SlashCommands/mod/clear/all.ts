@@ -23,35 +23,60 @@ type ClearType =
  | 'bots';
 
 export default async (
- cmd: Discord.ChatInputCommandInteraction,
- _args: string[],
+ cmd: Discord.ChatInputCommandInteraction | Discord.Message<true>,
+ args: string[],
  type: ClearType = 'all',
 ) => {
- if (!cmd.inCachedGuild()) return;
+ const isCmd = cmd instanceof Discord.ChatInputCommandInteraction;
+
+ if (isCmd ? !cmd.inCachedGuild() : !cmd.inGuild()) return;
  if (!cmd.channel) return;
 
- await cmd.deferReply({ ephemeral: true });
+ if (isCmd) await cmd.deferReply({ ephemeral: true });
 
- const amount = cmd.options.getInteger('amount', false);
- const channel =
-  cmd.options.getChannel('channel', false, [
-   Discord.ChannelType.AnnouncementThread,
-   Discord.ChannelType.PublicThread,
-   Discord.ChannelType.GuildAnnouncement,
-   Discord.ChannelType.PrivateThread,
-   Discord.ChannelType.GuildStageVoice,
-   Discord.ChannelType.GuildText,
-   Discord.ChannelType.GuildVoice,
-  ]) ?? cmd.channel;
+ const rawAmount = isCmd ? undefined : getAmount(args);
+ if (rawAmount && !isCmd && !validAmount(rawAmount)) {
+  cmd.client.util.request.channels.addReaction(
+   cmd,
+   cmd.client.util.constants.standard.getEmoteIdentifier(cmd.client.util.emotes.cross),
+  );
+  return;
+ }
+
+ const amount = isCmd ? cmd.options.getInteger('amount', false) : rawAmount;
+ const channel = isCmd
+  ? (cmd.options.getChannel('channel', false, [
+     Discord.ChannelType.AnnouncementThread,
+     Discord.ChannelType.PublicThread,
+     Discord.ChannelType.GuildAnnouncement,
+     Discord.ChannelType.PrivateThread,
+     Discord.ChannelType.GuildStageVoice,
+     Discord.ChannelType.GuildText,
+     Discord.ChannelType.GuildVoice,
+    ]) ?? (cmd.channel as Discord.GuildTextBasedChannel))
+  : cmd.channel;
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.clear;
- const allMessages = (await getMessages(type, cmd as Parameters<typeof getMessages>[1], channel))
+ const allMessages = (
+  await getMessages(
+   type,
+   cmd as Parameters<typeof getMessages>[1],
+   channel as Discord.GuildTextBasedChannel,
+  )
+ )
   .sort((a, b) => b.createdTimestamp - a.createdTimestamp)
   .filter((m) => m.createdTimestamp > Date.now() - 1209600000);
  const messages = amount ? allMessages.slice(0, amount) : allMessages;
 
  if (!messages.length) {
-  cmd.client.util.errorCmd(cmd, lan.noMessagesFound, language);
+  if (isCmd) cmd.client.util.errorCmd(cmd, lan.noMessagesFound, language);
+  else {
+   cmd.client.util.request.channels.addReaction(
+    cmd,
+    cmd.client.util.constants.standard.getEmoteIdentifier(cmd.client.util.emotes.cross),
+   );
+  }
   return;
  }
 
@@ -63,6 +88,8 @@ export default async (
   .forEach((c) => {
    cmd.client.util.request.channels.bulkDelete(channel as Discord.GuildTextBasedChannel, c);
   });
+
+ if (!isCmd) return;
 
  cmd.editReply({
   content: lan.deleted(messages.length),
@@ -187,4 +214,14 @@ const getMessages = async (
    return cmd.client.util.fetchMessages(channel, { amount: 100 });
   }
  }
+};
+
+const getAmount = (args: string[]) =>
+ Math.round(args.filter((a) => !Number.isNaN(+a)).map((a) => +a)[0] + 1);
+
+const validAmount = (amount: number) => {
+ if (amount > 499) return false;
+ if (amount < 1) return false;
+
+ return true;
 };
