@@ -14,6 +14,10 @@ type CommandName = (typeof SlashCommands)['names'][number];
 export default async (guild: Discord.Guild | undefined | null, name: CommandName) => {
  const { default: client } = await import('../Bot/Client.js');
 
+ if (guild && !guild.commands.cache.size) {
+  await client.util.request.commands.getGuildCommands(guild);
+ }
+
  const clientCommand =
   guild?.commands.cache.find((c) => c.name === name) ??
   client.application?.commands.cache.find((c) => c.name === name);
