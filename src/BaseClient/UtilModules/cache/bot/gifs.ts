@@ -227,7 +227,6 @@ const gifSelection = [
  { triggers: ['dance'], gifs: async () => getGif('dance', ['neko', 'purr', 'waifu']) },
  { triggers: ['facepalm'], gifs: async () => getGif('facepalm', ['neko']) },
  { triggers: ['feed'], gifs: async () => getGif('feed', ['neko']) },
- { triggers: ['feed'], gifs: async () => getGif('nom', ['waifu', 'neko']) },
  { triggers: ['fluff', 'floof'], gifs: async () => getGif('fluff', ['purr']) },
  { triggers: ['handshake'], gifs: async () => getGif('handshake', ['neko']) },
  { triggers: ['happy'], gifs: async () => getGif('happy', ['neko', 'waifu']) },
