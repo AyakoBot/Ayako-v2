@@ -1,12 +1,18 @@
-import * as Discord from 'discord.js';
-// import * as Typings from '../../../Typings/Typings.js';
+import {
+ PermissionFlagsBits,
+ PermissionsBitField,
+ type ButtonInteraction,
+ type ChatInputCommandInteraction,
+ type PermissionResolvable,
+} from 'discord.js';
 
-// TODO: finish this
 export default (
- cmd: Discord.ChatInputCommandInteraction<'cached'>,
- // language: Typings.Language,
- permissions: bigint[],
+ cmd: ChatInputCommandInteraction<'cached'> | ButtonInteraction<'cached'>,
+ permissions: PermissionResolvable = PermissionFlagsBits.ManageGuild,
 ): boolean => {
- if (!cmd.memberPermissions.has(permissions)) return false;
+ if (!cmd.memberPermissions.has(permissions)) {
+  cmd.client.util.permError(cmd, new PermissionsBitField(permissions).bitfield, false, false);
+  return false;
+ }
  return true;
 };

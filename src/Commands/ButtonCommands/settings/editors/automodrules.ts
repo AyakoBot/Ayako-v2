@@ -3,6 +3,7 @@ import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
+ if (!cmd.client.util.settingsHelpers.permissionCheck(cmd)) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;

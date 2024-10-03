@@ -1,9 +1,14 @@
 import crypto from 'crypto';
-import type * as Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
+ if (
+  !cmd.client.util.settingsHelpers.permissionCheck(cmd, Discord.PermissionFlagsBits.Administrator)
+ ) {
+  return;
+ }
 
  const fieldName = args.shift();
  if (!fieldName) return;

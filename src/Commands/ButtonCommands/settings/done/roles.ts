@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js';
+import { canEditRole } from '../../../../BaseClient/UtilModules/requestHandler/guilds/editRole.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
@@ -28,6 +29,17 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   ?.map((c) => c.replace(/\D/g, '') || undefined)
   .filter((c): c is string => !!c);
 
+ const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const unmanageableRoles = roleIds?.filter((r) => !canEditRole(cmd.member, r)) || [];
+ if (unmanageableRoles.length) {
+  cmd.client.util.errorCmd(
+   cmd,
+   `${language.errors.cantManageRole}\n\n${language.t.Roles}: ${unmanageableRoles.map((r) => `<@&${r}>`)}`,
+   language,
+  );
+  return;
+ }
+
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
@@ -35,8 +47,6 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   roleIds,
   uniquetimestamp,
  );
-
- const language = await cmd.client.util.getLanguage(cmd.guildId);
 
  cmd.client.util.settingsHelpers.updateLog(
   { [fieldName]: currentSetting?.[fieldName as keyof typeof currentSetting] },

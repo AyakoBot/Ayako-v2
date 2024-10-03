@@ -17,6 +17,7 @@ export default async (
  type: Types = CT.EditorTypes.ShopType,
 ) => {
  if (!cmd.inCachedGuild()) return;
+ if (!cmd.client.util.settingsHelpers.permissionCheck(cmd)) return;
 
  const fieldName = args.shift();
  if (!fieldName) return;

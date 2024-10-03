@@ -4,6 +4,7 @@ import type { SettingNames } from '../../../../Typings/Settings.js';
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
+ if (!cmd.client.util.settingsHelpers.permissionCheck(cmd)) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
 

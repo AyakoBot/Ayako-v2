@@ -6,6 +6,7 @@ const settingName = CT.SettingNames.DenylistRules;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
+ if (!cmd.client.util.settingsHelpers.permissionCheck(cmd)) return;
 
  args.shift();
  const fieldName = args.shift() as 'exemptChannels' | 'exemptRoles';

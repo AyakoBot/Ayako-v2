@@ -13,6 +13,11 @@ export default async (
  channelTypes: ChannelTypes = ChannelTypes.Text,
 ) => {
  if (!cmd.inCachedGuild()) return;
+ if (
+  !cmd.client.util.settingsHelpers.permissionCheck(cmd, Discord.PermissionFlagsBits.ManageChannels)
+ ) {
+  return;
+ }
 
  const fieldName = args.shift();
  if (!fieldName) return;
