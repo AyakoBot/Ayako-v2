@@ -243,7 +243,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    tasksWithSettings.scheduledEvents(guild, newSettings);
    return;
   case 'webhookevents':
-   tasksWithSettings.webhooks(guild, newSettings);
+   tasksWithSettings.webhooks(guild);
    return;
   case 'memberevents':
   case 'inviteevents':
