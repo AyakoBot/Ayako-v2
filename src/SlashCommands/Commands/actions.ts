@@ -42,7 +42,8 @@ const setOptions = (
       .setName(o.name)
       .setNameLocalizations(o.name_localizations ?? {})
       .setDescription(o.description)
-      .setDescriptionLocalizations(o.description_localizations ?? {}),
+      .setDescriptionLocalizations(o.description_localizations ?? {})
+      .setRequired(o.required || false),
     );
     break;
    default:
