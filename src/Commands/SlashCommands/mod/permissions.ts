@@ -7,6 +7,8 @@ export default async (
 ) => {
  if (!cmd.inCachedGuild()) return;
 
+ const reply = await (cmd.isButton() ? undefined : cmd.deferReply({ ephemeral: true }));
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.moderation.permissions;
  const customCommands = await Promise.all(
@@ -43,5 +45,5 @@ export default async (
  if (response) await response.delete();
 
  if (cmd.isButton()) cmd.editReply({ ...payload, message: cmd.message });
- else cmd.client.util.replyCmd(cmd, payload);
+ else (reply as Discord.InteractionResponse).edit(payload);
 };
