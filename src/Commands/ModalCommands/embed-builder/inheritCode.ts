@@ -14,9 +14,12 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
  if (!code) return;
 
  try {
-  const embedOrEmbeds = JSON.parse(code) as Discord.APIEmbed | Discord.APIEmbed[];
+  const embedOrEmbeds = JSON.parse(code) as
+   | Discord.APIEmbed
+   | Discord.APIEmbed[]
+   | Discord.APIMessage;
 
-  new Discord.EmbedBuilder(Array.isArray(embedOrEmbeds) ? embedOrEmbeds[0] : embedOrEmbeds);
+  new Discord.EmbedBuilder(extractEmbed(embedOrEmbeds));
  } catch (e) {
   const language = await cmd.client.util.getLanguage(cmd.guildId);
 
@@ -29,6 +32,25 @@ export default async (cmd: Discord.ModalSubmitInteraction) => {
   return;
  }
 
- const embedOrEmbeds = JSON.parse(code) as Discord.APIEmbed | Discord.APIEmbed[];
- startOver(cmd, [], Array.isArray(embedOrEmbeds) ? embedOrEmbeds[0] : embedOrEmbeds);
+ startOver(
+  cmd,
+  [],
+  extractEmbed(JSON.parse(code) as Discord.APIEmbed | Discord.APIEmbed[] | Discord.APIMessage),
+ );
+};
+
+const extractEmbed = (
+ m: Discord.APIEmbed | Discord.APIEmbed[] | Discord.APIMessage,
+): Discord.APIEmbed => {
+ if ('embeds' in m) {
+  if (m.embeds.length === 0) return {};
+  return m.embeds[0] as Discord.APIEmbed;
+ }
+
+ if (Array.isArray(m)) {
+  if (m.length === 0) return {};
+  return m[0];
+ }
+
+ return m;
 };
