@@ -107,24 +107,6 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  if (!newSettings) return;
 
  switch (changedSetting) {
-  case 'appid': {
-   if (!newSettings.appid) return;
-   if (newSettings.secret) return;
-   if (newSettings.token) return;
-
-   const deco = await guild.client.util.DataBase.linkedRolesDeco.findFirst({
-    where: { guildid: guild.id, botId: newSettings.appid },
-   });
-   if (!deco) return;
-   if (!deco.botSecret && !deco.botToken) return;
-
-   await guild.client.util.DataBase.customclients.update({
-    where: { guildid: guild.id },
-    data: { secret: deco.botSecret, token: deco.botToken },
-   });
-
-   return;
-  }
   case 'token': {
    if (!newSettings.token?.length) tokenDelete(guild);
    else tokenCreate(guild, newSettings as Parameters<typeof tokenCreate>[1]);
@@ -156,6 +138,12 @@ const tokenCreate = async (
   'token'
  >,
 ) => {
+ const id = guild.client.util.getBotIdFromToken(newSettings.token);
+ await guild.client.util.DataBase.customclients.update({
+  where: { guildid: guild.id },
+  data: { appid: id },
+ });
+
  requestHandler(guild.id, newSettings.token);
 
  const me = await getMe(guild);
