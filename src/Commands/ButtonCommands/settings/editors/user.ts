@@ -29,6 +29,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   | string[];
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
+
  cmd.update({
   embeds: [
    await cmd.client.util.settingsHelpers.changeHelpers.changeEmbed(
@@ -68,6 +69,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       settingName,
       fieldName,
       cmd.client,
+      uniquetimestamp,
      ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,

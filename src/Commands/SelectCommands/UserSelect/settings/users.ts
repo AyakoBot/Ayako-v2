@@ -4,6 +4,7 @@ import * as CT from '../../../../Typings/Typings.js';
 export default async (
  cmd: Discord.UserSelectMenuInteraction | Discord.ModalMessageModalSubmitInteraction,
  args: string[],
+ single: boolean = false,
 ) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -47,7 +48,7 @@ export default async (
     components: [
      cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      CT.EditorTypes.Users,
+      single ? CT.EditorTypes.User : CT.EditorTypes.Users,
       fieldName,
       settingName,
       uniquetimestamp,
@@ -67,11 +68,12 @@ export default async (
       settingName,
       fieldName,
       cmd.client,
+      uniquetimestamp,
      ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
       fieldName,
-      CT.EditorTypes.Users,
+      single ? CT.EditorTypes.User : CT.EditorTypes.Users,
       language,
       Number(uniquetimestamp),
      ),

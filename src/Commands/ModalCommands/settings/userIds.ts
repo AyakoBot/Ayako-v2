@@ -7,5 +7,5 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const fieldName = cmd.components[0].components[0].customId;
  args.unshift(fieldName);
 
- users(cmd, args);
+ users(cmd, args, true);
 };

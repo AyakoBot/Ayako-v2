@@ -67,6 +67,7 @@ export default async (
       settingName,
       fieldName,
       cmd.client,
+      uniquetimestamp,
      ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,

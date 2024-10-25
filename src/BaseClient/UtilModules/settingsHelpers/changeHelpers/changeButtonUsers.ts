@@ -12,13 +12,14 @@ export default <T extends keyof typeof SettingsName2TableName>(
  settingName: T,
  fieldName: string,
  client: Client<true>,
+ uniquetimestamp: number | string | undefined,
  many: boolean = true,
 ): APIButtonComponentWithCustomId => ({
  type: ComponentType.Button,
  style: ButtonStyle.Secondary,
  custom_id: getWithUTS(
   `settings/editors/userId${many ? 's' : ''}_${fieldName}_${settingName}`,
-  undefined,
+  uniquetimestamp,
  ),
  label: language.slashCommands.settings.addById,
  emoji: client.util.emotes.MemberBright,
