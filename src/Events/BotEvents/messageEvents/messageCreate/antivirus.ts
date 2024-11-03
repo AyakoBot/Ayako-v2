@@ -26,6 +26,14 @@ export default async (msg: Discord.Message) => {
  if (!('url' in result)) {
   if (msg.inGuild()) return;
 
+  await API.channels.deleteOwnMessageReaction(
+   msg.channelId,
+   msg.id,
+   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+  );
+
+  if (!result.urls.length) return;
+
   log(
    settings?.linklogging && settings?.linklogchannels.length
     ? settings.linklogchannels
@@ -35,11 +43,6 @@ export default async (msg: Discord.Message) => {
    result,
   );
 
-  await API.channels.deleteOwnMessageReaction(
-   msg.channelId,
-   msg.id,
-   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
-  );
   return;
  }
 

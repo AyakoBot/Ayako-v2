@@ -58,12 +58,16 @@ const filterFastMessages = (msg: Discord.Message) => {
  msg.client.util.cache.fastMsgCache.set(msg.author.id, {
   msgs: [msg],
   job: scheduleJob(getPathFromError(new Error(msg.author.id)), '*/10 * * * * *', () => {
-   const message = msg.client.util.cache.fastMsgCache.get(msg.author.id)?.msgs.shift();
-   if (message && (!msg.inGuild() || msg.member)) {
-    if (msg.inGuild()) invites(msg);
-    antivirus(msg);
+   const cache = msg.client.util.cache.fastMsgCache.get(msg.author.id);
+   const message = cache?.msgs.shift();
+
+   if (message && (!message.inGuild() || message.member)) {
+    if (message.inGuild()) invites(message);
+    antivirus(message);
     return;
    }
+
+   if (cache?.msgs.length) return;
 
    msg.client.util.cache.fastMsgCache.get(msg.author.id)?.job.cancel();
    msg.client.util.cache.fastMsgCache.delete(msg.author.id);
