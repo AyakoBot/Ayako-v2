@@ -28,8 +28,9 @@ async function fn(
  userId: string,
  saveGuild?: Discord.Guild,
  forceMainAPI: boolean = false,
-): Promise<Discord.GuildMember | Discord.DiscordAPIError> {
+): Promise<Discord.GuildMember | Discord.DiscordAPIError | Error> {
  const g = (guild ?? saveGuild)!;
+ if (!g) return new Error('guild is not defined');
 
  return (
   g.members.cache.get(userId) ??
