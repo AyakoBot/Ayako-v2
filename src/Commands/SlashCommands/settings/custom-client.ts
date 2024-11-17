@@ -147,7 +147,7 @@ const tokenCreate = async (
  requestHandler(guild.id, newSettings.token);
 
  const me = await getMe(guild);
- updateApp(guild);
+ await updateApp(guild, me);
  if (!meIsValid(guild, me)) return;
 
  sendWebhookRequest(guild, me.id);
@@ -155,10 +155,25 @@ const tokenCreate = async (
  guild.client.util.cache.customClients.delete(guild.id);
 };
 
-const updateApp = (guild: Discord.Guild) => {
- client.util.request.applications.editCurrent(guild, {
-  custom_install_url: process.env.customInstallURL,
+const updateApp = async (
+ guild: Discord.Guild,
+ me: Discord.APIApplication | Discord.DiscordAPIError,
+) => {
+ if ('verify_key' in me && me.verify_key) {
+  await client.util.DataBase.customclients.update({
+   where: { guildid: guild.id },
+   data: { publickey: me.verify_key, appid: me.id },
+  });
+ }
+
+ await client.util.request.applications.editCurrent(guild, {
   interactions_endpoint_url: process.env.customInteractionsEndpointURL,
+  custom_install_url: process.env.customInstallURL,
+  install_params: null!,
+  integration_types_config: {
+   [Discord.ApplicationIntegrationType.GuildInstall]: {},
+   [Discord.ApplicationIntegrationType.UserInstall]: {},
+  },
   flags:
    Discord.ApplicationFlags.GatewayMessageContentLimited |
    Discord.ApplicationFlags.GatewayGuildMembersLimited |
@@ -172,10 +187,7 @@ const deleteEntry = (guildId: string) => {
  client.util.cache.apis.delete(guildId);
 
  client.util.DataBase.customclients
-  .update({
-   where: { guildid: guildId },
-   data: { token: null },
-  })
+  .update({ where: { guildid: guildId }, data: { token: null } })
   .then();
 };
 
@@ -252,16 +264,7 @@ const sendWebhookRequest = (guild: Discord.Guild, meId: string) =>
  );
 
 export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplication) => {
- if (!guild.members.cache.has(me.id)) {
-  guild.client.util.DataBase.awaitJoinCC
-   .upsert({
-    where: { guildId: guild.id },
-    create: { botId: me.id, guildId: guild.id },
-    update: { botId: me.id },
-   })
-   .then();
-  return;
- }
+ if (!guild.members.cache.has(me.id)) return;
 
  const language = new Lang('en-GB');
 
@@ -278,17 +281,10 @@ export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplicatio
 
  await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
 
- const [, settings] = await client.util.DataBase.$transaction([
-  client.util.DataBase.customclients.update({
-   where: { guildid: guild.id },
-   data: { publickey: me.verify_key, appid: me.id },
-   select: { guildid: true },
-  }),
-  client.util.DataBase.guildsettings.findUnique({
-   where: { guildid: guild.id },
-   select: { enabledrp: true },
-  }),
- ]);
+ const settings = await client.util.DataBase.guildsettings.findUnique({
+  where: { guildid: guild.id },
+  select: { enabledrp: true },
+ });
  if (settings?.enabledrp) await create(guild);
 
  client.util.request.commands.getGuildCommands(guild);

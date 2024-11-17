@@ -10,7 +10,6 @@ import {
  giveawayCollectTimeExpired,
 } from '../../../../Commands/SlashCommands/giveaway/end.js';
 import { end as endReminder } from '../../../../Commands/SlashCommands/reminder/create.js';
-import { doCommands, getMe } from '../../../../Commands/SlashCommands/settings/custom-client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import appeal from '../../../ClusterEvents/appeal.js';
 import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
@@ -24,25 +23,6 @@ export default () => {
 };
 
 export const startupTasks = {
- awaitedJoinsCC: async (gIds: string[]) => {
-  gIds.forEach(async (gId) => {
-   const guild = client.guilds.cache.get(gId);
-   if (!guild) return;
-
-   const awaiting = await guild.client.util.DataBase.awaitJoinCC.findUnique({
-    where: { guildId: guild.id },
-   });
-   if (!awaiting) return;
-
-   const me = await getMe(guild);
-   if ('message' in me) {
-    guild.client.util.DataBase.awaitJoinCC.delete({ where: { guildId: guild.id } }).then();
-    return;
-   }
-
-   doCommands(guild, me);
-  });
- },
  appeals: async (gIds: string[]) => {
   const appeals = await client.util.DataBase.appeals.findMany({
    where: { guildid: { in: gIds }, received: false },

@@ -1,16 +1,16 @@
+import Prisma from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
-import Prisma from '@prisma/client';
 
+import DataBase from '../Bot/DataBase.js';
+import metricsCollector from '../Bot/Metrics.js';
 import cache from '../UtilModules/cache.js';
+import deleteThread from '../UtilModules/deleteNotificationThread.js';
 import error from '../UtilModules/error.js';
 import fetchAllEventSubscribers from '../UtilModules/fetchAllEventSubscribers.js';
 import fetchAllGuildMembers from '../UtilModules/fetchAllGuildMembers.js';
-import deleteThread from '../UtilModules/deleteNotificationThread.js';
-import { request } from '../UtilModules/requestHandler.js';
-import DataBase from '../Bot/DataBase.js';
 import getPathFromError from '../UtilModules/getPathFromError.js';
-import metricsCollector from '../Bot/Metrics.js';
+import { request } from '../UtilModules/requestHandler.js';
 
 export default async (guild: Discord.Guild | null, eventName: string) => {
  if (!guild) return;
@@ -36,6 +36,17 @@ export default async (guild: Discord.Guild | null, eventName: string) => {
 };
 
 const tasks = {
+ customClient: async (guild: Discord.Guild) => {
+  const settings = await guild.client.util.DataBase.customclients.findUnique({
+   where: { token: { not: null }, guildid: guild.id },
+  });
+  if (!settings) return;
+
+  const apiCreated = await guild.client.util.requestHandler(guild.id, settings.token as string);
+  if (!apiCreated) return;
+
+  guild.client.util.request.commands.getGlobalCommands(guild, guild.client);
+ },
  deleteThreads: async (guild: Discord.Guild) => {
   if (!guild.rulesChannel) return;
   const deleteThreads = await DataBase.deletethreads.findMany({

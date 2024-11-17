@@ -19,15 +19,31 @@ import voice from './requestHandler/voice.js';
  * Sets up a new API instance for the given guild ID and token.
  * @param guildId - The ID of the guild to set up the API for.
  * @param token - The token to use for authentication.
+ * @returns boolean indicating success
  */
-export default async (guildId: string, token: string) => {
+export default async (guildId: string, token: string): Promise<boolean> => {
  const rest = new DiscordRest.REST({
   version: '10',
   api: 'http://nirn:8080/api',
   timeout: 60000,
  }).setToken(token);
+
  const api = new DiscordCore.API(rest);
+
+ const canGetOwnGuild = await getOwnGuild(guildId, api);
+ if (!canGetOwnGuild) return false;
+
  cache.apis.set(guildId, api);
+ return true;
+};
+
+const getOwnGuild = async (guildId: string, api: DiscordCore.API) => {
+ const guild = await api.guilds
+  .get(guildId, { with_counts: false })
+  .catch((e: DiscordRest.DiscordAPIError) => e);
+
+ if ('message' in guild) return false;
+ return true;
 };
 
 export const request = {

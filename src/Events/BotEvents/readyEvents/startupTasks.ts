@@ -3,7 +3,6 @@ import client from '../../../BaseClient/Bot/Client.js';
 import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';
 
 import cache from './startupTasks/cache.js';
-import customAPIsHandler from './startupTasks/customAPIsHandler.js';
 import customBotCommands from './startupTasks/customBotCommands.js';
 import separators from './startupTasks/separators.js';
 
@@ -16,7 +15,6 @@ import guilds from './timedFiles/guilds.js';
 import users from './timedFiles/users.js';
 
 export default async () => {
- await customAPIsHandler();
  await customBotCommands();
 
  await antivirusBlocklistCacher();
