@@ -12,14 +12,14 @@ const token = (process.argv.includes('--dev') ? process.env.DevToken : process.e
 const requestHandler = (t: string) =>
  new DiscordCore.API(new DiscordRest.REST({ version: '10' }).setToken(t.replace('Bot ', '')));
 
-requestHandler(token)
+await requestHandler(token)
  .applicationCommands.bulkOverwriteGlobalCommands(
   Buffer.from(token.replace('Bot ', '')?.split('.')[0] ?? '0', 'base64').toString() ?? '',
   createCommands.map((c) => c.toJSON()),
  )
  .then((r) => console.log(`[MAIN] Registered ${r.length} Global Commands`));
 
-fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/commands`, {
+await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/commands`, {
  method: 'post',
  headers: {
   Authorization: process.env.DBListToken ?? '',
