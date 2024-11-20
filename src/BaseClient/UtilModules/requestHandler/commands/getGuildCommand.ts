@@ -7,6 +7,7 @@ import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
+import { makeRequestHandler } from '../../requestHandler.js';
 
 /**
  * Retrieves a guild command by ID from the cache or API.
@@ -26,6 +27,14 @@ export default async (guild: Discord.Guild, commandId: string) => {
  }
 
  if (await hasMissingScopes(guild)) return [];
+
+ if (
+  (await getBotIdFromGuild(guild)) !== guild.client.user.id &&
+  !cache.apis.get(guild.id) &&
+  !(await makeRequestHandler(guild))
+ ) {
+  return new Error('Failed to set up API');
+ }
 
  return (
   guild.commands.cache.get(commandId) ??

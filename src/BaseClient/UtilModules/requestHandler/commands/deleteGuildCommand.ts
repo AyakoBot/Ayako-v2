@@ -6,6 +6,7 @@ import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
+import { makeRequestHandler } from '../../requestHandler.js';
 
 /**
  * Deletes a guild command from the Discord API and removes it from the guild's command cache.
@@ -27,6 +28,14 @@ export default async (guild: Discord.Guild, commandId: string) => {
  }
 
  if (await hasMissingScopes(guild)) return [];
+
+ if (
+  (await getBotIdFromGuild(guild)) !== guild.client.user.id &&
+  !cache.apis.get(guild.id) &&
+  !(await makeRequestHandler(guild))
+ ) {
+  return new Error('Failed to set up API');
+ }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)

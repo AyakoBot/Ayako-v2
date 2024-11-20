@@ -6,6 +6,7 @@ import error from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
+import { makeRequestHandler } from '../../requestHandler.js';
 
 /**
  * Overwrites all existing global commands for this application in this guild.
@@ -26,6 +27,14 @@ export default async (
 
   error(guild, new Error((e as Discord.DiscordAPIError).message));
   return e;
+ }
+
+ if (
+  (await getBotIdFromGuild(guild)) !== guild.client.user.id &&
+  !cache.apis.get(guild.id) &&
+  !(await makeRequestHandler(guild))
+ ) {
+  return new Error('Failed to set up API');
  }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands

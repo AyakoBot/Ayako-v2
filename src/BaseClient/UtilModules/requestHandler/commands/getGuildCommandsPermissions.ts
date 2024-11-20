@@ -6,6 +6,7 @@ import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
+import { makeRequestHandler } from '../../requestHandler.js';
 
 /**
  * Retrieves the permissions for all the slash commands in a guild.
@@ -24,6 +25,14 @@ export default async (guild: Discord.Guild) => {
  }
 
  if (await hasMissingScopes(guild)) return [];
+
+ if (
+  (await getBotIdFromGuild(guild)) !== guild.client.user.id &&
+  !cache.apis.get(guild.id) &&
+  !(await makeRequestHandler(guild))
+ ) {
+  return new Error('Failed to set up API');
+ }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .getGuildCommandsPermissions(await getBotIdFromGuild(guild), guild.id)

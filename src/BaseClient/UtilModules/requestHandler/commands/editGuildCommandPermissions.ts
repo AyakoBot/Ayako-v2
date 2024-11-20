@@ -6,6 +6,7 @@ import error from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
+import { makeRequestHandler } from '../../requestHandler.js';
 
 /**
  * Edits the permissions for a command in a guild.
@@ -34,6 +35,14 @@ export default async (
  }
 
  if (await hasMissingScopes(guild)) return [];
+
+ if (
+  (await getBotIdFromGuild(guild)) !== guild.client.user.id &&
+  !cache.apis.get(guild.id) &&
+  !(await makeRequestHandler(guild))
+ ) {
+  return new Error('Failed to set up API');
+ }
 
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .editGuildCommandPermissions(userToken, await getBotIdFromGuild(guild), guild.id, commandId, body)
