@@ -10,11 +10,12 @@ export default async (
    .filter((o) => o.deny.bitfield !== 0n || o.allow.bitfield !== 0n)
    .map((o) => ({
     userid: o.id,
-    guildid: channel.guildId,
+    guildid: channel.guildId || channel.guild.id,
     channelid: channel.id,
     denybits: o.deny.bitfield,
     allowbits: o.allow.bitfield,
    }))
+   .filter((d) => !!d.guildid)
    .map((data) =>
     channel.client.util.DataBase.stickypermmembers.upsert({
      where: { userid_channelid: { userid: data.userid, channelid: data.channelid } },
