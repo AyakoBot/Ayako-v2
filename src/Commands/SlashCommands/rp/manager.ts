@@ -1,3 +1,4 @@
+import type { guildsettings } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 
@@ -11,20 +12,26 @@ export default async (
   return;
  }
 
+ const reply = await (cmd.isButton() ? undefined : cmd.deferReply({ ephemeral: true }));
+
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.rp;
 
- const guildsettings = await cmd.client.util.DataBase.$transaction([
-  cmd.client.util.DataBase.guildsettings.upsert({
-   where: { guildid: cmd.guildId },
-   update: {},
-   create: { guildid: cmd.guildId },
-  }),
-  cmd.client.util.DataBase.customclients.findUnique({
-   where: { guildid: cmd.guildId },
-   select: { appid: true },
-  }),
- ]).then(([g, c]) => ({ ...g, appid: c?.appid ?? null }));
+ const guildsettings: guildsettings & { appid: string | null } =
+  await cmd.client.util.DataBase.guildsettings
+   .upsert({
+    where: { guildid: cmd.guildId },
+    update: {},
+    create: { guildid: cmd.guildId },
+   })
+   .then((r) => ({ ...r, appid: null }));
+
+ const cc = await cmd.client.util.DataBase.customclients.findUnique({
+  where: { guildid: cmd.guildId },
+  select: { appid: true },
+ });
+
+ guildsettings.appid = cc?.appid || null;
 
  const payload = {
   embeds: [
@@ -46,7 +53,7 @@ export default async (
  if (isReplied) {
   if (!cmd.isMessageComponent()) return;
   await cmd.editReply(payload);
- } else cmd.client.util.replyCmd(cmd, payload);
+ } else (reply as Discord.InteractionResponse).edit(payload);
 };
 
 export const getComponents = (
