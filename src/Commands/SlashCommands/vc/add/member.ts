@@ -207,6 +207,7 @@ export const meIsPermittedDel = async (
  cmd.client.util.errorCmd(cmd, lan.meNoPerms, language);
  return false;
 };
+
 export const meIsPermittedEdit = async (
  cmd: ChatInputCommandInteraction<'cached'>,
  channel: StageChannel | VoiceChannel,

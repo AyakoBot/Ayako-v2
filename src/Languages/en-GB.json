@@ -1461,8 +1461,17 @@
    "helpEmbed": {
     "managers": "Voice-Channel Managers",
     "members": "Voice-Channel Members",
-    "help": "Welcome to your personal Voice-Channel\n\nYou have full access to Permission-Management here,\nmeaning you can manually add people to your Voice-Channel and change its Behavior as you wish.\nTo do so, simply open the Channel-Settings or use the Commands below\n\n-# - Add Members with </vc add member:{{cmdId}}>\n-# - Remove Members with </vc remove member:{{cmdId}}>\n-# - Add Managers with </vc add manager:{{cmdId}}>\n-# - Remove Managers with </vc remove manager:{{cmdId}}>\n-# - Remove all Members with </vc remove all-members:{{cmdId}}>\n-# - Remove all Managers with </vc remove all-managers:{{cmdId}}>\n-# - Remove everyone but the Voice-Channel Owner with </vc remove all:{{cmdId}}>",
+    "help": "Welcome to your personal Voice-Channel\n\nYou have full access to Permission-Management here,\nmeaning you can manually add people to your Voice-Channel and change its Behavior as you wish.\nTo do so, simply open the Channel-Settings or use the Commands below\n\n-# - Add Members with </vc add member:{{cmdId}}>\n-# - Remove Members with </vc remove member:{{cmdId}}>\n-# - Add Managers with </vc add manager:{{cmdId}}>\n-# - Remove Managers with </vc remove manager:{{cmdId}}>\n-# - Remove all Members with </vc remove all-members:{{cmdId}}>\n-# - Remove all Managers with </vc remove all-managers:{{cmdId}}>\n-# - Remove everyone but the Voice-Channel Owner with </vc remove all:{{cmdId}}>\n\nYou can also edit the Voice-Channel with the `/vc edit` Command",
     "owner": "Voice-Channel Owner"
+   },
+   "edit": {
+    "name": "Name successfully updated",
+    "bitrate": "Bitrate successfully updated",
+    "userLimit": "User-Limit successfully updated",
+    "slowmode": "Slowmode successfully updated",
+    "nsfw": "NSFW-Mode successfully updated",
+    "video": "Video-Quality-Mode successfully updated",
+    "region": "Region successfully updated"
    }
   },
   "setLevel": {
