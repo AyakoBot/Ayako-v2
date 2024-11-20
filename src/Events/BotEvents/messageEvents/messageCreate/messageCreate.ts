@@ -57,7 +57,7 @@ const filterFastMessages = (msg: Discord.Message) => {
 
  msg.client.util.cache.fastMsgCache.set(msg.author.id, {
   msgs: [msg],
-  job: scheduleJob(getPathFromError(new Error(msg.author.id)), '*/10 * * * * *', () => {
+  job: scheduleJob(getPathFromError(new Error(msg.author.id)), '*/5 * * * * *', () => {
    const cache = msg.client.util.cache.fastMsgCache.get(msg.author.id);
    const message = cache?.msgs.shift();
 

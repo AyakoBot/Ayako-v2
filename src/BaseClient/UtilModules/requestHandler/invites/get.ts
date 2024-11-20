@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 // eslint-disable-next-line import/extensions
 import type { RawInviteData } from 'discord.js/typings/rawDataTypes.js';
 import * as Classes from '../../../Other/classes.js';
-import error from '../../error.js';
 import { getAPI } from '../channels/addReaction.js';
 
 /**
@@ -27,7 +26,4 @@ export default async <T extends Discord.Guild | null>(
    guild?.invites.cache.set(parsed.code, parsed);
    return parsed;
   })
-  .catch((e: Discord.DiscordAPIError) => {
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
-   return e;
-  });
+  .catch((e: Discord.DiscordAPIError) => e);

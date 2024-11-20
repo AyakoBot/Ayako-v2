@@ -11,10 +11,10 @@ export default async (msg: Discord.Message<true>) => {
   where: {
    guildid: msg.guildId ?? msg.guild.id,
    active: true,
-   NOT: [
-    { wlchannelid: { has: msg.channelId } },
-    ...(msg.member ? [{ wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) } }] : []),
-   ],
+   NOT: {
+    wlchannelid: { has: msg.channelId },
+    wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] },
+   },
   },
  });
  if (!settings) return;
@@ -112,12 +112,13 @@ export default async (msg: Discord.Message<true>) => {
 const checkForInvite = async (content: string, guild: Discord.Guild): Promise<boolean> => {
  const pureMatches = content.match(guild.client.util.regexes.inviteTester);
  if (pureMatches?.length) {
-  const anyIsNotFromGuild = pureMatches.filter(
-   (m) =>
-    !guild.invites.cache.has(new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1)),
-  );
-  if (anyIsNotFromGuild.length) return true;
+  const anyIsExternal = (
+   await Promise.all(pureMatches.map((i) => isExternalInviteSource(i, guild)))
+  ).some((i) => !!i);
+
+  if (anyIsExternal) return true;
  }
+
  if (
   !content.match(guild.client.util.regexes.urlTester(guild.client.util.cache.urlTLDs.toArray()))
  ) {
@@ -134,20 +135,29 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
  const results = await Promise.all(
   argsContainingLink.map((arg) => guild.client.util.fetchWithRedirects(arg)),
  );
+
  const fetchedMatches = results
   .flat()
   .map((url) => url.match(guild.client.util.regexes.inviteTester))
   .flat()
   .filter((i): i is string => !!i);
- if (fetchedMatches?.length) {
-  const anyIsNotFromGuild = fetchedMatches.filter(
-   (m) =>
-    !guild.invites.cache.has(
-     new URL(m.startsWith('http') ? m : `http://${m}`).pathname.slice(1).replace('invite/', ''),
-    ),
-  );
-  if (anyIsNotFromGuild.length) return true;
- }
 
- return false;
+ if (!fetchedMatches?.length) return false;
+
+ return (await Promise.all(fetchedMatches.map((i) => isExternalInviteSource(i, guild)))).some(
+  (i) => !!i,
+ );
+};
+
+const isExternalInviteSource = async (invite: string, guild: Discord.Guild) => {
+ const inviteUrl = new URL(invite.startsWith('http') ? invite : `http://${invite}`);
+ const code = inviteUrl.pathname.slice(1).replace('invite/', '');
+
+ if (guild.invites.cache.has(code)) return false;
+
+ const inviteData = await guild.client.util.request.invites.get(guild, code);
+ if ('message' in inviteData) return false;
+ if (inviteData.type !== Discord.InviteType.Guild) return false;
+
+ return true;
 };
