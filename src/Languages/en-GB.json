@@ -766,7 +766,7 @@
     "description": "If you want to keep your multiplier streak up, ([click and vote](https://top.gg/bot/650691698409734151/vote))\nYour multiplyer is currently {{votegain}}x"
    },
    "nitro": {
-    "stackRoles": "> {{user}}> has been given\n> {{roles}}> for boosting longer than {{days}} days",
+    "stackRoles": "> {{user}}> has been given\n{{roles}}> for boosting longer than {{days}} days",
     "replaceRoles": "> The Booster-Roles of\n> {{user}}> have been replaced with\n{{roles}}> for boosting longer than {{days}} days",
     "started": "> {{user}}> has started boosting the Server",
     "stopped": "> {{user}}> has stopped boosting the Server"
