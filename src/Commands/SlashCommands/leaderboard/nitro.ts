@@ -21,8 +21,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const daysPerUser = getDaysPerUsers(nitroUsers)
   .sort((a, b) => b.days - a.days)
   .splice(0, 29);
- const self = daysPerUser.find((d) => d.userId === user.id);
- const position = self ? daysPerUser.findIndex((s) => s.userId === user.id) + 1 : 0;
+
+ const self = await client.util.DataBase.nitrousers.findMany({
+  where: { userid: user.id, guildid: cmd.guildId },
+ });
+
+ const position = self ? daysPerUser.findIndex((s) => s.userId === user.id) + 1 : '-';
  const users = await Promise.all(daysPerUser.map((d) => client.util.getUser(d.userId)));
 
  const { longestDays, longestUsername } = getLongest({ lan, language }, daysPerUser, users);
@@ -30,7 +34,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const embed = await getEmbed(
   { lan, language },
   position,
-  { days: Number(self?.days), longestDays, daysPerUser },
+  { days: Number(getDaysPerUsers(self)[0].days), longestDays, daysPerUser },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
   user,
   cmd.guild,
@@ -97,7 +101,7 @@ const getLongest = (
 };
 
 export const makeLine = (
- pos: number,
+ pos: number | string,
  { days, longestDays }: { days: number; longestDays: number },
  { displayName, longestUsername }: { displayName: string; longestUsername: number },
 ) => {
@@ -106,7 +110,7 @@ export const makeLine = (
   .replace(/\s+/g, ' ');
 
  return `${client.util.spaces(
-  `${client.util.splitByThousand(pos + 1)}.`,
+  `${typeof pos === 'number' ? client.util.splitByThousand(pos + 1) : pos}.`,
   7,
  )} | ${client.util.spaces(String(days), longestDays)} | ${client.util.spaces(
   name.length > 3 ? name : '-',
@@ -116,7 +120,7 @@ export const makeLine = (
 
 const getEmbed = async (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
- position: number,
+ position: number | string,
  {
   days,
   longestDays,
@@ -135,7 +139,7 @@ const getEmbed = async (
    value: position
     ? `${client.util.util.makeInlineCode(
        makeLine(
-        position - 1,
+        typeof position === 'number' ? position - 1 : position,
         { days, longestDays },
         { displayName: user.displayName, longestUsername },
        ),
