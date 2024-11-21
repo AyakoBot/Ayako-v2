@@ -12,8 +12,10 @@ export default async (msg: Discord.Message<true>) => {
    guildid: msg.guildId ?? msg.guild.id,
    active: true,
    NOT: {
-    wlchannelid: { has: msg.channelId },
-    wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] },
+    OR: [
+     { wlchannelid: { has: msg.channelId } },
+     { wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] } },
+    ],
    },
   },
  });
