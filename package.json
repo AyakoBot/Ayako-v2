@@ -1,6 +1,6 @@
 {
    "name": "@ayako/bot",
-   "version": "2.5.0",
+   "version": "2.4.4",
    "private": true,
    "type": "module",
    "scripts": {
