@@ -241,7 +241,7 @@ export type RequiredOnly<T> = Pick<T, RequiredKeys<T>>;
 
 export const ModType2StoredPunishmentTypes: Record<ModTypes, StoredPunishmentTypes> = {
  [ModTypes.VcDeafenAdd]: StoredPunishmentTypes.vcdeaf,
- [ModTypes.VcTempDeafenAdd]: StoredPunishmentTypes.vcdeaf,
+ [ModTypes.VcTempDeafenAdd]: StoredPunishmentTypes.vctempdeaf,
  [ModTypes.VcDeafenRemove]: StoredPunishmentTypes.vcdeaf,
  [ModTypes.TempMuteAdd]: StoredPunishmentTypes.tempmute,
  [ModTypes.MuteRemove]: StoredPunishmentTypes.tempmute,
@@ -255,7 +255,7 @@ export const ModType2StoredPunishmentTypes: Record<ModTypes, StoredPunishmentTyp
  [ModTypes.KickAdd]: StoredPunishmentTypes.kick,
  [ModTypes.WarnAdd]: StoredPunishmentTypes.warn,
  [ModTypes.VcMuteAdd]: StoredPunishmentTypes.vcmute,
- [ModTypes.VcTempMuteAdd]: StoredPunishmentTypes.vcmute,
+ [ModTypes.VcTempMuteAdd]: StoredPunishmentTypes.vctempmute,
  [ModTypes.VcMuteRemove]: StoredPunishmentTypes.vcmute,
  [ModTypes.StrikeAdd]: StoredPunishmentTypes.warn,
  [ModTypes.UnAfk]: StoredPunishmentTypes.warn,

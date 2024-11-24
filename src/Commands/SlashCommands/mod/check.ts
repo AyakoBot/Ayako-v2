@@ -1,7 +1,21 @@
-import type { punishments } from '@prisma/client';
+import { StoredPunishmentTypes, type punishments } from '@prisma/client';
 import * as Discord from 'discord.js';
+import type { languages } from '../../../BaseClient/Other/language.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';
+
+export const keys: Record<
+ keyof (typeof languages)['en-GB']['slashCommands']['check']['punishmentTypes'],
+ StoredPunishmentTypes[]
+> = {
+ warn: [StoredPunishmentTypes.warn],
+ ban: [StoredPunishmentTypes.ban, StoredPunishmentTypes.tempban],
+ mute: [StoredPunishmentTypes.mute, StoredPunishmentTypes.tempmute],
+ channelban: [StoredPunishmentTypes.channelban, StoredPunishmentTypes.tempchannelban],
+ kick: [StoredPunishmentTypes.kick],
+ voiceD: [StoredPunishmentTypes.vcdeaf, StoredPunishmentTypes.vctempdeaf],
+ voiceM: [StoredPunishmentTypes.vcmute, StoredPunishmentTypes.vctempmute],
+};
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -21,12 +35,7 @@ export const getPayload = async (
   member?: Discord.GuildMember;
  },
  selected: {
-  type?:
-   | CT.PunishmentType.Warn
-   | CT.PunishmentType.Ban
-   | CT.PunishmentType.Mute
-   | CT.PunishmentType.Channelban
-   | CT.PunishmentType.Kick;
+  type?: keyof typeof keys;
   page: number;
   values: number[];
  } = { page: 1, values: [] },
@@ -58,7 +67,7 @@ export const getPayload = async (
  };
 
  const punishmentsOfType = allPunishments?.filter((p) =>
-  [selected.type, `temp${selected.type}`].includes(p.type),
+  (selected.type ? keys[selected.type] : []).includes(p.type),
  );
 
  if (selected.page < 1) selected.page = 1;
@@ -68,20 +77,31 @@ export const getPayload = async (
 
  const punishmentsOfPage = punishmentsOfType?.slice(25 * selected.page - 25, 25 * selected.page);
 
+ const componentChunks: Discord.APIButtonComponentWithCustomId[][] = client.util.getChunks(
+  Object.entries(lan.punishmentTypes).map(([key, value]) => ({
+   label: value,
+   custom_id: `mod/check/type_${key}_${baseInfo.user.id}`,
+   type: Discord.ComponentType.Button,
+   style: selected.type === key ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
+   disabled: !allPunishments?.filter((p) => keys[key as keyof typeof keys].includes(p.type)).length,
+  })),
+  5,
+ );
+
  return {
   embeds: [
    {
     color: client.util.getColor(await client.util.getBotMemberFromGuild(baseInfo.guild)),
-    author: {
-     name: lan.name,
-    },
+    author: { name: lan.name },
     description: lan.desc(
      baseInfo.user,
      {
-      w: allPunishments?.filter((p) => p.type === CT.PunishmentType.Warn).length ?? 0,
-      m: allPunishments?.filter((p) => p.type === CT.PunishmentType.Mute).length ?? 0,
-      cb: allPunishments?.filter((p) => p.type === CT.PunishmentType.Channelban).length ?? 0,
-      b: allPunishments?.filter((p) => p.type === CT.PunishmentType.Ban).length ?? 0,
+      w: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.warn).length ?? 0,
+      m: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.mute).length ?? 0,
+      cb: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.channelban).length ?? 0,
+      b: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.ban).length ?? 0,
+      vcD: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.vcdeaf).length ?? 0,
+      vcM: allPunishments?.filter((p) => p.type === StoredPunishmentTypes.vcmute).length ?? 0,
       r: allPunishments?.filter((p) => p.type.includes('temp')).length ?? 0,
      },
      punishedOpts,
@@ -171,16 +191,13 @@ export const getPayload = async (
     ),
   ],
   components: [
-   {
-    type: Discord.ComponentType.ActionRow,
-    components: Object.entries(lan.punishmentTypes).map(([key, value]) => ({
-     label: value,
-     custom_id: `mod/check/type_${key}_${baseInfo.user.id}`,
-     type: Discord.ComponentType.Button,
-     style: selected.type === key ? Discord.ButtonStyle.Primary : Discord.ButtonStyle.Secondary,
-     disabled: !allPunishments?.filter((p) => [key, `temp${key}`].includes(p.type)).length,
-    })),
-   },
+   ...componentChunks.map(
+    (c) =>
+     ({
+      type: Discord.ComponentType.ActionRow,
+      components: c,
+     }) as Discord.APIActionRowComponent<Discord.APIButtonComponentWithCustomId>,
+   ),
    {
     type: Discord.ComponentType.ActionRow,
     components: [

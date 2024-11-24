@@ -2,8 +2,6 @@ import Prisma, { StoredPunishmentTypes, type punishments } from '@prisma/client'
 import { StoredBaseAndTempType, StoredTempTypes } from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
 
-type Picked = 'userid' | 'uniquetimestamp' | 'executorid' | 'guildid';
-
 function f(id: number): Promise<punishments | null>;
 function f(id: string): Promise<punishments | null>;
 function f(
@@ -29,7 +27,7 @@ function f(
  options: {
   includeTemp?: boolean;
   identType: 'with-type';
-  ident: Parameters<typeof getWithType>[1];
+  ident: StoredPunishmentTypes;
   guildid: string;
  },
 ): Promise<punishments[] | null>;
@@ -69,57 +67,47 @@ async function f(
  let asArray = true;
 
  if (options?.identType === 'with-type') {
-  return getWithType(
-   id as string,
-   options.ident as Parameters<typeof getWithType>[1],
-   options.includeTemp ?? false,
-   options.guildid as string,
-  ) as ReturnType<typeof f>;
+  return DataBase.punishments.findMany({
+   where: {
+    userid: id as string,
+    guildid: options.guildid,
+    type: options.includeTemp
+     ? { in: StoredBaseAndTempType[options.ident as StoredPunishmentTypes] }
+     : (options.ident as StoredPunishmentTypes),
+   },
+  });
  }
 
- const where: {
-  where: Pick<Prisma.Prisma.punishmentsWhereInput, Picked>;
- } = (() => {
+ const where: Pick<
+  Prisma.Prisma.punishmentsWhereInput,
+  'userid' | 'uniquetimestamp' | 'executorid' | 'guildid'
+ > = (() => {
   switch (options?.identType) {
    case 'all-on':
-    return { where: { userid: String(id), guildid: String(options.guildid) } };
+    return { userid: String(id), guildid: String(options.guildid) };
    case 'by':
     return {
-     where: {
-      userid: String(id),
-      executorid: String(options.ident),
-      guildid: String(options.guildid),
-     },
+     userid: String(id),
+     executorid: String(options.ident),
+     guildid: String(options.guildid),
     };
    case 'all-by':
-    return { where: { executorid: String(id), guildid: String(options.guildid) } };
+    return { executorid: String(id), guildid: String(options.guildid) };
    case 'between':
     return {
-     where: {
-      uniquetimestamp: {
-       lt: String([id, options.ident].sort((a, b) => Number(b) - Number(a))[0]),
-       gt: String([id, options.ident].sort((a, b) => Number(a) - Number(b))[0]),
-      },
-      guildid: String(options.guildid),
+     uniquetimestamp: {
+      lt: String([id, options.ident].sort((a, b) => Number(b) - Number(a))[0]),
+      gt: String([id, options.ident].sort((a, b) => Number(a) - Number(b))[0]),
      },
+     guildid: String(options.guildid),
     };
    case 'before':
-    return {
-     where: {
-      uniquetimestamp: { lt: String(id) },
-      guildid: String(options.guildid),
-     },
-    };
+    return { uniquetimestamp: { lt: String(id) }, guildid: String(options.guildid) };
    case 'after':
-    return {
-     where: {
-      uniquetimestamp: { gt: String(id) },
-      guildid: String(options.guildid),
-     },
-    };
+    return { uniquetimestamp: { gt: String(id) }, guildid: String(options.guildid) };
    default: {
     asArray = false;
-    return { where: { uniquetimestamp: String(id) } };
+    return { uniquetimestamp: String(id) };
    }
   }
  })();
@@ -132,21 +120,3 @@ async function f(
 }
 
 export default f;
-
-/**
- * Returns an array of punishment records of a specific type for a given user ID.
- * @param id - The user ID to search for.
- * @param type - The type of punishment to search for.
- * Must be one of 'warn', 'mute', 'ban', 'channelban', or 'kick'.
- * @returns An array of punishment records of the specified type for the given user ID.
- * @throws An error if an unknown type is provided.
- */
-const getWithType = (
- id: string,
- type: StoredPunishmentTypes,
- includeTemp: boolean,
- guildid: string,
-) =>
- DataBase.punishments.findMany({
-  where: { userid: id, guildid, type: includeTemp ? { in: StoredBaseAndTempType[type] } : type },
- });

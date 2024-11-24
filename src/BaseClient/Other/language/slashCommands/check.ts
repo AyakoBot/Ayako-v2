@@ -6,7 +6,15 @@ export default (t: CT.Language) => ({
  name: t.stp(t.JSON.slashCommands.check.name, { t }),
  desc: (
   user: Discord.User,
-  { w, m, cb, b, r }: { w: number; m: number; cb: number; b: number; r: number },
+  {
+   w,
+   m,
+   cb,
+   b,
+   r,
+   vcD,
+   vcM,
+  }: { w: number; m: number; cb: number; b: number; r: number; vcD: number; vcM: number },
   {
    isBanned,
    isMuted,
@@ -25,6 +33,8 @@ export default (t: CT.Language) => ({
    cb: t.util.util.makeBold(String(cb)),
    b: t.util.util.makeBold(String(b)),
    r: t.util.util.makeBold(String(r)),
+   vcD: t.util.util.makeBold(String(vcD)),
+   vcM: t.util.util.makeBold(String(vcM)),
    isBanned: isBanned
     ? `${banEmote} ${t.JSON.slashCommands.check.status.banned}`
     : `${banEmote} ${t.JSON.slashCommands.check.status.notBanned}`,

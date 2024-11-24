@@ -1529,7 +1529,9 @@
     "ban": "Bans",
     "mute": "Mutes",
     "channelban": "Channel-Bans",
-    "kick": "Kicks"
+    "kick": "Kicks",
+    "voiceM": "Voice Mutes",
+    "voiceD": "Voice Deafens"
    },
    "placeholder": "Select up to 9 Punishments",
    "date": "Date of Punishment",
@@ -1542,7 +1544,7 @@
    "banChannel": "Ban Channel",
    "cantPardon": "This Punishment can't be pardoned until it ends.\nWait for it to end or end it manually using the respective Un-Punish-Command (Un-Mute/Un-Ban/Channel-Unban)",
    "name": "{{t.botName}} Moderation-Management",
-   "desc": "> Punishments of\n> {{user}}\n\n> They currently have\n> {{w}} Warns\n> {{m}} Mutes\n> {{cb}} Channel-Bans\n> {{b}} Bans\n> of which {{r}} are temporary and currently running\n\n> {{isBanned}}\n> {{isMuted}}\n> {{isChannelBanned}}",
+   "desc": "> Punishments of\n> {{user}}\n\n> They currently have\n> {{w}} Warns\n> {{m}} Mutes\n> {{cb}} Channel-Bans\n> {{b}} Bans\n> {{vcD}} VC Deafens\n> {{vcM}} VC Mutes\n> of which {{r}} are temporary and currently running\n\n> {{isBanned}}\n> {{isMuted}}\n> {{isChannelBanned}}",
    "status": {
     "banned": "They are **currently banned**",
     "notBanned": "They are **currently not banned**",
@@ -4042,7 +4044,7 @@
     "meNoPerms": "I can't Voice-Mute this User",
     "youNoPerms": "You can't Voice-Mute this User",
     "error": "I failed to Voice-Mute this User",
-    "alreadyApplied": "> {{target}}> is already Voice-Muted",
+    "alreadyApplied": "> {{target}}> is already Voice-Muted or not in a Voice-Channel",
     "success": "> {{target}}> was Voice-Muted",
     "loading": "Voice-Muting User...",
     "self": "You can't Voice-Mute yourself",
@@ -4053,7 +4055,7 @@
     "meNoPerms": "I can't Temp-Voice-Mute this User",
     "youNoPerms": "You can't Temp-Voice-Mute this User",
     "error": "I failed to Temp-Voice-Mute this User",
-    "alreadyApplied": "> {{target}}> is already Temp-Voice-Muted",
+    "alreadyApplied": "> {{target}}> is already Temp-Voice-Muted or not in a Voice-Channel",
     "success": "> {{target}}> was Temp-Voice-Muted",
     "loading": "Temp-Voice-Muting User...",
     "self": "You can't Temp-Voice-Mute yourself",
@@ -4064,44 +4066,46 @@
     "meNoPerms": "I can't Voice-Un-Mute this User",
     "youNoPerms": "You can't Voice-Un-Mute this User",
     "error": "I failed to Voice-Un-Mute this User",
-    "alreadyApplied": "> {{target}}> is already Voice-Un-Muted",
+    "alreadyApplied": "> {{target}}> is already Voice-Un-Muted or not in a Voice-Channel",
     "success": "> {{target}}> was Voice-Un-Muted",
     "loading": "Voice-Un-Muting User...",
     "self": "You can't Voice-Un-Mute yourself",
-    "me": "I won't Voice-Un-Mute myself"
+    "me": "I won't Voice-Un-Mute myself",
+    "reason": "VC-Mute ended"
    },
    "vcDeafenAdd": {
     "dm": "You have been Voice-Deafened",
     "meNoPerms": "I can't Voice-Deafen this User",
     "youNoPerms": "You can't Voice-Deafen this User",
     "error": "I failed to Voice-Deafen this User",
-    "alreadyApplied": "> {{target}}> is already Voice-Deafened",
+    "alreadyApplied": "> {{target}}> is already Voice-Deafened or not in a Voice-Channel",
     "success": "> {{target}}> was Voice-Deafened",
     "loading": "Voice-Deafening User...",
     "self": "You can't Voice-Deafen yourself",
     "me": "I won't Voice-Deafen myself"
    },
    "vcTempDeafenAdd": {
-    "dm": "You have been Voice-Temp-Deafened",
-    "meNoPerms": "I can't Voice-Temp-Deafen this User",
-    "youNoPerms": "You can't Voice-Temp-Deafen this User",
-    "error": "I failed to Voice-Temp-Deafen this User",
-    "alreadyApplied": "> {{target}}> is already Voice-Temp-Deafened",
-    "success": "> {{target}}> was Voice-Temp-Deafened",
-    "loading": "Voice-Temp-Deafening User...",
-    "self": "You can't Voice-Temp-Deafen yourself",
-    "me": "I won't Voice-Temp-Deafen myself"
+    "dm": "You have been Temp-Voice-Deafened",
+    "meNoPerms": "I can't Temp-Voice-Deafen this User",
+    "youNoPerms": "You can't Temp-Voice-Deafen this User",
+    "error": "I failed to Temp-Voice-Deafen this User",
+    "alreadyApplied": "> {{target}}> is already Temp-Voice-Deafened or not in a Voice-Channel",
+    "success": "> {{target}}> was Temp-Voice-Deafened",
+    "loading": "Temp-Voice-Deafening User...",
+    "self": "You can't Temp-Voice-Deafen yourself",
+    "me": "I won't Temp-Voice-Deafen myself"
    },
    "vcDeafenRemove": {
     "dm": "You have been Voice-Un-Deafened",
     "meNoPerms": "I can't Voice-Un-Deafen this User",
     "youNoPerms": "You can't Voice-Un-Deafen this User",
     "error": "I failed to Voice-Un-Deafen this User",
-    "alreadyApplied": "> {{target}}> is already Voice-Un-Deafened",
+    "alreadyApplied": "> {{target}}> is already Voice-Un-Deafened or not in a Voice-Channel",
     "success": "> {{target}}> was Voice-Un-Deafened",
     "loading": "Voice-Un-Deafening User...",
     "self": "You can't Voice-Un-Deafen yourself",
-    "me": "I won't Voice-Un-Deafen myself"
+    "me": "I won't Voice-Un-Deafen myself",
+    "reason": "VC-Deaf ended"
    }
   }
  },

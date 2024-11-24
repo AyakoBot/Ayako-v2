@@ -42,6 +42,10 @@ export default async <T extends CT.ModTypes>(
   case CT.ModTypes.ChannelBanAdd:
   case CT.ModTypes.TempChannelBanAdd:
   case CT.ModTypes.TempMuteAdd:
+  case CT.ModTypes.VcMuteAdd:
+  case CT.ModTypes.VcDeafenAdd:
+  case CT.ModTypes.VcTempMuteAdd:
+  case CT.ModTypes.VcTempDeafenAdd:
   case CT.ModTypes.WarnAdd:
    return DataBase.punishments.create({ data: baseData });
   case CT.ModTypes.MuteRemove:
@@ -70,6 +74,24 @@ export default async <T extends CT.ModTypes>(
      type: StoredPunishmentTypes.tempban,
     },
     data: { type: StoredPunishmentTypes.ban },
+   });
+  case CT.ModTypes.VcDeafenRemove:
+   return DataBase.punishments.updateMany({
+    where: {
+     userid: baseData.userid,
+     guildid: baseData.guildid,
+     type: StoredPunishmentTypes.vctempdeaf,
+    },
+    data: { type: StoredPunishmentTypes.vcdeaf },
+   });
+  case CT.ModTypes.VcMuteRemove:
+   return DataBase.punishments.updateMany({
+    where: {
+     userid: baseData.userid,
+     guildid: baseData.guildid,
+     type: StoredPunishmentTypes.vctempmute,
+    },
+    data: { type: StoredPunishmentTypes.vcmute },
    });
   default: {
    throw new Error(`Unknown modType in DB fn ${type}`);
