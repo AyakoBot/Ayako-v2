@@ -2018,6 +2018,10 @@
      "unmute": "Unmute",
      "unban": "Unban",
      "clear": "Clear (Prune/Purge)",
+     "vc-mute": "VC-Mute",
+     "vc-unmute": "VC-Unmute",
+     "vc-deafen": "VC-Deafen",
+     "vc-undeafen": "VC-Undeafen",
      "pardon": "Pardon",
      "check": "Check",
      "edit": "Edit"
@@ -2890,6 +2894,10 @@
        "name": "Warns",
        "desc": "Whether Warns expire or not"
       },
+      "voice": {
+       "name": "Voice",
+       "desc": "Whether Voice-Punishments expire or not"
+      },
       "banstime": {
        "name": "Bans-Expire Time",
        "desc": "Time before Bans expire"
@@ -2909,6 +2917,10 @@
       "warnstime": {
        "name": "Warns-Expire Time",
        "desc": "Time before Warns expire"
+      },
+      "voicetime": {
+       "name": "Voice-Expire Time",
+       "desc": "Time before Voice-Punishments expire"
       }
      }
     },
@@ -3815,6 +3827,30 @@
    "softWarnAdd": {
     "author": "User Soft-Warned",
     "description": "> {{target}}> was Soft-Warned by\n> {{executor}}"
+   },
+   "vcMuteAdd": {
+    "author": "User Soft-Warned",
+    "description": "> {{target}}> was Soft-Warned by\n> {{executor}}"
+   },
+   "vcTempMuteAdd": {
+    "author": "User Voice-Temp-Muted",
+    "description": "> {{target}}> was Voice-Temp-Muted by\n> {{executor}}"
+   },
+   "vcMuteRemove": {
+    "author": "User Voice-Un-Muted",
+    "description": "> {{target}}> was Voice-Un-Muted by\n> {{executor}}"
+   },
+   "vcDeafenAdd": {
+    "author": "User Voice-Deafened",
+    "description": "> {{target}}> was Voice-Deafened by\n> {{executor}}"
+   },
+   "vcTempDeafenAdd": {
+    "author": "User Voice-Temp-Deafened",
+    "description": "> {{target}}> was Voice-Temp-Deafened by\n> {{executor}}"
+   },
+   "vcDeafenRemove": {
+    "author": "User Voice-Un-Deafened",
+    "description": "> {{target}}> was Voice-Un-Deafened by\n> {{executor}}"
    }
   },
   "execution": {
@@ -4000,6 +4036,72 @@
     "loading": "Soft-Warning User...",
     "self": "You can't Soft-Warn yourself",
     "me": "I won't Soft-Warn myself"
+   },
+   "vcMuteAdd": {
+    "dm": "You have been Voice-Muted",
+    "meNoPerms": "I can't Voice-Mute this User",
+    "youNoPerms": "You can't Voice-Mute this User",
+    "error": "I failed to Voice-Mute this User",
+    "alreadyApplied": "> {{target}}> is already Voice-Muted",
+    "success": "> {{target}}> was Voice-Muted",
+    "loading": "Voice-Muting User...",
+    "self": "You can't Voice-Mute yourself",
+    "me": "I won't Voice-Mute myself"
+   },
+   "vcTempMuteAdd": {
+    "dm": "You have been Temp-Voice-Muted",
+    "meNoPerms": "I can't Temp-Voice-Mute this User",
+    "youNoPerms": "You can't Temp-Voice-Mute this User",
+    "error": "I failed to Temp-Voice-Mute this User",
+    "alreadyApplied": "> {{target}}> is already Temp-Voice-Muted",
+    "success": "> {{target}}> was Temp-Voice-Muted",
+    "loading": "Temp-Voice-Muting User...",
+    "self": "You can't Temp-Voice-Mute yourself",
+    "me": "I won't Temp-Voice-Mute myself"
+   },
+   "vcMuteRemove": {
+    "dm": "You have been Voice-Un-Muted",
+    "meNoPerms": "I can't Voice-Un-Mute this User",
+    "youNoPerms": "You can't Voice-Un-Mute this User",
+    "error": "I failed to Voice-Un-Mute this User",
+    "alreadyApplied": "> {{target}}> is already Voice-Un-Muted",
+    "success": "> {{target}}> was Voice-Un-Muted",
+    "loading": "Voice-Un-Muting User...",
+    "self": "You can't Voice-Un-Mute yourself",
+    "me": "I won't Voice-Un-Mute myself"
+   },
+   "vcDeafenAdd": {
+    "dm": "You have been Voice-Deafened",
+    "meNoPerms": "I can't Voice-Deafen this User",
+    "youNoPerms": "You can't Voice-Deafen this User",
+    "error": "I failed to Voice-Deafen this User",
+    "alreadyApplied": "> {{target}}> is already Voice-Deafened",
+    "success": "> {{target}}> was Voice-Deafened",
+    "loading": "Voice-Deafening User...",
+    "self": "You can't Voice-Deafen yourself",
+    "me": "I won't Voice-Deafen myself"
+   },
+   "vcTempDeafenAdd": {
+    "dm": "You have been Voice-Temp-Deafened",
+    "meNoPerms": "I can't Voice-Temp-Deafen this User",
+    "youNoPerms": "You can't Voice-Temp-Deafen this User",
+    "error": "I failed to Voice-Temp-Deafen this User",
+    "alreadyApplied": "> {{target}}> is already Voice-Temp-Deafened",
+    "success": "> {{target}}> was Voice-Temp-Deafened",
+    "loading": "Voice-Temp-Deafening User...",
+    "self": "You can't Voice-Temp-Deafen yourself",
+    "me": "I won't Voice-Temp-Deafen myself"
+   },
+   "vcDeafenRemove": {
+    "dm": "You have been Voice-Un-Deafened",
+    "meNoPerms": "I can't Voice-Un-Deafen this User",
+    "youNoPerms": "You can't Voice-Un-Deafen this User",
+    "error": "I failed to Voice-Un-Deafen this User",
+    "alreadyApplied": "> {{target}}> is already Voice-Un-Deafened",
+    "success": "> {{target}}> was Voice-Un-Deafened",
+    "loading": "Voice-Un-Deafening User...",
+    "self": "You can't Voice-Un-Deafen yourself",
+    "me": "I won't Voice-Un-Deafen myself"
    }
   }
  },

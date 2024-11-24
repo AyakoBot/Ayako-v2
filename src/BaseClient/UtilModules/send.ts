@@ -204,6 +204,7 @@ const combineMessages = async (
   Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + timeout), () => {
    const queuedEmbeds =
     channel.client.util.channelQueue.get(channel.guildId)?.get(channel.id) || [];
+
    channel.client.util.send(channel, { embeds: queuedEmbeds });
 
    channel.client.util.channelQueue.get(channel.guildId)?.delete(channel.id);
@@ -212,6 +213,7 @@ const combineMessages = async (
    if (channel.client.util.channelQueue.get(channel.guildId)?.size === 0) {
     channel.client.util.channelQueue.delete(channel.guildId);
    }
+
    if (channel.client.util.channelTimeout.get(channel.guildId)?.size === 0) {
     channel.client.util.channelTimeout.delete(channel.guildId);
    }

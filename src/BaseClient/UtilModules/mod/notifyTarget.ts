@@ -4,6 +4,16 @@ import * as CT from '../../../Typings/Typings.js';
 import emotes from '../emotes.js';
 import send from '../send.js';
 
+const greenTypeActions = [
+ CT.ModTypes.RoleAdd,
+ CT.ModTypes.RoleRemove,
+ CT.ModTypes.BanRemove,
+ CT.ModTypes.MuteRemove,
+ CT.ModTypes.ChannelBanRemove,
+ CT.ModTypes.VcDeafenRemove,
+ CT.ModTypes.VcMuteRemove,
+];
+
 export default async <T extends CT.ModTypes>(
  options: CT.ModOptions<T>,
  language: CT.Language,
@@ -12,22 +22,10 @@ export default async <T extends CT.ModTypes>(
  const { dm } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
  const embed = {
-  color: ['roleAdd', 'roleRemove', 'banRemove', 'muteRemove', 'channelBanRemove'].includes(type)
-   ? CT.Colors.Success
-   : CT.Colors.Danger,
+  color: greenTypeActions.includes(type) ? CT.Colors.Success : CT.Colors.Danger,
   description: dm(options as never),
   fields: [...(options.reason ? [{ name: language.t.Reason, value: options.reason }] : [])],
-  thumbnail: [
-   CT.ModTypes.RoleAdd,
-   CT.ModTypes.RoleRemove,
-   CT.ModTypes.BanRemove,
-   CT.ModTypes.MuteRemove,
-   CT.ModTypes.ChannelBanRemove,
-  ].includes(type)
-   ? undefined
-   : {
-      url: emotes.warning.link,
-     },
+  thumbnail: greenTypeActions.includes(type) ? undefined : { url: emotes.warning.link },
  };
 
  const appeal: Discord.APIActionRowComponent<Discord.APIButtonComponent>[] = [
@@ -46,20 +44,12 @@ export default async <T extends CT.ModTypes>(
 
  if (
   !options.guild.rulesChannel ||
-  ['banAdd', 'tempBanAdd', 'softBanAdd', 'kickAdd', 'banRemove'].includes(type) ||
+  greenTypeActions.includes(type) ||
   !options.guild.members.cache.has(options.target.id)
  ) {
   send(options.target, {
    embeds: [embed],
-   components: [
-    CT.ModTypes.RoleAdd,
-    CT.ModTypes.RoleRemove,
-    CT.ModTypes.BanRemove,
-    CT.ModTypes.MuteRemove,
-    CT.ModTypes.ChannelBanRemove,
-   ].includes(type)
-    ? []
-    : appeal,
+   components: greenTypeActions.includes(type) ? [] : appeal,
   });
   return;
  }

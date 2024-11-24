@@ -1,12 +1,13 @@
 import * as Jobs from 'node-schedule';
+import { StoredPunishmentTypes } from '@prisma/client';
 import * as CT from '../../../../Typings/Typings.js';
 
 import DataBase from '../../../Bot/DataBase.js';
 
 import cache from '../../cache.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
-import type * as ModTypes from '../../mod.js';
 import getPathFromError from '../../getPathFromError.js';
+import type * as ModTypes from '../../mod.js';
 import { request } from '../../requestHandler.js';
 
 import { canEditMember } from '../../requestHandler/guilds/editMember.js';
@@ -27,8 +28,12 @@ export default async (
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
-  const punishments = await DataBase.punish_tempmutes.findMany({
-   where: { userid: options.target.id, guildid: options.guild.id },
+  const punishments = await DataBase.punishments.findMany({
+   where: {
+    userid: options.target.id,
+    guildid: options.guild.id,
+    type: StoredPunishmentTypes.tempmute,
+   },
   });
 
   const runningPunishment = punishments?.find(

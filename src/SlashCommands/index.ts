@@ -338,5 +338,9 @@ export default {
   'clear',
   'View Raw',
   'vc',
+  'vc-mute',
+  'vc-unmute',
+  'vc-deafen',
+  'vc-undeafen',
  ],
 } as const;

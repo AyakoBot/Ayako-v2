@@ -27,20 +27,13 @@ export default async <T extends CT.ModTypes>(
  const lan = language.mod.logs[type as keyof typeof language.mod.logs];
 
  const embed: Discord.APIEmbed = {
-  author: {
-   name: lan.author,
-  },
+  author: { name: lan.author },
   description: lan.description(target, executor, options as never),
   color: CT.ModColors[type],
   timestamp: new Date().toISOString(),
-  fields: [
-   options.reason
-    ? {
-       name: language.t.Reason,
-       value: options.reason,
-      }
-    : undefined,
-  ].filter((f): f is Discord.APIEmbedField => !!f),
+  fields: [options.reason ? { name: language.t.Reason, value: options.reason } : undefined].filter(
+   (f): f is Discord.APIEmbedField => !!f,
+  ),
  };
 
  send({ guildId: guild.id, id: logchannels }, { embeds: [embed] }, 10000);

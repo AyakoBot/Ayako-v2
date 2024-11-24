@@ -1,6 +1,6 @@
+import type { punishments } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import type { Returned } from '../../../../BaseClient/UtilModules/getPunishment.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -28,29 +28,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 export const pardon = (
- punishment: NonNullable<CT.DePromisify<ReturnType<typeof client.util.getPunishment>>>[number],
-) => {
- const where = { where: { uniquetimestamp: punishment.uniquetimestamp } };
-
- switch (punishment.type) {
-  case CT.PunishmentType.Ban:
-   return client.util.DataBase.punish_bans.deleteMany(where);
-  case CT.PunishmentType.Channelban:
-   return client.util.DataBase.punish_channelbans.deleteMany(where);
-  case CT.PunishmentType.Kick:
-   return client.util.DataBase.punish_kicks.deleteMany(where);
-  case CT.PunishmentType.Mute:
-   return client.util.DataBase.punish_mutes.deleteMany(where);
-  case CT.PunishmentType.Warn:
-   return client.util.DataBase.punish_warns.deleteMany(where);
-  default:
-   return undefined;
- }
-};
+ punishment: NonNullable<Awaited<ReturnType<typeof client.util.getPunishment>>>[number],
+) =>
+ client.util.DataBase.punishments.deleteMany({
+  where: { uniquetimestamp: punishment.uniquetimestamp, type: punishment.type },
+ });
 
 export const log = async (
  cmd: Discord.ChatInputCommandInteraction<'cached'>,
- punishment: Returned,
+ punishment: punishments,
  language: CT.Language,
  lan: CT.Language['slashCommands']['pardon'],
  reason: string,

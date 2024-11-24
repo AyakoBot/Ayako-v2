@@ -57,15 +57,10 @@ export const registerCmd = (commandName: CommandType, guild: Discord.Guild) => {
   .setDescription(cmdData.description)
   .setDefaultMemberPermissions(Discord.PermissionFlagsBits.ManageGuild)
   .setContexts([Discord.InteractionContextType.Guild])
-  .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall]);
-
- if (cmdData.name_localizations) submitCmd.setNameLocalizations(cmdData.name_localizations);
-
- if (cmdData.description_localizations) {
-  submitCmd.setDescriptionLocalizations(cmdData.description_localizations);
- }
-
- const submitCmdData = submitCmd.toJSON();
+  .setIntegrationTypes([Discord.ApplicationIntegrationType.GuildInstall])
+  .setNameLocalizations(cmdData.name_localizations || null)
+  .setDescriptionLocalizations(cmdData.description_localizations || null)
+  .toJSON();
 
  if (
   [
@@ -75,8 +70,8 @@ export const registerCmd = (commandName: CommandType, guild: Discord.Guild) => {
   'options' in cmdData &&
   cmdData.options
  ) {
-  submitCmdData.options = cmdData.options;
+  submitCmd.options = cmdData.options;
  }
 
- return submitCmdData;
+ return submitCmd;
 };

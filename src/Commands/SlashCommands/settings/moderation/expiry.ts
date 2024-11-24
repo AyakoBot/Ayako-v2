@@ -129,20 +129,27 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   type: Discord.ComponentType.ActionRow,
   components: [
    buttonParsers.boolean(language, settings?.bans, 'bans', name, undefined),
+   buttonParsers.specific(language, settings?.banstime, 'banstime', name, undefined),
    buttonParsers.boolean(language, settings?.channelbans, 'channelbans', name, undefined),
-   buttonParsers.boolean(language, settings?.kicks, 'kicks', name, undefined),
-   buttonParsers.boolean(language, settings?.mutes, 'mutes', name, undefined),
-   buttonParsers.boolean(language, settings?.warns, 'warns', name, undefined),
+   buttonParsers.specific(language, settings?.channelbanstime, 'channelbanstime', name, undefined),
   ],
  },
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings?.banstime, 'banstime', name, undefined),
-   buttonParsers.specific(language, settings?.channelbanstime, 'channelbanstime', name, undefined),
+   buttonParsers.boolean(language, settings?.kicks, 'kicks', name, undefined),
    buttonParsers.specific(language, settings?.kickstime, 'kickstime', name, undefined),
+   buttonParsers.boolean(language, settings?.mutes, 'mutes', name, undefined),
    buttonParsers.specific(language, settings?.mutestime, 'mutestime', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(language, settings?.warns, 'warns', name, undefined),
    buttonParsers.specific(language, settings?.warnstime, 'warnstime', name, undefined),
+   buttonParsers.boolean(language, settings?.warns, 'voice', name, undefined),
+   buttonParsers.specific(language, settings?.warnstime, 'voicetime', name, undefined),
   ],
  },
 ];

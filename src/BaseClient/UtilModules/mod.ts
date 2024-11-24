@@ -130,6 +130,33 @@ export default async <T extends CT.ModTypes>(
     return mod.banRemove(options, language, message, cmd);
    case CT.ModTypes.UnAfk:
     return mod.unAfk(options, language, message, cmd);
+   case CT.ModTypes.VcDeafenAdd:
+    return mod.vcDeafenAdd(options, language, message, cmd);
+   case CT.ModTypes.VcDeafenRemove:
+    return mod.vcDeafenRemove(
+     options as unknown as CT.ModOptions<CT.ModTypes.VcDeafenRemove>,
+     language,
+     message,
+     cmd,
+    );
+   case CT.ModTypes.VcMuteAdd:
+    return mod.vcMuteAdd(options, language, message, cmd);
+   case CT.ModTypes.VcMuteRemove:
+    return mod.vcMuteRemove(options, language, message, cmd);
+   case CT.ModTypes.VcTempDeafenAdd:
+    return mod.vcTempDeafenAdd(
+     options as unknown as CT.ModOptions<CT.ModTypes.VcTempDeafenAdd>,
+     language,
+     message,
+     cmd,
+    );
+   case CT.ModTypes.VcTempMuteAdd:
+    return mod.vcTempMuteAdd(
+     options as unknown as CT.ModOptions<CT.ModTypes.VcTempMuteAdd>,
+     language,
+     message,
+     cmd,
+    );
    default: {
     throw new Error(`Unknown modType ${type}`);
    }

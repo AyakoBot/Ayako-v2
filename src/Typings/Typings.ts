@@ -1,3 +1,4 @@
+import { StoredPunishmentTypes } from '@prisma/client';
 import * as Discord from 'discord.js';
 
 export type * from '../BaseClient/Cluster/Redis.js';
@@ -72,8 +73,6 @@ export type Appeal = {
  punishmentId: string;
 };
 
-export type DePromisify<T> = T extends Promise<infer U> ? U : T;
-
 export type NeverNull<T, K extends keyof T> = {
  [P in keyof T]: P extends K ? NonNullable<T[P]> : T[P];
 };
@@ -90,21 +89,9 @@ export type UsualMessagePayload = {
 };
 
 export type HelpCommand =
- | {
-    parentCommand: string;
-    subCommandGroup: string;
-    subCommand: string;
-   }
- | {
-    parentCommand: string;
-    subCommand: string;
-    subCommandGroup?: undefined;
-   }
- | {
-    parentCommand: string;
-    subCommandGroup?: undefined;
-    subCommand?: undefined;
-   };
+ | { parentCommand: string; subCommandGroup: string; subCommand: string }
+ | { parentCommand: string; subCommand: string; subCommandGroup?: undefined }
+ | { parentCommand: string; subCommandGroup?: undefined; subCommand?: undefined };
 
 export enum Colors {
  Danger = 0xff0000,
@@ -131,6 +118,12 @@ export enum ModTypes {
  SoftWarnAdd = 'softWarnAdd',
  StrikeAdd = 'strikeAdd',
  UnAfk = 'unAfk',
+ VcMuteAdd = 'vcMuteAdd',
+ VcTempMuteAdd = 'vcTempMuteAdd',
+ VcMuteRemove = 'vcMuteRemove',
+ VcDeafenAdd = 'vcDeafenAdd',
+ VcTempDeafenAdd = 'vcTempDeafenAdd',
+ VcDeafenRemove = 'vcDeafenRemove',
 }
 
 export const ModColors: Record<ModTypes, Colors> = {
@@ -150,6 +143,12 @@ export const ModColors: Record<ModTypes, Colors> = {
  [ModTypes.SoftWarnAdd]: Colors.Danger,
  [ModTypes.StrikeAdd]: Colors.Danger,
  [ModTypes.UnAfk]: Colors.Success,
+ [ModTypes.VcMuteAdd]: Colors.Danger,
+ [ModTypes.VcTempMuteAdd]: Colors.Danger,
+ [ModTypes.VcMuteRemove]: Colors.Success,
+ [ModTypes.VcDeafenAdd]: Colors.Danger,
+ [ModTypes.VcTempDeafenAdd]: Colors.Danger,
+ [ModTypes.VcDeafenRemove]: Colors.Success,
 };
 
 export type BaseOptions = {
@@ -193,6 +192,12 @@ type SpecificOpts = {
  [ModTypes.SoftWarnAdd]: Empty;
  [ModTypes.StrikeAdd]: Empty;
  [ModTypes.UnAfk]: Empty;
+ [ModTypes.VcMuteAdd]: Empty;
+ [ModTypes.VcTempMuteAdd]: Temp;
+ [ModTypes.VcMuteRemove]: Empty;
+ [ModTypes.VcDeafenAdd]: Empty;
+ [ModTypes.VcTempDeafenAdd]: Temp;
+ [ModTypes.VcDeafenRemove]: Empty;
 };
 
 type SpecificOptions = { [K in ModTypes]: SpecificOpts[K] };
@@ -209,6 +214,10 @@ export enum PunishmentType {
  Channelban = 'channelban',
  Tempchannelban = 'tempchannelban',
  Softban = 'softban',
+ VCMute = 'vcmute',
+ VCDeaf = 'vcdeaf',
+ VCTempMute = 'vctempmute',
+ VCTempDeaf = 'vctempdeaf',
 }
 
 export enum MessageType {
@@ -229,3 +238,72 @@ type RequiredKeys<T> = {
 }[keyof T];
 
 export type RequiredOnly<T> = Pick<T, RequiredKeys<T>>;
+
+export const ModType2StoredPunishmentTypes: Record<ModTypes, StoredPunishmentTypes> = {
+ [ModTypes.VcDeafenAdd]: StoredPunishmentTypes.vcdeaf,
+ [ModTypes.VcTempDeafenAdd]: StoredPunishmentTypes.vcdeaf,
+ [ModTypes.VcDeafenRemove]: StoredPunishmentTypes.vcdeaf,
+ [ModTypes.TempMuteAdd]: StoredPunishmentTypes.tempmute,
+ [ModTypes.MuteRemove]: StoredPunishmentTypes.tempmute,
+ [ModTypes.BanAdd]: StoredPunishmentTypes.ban,
+ [ModTypes.BanRemove]: StoredPunishmentTypes.ban,
+ [ModTypes.SoftBanAdd]: StoredPunishmentTypes.softban,
+ [ModTypes.TempBanAdd]: StoredPunishmentTypes.tempban,
+ [ModTypes.ChannelBanRemove]: StoredPunishmentTypes.channelban,
+ [ModTypes.ChannelBanAdd]: StoredPunishmentTypes.channelban,
+ [ModTypes.TempChannelBanAdd]: StoredPunishmentTypes.tempchannelban,
+ [ModTypes.KickAdd]: StoredPunishmentTypes.kick,
+ [ModTypes.WarnAdd]: StoredPunishmentTypes.warn,
+ [ModTypes.VcMuteAdd]: StoredPunishmentTypes.vcmute,
+ [ModTypes.VcTempMuteAdd]: StoredPunishmentTypes.vcmute,
+ [ModTypes.VcMuteRemove]: StoredPunishmentTypes.vcmute,
+ [ModTypes.StrikeAdd]: StoredPunishmentTypes.warn,
+ [ModTypes.UnAfk]: StoredPunishmentTypes.warn,
+ [ModTypes.SoftWarnAdd]: StoredPunishmentTypes.warn,
+ [ModTypes.RoleAdd]: StoredPunishmentTypes.warn,
+ [ModTypes.RoleRemove]: StoredPunishmentTypes.warn,
+};
+
+export const PunishmentType2StoredPunishmentTypes: Record<PunishmentType, StoredPunishmentTypes> = {
+ [PunishmentType.Kick]: StoredPunishmentTypes.kick,
+ [PunishmentType.Warn]: StoredPunishmentTypes.warn,
+ [PunishmentType.Mute]: StoredPunishmentTypes.mute,
+ [PunishmentType.Tempmute]: StoredPunishmentTypes.tempmute,
+ [PunishmentType.Ban]: StoredPunishmentTypes.ban,
+ [PunishmentType.Tempban]: StoredPunishmentTypes.tempban,
+ [PunishmentType.Channelban]: StoredPunishmentTypes.channelban,
+ [PunishmentType.Tempchannelban]: StoredPunishmentTypes.tempchannelban,
+ [PunishmentType.Softban]: StoredPunishmentTypes.softban,
+ [PunishmentType.VCMute]: StoredPunishmentTypes.vcmute,
+ [PunishmentType.VCDeaf]: StoredPunishmentTypes.vcdeaf,
+ [PunishmentType.VCTempMute]: StoredPunishmentTypes.vcmute,
+ [PunishmentType.VCTempDeaf]: StoredPunishmentTypes.vcdeaf,
+};
+
+export const StoredTempTypes = [
+ StoredPunishmentTypes.tempban,
+ StoredPunishmentTypes.tempchannelban,
+ StoredPunishmentTypes.tempmute,
+ StoredPunishmentTypes.vctempdeaf,
+ StoredPunishmentTypes.vctempmute,
+];
+
+export const StoredBaseAndTempType = {
+ [StoredPunishmentTypes.ban]: [StoredPunishmentTypes.ban, StoredPunishmentTypes.tempban],
+ [StoredPunishmentTypes.channelban]: [
+  StoredPunishmentTypes.channelban,
+  StoredPunishmentTypes.tempchannelban,
+ ],
+ [StoredPunishmentTypes.mute]: [StoredPunishmentTypes.mute, StoredPunishmentTypes.tempmute],
+ [StoredPunishmentTypes.vcdeaf]: [StoredPunishmentTypes.vcdeaf, StoredPunishmentTypes.vctempdeaf],
+ [StoredPunishmentTypes.vcmute]: [StoredPunishmentTypes.vcmute, StoredPunishmentTypes.vctempmute],
+
+ [StoredPunishmentTypes.kick]: [StoredPunishmentTypes.kick],
+ [StoredPunishmentTypes.warn]: [StoredPunishmentTypes.warn],
+ [StoredPunishmentTypes.tempmute]: [StoredPunishmentTypes.tempmute],
+ [StoredPunishmentTypes.tempban]: [StoredPunishmentTypes.tempban],
+ [StoredPunishmentTypes.tempchannelban]: [StoredPunishmentTypes.tempchannelban],
+ [StoredPunishmentTypes.softban]: [StoredPunishmentTypes.softban],
+ [StoredPunishmentTypes.vctempdeaf]: [StoredPunishmentTypes.vctempdeaf],
+ [StoredPunishmentTypes.vctempmute]: [StoredPunishmentTypes.vctempmute],
+};

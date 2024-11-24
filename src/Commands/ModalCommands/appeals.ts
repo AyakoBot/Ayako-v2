@@ -68,7 +68,12 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  });
  if (!punishment) return;
 
- if (accept) await deletePunishment(punishment);
+ if (accept) {
+  await client.util.DataBase.punishments.delete({
+   where: { uniquetimestamp: Number(punishment.uniquetimestamp), type: punishment.type },
+  });
+ }
+
  notifyUser(
   cmd,
   {
@@ -80,33 +85,8 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   },
   language,
  );
+
  pardon(punishment as Parameters<typeof pardon>[0]);
-};
-
-const deletePunishment = async (pun: NonNullable<Awaited<ReturnType<typeof getPunishment>>>) => {
- const where = { where: { uniquetimestamp: Number(pun.uniquetimestamp) } };
-
- switch (pun.type) {
-  case CT.PunishmentType.Softban:
-  case CT.PunishmentType.Ban:
-   return client.util.DataBase.punish_bans.delete(where);
-  case CT.PunishmentType.Channelban:
-   return client.util.DataBase.punish_channelbans.delete(where);
-  case CT.PunishmentType.Kick:
-   return client.util.DataBase.punish_kicks.delete(where);
-  case CT.PunishmentType.Mute:
-   return client.util.DataBase.punish_mutes.delete(where);
-  case CT.PunishmentType.Warn:
-   return client.util.DataBase.punish_warns.delete(where);
-  case CT.PunishmentType.Tempban:
-   return client.util.DataBase.punish_tempbans.delete(where);
-  case CT.PunishmentType.Tempchannelban:
-   return client.util.DataBase.punish_tempchannelbans.delete(where);
-  case CT.PunishmentType.Tempmute:
-   return client.util.DataBase.punish_tempmutes.delete(where);
-  default:
-   return undefined;
- }
 };
 
 const notifyUser = async (

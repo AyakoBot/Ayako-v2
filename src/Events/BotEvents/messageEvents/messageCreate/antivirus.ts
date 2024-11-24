@@ -78,7 +78,7 @@ const log = (
  channels: string[] | Discord.Message<false>['channel'],
  msg: Discord.Message,
  language: CT.Language,
- url: CT.DePromisify<ReturnType<typeof run>>,
+ url: Awaited<ReturnType<typeof run>>,
 ) => {
  const payload: CT.UsualMessagePayload = {
   embeds: [

@@ -120,46 +120,7 @@ export default async ({ data }: CT.Message<CT.MessageType.Appeal>) => {
  });
 };
 
-export const getPunishment = async ({ punishmentId }: CT.Appeal) => {
- const where = {
+export const getPunishment = async ({ punishmentId }: CT.Appeal) =>
+ client.util.DataBase.punishments.findUnique({
   where: { uniquetimestamp: Number(punishmentId) },
- };
-
- const results = await client.util.DataBase.$transaction([
-  client.util.DataBase.punish_bans.findUnique(where),
-  client.util.DataBase.punish_channelbans.findUnique(where),
-  client.util.DataBase.punish_kicks.findUnique(where),
-  client.util.DataBase.punish_mutes.findUnique(where),
-  client.util.DataBase.punish_warns.findUnique(where),
-  client.util.DataBase.punish_tempchannelbans.findUnique(where),
-  client.util.DataBase.punish_tempbans.findUnique(where),
-  client.util.DataBase.punish_tempmutes.findUnique(where),
- ]);
-
- return results
-  .map((r, i) => {
-   if (!r) return undefined;
-
-   switch (i) {
-    case 0:
-     return { ...r, type: CT.PunishmentType.Ban };
-    case 1:
-     return { ...r, type: CT.PunishmentType.Channelban };
-    case 2:
-     return { ...r, type: CT.PunishmentType.Kick };
-    case 3:
-     return { ...r, type: CT.PunishmentType.Mute };
-    case 4:
-     return { ...r, type: CT.PunishmentType.Warn };
-    case 5:
-     return { ...r, type: CT.PunishmentType.Tempchannelban };
-    case 6:
-     return { ...r, type: CT.PunishmentType.Tempban };
-    case 7:
-     return { ...r, type: CT.PunishmentType.Tempmute };
-    default:
-     return undefined;
-   }
-  })
-  .find((r) => !!r);
-};
+ });

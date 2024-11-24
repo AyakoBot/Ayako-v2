@@ -1,21 +1,11 @@
-import Prisma from '@prisma/client';
-import { PunishmentType } from '../../Typings/Typings.js';
+import Prisma, { StoredPunishmentTypes, type punishments } from '@prisma/client';
+import { StoredBaseAndTempType, StoredTempTypes } from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
 
 type Picked = 'userid' | 'uniquetimestamp' | 'executorid' | 'guildid';
 
-export type Returned = (
- | Prisma.punish_bans
- | Prisma.punish_channelbans
- | Prisma.punish_kicks
- | Prisma.punish_mutes
- | Prisma.punish_warns
-) & {
- type: PunishmentType;
-};
-
-function f(id: number): Promise<Returned | null>;
-function f(id: string): Promise<Returned | null>;
+function f(id: number): Promise<punishments | null>;
+function f(id: string): Promise<punishments | null>;
 function f(
  id: number,
  options: {
@@ -24,7 +14,7 @@ function f(
   ident: number;
   guildid: string;
  },
-): Promise<Returned[] | null>;
+): Promise<punishments[] | null>;
 function f(
  id: string,
  options: {
@@ -33,7 +23,7 @@ function f(
   ident: string;
   guildid: string;
  },
-): Promise<Returned[] | null>;
+): Promise<punishments[] | null>;
 function f(
  id: string,
  options: {
@@ -42,7 +32,7 @@ function f(
   ident: Parameters<typeof getWithType>[1];
   guildid: string;
  },
-): Promise<Returned[] | null>;
+): Promise<punishments[] | null>;
 function f(
  id: number,
  options: {
@@ -50,7 +40,7 @@ function f(
   identType: 'after' | 'before';
   guildid: string;
  },
-): Promise<Returned[] | null>;
+): Promise<punishments[] | null>;
 function f(
  id: string,
  options: {
@@ -58,7 +48,7 @@ function f(
   identType: 'all-by' | 'all-on';
   guildid: string;
  },
-): Promise<Returned[] | null>;
+): Promise<punishments[] | null>;
 /**
  * Retrieves punishment data from the database based on the given parameters.
  * @param id - The ID of the user to retrieve punishment data for.
@@ -75,7 +65,7 @@ async function f(
   ident?: string | number;
   guildid?: string;
  },
-): Promise<Returned | Returned[] | Returned[] | null> {
+): Promise<punishments | punishments[] | null> {
  let asArray = true;
 
  if (options?.identType === 'with-type') {
@@ -88,7 +78,7 @@ async function f(
  }
 
  const where: {
-  where: Pick<Prisma.Prisma.punish_warnsWhereInput, Picked>;
+  where: Pick<Prisma.Prisma.punishmentsWhereInput, Picked>;
  } = (() => {
   switch (options?.identType) {
    case 'all-on':
@@ -134,66 +124,11 @@ async function f(
   }
  })();
 
- return Promise.all([
-  DataBase.punish_bans
-   .findMany(where as never)
-   .then((r) =>
-    (r as Prisma.punish_bans[]).map((r2) => ({ ...r2, type: PunishmentType.Ban }) as const),
-   ),
-  DataBase.punish_channelbans
-   .findMany(where as never)
-   .then((r) =>
-    (r as Prisma.punish_channelbans[]).map(
-     (r2) => ({ ...r2, type: PunishmentType.Channelban }) as const,
-    ),
-   ),
-  DataBase.punish_kicks
-   .findMany(where as never)
-   .then((r) =>
-    (r as Prisma.punish_kicks[]).map((r2) => ({ ...r2, type: PunishmentType.Kick }) as const),
-   ),
-  DataBase.punish_mutes
-   .findMany(where as never)
-   .then((r) =>
-    (r as Prisma.punish_mutes[]).map((r2) => ({ ...r2, type: PunishmentType.Mute }) as const),
-   ),
-  DataBase.punish_warns
-   .findMany(where as never)
-   .then((r) =>
-    (r as Prisma.punish_warns[]).map((r2) => ({ ...r2, type: PunishmentType.Warn }) as const),
-   ),
-  ...(options?.includeTemp
-   ? [
-      DataBase.punish_tempchannelbans
-       .findMany(where as never)
-       .then((r) =>
-        (r as Prisma.punish_tempchannelbans[]).map(
-         (r2) => ({ ...r2, type: PunishmentType.Tempchannelban }) as const,
-        ),
-       ),
-      DataBase.punish_tempbans
-       .findMany(where as never)
-       .then((r) =>
-        (r as Prisma.punish_tempbans[]).map(
-         (r2) => ({ ...r2, type: PunishmentType.Tempban }) as const,
-        ),
-       ),
-      DataBase.punish_tempmutes
-       .findMany(where as never)
-       .then((r) =>
-        (r as Prisma.punish_tempmutes[]).map(
-         (r2) => ({ ...r2, type: PunishmentType.Tempmute }) as const,
-        ),
-       ),
-     ]
-   : []),
- ]).then((r) => {
-  const res = r.flat();
-  if (asArray) {
-   return res.filter((p) => !!p);
-  }
-  return res[0] || null;
+ const res = await DataBase.punishments.findMany({
+  where: { ...where, type: !options?.includeTemp ? undefined : { notIn: StoredTempTypes } },
  });
+
+ return asArray ? res : res[0];
 }
 
 export default f;
@@ -208,67 +143,10 @@ export default f;
  */
 const getWithType = (
  id: string,
- type:
-  | PunishmentType.Warn
-  | PunishmentType.Mute
-  | PunishmentType.Ban
-  | PunishmentType.Channelban
-  | PunishmentType.Kick,
+ type: StoredPunishmentTypes,
  includeTemp: boolean,
  guildid: string,
-) => {
- switch (type) {
-  case PunishmentType.Warn: {
-   return DataBase.punish_warns
-    .findMany({ where: { userid: id, guildid } })
-    .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Warn })));
-  }
-  case PunishmentType.Mute: {
-   const perm = DataBase.punish_mutes
-    .findMany({ where: { userid: id, guildid } })
-    .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Mute })));
-   return includeTemp
-    ? Promise.all([
-       perm,
-       DataBase.punish_tempmutes
-        .findMany({ where: { userid: id, guildid } })
-        .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Tempmute }))),
-      ]).then((r) => r.flat())
-    : perm;
-  }
-  case PunishmentType.Ban: {
-   const perm = DataBase.punish_bans
-    .findMany({ where: { userid: id, guildid } })
-    .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Ban })));
-   return includeTemp
-    ? Promise.all([
-       perm,
-       DataBase.punish_tempbans
-        .findMany({ where: { userid: id, guildid } })
-        .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Tempban }))),
-      ]).then((r) => r.flat())
-    : perm;
-  }
-  case PunishmentType.Channelban: {
-   const perm = DataBase.punish_channelbans
-    .findMany({ where: { userid: id, guildid } })
-    .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Channelban })));
-   return includeTemp
-    ? Promise.all([
-       perm,
-       DataBase.punish_tempchannelbans
-        .findMany({ where: { userid: id, guildid } })
-        .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Tempchannelban }))),
-      ]).then((r) => r.flat())
-    : perm;
-  }
-  case PunishmentType.Kick: {
-   return DataBase.punish_kicks
-    .findMany({ where: { userid: id, guildid } })
-    .then((r) => r.map((p) => ({ ...p, type: PunishmentType.Kick })));
-  }
-  default: {
-   throw new Error('Unkown type');
-  }
- }
-};
+) =>
+ DataBase.punishments.findMany({
+  where: { userid: id, guildid, type: includeTemp ? { in: StoredBaseAndTempType[type] } : type },
+ });

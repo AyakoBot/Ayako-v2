@@ -15,6 +15,12 @@ import tempChannelBanAdd from './execution/tempChannelBanAdd.js';
 import tempMuteAdd from './execution/tempMuteAdd.js';
 import unafk from './execution/unAfk.js';
 import warnAdd from './execution/warnAdd.js';
+import vcMuteAdd from './execution/vcMuteAdd.js';
+import vcTempMuteAdd from './execution/vcTempMuteAdd.js';
+import vcMuteRemove from './execution/vcMuteRemove.js';
+import vcDeafenAdd from './execution/vcDeafenAdd.js';
+import vcTempDeafenAdd from './execution/vcTempDeafenAdd.js';
+import vcDeafenRemove from './execution/vcDeafenRemove.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.mod.execution,
@@ -34,4 +40,10 @@ export default (t: CT.Language) => ({
  tempMuteAdd: tempMuteAdd(t),
  warnAdd: warnAdd(t),
  unAfk: unafk(t),
+ vcMuteAdd: vcMuteAdd(t),
+ vcTempMuteAdd: vcTempMuteAdd(t),
+ vcMuteRemove: vcMuteRemove(t),
+ vcDeafenAdd: vcDeafenAdd(t),
+ vcTempDeafenAdd: vcTempDeafenAdd(t),
+ vcDeafenRemove: vcDeafenRemove(t),
 });

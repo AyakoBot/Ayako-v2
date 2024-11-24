@@ -1,6 +1,6 @@
+import type { punishments } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import { type Returned } from '../../../BaseClient/UtilModules/getPunishment.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -103,7 +103,7 @@ export const getPayload = async (
    },
    ...selected.values
     .map((v) => punishmentsOfType?.find((p) => Number(p.uniquetimestamp) === v))
-    .filter((p): p is Returned => !!p)
+    .filter((p): p is punishments => !!p)
     .map(
      (p): Discord.APIEmbed => ({
       color: CT.Colors.Ephemeral,
@@ -152,11 +152,11 @@ export const getPayload = async (
            },
           ]
         : []),
-       ...('banchannelid' in p && p.banchannelid
+       ...('context' in p && p.context
         ? [
            {
             name: lan.banChannel,
-            value: `<#${p.banchannelid}> / ${client.util.util.makeInlineCode(p.banchannelid)}`,
+            value: `<#${p.context}> / ${client.util.util.makeInlineCode(p.context)}`,
             inline: true,
            },
           ]

@@ -32,7 +32,9 @@ import mutes, { type Mutes } from './cache/bot/mutes.js';
 import reminders, { type Reminders } from './cache/bot/reminders.js';
 import stickyTimeouts, { type StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import unblockedModUsers, { type UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
+import vcDeafens, { type VcDeafens } from './cache/bot/vcDeafens.js';
 import vcDeleteTimeout, { type VcDeleteTimeout } from './cache/bot/vcDeleteTimeout.js';
+import vcMutes, { type VcMutes } from './cache/bot/vcMutes.js';
 import votes, { type Votes } from './cache/bot/votes.js';
 
 import fishFish, { type FishFish } from './cache/urls/fishFish.js';
@@ -58,6 +60,8 @@ const cache: {
  // Cache
  giveawayClaimTimeout: GiveawayClaimTimeout;
  mutes: Mutes;
+ vcMutes: VcMutes;
+ vcDeafens: VcDeafens;
  bans: Bans;
  channelBans: ChannelBans;
  reminders: Reminders;
@@ -116,6 +120,8 @@ const cache: {
  // Cache
  giveawayClaimTimeout,
  mutes,
+ vcMutes,
+ vcDeafens,
  bans,
  channelBans,
  reminders,

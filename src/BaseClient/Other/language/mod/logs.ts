@@ -14,6 +14,12 @@ import tempBanAdd from './logs/tempBanAdd.js';
 import tempChannelBanAdd from './logs/tempChannelBanAdd.js';
 import tempMuteAdd from './logs/tempMuteAdd.js';
 import unAfk from './logs/unAfk.js';
+import vcDeafenAdd from './logs/vcDeafenAdd.js';
+import vcDeafenRemove from './logs/vcDeafenRemove.js';
+import vcMuteAdd from './logs/vcMuteAdd.js';
+import vcMuteRemove from './logs/vcMuteRemove.js';
+import vcTempDeafenAdd from './logs/vcTempDeafenAdd.js';
+import vcTempMuteAdd from './logs/vcTempMuteAdd.js';
 import warnAdd from './logs/warnAdd.js';
 
 export default (t: CT.Language) => ({
@@ -33,5 +39,11 @@ export default (t: CT.Language) => ({
  tempChannelBanAdd: tempChannelBanAdd(t),
  tempMuteAdd: tempMuteAdd(t),
  unAfk: unAfk(t),
+ vcMuteAdd: vcMuteAdd(t),
+ vcTempMuteAdd: vcTempMuteAdd(t),
+ vcMuteRemove: vcMuteRemove(t),
+ vcDeafenAdd: vcDeafenAdd(t),
+ vcTempDeafenAdd: vcTempDeafenAdd(t),
+ vcDeafenRemove: vcDeafenRemove(t),
  warnAdd: warnAdd(t),
 });

@@ -1,3 +1,4 @@
+import { StoredPunishmentTypes } from '@prisma/client';
 import * as Discord from 'discord.js';
 
 export default async (member: Discord.GuildMember) => {
@@ -6,8 +7,8 @@ export default async (member: Discord.GuildMember) => {
 };
 
 const mute = async (member: Discord.GuildMember) => {
- const allMutes = await member.client.util.DataBase.punish_tempmutes.findMany({
-  where: { guildid: member.guild.id, userid: member.id },
+ const allMutes = await member.client.util.DataBase.punishments.findMany({
+  where: { guildid: member.guild.id, userid: member.id, type: StoredPunishmentTypes.tempmute },
  });
 
  const activeMute = allMutes.find(
@@ -27,8 +28,8 @@ const mute = async (member: Discord.GuildMember) => {
 };
 
 const unmute = async (member: Discord.GuildMember) => {
- const allMutes = await member.client.util.DataBase.punish_tempmutes.findMany({
-  where: { guildid: member.guild.id, userid: member.id },
+ const allMutes = await member.client.util.DataBase.punishments.findMany({
+  where: { guildid: member.guild.id, userid: member.id, type: StoredPunishmentTypes.tempmute },
  });
 
  const activeMute = allMutes.find(
@@ -36,7 +37,5 @@ const unmute = async (member: Discord.GuildMember) => {
  );
  if (activeMute) return;
 
- member.client.util.request.guilds.editMember(member, {
-  communication_disabled_until: null,
- });
+ member.client.util.request.guilds.editMember(member, { communication_disabled_until: null });
 };

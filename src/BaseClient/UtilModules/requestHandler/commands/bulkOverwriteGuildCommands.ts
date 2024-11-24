@@ -57,6 +57,7 @@ export default async (
   })
   .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   setHasMissingScopes(e.message, guild);
    return e;
   });
 };
@@ -77,14 +78,13 @@ export const hasMissingScopes = (guild: Discord.Guild) =>
  * @param err - The error message.
  * @param guild - The Discord guild.
  */
-export const setHasMissingScopes = (err: string, guild: Discord.Guild) => {
+export const setHasMissingScopes = async (err: string, guild: Discord.Guild) => {
  if (!err.includes('Missing Access')) return;
 
+ const botId = await guild.client.util.getBotIdFromGuild(guild);
+ if (botId !== process.env.mainId) return;
+
  guild.client.util.DataBase.noCommandsGuilds
-  .upsert({
-   where: { guildId: guild.id },
-   create: { guildId: guild.id },
-   update: {},
-  })
+  .upsert({ where: { guildId: guild.id }, create: { guildId: guild.id }, update: {} })
   .then();
 };

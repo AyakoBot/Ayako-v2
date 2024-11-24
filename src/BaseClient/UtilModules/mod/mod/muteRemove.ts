@@ -1,3 +1,4 @@
+import { StoredPunishmentTypes } from '@prisma/client';
 import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../Bot/DataBase.js';
 
@@ -26,8 +27,12 @@ export default async (
  if (memberRes && !memberRes.canExecute) return false;
 
  if (!memberRes) {
-  const punishments = await DataBase.punish_tempmutes.findMany({
-   where: { userid: options.target.id, guildid: options.guild.id },
+  const punishments = await DataBase.punishments.findMany({
+   where: {
+    userid: options.target.id,
+    guildid: options.guild.id,
+    type: StoredPunishmentTypes.tempmute,
+   },
   });
 
   const runningPunishment = punishments?.find(

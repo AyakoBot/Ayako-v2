@@ -140,11 +140,13 @@ export default {
   kicks: CT.EditorTypes.Boolean,
   mutes: CT.EditorTypes.Boolean,
   warns: CT.EditorTypes.Boolean,
+  voice: CT.EditorTypes.Boolean,
   banstime: CT.EditorTypes.Duration,
   channelbanstime: CT.EditorTypes.Duration,
   kickstime: CT.EditorTypes.Duration,
   mutestime: CT.EditorTypes.Duration,
   warnstime: CT.EditorTypes.Duration,
+  vocietime: CT.EditorTypes.Duration,
  },
  [CT.SettingNames.Logs]: {
   applicationevents: CT.EditorTypes.Channels,

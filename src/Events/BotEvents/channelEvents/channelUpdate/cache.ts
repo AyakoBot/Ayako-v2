@@ -1,3 +1,4 @@
+import { StoredPunishmentTypes } from '@prisma/client';
 import * as Discord from 'discord.js';
 
 export default async (
@@ -30,10 +31,11 @@ export default async (
   .map((o) => o);
  if (!perms?.length) return;
 
- const res = await channel.client.util.DataBase.punish_tempchannelbans.findMany({
+ const res = await channel.client.util.DataBase.punishments.findMany({
   where: {
    guildid: channel.guild.id,
-   banchannelid: channel.id,
+   context: channel.id,
+   type: StoredPunishmentTypes.tempchannelban,
   },
  });
 
@@ -53,9 +55,11 @@ export default async (
    );
   })
   .forEach(async (data) => {
-   channel.client.util.DataBase.punish_tempchannelbans
-    .delete({ where: { uniquetimestamp: data.uniquetimestamp } })
+   channel.client.util.DataBase.punishments
+    .update({
+     where: { uniquetimestamp: data.uniquetimestamp },
+     data: { type: StoredPunishmentTypes.channelban },
+    })
     .then();
-   channel.client.util.DataBase.punish_channelbans.create({ data }).then();
   });
 };

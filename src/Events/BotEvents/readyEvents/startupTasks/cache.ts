@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma, { StoredPunishmentTypes } from '@prisma/client';
 import { BaseMessage } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
@@ -141,35 +141,46 @@ export const startupTasks = {
   });
  },
  punishments: async (gIds: string[]) => {
-  const where: Parameters<
-   | typeof client.util.DataBase.punish_tempmutes.findMany
-   | typeof client.util.DataBase.punish_tempbans.findMany
-   | typeof client.util.DataBase.punish_tempchannelbans.findMany
-  >[0] = { where: { guildid: { in: gIds } } };
   const tables = [
    {
     rows: () =>
-     client.util.DataBase.punish_tempmutes.findMany(
-      where as Parameters<typeof client.util.DataBase.punish_tempmutes.findMany>[0],
-     ),
+     client.util.DataBase.punishments.findMany({
+      where: { guildid: { in: gIds }, type: StoredPunishmentTypes.tempmute },
+     }),
     cache: client.util.cache.mutes,
     event: CT.ModTypes.MuteRemove,
    },
    {
     rows: () =>
-     client.util.DataBase.punish_tempbans.findMany(
-      where as Parameters<typeof client.util.DataBase.punish_tempbans.findMany>[0],
-     ),
+     client.util.DataBase.punishments.findMany({
+      where: { guildid: { in: gIds }, type: StoredPunishmentTypes.tempban },
+     }),
     cache: client.util.cache.bans,
     event: CT.ModTypes.BanRemove,
    },
    {
     rows: () =>
-     client.util.DataBase.punish_tempchannelbans.findMany(
-      where as Parameters<typeof client.util.DataBase.punish_tempchannelbans.findMany>[0],
-     ),
+     client.util.DataBase.punishments.findMany({
+      where: { guildid: { in: gIds }, type: StoredPunishmentTypes.tempchannelban },
+     }),
     cache: client.util.cache.channelBans,
     event: CT.ModTypes.ChannelBanRemove,
+   },
+   {
+    rows: () =>
+     client.util.DataBase.punishments.findMany({
+      where: { guildid: { in: gIds }, type: StoredPunishmentTypes.vctempmute },
+     }),
+    cache: client.util.cache.vcMutes,
+    event: CT.ModTypes.VcMuteRemove,
+   },
+   {
+    rows: () =>
+     client.util.DataBase.punishments.findMany({
+      where: { guildid: { in: gIds }, type: StoredPunishmentTypes.vctempdeaf },
+     }),
+    cache: client.util.cache.vcDeafens,
+    event: CT.ModTypes.VcDeafenRemove,
    },
   ] as const;
 
@@ -320,21 +331,31 @@ const tasks = {
  punishments: (
   table:
    | {
-      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempmutes[]>;
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punishments[]>;
       cache: typeof client.util.cache.mutes;
       event: CT.ModTypes.MuteRemove;
      }
    | {
-      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempbans[]>;
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punishments[]>;
       cache: typeof client.util.cache.bans;
       event: CT.ModTypes.BanRemove;
      }
    | {
-      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punish_tempchannelbans[]>;
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punishments[]>;
       cache: typeof client.util.cache.channelBans;
       event: CT.ModTypes.ChannelBanRemove;
+     }
+   | {
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punishments[]>;
+      cache: typeof client.util.cache.vcMutes;
+      event: CT.ModTypes.VcMuteRemove;
+     }
+   | {
+      rows: () => Prisma.Prisma.PrismaPromise<Prisma.punishments[]>;
+      cache: typeof client.util.cache.vcDeafens;
+      event: CT.ModTypes.VcDeafenRemove;
      },
-  m: Prisma.punish_tempchannelbans | Prisma.punish_tempbans | Prisma.punish_tempmutes,
+  m: Prisma.punishments,
   guild: Discord.Guild,
  ) => {
   const time = Number(m.uniquetimestamp) + Number(m.duration) * 1000;
@@ -369,13 +390,10 @@ const tasks = {
       guild,
       skipChecks: true,
       dbOnly: false,
-      channel: 'banchannelid' in m ? guild.channels.cache.get(m.banchannelid) : undefined,
+      channel: 'context' in m && m.context ? guild.channels.cache.get(m.context) : undefined,
      } as typeof options;
 
-     if (
-      !('banchannelid' in m) ||
-      guild.channels.cache.get((m as Prisma.punish_tempchannelbans).banchannelid)
-     ) {
+     if (!('context' in m) || !m.context || guild.channels.cache.get(m.context)) {
       client.util.mod(
        m.msgid && channel
         ? await client.util.request.channels
@@ -405,7 +423,7 @@ const tasks = {
     },
    ),
    guild.id,
-   'banchannelid' in m ? m.channelid : m.userid,
+   m.context ? m.channelid : m.userid,
    m.userid,
   );
  },

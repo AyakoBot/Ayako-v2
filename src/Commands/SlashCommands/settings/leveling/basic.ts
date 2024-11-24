@@ -125,7 +125,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     },
     {
      name: lan.fields.lvlupdeltimeout.name,
-     value: embedParsers.time(Number(settings.lvlupdeltimeout), language),
+     value: embedParsers.time(Number(settings.lvlupdeltimeout) * 1000, language),
      inline: true,
     },
    );

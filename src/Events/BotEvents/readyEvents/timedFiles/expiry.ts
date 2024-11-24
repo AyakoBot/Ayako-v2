@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client';
+import { Prisma, StoredPunishmentTypes, type punishments } from '@prisma/client';
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
@@ -24,99 +24,63 @@ export default async () => {
   if (settingsRow.warns && settingsRow.warnstime) {
    expire({ expire: settingsRow.warnstime, guildid: settingsRow.guildid }, CT.PunishmentType.Warn);
   }
+
   if (settingsRow.mutes && settingsRow.mutestime) {
    expire({ expire: settingsRow.mutestime, guildid: settingsRow.guildid }, CT.PunishmentType.Mute);
   }
+
   if (settingsRow.kicks && settingsRow.kickstime) {
    expire({ expire: settingsRow.kickstime, guildid: settingsRow.guildid }, CT.PunishmentType.Kick);
   }
+
   if (settingsRow.bans && settingsRow.banstime) {
    expire({ expire: settingsRow.banstime, guildid: settingsRow.guildid }, CT.PunishmentType.Ban);
   }
+
   if (settingsRow.channelbans && settingsRow.channelbanstime) {
    expire(
     { expire: settingsRow.channelbanstime, guildid: settingsRow.guildid },
     CT.PunishmentType.Channelban,
    );
   }
+
+  if (settingsRow.voice && settingsRow.voicetime) {
+   expire({ expire: settingsRow.voicetime, guildid: settingsRow.guildid }, [
+    CT.PunishmentType.VCDeaf,
+    CT.PunishmentType.VCMute,
+   ]);
+  }
  });
 };
 
-type TableName =
- | CT.PunishmentType.Warn
- | CT.PunishmentType.Mute
- | CT.PunishmentType.Kick
- | CT.PunishmentType.Ban
- | CT.PunishmentType.Channelban;
-
-const findTable = {
- [CT.PunishmentType.Warn]: (
-  findWhere: Parameters<(typeof client.util)['DataBase']['punish_warns']['findMany']>[0],
- ) => client.util.DataBase.punish_warns.findMany(findWhere),
- [CT.PunishmentType.Mute]: (
-  findWhere: Parameters<(typeof client.util)['DataBase']['punish_mutes']['findMany']>[0],
- ) => client.util.DataBase.punish_mutes.findMany(findWhere),
- [CT.PunishmentType.Kick]: (
-  findWhere: Parameters<(typeof client.util)['DataBase']['punish_kicks']['findMany']>[0],
- ) => client.util.DataBase.punish_kicks.findMany(findWhere),
- [CT.PunishmentType.Ban]: (
-  findWhere: Parameters<(typeof client.util)['DataBase']['punish_bans']['findMany']>[0],
- ) => client.util.DataBase.punish_bans.findMany(findWhere),
- [CT.PunishmentType.Channelban]: (
-  findWhere: Parameters<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>[0],
- ) => client.util.DataBase.punish_channelbans.findMany(findWhere),
-};
-
-const expire = async (row: { expire: Prisma.Decimal; guildid: string }, tableName: TableName) => {
- const findWhere = {
+const expire = async (
+ row: { expire: Prisma.Decimal; guildid: string },
+ type: StoredPunishmentTypes | StoredPunishmentTypes[],
+) => {
+ const tableRows = await client.util.DataBase.punishments.findMany({
   where: {
    guildid: row.guildid,
    uniquetimestamp: { lt: Math.abs(Date.now() - Number(row.expire) * 1000) },
+   type: Array.isArray(type) ? { in: type } : type,
   },
- };
-
- const tableRows = await findTable[tableName](findWhere);
-
- if (!tableRows) return;
-
- tableRows.forEach((r) => {
-  const deleteWhere = {
-   where: {
-    guildid: r.guildid,
-    uniquetimestamp: r.uniquetimestamp,
-   },
-  };
-
-  const deleteTable = {
-   [CT.PunishmentType.Warn]: () => client.util.DataBase.punish_warns.deleteMany(deleteWhere),
-   [CT.PunishmentType.Mute]: () => client.util.DataBase.punish_mutes.deleteMany(deleteWhere),
-   [CT.PunishmentType.Kick]: () => client.util.DataBase.punish_kicks.deleteMany(deleteWhere),
-   [CT.PunishmentType.Ban]: () => client.util.DataBase.punish_bans.deleteMany(deleteWhere),
-   [CT.PunishmentType.Channelban]: () =>
-    client.util.DataBase.punish_channelbans.deleteMany(deleteWhere),
-  };
-  deleteTable[tableName]().then();
  });
 
- logExpire<TableName>(tableRows, row.guildid);
+ if (!tableRows.length) return;
+
+ client.util.DataBase.punishments
+  .deleteMany({
+   where: {
+    guildid: row.guildid,
+    uniquetimestamp: { in: tableRows.map((r) => r.uniquetimestamp) },
+    type: Array.isArray(type) ? { in: type } : type,
+   },
+  })
+  .then();
+
+ logExpire(tableRows, row.guildid);
 };
 
-const logExpire = async <T extends TableName>(
- rows: T extends CT.PunishmentType.Warn
-  ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_warns']['findMany']>>
-  : T extends CT.PunishmentType.Mute
-    ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_mutes']['findMany']>>
-    : T extends CT.PunishmentType.Kick
-      ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_kicks']['findMany']>>
-      : T extends CT.PunishmentType.Ban
-        ? CT.DePromisify<ReturnType<(typeof client.util)['DataBase']['punish_bans']['findMany']>>
-        : T extends CT.PunishmentType.Channelban
-          ? CT.DePromisify<
-             ReturnType<(typeof client.util)['DataBase']['punish_channelbans']['findMany']>
-            >
-          : never,
- guildid: string,
-) => {
+const logExpire = async (rows: punishments[], guildid: string) => {
  const guild = client.guilds.cache.get(guildid);
  if (!guild) return;
 

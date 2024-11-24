@@ -332,7 +332,7 @@ const getMembers = async (
 
 const assinger = async (
  guild: Discord.Guild,
- members: Typings.DePromisify<ReturnType<typeof getMembers>>,
+ members: Awaited<ReturnType<typeof getMembers>>,
  lastRun: boolean = false,
 ) => {
  if (!guild) return;

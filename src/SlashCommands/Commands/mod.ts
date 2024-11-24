@@ -6,6 +6,11 @@ const Target = new Discord.SlashCommandUserOption()
  .setDescription('The Target')
  .setRequired(true);
 
+const User = new Discord.SlashCommandUserOption()
+ .setName('user')
+ .setDescription('The User')
+ .setRequired(true);
+
 const Executor = new Discord.SlashCommandUserOption()
  .setName('executor')
  .setDescription('The Executor')
@@ -20,6 +25,11 @@ const Duration = new Discord.SlashCommandStringOption()
  .setName('duration')
  .setDescription('The Duration (Example: 4d 30m 12s)')
  .setRequired(false);
+
+const RequiredDuration = new Discord.SlashCommandStringOption()
+ .setName(Duration.name)
+ .setDescription(Duration.description)
+ .setRequired(true);
 
 const DeleteMessageDuration = new Discord.SlashCommandStringOption()
  .setName('delete-message-duration')
@@ -70,42 +80,22 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('tempmute')
    .setDescription('Temporarily Mutes a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('duration')
-     .setDescription('The Duration (Example: 4d 30m 12s)')
-     .setRequired(false),
-   )
+   .addUserOption(User)
+   .addStringOption(RequiredDuration)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unmute')
    .setDescription('Unmutes a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('ban')
    .setDescription('Bans a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Duration)
    .addStringOption(Reason)
    .addStringOption(DeleteMessageDuration),
@@ -114,24 +104,14 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unban')
    .setDescription('Un-Bans a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('soft-ban')
    .setDescription('Soft-Bans a User (Bans and instantly Un-Bans them)')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason)
    .addStringOption(DeleteMessageDuration),
  )
@@ -139,18 +119,8 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('temp-ban')
    .setDescription('Temporarily Bans a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('duration')
-     .setDescription('The Duration (Example: 4d 30m 12s)')
-     .setRequired(true),
-   )
+   .addUserOption(User)
+   .addStringOption(RequiredDuration)
    .addStringOption(Reason)
    .addStringOption(DeleteMessageDuration),
  )
@@ -158,12 +128,7 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('channel-ban')
    .setDescription('Bans a User from a Channel')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addChannelOption(
     new Discord.SlashCommandChannelOption()
      .setName('channel')
@@ -178,12 +143,7 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('temp-channel-ban')
    .setDescription('Temporarily Bans a User from a Channel')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addChannelOption(
     new Discord.SlashCommandChannelOption()
      .setName('channel')
@@ -191,24 +151,14 @@ export default new Discord.SlashCommandBuilder()
      .addChannelTypes(...AllNonThreadGuildChannelTypes)
      .setRequired(true),
    )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('duration')
-     .setDescription('The Duration (Example: 4d 30m 12s)')
-     .setRequired(true),
-   )
+   .addStringOption(RequiredDuration)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('channel-unban')
    .setDescription('Temporarily Bans a User from a Channel')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addChannelOption(
     new Discord.SlashCommandChannelOption()
      .setName('channel')
@@ -222,60 +172,35 @@ export default new Discord.SlashCommandBuilder()
   new Discord.SlashCommandSubcommandBuilder()
    .setName('kick')
    .setDescription('Kicks a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('warn')
    .setDescription('Warns a User')
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('soft-warn')
    .setDescription("Soft-Warns a User (Doesn't save the Warn, only notifies the User)")
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('strike')
    .setDescription(`Strikes a User (Let's ${process.env.mainName} decide what Punishment to apply)`)
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unafk')
    .setDescription("Force delete someone's AFK status")
-   .addUserOption(
-    new Discord.SlashCommandUserOption()
-     .setName('user')
-     .setDescription('The User')
-     .setRequired(true),
-   )
+   .addUserOption(User)
    .addStringOption(Reason),
  )
  .addSubcommandGroup(
@@ -445,6 +370,36 @@ export default new Discord.SlashCommandBuilder()
      .setRequired(true)
      .setMaxValue(21600),
    ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('vc-mute')
+   .setDescription('Mute a User in a Voice Channel')
+   .addUserOption(User)
+   .addStringOption(Duration)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('vc-deafen')
+   .setDescription('Deafen a User in a Voice Channel')
+   .addUserOption(User)
+   .addStringOption(Duration)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('vc-unmute')
+   .setDescription('Unmute a User in a Voice Channel')
+   .addUserOption(User)
+   .addStringOption(Reason),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('vc-undeafen')
+   .setDescription('Undeafen a User in a Voice Channel')
+   .addUserOption(User)
+   .addStringOption(Reason),
  )
  .addSubcommandGroup(
   new Discord.SlashCommandSubcommandGroupBuilder()

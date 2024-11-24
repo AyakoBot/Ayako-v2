@@ -37,14 +37,7 @@ export interface DataBaseTables {
  nitroroles: Prisma.nitroroles;
  nitrosettings: Prisma.nitrosettings;
  nitrousers: Prisma.nitrousers;
- punish_bans: Prisma.punish_bans;
- punish_channelbans: Prisma.punish_channelbans;
- punish_kicks: Prisma.punish_kicks;
- punish_mutes: Prisma.punish_mutes;
- punish_tempbans: Prisma.punish_tempbans;
- punish_tempchannelbans: Prisma.punish_tempchannelbans;
- punish_tempmutes: Prisma.punish_tempmutes;
- punish_warns: Prisma.punish_warns;
+ punishments: Prisma.punishments;
  reactionroles: Prisma.reactionroles;
  reactionrolesettings: Prisma.reactionrolesettings;
  reminders: Prisma.reminders;
