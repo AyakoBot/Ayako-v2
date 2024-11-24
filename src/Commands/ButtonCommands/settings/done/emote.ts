@@ -64,12 +64,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], multi: boo
   );
  });
 
+ const insertEmotes =
+  (multi && validEmotes ? validEmotes.map((e) => e.identifier) : validEmotes?.[0]?.identifier) ??
+  null;
+ if (!insertEmotes) return;
+
  const updatedSetting = await cmd.client.util.settingsHelpers.changeHelpers.getAndInsert(
   settingName,
   fieldName,
   cmd.guildId,
-  (multi && validEmotes ? validEmotes.map((e) => e.identifier) : validEmotes?.[0].identifier) ??
-   null,
+  insertEmotes,
   uniquetimestamp,
  );
 
