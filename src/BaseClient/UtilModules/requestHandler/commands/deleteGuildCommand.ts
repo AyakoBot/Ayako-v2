@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import cache from '../../cache.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
 import { hasMissingScopes, setHasMissingScopes } from './bulkOverwriteGuildCommands.js';
@@ -40,6 +40,13 @@ export default async (guild: Discord.Guild, commandId: string) => {
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .deleteGuildCommand(await getBotIdFromGuild(guild), guild.id, commandId)
   .then(() => {
+   sendDebugMessage({
+    content: `Deleting guild command ${commandId} in ${guild.name}`,
+    files: [
+     guild.client.util.txtFileWriter(JSON.stringify(new Error(), null, 2), undefined, 'temp.json'),
+    ],
+   });
+
    cache.commands.delete(guild.id, commandId);
    guild.commands.cache.delete(commandId);
   })
@@ -51,7 +58,9 @@ export default async (guild: Discord.Guild, commandId: string) => {
     guild.commands.cache.delete(commandId);
     return true;
    }
+
    error(guild, new Error((e as Discord.DiscordAPIError).message));
+
    return e;
   });
 };

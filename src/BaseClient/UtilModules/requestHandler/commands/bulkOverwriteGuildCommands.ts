@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import { API } from '../../../Bot/Client.js';
 import * as Classes from '../../../Other/classes.js';
 import cache from '../../cache.js';
-import error from '../../error.js';
+import error, { sendDebugMessage } from '../../error.js';
 import { guild as getBotIdFromGuild } from '../../getBotIdFrom.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { canGetCommands } from './getGlobalCommand.js';
@@ -40,6 +40,13 @@ export default async (
  return (cache.apis.get(guild.id) ?? API).applicationCommands
   .bulkOverwriteGuildCommands(await getBotIdFromGuild(guild), guild.id, body)
   .then((cmds) => {
+   sendDebugMessage({
+    content: `Deleting all guild commands in ${guild.name}`,
+    files: [
+     guild.client.util.txtFileWriter(JSON.stringify(new Error(), null, 2), undefined, 'temp.json'),
+    ],
+   });
+
    const parsed = cmds.map(
     (cmd) => new Classes.ApplicationCommand(guild.client, cmd, guild, guild.id),
    );
