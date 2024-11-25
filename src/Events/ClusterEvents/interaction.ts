@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js';
+import { makeRequestHandler } from '../../BaseClient/UtilModules/requestHandler.js';
 import client from '../../BaseClient/Bot/Client.js';
 import * as Classes from '../../BaseClient/Other/classes.js';
-import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.js';
 import * as Typings from '../../Typings/Typings.js';
+import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.js';
 
 export default async (message: Typings.Message<Typings.MessageType.Interaction>) => {
  const interaction = message.data;
@@ -18,6 +19,12 @@ export default async (message: Typings.Message<Typings.MessageType.Interaction>)
    where: { token: { startsWith: startOfToken } },
   });
   if (!guildSettings) return;
+
+  if (!client.util.cache.apis.get(guildSettings?.guildid)) {
+   const guild = client.guilds.cache.get(interaction.guild_id);
+   if (!guild) return;
+   if (!(await makeRequestHandler(guild))) return;
+  }
 
   const api = client.util.cache.apis.get(guildSettings?.guildid);
   if (!api) return;
@@ -67,9 +74,8 @@ const getParsedInteraction = (i: Discord.APIInteraction) => {
      throw new Error('Unhandled Application Command Type');
    }
   }
-  case Discord.InteractionType.ApplicationCommandAutocomplete: {
+  case Discord.InteractionType.ApplicationCommandAutocomplete:
    return new Classes.AutocompleteInteraction(client, i);
-  }
   case Discord.InteractionType.MessageComponent: {
    switch (i.data.component_type) {
     case Discord.ComponentType.Button:
