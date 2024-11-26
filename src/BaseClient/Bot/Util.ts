@@ -1,6 +1,4 @@
-import type * as Discord from 'discord.js';
 import * as fs from 'fs';
-import type Jobs from 'node-schedule';
 
 import { Colors } from '../../Typings/Typings.js';
 import constants from '../Other/constants.js';
@@ -100,11 +98,6 @@ import userMiddleware from '../UtilModules/userMiddleware.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
 
-type ChannelQueue = Map<string, Map<string, Discord.APIEmbed[]>>;
-type ChannelTimeouts = Map<string, Map<string, Jobs.Job>>;
-const channelQueue: ChannelQueue = new Map();
-const channelTimeout: ChannelTimeouts = new Map();
-
 const logFiles = {
  ratelimits: fs.createWriteStream(
   `${process.cwd()}/logs/ratelimits-${new Date().getDate()}-${new Date().getMonth() + 1}-${new Date().getFullYear()}.log`,
@@ -123,9 +116,7 @@ interface Util {
  arrayEquals: typeof arrayEquals;
  bitUniques: typeof bitUniques;
  cache: typeof cache;
- channelQueue: ChannelQueue;
  channelRuleCalc: typeof channelRuleCalc;
- channelTimeout: ChannelTimeouts;
  constants: typeof constants;
  disableComponents: typeof disableComponents;
  dynamicToEmbed: typeof dynamicToEmbed;
@@ -224,9 +215,7 @@ const util: Util = {
  arrayEquals,
  bitUniques,
  cache,
- channelQueue,
  channelRuleCalc,
- channelTimeout,
  constants,
  disableComponents,
  dynamicToEmbed,

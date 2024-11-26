@@ -102,6 +102,20 @@ const cache: {
  antiraidQueued: Set<string>;
  enableInvites: Map<string, Jobs.Job>;
  separatorAssigner: Map<string, Jobs.Job[]>;
+
+ // embed queue
+ channelQueue: Map<
+  string,
+  {
+   job: Jobs.Job;
+   embeds: Discord.APIEmbed[];
+   channel:
+    | Discord.AnyThreadChannel
+    | Discord.NewsChannel
+    | Discord.TextChannel
+    | Discord.VoiceChannel;
+  }
+ >;
 } = {
  // Discord Cache
  invites,
@@ -160,6 +174,8 @@ const cache: {
  antiraidQueued: new Set(),
  enableInvites: new Map(),
  separatorAssigner: new Map(),
+
+ channelQueue: new Map(),
 };
 
 export default cache;
