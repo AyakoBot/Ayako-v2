@@ -5,7 +5,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  if (!oldMember.isCommunicationDisabled()) return;
  if (member.isCommunicationDisabled()) return;
 
- const res = await member.client.util.DataBase.punishments
+ member.client.util.DataBase.punishments
   .updateMany({
    where: {
     guildid: member.guild.id,
