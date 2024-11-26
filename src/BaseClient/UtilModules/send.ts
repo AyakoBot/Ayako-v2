@@ -9,31 +9,31 @@ export interface MessageCreateOptions extends Omit<Discord.MessageCreateOptions,
  embeds?: Discord.APIEmbed[];
 }
 
-async function send(
+async function send<T extends number | undefined>(
  channels: Discord.User,
  payload: CT.UsualMessagePayload,
- timeout?: number,
-): Promise<Discord.Message | null | void>;
-async function send(
+ timeout?: T,
+): Promise<T extends number ? Discord.Message : null | void>;
+async function send<T extends number | undefined>(
  channels: Discord.TextBasedChannel[],
  payload: CT.UsualMessagePayload,
- timeout?: number,
-): Promise<(Discord.Message | null | void)[] | null | void>;
-async function send(
+ timeout?: T,
+): Promise<(T extends number ? Discord.Message : null | void)[] | null | void>;
+async function send<T extends number | undefined>(
  channels: { id: string; guildId: string },
  payload: CT.UsualMessagePayload,
- timeout?: number,
+ timeout?: T,
 ): Promise<Discord.Message | null | void>;
-async function send(
+async function send<T extends number | undefined>(
  channels: { id: string[]; guildId: string },
  payload: CT.UsualMessagePayload,
- timeout?: number,
-): Promise<(Discord.Message | null | void)[] | null | void>;
-async function send(
+ timeout?: T,
+): Promise<(T extends number ? Discord.Message : null | void)[] | null | void>;
+async function send<T extends number | undefined>(
  channels: Discord.TextBasedChannel | Discord.ThreadChannel,
  payload: CT.UsualMessagePayload,
- timeout?: number,
-): Promise<Discord.Message | null | void>;
+ timeout?: T,
+): Promise<T extends number ? Discord.Message : null | void>;
 /**
  * Sends a message to a Discord channel or user.
  * @param channels - The channel or user to send the message to.

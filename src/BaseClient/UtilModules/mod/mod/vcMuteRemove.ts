@@ -18,19 +18,14 @@ export default async (
  message: ModTypes.ResponseMessage,
  cmd: ModTypes.CmdType,
 ) => {
- const type = CT.ModTypes.VcDeafenAdd;
+ const type = CT.ModTypes.VcMuteRemove;
 
  cache.vcMutes.delete(options.guild.id, options.target.id);
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
 
- if (
-  !options.skipChecks &&
-  (!memberRes?.targetMember ||
-   !memberRes.targetMember.voice.channelId ||
-   !memberRes.targetMember.voice.mute)
- ) {
+ if (!options.skipChecks && (!memberRes?.targetMember || !memberRes.targetMember.voice.mute)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
@@ -38,11 +33,27 @@ export default async (
  const me = await getBotMemberFromGuild(options.guild);
  if (
   memberRes?.targetMember &&
+  memberRes.targetMember.voice.channelId &&
   !canEditMember(me, memberRes.targetMember, { mute: false }) &&
   !options.skipChecks
  ) {
   permissionError(cmd, message, language, type);
   return false;
+ }
+
+ if (!memberRes?.targetMember.voice.channelId) {
+  await options.guild.client.util.DataBase.voiceStateUpdateQueue.upsert({
+   where: { userId_guildId: { guildId: options.guild.id, userId: options.target.id } },
+   update: { mute: false },
+   create: {
+    guildId: options.guild.id,
+    userId: options.target.id,
+    deaf: false,
+    mute: false,
+   },
+  });
+
+  return true;
  }
 
  const res = memberRes?.targetMember

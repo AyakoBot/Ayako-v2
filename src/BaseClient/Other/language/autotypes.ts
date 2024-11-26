@@ -1,6 +1,7 @@
 import * as CT from '../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
+ ...t.JSON.autotypes,
  voiceHub: t.stp(t.JSON.autotypes.voiceHub, { t }),
  verification: t.stp(t.JSON.autotypes.verification, { t }),
  shop: t.stp(t.JSON.autotypes.shop, { t }),

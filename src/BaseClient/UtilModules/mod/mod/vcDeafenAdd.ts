@@ -22,12 +22,7 @@ export default async (
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
 
- if (
-  !options.skipChecks &&
-  (!memberRes?.targetMember ||
-   !memberRes.targetMember.voice.channelId ||
-   memberRes.targetMember.voice.deaf)
- ) {
+ if (!options.skipChecks && (!memberRes?.targetMember || memberRes.targetMember.voice.deaf)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
@@ -35,11 +30,27 @@ export default async (
  const me = await getBotMemberFromGuild(options.guild);
  if (
   memberRes?.targetMember &&
+  memberRes.targetMember.voice.channelId &&
   !canEditMember(me, memberRes.targetMember, { deaf: true }) &&
   !options.skipChecks
  ) {
   permissionError(cmd, message, language, type);
   return false;
+ }
+
+ if (!memberRes?.targetMember.voice.channelId) {
+  await options.guild.client.util.DataBase.voiceStateUpdateQueue.upsert({
+   where: { userId_guildId: { guildId: options.guild.id, userId: options.target.id } },
+   update: { deaf: true },
+   create: {
+    guildId: options.guild.id,
+    userId: options.target.id,
+    deaf: true,
+    mute: false,
+   },
+  });
+
+  return true;
  }
 
  const res = memberRes?.targetMember
