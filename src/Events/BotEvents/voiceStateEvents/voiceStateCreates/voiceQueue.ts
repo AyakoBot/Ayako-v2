@@ -16,9 +16,9 @@ export default async (state: VoiceState, member?: GuildMember) => {
  if (!queuedState.deaf && state.serverDeaf) undeafen(member, lan);
  if (!queuedState.mute && state.serverMute) unmute(member, lan);
 
- member.client.util.DataBase.voiceStateUpdateQueue.delete({
-  where: { userId_guildId: { guildId: member.guild.id, userId: member.id } },
- });
+ member.client.util.DataBase.voiceStateUpdateQueue
+  .delete({ where: { userId_guildId: { guildId: member.guild.id, userId: member.id } } })
+  .then();
 };
 
 const deafen = (member: GuildMember, reason: string) =>
