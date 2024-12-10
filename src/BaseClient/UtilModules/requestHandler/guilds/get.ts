@@ -34,7 +34,15 @@ export default async (
   .get(guildId, query)
   .then((g) => {
    const parsed = new Guild(guild.client, g);
-   guild.client.guilds.cache.set(parsed.id, parsed);
+
+   if (query.with_counts && guild.client.guilds.cache.get(parsed.id)) {
+    guild.client.guilds.cache.get(parsed.id)!.approximateMemberCount =
+     parsed.approximateMemberCount;
+
+    guild.client.guilds.cache.get(parsed.id)!.approximatePresenceCount =
+     parsed.approximatePresenceCount;
+   }
+
    return parsed;
   })
   .catch((e: Discord.DiscordAPIError) => {

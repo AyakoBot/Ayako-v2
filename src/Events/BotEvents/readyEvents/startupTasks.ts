@@ -47,13 +47,13 @@ export default async () => {
 
  Jobs.scheduleJob(getPathFromError(new Error()), '0 */30 * * *', () => {
   antivirusBlocklistCacher();
+  guilds();
   amQuarantineControl();
  });
 
  Jobs.scheduleJob(getPathFromError(new Error()), '*/2 * * * * *', () => timedManager());
 
  Jobs.scheduleJob(getPathFromError(new Error()), '0 0 22 * * *', () => {
-  guilds();
   users();
  });
 };

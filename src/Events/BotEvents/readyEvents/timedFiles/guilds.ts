@@ -4,15 +4,20 @@ import client from '../../../../BaseClient/Bot/Client.js';
 export default async () => {
  if (client.user?.id !== process.env.mainId) return;
 
- const [oldGuilds] = await client.util.DataBase.$transaction([
+ const [upToDateGuilds] = await client.util.DataBase.$transaction([
   client.util.DataBase.guilds.findMany({
-   where: { fetchat: { lt: Date.now() - 6000000 } },
+   where: {
+    fetchat: { gte: Date.now() - 6000000 },
+    guildid: { in: client.guilds.cache.map((g) => g.id) },
+   },
   }),
-  client.util.DataBase.guilds.deleteMany({ where: { fetchat: { gte: Date.now() - 6000000 } } }),
+  client.util.DataBase.guilds.deleteMany({ where: { fetchat: { lt: Date.now() - 6000000 } } }),
  ]);
 
- const guildIds = oldGuilds.map((g) => g.guildid);
- const guildsToFetch = client.guilds.cache.filter((g) => !guildIds.includes(g.id)).map((g) => g);
+ const guildsToFetch = client.guilds.cache
+  .filter((g) => !upToDateGuilds.find((g2) => g2.guildid === g.id))
+  .map((g) => g);
+
  const guildsNoCounts = guildsToFetch.filter((g) => g.memberCount <= 10000);
  const guildsCounts = await Promise.all(
   guildsToFetch
