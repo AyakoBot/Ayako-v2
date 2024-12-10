@@ -166,7 +166,7 @@ export default async (
     .join('\n\n'),
   };
 
-  embeds.push(permEmbed);
+  if (permEmbed.description?.length) embeds.push(permEmbed);
  }
 
  channel.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds }, 10000);

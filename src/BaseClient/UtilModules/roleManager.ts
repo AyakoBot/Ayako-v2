@@ -123,6 +123,11 @@ const runJob = async (guild: Discord.Guild) => {
   return;
  }
 
+ if (!guild.members.cache.get(memberCache.member.id)) {
+  endJob(memberCaches);
+  return;
+ }
+
  const clientHighestRole = me?.roles.highest;
  if (!clientHighestRole) {
   endJob(memberCaches);
