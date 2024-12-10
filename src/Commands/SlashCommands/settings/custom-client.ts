@@ -1,4 +1,6 @@
+import { API } from '@discordjs/core';
 import * as Discord from 'discord.js';
+import { sendDebugMessage } from '../../../BaseClient/UtilModules/error.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
 import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
@@ -90,7 +92,9 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     url: settings.token
      ? client.util.constants.standard.invite.replace(
         process.env.mainId ?? '',
-        settings.appid ?? process.env.mainId ?? '',
+        (settings.appid ?? settings.token)
+         ? client.util.getBotIdFromToken(settings.token)
+         : (process.env.mainId ?? ''),
        )
      : 'https://ayakobot.com',
    },
@@ -139,6 +143,7 @@ const tokenCreate = async (
  >,
 ) => {
  const id = guild.client.util.getBotIdFromToken(newSettings.token);
+
  await guild.client.util.DataBase.customclients.update({
   where: { guildid: guild.id },
   data: { appid: id },
@@ -146,27 +151,31 @@ const tokenCreate = async (
 
  requestHandler(guild.id, newSettings.token);
 
- const me = await getMe(guild);
- await updateApp(guild, me);
+ const api = new API(
+  new Discord.REST({ version: '10', api: 'http://nirn:8080/api' }).setToken(newSettings.token),
+ );
+
+ const me = await api.applications.getCurrent().catch((e: Discord.DiscordAPIError) => e);
+ await updateApp(api, me, guild);
  if (!meIsValid(guild, me)) return;
 
  sendWebhookRequest(guild, me.id);
  doCommands(guild, me);
- guild.client.util.cache.customClients.delete(guild.id);
 };
 
 const updateApp = async (
- guild: Discord.Guild,
+ api: API,
  me: Discord.APIApplication | Discord.DiscordAPIError,
+ guild: Discord.Guild,
 ) => {
  if ('verify_key' in me && me.verify_key) {
   await client.util.DataBase.customclients.update({
    where: { guildid: guild.id },
-   data: { publickey: me.verify_key, appid: me.id },
+   data: { publickey: me.verify_key },
   });
  }
 
- await client.util.request.applications.editCurrent(guild, {
+ await api.applications.editCurrent({
   interactions_endpoint_url: process.env.customInteractionsEndpointURL,
   custom_install_url: process.env.customInstallURL,
   install_params: null!,
@@ -181,8 +190,6 @@ const updateApp = async (
  });
 };
 
-export const getMe = (guild: Discord.Guild) => client.util.request.applications.getCurrent(guild);
-
 const deleteEntry = (guildId: string) => {
  client.util.cache.apis.delete(guildId);
 
@@ -193,7 +200,7 @@ const deleteEntry = (guildId: string) => {
 
 const meIsValid = (
  guild: Discord.Guild,
- me: Awaited<ReturnType<typeof getMe>>,
+ me: Discord.DiscordAPIError | Discord.APIApplication,
 ): me is Discord.APIApplication => {
  if (!me || 'message' in me) {
   client.util.error(guild, new Error(me ? me.message : 'Unknown Application'));
@@ -280,6 +287,23 @@ export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplicatio
   .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
 
  await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
+
+ const debugErr = new Error();
+
+ sendDebugMessage({
+  content: `Deleting all guild commands in ${guild.name}`,
+  files: [
+   guild.client.util.txtFileWriter(
+    JSON.stringify(
+     { name: debugErr.name, message: debugErr.message, stack: debugErr.stack },
+     null,
+     2,
+    ),
+    undefined,
+    'temp',
+   ),
+  ],
+ });
 
  const settings = await client.util.DataBase.guildsettings.findUnique({
   where: { guildid: guild.id },
