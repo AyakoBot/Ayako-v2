@@ -1,6 +1,5 @@
 import { API } from '@discordjs/core';
 import * as Discord from 'discord.js';
-import { sendDebugMessage } from '../../../BaseClient/UtilModules/error.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
 import requestHandler from '../../../BaseClient/UtilModules/requestHandler.js';
@@ -160,6 +159,7 @@ const tokenCreate = async (
  if (!meIsValid(guild, me)) return;
 
  sendWebhookRequest(guild, me.id);
+ console.log('Custom Client Created', guild.name);
  doCommands(guild, me);
 };
 
@@ -287,23 +287,6 @@ export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplicatio
   .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
 
  await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
-
- const debugErr = new Error();
-
- sendDebugMessage({
-  content: `Deleting all guild commands in ${guild.name}`,
-  files: [
-   guild.client.util.txtFileWriter(
-    JSON.stringify(
-     { name: debugErr.name, message: debugErr.message, stack: debugErr.stack },
-     null,
-     2,
-    ),
-    undefined,
-    'temp',
-   ),
-  ],
- });
 
  const settings = await client.util.DataBase.guildsettings.findUnique({
   where: { guildid: guild.id },

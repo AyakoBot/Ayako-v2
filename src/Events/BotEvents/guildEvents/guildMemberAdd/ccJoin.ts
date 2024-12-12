@@ -18,5 +18,6 @@ export default async (member: GuildMember) => {
  const me = await member.client.util.request.applications.getCurrent(member.guild);
  if ('message' in me) return;
 
+ console.log('Custom Client Joined', member.guild.name);
  doCommands(member.guild, me);
 };
