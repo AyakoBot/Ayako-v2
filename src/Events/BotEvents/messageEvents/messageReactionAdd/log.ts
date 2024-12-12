@@ -15,43 +15,18 @@ export default async (
  const lan = language.events.logs.reaction;
  const con = msg.client.util.constants.events.logs.reaction;
  const files: Discord.AttachmentPayload[] = [];
- const embeds: Discord.APIEmbed[] = [];
 
  const embed: Discord.APIEmbed = {
-  author: {
-   icon_url: con.create,
-   name: lan.nameAdd,
-  },
+  author: { icon_url: con.create, name: lan.nameAdd },
   description: lan.descAdded(reaction.emoji, user, msg),
   fields: [],
   color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
- };
-
- embeds.push(embed);
-
- if (msg.reactions.cache?.size) {
-  embeds.push({
-   title: lan.reactions,
-   description: msg.reactions.cache
-    .map(
-     (r) =>
-      `\`${msg.client.util.spaces(`${r.count ?? 1}`, 5)}\` ${
-       (reaction.emoji.id && r.emoji.id && reaction.emoji.id === r.emoji.id) ||
-       (!reaction.emoji.id && reaction.emoji.name === r.emoji.name)
-        ? ` ${msg.client.util.constants.standard.getEmote(msg.client.util.emotes.plusBG)}`
-        : ` ${msg.client.util.constants.standard.getEmote(msg.client.util.emotes.invis)}`
-      } ${language.languageFunction.getEmote(r.emoji)}`,
-    )
-    .join(''),
-   color: CT.Colors.Ephemeral,
-  });
- }
-
- embed.thumbnail = {
-  url: `attachment://${msg.client.util.getNameAndFileType(
-   msg.client.util.constants.standard.emoteURL(reaction.emoji),
-  )}`,
+  thumbnail: {
+   url: `attachment://${msg.client.util.getNameAndFileType(
+    msg.client.util.constants.standard.emoteURL(reaction.emoji),
+   )}`,
+  },
  };
 
  const attachment = (
@@ -62,5 +37,9 @@ export default async (
 
  if (attachment) files.push(...attachment);
 
- await msg.client.util.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
+ await msg.client.util.send(
+  { id: channels, guildId: msg.guildId },
+  { embeds: [embed], files },
+  10000,
+ );
 };

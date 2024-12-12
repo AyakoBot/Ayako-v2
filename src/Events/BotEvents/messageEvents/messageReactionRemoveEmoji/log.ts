@@ -41,7 +41,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message<tr
   });
 
   const users = reaction.client.util.txtFileWriter(
-   reaction.users.cache.map((r) => r.id).join(', '),
+   `${language.languageFunction.getEmote(reaction.emoji)}\n- ${reaction.users.cache.map((u) => language.languageFunction.getUser(u)).join('')}`,
    undefined,
    lan.reactions,
   );

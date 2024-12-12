@@ -16,11 +16,7 @@ export default async (
  const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
-  author: {
-   name: lan.nameRemoveAll,
-   icon_url: con.remove,
-   url: msg.url,
-  },
+  author: { name: lan.nameRemoveAll, icon_url: con.remove, url: msg.url },
   description: lan.descRemovedAll(msg),
   color: CT.Colors.Danger,
   fields: [],
@@ -37,11 +33,16 @@ export default async (
        r.emoji,
       )}`,
     )
-    .join('\n'),
+    .join(''),
   });
 
   const users = msg.client.util.txtFileWriter(
-   reactions.map((r) => r.users.cache.map(String).join(', ')).join('\n'),
+   reactions
+    .map(
+     (r) =>
+      `${language.languageFunction.getEmote(r.emoji)}\n- ${r.users.cache.map((u) => language.languageFunction.getUser(u)).join('')}`,
+    )
+    .join('\n\n'),
    undefined,
    lan.reactions,
   );
