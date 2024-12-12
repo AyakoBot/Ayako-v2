@@ -4,6 +4,10 @@ import type { Guild } from 'discord.js';
 import { API } from '../Bot/Client.js';
 import cache from './cache.js';
 
+import rateLimited from '../../Events/RestEvents/rateLimited.js';
+import response from '../../Events/RestEvents/response.js';
+import restDebug from '../../Events/RestEvents/restDebug.js';
+
 import applications from './requestHandler/applications.js';
 import channels from './requestHandler/channels.js';
 import commands from './requestHandler/commands.js';
@@ -33,6 +37,17 @@ const requestHandler = async (guildId: string, token: string): Promise<boolean> 
 
  const canGetOwnGuild = await getOwnGuild(guildId, api);
  if (!canGetOwnGuild) return false;
+
+ rest.on(DiscordRest.RESTEvents.Debug, (info: string) => restDebug(info));
+
+ rest.on(DiscordRest.RESTEvents.RateLimited, (info: DiscordRest.RateLimitData) =>
+  rateLimited(info),
+ );
+
+ rest.on(
+  DiscordRest.RESTEvents.Response,
+  (req: DiscordRest.APIRequest, res: DiscordRest.ResponseLike) => response(req, res),
+ );
 
  cache.apis.set(guildId, api);
  return true;
