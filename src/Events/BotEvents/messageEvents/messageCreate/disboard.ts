@@ -87,6 +87,23 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  await deleteLastReminder(settings);
  const language = await client.util.getLanguage(guild.id);
 
+ const getComponents = (
+  disabled: boolean = true,
+ ): Discord.APIActionRowComponent<Discord.APIButtonComponentWithCustomId>[] => [
+  {
+   type: Discord.ComponentType.ActionRow,
+   components: [
+    {
+     type: Discord.ComponentType.Button,
+     style: Discord.ButtonStyle.Secondary,
+     label: language.events.ready.disboard.button,
+     custom_id: 'disboard/bump',
+     disabled,
+    },
+   ],
+  },
+ ];
+
  const m = await client.util.send(
   { id: (settings.channelid ?? settings.tempchannelid) as string, guildId: guild.id },
   {
@@ -103,19 +120,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
      description: language.events.ready.disboard.desc,
     },
    ],
-   components: [
-    {
-     type: Discord.ComponentType.ActionRow,
-     components: [
-      {
-       type: Discord.ComponentType.Button,
-       style: Discord.ButtonStyle.Secondary,
-       label: language.events.ready.disboard.button,
-       custom_id: 'disboard/bump',
-      },
-     ],
-    },
-   ],
+   components: getComponents(),
   },
  );
 
@@ -129,15 +134,17 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
   return;
  }
 
+ Jobs.scheduleJob(client.util.getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
+  client.util.request.channels.editMsg(m as Discord.Message<true>, {
+   components: getComponents(false),
+  });
+ });
+
  if (!settings.repeatenabled) {
   client.util.DataBase.disboard
    .update({
     where: { guildid: guild.id },
-    data: {
-     msgid: null,
-     tempchannelid: null,
-     nextbump: null,
-    },
+    data: { msgid: null, tempchannelid: null, nextbump: null },
    })
    .then();
   return;
