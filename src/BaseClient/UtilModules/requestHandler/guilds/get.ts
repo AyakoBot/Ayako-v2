@@ -41,6 +41,8 @@ export default async (
 
     guild.client.guilds.cache.get(parsed.id)!.approximatePresenceCount =
      parsed.approximatePresenceCount;
+
+    parsed.memberCount = guild.client.guilds.cache.get(parsed.id)!.memberCount;
    }
 
    return parsed;
