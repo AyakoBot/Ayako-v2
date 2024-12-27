@@ -1441,6 +1441,23 @@
  },
  "slashCommands": {
   "useSlashCommands": "Unknown Command. Did you mean {{c}}",
+  "event": {
+   "author": "Ayako Winter Event",
+   "outOfAmmo": "You're out of ammunition!",
+   "already": "You already have a snowball. Whack em'!",
+   "collected": "You have collected a snowball. Let's get them!",
+   "hits": [
+    "Pow, right in the kisser! {{user}} got slugged by a snowball.",
+    "Sound the trumptes of war (doot doot) - the reckoning has begun. {{user}} got hit with a snowball!",
+    "{{user}} wasn't even paying attention to chat... and they got smacked by a snowball anyways! Hey - use </event collect:{{cmdId}}> then </event throw:{{cmdId}}> to get 'em back!",
+    "{{user}} is just too quick! You missed!",
+    "Thunk! {{user}} got pelted with a snowball... you gonna take that lying down?"
+   ],
+   "misses": [
+    "A shoebill blocked your shot - damn those stinky shoebills. You missed!",
+    "Woosh! You missed but there's always another snowball. </event collect:{{cmdId}}> some more and show 'em what for!"
+   ]
+  },
   "vc": {
    "notEnabled": "Voice-Hubs are not enabled on this Server",
    "notVH": "This Channel is not a Voice-Hub",

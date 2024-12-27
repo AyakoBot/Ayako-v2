@@ -30,6 +30,7 @@ import vote from './Commands/vote.js';
 import actions from './Commands/actions.js';
 import viewRaw from './Commands/view-raw.js';
 import vc from './Commands/vc.js';
+import event from './Commands/event.js';
 
 export enum CommandCategories {
  Utility = 'utility',
@@ -47,6 +48,7 @@ export enum CommandCategories {
 
 export default {
  public: {
+  event,
   vc,
   leaderboard,
   balance,
@@ -83,6 +85,9 @@ export default {
   'View Raw': viewRaw,
  },
  categories: {
+  event_collect: [CommandCategories.Fun],
+  event_throw: [CommandCategories.Fun],
+  event_leaderboard: [CommandCategories.Info],
   'settings_moderation_anti-spam': [CommandCategories.Moderation],
   'settings_moderation_anti-virus': [CommandCategories.Moderation],
   'settings_moderation_auto-punish': [CommandCategories.Moderation],
@@ -293,6 +298,7 @@ export default {
   vc: [CommandCategories.Utility, CommandCategories.Automation],
  },
  names: [
+  'event',
   'settings',
   'info',
   'embed-builder',
