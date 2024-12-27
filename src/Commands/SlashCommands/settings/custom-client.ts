@@ -158,6 +158,8 @@ const tokenCreate = async (
  await updateApp(api, me, guild);
  if (!meIsValid(guild, me)) return;
 
+ client.util.cache.customClients.set(guild.id, me.id);
+
  sendWebhookRequest(guild, me.id);
  console.log('Custom Client Created', guild.name);
  doCommands(guild, me);
