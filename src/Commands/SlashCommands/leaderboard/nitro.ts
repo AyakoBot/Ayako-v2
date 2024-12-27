@@ -34,7 +34,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const embed = await getEmbed(
   { lan, language },
   position,
-  { days: Number(getDaysPerUsers(self)[0].days), longestDays, daysPerUser },
+  { days: Number(getDaysPerUsers(self)[0]?.days), longestDays, daysPerUser },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
   user,
   cmd.guild,

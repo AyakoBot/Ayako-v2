@@ -56,7 +56,14 @@ export default [
   specialOptions: [{ name: 'food', desc: "What you're feeding them" }],
  },
  { name: 'fluff', desc: 'Fluff someone', users: true, reqUser: true, buttons: ['wag', 'lurk'] },
- { name: 'floof', desc: 'Floof someone', users: true, reqUser: true, buttons: ['wag', 'lurk'] },
+ {
+  aliasOf: 'fluff',
+  name: 'floof',
+  desc: 'Floof someone',
+  users: true,
+  reqUser: true,
+  buttons: ['wag', 'lurk'],
+ },
  {
   name: 'handshake',
   desc: 'Shake Hands with someone',
@@ -210,6 +217,7 @@ export default [
   buttons: ['pat', 'woof', 'nya'],
  },
  {
+  aliasOf: 'pat',
   name: 'pet',
   desc: 'Headpat time~!',
   users: true,
