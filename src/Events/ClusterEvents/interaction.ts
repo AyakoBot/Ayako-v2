@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
-import { makeRequestHandler } from '../../BaseClient/UtilModules/requestHandler.js';
 import client from '../../BaseClient/Bot/Client.js';
 import * as Classes from '../../BaseClient/Other/classes.js';
+import requestHandler from '../../BaseClient/UtilModules/requestHandler.js';
 import * as Typings from '../../Typings/Typings.js';
 import interactionCreate from '../BotEvents/interactionEvents/interactionCreate.js';
 
@@ -10,46 +10,12 @@ export default async (message: Typings.Message<Typings.MessageType.Interaction>)
  if (client.cluster?.maintenance) return;
  if (process.argv.includes('--dev')) return;
 
- if (interaction.guild_id && !client.util.cache.apis.get(interaction.guild_id)) {
-  const startOfToken = Buffer.from(interaction.application_id)
-   .toString('base64')
-   .replace(/=+/g, '');
+ const api = interaction.guild_id
+  ? await getAPI(interaction as Parameters<typeof getAPI>[0])
+  : null;
 
-  const guildSettings = await client.util.DataBase.customclients.findFirst({
-   where: { token: { startsWith: startOfToken } },
-  });
-  if (!guildSettings) return;
-
-  if (!client.util.cache.apis.get(guildSettings?.guildid)) {
-   const guild = client.guilds.cache.get(interaction.guild_id);
-   if (!guild) return;
-   if (!(await makeRequestHandler(guild))) return;
-  }
-
-  const api = client.util.cache.apis.get(guildSettings?.guildid);
-  if (!api) return;
-
-  await api.interactions
-   .reply(interaction.id, interaction.token, {
-    embeds: [
-     {
-      color: client.util.getColor(),
-      description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${client.util.constants.standard.invite})
-Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${client.util.constants.standard.invite})
-
-I will now leave this Server`,
-      author: {
-       icon_url: client.user?.displayAvatarURL(),
-       name: client.user?.username ?? 'Ayako',
-       url: client.util.constants.standard.invite,
-      },
-     },
-    ],
-    flags: 64,
-   })
-   .catch(() => undefined);
-
-  api.rest.delete(`/users/@me/guilds/${interaction.guild_id}`);
+ if (interaction.guild_id && !api) {
+  wrongServer(interaction);
   return;
  }
 
@@ -99,4 +65,49 @@ const getParsedInteraction = (i: Discord.APIInteraction) => {
   default:
    throw new Error(`Unhandled Interaction Type ${i.type} ${Discord.ComponentType[i.type]}`);
  }
+};
+
+const getAPI = async (msg: Discord.APIInteraction & { guild_id: string }) => {
+ if (client.util.cache.apis.get(msg.guild_id)) {
+  return client.util.cache.apis.get(msg.guild_id) || null;
+ }
+
+ const startOfToken = Buffer.from(msg.application_id).toString('base64').replace(/=+/g, '');
+
+ const guildSettings = await client.util.DataBase.customclients.findFirst({
+  where: { token: { startsWith: startOfToken } },
+ });
+ if (!guildSettings) return null;
+
+ await requestHandler(msg.guild_id, guildSettings.token!);
+ return client.util.cache.apis.get(msg.guild_id) || null;
+};
+
+const wrongServer = async (msg: Discord.APIInteraction) => {
+ const settings = await client.util.DataBase.customclients.findFirst({
+  where: { appid: msg.application_id, token: { not: null } },
+ });
+ if (!settings) return;
+
+ const api = await getAPI({ ...msg, guild_id: settings.guildid });
+ if (!api) return;
+
+ await api.interactions
+  .reply(msg.id, msg.token, {
+   embeds: [
+    {
+     color: client.util.getColor(),
+     description: `This Bot is a Custom-Instance of [**${client.user?.username}**](${client.util.constants.standard.invite})
+Please invite the original Bot into your Server, instead of this one, using [this Invite-URL](${client.util.constants.standard.invite})
+`,
+     author: {
+      icon_url: client.user?.displayAvatarURL(),
+      name: client.user?.username ?? 'Ayako',
+      url: client.util.constants.standard.invite,
+     },
+    },
+   ],
+   flags: 64,
+  })
+  .catch(() => undefined);
 };
