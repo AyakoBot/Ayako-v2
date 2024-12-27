@@ -27,6 +27,8 @@ import webhooks from './requestHandler/webhooks.js';
  * @returns boolean indicating success
  */
 const requestHandler = async (guildId: string, token: string): Promise<boolean> => {
+ if (cache.apis.has(guildId)) return true;
+
  const rest = new DiscordRest.REST({
   version: '10',
   api: 'http://nirn:8080/api',
