@@ -6,6 +6,7 @@ import * as CT from '../../../../Typings/Typings.js';
 export default async (msg: Discord.Message) => {
  if (!msg.content) return;
  if (msg.author.bot) return;
+ if (!msg.inGuild() && msg.client.user.id !== process.env.MAIN_BOT_ID) return;
 
  const settings = msg.inGuild()
   ? await client.util.DataBase.antivirus.findUnique({
@@ -24,7 +25,17 @@ export default async (msg: Discord.Message) => {
 
  const result = await run(msg.content);
  if (!('url' in result)) {
-  if (msg.inGuild()) return;
+  if (msg.inGuild()) {
+   log(
+    settings?.linklogging && settings?.linklogchannels.length
+     ? settings.linklogchannels
+     : msg.channel,
+    msg,
+    await client.util.getLanguage(msg.guildId),
+    result,
+   );
+   return;
+  }
 
   await API.channels.deleteOwnMessageReaction(
    msg.channelId,
@@ -48,16 +59,14 @@ export default async (msg: Discord.Message) => {
 
  const language = await client.util.getLanguage(msg.guildId);
 
- if (!msg.inGuild() || result.triggers) {
-  log(
-   settings?.linklogging && settings?.linklogchannels.length
-    ? settings.linklogchannels
-    : msg.channel,
-   msg,
-   language,
-   result,
-  );
- }
+ log(
+  settings?.linklogging && settings?.linklogchannels.length
+   ? settings.linklogchannels
+   : msg.channel,
+  msg,
+  language,
+  result,
+ );
 
  if (!msg.inGuild()) {
   await API.channels.deleteOwnMessageReaction(
@@ -208,25 +217,21 @@ const getScans = async (
 };
 
 const getURLs = async (content: string): Promise<string[]> => {
- if (!content.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray()))) return [];
+ const urlTLDs = client.util.cache.urlTLDs.toArray();
+ const urlTester = client.util.regexes.urlTester(urlTLDs);
 
- const args = content
-  .split(/(\s+|\n+)/g)
-  .map((url) => url.trim())
-  .map((url) =>
-   /\[.*\](.*\s?.*)/g.test(url)
-    ? url.replace(/\[|\]|\(|\)/g, '').split(/https:\/\/|http:\/\//g)
-    : url,
+ return (
+  await Promise.all(
+   content
+    .replace(/<([^<>]+?)>/g, (m) => m.replace(/[\s\n]+/g, ''))
+    // eslint-disable-next-line no-useless-escape
+    .replace(/[\[\]\(\)<>]/g, ' ')
+    .split(/[\s\n]+/g)
+    .filter((line) => /[^.]+\./.test(line))
+    .filter((u) => u.match(urlTester))
+    .map((arg) => client.util.fetchWithRedirects(arg)),
   )
-  .flat();
-
- const argsContainingLink = args
-  .filter((a) => a.includes('.'))
-  .filter((arg) => arg.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
-
- return (await Promise.all(argsContainingLink.map((arg) => client.util.fetchWithRedirects(arg))))
-  .flat()
-  .filter((u) => u.match(client.util.regexes.urlTester(client.util.cache.urlTLDs.toArray())));
+ ).flat();
 };
 
 export const performPunishment = async (
