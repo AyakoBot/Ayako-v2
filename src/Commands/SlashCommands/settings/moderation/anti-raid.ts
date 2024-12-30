@@ -9,7 +9,7 @@ const name = CT.SettingNames.AntiRaid;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await client.util.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild.id);
  // if (!cmd.client.util.settingsHelpers.permissionCheck(cmd, language, requiredPerms)) {
  //  return;
  // }

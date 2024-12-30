@@ -13,7 +13,7 @@ const name = CT.SettingNames.CustomClient;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await client.util.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild.id);
  const { embedParsers, buttonParsers } = client.util.settingsHelpers;
 
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]]

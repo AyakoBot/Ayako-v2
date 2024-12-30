@@ -8,7 +8,7 @@ const name = CT.SettingNames.RuleChannels;
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
- const language = await client.util.getLanguage(cmd.guild?.id);
+ const language = await client.util.getLanguage(cmd.guild.id);
  const lan = language.slashCommands.settings.categories[name];
 
  const id = cmd.options.get('id', false)?.value as string;
