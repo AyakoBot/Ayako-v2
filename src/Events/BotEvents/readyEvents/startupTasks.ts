@@ -13,6 +13,7 @@ import timedManager from './timedFiles/timedManager.js';
 import verification from './timedFiles/verification.js';
 import guilds from './timedFiles/guilds.js';
 import users from './timedFiles/users.js';
+import voiceLevels from './timedFiles/voiceLevels.js';
 
 export default async () => {
  await customBotCommands();
@@ -43,7 +44,10 @@ export default async () => {
   client.util.cache.urlTLDs.start();
  });
 
- Jobs.scheduleJob(getPathFromError(new Error()), '0 * * * * *', () => verification());
+ Jobs.scheduleJob(getPathFromError(new Error()), '0 * * * * *', () => {
+  verification();
+  voiceLevels();
+ });
 
  Jobs.scheduleJob(getPathFromError(new Error()), '0 */30 * * *', () => {
   antivirusBlocklistCacher();

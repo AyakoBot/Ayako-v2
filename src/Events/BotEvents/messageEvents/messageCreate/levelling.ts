@@ -154,9 +154,10 @@ const updateLevels = async (
 
   if (level) {
    levelUp(
-    msg,
     { oldXP: Number(level.xp), newXP: xp, newLevel: oldLevel + 1, oldLevel },
     settings as Prisma.leveling,
+    await msg.client.util.request.guilds.getMember(msg.guild, msg.author.id, msg.guild),
+    msg,
    );
   }
  }
@@ -392,20 +393,23 @@ const checkRules = (msg: Discord.Message<true>, settings: Prisma.levelingrulesch
  return true;
 };
 
-const levelUp = async (
- msg: Discord.Message<true>,
+export const levelUp = async (
  levelData: LevelData,
  setting: Prisma.leveling | null,
+ member: Discord.GuildMember | Discord.DiscordAPIError | Error,
+ msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
 ) => {
+ if ('message' in member) return;
  if (!setting) return;
- const language = await msg.client.util.getLanguage(msg.guildId);
+ const language = await member.client.util.getLanguage(member.guild.id);
 
  switch (setting.lvlupmode) {
   case 'messages': {
-   await doEmbed(msg, language, levelData, setting);
+   await doEmbed(msg, language, levelData, setting, member.user);
    break;
   }
   case 'reactions': {
+   if (!(msg instanceof Discord.Message)) return;
    await doReact(msg, setting, levelData.newLevel, language);
    break;
   }
@@ -414,17 +418,17 @@ const levelUp = async (
   }
  }
 
- roleAssign(msg, setting.rolemode, levelData.newLevel, language);
+ roleAssign(member, setting.rolemode, levelData.newLevel, language);
 };
 
 const roleAssign = async (
- msg: Discord.Message<true>,
+ member: Discord.GuildMember,
  rolemode: boolean,
  newLevel: number,
  language: CT.Language,
 ) => {
- const roles = await msg.client.util.DataBase.levelingroles.findMany({
-  where: { guildid: msg.guildId, level: { lte: newLevel } },
+ const roles = await member.client.util.DataBase.levelingroles.findMany({
+  where: { guildid: member.guild.id, level: { lte: newLevel } },
  });
  if (!roles.length) return;
 
@@ -438,7 +442,7 @@ const roleAssign = async (
     .forEach((r) => {
      const roleMap = r.roles
       .map((roleId) => {
-       if (!msg.member?.roles.cache.has(roleId)) return roleId;
+       if (!member.roles.cache.has(roleId)) return roleId;
        return undefined;
       })
       .filter((role): role is string => !!role);
@@ -460,16 +464,16 @@ const roleAssign = async (
      r.roles?.forEach((roleId) => {
       if (
        Number(r.level) < newLevel &&
-       msg.member?.roles.cache.has(roleId) &&
-       msg.guild.roles.cache.get(roleId)
+       member.roles.cache.has(roleId) &&
+       member.guild.roles.cache.get(roleId)
       ) {
        remr.push(roleId);
       }
 
       if (
        Number(r.level) === newLevel &&
-       !msg.member?.roles.cache.has(roleId) &&
-       msg.guild.roles.cache.get(roleId)
+       !member.roles.cache.has(roleId) &&
+       member.guild.roles.cache.get(roleId)
       ) {
        addr.push(roleId);
       }
@@ -481,12 +485,12 @@ const roleAssign = async (
   }
  }
 
- if (!msg.member) return;
+ if (!member) return;
  if (add.length) {
-  await msg.client.util.roleManager.add(msg.member, add, language.autotypes.leveling);
+  await member.client.util.roleManager.add(member, add, language.autotypes.leveling);
  }
  if (remove.length) {
-  await msg.client.util.roleManager.remove(msg.member, remove, language.autotypes.leveling);
+  await member.client.util.roleManager.remove(member, remove, language.autotypes.leveling);
  }
 };
 
@@ -540,21 +544,23 @@ const infoEmbed = async (
 };
 
 const doEmbed = async (
- msg: Discord.Message<true>,
+ msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
  language: CT.Language,
  levelData: LevelData,
  setting: Prisma.leveling,
+ user: Discord.User,
 ) => {
  const getDefaultEmbed = async (): Promise<Discord.APIEmbed> => ({
   author: {
-   name: language.leveling.author(msg, String(levelData.newLevel)),
+   name: language.leveling.author(user, String(levelData.newLevel)),
+   icon_url: 'https://cdn.discordapp.com/emojis/807752347782086707.webp?size=4096',
   },
-  color: msg.client.util.getColor(await msg.client.util.getBotMemberFromGuild(msg.guild)),
+  color: user.client.util.getColor(await user.client.util.getBotMemberFromGuild(msg.guild)),
  });
 
  const options = [
   ['msg', msg],
-  ['user', msg.author],
+  ['user', user],
   ['newLevel', levelData.newLevel],
   ['oldLevel', levelData.oldLevel],
   ['newXP', levelData.newXP],
@@ -562,16 +568,16 @@ const doEmbed = async (
  ];
 
  let embed = !setting.embed
-  ? msg.client.util.dynamicToEmbed(await getDefaultEmbed(), options)
+  ? user.client.util.dynamicToEmbed(await getDefaultEmbed(), options)
   : undefined;
  if (setting.embed) {
-  const customEmbed = await msg.client.util.DataBase.customembeds.findUnique({
+  const customEmbed = await user.client.util.DataBase.customembeds.findUnique({
    where: { uniquetimestamp: setting.embed },
   });
 
   if (customEmbed) {
-   embed = msg.client.util.dynamicToEmbed(msg.client.util.getDiscordEmbed(customEmbed), options);
-  } else embed = msg.client.util.dynamicToEmbed(await getDefaultEmbed(), options);
+   embed = user.client.util.dynamicToEmbed(user.client.util.getDiscordEmbed(customEmbed), options);
+  } else embed = user.client.util.dynamicToEmbed(await getDefaultEmbed(), options);
  }
 
  if (!embed) return;
@@ -579,18 +585,23 @@ const doEmbed = async (
 };
 
 const send = async (
- msg: Discord.Message<true>,
+ msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
  embed: Discord.APIEmbed,
  setting: Prisma.leveling,
 ) => {
- const messages = (await msg.client.util.send(
-  {
-   id: (setting.lvlupchannels.length ? setting.lvlupchannels : msg.channelId) as never,
-   guildId: msg.guildId,
-  },
-  { embeds: [embed] },
- )) as Discord.Message<true> | Discord.Message<true>[] | undefined;
+ const channelId = msg instanceof Discord.Message ? msg.channelId : msg.id;
 
+ const messages = await msg.client.util
+  .send(
+   {
+    id: setting.lvlupchannels.length ? setting.lvlupchannels : [channelId],
+    guildId: msg.guildId,
+   },
+   { embeds: [embed] },
+  )
+  .then((m) => m?.filter((ms): ms is Discord.Message<true> => !!ms));
+
+ if (!messages) return;
  if (!setting.lvlupdeltimeout) return;
 
  Jobs.scheduleJob(
@@ -600,22 +611,18 @@ const send = async (
     (Number(setting.lvlupdeltimeout) > 5 ? Number(setting.lvlupdeltimeout) * 1000 : 5000) * 100,
   ),
   async () => {
-   if (Array.isArray(messages)) {
-    const deleteable = await Promise.all(messages.map((m) => msg.client.util.isDeleteable(m)));
-    messages?.forEach((m, i) => {
-     if (deleteable[i]) msg.client.util.request.channels.deleteMessage(m);
-    });
-    return;
-   }
+   const deleteable = await Promise.all(messages.map((m) => msg.client.util.isDeleteable(m)));
 
-   if (messages && (await msg.client.util.isDeleteable(messages))) {
-    msg.client.util.request.channels.deleteMessage(messages);
-   }
+   messages?.forEach((m, i) => {
+    if (deleteable[i]) msg.client.util.request.channels.deleteMessage(m);
+   });
   },
  );
 };
 
 const checkLevelRoles = async (msg: Discord.Message<true>) => {
+ if (!msg.member) return;
+
  const msgsFromUserLastHour = msg.channel.messages.cache.filter(
   (m) => m.createdTimestamp > Date.now() - 3600000 && m.author?.id === msg.author.id,
  );
@@ -637,7 +644,7 @@ const checkLevelRoles = async (msg: Discord.Message<true>) => {
  if (!roles.length) return;
 
  await roleAssign(
-  msg,
+  msg.member,
   settings.rolemode,
   Number(level.level),
   await msg.client.util.getLanguage(msg.guildId),

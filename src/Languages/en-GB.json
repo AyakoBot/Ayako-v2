@@ -3326,6 +3326,12 @@
     },
     "leveling": {
      "name": "Leveling",
+     "buttons": {
+      "blwl": "Allow/Deny Channels/Roles/Users",
+      "level-up": "Level-up Settings",
+      "voice": "Voice specific",
+      "text": "Text specific"
+     },
      "fields": {
       "xppermsg": {
        "name": "XP per Message",
@@ -3366,6 +3372,22 @@
       "minwords": {
        "name": "Minimum Amount of Words",
        "desc": "The Minimum Amount of Words required to award XP (measured by Spaces)"
+      },
+      "xppermin": {
+       "name": "XP per Minute",
+       "desc": "Amount of XP awarded per Minute"
+      },
+      "requireUnmute": {
+       "name": "Require Unmute",
+       "desc": "Whether to require the Member to be Unmuted to gain XP"
+      },
+      "excludeBots": {
+       "name": "Exclude Bots",
+       "desc": "Whether to exclude Bots from the minimum Participants"
+      },
+      "minParticipants": {
+       "name": "Minimum Participants",
+       "desc": "The Minimum Amount of Participants required to award XP"
       }
      }
     },
@@ -3761,7 +3783,7 @@
   "warnNewlines": "You've exceeded the Newlines limit of {{n}}.\nPlease send less many Newlines"
  },
  "leveling": {
-  "author": "{{msg.author.username}} has levelled up to {{level}} <:AMayakoBirthday:809063075021979668>",
+  "author": "{{author.username}} has levelled up to level {{level}}",
   "description": "> {{on}} this Server, Level-Ups are indicated by Reactions on your Message\n> {{reactions}}",
   "on": {
    "on": "On",
