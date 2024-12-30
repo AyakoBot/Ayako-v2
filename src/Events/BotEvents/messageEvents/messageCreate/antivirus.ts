@@ -89,6 +89,8 @@ const log = (
  language: CT.Language,
  url: Awaited<ReturnType<typeof run>>,
 ) => {
+ if (!url.url && !url.urls.length) return;
+
  const payload: CT.UsualMessagePayload = {
   embeds: [
    {
