@@ -95,6 +95,7 @@ import txtFileLinkToString from '../UtilModules/txtFileLinkToString.js';
 import txtFileWriter from '../UtilModules/txtFileWriter.js';
 import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import userMiddleware from '../UtilModules/userMiddleware.js';
+import channelStatusManager from '../UtilModules/channelStatusManager.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
 
@@ -202,6 +203,7 @@ interface Util {
  guildOnly: typeof guildOnly;
  Colors: typeof Colors;
  userMiddleware: typeof userMiddleware;
+ channelStatusManager: typeof channelStatusManager;
 }
 
 const util: Util = {
@@ -301,6 +303,7 @@ const util: Util = {
  guildOnly,
  Colors,
  userMiddleware,
+ channelStatusManager,
 };
 
 export default util;
