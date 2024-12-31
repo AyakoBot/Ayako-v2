@@ -178,7 +178,6 @@ const reply = async (
    language.slashCommands.interactions[
     ((cmd.inCachedGuild()
      ? // TODO: fix this
-       // @ts-expect-error
        cmd.message.interaction?.commandName
      : new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('cmd')) ??
      new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(

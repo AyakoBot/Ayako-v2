@@ -234,7 +234,9 @@
      "36": "Guild Incident Alert Mode Enabled",
      "37": "Guild Incident Alert Mode Disabled",
      "38": "Guild Incident Report Raid",
-     "39": "Guild Incident False Alarm"
+     "39": "Guild Incident False Alarm",
+     "44": "Purchase Notification",
+     "46": "Poll Result"
     },
     "embeds": "Embeds",
     "isFromBot": "From Bot",
@@ -493,7 +495,9 @@
      "CompletedOnboarding": "Completed Onboarding",
      "DidRejoin": "Rejoined",
      "StartedHomeActions": "Started Home Actions",
-     "StartedOnboarding": "Started Onboarding"
+     "StartedOnboarding": "Started Onboarding",
+     "DmSettingsUpsellAcknowledged": "Acknowledged DM Settings Upsell",
+     "IsGuest": "Is Guest"
     },
     "verificationLevelName": "Verification Level",
     "preferredLocale": "Preferred Locale",
@@ -1017,6 +1021,7 @@
   "VOICE_CHANNEL_EFFECTS": "Has previously participated in the voice Channel Effects Experiment",
   "VOICE_IN_THREADS": "Can send Voice Messages in Threads",
   "WELCOME_SCREEN_ENABLED": "Has welcome Screen enabled",
+  "MORE_SOUNDBOARD": "Has access to more soundboard slots",
 
   "CHANNEL_BANNER": "Can set Channel Banners *(Deprecated)*",
   "COMMERCE": "Can create Store-Channels *(Deprecated)*",
@@ -1388,6 +1393,9 @@
   "111": "Thread Update",
   "112": "Thread Delete",
   "121": "Application Command Permission Update",
+  "130": "Soundboard Sound Create",
+  "131": "Soundboard Sound Delete",
+  "132": "Soundboard Sound Update",
   "140": "Auto Moderation Rule Create",
   "141": "Auto Moderation Rule Update",
   "142": "Auto Moderation Rule Delete",

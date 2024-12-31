@@ -89,5 +89,7 @@ export default (t: CT.Language) => ({
   37: t.JSON.events.logs.message.type[37],
   38: t.JSON.events.logs.message.type[38],
   39: t.JSON.events.logs.message.type[39],
+  44: t.JSON.events.logs.message.type[44],
+  46: t.JSON.events.logs.message.type[46],
  },
 });

@@ -24,7 +24,7 @@
   "client@latest": "link:prisma/client@latest",
   "discord-api-types": "0.37.114",
   "discord-hybrid-sharding": "^2.2.3",
-  "discord.js": "14.16.3",
+  "discord.js": "^14.16.3",
   "dotenv": "^16.4.7",
   "glob": "^11.0.0",
   "ioredis": "^5.4.2",
