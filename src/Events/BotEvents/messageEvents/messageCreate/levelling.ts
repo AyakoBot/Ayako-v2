@@ -1,4 +1,4 @@
-import Prisma, { LevelType } from '@prisma/client';
+import Prisma, { LevelType, type leveling } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';
@@ -50,7 +50,7 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  const settings = await checkEnabled(msg);
- if (settings && !settings.active) return;
+ if (settings && (!settings.active || !settings.textenabled)) return;
 
  if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)) return;
 
@@ -91,11 +91,7 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  const rewardroles = await msg.client.util.DataBase.rolerewards.findMany({
-  where: {
-   guildid: msg.guildId,
-   active: true,
-   xpmultiplier: { not: 1 },
-  },
+  where: { guildid: msg.guildId, active: true, xpmultiplier: { not: 1 } },
  });
 
  const rewardXPMult = rewardroles.map((r) => Number(r.xpmultiplier)).reduce((a, b) => a + b, 0);
@@ -122,7 +118,9 @@ const getRules = async (msg: Discord.Message<true>) => {
 };
 
 const checkEnabled = async (msg: Discord.Message<true>) =>
- msg.client.util.DataBase.leveling.findUnique({ where: { guildid: msg.guildId } });
+ msg.client.util.DataBase.leveling.findUnique({
+  where: { guildid: msg.guildId },
+ });
 
 const updateLevels = async (
  msg: Discord.Message<true>,
@@ -397,7 +395,7 @@ export const levelUp = async (
  levelData: LevelData,
  setting: Prisma.leveling | null,
  member: Discord.GuildMember | Discord.DiscordAPIError | Error,
- msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
+ msg: Discord.Message<true> | Discord.BaseGuildVoiceChannel,
 ) => {
  if ('message' in member) return;
  if (!setting) return;
@@ -409,7 +407,10 @@ export const levelUp = async (
    break;
   }
   case 'reactions': {
-   if (!(msg instanceof Discord.Message)) return;
+   if (!(msg instanceof Discord.Message)) {
+    doVoiceStatus(msg, levelData, setting, language, member.user);
+    return;
+   }
    await doReact(msg, setting, levelData.newLevel, language);
    break;
   }
@@ -419,6 +420,36 @@ export const levelUp = async (
  }
 
  roleAssign(member, setting.rolemode, levelData.newLevel, language);
+};
+
+const doVoiceStatus = async (
+ channel: Discord.BaseGuildVoiceChannel,
+ levelData: LevelData,
+ settings: leveling,
+ language: CT.Language,
+ user: Discord.User,
+) => {
+ const oldStatus = channel.client.util.cache.voiceChannelStatus.get(channel.id) ?? '';
+ const newStatus = `${settings.lvlupemotes
+  .map((e) => (e.startsWith('a') ? `<${e}>` : `<:${e}>`))
+  .join('')} ${channel.client.util.stp(
+  settings.lvluptext?.length
+   ? settings.lvluptext
+   : language.slashCommands.settings.categories.leveling.status,
+  { ...levelData, user },
+ )}`;
+
+ const statusSet = await channel.client.util.request.channels.setVCStatus(channel, newStatus);
+ if (typeof statusSet !== 'boolean') return;
+
+ Jobs.scheduleJob(
+  channel.client.util.getPathFromError(new Error()),
+  new Date(Date.now() + Number(settings.lvlupdeltimeout) * 1000),
+  () => {
+   if (channel.client.util.cache.voiceChannelStatus.get(channel.id) !== newStatus) return;
+   channel.client.util.request.channels.setVCStatus(channel, oldStatus);
+  },
+ );
 };
 
 const roleAssign = async (
@@ -544,7 +575,7 @@ const infoEmbed = async (
 };
 
 const doEmbed = async (
- msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
+ msg: Discord.Message<true> | Discord.BaseGuildVoiceChannel,
  language: CT.Language,
  levelData: LevelData,
  setting: Prisma.leveling,
@@ -585,7 +616,7 @@ const doEmbed = async (
 };
 
 const send = async (
- msg: Discord.Message<true> | Discord.GuildTextBasedChannel,
+ msg: Discord.Message<true> | Discord.BaseGuildVoiceChannel,
  embed: Discord.APIEmbed,
  setting: Prisma.leveling,
 ) => {
@@ -634,7 +665,7 @@ const checkLevelRoles = async (msg: Discord.Message<true>) => {
  if (!level) return;
 
  const settings = await msg.client.util.DataBase.leveling.findUnique({
-  where: { guildid: msg.guildId, active: true },
+  where: { guildid: msg.guildId, active: true, textenabled: true },
  });
  if (!settings) return;
 

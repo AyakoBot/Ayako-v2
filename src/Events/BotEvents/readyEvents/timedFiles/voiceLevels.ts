@@ -32,7 +32,7 @@ export default async () => {
   }));
 
  const settings = await client.util.DataBase.leveling.findMany({
-  where: { guildid: { in: voiceStates.map((v) => v.guild.id) }, active: true },
+  where: { guildid: { in: voiceStates.map((v) => v.guild.id) }, active: true, voiceenabled: true },
  });
 
  const levels = (

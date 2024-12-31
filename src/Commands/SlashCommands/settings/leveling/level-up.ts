@@ -98,6 +98,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
      value: embedParsers.time(Number(settings.lvlupdeltimeout) * 1000, language),
      inline: true,
     },
+    {
+     name: lan.fields.lvluptext.name,
+     value: embedParsers.string(settings.lvluptext || language.t.Default, language),
+     inline: true,
+    },
    );
    break;
   }
@@ -149,6 +154,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    components[1].components.push(
     buttonParsers.specific(language, settings.lvlupemotes, 'lvlupemotes', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
+    buttonParsers.specific(language, settings.lvluptext, 'lvluptext', name, undefined),
    );
    break;
   }

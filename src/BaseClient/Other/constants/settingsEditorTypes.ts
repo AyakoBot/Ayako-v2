@@ -61,6 +61,7 @@ export default {
   requireUnmute: CT.EditorTypes.Boolean,
   excludeBots: CT.EditorTypes.Boolean,
   minParticipants: CT.EditorTypes.Number,
+  lvluptext: CT.EditorTypes.String,
   blchannelid: CT.EditorTypes.Channels,
   blroleid: CT.EditorTypes.Roles,
   bluserid: CT.EditorTypes.Users,

@@ -1144,7 +1144,7 @@
  },
  "lvlupmodes": {
   "messages": "Messages",
-  "reactions": "Reactions",
+  "reactions": "Reactions/Channel Status",
   "silent": "Silent"
  },
  "weekendstype": {
@@ -3326,6 +3326,7 @@
     },
     "leveling": {
      "name": "Leveling",
+     "status": "Level {{newLevel}} reached by {{user.username}}",
      "buttons": {
       "blwl": "Allow/Deny Channels/Roles/Users",
       "level-up": "Level-up Settings",
@@ -3333,6 +3334,18 @@
       "text": "Text specific"
      },
      "fields": {
+      "textenabled": {
+       "name": "Text-XP Enabled",
+       "desc": "Whether to award XP for Text Messages"
+      },
+      "voiceenabled": {
+       "name": "Voice-XP Enabled",
+       "desc": "Whether to award XP for Voice Minutes"
+      },
+      "lvluptext": {
+       "name": "Channel-Status Text",
+       "desc": "The Text displayed in the Channel-Status if the Member levelled up in VC\n\"{{oldXP}}\" will become the old XP\n\"{{newXP}}\" will become the new XP\n\"{{oldLevel}}\" will become the old Level\n\"{{newLevel}}\" will become the new Level\n\"{{user.displayName}}\" will become the User's Display Name\n\"{{user.username}}\" will become the User's Username"
+      },
       "xppermsg": {
        "name": "XP per Message",
        "desc": "Amount of XP awarded per Member"
@@ -3342,16 +3355,16 @@
        "desc": "Whether to Stack or Replace Level-Roles"
       },
       "lvlupmode": {
-       "name": "Level-up Mode",
+       "name": "Mode",
        "desc": "The Type of Level-up Notification Method"
       },
       "lvlupemotes": {
-       "name": "Level-up Emotes",
+       "name": "Emotes",
        "desc": "Send a Message containing the Emotes I will react with to Messages that triggered a Level-up. Split multiple Emotes with a Space."
       },
       "lvlupdeltimeout": {
-       "name": "Level-up Deletion Timeout",
-       "desc": "The Timeout before the Level-up Message is Auto-Deleted"
+       "name": "Deletion Timeout",
+       "desc": "The Timeout before the Level-up Message/Channel Status is Auto-Deleted"
       },
       "embed": {
        "name": "Level-up Embed",
