@@ -32,8 +32,9 @@ export default async (channel: Discord.BaseGuildVoiceChannel, status: string) =>
   .put(`/channels/${channel.id}/voice-status`, { body: { status } })
   .catch((e: Discord.DiscordAPIError) => {
    error(channel.guild, e);
+   return e;
   })
-  .then((e) => ('message' in (e as Error) ? e : true));
+  .then((e) => ('message' in (e as Error) ? (e as Error) : true));
 };
 
 /**

@@ -32,6 +32,7 @@ import deletePermissionOverwrite from './channels/deletePermissionOverwrite.js';
 import createWebhook from './channels/createWebhook.js';
 import getMessage from './channels/getMessage.js';
 import setVCStatus from './channels/setVCStatus.js';
+import requestVCStatus from './channels/requestVCStatus.js';
 
 interface Channels {
  sendMessage: typeof sendMessage;
@@ -68,6 +69,7 @@ interface Channels {
  createWebhook: typeof createWebhook;
  getMessage: typeof getMessage;
  setVCStatus: typeof setVCStatus;
+ requestVCStatus: typeof requestVCStatus;
 }
 
 /**
@@ -140,6 +142,8 @@ interface Channels {
  * - Gets a message from a channel.
  * @property {Function} setVCStatus
  * - Sets the channel status of a voice channel.
+ * @property {Function} requestVCStatus
+ * - Requests the channel status of a voice channel.
  */
 const channels: Channels = {
  sendMessage,
@@ -176,6 +180,7 @@ const channels: Channels = {
  createWebhook,
  getMessage,
  setVCStatus,
+ requestVCStatus,
 };
 
 export default channels;

@@ -56,6 +56,7 @@ const cache: {
  onboarding: Onboarding;
  commandPermissions: CommandPermissions;
  auditLogs: AuditLogs;
+ voiceChannelStatus: Map<string, string>;
 
  // Cache
  giveawayClaimTimeout: GiveawayClaimTimeout;
@@ -130,6 +131,7 @@ const cache: {
  interactedGuilds: new Set(),
  interactedChannels: new Set(),
  customClients: new Map(),
+ voiceChannelStatus: new Map(),
 
  // Cache
  giveawayClaimTimeout,

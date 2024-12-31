@@ -36,6 +36,9 @@ export default async (guild: Discord.Guild | null, eventName: string) => {
 };
 
 const tasks = {
+ vcStatus: (guild: Discord.Guild) => {
+  guild.client.util.request.channels.requestVCStatus(guild);
+ },
  customClient: async (guild: Discord.Guild) => {
   const settings = await guild.client.util.DataBase.customclients.findUnique({
    where: { token: { not: null }, guildid: guild.id },
