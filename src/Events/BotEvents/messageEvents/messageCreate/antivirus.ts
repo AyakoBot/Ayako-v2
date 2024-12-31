@@ -25,17 +25,7 @@ export default async (msg: Discord.Message) => {
 
  const result = await run(msg.content);
  if (!('url' in result)) {
-  if (msg.inGuild()) {
-   log(
-    settings?.linklogging && settings?.linklogchannels.length
-     ? settings.linklogchannels
-     : msg.channel,
-    msg,
-    await client.util.getLanguage(msg.guildId),
-    result,
-   );
-   return;
-  }
+  if (msg.inGuild()) return;
 
   await API.channels.deleteOwnMessageReaction(
    msg.channelId,
