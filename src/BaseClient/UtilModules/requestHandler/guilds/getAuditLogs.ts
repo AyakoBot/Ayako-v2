@@ -25,7 +25,27 @@ export default async (guild: Discord.Guild, query?: Discord.RESTGetAPIAuditLogQu
 
  return (await getAPI(guild)).guilds
   .getAuditLogs(guild.id, query)
-  .then((a) => new Classes.GuildAuditLogs(guild, a))
+  .then((a) => {
+   const logs = new Classes.GuildAuditLogs(guild, a);
+
+   a.audit_log_entries.forEach((entry) => {
+    switch (entry.action_type as number) {
+     case 192: {
+      const parsedEntry = logs.entries.find((e) => e.id === entry.id);
+      if (!parsedEntry) break;
+
+      // TODO: Wait for djs to support 192 193
+      // @ts-ignore
+      parsedEntry.extra = entry.options;
+      break;
+     }
+     default:
+      break;
+    }
+   });
+
+   return logs;
+  })
   .catch((e: Discord.DiscordAPIError) => {
    error(guild, new Error((e as Discord.DiscordAPIError).message));
    return e;

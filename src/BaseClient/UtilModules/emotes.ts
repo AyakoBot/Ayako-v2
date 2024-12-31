@@ -451,4 +451,22 @@ export default {
   id: '1208434096678895676',
   link: 'https://cdn.discordapp.com/emojis/1208434096678895676.png',
  },
+ created: {
+  name: 'Created',
+  animated: false,
+  id: '1155171800578261042',
+  link: 'https://cdn.discordapp.com/emojis/1155171800578261042.png',
+ },
+ updated: {
+  name: 'Updated',
+  animated: false,
+  id: '1155171880303591464',
+  link: 'https://cdn.discordapp.com/emojis/1155171880303591464.png',
+ },
+ deleted: {
+  name: 'Deleted',
+  animated: false,
+  id: '1155171841128796210',
+  link: 'https://cdn.discordapp.com/emojis/1155171841128796210.png',
+ },
 };

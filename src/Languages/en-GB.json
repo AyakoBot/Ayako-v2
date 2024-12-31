@@ -527,6 +527,9 @@
     "pending": "Pending"
    },
    "channel": {
+    "nameStatusCreate": "Channel-Status created",
+    "nameStatusUpdate": "Channel-Status updated",
+    "nameStatusDelete": "Channel-Status deleted",
     "nameCreate": "Channel created",
     "nameDelete": "Channel deleted",
     "nameTyping": "User started typing",
@@ -547,6 +550,7 @@
      "1": "Public",
      "2": "Server Only"
     },
+    "channelStatus": "Channel-Status",
     "bitrate": "Bitrate",
     "nsfw": "NSFW",
     "permissions": "Permissions",
@@ -593,7 +597,9 @@
     "descPinCreate": "> {{msg}}> was pinned in\n> {{channel}}",
     "descPinRemoveAudit": "> {{user}}> has unpinned\n> {{msg}}in\n> {{channel}}",
     "descPinRemove": "> {{msg}}> was unpinned in\n> {{channel}}",
-    "descTyping": "> {{user}}> has started typing in\n> {{channel}}"
+    "descTyping": "> {{user}}> has started typing in\n> {{channel}}",
+    "descStatusUpdate": "> Channel-Status of\n> {{channel}}> has changed",
+    "descStatusUpdateAudit": "> {{user}}> has changed the Channel-Status of\n> {{channel}}"
    },
    "user": {
     "name": "User updated",

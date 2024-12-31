@@ -1,3 +1,5 @@
+import emotes from '../../UtilModules/emotes.js';
+
 export default {
  logs: {
   automodRule: {
@@ -26,6 +28,18 @@ export default {
    close: 'https://cdn.ayakobot.com/Ayako_Assets/Events/StageInstanceClose.png',
   },
   channel: {
+   MediaChannelUpdate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/MediaChannelUpdate.png',
+   MediaChannelCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/MediaChannelCreate.png',
+   MediaChannelDelete: 'https://cdn.ayakobot.com/Ayako_Assets/Events/MediaChannelDelete.png',
+   GroupDmUpdate: emotes.updated.link,
+   GroupDmDelete: emotes.deleted.link,
+   GroupDmCreate: emotes.created.link,
+   DMDelete: emotes.deleted.link,
+   DMCreate: emotes.created.link,
+   DMUpdate: emotes.updated.link,
+   UnknownUpdate: emotes.updated.link,
+   UnknownCreate: emotes.created.link,
+   UnknownDelete: emotes.deleted.link,
    TextChannelCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/TextChannelCreate.png',
    ThreadCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/ThreadCreate.png',
    VoiceCreate: 'https://cdn.ayakobot.com/Ayako_Assets/Events/VoiceCreate.png',

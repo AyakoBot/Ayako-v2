@@ -104,6 +104,19 @@ export default (t: CT.Language) => ({
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
+ descStatusUpdate: (channel: Discord.GuildChannel | Discord.AnyThreadChannel, type: string) =>
+  t.stp(t.JSON.events.logs.channel.descDelete, {
+   channel: t.languageFunction.getChannel(channel, type),
+  }),
+ descStatusUpdateAudit: (
+  user: Discord.User,
+  channel: Discord.GuildChannel | Discord.AnyThreadChannel,
+  type: string,
+ ) =>
+  t.stp(t.JSON.events.logs.channel.descStatusUpdateAudit, {
+   user: t.languageFunction.getUser(user),
+   channel: t.languageFunction.getChannel(channel, type),
+  }),
  privacyLevel: {
   1: t.JSON.events.logs.channel.privacyLevel[1],
   2: t.JSON.events.logs.channel.privacyLevel[2],
