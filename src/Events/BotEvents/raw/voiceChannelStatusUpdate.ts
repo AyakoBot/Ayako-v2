@@ -3,7 +3,8 @@ import channelStatusUpdate from '../channelEvents/channelStatusUpdate/channelSta
 
 export default async (data: { status: string; id: string; guild_id: string }) => {
  const oldStatus = client.util.cache.voiceChannelStatus.get(data.id);
- client.util.cache.voiceChannelStatus.set(data.id, data.status);
+ if (data.status?.length) client.util.cache.voiceChannelStatus.set(data.id, data.status);
+ else client.util.cache.voiceChannelStatus.delete(data.id);
 
  const channel = client.channels.cache.get(data.id);
  if (!channel) return;
