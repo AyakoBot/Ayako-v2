@@ -59,14 +59,16 @@ export default async (msg: Discord.Message) => {
 
  const language = await client.util.getLanguage(msg.guildId);
 
- log(
-  settings?.linklogging && settings?.linklogchannels.length
-   ? settings.linklogchannels
-   : msg.channel,
-  msg,
-  language,
-  result,
- );
+ if (!msg.inGuild() || result.triggers) {
+  log(
+   settings?.linklogging && settings?.linklogchannels.length
+    ? settings.linklogchannels
+    : msg.channel,
+   msg,
+   language,
+   result,
+  );
+ }
 
  if (!msg.inGuild()) {
   await API.channels.deleteOwnMessageReaction(
