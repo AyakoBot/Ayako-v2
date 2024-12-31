@@ -18,14 +18,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
    guildid: cmd.guildId,
    active: true,
    approverroleid: { hasSome: cmd.member.roles.cache.map((r) => r.id) },
-   NOT: { nosendusers: { has: cmd.user.id } },
+   NOT: { nosendusers: { has: suggestion.userid } },
   },
-  data: {
-   nosendusers: { push: cmd.user.id },
-  },
-  select: {
-   active: true,
-  },
+  data: { nosendusers: { push: suggestion.userid } },
+  select: { active: true },
  });
 
  if (!settings?.active) {
