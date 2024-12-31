@@ -1,4 +1,4 @@
-import { API } from '@discordjs/core';
+import { API, type RESTPostAPIChatInputApplicationCommandsJSONBody } from '@discordjs/core';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import Lang from '../../../BaseClient/Other/language.js';
@@ -245,28 +245,14 @@ const sendWebhookRequest = (guild: Discord.Guild, meId: string) =>
    components: [
     {
      type: Discord.ComponentType.ActionRow,
-     components: [
-      {
+     components: ['1155145303167602838', '1155145225459744780', '1155150048393441411'].map(
+      (id, i) => ({
        type: Discord.ComponentType.Button,
        style: Discord.ButtonStyle.Link,
-       label: 'Invite 1',
-       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155150048393441411`,
-      },
-
-      {
-       type: Discord.ComponentType.Button,
-       style: Discord.ButtonStyle.Link,
-       label: 'Invite 2',
-       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155145303167602838`,
-      },
-
-      {
-       type: Discord.ComponentType.Button,
-       style: Discord.ButtonStyle.Link,
-       label: 'Invite 3',
-       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild=1155145225459744780`,
-      },
-     ],
+       label: `Invite ${i + 1}`,
+       url: `https://discord.com/api/oauth2/authorize?client_id=${meId}&scope=bot&guild_id=${id}`,
+      }),
+     ),
     },
    ],
   },
@@ -286,7 +272,7 @@ export const doCommands = async (guild: Discord.Guild, me: Discord.APIApplicatio
   .map((e) => guild.commands.cache.find((c) => c.name === e))
   .filter((c): c is Discord.ApplicationCommand => !!c)
   .map((c) => registerCmd(c.name as Parameters<typeof registerCmd>[0], guild))
-  .filter((c): c is Discord.RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
+  .filter((c): c is RESTPostAPIChatInputApplicationCommandsJSONBody => !!c);
 
  await client.util.request.commands.bulkOverwriteGuildCommands(guild, [...existingCommands]);
 
