@@ -10,5 +10,5 @@ export default async (data: { status: string; id: string; guild_id: string }) =>
  if (channel.isDMBased()) return;
  if (!channel.isVoiceBased()) return;
 
- channelStatusUpdate(channel, oldStatus || '', data.status, true);
+ channelStatusUpdate(channel, oldStatus || '', data.status || '', true);
 };
