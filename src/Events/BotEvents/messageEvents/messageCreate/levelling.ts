@@ -429,26 +429,17 @@ const doVoiceStatus = async (
  language: CT.Language,
  user: Discord.User,
 ) => {
- const oldStatus = channel.client.util.cache.voiceChannelStatus.get(channel.id) ?? '';
- const newStatus = `${settings.lvlupemotes
-  .map((e) => (e.startsWith('a') ? `<${e}>` : `<:${e}>`))
-  .join('')} ${channel.client.util.stp(
-  settings.lvluptext?.length
-   ? settings.lvluptext
-   : language.slashCommands.settings.categories.leveling.status,
-  { ...levelData, user },
- )}`;
-
- const statusSet = await channel.client.util.request.channels.setVCStatus(channel, newStatus);
- if (typeof statusSet !== 'boolean') return;
-
- Jobs.scheduleJob(
-  channel.client.util.getPathFromError(new Error()),
-  new Date(Date.now() + Number(settings.lvlupdeltimeout) * 1000),
-  () => {
-   if (channel.client.util.cache.voiceChannelStatus.get(channel.id) !== newStatus) return;
-   channel.client.util.request.channels.setVCStatus(channel, oldStatus);
-  },
+ channel.client.util.channelStatusManager.add(
+  channel,
+  `${settings.lvlupemotes
+   .map((e) => (e.startsWith('a') ? `<${e}>` : `<:${e}>`))
+   .join('')} ${channel.client.util.stp(
+   settings.lvluptext?.length
+    ? settings.lvluptext
+    : language.slashCommands.settings.categories.leveling.status,
+   { ...levelData, user },
+  )}`,
+  Number(settings.lvlupdeltimeout) * 1000,
  );
 };
 
