@@ -112,6 +112,8 @@ export default async (msg: Discord.Message<true>) => {
 };
 
 const checkForInvite = async (content: string, guild: Discord.Guild): Promise<boolean> => {
+ content = content.replace(/<[^>]*>/g, (match) => match.replace(/\n/g, '')).replace(/[<>]/g, ' ');
+
  const pureMatches = content.match(guild.client.util.regexes.inviteTester);
  if (pureMatches?.length) {
   const anyIsExternal = (
