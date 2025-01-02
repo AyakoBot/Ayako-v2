@@ -176,13 +176,9 @@ const reply = async (
   !replyUsers.length &&
   'request' in
    language.slashCommands.interactions[
-    ((cmd.inCachedGuild()
-     ? // TODO: fix this
-       cmd.message.interaction?.commandName
-     : new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get('cmd')) ??
-     new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
-      'cmd',
-     )) as InteractionKeys
+    new URL(cmd.message.embeds[0]?.url ?? 'https://ayakobot.com').searchParams.get(
+     'cmd',
+    ) as InteractionKeys
    ] &&
   !setting?.legacyrp
  ) {
