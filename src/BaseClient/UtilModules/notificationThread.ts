@@ -59,9 +59,10 @@ export default async (
  const active = await target.client.util.request.guilds
   .getActiveThreads(target.guild)
   .then((m) => ('message' in m ? undefined : m));
+
  if (
-  channel.threads.cache.filter((t) => !t.archived).size > 900 ||
-  Number(active?.filter((t) => t.parentId === channel.id).length) > 900
+  channel.threads.cache.filter((t) => !t.archived).size >= 200 ||
+  Number(active?.filter((t) => t.parentId === channel.id).length) >= 200
  ) {
   const oldestThread = await channel.client.util.DataBase.deletethreads.findFirst({
    where: { channelid: { in: channel.threads.cache.map((c) => c.id) } },
@@ -87,13 +88,18 @@ export default async (
 
  const finishedPayload = convertLinkButtons2EmbedLinks(payload);
  const message = await target.client.util.send(thread, finishedPayload);
- if (message && 'message' in message) return undefined;
+
+ if (!message || typeof message === 'undefined') {
+  target.client.util.cache.deleteThreads.delete(target.guild.id, thread.id);
+  deleteThread(target.guild, thread.id);
+  return undefined;
+ }
 
  if (!finishedPayload.components?.length) {
   target.client.util.request.channels.edit(thread, { locked: true });
  }
 
- return (message as Discord.Message<true> | void | undefined) || undefined;
+ return message as Discord.Message<true>;
 };
 
 const putDel = (target: Discord.GuildMember, thread: Discord.ThreadChannel) =>
