@@ -37,6 +37,7 @@ export default async <T extends CT.ModTypes>(
  if (!baseData.type) return undefined;
 
  switch (type) {
+  case CT.ModTypes.KickAdd:
   case CT.ModTypes.BanAdd:
   case CT.ModTypes.TempBanAdd:
   case CT.ModTypes.ChannelBanAdd:
