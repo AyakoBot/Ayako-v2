@@ -41,6 +41,9 @@ export default async (
      },
     ],
    },
-  ],
+  ].filter(
+   (a): a is Discord.APIActionRowComponent<Discord.APIButtonComponentWithCustomId> =>
+    !!a.components.length,
+  ),
  });
 };
