@@ -108,6 +108,7 @@ export default async (member: Discord.GuildMember) => {
     lastfetch: Date.now(),
     avatar: member.user.displayAvatarURL(),
     username: member.user.username,
+    displayName: member.user.displayName,
    },
    create: {
     userid: member.id,
@@ -115,6 +116,7 @@ export default async (member: Discord.GuildMember) => {
     lastfetch: Date.now(),
     avatar: member.user.displayAvatarURL(),
     username: member.user.username,
+    displayName: member.user.displayName,
    },
   })
   .then();

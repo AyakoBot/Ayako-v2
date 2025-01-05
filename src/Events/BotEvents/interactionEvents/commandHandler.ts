@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import { glob } from 'glob';
-import { handleUser } from '../../../BaseClient/UtilModules/userMiddleware.js';
 import metricsCollector from '../../../BaseClient/Bot/Metrics.js';
 
 // eslint-disable-next-line no-console
@@ -8,9 +7,6 @@ const { log } = console;
 
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isChatInputCommand()) return;
-
- const users = cmd.options.data.filter((c) => c.type === Discord.ApplicationCommandOptionType.User);
- users.forEach((u) => (u.user ? handleUser(u.user) : null));
 
  const files = await glob(
   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,

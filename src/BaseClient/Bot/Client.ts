@@ -2,6 +2,8 @@ import * as Sharding from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as DiscordCore from '@discordjs/core';
 
+import middleware from './Middleware.js';
+
 const client = new Discord.Client({
  shards: Sharding.getInfo().SHARD_LIST,
  shardCount: Sharding.getInfo().TOTAL_SHARDS,
@@ -62,6 +64,8 @@ client.cluster = new Sharding.ClusterClient(client);
 await client.login(
  (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '',
 );
+
+middleware(client);
 
 export const API = new DiscordCore.API(client.rest);
 export default client;

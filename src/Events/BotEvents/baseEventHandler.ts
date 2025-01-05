@@ -13,7 +13,6 @@ const botEvents = async (eventName: string, args: unknown[]) => {
  if (Number(client.uptime) > 60000 || process.argv.includes('--dev')) {
   firstGuildInteraction(eventName, args);
   firstChannelInteraction(eventName, args);
-  userMiddleware(args);
  }
 
  const event = client.util.getEvents.BotEvents.find((e) => e.endsWith(`${eventName}.js`));
@@ -131,11 +130,4 @@ const firstChannelInteraction = (eventName: string, args: unknown[]) => {
    break;
   }
  }
-};
-
-const userMiddleware = (args: unknown[]) => {
- if (!args[0]) return;
- if (typeof args[0] !== 'object') return;
-
- client.util.userMiddleware(args);
 };

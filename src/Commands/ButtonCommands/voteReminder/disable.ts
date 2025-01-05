@@ -12,6 +12,7 @@ export default async (
    create: {
     userid: cmd.user.id,
     username: cmd.user.username,
+    displayName: cmd.user.displayName,
     avatar: cmd.user.displayAvatarURL(),
     lastfetch: Date.now(),
     votereminders: isEnableAction,

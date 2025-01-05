@@ -45,11 +45,17 @@ export default async () => {
    client.util.DataBase.users
     .upsert({
      where: { userid: u.id },
-     update: { lastfetch: Date.now(), avatar: u.displayAvatarURL(), username: u.username },
+     update: {
+      lastfetch: Date.now(),
+      avatar: u.displayAvatarURL(),
+      username: u.username,
+      displayName: u.displayName,
+     },
      create: {
       lastfetch: Date.now(),
       avatar: u.displayAvatarURL(),
       username: u.username,
+      displayName: u.displayName,
       userid: u.id,
      },
     })
