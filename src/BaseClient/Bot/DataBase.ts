@@ -143,10 +143,10 @@ export const cacheNewEntry = <T extends keyof DataBaseTables>(
   res
    .filter((r) => !!r[keyName])
    .forEach((r) =>
-    Redis.set(`${process.env.mainId}:${tableName}:${r[keyName]}`, JSON.stringify(r)),
+    Redis.set(`${process.env.mainId}:settings:${tableName}:${r[keyName]}`, JSON.stringify(r)),
    );
  } else if (res[keyName]) {
-  Redis.set(`${process.env.mainId}:${tableName}:${res[keyName]}`, JSON.stringify(res));
+  Redis.set(`${process.env.mainId}:settings:${tableName}:${res[keyName]}`, JSON.stringify(res));
  }
 
  return res;
@@ -194,7 +194,7 @@ export const handleOperation = <T extends keyof Prisma.TypeMap['model'] & keyof 
  const indexValues = getKey<typeof name>(data.args.where, index);
 
  if (!indexValues?.length) return data.query(data.args);
- const keys = indexValues.map((value) => `${process.env.mainId}:${name}:${value}`);
+ const keys = indexValues.map((value) => `${process.env.mainId}:settings:${name}:${value}`);
 
  switch (data.operation) {
   case 'findMany':
