@@ -163,5 +163,5 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   }
  }
 
- return components;
+ return components.filter((c) => c.components.length);
 };
