@@ -68,6 +68,7 @@ export default {
   wlchannelid: CT.EditorTypes.Channels,
   wlroleid: CT.EditorTypes.Roles,
   wluserid: CT.EditorTypes.Users,
+  pingUser: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.MultiChannels]: {
   channels: CT.EditorTypes.Channels,

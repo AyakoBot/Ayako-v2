@@ -71,6 +71,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
      inline: true,
     },
     {
+     name: lan.fields.pingUser.name,
+     value: embedParsers.boolean(settings.pingUser, language),
+     inline: true,
+    },
+    {
      name: lan.fields.lvlupchannels.name,
      value: embedParsers.channels(settings.lvlupchannels, language),
      inline: false,
@@ -139,6 +144,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    components[1].components.push(
     buttonParsers.specific(language, settings.embed, 'embed', name, undefined),
     buttonParsers.specific(language, settings.lvlupdeltimeout, 'lvlupdeltimeout', name, undefined),
+    buttonParsers.specific(language, settings.pingUser, 'pingUser', name, undefined),
     buttonParsers.specific(
      language,
      settings.lvlupchannels,

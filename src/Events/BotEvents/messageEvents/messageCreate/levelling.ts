@@ -603,13 +603,14 @@ const doEmbed = async (
  }
 
  if (!embed) return;
- send(msg, embed, setting);
+ send(msg, embed, setting, user);
 };
 
-const send = async (
- msg: Discord.Message<true> | Discord.BaseGuildVoiceChannel,
+const send = async <T extends Discord.Message<true> | Discord.BaseGuildVoiceChannel>(
+ msg: T,
  embed: Discord.APIEmbed,
  setting: Prisma.leveling,
+ user: T extends Discord.Message<true> ? undefined : Discord.User,
 ) => {
  const channelId = msg instanceof Discord.Message ? msg.channelId : msg.id;
 
@@ -619,7 +620,14 @@ const send = async (
     id: setting.lvlupchannels.length ? setting.lvlupchannels : [channelId],
     guildId: msg.guildId,
    },
-   { embeds: [embed] },
+   {
+    embeds: [embed],
+    content:
+     setting.pingUser && setting.lvlupchannels.length
+      ? `<@${(msg instanceof Discord.Message ? msg.author : user)!.id}>`
+      : undefined,
+    allowed_mentions: { replied_user: setting.pingUser },
+   },
   )
   .then((m) => m?.filter((ms): ms is Discord.Message<true> => !!ms));
 

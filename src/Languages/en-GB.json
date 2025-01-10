@@ -3348,6 +3348,10 @@
       "text": "Text specific"
      },
      "fields": {
+      "pingUser": {
+       "name": "Ping User",
+       "desc": "Whether to Ping the User when they Level-Up"
+      },
       "textenabled": {
        "name": "Text-XP Enabled",
        "desc": "Whether to award XP for Text Messages"
