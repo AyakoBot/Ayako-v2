@@ -51,7 +51,13 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
 
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
-  components: await getComponents(buttonParsers, settings, language),
+  components: (await getComponents(buttonParsers, settings, language)).map((c) => ({
+   ...c,
+   components: c.components.map((b) => ({
+    ...b,
+    disabled: settings.roleId && cmd.member.roles.highest.comparePositionTo(settings.roleId) < 1,
+   })),
+  })) as Awaited<ReturnType<typeof getComponents>>,
   ephemeral: true,
  });
 };
