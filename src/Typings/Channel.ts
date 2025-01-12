@@ -19,6 +19,12 @@ export const AllNonThreadGuildChannelTypes = [
  Discord.ChannelType.GuildMedia,
 ] as const;
 
+export const AllThreadGuildChannelTypes = [
+ Discord.ChannelType.PublicThread,
+ Discord.ChannelType.PrivateThread,
+ Discord.ChannelType.AnnouncementThread,
+] as const;
+
 export const ChannelBanBits = [
  Discord.PermissionsBitField.Flags.SendMessages,
  Discord.PermissionsBitField.Flags.SendMessagesInThreads,

@@ -209,7 +209,7 @@ export const handleOperation = <T extends keyof Prisma.TypeMap['model'] & keyof 
   case 'deleteMany':
   case 'createMany':
   case 'createManyAndReturn':
-   keys.forEach((key) => Redis.del(key));
+   keys.forEach((key) => (key.length ? Redis.del(key) : 0));
    return data.query(data.args);
   default:
    return data.query(data.args);
