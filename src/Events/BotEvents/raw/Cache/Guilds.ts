@@ -137,7 +137,7 @@ export default {
   redis.roles.set(data.role, data.guild_id),
 
  [GatewayDispatchEvents.GuildRoleDelete]: (data: GatewayGuildRoleCreateDispatchData) =>
-  redis.roles.del(data.role.id),
+  data.role ? redis.roles.del(data.role.id) : undefined,
 
  [GatewayDispatchEvents.GuildRoleUpdate]: (data: GatewayGuildRoleCreateDispatchData) =>
   redis.roles.set(data.role, data.guild_id),
