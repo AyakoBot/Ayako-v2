@@ -1,0 +1,25 @@
+export { type RAutomod } from 'src/BaseClient/Bot/Cache/automod.js';
+export { type RBan } from 'src/BaseClient/Bot/Cache/ban.js';
+export { type RChannel } from 'src/BaseClient/Bot/Cache/channel.js';
+export { type RCommand } from 'src/BaseClient/Bot/Cache/command.js';
+export { type RCommandPermission } from 'src/BaseClient/Bot/Cache/commandPermission.js';
+export { type REmoji } from 'src/BaseClient/Bot/Cache/emoji.js';
+export { type REvent } from 'src/BaseClient/Bot/Cache/event.js';
+export { type RGuild } from 'src/BaseClient/Bot/Cache/guild.js';
+export { type RGuildCommand } from 'src/BaseClient/Bot/Cache/guildCommand.js';
+export { type RIntegration } from 'src/BaseClient/Bot/Cache/integration.js';
+export { type RInvite } from 'src/BaseClient/Bot/Cache/invite.js';
+export { type RMember } from 'src/BaseClient/Bot/Cache/member.js';
+export { type RMessage } from 'src/BaseClient/Bot/Cache/message.js';
+export { type RReaction } from 'src/BaseClient/Bot/Cache/reaction.js';
+export { type RRole } from 'src/BaseClient/Bot/Cache/role.js';
+export { type RSoundboardSound } from 'src/BaseClient/Bot/Cache/soundboard.js';
+export { type RStageInstance } from 'src/BaseClient/Bot/Cache/stage.js';
+export { type RSticker } from 'src/BaseClient/Bot/Cache/sticker.js';
+export { type RThread } from 'src/BaseClient/Bot/Cache/thread.js';
+export { type RThreadMember } from 'src/BaseClient/Bot/Cache/threadMember.js';
+export { type RUser } from 'src/BaseClient/Bot/Cache/user.js';
+export { type RVoiceState } from 'src/BaseClient/Bot/Cache/voice.js';
+export { type RWebhook } from 'src/BaseClient/Bot/Cache/webhook.js';
+
+export { type DeriveRFromAPI } from 'src/BaseClient/Bot/Cache/base.js';

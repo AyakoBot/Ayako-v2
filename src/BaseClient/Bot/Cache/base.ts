@@ -51,7 +51,7 @@ type GuildBasedCommand<T extends boolean> = T extends true
  ? APIApplicationCommand & { guild_id: string }
  : APIApplicationCommand;
 
-type DeriveRFromAPI<T, K extends boolean> = T extends APIThreadChannel & {
+export type DeriveRFromAPI<T, K extends boolean> = T extends APIThreadChannel & {
  guild_id: string;
  member_id: string;
 }
