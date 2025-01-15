@@ -1,4 +1,4 @@
-import type { APIApplicationCommandPermission } from 'discord.js';
+import type { APIApplicationCommandPermission } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
 

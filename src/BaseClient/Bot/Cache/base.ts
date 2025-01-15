@@ -21,7 +21,7 @@ import type {
  APIUser,
  APIVoiceState,
  APIWebhook,
-} from 'discord.js';
+} from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import type { RAutomod } from './automod';
 import type { RBan } from './ban';

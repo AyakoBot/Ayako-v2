@@ -1,4 +1,4 @@
-import type { APISticker } from 'discord.js';
+import type { APISticker } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import type { MakeRequired } from 'src/Typings/Typings';
 import Cache from './base.js';
