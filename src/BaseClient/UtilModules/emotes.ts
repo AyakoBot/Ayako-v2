@@ -442,14 +442,14 @@ export default {
  youtube: {
   name: 'YouTube',
   animated: false,
-  id: '1208431235375038484',
-  link: 'https://cdn.discordapp.com/emojis/1208431235375038484.png',
+  id: '1329038046204661760',
+  link: 'https://cdn.discordapp.com/emojis/1329038046204661760.png',
  },
  rp: {
   name: 'RP',
   animated: false,
-  id: '1208434096678895676',
-  link: 'https://cdn.discordapp.com/emojis/1208434096678895676.png',
+  id: '1329038480369647656',
+  link: 'https://cdn.discordapp.com/emojis/1329038480369647656.png',
  },
  created: {
   name: 'Created',
