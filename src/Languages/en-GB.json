@@ -3932,7 +3932,7 @@
     "meNoPerms": "I can't add Roles to this User",
     "youNoPerms": "You can't remove AFK from this User",
     "error": "I failed to remove AFK from this User",
-    "alreadyApplied": "> {{target}} isn't AFK",
+    "alreadyApplied": "> {{target}}> isn't AFK",
     "success": "> {{target}}'s AFK was removed",
     "loading": "Removing AFK...",
     "self": "You can't remove AFK from yourself",

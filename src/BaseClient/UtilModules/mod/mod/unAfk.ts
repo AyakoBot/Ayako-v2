@@ -55,7 +55,7 @@ export default async (
   where: { userid_guildid: { guildid: options.guild.id, userid: options.target.id } },
  });
 
- if (afk && !options.skipChecks) {
+ if (!afk && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
