@@ -45,7 +45,7 @@ export default (channel: Discord.Channel | Discord.GuildChannel, guild: Discord.
    return 'Thread';
   case Discord.ChannelType.GuildStageVoice:
    return 'Stage';
-  case Discord.ChannelType.GuildDirectory:
+  case Discord.ChannelType.GuildDirectory as (typeof channel)['type']:
    return 'Directory';
   case Discord.ChannelType.GuildForum: {
    switch (true) {

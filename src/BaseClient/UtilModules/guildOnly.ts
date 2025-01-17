@@ -30,7 +30,7 @@ export default async (
  cmd.reply({
   embeds: [embed],
   ephemeral: true,
-  fetchReply: false,
+  withResponse: false,
   components: [
    {
     type: Discord.ComponentType.ActionRow,

@@ -107,7 +107,7 @@ Please invite the original Bot into your Server, instead of this one, using [thi
      },
     },
    ],
-   flags: 64,
+   flags: Discord.MessageFlags.Ephemeral,
   })
   .catch(() => undefined);
 };

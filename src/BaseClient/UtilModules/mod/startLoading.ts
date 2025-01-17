@@ -28,5 +28,5 @@ export default async (
  if (cmd instanceof Discord.Message) {
   return replyMsg(cmd, payload);
  }
- return replyCmd(cmd, { ...payload, fetchReply: true });
+ return replyCmd(cmd, { ...payload, withResponse: true });
 };

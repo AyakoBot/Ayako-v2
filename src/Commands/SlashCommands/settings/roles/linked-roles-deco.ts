@@ -144,7 +144,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
      ? Discord.inlineCode(
         `${settings.botToken.split('.')[0]}.${'*'.repeat(
          settings.botToken.split('.')[1]?.length,
-        )}.${'*'.repeat(settings.botToken.split('.')[2].length)}`,
+        )}.${'*'.repeat(settings.botToken.split('.')[2]?.length)}`,
        )
      : language.t.None,
     inline: true,

@@ -15,7 +15,7 @@ type ReturnType<T extends boolean | undefined, K extends Discord.CacheType> = T 
  * Sends a reply to an interaction (button, command, select menu, or modal submit).
  * @param cmd The interaction to reply to.
  * @param payload The reply options to send.
- * @returns If `fetchReply` is `true`, returns the message that was sent.
+ * @returns If `withResponse` is `true`, returns the message that was sent.
  * Otherwise, returns `undefined`.
  * @throws If the interaction is not repliable.
  */
@@ -26,7 +26,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
   | Discord.AnySelectMenuInteraction<K>
   | Discord.ModalSubmitInteraction<K>,
  payload: Discord.InteractionReplyOptions & {
-  fetchReply?: T;
+  withResponse?: T;
  },
 ): Promise<ReturnType<T, K>> => {
  if ('respond' in cmd) return Promise.resolve(undefined);
@@ -80,7 +80,7 @@ const replyCmd = async <T extends boolean | undefined, K extends Discord.CacheTy
  * @param command The command that triggered the interaction.
  * @param commandName The name of the command that triggered the interaction,
  * required for handling cooldowns.
- * @returns The sent message if `fetchReply` is `true`, otherwise `undefined`.
+ * @returns The sent message if `withResponse` is `true`, otherwise `undefined`.
  */
 export default async <T extends boolean | undefined, K extends Discord.CacheType>(
  cmd:
@@ -89,7 +89,7 @@ export default async <T extends boolean | undefined, K extends Discord.CacheType
   | Discord.AnySelectMenuInteraction<K>
   | Discord.ModalSubmitInteraction<K>,
  payload: Discord.InteractionReplyOptions & {
-  fetchReply?: T;
+  withResponse?: T;
  },
  commandName?: string,
 ): Promise<ReturnType<T, K>> => {

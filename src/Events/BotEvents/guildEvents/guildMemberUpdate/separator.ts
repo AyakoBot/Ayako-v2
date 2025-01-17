@@ -159,7 +159,7 @@ export const oneTimeRunner = async (
   })
   .then();
 
- await cmd?.deferReply({ fetchReply: true, ephemeral: true });
+ await cmd?.deferReply({ withResponse: true });
 
  const members = await getMembers(guild, rows);
 

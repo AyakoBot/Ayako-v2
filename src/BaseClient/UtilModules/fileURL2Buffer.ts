@@ -36,4 +36,6 @@ export default async (
     name: fileName,
    };
   })
-  .filter((r): r is { attachment: Buffer; name: string | undefined } => !!r);
+  .filter(
+   (r): r is { attachment: Buffer<ArrayBuffer>; name: string | undefined } => !!r,
+  ) as Discord.AttachmentPayload[];

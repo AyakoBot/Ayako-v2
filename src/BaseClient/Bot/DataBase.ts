@@ -31,13 +31,13 @@ export default prisma
   name: 'Cache Middleware',
   query: {
    guildsettings: {
-    $allOperations: async (data) => handleOperation('guildsettings', 'guildid', data),
+    $allOperations: async (data) => handleOperation('guildsettings', 'guildid', data as never),
    },
    logchannels: {
-    $allOperations: async (data) => handleOperation('logchannels', 'guildid', data),
+    $allOperations: async (data) => handleOperation('logchannels', 'guildid', data as never),
    },
    customclients: {
-    $allOperations: async (data) => handleOperation('customclients', 'guildid', data),
+    $allOperations: async (data) => handleOperation('customclients', 'guildid', data as never),
    },
   },
  })
