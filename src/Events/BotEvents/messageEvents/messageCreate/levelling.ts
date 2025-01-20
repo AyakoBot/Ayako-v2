@@ -62,25 +62,22 @@ const levelling = async (msg: Discord.Message<true>) => {
   return;
  }
 
- if (!settings?.wluserid || !settings.wluserid.includes(msg.author.id)) {
-  if (settings?.bluserid && settings.bluserid.includes(msg.author.id)) return;
-  if (settings?.blroleid && msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))) {
-   return;
-  }
+ const isUserWhitelisted = settings?.wluserid?.includes(msg.author.id);
+ const isRoleWhitelisted = settings?.wlroleid?.length
+  ? msg.member?.roles.cache.some((r) => settings.wlroleid.includes(r.id))
+  : false;
+ const isChannelWhitelisted = settings?.wlchannelid?.length
+  ? settings.wlchannelid.includes(msg.channel.id)
+  : false;
 
-  if (
-   settings?.wlroleid.length &&
-   !msg.member?.roles.cache.some((r) => settings?.wlroleid.includes(r.id))
-  ) {
-   if (settings?.blchannelid && settings.blchannelid.includes(msg.channel.id)) return;
-   if (
-    settings?.wlchannelid &&
-    settings?.wlchannelid.length &&
-    !settings.wlchannelid.includes(msg.channel.id)
-   ) {
-    return;
-   }
-  }
+ if (!isUserWhitelisted && !isRoleWhitelisted && !isChannelWhitelisted) {
+  const isUserBlacklisted = settings?.bluserid?.includes(msg.author.id);
+  const isRoleBlacklisted = settings?.blroleid
+   ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
+   : false;
+  const isChannelBlacklisted = settings?.blchannelid?.includes(msg.channel.id);
+
+  if (isUserBlacklisted || isRoleBlacklisted || isChannelBlacklisted) return;
  }
 
  const rules = await getRules(msg);
@@ -95,15 +92,17 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  const rewardXPMult = rewardroles.map((r) => Number(r.xpmultiplier)).reduce((a, b) => a + b, 0);
+ const baseXP = settings ? Number(settings.xppermsg) - 10 : 15;
 
  if (level) {
-  updateLevels(msg, settings, level, settings ? Number(settings.xppermsg) - 10 : 15, 'guild', [
+  updateLevels(msg, settings, level, baseXP < 0 ? 1 : baseXP, 'guild', [
    settings ? Number(settings.xpmultiplier) + rewardXPMult : 1,
   ]);
+
   return;
  }
 
- insertLevels(msg, 'guild', settings ? Number(settings.xppermsg) - 10 : 15, [
+ insertLevels(msg, 'guild', baseXP < 0 ? 1 : baseXP, [
   settings ? Number(settings.xpmultiplier) : 1,
  ]);
 };
@@ -140,6 +139,7 @@ const updateLevels = async (
    .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
+
  const oldLevel = Number(level.level);
  const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
  const neededXP =
