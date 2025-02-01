@@ -146,9 +146,14 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .create({ data: { userid: cmd.user.id, roleid: role.id, guildid: cmd.guildId } })
   .then();
 
+ await cmd.client.util.sleep(1000);
+
  const positionRole = positionRoleId ? cmd.guild.roles.cache.get(positionRoleId) : undefined;
- if (cmd.guild.id === '672546390915940405') console.log(positionRole?.id);
  if (positionRole) {
+  if (cmd.guild.id === '672546390915940405') {
+   console.log({ position: positionRole.rawPosition, id: role.id });
+  }
+
   await cmd.client.util.request.guilds
    .setRolePositions(cmd.guild, [{ position: positionRole.rawPosition, id: role.id }])
    .catch((e) => console.log(e));
