@@ -106,16 +106,19 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
+ const getUnicodeEmoji = () => (!emoji || emoji.id ? undefined : emoji.name);
+ const getIconEmoji = () =>
+  parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
+   ? parsedIcon
+   : undefined;
+
  const role = await cmd.client.util.request.guilds.createRole(
   cmd.guild,
   {
    name: name ?? cmd.member.displayName,
-   unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
+   unicode_emoji: !getUnicodeEmoji() && getIconEmoji() ? null : undefined,
    color: parsedColor,
-   icon:
-    parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
-     ? parsedIcon
-     : undefined,
+   icon: getUnicodeEmoji() && !getIconEmoji() ? null : undefined,
    permissions: '0',
   },
   cmd.user.username,
@@ -140,13 +143,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  });
 
  cmd.client.util.DataBase.customroles
-  .create({
-   data: {
-    userid: cmd.user.id,
-    roleid: role.id,
-    guildid: cmd.guildId,
-   },
-  })
+  .create({ data: { userid: cmd.user.id, roleid: role.id, guildid: cmd.guildId } })
   .then();
 
  const positionRole = positionRoleId ? cmd.guild.roles.cache.get(positionRoleId) : undefined;
