@@ -57,18 +57,21 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
+ const getUnicodeEmoji = () => (!emoji || emoji.id ? undefined : emoji.name);
+ const getIconEmoji = () =>
+  iconUrl ??
+  icon?.url ??
+  (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
+   ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
+   : undefined);
+
  const editedRole = await cmd.client.util.request.guilds.editRole(cmd.guild, role.id, {
   name,
   hoist,
   mentionable,
-  unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
   color: color ? parseInt(color, 16) : undefined,
-  icon:
-   iconUrl ??
-   icon?.url ??
-   (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
-    ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
-    : undefined),
+  icon: getUnicodeEmoji() && !getIconEmoji() ? null : undefined,
+  unicode_emoji: !getUnicodeEmoji() && getIconEmoji() ? null : undefined,
  });
 
  if ('message' in editedRole) {
