@@ -77,13 +77,10 @@ export const getOwnLevel = async (
 
  const gain = Number(settings?.xpmultiplier ?? 1);
  const xpPerMsg = Number(settings?.xppermsg ?? 15);
+ const xpPerMin = Number(settings?.xppermin ?? 5);
 
  const newLevel = Number(self.level) + 1;
  const neededXP = (5 / 6) * newLevel * (2 * newLevel * newLevel + 27 * newLevel + 91);
- const duration = client.util.moment(
-  Math.floor((neededXP - Number(self.xp)) / (xpPerMsg + 10) / gain) * 60000,
-  language,
- );
 
  return [
   {
@@ -110,7 +107,15 @@ export const getOwnLevel = async (
    name: '\u200b',
    value: lan.thisWillTake(
     Math.ceil((neededXP - Number(self.xp)) / gain / (xpPerMsg + 10)),
-    duration,
+    client.util.moment(
+     Math.floor((neededXP - Number(self.xp)) / (xpPerMsg + 10) / gain) * 60000,
+     language,
+    ),
+    Math.ceil((neededXP - Number(self.xp)) / gain / (xpPerMin + 10)),
+    client.util.moment(
+     Math.floor((neededXP - Number(self.xp)) / (xpPerMin + 10) / gain) * 60000,
+     language,
+    ),
    ),
    inline: false,
   },

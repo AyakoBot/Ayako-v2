@@ -1552,7 +1552,7 @@
    "currentXP": "Current XP:",
    "nextLevelXP": "Next Level XP:",
    "xpDifference": "XP Difference:",
-   "thisWillTake": "> This will take an average of about\n> {{msgs}} counted Messages or\n> {{duration}}\n> since only 1 Message per Minute is counted",
+   "thisWillTake": "> This will take an average of about\n> {{voiceMins}} counted Voice-Minutes or\n> {{voiceDuration}} in VC or\n> {{msgs}} counted Messages or\n> {{msgDuration}} of texting\n> since only 1 Message per Minute is counted",
    "fullLeaderboard": "Full Leaderboard"
   },
   "check": {
