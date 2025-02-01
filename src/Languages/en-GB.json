@@ -3466,75 +3466,75 @@
        "desc": "The Channels these Rules apply in"
       },
       "hasleastattachments": {
-       "name": "Minimum Amount of Attachments",
+       "name": "Min. num. of Attachments",
        "desc": "The minimum Amount of Attachments required for this Message to gain XP"
       },
       "hasmostattachments": {
-       "name": "Maximum Amount of Attachments",
+       "name": "Max. num. of Attachments",
        "desc": "The maximum Amount of Attachments required for this Message to gain XP"
       },
       "hasleastcharacters": {
-       "name": "Minimum Amount of Characters in Content",
+       "name": "Min. num. of Characters in Content",
        "desc": "The minimum Amount of Characters required for this Message to gain XP"
       },
       "hasmostcharacters": {
-       "name": "Maximum Amount of Characters in Content",
+       "name": "Max. num. of Characters in Content",
        "desc": "The maximum Amount of Characters required for this Message to gain XP"
       },
       "hasleastwords": {
-       "name": "Minimum Amount of Words in Content",
+       "name": "Min. num. of Words in Content",
        "desc": "The minimum Amount of Words required for this Message to gain XP"
       },
       "hasmostwords": {
-       "name": "Maximum Amount of Words in Content",
+       "name": "Max. num. of Words in Content",
        "desc": "The maximum Amount of Words required for this Message to gain XP"
       },
       "mentionsleastusers": {
-       "name": "Minimum Amount of User Mentions in Content",
+       "name": "Min. num. of User-Mentions in Content",
        "desc": "The minimum Amount of mentioned Users required for this Message to gain XP"
       },
       "mentionsmostusers": {
-       "name": "Maximum Amount of User Mentions in Content",
+       "name": "Max. num. of User-Mentions in Content",
        "desc": "The maximum Amount of mentioned Users required for this Message to gain XP"
       },
       "mentionsleastchannels": {
-       "name": "Minimum Amount of Channels Mentions in Content",
+       "name": "Min. num. of Channel-Mentions in Content",
        "desc": "The minimum Amount of mentioned Channels required for this Message to gain XP"
       },
       "mentionsmostchannels": {
-       "name": "Maximum Amount of Channels Mentions in Content",
+       "name": "Max. Amount of Channel-Mentions in Content",
        "desc": "The maximum Amount of mentioned Channels required for this Message to gain XP"
       },
       "mentionsleastroles": {
-       "name": "Minimum Amount of Roles Mentions in Content",
+       "name": "Min. num. of Role-Mentions in Content",
        "desc": "The minimum Amount of mentioned Roles required for this Message to gain XP"
       },
       "mentionsmostroles": {
-       "name": "Maximum Amount of Roles Mentions in Content",
+       "name": "Max. num. of Role-Mentions in Content",
        "desc": "The maximum Amount of mentioned Roles required for this Message to gain XP"
       },
       "hasleastlinks": {
-       "name": "Minimum Amount of Links",
+       "name": "Min. num. of Links",
        "desc": "The minimum Amount of Links required for this Message to gain XP"
       },
       "hasmostlinks": {
-       "name": "Maximum Amount of Links",
+       "name": "Max. num. of Links",
        "desc": "The maximum Amount of Links required for this Message to gain XP"
       },
       "hasleastemotes": {
-       "name": "Minimum Amount of Emotes",
+       "name": "Min. num. of Emotes",
        "desc": "The minimum Amount of Emotes required for this Message to gain XP"
       },
       "hasmostemotes": {
-       "name": "Maximum Amount of Emotes",
+       "name": "Max. num. of Emotes",
        "desc": "The maximum Amount of Emotes required for this Message to gain XP"
       },
       "hasleastmentions": {
-       "name": "Minimum Amount of Mentions",
+       "name": "Min. num. of Mentions",
        "desc": "The minimum Amount of Mentions required for this Message to gain XP"
       },
       "hasmostmentions": {
-       "name": "Maximum Amount of Mentions",
+       "name": "Max. num. of Mentions",
        "desc": "The maximum Amount of Mentions required for this Message to gain XP"
       }
      }
@@ -3933,7 +3933,7 @@
     "youNoPerms": "You can't remove AFK from this User",
     "error": "I failed to remove AFK from this User",
     "alreadyApplied": "> {{target}}> isn't AFK",
-    "success": "> {{target}}'s AFK was removed",
+    "success": "AFK of\n> {{target}}\nwas removed",
     "loading": "Removing AFK...",
     "self": "You can't remove AFK from yourself",
     "me": "I won't remove AFK from myself"
@@ -4181,6 +4181,7 @@
   }
  },
  "t": {
+  "Website": "Website",
   "More": "More",
   "useDefaultRP": "Please use the Default RP-Commands (`/hug`, `/pat` etc) if enabled\n`/actions` Commands are for DMs and Servers that don't have Ayako added\n\nIf they aren't enabled, consider asking a Server Administrator to enable them via `/rp manager`",
   "guildOnly": "This Command requires me to be part of this Server",
