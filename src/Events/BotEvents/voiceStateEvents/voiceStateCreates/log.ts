@@ -23,7 +23,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   description: lan.descCreate(
    member.user,
    state.channel,
-   language.channelTypes[state.channel.type],
+   language.channelTypes[state.channel?.type || 'unknownChannel'],
   ),
   timestamp: new Date().toISOString(),
  };
