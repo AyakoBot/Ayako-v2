@@ -59,8 +59,7 @@ export const getXPComponents = (
    },
    {
     label: language.slashCommands.leaderboard.xp,
-    custom_id: `xp`,
-    disabled: true,
+    custom_id: `set-level/${type}/xp_${roleOrUserId}`,
     style: Discord.ButtonStyle.Secondary,
    },
    {
@@ -95,8 +94,7 @@ export const getLevelComponents = (
    },
    {
     label: language.slashCommands.leaderboard.level,
-    custom_id: `lvl`,
-    disabled: true,
+    custom_id: `set-level/${type}/lvl_${roleOrUserId}`,
     style: Discord.ButtonStyle.Secondary,
    },
    {
