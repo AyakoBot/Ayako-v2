@@ -30,7 +30,7 @@ export default {
   postchannels: CT.EditorTypes.Channels,
   pingroles: CT.EditorTypes.Roles,
   pingusers: CT.EditorTypes.Users,
-  time: CT.EditorTypes.Duration,
+  timeout: CT.EditorTypes.Duration,
   jointhreshold: CT.EditorTypes.Number,
   punishmenttof: CT.EditorTypes.Boolean,
   action: CT.EditorTypes.AntiRaidPunishment,
