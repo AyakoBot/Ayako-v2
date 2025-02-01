@@ -272,8 +272,20 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.global(language, settings?.blroleid, CT.GlobalDescType.BLRoleId, name, undefined),
-   buttonParsers.global(language, settings?.bluserid, CT.GlobalDescType.BLUserId, name, undefined),
+   buttonParsers.global(
+    language,
+    settings?.blroleid,
+    CT.GlobalDescType.BLRoleId,
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
+   buttonParsers.global(
+    language,
+    settings?.bluserid,
+    CT.GlobalDescType.BLUserId,
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
   ],
  },
 ];
