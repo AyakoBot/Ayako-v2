@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import ms from 'ms';
+import ms, { type StringValue } from 'ms';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
@@ -22,7 +22,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const verify = (): Promise<{ value?: number; error?: Error }> =>
   new Promise((res) => {
    try {
-    ms(field.value);
+    ms(field.value as StringValue);
     res({ value: cmd.client.util.getDuration(field.value) / 1000 });
    } catch (e) {
     res({ error: e as Error });
