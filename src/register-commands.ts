@@ -7,7 +7,7 @@ import DataBase from './BaseClient/Bot/DataBase.js';
 import commands from './SlashCommands/index.js';
 
 const createCommands = Object.values(commands.public);
-const token = (process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '';
+const token = process.env.Token ?? '';
 
 const requestHandler = (t: string) =>
  new DiscordCore.API(new DiscordRest.REST({ version: '10' }).setToken(t.replace('Bot ', '')));
@@ -28,32 +28,30 @@ await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/comman
  body: JSON.stringify(createCommands.map((c) => c.toJSON())),
 });
 
-if (!process.argv.includes('--dev')) {
- (
-  await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
- ).forEach(async (s) => {
-  const api = requestHandler(s.token ?? '');
+(
+ await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
+).forEach(async (s) => {
+ const api = requestHandler(s.token ?? '');
 
-  await api.applicationCommands
-   .bulkOverwriteGlobalCommands(
-    s.appid ?? '',
-    createCommands
-     .filter((c) => !c.name.includes('action'))
-     .map((c) =>
-      c
-       .setContexts(Discord.InteractionContextType.Guild)
-       .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
-       .toJSON(),
-     ),
-   )
-   .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
-   .catch((e: Error) => {
-    if (!e.message.includes('401')) return;
-    console.log(`Unauthorized for ${s.appid}`, e);
-    DataBase.customclients.delete({ where: { guildid: s.guildid } }).then();
-   });
- });
-}
+ await api.applicationCommands
+  .bulkOverwriteGlobalCommands(
+   s.appid ?? '',
+   createCommands
+    .filter((c) => !c.name.includes('action'))
+    .map((c) =>
+     c
+      .setContexts(Discord.InteractionContextType.Guild)
+      .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
+      .toJSON(),
+    ),
+  )
+  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
+  .catch((e: Error) => {
+   if (!e.message.includes('401')) return;
+   console.log(`Unauthorized for ${s.appid}`, e);
+   DataBase.customclients.delete({ where: { guildid: s.guildid } }).then();
+  });
+});
 
 setTimeout(async () => {
  console.log('Finished. Exiting...');
