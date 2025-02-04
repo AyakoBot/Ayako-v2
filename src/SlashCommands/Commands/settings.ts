@@ -197,6 +197,11 @@ export default new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${process.env.mainName}'s Role Management`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('ping-reporter')
+     .setDescription('Ping Members of a Role when a Role is pinged'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('linked-roles-deco')
      .setDescription('Useage of Linked-Roles purely for aesthetic purposes')
      .addStringOption(idSelector),

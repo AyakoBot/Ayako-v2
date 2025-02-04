@@ -176,7 +176,8 @@
      "FailedToMentionSomeRolesInThread": "Failed to mention some Roles in Thread",
      "SuppressNotifications": "Supress Notifications",
      "IsVoiceMessage": "Voice Message",
-     "ShouldShowLinkNotDiscordWarning": "Should Show Link not Discord Warning"
+     "ShouldShowLinkNotDiscordWarning": "Should Show Link not Discord Warning",
+     "HasSnapshot": "Has Snapshot"
     },
     "reactions": "Reactions",
     "components": "Components",
@@ -826,6 +827,12 @@
   },
   "interactionCreate": {
    "cooldown": "This Command is on Cooldown"
+  },
+  "messageCreate": {
+   "pingReporter": {
+    "author": "Role Mentioned",
+    "desc": "> {{role}}> was mentioned by\n> {{user}}> in\n> {{channel}}"
+   }
   }
  },
  "punishmentAction": {
@@ -2552,6 +2559,24 @@
     "deleted": "{{setting}} Setting deleted"
    },
    "categories": {
+    "ping-reporter": {
+     "name": "Ping-Report",
+     "description": "Discord's Push-Notification delivery is somewhat unreliable on large servers.\n**Note:** This requires the Role to have less than 100 Members\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> -# - On large Servers Discord will go through every Member and check if they are elligible for a Notification at a very slow Rate. Causing up to Hour long Delays on Push-Notifications\n> 2. Ayako sends a Log-Message into your specified Channel along with a @Mention for every of the Roles Members\n> -# - This causes Discord to start a second Notification-Process, but only on the mentioned Members. Making them receive the Push-Notification almost instantly",
+     "fields": {
+      "channelIds": {
+       "name": "Channel",
+       "desc": "The Channel to send the Ping-Report to"
+      },
+      "roleIds": {
+       "name": "Roles",
+       "desc": "The Roles to of which the Members to ping"
+      },
+      "cooldown": {
+       "name": "Cooldown",
+       "desc": "The Cooldown between Ping-Reports"
+      }
+     }
+    },
     "linked-roles-deco": {
      "name": "Linked-Roles-Decoration",
      "apply": {
@@ -4181,6 +4206,7 @@
   }
  },
  "t": {
+  "JumpToMessage": "Jump to Message",
   "Website": "Website",
   "More": "More",
   "useDefaultRP": "Please use the Default RP-Commands (`/hug`, `/pat` etc) if enabled\n`/actions` Commands are for DMs and Servers that don't have Ayako added\n\nIf they aren't enabled, consider asking a Server Administrator to enable them via `/rp manager`",

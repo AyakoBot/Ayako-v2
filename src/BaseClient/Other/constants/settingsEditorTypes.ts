@@ -338,4 +338,9 @@ export default {
   botSecret: CT.EditorTypes.BotToken,
   allowedUsers: CT.EditorTypes.Users,
  },
+ [CT.SettingNames.PingReporter]: {
+  roleIds: CT.EditorTypes.Roles,
+  channelIds: CT.EditorTypes.Channels,
+  cooldown: CT.EditorTypes.Duration,
+ },
 };

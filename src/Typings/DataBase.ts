@@ -71,4 +71,5 @@ export interface DataBaseTables {
  customclients: Prisma.customclients;
  afksettings: Prisma.afksettings;
  linkedRolesDeco: Prisma.linkedRolesDeco;
+ pingReport: Prisma.pingReport;
 }

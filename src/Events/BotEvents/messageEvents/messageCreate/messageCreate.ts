@@ -16,6 +16,7 @@ import notificationThread from './notificationThread.js';
 import other from './other.js';
 import stickyMessage from './stickyMessage.js';
 import tta from './tta.js';
+import pingReporter from './pingReporter.js';
 
 import dmLog from './dmLog.js';
 import dmResponse from './dmResponse.js';
@@ -35,6 +36,7 @@ export default async (msg: Discord.Message) => {
   antispam(msg);
   notificationThread(msg);
   customEmbedThread(msg);
+  pingReporter(msg);
 
   dmResponse(msg);
  } else {

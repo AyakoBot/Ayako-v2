@@ -58,8 +58,8 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     value: settings.token
      ? client.util.util.makeInlineCode(
         `${settings.token.split('.')[0]}.${'*'.repeat(
-         settings.token.split('.')[1].length,
-        )}.${'*'.repeat(settings.token.split('.')[2].length)}`,
+         settings.token.split('.')[1]?.length,
+        )}.${'*'.repeat(settings.token.split('.')[2]?.length)}`,
        )
      : language.t.None,
    },
