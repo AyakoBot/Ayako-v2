@@ -3,7 +3,7 @@
  */
 export default {
  levelupemotes: [
-  { name: '🆙', animated: false, id: null },
+  { name: '🆙', animated: false, id: undefined },
   { name: 'AyakoPeek', id: '1155535675077165087', animated: false },
  ],
  switch: {
