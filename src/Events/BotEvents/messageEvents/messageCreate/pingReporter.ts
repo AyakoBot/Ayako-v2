@@ -24,7 +24,7 @@ export default async (msg: Message) => {
 
  settings.forEach(async (s) => {
   const pingedMembers = await runReporter(s, msg, language, cooldownKeys, me);
-  if (msg.guild.memberCount - 100 < msg.guild.members.cache.size) return;
+  if (msg.guild.memberCount === msg.guild.members.cache.size) return;
 
   const members = await msg.client.util.fetchAllGuildMembers(msg.guild);
   const notPinged = members.filter(
