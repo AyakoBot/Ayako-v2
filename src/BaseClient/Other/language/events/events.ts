@@ -7,9 +7,11 @@ import logs from './logs/logs.js';
 import ready from './logs/ready.js';
 import vote from './logs/vote.js';
 import messageCreate from './messageCreate.js';
+import redis from './redis.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events,
+ redis: redis(t),
  logs: logs(t),
  guildMemberUpdate: guildMemberUpdate(t),
  guildMemberAdd: guildMemberAdd(t),

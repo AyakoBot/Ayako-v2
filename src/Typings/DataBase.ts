@@ -72,4 +72,5 @@ export interface DataBaseTables {
  afksettings: Prisma.afksettings;
  linkedRolesDeco: Prisma.linkedRolesDeco;
  pingReport: Prisma.pingReport;
+ votePunish: Prisma.votePunish;
 }

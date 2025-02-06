@@ -24,4 +24,5 @@ export default (t: CT.Language) => ({
  reactionroles: t.stp(t.JSON.autotypes.reactionroles, { t }),
  buttonroles: t.stp(t.JSON.autotypes.buttonroles, { t }),
  antiraid: t.stp(t.JSON.autotypes.antiraid, { t }),
+ votepunish: t.stp(t.JSON.autotypes.votepunish, { t }),
 });

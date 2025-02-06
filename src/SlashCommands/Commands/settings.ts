@@ -73,6 +73,12 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandSubcommandBuilder()
      .setName('expiry')
      .setDescription('Define when logged Punishments expire'),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('vote-punish')
+     .setDescription('In case of idle Staff, let Members vote to keep offenders in Chat')
+     .addStringOption(idSelector),
    ),
  )
  .addSubcommandGroup(

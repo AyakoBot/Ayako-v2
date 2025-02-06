@@ -3,8 +3,8 @@
  */
 export default {
  levelupemotes: [
-  { name: '🆙' },
-  { name: 'AMayakopeek', id: '1155535675077165087', animated: false },
+  { name: '🆙', animated: false, id: null },
+  { name: 'AyakoPeek', id: '1155535675077165087', animated: false },
  ],
  switch: {
   disabled: [

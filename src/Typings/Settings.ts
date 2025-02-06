@@ -154,6 +154,7 @@ export enum SettingNames {
  Afk = 'afk',
  LinkedRolesDeco = 'linked-roles-deco',
  PingReporter = 'ping-reporter',
+ VotePunish = 'vote-punish',
 }
 
 export const SettingsName2TableName = {
@@ -200,6 +201,7 @@ export const SettingsName2TableName = {
  [SettingNames.Afk]: 'afksettings',
  [SettingNames.LinkedRolesDeco]: 'linkedRolesDeco',
  [SettingNames.PingReporter]: 'pingReport',
+ [SettingNames.VotePunish]: 'votePunish',
 } as const;
 
 export type CRUDResult<T extends keyof typeof SettingsName2TableName> = Promise<

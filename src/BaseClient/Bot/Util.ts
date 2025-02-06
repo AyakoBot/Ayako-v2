@@ -97,6 +97,11 @@ import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import channelStatusManager from '../UtilModules/channelStatusManager.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
+import setScheduled from '../UtilModules/setScheduled.js';
+import getScheduled from '../UtilModules/getScheduled.js';
+import delScheduled from '../UtilModules/delScheduled.js';
+import setRatelimit from '../UtilModules/setRatelimit.js';
+import getRatelimit from '../UtilModules/getRatelimit.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -202,6 +207,11 @@ interface Util {
  guildOnly: typeof guildOnly;
  Colors: typeof Colors;
  channelStatusManager: typeof channelStatusManager;
+ setScheduled: typeof setScheduled;
+ getScheduled: typeof getScheduled;
+ delScheduled: typeof delScheduled;
+ setRatelimit: typeof setRatelimit;
+ getRatelimit: typeof getRatelimit;
 }
 
 const util: Util = {
@@ -301,6 +311,11 @@ const util: Util = {
  guildOnly,
  Colors,
  channelStatusManager,
+ setScheduled,
+ getScheduled,
+ delScheduled,
+ setRatelimit,
+ getRatelimit,
 };
 
 export default util;

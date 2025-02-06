@@ -1,5 +1,14 @@
 {
  "events": {
+  "redis": {
+   "votePunish": {
+    "content": "Uh oh! It seems the Members of `{{roleName}}` are unresponsive.\n\n## {{user}} please select the Member this mention is about in the Menu below.\n-# Members of the mentioned Role may end this lockdown using the `Cancel` Button below\n-# Please pick by {{time}}",
+    "placeholder": "Select Offenders",
+    "pick": "Vote for Offenders",
+    "voteContent": "Above Users have been selected as Offenders. Please Vote in the Menu below if this is correct.\n-# Please vote by {{time}}\n-# You need {{roles}} to participate in this Vote",
+    "thanks": "Thanks for voting. Voting again will overwrite your previous Vote."
+   }
+  },
   "logs": {
    "sticker": {
     "descUpdateAudit": "> {{user}}> has updated\n> {{sticker}}",
@@ -1435,6 +1444,7 @@
   "2": "Gallery View"
  },
  "autotypes": {
+  "votepunish": "{{t.botName}} Vote-Punish",
   "voiceHub": "{{t.botName}} Voice-Hubs",
   "verification": "{{t.botName}} Verification",
   "shop": "{{t.botName}} Shop",
@@ -2559,6 +2569,48 @@
     "deleted": "{{setting}} Setting deleted"
    },
    "categories": {
+    "vote-punish": {
+     "name": "Vote-Punish",
+     "description": "Your Staff isn't always available, and that's alright. With this you can prepare for that Situation and let your Chat moderate itself.\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> 2. Ayako waits for a Staff Member to write something in chat or execute a Punishment until the Cooldown wears off\n> 3. If no Staff Member appears in time, Ayako will lock the Channel and ask the User who mentioned which Member this Mention is about.\n> 4. Ayako will then start a Vote to decide if the mentioned Member should be punished.\n> -# - The mentioned Member can't vote\n> -# - Only Members with the required Role can vote. \n> -# - If no required Role is set everyone can vote.\n> -# - The vote requires at least the Amount of Votes you specified to pass.\n> 5. If the Vote passes, Ayako will execute the Punishment you specified for the specified Duration.\n> 6. Ayako will unlock the Channel again.\n> 7. A Log-Message will be sent to the specified Log-Channel.",
+     "fields": {
+      "voteInitRoles": {
+       "name": "Vote-Init Roles",
+       "desc": "The Roles that can initiate Votes (if none set, all Roles can initiate Votes)"
+      },
+      "roleId": {
+       "name": "Mentioned Role",
+       "desc": "The Role that needs to be mentioned"
+      },
+      "channelIds": {
+       "name": "Channels",
+       "desc": "The Channels to listen for Mentions in (if none set, all Channels will be listened to)"
+      },
+      "reqRoles": {
+       "name": "Required Vote-Roles",
+       "desc": "The Roles required to vote (if none set, all Roles can vote, Voters only need one of these)"
+      },
+      "reqRoleAmount": {
+       "name": "Required Vote-Amount",
+       "desc": "The Amount of Members with the required Role that need to vote for the Vote to pass"
+      },
+      "cooldown": {
+       "name": "Cooldown",
+       "desc": "The Time to wait before assuming Staff is currently idle"
+      },
+      "punishment": {
+       "name": "Punishment",
+       "desc": "The Punishment to execute if the Vote passes"
+      },
+      "duration": {
+       "name": "Duration",
+       "desc": "The Duration of the Punishment"
+      },
+      "deleteMessageSeconds": {
+       "name": "Delete Messages Time-Span",
+       "desc": "Time-Span of Messages to Delete (Max. 7 Days)"
+      }
+     }
+    },
     "ping-reporter": {
      "name": "Ping-Report",
      "description": "Discord's Push-Notification delivery is somewhat unreliable on large servers.\n**Note:** This requires the Role to have less than 100 Members\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> -# - On large Servers Discord will go through every Member and check if they are elligible for a Notification at a very slow Rate. Causing up to Hour long Delays on Push-Notifications\n> 2. Ayako sends a Log-Message into your specified Channel along with a @Mention for every of the Roles Members\n> -# - This causes Discord to start a second Notification-Process, but only on the mentioned Members. Making them receive the Push-Notification almost instantly",
@@ -3953,7 +4005,7 @@
   },
   "execution": {
    "unAfk": {
-    "dm": "Your AFK has been removed",
+    "dm": "> Your AFK has been removed",
     "meNoPerms": "I can't add Roles to this User",
     "youNoPerms": "You can't remove AFK from this User",
     "error": "I failed to remove AFK from this User",
@@ -3964,7 +4016,7 @@
     "me": "I won't remove AFK from myself"
    },
    "strikeAdd": {
-    "dm": "You have been Striked",
+    "dm": "> You have been Striked",
     "meNoPerms": "I can't Strike this User",
     "youNoPerms": "You can't Strike this User",
     "error": "I failed to Strike this User",
@@ -4001,7 +4053,7 @@
     "me": "I won't remove Roles from myself"
    },
    "tempMuteAdd": {
-    "dm": "You have been Muted",
+    "dm": "> You have been Muted",
     "meNoPerms": "I can't Mute this User",
     "youNoPerms": "You can't Mute this User",
     "error": "I failed to Mute this User",
@@ -4013,7 +4065,7 @@
     "durationTooLong": "Duration cannot be longer than 28 Days"
    },
    "muteRemove": {
-    "dm": "You have been Un-Muted",
+    "dm": "> You have been Un-Muted",
     "meNoPerms": "I can't Un-Mute this User",
     "youNoPerms": "You can't Un-Mute this User",
     "error": "I failed to Un-Mute this User",
@@ -4025,7 +4077,7 @@
     "reason": "Mute ended"
    },
    "banAdd": {
-    "dm": "You have been Banned from\n> {{guild}}",
+    "dm": "> You have been Banned from\n> {{guild}}",
     "meNoPerms": "I can't Ban this User",
     "youNoPerms": "You can't Ban this User",
     "error": "I failed to Ban this User",
@@ -4036,7 +4088,7 @@
     "me": "I won't Ban myself"
    },
    "softBanAdd": {
-    "dm": "You have been Soft-Banned from\n> {{guild}}",
+    "dm": "> You have been Soft-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Soft-Ban this User",
     "youNoPerms": "You can't Soft-Ban this User",
     "error": "I failed to Soft-Ban this User",
@@ -4047,7 +4099,7 @@
     "me": "I won't Soft-Ban myself"
    },
    "tempBanAdd": {
-    "dm": "You have been Temp-Banned from\n> {{guild}}",
+    "dm": "> You have been Temp-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Temp-Ban this User",
     "youNoPerms": "You can't Temp-Ban this User",
     "error": "I failed to Temp-Ban this User",
@@ -4058,7 +4110,7 @@
     "me": "I won't Temp-Ban myself"
    },
    "channelBanAdd": {
-    "dm": "You have been Channel-Banned from\n> {{channel}}",
+    "dm": "> You have been Channel-Banned from\n> {{channel}}",
     "meNoPerms": "I can't Channel-Ban this User",
     "youNoPerms": "You can't Channel-Ban this User",
     "error": "I failed to Channel-Ban this User",
@@ -4070,7 +4122,7 @@
     "importantChannel": "You can't Channel-Ban Members from the Server's Rules-Channel"
    },
    "tempChannelBanAdd": {
-    "dm": "You have been Temp-Channel-Banned from\n> {{channel}}",
+    "dm": "> You have been Temp-Channel-Banned from\n> {{channel}}",
     "meNoPerms": "I can't Temp-Channel-Ban this User",
     "youNoPerms": "You can't Temp-Channel-Ban this User",
     "error": "I failed to Temp-Channel-Ban this User",
@@ -4081,7 +4133,7 @@
     "me": "I won't Temp-Channel-Ban myself"
    },
    "channelBanRemove": {
-    "dm": "You have been Channel-Unbanned from\n> {{channel}}",
+    "dm": "> You have been Channel-Unbanned from\n> {{channel}}",
     "meNoPerms": "I can't Channel-Unban this User",
     "youNoPerms": "You can't Channel-Unban this User",
     "error": "I failed to Channel-Unban this User",
@@ -4092,7 +4144,7 @@
     "me": "I won't Channel-Unban myself"
    },
    "banRemove": {
-    "dm": "You have been Un-Banned from\n> {{guild}}",
+    "dm": "> You have been Un-Banned from\n> {{guild}}",
     "meNoPerms": "I can't Un-Ban this User",
     "youNoPerms": "You can't Un-Ban this User",
     "error": "I failed to Un-Ban this User",
@@ -4103,7 +4155,7 @@
     "me": "I won't Un-Ban myself"
    },
    "kickAdd": {
-    "dm": "You have been Kicked from\n> {{guild}}",
+    "dm": "> You have been Kicked from\n> {{guild}}",
     "meNoPerms": "I can't Kick this User",
     "youNoPerms": "You can't Kick this User",
     "error": "I failed to Kick this User",
@@ -4114,7 +4166,7 @@
     "me": "I won't Kick myself"
    },
    "warnAdd": {
-    "dm": "You have been Warned",
+    "dm": "> You have been Warned",
     "meNoPerms": "I can't Warn this User",
     "youNoPerms": "You can't Warn this User",
     "error": "I failed to Warn this User",
@@ -4125,7 +4177,7 @@
     "me": "I won't Warn myself"
    },
    "softWarnAdd": {
-    "dm": "You have been Soft-Warned",
+    "dm": "> You have been Soft-Warned",
     "meNoPerms": "I can't Soft-Warn this User",
     "youNoPerms": "You can't Soft-Warn this User",
     "error": "I failed to Soft-Warn this User",
@@ -4136,7 +4188,7 @@
     "me": "I won't Soft-Warn myself"
    },
    "vcMuteAdd": {
-    "dm": "You have been Voice-Muted",
+    "dm": "> You have been Voice-Muted",
     "meNoPerms": "I can't Voice-Mute this User",
     "youNoPerms": "You can't Voice-Mute this User",
     "error": "I failed to Voice-Mute this User",
@@ -4147,7 +4199,7 @@
     "me": "I won't Voice-Mute myself"
    },
    "vcTempMuteAdd": {
-    "dm": "You have been Temp-Voice-Muted",
+    "dm": "> You have been Temp-Voice-Muted",
     "meNoPerms": "I can't Temp-Voice-Mute this User",
     "youNoPerms": "You can't Temp-Voice-Mute this User",
     "error": "I failed to Temp-Voice-Mute this User",
@@ -4158,7 +4210,7 @@
     "me": "I won't Temp-Voice-Mute myself"
    },
    "vcMuteRemove": {
-    "dm": "You have been Voice-Un-Muted",
+    "dm": "> You have been Voice-Un-Muted",
     "meNoPerms": "I can't Voice-Un-Mute this User",
     "youNoPerms": "You can't Voice-Un-Mute this User",
     "error": "I failed to Voice-Un-Mute this User",
@@ -4170,7 +4222,7 @@
     "reason": "VC-Mute ended"
    },
    "vcDeafenAdd": {
-    "dm": "You have been Voice-Deafened",
+    "dm": "> You have been Voice-Deafened",
     "meNoPerms": "I can't Voice-Deafen this User",
     "youNoPerms": "You can't Voice-Deafen this User",
     "error": "I failed to Voice-Deafen this User",
@@ -4181,7 +4233,7 @@
     "me": "I won't Voice-Deafen myself"
    },
    "vcTempDeafenAdd": {
-    "dm": "You have been Temp-Voice-Deafened",
+    "dm": "> You have been Temp-Voice-Deafened",
     "meNoPerms": "I can't Temp-Voice-Deafen this User",
     "youNoPerms": "You can't Temp-Voice-Deafen this User",
     "error": "I failed to Temp-Voice-Deafen this User",
@@ -4192,7 +4244,7 @@
     "me": "I won't Temp-Voice-Deafen myself"
    },
    "vcDeafenRemove": {
-    "dm": "You have been Voice-Un-Deafened",
+    "dm": "> You have been Voice-Un-Deafened",
     "meNoPerms": "I can't Voice-Un-Deafen this User",
     "youNoPerms": "You can't Voice-Un-Deafen this User",
     "error": "I failed to Voice-Un-Deafen this User",
@@ -4206,6 +4258,7 @@
   }
  },
  "t": {
+  "Cancel": "Cancel",
   "JumpToMessage": "Jump to Message",
   "Website": "Website",
   "More": "More",

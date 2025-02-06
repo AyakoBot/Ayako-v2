@@ -1,4 +1,5 @@
 import Redis from 'ioredis';
+import { glob } from 'glob';
 
 import AutomodCache from './Cache/automod.js';
 import BanCache from './Cache/ban.js';
@@ -24,12 +25,17 @@ import UserCache from './Cache/user.js';
 import VoiceCache from './Cache/voice.js';
 import WebhookCache from './Cache/webhook.js';
 
-const redis = new Redis({ host: 'redis' });
+const db = process.argv.includes('--dev') ? 2 : 0;
+
+const redis = new Redis({ host: 'redis', db });
+const subscriber = new Redis({ host: 'redis', db });
 
 export default redis;
 
-export const prefix = `${process.env.mainId}:cache:${process.argv.includes('--dev') ? 'dev' : 'prod'}`;
+export const prefix = `${process.env.mainId}:cache`;
 await redis.keys(`${prefix}:*`).then((r) => (r.length ? redis.del(r) : 0));
+await redis.config('SET', 'notify-keyspace-events', 'Ex');
+await subscriber.subscribe(`__keyevent@${db}__:expired`);
 
 export const cache = {
  automods: new AutomodCache(prefix, redis),
@@ -56,3 +62,27 @@ export const cache = {
  voices: new VoiceCache(prefix, redis),
  webhooks: new WebhookCache(prefix, redis),
 };
+
+subscriber.on('message', async (channel, key) => {
+ if (channel !== `__keyevent@${db}__:expired`) return;
+ if (key.includes('scheduled-data:')) return;
+
+ const keyArgs = key.split(/:/g).slice(2);
+ const path = keyArgs.filter((k) => Number.isNaN(+k)).join('/');
+
+ const dataKey = key.replace('scheduled:', 'scheduled-data:');
+ const value = await redis.get(dataKey);
+ redis.expire(dataKey, 10);
+
+ const files = await glob(
+  `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Events/RedisEvents/**/*`,
+ );
+
+ const file = files.find((f) => f.endsWith(`${path}.js`));
+ if (!file) return;
+
+ // eslint-disable-next-line no-console
+ console.log(path);
+
+ (await import(file)).default(value ? JSON.parse(value) : undefined);
+});

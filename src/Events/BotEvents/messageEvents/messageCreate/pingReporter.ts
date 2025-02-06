@@ -1,7 +1,6 @@
 import type { pingReport } from '@prisma/client';
 import { ButtonStyle, ComponentType, GuildMember, type APIEmbed, type Message } from 'discord.js';
 import type { Language } from 'src/Typings/Typings.js';
-import Redis from '../../../../BaseClient/Bot/Redis.js';
 
 export default async (msg: Message) => {
  if (!msg.inGuild()) return;
@@ -20,10 +19,9 @@ export default async (msg: Message) => {
 
  const language = await msg.client.util.getLanguage(msg.guildId);
  const me = await msg.client.util.getBotMemberFromGuild(msg.guild);
- const cooldownKeys = await Redis.keys(`${process.env.mainId}:ratelimits:*`);
 
  settings.forEach(async (s) => {
-  const pingedMembers = await runReporter(s, msg, language, cooldownKeys, me);
+  const pingedMembers = await runReporter(s, msg, language, me);
   if (msg.guild.memberCount === msg.guild.members.cache.size) return;
 
   const members = await msg.client.util.fetchAllGuildMembers(msg.guild);
@@ -32,7 +30,7 @@ export default async (msg: Message) => {
   );
   if (!notPinged.length) return;
 
-  await runReporter(s, msg, language, cooldownKeys, me, notPinged);
+  await runReporter(s, msg, language, me, notPinged);
  });
 };
 
@@ -40,21 +38,20 @@ const runReporter = async (
  settings: pingReport,
  msg: Message<true>,
  language: Language,
- cooldownKeys: string[],
  me: GuildMember,
  fixedMembers?: GuildMember[],
 ) => {
  const role = msg.guild.roles.cache.get(settings.roleId!);
  if (!role) return [];
 
- if (cooldownKeys.includes(`${process.env.mainId}:ratelimits:${settings.roleId}`)) return [];
+ if (await msg.client.util.getRatelimit(`pingReporter:${role.id}`)) return [];
 
  const lan = language.events.messageCreate.pingReporter;
 
  const members = fixedMembers ?? role.members.map((m) => m.id);
  if (members.length > 100) return [];
 
- Redis.setex(`${process.env.mainId}:ratelimits:${role.id}`, Number(settings.cooldown), 'true');
+ msg.client.util.setRatelimit(`pingReporter:${role.id}`, Number(settings.cooldown));
 
  const content = members.map((m) => `<@${m}>`).join(' ');
 

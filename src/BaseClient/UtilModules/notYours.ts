@@ -8,7 +8,10 @@ import reply from './replyCmd.js';
  * @param interaction - The button interaction that triggered the error message.
  * @param language - An object containing the language strings to use for the error message.
  */
-export default (interaction: Discord.ButtonInteraction, language: CT.Language) =>
+export default (
+ interaction: Discord.ButtonInteraction | Discord.AnySelectMenuInteraction,
+ language: CT.Language,
+) =>
  reply(interaction, {
   embeds: [
    {
