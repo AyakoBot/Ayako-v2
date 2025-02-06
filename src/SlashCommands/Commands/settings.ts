@@ -198,7 +198,8 @@ export default new Discord.SlashCommandBuilder()
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
      .setName('ping-reporter')
-     .setDescription('Ping Members of a Role when a Role is pinged'),
+     .setDescription('Ping Members of a Role when a Role is pinged')
+     .addStringOption(idSelector),
    )
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()

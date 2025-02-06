@@ -339,7 +339,7 @@ export default {
   allowedUsers: CT.EditorTypes.Users,
  },
  [CT.SettingNames.PingReporter]: {
-  roleIds: CT.EditorTypes.Roles,
+  roleId: CT.EditorTypes.Role,
   channelIds: CT.EditorTypes.Channels,
   cooldown: CT.EditorTypes.Duration,
  },

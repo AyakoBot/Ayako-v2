@@ -2567,9 +2567,9 @@
        "name": "Channel",
        "desc": "The Channel to send the Ping-Report to"
       },
-      "roleIds": {
-       "name": "Roles",
-       "desc": "The Roles to of which the Members to ping"
+      "roleId": {
+       "name": "Role",
+       "desc": "The Role to of which the Members to ping"
       },
       "cooldown": {
        "name": "Cooldown",
