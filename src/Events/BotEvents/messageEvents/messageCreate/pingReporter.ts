@@ -13,6 +13,7 @@ export default async (msg: Message) => {
    guildid: msg.guildId,
    roleId: { in: msg.mentions.roles.map((r) => r.id) },
    channelIds: { isEmpty: false },
+   active: true,
   },
  });
  if (!settings) return;
