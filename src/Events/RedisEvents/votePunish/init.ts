@@ -45,7 +45,7 @@ export default async (payload: {
       type: ComponentType.UserSelect,
       custom_id: `votePunish_${payload.id}_${payload.userId}`,
       placeholder: lan.placeholder,
-      max_values: 25,
+      max_values: 24,
       min_values: 1,
      },
     ],

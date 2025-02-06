@@ -66,7 +66,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  });
 
  const fields = settings.map((s) => ({
-  name: `${lan.fields.roleId.name}: \`${s.roleId ? `<@&${s.roleId}>` : language.t.None}\` - ${
+  name: `${lan.fields.roleId.name}: ${s.roleId ? `<@&${s.roleId}>` : language.t.None} - ${
    lan.fields.punishment.name
   }: \`${
    s.punishment
