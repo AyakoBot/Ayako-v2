@@ -106,7 +106,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: language.slashCommands.settings.active,
     value: embedParsers.boolean(settings?.active, language),
-    inline: true,
+    inline: false,
    },
    {
     name: lan.fields.cooldown.name,
@@ -119,12 +119,12 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    {
     name: lan.fields.roleId.name,
     value: embedParsers.role(settings?.roleId, language),
-    inline: false,
+    inline: true,
    },
    {
     name: lan.fields.channelIds.name,
     value: embedParsers.channels(settings?.channelIds, language),
-    inline: false,
+    inline: true,
    },
   ],
  },
@@ -158,11 +158,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings.uniquetimestamp),
    ),
-  ],
- },
- {
-  type: Discord.ComponentType.ActionRow,
-  components: [
    buttonParsers.specific(
     language,
     settings.roleId,
