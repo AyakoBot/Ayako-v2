@@ -23,7 +23,7 @@ export default async (state: Discord.VoiceState, member?: Discord.GuildMember) =
   description: lan.descDelete(
    member.user,
    state.channel,
-   language.channelTypes[state.channel.type],
+   state.channel ? language.channelTypes[state.channel.type] : language.channelTypes.unknownChannel,
   ),
   timestamp: new Date().toISOString(),
  };
