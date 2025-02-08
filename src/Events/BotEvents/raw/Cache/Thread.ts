@@ -9,6 +9,7 @@ import {
  type GatewayThreadUpdateDispatchData,
 } from 'discord.js';
 import RedisClient, { cache as redis } from '../../../../BaseClient/Bot/Redis.js';
+import scanKeys from '../../../../BaseClient/UtilModules/scanKeys.js';
 
 export default {
  [GatewayDispatchEvents.ThreadCreate]: (data: GatewayThreadCreateDispatchData) =>
@@ -17,11 +18,11 @@ export default {
  [GatewayDispatchEvents.ThreadDelete]: (data: GatewayThreadDeleteDispatchData) => {
   redis.threads.del(data.id);
 
-  RedisClient.keys(`${redis.messages.key}:${data.guild_id}:${data.id}:*`).then((keys) =>
+  scanKeys(`${redis.messages.key}:${data.guild_id}:${data.id}:*`).then((keys) =>
    keys.length ? RedisClient.del(keys) : 0,
   );
 
-  RedisClient.keys(`${redis.threadMembers.key}:${data.guild_id}:${data.id}:*`).then((keys) =>
+  scanKeys(`${redis.threadMembers.key}:${data.guild_id}:${data.id}:*`).then((keys) =>
    keys.length ? RedisClient.del(keys) : 0,
   );
  },

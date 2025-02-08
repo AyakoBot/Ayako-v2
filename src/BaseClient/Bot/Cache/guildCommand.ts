@@ -54,10 +54,9 @@ export default class GuildCommandCache extends Cache<
   return this.redis.get(`${this.key()}:${gId}:${id}`).then((data) => this.stringToData(data));
  }
 
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(id: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  // eslint-disable-next-line class-methods-use-this

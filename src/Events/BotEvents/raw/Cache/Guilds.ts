@@ -31,6 +31,7 @@ import RedisClient, {
  cache as redis,
  prefix as redisKey,
 } from '../../../../BaseClient/Bot/Redis.js';
+import scanKeys from '../../../../BaseClient/UtilModules/scanKeys.js';
 
 export default {
  [GatewayDispatchEvents.GuildAuditLogEntryCreate]: (
@@ -64,13 +65,13 @@ export default {
  },
 
  [GatewayDispatchEvents.GuildDelete]: (data: GatewayGuildDeleteDispatchData) =>
-  RedisClient.keys(`${redisKey}:${data.id}:*`).then((r) => (r.length ? RedisClient.del(r) : 0)),
+  scanKeys(`${redisKey}:${data.id}:*`).then((r) => (r.length ? RedisClient.del(r) : 0)),
 
  [GatewayDispatchEvents.GuildUpdate]: (data: GatewayGuildUpdateDispatchData) =>
   redis.guilds.set(data),
 
  [GatewayDispatchEvents.GuildEmojisUpdate]: async (data: GatewayGuildEmojisUpdateDispatchData) => {
-  await RedisClient.keys(`${redis.emojis.key()}:${data.guild_id}:*`).then((r) =>
+  await scanKeys(`${redis.emojis.key()}:${data.guild_id}:*`).then((r) =>
    r.length ? RedisClient.del(r) : 0,
   );
 
@@ -177,7 +178,7 @@ export default {
  [GatewayDispatchEvents.GuildSoundboardSoundsUpdate]: async (
   data: GatewayGuildSoundboardSoundsUpdateDispatchData,
  ) => {
-  await RedisClient.keys(`${redis.soundboards.key()}:${data.guild_id}:*`).then((r) =>
+  await scanKeys(`${redis.soundboards.key()}:${data.guild_id}:*`).then((r) =>
    r.length ? RedisClient.del(r) : 0,
   );
 
@@ -189,7 +190,7 @@ export default {
  [GatewayDispatchEvents.GuildStickersUpdate]: async (
   data: GatewayGuildStickersUpdateDispatchData,
  ) => {
-  await RedisClient.keys(`${redis.stickers.key()}:${data.guild_id}:*`).then((r) =>
+  await scanKeys(`${redis.stickers.key()}:${data.guild_id}:*`).then((r) =>
    r.length ? RedisClient.del(r) : 0,
   );
 

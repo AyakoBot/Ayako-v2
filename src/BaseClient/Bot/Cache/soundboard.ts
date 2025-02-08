@@ -39,10 +39,9 @@ export default class SoundboardCache extends Cache<APISoundboardSound> {
   return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
  }
 
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(id: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APISoundboardSound) {

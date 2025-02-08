@@ -42,10 +42,9 @@ export default class ReactionCache extends Cache<APIReaction> {
   return this.redis.get(`${this.key()}:${mId}:${eId}`).then((data) => this.stringToData(data));
  }
 
- del(mId: string, eId: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${mId}:${eId}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(mId: string, eId: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${mId}:${eId}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIReaction, guildId: string, channelId: string, messageId: string) {

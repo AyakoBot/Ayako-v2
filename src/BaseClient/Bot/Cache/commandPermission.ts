@@ -30,10 +30,9 @@ export default class CommandPermissionCache extends Cache<APIApplicationCommandP
   return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
  }
 
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(id: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIApplicationCommandPermission, guildId: string) {

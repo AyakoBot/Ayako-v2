@@ -23,6 +23,7 @@ import type {
  APIWebhook,
 } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
+import scanKeys from '../../UtilModules/scanKeys.js';
 import type { RAutomod } from './automod';
 import type { RBan } from './ban';
 import type { RChannel, RChannelTypes } from './channel';
@@ -153,6 +154,10 @@ export default abstract class Cache<
 
  key(id?: string) {
   return `${this.prefix}${id ? `:${id}` : '*'}`;
+ }
+
+ static async scanKeys(pattern: string): Promise<string[]> {
+  return scanKeys(pattern);
  }
 
  abstract set(...args: [T, string, string, string]): Promise<boolean>;

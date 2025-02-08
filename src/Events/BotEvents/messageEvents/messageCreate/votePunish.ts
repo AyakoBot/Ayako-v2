@@ -1,5 +1,4 @@
 import type { Message } from 'discord.js';
-import redis from '../../../../BaseClient/Bot/Redis.js';
 import { prefix } from '../../../../BaseClient/UtilModules/getScheduled.js';
 
 export default async (msg: Message) => {
@@ -14,7 +13,9 @@ export default async (msg: Message) => {
 
  if (!msg.mentions.roles.size) return;
 
- if ((await redis.keys(`${prefix}:votePunish:${msg.guildId}:*:${msg.channelId}`)).length) {
+ if (
+  (await msg.client.util.scanKeys(`${prefix}:votePunish:${msg.guildId}:*:${msg.channelId}`)).length
+ ) {
   return;
  }
 

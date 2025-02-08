@@ -37,10 +37,9 @@ export default class ThreadMemberCache extends Cache<APIThreadMember> {
   return this.redis.get(`${this.key()}:${tId}:${id}`).then((data) => this.stringToData(data));
  }
 
- del(tId: string, id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${tId}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(tId: string, id: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${tId}${id}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIThreadMember, guildId: string) {

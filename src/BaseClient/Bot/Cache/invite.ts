@@ -53,10 +53,9 @@ export default class InviteCache extends Cache<APIInvite> {
   return this.redis.get(`${this.key()}:${code}`).then((data) => this.stringToData(data));
  }
 
- del(code: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${code}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
+ async del(code: string): Promise<number> {
+  const keys = await Cache.scanKeys(`${this.key()}:${code}`);
+  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIInvite) {

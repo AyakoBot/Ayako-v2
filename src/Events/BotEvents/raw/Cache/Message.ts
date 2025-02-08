@@ -11,8 +11,9 @@ import {
  type GatewayMessageReactionRemoveEmojiDispatchData,
  type GatewayMessageUpdateDispatchData,
 } from 'discord.js';
-import { AllThreadGuildChannelTypes } from '../../../../Typings/Channel.js';
 import RedisClient, { cache as redis } from '../../../../BaseClient/Bot/Redis.js';
+import scanKeys from '../../../../BaseClient/UtilModules/scanKeys.js';
+import { AllThreadGuildChannelTypes } from '../../../../Typings/Channel.js';
 
 export default {
  [GatewayDispatchEvents.MessageCreate]: async (data: GatewayMessageCreateDispatchData) => {
@@ -102,14 +103,14 @@ export default {
  [GatewayDispatchEvents.MessageReactionRemoveAll]: (
   data: GatewayMessageReactionRemoveAllDispatchData,
  ) =>
-  RedisClient.keys(`${redis.reactions.key()}:*:${data.message_id}:*`).then((r) =>
+  scanKeys(`${redis.reactions.key()}:*:${data.message_id}:*`).then((r) =>
    r.length ? RedisClient.del(r) : 0,
   ),
 
  [GatewayDispatchEvents.MessageReactionRemoveEmoji]: (
   data: GatewayMessageReactionRemoveEmojiDispatchData,
  ) =>
-  RedisClient.keys(
+  scanKeys(
    `${redis.reactions.key()}:*:${data.message_id}:${data.emoji.id || data.emoji.name}`,
   ).then((r) => (r.length ? RedisClient.del(r) : 0)),
 } as const;

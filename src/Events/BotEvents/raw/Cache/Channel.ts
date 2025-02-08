@@ -7,6 +7,7 @@ import {
  type GatewayChannelUpdateDispatchData,
 } from 'discord.js';
 import RedisClient, { cache as redis } from '../../../../BaseClient/Bot/Redis.js';
+import scanKeys from '../../../../BaseClient/UtilModules/scanKeys.js';
 
 export default {
  [GatewayDispatchEvents.ChannelCreate]: (data: GatewayChannelCreateDispatchData) =>
@@ -14,7 +15,7 @@ export default {
 
  [GatewayDispatchEvents.ChannelDelete]: (data: GatewayChannelDeleteDispatchData) => {
   redis.channels.del(data.id);
-  RedisClient.keys(`${redis.messages.key}:${data.guild_id}:${data.id}:*`).then((keys) =>
+  scanKeys(`${redis.messages.key()}:${data.guild_id}:${data.id}:*`).then((keys) =>
    keys.length ? RedisClient.del(keys) : 0,
   );
  },
