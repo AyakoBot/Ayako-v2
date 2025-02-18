@@ -22,8 +22,13 @@ export default async <T extends Discord.Guild | null>(
   .get(code, query)
   .then((i) => {
    const parsed = new Classes.Invite((guild?.client ?? client)!, i as RawInviteData);
-   if (guild?.invites.cache.get(parsed.code)) return parsed;
-   guild?.invites.cache.set(parsed.code, parsed);
+
+   const g = parsed.guild
+    ? (guild?.client || client)?.guilds.cache.get(parsed.guild.id)
+    : undefined;
+
+   if (g?.invites.cache.get(parsed.code)) return parsed;
+   g?.invites.cache.set(parsed.code, parsed);
    return parsed;
   })
   .catch((e: Discord.DiscordAPIError) => e);
