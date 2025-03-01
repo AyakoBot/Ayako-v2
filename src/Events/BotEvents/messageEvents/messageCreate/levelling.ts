@@ -409,7 +409,7 @@ export const levelUp = async (
   case 'reactions': {
    if (!(msg instanceof Discord.Message)) {
     doVoiceStatus(msg, levelData, setting, language, member.user);
-    return;
+    break;
    }
    await doReact(msg, setting, levelData.newLevel, language);
    break;
