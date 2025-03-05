@@ -15,7 +15,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[], accept: bo
  }
 
  if (
-  settings.reviewroleid.some((r) => !cmd.member.roles.cache.has(r)) ||
+  settings.reviewroleid.every((r) => !cmd.member.roles.cache.has(r)) ||
   (!settings.reviewroleid.length &&
    !cmd.member.permissions.has(Discord.PermissionFlagsBits.ManageGuild))
  ) {
