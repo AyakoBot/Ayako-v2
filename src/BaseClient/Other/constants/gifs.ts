@@ -42,6 +42,7 @@ export default {
   'https://c.tenor.com/a4vjO1o0hewAAAAd/puuung-puung.gif',
   'https://c.tenor.com/xlW3RF3bzo8AAAAC/banished-from-the-heros-party-red.gif',
   'https://c.tenor.com/W4Voi07VHcsAAAAC/anime-josee.gif',
+  'https://cdn.discordapp.com/attachments/596359459094396970/1340364746804826112/IONE3HSL1L8ADUOG.gif?ex=67d3b5b2&is=67d26432&hm=c1842aeedb92f3969e19f319fec1784d9e0ca694f4cc57c83366a1d54b14aacd&',
  ],
  nya: [
   'https://cdn.discordapp.com/attachments/760152457799401532/825788696631574608/tenor_74.gif',
