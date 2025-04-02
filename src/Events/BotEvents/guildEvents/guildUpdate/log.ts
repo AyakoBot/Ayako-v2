@@ -12,10 +12,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  const auditUser = audit?.executor ?? undefined;
 
  const embed: Discord.APIEmbed = {
-  author: {
-   icon_url: con.GuildUpdate,
-   name: lan.guildUpdate,
-  },
+  author: { icon_url: con.GuildUpdate, name: lan.guildUpdate },
   description: auditUser ? lan.descGuildUpdateAudit(auditUser) : lan.descGuildUpdate(),
   fields: [],
   color: CT.Colors.Loading,
@@ -29,7 +26,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
  if (newWelcomeScreen) guild.client.util.cache.welcomeScreens.set(newWelcomeScreen);
 
  const files: Discord.AttachmentPayload[] = [];
- const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
+ const merge = (after: unknown, before: unknown, type: CT.AcceptedMergingTypes, name: string) =>
   guild.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (guild.description !== oldGuild.description) {
@@ -141,7 +138,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   );
  }
  if (guild.name !== oldGuild.name) {
-  merge(oldGuild.name, guild.name, 'string', lan.publicUpdatesChannelId);
+  merge(oldGuild.name, guild.name, 'string', language.t.name);
  }
  if (guild.ownerId !== oldGuild.ownerId) {
   merge(`<@${oldGuild.ownerId}>`, `<@${guild.ownerId}>`, 'string', lan.ownerId);
