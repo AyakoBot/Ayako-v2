@@ -52,7 +52,12 @@ const levelling = async (msg: Discord.Message<true>) => {
  const settings = await checkEnabled(msg);
  if (settings && (!settings.active || !settings.textenabled)) return;
 
- if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)) return;
+ if (
+  !(await getRules(msg)) &&
+  Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)
+ ) {
+  return;
+ }
 
  if (
   settings?.ignoreprefixes &&
