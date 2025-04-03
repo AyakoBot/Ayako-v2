@@ -45,12 +45,36 @@ const levelling = async (msg: Discord.Message<true>) => {
  msg.client.util.cache.lastMessageGuild.set(msg.author.id, msg.content);
  msg.client.util.cache.guildLevellingCD.add(msg.author.id);
 
- Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   msg.client.util.cache.guildLevellingCD.delete(msg.author.id);
  });
 
+ if (msg.client.util.cache.levellingCD.get(msg.guildId)?.has(msg.author.id)) return;
+ if (msg.client.util.cache.levellingCD.get(msg.channelId)?.has(msg.author.id)) return;
+
  const settings = await checkEnabled(msg);
  if (settings && (!settings.active || !settings.textenabled)) return;
+
+ if (!settings?.cooldownType) {
+  if (msg.client.util.cache.levellingCD.has(msg.guildId)) {
+   msg.client.util.cache.levellingCD.get(msg.guildId)?.add(msg.author.id);
+  } else msg.client.util.cache.levellingCD.set(msg.guildId, new Set([msg.author.id]));
+ } else {
+  if (msg.client.util.cache.levellingCD.has(msg.channelId)) {
+   msg.client.util.cache.levellingCD.get(msg.channelId)?.add(msg.author.id);
+  } else msg.client.util.cache.levellingCD.set(msg.channelId, new Set([msg.author.id]));
+ }
+
+ const cooldown = settings ? Number(settings.cooldown) : 60;
+
+ Jobs.scheduleJob(
+  getPathFromError(new Error()),
+  new Date(Date.now() + (cooldown < 1 ? 1000 : cooldown * 1000)),
+  () => {
+   msg.client.util.cache.levellingCD.get(msg.guildId)?.delete(msg.author.id);
+   msg.client.util.cache.levellingCD.get(msg.channelId)?.delete(msg.author.id);
+  },
+ );
 
  if (
   !(await getRules(msg)) &&

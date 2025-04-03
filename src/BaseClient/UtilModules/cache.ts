@@ -94,6 +94,7 @@ const cache: {
 
  globalLevellingCD: Set<string>;
  guildLevellingCD: Set<string>;
+ levellingCD: Map<string, Set<string>>;
  lastMessageGlobal: Map<string, string>;
  lastMessageGuild: Map<string, string>;
  afkCD: Map<string, Set<string>>;
@@ -166,6 +167,7 @@ const cache: {
 
  globalLevellingCD: new Set(),
  guildLevellingCD: new Set(),
+ levellingCD: new Map(),
  lastMessageGlobal: new Map(),
  lastMessageGuild: new Map(),
  afkCD: new Map(),

@@ -68,6 +68,16 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     value: embedParsers.number(settings.minwords, language),
     inline: true,
    },
+   {
+    name: lan.fields.cooldown.name,
+    value: embedParsers.time(Number(settings.cooldown) * 1000, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.cooldownType.name,
+    value: settings.cooldownType ? language.t.Channel : language.t.Server,
+    inline: true,
+   },
   ],
  },
 ];
@@ -84,6 +94,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
    buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
    buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
    buttonParsers.specific(language, settings.minwords, 'minwords', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.specific(language, settings.cooldown, 'cooldown', name, undefined),
+   buttonParsers.specific(language, settings.cooldownType, 'cooldownType', name, undefined),
   ],
  },
  {
