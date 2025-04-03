@@ -40,7 +40,7 @@ export const run = async (guild: Discord.Guild) => {
   const rolesToRemove = roles.filter((r) => Number(r.days) > days);
 
   if (
-   !closestRolesToGive?.roles.every((role) => !member.roles.cache.has(role)) &&
+   closestRolesToGive?.roles.some((role) => member.roles.cache.has(role)) &&
    !rolesToRemove.filter((r) => r.roles.every((role) => member.roles.cache.has(role))).length
   ) {
    return;
@@ -58,7 +58,8 @@ export const run = async (guild: Discord.Guild) => {
   }
 
   if (!settings.rolemode) {
-   const filteredRoles = [...rolesToRemove.map((r) => r.roles), ...rolesToGive.map((r) => r.roles)]
+   const filteredRoles = rolesToRemove
+    .map((r) => r.roles)
     .flat()
     .filter((r) => !closestRolesToGive?.roles.includes(r));
 
