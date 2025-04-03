@@ -20,12 +20,12 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('blocked')
-   .setDescription('See Users you currently have blocked'),
+   .setDescription('See Commands and Users you currently have blocked'),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('block')
-   .setDescription('Block a User from using RP-Commands on you')
+   .setDescription('Block a Command or a User from using RP-Commands on you')
    .addUserOption(
     new Discord.SlashCommandUserOption()
      .setName('user')
@@ -36,7 +36,7 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('unblock')
-   .setDescription('Unblock a User from using RP-Commands on you')
+   .setDescription('Unblock a Command or a User from using RP-Commands on you')
    .addUserOption(
     new Discord.SlashCommandUserOption()
      .setName('user')
