@@ -38,7 +38,7 @@ export default async (
      cmd.guild,
      {
       name,
-      file: (await Discord.resolveFile(img.url)) as Discord.RawFile,
+      file: (await cmd.client.util.util.resolveFile(img.url)) as Discord.RawFile,
       description: cmd.options.getString('description', true),
       tags: Discord.parseEmoji(cmd.options.getString('emoji', true))!.name,
      },

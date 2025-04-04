@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import * as Classes from '../../../Other/classes.js';
 import error from '../../error.js';
+import { resolveFile } from '../../util.js';
 import { getAPI } from '../channels/addReaction.js';
 
 type Body =
@@ -61,7 +62,7 @@ export default fn;
 
 export const resolveFiles = async (files: Discord.AttachmentPayload[] | undefined) =>
  files
-  ? (await Promise.all(files.map((f) => Discord.resolveFile(f.attachment)))).map((f, i) => ({
+  ? (await Promise.all(files.map((f) => resolveFile(f.attachment)))).map((f, i) => ({
      ...f,
      name: files[i].name ?? String(Date.now() + i),
     }))

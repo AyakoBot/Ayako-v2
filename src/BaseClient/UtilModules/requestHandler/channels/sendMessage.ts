@@ -54,7 +54,7 @@ async function fn(
       await Promise.all(
        payload.files
         .filter((f): f is Discord.AttachmentPayload => 'attachment' in f)
-        .map((f) => Discord.resolveFile(f.attachment)),
+        .map((f) => c.util.util.resolveFile(f.attachment)),
       )
      ).map((f, i) => ({
       ...f,

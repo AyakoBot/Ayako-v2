@@ -36,7 +36,7 @@ export default async (
    webhook.id,
    {
     ...body,
-    avatar: body.avatar ? await Discord.resolveImage(body.avatar) : body.avatar,
+    avatar: body.avatar ? await guild.client.util.util.resolveImage(body.avatar) : body.avatar,
    },
    { ...data, token: webhook.token ?? data?.token },
   )

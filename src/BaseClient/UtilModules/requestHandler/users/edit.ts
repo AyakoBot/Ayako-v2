@@ -32,7 +32,7 @@ async function fn(
  return (await getAPI(guild)).users
   .edit({
    ...data,
-   avatar: data.avatar ? await Discord.resolveImage(data.avatar) : data.avatar,
+   avatar: data.avatar ? await c.util.util.resolveImage(data.avatar) : data.avatar,
   })
   .then((u) => new Classes.User(c, u))
   .catch((e: Discord.DiscordAPIError) => {

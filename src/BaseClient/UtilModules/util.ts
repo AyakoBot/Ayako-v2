@@ -1,3 +1,8 @@
+import { type Base64Resolvable, type BufferResolvable } from 'discord.js';
+import fs from 'fs/promises';
+import path from 'path';
+import type Stream from 'stream';
+
 /**
  * Returns a string wrapped in a code block.
  * @param text - The string to be wrapped in a code block.
@@ -37,3 +42,52 @@ export const webhookURLToIdAndToken = (text: string) => {
  const [id, token] = text.substring(text.indexOf('webhooks/') + 9).split('/');
  return { id, token };
 };
+
+export const resolveImage = async (image: BufferResolvable | Base64Resolvable): Promise<string> => {
+ if (typeof image === 'string' && image.startsWith('data:')) {
+  return image;
+ }
+
+ const file = await resolveFile(image);
+ return resolveBase64(file.data);
+};
+
+export const resolveFile = async (
+ resource: BufferResolvable | Stream,
+): Promise<{
+ data: BufferResolvable | Base64Resolvable;
+ contentType?: string | undefined;
+}> => {
+ if (Buffer.isBuffer(resource)) return { data: resource };
+
+ // @ts-expect-error
+ if (typeof resource[Symbol.asyncIterator] === 'function') {
+  const buffers = [];
+  // @ts-expect-error
+  for await (const data of resource) buffers.push(Buffer.from(data));
+  return { data: Buffer.concat(buffers) };
+ }
+
+ if (typeof resource === 'string') {
+  if (/^https?:\/\//.test(resource)) {
+   const res = await fetch(resource);
+   return {
+    data: Buffer.from(await res.arrayBuffer()),
+    contentType: res.headers.get('content-type') || undefined,
+   };
+  }
+
+  const file = path.resolve(resource);
+
+  const stats = await fs.stat(file);
+  if (!stats.isFile()) throw new Error('Fíle now found');
+  return { data: await fs.readFile(file) };
+ }
+
+ throw new Error('Bad Request Resource Type');
+};
+
+function resolveBase64(data: Base64Resolvable) {
+ if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
+ return data;
+}

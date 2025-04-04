@@ -35,7 +35,7 @@ export default async (
   .editRole(
    guild.id,
    roleId,
-   { ...body, icon: body.icon ? await Discord.resolveImage(body.icon) : body.icon },
+   { ...body, icon: body.icon ? await guild.client.util.util.resolveImage(body.icon) : body.icon },
    { reason },
   )
   .then((r) => new Classes.Role(guild.client, r, guild))

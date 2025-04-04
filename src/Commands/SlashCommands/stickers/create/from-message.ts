@@ -36,7 +36,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const created = await cmd.client.util.request.guilds.createSticker(
   cmd.guild,
   {
-   file: (await Discord.resolveFile(sticker.url)) as Discord.RawFile,
+   file: (await cmd.client.util.util.resolveFile(sticker.url)) as Discord.RawFile,
    name,
    description,
    tags: selectedEmoji,
