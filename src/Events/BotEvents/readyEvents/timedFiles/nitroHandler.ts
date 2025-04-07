@@ -49,12 +49,19 @@ export const run = async (guild: Discord.Guild) => {
   if (settings.rolemode) {
    log(rolesToGive.map((r) => r.roles).flat(), member, settings.logchannels, language, days, true);
 
+   const filteredRoles = rolesToRemove
+    .map((r) => r.roles)
+    .flat()
+    .filter((r) => !rolesToGive.some((r2) => r2.roles.includes(r)));
+
    client.util.roleManager.add(
     member,
     rolesToGive.map((r) => r.roles).flat(),
     language.autotypes.nitro,
     1,
    );
+
+   client.util.roleManager.remove(member, [...new Set(filteredRoles)], language.autotypes.nitro, 1);
   }
 
   if (!settings.rolemode) {
@@ -71,6 +78,7 @@ export const run = async (guild: Discord.Guild) => {
     language.autotypes.nitro,
     1,
    );
+
    client.util.roleManager.remove(member, filteredRoles, language.autotypes.nitro, 1);
   }
  });
