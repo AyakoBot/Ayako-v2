@@ -91,23 +91,32 @@ const levelling = async (msg: Discord.Message<true>) => {
   return;
  }
 
- const isUserWhitelisted = settings?.wluserid?.includes(msg.author.id);
- const isRoleWhitelisted = settings?.wlroleid?.length
+ const isUserAllowed = settings?.wluserid?.includes(msg.author.id);
+ const isUserDenied = settings?.bluserid?.includes(msg.author.id);
+
+ const isRoleAllowed = settings?.wlroleid?.length
   ? msg.member?.roles.cache.some((r) => settings.wlroleid.includes(r.id))
   : false;
- const isChannelWhitelisted = settings?.wlchannelid?.length
+ const isRoleDenied = settings?.blroleid?.length
+  ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
+  : false;
+
+
+ const isChannelAllowed = settings?.wlchannelid?.length
   ? settings.wlchannelid.includes(msg.channel.id)
   : false;
 
- if (!isUserWhitelisted && !isRoleWhitelisted && !isChannelWhitelisted) {
-  const isUserBlacklisted = settings?.bluserid?.includes(msg.author.id);
-  const isRoleBlacklisted = settings?.blroleid
-   ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
-   : false;
-  const isChannelBlacklisted = settings?.blchannelid?.includes(msg.channel.id);
+  const getIsChannelDenied = () => {
+   if (settings?.wlchannelid?.length && !isChannelAllowed) return true;
+   if (settings?.blchannelid?.includes(msg.channel.id)) return true;
+   return false;
+  }
 
-  if (isUserBlacklisted || isRoleBlacklisted || isChannelBlacklisted) return;
- }
+  const isChannelDenied = getIsChannelDenied()
+
+ if (isUserDenied) return;
+ if (isRoleDenied && !isUserAllowed) return;
+ if (isChannelDenied && !isUserAllowed && !isRoleAllowed) return;
 
  const rules = await getRules(msg);
  if (rules.length && !checkRules(msg, rules)) return;
