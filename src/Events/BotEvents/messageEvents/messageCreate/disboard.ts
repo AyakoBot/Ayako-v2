@@ -7,7 +7,7 @@ import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromErro
 export default async (msg: Discord.Message<true>) => {
  if (!msg.author.bot) return;
  if (msg.author.id !== '302050872383242240') return;
- if (!msg.embeds[0]?.description?.includes(':thumbsup:')) return;
+ if (!msg.embeds[0]?.description?.includes('Bump done!')) return;
 
  disboardSent(msg);
 };
