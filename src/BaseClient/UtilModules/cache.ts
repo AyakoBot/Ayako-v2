@@ -29,7 +29,6 @@ import giveawayClaimTimeout, {
 } from './cache/bot/giveawayClaimTimeout.js';
 import giveaways, { type Giveaways } from './cache/bot/giveaways.js';
 import mutes, { type Mutes } from './cache/bot/mutes.js';
-import reminders, { type Reminders } from './cache/bot/reminders.js';
 import stickyTimeouts, { type StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import unblockedModUsers, { type UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
 import vcDeafens, { type VcDeafens } from './cache/bot/vcDeafens.js';
@@ -65,7 +64,6 @@ const cache: {
  vcDeafens: VcDeafens;
  bans: Bans;
  channelBans: ChannelBans;
- reminders: Reminders;
  disboardBumpReminders: DisboardBumpReminders;
  votes: Votes;
  giveaways: Giveaways;
@@ -140,7 +138,6 @@ const cache: {
  vcDeafens,
  bans,
  channelBans,
- reminders,
  disboardBumpReminders,
  votes,
  giveaways,

@@ -5,16 +5,15 @@ const isSnowflake = (id: string) => /^\d{17,19}$/.test(id);
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.reminder;
- const reminders = await cmd.client.util.DataBase.reminders.findMany({
-  where: { userid: cmd.user.id },
+ const reminders = await cmd.client.util.DataBase.reminder.findMany({
+  where: { userId: cmd.user.id },
  });
 
  const embed: Discord.APIEmbed = {
-  description: lan.desc((await cmd.client.util.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
   fields: reminders.map((r) => ({
-   name: `${isSnowflake(r.channelid) ? `<#${r.channelid}>` : language.t.Website} | ${cmd.client.util.constants.standard.getTime(
-    Number(r.endtime),
-   )} | ID: \`${Number(r.uniquetimestamp).toString(36)}\``,
+   name: `${isSnowflake(r.channelId) ? `<#${r.channelId}>` : language.t.Website} | ${cmd.client.util.constants.standard.getTime(
+    Number(r.endTime),
+   )} | ID: \`${Number(r.startTime).toString(36)}\``,
    value: r.reason,
   })),
   color: cmd.client.util.getColor(
@@ -22,5 +21,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   ),
  };
 
- await cmd.client.util.replyCmd(cmd, { embeds: [embed] });
+ await cmd.client.util.replyCmd(cmd, {
+  content: lan.desc((await cmd.client.util.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
+  embeds: reminders.length ? [embed] : [],
+ });
 };

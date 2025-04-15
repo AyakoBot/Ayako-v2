@@ -7,5 +7,6 @@ export default async (key: string) => {
  if (!keys.length) return;
 
  const allKeys = [...keys, ...keys.map((k) => k.replace('scheduled', 'scheduled-data'))];
- await Redis.del(allKeys);
+ console.log(allKeys);
+ await Redis.del(allKeys).then(console.log);
 };

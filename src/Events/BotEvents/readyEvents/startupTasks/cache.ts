@@ -1,15 +1,16 @@
 import Prisma, { StoredPunishmentTypes } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/library.js';
 import { BaseMessage } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
+import { Reminder } from '../../../../BaseClient/UtilModules/cache/bot/Reminder.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import { endDeleteSuggestion } from '../../../../Commands/ModalCommands/suggestion/accept.js';
 import {
  end as endGiveaway,
  giveawayCollectTimeExpired,
 } from '../../../../Commands/SlashCommands/giveaway/end.js';
-import { end as endReminder } from '../../../../Commands/SlashCommands/reminder/create.js';
 import * as CT from '../../../../Typings/Typings.js';
 import appeal from '../../../ClusterEvents/appeal.js';
 import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
@@ -44,21 +45,15 @@ export const startupTasks = {
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  reminder: async (_: string[]) => {
   if (client.user?.id !== process.env.mainId) return;
-  const reminders = await client.util.DataBase.reminders.findMany({ where: {} });
 
-  reminders.forEach((r) => {
-   client.util.cache.reminders.set(
-    Jobs.scheduleJob(
-     getPathFromError(new Error(String(r.uniquetimestamp))),
-     new Date(Number(r.endtime) < Date.now() ? Date.now() + 10000 : Number(r.endtime)),
-     () => {
-      endReminder(r);
-     },
-    ),
-    r.userid,
-    Number(r.endtime),
-   );
-  });
+  const reminders = await client.util.DataBase.reminder.findMany({ where: {} });
+  reminders.forEach(
+   (r) =>
+    new Reminder({
+     ...r,
+     endTime: new Decimal(Number(r.endTime) < Date.now() ? Date.now() + 10000 : r.endTime),
+    }),
+  );
  },
  vote: async (gIds: string[]) => {
   const votes = await client.util.DataBase.votes.findMany({
