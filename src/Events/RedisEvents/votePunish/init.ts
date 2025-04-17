@@ -13,6 +13,8 @@ export default async (payload: {
  userId: string;
  channelId: string;
 }) => {
+ if (!payload) return;
+
  const guild = client.guilds.cache.get(payload.guildId);
  if (!guild) return;
 
