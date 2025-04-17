@@ -13,33 +13,22 @@ export const RThreadMemberKeys = ['id', 'user_id', 'join_timestamp', 'flags', 'g
 export default class ThreadMemberCache extends Cache<APIThreadMember> {
  public keys = RThreadMemberKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:threadMembers`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'threadMembers');
  }
 
  async set(data: APIThreadMember, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.set(
-   `${this.key()}:${rData.guild_id}:${data.id}:${data.user_id}`,
-   JSON.stringify(rData),
-  );
+  const key = this.key(rData.guild_id, rData.id, rData.user_id);
+
+  const pipeline = this.redis.pipeline();
+  pipeline.set(key, JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), key, 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(tId: string, id: string) {
-  return this.redis.get(`${this.key()}:${tId}:${id}`).then((data) => this.stringToData(data));
- }
-
- async del(tId: string, id: string): Promise<number> {
-  const keys = await Cache.scanKeys(`${this.key()}:${tId}${id}`);
-  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIThreadMember, guildId: string) {

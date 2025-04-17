@@ -32,30 +32,20 @@ export const RInviteKeys = [
 export default class InviteCache extends Cache<APIInvite> {
  public keys = RInviteKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:invites`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'invites');
  }
 
  async set(data: APIInvite) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${rData.guild_id}:${data.code}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.guild_id, rData.code), JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.code), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(code: string) {
-  return this.redis.get(`${this.key()}:${code}`).then((data) => this.stringToData(data));
- }
-
- async del(code: string): Promise<number> {
-  const keys = await Cache.scanKeys(`${this.key()}:${code}`);
-  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIInvite) {

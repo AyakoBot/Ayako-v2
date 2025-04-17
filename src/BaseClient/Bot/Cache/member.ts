@@ -29,8 +29,8 @@ export const RMemberKeys = [
 export default class MemberCache extends Cache<APIGuildMember> {
  public keys = RMemberKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:members`, redis);
+ constructor(redis: Redis) {
+  super(redis, 'members');
  }
 
  public static bannerUrl(banner: string, userId: string, guildId: string) {
@@ -41,25 +41,16 @@ export default class MemberCache extends Cache<APIGuildMember> {
   return `https://cdn.discordapp.com/guilds/${guildId}/users/${userId}/avatars/${avatar}.${avatar.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- key() {
-  return this.prefix;
- }
-
  async set(data: APIGuildMember, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${rData.guild_id}:${rData.user_id}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.guild_id, rData.user_id), JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.guild_id, rData.user_id), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(gId: string, id: string) {
-  return this.redis.get(`${this.key()}:${gId}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(gId: string, id: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${gId}:${id}`);
  }
 
  apiToR(data: APIGuildMember, guildId: string) {

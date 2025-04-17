@@ -2,7 +2,11 @@ import type { APIEmoji } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
 
-export type REmoji = Omit<APIEmoji, 'user'> & { user_id: string | null; guild_id: string };
+export type REmoji = Omit<APIEmoji, 'user' | 'id'> & {
+ user_id: string | null;
+ guild_id: string;
+ id: string;
+};
 
 export const REmojiKeys = [
  'id',
@@ -18,30 +22,20 @@ export const REmojiKeys = [
 export default class EmojiCache extends Cache<APIEmoji> {
  public keys = REmojiKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:emojis`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'emojis');
  }
 
  async set(data: APIEmoji, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${rData.guild_id}:${data.id}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.id), JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.id), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- async del(id: string): Promise<number> {
-  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
-  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIEmoji, guildId: string) {

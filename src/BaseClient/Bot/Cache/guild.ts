@@ -72,29 +72,18 @@ export default class GuildCache extends Cache<APIGuild> {
   return `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:guilds`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'guilds');
  }
 
  async set(data: APIGuild) {
   const rData = this.apiToR(data);
   if (!rData) return false;
+  if (!rData.id) return false;
 
-  await this.redis.set(`${this.key()}:${data.id}`, JSON.stringify(rData));
+  await this.redis.set(this.key(rData.id), JSON.stringify(rData));
 
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${id}`);
  }
 
  apiToR(data: APIGuild) {

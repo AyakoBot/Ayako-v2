@@ -57,34 +57,25 @@ export const RMessageKeys = [
 export default class MessageCache extends Cache<APIMessage> {
  public keys = RMessageKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:messages`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'messages');
  }
 
  async set(data: APIMessage, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  const key = `${this.key()}:${rData.guild_id}:${data.channel_id}:${data.id}`;
+  const key = this.key(rData.channel_id, rData.id);
   const exists = await this.redis.exists(key);
+  const pipeline = this.redis.pipeline();
 
-  if (exists) await this.redis.set(key, JSON.stringify(rData), 'KEEPTTL');
-  else await this.redis.setex(key, 1209600, JSON.stringify(rData));
+  if (exists) pipeline.set(key, JSON.stringify(rData), 'KEEPTTL');
+  else pipeline.setex(key, 1209600, JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), key, 0);
+  pipeline.call('hexpire', this.keystore(rData.guild_id), key, 1209600);
+  await pipeline.exec();
 
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- async del(id: string): Promise<number> {
-  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
-  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: APIMessage, guildId: string) {

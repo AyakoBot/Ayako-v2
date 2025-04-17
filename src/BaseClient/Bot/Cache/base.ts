@@ -23,7 +23,6 @@ import type {
  APIWebhook,
 } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
-import scanKeys from '../../UtilModules/scanKeys.js';
 import type { RAutomod } from './automod';
 import type { RBan } from './ban';
 import type { RChannel, RChannelTypes } from './channel';
@@ -140,28 +139,41 @@ export default abstract class Cache<
   | APIThreadMember,
  K extends boolean = false,
 > {
- public prefix: string;
- public redis: Redis;
  abstract keys: ReadonlyArray<keyof DeriveRFromAPI<T, K>>;
 
- constructor(prefix: string, redis: Redis) {
-  this.prefix = prefix;
+ private prefix: string;
+ private keystorePrefix: string;
+ public redis: Redis;
+
+ constructor(redis: Redis, type: string) {
+  this.prefix = `cache:${type}`;
+  this.keystorePrefix = `keystore:${type}`;
   this.redis = redis;
  }
 
- // eslint-disable-next-line class-methods-use-this
  stringToData = (data: string | null) => (data ? (JSON.parse(data) as DeriveRFromAPI<T, K>) : null);
 
- key(id?: string) {
-  return `${this.prefix}${id ? `:${id}` : '*'}`;
+ keystore(...ids: string[]) {
+  return `${this.keystorePrefix}${ids.length ? `:${ids.join(':')}` : ''}`;
  }
 
- static async scanKeys(pattern: string): Promise<string[]> {
-  return scanKeys(pattern);
+ key(...ids: string[]) {
+  return `${this.prefix}${ids.length ? `:${ids.join(':')}` : ''}`;
  }
 
  abstract set(...args: [T, string, string, string]): Promise<boolean>;
- abstract get(...args: string[]): Promise<null | DeriveRFromAPI<T, K>>;
- abstract del(...args: string[]): Promise<number>;
+
+ get(...ids: string[]): Promise<null | DeriveRFromAPI<T, K>> {
+  return this.redis.get(this.key(...ids)).then((data) => this.stringToData(data));
+ }
+
+ del(...ids: string[]) {
+  const pipeline = this.redis.pipeline();
+  pipeline.del(this.key(...ids));
+  pipeline.hdel(this.keystore(...ids), this.key(...ids));
+
+  return pipeline.exec();
+ }
+
  abstract apiToR(...args: [T, string, string, string]): DeriveRFromAPI<T, K> | false;
 }

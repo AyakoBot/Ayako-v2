@@ -1,12 +1,9 @@
 import Redis from '../Bot/Redis.js';
 import { prefix } from './getScheduled.js';
-import scanKeys from './scanKeys.js';
 
 export default async (key: string) => {
- const keys = await scanKeys(`${prefix}:${key}`);
- if (!keys.length) return;
+ const baseKey = `${prefix}:${key}`;
+ const keys = [baseKey, baseKey.replace('scheduled:', 'scheduled-data:')];
 
- const allKeys = [...keys, ...keys.map((k) => k.replace('scheduled', 'scheduled-data'))];
- console.log(allKeys);
- await Redis.del(allKeys).then(console.log);
+ await Redis.del(keys).then(console.log);
 };

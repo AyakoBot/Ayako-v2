@@ -7,17 +7,23 @@ import {
  type GatewayChannelUpdateDispatchData,
 } from 'discord.js';
 import RedisClient, { cache as redis } from '../../../../BaseClient/Bot/Redis.js';
-import scanKeys from '../../../../BaseClient/UtilModules/scanKeys.js';
 
 export default {
  [GatewayDispatchEvents.ChannelCreate]: (data: GatewayChannelCreateDispatchData) =>
   redis.channels.set(data),
 
- [GatewayDispatchEvents.ChannelDelete]: (data: GatewayChannelDeleteDispatchData) => {
+ [GatewayDispatchEvents.ChannelDelete]: async (data: GatewayChannelDeleteDispatchData) => {
   redis.channels.del(data.id);
-  scanKeys(`${redis.messages.key()}:${data.guild_id}:${data.id}:*`).then((keys) =>
-   keys.length ? RedisClient.del(keys) : 0,
+
+  const pipeline = RedisClient.pipeline();
+  const messages = await RedisClient.hgetall(redis.messages.keystore(data.guild_id));
+
+  pipeline.hdel(
+   redis.messages.keystore(data.guild_id),
+   ...Object.keys(messages).filter((m) => m.includes(data.id)),
   );
+  pipeline.del(...Object.keys(messages).filter((m) => m.includes(data.id)));
+  pipeline.exec();
  },
 
  [GatewayDispatchEvents.ChannelPinsUpdate]: (_: GatewayChannelPinsUpdateDispatchData) => undefined,

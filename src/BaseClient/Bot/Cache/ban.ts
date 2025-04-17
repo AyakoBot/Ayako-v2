@@ -9,29 +9,20 @@ export const RBanKeys = ['reason', 'user_id', 'guild_id'] as const;
 export default class BanCache extends Cache<APIBan> {
  public keys = RBanKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:bans`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'bans');
  }
 
  async set(data: APIBan, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${rData.guild_id}:${rData.user_id}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.guild_id, rData.user_id), JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.guild_id, rData.user_id), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(gId: string, uId: string) {
-  return this.redis.get(`${this.key()}:${gId}:${uId}`).then((data) => this.stringToData(data));
- }
-
- del(gId: string, uId: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${gId}:${uId}`);
  }
 
  apiToR(data: APIBan, guildId: string) {

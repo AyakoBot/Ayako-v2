@@ -102,7 +102,7 @@ import getScheduled from '../UtilModules/getScheduled.js';
 import delScheduled from '../UtilModules/delScheduled.js';
 import setRatelimit from '../UtilModules/setRatelimit.js';
 import getRatelimit from '../UtilModules/getRatelimit.js';
-import scanKeys from '../UtilModules/scanKeys.js';
+import redis from '../Bot/Redis.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -213,7 +213,7 @@ interface Util {
  delScheduled: typeof delScheduled;
  setRatelimit: typeof setRatelimit;
  getRatelimit: typeof getRatelimit;
- scanKeys: typeof scanKeys;
+ redis: typeof redis;
 }
 
 const util: Util = {
@@ -318,7 +318,7 @@ const util: Util = {
  delScheduled,
  setRatelimit,
  getRatelimit,
- scanKeys,
+ redis,
 };
 
 export default util;

@@ -46,30 +46,20 @@ export default class ThreadCache extends Cache<
 > {
  public keys = RThreadKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:threads`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'threads');
  }
 
  async set(data: Omit<APIThreadChannel, 'position'>) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${data.guild_id}:${data.id}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.id), JSON.stringify(rData));
+  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.id), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- async del(id: string): Promise<number> {
-  const keys = await Cache.scanKeys(`${this.key()}:${id}`);
-  return keys.length ? this.redis.del(keys) : 0;
  }
 
  apiToR(data: Omit<APIThreadChannel, 'position'>) {

@@ -28,29 +28,20 @@ export const RCommandKeys = [
 export default class CommandCache extends Cache<APIApplicationCommand> {
  public keys = RCommandKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:commands`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'commands');
  }
 
  async set(data: APIApplicationCommand) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.set(`${this.key()}:${data.id}`, JSON.stringify(rData));
+  const pipeline = this.redis.pipeline();
+  pipeline.set(this.key(rData.id), JSON.stringify(rData));
+  pipeline.hset(this.keystore(), this.key(rData.id), 0);
+  await pipeline.exec();
 
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${id}`);
  }
 
  apiToR(data: APIApplicationCommand) {
