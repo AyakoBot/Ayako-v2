@@ -32,7 +32,7 @@ const subscriber = new Redis({ host: 'redis', db });
 
 export default redis;
 
-export const prefix = `${process.env.mainId}:cache`;
+export const prefix = `cache`;
 await redis.config('SET', 'notify-keyspace-events', 'Ex');
 await subscriber.subscribe(`__keyevent@${db}__:expired`);
 

@@ -1,5 +1,5 @@
 import Redis from '../Bot/Redis.js';
 
-export const prefix = `${process.env.mainId}:scheduled`;
+export const prefix = `scheduled`;
 
 export default (key: string) => Redis.get(`${prefix}:${key}`);
