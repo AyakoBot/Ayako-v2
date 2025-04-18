@@ -21,13 +21,7 @@ export default class ThreadMemberCache extends Cache<APIThreadMember> {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  const key = this.key(rData.guild_id, rData.id, rData.user_id);
-
-  const pipeline = this.redis.pipeline();
-  pipeline.set(key, JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), key, 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.id, rData.user_id]);
   return true;
  }
 

@@ -29,11 +29,7 @@ export default class SoundboardCache extends Cache<APISoundboardSound> {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  const pipeline = this.redis.pipeline();
-  pipeline.set(this.key(rData.sound_id), JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.sound_id), 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.sound_id]);
   return true;
  }
 

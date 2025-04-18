@@ -35,11 +35,7 @@ export default class RoleCache extends Cache<APIRole> {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  const pipeline = this.redis.pipeline();
-  pipeline.set(this.key(rData.id), JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.id), 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
  }
 

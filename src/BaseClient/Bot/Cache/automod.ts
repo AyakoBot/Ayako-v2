@@ -1,5 +1,5 @@
 import type { APIAutoModerationRule } from 'discord-api-types/v10';
-import type Redis from 'ioredis';
+import Redis from 'ioredis';
 import Cache from './base.js';
 
 export type RAutomod = APIAutoModerationRule;
@@ -29,11 +29,7 @@ export default class AutomodCache extends Cache<APIAutoModerationRule> {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  const pipeline = this.redis.pipeline();
-  pipeline.set(this.key(rData.id), JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), this.key(rData.id), 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
  }
 

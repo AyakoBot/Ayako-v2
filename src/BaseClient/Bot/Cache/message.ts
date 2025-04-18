@@ -65,16 +65,7 @@ export default class MessageCache extends Cache<APIMessage> {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  const key = this.key(rData.channel_id, rData.id);
-  const exists = await this.redis.exists(key);
-  const pipeline = this.redis.pipeline();
-
-  if (exists) pipeline.set(key, JSON.stringify(rData), 'KEEPTTL');
-  else pipeline.setex(key, 1209600, JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), key, 0);
-  pipeline.call('hexpire', this.keystore(rData.guild_id), key, 1209600);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.channel_id, rData.id], 1209600);
   return true;
  }
 

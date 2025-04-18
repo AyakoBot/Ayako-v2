@@ -4,11 +4,14 @@ export default async (msg: Message) => {
  if (!msg.inGuild()) return;
  if (msg.author?.bot) return;
 
- await Promise.all(
-  msg.member?.roles.cache.map((role) =>
-   msg.client.util.delScheduled(`votePunish:init:${msg.guildId}:${role.id}:${msg.channelId}`),
-  ) || [],
+ const pipeline = msg.client.util.redis.pipeline();
+ msg.member?.roles.cache.map((role) =>
+  msg.client.util.delScheduled(
+   `votePunish:init:${msg.guildId}:${role.id}:${msg.channelId}`,
+   pipeline,
+  ),
  );
+ pipeline.exec();
 
  if (!msg.mentions.roles.size) return;
 

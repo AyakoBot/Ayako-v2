@@ -36,11 +36,7 @@ export default class CommandCache extends Cache<APIApplicationCommand> {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  const pipeline = this.redis.pipeline();
-  pipeline.set(this.key(rData.id), JSON.stringify(rData));
-  pipeline.hset(this.keystore(), this.key(rData.id), 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [], [rData.id]);
   return true;
  }
 

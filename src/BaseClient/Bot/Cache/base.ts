@@ -46,6 +46,7 @@ import type { RThreadMember } from './threadMember';
 import type { RUser } from './user';
 import type { RVoiceState } from './voice';
 import type { RWebhook } from './webhook';
+import type { ChainableCommander } from 'ioredis';
 
 type GuildBasedCommand<T extends boolean> = T extends true
  ? APIApplicationCommand & { guild_id: string }
@@ -165,6 +166,34 @@ export default abstract class Cache<
 
  get(...ids: string[]): Promise<null | DeriveRFromAPI<T, K>> {
   return this.redis.get(this.key(...ids)).then((data) => this.stringToData(data));
+ }
+
+ private setKeystore(
+  pipeline: ChainableCommander,
+  ttl: number = 604800,
+  keystoreKeys: string[],
+  keys: string[],
+ ) {
+  pipeline.hset(this.keystore(...keystoreKeys), this.key(...keys), 0);
+  pipeline.call('hexpire', this.keystore(...keystoreKeys), this.key(...keys), ttl);
+ }
+
+ private setKey(
+  pipeline: ChainableCommander,
+  ttl: number = 604800,
+  keys: string[],
+  value: DeriveRFromAPI<T, K>,
+ ) {
+  pipeline.set(this.key(...keys), JSON.stringify(value));
+  pipeline.expire(this.key(...keys), ttl);
+ }
+
+ setValue(value: DeriveRFromAPI<T, K>, keystoreIds: string[], ids: string[], ttl: number = 604800) {
+  const pipeline = this.redis.pipeline();
+  this.setKey(pipeline, ttl, ids, value);
+  this.setKeystore(pipeline, ttl, keystoreIds, ids);
+
+  return pipeline.exec();
  }
 
  del(...ids: string[]) {

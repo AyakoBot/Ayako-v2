@@ -81,8 +81,7 @@ export default class GuildCache extends Cache<APIGuild> {
   if (!rData) return false;
   if (!rData.id) return false;
 
-  await this.redis.set(this.key(rData.id), JSON.stringify(rData));
-
+  await this.setValue(rData, [], [rData.id]);
   return true;
  }
 

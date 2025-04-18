@@ -26,13 +26,7 @@ export default class ReactionCache extends Cache<APIReaction> {
   const rData = this.apiToR(data, guildId, channelId, messageId);
   if (!rData) return false;
 
-  const key = this.key(rData.channel_id, rData.message_id, (data.emoji.id || data.emoji.name)!);
-
-  const pipeline = this.redis.pipeline();
-  pipeline.set(key, JSON.stringify(rData));
-  pipeline.hset(this.keystore(rData.guild_id), key, 0);
-  await pipeline.exec();
-
+  await this.setValue(rData, [rData.guild_id], [rData.channel_id, rData.message_id, (data.emoji.id || data.emoji.name)!]);
   return true;
  }
 
