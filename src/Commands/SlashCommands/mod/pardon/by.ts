@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  punishments.forEach((p) => {
-  pardon(p);
+  pardon(p).then();
   log(cmd, p, language, lan, reason);
  });
 

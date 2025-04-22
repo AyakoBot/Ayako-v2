@@ -30,7 +30,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 export const pardon = (
  punishment: NonNullable<Awaited<ReturnType<typeof client.util.getPunishment>>>[number],
 ) =>
- client.util.DataBase.punishments.deleteMany({
+ client.util.DataBase.punishments.delete({
   where: { uniquetimestamp: punishment.uniquetimestamp, type: punishment.type },
  });
 
