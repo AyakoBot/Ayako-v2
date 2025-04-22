@@ -37,6 +37,7 @@ function f(
   includeTemp?: boolean;
   identType: 'after' | 'before';
   guildid: string;
+  ident?: string;
  },
 ): Promise<punishments[] | null>;
 function f(
@@ -102,9 +103,17 @@ async function f(
      guildid: String(options.guildid),
     };
    case 'before':
-    return { uniquetimestamp: { lt: String(id) }, guildid: String(options.guildid) };
+    return {
+     uniquetimestamp: { lt: String(id) },
+     guildid: String(options.guildid),
+     executorid: options.ident ? String(options.ident) : undefined,
+    };
    case 'after':
-    return { uniquetimestamp: { gt: String(id) }, guildid: String(options.guildid) };
+    return {
+     uniquetimestamp: { gt: String(id) },
+     guildid: String(options.guildid),
+     executorid: options.ident ? String(options.ident) : undefined,
+    };
    default: {
     asArray = false;
     return { uniquetimestamp: String(id) };
