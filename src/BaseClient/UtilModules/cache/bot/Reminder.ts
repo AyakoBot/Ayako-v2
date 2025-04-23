@@ -1,6 +1,8 @@
-import type { Reminder as DBReminder } from '@prisma/client';
-import ExpirableCache from './ExpirableCache.js';
+import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
 import type { Optional } from '@prisma/client/runtime/library.js';
+import db from '../../../Bot/DataBase.js';
+import redis from '../../../Bot/Redis.js';
+import ExpirableCache, { CacheType } from './ExpirableCache.js';
 
 /**
  * Class representing a scheduled reminder with database persistence.
@@ -14,6 +16,6 @@ export class Reminder extends ExpirableCache<DBReminder> {
   * @param init - Whether to initialize the reminder immediately
   */
  constructor(opts: Optional<DBReminder, 'startTime'>, init: boolean = true) {
-  super(opts, 'reminder', init);
+  super(opts, CacheType.Reminder, init, redis, db as PrismaClient);
  }
 }

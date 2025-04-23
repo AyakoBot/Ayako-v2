@@ -1,9 +1,12 @@
+import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
 import type { Optional } from '@prisma/client/runtime/library.js';
-import db from '../../../Bot/DataBase.js';
+import type Redis from 'ioredis';
 import delScheduled from '../../delScheduled.js';
 import setScheduled from '../../setScheduled.js';
 
-import type { Reminder as DBReminder } from '@prisma/client';
+export enum CacheType {
+ Reminder = 'reminder',
+}
 
 /**
  * A cache class for handling expirable data with database persistence.
@@ -21,7 +24,19 @@ export default class ExpirableCache<T extends DBReminder> {
   * Type of data this cache is handling
   * @public
   */
- public type: 'reminder';
+ public type: CacheType;
+
+ /**
+  * Redis client for caching
+  * @private
+  */
+ private redis: Redis;
+
+ /**
+  * Database client for database operations
+  * @private
+  */
+ private db: PrismaClient;
 
  /**
   * Creates a new expirable cache instance.
@@ -34,9 +49,13 @@ export default class ExpirableCache<T extends DBReminder> {
   opts: Optional<T, 'startTime'>,
   type: (typeof ExpirableCache)['prototype']['type'],
   init: boolean = true,
+  redis: Redis,
+  db: PrismaClient,
  ) {
   this.id = Number(opts.startTime) || Date.now();
   this.type = type;
+  this.redis = redis;
+  this.db = db;
 
   if (!init) return;
   this.init(opts);
@@ -53,7 +72,7 @@ export default class ExpirableCache<T extends DBReminder> {
   const diff = Math.abs(Number(opts.endTime) - Date.now()) / 1000;
 
   const data = await (opts.startTime
-   ? db[this.type].upsert({
+   ? this.db[this.type].upsert({
       where: { startTime: opts.startTime },
       create: {
        userId: opts.userId,
@@ -64,7 +83,7 @@ export default class ExpirableCache<T extends DBReminder> {
       },
       update: {},
      })
-   : db[this.type].create({
+   : this.db[this.type].create({
       data: {
        userId: opts.userId,
        channelId: opts.channelId,
@@ -74,7 +93,9 @@ export default class ExpirableCache<T extends DBReminder> {
       },
      }));
 
-  setScheduled(this.key, JSON.stringify(data), diff);
+  const pipeline = this.redis.pipeline();
+  setScheduled(this.key, JSON.stringify(data), diff, pipeline);
+  pipeline.exec();
  }
 
  /**
@@ -92,7 +113,7 @@ export default class ExpirableCache<T extends DBReminder> {
   * @returns {Promise<T | null>} The data data or null if not found
   */
  async get() {
-  return db[this.type].findUnique({ where: { startTime: this.id } });
+  return this.db[this.type].findUnique({ where: { startTime: this.id } });
  }
 
  /**
@@ -102,7 +123,7 @@ export default class ExpirableCache<T extends DBReminder> {
   * @throws {Error} If the data data cannot be found in the database
   */
  async expired() {
-  const data = await db[this.type].findUnique({ where: { startTime: Number(this.id) } });
+  const data = await this.db[this.type].findUnique({ where: { startTime: Number(this.id) } });
   if (!data) throw new Error(`Data ${this.type} not found`);
 
   return Number(data.endTime) < Date.now();
@@ -114,7 +135,10 @@ export default class ExpirableCache<T extends DBReminder> {
   * @returns {void}
   */
  delete() {
-  db[this.type].delete({ where: { startTime: this.id } }).then();
-  delScheduled(this.key);
+  this.db[this.type].delete({ where: { startTime: this.id } }).then();
+
+  const pipeline = this.redis.pipeline();
+  delScheduled(this.key, pipeline);
+  pipeline.exec();
  }
 }
