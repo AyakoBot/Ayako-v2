@@ -90,10 +90,10 @@ async function fn(
     : undefined,
   })
   .then((m) => new Classes.Message(c, m))
-  .catch((e: Discord.DiscordAPIError) => {
+  .catch(async (e: Discord.DiscordAPIError) => {
    if (!e.message.includes('to this user')) {
     sendDebugMessage({
-     content: `${guild?.id} - ${channelId}\n${e.message}\n${debugStack}`,
+     content: `${guild?.id} - ${channelId} - ${guild ? (await getBotMemberFromGuild(guild)).id : '-'}\n${e.message}\n${debugStack}`,
      files: [
       c.util.txtFileWriter(JSON.stringify({ ...payload, files: payload.files?.length }, null, 2)),
      ],
@@ -287,9 +287,7 @@ export const getEmbedCharLens = (embeds: Discord.APIEmbed[]) => {
  let total = 0;
  embeds.forEach((embed) => {
   Object.values(embed).forEach((data) => {
-   if (typeof data === 'string') {
-    total += data.length;
-   }
+   if (typeof data === 'string') total += data.length;
   });
 
   for (let i = 0; i < (embed.fields ? embed.fields.length : 0); i += 1) {
