@@ -10,7 +10,7 @@ export enum ExpirableCacheType {
 
 export type ExpirableCacheOpts<T extends DBReminder, K extends boolean> = K extends true
  ? Optional<T, 'startTime'>
- : { startTime: Decimal; userId: Decimal };
+ : { startTime: Decimal; userId: string };
 
 /**
  * A cache class for handling expirable data with database persistence.
