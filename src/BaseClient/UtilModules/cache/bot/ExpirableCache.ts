@@ -10,7 +10,7 @@ export enum ExpirableCacheType {
 
 export type ExpirableCacheOpts<T extends DBReminder, K extends boolean> = K extends true
  ? Optional<T, 'startTime'>
- : { startTime: Decimal };
+ : { startTime: Decimal; userId: Decimal };
 
 /**
  * A cache class for handling expirable data with database persistence.
@@ -149,7 +149,11 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
   * @returns {void}
   */
  delete() {
-  this.db[this.type].delete({ where: { startTime: this.id } }).then();
+  this.db[this.type]
+   .delete({
+    where: { startTime: this.id, userId: this.opts.userId ? String(this.opts.userId) : undefined },
+   })
+   .then();
 
   const pipeline = this.redis.pipeline();
   delScheduled(this.key, pipeline);
