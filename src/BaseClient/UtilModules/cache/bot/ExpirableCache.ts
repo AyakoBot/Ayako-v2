@@ -1,19 +1,24 @@
 import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
-import type { Optional } from '@prisma/client/runtime/library.js';
+import type { Decimal, Optional } from '@prisma/client/runtime/library.js';
 import type Redis from 'ioredis';
 import delScheduled from '../../delScheduled.js';
 import setScheduled from '../../setScheduled.js';
 
-export enum CacheType {
+export enum ExpirableCacheType {
  Reminder = 'reminder',
 }
+
+export type ExpirableCacheOpts<T extends DBReminder, K extends boolean> = K extends true
+ ? Optional<T, 'startTime'>
+ : { startTime: Decimal };
 
 /**
  * A cache class for handling expirable data with database persistence.
  *
  * @template T Type extending the base DBReminder type
+ * @template K Boolean indicating whether to initialize the data
  */
-export default class ExpirableCache<T extends DBReminder> {
+export default class ExpirableCache<T extends DBReminder, K extends boolean = true> {
  /**
   * Unique identifier for this cache entry, defaults to current timestamp if not provided
   * @private
@@ -24,7 +29,7 @@ export default class ExpirableCache<T extends DBReminder> {
   * Type of data this cache is handling
   * @public
   */
- public type: CacheType;
+ public type: ExpirableCacheType;
 
  /**
   * Redis client for caching
@@ -39,16 +44,24 @@ export default class ExpirableCache<T extends DBReminder> {
  private db: PrismaClient;
 
  /**
+  * The options used for storing the data
+  * @private
+  */
+ private opts: ExpirableCacheOpts<T, K>;
+
+ /**
   * Creates a new expirable cache instance.
   *
-  * @param {Optional<T, 'startTime'>} opts - Configuration options for the data, where startTime is optional
-  * @param {(typeof ExpirableCache)['prototype']['type']} type - The type of data this cache will handle
-  * @param {boolean} [init=true] - Whether to initialize the data in the database immediately
+  * @param {ExpirableCacheOpts<T, K>} opts - Configuration options for the data
+  * @param {ExpirableCacheType} type - The type of data this cache will handle
+  * @param {K} init - Whether to initialize the data in the database immediately
+  * @param {Redis} redis - Redis client for caching
+  * @param {PrismaClient} db - Database client for persistence
   */
  constructor(
-  opts: Optional<T, 'startTime'>,
-  type: (typeof ExpirableCache)['prototype']['type'],
-  init: boolean = true,
+  opts: ExpirableCacheOpts<T, K>,
+  type: ExpirableCacheType,
+  init: K,
   redis: Redis,
   db: PrismaClient,
  ) {
@@ -56,9 +69,10 @@ export default class ExpirableCache<T extends DBReminder> {
   this.type = type;
   this.redis = redis;
   this.db = db;
+  this.opts = opts as ExpirableCacheOpts<T, K>;
 
-  if (!init) return;
-  this.init(opts);
+  if (init === (false as any)) return;
+  this.init(opts as Optional<T, 'startTime'>);
  }
 
  /**
@@ -140,5 +154,14 @@ export default class ExpirableCache<T extends DBReminder> {
   const pipeline = this.redis.pipeline();
   delScheduled(this.key, pipeline);
   pipeline.exec();
+ }
+
+ /**
+  * Converts the data to a JSON object.
+  *
+  * @returns {Optional<T, 'startTime'> | { startTime: Decimal }} The data as a JSON object
+  */
+ toJSON() {
+  return this.opts;
  }
 }
