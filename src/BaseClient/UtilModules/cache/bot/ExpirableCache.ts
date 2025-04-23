@@ -1,8 +1,7 @@
 import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
 import type { Decimal, Optional } from '@prisma/client/runtime/library.js';
 import type Redis from 'ioredis';
-import delScheduled from '../../delScheduled.js';
-import setScheduled from '../../setScheduled.js';
+import { ScheduleManager } from '../../ScheduleManager.js';
 
 export enum ExpirableCacheType {
  Reminder = 'reminder',
@@ -50,6 +49,12 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
  private opts: ExpirableCacheOpts<T, K>;
 
  /**
+  * The schedule manager for handling scheduled tasks
+  * @private
+  */
+ private scheduleManager: ScheduleManager;
+
+ /**
   * Creates a new expirable cache instance.
   *
   * @param {ExpirableCacheOpts<T, K>} opts - Configuration options for the data
@@ -70,6 +75,7 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
   this.redis = redis;
   this.db = db;
   this.opts = opts as ExpirableCacheOpts<T, K>;
+  this.scheduleManager = new ScheduleManager(redis);
 
   if (init === (false as any)) return;
   this.init(opts as Optional<T, 'startTime'>);
@@ -108,7 +114,7 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
      }));
 
   const pipeline = this.redis.pipeline();
-  setScheduled(this.key, JSON.stringify(data), diff, pipeline);
+  this.scheduleManager.setScheduled(this.key, JSON.stringify(data), diff, pipeline);
   pipeline.exec();
  }
 
@@ -156,7 +162,7 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
    .then();
 
   const pipeline = this.redis.pipeline();
-  delScheduled(this.key, pipeline);
+  this.scheduleManager.delScheduled(this.key, pipeline);
   pipeline.exec();
  }
 

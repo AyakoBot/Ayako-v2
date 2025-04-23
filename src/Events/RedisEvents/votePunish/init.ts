@@ -85,7 +85,7 @@ const overwritePermissions = (
   deny: o.deny,
  }));
 
- channel.client.util.setScheduled(
+ channel.client.util.scheduleManager.setScheduled(
   `votePunish:expire:${channel.guild.id}:${channel.id}`,
   JSON.stringify({
    overwrites: oldOverwrites.map((o) => ({

@@ -2,7 +2,6 @@ import { AutoPunishPunishmentType, type votePunish } from '@prisma/client';
 import type { GuildTextBasedChannel, Message, User } from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import redis from '../../../BaseClient/Bot/Redis.js';
-import { prefix } from '../../../BaseClient/UtilModules/getScheduled.js';
 import { ModTypes, type Language } from '../../../Typings/Typings.js';
 
 type Payload = {
@@ -36,7 +35,10 @@ export default async (payload: Payload) => {
  if (!channel) return;
 
  const message = await client.util.request.channels.getMessage(channel, payload.msgId);
- redis.expire(`${prefix}:votePunish:expire:${payload.guildId}:${payload.channelId}`, 1);
+ redis.expire(
+  `${client.util.scheduleManager.prefix}:votePunish:expire:${payload.guildId}:${payload.channelId}`,
+  1,
+ );
 
  const punishUsers = await Promise.all(
   Object.entries(Object.fromEntries(result))

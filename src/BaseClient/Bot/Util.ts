@@ -97,12 +97,10 @@ import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import channelStatusManager from '../UtilModules/channelStatusManager.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
-import setScheduled from '../UtilModules/setScheduled.js';
-import getScheduled from '../UtilModules/getScheduled.js';
-import delScheduled from '../UtilModules/delScheduled.js';
 import setRatelimit from '../UtilModules/setRatelimit.js';
 import getRatelimit from '../UtilModules/getRatelimit.js';
 import redis from '../Bot/Redis.js';
+import { ScheduleManager } from '../UtilModules/ScheduleManager.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -110,6 +108,8 @@ const logFiles = {
   { flags: 'a' },
  ),
 };
+
+const scheduleManager = new ScheduleManager(redis);
 
 interface Util {
  getPathFromError: typeof getPathFromError;
@@ -208,12 +208,10 @@ interface Util {
  guildOnly: typeof guildOnly;
  Colors: typeof Colors;
  channelStatusManager: typeof channelStatusManager;
- setScheduled: typeof setScheduled;
- getScheduled: typeof getScheduled;
- delScheduled: typeof delScheduled;
  setRatelimit: typeof setRatelimit;
  getRatelimit: typeof getRatelimit;
  redis: typeof redis;
+ scheduleManager: typeof scheduleManager;
 }
 
 const util: Util = {
@@ -313,11 +311,9 @@ const util: Util = {
  guildOnly,
  Colors,
  channelStatusManager,
- setScheduled,
- getScheduled,
- delScheduled,
  setRatelimit,
  getRatelimit,
+ scheduleManager,
  redis,
 };
 
