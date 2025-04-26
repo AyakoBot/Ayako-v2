@@ -64,7 +64,6 @@ export const cache = {
 
 subscriber.on('message', async (channel, key) => {
  if (channel !== `__keyevent@${db}__:expired`) return;
-
  if (key.includes('scheduled-data:')) return;
 
  const keyArgs = key.split(/:/g).slice(2);
@@ -80,9 +79,6 @@ subscriber.on('message', async (channel, key) => {
 
  const file = files.find((f) => f.endsWith(`${path}.js`));
  if (!file) return;
-
- // eslint-disable-next-line no-console
- console.log(path);
 
  (await import(file)).default(value ? JSON.parse(value) : undefined);
 });

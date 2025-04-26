@@ -1943,12 +1943,6 @@
     "others": "lays with",
     "buttons": ["Fluff em good~", "Cuddle them ^-^", "Pat them :3c"]
    },
-   "lewd": {
-    "self": "lewds themself, get a room!!",
-    "noOne": "is lewd!!",
-    "others": "lewds",
-    "buttons": ["Run away", "No you!", "Hide away <~<"]
-   },
    "lick": {
     "self": "licks themself, at least you don't need a shower now, I guess...",
     "others": "licks",

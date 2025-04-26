@@ -242,7 +242,6 @@ const gifSelection = [
  { triggers: ['kidnap'], gifs: async () => getGif('kidnap', ['hardcoded']) },
  { triggers: ['laugh'], gifs: async () => getGif('laugh', ['neko']) },
  { triggers: ['lay'], gifs: async () => getGif('lay', ['purr']) },
- { triggers: ['lewd'], gifs: async () => getGif('lewd', ['hardcoded']) },
  { triggers: ['lick'], gifs: async () => getGif('lick', ['purr', 'waifu']) },
  { triggers: ['lift', 'pickup'], gifs: async () => getGif('lift', ['hardcoded']) },
  { triggers: ['lurk', 'peek'], gifs: async () => getGif('lurk', ['neko']) },
