@@ -708,7 +708,7 @@
   "guildMemberUpdate": {
    "rewards": {
     "desc": "You meet Requirements for a Reward as you own at least one of the following Roles:\n{{roles}}",
-    "customRole": "Claim a Custom Role using </custom-role:{{commandId}}>\nIf you stop meeting the Requirements the Role will be deleted",
+    "customRole": "Claim a Custom Role using </custom-role create:{{commandId}}>\nIf you stop meeting the Requirements the Role will be deleted",
     "xp": "You will get an XP Multiplier of {{amount}}x as long as you meet the Requirements",
     "currency": "You have received {{amount}} {{emote}}",
     "memberLeft": "Custom-Role Owner left the Server",
@@ -1444,6 +1444,7 @@
   "2": "Gallery View"
  },
  "autotypes": {
+  "customroles": "{{t.botName}} Custom Roles",
   "votepunish": "{{t.botName}} Vote-Punish",
   "voiceHub": "{{t.botName}} Voice-Hubs",
   "verification": "{{t.botName}} Verification",
@@ -2157,7 +2158,17 @@
     "notEnabled": "Setting Custom-Roles is not enabled",
     "cantSet": "You don't qualify to set a Custom-Role",
     "edit": "> {{role}}> was edited\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
-    "create": "> {{role}}> was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}"
+    "create": "> {{role}}> was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
+    "share": {
+     "title": "Custom-Role Sharing",
+     "cantShare": "You don't qualify to share a Custom-Role",
+     "desc": "You can share your Custom-Role with {{amount}} Members of this Server\nPick them below\n-# If an Admin reduces the maximum share Amount, {{t.botName}} will remove Members from the End of the List",
+     "noRole": "You don't have a Custom-Role to share",
+     "placeholder": "Shared Users",
+     "notFound": "The Role you are trying to claim does not exist anymore.",
+     "notAllowed": "You are not allowed to claim this Role.",
+     "claimed": "You have claimed the Custom-Role\n{{role}}"
+    }
    },
    "builders": {
     "descReactions": "React to the Message with the Emojis you want to use\nYou can add up to 25 Reactions in total and 10 Roles per Reaction\nFor extended Settings visit </settings roles reaction-role-settings:{{cmdId}}>\n__Notice:__ Emotes might not display properly below, but they will work just fine as long as you don't remove {{t.botName}}'s Reaction",
@@ -3056,6 +3067,10 @@
       "positionrole": {
        "name": "Position Role",
        "desc": "The Role under which the Custom-Roles will be created"
+      },
+      "maxShare": {
+       "name": "Max. Share",
+       "desc": "The maximum Amount of Members a User can share their Custom-Role with\nReducing the Amount of Members will automatically remove the Custom-Role from the Members last added"
       }
      }
     },

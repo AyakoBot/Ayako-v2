@@ -5,6 +5,7 @@ export default {
  [CT.SettingNames.RoleRewards]: {
   roles: CT.EditorTypes.Roles,
   customrole: CT.EditorTypes.Boolean,
+  maxShare: CT.EditorTypes.Number,
   positionrole: CT.EditorTypes.Role,
   xpmultiplier: CT.EditorTypes.Number,
   currency: CT.EditorTypes.Number,

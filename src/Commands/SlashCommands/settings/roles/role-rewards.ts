@@ -150,6 +150,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         value: embedParsers.role(settings?.positionrole, language),
         inline: true,
        },
+       {
+        name: lan.fields.maxShare.name,
+        value: embedParsers.number(settings?.maxShare, language),
+        inline: true,
+       },
       ]
     : []),
    {
@@ -265,6 +270,13 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
        ),
+       buttonParsers.specific(
+        language,
+        settings?.maxShare,
+        'maxShare',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
       ]
     : []),
   ],
@@ -289,3 +301,67 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+ oldSetting,
+ newSetting,
+ changedSetting,
+ guild,
+) => {
+ if (!oldSetting || !newSetting) return;
+
+ switch (changedSetting) {
+  case 'maxShare':
+   maxShare(oldSetting, newSetting, guild);
+   break;
+  default:
+   break;
+ }
+};
+
+const maxShare = async (
+ oldSetting: NonNullable<Parameters<typeof postChange>[0]>,
+ newSetting: NonNullable<Parameters<typeof postChange>[1]>,
+ guild: Parameters<typeof postChange>[3],
+) => {
+ if (Number(oldSetting.maxShare) < Number(newSetting.maxShare)) return;
+
+ const settings = await client.util.DataBase.customroles.findMany({
+  where: { guildid: guild.id, shared: { isEmpty: false } },
+ });
+ if (!settings.length) return;
+
+ console.log(settings);
+
+ const tooLong = settings
+  .filter((s) => s.shared.length > Number(newSetting.maxShare))
+  .map((s) => {
+   return {
+    members: s.shared.splice(Number(newSetting.maxShare), s.shared.length),
+    role: guild.roles.cache.get(s.roleid),
+    newSetting: { ...s, shared: s.shared.splice(0, Number(newSetting.maxShare)) },
+   };
+  })
+  .filter((s): s is typeof s & { role: NonNullable<(typeof s)['role']> } => !!s.role);
+
+ if (!tooLong.length) return;
+ await client.util.DataBase.$transaction(
+  tooLong.map((s) =>
+   client.util.DataBase.customroles.update({
+    where: { guildid_userid: { guildid: guild.id, userid: s.newSetting.userid } },
+    data: { shared: s.newSetting.shared },
+   }),
+  ),
+ );
+
+ const language = await guild.client.util.getLanguage(guild.id);
+
+ tooLong.forEach((s) => {
+  s.members.forEach((m) => {
+   const member = guild.members.cache.get(m);
+   if (!member) return;
+
+   guild.client.util.roleManager.remove(member, [s.role.id], language.autotypes.customroles);
+  });
+ });
+};

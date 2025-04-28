@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import { getContent } from '../../Events/BotEvents/autoModerationActionEvents/censor.js';
+import { getContent } from '../../../Events/BotEvents/autoModerationActionEvents/censor.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -65,12 +65,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  }
 
  const customroleSetting = await cmd.client.util.DataBase.customroles.findUnique({
-  where: {
-   guildid_userid: {
-    guildid: cmd.guildId,
-    userid: cmd.user.id,
-   },
-  },
+  where: { guildid_userid: { guildid: cmd.guildId, userid: cmd.user.id } },
  });
  const customRole = customroleSetting ? cmd.guild.roles.cache.get(customroleSetting.roleid) : false;
 
