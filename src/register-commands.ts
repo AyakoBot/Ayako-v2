@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
 import * as DiscordCore from '@discordjs/core';
 import * as DiscordRest from '@discordjs/rest';
+import { PrismaClient } from '@prisma/client';
 import * as Discord from 'discord.js';
 import 'dotenv/config';
-import DataBase from './BaseClient/Bot/DataBase.js';
 import commands from './SlashCommands/index.js';
+
+const prisma = new PrismaClient();
 
 const createCommands = Object.values(commands.public);
 const token = process.env.Token ?? '';
@@ -29,7 +31,7 @@ await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/comman
 });
 
 (
- await DataBase.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
+ await prisma.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
 ).forEach(async (s) => {
  const api = requestHandler(s.token ?? '');
 
@@ -49,13 +51,13 @@ await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/comman
   .catch((e: Error) => {
    if (!e.message.includes('401')) return;
    console.log(`Unauthorized for ${s.appid}`, e);
-   DataBase.customclients.delete({ where: { guildid: s.guildid } }).then();
+   prisma.customclients.delete({ where: { guildid: s.guildid } }).then();
   });
 });
 
 setTimeout(async () => {
  console.log('Finished. Exiting...');
 
- await DataBase.$disconnect();
+ await prisma.$disconnect();
  process.exit(0);
 }, 10000);
