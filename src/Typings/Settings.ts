@@ -1,8 +1,8 @@
 import type {
  APIActionRowComponent,
  APIChatInputApplicationCommandGuildInteraction,
+ APIComponentInActionRow,
  APIEmbed,
- APIMessageActionRowComponent,
  APIMessageComponentButtonInteraction,
 } from 'discord-api-types/v10.js';
 import type { ChangeSelectType } from '../BaseClient/UtilModules/settingsHelpers/getChangeSelectType.js';
@@ -92,8 +92,8 @@ export interface SettingsFile<K extends MatchingCategoryKeys> {
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
   language: Language,
  ) =>
-  | APIActionRowComponent<APIMessageActionRowComponent>[]
-  | Promise<APIActionRowComponent<APIMessageActionRowComponent>[]>;
+  | APIActionRowComponent<APIComponentInActionRow>[]
+  | Promise<APIActionRowComponent<APIComponentInActionRow>[]>;
  showAll?: (
   cmd: APIChatInputApplicationCommandGuildInteraction | APIMessageComponentButtonInteraction,
   language: Language,

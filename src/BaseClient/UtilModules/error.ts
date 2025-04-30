@@ -1,10 +1,17 @@
-import * as CT from '../../Typings/Typings.js';
+import { DiscordAPIError } from '@discordjs/rest';
+import {
+ ButtonStyle,
+ ComponentType,
+ type RESTPostAPIChannelMessageJSONBody,
+} from 'discord-api-types/v10.js';
 import DataBase from '../Bot/DataBase.js';
 import constants from '../Other/constants.js';
 import objectEmotes from './emotes.js';
 import { getLanguage } from './getLanguage.js';
 import { request } from './requestHandler.js';
 import { canSendMessage } from './requestHandler/channels/sendMessage.js';
+import { cache } from '../Bot/Redis.js';
+import util from '../Bot/Util.js';
 
 /**
  * Sends an error message to the configured error channel of the guild.
@@ -13,22 +20,22 @@ import { canSendMessage } from './requestHandler/channels/sendMessage.js';
  * @returns Promise<void>
  */
 export default async (
- guild: Discord.Guild | undefined | null,
- err: Error | Discord.DiscordAPIError,
+ guildId: string | undefined | null,
+ err: Error | DiscordAPIError,
  postDebug: boolean = true,
 ) => {
  if (process.argv.includes('--silent')) return;
- if (!guild && !postDebug) return;
- if (!(err instanceof Discord.DiscordAPIError)) postDebug = false;
+ if (!guildId && !postDebug) return;
+ if (!(err instanceof DiscordAPIError)) postDebug = false;
 
- const language = await getLanguage(guild?.id ?? 'en-GB');
+ const language = await getLanguage(guildId ?? 'en-GB');
 
  const filteredStack = err.stack
   ?.replace(/file:\/\/\/root\/Ayako\/packages\/Bot/g, '')
   .split(/\n+/g)
   .filter((l) => !l.includes('node_modules') && !l.includes('node:internal'));
 
- const payload: Omit<CT.UsualMessagePayload, 'files'> = {
+ const payload: RESTPostAPIChannelMessageJSONBody = {
   embeds: [
    {
     footer: {
@@ -52,11 +59,11 @@ export default async (
   ],
   components: [
    {
-    type: Discord.ComponentType.ActionRow,
+    type: ComponentType.ActionRow,
     components: [
      {
-      type: Discord.ComponentType.Button,
-      style: Discord.ButtonStyle.Link,
+      type: ComponentType.Button,
+      style: ButtonStyle.Link,
       label: language.slashCommands.help.clickMe,
       url: constants.standard.support,
      },
@@ -66,21 +73,20 @@ export default async (
  };
 
  if (postDebug) sendDebugMessage(payload);
- if (!guild) return;
+ if (!guildId) return;
  if (!proceed(err.message, err.stack)) return;
 
  const errorchannel = await DataBase.guildsettings
   .findUnique({
-   where: { guildid: guild.id },
+   where: { guildid: guildId },
    select: { errorchannel: true },
   })
   .then((r) => r?.errorchannel);
  if (!errorchannel) return;
 
- const channel = await guild.client.util.getChannel.guildTextChannel(errorchannel);
+ const channel = await util.getChannel.guildTextChannel(errorchannel);
  if (!channel) return;
 
- if (!guild.members.me) return;
  if (!canSendMessage(channel.id, payload, guild.members.me)) return;
  request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };

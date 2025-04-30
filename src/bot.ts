@@ -1,13 +1,11 @@
 /* eslint-disable no-console */
 import 'dotenv/config';
 import sms from 'source-map-support';
+
 import './BaseClient/UtilModules/console.js';
-
-import client from './BaseClient/Bot/Client.js';
-import util from './BaseClient/Bot/Util.js';
+import './BaseClient/Bot/Client.js';
+import './BaseClient/Bot/Util.js';
 import './BaseClient/Bot/Events.js';
-
-client.util = util;
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),

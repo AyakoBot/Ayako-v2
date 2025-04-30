@@ -38,7 +38,6 @@ import {
 } from '../UtilModules/getBotIdFrom.js';
 import getBotMemberFromGuild from '../UtilModules/getBotMemberFromGuild.js';
 import getChanged from '../UtilModules/getChanged.js';
-import * as getChannel from '../UtilModules/getChannel.js';
 import getChannelWebhook from '../UtilModules/getChannelWebhook.js';
 import getChunks from '../UtilModules/getChunks.js';
 import getColor from '../UtilModules/getColor.js';
@@ -146,7 +145,6 @@ interface Util {
  getBotIdFromToken: typeof getBotIdFromToken;
  getBotMemberFromGuild: typeof getBotMemberFromGuild;
  getChanged: typeof getChanged;
- getChannel: typeof getChannel;
  getChannelWebhook: typeof getChannelWebhook;
  getChunks: typeof getChunks;
  getColor: typeof getColor;
@@ -250,7 +248,6 @@ const util: Util = {
  getBotIdFromToken,
  getBotMemberFromGuild,
  getChanged,
- getChannel,
  getChannelWebhook,
  getChunks,
  getColor,

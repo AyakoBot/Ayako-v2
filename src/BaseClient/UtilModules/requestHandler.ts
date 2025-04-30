@@ -1,7 +1,15 @@
-import * as DiscordCore from '@discordjs/core';
-import * as DiscordRest from '@discordjs/rest';
-import type { Guild } from 'discord.js';
+import { API as DAPI, type APIGuild, type APIPartialInteractionGuild } from '@discordjs/core';
+import {
+ DiscordAPIError,
+ REST,
+ RESTEvents,
+ type APIRequest,
+ type RateLimitData,
+ type ResponseLike,
+} from '@discordjs/rest';
+
 import { API } from '../Bot/Client.js';
+import DataBase from '../Bot/DataBase.js';
 import cache from './cache.js';
 
 import rateLimited from '../../Events/RestEvents/rateLimited.js';
@@ -29,36 +37,29 @@ import webhooks from './requestHandler/webhooks.js';
 const requestHandler = async (guildId: string, token: string): Promise<boolean> => {
  if (cache.apis.has(guildId)) return true;
 
- const rest = new DiscordRest.REST({
+ const rest = new REST({
   version: '10',
   api: 'http://nirn:8080/api',
   timeout: 60000,
  }).setToken(token);
 
- const api = new DiscordCore.API(rest);
+ const api = new DAPI(rest);
 
  const canGetOwnGuild = await getOwnGuild(guildId, api);
  if (!canGetOwnGuild) return false;
 
- rest.on(DiscordRest.RESTEvents.Debug, (info: string) => restDebug(info));
-
- rest.on(DiscordRest.RESTEvents.RateLimited, (info: DiscordRest.RateLimitData) =>
-  rateLimited(info),
- );
-
- rest.on(
-  DiscordRest.RESTEvents.Response,
-  (req: DiscordRest.APIRequest, res: DiscordRest.ResponseLike) => response(req, res),
- );
+ rest.on(RESTEvents.Debug, (info: string) => restDebug(info));
+ rest.on(RESTEvents.RateLimited, (info: RateLimitData) => rateLimited(info));
+ rest.on(RESTEvents.Response, (req: APIRequest, res: ResponseLike) => response(req, res));
 
  cache.apis.set(guildId, api);
  return true;
 };
 
-const getOwnGuild = async (guildId: string, api: DiscordCore.API) => {
+const getOwnGuild = async (guildId: string, api: DAPI) => {
  const guild = await api.guilds
   .get(guildId, { with_counts: false })
-  .catch((e: DiscordRest.DiscordAPIError) => e);
+  .catch((e: DiscordAPIError) => e);
 
  if ('message' in guild) return false;
  return true;
@@ -66,8 +67,8 @@ const getOwnGuild = async (guildId: string, api: DiscordCore.API) => {
 
 export default requestHandler;
 
-export const makeRequestHandler = async (guild: Guild) => {
- const ccSettings = await guild.client.util.DataBase.customclients.findUnique({
+export const makeRequestHandler = async (guild: APIGuild | APIPartialInteractionGuild) => {
+ const ccSettings = await DataBase.customclients.findUnique({
   where: { guildid: guild.id, token: { not: null } },
  });
  if (!ccSettings) return false;
@@ -83,6 +84,7 @@ export const request = {
  channels,
  guilds,
  webhooks,
+ interactions: API.interactions,
  invites,
  oAuth2: API.oauth2,
  roleConnections: API.roleConnections,

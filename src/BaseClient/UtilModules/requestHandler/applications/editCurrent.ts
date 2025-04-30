@@ -1,3 +1,5 @@
+import type { DiscordAPIError } from '@discordjs/rest';
+import type { Guild } from 'src/Typings/Typings.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
@@ -10,12 +12,12 @@ import error from '../../error.js';
  * if the application cannot be found or edited.
  */
 export default async (
- guild: Discord.Guild | undefined,
+ guild: Guild | undefined,
  body: Parameters<typeof API.applications.editCurrent>[0],
 ) =>
  (guild ? (cache.apis.get(guild.id) ?? API) : API).applications
   .editCurrent(body)
-  .catch((e: Discord.DiscordAPIError) => {
+  .catch((e: DiscordAPIError) => {
    if (guild) error(guild, e);
    return e;
   });

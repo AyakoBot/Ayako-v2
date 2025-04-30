@@ -1,3 +1,4 @@
+import type { Guild } from 'src/Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
 import cache from './cache.js';
 
@@ -10,29 +11,34 @@ export const token = (t: string) => Buffer.from(t.split('.')[0], 'base64').toStr
 
 /**
  * Returns the bot ID for a given guild.
- * @param g - The Discord guild object.
+ * @param g - The guild.
  * @returns The bot ID for the guild.
  */
-export const guild = async (g: Discord.Guild) => {
+export const guild = async (g: Guild | string) => {
+ const gId = typeof g === 'string' ? g : g.id;
  if (!g) {
-  const { default: client } = await import('../Bot/Client.js');
+  const { clientUser } = await import('../Bot/Client.js');
 
-  return client.user!.id;
+  return clientUser.id;
  }
 
- if (cache.customClients.get(g.id)) return cache.customClients.get(g.id)!;
+ const cached = cache.customClients.get(gId);
+ if (cached) return cached;
 
  const settings = await DataBase.customclients.findUnique({
-  where: { guildid: g.id, token: { not: null } },
+  where: { guildid: gId, token: { not: null } },
   select: { token: true },
  });
+
+ const { clientUser } = await import('../Bot/Client.js');
+
  if (!settings || !settings.token) {
-  cache.customClients.set(g.id, g.client.user.id);
-  return g.client.user.id;
+  cache.customClients.set(gId, clientUser.id);
+  return clientUser.id;
  }
 
  const id = token(settings.token);
- cache.customClients.set(g.id, id);
+ cache.customClients.set(gId, id);
 
  return id;
 };

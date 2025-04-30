@@ -1,16 +1,25 @@
+import {
+ SlashCommandBuilder,
+ SlashCommandStringOption,
+ SlashCommandUserOption,
+} from '@discordjs/builders';
+import { type APIGuild, type APIMessageComponentInteraction } from 'discord-api-types/v10.js';
+import util from 'src/BaseClient/Bot/Util.js';
+import constants from '../../../BaseClient/Other/constants.js';
 import rp from '../../SlashCommands/rp/manager.js';
+import { request } from 'src/BaseClient/UtilModules/requestHandler.js';
 
-export default async (cmd: Discord.ButtonInteraction) => {
- if (!cmd.inCachedGuild()) return;
+export default async (cmd: APIMessageComponentInteraction) => {
+ if (!cmd.guild) return;
 
- const language = await cmd.client.util.getLanguage(cmd.guildId);
+ const language = await util.getLanguage(cmd.guild_id);
 
- await cmd.deferUpdate();
- cmd.editReply({
+ await request.interactions.deferMessageUpdate(cmd.id, cmd.token);
+ request.interactions.editReply(cmd.application_id, cmd.token, {
   components: [],
   embeds: [
    {
-    ...cmd.client.util.loadingEmbed({
+    ...util.loadingEmbed({
      language,
      lan: { author: language.slashCommands.rp.author },
     }),
@@ -25,17 +34,14 @@ export default async (cmd: Discord.ButtonInteraction) => {
   ],
  });
 
- const settings = !(await cmd.client.util.DataBase.guildsettings
-  .findUnique({
-   where: { guildid: cmd.guildId },
-   select: { enabledrp: true },
-  })
+ const settings = !(await util.DataBase.guildsettings
+  .findUnique({ where: { guildid: cmd.guild_id }, select: { enabledrp: true } })
   .then((r) => r?.enabledrp));
 
- cmd.client.util.DataBase.guildsettings
+ util.DataBase.guildsettings
   .upsert({
-   where: { guildid: cmd.guildId },
-   create: { guildid: cmd.guildId, enabledrp: settings },
+   where: { guildid: cmd.guild_id },
+   create: { guildid: cmd.guild_id!, enabledrp: settings },
    update: { enabledrp: settings },
   })
   .then();
@@ -46,66 +52,62 @@ export default async (cmd: Discord.ButtonInteraction) => {
  rp(cmd, [], true);
 };
 
-const deleteAll = async (cmd: APIMessageComponentButtonInteraction) => {
- const commands = await cmd.guild.client.util.request.commands.getGuildCommands(cmd.guild);
+const deleteAll = async (cmd: APIMessageComponentInteraction) => {
+ const commands = await util.request.commands.getGuildCommands(cmd.guild);
  if ('message' in commands) {
-  cmd.guild.client.util.error(cmd.guild, new Error(commands.message));
+  util.error(cmd.guild, new Error(commands.message));
   return;
  }
 
- if (commands.length === cmd.client.util.constants.commands.interactions.length) {
-  await cmd.client.util.request.commands.bulkOverwriteGuildCommands(cmd.guild, []);
+ if (commands.length === util.constants.commands.interactions.length) {
+  await util.request.commands.bulkOverwriteGuildCommands(cmd.guild, []);
  } else {
-  const commandNames = cmd.client.util.constants.commands.interactions.map((c) => c.name);
+  const commandNames = util.constants.commands.interactions.map((c) => c.name);
 
   await Promise.all(
    commands
     .filter((c) => commandNames.includes(c.name))
-    .map((c) => cmd.guild.client.util.request.commands.deleteGuildCommand(cmd.guild, c.id)),
+    .map((c) => util.request.commands.deleteGuildCommand(cmd.guild, c.id)),
   );
  }
 };
 
-export const create = async (guild: Discord.Guild) => {
- const commands = await guild.client.util.request.commands.getGuildCommands(guild);
+export const create = async (guild: APIGuild) => {
+ const commands = await util.request.commands.getGuildCommands(guild);
 
  if ('message' in commands) {
-  guild.client.util.error(guild, new Error(commands.message));
+  util.error(guild, new Error(commands.message));
   return;
  }
 
- const registerCommands = getRegisterCommands(
-  guild.client.util.constants.commands.interactions,
- ).filter((c) => !commands.find((existing) => existing.name === c.name));
+ const registerCommands = getRegisterCommands(util.constants.commands.interactions).filter(
+  (c) => !commands.find((existing) => existing.name === c.name),
+ );
 
  const createPayload = registerCommands.map((c) => c.toJSON());
 
  if (!commands.length) {
-  await guild.client.util.request.commands.bulkOverwriteGuildCommands(guild, createPayload);
+  await util.request.commands.bulkOverwriteGuildCommands(guild, createPayload);
  } else {
-  guild.client.util.cache.interactionInstallmentRunningFor.add(guild.id);
-  await Promise.all(
-   createPayload.map((p) => guild.client.util.request.commands.createGuildCommand(guild, p)),
-  );
-  guild.client.util.cache.interactionInstallmentRunningFor.delete(guild.id);
+  util.cache.interactionInstallmentRunningFor.add(guild.id);
+  await Promise.all(createPayload.map((p) => util.request.commands.createGuildCommand(guild, p)));
+  util.cache.interactionInstallmentRunningFor.delete(guild.id);
  }
 
- await guild.client.util.DataBase.guildsettings.upsert({
+ await util.DataBase.guildsettings.upsert({
   where: { guildid: guild.id },
   update: { rpenableruns: { increment: 1 } },
   create: { guildid: guild.id, rpenableruns: 1, enabledrp: true },
  });
 };
 
-export const getRegisterCommands = (
- interactions: Discord.Client<true>['util']['constants']['commands']['interactions'],
-) =>
+export const getRegisterCommands = (interactions: (typeof constants)['commands']['interactions']) =>
  interactions.map((c) => {
-  const command = new Discord.SlashCommandBuilder().setName(c.name).setDescription(c.desc);
+  const command = new SlashCommandBuilder().setName(c.name).setDescription(c.desc);
 
   if (c.users) {
    command.addUserOption(
-    new Discord.SlashCommandUserOption()
+    new SlashCommandUserOption()
      .setDescription('The User to interact with')
      .setRequired(c.reqUser)
      .setName('user'),
@@ -113,7 +115,7 @@ export const getRegisterCommands = (
   }
 
   command.addStringOption(
-   new Discord.SlashCommandStringOption()
+   new SlashCommandStringOption()
     .setName('text')
     .setDescription('The text to Display')
     .setRequired(false),
@@ -122,10 +124,7 @@ export const getRegisterCommands = (
   if ('specialOptions' in c && c.specialOptions) {
    c.specialOptions.forEach((o) =>
     command.addStringOption(
-     new Discord.SlashCommandStringOption()
-      .setName(o.name)
-      .setDescription(o.desc)
-      .setRequired(false),
+     new SlashCommandStringOption().setName(o.name).setDescription(o.desc).setRequired(false),
     ),
    );
   }
@@ -133,7 +132,7 @@ export const getRegisterCommands = (
   if (c.users) {
    new Array(5).fill(null).forEach((_, i) => {
     command.addUserOption(
-     new Discord.SlashCommandUserOption()
+     new SlashCommandUserOption()
       .setDescription(`Another User to interact with`)
       .setRequired(false)
       .setName(`user-${i}`),

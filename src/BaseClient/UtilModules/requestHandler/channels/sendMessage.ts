@@ -1,7 +1,10 @@
+import type { APIGuildMember, RESTPostAPIChannelMessageJSONBody } from 'discord-api-types/v10.js';
 import { type UsualMessagePayload } from '../../../../Typings/Typings.js';
 import * as Classes from '../../../Other/classes.js';
 import error, { sendDebugMessage } from '../../error.js';
 
+import type { RawFile } from '@discordjs/rest';
+import type { RMember } from 'src/Typings/Redis.js';
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
 import { getAPI } from './addReaction.js';
@@ -115,10 +118,10 @@ export default fn;
  */
 export const canSendMessage = (
  channelId: string,
- payload: Discord.RESTPostAPIChannelMessageJSONBody & {
-  files?: Discord.RawFile[];
+ payload: RESTPostAPIChannelMessageJSONBody & {
+  files?: RawFile[];
  },
- me: Discord.GuildMember,
+ me: APIGuildMember | RMember,
 ) => {
  if (!channelId) return true;
  const channel = me.guild.channels.cache.get(channelId);

@@ -1,9 +1,9 @@
-import { Client } from '@discordjs/core';
+import { API as DAPI, Client } from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { CompressionMethod, Encoding, WebSocketManager } from '@discordjs/ws';
 import { ActivityType, GatewayIntentBits, PresenceUpdateStatus } from 'discord-api-types/v10';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
-import { cache } from './Redis.js';
+import { cache as RedisCache } from './Redis.js';
 
 const rest = new REST({ api: 'http://nirn:8080/api' });
 rest.setToken((process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '');
@@ -51,13 +51,12 @@ const gateway = new WebSocketManager({
 
 gateway.setToken((process.argv.includes('--dev') ? process.env.DevToken : process.env.Token) ?? '');
 
-const client = new Client({
- rest,
- gateway,
-});
+const client = new Client({ rest, gateway });
 
-client.cluster = new ClusterClient(client);
-client.cache = cache;
+export const cluster = new ClusterClient(client);
+export const cache = RedisCache;
+export const API = new DAPI(rest);
+export const clientUser = await API.users.getCurrent();
 
 gateway.connect();
 

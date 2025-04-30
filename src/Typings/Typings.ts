@@ -1,5 +1,10 @@
 import { StoredPunishmentTypes } from '@prisma/client';
-import type { APIApplicationCommandAutocompleteInteraction } from 'discord-api-types/v10.js';
+import type {
+ APIApplicationCommandAutocompleteInteraction,
+ APIGuild,
+ APIPartialGuild,
+ APIPartialInteractionGuild,
+} from 'discord-api-types/v10.js';
 import type { RChannel, RGuild, RMessage, RRole, RUser } from './Redis.js';
 
 export type * from '../BaseClient/Cluster/Redis.js';
@@ -288,3 +293,5 @@ export const StoredBaseAndTempType = {
  [StoredPunishmentTypes.vctempdeaf]: [StoredPunishmentTypes.vctempdeaf],
  [StoredPunishmentTypes.vctempmute]: [StoredPunishmentTypes.vctempmute],
 };
+
+export type Guild = APIGuild | APIPartialGuild | APIPartialInteractionGuild | RGuild;

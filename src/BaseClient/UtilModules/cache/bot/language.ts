@@ -1,4 +1,4 @@
-import { Guild } from 'discord.js';
+import type { APIGuild, APIPartialInteractionGuild } from 'discord-api-types/v10.js';
 import type Lang from '../../../Other/language.js';
 
 /**
@@ -16,13 +16,13 @@ export interface Language {
   * Deletes a language of a guild.
   * @param guild - The guild to delete the language for.
   */
- delete: (guild: Guild) => void;
+ delete: (guild: APIGuild | APIPartialInteractionGuild) => void;
 
  /**
   * Gets the language of a guild.
   * @param guild - The guild to get the language for.
   */
- get: (guild: Guild) => Promise<Lang>;
+ get: (guild: APIGuild | APIPartialInteractionGuild) => Promise<Lang>;
 
  /**
   * Map of guild IDs to Languages.

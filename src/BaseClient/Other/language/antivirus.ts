@@ -1,5 +1,6 @@
 import type { RChannel, RMessage } from 'src/Typings/Redis.js';
 import * as CT from '../../../Typings/Typings.js';
+import type { APIMessage } from 'discord-api-types/v10.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.antivirus,
@@ -10,10 +11,10 @@ export default (t: CT.Language) => ({
   vtStats: (m: string, s: string, h: string, u: string) =>
    t.stp(t.JSON.antivirus.log.vtStats, { m, s, h, u }),
   detectedAs: (c: string) => t.stp(t.JSON.antivirus.log.detectedAs, { c }),
-  value: (msg: RMessage, channel: RChannel) =>
+  value: (msg: RMessage | APIMessage, channel: RChannel | null) =>
    t.stp(t.JSON.antivirus.log.value, {
     msg,
-    name: 'name' in channel ? channel.name : t.JSON.t.Unknown,
+    name: channel ? ('name' in channel ? channel.name : t.JSON.t.Unknown) : t.JSON.t.Unknown,
    }),
  },
 });

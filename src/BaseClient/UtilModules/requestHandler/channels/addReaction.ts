@@ -1,7 +1,12 @@
+import {
+ PermissionFlagsBits,
+ type APIMessage,
+ type GatewayMessageCreateDispatchData,
+} from 'discord-api-types/v10.js';
+import type { RMessage } from 'src/Typings/Redis.js';
 import { API } from '../../../Bot/Client.js';
 import cache from '../../cache.js';
 import error from '../../error.js';
-
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
 
@@ -11,20 +16,21 @@ import requestHandlerError from '../../requestHandlerError.js';
  * @param emoji The emoji to add as a reaction.
  * @returns A Promise that resolves with the DiscordAPIError if the reaction could not be added.
  */
-export default async (msg: Discord.Message<true>, emoji: string) => {
+export default async (
+ msg: (APIMessage & { guild_id: string }) | GatewayMessageCreateDispatchData | RMessage,
+ emoji: string,
+) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
+ if (!msg.guild_id) return new Error('No guild id provided.');
 
- if (!isReactable(msg, emoji, await getBotMemberFromGuild(msg.guild))) {
-  const e = requestHandlerError(
-   `Cannot apply ${emoji} as reaction in ${msg.channel.name} / ${msg.channel.id}`,
-   [
-    Discord.PermissionFlagsBits.AddReactions,
-    Discord.PermissionFlagsBits.ReadMessageHistory,
-    ...(emoji.includes(':') ? [Discord.PermissionFlagsBits.UseExternalEmojis] : []),
-   ],
-  );
+ if (!isReactable(msg, emoji, await getBotMemberFromGuild(msg.guild_id))) {
+  const e = requestHandlerError(`Cannot apply ${emoji} as reaction in ${msg.channel_id}`, [
+   PermissionFlagsBits.AddReactions,
+   PermissionFlagsBits.ReadMessageHistory,
+   ...(emoji.includes(':') ? [PermissionFlagsBits.UseExternalEmojis] : []),
+  ]);
 
-  error(msg.guild, e);
+  error(msg.guild_id, e);
   return e;
  }
 

@@ -1,35 +1,39 @@
 import Prisma, { PunishmentType } from '@prisma/client';
-import client, { API } from '../../../../BaseClient/Bot/Client.js';
+import type { GatewayMessageCreateDispatchData } from 'discord-api-types/v10.js';
+import util from 'src/BaseClient/Bot/Util.js';
+import client, { API, clientUser } from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
+import type { MessageCreateOptions } from 'src/BaseClient/UtilModules/send.js';
+import cache from 'src/BaseClient/UtilModules/cache.js';
 
-export default async (msg: Discord.Message) => {
+export default async (msg: GatewayMessageCreateDispatchData) => {
  if (!msg.content) return;
  if (msg.author.bot) return;
- if (!msg.inGuild() && msg.client.user.id !== process.env.MAIN_BOT_ID) return;
+ if (!msg.guild_id && clientUser.id !== process.env.MAIN_BOT_ID) return;
 
- const settings = msg.inGuild()
-  ? await client.util.DataBase.antivirus.findUnique({
-     where: { guildid: msg.guildId, active: true },
+ const settings = msg.guild_id
+  ? await util.DataBase.antivirus.findUnique({
+     where: { guildid: msg.guild_id, active: true },
     })
   : undefined;
- if (!settings && msg.inGuild()) return;
+ if (!settings && msg.guild_id) return;
 
- if (!msg.inGuild()) {
+ if (!msg.guild_id) {
   await API.channels.addMessageReaction(
-   msg.channelId,
+   msg.channel_id,
    msg.id,
-   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+   util.constants.standard.getEmoteIdentifier(util.emotes.loading),
   );
  }
 
  const result = await run(msg.content);
  if (!('url' in result)) {
-  if (msg.inGuild()) return;
+  if (msg.guild_id) return;
 
   await API.channels.deleteOwnMessageReaction(
-   msg.channelId,
+   msg.channel_id,
    msg.id,
-   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+   util.constants.standard.getEmoteIdentifier(util.emotes.loading),
   );
 
   if (!result.urls.length) return;
@@ -37,61 +41,61 @@ export default async (msg: Discord.Message) => {
   log(
    settings?.linklogging && settings?.linklogchannels.length
     ? settings.linklogchannels
-    : msg.channel,
+    : msg.channel_id,
    msg,
-   await client.util.getLanguage(msg.guildId),
+   await util.getLanguage(msg.guild_id),
    result,
   );
 
   return;
  }
 
- const language = await client.util.getLanguage(msg.guildId);
+ const language = await util.getLanguage(msg.guild_id);
 
- if (!msg.inGuild() || result.triggers) {
+ if (!msg.guild_id || result.triggers) {
   log(
    settings?.linklogging && settings?.linklogchannels.length
     ? settings.linklogchannels
-    : msg.channel,
+    : msg.channel_id,
    msg,
    language,
    result,
   );
  }
 
- if (!msg.inGuild()) {
+ if (!msg.guild_id) {
   await API.channels.deleteOwnMessageReaction(
-   msg.channelId,
+   msg.channel_id,
    msg.id,
-   client.util.constants.standard.getEmoteIdentifier(client.util.emotes.loading),
+   util.constants.standard.getEmoteIdentifier(util.emotes.loading),
   );
  }
 
- if (msg.inGuild() && settings?.deletemsg) {
-  await msg.client.util.request.channels.deleteMessage(msg);
+ if (msg.guild_id && settings?.deletemsg) {
+  await util.request.channels.deleteMessage(msg);
  }
 
- if (msg.inGuild() && settings) performPunishment(msg, settings, language, msg);
+ if (msg.guild_id && settings) performPunishment(msg, settings, language, msg);
 };
 
-const log = (
- channels: string[] | Discord.Message<false>['channel'],
- msg: Discord.Message,
+const log = async (
+ channels: string[],
+ msg: GatewayMessageCreateDispatchData,
  language: CT.Language,
  url: Awaited<ReturnType<typeof run>>,
 ) => {
  if (!url.url && !url.urls.length) return;
 
- const payload: CT.UsualMessagePayload = {
+ const payload: MessageCreateOptions = {
   embeds: [
    {
     color: url.triggers ? CT.Colors.Danger : CT.Colors.Success,
     author: {
      name: language.autotypes.antivirus,
-     icon_url: client.util.constants.events.logs.invite.create,
+     icon_url: util.constants.events.logs.invite.create,
     },
-    description: `${language.antivirus.log.value(msg)}\n\n${language.antivirus.log.name}\n${url.urls
-     .map((u) => client.util.util.makeInlineCode(u))
+    description: `${language.antivirus.log.value(msg, await util.cache.channels.get(msg.channel_id))}\n\n${language.antivirus.log.name}\n${url.urls
+     .map((u) => util.util.makeInlineCode(u))
      .join(', ')}`,
     fields: [
      ...(url.url
@@ -99,18 +103,18 @@ const log = (
          { name: '\u200b', value: '\u200b' },
          {
           name: language.antivirus.malicious(
-           client.util.constants.standard.getEmote(client.util.emotes.crossWithBackground) ?? '❌',
+           util.constants.standard.getEmote(util.emotes.crossWithBackground) ?? '❌',
           ),
-          value: client.util.util.makeInlineCode(url.url),
+          value: util.util.makeInlineCode(url.url),
          },
          { name: '\u200b', value: '\u200b' },
         ]
       : [
          {
           name: language.antivirus.clean(
-           client.util.constants.standard.getEmote(client.util.emotes.tickWithBackground) ?? '✅',
+           util.constants.standard.getEmote(util.emotes.tickWithBackground) ?? '✅',
           ),
-          value: url.urls.map((u) => client.util.util.makeInlineCode(u)).join(', '),
+          value: url.urls.map((u) => util.util.makeInlineCode(u)).join(', '),
          },
         ]),
     ],
@@ -118,9 +122,9 @@ const log = (
   ],
  };
 
- if (msg.inGuild()) {
-  client.util.send({ id: channels as string[], guildId: msg.guildId }, payload, 10000);
- } else client.util.send(channels as Discord.TextBasedChannel, payload);
+ if (msg.guild_id) {
+  util.send({ id: channels as string[], guildId: msg.guild_id }, payload, 10000);
+ } else util.send(channels, payload);
 };
 
 const run = async (content: string) => {
@@ -205,13 +209,13 @@ const getScans = async (
 
  if (scans.length) return scans;
 
- await client.util.sleep(5000);
+ await util.sleep(5000);
  return getScans(scanIds, scans, iteration + 1);
 };
 
 const getURLs = async (content: string): Promise<string[]> => {
- const urlTLDs = client.util.cache.urlTLDs.toArray();
- const urlTester = client.util.regexes.urlTester(urlTLDs);
+ const urlTLDs = cache.urlTLDs.toArray();
+ const urlTester = util.regexes.urlTester(urlTLDs);
 
  return (
   await Promise.all(
@@ -222,25 +226,26 @@ const getURLs = async (content: string): Promise<string[]> => {
     .split(/[\s\n]+/g)
     .filter((line) => /[^.]+\./.test(line))
     .filter((u) => u.match(urlTester))
-    .map((arg) => client.util.fetchWithRedirects(arg)),
+    .map((arg) => util.fetchWithRedirects(arg)),
   )
  ).flat();
 };
 
 export const performPunishment = async (
- rawMessage: Discord.Message<true> | undefined,
+ rawMessage: GatewayMessageCreateDispatchData | undefined,
  settings: Prisma.antivirus | Prisma.antispam,
  language: CT.Language,
- additionalData: Discord.Message<true>,
+ additionalData: GatewayMessageCreateDispatchData,
 ) => {
  const msg = rawMessage ?? additionalData;
+ if (!msg.guild_id) return;
 
  const baseOptions = {
   dbOnly: false,
   reason: language.autotypes.antivirus,
-  executor: (await msg.client.util.getBotMemberFromGuild(msg.guild)).user,
+  executor: (await util.getBotMemberFromGuild(msg.guild_id))?.user,
   target: msg.author,
-  guild: msg.guild,
+  guild: msg.guild_id,
   skipChecks: false,
  };
 
