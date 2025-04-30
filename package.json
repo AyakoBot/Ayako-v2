@@ -15,9 +15,9 @@
     "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
   },
   "dependencies": {
+    "@discordjs/builders": "^1.11.1",
     "@discordjs/core": "^2.1.0",
     "@discordjs/rest": "^2.5.0",
-    "@discordjs/builders": "^1.11.1",
     "@discordjs/ws": "^2.0.2",
     "@prisma/client": "^6.7.0",
     "@total-typescript/ts-reset": "^0.6.1",
@@ -62,7 +62,7 @@
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
-    "eslint": "^8.57.1",
+    "eslint": "^8.24.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.2",
     "eslint-import-resolver-typescript": "4.3.4",
@@ -75,10 +75,10 @@
     "source-map-support": "^0.5.21",
     "typescript": "^5.8.3"
   },
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@10.10.0",
   "engines": {
     "node": "^22.3.0",
-    "pnpm": "^9.5.0"
+    "pnpm": "10.10.0"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"
