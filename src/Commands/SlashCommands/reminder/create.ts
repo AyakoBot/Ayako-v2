@@ -31,7 +31,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 };
 
 export const end = async (reminder: DBReminder | Serialized<DBReminder>) => {
- if (!reminder) return;
+ if (!reminder || !reminder.startTime) return;
  const user = await client.util.getUser(reminder.userId);
 
  client.util.DataBase.reminder.delete({ where: { startTime: reminder.startTime } }).then();
