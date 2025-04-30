@@ -42,38 +42,19 @@ export const RInviteKeys = [
 export default class InviteCache extends Cache<APIInvite> {
  public keys = RInviteKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:invites`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'invites');
  }
 
  async set(data: APIInvite) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${rData.guild_id}:${data.code}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.code]);
   return true;
  }
 
- get(code: string) {
-  return this.redis.get(`${this.key()}:${code}`).then((data) => this.stringToData(data));
- }
-
- del(code: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${code}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
- }
-
- apiToR(data: APIInvite | APIExtendedInvite) {
+ apiToR(data: APIInvite) {
   if (!data.guild) return false;
 
   const keysNotToCache = Object.keys(data).filter(

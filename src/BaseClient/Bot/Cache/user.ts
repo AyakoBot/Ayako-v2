@@ -35,8 +35,8 @@ export default class UserCache extends Cache<APIUser> {
   avatar_decoration_data: ['asset_url', 'sku_id'] as const,
  };
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:users`, redis);
+ constructor(redis: Redis) {
+  super(redis, 'users');
  }
 
  public static assetUrl(asset: string) {
@@ -51,25 +51,12 @@ export default class UserCache extends Cache<APIUser> {
   return `https://cdn.discordapp.com/banners/${userId}/${banner}.${banner.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- key() {
-  return this.prefix;
- }
-
  async set(data: APIUser) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(`${this.key()}:${data.id}`, this.ttl, JSON.stringify(rData));
-
+  await this.setValue(rData, [], [rData.id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${id}`);
  }
 
  apiToR(data: APIUser) {

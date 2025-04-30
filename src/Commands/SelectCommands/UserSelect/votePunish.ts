@@ -1,6 +1,5 @@
 import { ButtonStyle, ComponentType, Role, type UserSelectMenuInteraction } from 'discord.js';
 import redis from '../../../BaseClient/Bot/Redis.js';
-import { prefix } from '../../../BaseClient/UtilModules/getScheduled.js';
 
 export default async (cmd: UserSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -19,11 +18,17 @@ export default async (cmd: UserSelectMenuInteraction, args: string[]) => {
   where: { uniquetimestamp: Number(settingId) },
  });
  if (!settings) {
-  redis.expire(`${prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`, 1);
+  redis.expire(
+   `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
+   1,
+  );
   return;
  }
 
- redis.expire(`${prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`, 60);
+ redis.expire(
+  `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
+  60,
+ );
 
  cmd.update({
   content: `${cmd.users.map((u) => u.toString()).join(', ')}\n\n${lan.voteContent(
@@ -62,7 +67,7 @@ export default async (cmd: UserSelectMenuInteraction, args: string[]) => {
   ],
  });
 
- cmd.client.util.setScheduled(
+ cmd.client.util.scheduleManager.setScheduled(
   `votePunish:execute:${cmd.guildId}:${settings.roleId}`,
   JSON.stringify({
    id: Number(settingId),

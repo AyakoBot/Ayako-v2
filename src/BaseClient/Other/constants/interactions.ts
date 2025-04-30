@@ -154,13 +154,6 @@ export default [
  { name: 'laugh', desc: 'Laugh', users: true, reqUser: false, buttons: ['peck', 'bonk'] },
  { name: 'lay', desc: 'Lay', users: true, reqUser: false, buttons: ['fluff', 'cuddle', 'pat'] },
  {
-  name: 'lewd',
-  desc: 'Lewd someone',
-  users: true,
-  reqUser: false,
-  buttons: ['run', 'lewd', 'lurk'],
- },
- {
   name: 'lick',
   desc: 'Lick someone',
   users: true,

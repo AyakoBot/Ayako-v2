@@ -9,35 +9,16 @@ export const RCommandPermissionKeys = ['id', 'type', 'permission', 'guild_id'] a
 export default class CommandPermissionCache extends Cache<APIApplicationCommandPermission> {
  public keys = RCommandPermissionKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:commandPermissions`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'commandPermissions');
  }
 
  async set(data: APIApplicationCommandPermission, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${rData.guild_id}:${data.id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APIApplicationCommandPermission, guildId: string) {

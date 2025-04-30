@@ -23,39 +23,20 @@ export const RRoleKeys = [
 export default class RoleCache extends Cache<APIRole> {
  public keys = RRoleKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:roles`, redis);
+ constructor(redis: Redis) {
+  super(redis, 'roles');
  }
 
  public static iconUrl(icon: string, roleId: string) {
   return `https://cdn.discordapp.com/role-icons/${roleId}/${icon}.${icon.startsWith('a_') ? 'gif' : 'webp'}`;
  }
 
- key() {
-  return this.prefix;
- }
-
  async set(data: APIRole, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${rData.guild_id}:${data.id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APIRole, guildId: string) {

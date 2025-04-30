@@ -106,7 +106,7 @@ export default async (
   components: getComponents(options, lan, message, type),
  };
 
- if (cmd.isChatInputCommand()) cmd.editReply(payload as Discord.InteractionReplyOptions);
+ if (cmd.isChatInputCommand()) cmd.editReply(payload as Discord.InteractionEditReplyOptions);
  else {
   if (reply) reply.delete();
   cmd.editReply({ ...(payload as Discord.InteractionUpdateOptions), message: cmd.message });

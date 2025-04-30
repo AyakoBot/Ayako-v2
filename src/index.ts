@@ -5,14 +5,12 @@ import './BaseClient/UtilModules/console.js';
 import getPathFromError from './BaseClient/UtilModules/getPathFromError.js';
 
 console.clear();
-console.log(
- `+++++++++++++++ Welcome to Ayako ++++++++++++++++
-+      Restart all Clusters with "restart"      +
-+                  Arguments:                   +
-+   --debug --debug-db --warn --debug-queries   +
-+                --silent --dev                 +
-+++++++++++++++++++++++++++++++++++++++++++++++++`,
-);
+console.log('+++++++++++++++ Welcome to Ayako ++++++++++++++++');
+console.log('+      Restart all Clusters with "restart"      +');
+console.log('+                  Arguments:                   +');
+console.log('+   --debug --debug-db --warn --debug-queries   +');
+console.log('+                --silent --dev                 +');
+console.log('+++++++++++++++++++++++++++++++++++++++++++++++++');
 
 sms.install({
  handleUncaughtExceptions: process.argv.includes('--debug'),

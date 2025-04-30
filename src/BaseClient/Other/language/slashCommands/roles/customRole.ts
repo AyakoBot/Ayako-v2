@@ -23,4 +23,13 @@ export default (t: CT.Language) => ({
     limit.color ? t.util.emotes.enabled : t.util.emotes.disabled,
    ),
   }),
+ share: {
+  ...t.JSON.slashCommands.roles.customRole.share,
+  desc: (amount: number) =>
+   t.stp(t.JSON.slashCommands.roles.customRole.share.desc, { amount: String(amount), t }),
+  claimed: (role: Discord.Role) =>
+   t.stp(t.JSON.slashCommands.roles.customRole.share.claimed, {
+    role: t.languageFunction.getRole(role),
+   }),
+ },
 });

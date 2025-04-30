@@ -10,9 +10,9 @@ import {
  type GatewayMessageReactionRemoveDispatchData,
  type GatewayMessageReactionRemoveEmojiDispatchData,
  type GatewayMessageUpdateDispatchData,
-} from 'discord-api-types/v10.js';
-import { AllThreadGuildChannelTypes } from '../../../../../Typings/Channel.js';
-import RedisClient, { cache as redis } from '../../../Redis.js';
+} from 'discord.js';
+import RedisClient, { cache as redis } from '../../../../BaseClient/Bot/Redis.js';
+import { AllThreadGuildChannelTypes } from '../../../../Typings/Channel.js';
 
 export default {
  [GatewayDispatchEvents.MessageCreate]: async (data: GatewayMessageCreateDispatchData) => {
@@ -101,15 +101,30 @@ export default {
 
  [GatewayDispatchEvents.MessageReactionRemoveAll]: (
   data: GatewayMessageReactionRemoveAllDispatchData,
- ) =>
-  RedisClient.keys(`${redis.reactions.key()}:*:${data.message_id}:*`).then((r) =>
-   r.length ? RedisClient.del(r) : 0,
-  ),
+ ) => {
+  const pipeline = RedisClient.pipeline();
+  const reactions = RedisClient.hgetall(redis.reactions.keystore(data.message_id));
+  pipeline.hdel(
+   redis.reactions.keystore(data.message_id),
+   ...Object.keys(reactions).filter((r) => r.includes(data.message_id)),
+  );
+  pipeline.del(...Object.keys(reactions).filter((r) => r.includes(data.message_id)));
+  pipeline.exec();
+ },
 
- [GatewayDispatchEvents.MessageReactionRemoveEmoji]: (
+ [GatewayDispatchEvents.MessageReactionRemoveEmoji]: async (
   data: GatewayMessageReactionRemoveEmojiDispatchData,
- ) =>
-  RedisClient.keys(
-   `${redis.reactions.key()}:*:${data.message_id}:${data.emoji.id || data.emoji.name}`,
-  ).then((r) => (r.length ? RedisClient.del(r) : 0)),
+ ) => {
+  if (!data.guild_id) return;
+
+  const pipeline = RedisClient.pipeline();
+  const reactions = await RedisClient.hgetall(redis.reactions.keystore(data.guild_id));
+  const filteredReactions = Object.keys(reactions).filter(
+   (r) => r.includes(data.message_id) && r.includes((data.emoji.id || data.emoji.name)!),
+  );
+
+  pipeline.hdel(redis.reactions.keystore(data.guild_id), ...filteredReactions);
+  pipeline.del(...filteredReactions);
+  pipeline.exec();
+ },
 } as const;

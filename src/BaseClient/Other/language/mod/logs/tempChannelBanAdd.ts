@@ -11,9 +11,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.logs.tempChannelBanAdd.description, {
    target: t.languageFunction.getUser(target),
    executor: t.languageFunction.getUser(executor),
-   options: {
-    channel: t.languageFunction.getChannel(options.channel),
-    duration: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
-   },
+   channel: t.languageFunction.getChannel(options.channel),
+   time: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
   }),
 });

@@ -5,6 +5,7 @@ export default {
  [CT.SettingNames.RoleRewards]: {
   roles: CT.EditorTypes.Roles,
   customrole: CT.EditorTypes.Boolean,
+  maxShare: CT.EditorTypes.Number,
   positionrole: CT.EditorTypes.Role,
   xpmultiplier: CT.EditorTypes.Number,
   currency: CT.EditorTypes.Number,
@@ -69,6 +70,8 @@ export default {
   wlroleid: CT.EditorTypes.Roles,
   wluserid: CT.EditorTypes.Users,
   pingUser: CT.EditorTypes.Boolean,
+  cooldown: CT.EditorTypes.Duration,
+  cooldownType: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.MultiChannels]: {
   channels: CT.EditorTypes.Channels,

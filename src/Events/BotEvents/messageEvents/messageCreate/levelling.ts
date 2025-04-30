@@ -44,14 +44,43 @@ const levelling = async (msg: Discord.Message<true>) => {
  msg.client.util.cache.lastMessageGuild.set(msg.author.id, msg.content);
  msg.client.util.cache.guildLevellingCD.add(msg.author.id);
 
- Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
+ Jobs.scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
   msg.client.util.cache.guildLevellingCD.delete(msg.author.id);
  });
+
+ if (msg.client.util.cache.levellingCD.get(msg.guildId)?.has(msg.author.id)) return;
+ if (msg.client.util.cache.levellingCD.get(msg.channelId)?.has(msg.author.id)) return;
 
  const settings = await checkEnabled(msg);
  if (settings && (!settings.active || !settings.textenabled)) return;
 
- if (Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)) return;
+ if (!settings?.cooldownType) {
+  if (msg.client.util.cache.levellingCD.has(msg.guildId)) {
+   msg.client.util.cache.levellingCD.get(msg.guildId)?.add(msg.author.id);
+  } else msg.client.util.cache.levellingCD.set(msg.guildId, new Set([msg.author.id]));
+ } else {
+  if (msg.client.util.cache.levellingCD.has(msg.channelId)) {
+   msg.client.util.cache.levellingCD.get(msg.channelId)?.add(msg.author.id);
+  } else msg.client.util.cache.levellingCD.set(msg.channelId, new Set([msg.author.id]));
+ }
+
+ const cooldown = settings ? Number(settings.cooldown) : 60;
+
+ Jobs.scheduleJob(
+  getPathFromError(new Error()),
+  new Date(Date.now() + (cooldown < 1 ? 1000 : cooldown * 1000)),
+  () => {
+   msg.client.util.cache.levellingCD.get(msg.guildId)?.delete(msg.author.id);
+   msg.client.util.cache.levellingCD.get(msg.channelId)?.delete(msg.author.id);
+  },
+ );
+
+ if (
+  !(await getRules(msg)) &&
+  Number(msg.content.match(/\s+/g)?.length) < Number(settings?.minwords)
+ ) {
+  return;
+ }
 
  if (
   settings?.ignoreprefixes &&
@@ -61,23 +90,32 @@ const levelling = async (msg: Discord.Message<true>) => {
   return;
  }
 
- const isUserWhitelisted = settings?.wluserid?.includes(msg.author.id);
- const isRoleWhitelisted = settings?.wlroleid?.length
+ const isUserAllowed = settings?.wluserid?.includes(msg.author.id);
+ const isUserDenied = settings?.bluserid?.includes(msg.author.id);
+
+ const isRoleAllowed = settings?.wlroleid?.length
   ? msg.member?.roles.cache.some((r) => settings.wlroleid.includes(r.id))
   : false;
- const isChannelWhitelisted = settings?.wlchannelid?.length
+ const isRoleDenied = settings?.blroleid?.length
+  ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
+  : false;
+
+
+ const isChannelAllowed = settings?.wlchannelid?.length
   ? settings.wlchannelid.includes(msg.channel.id)
   : false;
 
- if (!isUserWhitelisted && !isRoleWhitelisted && !isChannelWhitelisted) {
-  const isUserBlacklisted = settings?.bluserid?.includes(msg.author.id);
-  const isRoleBlacklisted = settings?.blroleid
-   ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
-   : false;
-  const isChannelBlacklisted = settings?.blchannelid?.includes(msg.channel.id);
+  const getIsChannelDenied = () => {
+   if (settings?.wlchannelid?.length && !isChannelAllowed) return true;
+   if (settings?.blchannelid?.includes(msg.channel.id)) return true;
+   return false;
+  }
 
-  if (isUserBlacklisted || isRoleBlacklisted || isChannelBlacklisted) return;
- }
+  const isChannelDenied = getIsChannelDenied()
+
+ if (isUserDenied) return;
+ if (isRoleDenied && !isUserAllowed) return;
+ if (isChannelDenied && !isUserAllowed && !isRoleAllowed) return;
 
  const rules = await getRules(msg);
  if (rules.length && !checkRules(msg, rules)) return;
@@ -408,7 +446,7 @@ export const levelUp = async (
   case 'reactions': {
    if (!(msg instanceof Discord.Message)) {
     doVoiceStatus(msg, levelData, setting, language, member.user);
-    return;
+    break;
    }
    await doReact(msg, setting, levelData.newLevel, language);
    break;

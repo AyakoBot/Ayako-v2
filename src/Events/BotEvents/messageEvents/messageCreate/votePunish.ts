@@ -1,21 +1,18 @@
 import type { Message } from 'discord.js';
-import redis from '../../../../BaseClient/Bot/Redis.js';
-import { prefix } from '../../../../BaseClient/UtilModules/getScheduled.js';
 
 export default async (msg: Message) => {
  if (!msg.inGuild()) return;
 
- await Promise.all(
-  msg.member?.roles.cache.map((role) =>
-   msg.client.util.delScheduled(`votePunish:init:${msg.guildId}:${role.id}:${msg.channelId}`),
-  ) || [],
+ const pipeline = msg.client.util.redis.pipeline();
+ msg.member?.roles.cache.map((role) =>
+  msg.client.util.scheduleManager.delScheduled(
+   `votePunish:init:${msg.guildId}:${role.id}:${msg.channelId}`,
+   pipeline,
+  ),
  );
+ pipeline.exec();
 
  if (!msg.mentions.roles.size) return;
-
- if ((await redis.keys(`${prefix}:votePunish:${msg.guildId}:*:${msg.channelId}`)).length) {
-  return;
- }
 
  const settings = await msg.client.util.DataBase.votePunish.findFirst({
   where: {
@@ -43,7 +40,7 @@ export default async (msg: Message) => {
  if (await msg.client.util.getRatelimit(`votePunish:${settings.roleId}`)) return;
  msg.client.util.setRatelimit(`votePunish:${settings.roleId}`, Number(settings.cooldown));
 
- msg.client.util.setScheduled(
+ msg.client.util.scheduleManager.setScheduled(
   `votePunish:init:${msg.guildId}:${settings.roleId}:${msg.channelId}`,
   JSON.stringify({
    id: Number(settings.uniquetimestamp),

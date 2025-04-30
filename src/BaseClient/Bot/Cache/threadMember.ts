@@ -13,35 +13,16 @@ export const RThreadMemberKeys = ['id', 'user_id', 'join_timestamp', 'flags', 'g
 export default class ThreadMemberCache extends Cache<APIThreadMember> {
  public keys = RThreadMemberKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:threadMembers`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'threadMembers');
  }
 
  async set(data: APIThreadMember, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${rData.guild_id}:${data.id}:${data.user_id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.id, rData.user_id]);
   return true;
- }
-
- get(tId: string, id: string) {
-  return this.redis.get(`${this.key()}:${tId}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(tId: string, id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${tId}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APIThreadMember, guildId: string) {

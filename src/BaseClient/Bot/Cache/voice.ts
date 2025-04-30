@@ -1,9 +1,8 @@
 import type { APIVoiceState } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
-import type { MakeRequired } from 'src/Typings/Typings';
 import Cache from './base.js';
 
-export type RVoiceState = MakeRequired<Omit<APIVoiceState, 'member'>, 'guild_id'>;
+export type RVoiceState = Omit<APIVoiceState, 'member' | 'guild_id'> & { guild_id: string };
 
 export const RVoiceStateKeys = [
  'guild_id',
@@ -23,33 +22,16 @@ export const RVoiceStateKeys = [
 export default class VoiceCache extends Cache<APIVoiceState> {
  public keys = RVoiceStateKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:voices`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'voices');
  }
 
  async set(data: APIVoiceState) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${data.guild_id}:${data.user_id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.guild_id, rData.user_id]);
   return true;
- }
-
- get(gId: string, id: string) {
-  return this.redis.get(`${this.key()}:${gId}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(gId: string, id: string): Promise<number> {
-  return this.redis.del(`${this.key()}:${gId}:${id}`);
  }
 
  apiToR(data: APIVoiceState) {

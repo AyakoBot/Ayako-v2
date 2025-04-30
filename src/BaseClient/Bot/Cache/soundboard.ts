@@ -2,7 +2,10 @@ import type { APISoundboardSound } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
 
-export type RSoundboardSound = Omit<APISoundboardSound, 'user'> & { user_id: string | null };
+export type RSoundboardSound = Omit<APISoundboardSound, 'user' | 'guild_id'> & {
+ user_id: string | null;
+ guild_id: string;
+};
 
 export const RSoundboardSoundKeys = [
  'name',
@@ -18,35 +21,16 @@ export const RSoundboardSoundKeys = [
 export default class SoundboardCache extends Cache<APISoundboardSound> {
  public keys = RSoundboardSoundKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:soundboards`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'soundboards');
  }
 
  async set(data: APISoundboardSound) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${rData.guild_id}:${data.sound_id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.sound_id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APISoundboardSound) {

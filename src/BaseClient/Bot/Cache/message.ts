@@ -58,37 +58,16 @@ export const RMessageKeys = [
 export default class MessageCache extends Cache<APIMessage> {
  public keys = RMessageKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:messages`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'messages');
  }
 
  async set(data: APIMessage, guildId: string) {
   const rData = this.apiToR(data, guildId);
   if (!rData) return false;
 
-  const key = `${this.key()}:${rData.guild_id}:${data.channel_id}:${data.id}`;
-  const exists = await this.redis.exists(key);
-
-  if (exists) await this.redis.set(key, JSON.stringify(rData), 'KEEPTTL');
-  else await this.redis.setex(key, this.ttl, JSON.stringify(rData));
-
-  new PinCache(this.prefix, this.redis).refresh(data.channel_id);
-
+  await this.setValue(rData, [rData.guild_id], [rData.channel_id, rData.id], 1209600);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APIMessage, guildId: string) {

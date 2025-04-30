@@ -33,38 +33,18 @@ export default class GuildCommandCache extends Cache<
 > {
  public keys = RGuildCommandKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:commands`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'commands');
  }
 
  async set(data: APIApplicationCommand & { guild_id: string }) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${data.guild_id}:${data.id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
  }
 
- get(gId: string, id: string) {
-  return this.redis.get(`${this.key()}:${gId}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
- }
-
- // eslint-disable-next-line class-methods-use-this
  apiToR(data: APIApplicationCommand & { guild_id: string }) {
   if (!data.guild_id) return false;
   const keysNotToCache = Object.keys(data).filter(

@@ -28,7 +28,6 @@ import giveawayClaimTimeout, {
 } from './cache/bot/giveawayClaimTimeout.js';
 import giveaways, { type Giveaways } from './cache/bot/giveaways.js';
 import mutes, { type Mutes } from './cache/bot/mutes.js';
-import reminders, { type Reminders } from './cache/bot/reminders.js';
 import stickyTimeouts, { type StickyTimeouts } from './cache/bot/stickyTimeouts.js';
 import unblockedModUsers, { type UnblockedModUsers } from './cache/bot/unblockedModUsers.js';
 import vcDeafens, { type VcDeafens } from './cache/bot/vcDeafens.js';
@@ -64,7 +63,6 @@ const cache: {
  vcDeafens: VcDeafens;
  bans: Bans;
  channelBans: ChannelBans;
- reminders: Reminders;
  disboardBumpReminders: DisboardBumpReminders;
  votes: Votes;
  giveaways: Giveaways;
@@ -93,6 +91,7 @@ const cache: {
 
  globalLevellingCD: Set<string>;
  guildLevellingCD: Set<string>;
+ levellingCD: Map<string, Set<string>>;
  lastMessageGlobal: Map<string, string>;
  lastMessageGuild: Map<string, string>;
  afkCD: Map<string, Set<string>>;
@@ -138,7 +137,6 @@ const cache: {
  vcDeafens,
  bans,
  channelBans,
- reminders,
  disboardBumpReminders,
  votes,
  giveaways,
@@ -165,6 +163,7 @@ const cache: {
 
  globalLevellingCD: new Set(),
  guildLevellingCD: new Set(),
+ levellingCD: new Map(),
  lastMessageGlobal: new Map(),
  lastMessageGuild: new Map(),
  afkCD: new Map(),

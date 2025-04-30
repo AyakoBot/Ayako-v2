@@ -3,7 +3,7 @@ import { ApplicationIntegrationType, InteractionContextType } from 'discord-api-
 
 export default new SlashCommandBuilder()
  .setName('ping')
- .setDescription(`Display the ${process.env.mainName}'s Ping`)
+ .setDescription(`Display ${process.env.mainName}'s Ping`)
  .setContexts([
   InteractionContextType.BotDM,
   InteractionContextType.Guild,

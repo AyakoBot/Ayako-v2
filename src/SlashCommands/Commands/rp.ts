@@ -23,12 +23,12 @@ export default new SlashCommandBuilder()
  .addSubcommand(
   new SlashCommandSubcommandBuilder()
    .setName('blocked')
-   .setDescription('See Users you currently have blocked'),
+   .setDescription('See Commands and Users you currently have blocked'),
  )
  .addSubcommand(
   new SlashCommandSubcommandBuilder()
    .setName('block')
-   .setDescription('Block a User from using RP-Commands on you')
+   .setDescription('Block a Command or a User from using RP-Commands on you')
    .addUserOption(
     new SlashCommandUserOption().setName('user').setDescription('The User').setRequired(false),
    ),
@@ -36,7 +36,7 @@ export default new SlashCommandBuilder()
  .addSubcommand(
   new SlashCommandSubcommandBuilder()
    .setName('unblock')
-   .setDescription('Unblock a User from using RP-Commands on you')
+   .setDescription('Unblock a Command or a User from using RP-Commands on you')
    .addUserOption(
     new SlashCommandUserOption().setName('user').setDescription('The User').setRequired(true),
    ),

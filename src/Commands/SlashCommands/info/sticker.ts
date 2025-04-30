@@ -5,6 +5,13 @@ export default async (
  _args: string[],
  page?: number,
 ) => {
+ const language = await cmd.client.util.getLanguage(cmd.locale);
+
+ if (!cmd.inCachedGuild()) {
+  cmd.client.util.replyCmd(cmd, { content: language.t.guildOnly });
+  return;
+ }
+
  const messageLinkOrStickerId =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? cmd.options.getString('sticker', false)
@@ -13,7 +20,6 @@ export default async (
   cmd instanceof Discord.ChatInputCommandInteraction
    ? (cmd.options.getBoolean('hide', false) ?? true)
    : true;
- const language = await cmd.client.util.getLanguage(cmd.locale);
 
  if (messageLinkOrStickerId) {
   single(cmd as Discord.ChatInputCommandInteraction, language, ephemeral);

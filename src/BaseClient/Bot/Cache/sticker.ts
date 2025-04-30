@@ -25,43 +25,16 @@ export const RStickerKeys = [
 export default class StickerCache extends Cache<APISticker> {
  public keys = RStickerKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:stickers`, redis);
- }
-
- public static assetUrl(id: string, format: StickerFormatType) {
-  return `https://media.discordapp.net/stickers/${id}.${
-   format === StickerFormatType.GIF
-    ? 'gif'
-    : (format === StickerFormatType.Lottie && 'json') || 'png'
-  }`;
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'stickers');
  }
 
  async set(data: APISticker) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${data.guild_id}:${data.id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APISticker) {

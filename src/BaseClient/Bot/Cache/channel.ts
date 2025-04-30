@@ -1,7 +1,6 @@
 import type { APIGuildChannel, ChannelType } from 'discord-api-types/v10';
 import type Redis from 'ioredis';
 import Cache from './base.js';
-import PinCache from './pin.js';
 
 export type RChannelTypes =
  | ChannelType.GuildAnnouncement
@@ -54,37 +53,16 @@ export default class ChannelCache extends Cache<
 > {
  public keys = RChannelKeys;
 
- constructor(prefix: string, redis: Redis) {
-  super(`${prefix}:channels`, redis);
- }
-
- key() {
-  return this.prefix;
+ constructor(redis: Redis) {
+  super(redis, 'channels');
  }
 
  async set(data: APIGuildChannel<RChannelTypes>) {
   const rData = this.apiToR(data);
   if (!rData) return false;
 
-  await this.redis.setex(
-   `${this.key()}:${data.guild_id}:${data.id}`,
-   this.ttl,
-   JSON.stringify(rData),
-  );
-
-  new PinCache(this.prefix, this.redis).refresh(data.id);
-
+  await this.setValue(rData, [rData.guild_id], [rData.id]);
   return true;
- }
-
- get(id: string) {
-  return this.redis.get(`${this.key()}:${id}`).then((data) => this.stringToData(data));
- }
-
- del(id: string): Promise<number> {
-  return this.redis
-   .keys(`${this.key()}:${id}`)
-   .then((keys) => (keys.length ? this.redis.del(keys) : 0));
  }
 
  apiToR(data: APIGuildChannel<RChannelTypes>) {

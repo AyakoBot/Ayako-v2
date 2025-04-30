@@ -8,6 +8,8 @@ export default async (payload: {
  userId: string;
  channelId: string;
 }) => {
+ if (!payload) return;
+
  const guild = client.guilds.cache.get(payload.guildId);
  if (!guild) return;
 
@@ -78,7 +80,7 @@ const overwritePermissions = (
   deny: o.deny,
  }));
 
- channel.client.util.setScheduled(
+ channel.client.util.scheduleManager.setScheduled(
   `votePunish:expire:${channel.guild.id}:${channel.id}`,
   JSON.stringify({
    overwrites: oldOverwrites.map((o) => ({

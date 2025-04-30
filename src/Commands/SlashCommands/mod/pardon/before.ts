@@ -30,6 +30,7 @@ export default async (
  const punishments = await cmd.client.util.getPunishment(date, {
   identType: type,
   guildid: cmd.guild.id,
+  ident: user.id,
  });
 
  if (!punishments) {
@@ -38,7 +39,7 @@ export default async (
  }
 
  punishments.forEach((p) => {
-  pardon(p);
+  pardon(p).then();
   log(cmd, p, language, lan, reason);
  });
 

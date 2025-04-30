@@ -11,7 +11,6 @@ import arrayEquals from '../UtilModules/arrayEquals.js';
 import bitUniques from '../UtilModules/bitUniques.js';
 import channelRuleCalc from '../UtilModules/channelRuleCalc.js';
 import channelStatusManager from '../UtilModules/channelStatusManager.js';
-import delScheduled from '../UtilModules/delScheduled.js';
 import deleteNotificationThread from '../UtilModules/deleteNotificationThread.js';
 import disableComponents from '../UtilModules/disableComponents.js';
 import dynamicToEmbed from '../UtilModules/dynamicToEmbed.js';
@@ -54,9 +53,7 @@ import getNameAndFileType from '../UtilModules/getNameAndFileType.js';
 import getPathFromError from '../UtilModules/getPathFromError.js';
 import getPunishment from '../UtilModules/getPunishment.js';
 import getRandom from '../UtilModules/getRandom.js';
-import getRatelimit from '../UtilModules/getRatelimit.js';
 import getReferenceMessage from '../UtilModules/getReferenceMessage.js';
-import getScheduled from '../UtilModules/getScheduled.js';
 import getSerializedChannelPerms from '../UtilModules/getSerializedChannelPerms.js';
 import getStringChunks from '../UtilModules/getStringChunks.js';
 import getTarget from '../UtilModules/getTarget.js';
@@ -89,8 +86,6 @@ import replyMsg from '../UtilModules/replyMsg.js';
 import requestHandler, { request } from '../UtilModules/requestHandler.js';
 import roleManager from '../UtilModules/roleManager.js';
 import send from '../UtilModules/send.js';
-import setRatelimit from '../UtilModules/setRatelimit.js';
-import setScheduled from '../UtilModules/setScheduled.js';
 import settingsHelpers from '../UtilModules/settingsHelpers.js';
 import sleep from '../UtilModules/sleep.js';
 import spaces from '../UtilModules/spaces.js';
@@ -101,6 +96,10 @@ import txtFileWriter from '../UtilModules/txtFileWriter.js';
 import userFlagsCalc from '../UtilModules/userFlagsCalc.js';
 import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
+import setRatelimit from '../UtilModules/setRatelimit.js';
+import getRatelimit from '../UtilModules/getRatelimit.js';
+import redis from '../Bot/Redis.js';
+import { ScheduleManager } from '../UtilModules/ScheduleManager.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -108,6 +107,8 @@ const logFiles = {
   { flags: 'a' },
  ),
 };
+
+const scheduleManager = new ScheduleManager(redis);
 
 interface Util {
  getPathFromError: typeof getPathFromError;
@@ -205,11 +206,10 @@ interface Util {
  guildOnly: typeof guildOnly;
  Colors: typeof Colors;
  channelStatusManager: typeof channelStatusManager;
- setScheduled: typeof setScheduled;
- getScheduled: typeof getScheduled;
- delScheduled: typeof delScheduled;
  setRatelimit: typeof setRatelimit;
  getRatelimit: typeof getRatelimit;
+ redis: typeof redis;
+ scheduleManager: typeof scheduleManager;
 }
 
 const util: Util = {
@@ -308,11 +308,10 @@ const util: Util = {
  guildOnly,
  Colors,
  channelStatusManager,
- setScheduled,
- getScheduled,
- delScheduled,
  setRatelimit,
  getRatelimit,
+ scheduleManager,
+ redis,
 };
 
 export default util;
