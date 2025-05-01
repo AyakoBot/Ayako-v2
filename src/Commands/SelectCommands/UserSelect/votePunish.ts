@@ -1,5 +1,5 @@
 import { ButtonStyle, ComponentType, Role, type UserSelectMenuInteraction } from 'discord.js';
-import redis from '../../../BaseClient/Bot/Redis.js';
+import { scheduleDB } from '../../../BaseClient/Bot/Redis.js';
 
 export default async (cmd: UserSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -18,14 +18,14 @@ export default async (cmd: UserSelectMenuInteraction, args: string[]) => {
   where: { uniquetimestamp: Number(settingId) },
  });
  if (!settings) {
-  redis.expire(
+  scheduleDB.expire(
    `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
    1,
   );
   return;
  }
 
- redis.expire(
+ scheduleDB.expire(
   `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
   60,
  );

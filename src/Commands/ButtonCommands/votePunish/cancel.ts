@@ -1,5 +1,5 @@
 import type { ButtonInteraction } from 'discord.js';
-import redis from '../../../BaseClient/Bot/Redis.js';
+import { scheduleDB } from '../../../BaseClient/Bot/Redis.js';
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -13,7 +13,7 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
  }
 
  cmd.client.util.request.channels.deleteMessage(cmd.message);
- redis.expire(
+ scheduleDB.expire(
   `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
   1,
  );

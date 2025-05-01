@@ -1,7 +1,7 @@
 import { InteractionType } from 'discord.js';
 import { scheduleJob } from 'node-schedule';
 import { Counter, Gauge, Registry } from 'prom-client';
-import redis from './Redis.js';
+import cacheDB from './Redis.js';
 
 const registry = new Registry();
 
@@ -166,5 +166,5 @@ const getInteractionType = (type: InteractionTypeExtended) => {
 };
 
 scheduleJob('metrics', '*/5 * * * * *', async () => {
- redis.set(`metrics:Ayako - Manager`, await registry.metrics());
+ cacheDB.set(`metrics:Ayako - Manager`, await registry.metrics());
 });

@@ -1,6 +1,6 @@
 import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
 import db from '../../../Bot/DataBase.js';
-import redis from '../../../Bot/Redis.js';
+import { scheduleDB } from '../../../Bot/Redis.js';
 import getColor from '../../getColor.js';
 import getLanguage from '../../getLanguage.js';
 import getUser from '../../getUser.js';
@@ -19,7 +19,7 @@ export class Reminder<K extends boolean = true> extends ExpirableCache<DBReminde
   * @param init - Whether to initialize the reminder immediately
   */
  constructor(opts: ExpirableCacheOpts<DBReminder, K>, init: K = true as K) {
-  super(opts, ExpirableCacheType.Reminder, init, redis, db as PrismaClient);
+  super(opts, ExpirableCacheType.Reminder, init, scheduleDB, db as PrismaClient);
  }
 
  async end() {

@@ -1,5 +1,5 @@
 import type { StringSelectMenuInteraction } from 'discord.js';
-import redis from '../../../BaseClient/Bot/Redis.js';
+import { scheduleDB } from '../../../BaseClient/Bot/Redis.js';
 
 export default async (cmd: StringSelectMenuInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -11,7 +11,7 @@ export default async (cmd: StringSelectMenuInteraction, args: string[]) => {
 
  if (!settings) {
   cmd.client.util.request.channels.deleteMessage(cmd.message);
-  redis.expire(
+  scheduleDB.expire(
    `${cmd.client.util.scheduleManager.prefix}:votePunish:expire:${cmd.guild.id}:${cmd.channel!.id}`,
    1,
   );
@@ -27,7 +27,7 @@ export default async (cmd: StringSelectMenuInteraction, args: string[]) => {
   return;
  }
 
- const current = await redis.get(
+ const current = await scheduleDB.get(
   `${cmd.client.util.scheduleManager.dataPrefix}:votePunish:execute:${cmd.guildId}:${settings.roleId}`,
  );
  if (!current) return;
@@ -45,7 +45,7 @@ export default async (cmd: StringSelectMenuInteraction, args: string[]) => {
   data.voters.find((v) => v.id === cmd.user.id)!.votes = cmd.values;
  } else data.voters.push({ id: cmd.user.id, votes: cmd.values });
 
- redis.set(
+ scheduleDB.set(
   `${cmd.client.util.scheduleManager.dataPrefix}:votePunish:execute:${cmd.guildId}:${settings.roleId}`,
   JSON.stringify(data),
  );

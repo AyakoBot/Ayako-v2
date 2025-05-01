@@ -99,7 +99,7 @@ import * as utils from '../UtilModules/util.js';
 import DataBase from './DataBase.js';
 import setRatelimit from '../UtilModules/setRatelimit.js';
 import getRatelimit from '../UtilModules/getRatelimit.js';
-import redis from '../Bot/Redis.js';
+import cacheDB, { scheduleDB } from '../Bot/Redis.js';
 import { ScheduleManager } from '../UtilModules/ScheduleManager.js';
 
 const logFiles = {
@@ -109,7 +109,7 @@ const logFiles = {
  ),
 };
 
-const scheduleManager = new ScheduleManager(redis);
+const scheduleManager = new ScheduleManager(scheduleDB);
 
 interface Util {
  getPathFromError: typeof getPathFromError;
@@ -210,7 +210,7 @@ interface Util {
  channelStatusManager: typeof channelStatusManager;
  setRatelimit: typeof setRatelimit;
  getRatelimit: typeof getRatelimit;
- redis: typeof redis;
+ redis: typeof cacheDB;
  scheduleManager: typeof scheduleManager;
 }
 
@@ -314,7 +314,7 @@ const util: Util = {
  setRatelimit,
  getRatelimit,
  scheduleManager,
- redis,
+ redis: cacheDB,
 };
 
 export default util;

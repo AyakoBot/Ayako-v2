@@ -25,53 +25,68 @@ import UserCache from './Cache/user.js';
 import VoiceCache from './Cache/voice.js';
 import WebhookCache from './Cache/webhook.js';
 
-const db = process.argv.includes('--dev') ? 2 : 0;
+export const prefix = 'cache';
+const cacheDBnum = process.argv.includes('--dev') ? 2 : 0;
+const scheduleDBnum = process.argv.includes('--dev') ? 2 : 1;
 
-const redis = new Redis({ host: 'redis', db });
-const subscriber = new Redis({ host: 'redis', db });
+export const cacheDB = new Redis({ host: 'redis', db: cacheDBnum });
+export const cacheSub = new Redis({ host: 'redis', db: cacheDBnum });
+export const scheduleDB = new Redis({ host: 'redis', db: scheduleDBnum });
+export const scheduleSub = new Redis({ host: 'redis', db: scheduleDBnum });
 
-export default redis;
+export default cacheDB;
 
-export const prefix = `cache`;
-await redis.config('SET', 'notify-keyspace-events', 'Ex');
-await subscriber.subscribe(`__keyevent@${db}__:expired`);
+await cacheDB.config('SET', 'notify-keyspace-events', 'Ex');
+await scheduleDB.config('SET', 'notify-keyspace-events', 'Ex');
+
+await cacheSub.subscribe(`__keyevent@${cacheDBnum}__:expired`);
+await scheduleSub.subscribe(`__keyevent@${scheduleDBnum}__:expired`);
 
 export const cache = {
- automods: new AutomodCache(redis),
- bans: new BanCache(redis),
- channels: new ChannelCache(redis),
- commands: new CommandCache(redis),
- commandPermissions: new CommandPermissionCache(redis),
- emojis: new EmojiCache(redis),
- events: new EventCache(redis),
- guilds: new GuildCache(redis),
- guildCommands: new GuildCommandCache(redis),
- integrations: new IntegrationCache(redis),
- invites: new InviteCache(redis),
- members: new MemberCache(redis),
- messages: new MessageCache(redis),
- reactions: new ReactionCache(redis),
- roles: new RoleCache(redis),
- soundboards: new SoundboardCache(redis),
- stages: new StageCache(redis),
- stickers: new StickerCache(redis),
- threads: new ThreadCache(redis),
- threadMembers: new ThreadMemberCache(redis),
- users: new UserCache(redis),
- voices: new VoiceCache(redis),
- webhooks: new WebhookCache(redis),
+ automods: new AutomodCache(cacheDB),
+ bans: new BanCache(cacheDB),
+ channels: new ChannelCache(cacheDB),
+ commands: new CommandCache(cacheDB),
+ commandPermissions: new CommandPermissionCache(cacheDB),
+ emojis: new EmojiCache(cacheDB),
+ events: new EventCache(cacheDB),
+ guilds: new GuildCache(cacheDB),
+ guildCommands: new GuildCommandCache(cacheDB),
+ integrations: new IntegrationCache(cacheDB),
+ invites: new InviteCache(cacheDB),
+ members: new MemberCache(cacheDB),
+ messages: new MessageCache(cacheDB),
+ reactions: new ReactionCache(cacheDB),
+ roles: new RoleCache(cacheDB),
+ soundboards: new SoundboardCache(cacheDB),
+ stages: new StageCache(cacheDB),
+ stickers: new StickerCache(cacheDB),
+ threads: new ThreadCache(cacheDB),
+ threadMembers: new ThreadMemberCache(cacheDB),
+ users: new UserCache(cacheDB),
+ voices: new VoiceCache(cacheDB),
+ webhooks: new WebhookCache(cacheDB),
 };
 
-subscriber.on('message', async (channel, key) => {
- if (channel !== `__keyevent@${db}__:expired`) return;
+const callback = async (channel: string, key: string) => {
+ if (
+  channel !== `__keyevent@${cacheDBnum}__:expired` &&
+  channel !== `__keyevent@${scheduleDBnum}__:expired`
+ ) {
+  return;
+ }
+
  if (key.includes('scheduled-data:')) return;
 
  const keyArgs = key.split(/:/g).splice(0, 2);
  const path = keyArgs.filter((k) => Number.isNaN(+k)).join('/');
 
  const dataKey = key.replace('scheduled:', 'scheduled-data:');
- const value = await redis.get(dataKey);
- redis.expire(dataKey, 10);
+ const dbNum = channel.split('@')[1].split(':')[0];
+ const db = dbNum === String(cacheDBnum) ? cacheDB : scheduleDB;
+
+ const value = await db.get(dataKey);
+ db.expire(dataKey, 10);
 
  const files = await glob(
   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Events/RedisEvents/scheduled/**/*`,
@@ -81,4 +96,7 @@ subscriber.on('message', async (channel, key) => {
  if (!file) return;
 
  (await import(file)).default(value ? JSON.parse(value) : undefined);
-});
+};
+
+cacheSub.on('message', callback);
+scheduleSub.on('message', callback);

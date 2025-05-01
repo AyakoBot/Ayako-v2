@@ -8,7 +8,7 @@ import {
  type GatewayThreadMemberUpdateDispatchData,
  type GatewayThreadUpdateDispatchData,
 } from 'discord.js';
-import RedisClient, { cache as cache } from '../../../../BaseClient/Bot/Redis.js';
+import RedisClient, { cache } from '../../../../BaseClient/Bot/Redis.js';
 
 export default {
  [GatewayDispatchEvents.ThreadCreate]: (data: GatewayThreadCreateDispatchData) =>
