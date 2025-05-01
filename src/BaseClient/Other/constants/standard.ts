@@ -29,7 +29,7 @@ export default {
  msgurl: (g: string | undefined | null, c: string, m: string) =>
   `https://discord.com/channels/${g ?? '@me'}/${c}/${m}`,
  ytURL: 'https://www.youtube.com/@AyakoBot',
- user: (u: Discord.User | { discriminator: string; username: string }) =>
+ user: (u: Discord.User | { discriminator: string; username: string } | Discord.PartialUser) =>
   `${u.discriminator === '0' ? u.username : `${u.username}#${u.discriminator}`}`,
  roleIconURL: (role: Discord.Role | { icon: string; id: string }) =>
   `https://cdn.discordapp.com/role-icons/${role.id}/${role.icon}.png`,

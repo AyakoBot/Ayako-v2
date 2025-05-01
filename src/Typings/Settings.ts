@@ -85,8 +85,8 @@ export interface SettingsFile<K extends MatchingCategoryKeys> {
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
   language: Language,
  ) =>
-  | Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]
-  | Promise<Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[]>;
+  | Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[]
+  | Promise<Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[]>;
  showAll?: (
   cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.ButtonInteraction<'cached'>,
   language: Language,

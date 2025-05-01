@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.invite,
- descCreateAudit: (user: Discord.User, invite: Discord.Invite) =>
+ descCreateAudit: (user: Discord.User | Discord.PartialUser, invite: Discord.Invite) =>
   t.stp(t.JSON.events.logs.invite.descCreateAudit, {
    user: t.languageFunction.getUser(user),
    invite: t.languageFunction.getInvite(invite),
@@ -12,7 +12,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.invite.descCreate, {
    invite: t.languageFunction.getInvite(invite),
   }),
- descDeleteAudit: (user: Discord.User, invite: Discord.Invite) =>
+ descDeleteAudit: (user: Discord.User | Discord.PartialUser, invite: Discord.Invite) =>
   t.stp(t.JSON.events.logs.invite.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
    invite: t.languageFunction.getInvite(invite),

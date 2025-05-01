@@ -1,4 +1,4 @@
-import { ButtonInteraction, UserSelectMenuComponent } from 'discord.js';
+import { ButtonInteraction, ComponentType, UserSelectMenuComponent } from 'discord.js';
 import changeModal from '../../../../BaseClient/UtilModules/settingsHelpers/changeHelpers/changeModal.js';
 import type { SettingNames } from '../../../../Typings/Settings.js';
 
@@ -26,6 +26,8 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
   uniquetimestamp,
   true,
  );
+
+ if (cmd.message.components[0].type !== ComponentType.ActionRow) return;
 
  const selectMenu = cmd.message.components[0].components[0] as UserSelectMenuComponent;
  const valueComponent = modal.components[0].components[0];

@@ -20,10 +20,16 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- const relevantButtonX = cmd.message.components[type === 'x' ? 0 : 1]
-  .components[3] as Discord.ButtonComponent;
- const relevantButtonL = cmd.message.components[type === 'l' ? 0 : 1]
-  .components[3] as Discord.ButtonComponent;
+ const relevantButtonX = (
+  cmd.message.components[
+   type === 'x' ? 0 : 1
+  ] as Discord.ActionRow<Discord.MessageActionRowComponent>
+ ).components[3] as Discord.ButtonComponent;
+ const relevantButtonL = (
+  cmd.message.components[
+   type === 'l' ? 0 : 1
+  ] as Discord.ActionRow<Discord.MessageActionRowComponent>
+ ).components[3] as Discord.ButtonComponent;
 
  const xpOrLevel = Number(
   cmd.message.embeds[0].fields[type === 'x' ? 0 : 1].value.replace(/,/g, ''),
@@ -81,11 +87,15 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
    },
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[2].components.map((c) => c.data),
+    components: (
+     cmd.message.components[2] as Discord.ActionRow<Discord.MessageActionRowComponent>
+    ).components.map((c) => c.data),
    },
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[3].components.map((c) => c.data),
+    components: (
+     cmd.message.components[3] as Discord.ActionRow<Discord.MessageActionRowComponent>
+    ).components.map((c) => c.data),
    },
   ],
  });

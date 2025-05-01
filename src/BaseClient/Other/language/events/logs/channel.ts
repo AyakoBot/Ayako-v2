@@ -4,7 +4,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.channel,
  descCreateAudit: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildChannel | Discord.AnyThreadChannel,
   type: string,
  ) =>
@@ -17,7 +17,7 @@ export default (t: CT.Language) => ({
    channel: t.languageFunction.getChannel(channel, type),
   }),
  descDeleteAudit: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildChannel | Discord.AnyThreadChannel,
   type: string,
  ) =>
@@ -30,7 +30,7 @@ export default (t: CT.Language) => ({
    channel: t.languageFunction.getChannel(channel, type),
   }),
  descUpdateAudit: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildChannel | Discord.AnyThreadChannel,
   type: string,
  ) =>
@@ -50,7 +50,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.channel.descLeaveMember, {
    channel: t.languageFunction.getChannel(thread, channelType),
   }),
- descUpdateStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User) =>
+ descUpdateStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.channel.descUpdateStageAudit, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
@@ -59,7 +59,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.channel.descUpdateStage, {
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descCreateStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User) =>
+ descCreateStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.channel.descCreateStageAudit, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
@@ -68,7 +68,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.channel.descCreateStage, {
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descDeleteStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User) =>
+ descDeleteStageAudit: (channel: Discord.StageChannel, channelType: string, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.channel.descDeleteStageAudit, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
@@ -77,7 +77,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.channel.descDeleteStage, {
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descPinCreateAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+ descPinCreateAudit: (user: Discord.User | Discord.PartialUser, msg: Discord.Message, channelType: string) =>
   t.stp(t.JSON.events.logs.channel.descPinCreateAudit, {
    user: t.languageFunction.getUser(user),
    msg: t.languageFunction.getMessage(msg),
@@ -88,7 +88,7 @@ export default (t: CT.Language) => ({
    msg: t.languageFunction.getMessage(msg),
    channel: t.languageFunction.getChannel(msg.channel, channelType),
   }),
- descPinRemoveAudit: (user: Discord.User, msg: Discord.Message, channelType: string) =>
+ descPinRemoveAudit: (user: Discord.User | Discord.PartialUser, msg: Discord.Message, channelType: string) =>
   t.stp(t.JSON.events.logs.channel.descPinRemoveAudit, {
    user: t.languageFunction.getUser(user),
    msg: t.languageFunction.getMessage(msg),
@@ -99,7 +99,7 @@ export default (t: CT.Language) => ({
    msg: t.languageFunction.getMessage(msg),
    channel: t.languageFunction.getChannel(msg.channel, channelType),
   }),
- descTyping: (user: Discord.User, channel: Discord.GuildTextBasedChannel, channelType: string) =>
+ descTyping: (user: Discord.User | Discord.PartialUser, channel: Discord.GuildTextBasedChannel, channelType: string) =>
   t.stp(t.JSON.events.logs.channel.descTyping, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
@@ -109,7 +109,7 @@ export default (t: CT.Language) => ({
    channel: t.languageFunction.getChannel(channel, type),
   }),
  descStatusUpdateAudit: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildChannel | Discord.AnyThreadChannel,
   type: string,
  ) =>

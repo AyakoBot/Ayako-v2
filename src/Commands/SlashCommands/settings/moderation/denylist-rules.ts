@@ -617,7 +617,7 @@ export const getComponents = (
 const getAllComponents = (
  language: CT.Language,
  automodRules: Discord.AutoModerationRule[] | undefined,
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => {
+): Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] => {
  const lan = language.slashCommands.settings.categories[CT.SettingNames.DenylistRules];
 
  const createKeywordRule = client.util.settingsHelpers.buttonParsers.create(

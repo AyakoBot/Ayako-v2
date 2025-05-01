@@ -13,7 +13,8 @@ export default async (cmd: Discord.ButtonInteraction) => {
 
 export const getSelectedField = (msg: Discord.Message) =>
  Number(
-  (msg.components[1].components[0] as Discord.StringSelectMenuComponent).data.options.find(
-   (o) => !!o.default,
-  )?.value,
+  (
+   (msg.components[1] as Discord.ActionRow<Discord.MessageActionRowComponent>)
+    .components[0] as Discord.StringSelectMenuComponent
+  ).data.options.find((o) => !!o.default)?.value,
  );

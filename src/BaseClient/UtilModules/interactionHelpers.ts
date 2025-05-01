@@ -383,7 +383,9 @@ const getComponents = (
 ): Discord.APIActionRowComponent<Discord.APIButtonComponent>[] => [
  {
   type: Discord.ComponentType.ActionRow,
-  components: cmd.message.components[0].components
+  components: (
+   cmd.message.components[0] as Discord.ActionRow<Discord.MessageActionRowComponent>
+  ).components
    .filter((c): c is Discord.ButtonComponent => c.type === Discord.ComponentType.Button)
    .map((c) => ({
     label: c.label as string,

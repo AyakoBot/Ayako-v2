@@ -15,10 +15,16 @@ export default async (
  const addOrRemove = args.shift() as '+' | '-';
  const userOrRoleId = args.shift() as string;
 
- const relevantButtonX = cmd.message.components[type === 'x' ? 0 : 1]
-  .components[3] as Discord.ButtonComponent;
- const relevantButtonL = cmd.message.components[type === 'l' ? 0 : 1]
-  .components[3] as Discord.ButtonComponent;
+ const relevantButtonX = (
+  cmd.message.components[
+   type === 'x' ? 0 : 1
+  ] as Discord.ActionRow<Discord.MessageActionRowComponent>
+ ).components[3] as Discord.ButtonComponent;
+ const relevantButtonL = (
+  cmd.message.components[
+   type === 'l' ? 0 : 1
+  ] as Discord.ActionRow<Discord.MessageActionRowComponent>
+ ).components[3] as Discord.ButtonComponent;
 
  const amountOfZerosOnPrimary = Number(relevantButtonX.label?.length) - 2;
  const amountOfZerosOnSecondary = Number(relevantButtonL.label?.length) - 2;
@@ -62,13 +68,17 @@ export default async (
    },
    {
     type: Discord.ComponentType.ActionRow,
-    components: cmd.message.components[2].components.map((c) => c.data),
+    components: (
+     cmd.message.components[2] as Discord.ActionRow<Discord.MessageActionRowComponent>
+    ).components.map((c) => c.data),
    },
    ...(cmdType === 'role'
     ? ([
        {
         type: Discord.ComponentType.ActionRow,
-        components: cmd.message.components[3].components.map((c) => c.data),
+        components: (
+         cmd.message.components[3] as Discord.ActionRow<Discord.MessageActionRowComponent>
+        ).components.map((c) => c.data),
        },
       ] as const)
     : []),

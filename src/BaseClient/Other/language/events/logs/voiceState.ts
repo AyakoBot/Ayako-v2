@@ -3,13 +3,13 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.voiceState,
- descCreate: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
+ descCreate: (user: Discord.User | Discord.PartialUser, channel: Discord.GuildChannel, channelType: string) =>
   t.stp(t.JSON.events.logs.voiceState.descCreate, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
  descUpdateChannel: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildChannel,
   channelType: string,
   oldChannel: Discord.GuildChannel | undefined,
@@ -20,12 +20,12 @@ export default (t: CT.Language) => ({
    newChannel: t.languageFunction.getChannel(channel, channelType),
    oldChannel: t.languageFunction.getChannel(oldChannel, oldChannelType),
   }),
- descUpdate: (user: Discord.User, channel: Discord.VoiceBasedChannel, channelType: string) =>
+ descUpdate: (user: Discord.User | Discord.PartialUser, channel: Discord.VoiceBasedChannel, channelType: string) =>
   t.stp(t.JSON.events.logs.voiceState.descUpdate, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descDelete: (user: Discord.User, channel: Discord.GuildChannel, channelType: string) =>
+ descDelete: (user: Discord.User | Discord.PartialUser, channel: Discord.GuildChannel, channelType: string) =>
   t.stp(t.JSON.events.logs.voiceState.descDelete, {
    user: t.languageFunction.getUser(user),
    channel: t.languageFunction.getChannel(channel, channelType),

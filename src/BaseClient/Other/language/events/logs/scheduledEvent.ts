@@ -4,7 +4,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.scheduledEvent,
  descUserRemoveChannel: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   event: Discord.GuildScheduledEvent,
   channel:
    | Discord.NewsChannel
@@ -19,13 +19,13 @@ export default (t: CT.Language) => ({
    event: t.languageFunction.getScheduledEvent(event),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descUserRemove: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
+ descUserRemove: (user: Discord.User | Discord.PartialUser, event: Discord.GuildScheduledEvent) =>
   t.stp(t.JSON.events.logs.scheduledEvent.descUserRemove, {
    user: t.languageFunction.getUser(user),
    event: t.languageFunction.getScheduledEvent(event),
   }),
  descUserAddChannel: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   event: Discord.GuildScheduledEvent,
   channel:
    | Discord.NewsChannel
@@ -40,14 +40,14 @@ export default (t: CT.Language) => ({
    event: t.languageFunction.getScheduledEvent(event),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descUserAdd: (user: Discord.User, event: Discord.GuildScheduledEvent) =>
+ descUserAdd: (user: Discord.User | Discord.PartialUser, event: Discord.GuildScheduledEvent) =>
   t.stp(t.JSON.events.logs.scheduledEvent.descUserAdd, {
    user: t.languageFunction.getUser(user),
    event: t.languageFunction.getScheduledEvent(event),
   }),
  descDeleteChannelAudit: (
   event: Discord.GuildScheduledEvent,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel:
    | Discord.NewsChannel
    | Discord.TextChannel
@@ -61,7 +61,7 @@ export default (t: CT.Language) => ({
    event: t.languageFunction.getScheduledEvent(event),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descDeleteAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+ descDeleteAudit: (event: Discord.GuildScheduledEvent, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.scheduledEvent.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
    event: t.languageFunction.getScheduledEvent(event),
@@ -86,7 +86,7 @@ export default (t: CT.Language) => ({
   }),
  descCreateChannelAudit: (
   event: Discord.GuildScheduledEvent,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel:
    | Discord.NewsChannel
    | Discord.TextChannel
@@ -100,7 +100,7 @@ export default (t: CT.Language) => ({
    event: t.languageFunction.getScheduledEvent(event),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descCreateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+ descCreateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.scheduledEvent.descCreateAudit, {
    user: t.languageFunction.getUser(user),
    event: t.languageFunction.getScheduledEvent(event),
@@ -125,7 +125,7 @@ export default (t: CT.Language) => ({
   }),
  descUpdateChannelAudit: (
   event: Discord.GuildScheduledEvent,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel:
    | Discord.NewsChannel
    | Discord.TextChannel
@@ -139,7 +139,7 @@ export default (t: CT.Language) => ({
    event: t.languageFunction.getScheduledEvent(event),
    channel: t.languageFunction.getChannel(channel, channelType),
   }),
- descUpdateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User) =>
+ descUpdateAudit: (event: Discord.GuildScheduledEvent, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.scheduledEvent.descUpdateAudit, {
    user: t.languageFunction.getUser(user),
    event: t.languageFunction.getScheduledEvent(event),

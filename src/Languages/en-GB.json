@@ -186,7 +186,8 @@
      "SuppressNotifications": "Supress Notifications",
      "IsVoiceMessage": "Voice Message",
      "ShouldShowLinkNotDiscordWarning": "Should Show Link not Discord Warning",
-     "HasSnapshot": "Has Snapshot"
+     "HasSnapshot": "Has Snapshot",
+     "IsComponentsV2": "Is Components V2"
     },
     "reactions": "Reactions",
     "components": "Components",

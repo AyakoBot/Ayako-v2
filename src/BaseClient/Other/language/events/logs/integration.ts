@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.integration,
- descCreateAudit: (integration: Discord.Integration, user: Discord.User) =>
+ descCreateAudit: (integration: Discord.Integration, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.integration.descCreateAudit, {
    user: t.languageFunction.getUser(user),
    integration: t.languageFunction.getIntegration(integration),
@@ -13,7 +13,7 @@ export default (t: CT.Language) => ({
    integration: t.languageFunction.getIntegration(integration),
   }),
  descDeleteIntegrationAudit: (
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   integration: Discord.Integration,
   app: Discord.Application,
  ) =>
@@ -22,7 +22,7 @@ export default (t: CT.Language) => ({
    integration: t.languageFunction.getIntegration(integration),
    app: t.languageFunction.getApplication(app),
   }),
- descDeleteAudit: (user: Discord.User, integration: Discord.Integration) =>
+ descDeleteAudit: (user: Discord.User | Discord.PartialUser, integration: Discord.Integration) =>
   t.stp(t.JSON.events.logs.integration.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
    integration: t.languageFunction.getIntegration(integration),
@@ -31,7 +31,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.integration.descDeleteIntegration, {
    integration: t.languageFunction.getIntegration(integration),
   }),
- descUpdateAudit: (user: Discord.User, integration: Discord.Integration) =>
+ descUpdateAudit: (user: Discord.User | Discord.PartialUser, integration: Discord.Integration) =>
   t.stp(t.JSON.events.logs.integration.descUpdateAudit, {
    user: t.languageFunction.getUser(user),
    integration: t.languageFunction.getIntegration(integration),

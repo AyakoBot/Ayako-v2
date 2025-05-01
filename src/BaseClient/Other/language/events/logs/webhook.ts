@@ -6,7 +6,7 @@ export default (t: CT.Language) => ({
  descCreateAudit: (
   webhook: Discord.Webhook,
   webhookType: string,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
@@ -28,7 +28,7 @@ export default (t: CT.Language) => ({
  descDeleteAudit: (
   webhook: Discord.Webhook,
   webhookType: string,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>
@@ -50,7 +50,7 @@ export default (t: CT.Language) => ({
  descUpdateAudit: (
   webhook: Discord.Webhook,
   webhookType: string,
-  user: Discord.User,
+  user: Discord.User | Discord.PartialUser,
   channel: Discord.GuildTextBasedChannel,
   channelType: string,
  ) =>

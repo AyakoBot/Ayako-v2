@@ -12,7 +12,7 @@ import buttonParsers from '../buttonParsers.js';
  */
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  options: unknown[],
- components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[],
+ components: Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[],
  language: CT.Language,
  name: T,
  page: number,

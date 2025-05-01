@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.message,
- descDeleteAudit: (user: Discord.User, msg: Discord.Message) =>
+ descDeleteAudit: (user: Discord.User | Discord.PartialUser, msg: Discord.Message) =>
   t.stp(t.JSON.events.logs.message.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
    msg: t.languageFunction.getMessage(msg),
@@ -14,7 +14,7 @@ export default (t: CT.Language) => ({
    msg: t.languageFunction.getMessage(msg),
    author: t.languageFunction.getUser(msg.author),
   }),
- descDeleteBulkAudit: (user: Discord.User, size: number, channel: Discord.GuildTextBasedChannel) =>
+ descDeleteBulkAudit: (user: Discord.User | Discord.PartialUser, size: number, channel: Discord.GuildTextBasedChannel) =>
   t.stp(t.JSON.events.logs.message.descDeleteBulkAudit, {
    user: t.languageFunction.getUser(user),
    size,

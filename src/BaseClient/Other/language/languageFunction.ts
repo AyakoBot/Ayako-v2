@@ -33,7 +33,10 @@ export default (t: CT.Language) => ({
      )} / ${t.util.util.makeInlineCode(channel.id)}**\n`
    : `**${t.channelTypes.unknownChannel}**\n`,
  getUser: (
-  user: Discord.User | { bot: boolean; id: string; username: string; discriminator: string },
+  user:
+   | Discord.User
+   | { bot: boolean; id: string; username: string; discriminator: string }
+   | Discord.PartialUser,
  ) =>
   `**${user?.bot ? t.JSON.t.Bot : t.JSON.t.User} <@${user?.id}> / ${t.util.util.makeInlineCode(
    user ? t.util.constants.standard.user(user) : t.JSON.t.Unknown,

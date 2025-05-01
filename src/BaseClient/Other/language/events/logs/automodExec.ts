@@ -3,18 +3,18 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.automodExec,
- descMessage: (rule: Discord.AutoModerationRule, msg: Discord.Message, user: Discord.User) =>
+ descMessage: (rule: Discord.AutoModerationRule, msg: Discord.Message, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.automodExec.descMessage, {
    rule: t.languageFunction.getAutoModerationRule(rule),
    msg: t.languageFunction.getMessage(msg),
    user: t.languageFunction.getUser(user),
   }),
- desc: (rule: Discord.AutoModerationRule, user: Discord.User) =>
+ desc: (rule: Discord.AutoModerationRule, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.automodExec.desc, {
    rule: t.languageFunction.getAutoModerationRule(rule),
    user: t.languageFunction.getUser(user),
   }),
- descChannel: (rule: Discord.AutoModerationRule, user: Discord.User, channel: Discord.Channel) =>
+ descChannel: (rule: Discord.AutoModerationRule, user: Discord.User | Discord.PartialUser, channel: Discord.Channel) =>
   t.stp(t.JSON.events.logs.automodExec.descChannel, {
    rule: t.languageFunction.getAutoModerationRule(rule),
    user: t.languageFunction.getUser(user),

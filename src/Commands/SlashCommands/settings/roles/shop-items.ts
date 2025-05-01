@@ -291,9 +291,10 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
    );
    if (!message) return;
 
-   const componentChunks: Discord.APIMessageActionRowComponent[][] = client.util.getChunks(
+   const componentChunks: Discord.APIComponentInMessageActionRow[][] = client.util.getChunks(
     [
      ...message.components
+      .filter((c) => c.type === Discord.ComponentType.ActionRow)
       .map((c) =>
        c.components.map((c2) => structuredClone(c2.data) as Discord.APIButtonComponentWithCustomId),
       )

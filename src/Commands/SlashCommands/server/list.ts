@@ -73,7 +73,7 @@ export default async (
    .join('\n')}`,
  };
 
- const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
+ const components: Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] = [
   {
    type: Discord.ComponentType.ActionRow,
    components: [

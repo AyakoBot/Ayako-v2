@@ -3,25 +3,25 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.guild,
- descBan: (user: Discord.User) =>
+ descBan: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBan, {
    user: t.languageFunction.getUser(user),
   }),
- descBanAudit: (user: Discord.User, executor: Discord.User) =>
+ descBanAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBanAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descUnban: (user: Discord.User) =>
+ descUnban: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descUnban, {
    user: t.languageFunction.getUser(user),
   }),
- descUnbanAudit: (user: Discord.User, executor: Discord.User) =>
+ descUnbanAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descUnbanAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descEmojiCreateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+ descEmojiCreateAudit: (user: Discord.User | Discord.PartialUser, emoji: Discord.Emoji) =>
   t.stp(t.JSON.events.logs.guild.descEmojiCreateAudit, {
    user: t.languageFunction.getUser(user),
    emoji: t.languageFunction.getEmote(emoji),
@@ -30,7 +30,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.guild.descEmojiCreate, {
    emoji: t.languageFunction.getEmote(emoji),
   }),
- descEmojiDeleteAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+ descEmojiDeleteAudit: (user: Discord.User | Discord.PartialUser, emoji: Discord.Emoji) =>
   t.stp(t.JSON.events.logs.guild.descEmojiDeleteAudit, {
    user: t.languageFunction.getUser(user),
    emoji: t.languageFunction.getEmote(emoji),
@@ -39,7 +39,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.guild.descEmojiDelete, {
    emoji: t.languageFunction.getEmote(emoji),
   }),
- descEmojiUpdateAudit: (user: Discord.User, emoji: Discord.Emoji) =>
+ descEmojiUpdateAudit: (user: Discord.User | Discord.PartialUser, emoji: Discord.Emoji) =>
   t.stp(t.JSON.events.logs.guild.descEmojiUpdateAudit, {
    user: t.languageFunction.getUser(user),
    emoji: t.languageFunction.getEmote(emoji),
@@ -48,57 +48,57 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.guild.descEmojiUpdate, {
    emoji: t.languageFunction.getEmote(emoji),
   }),
- descJoinAudit: (user: Discord.User, executor: Discord.User) =>
+ descJoinAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descJoinAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descMemberJoin: (user: Discord.User) =>
+ descMemberJoin: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descMemberJoin, {
    user: t.languageFunction.getUser(user),
   }),
- descBotJoin: (user: Discord.User) =>
+ descBotJoin: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBotJoin, {
    user: t.languageFunction.getUser(user),
   }),
- descBotLeave: (user: Discord.User) =>
+ descBotLeave: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBotLeave, {
    user: t.languageFunction.getUser(user),
   }),
- descBotLeaveAudit: (user: Discord.User, executor: Discord.User) =>
+ descBotLeaveAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBotLeaveAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descMemberLeave: (user: Discord.User) =>
+ descMemberLeave: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descMemberLeave, {
    user: t.languageFunction.getUser(user),
   }),
- descMemberLeaveAudit: (user: Discord.User, executor: Discord.User) =>
+ descMemberLeaveAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descMemberLeaveAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descBotUpdate: (user: Discord.User) =>
+ descBotUpdate: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBotUpdate, {
    user: t.languageFunction.getUser(user),
   }),
- descBotUpdateAudit: (user: Discord.User, executor: Discord.User) =>
+ descBotUpdateAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descBotUpdateAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
- descMemberUpdate: (user: Discord.User) =>
+ descMemberUpdate: (user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descMemberUpdate, {
    user: t.languageFunction.getUser(user),
   }),
- descMemberUpdateAudit: (user: Discord.User, executor: Discord.User) =>
+ descMemberUpdateAudit: (user: Discord.User | Discord.PartialUser, executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descMemberUpdateAudit, {
    executor: t.languageFunction.getUser(executor),
    user: t.languageFunction.getUser(user),
   }),
  descGuildUpdate: () => t.JSON.events.logs.guild.descGuildUpdate,
- descGuildUpdateAudit: (executor: Discord.User) =>
+ descGuildUpdateAudit: (executor: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.guild.descGuildUpdateAudit, {
    executor: t.languageFunction.getUser(executor),
   }),
@@ -226,7 +226,7 @@ export default (t: CT.Language) => ({
    member: t.languageFunction.getUser(member.user),
    autoModerationRule: t.languageFunction.getAutoModerationRule(rule),
   }),
- descMemberPrune: (executor: Discord.User, amount: number, days: number) =>
+ descMemberPrune: (executor: Discord.User | Discord.PartialUser, amount: number, days: number) =>
   t.stp(t.JSON.events.logs.guild.descMemberPrune, {
    executor: t.languageFunction.getUser(executor),
    amount: `${amount}`,

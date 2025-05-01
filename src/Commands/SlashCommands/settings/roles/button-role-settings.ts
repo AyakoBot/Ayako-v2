@@ -221,7 +221,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
      });
      if (!relatedSettings.length) return;
 
-     const componentChunks: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] =
+     const componentChunks: Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] =
       client.util
        .getChunks(
         relatedSettings

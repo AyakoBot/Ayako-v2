@@ -1,11 +1,6 @@
 import * as Discord from 'discord.js';
 
-type ActionType = Discord.GuildAuditLogsEntry<
- Discord.AuditLogEvent,
- Discord.GuildAuditLogsActionType,
- Discord.GuildAuditLogsTargetType,
- Discord.AuditLogEvent
->['action'];
+type ActionType = Discord.GuildAuditLogsEntry<Discord.AuditLogEvent>['action'];
 
 /**
  * Interface for managing audit logs in a Discord guild.

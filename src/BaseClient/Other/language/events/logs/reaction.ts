@@ -3,13 +3,13 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.reaction,
- descAdded: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
+ descAdded: (emoji: Discord.Emoji, user: Discord.User | Discord.PartialUser, msg: Discord.Message) =>
   t.stp(t.JSON.events.logs.reaction.descAdded, {
    user: t.languageFunction.getUser(user),
    emoji: t.languageFunction.getEmote(emoji),
    msg: t.languageFunction.getMessage(msg),
   }),
- descRemoved: (emoji: Discord.Emoji, user: Discord.User, msg: Discord.Message) =>
+ descRemoved: (emoji: Discord.Emoji, user: Discord.User | Discord.PartialUser, msg: Discord.Message) =>
   t.stp(t.JSON.events.logs.reaction.descRemoved, {
    user: t.languageFunction.getUser(user),
    emoji: t.languageFunction.getEmote(emoji),

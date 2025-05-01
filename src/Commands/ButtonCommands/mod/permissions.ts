@@ -12,10 +12,12 @@ export default async (cmd: Discord.ButtonInteraction, args: CommandType[]) => {
  cmd.editReply({
   components: cmd.message.components.map((actionRow) => ({
    type: actionRow.type,
-   components: actionRow.components.map((c) => ({
-    ...c.data,
-    disabled: true,
-   })),
+   components: (actionRow as Discord.ActionRow<Discord.MessageActionRowComponent>).components.map(
+    (c) => ({
+     ...c.data,
+     disabled: true,
+    }),
+   ),
   })),
   message: cmd.message,
  });

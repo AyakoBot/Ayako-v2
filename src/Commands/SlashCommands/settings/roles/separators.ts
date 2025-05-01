@@ -153,7 +153,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  settings,
  language,
 ) => {
- const components: Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] = [
+ const components: Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] = [
   {
    type: Discord.ComponentType.ActionRow,
    components: [

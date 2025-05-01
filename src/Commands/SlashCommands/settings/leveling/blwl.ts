@@ -73,7 +73,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
  settings,
  language,
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+): Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] => [
  {
   type: Discord.ComponentType.ActionRow,
   components: [

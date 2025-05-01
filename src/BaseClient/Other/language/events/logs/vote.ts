@@ -3,13 +3,13 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.vote,
- bot: (user: Discord.User, bot: Discord.User, link: string) =>
+ bot: (user: Discord.User | Discord.PartialUser, bot: Discord.User | Discord.PartialUser, link: string) =>
   t.stp(t.JSON.events.vote.bot, {
    user: user.displayName,
    bot: bot.username,
    link,
   }),
- guild: (user: Discord.User, guild: Discord.Guild, link: string) =>
+ guild: (user: Discord.User | Discord.PartialUser | Discord.PartialUser, guild: Discord.Guild, link: string) =>
   t.stp(t.JSON.events.vote.guild, {
    user: user.displayName,
    guild: guild.name,
@@ -19,7 +19,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.vote.tempReward, {
    reward,
   }),
- botReason: (bot: Discord.User) =>
+ botReason: (bot: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.vote.botReason, {
    bot: bot.username,
   }),
@@ -29,7 +29,7 @@ export default (t: CT.Language) => ({
   }),
  reminder: {
   ...t.JSON.events.vote.reminder,
-  descBot: (bot: Discord.User) =>
+  descBot: (bot: Discord.User | Discord.PartialUser) =>
    t.stp(t.JSON.events.vote.reminder.descBot, {
     bot: t.util.constants.standard.user(bot),
    }),
@@ -37,7 +37,7 @@ export default (t: CT.Language) => ({
    t.stp(t.JSON.events.vote.reminder.descGuild, {
     guild: guild.name,
    }),
-  voteBotButton: (bot: Discord.User) =>
+  voteBotButton: (bot: Discord.User | Discord.PartialUser) =>
    t.stp(t.JSON.events.vote.reminder.voteBotButton, {
     bot: bot.username,
    }),

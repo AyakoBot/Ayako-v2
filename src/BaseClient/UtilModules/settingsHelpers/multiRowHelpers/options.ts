@@ -11,7 +11,7 @@ import buttonParsers from '../buttonParsers.js';
 export default <T extends keyof typeof CT.SettingsName2TableName>(
  language: CT.Language,
  name: T,
-): Discord.APIActionRowComponent<Discord.APIMessageActionRowComponent>[] => [
+): Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[] => [
  {
   type: Discord.ComponentType.ActionRow,
   components: [buttonParsers.create(language, name)],

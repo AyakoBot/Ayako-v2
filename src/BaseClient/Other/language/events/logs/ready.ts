@@ -19,23 +19,23 @@ export default (t: CT.Language) => ({
  },
  nitro: {
   ...t.JSON.events.ready.nitro,
-  stackRoles: (user: Discord.User, r: Discord.Role[], days: string | number) =>
+  stackRoles: (user: Discord.User | Discord.PartialUser, r: Discord.Role[], days: string | number) =>
    t.stp(t.JSON.events.ready.nitro.stackRoles, {
     user: t.languageFunction.getUser(user),
     roles: r.map((r2) => `> ${t.languageFunction.getRole(r2)}`).join(''),
     days,
    }),
-  replaceRoles: (user: Discord.User, r: Discord.Role[], days: string | number) =>
+  replaceRoles: (user: Discord.User | Discord.PartialUser, r: Discord.Role[], days: string | number) =>
    t.stp(t.JSON.events.ready.nitro.replaceRoles, {
     user: t.languageFunction.getUser(user),
     roles: r.map((r2) => t.languageFunction.getRole(r2)).join(''),
     days,
    }),
-  started: (user: Discord.User) =>
+  started: (user: Discord.User | Discord.PartialUser) =>
    t.stp(t.JSON.events.ready.nitro.started, {
     user: t.languageFunction.getUser(user),
    }),
-  stopped: (user: Discord.User) =>
+  stopped: (user: Discord.User | Discord.PartialUser) =>
    t.stp(t.JSON.events.ready.nitro.stopped, {
     user: t.languageFunction.getUser(user),
    }),

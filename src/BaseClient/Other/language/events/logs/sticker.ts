@@ -3,7 +3,7 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.sticker,
- descCreateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+ descCreateAudit: (sticker: Discord.Sticker, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.sticker.descCreateAudit, {
    user: t.languageFunction.getUser(user),
    sticker: t.languageFunction.getSticker(sticker),
@@ -12,7 +12,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.sticker.descCreate, {
    sticker: t.languageFunction.getSticker(sticker),
   }),
- descDeleteAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+ descDeleteAudit: (sticker: Discord.Sticker, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.sticker.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
    sticker: t.languageFunction.getSticker(sticker),
@@ -21,7 +21,7 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.events.logs.sticker.descDelete, {
    sticker: t.languageFunction.getSticker(sticker),
   }),
- descUpdateAudit: (sticker: Discord.Sticker, user: Discord.User) =>
+ descUpdateAudit: (sticker: Discord.Sticker, user: Discord.User | Discord.PartialUser) =>
   t.stp(t.JSON.events.logs.sticker.descUpdateAudit, {
    user: t.languageFunction.getUser(user),
    sticker: t.languageFunction.getSticker(sticker),
