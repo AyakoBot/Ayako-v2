@@ -1,9 +1,6 @@
-import type { Reminder as DBReminder } from '@prisma/client';
-import { type Serialized } from 'discord-hybrid-sharding';
-import * as Discord from 'discord.js';
-import client from '../../../BaseClient/Bot/Client.js';
-import { Reminder } from '../../../BaseClient/UtilModules/cache/bot/Reminder.js';
 import { Decimal } from '@prisma/client/runtime/library.js';
+import * as Discord from 'discord.js';
+import { Reminder } from '../../../BaseClient/UtilModules/cache/bot/Reminder.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const duration = cmd.client.util.getDuration(cmd.options.getString('duration', true));
@@ -27,22 +24,5 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  cmd.client.util.replyCmd(cmd, {
   content: lan.created((await cmd.client.util.getCustomCommand(cmd.guild, 'reminder'))?.id ?? '0'),
- });
-};
-
-export const end = async (reminder: DBReminder | Serialized<DBReminder>) => {
- if (!reminder || !reminder.startTime) return;
- const user = await client.util.getUser(reminder.userId);
-
- client.util.DataBase.reminder.delete({ where: { startTime: reminder.startTime } }).then();
-
- if (!user) return;
-
- const language = await client.util.getLanguage(undefined);
- const lan = language.slashCommands.reminder;
-
- client.util.send(user, {
-  content: lan.reminderEnded(reminder.userId),
-  embeds: [{ description: reminder.reason, color: client.util.getColor() }],
  });
 };
