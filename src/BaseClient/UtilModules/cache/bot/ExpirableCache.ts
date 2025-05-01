@@ -77,7 +77,7 @@ export default class ExpirableCache<T extends DBReminder, K extends boolean = tr
   this.opts = opts as ExpirableCacheOpts<T, K>;
   this.scheduleManager = new ScheduleManager(redis);
 
-  if (init === (false as any)) return;
+  if (init === false) return;
   this.init(opts as Optional<T, 'startTime'>);
  }
 
