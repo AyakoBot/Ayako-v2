@@ -3,6 +3,7 @@ import { scheduleJob } from 'node-schedule';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 import log from './log.js';
 import reactionRoles from './reactionRoles.js';
+import votePunish from './votePunish.js';
 
 export default async (reaction: Discord.MessageReaction, user: Discord.User) => {
  if (!reaction.message.guild) return;
@@ -24,4 +25,5 @@ export default async (reaction: Discord.MessageReaction, user: Discord.User) => 
   log(reaction, user, msg);
  });
  reactionRoles(reaction, user, msg);
+ votePunish(reaction, user, msg);
 };

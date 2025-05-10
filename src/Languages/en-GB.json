@@ -2577,7 +2577,7 @@
    "categories": {
     "vote-punish": {
      "name": "Vote-Punish",
-     "description": "Your Staff isn't always available, and that's alright. With this you can prepare for that Situation and let your Chat moderate itself.\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> 2. Ayako waits for a Staff Member to write something in chat or execute a Punishment until the Cooldown wears off\n> 3. If no Staff Member appears in time, Ayako will lock the Channel and ask the User who mentioned which Member this Mention is about.\n> 4. Ayako will then start a Vote to decide if the mentioned Member should be punished.\n> -# - Only Members with the required Role can vote. \n> -# - If no required Role is set everyone can vote.\n> -# - The vote requires at least the Amount of Votes you specified to pass.\n> 5. If the Vote passes, Ayako will execute the Punishment you specified for the specified Duration.\n> 6. Ayako will unlock the Channel again.",
+     "description": "Your Staff isn't always available, and that's alright. With this you can prepare for that Situation and let your Chat moderate itself.\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> 2. Ayako waits for a Staff Member to write something in chat until the Cooldown wears off\n> -# A Staff-Member sending a Message, reacting to Ayako's Reaction or executing a Punishment counts as appearing\n> 3. If no Staff Member appears in time, Ayako will lock the Channel and ask the User who mentioned which Member this Mention is about.\n> 4. Ayako will then start a Vote to decide if the mentioned Member should be punished.\n> -# - Only Members with the required Role can vote. \n> -# - If no required Role is set everyone can vote.\n> -# - The vote requires at least the Amount of Votes you specified to pass.\n> 5. If the Vote passes, Ayako will execute the Punishment you specified for the specified Duration.\n> 6. Ayako will unlock the Channel again.",
      "fields": {
       "voteInitRoles": {
        "name": "Vote-Init Roles",
@@ -2896,7 +2896,8 @@
      }
     },
     "invites": {
-     "name": "Invites"
+     "name": "Invites",
+     "fields": {}
     },
     "censor": {
      "name": "Censor",
