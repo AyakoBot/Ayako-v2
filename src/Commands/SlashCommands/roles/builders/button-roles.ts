@@ -72,7 +72,11 @@ export default async (
 
  const options: Discord.SelectMenuComponentOptionData[] = [
   ...((settings?.map((s) => ({
-   emoji: s.emote,
+   emoji: {
+    name: s.emote?.includes(':') ? '_' : s.emote,
+    id: s.emote?.includes(':') ? s.emote.split(/:/g).at(-1) : undefined,
+    animated: s.emote?.startsWith('a:'),
+   },
    label: language.t.Edit,
    value: s.emote ?? s.uniquetimestamp,
   })) ?? []) as Discord.SelectMenuComponentOptionData[]),
