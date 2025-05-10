@@ -27,7 +27,7 @@ import WebhookCache from './Cache/webhook.js';
 
 export const prefix = 'cache';
 const cacheDBnum = process.argv.includes('--dev') ? 2 : 0;
-const scheduleDBnum = process.argv.includes('--dev') ? 2 : 1;
+const scheduleDBnum = process.argv.includes('--dev') ? 3 : 1;
 
 export const cacheDB = new Redis({ host: 'redis', db: cacheDBnum });
 export const cacheSub = new Redis({ host: 'redis', db: cacheDBnum });
@@ -78,7 +78,7 @@ const callback = async (channel: string, key: string) => {
 
  if (key.includes('scheduled-data:')) return;
 
- const keyArgs = key.split(/:/g).splice(0, 2);
+ const keyArgs = key.split(/:/g).splice(0, 3);
  const path = keyArgs.filter((k) => Number.isNaN(+k)).join('/');
 
  const dataKey = key.replace('scheduled:', 'scheduled-data:');
@@ -93,6 +93,7 @@ const callback = async (channel: string, key: string) => {
  );
 
  const file = files.find((f) => f.endsWith(`${path}.js`));
+ console.log(path, file, files, keyArgs, key)
  if (!file) return;
 
  (await import(file)).default(value ? JSON.parse(value) : undefined);
