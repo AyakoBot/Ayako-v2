@@ -17,6 +17,7 @@ import tempBanAdd from './tempBanAdd.js';
 import tempChannelBanAdd from './tempChannelBanAdd.js';
 import tempMuteAdd from './tempMuteAdd.js';
 import warnAdd from './warnAdd.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async <T extends CT.ModTypes>(
  rawOpts: CT.ModOptions<CT.ModTypes.StrikeAdd>,
@@ -31,6 +32,8 @@ export default async <T extends CT.ModTypes>(
  if (memberRes && !memberRes.canExecute) {
   return { success: false, type: CT.ModTypes.StrikeAdd, options: options as CT.ModOptions<T> };
  }
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  if (!strike) {
   cache.punishments.delete(options.target.id);

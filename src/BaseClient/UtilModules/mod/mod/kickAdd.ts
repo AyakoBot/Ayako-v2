@@ -10,6 +10,7 @@ import getMembers from '../getMembers.js';
 import err from '../err.js';
 import permissionError from '../permissionError.js';
 import { canRemoveMember } from '../../requestHandler/guilds/removeMember.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.KickAdd>,
@@ -21,6 +22,8 @@ export default async (
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  if (!memberRes?.targetMember && !options.skipChecks) {
   actionAlreadyApplied(cmd, message, options.target, language, type);

@@ -15,6 +15,7 @@ import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.TempMuteAdd>,
@@ -26,6 +27,8 @@ export default async (
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  if (!memberRes) {
   const punishments = await DataBase.punishments.findMany({

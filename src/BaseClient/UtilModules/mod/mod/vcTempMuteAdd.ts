@@ -13,6 +13,7 @@ import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.VcTempMuteAdd>,
@@ -24,6 +25,8 @@ export default async (
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  if (!options.skipChecks && (!memberRes?.targetMember || memberRes.targetMember.voice.mute)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);

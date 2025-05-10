@@ -11,6 +11,7 @@ import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
 import { canEditMember } from '../../requestHandler/guilds/editMember.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.RoleRemove>,
@@ -22,6 +23,8 @@ export default async (
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  if (!memberRes) {
   const sticky = await DataBase.sticky.findUnique({ where: { guildid: options.guild.id } });

@@ -10,6 +10,7 @@ import getMembers from '../getMembers.js';
 import permissionError from '../permissionError.js';
 import { canBanMember } from '../../requestHandler/guilds/banMember.js';
 import { canBanUser } from '../../requestHandler/guilds/banUser.js';
+import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.BanAdd>,
@@ -21,6 +22,8 @@ export default async (
 
  const memberRes = await getMembers(cmd, options, language, message, type);
  if (memberRes && !memberRes.canExecute) return false;
+
+ rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
  const me = await getBotMemberFromGuild(options.guild);
  if (
