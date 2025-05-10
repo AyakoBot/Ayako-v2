@@ -16,15 +16,11 @@ const RUserKeys = [
  'avatar_url',
  'bot',
  'system',
- 'mfa_enabled',
  'banner_url',
  'accent_color',
- 'locale',
  'verified',
  'flags',
- 'premium_type',
  'public_flags',
- 'avatar_decoration',
  'avatar_decoration_data',
 ] as const;
 
