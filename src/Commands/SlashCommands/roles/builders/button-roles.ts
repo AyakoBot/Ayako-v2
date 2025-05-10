@@ -87,8 +87,6 @@ export default async (
   })),
  ].slice(0, 25);
 
- console.log(options);
-
  const payload = {
   embeds: [
    {
