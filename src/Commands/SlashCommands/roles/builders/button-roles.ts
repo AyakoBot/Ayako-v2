@@ -77,11 +77,17 @@ export default async (
    value: s.emote ?? s.uniquetimestamp,
   })) ?? []) as Discord.SelectMenuComponentOptionData[]),
   ...applyReactions.map((r) => ({
-   emoji: r.emoji.identifier,
+   emoji: {
+    id: r.emoji.id || undefined,
+    name: r.emoji.name || undefined,
+    animated: r.emoji.animated || undefined,
+   },
    label: language.t.Add,
    value: !r.emoji.id ? (r.emoji.name as string) : r.emoji.identifier,
   })),
  ].slice(0, 25);
+
+ console.log(options);
 
  const payload = {
   embeds: [
