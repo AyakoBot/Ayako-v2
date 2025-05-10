@@ -41,7 +41,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     components: [
      cmd.client.util.settingsHelpers.changeHelpers.changeSelectGlobal(
       language,
-      CT.EditorTypes.Channel,
+      CT.EditorTypes.Channels,
       CT.AutoModEditorType.Channels,
       settingName,
       id,
