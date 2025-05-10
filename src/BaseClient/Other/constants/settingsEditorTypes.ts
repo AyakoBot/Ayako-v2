@@ -33,7 +33,6 @@ export default {
   pingusers: CT.EditorTypes.Users,
   timeout: CT.EditorTypes.Duration,
   jointhreshold: CT.EditorTypes.Number,
-  punishmenttof: CT.EditorTypes.Boolean,
   action: CT.EditorTypes.AntiRaidPunishment,
   disableinvites: CT.EditorTypes.Boolean,
   actiontof: CT.EditorTypes.Boolean,
@@ -155,7 +154,7 @@ export default {
   kickstime: CT.EditorTypes.Duration,
   mutestime: CT.EditorTypes.Duration,
   warnstime: CT.EditorTypes.Duration,
-  vocietime: CT.EditorTypes.Duration,
+  voicetime: CT.EditorTypes.Duration,
  },
  [CT.SettingNames.Logs]: {
   applicationevents: CT.EditorTypes.Channels,
@@ -187,9 +186,7 @@ export default {
   notifychannel: CT.EditorTypes.Channel,
   statuschannel: CT.EditorTypes.Channel,
   updateschannel: CT.EditorTypes.Channel,
-  vanity: CT.EditorTypes.String,
   ptreminderenabled: CT.EditorTypes.Boolean,
-  token: CT.EditorTypes.BotToken,
  },
  [CT.SettingNames.CustomClient]: {
   appid: CT.EditorTypes.User,
