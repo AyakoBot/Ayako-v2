@@ -42,6 +42,7 @@ export const getContent = async (
  settings?: Prisma.censor,
  msg?: Discord.AutoModerationActionExecution,
  channel?: Discord.GuildBasedChannel,
+ roles: Discord.Role[] = [],
 ) => {
  const rules = (
   guild.autoModerationRules.cache.size
@@ -68,6 +69,15 @@ export const getContent = async (
    ) {
     return false;
    }
+   return true;
+  })
+  .filter((r) => {
+   if (!r.exemptRoles.size) return true;
+
+   const includesRole = roles.length ? roles.some((role) => r.exemptRoles.has(role.id)) : false;
+
+   if (includesRole) return false;
+   if (r.exemptRoles.hasAny(guild.roles.everyone.id)) return false;
    return true;
   });
 

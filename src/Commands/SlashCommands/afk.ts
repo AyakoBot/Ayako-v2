@@ -26,7 +26,14 @@ export default async (
   ? [
      {
       color: CT.Colors.Loading,
-      description: await getContent(cmd.guild, text, undefined, undefined, cmd.channel),
+      description: await getContent(
+       cmd.guild,
+       text,
+       undefined,
+       undefined,
+       cmd.channel,
+       cmd.member?.roles.cache.map((r) => r),
+      ),
      },
     ]
   : [];

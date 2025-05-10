@@ -71,7 +71,16 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (customRole) {
   const role = await cmd.client.util.request.guilds.editRole(cmd.guild, customRole.id, {
-   name: name ? await getContent(cmd.guild, name) : undefined,
+   name: name
+    ? await getContent(
+       cmd.guild,
+       name,
+       undefined,
+       undefined,
+       undefined,
+       cmd.member.roles.cache.map((r) => r),
+      )
+    : undefined,
    unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
    color: parsedColor ?? undefined,
    icon:

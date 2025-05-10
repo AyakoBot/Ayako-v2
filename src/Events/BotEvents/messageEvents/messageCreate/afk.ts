@@ -98,7 +98,16 @@ const mention = async (
 
  const contents = await Promise.all(
   afk.map((a) =>
-   a.text ? getContent(msg.guild, a.text, undefined, undefined, msg.channel) : null,
+   a.text
+    ? getContent(
+       msg.guild,
+       a.text,
+       undefined,
+       undefined,
+       msg.channel,
+       msg.mentions.members.find((m) => m.id === a.userid)?.roles.cache.map((r) => r),
+      )
+    : null,
   ),
  );
  contents.forEach((c, i) => {
