@@ -38,7 +38,7 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
   language.slashCommands.settings.addByIdInstructionsSingle.length;
  instructionsComponent.min_length =
   language.slashCommands.settings.addByIdInstructionsSingle.length;
- valueComponent.value = selectMenu.data.default_values?.map((v) => v.id).join(', ') ?? '';
+ valueComponent.value = selectMenu.data.default_values?.map((v) => v.id).join(', ') ?? undefined;
  modal.custom_id = modal.custom_id.replace('settings/string', 'settings/userId');
 
  cmd.showModal(modal);

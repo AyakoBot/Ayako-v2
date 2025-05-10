@@ -70,6 +70,7 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
       fieldName,
       cmd.client,
       uniquetimestamp,
+      false,
      ),
      cmd.client.util.settingsHelpers.changeHelpers.done(
       settingName,
