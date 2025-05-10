@@ -1,8 +1,8 @@
 import { AutoPunishPunishmentType, type votePunish } from '@prisma/client';
 import type { GuildTextBasedChannel, Message, User } from 'discord.js';
-import client from '../../../BaseClient/Bot/Client.js';
-import { scheduleDB } from '../../../BaseClient/Bot/Redis.js';
-import { ModTypes, type Language } from '../../../Typings/Typings.js';
+import client from '../../../../BaseClient/Bot/Client.js';
+import { scheduleDB } from '../../../../BaseClient/Bot/Redis.js';
+import { ModTypes, type Language } from '../../../../Typings/Typings.js';
 
 type Payload = {
  id: number;

@@ -17,10 +17,10 @@ export class ScheduleManager {
   */
  public dataPrefix = 'scheduled-data';
  /**
-  * The Redis client used for caching.
-  * @private
+  * The Redis client used for scheduling.
+  * @public
   */
- private redis: Redis;
+ public redis: Redis;
 
  constructor(redis: Redis) {
   this.redis = redis;
@@ -62,7 +62,7 @@ export class ScheduleManager {
   pipeline?: T,
  ): ReturnType<T> {
   const baseKey = `${this.prefix}:${key}`;
-  const keys = [baseKey, baseKey.replace('scheduled:', 'scheduled-data:')];
+  const keys = [baseKey, baseKey.replace(`${this.prefix}:`, `${this.dataPrefix}:`)];
 
   return (pipeline ? pipeline.del(...keys) : this.redis.del(...keys)) as ReturnType<T>;
  }

@@ -5,7 +5,7 @@ import {
  PermissionFlagsBits,
  type GuildTextBasedChannel,
 } from 'discord.js';
-import client from '../../../BaseClient/Bot/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 
 export default async (payload: {
  id: number;

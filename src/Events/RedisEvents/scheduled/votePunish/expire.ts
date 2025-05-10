@@ -1,5 +1,5 @@
 import type { GuildTextBasedChannel, OverwriteType } from 'discord.js';
-import client from '../../../BaseClient/Bot/Client.js';
+import client from '../../../../BaseClient/Bot/Client.js';
 
 export default async (payload: {
  guildId: string;
