@@ -4003,7 +4003,7 @@
    },
    "vcTempMuteAdd": {
     "author": "User Voice-Temp-Muted",
-    "description": "> {{target}}> was Voice-Temp-Muted by\n> {{executor}}"
+    "description": "> {{target}}> was Voice-Temp-Muted by\n> {{executor}}> until\n> {{time}}"
    },
    "vcMuteRemove": {
     "author": "User Voice-Un-Muted",
@@ -4015,7 +4015,7 @@
    },
    "vcTempDeafenAdd": {
     "author": "User Voice-Temp-Deafened",
-    "description": "> {{target}}> was Voice-Temp-Deafened by\n> {{executor}}"
+    "description": "> {{target}}> was Voice-Temp-Deafened by\n> {{executor}}> until\n> {{time}}"
    },
    "vcDeafenRemove": {
     "author": "User Voice-Un-Deafened",
