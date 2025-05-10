@@ -29,7 +29,6 @@ export default async (cmd: Discord.ButtonInteraction) => {
    userid_botid: { userid: cmd.user.id, botid: customClient?.appid ?? process.env.mainId ?? '' },
   },
  });
-
  if (!tokens) {
   cmd.client.util.errorCmd(cmd, language.errors.notLoggedIn, language);
   return;
@@ -54,6 +53,23 @@ export default async (cmd: Discord.ButtonInteraction) => {
   return;
  }
 
+ const upsert = await cmd.client.util.DataBase.guildsettings.upsert({
+  where: { guildid: cmd.guildId },
+  update: { lastrpsyncrun: Date.now() },
+  create: { guildid: cmd.guildId, lastrpsyncrun: Date.now() },
+ });
+
+ const find = await cmd.client.util.DataBase.customclients.findUnique({
+  where: { guildid: cmd.guildId },
+  select: { appid: true },
+ });
+
+ const guildsettings = { ...upsert, appid: find?.appid ?? null };
+
+ await cmd.update({
+  components: getComponents(language, lan, cmd, guildsettings),
+ });
+
  const perms = (await cmd.client.util.cache.commandPermissions.get(cmd.guild, rpCmd.id)) ?? [];
 
  [...(cmd.client.util.cache.commands.cache.get(cmd.guildId)?.values() ?? [])]
@@ -67,22 +83,6 @@ export default async (cmd: Discord.ButtonInteraction) => {
    ),
   );
 
- const guildsettings = await cmd.client.util.DataBase.$transaction([
-  cmd.client.util.DataBase.guildsettings.upsert({
-   where: { guildid: cmd.guildId },
-   update: { lastrpsyncrun: Date.now() },
-   create: { guildid: cmd.guildId, lastrpsyncrun: Date.now() },
-  }),
-  cmd.client.util.DataBase.customclients.findUnique({
-   where: { guildid: cmd.guildId },
-   select: { appid: true },
-  }),
- ]).then(([g, c]) => ({ ...g, appid: c?.appid ?? null }));
-
- await cmd.update({
-  components: getComponents(language, lan, cmd, guildsettings),
- });
-
  const embed: Discord.APIEmbed = {
   color: CT.Colors.Loading,
   description: lan.willTake(cmd.client.util.constants.standard.getTime(Date.now() + 3600000)),
@@ -91,6 +91,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
    icon_url: cmd.client.util.emotes.loading.link,
   },
  };
+ console.log(1);
 
  await cmd.followUp({
   ephemeral: true,
