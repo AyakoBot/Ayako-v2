@@ -93,7 +93,6 @@ const callback = async (channel: string, key: string) => {
  );
 
  const file = files.find((f) => f.endsWith(`${path}.js`));
- console.log(path, file, files, keyArgs, key)
  if (!file) return;
 
  (await import(file)).default(value ? JSON.parse(value) : undefined);
