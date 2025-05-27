@@ -46,7 +46,7 @@ export default class RoleCache extends Cache<APIRole> {
 
   const rData = structuredClone(data) as unknown as RRole;
   rData.guild_id = guildId;
-  rData.icon_url = data.icon ? RoleCache.iconUrl(data.icon, guildId) : null;
+  rData.icon_url = data.icon ? RoleCache.iconUrl(data.icon, data.id) : null;
 
   keysNotToCache.forEach((k) => delete (rData as Record<string, unknown>)[k as string]);
 
