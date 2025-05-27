@@ -2,7 +2,10 @@ import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  const settings = (
-  await cmd.guild.client.util.DataBase.shopitems.findMany({ where: { guildid: cmd.guild.id } })
+  await cmd.guild.client.util.DataBase.shopitems.findMany({
+   where: { guildid: cmd.guild.id },
+   orderBy: { uniquetimestamp: 'asc' },
+  })
  )?.filter((s) => {
   const id = 'options' in cmd ? String(cmd.options.get('id', false)?.value) : undefined;
 
