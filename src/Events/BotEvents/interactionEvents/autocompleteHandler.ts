@@ -40,5 +40,5 @@ export default async (cmd: Discord.Interaction) => {
 
  const responses = await ((await import(command)) as CT.AutoCompleteFile).default(cmd);
 
- cmd.respond(responses ?? []);
+ cmd.respond(responses?.slice(0, 25) ?? []);
 };
