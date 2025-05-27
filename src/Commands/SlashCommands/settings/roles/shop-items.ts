@@ -64,6 +64,7 @@ export const showAll: NonNullable<CT.SettingsFile<typeof name>['showAll']> = asy
  const { embedParsers, multiRowHelpers } = client.util.settingsHelpers;
  const settings = await client.util.DataBase[CT.SettingsName2TableName[name]].findMany({
   where: { guildid: cmd.guildId },
+  orderBy: { uniquetimestamp: 'asc' },
  });
 
  const fields = settings?.map((s) => ({
