@@ -11,6 +11,6 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.mod.logs.vcTempDeafenAdd.description, {
    target: t.languageFunction.getUser(target),
    executor: t.languageFunction.getUser(executor),
-   duration: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
+   time: t.util.constants.standard.getTime(Date.now() + options.duration * 1000),
   }),
 });
