@@ -11,13 +11,7 @@ export default (guilds: number) =>
   },
   body: JSON.stringify({
    server_count: guilds,
-   shards: splitBetweenShards(guilds, Manager.totalShards).map((c) => c),
    shard_count: Manager.totalShards,
   }),
   // eslint-disable-next-line no-console
  }).then(async (r) => (r.ok ? undefined : console.log(await r.text())));
-
-const splitBetweenShards = (x: number, y: number): number[] =>
- Array(y)
-  .fill(Math.floor(x / y))
-  .map((res) => res + 1);
