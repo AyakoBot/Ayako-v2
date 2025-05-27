@@ -2,7 +2,11 @@ import * as Discord from 'discord.js';
 import * as CT from '../../Typings/Typings.js';
 
 export default async (
- cmd: Discord.ChatInputCommandInteraction | Discord.StringSelectMenuInteraction,
+ cmd:
+  | Discord.ChatInputCommandInteraction
+  | Discord.StringSelectMenuInteraction
+  | Discord.ButtonInteraction,
+ args: string[] = [],
 ) => {
  if (!cmd.inCachedGuild()) return;
 
@@ -19,6 +23,7 @@ export default async (
 
  const shopItems = await cmd.client.util.DataBase.shopitems.findMany({
   where: { guildid: cmd.guildId, roles: { isEmpty: false } },
+  orderBy: { uniquetimestamp: 'asc' },
  });
  if (!shopItems) {
   cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
@@ -89,6 +94,8 @@ export default async (
   },
  ];
 
+ const page = cmd instanceof Discord.ButtonInteraction ? Number(args[0] || 1) : 1;
+
  const payload: CT.UsualMessagePayload = {
   embeds: [
    {
@@ -100,7 +107,7 @@ export default async (
      currencyEmote ?? '',
      (await cmd.client.util.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
     ),
-    fields: shopItems.map((s, i) => ({
+    fields: shopItems.slice((page - 1) * 25, page * 25).map((s, i) => ({
      name: `#${i + 1} - ${s.price} ${currencyEmote}`,
      value: `${s.roles.map((r) => `<@&${r}>`).join(', ')}${
       s.shoptype === 'message'
@@ -114,10 +121,33 @@ export default async (
     color: cmd.client.util.getColor(await cmd.client.util.getBotMemberFromGuild(cmd.guild)),
    },
   ],
-  components: selMenu.map((s) => ({
-   type: Discord.ComponentType.ActionRow,
-   components: [s],
-  })),
+  components: [
+   ...selMenu.map((s) => ({
+    type: Discord.ComponentType.ActionRow,
+    components: [s],
+   })),
+   {
+    type: Discord.ComponentType.ActionRow,
+    components: [
+     {
+      type: Discord.ComponentType.Button,
+      custom_id: `shop/prev_${page - 1}`,
+      emoji: { id: undefined, name: '⬅️' },
+      style: Discord.ButtonStyle.Secondary,
+      disabled: page <= 1,
+     },
+     {
+      type: Discord.ComponentType.Button,
+      custom_id: `shop/next_${page + 1}`,
+      emoji: { id: undefined, name: '➡️' },
+      style: Discord.ButtonStyle.Secondary,
+      disabled: Math.ceil(shopItems.length / 25) <= page,
+     },
+    ],
+   },
+  ] as Discord.APIActionRowComponent<
+   Discord.APIButtonComponentWithCustomId | Discord.APISelectMenuComponent
+  >[],
  };
 
  if (cmd instanceof Discord.ChatInputCommandInteraction) cmd.client.util.replyCmd(cmd, payload);
