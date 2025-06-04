@@ -126,6 +126,9 @@ export const canSendMessage = (
  if (!channel) return false;
 
  switch (true) {
+  case payload.message_reference &&
+   !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ReadMessageHistory, true):
+   return false;
   case !me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ViewChannel, true):
    return false;
   case Number(me.communicationDisabledUntilTimestamp) > Date.now():
