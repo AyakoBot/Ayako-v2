@@ -5,6 +5,8 @@ import error from '../../error.js';
 
 import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import requestHandlerError from '../../requestHandlerError.js';
+import requestHandler from '../../requestHandler.js';
+import DataBase from '../../../Bot/DataBase.js';
 
 /**
  * Adds a reaction to a message.
@@ -110,5 +112,23 @@ const saveBlocked = async (
   .then();
 };
 
-export const getAPI = async (guild: Discord.Guild | undefined | null) =>
- guild ? ((await getBotMemberFromGuild(guild)) && (cache.apis.get(guild.id) ?? API)) || API : API;
+const getTokenFromGuild = (guild: Discord.Guild) =>
+ DataBase.customclients
+  .findUnique({
+   where: { guildid: guild.id, token: { not: null } },
+   select: { token: true },
+  })
+  .then((c) => c?.token!);
+
+export const getAPI = async (guild: Discord.Guild | undefined | null) => {
+ if (!guild) return API;
+
+ const api = (((await getBotMemberFromGuild(guild)) && cache.apis.get(guild.id)) ?? null) || null;
+ if (api) return api;
+
+ const token = await getTokenFromGuild(guild);
+ if (!token) return API;
+
+ const newApi = await requestHandler(guild.id, token);
+ return newApi ? cache.apis.get(guild.id) || API : API;
+};
