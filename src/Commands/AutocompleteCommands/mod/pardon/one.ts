@@ -11,7 +11,9 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   | CT.PunishmentType.Mute
   | CT.PunishmentType.Kick
   | CT.PunishmentType.Ban
-  | CT.PunishmentType.Channelban;
+  | CT.PunishmentType.Channelban
+  | CT.PunishmentType.VCDeaf
+  | CT.PunishmentType.VCMute;
  if (!type) return [];
 
  const punishments = await cmd.guild.client.util.getPunishment(user, {

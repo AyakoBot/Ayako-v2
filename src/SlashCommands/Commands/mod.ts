@@ -223,6 +223,8 @@ export default new Discord.SlashCommandBuilder()
         { name: 'Kick', value: 'kick' },
         { name: 'Warn', value: 'warn' },
         { name: 'Channel-Ban', value: 'channelban' },
+        { name: 'VC-Mute', value: 'vcmute' },
+        { name: 'VC-Deaf', value: 'vcdeaf' },
        ),
      )
      .addStringOption(
