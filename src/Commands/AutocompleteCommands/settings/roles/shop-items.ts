@@ -1,6 +1,8 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
+
  const settings = (
   await cmd.guild.client.util.DataBase.shopitems.findMany({
    where: { guildid: cmd.guild.id },
@@ -19,7 +21,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  return settings?.map((s) => ({
   name: `${lan.fields.price.name}: ${
-   cmd.guild.client.util.splitByThousand(Number(s.price)) ?? language.t.None
+   cmd.guild!.client.util.splitByThousand(Number(s.price)) ?? language.t.None
   } - ${lan.fields.roles.name}: ${s?.roles.length ?? language.t.None}`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

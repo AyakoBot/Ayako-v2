@@ -2,6 +2,7 @@ import { findBestMatch } from 'string-similarity';
 import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  if (!('options' in cmd)) return [];
 
  const stickerName = cmd.options.getString('sticker', true);
@@ -13,7 +14,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   .ratings.sort((a, b) => b.rating - a.rating)
   .map((r) => ({
    name: r.target,
-   value: cmd.guild.stickers.cache.find((s) => s.name === r.target)?.id ?? stickerName,
+   value: cmd.guild!.stickers.cache.find((s) => s.name === r.target)?.id ?? stickerName,
   }))
   .splice(0, 25);
 };

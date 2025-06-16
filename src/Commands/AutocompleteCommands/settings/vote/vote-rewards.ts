@@ -1,6 +1,8 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
+
  const settings = (
   await cmd.guild.client.util.DataBase.voterewards.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
@@ -24,7 +26,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
    s.rewardroles.length
     ? `${lan.fields.rewardroles.name}: ${s.rewardroles
        .slice(0, 1)
-       .map((r) => cmd.guild.roles.cache.get(r)?.name ?? '-')}${
+       .map((r) => cmd.guild!.roles.cache.get(r)?.name ?? '-')}${
        s.rewardroles.length > 1 ? ` + ${s.rewardroles.length - 1}` : ''
       }`
     : null,

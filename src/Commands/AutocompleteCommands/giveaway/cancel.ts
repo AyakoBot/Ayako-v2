@@ -1,6 +1,7 @@
 import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  if (!('options' in cmd)) return [];
 
  if (cmd.inGuild() && !cmd.inCachedGuild()) return [];
@@ -8,7 +9,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  const entered = cmd.options.getString('message-id', true);
  const giveaways = await cmd.guild.client.util.DataBase.giveaways.findMany({
-  where: { guildid: cmd.guildId },
+  where: { guildid: cmd.guild.id },
  });
  if (!giveaways?.length) return [];
 

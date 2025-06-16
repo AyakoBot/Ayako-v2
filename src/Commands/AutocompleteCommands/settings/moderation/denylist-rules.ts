@@ -1,6 +1,7 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  const automodRules = cmd.guild?.autoModerationRules.cache
   .map((o) => o)
   ?.filter((r) => {

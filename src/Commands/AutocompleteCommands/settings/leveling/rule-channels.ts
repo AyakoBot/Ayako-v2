@@ -2,6 +2,7 @@ import ChannelRules from '../../../../BaseClient/Other/ChannelRules.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  const settings = (
   await cmd.guild.client.util.DataBase.levelingruleschannels.findMany({
    where: { guildid: cmd.guild.id },

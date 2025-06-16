@@ -6,23 +6,27 @@ import Manager from './Manager.js';
 
 scheduleJob(getPathFromError(new Error()), '0 */10 * * * *', async () => {
  const guildCount = await Manager.fetchClientValues('guilds?.cache.size');
+ const memberCount = await Manager.broadcastEval((cl) =>
+  cl.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0),
+ ).then((counts) => counts.reduce((acc, count) => acc + count, 0));
 
  Manager.broadcastEval(
-  async (cl: DjsDiscordClient, { guilds }: { guilds: number }) => {
+  async (cl: DjsDiscordClient, { guilds, members }: { guilds: number; members: number }) => {
    const app = await cl.util.request.applications
     .getCurrent(undefined)
     .then((r) => ('message' in r ? undefined : r));
 
    cl.util.request.applications.editCurrent(undefined, {
-    description: `Helping \`${cl.util.splitByThousand(guilds)} Servers\` / \`${cl.util.splitByThousand(app?.approximate_user_install_count ?? 0)} Users\` 
+    description: `**Your go-to, free-to-access, management, and automation Discord Bot!**
+Installed on \`${cl.util.splitByThousand(guilds)} Servers\` / \`${cl.util.splitByThousand(app?.approximate_user_install_count ?? 0)} Users\` 
+Managing \`${cl.util.splitByThousand(members)} Members\`
 Current Version: \`v${cl.util.files.importCache.package.file.version}\`
-**Your go-to, free-to-access, management, and automation Discord Bot!**
 
 https://ayakobot.com
 https://support.ayakobot.com`,
    });
   },
-  { context: { guilds: guildCount }, cluster: 0 },
+  { context: { guilds: guildCount, members: memberCount }, cluster: 0 },
  );
 });
 

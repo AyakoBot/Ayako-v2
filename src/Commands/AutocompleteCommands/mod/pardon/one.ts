@@ -1,6 +1,7 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  if (!('options' in cmd)) return [];
 
  const user = cmd.options.get('target', false)?.value as string;

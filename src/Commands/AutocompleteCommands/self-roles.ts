@@ -1,6 +1,7 @@
 import * as CT from '../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  const category = 'options' in cmd ? String(cmd.options.get('category', false)?.value) : undefined;
 
  const settings = await cmd.guild.client.util.DataBase.selfroles.findMany({

@@ -35,11 +35,11 @@ export const emoji = (cmd: Discord.AutocompleteInteraction) => {
   .splice(0, 25);
 };
 
-const stickerName = async (cmd: Discord.AutocompleteInteraction<'cached'>) => {
+const stickerName = async (cmd: Discord.AutocompleteInteraction) => {
  const messageLink = cmd.options.getString('link', true);
  if (!messageLink) return [];
 
- const message = await cmd.guild.client.util.getMessage(messageLink);
+ const message = await cmd.client.util.getMessage(messageLink);
  if (!message) return [];
 
  return message.stickers

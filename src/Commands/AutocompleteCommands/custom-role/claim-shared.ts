@@ -1,6 +1,7 @@
 import * as CT from '../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  if (!('user' in cmd)) return;
 
  const roleName = 'options' in cmd ? String(cmd.options.get('role', true)?.value) : undefined;
@@ -12,7 +13,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   .then((r) => r.filter((role) => role.shared.includes(cmd.user.id)));
 
  const typedRoles = roles.filter((r) =>
-  cmd.guild.roles.cache
+  cmd.guild!.roles.cache
    .get(r.roleid)
    ?.name.toLowerCase()
    .includes(roleName?.toLowerCase() || ''),
@@ -20,7 +21,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  return (typedRoles.length ? typedRoles : roles)
   .map((s) => ({
-   name: cmd.guild.roles.cache.get(s.roleid)?.name || '-',
+   name: cmd.guild!.roles.cache.get(s.roleid)?.name || '-',
    value: `${s.roleid}-${s.userid}`,
   }))
   .slice(0, 25);

@@ -1,6 +1,8 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
+
  const settings = (
   await cmd.guild.client.util.DataBase.linkedRolesDeco.findMany({
    where: { guildid: cmd.guild.id },
@@ -18,7 +20,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
 
  return settings?.map((s) => ({
   name: `${lan.fields.roleId.name}: ${
-   s.roleId ? cmd.guild.roles.cache.get(s.roleId)?.name : (s.roleId ?? language.t.None)
+   s.roleId ? cmd.guild!.roles.cache.get(s.roleId)?.name : (s.roleId ?? language.t.None)
   }`,
   value: Number(s.uniquetimestamp).toString(36),
  }));

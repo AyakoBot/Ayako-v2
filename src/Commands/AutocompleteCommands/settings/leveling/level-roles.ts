@@ -1,6 +1,7 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  const settings = (
   await cmd.guild.client.util.DataBase.levelingroles.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {

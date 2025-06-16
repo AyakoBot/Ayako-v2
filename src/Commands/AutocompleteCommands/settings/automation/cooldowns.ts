@@ -2,6 +2,7 @@ import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (!cmd.guild) return [];
  const settings = (
   await cmd.guild.client.util.DataBase.cooldowns.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {
@@ -23,7 +24,7 @@ const f: CT.AutoCompleteFile['default'] = async (cmd) => {
   return {
    name: `${lan.fields.command.name}: ${command ?? language.t.None} - ${
     lan.fields.cooldown.name
-   }: ${cmd.guild.client.util.settingsHelpers.embedParsers.time(
+   }: ${cmd.guild!.client.util.settingsHelpers.embedParsers.time(
     s.cooldown ? Number(s.cooldown) * 1000 : null,
     language,
    )}`,
