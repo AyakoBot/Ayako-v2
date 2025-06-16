@@ -8,7 +8,6 @@ const { log } = console;
 
 export default async (cmd: Discord.Interaction) => {
  if (!cmd.isAutocomplete()) return;
- if (!cmd.inCachedGuild()) return;
 
  const files = await glob(
   `${process.cwd()}${process.cwd().includes('dist') ? '' : '/dist'}/Commands/**/*`,

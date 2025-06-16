@@ -35,7 +35,7 @@ export type AcceptedMergingTypes = 'string' | 'boolean' | 'difference' | 'icon' 
 
 export interface AutoCompleteFile {
  default: (
-  cmd: Discord.AutocompleteInteraction<'cached'> | { guild: Discord.Guild },
+  cmd: Discord.AutocompleteInteraction | { guild: Discord.Guild },
  ) => Promise<{ name: string; value: string }[] | undefined>;
 }
 

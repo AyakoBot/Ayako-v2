@@ -1,4 +1,9 @@
-import * as Discord from 'discord.js';
+import {
+ ButtonStyle,
+ ComponentType,
+ type APIActionRowComponent,
+ type APIButtonComponent,
+} from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 
 import emotes from '../emotes.js';
@@ -28,13 +33,24 @@ export default async <T extends CT.ModTypes>(
   thumbnail: greenTypeActions.includes(type) ? undefined : { url: emotes.warning.link },
  };
 
- const appeal: Discord.APIActionRowComponent<Discord.APIButtonComponent>[] = [
+ if (!greenTypeActions.includes(type)) {
+  embed.fields.push({
+   name: language.t.Appeal,
+   value: language.events.appeal.desc(
+    await options.guild.client.util
+     .getCustomCommand(options.guild, 'appeal')
+     .then((r) => r?.id || '0'),
+   ),
+  });
+ }
+
+ const appeal: APIActionRowComponent<APIButtonComponent>[] = [
   {
-   type: Discord.ComponentType.ActionRow,
+   type: ComponentType.ActionRow,
    components: [
     {
-     type: Discord.ComponentType.Button,
-     style: Discord.ButtonStyle.Link,
+     type: ComponentType.Button,
+     style: ButtonStyle.Link,
      label: language.mod.appeal,
      url: `https://ayakobot.com/guilds/${options.guild.id}/appeals`,
     },
@@ -42,11 +58,7 @@ export default async <T extends CT.ModTypes>(
   },
  ];
 
- if (
-  !options.guild.rulesChannel ||
-  greenTypeActions.includes(type) ||
-  !options.guild.members.cache.has(options.target.id)
- ) {
+ if (!options.guild.rulesChannel || !options.guild.members.cache.has(options.target.id)) {
   send(options.target, {
    embeds: [embed],
    components: greenTypeActions.includes(type) ? [] : appeal,
@@ -57,5 +69,8 @@ export default async <T extends CT.ModTypes>(
  const member = options.guild.members.cache.get(options.target.id);
  if (!member) return;
 
- options.guild.client.util.notificationThread(member, { embeds: [embed], components: appeal });
+ options.guild.client.util.notificationThread(member, {
+  embeds: [embed],
+  components: greenTypeActions.includes(type) ? [] : appeal,
+ });
 };

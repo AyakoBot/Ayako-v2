@@ -25,9 +25,11 @@ import settings from './slashCommands/settings.js';
 import slowmode from './slashCommands/slowmode.js';
 import suggest from './slashCommands/suggest.js';
 import vc from './slashCommands/vc.js';
+import appeal from './slashCommands/appeal.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands,
+ appeal: appeal(t),
  vc: vc(t),
  setLevel: setLevel(t),
  resetLevels: resetLevels(t),

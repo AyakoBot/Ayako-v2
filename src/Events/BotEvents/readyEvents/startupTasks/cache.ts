@@ -1,6 +1,5 @@
 import Prisma, { StoredPunishmentTypes } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library.js';
-import { BaseMessage } from 'discord-hybrid-sharding';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
@@ -12,11 +11,11 @@ import {
  giveawayCollectTimeExpired,
 } from '../../../../Commands/SlashCommands/giveaway/end.js';
 import * as CT from '../../../../Typings/Typings.js';
-import appeal from '../../../ClusterEvents/appeal.js';
 import { end as endVote } from '../../../ClusterEvents/voteEvents/voteBotCreate.js';
 import { enableInvites } from '../../guildEvents/guildMemberAdd/antiraid.js';
 import { bumpReminder } from '../../messageEvents/messageCreate/disboard.js';
 import { del } from '../../voiceStateEvents/voiceStateDeletes/voiceHub.js';
+import { appeal } from '../../../../Commands/ButtonCommands/appeals/submit.js';
 
 export default () => {
  const gIds = client.guilds.cache.map((g) => g.id);
@@ -29,18 +28,7 @@ export const startupTasks = {
    where: { guildid: { in: gIds }, received: false },
   });
 
-  appeals.forEach((a) => {
-   appeal(
-    new BaseMessage({
-     type: CT.MessageType.Appeal,
-     appeal: {
-      userId: String(a.userid),
-      guildId: String(a.guildid),
-      punishmentId: String(a.punishmentid),
-     },
-    }) as CT.Message<CT.MessageType.Appeal>,
-   );
-  });
+  appeals.forEach((a) => appeal(client, Number(a.punishmentid)));
  },
  // eslint-disable-next-line @typescript-eslint/no-unused-vars
  reminder: async (_: string[]) => {

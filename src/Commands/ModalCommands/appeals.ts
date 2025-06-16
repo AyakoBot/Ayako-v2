@@ -1,9 +1,9 @@
 import { AppealStatus } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
-import { getPunishment } from '../../Events/ClusterEvents/appeal.js';
 import * as CT from '../../Typings/Typings.js';
 import { pardon } from '../SlashCommands/mod/pardon/one.js';
+import { getPunishment } from '../ButtonCommands/appeals/submit.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -18,7 +18,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const appeal = await cmd.client.util.DataBase.appeals.update({
   where: { punishmentid },
-  data: { status: accept ? AppealStatus.accepted : AppealStatus.rejected },
+  data: { status: accept ? AppealStatus.accepted : AppealStatus.rejected, reason },
  });
  if (!appeal) {
   cmd.client.util.errorCmd(cmd, lan.appealNotFound, language);
@@ -61,10 +61,10 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   ],
  });
 
- const punishment = await getPunishment({
-  guildId: appeal.guildid,
-  userId: appeal.userid,
-  punishmentId: String(appeal.punishmentid),
+ const punishment = await getPunishment(cmd.client, {
+  guildid: appeal.guildid,
+  userid: appeal.userid,
+  uniquetimestamp: String(appeal.punishmentid),
  });
  if (!punishment) return;
 

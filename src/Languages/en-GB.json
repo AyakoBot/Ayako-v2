@@ -833,7 +833,8 @@
     "punReason": "Appealed Punishment Reason",
     "rejReason": "Rejection Reason",
     "accReason": "Acception Reason"
-   }
+   },
+   "desc": "You can appeal this Punishment with </appeal:{{cmdId}}>` or on the Dashboard with the Button below.\n-# In case we don't share a Server, simply [install me on your Account or on any of your Servers by clicking this](https://discord.com/oauth2/authorize?client_id=650691698409734151)"
   },
   "interactionCreate": {
    "cooldown": "This Command is on Cooldown"
@@ -1189,7 +1190,12 @@
   "tempban": "Temp-Ban",
   "softban": "Soft-Ban",
   "ban": "Ban",
-  "strike": "Strike"
+  "strike": "Strike",
+  "vctempmute": "VC Temp-Mute",
+  "vctempdeaf": "VC Temp-Deaf",
+  "vcdeaf": "VC Deaf",
+  "vcmute": "VC Mute",
+  "mute": "Mute"
  },
  "shoptypes": {
   "command": "Shop-Command",
@@ -1474,6 +1480,28 @@
  },
  "slashCommands": {
   "useSlashCommands": "Unknown Command. Did you mean {{c}}",
+  "appeal": {
+   "punNotFound": "Punishment not found",
+   "punAlreadyAppealed": "You already appealed this Punishment. Therefore, you can only view your appeal.",
+   "appealsNotEnabled": "Appeals are not enabled on this Server",
+   "questionNotFound": "Question not found",
+   "number": "Insert Number",
+   "selectOne": "Select one",
+   "selectMultiple": "Select multiple",
+   "submit": "Submit Appeal",
+   "endInfo": "-# \\* = Required Field\nThe information you provide in this Form will be used to process your Appeal.\nNever submit sensitive Data in a punishment Appeal, as this information will be shared with a select few Members of the target Server",
+   "punInfo": "> Reason: {{reason}}\n> Type: {{type}} - Date: {{date}}\n> {{channel}}\n> Appeal Status: {{status}}\n> Decision Reason: {{decicionReason}}",
+   "intro": "# New Appeal\nFill out the below Questions to appeal your Punishment",
+   "missingRequired": "You need to fill out all required Questions",
+   "text": "Insert Text",
+   "fillOut": "Fill out the Form",
+   "appealStatus": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "unsent": "Not Appealed"
+   }
+  },
   "event": {
    "author": "Ayako Winter Event",
    "outOfAmmo": "You're out of ammunition!",
@@ -4277,6 +4305,9 @@
   }
  },
  "t": {
+  "Appeal": "Appeal Punishment",
+  "Question": "Question",
+  "Text": "Text",
   "Cancel": "Cancel",
   "JumpToMessage": "Jump to Message",
   "Website": "Website",

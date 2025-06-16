@@ -15,4 +15,5 @@ export default (t: CT.Language) => ({
   rejDesc: (id: string) => t.stp(t.JSON.events.appeal.notifications.rejDesc, { id }),
   accDesc: (id: string) => t.stp(t.JSON.events.appeal.notifications.accDesc, { id }),
  },
+ desc: (cmdId: string) => t.stp(t.JSON.events.appeal.desc, { cmdId }),
 });

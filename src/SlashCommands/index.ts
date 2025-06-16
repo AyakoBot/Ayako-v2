@@ -31,6 +31,7 @@ import actions from './Commands/actions.js';
 import viewRaw from './Commands/view-raw.js';
 import vc from './Commands/vc.js';
 import event from './Commands/event.js';
+import appeal from './Commands/appeal.js';
 
 export enum CommandCategories {
  Utility = 'utility',
@@ -83,6 +84,7 @@ export default {
   actions1: actions[1],
   actions2: actions[2],
   'View Raw': viewRaw,
+  appeal,
  },
  categories: {
   event_collect: [CommandCategories.Fun],
@@ -296,6 +298,7 @@ export default {
   stickers_delete: [CommandCategories.Utility],
   stickers_edit_name: [CommandCategories.Utility],
   vc: [CommandCategories.Utility, CommandCategories.Automation],
+  appeal: [CommandCategories.Moderation, CommandCategories.Automation, CommandCategories.Utility],
  },
  names: [
   'event',
@@ -348,5 +351,6 @@ export default {
   'vc-unmute',
   'vc-deafen',
   'vc-undeafen',
+  'appeal',
  ],
 } as const;
