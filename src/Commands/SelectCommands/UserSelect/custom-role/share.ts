@@ -45,7 +45,7 @@ export default async (cmd: UserSelectMenuInteraction) => {
  const membersRemoved = [
   ...roleMembers.filter((m) => !cmd.values.includes(m.id)).map((m) => m),
   cmd.guild.members.cache.get(cmd.user.id)!,
- ];
+ ].filter((m) => m.id !== cmd.user.id);
 
  membersRemoved.forEach((m) => {
   cmd.client.util.roleManager.remove(m, [role.roleid], language.autotypes.customroles);

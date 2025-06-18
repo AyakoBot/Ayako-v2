@@ -1491,7 +1491,7 @@
    "selectMultiple": "Select multiple",
    "submit": "Submit Appeal",
    "endInfo": "-# \\* = Required Field\nThe information you provide in this Form will be used to process your Appeal.\nNever submit sensitive Data in a punishment Appeal, as this information will be shared with a select few Members of the target Server",
-   "punInfo": "> Reason: {{reason}}\n> Type: {{type}} - Date: {{date}}\n> {{channel}}\n> Appeal Status: {{status}}\n> Decision Reason: {{decicionReason}}",
+   "punInfo": "> Reason: {{reason}}\n> Type: {{type}} - Date: {{date}}\n> {{channel}}\n> Appeal Status: {{status}}\n> Decision Reason: {{decisionReason}}",
    "intro": "# New Appeal\nFill out the below Questions to appeal your Punishment",
    "missingRequired": "You need to fill out all required Questions",
    "text": "Insert Text",

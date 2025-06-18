@@ -368,8 +368,6 @@ const maxShare = async (
  });
  if (!settings.length) return;
 
- console.log(settings);
-
  const tooLong = settings
   .filter((s) => s.shared.length > Number(newSetting.maxShare))
   .map((s) => {
