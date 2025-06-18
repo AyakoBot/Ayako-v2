@@ -9,7 +9,6 @@ export default {
   'https://cdn.discordapp.com/attachments/760152457799401532/825768456070103040/tenor_51.gif',
  ],
  bath: [
-  'https://c.tenor.com/zpqP_RbvWQEAAAAd/tenor.gif',
   'https://c.tenor.com/QGrKnjDkhjMAAAAC/tenor.gif',
   'https://c.tenor.com/bgPDDNuCXE8AAAAC/tenor.gif',
   'https://c.tenor.com/13C980rvvOAAAAAC/tenor.gif',
@@ -19,7 +18,6 @@ export default {
   'https://c.tenor.com/WKPCniX30KMAAAAd/tenor.gif',
  ],
  kidnap: [
-  'https://c.tenor.com/6oV95jWO_6gAAAAC/loli-steals-loli.gif',
   'https://c.tenor.com/0Wzg7M2v_bwAAAAC/closet-kidnapping.gif',
   'https://c.tenor.com/mabGQZaavQsAAAAC/cross-ange-kidnap.gif',
   'https://c.tenor.com/PtHyjUzSV4IAAAAC/shugo-chara-kidnap.gif',
@@ -66,7 +64,6 @@ export default {
   'https://c.tenor.com/G2YT33dvNjQAAAAC/tenor.gif',
   'https://c.tenor.com/Xyl5bNpBCVsAAAAd/tenor.gif',
   'https://c.tenor.com/E92g-rwBrvkAAAAC/tenor.gif',
-  'https://c.tenor.com/x91zb9XYaiQAAAAd/tenor.gif',
   'https://c.tenor.com/Vuu21qfS4wcAAAAC/tenor.gif',
   'https://c.tenor.com/mUIXigPWPuYAAAAd/tenor.gif',
   'https://c.tenor.com/MMA6_WvqS60AAAAC/tenor.gif',
