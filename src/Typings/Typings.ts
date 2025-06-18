@@ -126,6 +126,13 @@ export enum ModTypes {
  VcDeafenRemove = 'vcDeafenRemove',
 }
 
+export const DestructiveModTypes = [
+ ModTypes.BanAdd,
+ ModTypes.KickAdd,
+ ModTypes.SoftBanAdd,
+ ModTypes.TempBanAdd,
+];
+
 export const ModColors: Record<ModTypes, Colors> = {
  [ModTypes.RoleAdd]: Colors.Success,
  [ModTypes.RoleRemove]: Colors.Danger,
@@ -158,6 +165,7 @@ export type BaseOptions = {
  target: Discord.User;
  executor: Discord.User;
  skipChecks: boolean;
+ dm?: Discord.Message;
 };
 
 type Channel = {

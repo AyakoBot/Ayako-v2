@@ -224,7 +224,7 @@ const runBasics2 = async (
  cmd: CmdType,
 ) => {
  declareSuccess(cmd, message, language, options, type);
+ await notifyTarget(options, language, type);
  log(options.guild, type, options.target, options.executor, options as never);
  db(cmd, options, language, type).then();
- notifyTarget(options, language, type);
 };

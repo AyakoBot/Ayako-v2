@@ -28,7 +28,9 @@ export default async <T extends CT.ModTypes>(
 
  const embed: Discord.APIEmbed = {
   author: { name: lan.author },
-  description: lan.description(target, executor, options as never),
+  description: `${lan.description(target, executor, options as never)}\n${
+   !options.dm && CT.DestructiveModTypes.includes(type) ? language.mod.dmFail : ''
+  }`,
   color: CT.ModColors[type],
   timestamp: new Date().toISOString(),
   fields: [options.reason ? { name: language.t.Reason, value: options.reason } : undefined].filter(

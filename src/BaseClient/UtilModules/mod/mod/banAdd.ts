@@ -4,12 +4,14 @@ import getBotMemberFromGuild from '../../getBotMemberFromGuild.js';
 import type * as ModTypes from '../../mod.js';
 import { request } from '../../requestHandler.js';
 
+import type { Message } from 'discord.js';
+import { canBanMember } from '../../requestHandler/guilds/banMember.js';
+import { canBanUser } from '../../requestHandler/guilds/banUser.js';
 import actionAlreadyApplied from '../actionAlreadyApplied.js';
 import err from '../err.js';
 import getMembers from '../getMembers.js';
+import notifyTarget from '../notifyTarget.js';
 import permissionError from '../permissionError.js';
-import { canBanMember } from '../../requestHandler/guilds/banMember.js';
-import { canBanUser } from '../../requestHandler/guilds/banUser.js';
 import rmVotePunish from '../rmVotePunish.js';
 
 export default async (
@@ -40,6 +42,8 @@ export default async (
   return false;
  }
 
+ await notifyTarget(options, language, type);
+
  const res = await (memberRes
   ? request.guilds.banMember(
      memberRes.targetMember,
@@ -55,6 +59,9 @@ export default async (
 
  if (typeof res !== 'undefined' && 'message' in res) {
   err(cmd, res, language, message, options.guild);
+  if (!options.dm) return false;
+
+  me.client.util.request.channels.deleteMessage(options.dm as Message<false>, options.guild);
   return false;
  }
 

@@ -834,7 +834,7 @@
     "rejReason": "Rejection Reason",
     "accReason": "Acception Reason"
    },
-   "desc": "You can appeal this Punishment with </appeal:{{cmdId}}>` or on the Dashboard with the Button below.\n-# In case we don't share a Server, simply [install me on your Account or on any of your Servers by clicking this](https://discord.com/oauth2/authorize?client_id=650691698409734151)"
+   "desc": "You can appeal this Punishment with </appeal:{{cmdId}}> or on the Dashboard with the Button below.\n-# In case we don't share a Server, simply [install me on your Account or on any of your Servers by clicking this](https://discord.com/oauth2/authorize?client_id=650691698409734151)"
   },
   "interactionCreate": {
    "cooldown": "This Command is on Cooldown"
@@ -3976,6 +3976,7 @@
    "commandUnblockedDesc": "__If you are absolutely sure you want to execute this Command on this User, run the Command again.__"
   },
   "alreadyExecuting": "There currently is a Moderation-Command being executed on this User",
+  "dmFail": "Notification-DM failed to send. Target DMs are closed.",
   "logs": {
    "roleAdd": {
     "author": "Role given to Member",

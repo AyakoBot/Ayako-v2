@@ -3,6 +3,7 @@ import {
  ComponentType,
  type APIActionRowComponent,
  type APIButtonComponent,
+ type APIEmbedField,
 } from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 
@@ -24,6 +25,8 @@ export default async <T extends CT.ModTypes>(
  language: CT.Language,
  type: T,
 ) => {
+ if (options.dm) return;
+
  const { dm } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
  const embed = {
@@ -35,13 +38,14 @@ export default async <T extends CT.ModTypes>(
 
  if (!greenTypeActions.includes(type)) {
   embed.fields.push({
+   inline: false,
    name: language.t.Appeal,
    value: language.events.appeal.desc(
     await options.guild.client.util
      .getCustomCommand(options.guild, 'appeal')
      .then((r) => r?.id || '0'),
    ),
-  });
+  } as APIEmbedField);
  }
 
  const appeal: APIActionRowComponent<APIButtonComponent>[] = [
@@ -58,10 +62,17 @@ export default async <T extends CT.ModTypes>(
   },
  ];
 
- if (!options.guild.rulesChannel || !options.guild.members.cache.has(options.target.id)) {
-  send(options.target, {
+ if (
+  !options.guild.rulesChannel ||
+  !options.guild.members.cache.has(options.target.id) ||
+  CT.DestructiveModTypes.includes(type)
+ ) {
+  await send(options.target, {
    embeds: [embed],
    components: greenTypeActions.includes(type) ? [] : appeal,
+  }).then((r) => {
+   if (!r || 'message' in r) return;
+   options.dm = r;
   });
   return;
  }

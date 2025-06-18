@@ -11,6 +11,7 @@ import err from '../err.js';
 import permissionError from '../permissionError.js';
 import { canRemoveMember } from '../../requestHandler/guilds/removeMember.js';
 import rmVotePunish from '../rmVotePunish.js';
+import notifyTarget from '../notifyTarget.js';
 
 export default async (
  options: CT.ModOptions<CT.ModTypes.KickAdd>,
@@ -40,11 +41,16 @@ export default async (
   return false;
  }
 
+ await notifyTarget(options, language, type);
+
  const res = memberRes?.targetMember
   ? await request.guilds.removeMember(memberRes.targetMember, options.reason)
   : false;
  if (res && (res as Discord.DiscordAPIError).message) {
   err(cmd, res as Discord.DiscordAPIError, language, message, options.guild);
+  if (!options.dm) return false;
+
+  me.client.util.request.channels.deleteMessage(options.dm as Discord.Message<false>, options.guild);
   return false;
  }
 
