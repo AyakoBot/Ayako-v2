@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 
-export default async (cmd: Discord.CommandInteraction) => {
+export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const link = cmd.options.get('message-link', true).value as string;

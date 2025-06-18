@@ -22,7 +22,7 @@ type Message =
  */
 export default async <T extends Message>(
  msg: T,
- g: T extends Discord.Message<false> ? Discord.Guild : undefined,
+ g?: T extends Discord.Message<false> ? Discord.Guild : undefined,
 ) => {
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
  const guild = (g || msg.guild)!;

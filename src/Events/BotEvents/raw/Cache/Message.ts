@@ -54,7 +54,7 @@ export default {
 
   redis.reactions.set(
    {
-    burst_colors: data.burst_colors,
+    burst_colors: data.burst_colors || [],
     emoji: data.emoji,
     me: cache?.me || false,
     count_details: cache?.count_details

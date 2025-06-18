@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 
-export default async (cmd: Discord.CommandInteraction) => {
+export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guild?.id);
  const lan = language.slashCommands.stp;
  const string = cmd.options.get('string', true).value as string;
