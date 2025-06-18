@@ -291,6 +291,15 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
        ),
+      ]
+    : []),
+  ],
+ },
+ ...(settings?.customrole
+  ? [
+     {
+      type: Discord.ComponentType.ActionRow,
+      components: [
        buttonParsers.specific(
         language,
         settings?.positionrole,
@@ -298,22 +307,6 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
        ),
-      ]
-    : []),
-  ],
- },
- {
-  type: Discord.ComponentType.ActionRow,
-  components: [
-   buttonParsers.boolean(
-    language,
-    settings?.customrole,
-    'customrole',
-    name,
-    Number(settings?.uniquetimestamp),
-   ),
-   ...(settings?.customrole
-    ? [
        buttonParsers.specific(
         language,
         settings?.maxShare,
@@ -321,10 +314,10 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
        ),
-      ]
-    : []),
-  ],
- },
+      ],
+     } as Discord.APIActionRowComponent<Discord.APIButtonComponent>,
+    ]
+  : []),
  {
   type: Discord.ComponentType.ActionRow,
   components: [
