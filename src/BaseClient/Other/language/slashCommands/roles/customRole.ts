@@ -3,25 +3,35 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.roles.customRole,
- edit: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
+ alreadyExists: (cmdId: string) =>
+  t.stp(t.JSON.slashCommands.roles.customRole.alreadyExists, { cmdId }),
+ notExists: (cmdId: string) => t.stp(t.JSON.slashCommands.roles.customRole.notExists, { cmdId }),
+ edit: (role: Discord.Role) =>
   t.stp(t.JSON.slashCommands.roles.customRole.edit, {
    role: t.languageFunction.getRole(role),
-   icon: t.util.constants.standard.getEmote(
-    limit.icon ? t.util.emotes.enabled : t.util.emotes.disabled,
-   ),
-   color: t.util.constants.standard.getEmote(
-    limit.color ? t.util.emotes.enabled : t.util.emotes.disabled,
-   ),
   }),
- create: (role: Discord.Role, limit: { icon: boolean; color: boolean }) =>
+ create: (role: Discord.Role) =>
   t.stp(t.JSON.slashCommands.roles.customRole.create, {
    role: t.languageFunction.getRole(role),
+  }),
+ limits: (
+  limit: { icon: boolean; color: boolean; holo: boolean; gradient: boolean },
+  cmdId: string,
+ ) =>
+  t.stp(t.JSON.slashCommands.roles.customRole.limits, {
    icon: t.util.constants.standard.getEmote(
     limit.icon ? t.util.emotes.enabled : t.util.emotes.disabled,
    ),
    color: t.util.constants.standard.getEmote(
     limit.color ? t.util.emotes.enabled : t.util.emotes.disabled,
    ),
+   gradient: t.util.constants.standard.getEmote(
+    limit.gradient ? t.util.emotes.enabled : t.util.emotes.disabled,
+   ),
+   holo: t.util.constants.standard.getEmote(
+    limit.holo ? t.util.emotes.enabled : t.util.emotes.disabled,
+   ),
+   cmdId,
   }),
  share: {
   ...t.JSON.slashCommands.roles.customRole.share,

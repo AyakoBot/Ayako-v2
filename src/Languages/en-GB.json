@@ -1345,7 +1345,8 @@
   "cantCreateInvite": "I can't create an Invite in this Channel",
   "cantCreateInviteYou": "You can't create an Invite in this Channel",
   "commandNotFound": "Command not found",
-  "timeInPast": "Time is in the Past"
+  "timeInPast": "Time is in the Past",
+  "noArguments": "No or not enough Command Arguments provided"
  },
  "channelRules": {
   "HasLeastAttachments": "Has at least {{val}} Attachments",
@@ -2186,8 +2187,17 @@
    "customRole": {
     "notEnabled": "Setting Custom-Roles is not enabled",
     "cantSet": "You don't qualify to set a Custom-Role",
-    "edit": "> {{role}}> was edited\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
-    "create": "> {{role}}> was created\n\n__Applying limits:__\nCan set Role-Icon {{icon}}\nCan set Role-Color {{color}}",
+    "edit": "> {{role}}> was edited",
+    "create": "> {{role}}> was created",
+    "limits": "__Applying limits:__\n-# Can set Role-Icon {{icon}} at </custom-role edit-icon:{{cmdId}}>\n-# Can set Role-Color {{color}} at </custom-role edit-color solid:{{cmdId}}>\n-# Can set Role-Gradient: {{gradient}} at </custom-role edit-color gradient:{{cmdId}}>\n-# Can set Role-Holographic: {{holo}} at </custom-role edit-color holographic:{{cmdId}}>",
+    "alreadyExists": "You already have a Custom-Role. You can edit its name at </custom-role edit-name:{{cmdId}}>",
+    "notExists": "You don't have a Custom-Role, create one with </custom-role create:{{cmdId}}>",
+    "cantSetHolo": "You don't qualify to set a Holographic Custom-Role",
+    "cantSetGradient": "You don't qualify to set a Gradient Custom-Role",
+    "cantSetColor": "You don't qualify to set a Solid Color Custom-Role",
+    "cantSetIcon": "You don't qualify to set a Custom-Role Icon",
+    "iconsNotAvailable": "This Server doesn't have Role-Icons enabled",
+    "gradientsNotAvailable": "This Server doesn't have Gradient and Holographic Roles enabled",
     "share": {
      "title": "Custom-Role Sharing",
      "cantShare": "You don't qualify to share a Custom-Role",
@@ -3101,6 +3111,14 @@
       "maxShare": {
        "name": "Max. Share",
        "desc": "The maximum Amount of Members a User can share their Custom-Role with\nReducing the Amount of Members will automatically remove the Custom-Role from the Members last added"
+      },
+      "cansetgradient": {
+       "name": "Can set Gradient",
+       "desc": "Whether Users can set a Gradient Color for their Custom-Roles"
+      },
+      "cansetholo": {
+       "name": "Can set Holographic",
+       "desc": "Whether Users can set a Holographic Color for their Custom-Roles"
       }
      }
     },

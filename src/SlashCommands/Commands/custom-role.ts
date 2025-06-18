@@ -12,9 +12,20 @@ const color = new Discord.SlashCommandStringOption()
  .setMaxLength(6)
  .setRequired(false);
 
-const role = new Discord.SlashCommandRoleOption()
+const color2 = new Discord.SlashCommandStringOption()
+ .setName('color-2')
+ .setDescription('The second Color of the Role (Hex Code)')
+ .setMaxLength(6)
+ .setRequired(false);
+
+const colorRole = new Discord.SlashCommandRoleOption()
  .setName('color-role')
  .setDescription('The Role to copy the Color from')
+ .setRequired(false);
+
+const colorRole2 = new Discord.SlashCommandRoleOption()
+ .setName('color-role-2')
+ .setDescription('The Role to copy the second Color from')
  .setRequired(false);
 
 const icon = new Discord.SlashCommandAttachmentOption()
@@ -40,25 +51,48 @@ export default new Discord.SlashCommandBuilder()
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
    .setName('create')
-   .setDescription('Create a custom role')
-   .setDescription('Edit a custom role')
-   .addStringOption(name)
-   .addStringOption(color)
-   .addRoleOption(role)
+   .setDescription('Create your custom role')
+   .addStringOption(name),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit-name')
+   .setDescription('Edit the name of your custom role')
+   .addStringOption(name),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit-icon')
+   .setDescription('Edit the icon of your custom role')
    .addAttachmentOption(icon)
    .addStringOption(iconEmoji)
    .addStringOption(iconURL),
  )
- .addSubcommand(
-  new Discord.SlashCommandSubcommandBuilder()
-   .setName('edit')
-   .setDescription('Edit a custom role')
-   .addStringOption(name)
-   .addStringOption(color)
-   .addRoleOption(role)
-   .addAttachmentOption(icon)
-   .addStringOption(iconEmoji)
-   .addStringOption(iconURL),
+ .addSubcommandGroup(
+  new Discord.SlashCommandSubcommandGroupBuilder()
+   .setName('edit-color')
+   .setDescription('Edit the color of your custom role')
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('solid')
+     .setDescription('Set a solid color for your custom role')
+     .addStringOption(color)
+     .addRoleOption(colorRole),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('gradient')
+     .setDescription('Set a gradient color for your custom role')
+     .addStringOption(color)
+     .addStringOption(color2)
+     .addRoleOption(colorRole)
+     .addRoleOption(colorRole2),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
+     .setName('holographic')
+     .setDescription('Set a your custom role to holographic'),
+   ),
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()

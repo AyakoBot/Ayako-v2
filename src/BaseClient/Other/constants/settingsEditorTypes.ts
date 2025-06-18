@@ -13,6 +13,8 @@ export default {
   bluserid: CT.EditorTypes.Users,
   cansetcolor: CT.EditorTypes.Boolean,
   canseticon: CT.EditorTypes.Boolean,
+  cansetgradient: CT.EditorTypes.Boolean,
+  cansetholo: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.AntiSpam]: {
   wlchannelid: CT.EditorTypes.Channels,

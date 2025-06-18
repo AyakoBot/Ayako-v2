@@ -146,10 +146,24 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
         inline: true,
        },
        {
+        name: lan.fields.cansetgradient.name,
+        value: embedParsers.boolean(settings?.canseticon, language),
+        inline: true,
+       },
+       {
+        name: lan.fields.cansetholo.name,
+        value: embedParsers.boolean(settings?.canseticon, language),
+        inline: true,
+       },
+       {
         name: lan.fields.positionrole.name,
         value: embedParsers.role(settings?.positionrole, language),
         inline: true,
        },
+      ]
+    : []),
+   ...(settings?.customrole
+    ? [
        {
         name: lan.fields.maxShare.name,
         value: embedParsers.number(settings?.maxShare, language),
@@ -258,6 +272,20 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
        ),
        buttonParsers.boolean(
         language,
+        settings?.cansetgradient,
+        'cansetgradient',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+       buttonParsers.boolean(
+        language,
+        settings?.cansetholo,
+        'cansetholo',
+        name,
+        Number(settings?.uniquetimestamp),
+       ),
+       buttonParsers.boolean(
+        language,
         settings?.canseticon,
         'canseticon',
         name,
@@ -270,6 +298,22 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
         name,
         Number(settings?.uniquetimestamp),
        ),
+      ]
+    : []),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   buttonParsers.boolean(
+    language,
+    settings?.customrole,
+    'customrole',
+    name,
+    Number(settings?.uniquetimestamp),
+   ),
+   ...(settings?.customrole
+    ? [
        buttonParsers.specific(
         language,
         settings?.maxShare,

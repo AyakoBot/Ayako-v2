@@ -4,6 +4,88 @@ import { getContent } from '../../../Events/BotEvents/autoModerationActionEvents
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
+ const settings = await getSettings(cmd);
+ if (!settings) return;
+ const { language, lan } = settings;
+
+ const customRole = await getCustomRole(cmd, settings, false);
+
+ if (customRole) {
+  cmd.client.util.errorCmd(
+   cmd,
+   `${lan.alreadyExists}\n\n${lan.limits(
+    {
+     icon: settings.canseticon,
+     color: settings.cansetcolor,
+     holo: settings.cansetholo,
+     gradient: settings.cansetgradient,
+    },
+    await cmd.client.util.getCustomCommand(cmd.guild, 'custom-role').then((r) => r?.id || '0'),
+   )}`,
+   language,
+  );
+  return;
+ }
+
+ const name = cmd.options.getString('name', false);
+
+ const role = await cmd.client.util.request.guilds.createRole(
+  cmd.guild,
+  {
+   name: name
+    ? await getContent(
+       cmd.guild,
+       name,
+       undefined,
+       undefined,
+       undefined,
+       cmd.member.roles.cache.map((r) => r),
+      )
+    : cmd.member.displayName,
+   permissions: '0',
+  },
+  cmd.user.username,
+ );
+
+ if (!role || 'message' in role) {
+  cmd.client.util.errorCmd(cmd, role.message, language);
+  return;
+ }
+
+ cmd.client.util.roleManager.add(
+  cmd.member,
+  [role.id],
+  language.events.guildMemberUpdate.rewards.customRoleName,
+ );
+ cmd.client.util.replyCmd(cmd, {
+  content: `${lan.create(role)}\n\n${lan.limits(
+   {
+    icon: settings.canseticon,
+    color: settings.cansetcolor,
+    holo: settings.cansetholo,
+    gradient: settings.cansetgradient,
+   },
+   await cmd.client.util.getCustomCommand(cmd.guild, 'custom-role').then((r) => r?.id || '0'),
+  )}`,
+ });
+
+ cmd.client.util.DataBase.customroles
+  .create({ data: { userid: cmd.user.id, roleid: role.id, guildid: cmd.guildId } })
+  .then();
+
+ await cmd.client.util.sleep(1000);
+
+ const positionRole = settings.positionRoleId
+  ? cmd.guild.roles.cache.get(settings.positionRoleId)
+  : undefined;
+ if (!positionRole) return;
+
+ await cmd.client.util.request.guilds
+  .setRolePositions(cmd.guild, [{ position: positionRole.rawPosition, id: role.id }])
+  .catch((e) => console.log(e));
+};
+
+export const getSettings = async (cmd: Discord.ChatInputCommandInteraction<'cached'>) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.customRole;
 
@@ -11,8 +93,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   where: { guildid: cmd.guildId, active: true, customrole: true },
  });
  if (!settings.length) {
-  cmd.client.util.errorCmd(cmd, language.slashCommands.roles.customRole.notEnabled, language);
-  return;
+  cmd.client.util.errorCmd(cmd, lan.notEnabled, language);
+  return false;
  }
 
  const applyingSettings = settings.filter(
@@ -23,143 +105,51 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  );
 
  if (!applyingSettings.length) {
-  cmd.client.util.errorCmd(cmd, language.slashCommands.roles.customRole.cantSet, language);
-  return;
+  cmd.client.util.errorCmd(cmd, lan.cantSet, language);
+  return false;
  }
 
- const cansetcolor = applyingSettings.some((s) => s.cansetcolor);
- const canseticon = applyingSettings.some((s) => s.canseticon);
- const positionRoleId = applyingSettings.find((s) => s.positionrole)?.positionrole;
+ return {
+  cansetcolor: applyingSettings.some((s) => s.cansetcolor),
+  canseticon: applyingSettings.some((s) => s.canseticon),
+  cansetholo: applyingSettings.some((s) => s.cansetholo),
+  cansetgradient: applyingSettings.some((s) => s.cansetgradient),
+  positionRoleId: applyingSettings.find((s) => s.positionrole)?.positionrole,
+  language,
+  lan,
+ };
+};
 
- const name = cmd.options.getString('name', false);
- const color = cansetcolor ? cmd.options.getString('color', false) : undefined;
- const colorRole = cansetcolor ? cmd.options.getRole('color-role', false) : undefined;
- const icon = canseticon ? cmd.options.getAttachment('icon', false) : undefined;
- const iconEmoji = canseticon ? cmd.options.getString('icon-emoji', false) : undefined;
- const iconUrl = canseticon ? cmd.options.getString('icon-url', false) : undefined;
-
- if (color && !color.match(/[0-9a-f]+/i)?.length) {
-  cmd.client.util.errorCmd(cmd, language.errors.invalidColor, language);
-  return;
- }
-
- const parsedIcon =
-  iconUrl ??
-  icon?.url ??
-  (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
-   ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
-   : undefined);
-
- const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
- const parsedColor =
-  colorRole?.color ||
-  (color ? cmd.client.util.getColor(color.startsWith('#') ? color : `#${color}`) : undefined);
-
- if (iconUrl) {
-  try {
-   new URL(iconUrl);
-  } catch (e) {
-   cmd.client.util.errorCmd(cmd, e as Error, await cmd.client.util.getLanguage(cmd.guildId));
-   return;
-  }
- }
-
+export const getCustomRole = async (
+ cmd: Discord.ChatInputCommandInteraction<'cached'>,
+ settings: Exclude<Awaited<ReturnType<typeof getSettings>>, false>,
+ errorIfNotExists: boolean = true,
+) => {
  const customroleSetting = await cmd.client.util.DataBase.customroles.findUnique({
   where: { guildid_userid: { guildid: cmd.guildId, userid: cmd.user.id } },
  });
  const customRole = customroleSetting ? cmd.guild.roles.cache.get(customroleSetting.roleid) : false;
 
- if (customRole) {
-  const role = await cmd.client.util.request.guilds.editRole(cmd.guild, customRole.id, {
-   name: name
-    ? await getContent(
-       cmd.guild,
-       name,
-       undefined,
-       undefined,
-       undefined,
-       cmd.member.roles.cache.map((r) => r),
-      )
-    : undefined,
-   unicode_emoji: !emoji || emoji.id ? undefined : emoji.name,
-   color: parsedColor ?? undefined,
-   icon:
-    parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
-     ? parsedIcon
-     : undefined,
-  });
+ if (!customRole && errorIfNotExists) {
+  const cmdId = await cmd.client.util
+   .getCustomCommand(cmd.guild, 'custom-role')
+   .then((r) => r?.id || '0');
 
-  if ('message' in role) {
-   cmd.client.util.errorCmd(
-    cmd,
-    role.message.includes('ENOENT') ? language.errors.emoteNotFound : role.message,
-    language,
-   );
-   return;
-  }
-
-  cmd.client.util.replyCmd(cmd, {
-   content: lan.edit(role, { icon: canseticon, color: cansetcolor }),
-  });
-
-  cmd.client.util.roleManager.add(
-   cmd.member,
-   [role.id],
-   language.events.guildMemberUpdate.rewards.customRoleName,
-  );
-  return;
- }
-
- const getUnicodeEmoji = () => (!emoji || emoji.id ? undefined : emoji.name);
- const getIconEmoji = () =>
-  parsedIcon && cmd.guild.features.includes(Discord.GuildFeature.RoleIcons)
-   ? parsedIcon
-   : undefined;
-
- const role = await cmd.client.util.request.guilds.createRole(
-  cmd.guild,
-  {
-   name: name ?? cmd.member.displayName,
-   unicode_emoji: !getUnicodeEmoji() && getIconEmoji() ? null : undefined,
-   color: parsedColor,
-   icon: getUnicodeEmoji() && !getIconEmoji() ? null : undefined,
-   permissions: '0',
-  },
-  cmd.user.username,
- );
-
- if ('message' in role) {
   cmd.client.util.errorCmd(
    cmd,
-   role.message.includes('ENOENT') ? language.errors.emoteNotFound : role,
-   language,
+   `${settings.lan.notExists(cmdId)}\n\n${settings.lan.limits(
+    {
+     icon: settings.canseticon,
+     color: settings.cansetcolor,
+     holo: settings.cansetholo,
+     gradient: settings.cansetgradient,
+    },
+    cmdId,
+   )}`,
+   settings.language,
   );
   return;
  }
 
- cmd.client.util.roleManager.add(
-  cmd.member,
-  [role.id],
-  language.events.guildMemberUpdate.rewards.customRoleName,
- );
- cmd.client.util.replyCmd(cmd, {
-  content: lan.create(role, { icon: canseticon, color: cansetcolor }),
- });
-
- cmd.client.util.DataBase.customroles
-  .create({ data: { userid: cmd.user.id, roleid: role.id, guildid: cmd.guildId } })
-  .then();
-
- await cmd.client.util.sleep(1000);
-
- const positionRole = positionRoleId ? cmd.guild.roles.cache.get(positionRoleId) : undefined;
- if (positionRole) {
-  if (cmd.guild.id === '672546390915940405') {
-   console.log({ position: positionRole.rawPosition, id: role.id });
-  }
-
-  await cmd.client.util.request.guilds
-   .setRolePositions(cmd.guild, [{ position: positionRole.rawPosition, id: role.id }])
-   .catch((e) => console.log(e));
- }
+ return customRole;
 };
