@@ -829,7 +829,7 @@
     "accTitle": "Appeal Accepted",
     "rejTitle": "Appeal Rejected",
     "rejDesc": "Your Appeal for the Punishment `{{id}}` has been rejected\nYou will not be able to submit an appeal again.",
-    "accDesc": "Your Appeal for the Punishment `{{id}}` has been accepted\nThe Punishment has been revoked but you still need to be manually unbanned/unmuted/unchannelbanned etc.",
+    "accDesc": "Your Appeal for the Punishment `{{id}}` has been accepted\nThe Punishment has been revoked but you still need to be manually un-banned/un-muted/un-channel-banned etc.",
     "punReason": "Appealed Punishment Reason",
     "rejReason": "Rejection Reason",
     "accReason": "Acception Reason"
