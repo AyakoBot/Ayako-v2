@@ -39,7 +39,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const color2 = cmd.options.getString('color-2', false);
  const colorRole2 = cmd.options.getRole('color-role-2', false);
 
- if ((!color && !colorRole) || (!color2 && !colorRole2)) {
+ if (!color && !colorRole) {
   cmd.client.util.errorCmd(cmd, language.errors.noArguments, language);
   return;
  }

@@ -8,11 +8,8 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const name = cmd.options.getString('name', false) ?? undefined;
  let color = cmd.options.getString('color', false) ?? undefined;
  const hoist = cmd.options.getBoolean('hoist', false) ?? undefined;
- const icon = cmd.options.getAttachment('icon', false) ?? undefined;
- const iconEmoji = cmd.options.getString('icon-emoji', false) ?? undefined;
  const mentionable = cmd.options.getBoolean('mentionable', false) ?? undefined;
  const positionRole = cmd.options.getRole('position-role', false) ?? undefined;
- const iconUrl = cmd.options.getString('icon-url', false);
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles;
@@ -37,8 +34,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
 
  if (Number.isNaN(parseInt(color as string, 16))) color = undefined;
 
- const emoji = iconEmoji ? Discord.parseEmoji(iconEmoji) : undefined;
-
  const editPositionRes = positionRole
   ? await cmd.client.util.request.guilds.setRolePositions(cmd.guild, [
      {
@@ -57,21 +52,11 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   return;
  }
 
- const getUnicodeEmoji = () => (!emoji || emoji.id ? undefined : emoji.name);
- const getIconEmoji = () =>
-  iconUrl ??
-  icon?.url ??
-  (iconEmoji && Discord.parseEmoji(iconEmoji)?.id
-   ? `https://cdn.discordapp.com/emojis/${Discord.parseEmoji(iconEmoji)?.id}.png`
-   : undefined);
-
  const editedRole = await cmd.client.util.request.guilds.editRole(cmd.guild, role.id, {
   name,
   hoist,
   mentionable,
   color: color ? parseInt(color, 16) : undefined,
-  icon: getUnicodeEmoji() && !getIconEmoji() ? null : undefined,
-  unicode_emoji: !getUnicodeEmoji() && getIconEmoji() ? null : undefined,
  });
 
  if ('message' in editedRole) {

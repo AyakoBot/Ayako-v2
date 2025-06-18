@@ -35,6 +35,71 @@ export default new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit-gradient')
+   .setDescription('Edit the Gradient of a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role you want to edit')
+     .setRequired(true),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('color')
+     .setDescription('The new Color of the Role (Hex Code)')
+     .setMaxLength(6)
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('color-2')
+     .setDescription('The new Color of the Role (Hex Code)')
+     .setMaxLength(6)
+     .setRequired(false),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit-holographic')
+   .setDescription('Edit the Gradient of a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role you want to edit')
+     .setRequired(true),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
+   .setName('edit-icon')
+   .setDescription('Edit the Gradient of a Role')
+   .addRoleOption(
+    new Discord.SlashCommandRoleOption()
+     .setName('role')
+     .setDescription('The Role you want to edit')
+     .setRequired(true),
+   )
+   .addAttachmentOption(
+    new Discord.SlashCommandAttachmentOption()
+     .setName('icon')
+     .setDescription('The new Icon of the Role')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-emoji')
+     .setDescription('The new Icon of the Role derived from an Emoji')
+     .setRequired(false),
+   )
+   .addStringOption(
+    new Discord.SlashCommandStringOption()
+     .setName('icon-url')
+     .setDescription('The new Icon of the Role derived from a URL')
+     .setRequired(false),
+   ),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('edit')
    .setDescription('Edit an existing Role')
    .addRoleOption(
@@ -61,24 +126,6 @@ export default new Discord.SlashCommandBuilder()
     new Discord.SlashCommandBooleanOption()
      .setName('hoist')
      .setDescription('Whether the Role should be displayed separately')
-     .setRequired(false),
-   )
-   .addAttachmentOption(
-    new Discord.SlashCommandAttachmentOption()
-     .setName('icon')
-     .setDescription('The new Icon of the Role')
-     .setRequired(false),
-   )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('icon-emoji')
-     .setDescription('The new Icon of the Role derived from an Emoji')
-     .setRequired(false),
-   )
-   .addStringOption(
-    new Discord.SlashCommandStringOption()
-     .setName('icon-url')
-     .setDescription('The new Icon of the Role derived from a URL')
      .setRequired(false),
    )
    .addBooleanOption(
