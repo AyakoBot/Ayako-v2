@@ -1,11 +1,11 @@
 {
   "name": "@ayako/bot",
-  "version": "2.10.0",
+  "version": "2.10.1",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "swc src -d dist --strip-leading-paths --copy-files",
-    "dev": "pnpx prisma db push && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev",
+    "dev": "pnpx prisma db push && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev --debug-db",
     "postinstall": "mkdir -p ./logs",
     "lint": "npx eslint 'src/**/*.ts' --fix",
     "register": "node ./dist/register-commands.js",
