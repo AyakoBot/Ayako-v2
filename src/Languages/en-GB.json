@@ -4328,6 +4328,7 @@
   }
  },
  "t": {
+  "typeToSearch": "Type to search",
   "Appeal": "Appeal Punishment",
   "Question": "Question",
   "Text": "Text",
