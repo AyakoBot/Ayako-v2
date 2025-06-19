@@ -45,11 +45,11 @@ export default (t: CT.Language) => ({
   `**${t.JSON.t.AutoModRule} ${t.util.util.makeInlineCode(rule.name)} / ${t.util.util.makeInlineCode(
    rule.id,
   )}**\n`,
- getMessage: (msg: Discord.Message | Discord.MessageReference) =>
+ getMessage: (msg: Discord.Message | Discord.MessageReference | Discord.MessageSnapshot) =>
   `**[${t.JSON.t.thisMessage}](${t.util.constants.standard.msgurl(
    msg.guildId,
-   msg.channelId,
-   'id' in msg ? msg.id : (msg.messageId ?? ''),
+   msg.channelId || '@me',
+   ('id' in msg ? msg.id : (msg.messageId ?? '')) || '',
   )})**\n`,
  getEmote: (emoji: Discord.Emoji) =>
   `**${t.JSON.t.Emoji} ${t.util.constants.standard.getEmote(emoji)} / \`${

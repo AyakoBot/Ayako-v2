@@ -3,6 +3,25 @@ import * as CT from '../../../../../Typings/Typings.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.events.logs.message,
+ descDeleteForward: (msg: Discord.MessageSnapshot, originalMsg: Discord.Message) =>
+  t.stp(t.JSON.events.logs.message.descDeleteForward, {
+   originalMsgAuthor: t.languageFunction.getUser(originalMsg.author),
+   originalMsg: t.languageFunction.getMessage(originalMsg),
+   forwardedMsg: t.languageFunction.getMessage(msg),
+   forwardMsgAuthor: msg.author ? t.languageFunction.getUser(msg.author) : t.JSON.t.Unknown,
+  }),
+ descDeleteForwardAudit: (
+  user: Discord.User | Discord.PartialUser,
+  msg: Discord.MessageSnapshot,
+  originalMsg: Discord.Message,
+ ) =>
+  t.stp(t.JSON.events.logs.message.descDeleteForwardAudit, {
+   originalMsgAuthor: t.languageFunction.getUser(originalMsg.author),
+   originalMsg: t.languageFunction.getMessage(originalMsg),
+   forwardedMsg: t.languageFunction.getMessage(msg),
+   forwardMsgAuthor: msg.author ? t.languageFunction.getUser(msg.author) : t.JSON.t.Unknown,
+   auditUser: t.languageFunction.getUser(user),
+  }),
  descDeleteAudit: (user: Discord.User | Discord.PartialUser, msg: Discord.Message) =>
   t.stp(t.JSON.events.logs.message.descDeleteAudit, {
    user: t.languageFunction.getUser(user),
@@ -14,7 +33,11 @@ export default (t: CT.Language) => ({
    msg: t.languageFunction.getMessage(msg),
    author: t.languageFunction.getUser(msg.author),
   }),
- descDeleteBulkAudit: (user: Discord.User | Discord.PartialUser, size: number, channel: Discord.GuildTextBasedChannel) =>
+ descDeleteBulkAudit: (
+  user: Discord.User | Discord.PartialUser,
+  size: number,
+  channel: Discord.GuildTextBasedChannel,
+ ) =>
   t.stp(t.JSON.events.logs.message.descDeleteBulkAudit, {
    user: t.languageFunction.getUser(user),
    size,

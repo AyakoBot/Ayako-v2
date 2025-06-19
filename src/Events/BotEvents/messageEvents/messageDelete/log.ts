@@ -1,8 +1,15 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
+import log from './log.js';
 
-export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | boolean = false) => {
+export default async (
+ msgToLog: Discord.Message | Discord.MessageSnapshot,
+ isBulk: Discord.Message<true>[] | boolean = false,
+ originalMsg: false | Discord.Message = false,
+) => {
+ const msg = (originalMsg || msgToLog) as Discord.Message;
  if (!msg.inGuild()) return;
+
  if (msg.author?.id === (await msg.client.util.getBotIdFromGuild(msg.guild))) return;
  if (!msg.author) return;
 
@@ -17,12 +24,23 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
  const files: Discord.AttachmentPayload[] = [];
  const embeds: Discord.APIEmbed[] = [];
 
+ const getDesc = () => {
+  if (originalMsg && auditUser) {
+   return lan.descDeleteForwardAudit(auditUser, msgToLog as Discord.MessageSnapshot, originalMsg);
+  }
+  if (originalMsg) {
+   return lan.descDeleteForward(
+    msgToLog as Discord.MessageSnapshot,
+    originalMsg as Discord.Message,
+   );
+  }
+  if (auditUser) return lan.descDeleteAudit(auditUser, msg);
+  return lan.descDelete(msg);
+ };
+
  const embed: Discord.APIEmbed = {
-  author: {
-   icon_url: con.delete,
-   name: lan.nameDelete,
-  },
-  description: auditUser ? lan.descDeleteAudit(auditUser, msg) : lan.descDelete(msg),
+  author: { icon_url: con.delete, name: originalMsg ? lan.nameForwardDelete : lan.nameDelete },
+  description: getDesc(),
   fields: [],
   color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
@@ -31,17 +49,17 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
  embeds.push(embed);
 
  const flagsText = [
-  ...msg.flags.toArray().map((f) => lan.flags[f]),
-  msg.tts ? lan.tts : null,
-  msg.mentions.everyone ? lan.mentionEveryone : null,
-  msg.pinned ? lan.pinned : null,
-  msg.editedTimestamp ? lan.edited : null,
-  msg.activity ? `${lan.activityName} ${lan.activity[msg.activity.type]}` : null,
-  msg.interactionMetadata
-   ? `${lan.interactionName} ${lan.interaction[msg.interactionMetadata.type]}`
+  ...msgToLog.flags.toArray().map((f) => lan.flags[f]),
+  msgToLog.tts ? lan.tts : null,
+  msgToLog.mentions.everyone ? lan.mentionEveryone : null,
+  msgToLog.pinned ? lan.pinned : null,
+  msgToLog.editedTimestamp ? lan.edited : null,
+  msgToLog.activity ? `${lan.activityName} ${lan.activity[msgToLog.activity.type]}` : null,
+  msgToLog.interactionMetadata
+   ? `${lan.interactionName} ${lan.interaction[msgToLog.interactionMetadata.type]}`
    : null,
-  msg.type ? lan.type[msg.type] : null,
-  msg.author.bot ? lan.isFromBot : null,
+  msgToLog.type ? lan.type[msg.type] : null,
+  msgToLog.author?.bot ? lan.isFromBot : null,
  ]
   .filter((f): f is string => !!f)
   .map((f) => `\`${f}\``)
@@ -55,9 +73,9 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   });
  }
 
- if (msg.components?.length) {
+ if (msgToLog.components?.length) {
   const components = msg.client.util.txtFileWriter(
-   msg.components.map((c) => JSON.stringify(c, null, 2)),
+   msgToLog.components.map((c) => JSON.stringify(c, null, 2)),
    undefined,
    lan.components,
   );
@@ -65,10 +83,10 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   if (components) files.push(components);
  }
 
- if (msg.reactions.cache?.size) {
+ if (msgToLog.reactions?.cache?.size) {
   embed.fields?.push({
    name: lan.reactions,
-   value: msg.reactions.cache
+   value: msgToLog.reactions.cache
     .map(
      (r) =>
       `\`${msg.client.util.spaces(`${r.count}`, 5)}\` ${language.languageFunction.getEmote(
@@ -79,22 +97,29 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   });
  }
 
- if (msg.thread) {
+ if (msgToLog.thread) {
   embed.fields?.push({
-   name: language.channelTypes[msg.thread.type],
-   value: language.languageFunction.getChannel(msg.thread, language.channelTypes[msg.thread.type]),
+   name: language.channelTypes[msgToLog.thread.type],
+   value: language.languageFunction.getChannel(
+    msgToLog.thread,
+    language.channelTypes[msgToLog.thread.type],
+   ),
   });
  }
 
- if (msg.stickers?.size) {
+ if (msgToLog.stickers?.size) {
   embed.fields?.push({
    name: lan.stickers,
-   value: msg.stickers.map((s) => `\`${s.name}\` / \`${s.id}\``).join('\n'),
+   value: msgToLog.stickers.map((s) => `\`${s.name}\` / \`${s.id}\``).join('\n'),
   });
  }
 
- if (msg.webhookId) {
-  const webhook = await msg.client.util.cache.webhooks.get(msg.webhookId, msg.channelId, msg.guild);
+ if (msgToLog.webhookId && msgToLog.channelId && msgToLog.guild) {
+  const webhook = await msg.client.util.cache.webhooks.get(
+   msgToLog.webhookId,
+   msgToLog.channelId,
+   msgToLog.guild,
+  );
 
   if (webhook) {
    embed.fields?.push({
@@ -104,16 +129,16 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   }
  }
 
- if (msg.reference) {
+ if (msgToLog.reference) {
   embed.fields?.push({
    name: lan.referenceMessage,
-   value: language.languageFunction.getMessage(msg.reference),
+   value: language.languageFunction.getMessage(msgToLog.reference),
   });
  }
 
- if (msg.embeds?.length) {
+ if (msgToLog.embeds?.length) {
   const msgEmbeds = msg.client.util.txtFileWriter(
-   msg.embeds.map((c) => JSON.stringify(c, null, 2)),
+   msgToLog.embeds.map((c) => JSON.stringify(c, null, 2)),
    undefined,
    lan.embeds,
   );
@@ -121,35 +146,35 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   if (msgEmbeds) files.push(msgEmbeds);
  }
 
- if (msg.mentions.users.size) {
+ if (msgToLog.mentions.users.size) {
   embed.fields?.push({
    name: lan.mentionedUsers,
-   value: msg.mentions.users.map((m) => `<@${m.id}>`).join(', '),
+   value: msgToLog.mentions.users.map((m) => `<@${m.id}>`).join(', '),
   });
  }
 
- if (msg.mentions.roles.size) {
+ if (msgToLog.mentions.roles.size) {
   embed.fields?.push({
    name: lan.mentionedRoles,
-   value: msg.mentions.roles.map((m) => `<@&${m.id}>`).join(', '),
+   value: msgToLog.mentions.roles.map((m) => `<@&${m.id}>`).join(', '),
   });
  }
 
- if (msg.mentions.channels.size) {
+ if (msgToLog.mentions.channels.size) {
   embed.fields?.push({
    name: lan.mentionedChannels,
-   value: msg.mentions.channels.map((m) => `<#${m.id}>`).join(', '),
+   value: msgToLog.mentions.channels.map((m) => `<#${m.id}>`).join(', '),
   });
  }
 
- if (msg.content) {
-  if (msg.content?.length > 1024) {
-   const content = msg.client.util.txtFileWriter(msg.content, undefined, language.t.content);
+ if (msgToLog.content) {
+  if (msgToLog.content?.length > 1024) {
+   const content = msg.client.util.txtFileWriter(msgToLog.content, undefined, language.t.content);
    if (content) files.push(content);
   } else {
    embed.fields?.push({
     name: language.t.content,
-    value: msg.content ?? language.t.None,
+    value: msgToLog.content ?? language.t.None,
     inline: false,
    });
   }
@@ -163,11 +188,11 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
   });
  }
 
- if (msg.attachments?.size) {
-  const isRemix = msg.attachments.map((a) => a.flags.has(Discord.AttachmentFlags.IsRemix));
+ if (msgToLog.attachments?.size) {
+  const isRemix = msgToLog.attachments.map((a) => a.flags.has(Discord.AttachmentFlags.IsRemix));
 
   const attachments = (
-   await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url))
+   await msg.client.util.fileURL2Buffer(msgToLog.attachments.map((a) => a.url))
   ).filter((e): e is Discord.AttachmentPayload => !!e);
 
   if (attachments?.length) {
@@ -179,6 +204,8 @@ export default async (msg: Discord.Message, isBulk: Discord.Message<true>[] | bo
    );
   }
  }
+
+ msgToLog.messageSnapshots?.forEach((m) => log(m, false, msg));
 
  msg.client.util.send({ id: channels, guildId: msg.guildId }, { embeds, files }, 10000);
 };

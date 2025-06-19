@@ -163,6 +163,8 @@
     "count": "Reaction count"
    },
    "message": {
+    "descDeleteForwardAudit": "> {{auditUser}}> has deleted\n> {{originalMsg}}> from\n> {{originalMsgAuthor}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}" ,
+    "descDeleteForward": "> {{originalMsgAuthor}}> has deleted\n> {{originalMsg}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}" ,
     "descDeleteAudit": "> {{user}}> has deleted\n> {{msg}}> from\n> {{author}}",
     "descDelete": "> {{msg}}> from\n> {{author}}> was deleted",
     "descDeleteBulkAudit": "> {{user}}> has bulk deleted\n> {{size}} Messages in\n> {{channel}}",
@@ -171,6 +173,7 @@
     "descUpdate": "> {{msg}}> was updated",
     "descUpdateAuthor": "> {{msg}}> was updated by\n> {{user}}",
     "nameDelete": "Message Deleted",
+    "nameForwardDelete": "Forwarded Message Deleted",
     "nameUpdate": "Message Updated",
     "bulkDelete": "This Log is part of a Bulk delete.",
     "flags": {
