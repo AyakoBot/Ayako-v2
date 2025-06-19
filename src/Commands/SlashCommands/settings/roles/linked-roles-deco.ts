@@ -127,6 +127,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     inline: false,
    },
    {
+    name: lan.fields.allowedRoles.name,
+    value: embedParsers.roles(settings?.allowedRoles, language),
+    inline: false,
+   },
+   {
     name: lan.fields.botId.name,
     value: settings?.botId ? embedParsers.user(settings.botId, language) : language.t.None,
     inline: true,
@@ -177,6 +182,14 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     name,
     Number(settings?.uniquetimestamp),
     CT.EditorTypes.User,
+   ),
+   buttonParsers.specific(
+    language,
+    settings?.allowedRoles,
+    'allowedRoles',
+    name,
+    Number(settings?.uniquetimestamp),
+    CT.EditorTypes.Role,
    ),
   ],
  },
@@ -273,7 +286,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
  }
 };
 
-const revokeToken = async (
+export const revokeToken = async (
  guild: Discord.Guild,
  userId: string,
  bot: { id: string; secret: string },

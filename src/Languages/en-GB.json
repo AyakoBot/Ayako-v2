@@ -2695,6 +2695,10 @@
        "name": "Allowed Users",
        "desc": "Users that can take this Role"
       },
+      "allowedRoles": {
+       "name": "Allowed Roles",
+       "desc": "Users with any of these Roles can take this Linked-Role"
+      },
       "botSecret": {
        "name": "Bot Secret",
        "desc": "The Secret of your Bot\n Obtain it on the [Discord's Developer Portal](https://discordapp.com/developers/applications/) under the \"OAuth2\" Section"

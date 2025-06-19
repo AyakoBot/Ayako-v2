@@ -5,6 +5,7 @@ import verification from '../guildMemberAdd/verification.js';
 import welcome from '../guildMemberAdd/welcome.js';
 import boost from './boost.js';
 import cache from './cache.js';
+import linkedRolesDeco from './linkedRolesDeco.js';
 import log from './log.js';
 import nitro from './nitro.js';
 import rewards from './rewards.js';
@@ -14,6 +15,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
  log(oldMember, member);
  separator(oldMember, member);
  cache(oldMember, member);
+ linkedRolesDeco(member);
 
  if (oldMember.partial) return;
 

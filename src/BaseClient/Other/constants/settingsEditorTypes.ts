@@ -343,6 +343,7 @@ export default {
   botToken: CT.EditorTypes.BotToken,
   botSecret: CT.EditorTypes.BotToken,
   allowedUsers: CT.EditorTypes.Users,
+  allowedRoles: CT.EditorTypes.Roles,
  },
  [CT.SettingNames.PingReporter]: {
   roleId: CT.EditorTypes.Role,
