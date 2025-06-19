@@ -193,7 +193,7 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    },
    {
     name: language.slashCommands.settings.BLWL.blroleid,
-    value: embedParsers.channels(settings?.blroleid, language),
+    value: embedParsers.roles(settings?.blroleid, language),
     inline: false,
    },
    {
