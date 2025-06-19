@@ -8,7 +8,6 @@ import {
 import * as CT from '../../../Typings/Typings.js';
 
 import emotes from '../emotes.js';
-import send from '../send.js';
 
 const greenTypeActions = [
  CT.ModTypes.RoleAdd,
@@ -67,13 +66,27 @@ export default async <T extends CT.ModTypes>(
   !options.guild.members.cache.has(options.target.id) ||
   CT.DestructiveModTypes.includes(type)
  ) {
-  await send(options.target, {
-   embeds: [embed],
-   components: greenTypeActions.includes(type) ? [] : appeal,
-  }).then((r) => {
-   if (!r || 'message' in r) return;
-   options.dm = r;
-  });
+  const dm = await options.guild.client.util.request.users.createDM(
+   options.guild,
+   options.target.id,
+   options.guild.client,
+  );
+  if ('message' in dm) return;
+
+  options.guild.client.util.request.channels
+   .sendMessage(
+    options.guild,
+    dm.id,
+    {
+     embeds: [embed],
+     components: greenTypeActions.includes(type) ? [] : appeal,
+    },
+    options.guild.client,
+   )
+   .then((r) => {
+    if (!r || 'message' in r) return;
+    options.dm = r;
+   });
   return;
  }
 

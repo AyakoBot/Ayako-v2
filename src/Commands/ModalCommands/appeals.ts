@@ -124,7 +124,7 @@ const notifyUser = async (
   const dm = await cmd.client.util.request.users.createDM(cmd.guild, pun.targetId, cmd.client);
   if ('message' in dm) return;
 
-  cmd.client.util.request.channels.sendMessage(undefined, dm.id, { embeds: [embed] }, cmd.client);
+  cmd.client.util.request.channels.sendMessage(cmd.guild, dm.id, { embeds: [embed] }, cmd.client);
  };
 
  const member = await cmd.client.util.request.guilds.getMember(cmd.guild, pun.targetId);
