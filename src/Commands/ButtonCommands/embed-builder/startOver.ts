@@ -38,9 +38,7 @@ export default async (
       name: author.username,
      });
 
-  if (cmd instanceof Discord.Message) {
-   return t;
-  }
+  if (cmd instanceof Discord.Message) return t;
 
   if ('message' in t) {
    cmd.client.util.replyCmd(cmd, { content: t.message });
@@ -48,7 +46,7 @@ export default async (
   }
 
   if (!inThread) {
-   await cmd.deferUpdate();
+   if (!cmd.replied) await cmd.deferUpdate();
    cmd.deleteReply();
   }
 
