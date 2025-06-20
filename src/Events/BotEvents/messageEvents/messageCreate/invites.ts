@@ -14,7 +14,7 @@ export default async (msg: Discord.Message<true>) => {
    NOT: {
     OR: [
      { wlchannelid: { has: msg.channelId } },
-     { wlchannelid: { has: msg.channel?.parentId } },
+     { wlchannelid: { has: msg.channel?.parentId || '' } },
      { wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] } },
     ],
    },
@@ -155,6 +155,13 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
 };
 
 const isExternalInviteSource = async (invite: string, guild: Discord.Guild) => {
+try {
+ new URL(invite.startsWith('http') ? invite : `http://${invite}`);
+} catch (e) {
+ console.log(invite, e);
+ return false;
+}
+
  const inviteUrl = new URL(invite.startsWith('http') ? invite : `http://${invite}`);
  const code = inviteUrl.pathname.slice(1).replace('invite/', '');
 
