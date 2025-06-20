@@ -44,14 +44,6 @@ export default async (
   return false;
  }
 
- const res = memberRes?.targetMember
-  ? await request.guilds.editMember(memberRes.targetMember, { deaf: true }, options.reason)
-  : false;
- if (res && (res as Discord.DiscordAPIError).message) {
-  err(cmd, res as Discord.DiscordAPIError, language, message, options.guild);
-  return false;
- }
-
  if (!memberRes?.targetMember.voice.channelId) {
   await options.guild.client.util.DataBase.voiceStateUpdateQueue.upsert({
    where: { userId_guildId: { guildId: options.guild.id, userId: options.target.id } },
@@ -65,6 +57,14 @@ export default async (
   });
 
   return true;
+ }
+
+ const res = memberRes?.targetMember
+  ? await request.guilds.editMember(memberRes.targetMember, { deaf: true }, options.reason)
+  : false;
+ if (res && (res as Discord.DiscordAPIError).message) {
+  err(cmd, res as Discord.DiscordAPIError, language, message, options.guild);
+  return false;
  }
 
  cache.vcDeafens.set(
