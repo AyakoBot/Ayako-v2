@@ -38,8 +38,14 @@ export default async (
   return lan.descDelete(msg);
  };
 
+ const getAuthor = () => {
+  if (originalMsg) return lan.nameForwardDelete;
+  if (isBulk) return lan.nameBulkDelete;
+  return lan.nameDelete;
+ }
+
  const embed: Discord.APIEmbed = {
-  author: { icon_url: con.delete, name: originalMsg ? lan.nameForwardDelete : lan.nameDelete },
+  author: { icon_url: con.delete, name: getAuthor() },
   description: getDesc(),
   fields: [],
   color: CT.Colors.Danger,
