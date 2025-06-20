@@ -4,7 +4,7 @@ import {
  type APIEmbed,
  type ChatInputCommandInteraction,
 } from 'discord.js';
-import { getApplyingSettings } from '../../../Commands/SelectCommands/UserSelect/custom-role/share.js';
+import { getMaxShare } from '../../../Commands/SelectCommands/UserSelect/custom-role/share.js';
 
 export default async (cmd: ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -12,12 +12,12 @@ export default async (cmd: ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.customRole;
 
- const settings = await getApplyingSettings(cmd);
- if (!settings) return;
+ const maxShare = await getMaxShare(cmd);
+ if (!maxShare) return;
 
  const embed: APIEmbed = {
   author: { name: lan.share.title },
-  description: lan.share.desc(Number(settings.maxShare)),
+  description: lan.share.desc(Number(maxShare)),
   color: cmd.client.util.Colors.Ephemeral,
  };
 
@@ -40,14 +40,9 @@ export default async (cmd: ChatInputCommandInteraction) => {
       customId: 'custom-role/share',
       placeholder: lan.share.placeholder,
       minValues: 0,
-      maxValues:
-       Number(settings.maxShare) > 25
-        ? 25
-        : Number(settings.maxShare) < 1
-          ? 1
-          : Number(settings.maxShare),
+      maxValues: Number(maxShare) > 25 ? 25 : Number(maxShare) < 1 ? 1 : Number(maxShare),
       defaultValues: role.shared.map((id) => ({ type: SelectMenuDefaultValueType.User, id })),
-      disabled: Number(settings.maxShare) < 1,
+      disabled: Number(maxShare) < 1,
      },
     ],
    },

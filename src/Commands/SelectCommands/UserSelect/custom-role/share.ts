@@ -11,8 +11,8 @@ export default async (cmd: UserSelectMenuInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.roles.customRole;
 
- const settings = await getApplyingSettings(cmd);
- if (!settings) return;
+ const maxShare = await getMaxShare(cmd);
+ if (!maxShare) return;
 
  const role = await cmd.client.util.DataBase.customroles.update({
   where: { guildid_userid: { guildid: cmd.guildId, userid: cmd.user.id } },
@@ -33,7 +33,7 @@ export default async (cmd: UserSelectMenuInteraction) => {
       customId: 'custom-role/share',
       placeholder: lan.share.placeholder,
       minValues: 0,
-      maxValues: Number(settings.maxShare),
+      maxValues: Number(maxShare),
       defaultValues: role.shared.map((id) => ({ type: SelectMenuDefaultValueType.User, id })),
      },
     ],
@@ -52,9 +52,7 @@ export default async (cmd: UserSelectMenuInteraction) => {
  });
 };
 
-export const getApplyingSettings = async (
- cmd: ChatInputCommandInteraction | UserSelectMenuInteraction,
-) => {
+export const getMaxShare = async (cmd: ChatInputCommandInteraction | UserSelectMenuInteraction) => {
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -68,22 +66,24 @@ export const getApplyingSettings = async (
   return;
  }
 
- const applyingSettings = settings.find(
+ const applyingSettings = settings.filter(
   (s) =>
    s.roles.some((r) => cmd.member.roles.cache.has(r)) &&
    !s.blroleid.some((r) => cmd.member.roles.cache.has(r)) &&
    !s.bluserid.includes(cmd.user.id),
  );
 
+ const maxShare = Math.max(...applyingSettings.map((s) => Number(s.maxShare)));
+
  if (!applyingSettings) {
   cmd.client.util.errorCmd(cmd, lan.cantSet, language);
   return;
  }
 
- if (!applyingSettings.maxShare) {
+ if (!maxShare) {
   cmd.client.util.errorCmd(cmd, lan.share.cantShare, language);
   return;
  }
 
- return applyingSettings;
+ return maxShare;
 };
