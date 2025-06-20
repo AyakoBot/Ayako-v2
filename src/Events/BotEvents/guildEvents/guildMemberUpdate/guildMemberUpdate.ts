@@ -10,12 +10,14 @@ import log from './log.js';
 import nitro from './nitro.js';
 import rewards from './rewards.js';
 import separator from './separator.js';
+import customRole from './customRole.js'
 
 export default async (oldMember: Discord.GuildMember, member: Discord.GuildMember) => {
  log(oldMember, member);
  separator(oldMember, member);
  cache(oldMember, member);
  linkedRolesDeco(member);
+ customRole(member);
 
  if (oldMember.partial) return;
 

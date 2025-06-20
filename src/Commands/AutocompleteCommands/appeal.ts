@@ -46,7 +46,8 @@ const getServers = (cmd: AutocompleteInteraction, value: string) => {
 };
 
 export const getPunishments = async (cmd: AutocompleteInteraction, value: string) => {
- const server = cmd.options.getString('server', true);
+ const server = cmd.options.getString('server', false);
+ if (!server) return [];
 
  const appeals = value.length
   ? []
@@ -61,7 +62,9 @@ export const getPunishments = async (cmd: AutocompleteInteraction, value: string
    userid: cmd.user.id,
    OR: [
     {
-     uniquetimestamp: value.length ? parseInt(value, 36) : { notIn: appeals.map((a) => a.punishmentid) },
+     uniquetimestamp: value.length
+      ? parseInt(value, 36)
+      : { notIn: appeals.map((a) => a.punishmentid) },
     },
     {
      reason: { contains: value, mode: 'insensitive' },

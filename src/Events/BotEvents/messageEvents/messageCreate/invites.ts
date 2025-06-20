@@ -14,7 +14,7 @@ export default async (msg: Discord.Message<true>) => {
    NOT: {
     OR: [
      { wlchannelid: { has: msg.channelId } },
-     { wlchannelid: { has: msg.channel.parentId } },
+     { wlchannelid: { has: msg.channel?.parentId } },
      { wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] } },
     ],
    },
