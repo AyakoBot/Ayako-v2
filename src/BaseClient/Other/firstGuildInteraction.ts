@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma, { type PrismaPromise } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 
@@ -76,7 +76,79 @@ const tasks = {
   request.commands.getGuildCommands(guild);
  },
  members: async (guild: Discord.Guild) => {
-  fetchAllGuildMembers(guild);
+  const members = await fetchAllGuildMembers(guild);
+  if (!members.length) return;
+
+  const queries: PrismaPromise<unknown>[] = [];
+
+  const runningNitroUsers = await guild.client.util.DataBase.nitrousers.findMany({
+   where: { guildid: guild.id, boostend: null },
+  });
+
+  runningNitroUsers.forEach((user) => {
+   const member = members.find((m) => m.id === user.userid);
+   if (member && member.premiumSinceTimestamp) {
+    if (Number(user.booststart) === member.premiumSinceTimestamp) return;
+
+    queries.push(
+     guild.client.util.DataBase.nitrousers.updateMany({
+      where: { guildid: guild.id, userid: user.userid, boostend: null },
+      data: { boostend: member.premiumSinceTimestamp },
+     }),
+     guild.client.util.DataBase.nitrousers.create({
+      data: {
+       guildid: guild.id,
+       userid: user.userid,
+       booststart: member.premiumSinceTimestamp,
+       boostend: null,
+      },
+     }),
+    );
+   }
+
+   queries.push(
+    guild.client.util.DataBase.nitrousers.updateMany({
+     where: { guildid: guild.id, userid: user.userid, boostend: null },
+     data: { boostend: Date.now() },
+    }),
+   );
+  });
+
+  const endedNitroUsers = await guild.client.util.DataBase.nitrousers
+   .findMany({
+    where: { guildid: guild.id, boostend: { not: null } },
+   })
+   .then((users) =>
+    users.reduce((acc, user) => {
+     const existingUser = acc.find((u) => u.userid === user.userid);
+     if (!existingUser || Number(existingUser.boostend) < Number(user.boostend)) {
+      return [...acc.filter((u) => u.userid !== user.userid), user];
+     }
+     return acc;
+    }, [] as Prisma.nitrousers[]),
+   );
+
+  endedNitroUsers.forEach((user) => {
+   const member = members.find((m) => m.id === user.userid); 
+   if (!member) return;
+   if (!member.premiumSinceTimestamp) return;
+
+   queries.push(
+    guild.client.util.DataBase.nitrousers.upsert({
+     where: { guildid: guild.id, userid: user.userid, booststart: member.premiumSinceTimestamp },
+     update: { boostend: null },
+     create: {
+      booststart: member.premiumSinceTimestamp,
+      boostend: null,
+      guildid: guild.id,
+      userid: user.userid,
+     },
+    }),
+   );
+  });
+
+  if (!queries.length) return;
+  guild.client.util.DataBase.$transaction(queries).then();
  },
  commandPermissions: async (guild: Discord.Guild) => {
   cache.commandPermissions.get(guild, '');
