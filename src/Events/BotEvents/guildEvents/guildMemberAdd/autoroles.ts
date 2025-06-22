@@ -16,6 +16,8 @@ export default async (member: Discord.GuildMember) => {
  if (settings.allroleid.length) rolesToAdd = [...rolesToAdd, ...settings.allroleid];
  if (!rolesToAdd.length) return;
 
+ await member.client.util.sleep(2000);
+
  const language = await member.client.util.getLanguage(member.guild.id);
  member.client.util.roleManager.add(member, rolesToAdd, language.autotypes.autoroles, 1);
 };
