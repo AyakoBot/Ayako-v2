@@ -40,7 +40,7 @@ export default async (cmd: ChatInputCommandInteraction) => {
       customId: 'custom-role/share',
       placeholder: lan.share.placeholder,
       minValues: 0,
-      maxValues: Number(maxShare) > 25 ? 25 : Number(maxShare) < 1 ? 1 : Number(maxShare),
+      maxValues: maxShare,
       defaultValues: role.shared.map((id) => ({ type: SelectMenuDefaultValueType.User, id })),
       disabled: Number(maxShare) < 1,
      },

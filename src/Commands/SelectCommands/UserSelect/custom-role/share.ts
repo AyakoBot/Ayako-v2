@@ -33,7 +33,7 @@ export default async (cmd: UserSelectMenuInteraction) => {
       customId: 'custom-role/share',
       placeholder: lan.share.placeholder,
       minValues: 0,
-      maxValues: Number(maxShare),
+      maxValues: maxShare,
       defaultValues: role.shared.map((id) => ({ type: SelectMenuDefaultValueType.User, id })),
      },
     ],
@@ -85,5 +85,5 @@ export const getMaxShare = async (cmd: ChatInputCommandInteraction | UserSelectM
   return;
  }
 
- return maxShare;
+ return maxShare > 25 ? 25 : maxShare < 1 ? 1 : maxShare;
 };
