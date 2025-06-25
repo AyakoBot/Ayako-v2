@@ -20,7 +20,7 @@ export default {
   * Regular expression for testing Discord invite links.
   */
  inviteTester:
-  /(https?:\/\/)?(www.)?(discord.(gg|me)|(discordapp|discord).com\/invite)\/[^\s/]+?(?=\b)/gm,
+  /(https?:\/\/)?(www.)?((discord\.(gg|me)\/)|((discordapp|discord)\.com\/invite[\/\\]))[^\s\/\\]+?(?=\b)/gm,
 
  /**
   * Regular expression for testing URLs with the given top-level domains.
