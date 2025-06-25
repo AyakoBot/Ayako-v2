@@ -32,7 +32,7 @@ export default async (
   where: { userId_guildId: { guildId: options.guild.id, userId: options.target.id } },
  });
 
- if (!!options.skipChecks && (!memberRes?.targetMember || !memberRes.targetMember.voice.deaf || !pendingUpdate?.deaf)) {
+ if (!!options.skipChecks && (!memberRes?.targetMember || !memberRes.targetMember.voice.serverDeaf || !pendingUpdate?.deaf)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }

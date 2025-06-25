@@ -31,7 +31,7 @@ export default async (
 
  if (
   !options.skipChecks &&
-  (!memberRes?.targetMember || memberRes.targetMember.voice.deaf || pendingUpdate?.deaf)
+  (!memberRes?.targetMember || memberRes.targetMember.voice.serverDeaf || pendingUpdate?.deaf)
  ) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;

@@ -31,7 +31,7 @@ export default async (
 
  if (
   !options.skipChecks &&
-  (!memberRes?.targetMember || memberRes.targetMember.voice.mute || pendingUpdate?.mute)
+  (!memberRes?.targetMember || memberRes.targetMember.voice.serverMute || pendingUpdate?.mute)
  ) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;

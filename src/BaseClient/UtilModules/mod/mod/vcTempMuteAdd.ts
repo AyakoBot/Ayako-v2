@@ -28,7 +28,7 @@ export default async (
 
  rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
- if (!options.skipChecks && (!memberRes?.targetMember || memberRes.targetMember.voice.mute)) {
+ if (!options.skipChecks && (!memberRes?.targetMember || memberRes.targetMember.voice.serverMute)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
