@@ -28,7 +28,11 @@ export default async (
 
  rmVotePunish(options, memberRes?.executorMember, cmd?.channelId);
 
- if (!!options.skipChecks && (!memberRes?.targetMember || !memberRes.targetMember.voice.deaf)) {
+ const pendingUpdate = await options.guild.client.util.DataBase.voiceStateUpdateQueue.findUnique({
+  where: { userId_guildId: { guildId: options.guild.id, userId: options.target.id } },
+ });
+
+ if (!!options.skipChecks && (!memberRes?.targetMember || !memberRes.targetMember.voice.deaf || !pendingUpdate?.deaf)) {
   actionAlreadyApplied(cmd, message, options.target, language, type);
   return false;
  }
