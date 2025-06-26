@@ -2209,7 +2209,7 @@
      "placeholder": "Shared Users",
      "notFound": "The Role you are trying to claim does not exist anymore.",
      "notAllowed": "You are not allowed to claim this Role.",
-     "claimed": "You have claimed the Custom-Role\n{{role}}",
+     "claimed": "You have claimed the Custom-Role\n{{role}}\n-# You can unequip the Role by running this Command again",
      "unequip": "You have unequipped the Custom-Role\n{{role}}"
     }
    },
