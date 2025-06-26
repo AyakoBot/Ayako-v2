@@ -44,8 +44,12 @@ export default async (
   where: { userid_guildid: { guildid: cmd.guildId, userid: cmd.user.id } },
  });
 
+ const page = cmd instanceof Discord.ButtonInteraction ? Number(args[0] || 1) : 1;
  const buyable = shopItems.filter((i) => !user?.boughtids.includes(String(i.uniquetimestamp)));
  const equippable = shopItems.filter((i) => user?.boughtids.includes(String(i.uniquetimestamp)));
+ const sectionBuyable = buyable.slice((page - 1) * 25, page * 25);
+ const sectionEquippable = equippable.slice((page - 1) * 25, page * 25);
+ const displayItems = shopItems.slice((page - 1) * 25, page * 25);
 
  const selMenu: Discord.APISelectMenuComponent[] = [
   {
@@ -54,12 +58,13 @@ export default async (
    placeholder: lan.selRoleToBuy,
    min_values: 1,
    max_values: 1,
-   disabled: !buyable.length,
-   options: buyable.length
-    ? buyable.map((s) => ({
+   disabled: !sectionBuyable.length,
+   options: sectionBuyable.length
+    ? sectionBuyable.map((s) => ({
        emoji: cmd.client.util.emotes.buy,
-       label: `${(s.roles.length > 1 ? lan.buyTheseFor : lan.buyThisFor)(
+       label: `${lan.buyFor(
         cmd.client.util.splitByThousand(Number(s.price)),
+        Number(displayItems.findIndex((i) => i.uniquetimestamp === s.uniquetimestamp)) + 1,
        )}`,
        description: `${s.roles
         .map((r) => cmd.guild.roles.cache.get(r)?.name)
@@ -76,13 +81,15 @@ export default async (
    placeholder: lan.selRoleToEquip,
    min_values: 1,
    max_values: 1,
-   disabled: !equippable.length,
-   options: equippable.length
-    ? equippable.map((s) => ({
+   disabled: !sectionEquippable.length,
+   options: sectionEquippable.length
+    ? sectionEquippable.map((s) => ({
        emoji: cmd.member.roles.cache.hasAll(...s.roles)
         ? cmd.client.util.emotes.minusBG
         : cmd.client.util.emotes.plusBG,
-       label: cmd.member.roles.cache.hasAll(...s.roles) ? lan.unequip : lan.equip,
+       label: (cmd.member.roles.cache.hasAll(...s.roles) ? lan.unequip : lan.equip)(
+        Number(displayItems.findIndex((i) => i.uniquetimestamp === s.uniquetimestamp)) + 1,
+       ),
        description: `${s.roles
         .map((r) => cmd.guild.roles.cache.get(r)?.name)
         .filter((r): r is string => !!r)
@@ -93,8 +100,6 @@ export default async (
     : [{ label: '-', value: '-' }],
   },
  ];
-
- const page = cmd instanceof Discord.ButtonInteraction ? Number(args[0] || 1) : 1;
 
  const payload: CT.UsualMessagePayload = {
   embeds: [
@@ -107,7 +112,7 @@ export default async (
      currencyEmote ?? '',
      (await cmd.client.util.getCustomCommand(cmd.guild, 'balance'))?.id ?? '0',
     ),
-    fields: shopItems.slice((page - 1) * 25, page * 25).map((s, i) => ({
+    fields: displayItems.map((s, i) => ({
      name: `#${i + 1} - ${s.price} ${currencyEmote}`,
      value: `${s.roles.map((r) => `<@&${r}>`).join(', ')}${
       s.shoptype === 'message'

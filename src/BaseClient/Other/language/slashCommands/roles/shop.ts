@@ -4,8 +4,10 @@ export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.roles.shop,
  notEnoughMoney: (emote: string) =>
   t.stp(t.JSON.slashCommands.roles.shop.notEnoughMoney, { emote }),
- buyTheseFor: (amount: string) => t.stp(t.JSON.slashCommands.roles.shop.buyTheseFor, { amount }),
- buyThisFor: (amount: string) => t.stp(t.JSON.slashCommands.roles.shop.buyThisFor, { amount }),
+ buyFor: (amount: string, num: number) =>
+  t.stp(t.JSON.slashCommands.roles.shop.buyFor, { amount, num: String(num) }),
+ unequip: (num: number) => t.stp(t.JSON.slashCommands.roles.shop.unequip, { num: String(num) }),
+ equip: (num: number) => t.stp(t.JSON.slashCommands.roles.shop.equip, { num: String(num) }),
  description: (balance: number, emote: string, cId: string) =>
   t.stp(t.JSON.slashCommands.roles.shop.description, {
    balance: t.util.util.makeInlineCode(String(t.util.splitByThousand(balance))),
