@@ -163,8 +163,8 @@
     "count": "Reaction count"
    },
    "message": {
-    "descDeleteForwardAudit": "> {{auditUser}}> has deleted\n> {{originalMsg}}> from\n> {{originalMsgAuthor}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}" ,
-    "descDeleteForward": "> {{originalMsgAuthor}}> has deleted\n> {{originalMsg}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}" ,
+    "descDeleteForwardAudit": "> {{auditUser}}> has deleted\n> {{originalMsg}}> from\n> {{originalMsgAuthor}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}",
+    "descDeleteForward": "> {{originalMsgAuthor}}> has deleted\n> {{originalMsg}}> that forwarded\n> {{forwardedMsg}}> from\n> {{forwardMsgAuthor}}",
     "descDeleteAudit": "> {{user}}> has deleted\n> {{msg}}> from\n> {{author}}",
     "descDelete": "> {{msg}}> from\n> {{author}}> was deleted",
     "descDeleteBulkAudit": "> {{user}}> has bulk deleted\n> {{size}} Messages in\n> {{channel}}",
@@ -2209,7 +2209,8 @@
      "placeholder": "Shared Users",
      "notFound": "The Role you are trying to claim does not exist anymore.",
      "notAllowed": "You are not allowed to claim this Role.",
-     "claimed": "You have claimed the Custom-Role\n{{role}}"
+     "claimed": "You have claimed the Custom-Role\n{{role}}",
+     "unequip": "You have unequipped the Custom-Role\n{{role}}"
     }
    },
    "builders": {

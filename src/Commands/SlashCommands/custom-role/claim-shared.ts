@@ -8,7 +8,6 @@ export default async (cmd: ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.locale);
  const lan = language.slashCommands.roles.customRole.share;
 
- console.log(roleId)
  if (!role) {
   await cmd.reply({ content: lan.notFound, ephemeral: true });
   return;
@@ -20,6 +19,12 @@ export default async (cmd: ChatInputCommandInteraction) => {
 
  if (!settings) {
   await cmd.reply({ content: lan.notAllowed, ephemeral: true });
+  return;
+ }
+
+ if (cmd.member.roles.cache.has(role.id)) {
+  cmd.client.util.roleManager.remove(cmd.member, [role.id], language.autotypes.customroles);
+  cmd.client.util.replyCmd(cmd, { content: lan.claimed(role), ephemeral: true });
   return;
  }
 

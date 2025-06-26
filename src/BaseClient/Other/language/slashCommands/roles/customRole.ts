@@ -41,5 +41,9 @@ export default (t: CT.Language) => ({
    t.stp(t.JSON.slashCommands.roles.customRole.share.claimed, {
     role: t.languageFunction.getRole(role),
    }),
+  unequip: (role: Discord.Role) =>
+   t.stp(t.JSON.slashCommands.roles.customRole.share.unequip, {
+    role: t.languageFunction.getRole(role),
+   }),
  },
 });
