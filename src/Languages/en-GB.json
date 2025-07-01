@@ -2679,6 +2679,7 @@
     },
     "linked-roles-deco": {
      "name": "Linked-Roles-Decoration",
+     "whyDisabled": "⚠️ One (or more) of the Roles this Setting manages are above your highest Role, so you can't manage this Setting",
      "apply": {
       "all": "All",
       "apply": "Make visible",

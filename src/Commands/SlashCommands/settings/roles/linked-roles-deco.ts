@@ -49,13 +49,19 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
   return;
  }
 
+ const disabled =
+  settings.roleId && cmd.member.roles.highest.comparePositionTo(settings.roleId) < 1;
+
+ const embeds = await getEmbeds(embedParsers, settings, language, lan, cmd.guild);
+ if (disabled) embeds[0].footer!.text += ` | ${lan.whyDisabled}`;
+
  cmd.reply({
-  embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
+  embeds,
   components: (await getComponents(buttonParsers, settings, language)).map((c) => ({
    ...c,
    components: c.components.map((b) => ({
     ...b,
-    disabled: settings.roleId && cmd.member.roles.highest.comparePositionTo(settings.roleId) < 1,
+    disabled,
    })),
   })) as Awaited<ReturnType<typeof getComponents>>,
   ephemeral: true,
