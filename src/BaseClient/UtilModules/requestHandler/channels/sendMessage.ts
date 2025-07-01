@@ -98,9 +98,9 @@ async function fn(
       c.util.txtFileWriter(JSON.stringify({ ...payload, files: payload.files?.length }, null, 2)),
      ],
     });
-   }
 
-   error(guild, new Error((e as Discord.DiscordAPIError).message));
+    error(guild, new Error((e as Discord.DiscordAPIError).message));
+   }
    return e;
   });
 }
