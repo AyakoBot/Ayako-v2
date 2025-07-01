@@ -165,7 +165,7 @@ export type BaseOptions = {
  target: Discord.User;
  executor: Discord.User;
  skipChecks: boolean;
- dm?: Discord.Message;
+ dm?: Discord.Message | Discord.DiscordAPIError | Error;
 };
 
 type Channel = {
