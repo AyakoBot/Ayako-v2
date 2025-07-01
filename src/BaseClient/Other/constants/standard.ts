@@ -41,6 +41,8 @@ export default {
   `https://cdn.discordapp.com/splashes/${guildId}/${hash}.png`,
  bannerURL: (guildId: string, hash: string) =>
   `https://cdn.discordapp.com/banners/${guildId}/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
+ guildBannerURL: (guildId: string, userId: string, hash: string) =>
+  `https://cdn.discordapp.com/guilds/${guildId}/users/${userId}/banners/${hash}.${hash.startsWith('a_') ? 'gif' : 'png'}`,
  webhookAvatarURL: (webhookId: string, hash: string) =>
   `https://cdn.discordapp.com/avatars/${webhookId}/${hash}.png`,
  stickerURL: (sticker: Discord.Sticker) =>
