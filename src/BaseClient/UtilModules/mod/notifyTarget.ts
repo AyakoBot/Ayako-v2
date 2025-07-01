@@ -24,7 +24,7 @@ export default async <T extends CT.ModTypes>(
  language: CT.Language,
  type: T,
 ) => {
- if (options.dm) return;
+ if (options.dm && !('message' in options.dm)) return;
 
  const { dm } = language.mod.execution[type as keyof CT.Language['mod']['execution']];
 
@@ -62,9 +62,8 @@ export default async <T extends CT.ModTypes>(
  ];
 
  if (
-  !options.guild.rulesChannel ||
-  !options.guild.members.cache.has(options.target.id) ||
-  CT.DestructiveModTypes.includes(type)
+  (!options.guild.rulesChannel || !options.guild.members.cache.has(options.target.id)) &&
+  !options.dm
  ) {
   const dm = await options.guild.client.util.request.users.createDM(
    options.guild,
@@ -73,22 +72,16 @@ export default async <T extends CT.ModTypes>(
   );
   if ('message' in dm) return;
 
-  options.guild.client.util.request.channels
-   .sendMessage(
-    options.guild,
-    dm.id,
-    {
-     embeds: [embed],
-     components: greenTypeActions.includes(type) ? [] : appeal,
-    },
-    options.guild.client,
-   )
-   .then((r) => {
-    if (!r || 'message' in r) return;
-    options.dm = r;
-   });
+  options.dm = await options.guild.client.util.request.channels.sendMessage(
+   options.guild,
+   dm.id,
+   { embeds: [embed], components: greenTypeActions.includes(type) ? [] : appeal },
+   options.guild.client,
+  );
   return;
  }
+
+ if (CT.DestructiveModTypes.includes(type)) return;
 
  const member = options.guild.members.cache.get(options.target.id);
  if (!member) return;
