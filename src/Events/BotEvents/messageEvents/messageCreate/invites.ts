@@ -113,7 +113,12 @@ export default async (msg: Discord.Message<true>) => {
 };
 
 const checkForInvite = async (content: string, guild: Discord.Guild): Promise<boolean> => {
- content = decodeURIComponent(content.replace(/<[^>]*>/g, (match) => match.replace(/\n/g, '')).replace(/[<>]/g, ' '));
+ content = decodeURIComponent(
+  content
+   .replace(/<[^>]*>/g, (match) => match.replace(/\n/g, ''))
+   .replace(/[<>]/g, ' ')
+   .replace(/\\+/g, '/'),
+ );
 
  const pureMatches = content.match(guild.client.util.regexes.inviteTester);
  if (pureMatches?.length) {
@@ -155,12 +160,12 @@ const checkForInvite = async (content: string, guild: Discord.Guild): Promise<bo
 };
 
 const isExternalInviteSource = async (invite: string, guild: Discord.Guild) => {
-try {
- new URL(invite.startsWith('http') ? invite : `http://${invite}`);
-} catch (e) {
- console.log(invite, e);
- return false;
-}
+ try {
+  new URL(invite.startsWith('http') ? invite : `http://${invite}`);
+ } catch (e) {
+  console.log(invite, e);
+  return false;
+ }
 
  const inviteUrl = new URL(invite.startsWith('http') ? invite : `http://${invite}`);
  const code = inviteUrl.pathname.slice(1).replace('invite/', '');
