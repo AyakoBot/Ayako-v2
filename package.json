@@ -11,7 +11,7 @@
     "register": "node ./dist/register-commands.js",
     "register-dev": "pnpm build && node ./dist/register-commands-dev.js",
     "run": "node --max-old-space-size=15360 --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
-    "start": "pnpx prisma generate && pnpx prisma db push && pnpm run dev",
+    "start": "pnpx prisma generate && pnpx prisma db push && pnpm run run",
     "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
   },
   "dependencies": {
