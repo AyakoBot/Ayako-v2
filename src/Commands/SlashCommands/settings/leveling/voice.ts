@@ -23,6 +23,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  cmd.update({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
+  files: [],
  });
 };
 
@@ -42,8 +43,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    : undefined,
   fields: [
    {
-    name: lan.fields.xppermin.name,
-    value: embedParsers.number(settings.xppermin, language),
+    name: lan.fields.vcXpRangeBottom.name,
+    value: embedParsers.number(settings.vcXpRangeBottom, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.vcXpRangeTop.name,
+    value: embedParsers.number(settings.vcXpRangeTop, language),
     inline: true,
    },
    {
@@ -73,7 +79,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings.xppermsg, 'xppermin', name, undefined),
+   buttonParsers.specific(language, settings.vcXpRangeBottom, 'vcXpRangeBottom', name, undefined),
+   buttonParsers.specific(language, settings.vcXpRangeTop, 'vcXpRangeTop', name, undefined),
    buttonParsers.boolean(language, settings.requireUnmute, 'requireUnmute', name, undefined),
    buttonParsers.specific(language, settings.minParticipants, 'minParticipants', name, undefined),
    buttonParsers.boolean(language, settings.excludeBots, 'excludeBots', name, undefined),

@@ -48,7 +48,6 @@ export default {
   deletemsg: CT.EditorTypes.Boolean,
  },
  [CT.SettingNames.Leveling]: {
-  xppermsg: CT.EditorTypes.Number,
   xpmultiplier: CT.EditorTypes.Number,
   rolemode: CT.EditorTypes.Boolean,
   lvlupmode: CT.EditorTypes.LvlUpMode,
@@ -59,7 +58,6 @@ export default {
   ignoreprefixes: CT.EditorTypes.Boolean,
   prefixes: CT.EditorTypes.Strings,
   minwords: CT.EditorTypes.Number,
-  xppermin: CT.EditorTypes.Number,
   requireUnmute: CT.EditorTypes.Boolean,
   excludeBots: CT.EditorTypes.Boolean,
   minParticipants: CT.EditorTypes.Number,
@@ -73,6 +71,10 @@ export default {
   pingUser: CT.EditorTypes.Boolean,
   cooldown: CT.EditorTypes.Duration,
   cooldownType: CT.EditorTypes.Boolean,
+  xpRangeBottom: CT.EditorTypes.Number,
+  xpRangeTop: CT.EditorTypes.Number,
+  curveModifier: CT.EditorTypes.Number,
+  formulaType: CT.EditorTypes.FormulaType,
  },
  [CT.SettingNames.MultiChannels]: {
   channels: CT.EditorTypes.Channels,

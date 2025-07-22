@@ -143,7 +143,11 @@ const handleVoiceXP = (v: VoiceStateGuild) => {
 
  if (!v.states.length) return undefined;
 
- const xp = Number(v.settings.xppermin) * Number(v.settings.xpmultiplier);
+ const xp =
+  v.guild.client.util.getRandom(
+   Math.abs(Number(v.settings.vcXpRangeBottom)),
+   Math.abs(Number(v.settings.vcXpRangeTop)),
+  ) * Number(v.settings.xpmultiplier);
 
  const newStates = v.states
   .map((s) => {

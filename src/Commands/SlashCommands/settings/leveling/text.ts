@@ -23,6 +23,7 @@ export default async (cmd: Discord.ButtonInteraction) => {
  cmd.update({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
+  files: [],
  });
 };
 
@@ -47,8 +48,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
     inline: false,
    },
    {
-    name: lan.fields.xppermsg.name,
-    value: embedParsers.number(settings.xppermsg, language),
+    name: lan.fields.msgXpRangeBottom.name,
+    value: embedParsers.number(settings.msgXpRangeBottom, language),
+    inline: true,
+   },
+   {
+    name: lan.fields.msgXpRangeTop.name,
+    value: embedParsers.number(settings.msgXpRangeTop, language),
     inline: true,
    },
    {
@@ -90,7 +96,8 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
-   buttonParsers.specific(language, settings.xppermsg, 'xppermsg', name, undefined),
+   buttonParsers.specific(language, settings.msgXpRangeBottom, 'msgXpRangeBottom', name, undefined),
+   buttonParsers.specific(language, settings.msgXpRangeTop, 'msgXpRangeTop', name, undefined),
    buttonParsers.boolean(language, settings.ignoreprefixes, 'ignoreprefixes', name, undefined),
    buttonParsers.specific(language, settings.prefixes, 'prefixes', name, undefined),
    buttonParsers.specific(language, settings.minwords, 'minwords', name, undefined),

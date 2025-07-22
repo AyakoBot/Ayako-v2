@@ -1,4 +1,4 @@
-import Prisma, { LevelType, type leveling } from '@prisma/client';
+import Prisma, { FormulaType, LevelType, type leveling } from '@prisma/client';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';
@@ -32,8 +32,8 @@ const globalLevelling = async (msg: Discord.Message<true>) => {
   where: { type: 'global', userid: msg.author.id },
  });
 
- if (level) updateLevels(msg, null, level, 10, 'global', [1]);
- else insertLevels(msg, 'global', 10, [1]);
+ if (level) updateLevels(msg, null, level, [10, 20], 'global', [1]);
+ else insertLevels(msg, 'global', [10, 20], [1]);
 };
 
 const levelling = async (msg: Discord.Message<true>) => {
@@ -101,18 +101,17 @@ const levelling = async (msg: Discord.Message<true>) => {
   ? msg.member?.roles.cache.some((r) => settings.blroleid.includes(r.id))
   : false;
 
-
  const isChannelAllowed = settings?.wlchannelid?.length
   ? settings.wlchannelid.includes(msg.channel.id)
   : false;
 
-  const getIsChannelDenied = () => {
-   if (settings?.wlchannelid?.length && !isChannelAllowed) return true;
-   if (settings?.blchannelid?.includes(msg.channel.id)) return true;
-   return false;
-  }
+ const getIsChannelDenied = () => {
+  if (settings?.wlchannelid?.length && !isChannelAllowed) return true;
+  if (settings?.blchannelid?.includes(msg.channel.id)) return true;
+  return false;
+ };
 
-  const isChannelDenied = getIsChannelDenied()
+ const isChannelDenied = getIsChannelDenied();
 
  if (isUserDenied) return;
  if (isRoleDenied && !isUserAllowed) return;
@@ -130,19 +129,18 @@ const levelling = async (msg: Discord.Message<true>) => {
  });
 
  const rewardXPMult = rewardroles.map((r) => Number(r.xpmultiplier)).reduce((a, b) => a + b, 0);
- const baseXP = settings ? Number(settings.xppermsg) - 10 : 15;
+ const xpTop = Math.abs(settings ? Number(settings.msgXpRangeTop) : 25);
+ const xpBottom = Math.abs(settings ? Number(settings.msgXpRangeBottom) : 15);
 
  if (level) {
-  updateLevels(msg, settings, level, baseXP < 0 ? 1 : baseXP, 'guild', [
+  updateLevels(msg, settings, level, [xpBottom, xpTop], 'guild', [
    settings ? Number(settings.xpmultiplier) + rewardXPMult : 1,
   ]);
 
   return;
  }
 
- insertLevels(msg, 'guild', baseXP < 0 ? 1 : baseXP, [
-  settings ? Number(settings.xpmultiplier) : 1,
- ]);
+ insertLevels(msg, 'guild', [xpBottom, xpTop], [settings ? Number(settings.xpmultiplier) : 1]);
 };
 
 const getRules = async (msg: Discord.Message<true>) => {
@@ -163,7 +161,7 @@ const updateLevels = async (
  msg: Discord.Message<true>,
  settings: Prisma.leveling | null,
  level: Prisma.level,
- baseXP: number,
+ xpRange: [number, number],
  type: LevelType,
  xpMultiplier = [1],
 ) => {
@@ -174,14 +172,16 @@ const updateLevels = async (
 
  const newXP = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
-   .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
+   .map((m) => Math.floor(msg.client.util.getRandom(...xpRange)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
 
  const oldLevel = Number(level.level);
  const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
- const neededXP =
-  (5 / 6) * (oldLevel + 1) * (2 * (oldLevel + 1) * (oldLevel + 1) + 27 * (oldLevel + 1) + 91);
+ const neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+  oldLevel + 1,
+  settings ? Number(settings.curveModifier) : 100,
+ );
 
  let newLevel = oldLevel;
 
@@ -243,12 +243,12 @@ const updateLevels = async (
 const insertLevels = (
  msg: Discord.Message<true>,
  type: LevelType,
- baseXP: number,
+ xpRange: [number, number],
  xpMultiplier: number[] = [],
 ) => {
  const xp = Math.floor(
   (xpMultiplier.length ? xpMultiplier : [1])
-   .map((m) => Math.floor(msg.client.util.getRandom(baseXP, baseXP + 10)) * m)
+   .map((m) => Math.floor(msg.client.util.getRandom(...xpRange)) * m)
    .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
 
@@ -717,4 +717,17 @@ const checkLevelRoles = async (msg: Discord.Message<true>) => {
   Number(level.level),
   await msg.client.util.getLanguage(msg.guildId),
  );
+};
+
+// default curveModifier = 100
+export const formulas = {
+ logarithmic: (level: number, curveModifier: number) =>
+  Math.log(level + 1) * Math.pow(level, 0.5) * curveModifier * 1000,
+ linear: (level: number, curveModifier: number) => level * curveModifier * 100,
+ quadratic: (level: number, curveModifier: number) => level * level * curveModifier,
+ cubic: (level: number, curveModifier: number) => (level * level * level * curveModifier) / 100,
+ polynomial: (level: number, curveModifier: number) =>
+  (5 / 6) * level * (2 * level * level + 27 * level + 91) * Math.pow(curveModifier / 100, 0.5),
+ exponential: (level: number, curveModifier: number) =>
+  Math.pow(1.5, level / 10) * curveModifier * 100,
 };

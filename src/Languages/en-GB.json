@@ -1044,6 +1044,7 @@
   "VOICE_IN_THREADS": "Can send Voice Messages in Threads",
   "WELCOME_SCREEN_ENABLED": "Has welcome Screen enabled",
   "MORE_SOUNDBOARD": "Has access to more soundboard slots",
+  "ENHANCED_ROLE_COLORS": "Has access to enhanced Role Colors",
 
   "CHANNEL_BANNER": "Can set Channel Banners *(Deprecated)*",
   "COMMERCE": "Can create Store-Channels *(Deprecated)*",
@@ -1204,6 +1205,14 @@
  "shoptypes": {
   "command": "Shop-Command",
   "message": "Shop-Message"
+ },
+ "formulatypes": {
+  "logarithmic": "Logarithmic",
+  "linear": "Linear",
+  "quadratic": "Quadratic",
+  "cubic": "Cubic",
+  "polynomial": "Polynomial",
+  "exponential": "Exponential"
  },
  "answertypes": {
   "paragraph": "Paragraph",
@@ -3484,13 +3493,31 @@
     "leveling": {
      "name": "Leveling",
      "status": "Level {{newLevel}} reached by {{user.username}}",
+     "moreSettings": "More Settings",
      "buttons": {
       "blwl": "Allow/Deny Channels/Roles/Users",
       "level-up": "Level-up Settings",
       "voice": "Voice specific",
       "text": "Text specific"
      },
+     "curve": "## XP Curve\nThe XP Curve is used to calculate the XP required to reach a Level\nThe steeper the curve the harder it is to reach the next level.",
      "fields": {
+      "curveModifier": {
+       "name": "Modify Curve",
+       "desc": "Make the curve more steep or flat\nA value of 100 is the default, 200 is twice as steep, 50 is half as steep"
+      },
+      "formulaType": {
+       "name": "Formula Type",
+       "desc": "The Type of Formula used to calculate the XP required to reach a Level"
+      },
+      "msgXpRangeTop": {
+       "name": "XP-Range Top",
+       "desc": "Maximum Amount of XP awarded per Message"
+      },
+      "msgXpRangeBottom": {
+       "name": "XP-Range Bottom",
+       "desc": "Minimum Amount of XP awarded per Message"
+      },
       "pingUser": {
        "name": "Ping User",
        "desc": "Whether to Ping the User when they Level-Up"
@@ -3506,10 +3533,6 @@
       "lvluptext": {
        "name": "Channel-Status Text",
        "desc": "The Text displayed in the Channel-Status if the Member levelled up in VC\n\"{{oldXP}}\" will become the old XP\n\"{{newXP}}\" will become the new XP\n\"{{oldLevel}}\" will become the old Level\n\"{{newLevel}}\" will become the new Level\n\"{{user.displayName}}\" will become the User's Display Name\n\"{{user.username}}\" will become the User's Username"
-      },
-      "xppermsg": {
-       "name": "XP per Message",
-       "desc": "Amount of XP awarded per Member"
       },
       "rolemode": {
        "name": "Role Mode",
@@ -3547,9 +3570,13 @@
        "name": "Minimum Amount of Words",
        "desc": "The Minimum Amount of Words required to award XP (measured by Spaces)"
       },
-      "xppermin": {
-       "name": "XP per Minute",
-       "desc": "Amount of XP awarded per Minute"
+      "vcXpRangeBottom": {
+       "name": "XP-Range Bottom",
+       "desc": "Maximum Amount of XP awarded per Minute"
+      },
+      "vcXpRangeTop": {
+       "name": "XP-Range Top",
+       "desc": "Minumum Amount of XP awarded per Minute"
       },
       "requireUnmute": {
        "name": "Require Unmute",

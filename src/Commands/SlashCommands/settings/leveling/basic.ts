@@ -23,43 +23,15 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language),
-  ephemeral: true,
+  files: await getFiles(settings, language),
  });
 };
 
-export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
- embedParsers,
- settings,
- language,
- lan,
-): Discord.APIEmbed[] => [
- {
-  author: embedParsers.author(language, lan),
-  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
-   ?.length
-   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
-      name as keyof typeof client.util.constants.tutorials
-     ].map((t) => `[${t.name}](${t.link})`)}`
-   : undefined,
-  fields: [
-   {
-    name: language.slashCommands.settings.active,
-    value: embedParsers.boolean(settings.active, language),
-    inline: false,
-   },
-   {
-    name: lan.fields.xpmultiplier.name,
-    value: embedParsers.number(settings.xpmultiplier ?? 1, language),
-    inline: true,
-   },
-   {
-    name: lan.fields.rolemode.name,
-    value: settings.rolemode ? language.rolemodes.replace : language.rolemodes.stack,
-    inline: true,
-   },
-  ],
- },
-];
+export const getFiles: CT.SettingsFile<typeof name>['getFiles'] = (settings) => {
+ const rawFile = client.util.getLevelingGraphs(settings ? Number(settings.curveModifier) : 1);
+
+ return [new Discord.AttachmentBuilder(rawFile.attachment).setName(rawFile.name)];
+};
 
 export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  buttonParsers,
@@ -75,8 +47,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
  {
   type: Discord.ComponentType.ActionRow,
   components: [
+   buttonParsers.specific(language, settings.curveModifier, 'curveModifier', name, undefined),
    buttonParsers.specific(language, settings.xpmultiplier, 'xpmultiplier', name, undefined),
-   buttonParsers.specific(language, settings.rolemode, CT.EditorTypes.RoleMode, name, undefined),
+   buttonParsers.specific(language, settings.formulaType, 'formulaType', name, undefined),
+  ],
+ },
+ {
+  type: Discord.ComponentType.ActionRow,
+  components: [
+   {
+    type: Discord.ComponentType.Button,
+    style: Discord.ButtonStyle.Secondary,
+    custom_id: `-`,
+    label: language.slashCommands.settings.categories.leveling.moreSettings,
+    disabled: true,
+   },
   ],
  },
  {
@@ -84,12 +69,27 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   components: Object.entries(language.slashCommands.settings.categories.leveling.buttons).map(
    ([k, v]) => ({
     type: Discord.ComponentType.Button,
-    style: Discord.ButtonStyle.Primary,
+    style: Discord.ButtonStyle.Secondary,
     custom_id: `settings/leveling/${k}`,
     label: v,
     emoji: getEmote(k),
    }),
   ),
+ },
+];
+
+export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
+ embedParsers,
+ _,
+ language,
+ lan,
+) => [
+ {
+  author: embedParsers.author(language, lan),
+  description: `${lan.curve}`,
+  image: {
+   url: 'attachment://xp-formulas-chart.png',
+  },
  },
 ];
 

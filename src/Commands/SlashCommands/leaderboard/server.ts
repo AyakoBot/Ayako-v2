@@ -76,8 +76,12 @@ export const getOwnLevel = async (
  });
 
  const gain = Number(settings?.xpmultiplier ?? 1);
- const xpPerMsg = Number(settings?.xppermsg ?? 15);
- const xpPerMin = Number(settings?.xppermin ?? 5);
+ const msgXpBottom = Math.abs(Number(settings?.msgXpRangeBottom ?? 15));
+ const msgXpTop = Math.abs(Number(settings?.msgXpRangeTop ?? 15));
+ const msgXpMedian = (msgXpTop + msgXpBottom) / 2;
+ const vcXpBottom = Math.abs(Number(settings?.vcXpRangeBottom ?? 15));
+ const vcXpTop = Math.abs(Number(settings?.vcXpRangeTop ?? 15));
+ const vcXpMedian = (vcXpTop + vcXpBottom) / 2;
 
  const newLevel = Number(self.level) + 1;
  const neededXP = (5 / 6) * newLevel * (2 * newLevel * newLevel + 27 * newLevel + 91);
@@ -106,14 +110,14 @@ export const getOwnLevel = async (
   {
    name: '\u200b',
    value: lan.thisWillTake(
-    Math.ceil((neededXP - Number(self.xp)) / gain / (xpPerMsg + 10)),
+    Math.ceil((neededXP - Number(self.xp)) / gain / msgXpMedian),
     client.util.moment(
-     Math.floor((neededXP - Number(self.xp)) / (xpPerMsg + 10) / gain) * 60000,
+     Math.floor((neededXP - Number(self.xp)) / msgXpMedian / gain) * 60000,
      language,
     ),
-    Math.ceil((neededXP - Number(self.xp)) / gain / (xpPerMin + 10)),
+    Math.ceil((neededXP - Number(self.xp)) / gain / (vcXpMedian + 10)),
     client.util.moment(
-     Math.floor((neededXP - Number(self.xp)) / (xpPerMin + 10) / gain) * 60000,
+     Math.floor((neededXP - Number(self.xp)) / (vcXpMedian + 10) / gain) * 60000,
      language,
     ),
    ),

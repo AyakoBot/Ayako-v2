@@ -9,7 +9,8 @@ type Types =
  | CT.EditorTypes.AntiRaidPunishment
  | CT.EditorTypes.Questions
  | CT.EditorTypes.LvlUpMode
- | CT.EditorTypes.WeekendsType;
+ | CT.EditorTypes.WeekendsType
+ | CT.EditorTypes.FormulaType;
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -134,6 +135,8 @@ export const getOptions = (type: Types, language: CT.Language) => {
    return language.lvlupmodes;
   case CT.EditorTypes.WeekendsType:
    return language.weekendstype;
+  case CT.EditorTypes.FormulaType:
+   return language.formulatypes;
   default:
    return [];
  }

@@ -40,6 +40,7 @@ export enum EditorTypes {
  BotToken = 'bot-token',
  Message = 'message',
  ShopType = 'shoptype',
+ FormulaType = 'formulatype',
  Emote = 'emote',
  Emotes = 'emotes',
  Command = 'command',
@@ -73,6 +74,19 @@ export type Categories = Language['slashCommands']['settings']['categories'];
 export type MatchingCategoryKeys = Extract<keyof typeof SettingsName2TableName, keyof Categories>;
 
 export interface SettingsFile<K extends MatchingCategoryKeys> {
+ getFiles: (
+  settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
+  language: Language,
+ ) => Discord.AttachmentBuilder[] | Promise<Discord.AttachmentBuilder[]>;
+ getComponentsV2: (
+  embedParsers: (typeof util)['settingsHelpers']['embedParsers'],
+  buttonParsers: (typeof util)['settingsHelpers']['buttonParsers'],
+  componentParsers: (typeof util)['settingsHelpers']['componentParsers'],
+  settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
+  language: Language,
+  lan: Categories[K],
+  guild: Discord.Guild,
+ ) => Discord.BaseMessageOptions['components'] | Promise<Discord.BaseMessageOptions['components']>;
  getEmbeds: (
   embedParsers: (typeof util)['settingsHelpers']['embedParsers'],
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],

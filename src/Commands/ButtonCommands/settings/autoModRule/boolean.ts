@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 export const getAPIRule = (rule: Discord.AutoModerationRule) => ({
  enabled: rule.enabled,
@@ -80,25 +79,8 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
-  settingName,
-  cmd.guild,
- )) as unknown as typeof SettingsFile;
- if (!settingsFile) return;
-
- cmd.update({
-  embeds: settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   updatedSetting,
-   language,
-   language.slashCommands.settings.categories[settingName],
-  ),
-  components: settingsFile.getComponents(
-   updatedSetting,
-   language,
-   language.slashCommands.settings.categories['denylist-rules'],
-  ),
- });
+ // @ts-expect-error Error overwrite for automod rules
+ cmd.client.util.settingsHelpers.showOverview(cmd, settingName, updatedSetting, language);
 };
 
 enum SettingNames {

@@ -38,22 +38,12 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- cmd.update({
-  embeds: await settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   (id
-    ? cmd.guild.autoModerationRules.cache.get(id)
-    : cmd.guild.autoModerationRules.cache.map((o) => o)) as never,
-   language,
-   language.slashCommands.settings.categories[settingName],
-   cmd.guild,
-  ),
-  components: await settingsFile.getComponents(
-   cmd.client.util.settingsHelpers.buttonParsers,
-   (id
-    ? cmd.guild.autoModerationRules.cache.get(id)
-    : cmd.guild.autoModerationRules.cache.map((o) => o)) as never,
-   language,
-  ),
- });
+ cmd.client.util.settingsHelpers.showOverview(
+  cmd,
+  settingName,
+  (id
+   ? cmd.guild.autoModerationRules.cache.get(id)
+   : cmd.guild.autoModerationRules.cache.map((o) => o)) as never,
+  language,
+ );
 };

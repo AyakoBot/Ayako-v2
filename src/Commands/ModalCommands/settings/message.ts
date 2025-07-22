@@ -55,21 +55,5 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
- if (!settingsFile) return;
-
- cmd.update({
-  embeds: await settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   updatedSetting as Parameters<(typeof settingsFile)['getEmbeds']>[1],
-   language,
-   language.slashCommands.settings.categories[settingName],
-   cmd.guild,
-  ),
-  components: await settingsFile.getComponents(
-   cmd.client.util.settingsHelpers.buttonParsers,
-   updatedSetting as Parameters<(typeof settingsFile)['getEmbeds']>[1],
-   language,
-  ),
- });
+ cmd.client.util.settingsHelpers.showOverview(cmd, settingName, updatedSetting, language);
 };

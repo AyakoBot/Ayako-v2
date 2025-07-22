@@ -49,18 +49,5 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   return;
  }
 
- cmd.update({
-  embeds: await settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   settings,
-   language,
-   language.slashCommands.settings.categories[settingName],
-   cmd.guild,
-  ),
-  components: await settingsFile.getComponents(
-   cmd.client.util.settingsHelpers.buttonParsers,
-   settings,
-   language,
-  ),
- });
+ cmd.client.util.settingsHelpers.showOverview(cmd, settingName, settings, language);
 };

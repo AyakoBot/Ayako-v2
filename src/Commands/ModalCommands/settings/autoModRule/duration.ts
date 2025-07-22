@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import ms, { type StringValue } from 'ms';
 import * as CT from '../../../../Typings/Typings.js';
 import { getAPIRule } from '../../../ButtonCommands/settings/autoModRule/boolean.js';
-import * as SettingsFile from '../../../SlashCommands/settings/moderation/denylist-rules.js';
 
 const settingName = CT.SettingNames.DenylistRules;
 
@@ -90,23 +89,6 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- const settingsFile = (await cmd.client.util.settingsHelpers.getSettingsFile(
-  settingName,
-  cmd.guild,
- )) as unknown as typeof SettingsFile;
- if (!settingsFile) return;
-
- cmd.update({
-  embeds: settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   updatedRule,
-   language,
-   language.slashCommands.settings.categories[settingName],
-  ),
-  components: settingsFile.getComponents(
-   updatedRule,
-   language,
-   language.slashCommands.settings.categories[settingName],
-  ),
- });
+ // @ts-expect-error Error overwrite for automod rules
+ cmd.client.util.settingsHelpers.showOverview(cmd, settingName, updatedRule, language);
 };

@@ -101,6 +101,7 @@ import setRatelimit from '../UtilModules/setRatelimit.js';
 import getRatelimit from '../UtilModules/getRatelimit.js';
 import cacheDB, { scheduleDB } from '../Bot/Redis.js';
 import { ScheduleManager } from '../UtilModules/ScheduleManager.js';
+import getLevelingGraphs from '../UtilModules/canvas/getLevelingGraphs.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -112,6 +113,7 @@ const logFiles = {
 const scheduleManager = new ScheduleManager(scheduleDB);
 
 interface Util {
+ getLevelingGraphs: typeof getLevelingGraphs;
  getPathFromError: typeof getPathFromError;
  getAllJobs: typeof getAllJobs;
  makeTable: typeof makeTable;
@@ -215,6 +217,7 @@ interface Util {
 }
 
 const util: Util = {
+ getLevelingGraphs,
  getPathFromError,
  getAllJobs,
  makeTable,

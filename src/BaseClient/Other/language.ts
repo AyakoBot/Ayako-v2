@@ -63,6 +63,7 @@ export default class Language {
  punishments: typeof this.JSON.punishments;
  punishmentDuration: typeof this.JSON.punishmentDuration;
  shoptypes: typeof this.JSON.shoptypes;
+ formulatypes: typeof this.JSON.formulatypes;
  answertypes: typeof this.JSON.answertypes;
  commandTypes: typeof this.JSON.commandTypes;
  languages: typeof this.JSON.languages;
@@ -113,6 +114,7 @@ export default class Language {
   this.punishments = this.JSON.punishments;
   this.punishmentDuration = this.JSON.punishmentDuration;
   this.shoptypes = this.JSON.shoptypes;
+  this.formulatypes = this.JSON.formulatypes;
   this.answertypes = this.JSON.answertypes;
   this.commandTypes = this.JSON.commandTypes;
   this.languages = this.JSON.languages;

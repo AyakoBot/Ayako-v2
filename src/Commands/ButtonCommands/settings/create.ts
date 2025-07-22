@@ -15,23 +15,10 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
     r as CT.DataBaseTables[(typeof CT.SettingsName2TableName)[T]],
   );
 
- const settingsFile = await cmd.client.util.settingsHelpers.getSettingsFile(settingName, cmd.guild);
- if (!settingsFile) return;
-
- const language = await cmd.client.util.getLanguage(cmd.guildId);
-
- cmd.update({
-  embeds: await settingsFile.getEmbeds(
-   cmd.client.util.settingsHelpers.embedParsers,
-   currentSettings,
-   language,
-   language.slashCommands.settings.categories[settingName],
-   cmd.guild,
-  ),
-  components: await settingsFile.getComponents(
-   cmd.client.util.settingsHelpers.buttonParsers,
-   currentSettings,
-   language,
-  ),
- });
+ cmd.client.util.settingsHelpers.showOverview(
+  cmd,
+  settingName,
+  currentSettings,
+  await cmd.client.util.getLanguage(cmd.guildId),
+ );
 };

@@ -9,7 +9,8 @@ type Type =
  | CT.EditorTypes.AntiRaidPunishment
  | CT.EditorTypes.Questions
  | CT.EditorTypes.LvlUpMode
- | CT.EditorTypes.WeekendsType;
+ | CT.EditorTypes.WeekendsType
+ | CT.EditorTypes.FormulaType;
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction,
