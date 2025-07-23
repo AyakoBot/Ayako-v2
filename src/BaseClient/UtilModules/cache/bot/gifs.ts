@@ -40,11 +40,16 @@ export interface Gifs {
 export const self: Gifs = {
  get: (name, type) => {
   const store = self.cache.get(name) ?? self.cache.set(name, []).get(name)!;
-  self.getNew(name, type);
+  if (store.length > 10) store.splice(0, store.length - 10);
 
-  if (!store.length) {
+  self.cache.set(
+   name,
+   store.filter((s) => s.url?.length),
+  );
+
+  if (store.length !== 10) {
    scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < Math.abs(10 - store.length); i += 1) {
      self.getNew(name, type);
     }
    });
@@ -52,7 +57,7 @@ export const self: Gifs = {
    return self.getNew(name, type);
   }
 
-  return store.shift()!;
+  return store.shift() || { url: undefined };
  },
  getNew: async (name, type, iteration = 0) => {
   if (iteration >= 10) return { url: undefined };
@@ -223,7 +228,11 @@ const gifSelection = [
  { triggers: ['bored'], gifs: async () => getGif('bored', ['neko']) },
  { triggers: ['comfy'], gifs: async () => getGif('comfy', ['purr']) },
  { triggers: ['cry'], gifs: async () => getGif('cry', ['neko', 'purr', 'waifu']) },
- { triggers: ['cuddle'], gifs: async () => getGif('cuddle', ['neko', 'purr', 'waifu']) },
+ {
+  triggers: ['snuggle', 'cuddle', 'nuzzle'],
+  gifs: async () => getGif('cuddle', ['neko', 'purr', 'waifu']),
+ },
+ { triggers: ['snuggle', 'cuddle', 'nuzzle'], gifs: async () => getGif('glomp', ['waifu']) },
  { triggers: ['dance'], gifs: async () => getGif('dance', ['neko', 'purr', 'waifu']) },
  { triggers: ['facepalm'], gifs: async () => getGif('facepalm', ['neko']) },
  { triggers: ['feed'], gifs: async () => getGif('feed', ['neko']) },
@@ -295,7 +304,6 @@ const gifSelection = [
  { triggers: ['shinobu'], gifs: async () => getGif('shinobu', ['waifu']) },
  { triggers: ['megumin'], gifs: async () => getGif('megumin', ['waifu']) },
  { triggers: ['bully'], gifs: async () => getGif('bully', ['waifu']) },
- { triggers: ['snuggle', 'cuddle', 'nuzzle'], gifs: async () => getGif('glomp', ['waifu']) },
  { triggers: ['kill'], gifs: async () => getGif('kill', ['waifu']) },
  { triggers: ['kick'], gifs: async () => getGif('kick', ['neko', 'waifu']) },
  { triggers: ['cringe'], gifs: async () => getGif('cringe', ['waifu']) },
