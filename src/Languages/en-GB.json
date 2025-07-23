@@ -1765,12 +1765,12 @@
    "comfort": {
     "self": "shhh, It's alright. Everything will be fine",
     "others": "comforts",
-    "buttons": ["Cry quietly", "Snuggle together"]
+    "buttons": ["Indulge in snugs", "Snuggle together"]
    },
    "hold": {
     "self": "holds themself very very tight. They are so lonely",
     "others": ["holds", "very tight"],
-    "buttons": ["Cry quietly", "Nuzzle together"]
+    "buttons": ["Indulge~", "Nuzzle together"]
    },
    "hug": {
     "self": "hugs themself, that looks quite sad...",
