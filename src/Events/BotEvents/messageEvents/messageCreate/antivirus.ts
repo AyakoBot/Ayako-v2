@@ -210,7 +210,7 @@ const getScans = async (
  return getScans(scanIds, scans, iteration + 1);
 };
 
-const getURLs = async (content: string): Promise<string[]> => {
+export const getURLs = async (content: string): Promise<string[]> => {
  const urlTLDs = client.util.cache.urlTLDs.toArray();
  const urlTester = client.util.regexes.urlTester(urlTLDs);
 

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { type APIEmbedImage } from 'discord.js';
 
 export default async (member: Discord.GuildMember) => {
  if (member.pending) return;
@@ -29,6 +29,8 @@ export default async (member: Discord.GuildMember) => {
   settings.pingroles.length ? `\n${settings.pingroles.map((r) => `<@&${r}>`).join(' ')}` : ''
  }${settings.pingusers.length ? `\n${settings.pingusers.map((r) => `<@${r}>`).join(' ')}` : ''}`;
 
+ embed.image = await getEmbedImage(settings.gifChannelId, member.guild, embed.image);
+
  member.client.util.send(channel, {
   embeds: [embed],
   content,
@@ -41,5 +43,29 @@ const getDefaultEmbed = async (member: Discord.GuildMember) => {
 
  return {
   description: member.client.util.stp(language.events.guildMemberAdd.welcome.embed, { member }),
+ };
+};
+
+const getEmbedImage = async (
+ gifChannelId: string | null,
+ guild: Discord.Guild,
+ currentImage: APIEmbedImage | undefined,
+) => {
+ if (!gifChannelId) return currentImage;
+
+ const imageCount = await guild.client.util.DataBase.welcomeGIF.count({
+  where: { channelId: gifChannelId, guildId: guild.id },
+ });
+ if (!imageCount) return currentImage;
+
+ return {
+  url: await guild.client.util.DataBase.welcomeGIF
+   .findFirst({
+    where: { channelId: gifChannelId, guildId: guild.id },
+    take: 1,
+    skip: guild.client.util.getRandom(0, imageCount - 1),
+    select: { url: true },
+   })
+   .then((r) => r?.url || currentImage?.url || ''),
  };
 };

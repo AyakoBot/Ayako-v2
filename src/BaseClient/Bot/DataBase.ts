@@ -39,6 +39,9 @@ export default prisma
    customclients: {
     $allOperations: async (data) => handleOperation('customclients', 'guildid', data as never),
    },
+   welcome: {
+    $allOperations: async (data) => handleOperation('welcome', 'guildid', data as never),
+   },
   },
  })
  .$extends({
@@ -142,9 +145,7 @@ export const cacheNewEntry = <T extends keyof DataBaseTables>(
  if (Array.isArray(res)) {
   res
    .filter((r) => !!r[keyName])
-   .forEach((r) =>
-    Redis.set(`settings:${tableName}:${r[keyName]}`, JSON.stringify(r)),
-   );
+   .forEach((r) => Redis.set(`settings:${tableName}:${r[keyName]}`, JSON.stringify(r)));
  } else if (res[keyName]) {
   Redis.set(`settings:${tableName}:${res[keyName]}`, JSON.stringify(res));
  }

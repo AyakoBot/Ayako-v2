@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 import cache from './cache.js';
 import log from './log.js';
+import welcomeGifChannel from './welcomeGifChannel.js';
 
 export default async (channel: Discord.Channel) => {
  if (!('guild' in channel)) return;
@@ -15,4 +16,5 @@ export default async (channel: Discord.Channel) => {
 
  log(channel);
  cache(channel);
+ welcomeGifChannel(channel);
 };

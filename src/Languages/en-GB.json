@@ -3445,6 +3445,10 @@
     "welcome": {
      "name": "Welcome",
      "fields": {
+      "gifChannelId": {
+       "name": "GIF Channel",
+       "desc": "The GIF Channel will be used to attach random GIFs to your Welcome Messages.\nSetting a GIF Channel will overwrite any Embed-Image you set. Make sure the channel only contains GIFs and Images as Links or Attachments.\nYou may post more GIFs into that channel at any time. If the Channel or Thread is private, make sure I can view it"
+      },
       "channelid": {
        "name": "Welcome Channel",
        "desc": "The Channel to welcome joining Members in"

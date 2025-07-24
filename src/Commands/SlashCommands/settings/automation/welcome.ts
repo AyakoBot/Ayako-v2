@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { getURLs } from '../../../../Events/BotEvents/messageEvents/messageCreate/antivirus.js';
+import { convertTenorToGIF } from '../../../../Events/BotEvents/messageEvents/messageCreate/welcomeGifChannel.js';
 
 const name = CT.SettingNames.Welcome;
 
@@ -60,6 +62,11 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
     inline: true,
    },
    {
+    name: lan.fields.gifChannelId.name,
+    value: embedParsers.channel(settings?.gifChannelId, language),
+    inline: true,
+   },
+   {
     name: lan.fields.pingjoin.name,
     value: embedParsers.boolean(settings?.pingjoin, language),
     inline: true,
@@ -101,6 +108,14 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
     CT.EditorTypes.Channel,
    ),
    buttonParsers.specific(language, settings?.embed, 'embed', name, undefined),
+   buttonParsers.specific(
+    language,
+    settings?.gifChannelId,
+    'gifChannelId',
+    name,
+    undefined,
+    CT.EditorTypes.Channel,
+   ),
    buttonParsers.boolean(language, settings?.pingjoin, 'pingjoin', name, undefined),
   ],
  },
@@ -137,3 +152,46 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+ oldSetting,
+ newSetting,
+ changedSetting,
+ guild,
+) => {
+ if (changedSetting !== 'gifChannelId') return;
+ if (newSetting?.gifChannelId === oldSetting?.gifChannelId) return;
+
+ await client.util.DataBase.welcomeGIF.deleteMany({ where: { guildId: guild.id } });
+ if (!newSetting?.gifChannelId) return;
+
+ const channel = guild.channels.cache.get(newSetting.gifChannelId);
+ if (!channel || !channel.isTextBased()) return;
+
+ const messages = await guild.client.util.fetchMessages(channel, { amount: 500 });
+ if (!messages.length) return;
+
+ const contentURLs = await Promise.all(
+  messages.map((m) => getURLs(m.content).then((urls) => urls.map((url) => ({ url, id: m.id })))),
+ );
+
+ const videoURLs = messages
+  .map((m) => m.embeds?.map((e) => ({ url: convertTenorToGIF(e.video?.url), id: m.id })).flat())
+  .flat()
+  .filter((u): u is { url: string; id: string } => !!u.url?.length);
+
+ await client.util.DataBase.welcomeGIF.createMany({
+  data: [
+   ...messages.map((m) => m.attachments.map((a) => ({ url: a.url, id: m.id }))).flat(),
+   ...contentURLs.flat(3),
+   ...videoURLs,
+  ]
+   .filter((u) => !!u.url && !u.url.includes('tenor.com/view'))
+   .map((m) => ({
+    guildId: guild.id,
+    channelId: channel.id,
+    msgId: m.id,
+    url: m.url,
+   })),
+ });
+};

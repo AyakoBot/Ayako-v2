@@ -18,6 +18,7 @@ import stickyMessage from './stickyMessage.js';
 import tta from './tta.js';
 import pingReporter from './pingReporter.js';
 import votePunish from './votePunish.js';
+import welcomeGifChannel from './welcomeGifChannel.js';
 
 import dmLog from './dmLog.js';
 import dmResponse from './dmResponse.js';
@@ -39,6 +40,7 @@ export default async (msg: Discord.Message) => {
   customEmbedThread(msg);
   pingReporter(msg);
   votePunish(msg);
+  welcomeGifChannel(msg);
 
   dmResponse(msg);
  } else {

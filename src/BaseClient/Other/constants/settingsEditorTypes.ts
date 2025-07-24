@@ -90,6 +90,7 @@ export default {
   pingroles: CT.EditorTypes.Roles,
   pingusers: CT.EditorTypes.Users,
   pingjoin: CT.EditorTypes.Boolean,
+  gifChannelId: CT.EditorTypes.Channel,
  },
  [CT.SettingNames.Verification]: {
   logchannel: CT.EditorTypes.Channel,
