@@ -32,6 +32,7 @@ await Manager.spawn()
     Number(e.headers?.get('retry-after') ?? 0) / 60
    } Minutes`,
   );
+  console.error(e);
   process.exit(1);
  });
 
