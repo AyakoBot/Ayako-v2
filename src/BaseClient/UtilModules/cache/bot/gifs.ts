@@ -49,25 +49,35 @@ export const self: Gifs = {
 
   if (store.length !== 10) {
    scheduleJob(getPathFromError(new Error()), new Date(Date.now() + 5000), () => {
-    for (let i = 0; i < Math.abs(10 - store.length); i += 1) {
+    new Array(Math.abs(10 - store.length)).fill(null).forEach(() => {
      self.getNew(name, type);
-    }
+    });
    });
 
    return self.getNew(name, type);
   }
 
-  return store.shift() || { url: undefined };
+  const result = store.shift() || { url: undefined };
+  self.cache.set(name, store);
+  return result;
  },
  getNew: async (name, type, iteration = 0) => {
   if (iteration >= 10) return { url: undefined };
 
-  const gif = await fetchGif(name, type);
-  if (!gif) return self.getNew(name, type, iteration + 1);
-  const store = self.cache.get(name) ?? self.cache.set(name, []).get(name)!;
-  store.push(gif);
+  const timeoutPromise = new Promise<ReturnType<'gif' | 'img'>>((_, reject) => {
+   setTimeout(() => reject(new Error('Timeout')), 1000);
+  });
 
-  return gif!;
+  try {
+   const gif = await Promise.race([fetchGif(name, type), timeoutPromise]);
+   if (!gif) return self.getNew(name, type, iteration + 1);
+   const store = self.cache.get(name) ?? self.cache.set(name, []).get(name)!;
+   store.push(gif);
+
+   return gif!;
+  } catch (error) {
+   return { url: undefined };
+  }
  },
  cache: new Map(),
 };
