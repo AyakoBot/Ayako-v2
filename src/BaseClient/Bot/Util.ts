@@ -101,7 +101,7 @@ import setRatelimit from '../UtilModules/setRatelimit.js';
 import getRatelimit from '../UtilModules/getRatelimit.js';
 import cacheDB, { scheduleDB } from '../Bot/Redis.js';
 import { ScheduleManager } from '../UtilModules/ScheduleManager.js';
-import getLevelingGraphs from '../UtilModules/canvas/getLevelingGraphs.js';
+import type getLevelingGraphs from '../UtilModules/canvas/getLevelingGraphs.js';
 
 const logFiles = {
  ratelimits: fs.createWriteStream(
@@ -217,7 +217,11 @@ interface Util {
 }
 
 const util: Util = {
- getLevelingGraphs,
+ getLevelingGraphs: await import(
+  process.argv.includes('--dev')
+   ? '../UtilModules/getColor.js'
+   : '../UtilModules/canvas/getLevelingGraphs.js'
+ ).then((r) => r.default),
  getPathFromError,
  getAllJobs,
  makeTable,
