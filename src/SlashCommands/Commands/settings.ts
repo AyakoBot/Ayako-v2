@@ -288,6 +288,12 @@ export default new Discord.SlashCommandBuilder()
    .setDescription(`Everything about ${process.env.mainName}'s Automation`)
    .addSubcommand(
     new Discord.SlashCommandSubcommandBuilder()
+     .setName('ticketing')
+     .setDescription('Create a Ticket System for your Server')
+     .addStringOption(idSelector),
+   )
+   .addSubcommand(
+    new Discord.SlashCommandSubcommandBuilder()
      .setName('censor')
      .setDescription('Repost Messages that contain Denylisted Words'),
    )

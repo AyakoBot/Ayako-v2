@@ -12,8 +12,26 @@ import { canGetMessage } from './getMessage.js';
  * @param channel - The guild text-based channel to retrieve pinned messages from.
  * @returns A promise that resolves with an array of parsed messages.
  */
-export default async (channel: Discord.GuildTextBasedChannel) => {
- if (!canGetMessage(channel, await getBotMemberFromGuild(channel.guild))) {
+export default async (
+ channel:
+  | Discord.GuildTextBasedChannel
+  | {
+     id: string;
+     name: string;
+     guild: Discord.Guild;
+     type: Discord.ChannelType;
+     skip: true;
+     client: Discord.Client<true>;
+    },
+) => {
+ if (
+  'skip' in channel && channel.skip
+   ? false
+   : !canGetMessage(
+      channel as Discord.GuildTextBasedChannel,
+      await getBotMemberFromGuild(channel.guild),
+     )
+ ) {
   const e = requestHandlerError(`Cannot get pinned messages in ${channel.name} / ${channel.id}`, [
    Discord.PermissionFlagsBits.ViewChannel,
    Discord.PermissionFlagsBits.ReadMessageHistory,
@@ -31,8 +49,8 @@ export default async (channel: Discord.GuildTextBasedChannel) => {
   .then((msgs) => {
    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));
    parsed.forEach((p) => {
-    if (channel.messages.cache.get(p.id)) return;
-    channel.messages.cache.set(p.id, p);
+    if ('skip' in channel ? true : channel.messages.cache.get(p.id)) return;
+    (channel as Discord.GuildTextBasedChannel).messages.cache.set(p.id, p);
    });
    return parsed;
   })

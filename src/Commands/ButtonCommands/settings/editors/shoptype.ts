@@ -10,7 +10,9 @@ type Types =
  | CT.EditorTypes.Questions
  | CT.EditorTypes.LvlUpMode
  | CT.EditorTypes.WeekendsType
- | CT.EditorTypes.FormulaType;
+ | CT.EditorTypes.FormulaType
+ | CT.EditorTypes.TicketingType
+ | CT.EditorTypes.ThreadAutoArchiveDuration;
 
 export default async (
  cmd: Discord.ButtonInteraction,
@@ -137,6 +139,10 @@ export const getOptions = (type: Types, language: CT.Language) => {
    return language.weekendstype;
   case CT.EditorTypes.FormulaType:
    return language.formulatypes;
+  case CT.EditorTypes.TicketingType:
+   return language.ticketingtype;
+  case CT.EditorTypes.ThreadAutoArchiveDuration:
+   return language.threadAutoArchiveDurations;
   default:
    return [];
  }

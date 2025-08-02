@@ -57,7 +57,9 @@ export enum EditorTypes {
  Commands = 'commands',
  Questions = 'questions',
  Position = 'position',
+ ThreadAutoArchiveDuration = 'thread-archive-time',
  WeekendsType = 'weekends-type',
+ TicketingType = 'ticketing-type',
 }
 
 export const GlobalType = {
@@ -98,6 +100,7 @@ export interface SettingsFile<K extends MatchingCategoryKeys> {
   buttonParsers: (typeof util)['settingsHelpers']['buttonParsers'],
   settings: DB.DataBaseTables[(typeof SettingsName2TableName)[K]],
   language: Language,
+  guild: Discord.Guild,
  ) =>
   | Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[]
   | Promise<Discord.APIActionRowComponent<Discord.APIComponentInMessageActionRow>[]>;
@@ -169,6 +172,7 @@ export enum SettingNames {
  LinkedRolesDeco = 'linked-roles-deco',
  PingReporter = 'ping-reporter',
  VotePunish = 'vote-punish',
+ Ticketing = 'ticketing',
 }
 
 export const SettingsName2TableName = {
@@ -216,6 +220,7 @@ export const SettingsName2TableName = {
  [SettingNames.LinkedRolesDeco]: 'linkedRolesDeco',
  [SettingNames.PingReporter]: 'pingReport',
  [SettingNames.VotePunish]: 'votePunish',
+ [SettingNames.Ticketing]: 'ticketing',
 } as const;
 
 export type CRUDResult<T extends keyof typeof SettingsName2TableName> = Promise<

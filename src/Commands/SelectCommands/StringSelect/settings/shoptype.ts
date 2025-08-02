@@ -10,7 +10,9 @@ type Type =
  | CT.EditorTypes.Questions
  | CT.EditorTypes.LvlUpMode
  | CT.EditorTypes.WeekendsType
- | CT.EditorTypes.FormulaType;
+ | CT.EditorTypes.FormulaType
+ | CT.EditorTypes.TicketingType
+ | CT.EditorTypes.ThreadAutoArchiveDuration;
 
 export default async (
  cmd: Discord.StringSelectMenuInteraction,

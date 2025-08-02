@@ -23,16 +23,21 @@ export default async (
  for (let i = 0; i < filter.amount / 100; i += 1) {
   // eslint-disable-next-line no-await-in-loop
   const msgs = await request.channels.getMessages(channel, {
-   limit: 100,
+   limit: Math.min(100, filter.amount - messages.length),
    before: messages.at(-1)?.id ?? filter.before,
   });
 
   if ('message' in msgs) return [];
+
+  if (msgs.length === 0) break;
+
   msgs.filter((m) => !messages.find((m2) => m2.id === m.id)).forEach((m) => messages.push(m));
 
-  if (msgs.length === lastAmount) i = filter.amount / 100;
+  if (messages.length >= filter.amount) break;
+  if (msgs.length === lastAmount && msgs.length < 100) break;
+
   lastAmount = msgs.length;
  }
 
- return messages;
+ return messages.slice(0, filter.amount);
 };

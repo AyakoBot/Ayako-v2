@@ -9,10 +9,24 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!userRes) return;
 
  const { user, language } = userRes;
+ const payload = await getPayload(user, language, cmd.guild || undefined);
+
+ cmd.reply({
+  components: payload.components,
+  embeds: payload.embeds,
+  ephemeral: true,
+ });
+};
+
+export const getPayload = async (
+ user: Discord.User,
+ language: CT.Language,
+ guild?: Discord.Guild,
+) => {
  const lan = language.slashCommands.info.user;
 
- const flags = await cmd.client.util.request.users
-  .get(cmd.guild, user.id, cmd.client)
+ const flags = await user.client.util.request.users
+  .get(guild, user.id, user.client)
   .then((u) =>
    u && !('message' in u)
     ? (u.flags ?? new Discord.UserFlagsBitField())
@@ -52,12 +66,12 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   fields: [],
  };
  const embeds = [userInfo];
- const member = cmd.guild
+ const member = guild
   ? await client.util.request.guilds
-     .getMember(cmd.guild, user.id)
+     .getMember(guild, user.id)
      .then((m) => ('message' in m ? undefined : m))
   : undefined;
- const components = getComponents(member, user, language, cmd.guild);
+ const components = getComponents(member, user, language, guild || null);
 
  if (botInfo && botInfo.description) {
   userInfo.fields?.push({ name: language.t.Description, value: botInfo.description });
@@ -82,11 +96,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (user.accentColor) userInfo.footer = { text: lan.footer };
  if (member) getMemberEmbed(embeds, member, user, language);
 
- cmd.reply({
-  components,
-  embeds,
-  ephemeral: true,
- });
+ return { components, embeds };
 };
 
 const getMemberEmbed = (

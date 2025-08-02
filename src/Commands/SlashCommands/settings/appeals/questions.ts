@@ -43,14 +43,14 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
  if (cmd.isButton()) {
   cmd.update({
    embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
-   components: await getComponents(buttonParsers, settings, language),
+   components: await getComponents(buttonParsers, settings, language, cmd.guild),
   });
   return;
  }
 
  cmd.reply({
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
-  components: await getComponents(buttonParsers, settings, language),
+  components: await getComponents(buttonParsers, settings, language, cmd.guild),
   ephemeral: true,
  });
 };

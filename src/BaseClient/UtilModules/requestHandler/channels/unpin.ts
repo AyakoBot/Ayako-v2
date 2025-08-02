@@ -10,15 +10,20 @@ import { getAPI } from './addReaction.js';
  * @param msg The message to unpin.
  * @returns A promise that resolves with the unpinned message, or rejects with an error.
  */
-export default async (msg: Discord.Message<true>) => {
+export default async (
+ msg: Discord.Message | { guild: undefined; id: string; channelId: string },
+ guild: Discord.Guild,
+) => {
+ const g = (msg.guild || guild)!;
+
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (!canUnPinMessage(msg.channelId, await getBotMemberFromGuild(msg.guild))) {
-  const e = requestHandlerError(`Cannot unpin message in ${msg.guild.name} / ${msg.guild.id}`, [
+ if (msg.guild ? !canUnPinMessage(msg.channelId, await getBotMemberFromGuild(g)) : false) {
+  const e = requestHandlerError(`Cannot unpin message in ${g.name} / ${g.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,
   ]);
 
-  error(msg.guild, e);
+  error(g, e);
   return e;
  }
 

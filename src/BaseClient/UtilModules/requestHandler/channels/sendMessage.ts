@@ -123,7 +123,7 @@ export const canSendMessage = (
 ) => {
  if (!channelId) return true;
  const channel = me.guild.channels.cache.get(channelId);
- if (!channel) return !!me.client.channels.cache.get(channelId)
+ if (!channel) return true;
 
  switch (true) {
   case payload.message_reference &&

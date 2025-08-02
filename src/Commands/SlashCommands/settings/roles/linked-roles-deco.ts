@@ -44,7 +44,7 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
  if (cmd.isButton()) {
   cmd.update({
    embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
-   components: await getComponents(buttonParsers, settings, language),
+   components: await getComponents(buttonParsers, settings, language, cmd.guild),
   });
   return;
  }
@@ -57,7 +57,7 @@ export const showId: NonNullable<CT.SettingsFile<typeof name>['showId']> = async
 
  cmd.reply({
   embeds,
-  components: (await getComponents(buttonParsers, settings, language)).map((c) => ({
+  components: (await getComponents(buttonParsers, settings, language, cmd.guild)).map((c) => ({
    ...c,
    components: c.components.map((b) => ({
     ...b,
@@ -317,7 +317,8 @@ export const revokeToken = async (
    passThroughBody: true,
   })
   .catch((e) => {
-   sendDebugMessage({ content: JSON.stringify(e, null, 2) });
+   (e as Error).cause = bot.id;
+   sendDebugMessage({ content: `${JSON.stringify(e, null, 2)}` });
    return false;
   });
 

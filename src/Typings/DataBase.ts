@@ -73,4 +73,5 @@ export interface DataBaseTables {
  linkedRolesDeco: Prisma.linkedRolesDeco;
  pingReport: Prisma.pingReport;
  votePunish: Prisma.votePunish;
+ ticketing: Prisma.ticketing
 }

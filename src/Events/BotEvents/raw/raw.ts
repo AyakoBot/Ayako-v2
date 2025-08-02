@@ -1,11 +1,11 @@
 import { GatewayDispatchEvents, GatewayOpcodes, type GatewayDispatchPayload } from 'discord.js';
 import channelStatuses from './channelStatuses.js';
-import cache from './cache.js';
+// import cache from './cache.js';
 import voiceChannelStatusUpdate from './voiceChannelStatusUpdate.js';
 
 export default (data: GatewayDispatchPayload) => {
  if (data.op !== GatewayOpcodes.Dispatch) return;
- cache(data);
+ // cache(data);
 
  switch (data.t) {
   // TODO: wait for d to document this

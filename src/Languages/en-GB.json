@@ -850,6 +850,55 @@
    }
   }
  },
+ "ticketing": {
+  "alreadyClosed": "The Ticket is already closed.",
+  "pickChannel": "Pick a Channel to send the \"Start Ticket\" Message in",
+  "initDesc": "Click the Button below to create a Ticket",
+  "initDone": "Successfully sent \"Start Ticket\" Message",
+  "editTitle": "To edit the Message",
+  "editSteps": "1. Copy the Message URL of the \"Start Ticket\" Message\n2. Enter the `/embed-builder create` Command and press `Start Over`\n3. Create your desired Embed\n4. Once done, press the `Edit` Button and paste the Message Link into the shown Text field",
+  "startTicket": "Start Ticket",
+  "notActive": "Ticketing-System not found or not disabled",
+  "startChatting": "Please explain why you opened this Ticket. The Support-Team will reply shortly.\n-# Every following message will be relayed to the Support-Team until the Ticket is closed or you left it",
+  "openDMs": "Failed to send DM. Please open your DMs in the Servers Privacy Settings.",
+  "cantCreateChannel": "Couldn't create a Support-Channel",
+  "closeTicket": "Close Ticket",
+  "blocked": "You are blocked from creating Tickets",
+  "messageFailedDeliver": "Failed to deliver the Message. Recipient might have closed their DMs",
+  "leaveTicket": "Leave Ticket",
+  "leaveSure": "Are you sure you want to leave the Ticket? You will not be able to rejoin it.",
+  "alreadyInTicket": "You already are in a Ticket. Please leave it first via the `Leave Ticket`.\nThe Message with the Button is Pinned",
+  "ticketLeft": "You left the Ticket. You will no longer receive messages sent there and yours will no longer be relayed to the Support-Team",
+  "ticketAlreadyClosed": "The Ticket is already closed",
+  "leftTicket": "Left Ticket. Messages will no longer be delivered.",
+  "dmd": "I've sent you a DM",
+  "sentBySupport": "Sent by Server Support-Team",
+  "cantClaim": "You can't claim this Ticket",
+  "reportAbuse": "Please report abuse to the Ayako Support-Team",
+  "closed": "closed",
+  "claimTicket": "Claim Ticket",
+  "claimed": "claimed",
+  "claimedBy": "Claimed By",
+  "hasClosedThread": "Closed the Ticket. Messages will no longer be relayed",
+  "hasClosed": "Closed the Ticket. The Member has been removed from the Channel",
+  "SupportTeam": "Support Team",
+  "notFound": "Ticket configuration not found",
+  "ticketed": "Support-Ticket created",
+  "cantDelete": "Couldn't delete the Ticket-Channel",
+  "logs": {
+   "authorCreate": "Ticket Created",
+   "descCreate": "> {{user}}> has created a Ticket in\n> {{channel}}",
+   "authorClose": "Ticket Closed",
+   "descClose": "> {{user}}> has closed the Ticket in\n> {{channel}}",
+   "authorLeave": "Ticket Left",
+   "descLeave": "> {{user}}> has left the Ticket in\n> {{channel}}",
+   "authorDelete": "Ticket Deleted",
+   "descDelete": "> {{user}}> has deleted the Ticket-Channel\n> {{channel}}",
+   "authorClaimed": "Ticket Claimed",
+   "descClaimed": "> {{user}}> has claimed the Ticket in\n> {{channel}}",
+   "transcript": "Transcript"
+  }
+ },
  "punishmentAction": {
   "name": "Action",
   "desc": "The Action to take"
@@ -1186,6 +1235,12 @@
   "onlyOnWeekdays": "Only applied on Weekdays",
   "everyDay": "Every Day"
  },
+ "threadAutoArchiveDurations": {
+  "60": "1 hour",
+  "1440": "1 day",
+  "4320": "3 days",
+  "10080": "7 days"
+ },
  "punishments": {
   "warn": "Warn",
   "tempmute": "Temp-Mute",
@@ -1213,6 +1268,12 @@
   "cubic": "Cubic",
   "polynomial": "Polynomial",
   "exponential": "Exponential"
+ },
+ "ticketingtype": {
+  "dmToThread": "DM to Thread",
+  "dmToChannel": "DM to Channel",
+  "Thread": "Thread",
+  "Channel": "Channel"
  },
  "answertypes": {
   "paragraph": "Paragraph",
@@ -1465,6 +1526,7 @@
   "2": "Gallery View"
  },
  "autotypes": {
+  "ticketing": "{{t.botName}} Ticketing",
   "customroles": "{{t.botName}} Custom Roles",
   "votepunish": "{{t.botName}} Vote-Punish",
   "voiceHub": "{{t.botName}} Voice-Hubs",
@@ -2626,6 +2688,48 @@
     "deleted": "{{setting}} Setting deleted"
    },
    "categories": {
+    "ticketing": {
+     "name": "Ticketing",
+     "sendInit": "Send Initial Message",
+     "fields": {
+      "archiveCategoryId": {
+       "name": "Archive Category",
+       "desc": "Category to move closed Support-Channels to"
+      },
+      "logChannelIds": {
+       "name": "Log Channels",
+       "desc": "Channels to log Ticket-Events in"
+      },
+      "channelId": {
+       "name": "Thread Channel",
+       "desc": "Channel to create Support-Threads in"
+      },
+      "type": {
+       "name": "Ticket-System Type",
+       "desc": "The Type of Ticket-System to use\n- __`DM to Channel`__: The User DMs the Bot. All messages are relayed to a Channel\n-# > Allows for private Support-Team conversations\n-# > Allows moving to an archive Category\n- __`DM to Thread`__: The User DMs the Bot. All messages are relayed to a Thread\n-# > Allows for private Support-Team conversations\n-# > Allows for automatic Thread deletion on inactivity\n- __`Channel`__: The User is added to a Channel with the Support-Team\n-# > Allows for more personal User to Support interactions\n-# > Allows moving to an archive Category\n- __`Thread`__: The User is added to a Thread with the Support-Team\n-# > Allows for more personal User to Support interactions\n-# > Allows for automatic Thread deletion on inactivity"
+      },
+      "categoryId": {
+       "name": "Channel Category",
+       "desc": "Category to create Support-Channels in"
+      },
+      "archiveDuration": {
+       "name": "Archive Duration",
+       "desc": "The Duration after which a Thread will be archived if no Messages were sent in it"
+      },
+      "mentionRoles": {
+       "name": "Mention Roles",
+       "desc": "Roles to mention when a User requests help"
+      },
+      "mentionUsers": {
+       "name": "Mention Users",
+       "desc": "Users to mention when a User requests help"
+      },
+      "sendMessagePrefixes": {
+       "name": "Send Message Prefixes",
+       "desc": "Messages using one of these Prefixes will be relayed to the User"
+      }
+     }
+    },
     "vote-punish": {
      "name": "Vote-Punish",
      "description": "Your Staff isn't always available, and that's alright. With this you can prepare for that Situation and let your Chat moderate itself.\n\n**How it works**\n> 1. A Member mentions @Staff to notify them\n> 2. Ayako waits for a Staff Member to write something in chat until the Cooldown wears off\n> -# A Staff-Member sending a Message, reacting to Ayako's Reaction or executing a Punishment counts as appearing\n> 3. If no Staff Member appears in time, Ayako will lock the Channel and ask the User who mentioned which Member this Mention is about.\n> 4. Ayako will then start a Vote to decide if the mentioned Member should be punished.\n> -# - Only Members with the required Role can vote. \n> -# - If no required Role is set everyone can vote.\n> -# - The vote requires at least the Amount of Votes you specified to pass.\n> 5. If the Vote passes, Ayako will execute the Punishment you specified for the specified Duration.\n> 6. Ayako will unlock the Channel again.",
@@ -4364,6 +4468,8 @@
   }
  },
  "t": {
+  "MessageID": "Message ID",
+  "MessageURL": "Message URL",
   "typeToSearch": "Type to search",
   "Appeal": "Appeal Punishment",
   "Question": "Question",

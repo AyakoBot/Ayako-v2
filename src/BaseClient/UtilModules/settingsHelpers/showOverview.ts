@@ -51,6 +51,7 @@ export default async <K extends SettingNames>(
    cmd.client.util.settingsHelpers.buttonParsers,
    updatedSetting,
    language,
+   cmd.guild,
   ),
   files: settingsFile.getFiles ? await settingsFile.getFiles(updatedSetting, language) : undefined,
  });

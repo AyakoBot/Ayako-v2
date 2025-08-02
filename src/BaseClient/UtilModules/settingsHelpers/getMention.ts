@@ -21,7 +21,9 @@ export type MentionTypes =
  | CT.EditorTypes.Questions
  | CT.EditorTypes.LvlUpMode
  | CT.EditorTypes.WeekendsType
- | CT.EditorTypes.FormulaType;
+ | CT.EditorTypes.FormulaType
+ | CT.EditorTypes.TicketingType
+ | CT.EditorTypes.ThreadAutoArchiveDuration;
 
 /**
  * Returns a mention string based on the given type and value.
@@ -72,6 +74,10 @@ export default async (
    return language.weekendstype[value as keyof typeof language.weekendstype];
   case CT.EditorTypes.FormulaType:
    return language.formulatypes[value as keyof typeof language.formulatypes];
+  case CT.EditorTypes.TicketingType:
+   return language.ticketingtype[value as keyof typeof language.ticketingtype];
+  case CT.EditorTypes.ThreadAutoArchiveDuration:
+   return language.threadAutoArchiveDurations[value as keyof typeof language.threadAutoArchiveDurations];
   default:
    return value;
  }

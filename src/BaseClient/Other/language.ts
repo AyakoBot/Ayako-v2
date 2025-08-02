@@ -20,6 +20,7 @@ import slashCommands from './language/slashCommands.js';
 import nitro from './language/nitro.js';
 import mod from './language/mod.js';
 import leveling from './language/leveling.js';
+import ticketing from './language/ticketing.js';
 
 import enJSON from '../../Languages/en-GB.json' with { type: 'json' };
 import deJSON from '../../Languages/de-DE.json' with { type: 'json' };
@@ -53,6 +54,7 @@ export default class Language {
  t: ReturnType<typeof t>;
 
  permissions: typeof this.JSON.permissions;
+ ticketing: ReturnType<typeof ticketing>;
  userFlags: typeof this.JSON.userFlags;
  punishmentAction: typeof this.JSON.punishmentAction;
  punishmentDeleteMessageSeconds: typeof this.JSON.punishmentDeleteMessageSeconds;
@@ -64,6 +66,7 @@ export default class Language {
  punishmentDuration: typeof this.JSON.punishmentDuration;
  shoptypes: typeof this.JSON.shoptypes;
  formulatypes: typeof this.JSON.formulatypes;
+ ticketingtype: typeof this.JSON.ticketingtype;
  answertypes: typeof this.JSON.answertypes;
  commandTypes: typeof this.JSON.commandTypes;
  languages: typeof this.JSON.languages;
@@ -75,6 +78,7 @@ export default class Language {
  errors: typeof this.JSON.errors;
  lvlupmodes: typeof this.JSON.lvlupmodes;
  weekendstype: typeof this.JSON.weekendstype;
+ threadAutoArchiveDurations: typeof this.JSON.threadAutoArchiveDurations;
 
  leveling: ReturnType<typeof leveling>;
  time: ReturnType<typeof time>;
@@ -104,6 +108,7 @@ export default class Language {
   this.t = t(this.JSON);
 
   this.permissions = this.JSON.permissions;
+  this.ticketing = ticketing(this);
   this.userFlags = this.JSON.userFlags;
   this.punishmentAction = this.JSON.punishmentAction;
   this.punishmentDeleteMessageSeconds = this.JSON.punishmentDeleteMessageSeconds;
@@ -115,6 +120,7 @@ export default class Language {
   this.punishmentDuration = this.JSON.punishmentDuration;
   this.shoptypes = this.JSON.shoptypes;
   this.formulatypes = this.JSON.formulatypes;
+  this.ticketingtype = this.JSON.ticketingtype;
   this.answertypes = this.JSON.answertypes;
   this.commandTypes = this.JSON.commandTypes;
   this.languages = this.JSON.languages;
@@ -126,6 +132,7 @@ export default class Language {
   this.errors = this.JSON.errors;
   this.lvlupmodes = this.JSON.lvlupmodes;
   this.weekendstype = this.JSON.weekendstype;
+  this.threadAutoArchiveDurations = this.JSON.threadAutoArchiveDurations;
 
   this.leveling = leveling(this);
   this.time = time(this);
