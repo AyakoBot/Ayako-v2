@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
 import rp from '../../SlashCommands/rp/manager.js';
+import { API } from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -41,8 +42,10 @@ export default async (cmd: Discord.ButtonInteraction) => {
   })
   .then();
 
- if (!settings) await deleteAll(cmd);
- else await create(cmd.guild);
+ if (!settings) {
+  await deleteAll(cmd);
+  deleteMain(cmd);
+ } else await create(cmd.guild);
 
  rp(cmd, [], true);
 };
@@ -144,3 +147,27 @@ export const getRegisterCommands = (
 
   return command;
  });
+
+const deleteMain = async (cmd: Discord.ButtonInteraction<'cached'>) => {
+ const cc = await cmd.client.util.DataBase.customclients.findUnique({
+  where: { guildid: cmd.guildId, token: { not: null } },
+ });
+ if (!cc) return;
+
+ const commands = await API.applicationCommands
+  .getGuildCommands(cmd.client.user.id, cmd.guildId)
+  .catch(() => null);
+ if (!commands) return;
+
+ if (commands.length === cmd.client.util.constants.commands.interactions.length) {
+  await API.applicationCommands.bulkOverwriteGuildCommands(cmd.client.user.id, cmd.guildId, []);
+ } else {
+  const commandNames = cmd.client.util.constants.commands.interactions.map((c) => c.name);
+
+  await Promise.all(
+   commands
+    .filter((c) => commandNames.includes(c.name))
+    .map((c) => API.applicationCommands.deleteGuildCommand(cmd.client.user.id, cmd.guildId, c.id)),
+  );
+ }
+};
