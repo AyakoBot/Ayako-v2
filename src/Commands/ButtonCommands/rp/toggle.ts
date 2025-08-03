@@ -1,6 +1,5 @@
 import * as Discord from 'discord.js';
 import rp from '../../SlashCommands/rp/manager.js';
-import { API } from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
  if (!cmd.inCachedGuild()) return;
@@ -149,6 +148,8 @@ export const getRegisterCommands = (
  });
 
 const deleteMain = async (cmd: Discord.ButtonInteraction<'cached'>) => {
+ const API = await import('../../../BaseClient/Bot/Client.js').then((m) => m.API);
+
  const cc = await cmd.client.util.DataBase.customclients.findUnique({
   where: { guildid: cmd.guildId, token: { not: null } },
  });
