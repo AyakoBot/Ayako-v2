@@ -881,6 +881,7 @@
   "claimed": "claimed",
   "claimedBy": "Claimed By",
   "hasClosedThread": "Closed the Ticket. Messages will no longer be relayed",
+  "hasClosedThreadInactive": "Closed the Ticket due to inactivity. Messages will no longer be relayed",
   "hasClosed": "Closed the Ticket. The Member has been removed from the Channel",
   "SupportTeam": "Support Team",
   "notFound": "Ticket configuration not found",

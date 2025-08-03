@@ -1,16 +1,20 @@
-import { TicketType } from '@prisma/client';
+import { TicketType, type DMTicket, type ticketing } from '@prisma/client';
 import {
- BaseGuildTextChannel,
  ButtonStyle,
  CategoryChannel,
  ChannelType,
  ComponentType,
+ Guild,
  MessageFlags,
  OverwriteType,
+ type User,
  type APIActionRowComponent,
  type APIButtonComponentWithCustomId,
  type ButtonInteraction,
+ type GuildTextBasedChannel,
+ ThreadAutoArchiveDuration,
 } from 'discord.js';
+import type { Language, UsualMessagePayload } from 'src/Typings/Typings';
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -35,27 +39,42 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
    active: true,
    logChannelIds: { isEmpty: false },
   },
+  include: { DMTicket: { where: { channelId: cmd.channel!.id } } },
  });
 
- cmd.client.util.request.channels.edit(cmd.channel!, {
+ const payload = await closeChannel(cmd.guild, language, cmd.channel, settings, cmd.user, id);
+ cmd.reply(payload);
+};
+
+export const closeChannel = async (
+ guild: Guild,
+ language: Language,
+ channel: GuildTextBasedChannel,
+ settings: (ticketing & { DMTicket: DMTicket[] }) | null,
+ closer: User,
+ id: string,
+): Promise<UsualMessagePayload> => {
+ guild.client.util.request.channels.edit(channel!, {
+  archived: channel.isThread() ? false : undefined,
+  auto_archive_duration: channel.isThread() ? ThreadAutoArchiveDuration.OneHour : undefined,
   name:
-   `${language.ticketing.closed}-${cmd.channel?.name.replace(language.ticketing.claimed, '')}`.slice(
+   `${language.ticketing.closed}-${channel?.name.replace(language.ticketing.claimed, '')}`.slice(
     0,
     30,
    ),
   parent_id:
-   !cmd.channel.isThread() &&
+   !channel.isThread() &&
    settings &&
    [TicketType.Channel, TicketType.dmToChannel].includes(settings.type)
     ? settings.archiveCategoryId || undefined
     : undefined,
   permission_overwrites:
-   !cmd.channel.isThread() &&
+   !channel.isThread() &&
    settings &&
    [TicketType.Channel, TicketType.dmToChannel].includes(settings.type) &&
    !!settings.archiveCategoryId
     ? (
-       cmd.guild.channels.cache.get(settings.archiveCategoryId) as CategoryChannel | undefined
+       guild.channels.cache.get(settings.archiveCategoryId) as CategoryChannel | undefined
       )?.permissionOverwrites.cache.map((o) => ({
        id: o.id,
        type: o.type,
@@ -65,27 +84,27 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
     : undefined,
  });
 
- if (cmd.channel && !cmd.channel.isThread()) {
-  (cmd.channel as BaseGuildTextChannel).permissionOverwrites.cache
+ if (channel && !channel.isThread()) {
+  channel.permissionOverwrites.cache
    .filter((o) => o.type === OverwriteType.Member)
    .forEach((o) => {
-    cmd.client.util.request.channels.deletePermissionOverwrite(
-     cmd.channel!,
+    guild.client.util.request.channels.deletePermissionOverwrite(
+     channel!,
      o.id,
      language.autotypes.ticketing,
     );
    });
  }
 
- if (settings && cmd.channel) {
-  cmd.client.util.send(
-   { id: settings.logChannelIds, guildId: cmd.guildId },
+ if (settings && channel) {
+  guild.client.util.send(
+   { id: settings.logChannelIds, guildId: guild.id },
    {
     embeds: [
      {
       author: { name: language.ticketing.logs.authorClose },
-      description: language.ticketing.logs.descClose(cmd.user, cmd.channel),
-      color: cmd.client.util.Colors.Loading,
+      description: language.ticketing.logs.descClose(closer, channel),
+      color: guild.client.util.Colors.Loading,
      },
     ],
    },
@@ -104,59 +123,53 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
   ],
  };
 
- const dmThread = await cmd.client.util.DataBase.dMTicket.findFirst({
-  where: { channelId: cmd.channel!.id },
- });
- if (!dmThread) {
-  cmd.reply({
-   embeds: [
-    {
-     author: { name: cmd.user.username, icon_url: cmd.user.displayAvatarURL() },
-     description: language.ticketing.hasClosed,
-     color: cmd.client.util.Colors.Danger,
-    },
-   ],
-   components: [deleteBtn],
-  });
-  return;
- }
-
- cmd.reply({
+ const payload: UsualMessagePayload = {
   embeds: [
    {
-    author: { name: cmd.user.username, icon_url: cmd.user.displayAvatarURL() },
-    description: language.ticketing.hasClosedThread,
-    color: cmd.client.util.Colors.Danger,
+    author: { name: closer.username, icon_url: closer.displayAvatarURL() },
+    description: closer.bot
+     ? language.ticketing.hasClosedThreadInactive
+     : settings
+       ? language.ticketing.hasClosedThread
+       : language.ticketing.hasClosed,
+    color: guild.client.util.Colors.Danger,
    },
   ],
   components: [deleteBtn],
- });
+ };
 
- cmd.client.util.request.channels.sendMessage(cmd.guild, dmThread.dmId, {
+ if (!settings) return payload;
+ if (!settings.DMTicket[0]?.dmId) return payload;
+
+ guild.client.util.request.channels.sendMessage(guild, settings.DMTicket[0]?.dmId, {
   embeds: [
    {
     author: { name: language.ticketing.SupportTeam },
-    description: language.ticketing.hasClosedThread,
-    color: cmd.client.util.Colors.Danger,
+    description: closer.bot
+     ? language.ticketing.hasClosedThreadInactive
+     : language.ticketing.hasClosedThread,
+    color: guild.client.util.Colors.Danger,
    },
   ],
  });
 
- cmd.client.util.DataBase.dMTicket.deleteMany({ where: { channelId: cmd.channel!.id } }).then();
+ guild.client.util.DataBase.dMTicket.deleteMany({ where: { channelId: channel!.id } }).then();
 
- const pins = await cmd.client.util.request.channels.getPins({
+ const pins = await guild.client.util.request.channels.getPins({
   skip: true,
-  id: dmThread.dmId,
+  id: settings.DMTicket[0]?.dmId,
   name: '@me',
-  guild: cmd.guild,
+  guild: guild,
   type: ChannelType.DM,
-  client: cmd.client,
+  client: guild.client,
  });
 
- if ('message' in pins) return;
+ if ('message' in pins) return payload;
 
- const messages = pins.filter((m) => m.author.id === cmd.client.user.id && m.components.length);
+ const messages = pins.filter((m) => m.author.id === guild.client.user.id && m.components.length);
  messages.forEach((m) => {
-  cmd.client.util.request.channels.unpin(m, cmd.guild);
+  guild.client.util.request.channels.unpin(m, guild);
  });
+
+ return payload;
 };
