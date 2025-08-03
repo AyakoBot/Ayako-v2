@@ -12,7 +12,6 @@ export default async (channel: AnyThreadChannel) => {
   where: { channelId: channel.parentId },
   include: { DMTicket: { where: { channelId: channel.id } } },
  });
- console.log(settings);
  if (!settings) return;
 
  const payload = await closeChannel(
