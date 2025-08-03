@@ -132,14 +132,14 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
    .join(' ')}`,
   embeds: [initPayload.embeds[0]],
   components: [
-  {
+   {
     type: ComponentType.ActionRow,
     components: [
      {
       type: ComponentType.Button,
       custom_id: `info/user_${cmd.user.id}`,
-      label: language.ticketing.closeTicket,
-      style: ButtonStyle.Danger,
+      label: language.ticketing.userInfo,
+      style: ButtonStyle.Secondary,
      },
     ],
    },

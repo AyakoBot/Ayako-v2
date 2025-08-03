@@ -851,6 +851,7 @@
   }
  },
  "ticketing": {
+  "userInfo": "More User Info",
   "alreadyClosed": "The Ticket is already closed.",
   "pickChannel": "Pick a Channel to send the \"Start Ticket\" Message in",
   "initDesc": "Click the Button below to create a Ticket",
