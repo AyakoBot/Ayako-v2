@@ -28,6 +28,7 @@ export default {
   'https://c.tenor.com/xlW3RF3bzo8AAAAC/tenor.gif',
   'https://c.tenor.com/W4Voi07VHcsAAAAC/tenor.gif',
   'https://cdn.discordapp.com/attachments/596359459094396970/1340364746804826112/IONE3HSL1L8ADUOG.gif',
+  'https://cdn.discordapp.com/attachments/694000565423833119/1401659165780217987/jpZFfMK.gif'
  ],
  nya: [
   'https://cdn.discordapp.com/attachments/760152457799401532/825788696631574608/tenor_74.gif',
