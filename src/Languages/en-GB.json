@@ -3550,6 +3550,7 @@
     },
     "welcome": {
      "name": "Welcome",
+     "desc": "Mentions may not display properly if `Ping joined User` is disabled, but will still work",
      "fields": {
       "gifChannelId": {
        "name": "GIF Channel",

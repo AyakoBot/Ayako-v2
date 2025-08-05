@@ -39,12 +39,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = async (
 ) => [
  {
   author: embedParsers.author(language, lan),
-  description: client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]
-   ?.length
-   ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
-      name as keyof typeof client.util.constants.tutorials
-     ].map((t) => `[${t.name}](${t.link})`)}`
-   : undefined,
+  description: `${lan.desc}\n${
+   client.util.constants.tutorials[name as keyof typeof client.util.constants.tutorials]?.length
+    ? `${language.slashCommands.settings.tutorial}\n${client.util.constants.tutorials[
+       name as keyof typeof client.util.constants.tutorials
+      ].map((t) => `[${t.name}](${t.link})`)}`
+    : ''
+  }`,
   fields: [
    {
     name: language.slashCommands.settings.active,
