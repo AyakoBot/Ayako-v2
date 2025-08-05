@@ -24,7 +24,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   embeds: await getEmbeds(embedParsers, settings, language, lan, cmd.guild),
   components: await getComponents(buttonParsers, settings, language, cmd.guild),
   files: await getFiles(settings, language),
-  flags: Discord.MessageFlags.Ephemeral
+  flags: Discord.MessageFlags.Ephemeral,
  });
 };
 
@@ -81,7 +81,7 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
 
 export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
  embedParsers,
- _,
+ settings,
  language,
  lan,
 ) => [
@@ -91,6 +91,13 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
   image: {
    url: 'attachment://xp-formulas-chart.png',
   },
+  fields: [
+   {
+    name: language.slashCommands.settings.active,
+    value: embedParsers.boolean(settings.active, language),
+    inline: false,
+   },
+  ],
  },
 ];
 

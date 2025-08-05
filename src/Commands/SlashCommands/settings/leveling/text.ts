@@ -43,11 +43,6 @@ export const getEmbeds: CT.SettingsFile<typeof name>['getEmbeds'] = (
    : undefined,
   fields: [
    {
-    name: language.slashCommands.settings.active,
-    value: embedParsers.boolean(settings.active, language),
-    inline: false,
-   },
-   {
     name: lan.fields.msgXpRangeBottom.name,
     value: embedParsers.number(settings.msgXpRangeBottom, language),
     inline: true,
