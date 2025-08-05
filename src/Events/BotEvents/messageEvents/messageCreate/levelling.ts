@@ -178,7 +178,7 @@ const updateLevels = async (
 
  const oldLevel = Number(level.level);
  const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
- const neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+ let neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
   oldLevel + 1,
   settings ? Number(settings.curveModifier) : 100,
  );
@@ -186,11 +186,18 @@ const updateLevels = async (
  let newLevel = oldLevel;
 
  if (xp >= neededXP) {
-  newLevel += 1;
+  while (xp >= neededXP) {
+   newLevel += 1;
+   neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+    newLevel,
+    settings ? Number(settings.curveModifier) : 100,
+   );
+   if (xp < neededXP) break;
+  }
 
   if (level) {
    levelUp(
-    { oldXP: Number(level.xp), newXP: xp, newLevel: oldLevel + 1, oldLevel },
+    { oldXP: Number(level.xp), newXP: xp, newLevel, oldLevel },
     settings as Prisma.leveling,
     await msg.client.util.request.guilds.getMember(msg.guild, msg.author.id, msg.guild),
     msg,
