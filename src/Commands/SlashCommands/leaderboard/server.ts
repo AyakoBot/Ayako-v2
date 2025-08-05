@@ -1,6 +1,7 @@
-import Prisma from '@prisma/client';
+import Prisma, { FormulaType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
+import { formulas } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -84,7 +85,10 @@ export const getOwnLevel = async (
  const vcXpMedian = (vcXpTop + vcXpBottom) / 2;
 
  const newLevel = Number(self.level) + 1;
- const neededXP = (5 / 6) * newLevel * (2 * newLevel * newLevel + 27 * newLevel + 91);
+ const neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+  Number(self.level || 0) + 1,
+  settings ? Number(settings.curveModifier) : 100,
+ );
 
  return [
   {
