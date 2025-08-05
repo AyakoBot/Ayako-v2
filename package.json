@@ -41,17 +41,17 @@
     "waifu-pics-api": "^1.0.5"
   },
   "devDependencies": {
-    "@total-typescript/ts-reset": "^0.6.1",
-    "@types/echarts": "^5.0.0",
-    "@types/lodash": "^4.17.20",
-    "@types/lodash.merge": "^4.6.9",
     "@babel/eslint-parser": "^7.28.0",
     "@babel/eslint-plugin": "^7.27.1",
     "@swc/cli": "^0.7.8",
     "@swc/core": "1.13.3",
+    "@total-typescript/ts-reset": "^0.6.1",
     "@types/clone": "^2.1.4",
+    "@types/echarts": "^5.0.0",
     "@types/glob": "^9.0.0",
+    "@types/lodash": "^4.17.20",
     "@types/lodash.clonedeep": "^4.5.9",
+    "@types/lodash.merge": "^4.6.9",
     "@types/moment-duration-format": "^2.2.6",
     "@types/ms": "^2.1.0",
     "@types/node": "^24.2.0",
@@ -61,7 +61,7 @@
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
-  		"eslint": "^8.57.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -76,7 +76,7 @@
   },
   "packageManager": "pnpm@10.10.0",
   "engines": {
-    "node": "^22.3.0",
+    "node": "^24.0.1",
     "pnpm": "^10.10.0"
   },
   "prisma": {
