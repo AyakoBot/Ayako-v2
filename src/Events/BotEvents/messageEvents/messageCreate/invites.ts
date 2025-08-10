@@ -8,19 +8,13 @@ export default async (msg: Discord.Message<true>) => {
  if (msg.member?.permissions.has(Discord.PermissionFlagsBits.Administrator)) return;
 
  const settings = await msg.client.util.DataBase.invites.findUnique({
-  where: {
-   guildid: msg.guildId ?? msg.guild.id,
-   active: true,
-   NOT: {
-    OR: [
-     { wlchannelid: { has: msg.channelId } },
-     { wlchannelid: { has: msg.channel?.parentId || '' } },
-     { wlroleid: { hasSome: msg.member?.roles.cache.map((r) => r.id) || [] } },
-    ],
-   },
-  },
+  where: { guildid: msg.guildId ?? msg.guild.id, active: true },
  });
  if (!settings) return;
+
+ if (settings.wlroleid.some((r) => msg.member?.roles.cache.has(r))) return;
+ if (settings.wlchannelid.some((c) => msg.channel.id === c)) return;
+ if (settings.wlchannelid.some((c) => msg.channel.parentId === c)) return;
 
  const hasInvite = await checkForInvite(msg.content, msg.guild);
  if (!hasInvite) return;
