@@ -8,8 +8,11 @@ import crypto from 'crypto';
  * @throws An error if too many bytes are needed to generate the random number.
  */
 export default (min: number, max: number) => {
- const minStr = min.toString();
- const maxStr = max.toString();
+ const realMin = Math.min(min, max);
+ const realMax = Math.max(min, max);
+ if (realMin === realMax) return realMin;
+ const minStr = realMin.toString();
+ const maxStr = realMax.toString();
  const minDecimals = minStr.includes('.') ? minStr.split('.')[1].length : 0;
  const maxDecimals = maxStr.includes('.') ? maxStr.split('.')[1].length : 0;
  const decimals = Math.max(minDecimals, maxDecimals);
@@ -22,6 +25,12 @@ export default (min: number, max: number) => {
 
  if (bytesNeeded > 6) {
   throw new Error('Too many bytes needed');
+ }
+
+ try {
+  crypto.randomBytes(bytesNeeded);
+ } catch {
+  throw new Error(`Error generating random bytes: ${bytesNeeded} - from ${min} to ${max}`);
  }
 
  const randomBytes = crypto.randomBytes(bytesNeeded);
