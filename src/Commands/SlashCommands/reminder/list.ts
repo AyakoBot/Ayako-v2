@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 
-const isSnowflake = (id: string) => /^\d{17,19}$/.test(id);
+const isSnowflake = (id: string) => !!id.match(/^\d{17,19}$/)?.length;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const language = await cmd.client.util.getLanguage(cmd.guildId);

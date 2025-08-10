@@ -69,7 +69,7 @@ export const resolveFile = async (
  }
 
  if (typeof resource === 'string') {
-  if (/^https?:\/\//.test(resource)) {
+  if (resource.match(/^https?:\/\//)?.length) {
    const res = await fetch(resource);
    return {
     data: Buffer.from(await res.arrayBuffer()),

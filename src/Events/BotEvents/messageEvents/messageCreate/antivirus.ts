@@ -221,7 +221,7 @@ export const getURLs = async (content: string): Promise<string[]> => {
     // eslint-disable-next-line no-useless-escape
     .replace(/[\[\]\(\)<>]/g, ' ')
     .split(/[\s\n]+/g)
-    .filter((line) => /[^.]+\./.test(line))
+    .filter((line) => line.match(/[^.]+\./)?.length)
     .filter((u) => u.match(urlTester))
     .map((arg) => client.util.fetchWithRedirects(arg)),
   )

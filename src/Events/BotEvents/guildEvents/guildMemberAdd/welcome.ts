@@ -6,6 +6,7 @@ export default async (member: Discord.GuildMember) => {
   where: { guildid: member.guild.id, active: true },
  });
  if (!settings) return;
+ if (!settings.active) return;
 
  const channel = settings.channelid
   ? await member.client.util.getChannel.guildTextChannel(settings.channelid)
