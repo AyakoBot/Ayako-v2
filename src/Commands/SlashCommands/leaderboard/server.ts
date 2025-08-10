@@ -119,9 +119,9 @@ export const getOwnLevel = async (
      Math.floor((neededXP - Number(self.xp)) / msgXpMedian / gain) * 60000,
      language,
     ),
-    Math.ceil((neededXP - Number(self.xp)) / gain / (vcXpMedian + 10)),
+    Math.ceil((neededXP - Number(self.xp)) / gain / vcXpMedian),
     client.util.moment(
-     Math.floor((neededXP - Number(self.xp)) / (vcXpMedian + 10) / gain) * 60000,
+     Math.floor((neededXP - Number(self.xp)) / vcXpMedian / gain) * 60000,
      language,
     ),
    ),
