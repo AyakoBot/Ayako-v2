@@ -11,6 +11,7 @@ export default (min: number, max: number) => {
  const realMin = Math.min(min, max);
  const realMax = Math.max(min, max);
  if (realMin === realMax) return realMin;
+
  const minStr = realMin.toString();
  const maxStr = realMax.toString();
  const minDecimals = minStr.includes('.') ? minStr.split('.')[1].length : 0;
@@ -18,8 +19,8 @@ export default (min: number, max: number) => {
  const decimals = Math.max(minDecimals, maxDecimals);
 
  const scale = Math.pow(10, decimals);
- const minInt = Math.round(min * scale);
- const maxInt = Math.round(max * scale);
+ const minInt = Math.round(realMin * scale);
+ const maxInt = Math.round(realMax * scale);
  const range = maxInt - minInt + 1;
  const bytesNeeded = Math.ceil(Math.log2(range) / 8);
 
