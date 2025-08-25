@@ -3,6 +3,7 @@ import * as Jobs from 'node-schedule';
 import { Colors, type UsualMessagePayload } from '../../Typings/Typings.js';
 import deleteThread from './deleteNotificationThread.js';
 import getPathFromError from './getPathFromError.js';
+import { sendDebugMessage } from './error.js';
 
 /**
  * Creates a notification thread for a target guild member.
@@ -81,6 +82,8 @@ export default async (
   name: target.client.util.constants.standard.getEmote(target.client.util.emotes.warning) ?? '⚠️',
  });
  if ('message' in thread) return undefined;
+ if (!thread) return undefined;
+
  putDel(target, thread);
 
  const member = await target.client.util.request.threads.addMember(thread, target.id);
@@ -90,6 +93,7 @@ export default async (
  const message = await target.client.util.send(thread, finishedPayload);
 
  if (!message || typeof message === 'undefined') {
+  sendDebugMessage({ files: [target.client.util.txtFileWriter(JSON.stringify(thread, null, 2))] });
   target.client.util.cache.deleteThreads.delete(target.guild.id, thread.id);
   deleteThread(target.guild, thread.id);
   return undefined;
