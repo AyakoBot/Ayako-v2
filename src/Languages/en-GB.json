@@ -778,7 +778,7 @@
    "unban": "Automatically Un-Banned",
    "unmute": "Automatically Un-Muted",
    "disboard": {
-    "desc": "You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond with a Server-Bump Message, click the Button below.",
+    "desc": "You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond with a Server-Bump Message, click the Button below.\n-# Also check out https://discordservers.gg (unpaid ad)",
     "title": "{{t.botName}} DISBOARD Bump Reminder",
     "button": "Mark Server as bumped"
    },
