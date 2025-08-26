@@ -107,12 +107,16 @@ export default async (msg: Discord.Message<true>) => {
 };
 
 const checkForInvite = async (content: string, guild: Discord.Guild): Promise<boolean> => {
- content = decodeURIComponent(
-  content
-   .replace(/<[^>]*>/g, (match) => match.replace(/\n/g, ''))
-   .replace(/[<>]/g, ' ')
-   .replace(/\\+/g, '/'),
- );
+ try {
+  content = decodeURIComponent(
+   content
+    .replace(/<[^>]*>/g, (match) => match.replace(/\n/g, ''))
+    .replace(/[<>]/g, ' ')
+    .replace(/\\+/g, '/'),
+  );
+ } catch {
+  return false;
+ }
 
  const pureMatches = content.match(guild.client.util.regexes.inviteTester);
  if (pureMatches?.length) {
