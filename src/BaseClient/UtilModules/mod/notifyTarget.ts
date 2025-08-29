@@ -62,8 +62,9 @@ export default async <T extends CT.ModTypes>(
  ];
 
  if (
-  (!options.guild.rulesChannel || !options.guild.members.cache.has(options.target.id)) &&
-  !options.dm
+  ((!options.guild.rulesChannel || !options.guild.members.cache.has(options.target.id)) &&
+   !options.dm) ||
+  CT.DestructiveModTypes.includes(type)
  ) {
   const dm = await options.guild.client.util.request.users.createDM(
    options.guild,
