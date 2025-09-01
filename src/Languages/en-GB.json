@@ -991,7 +991,9 @@
   "self": "holds their own hand, try holding someone else's next time",
   "others": "holds hands with",
   "request": "wants to hold your hand!",
-  "buttons": ["Hold Hands~!"]
+  "buttons": [
+   "Hold Hands~!"
+  ]
  },
  "punishmentDuration": {
   "name": "Duration",
@@ -1097,7 +1099,6 @@
   "WELCOME_SCREEN_ENABLED": "Has welcome Screen enabled",
   "MORE_SOUNDBOARD": "Has access to more soundboard slots",
   "ENHANCED_ROLE_COLORS": "Has access to enhanced Role Colors",
-
   "CHANNEL_BANNER": "Can set Channel Banners *(Deprecated)*",
   "COMMERCE": "Can create Store-Channels *(Deprecated)*",
   "EXPOSED_TO_BOOSTING_TIERS_EXPERIMENT": "Exposed to Boosting Tiers Experiment *(Deprecated)* *(?)*",
@@ -1717,13 +1718,22 @@
     "self": "Awoo!!",
     "noOne": "Awoo!!",
     "others": "awoo's at",
-    "buttons": ["Pat them!", "Awoo together!"]
+    "buttons": [
+     "Pat them!",
+     "Awoo together!"
+    ]
    },
    "angry": {
     "self": "Grrr!",
     "noOne": "Grrr!",
-    "others": ["is angry at", ">:("],
-    "buttons": ["Cry ;-;", "Run away!"]
+    "others": [
+     "is angry at",
+     ">:("
+    ],
+    "buttons": [
+     "Cry ;-;",
+     "Run away!"
+    ]
    },
    "ayaya": {
     "self": "Ayaya!!",
@@ -1733,59 +1743,96 @@
    "baka": {
     "self": "thinks they themself are a Baka??",
     "noOne": "thinks everyone in Chat is a Baka!",
-    "one": ["thinks", "is a Baka!"],
-    "many": ["thinks", "are Bakas!"],
-    "buttons": ["Bonk them!", "No you!"]
+    "one": [
+     "thinks",
+     "is a Baka!"
+    ],
+    "many": [
+     "thinks",
+     "are Bakas!"
+    ],
+    "buttons": [
+     "Bonk them!",
+     "No you!"
+    ]
    },
    "bath": {
     "self": "bathes themself, they are so clean",
     "noOne": "is bathing and blowing bubbles 🫧",
     "others": "bathes with",
     "request": "wants to bathe with you!",
-    "buttons": ["Bathe together~", "Pat them", "Bonk them"]
+    "buttons": [
+     "Bathe together~",
+     "Pat them",
+     "Bonk them"
+    ]
    },
    "blush": {
     "self": "blushes because of their own actions, what a sub~",
     "noOne": "blushes",
     "others": "blushes at",
-    "buttons": ["Pat them!", "Tickle fight!", "Kiss them!", "Boop the hekk outta em"]
+    "buttons": [
+     "Pat them!",
+     "Tickle fight!",
+     "Kiss them!",
+     "Boop the hekk outta em"
+    ]
    },
    "bonk": {
     "self": "bonks themself, at least I didn't have to do it",
     "others": "bonks",
-    "buttons": ["Bonk them! >:(", "Cry ;-;"]
+    "buttons": [
+     "Bonk them! >:(",
+     "Cry ;-;"
+    ]
    },
    "bored": {
     "self": "is bored",
     "noOne": "is bored",
     "others": "is bored because of",
-    "buttons": ["Bonk them!", "Tickle fight!"]
+    "buttons": [
+     "Bonk them!",
+     "Tickle fight!"
+    ]
    },
    "comfy": {
     "self": "is comfy",
     "noOne": "is comfy",
     "others": "makes themself comfy with",
     "request": "wants to get comfy with you!",
-    "buttons": ["Cuddle together", "Pat them"]
+    "buttons": [
+     "Cuddle together",
+     "Pat them"
+    ]
    },
    "cry": {
     "self": "cries at themself, how sad",
     "noOne": "cries <:AMayakocry:924071113586253884>",
     "others": "cries at",
-    "buttons": ["Pat them", "Comfort them", "Hold them"]
+    "buttons": [
+     "Pat them",
+     "Comfort them",
+     "Hold them"
+    ]
    },
    "cuddle": {
     "self": "cuddles themself, how does that even work",
     "others": "cuddles with",
     "request": "wants to cuddle with you!",
-    "buttons": ["Cuddle them", "Pat them"]
+    "buttons": [
+     "Cuddle them",
+     "Pat them"
+    ]
    },
    "dance": {
     "self": "dances with themself, be proud of who you are!",
     "noOne": "dances",
     "others": "dances with",
     "request": "wants to dance with you!",
-    "buttons": ["Dance together~", "Pat them"]
+    "buttons": [
+     "Dance together~",
+     "Pat them"
+    ]
    },
    "facepalm": {
     "self": "facepalms at their own actions, how unexpected",
@@ -1798,127 +1845,213 @@
    },
    "floof": {
     "self": "floofs their tail, how cute~",
-    "many": ["floofs", "tails"],
-    "one": ["floofs", "tail"],
-    "buttons": ["Embrace the floofs~", "Hide away >~>"]
+    "many": [
+     "floofs",
+     "tails"
+    ],
+    "one": [
+     "floofs",
+     "tail"
+    ],
+    "buttons": [
+     "Embrace the floofs~",
+     "Hide away >~>"
+    ]
    },
    "fluff": {
     "self": "fluffs their tail, how cute~",
-    "many": ["fluffs", "tails"],
-    "one": ["fluffs", "tail"],
-    "buttons": ["Embrace the fluffs~", "Hide away >~>"]
+    "many": [
+     "fluffs",
+     "tails"
+    ],
+    "one": [
+     "fluffs",
+     "tail"
+    ],
+    "buttons": [
+     "Embrace the fluffs~",
+     "Hide away >~>"
+    ]
    },
    "handshake": {
     "self": "shakes themself, wait what",
-    "many": ["shakes hands", "'s hand"],
-    "one": ["shakes", "'s hand"],
+    "many": [
+     "shakes hands",
+     "'s hand"
+    ],
+    "one": [
+     "shakes",
+     "'s hand"
+    ],
     "request": "wants to shake your hand!",
-    "buttons": ["🤝"]
+    "buttons": [
+     "🤝"
+    ]
    },
    "happy": {
     "self": "is happy because of themself, that's nice",
     "noOne": "is happy",
     "others": "is happy because of",
-    "buttons": ["Pat them!", "Hug them!"]
+    "buttons": [
+     "Pat them!",
+     "Hug them!"
+    ]
    },
    "highfive": {
     "self": "highfives themself, someone left them hanging >~>",
     "others": "highfives",
     "request": "holds their hand up, waiting for a high-five!",
-    "buttons": ["High-five!"]
+    "buttons": [
+     "High-five!"
+    ]
    },
    "comfort": {
     "self": "shhh, It's alright. Everything will be fine",
     "others": "comforts",
-    "buttons": ["Indulge in snugs", "Snuggle together"]
+    "buttons": [
+     "Indulge in snugs",
+     "Snuggle together"
+    ]
    },
    "hold": {
     "self": "holds themself very very tight. They are so lonely",
-    "others": ["holds", "very tight"],
-    "buttons": ["Indulge~", "Nuzzle together"]
+    "others": [
+     "holds",
+     "very tight"
+    ],
+    "buttons": [
+     "Indulge~",
+     "Nuzzle together"
+    ]
    },
    "hug": {
     "self": "hugs themself, that looks quite sad...",
     "others": "hugs",
-    "buttons": ["Hug back!"]
+    "buttons": [
+     "Hug back!"
+    ]
    },
    "kidnap": {
     "self": "kidnaps themself, I don't think it works that way",
     "others": "kidnaps",
-    "buttons": ["Be stolen c:", "Run away!"]
+    "buttons": [
+     "Be stolen c:",
+     "Run away!"
+    ]
    },
    "kith": {
     "self": "kithes themself, they are in great danger.",
     "others": "kithes with",
     "request": "wants to kith you~! >~<",
-    "buttons": ["Kith~", "Bonk em"]
+    "buttons": [
+     "Kith~",
+     "Bonk em"
+    ]
    },
    "pash": {
     "self": "pashes themself, classic aussie",
     "others": "pashes with",
     "request": "wants to pash you~! >~<",
-    "buttons": ["Pash~", "Bonk em"]
+    "buttons": [
+     "Pash~",
+     "Bonk em"
+    ]
    },
    "smooch": {
     "self": "smooches themself, please get help",
     "others": "smooches with",
     "request": "wants to smooch you~! >~<",
-    "buttons": ["Smooch~", "Bonk em"]
+    "buttons": [
+     "Smooch~",
+     "Bonk em"
+    ]
    },
    "kiss": {
     "self": "kisses themself, how do you even do that??",
     "others": "kisses with",
     "request": "wants to kiss you~! >~<",
-    "buttons": ["Kiss~!", "Bonk em"]
+    "buttons": [
+     "Kiss~!",
+     "Bonk em"
+    ]
    },
    "mwah": {
     "self": "kisses themself, how do you even do that??",
     "others": "kisses with",
     "request": "wants to mwah you~! >~<",
-    "buttons": ["Mwah them~", "Bonk em"]
+    "buttons": [
+     "Mwah them~",
+     "Bonk em"
+    ]
    },
    "pet": {
     "self": "pats themself, what an odd thing to do",
     "others": "pats",
-    "buttons": ["Blush~ #~#", "Enjoy the pats <3", "Pout >~>"]
+    "buttons": [
+     "Blush~ #~#",
+     "Enjoy the pats <3",
+     "Pout >~>"
+    ]
    },
    "pat": {
     "self": "pats themself, what an odd thing to do",
     "others": "pats",
-    "buttons": ["Blush~ #~#", "Enjoy the pats <3", "Pout >~>"]
+    "buttons": [
+     "Blush~ #~#",
+     "Enjoy the pats <3",
+     "Pout >~>"
+    ]
    },
    "peck": {
     "self": "pecks themself, you physically can't do that...",
     "others": "pecks",
-    "buttons": ["Blush~ #~#", "Peck back!"]
+    "buttons": [
+     "Blush~ #~#",
+     "Peck back!"
+    ]
    },
    "peek": {
     "self": "peeks into Chat <:AMayakopeek:924071140257841162>",
     "noOne": "peeks into Chat <:AMayakopeek:924071140257841162>",
     "others": "peeks at",
-    "buttons": ["Pat them", "Lurk together ^-^"]
+    "buttons": [
+     "Pat them",
+     "Lurk together ^-^"
+    ]
    },
    "boop": {
     "self": "boops themself, how cute",
     "others": "boops",
-    "buttons": ["Pat them", "Nom their finger >;3"]
+    "buttons": [
+     "Pat them",
+     "Nom their finger >;3"
+    ]
    },
    "poke": {
     "self": "pokes themself, how cute",
     "others": "pokes",
-    "buttons": ["Pat them", "Kiss them~", "Hug them"]
+    "buttons": [
+     "Pat them",
+     "Kiss them~",
+     "Hug them"
+    ]
    },
    "pout": {
     "self": "pouts at themself, guess they shouldn't have said that",
     "noOne": "pouts *Hmpf!*",
     "others": "pouts at",
-    "buttons": ["Pat them"]
+    "buttons": [
+     "Pat them"
+    ]
    },
    "quack": {
     "self": "quacks around",
     "noOne": "**QUACK!!**",
     "others": "quacks at",
-    "buttons": ["Pat them", "Quack back!"]
+    "buttons": [
+     "Pat them",
+     "Quack back!"
+    ]
    },
    "run": {
     "self": "runs from themself, how did they get here?",
@@ -1929,12 +2062,17 @@
     "self": "screams at themself, they should get some help",
     "noOne": "screams.. just screams...",
     "others": "screams at",
-    "buttons": ["Shake em back to reality"]
+    "buttons": [
+     "Shake em back to reality"
+    ]
    },
    "shake": {
     "self": "is shaking. They must be cold.. or on caffeine",
     "others": "shakes",
-    "buttons": ["SCREAM °O°", "Cry ;-;"]
+    "buttons": [
+     "SCREAM °O°",
+     "Cry ;-;"
+    ]
    },
    "shrug": {
     "self": "shrugs at themself? Weird",
@@ -1946,49 +2084,70 @@
     "noOne": "sleeps",
     "others": "sleeps with",
     "request": "wants to sleep together with you!",
-    "buttons": ["Sleep together~", "Nope away"]
+    "buttons": [
+     "Sleep together~",
+     "Nope away"
+    ]
    },
    "eep": {
     "self": "eeps alone tonight >~>",
     "noOne": "eeps",
     "others": "eeps with",
     "request": "wants to eep together with you!",
-    "buttons": ["eep together~", "Nope away"]
+    "buttons": [
+     "eep together~",
+     "Nope away"
+    ]
    },
    "smile": {
     "self": "smiles at themself, how nice",
     "noOne": "smiles >^<",
     "others": "smiles at",
-    "buttons": ["Be happy together!"]
+    "buttons": [
+     "Be happy together!"
+    ]
    },
    "smug": {
     "self": "smugs at themself, they probably did something dirty...",
     "noOne": "smugs at Chat",
     "others": "smugs at",
-    "buttons": ["Poke them"]
+    "buttons": [
+     "Poke them"
+    ]
    },
    "snuggle": {
     "self": "snuggles with themself, try snuggling someone else maybe, you wouldn't look that lonely",
     "others": "snuggles with",
     "request": "wants to snuggle you!",
-    "buttons": ["Snuggle together~"]
+    "buttons": [
+     "Snuggle together~"
+    ]
    },
    "stare": {
     "self": "stares at themself, they are staring at themself!!",
     "others": "stares at",
-    "buttons": ["Stare back °-°"]
+    "buttons": [
+     "Stare back °-°"
+    ]
    },
    "wag": {
     "self": "wags their tail at themself, adorable~",
     "noOne": "wags their tail at Chat",
     "others": "wags their tail at",
-    "buttons": ["Fluff em!"]
+    "buttons": [
+     "Fluff em!"
+    ]
    },
    "lapsleep": {
     "self": "sleeps on their own lap, it seems they are quite agile",
-    "others": ["lets", "sleep on their lap"],
+    "others": [
+     "lets",
+     "sleep on their lap"
+    ],
     "request": "wants to sleep on your lap!",
-    "buttons": ["Get comfy~"]
+    "buttons": [
+     "Get comfy~"
+    ]
    },
    "think": {
     "self": "thinks about themself, must be a thinker",
@@ -1999,18 +2158,27 @@
     "self": "agrees with themself",
     "noOne": "agrees with Chat",
     "others": "agrees with",
-    "buttons": ["🤝"]
+    "buttons": [
+     "🤝"
+    ]
    },
    "tickle": {
     "self": "tickles themself, being able to tickle yourself is very rare",
     "others": "tickles",
-    "buttons": ["Laugh ^-^", "Scream °O°", "Run away!"]
+    "buttons": [
+     "Laugh ^-^",
+     "Scream °O°",
+     "Run away!"
+    ]
    },
    "wave": {
     "self": "waves at Chat <:AMayakowave:924071188957913108>",
     "noOne": "waves at Chat <:AMayakowave:924071188957913108>",
     "others": "waves at",
-    "buttons": ["Wave back o/", "Boop them >~<"]
+    "buttons": [
+     "Wave back o/",
+     "Boop them >~<"
+    ]
    },
    "wink": {
     "self": "winks at themself, for some reason..",
@@ -2021,19 +2189,30 @@
     "self": "yawns at themself, sounds like someone needs a nap~",
     "noOne": "yawns",
     "others": "yawns at",
-    "buttons": ["Cuddle them", "Boop them!"]
+    "buttons": [
+     "Cuddle them",
+     "Boop them!"
+    ]
    },
    "woof": {
     "self": "Woof~ :3",
     "noOne": "Woof~ :3",
-    "others": ["woofs at", ":3"],
-    "buttons": ["Pat them", "Nya~ ^~^"]
+    "others": [
+     "woofs at",
+     ":3"
+    ],
+    "buttons": [
+     "Pat them",
+     "Nya~ ^~^"
+    ]
    },
    "nod": {
     "self": "yep yep~",
     "noOne": "agrees with Chat",
     "others": "agrees with",
-    "buttons": ["🤝"]
+    "buttons": [
+     "🤝"
+    ]
    },
    "nope": {
     "self": "uuuuuuuh nope-",
@@ -2044,68 +2223,125 @@
     "self": "laughs at themself, something must be funny",
     "noOne": "laughs",
     "others": "laughs at",
-    "buttons": ["Peck them", "Bonk em"]
+    "buttons": [
+     "Peck them",
+     "Bonk em"
+    ]
    },
    "lay": {
     "self": "is laying around",
     "noOne": "is laying around",
     "others": "lays with",
-    "buttons": ["Fluff em good~", "Cuddle them ^-^", "Pat them :3c"]
+    "buttons": [
+     "Fluff em good~",
+     "Cuddle them ^-^",
+     "Pat them :3c"
+    ]
    },
    "lick": {
     "self": "licks themself, at least you don't need a shower now, I guess...",
     "others": "licks",
-    "buttons": ["Lick back!", "Bonk them", "Blush #~#"]
+    "buttons": [
+     "Lick back!",
+     "Bonk them",
+     "Blush #~#"
+    ]
    },
    "pickup": {
     "self": "picks themself up, but how..?",
-    "others": ["picks", "up"],
-    "buttons": ["Enjoy getting carried around~", "Bonk them!"]
+    "others": [
+     "picks",
+     "up"
+    ],
+    "buttons": [
+     "Enjoy getting carried around~",
+     "Bonk them!"
+    ]
    },
    "lift": {
     "self": "lifts themself up, how the hecc???",
-    "others": ["lifts", "up"],
-    "buttons": ["Enjoy getting carried around~", "Bonk them!"]
+    "others": [
+     "lifts",
+     "up"
+    ],
+    "buttons": [
+     "Enjoy getting carried around~",
+     "Bonk them!"
+    ]
    },
    "lurk": {
     "self": "lurks in Chat <:AMayakopeek:924071140257841162>",
     "noOne": "lurks in Chat <:AMayakopeek:924071140257841162>",
     "others": "lurks at",
-    "buttons": ["Pat them", "Hug them"]
+    "buttons": [
+     "Pat them",
+     "Hug them"
+    ]
    },
    "nam": {
     "self": "get nammed on, I guess",
     "others": "nams on",
-    "buttons": ["Nam back!"]
+    "buttons": [
+     "Nam back!"
+    ]
    },
    "nom": {
     "self": "noms on themself. I mean if you have no one else to nom, why not?",
     "others": "noms on",
-    "buttons": ["Nom back!"]
+    "buttons": [
+     "Nom back!"
+    ]
    },
    "nuzzle": {
     "self": "nuzzles into themself, probably to find out if they should take a shower",
-    "others": ["lets", "nuzzle into them"],
+    "others": [
+     "lets",
+     "nuzzle into them"
+    ],
     "request": "wants to nuzzle into you!",
-    "buttons": ["Nuzzle together~", "Bonk òwó"]
+    "buttons": [
+     "Nuzzle together~",
+     "Bonk òwó"
+    ]
    },
    "mew": {
     "self": "Mew =^_^=",
     "noOne": "Mew =^_^=",
-    "others": ["mews at", "=^_^="],
-    "buttons": ["Mew back~", "Pat them!", "Woof!"]
+    "others": [
+     "mews at",
+     "=^_^="
+    ],
+    "buttons": [
+     "Mew back~",
+     "Pat them!",
+     "Woof!"
+    ]
    },
    "meow": {
     "self": "Meow =^_^=",
     "noOne": "Meow =^_^=",
-    "others": ["meows at", "=^_^="],
-    "buttons": ["Meow back~", "Pat them!", "Woof!"]
+    "others": [
+     "meows at",
+     "=^_^="
+    ],
+    "buttons": [
+     "Meow back~",
+     "Pat them!",
+     "Woof!"
+    ]
    },
    "nya": {
     "self": "Nya~ :3",
     "noOne": "Nya~ :3",
-    "others": ["nyas at", ":3"],
-    "buttons": ["Pat them!", "Woof!", "Nya back~ =w="]
+    "others": [
+     "nyas at",
+     ":3"
+    ],
+    "buttons": [
+     "Pat them!",
+     "Woof!",
+     "Nya back~ =w="
+    ]
    }
   },
   "balance": {
@@ -4586,7 +4822,10 @@
   "Page": "Page",
   "Scopes": "Scopes",
   "Result": "Result",
-  "stagePrivacyLevels": ["Public", "Server Only"],
+  "stagePrivacyLevels": [
+   "Public",
+   "Server Only"
+  ],
   "none": "none",
   "featuresName": "Features",
   "regionsName": "Regions",
