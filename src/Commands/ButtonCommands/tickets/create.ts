@@ -130,7 +130,19 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
   }\n${settings.mentionRoles.map((r) => `<@&${r}>`).join(' ')}\n${settings.mentionUsers
    .map((u) => `<@${u}>`)
    .join(' ')}`,
-  embeds: [initPayload.embeds[0]],
+  embeds: [
+   initPayload.embeds[0],
+   ...(settings.sendMessagePrefixes.length
+    ? [
+       {
+        author: { name: language.ticketing.replyWith },
+        description: settings.sendMessagePrefixes
+         .map((p) => `${cmd.client.util.util.makeInlineCode(p)}`)
+         .join(', '),
+       },
+      ]
+    : []),
+  ],
   components: [
    {
     type: ComponentType.ActionRow,

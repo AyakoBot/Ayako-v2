@@ -852,6 +852,7 @@
  },
  "ticketing": {
   "userInfo": "More User Info",
+  "replyWith": "Reply Prefixes",
   "alreadyClosed": "The Ticket is already closed.",
   "pickChannel": "Pick a Channel to send the \"Start Ticket\" Message in",
   "initDesc": "Click the Button below to create a Ticket",
