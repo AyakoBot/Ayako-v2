@@ -504,6 +504,7 @@
     "memberFlagsName": "Member Flags",
     "memberFlags": {
      "AutomodQuarantinedBio": "Quarantined for User Bio",
+     "AutoModQuarantinedGuildTag": "Quarantined for Guild Tag",
      "AutomodQuarantinedUsernameOrGuildNickname": "Quarantined for Username or Nickname",
      "BypassesVerification": "Bypasses Verification",
      "CompletedHomeActions": "Completed Home Actions",
@@ -1110,7 +1111,8 @@
   "PUBLIC": "Public Server *(Deprecated)*",
   "PUBLIC_DISABLED": "Disabled Public Server *(Deprecated)*",
   "SEVEN_DAY_THREAD_ARCHIVE": "Ability to use 7 Day Thread Archive *(Deprecated)*",
-  "THREE_DAY_THREAD_ARCHIVE": "Ability to use 3 Day Thread Archive *(Deprecated)*"
+  "THREE_DAY_THREAD_ARCHIVE": "Ability to use 3 Day Thread Archive *(Deprecated)*",
+  "GUILD_TAGS": "Can have a Clan Tag" 
  },
  "userFlags": {
   "Staff": "Discord Employee",
@@ -1504,6 +1506,7 @@
   "143": "Auto Moderation Block Message",
   "144": "Auto Moderation Flag To Channel",
   "145": "Auto Moderation User Communication Disabled",
+  "146": "Auto Moderation Quaranied User",
   "150": "Creator Monetization Request Created",
   "151": "Creator Monetization Terms Accepted",
   "163": "Onboarding Prompt Create",
