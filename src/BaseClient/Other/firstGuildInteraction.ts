@@ -44,6 +44,7 @@ const tasks = {
    where: { token: { not: null }, guildid: guild.id },
   });
   if (!settings) return;
+  if (!settings.token) return;
 
   const apiCreated = await guild.client.util.requestHandler(guild.id, settings.token as string);
   if (!apiCreated) return;

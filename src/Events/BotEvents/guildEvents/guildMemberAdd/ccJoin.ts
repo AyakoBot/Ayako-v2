@@ -10,6 +10,7 @@ export default async (member: GuildMember) => {
   where: { guildid: member.guild.id, appid: member.user.id, token: { not: null } },
  });
  if (!cc) return;
+ if (cc.appid !== member.user.id) return;
  if (!cc.token) return;
 
  const apiCreated = await requestHandler(member.guild.id, cc.token);

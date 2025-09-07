@@ -88,6 +88,7 @@ const wrongServer = async (msg: Discord.APIInteraction) => {
   where: { appid: msg.application_id, token: { not: null } },
  });
  if (!settings) return;
+ if (settings.token) return;
 
  const api = await getAPI({ ...msg, guild_id: settings.guildid });
  if (!api) return;

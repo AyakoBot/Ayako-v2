@@ -193,14 +193,16 @@ export const startupTasks = {
   const settings = await client.util.DataBase.guildsettings.findMany({
    where: { guildid: { in: gIds }, enableinvitesat: { not: null } },
   });
-  if (!settings) return;
+  if (!settings?.length) return;
 
-  settings.forEach((s) => {
-   const guild = client.guilds.cache.get(s.guildid);
-   if (!guild) return;
+  settings
+   .filter((s) => !!s.enableinvitesat)
+   .forEach((s) => {
+    const guild = client.guilds.cache.get(s.guildid);
+    if (!guild) return;
 
-   tasks.enableInvites(s, guild);
-  });
+    tasks.enableInvites(s, guild);
+   });
  },
 };
 

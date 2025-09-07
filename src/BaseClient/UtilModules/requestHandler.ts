@@ -71,6 +71,7 @@ export const makeRequestHandler = async (guild: Guild) => {
   where: { guildid: guild.id, token: { not: null } },
  });
  if (!ccSettings) return false;
+ if (!ccSettings.token) return false;
 
  const success = await requestHandler(guild.id, ccSettings.token!);
  if (!success) return false;

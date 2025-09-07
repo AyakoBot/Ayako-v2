@@ -259,6 +259,7 @@ export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
     where: { guildid: guild.id, appid: newSettings.botId },
    });
    if (!cc) return;
+   if (!cc.appid) return;
    if (!cc.secret && !cc.token) return;
 
    await guild.client.util.DataBase.linkedRolesDeco.update({

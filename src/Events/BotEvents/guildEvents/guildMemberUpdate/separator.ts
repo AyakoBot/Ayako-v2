@@ -428,6 +428,7 @@ const notification = async (
   where: { guildid: guild.id, errorchannel: { not: null } },
  });
  if (!guildSettings) return;
+ if (!guildSettings.errorchannel) return;
 
  const edit = () =>
   guild.client.util.request.channels.editMessage(

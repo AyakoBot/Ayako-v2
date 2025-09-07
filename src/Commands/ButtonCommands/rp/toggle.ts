@@ -154,6 +154,7 @@ const deleteMain = async (cmd: Discord.ButtonInteraction<'cached'>) => {
   where: { guildid: cmd.guildId, token: { not: null } },
  });
  if (!cc) return;
+ if (!cc.token) return;
 
  const commands = await API.applicationCommands
   .getGuildCommands(cmd.client.user.id, cmd.guildId)

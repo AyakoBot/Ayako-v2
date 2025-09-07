@@ -7,6 +7,7 @@ export default async (member: GuildMember) => {
   where: { guildid: member.guild.id, appid: member.id },
  });
  if (!cc) return;
+ if (cc.appid !== member.id) return;
 
  member.client.util.cache.apis.delete(member.guild.id);
 };

@@ -30,6 +30,7 @@ export default prisma
  .$extends({
   name: 'Cache Middleware',
   query: {
+   // TODO: multiple filters need to be manually checked as well
    guildsettings: {
     $allOperations: async (data) => handleOperation('guildsettings', 'guildid', data as never),
    },

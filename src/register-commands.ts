@@ -30,30 +30,30 @@ await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/comman
  body: JSON.stringify(createCommands.map((c) => c.toJSON())),
 });
 
-(
- await prisma.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } })
-).forEach(async (s) => {
- const api = requestHandler(s.token ?? '');
+(await prisma.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } }))
+ .filter((s) => !!s.token && !!s.appid)
+ .forEach(async (s) => {
+  const api = requestHandler(s.token ?? '');
 
- await api.applicationCommands
-  .bulkOverwriteGlobalCommands(
-   s.appid ?? '',
-   createCommands
-    .filter((c) => !c.name.includes('action'))
-    .map((c) =>
-     c
-      .setContexts(Discord.InteractionContextType.Guild)
-      .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
-      .toJSON(),
-    ),
-  )
-  .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
-  .catch((e: Error) => {
-   if (!e.message.includes('401')) return;
-   console.log(`Unauthorized for ${s.appid}`, e);
-   prisma.customclients.delete({ where: { guildid: s.guildid } }).then();
-  });
-});
+  await api.applicationCommands
+   .bulkOverwriteGlobalCommands(
+    s.appid ?? '',
+    createCommands
+     .filter((c) => !c.name.includes('action'))
+     .map((c) =>
+      c
+       .setContexts(Discord.InteractionContextType.Guild)
+       .setIntegrationTypes(Discord.ApplicationIntegrationType.GuildInstall)
+       .toJSON(),
+     ),
+   )
+   .then((r) => console.log(`[CUSTOM] Registered ${r.length} Global Commands`))
+   .catch((e: Error) => {
+    if (!e.message.includes('401')) return;
+    console.log(`Unauthorized for ${s.appid}`, e);
+    prisma.customclients.delete({ where: { guildid: s.guildid } }).then();
+   });
+ });
 
 setTimeout(async () => {
  console.log('Finished. Exiting...');

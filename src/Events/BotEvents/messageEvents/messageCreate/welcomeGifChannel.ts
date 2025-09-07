@@ -6,6 +6,7 @@ export default async (msg: Message<true>) => {
   where: { guildid: msg.guildId, gifChannelId: msg.channelId },
  });
  if (!welcomeSettings) return;
+ if (welcomeSettings.gifChannelId !== msg.channelId) return;
 
  const contentURLs = await getURLs(msg.content).then((urls) =>
   urls.filter((url) => !url.includes('tenor.com')),
