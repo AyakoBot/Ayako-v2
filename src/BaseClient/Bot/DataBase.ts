@@ -12,21 +12,25 @@ import Redis from './Redis.js';
 
 const prisma = new PrismaClient();
 
-prisma.$use(async (params, next) => {
- try {
-  const result = await next(params);
-  return result;
- } catch (error) {
-  if (error instanceof Prisma.PrismaClientKnownRequestError) {
-   // eslint-disable-next-line no-console
-   if (process.argv.includes('--debug-db')) console.log(`[Prisma] Error: ${error}`);
-   return null;
-  }
-  throw error;
- }
-});
-
 export default prisma
+ .$extends({
+  name: 'Logging Middleware',
+  query: {
+   $allOperations: async ({ args, query }) => {
+    try {
+     const result = await query(args);
+     return result;
+    } catch (error) {
+     if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // eslint-disable-next-line no-console
+      if (process.argv.includes('--debug-db')) console.log(`[Prisma] Error: ${error}`);
+      return null;
+     }
+     throw error;
+    }
+   },
+  },
+ })
  .$extends({
   name: 'Cache Middleware',
   query: {
