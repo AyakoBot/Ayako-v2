@@ -39,7 +39,7 @@ const self: DeleteThreads = {
     data: {
      guildid: guildId,
      channelid: channelId,
-     deletetime: job.nextInvocation().getTime(),
+     deletetime: job.nextInvocation()?.getTime() || 0,
     },
    })
    .then();
