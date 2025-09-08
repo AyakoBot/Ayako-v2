@@ -4,6 +4,11 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
+import { FormulaType } from '@prisma/client';
+import {
+ levelToXP,
+ xpToLevel,
+} from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -44,8 +49,24 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   where: { userid_guildid_type: { guildid: cmd.guildId, userid: user.id, type: 'guild' } },
  });
 
- const newLevel = type === 'l' ? newXpOrLevel : getLevel(newXpOrLevel);
- const newXP = type === 'x' ? newXpOrLevel : getXP(newXpOrLevel);
+ const settings = await cmd.client.util.DataBase.leveling.findUnique({
+  where: { guildid: cmd.guildId },
+ });
+
+ const newLevel =
+  type === 'l'
+   ? newXpOrLevel
+   : xpToLevel[settings?.formulaType || FormulaType.polynomial](
+      newXpOrLevel,
+      settings ? Number(settings.curveModifier) : 100,
+     );
+ const newXP =
+  type === 'x'
+   ? newXpOrLevel
+   : levelToXP[settings?.formulaType || FormulaType.polynomial](
+      newXpOrLevel,
+      settings ? Number(settings.curveModifier) : 100,
+     );
 
  if (newLevel < 0 || newXP < 0) {
   cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.min, language);
@@ -55,11 +76,14 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const embed = getEmbed(
   user,
   language,
-  { xp: Number(level?.xp), level: Number(level?.level) },
   {
-   xp: newXP,
-   level: newLevel,
+   xp: Number(level?.xp),
+   level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+    Number(level?.xp),
+    settings ? Number(settings.curveModifier) : 100,
+   ),
   },
+  { xp: newXP, level: newLevel },
  );
 
  const c = cmd.client.util.getChunks(
@@ -98,16 +122,3 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
   ],
  });
 };
-
-export const getLevel = (xp: number) =>
- Math.round(
-  (3 ** 0.5 * (3888 * xp ** 2 + 233280 * xp - 3366425) ** 0.5 + 108 * xp + 3240) ** (1 / 3) /
-   (2 * 3 ** (2 / 3) * 5 ** (1 / 3)) +
-   (65 * (5 / 3) ** (1 / 3)) /
-    (2 *
-     (3 ** 0.5 * (3888 * xp ** 2 + 233280 * xp - 3366425) ** 0.5 + 108 * xp + 3240) ** (1 / 3)) -
-   9 / 2,
- ) || 0;
-
-export const getXP = (level: number) =>
- Math.floor((5 / 6) * level * (2 * level * level + 27 * level + 91));

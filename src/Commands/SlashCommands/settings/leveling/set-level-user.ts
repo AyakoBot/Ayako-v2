@@ -1,6 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
+import { xpToLevel } from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
+import { FormulaType } from '@prisma/client';
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,
@@ -17,11 +19,20 @@ export default async (
   create: { userid: user.id, type: 'guild', guildid: cmd.guildId, xp: 0 },
  });
 
+ const settings = await cmd.client.util.DataBase.leveling.findUnique({
+  where: { guildid: cmd.guildId },
+ });
+
+ const currentLevel = xpToLevel[settings?.formulaType || FormulaType.polynomial](
+  Number(level?.xp),
+  settings ? Number(settings.curveModifier) : 100,
+ );
+
  const embed = getEmbed(
   user,
   language,
-  { xp: Number(level?.xp), level: Number(level?.level) },
-  { xp: Number(level?.xp), level: Number(level?.level) },
+  { xp: Number(level?.xp), level: currentLevel },
+  { xp: Number(level?.xp), level: currentLevel },
  );
 
  const compChunks = client.util.getChunks(getComponents(user.id, 0, 0, language), 5);

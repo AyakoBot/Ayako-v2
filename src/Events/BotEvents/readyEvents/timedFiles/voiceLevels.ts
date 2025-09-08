@@ -1,8 +1,13 @@
-import { LevelType, type level, type levelchannels, type leveling } from '@prisma/client';
+import {
+ FormulaType,
+ LevelType,
+ type level,
+ type levelchannels,
+ type leveling,
+} from '@prisma/client';
 import type { Guild, GuildMember, VoiceBasedChannel } from 'discord.js';
-import { getLevel } from '../../../../Commands/ButtonCommands/set-level/user/calc.js';
 import client from '../../../../BaseClient/Bot/Client.js';
-import { levelUp } from '../../messageEvents/messageCreate/levelling.js';
+import { levelUp, xpToLevel } from '../../messageEvents/messageCreate/levelling.js';
 
 type VoiceStateGuild = {
  settings: leveling;
@@ -81,7 +86,7 @@ export default async () => {
    })),
   }))
   .filter((s): s is VoiceStateGuild => !!s.settings)
-  .map((v) => handleVoiceXP(v))
+  .map((v) => handleVoiceXP(v, settings.find((s) => s.guildid === v.guild.id)!))
   .filter((v) => !!v);
 
  const updates = newStates.map((v) =>
@@ -93,11 +98,10 @@ export default async () => {
     create: {
      guildid: v.guild.id,
      userid: s.member.id,
-     level: s.newLevel,
      xp: s.newLevelXP,
      type: LevelType.guild,
     },
-    update: { level: s.newLevel, xp: s.newLevelXP },
+    update: { xp: s.newLevelXP },
    }),
    client.util.DataBase.levelchannels.upsert({
     where: {
@@ -121,7 +125,7 @@ export default async () => {
  await client.util.DataBase.$transaction(updates.flat(3));
 };
 
-const handleVoiceXP = (v: VoiceStateGuild) => {
+const handleVoiceXP = (v: VoiceStateGuild, settings: leveling) => {
  v.states = v.states
   .filter(
    (s) =>
@@ -159,7 +163,17 @@ const handleVoiceXP = (v: VoiceStateGuild) => {
     newChannelXP: Number(s.levelchannel?.xp || 0) + xp * (Number(s.level?.multiplier) || 1) + sXP,
    };
   })
-  .map((s) => ({ ...s, newLevel: getLevel(s.newLevelXP) }));
+  .map((s) => ({
+   ...s,
+   level: {
+    ...s.level,
+    level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+     s.newLevelXP,
+     settings ? Number(settings.curveModifier) : 100,
+    ),
+   },
+  }))
+  .map((s) => ({ ...s, newLevel: s.level.level + 1 }));
 
  newStates
   .filter((s) => s.newLevel !== Number(s.level?.level))
@@ -168,7 +182,7 @@ const handleVoiceXP = (v: VoiceStateGuild) => {
     {
      oldXP: Number(s.level?.xp) ?? 0,
      newXP: s.newLevelXP,
-     oldLevel: Number(s.level?.level) ?? 0,
+     oldLevel: Number(s.level) ?? 0,
      newLevel: s.newLevel,
     },
     v.settings,

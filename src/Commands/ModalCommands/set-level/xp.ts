@@ -1,7 +1,11 @@
 import type { APIEmbed, ModalSubmitInteraction } from 'discord.js';
-import { getLevel, getXP } from '../../ButtonCommands/set-level/user/calc.js';
 import { getEmbed as getEmbedRole } from '../../SlashCommands/settings/leveling/set-level-role.js';
 import { getEmbed as getEmbedUser } from '../../SlashCommands/settings/leveling/set-level-user.js';
+import {
+ levelToXP,
+ xpToLevel,
+} from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
+import { FormulaType } from '@prisma/client';
 
 export default async (cmd: ModalSubmitInteraction, args: string[], type: 'xp' | 'lvl' = 'xp') => {
  if (!cmd.inCachedGuild()) return;
@@ -36,6 +40,10 @@ export default async (cmd: ModalSubmitInteraction, args: string[], type: 'xp' | 
  }
 
  const getEmbed = async (): Promise<APIEmbed | undefined> => {
+  const settings = await cmd.client.util.DataBase.leveling.findUnique({
+   where: { guildid: cmd.guildId },
+  });
+
   if (roleOrUser === 'user') {
    if (!user) return undefined;
 
@@ -46,10 +54,28 @@ export default async (cmd: ModalSubmitInteraction, args: string[], type: 'xp' | 
    return getEmbedUser(
     user,
     language,
-    { xp: Number(level?.xp || 0), level: Number(level?.level || 0) },
     {
-     xp: type === 'xp' ? newAmount : getXP(newAmount),
-     level: type === 'lvl' ? newAmount : getLevel(newAmount),
+     xp: Number(level?.xp || 0),
+     level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+      level ? Number(level.xp) : 0,
+      settings ? Number(settings.curveModifier) : 100,
+     ),
+    },
+    {
+     xp:
+      type === 'xp'
+       ? newAmount
+       : levelToXP[settings?.formulaType || FormulaType.polynomial](
+          newAmount,
+          settings ? Number(settings.curveModifier) : 100,
+         ),
+     level:
+      type === 'lvl'
+       ? newAmount
+       : xpToLevel[settings?.formulaType || FormulaType.polynomial](
+          newAmount,
+          settings ? Number(settings.curveModifier) : 100,
+         ),
     },
    );
   }
@@ -64,8 +90,18 @@ export default async (cmd: ModalSubmitInteraction, args: string[], type: 'xp' | 
   return getEmbedRole(
    language,
    role,
-   type === 'xp' ? newAmount : getXP(newAmount),
-   type === 'lvl' ? newAmount : getLevel(newAmount),
+   type === 'xp'
+    ? newAmount
+    : levelToXP[settings?.formulaType || FormulaType.polynomial](
+       newAmount,
+       settings ? Number(settings.curveModifier) : 100,
+      ),
+   type === 'lvl'
+    ? newAmount
+    : xpToLevel[settings?.formulaType || FormulaType.polynomial](
+       newAmount,
+       settings ? Number(settings.curveModifier) : 100,
+      ),
    roles,
   );
  };

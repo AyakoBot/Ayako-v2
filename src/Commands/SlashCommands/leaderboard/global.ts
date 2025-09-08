@@ -1,5 +1,7 @@
 import * as Discord from 'discord.js';
 import { getEmbed, getLongest, getOwnLevel } from './server.js';
+import { FormulaType } from '@prisma/client';
+import { xpToLevel } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  await cmd.deferReply({ ephemeral: true });
@@ -28,12 +30,24 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const users = await Promise.all(levels.map((l) => cmd.client.util.getUser(l.userid)));
  const ownLevel = self ? await getOwnLevel(self, language, lan) : undefined;
 
- const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
+ const { longestLevel, longestXP, longestUsername, settings } = await getLongest(
+  { lan, language },
+  levels,
+  users,
+  cmd.guildId,
+ );
 
  const embed = await getEmbed(
   { lan, language },
   Number(position),
-  { levels, longestLevel, level: Number(self?.level) },
+  {
+   levels,
+   longestLevel,
+   level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+    self ? Number(self.xp) : 0,
+    settings ? Number(settings.curveModifier) : 100,
+   ),
+  },
   { xp: Number(self?.xp), longestXP },
   { displayNames: users.map((u) => u?.displayName || '-'), longestUsername },
   user,

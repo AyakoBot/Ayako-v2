@@ -4,7 +4,11 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
-import { getLevel, getXP } from '../user/calc.js';
+import {
+ levelToXP,
+ xpToLevel,
+} from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
+import { FormulaType } from '@prisma/client';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;
@@ -41,8 +45,24 @@ export default async (cmd: Discord.ButtonInteraction, args: string[]) => {
  const newXpOrLevel =
   xpOrLevel + (addOrRemove === '+' ? amountToAddOrRemove : -amountToAddOrRemove);
 
- const newLevel = type === 'l' ? newXpOrLevel : getLevel(newXpOrLevel);
- const newXP = type === 'x' ? newXpOrLevel : getXP(newXpOrLevel);
+ const settings = await cmd.client.util.DataBase.leveling.findUnique({
+  where: { guildid: cmd.guildId },
+ });
+
+ const newLevel =
+  type === 'l'
+   ? newXpOrLevel
+   : xpToLevel[settings?.formulaType || FormulaType.polynomial](
+      newXpOrLevel,
+      settings ? Number(settings.curveModifier) : 100,
+     );
+ const newXP =
+  type === 'x'
+   ? newXpOrLevel
+   : levelToXP[settings?.formulaType || FormulaType.polynomial](
+      newXpOrLevel,
+      settings ? Number(settings.curveModifier) : 100,
+     );
 
  if (newLevel < 0 || newXP < 0) {
   cmd.client.util.errorCmd(cmd, language.slashCommands.setLevel.min, language);

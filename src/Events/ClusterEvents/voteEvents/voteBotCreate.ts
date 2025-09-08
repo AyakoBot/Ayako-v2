@@ -281,7 +281,7 @@ export const xp = (r: Prisma.voterewards, user: Discord.User, guild: Discord.Gui
   .upsert({
    where: { userid_guildid_type: { userid: user.id, guildid: guild.id, type: 'guild' } },
    update: { xp: { increment: r.rewardxp } },
-   create: { userid: user.id, guildid: guild.id, type: 'guild', xp: r.rewardxp, level: 0 },
+   create: { userid: user.id, guildid: guild.id, type: 'guild', xp: r.rewardxp },
   })
   .then();
 };
@@ -299,7 +299,6 @@ export const xpmultiplier = (r: Prisma.voterewards, user: Discord.User, guild: D
     type: 'guild',
     xp: 0,
     multiplier: r.rewardxpmultiplier,
-    level: 0,
    },
   })
   .then();

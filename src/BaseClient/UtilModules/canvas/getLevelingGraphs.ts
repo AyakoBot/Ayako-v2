@@ -1,6 +1,6 @@
 import { createCanvas } from 'canvas';
 import * as echarts from 'echarts';
-import { formulas } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
+import { levelToXP } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 
 const commonOptions = {
  backgroundColor: 'transparent',
@@ -101,7 +101,7 @@ const xpFormulasChart = (curveModifier: number) => {
  const maxLevel = 200;
  const levels = Array.from({ length: maxLevel + 1 }, (_, i) => i);
 
- const formulaData = Object.entries(formulas).map(([name, formula], index) => {
+ const formulaData = Object.entries(levelToXP).map(([name, formula], index) => {
   const data = levels.map((level) => {
    if (level === 0) return 0;
    return formula(level, curveModifier);

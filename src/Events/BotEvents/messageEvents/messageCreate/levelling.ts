@@ -176,9 +176,12 @@ const updateLevels = async (
    .reduce((a, b) => a + b) / xpMultiplier.length || 1,
  );
 
- const oldLevel = Number(level.level);
+ const oldLevel = xpToLevel[settings?.formulaType || FormulaType.polynomial](
+  Number(level.xp),
+  settings ? Number(settings.curveModifier) : 100,
+ );
  const xp = newXP + Number(level.xp) < 1 ? 1 : newXP + Number(level.xp);
- let neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+ let neededXP = levelToXP[settings?.formulaType || FormulaType.polynomial](
   oldLevel + 1,
   settings ? Number(settings.curveModifier) : 100,
  );
@@ -188,7 +191,7 @@ const updateLevels = async (
  if (xp >= neededXP) {
   while (xp >= neededXP) {
    newLevel += 1;
-   neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
+   neededXP = levelToXP[settings?.formulaType || FormulaType.polynomial](
     newLevel,
     settings ? Number(settings.curveModifier) : 100,
    );
@@ -209,7 +212,7 @@ const updateLevels = async (
   msg.client.util.DataBase.level
    .update({
     where: { userid_guildid_type: { type, userid: msg.author.id, guildid: msg.guildId } },
-    data: { level: newLevel, xp },
+    data: { xp },
    })
    .then();
 
@@ -238,7 +241,6 @@ const updateLevels = async (
   .update({
    where: { userid_guildid_type: { type, userid: msg.author.id, guildid: '1' } },
    data: {
-    level: newLevel,
     xp,
     type,
     userid: msg.author.id,
@@ -265,7 +267,6 @@ const insertLevels = (
     type,
     userid: msg.author.id,
     xp,
-    level: 0,
     guildid: type === 'global' ? '1' : msg.guildId,
    },
   })
@@ -712,22 +713,26 @@ const checkLevelRoles = async (msg: Discord.Message<true>) => {
   where: { guildid: msg.guildId, active: true, textenabled: true },
  });
  if (!settings) return;
+ const currentLevel = xpToLevel[settings.formulaType || FormulaType.polynomial](
+  Number(level.xp),
+  settings.curveModifier ? Number(settings.curveModifier) : 100,
+ );
 
  const roles = await msg.client.util.DataBase.levelingroles.findMany({
-  where: { guildid: msg.guildId, level: { lte: level.level } },
+  where: { guildid: msg.guildId, level: { lte: currentLevel } },
  });
  if (!roles.length) return;
 
  await roleAssign(
   msg.member,
   settings.rolemode,
-  Number(level.level),
+  currentLevel,
   await msg.client.util.getLanguage(msg.guildId),
  );
 };
 
 // default curveModifier = 100
-export const formulas = {
+export const levelToXP = {
  logarithmic: (level: number, curveModifier: number) =>
   Math.log(level + 1) * Math.pow(level, 0.5) * curveModifier * 1000,
  linear: (level: number, curveModifier: number) => level * curveModifier * 100,
@@ -737,4 +742,50 @@ export const formulas = {
   (5 / 6) * level * (2 * level * level + 27 * level + 91) * Math.pow(curveModifier / 100, 0.5),
  exponential: (level: number, curveModifier: number) =>
   Math.pow(1.5, level / 10) * curveModifier * 100,
+};
+
+export const xpToLevel = {
+ logarithmic: (xp: number, curveModifier: number) => {
+  const targetXp = xp / (curveModifier * 1000);
+  let level = Math.max(1, targetXp);
+
+  for (let i = 0; i < 20; i++) {
+   const f = Math.log(level + 1) * Math.pow(level, 0.5) - targetXp;
+   const fPrime =
+    Math.pow(level, 0.5) / (level + 1) + (0.5 * Math.log(level + 1)) / Math.pow(level, 0.5);
+
+   const nextLevel = level - f / fPrime;
+   if (Math.abs(nextLevel - level) < 0.0001) break;
+   level = nextLevel;
+  }
+
+  return Math.round(level);
+ },
+ linear: (xp: number, curveModifier: number) => xp / (curveModifier * 100),
+ quadratic: (xp: number, curveModifier: number) => Math.sqrt(xp / curveModifier),
+ cubic: (xp: number, curveModifier: number) => Math.cbrt((xp * 100) / curveModifier),
+ polynomial: (xp: number, curveModifier: number) => {
+  const adjustedXp = xp / Math.sqrt(curveModifier / 100);
+
+  return (
+   Math.round(
+    (3 ** 0.5 * (3888 * adjustedXp ** 2 + 233280 * adjustedXp - 3366425) ** 0.5 +
+     108 * adjustedXp +
+     3240) **
+     (1 / 3) /
+     (2 * 3 ** (2 / 3) * 5 ** (1 / 3)) +
+     (65 * (5 / 3) ** (1 / 3)) /
+      (2 *
+       (3 ** 0.5 * (3888 * adjustedXp ** 2 + 233280 * adjustedXp - 3366425) ** 0.5 +
+        108 * adjustedXp +
+        3240) **
+        (1 / 3)) -
+     9 / 2,
+   ) || 0
+  );
+ },
+ exponential: (xp: number, curveModifier: number) => {
+  const level = (10 * Math.log(xp / (curveModifier * 100))) / Math.log(1.5);
+  return Math.round(level);
+ },
 };

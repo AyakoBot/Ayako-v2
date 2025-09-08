@@ -1,7 +1,10 @@
 import Prisma, { FormulaType } from '@prisma/client';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
-import { formulas } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
+import {
+ levelToXP,
+ xpToLevel,
+} from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
@@ -34,13 +37,25 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
  const position = higherXpCount ?? undefined;
  const users = await Promise.all(levels.map((l) => client.util.getUser(l.userid)));
 
- const { longestLevel, longestXP, longestUsername } = getLongest({ lan, language }, levels, users);
+ const { longestLevel, longestXP, longestUsername, settings } = await getLongest(
+  { lan, language },
+  levels,
+  users,
+  cmd.guildId,
+ );
  const ownLevel = self ? await getOwnLevel(self, language, lan) : undefined;
 
  const embed = await getEmbed(
   { lan, language },
   Number(position),
-  { levels, longestLevel, level: Number(self?.level) },
+  {
+   levels,
+   longestLevel,
+   level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+    self ? Number(self.xp) : 0,
+    settings ? Number(settings.curveModifier) : 100,
+   ),
+  },
   { xp: Number(self?.xp), longestXP },
   { displayNames: users.map((u) => u?.displayName ?? '-'), longestUsername },
   user,
@@ -84,9 +99,13 @@ export const getOwnLevel = async (
  const vcXpTop = Math.abs(Number(settings?.vcXpRangeTop ?? 15));
  const vcXpMedian = (vcXpTop + vcXpBottom) / 2;
 
- const newLevel = Number(self.level) + 1;
- const neededXP = formulas[settings?.formulaType || FormulaType.polynomial](
-  Number(self.level || 0) + 1,
+ const newLevel =
+  xpToLevel[settings?.formulaType || FormulaType.polynomial](
+   Number(self.xp),
+   settings ? Number(settings.curveModifier) : 100,
+  ) + 1;
+ const neededXP = levelToXP[settings?.formulaType || FormulaType.polynomial](
+  newLevel,
   settings ? Number(settings.curveModifier) : 100,
  );
 
@@ -130,12 +149,27 @@ export const getOwnLevel = async (
  ];
 };
 
-export const getLongest = (
+export const getLongest = async (
  { lan, language }: { lan: CT.Language['slashCommands']['leaderboard']; language: CT.Language },
  levels: Prisma.level[],
  users: (Discord.User | undefined)[],
+ guildId: string | null,
 ) => {
- let longestLevel = Math.max(...levels.map((l) => String(l.level).length));
+ const settings = guildId
+  ? await client.util.DataBase.leveling.findUnique({ where: { guildid: guildId } })
+  : null;
+
+ let longestLevel = Math.max(
+  ...levels.map(
+   (l) =>
+    String(
+     xpToLevel[settings?.formulaType || FormulaType.polynomial](
+      Number(l.xp),
+      settings ? Number(settings.curveModifier) : 100,
+     ),
+    ).length,
+  ),
+ );
  let longestXP = Math.max(
   ...levels.map((l) => String(client.util.splitByThousand(Number(l.xp))).length),
  );
@@ -155,7 +189,7 @@ export const getLongest = (
  if (longestXP < lan.xp.length) longestXP = lan.xp.length;
  if (longestUsername < language.t.User.length) longestUsername = language.t.User.length;
 
- return { longestLevel, longestXP, longestUsername };
+ return { longestLevel, longestXP, longestUsername, settings };
 };
 
 export const makeLine = (
@@ -185,43 +219,53 @@ export const getEmbed = async (
  { displayNames, longestUsername }: { displayNames: string[]; longestUsername: number },
  user: Discord.User,
  guild?: Discord.Guild,
-): Promise<Discord.APIEmbed> => ({
- author: {
-  name: lan.lleaderboard,
- },
- fields: [
-  {
-   name: lan.yourPos,
-   value:
-    typeof position === 'number'
-     ? `${client.util.util.makeInlineCode(
-        makeLine(
-         position,
-         { level: Number(level), longestLevel },
-         { xp: Number(xp) ?? 0, longestXP },
-         { displayName: user.displayName, longestUsername },
-        ),
-       )}`
-     : lan.notRanked,
-  },
- ],
- color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
- description: `${client.util.util.makeInlineCode(
-  `${client.util.spaces(lan.rank, 7)} | ${client.util.spaces(
-   lan.level,
-   longestLevel,
-  )} | ${client.util.spaces(lan.xp, longestXP)} | ${client.util.spaces(
-   language.t.User,
-   longestUsername,
-  )}\n${levels
-   .map((l, i) =>
-    makeLine(
-     i,
-     { level: Number(l.level), longestLevel },
-     { xp: Number(l.xp), longestXP },
-     { displayName: displayNames[i] || '-', longestUsername },
-    ),
-   )
-   .join('\n')}`,
- )}`,
-});
+): Promise<Discord.APIEmbed> => {
+ const settings = await guild?.client.util.DataBase.leveling.findUnique({
+  where: { guildid: guild?.id },
+ });
+
+ return {
+  author: { name: lan.lleaderboard },
+  fields: [
+   {
+    name: lan.yourPos,
+    value:
+     typeof position === 'number'
+      ? `${client.util.util.makeInlineCode(
+         makeLine(
+          position,
+          { level: Number(level), longestLevel },
+          { xp: Number(xp) ?? 0, longestXP },
+          { displayName: user.displayName, longestUsername },
+         ),
+        )}`
+      : lan.notRanked,
+   },
+  ],
+  color: client.util.getColor(guild ? await client.util.getBotMemberFromGuild(guild) : undefined),
+  description: `${client.util.util.makeInlineCode(
+   `${client.util.spaces(lan.rank, 7)} | ${client.util.spaces(
+    lan.level,
+    longestLevel,
+   )} | ${client.util.spaces(lan.xp, longestXP)} | ${client.util.spaces(
+    language.t.User,
+    longestUsername,
+   )}\n${levels
+    .map((l, i) =>
+     makeLine(
+      i,
+      {
+       level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
+        Number(l.xp),
+        settings ? Number(settings.curveModifier) : 100,
+       ),
+       longestLevel,
+      },
+      { xp: Number(l.xp), longestXP },
+      { displayName: displayNames[i] || '-', longestUsername },
+     ),
+    )
+    .join('\n')}`,
+  )}`,
+ };
+};
