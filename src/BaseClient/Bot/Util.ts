@@ -217,11 +217,9 @@ interface Util {
 }
 
 const util: Util = {
- getLevelingGraphs: await import(
-  process.argv.includes('--dev')
-   ? '../UtilModules/getColor.js'
-   : '../UtilModules/canvas/getLevelingGraphs.js'
- ).then((r) => r.default),
+ getLevelingGraphs: process.argv.includes('--dev')
+  ? (_: number) => ({ attachment: new Buffer('str'), name: 'empty.png' })
+  : await import('../UtilModules/canvas/getLevelingGraphs.js').then((r) => r.default),
  getPathFromError,
  getAllJobs,
  makeTable,
