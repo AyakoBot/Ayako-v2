@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "swc src -d dist --strip-leading-paths --copy-files",
-    "dev": "pnpx prisma db push && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev --debug-db",
+    "dev": "node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev --debug-db",
     "postinstall": "mkdir -p ./logs",
     "lint": "npx eslint 'src/**/*.ts' --fix",
     "register": "node ./dist/register-commands.js",
@@ -17,7 +17,7 @@
   "dependencies": {
     "@discordjs/core": "^2.2.0",
     "@discordjs/rest": "^2.5.1",
-    "@prisma/client": "^6.13.0",
+    "@prisma/client": "^6.16.1",
     "canvas": "^3.1.2",
     "captcha-canvas": "^2.4.1",
     "client@latest": "link:prisma/client@latest",
@@ -61,7 +61,7 @@
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
-    "eslint": "^9.35.0",
+    "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
@@ -70,7 +70,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
-    "prisma": "^6.13.0",
+    "prisma": "^6.16.1",
     "source-map-support": "^0.5.21",
     "typescript": "^5.9.2"
   },
