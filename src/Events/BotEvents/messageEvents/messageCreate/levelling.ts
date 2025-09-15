@@ -198,7 +198,7 @@ const updateLevels = async (
    if (xp < neededXP) break;
   }
 
-  if (level) {
+  if (newLevel > oldLevel) {
    levelUp(
     { oldXP: Number(level.xp), newXP: xp, newLevel, oldLevel },
     settings as Prisma.leveling,
