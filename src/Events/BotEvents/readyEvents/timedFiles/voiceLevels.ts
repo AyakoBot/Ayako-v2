@@ -153,36 +153,41 @@ const handleVoiceXP = (v: VoiceStateGuild, settings: leveling) => {
    Math.abs(Number(v.settings.vcXpRangeTop)),
   ) * Number(v.settings.xpmultiplier);
 
- const newStates = v.states
-  .map((s) => {
-   const sXP = Math.round(Math.random() * 5 - 2.5);
+ const newStates = v.states.map((s) => {
+  const sXP = Math.round(Math.random() * 5 - 2.5);
+  const newLevelXP = Number(s.level?.xp || 0) + xp * (Number(s.level?.multiplier) || 1) + sXP;
+  const newChannelXP =
+   Number(s.levelchannel?.xp || 0) + xp * (Number(s.level?.multiplier) || 1) + sXP;
 
-   return {
-    ...s,
-    newLevelXP: Number(s.level?.xp || 0) + xp * (Number(s.level?.multiplier) || 1) + sXP,
-    newChannelXP: Number(s.levelchannel?.xp || 0) + xp * (Number(s.level?.multiplier) || 1) + sXP,
-   };
-  })
-  .map((s) => ({
+  const oldLevel = s.level
+   ? xpToLevel[settings?.formulaType || FormulaType.polynomial](
+      Number(s.level.xp),
+      settings ? Number(settings.curveModifier) : 100,
+     )
+   : 0;
+
+  const newLevel = xpToLevel[settings?.formulaType || FormulaType.polynomial](
+   newLevelXP,
+   settings ? Number(settings.curveModifier) : 100,
+  );
+
+  return {
    ...s,
-   level: {
-    ...s.level,
-    level: xpToLevel[settings?.formulaType || FormulaType.polynomial](
-     s.newLevelXP,
-     settings ? Number(settings.curveModifier) : 100,
-    ),
-   },
-  }))
-  .map((s) => ({ ...s, newLevel: s.level.level + 1 }));
+   newLevelXP,
+   newChannelXP,
+   newLevel,
+   oldLevel,
+  };
+ });
 
  newStates
-  .filter((s) => s.newLevel !== Number(s.level?.level))
+  .filter((s) => s.newLevel > s.oldLevel)
   .forEach((s) =>
    levelUp(
     {
      oldXP: Number(s.level?.xp) ?? 0,
      newXP: s.newLevelXP,
-     oldLevel: Number(s.level) ?? 0,
+     oldLevel: s.oldLevel,
      newLevel: s.newLevel,
     },
     v.settings,
