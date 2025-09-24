@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import 'dotenv/config';
+import 'longjohn';
 import sms from 'source-map-support';
 import './BaseClient/UtilModules/console.js';
 
