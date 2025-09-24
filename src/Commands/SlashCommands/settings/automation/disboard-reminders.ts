@@ -128,3 +128,21 @@ export const getComponents: CT.SettingsFile<typeof name>['getComponents'] = (
   ],
  },
 ];
+
+export const postChange: CT.SettingsFile<typeof name>['postChange'] = async (
+ _oldSettings,
+ newSettings,
+ _changedSetting,
+ guild,
+) => {
+ if (!newSettings) return;
+
+ if (Number(newSettings.repeatreminder) < 300) {
+  client.util.DataBase.disboard
+   .update({
+    where: { guildid: guild.id },
+    data: { repeatreminder: 300 },
+   })
+   .then();
+ }
+};
