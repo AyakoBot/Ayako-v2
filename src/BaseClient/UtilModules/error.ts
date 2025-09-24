@@ -66,7 +66,7 @@ export default async (
   ],
  };
 
- if (postDebug) sendDebugMessage(payload);
+ if (postDebug) sendDebugMessage(payload, err.cause);
  if (!guild) return;
  if (!proceed(err.message, err.stack)) return;
 
@@ -86,14 +86,18 @@ export default async (
  request.channels.sendMessage(undefined, channel.id, payload, guild.client);
 };
 
-export const sendDebugMessage = async (payload: CT.UsualMessagePayload) => {
+export const sendDebugMessage = async (payload: CT.UsualMessagePayload, cause?: unknown) => {
  const client = await import('../Bot/Client.js').then((c) => c.default);
+
+ const attachment = cause
+  ? client.util.txtFileWriter(JSON.stringify(cause, null, 2), 'cause.txt')
+  : undefined;
 
  client.util.request.webhooks.execute(
   undefined,
   process.env.debugWebhookId ?? '',
   process.env.debugWebhookToken ?? '',
-  payload,
+  { ...payload, files: attachment ? [attachment] : undefined },
   client as Discord.Client<true>,
  );
 };
