@@ -1112,7 +1112,8 @@
   "PUBLIC_DISABLED": "Disabled Public Server *(Deprecated)*",
   "SEVEN_DAY_THREAD_ARCHIVE": "Ability to use 7 Day Thread Archive *(Deprecated)*",
   "THREE_DAY_THREAD_ARCHIVE": "Ability to use 3 Day Thread Archive *(Deprecated)*",
-  "GUILD_TAGS": "Can have a Clan Tag" 
+  "GUILD_TAGS": "Can have a Clan Tag",
+  "GUESTS_ENABLED": "Has access to Guest invites"
  },
  "userFlags": {
   "Staff": "Discord Employee",
@@ -1228,7 +1229,8 @@
    "ViewChannels": "View Channels",
    "ManagePermissions": "Manage Permissions",
    "SendPolls": "Send Polls",
-   "UseExternalApps": "Use External Apps"
+   "UseExternalApps": "Use External Apps",
+   "PinMessages": "Pin Messages"
   }
  },
  "lvlupmodes": {

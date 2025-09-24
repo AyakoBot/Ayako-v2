@@ -1,4 +1,10 @@
-import { ButtonInteraction, ComponentType, UserSelectMenuComponent } from 'discord.js';
+import {
+ ButtonInteraction,
+ ComponentType,
+ UserSelectMenuComponent,
+ type APIActionRowComponent,
+ type APIComponentInModalActionRow,
+} from 'discord.js';
 import changeModal from '../../../../BaseClient/UtilModules/settingsHelpers/changeHelpers/changeModal.js';
 import type { SettingNames } from '../../../../Typings/Settings.js';
 
@@ -30,8 +36,11 @@ export default async (cmd: ButtonInteraction, args: string[]) => {
  if (cmd.message.components[0].type !== ComponentType.ActionRow) return;
 
  const selectMenu = cmd.message.components[0].components[0] as UserSelectMenuComponent;
- const valueComponent = modal.components[0].components[0];
- const instructionsComponent = modal.components[1].components[0];
+ const valueComponent = (modal.components[0] as APIActionRowComponent<APIComponentInModalActionRow>)
+  .components[0];
+ const instructionsComponent = (
+  modal.components[1] as APIActionRowComponent<APIComponentInModalActionRow>
+ ).components[0];
 
  instructionsComponent.value = language.slashCommands.settings.addByIdInstructionsMulti;
  instructionsComponent.max_length = language.slashCommands.settings.addByIdInstructionsMulti.length;

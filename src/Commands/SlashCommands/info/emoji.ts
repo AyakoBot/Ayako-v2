@@ -128,7 +128,7 @@ const getEmotePayloads = async (
  client.cluster?.broadcastEval(
   async (cl, { color, e, guildId }) => {
    const ctEval = cl.util.files['/Typings/Typings.js'];
-   const emoji = e.id ? (cl.emojis?.cache.get(e.id) ?? e) : e;
+   const emoji = e.id ? ((cl.emojis?.cache.get(e.id) as Discord.GuildEmoji | null) ?? e) : e;
    const language = await cl.util.getLanguage(guildId);
    const lan = language.slashCommands.info;
 
@@ -141,10 +141,9 @@ const getEmotePayloads = async (
       },
       image: emoji.id
        ? {
-          url:
-           'url' in emoji && emoji.url
-            ? (emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji))
-            : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji),
+          url: ('url' in emoji && emoji.url
+           ? (emoji.url ?? cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji))
+           : cl.util.constants.standard.emoteURL(emoji as Discord.GuildEmoji)) as string,
          }
        : undefined,
       description: [
@@ -174,10 +173,10 @@ const getEmotePayloads = async (
         name: `${cl.util.util.makeBold(lan.emojis.animated)}:`,
         value: `${cl.util.settingsHelpers.embedParsers.boolean(!!emoji.animated, language)}`,
        },
-       'createdTimestamp' in emoji && emoji.createdTimestamp
+       'id' in emoji && emoji.id
         ? {
            name: `${cl.util.util.makeBold(language.t.createdAt)}:`,
-           value: `${cl.util.constants.standard.getTime(emoji.createdTimestamp)}`,
+           value: `${cl.util.constants.standard.getTime(cl.util.getUnix(emoji.id))}`,
           }
         : undefined,
        'available' in emoji
@@ -195,7 +194,7 @@ const getEmotePayloads = async (
        'guild' in emoji && emoji.guild
         ? {
            name: `\n${cl.util.util.makeBold(language.t.Server)}:\n`,
-           value: language.languageFunction.getGuild(emoji.guild),
+           value: language.languageFunction.getGuild(emoji.guild as Discord.Guild),
           }
         : undefined,
        'author' in emoji && emoji.author
@@ -209,11 +208,13 @@ const getEmotePayloads = async (
        .map((v) => `${v.name} ${v.value}`)
        .join('\n'),
       fields:
-       'roles' in emoji && emoji.roles.cache.size
+       'roles' in emoji && (emoji.roles as Discord.GuildEmojiRoleManager).cache.size
         ? [
            {
             name: lan.emojis.roles,
-            value: emoji.roles.cache.map((r) => language.languageFunction.getRole(r)).join(''),
+            value: (emoji.roles as Discord.GuildEmojiRoleManager).cache
+             .map((r) => language.languageFunction.getRole(r))
+             .join(''),
            },
           ]
         : undefined,

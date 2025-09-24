@@ -96,7 +96,7 @@ const chartOpts = {
 
 const xpFormulasChart = (curveModifier: number) => {
  const nodeCanvas = createCanvas(chartOpts.width, chartOpts.height);
- const chart = echarts.init(nodeCanvas, null, chartOpts);
+ const chart = echarts.init(nodeCanvas as never, null, chartOpts);
 
  const maxLevel = 200;
  const levels = Array.from({ length: maxLevel + 1 }, (_, i) => i);

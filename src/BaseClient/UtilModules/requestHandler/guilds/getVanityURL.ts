@@ -68,6 +68,7 @@ export default async (guild: Discord.Guild) => {
        max_age: 0,
        temporary: false,
        created_at: guild.createdAt.toISOString(),
+       expires_at: null,
       })
     : undefined;
    if (parsed) guild.invites.cache.set(parsed.code, parsed);
