@@ -135,6 +135,7 @@ export const bumpReminder = async (guild: Discord.Guild, cacheSettings?: Prisma.
  }
 
  Jobs.scheduleJob(client.util.getPathFromError(new Error()), new Date(Date.now() + 60000), () => {
+  if (!m.channel.messages.cache.get(m.id)) return;
   client.util.request.channels.editMsg(m as Discord.Message<true>, {
    components: getComponents(false),
   });
