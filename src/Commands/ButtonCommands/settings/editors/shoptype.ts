@@ -94,7 +94,17 @@ export const getOptions = (type: Types, language: CT.Language) => {
   case CT.EditorTypes.AntiRaidPunishment: {
    const obj = structuredClone(language.punishments) as Omit<
     CT.Language['punishments'],
-    'strike' | 'warn' | 'tempmute' | 'tempchannelban' | 'channelban' | 'tempban' | 'softban'
+    | 'strike'
+    | 'warn'
+    | 'tempmute'
+    | 'tempchannelban'
+    | 'channelban'
+    | 'tempban'
+    | 'softban'
+    | 'vctempmute'
+    | 'vctempdeaf'
+    | 'vcdeaf'
+    | 'vcmute'
    > & {
     strike?: string;
     warn?: string;
@@ -103,6 +113,10 @@ export const getOptions = (type: Types, language: CT.Language) => {
     channelban?: string;
     tempban?: string;
     softban?: string;
+    vctempmute?: string;
+    vctempdeaf?: string;
+    vcdeaf?: string;
+    vcmute?: string;
    };
 
    delete obj.strike;
@@ -112,6 +126,10 @@ export const getOptions = (type: Types, language: CT.Language) => {
    delete obj.channelban;
    delete obj.tempban;
    delete obj.softban;
+   delete obj.vctempmute;
+   delete obj.vctempdeaf;
+   delete obj.vcdeaf;
+   delete obj.vcmute;
    return obj;
   }
   case CT.EditorTypes.AutoPunishment: {

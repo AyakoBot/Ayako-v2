@@ -779,7 +779,7 @@
    "unban": "Automatically Un-Banned",
    "unmute": "Automatically Un-Muted",
    "disboard": {
-    "desc": "You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond with a Server-Bump Message, click the Button below.\n-# Also check out https://discordservers.gg (unpaid ad)",
+    "desc": "You can now Bump this Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond with a Server-Bump Message, click the Button below.",
     "title": "{{t.botName}} DISBOARD Bump Reminder",
     "button": "Mark Server as bumped"
    },
@@ -2465,7 +2465,8 @@
     "automation": "Automation",
     "leveling": "Leveling",
     "channels": "Channels",
-    "shop": "Shop"
+    "shop": "Shop",
+    "appeals": "Appeals"
    },
    "parentCommands": "The Parent-Commands in this Category are:",
    "subCommandGroups": "The Sub-Command-Groups in this Category are:",
@@ -3963,7 +3964,7 @@
      }
     },
     "multi-roles": {
-     "name": "Leveling Multi-Channels",
+     "name": "Leveling Multi-Roles",
      "fields": {
       "roles": {
        "name": "Roles",
@@ -4221,7 +4222,7 @@
       },
       "ptreminderenabled": {
        "name": "Privacy & Terms Reminder",
-       "desc": "Whethr the Privacy and Terms Reminder is enabled or not"
+       "desc": "Whether the Privacy and Terms Reminder is enabled or not"
       }
      }
     },

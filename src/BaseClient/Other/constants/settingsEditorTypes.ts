@@ -1,4 +1,6 @@
+import zod from 'zod';
 import * as CT from '../../../Typings/Typings.js';
+import en from '../../../Languages/en-GB.json' with { type: 'json' };
 
 export default {
  [CT.SettingNames.DenylistRules]: {},
@@ -380,6 +382,445 @@ export default {
   blroleid: CT.EditorTypes.Roles,
   bluserid: CT.EditorTypes.Users,
   logChannelIds: CT.EditorTypes.Channels,
-  archiveCategoryId: CT.EditorTypes.Category
+  archiveCategoryId: CT.EditorTypes.Category,
+ },
+};
+
+const role = zod.string().regex(/^(\d{17,19})$/);
+const channel = zod.string().regex(/^(\d{17,19})$/);
+const user = zod.string().regex(/^(\d{17,19})$/);
+const message = zod.string().regex(/^(\d{17,19})$/);
+const emote = zod.string().regex(/^(\S|(\S:\D))$/);
+
+const roles = zod.array(role);
+const channels = zod.array(channel);
+const users = zod.array(user);
+const emotes = zod.array(emote);
+
+const boolean = zod.boolean();
+const number = zod.number();
+const string = zod.string();
+const strings = zod.array(string);
+
+const uniquetimestamp = zod
+ .number()
+ .int()
+ .refine((val) => String(val).length === String(Date.now()).length);
+
+const punishment = zod.enum(Object.keys(en.languages));
+const antiraidPunishemnts = zod.enum(
+ Object.keys(en.punishments).filter((val) => !['kick', 'ban', 'mute'].includes(val)),
+);
+const autoPunishemnts = zod.enum(
+ Object.keys(en.punishments).filter(
+  (val) =>
+   ![
+    'warn',
+    'tempmute',
+    'tempchannelban',
+    'channelban',
+    'kick',
+    'tempban',
+    'softban',
+    'ban',
+    'vctempmute',
+    'vctempdeaf',
+    'vcdeaf',
+    'vcmute',
+    'mute',
+   ].includes(val),
+ ),
+);
+
+const lvlUpModes = zod.enum(Object.keys(en.lvlupmodes));
+const formulaTypes = zod.enum(Object.keys(en.formulatypes));
+const languages = zod.enum(Object.keys(en.languages));
+const shopTypes = zod.enum(Object.keys(en.shoptypes));
+const weekendsTypes = zod.enum(Object.keys(en.weekendstype));
+const answerTypes = zod.enum(Object.keys(en.answertypes));
+const ticketTypes = zod.enum(Object.keys(en.ticketingtype));
+const threadAutoArchiveDurations = zod.enum(Object.keys(en.threadAutoArchiveDurations));
+
+export const zodValidators = {
+ [CT.SettingNames.DenylistRules]: {},
+ [CT.SettingNames.RoleRewards]: {
+  roles: roles,
+  customrole: boolean,
+  maxShare: number,
+  positionrole: role,
+  xpmultiplier: number,
+  currency: number,
+  blroleid: roles,
+  bluserid: users,
+  cansetcolor: boolean,
+  canseticon: boolean,
+  cansetgradient: boolean,
+  cansetholo: boolean,
+ },
+ [CT.SettingNames.AntiSpam]: {
+  wlchannelid: channels,
+  wluserid: users,
+  wlroleid: roles,
+  msgthreshold: number,
+  dupemsgthreshold: number,
+  timeout: number,
+  deletespam: boolean,
+  deletemessageseconds: number,
+  duration: number,
+  action: punishment,
+ },
+ [CT.SettingNames.AntiRaid]: {
+  posttof: boolean,
+  postchannels: channels,
+  pingroles: roles,
+  pingusers: users,
+  timeout: number,
+  jointhreshold: number,
+  action: antiraidPunishemnts,
+  disableinvites: boolean,
+  actiontof: boolean,
+ },
+ [CT.SettingNames.AntiVirus]: {
+  linklogging: boolean,
+  linklogchannels: channels,
+  deletemessageseconds: number,
+  duration: number,
+  action: punishment,
+  deletemsg: boolean,
+ },
+ [CT.SettingNames.Leveling]: {
+  xpmultiplier: number,
+  rolemode: boolean,
+  lvlupmode: lvlUpModes,
+  lvlupemotes: emotes,
+  lvlupdeltimeout: number,
+  embed: uniquetimestamp,
+  lvlupchannels: channels,
+  ignoreprefixes: boolean,
+  prefixes: string,
+  minwords: number,
+  requireUnmute: boolean,
+  excludeBots: boolean,
+  minParticipants: number,
+  lvluptext: string,
+  blchannelid: channels,
+  blroleid: roles,
+  bluserid: users,
+  wlchannelid: channels,
+  wlroleid: roles,
+  wluserid: users,
+  pingUser: boolean,
+  cooldown: number,
+  cooldownType: boolean,
+  msgXpRangeBottom: number,
+  msgXpRangeTop: number,
+  curveModifier: number,
+  formulaType: formulaTypes,
+  vcXpRangeBottom: number,
+  vcXpRangeTop: number,
+ },
+ [CT.SettingNames.MultiChannels]: {
+  channels: channels,
+  multiplier: number,
+ },
+ [CT.SettingNames.MultiRoles]: {
+  roles: roles,
+  multiplier: number,
+ },
+ [CT.SettingNames.Welcome]: {
+  channelid: channel,
+  embed: uniquetimestamp,
+  pingroles: roles,
+  pingusers: users,
+  pingjoin: boolean,
+  gifChannelId: channel,
+ },
+ [CT.SettingNames.Verification]: {
+  logchannel: channel,
+  pendingrole: role,
+  finishedrole: role,
+  startchannel: channel,
+  selfstart: boolean,
+  kickafter: number,
+  kicktof: boolean,
+ },
+ [CT.SettingNames.Suggestions]: {
+  deletedenied: boolean,
+  deleteapproved: boolean,
+  deletedeniedafter: number,
+  deleteapprovedafter: number,
+  channelid: channel,
+  novoteroles: roles,
+  novoteusers: users,
+  approverroleid: roles,
+  anonvote: boolean,
+  anonsuggestion: boolean,
+  nosendroles: roles,
+  nosendusers: users,
+ },
+ [CT.SettingNames.ShopItems]: {
+  roles: roles,
+  price: number,
+  shoptype: shopTypes,
+  buttonemote: emote,
+  buttontext: string,
+  msgid: message,
+ },
+ [CT.SettingNames.Shop]: {
+  currencyemote: emote,
+ },
+ [CT.SettingNames.Sticky]: {
+  roles: roles,
+  stickyrolesmode: boolean,
+  stickyrolesactive: boolean,
+  stickypermsactive: boolean,
+ },
+ [CT.SettingNames.Separators]: {
+  separator: role,
+  stoprole: role,
+  isvarying: boolean,
+  roles: roles,
+ },
+ [CT.SettingNames.SelfRoles]: {
+  roles: roles,
+  onlyone: boolean,
+  blroleid: roles,
+  bluserid: users,
+  wlroleid: roles,
+  wluserid: users,
+  name: string,
+ },
+ [CT.SettingNames.Expiry]: {
+  bans: boolean,
+  channelbans: boolean,
+  kicks: boolean,
+  mutes: boolean,
+  warns: boolean,
+  voice: boolean,
+  banstime: number,
+  channelbanstime: number,
+  kickstime: number,
+  mutestime: number,
+  warnstime: number,
+  voicetime: number,
+ },
+ [CT.SettingNames.Logs]: {
+  applicationevents: channels,
+  automodevents: channels,
+  channelevents: channels,
+  emojievents: channels,
+  guildevents: channels,
+  scheduledeventevents: channels,
+  inviteevents: channels,
+  messageevents: channels,
+  roleevents: channels,
+  stageevents: channels,
+  stickerevents: channels,
+  typingevents: channels,
+  userevents: channels,
+  voiceevents: channels,
+  webhookevents: channels,
+  settingslog: channels,
+  modlog: channels,
+  memberevents: channels,
+ },
+ [CT.SettingNames.Basic]: {
+  prefix: string,
+  interactionsmode: boolean,
+  legacyrp: boolean,
+  editrpcommands: boolean,
+  lan: languages,
+  errorchannel: channel,
+  notifychannel: channel,
+  statuschannel: channel,
+  updateschannel: channel,
+  ptreminderenabled: boolean,
+ },
+ [CT.SettingNames.CustomClient]: {
+  appid: user,
+  token: string,
+  secret: string,
+ },
+ [CT.SettingNames.DisboardReminders]: {
+  repeatreminder: number,
+  channelid: channel,
+  roles: roles,
+  users: users,
+  deletereply: boolean,
+  repeatenabled: boolean,
+ },
+ [CT.SettingNames.Cooldowns]: {
+  command: string,
+  cooldown: number,
+  wlchannelid: channels,
+  wlroleid: roles,
+  wluserid: users,
+  activechannelid: channels,
+ },
+ [CT.SettingNames.Censor]: {
+  repostroles: roles,
+  repostrules: uniquetimestamp,
+ },
+ [CT.SettingNames.Newlines]: {
+  maxnewlines: number,
+  wlchannelid: channels,
+  wlroleid: roles,
+  action: punishment,
+  duration: number,
+  deletemessageseconds: number,
+ },
+ [CT.SettingNames.Invites]: {
+  wlchannelid: channels,
+  wlroleid: roles,
+  deletemessageseconds: number,
+  action: punishment,
+  duration: number,
+ },
+ [CT.SettingNames.AutoPunish]: {
+  duration: number,
+  warnamount: number,
+  punishment: autoPunishemnts,
+  addroles: roles,
+  removeroles: roles,
+  deletemessageseconds: number,
+ },
+ [CT.SettingNames.AutoRoles]: {
+  botroleid: roles,
+  userroleid: roles,
+  allroleid: roles,
+ },
+ [CT.SettingNames.LevelRoles]: {
+  level: number,
+  roles: roles,
+ },
+ [CT.SettingNames.RuleChannels]: {
+  // rules: CT.EditorTypes.Permission,
+  channels: channels,
+  hasleastattachments: number,
+  hasmostattachments: number,
+  hasleastcharacters: number,
+  hasmostcharacters: number,
+  hasleastwords: number,
+  hasmostwords: number,
+  mentionsleastusers: number,
+  mentionsmostusers: number,
+  mentionsleastchannels: number,
+  mentionsmostchannels: number,
+  mentionsleastroles: number,
+  mentionsmostroles: number,
+  hasleastlinks: number,
+  hasmostlinks: number,
+  hasleastemotes: number,
+  hasmostemotes: number,
+  hasleastmentions: number,
+  hasmostmentions: number,
+ },
+ [CT.SettingNames.BoosterRoles]: {
+  roles: roles,
+  days: number,
+ },
+ [CT.SettingNames.Nitro]: {
+  logchannels: channels,
+  rolemode: boolean,
+  notification: boolean,
+  notifchannels: channels,
+  notifembed: uniquetimestamp,
+ },
+ [CT.SettingNames.Vote]: {
+  token: string,
+  reminders: boolean,
+  announcementchannel: channel,
+  name: string,
+ },
+ [CT.SettingNames.VoteRewards]: {
+  rewardxp: number,
+  rewardxpmultiplier: number,
+  rewardcurrency: number,
+  rewardroles: roles,
+  weekends: weekendsTypes,
+ },
+ [CT.SettingNames.ReactionRoleSettings]: {
+  anyroles: roles,
+  msgid: message,
+ },
+ [CT.SettingNames.ButtonRoleSettings]: {
+  onlyone: boolean,
+  anyroles: roles,
+  msgid: message,
+ },
+ [CT.SettingNames.ButtonRoles]: {
+  emote: emote,
+  text: string,
+  roles: roles,
+  linkedid: uniquetimestamp,
+ },
+ [CT.SettingNames.ReactionRoles]: {
+  emote: emote,
+  roles: roles,
+  linkedid: uniquetimestamp,
+ },
+ [CT.SettingNames.VoiceHubs]: {
+  channelid: channel,
+  categoryid: channel,
+  deletetime: number,
+  private: boolean,
+  bluserid: users,
+  blroleid: roles,
+  wlroleid: roles,
+  wluserid: users,
+ },
+ [CT.SettingNames.Appeals]: {
+  channelid: channel,
+  bluserid: users,
+  reviewroleid: roles,
+ },
+ [CT.SettingNames.Questions]: {
+  question: string,
+  answertype: answerTypes,
+  required: boolean,
+  options: strings,
+ },
+ [CT.SettingNames.Afk]: {
+  maxLetters: number,
+ },
+ [CT.SettingNames.LinkedRolesDeco]: {
+  roleId: role,
+  botId: user,
+  botToken: string,
+  botSecret: string,
+  allowedUsers: users,
+  allowedRoles: roles,
+ },
+ [CT.SettingNames.PingReporter]: {
+  roleId: role,
+  channelIds: channels,
+  cooldown: number,
+ },
+ [CT.SettingNames.VotePunish]: {
+  roleId: role,
+  channelIds: channels,
+  reqRoles: roles,
+  reqRoleAmount: number,
+  cooldown: number,
+  punishment: autoPunishemnts,
+  duration: number,
+  deleteMessageSeconds: number,
+  voteInitRoles: roles,
+  bluserid: users,
+  blroleid: roles,
+ },
+ [CT.SettingNames.Ticketing]: {
+  type: ticketTypes,
+  active: boolean,
+  channelId: channel,
+  categoryId: channel,
+  archiveDuration: threadAutoArchiveDurations,
+  mentionRoles: roles,
+  mentionUsers: users,
+  sendMessagePrefixes: strings,
+  blroleid: roles,
+  bluserid: users,
+  logChannelIds: channels,
+  archiveCategoryId: channel,
  },
 };

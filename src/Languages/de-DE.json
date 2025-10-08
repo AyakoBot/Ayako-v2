@@ -778,7 +778,7 @@
    "unban": "Automatically Un-Banned",
    "unmute": "Automatically Un-Muted",
    "disboard": {
-    "desc": "You cein/eine now Bump thist Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond mit ein/eine Server-Bump Nachricht, click der/die/das Schaltfläche below.\n-# Also check out https://discordservers.gg (unpaid ad)",
+    "desc": "You cein/eine now Bump thist Server again!\n\nPlease type </bump:947088344167366698>\n-# If DISBOARD doesn't respond mit ein/eine Server-Bump Nachricht, click der/die/das Schaltfläche below.",
     "title": "{{t.botName}} DISBOARD Bump Reminder",
     "button": "Mark Server as bumped"
    },
@@ -4216,7 +4216,7 @@
       },
       "ptreminderenabled": {
        "name": "Privacy & Terms Reminder",
-       "desc": "Whethr the Privacy and Terms Reminder is aktiviert or nicht"
+       "desc": "Whether the Privacy and Terms Reminder is aktiviert or nicht"
       }
      }
     },
