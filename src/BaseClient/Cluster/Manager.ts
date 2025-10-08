@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import * as Sharding from 'discord-hybrid-sharding';
 import 'dotenv/config';
-import readline from 'readline';
+import ManagerMemoryMonitor from './ManagerMemoryMonitor.js';
 
 const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
@@ -12,19 +12,21 @@ const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  execArgv: [
   '--experimental-json-modules',
   '--experimental-wasm-modules',
+  '--expose-gc',
+  '--max-old-space-size=8192',
   ...(process.argv.includes('--dev') ? [] : ['--no-deprecation', '--no-warnings']),
  ],
  respawn: true,
  mode: 'process',
 });
 
-Manager.extend(new Sharding.ReClusterManager({ restartMode: 'rolling' }));
-
 await Manager.spawn()
  .then(() => {
   setInterval(async () => {
    await Manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
   }, 60000);
+
+  ManagerMemoryMonitor.initialize();
  })
  .catch((e: Response) => {
   console.log(
@@ -37,15 +39,3 @@ await Manager.spawn()
  });
 
 export default Manager;
-
-// @ts-ignore
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-rl.on('line', async (msg: string) => {
- const parts = msg.trim().split(/\s+/);
- const code = parts.join(' ');
-
- if (!code.startsWith('restart')) return;
-
- console.log('[Cluster Manager] Restarting all Clusters...');
- await Manager.recluster?.start({ restartMode: 'rolling' });
-});

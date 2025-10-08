@@ -14,6 +14,7 @@ import verification from './timedFiles/verification.js';
 import guilds from './timedFiles/guilds.js';
 import users from './timedFiles/users.js';
 import voiceLevels from './timedFiles/voiceLevels.js';
+import memoryMonitor from './timedFiles/memoryMonitor.js';
 
 export default async () => {
  await customBotCommands();
@@ -48,6 +49,8 @@ export default async () => {
   verification();
   voiceLevels();
  });
+
+ memoryMonitor.initialize();
 
  Jobs.scheduleJob(getPathFromError(new Error()), '0 */30 * * *', () => {
   antivirusBlocklistCacher();
