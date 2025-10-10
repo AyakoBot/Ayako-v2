@@ -21,6 +21,16 @@ export default async (msg: Message<true>) => {
   .createMany({
    data: [...msg.attachments.map((a) => a.url), ...contentURLs.flat(), ...videoURLs]
     .filter((u) => !!u.length)
+    .filter(
+     (u) =>
+      u.includes('.gif') ||
+      u.includes('.jpg') ||
+      u.includes('.png') ||
+      u.includes('.webp') ||
+      u.includes('.jpeg') ||
+      u.includes('.apng') ||
+      u.includes('.avif'),
+    )
     .map((url) => ({
      guildId: msg.guild.id,
      channelId: msg.channel.id,
