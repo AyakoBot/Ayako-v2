@@ -38,6 +38,15 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
   return;
  }
 
+ const otherDmTickets = await cmd.client.util.DataBase.dMTicket.findMany({
+  where: { userId: cmd.user.id },
+ });
+
+ if (otherDmTickets.length) {
+  cmd.client.util.errorCmd(cmd, language.ticketing.alreadyInTicket, language);
+  return;
+ }
+
  let dmId: string | undefined = undefined;
 
  if ([TicketType.dmToThread, TicketType.dmToChannel].includes(settings.type)) {
@@ -125,6 +134,7 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
  const initPayload = await getPayload(cmd.user, language, cmd.guild);
 
  const msg = await cmd.client.util.send(supportChannel, {
+  allowed_mentions: { users: settings.mentionUsers, roles: settings.mentionRoles },
   content: `${
    [TicketType.Channel, TicketType.Thread].includes(settings.type) ? cmd.user : ''
   }\n${settings.mentionRoles.map((r) => `<@&${r}>`).join(' ')}\n${settings.mentionUsers
