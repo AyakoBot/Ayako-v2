@@ -870,7 +870,7 @@
   "messageFailedDeliver": "Failed to deliver the Message. Recipient might have closed their DMs",
   "leaveTicket": "Leave Ticket",
   "leaveSure": "Are you sure you want to leave the Ticket? You will not be able to rejoin it.",
-  "alreadyInTicket": "You already are in a Ticket. Please leave it first via the `Leave Ticket`.\nThe Message with the Button is Pinned",
+  "alreadyInTicket": "You already are in a Ticket. Please leave it first via the `Leave Ticket`.\nThe Message with the Button is Pinned to our DMs",
   "ticketLeft": "You left the Ticket. You will no longer receive messages sent there and yours will no longer be relayed to the Support-Team",
   "ticketAlreadyClosed": "The Ticket is already closed",
   "leftTicket": "Left Ticket. Messages will no longer be delivered.",
