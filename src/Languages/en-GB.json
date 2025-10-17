@@ -2912,6 +2912,14 @@
     "wluserid": "Allowlisted Users",
     "bluserid": "Denylisted Users"
    },
+   "BLWLDescs": {
+    "wlchannelid": "If empty; setting will be active in ALL channels\nIf set; setting will be active ONLY in these channels",
+    "blchannelid": "If empty; setting will be active in ALL channels\nIf set; setting will be NOT be active in these channels",
+    "wlroleid": "If empty; setting will be active for ALL roles\nIf set; setting will be active ONLY for these roles",
+    "blroleid": "If empty; setting will be active for ALL roles\nIf set; setting will NOT be active for these roles",
+    "wluserid": "If set; These users will ALWAYS be included in the setting, even if they have a denylist role/channel\nIf empty; no effect",
+    "bluserid": "If set; These users will NEVER be included in the setting, even if they have an allowlist role/channel\nIf empty; no effect"
+   },
    "addById": "Add by ID",
    "addByIdInstructionsSingle": "Insert a Users ID",
    "addByIdInstructionsMulti": "Insert User IDs separated by a space or comma",
