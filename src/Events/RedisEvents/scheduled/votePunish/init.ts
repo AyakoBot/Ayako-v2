@@ -34,6 +34,7 @@ export default async (payload: {
  const lan = language.events.redis.votePunish;
 
  const m = await client.util.send(channel, {
+  allowed_mentions: { users: [mentioner.id] },
   content: lan.content(
    guild.roles.cache.get(settings.roleId!),
    mentioner,
