@@ -10,12 +10,12 @@ import { getAPI } from './addReaction.js';
  * @param msg - The message to be pinned.
  * @returns A promise that resolves with the pinned message, or rejects with a DiscordAPIError.
  */
-export default async (msg: Discord.Message, guild: Discord.Guild) => {
- const g = (msg.guild || guild)!;
+export default async (msg: Discord.Message, guild: Discord.Guild | null) => {
+ const g = msg.guild || guild;
 
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (msg.guild ? !canPinMessage(msg.channelId, await getBotMemberFromGuild(g)) : false) {
+ if (g && !canPinMessage(msg.channelId, await getBotMemberFromGuild(g))) {
   const e = requestHandlerError(
    `Cannot pin message in ${'name' in msg.channel ? msg.channel.name : 'DM'} / ${msg.channel.id}`,
    [Discord.PermissionFlagsBits.ManageMessages],

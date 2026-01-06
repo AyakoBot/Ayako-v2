@@ -104,6 +104,7 @@ export const sendDebugMessage = async (payload: CT.UsualMessagePayload, cause?: 
 
 const proceed = (message: string, stack: string | undefined) => {
  switch (true) {
+  case message.includes('This operation was aborted'):
   case message.includes('Connect Timeout Error'):
   case message.includes('other side closed'):
   case message.includes('write EPIPE'):

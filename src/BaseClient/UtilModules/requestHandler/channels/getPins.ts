@@ -22,6 +22,7 @@ export default async (
      type: Discord.ChannelType;
      skip: true;
      client: Discord.Client<true>;
+     forceMain?: boolean;
     },
 ) => {
  if (
@@ -44,7 +45,7 @@ export default async (
   return e;
  }
 
- return (await getAPI(channel.guild)).channels
+ return (await getAPI('forceMain' in channel && channel.forceMain ? null : channel.guild)).channels
   .getPins(channel.id)
   .then((msgs) => {
    const parsed = msgs.map((msg) => new Classes.Message(channel.client, msg));

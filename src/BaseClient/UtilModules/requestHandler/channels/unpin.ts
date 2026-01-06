@@ -12,13 +12,13 @@ import { getAPI } from './addReaction.js';
  */
 export default async (
  msg: Discord.Message | { guild: undefined; id: string; channelId: string },
- guild: Discord.Guild,
+ guild: Discord.Guild | null,
 ) => {
- const g = (msg.guild || guild)!;
+ const g = msg.guild || guild;
 
  if (process.argv.includes('--silent')) return new Error('Silent mode enabled.');
 
- if (msg.guild ? !canUnPinMessage(msg.channelId, await getBotMemberFromGuild(g)) : false) {
+ if (g && !canUnPinMessage(msg.channelId, await getBotMemberFromGuild(g))) {
   const e = requestHandlerError(`Cannot unpin message in ${g.name} / ${g.id}`, [
    Discord.PermissionFlagsBits.ManageMessages,
   ]);
@@ -27,10 +27,10 @@ export default async (
   return e;
  }
 
- return (await getAPI(msg.guild)).channels
+ return (await getAPI(g)).channels
   .unpinMessage(msg.channelId, msg.id)
   .catch((e: Discord.DiscordAPIError) => {
-   error(msg.guild, e);
+   error(g, e);
    return e;
   });
 };
