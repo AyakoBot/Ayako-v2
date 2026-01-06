@@ -30,7 +30,7 @@ export default async (msg: Message<true>) => {
 
  const language = await msg.client.util.getLanguage(msg.guild.id);
 
- const m = await msg.client.util.request.channels.sendMessage(msg.guild, dmThread.dmId, {
+ const m = await msg.client.util.request.channels.sendMessage(null, dmThread.dmId, {
   content,
   embeds: [
    {
@@ -38,7 +38,7 @@ export default async (msg: Message<true>) => {
    },
   ],
   files: await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url)),
- });
+ }, msg.client);
 
  if (!m || 'message' in m) {
   const language = await msg.client.util.getLanguage(msg.guild.id);

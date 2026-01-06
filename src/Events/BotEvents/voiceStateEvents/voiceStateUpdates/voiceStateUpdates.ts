@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import log from './log.js';
 import voiceHub from '../voiceStateCreates/voiceHub.js';
+import voiceHubDel from '../voiceStateDeletes/voiceHub.js';
 
 export default async (
  oldState: Discord.VoiceState,
@@ -9,4 +10,6 @@ export default async (
 ) => {
  log(oldState, state, member);
  voiceHub(state, member);
+
+ if (oldState.channelId !== state.channelId) voiceHubDel(oldState);
 };

@@ -58,25 +58,30 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
    return;
   }
 
-  const dm = await cmd.client.util.request.users.createDM(cmd.guild, cmd.user.id, cmd.client);
+  const dm = await cmd.client.util.request.users.createDM(null, cmd.user.id, cmd.client);
   const msg =
    dm && !('message' in dm)
-    ? await cmd.client.util.request.channels.sendMessage(cmd.guild, dm.id, {
-       content: language.ticketing.startChatting,
-       components: [
-        {
-         type: ComponentType.ActionRow,
-         components: [
-          {
-           type: ComponentType.Button,
-           custom_id: `tickets/leave_${settings.uniquetimestamp}`,
-           label: language.ticketing.leaveTicket,
-           style: ButtonStyle.Danger,
-          },
-         ],
-        },
-       ],
-      })
+    ? await cmd.client.util.request.channels.sendMessage(
+       null,
+       dm.id,
+       {
+        content: language.ticketing.startChatting,
+        components: [
+         {
+          type: ComponentType.ActionRow,
+          components: [
+           {
+            type: ComponentType.Button,
+            custom_id: `tickets/leave_${settings.uniquetimestamp}`,
+            label: language.ticketing.leaveTicket,
+            style: ButtonStyle.Danger,
+           },
+          ],
+         },
+        ],
+       },
+       cmd.client,
+      )
     : undefined;
 
   if (!msg || 'message' in dm || 'message' in msg) {
@@ -84,7 +89,7 @@ export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
    return;
   }
 
-  cmd.client.util.request.channels.pin(msg, cmd.guild);
+  cmd.client.util.request.channels.pin(msg, null);
 
   cmd.reply({
    flags: MessageFlags.Ephemeral,

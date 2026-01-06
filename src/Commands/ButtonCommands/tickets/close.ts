@@ -141,17 +141,22 @@ export const closeChannel = async (
  if (!settings) return payload;
  if (!settings.DMTicket[0]?.dmId) return payload;
 
- guild.client.util.request.channels.sendMessage(guild, settings.DMTicket[0]?.dmId, {
-  embeds: [
-   {
-    author: { name: language.ticketing.SupportTeam },
-    description: closer.bot
-     ? language.ticketing.hasClosedThreadInactive
-     : language.ticketing.hasClosedThread,
-    color: guild.client.util.Colors.Danger,
-   },
-  ],
- });
+ guild.client.util.request.channels.sendMessage(
+  null,
+  settings.DMTicket[0]?.dmId,
+  {
+   embeds: [
+    {
+     author: { name: language.ticketing.SupportTeam },
+     description: closer.bot
+      ? language.ticketing.hasClosedThreadInactive
+      : language.ticketing.hasClosedThread,
+     color: guild.client.util.Colors.Danger,
+    },
+   ],
+  },
+  guild.client,
+ );
 
  guild.client.util.DataBase.dMTicket.deleteMany({ where: { channelId: channel!.id } }).then();
 
@@ -162,13 +167,14 @@ export const closeChannel = async (
   guild: guild,
   type: ChannelType.DM,
   client: guild.client,
+  forceMain: true,
  });
 
  if ('message' in pins) return payload;
 
  const messages = pins.filter((m) => m.author.id === guild.client.user.id && m.components.length);
  messages.forEach((m) => {
-  guild.client.util.request.channels.unpin(m, guild);
+  guild.client.util.request.channels.unpin(m, null);
  });
 
  return payload;

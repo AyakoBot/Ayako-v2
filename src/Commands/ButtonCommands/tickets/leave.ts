@@ -74,7 +74,7 @@ export default async (cmd: ButtonInteraction) => {
 
    cl.util.request.channels.unpin(
     { guild: undefined, id: messageId, channelId: dmId },
-    channel.guild,
+    null,
    );
   },
   {
