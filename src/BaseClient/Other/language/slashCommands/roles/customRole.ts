@@ -14,6 +14,10 @@ export default (t: CT.Language) => ({
   t.stp(t.JSON.slashCommands.roles.customRole.create, {
    role: t.languageFunction.getRole(role),
   }),
+ deleted: (role: Discord.Role) =>
+  t.stp(t.JSON.slashCommands.roles.customRole.deleted, {
+   role: t.languageFunction.getRole(role),
+  }),
  limits: (
   limit: { icon: boolean; color: boolean; holo: boolean; gradient: boolean },
   cmdId: string,

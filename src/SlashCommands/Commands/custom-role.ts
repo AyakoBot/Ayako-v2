@@ -56,6 +56,11 @@ export default new Discord.SlashCommandBuilder()
  )
  .addSubcommand(
   new Discord.SlashCommandSubcommandBuilder()
+   .setName('delete')
+   .setDescription('Delete your custom role'),
+ )
+ .addSubcommand(
+  new Discord.SlashCommandSubcommandBuilder()
    .setName('edit-name')
    .setDescription('Edit the name of your custom role')
    .addStringOption(name),

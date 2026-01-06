@@ -2507,6 +2507,7 @@
     "notEnabled": "Setting Custom-Roles is not enabled",
     "cantSet": "You don't qualify to set a Custom-Role",
     "edit": "> {{role}}> was edited",
+    "deleted": "> {{role}}> was deleted",
     "create": "> {{role}}> was created",
     "limits": "__Applying limits:__\n-# Can set Role-Icon {{icon}} at </custom-role edit-icon:{{cmdId}}>\n-# Can set Role-Color {{color}} at </custom-role edit-color solid:{{cmdId}}>\n-# Can set Role-Gradient: {{gradient}} at </custom-role edit-color gradient:{{cmdId}}>\n-# Can set Role-Holographic: {{holo}} at </custom-role edit-color holographic:{{cmdId}}>",
     "alreadyExists": "You already have a Custom-Role. You can edit its name at </custom-role edit-name:{{cmdId}}>",
@@ -2728,8 +2729,8 @@
     "desc": "Use the Buttons below to edit your Embed\n\nFor Timestamp help, visit [hammertime.cyou](https://hammertime.cyou/) or [Mozilla Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date#date_time_string_format)",
     "quick": "### Quick Help",
     "fields": [
-     "This Part is used in __Leveling Settings__\n`{{newLevel}}` displays the new Level\n`{{oldLevel}}` displays the old Level\n`{{newXP}}` displays the new XP\n`{{oldXP}}` displays the old XP\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/Message",
-     "This Part is used in __Welcome Settings__ and __Nitro Notifications__\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/#/docs/discord.js/main/class/GuildMember",
+     "This Part is used in __Leveling Settings__\n`{{newLevel}}` displays the new Level\n`{{oldLevel}}` displays the old Level\n`{{newXP}}` displays the new XP\n`{{oldXP}}` displays the old XP\n`{{msg.author}}` mentions the User that sent the triggering Message\n`{{msg.channel}}` mentions the Channel that the triggering Message was sent in\n`{{msg.guild.name}}` displays the Servers Name\n`{{msg.guild.memberCount}}` displays the Servers Member Count\nnhttps://discord.js.org/docs/packages/discord.js/14.23.2/Message:Class",
+     "This Part is used in __Welcome Settings__ and __Nitro Notifications__\n`{{member}}` mentions the User that joined the Server\n`{{member.displayName}}` displays the Name of the joined Member\n`{{member.guild.name}}` displays the Servers Name\n`{{member.guild.memberCount}}` displays the Servers Member Count\nhttps://discord.js.org/docs/packages/discord.js/14.23.2/GuildMember:Class",
      "You can use </stp:{{cmdId}}> to test the `{{msg}}` Templates\n**Add Content via Modal or by sending a Message if no Modal pops up.**"
     ],
     "editButtons": [
