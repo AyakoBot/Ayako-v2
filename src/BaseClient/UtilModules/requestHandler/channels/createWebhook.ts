@@ -50,4 +50,4 @@ export default async (
  */
 export const canCreateWebhook = (channelId: string, me: Discord.GuildMember) =>
  me.permissionsIn(channelId).has(Discord.PermissionFlagsBits.ManageWebhooks) &&
- Number(me.client.util.cache.webhooks.cache.get(me.guild.id)?.get(channelId)?.size) < 15;
+ Number(me.client.util.cache.webhooks.cache.get(me.guild.id)?.get(channelId)?.size || 0) < 15;
