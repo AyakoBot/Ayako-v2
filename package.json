@@ -5,19 +5,19 @@
   "type": "module",
   "scripts": {
     "build": "swc src -d dist --strip-leading-paths --copy-files",
-    "dev": "pnpx prisma generate && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev --debug-db",
+    "dev": "pnpx prisma@6.18.0 generate && node --enable-source-maps --experimental-wasm-modules --experimental-json-modules ./dist/index.js --debug --warn --dev --debug-db",
     "postinstall": "mkdir -p ./logs",
     "lint": "npx eslint 'src/**/*.ts' --fix",
     "register": "node ./dist/register-commands.js",
     "register-dev": "pnpm build && node ./dist/register-commands-dev.js",
     "run": "node --expose-gc --no-deprecation --no-warnings --experimental-json-modules ./dist/index.js",
-    "start": "pnpx prisma generate && pnpx prisma db push && pnpm run run",
+    "start": "pnpx prisma@6.18.0 generate && pnpx prisma@6.18.0 db push && pnpm run run",
     "watch": "swc src -d dist --strip-leading-paths --copy-files --watch"
   },
   "dependencies": {
     "@discordjs/core": "^2.2.2",
     "@discordjs/rest": "^2.6.0",
-    "@prisma/client": "^6.16.3",
+    "@prisma/client": "^6.18.0",
     "canvas": "^3.2.0",
     "captcha-canvas": "^3.3.4",
     "client@latest": "link:prisma/client@latest",
@@ -72,14 +72,14 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
-    "prisma": "^6.16.3",
+    "prisma": "^6.18.0",
     "source-map-support": "^0.5.21",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.18.2",
   "engines": {
     "node": "^24.0.1",
-    "pnpm": "^10.17.1"
+    "pnpm": "^10.18.2"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"
