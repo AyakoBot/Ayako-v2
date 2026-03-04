@@ -4,8 +4,8 @@ import {
  type ButtonInteraction,
  type ModalMessageModalSubmitInteraction,
 } from 'discord.js';
-import type { SettingNames, SettingsName2TableName } from 'src/Typings/Settings';
-import type { DataBaseTables, Language } from 'src/Typings/Typings';
+import type { SettingNames, SettingsName2TableName } from 'src/Typings/Settings.js';
+import type { DataBaseTables, Language } from 'src/Typings/Typings.js';
 import buttonParsers from './buttonParsers.js';
 import componentParsers from './componentParsers.js';
 import embedParsers from './embedParsers.js';

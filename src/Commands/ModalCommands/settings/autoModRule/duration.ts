@@ -22,8 +22,8 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  const verify = (): Promise<{ value?: number; error?: Error }> =>
   new Promise((res) => {
    try {
-    ms(field.value as StringValue);
-    res({ value: cmd.client.util.getDuration(field.value) / 1000 });
+    ms((field as Discord.TextInputModalData).value as StringValue);
+    res({ value: cmd.client.util.getDuration((field as Discord.TextInputModalData).value) / 1000 });
    } catch (e) {
     res({ error: e as Error });
    }

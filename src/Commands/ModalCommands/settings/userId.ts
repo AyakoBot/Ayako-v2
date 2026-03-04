@@ -4,6 +4,7 @@ import user from '../../SelectCommands/UserSelect/settings/user.js';
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!cmd.isFromMessage()) return;
 
+ //@ts-ignore
  const fieldName = cmd.components[0].components[0].customId;
  args.unshift(fieldName);
 

@@ -1,5 +1,5 @@
 import type { GuildMember } from 'discord.js';
-import type { ModOptions, ModTypes } from 'src/Typings/Typings';
+import type { ModOptions, ModTypes } from 'src/Typings/Typings.js';
 
 export default async (options: ModOptions<ModTypes>, member?: GuildMember, channelId?: string) => {
  if (!member) return;

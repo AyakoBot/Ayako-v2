@@ -1,19 +1,17 @@
 import * as Discord from 'discord.js';
-// eslint-disable-next-line import/extensions, import/no-unresolved
-import * as RawData from 'discord.js/typings/rawDataTypes.js';
 
 export default undefined;
 
 // @ts-ignore
 export class GuildBan extends Discord.GuildBan {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildBanData, guild: Discord.Guild) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildBanData, guild: Discord.Guild) {
   super(client, data, guild);
  }
 }
 
 // @ts-ignore
 export class Invite extends Discord.Invite {
- constructor(client: Discord.Client<true>, data: RawData.RawInviteData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawInviteData) {
   super(client, data);
  }
 }
@@ -38,28 +36,28 @@ export class GuildMember extends Discord.GuildMember {
 
 // @ts-ignore
 export class Webhook extends Discord.Webhook {
- constructor(client: Discord.Client<true>, data: RawData.RawWebhookData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawWebhookData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class Message extends Discord.Message<true> {
- constructor(client: Discord.Client<true>, data: RawData.RawMessageData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawMessageData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class GuildAuditLogs extends Discord.GuildAuditLogs {
- constructor(guild: Discord.Guild, data: RawData.RawGuildAuditLogData) {
+ constructor(guild: Discord.Guild, data: Discord.RawGuildAuditLogData) {
   super(guild, data);
  }
 }
 
 // @ts-ignore
 export class Integration extends Discord.Integration {
- constructor(client: Discord.Client<true>, data: RawData.RawIntegrationData, guild: Discord.Guild) {
+ constructor(client: Discord.Client<true>, data: Discord.RawIntegrationData, guild: Discord.Guild) {
   super(client, data, guild);
  }
 }
@@ -73,14 +71,14 @@ export class GuildOnboarding extends Discord.GuildOnboarding {
 
 // @ts-ignore
 export class WelcomeScreen extends Discord.WelcomeScreen {
- constructor(guild: Discord.Guild, data: RawData.RawWelcomeScreenData) {
+ constructor(guild: Discord.Guild, data: Discord.RawWelcomeScreenData) {
   super(guild, data);
  }
 }
 
 // @ts-ignore
 export class ThreadChannel extends Discord.ThreadChannel {
- constructor(guild: Discord.Guild, data: RawData.RawThreadChannelData) {
+ constructor(guild: Discord.Guild, data: Discord.RawThreadChannelData) {
   super(guild, data);
  }
 }
@@ -98,14 +96,14 @@ export class AutoModerationRule extends Discord.AutoModerationRule {
 
 // @ts-ignore
 export class GuildEmoji extends Discord.GuildEmoji {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildEmojiData, guild: Discord.Guild) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildEmojiData, guild: Discord.Guild) {
   super(client, data, guild);
  }
 }
 
 // @ts-ignore
 export class Role extends Discord.Role {
- constructor(client: Discord.Client<true>, data: RawData.RawRoleData, guild: Discord.Guild) {
+ constructor(client: Discord.Client<true>, data: Discord.RawRoleData, guild: Discord.Guild) {
   super(client, data, guild);
  }
 }
@@ -114,7 +112,7 @@ export class Role extends Discord.Role {
 export class GuildChannel extends Discord.GuildChannel {
  constructor(
   guild: Discord.Guild,
-  channel: RawData.RawGuildChannelData,
+  channel: Discord.RawGuildChannelData,
   client: Discord.Client<true>,
  ) {
   super(guild, channel, client);
@@ -123,14 +121,14 @@ export class GuildChannel extends Discord.GuildChannel {
 
 // @ts-ignore
 export class User extends Discord.User {
- constructor(client: Discord.Client<true>, data: RawData.RawUserData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawUserData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class Ban extends Discord.GuildBan {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildBanData, guild: Discord.Guild) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildBanData, guild: Discord.Guild) {
   super(client, data, guild);
  }
 }
@@ -139,7 +137,7 @@ export class Ban extends Discord.GuildBan {
 export class ApplicationCommand extends Discord.ApplicationCommand {
  constructor(
   client: Discord.Client<true>,
-  data: RawData.RawApplicationCommandData,
+  data: Discord.RawApplicationCommandData,
   guild?: Discord.Guild,
   guildId?: Discord.Snowflake,
  ) {
@@ -225,49 +223,49 @@ export const Channel = <T extends Discord.ChannelType>(
 
 // @ts-ignore
 export class GuildPreview extends Discord.GuildPreview {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildPreviewData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildPreviewData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class Guild extends Discord.Guild {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class VoiceRegion extends Discord.VoiceRegion {
- constructor(data: RawData.RawVoiceRegionData) {
+ constructor(data: Discord.RawVoiceRegionData) {
   super(data);
  }
 }
 
 // @ts-ignore
 export class Widget extends Discord.Widget {
- constructor(client: Discord.Client<true>, data: RawData.RawWidgetData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawWidgetData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class GuildScheduledEvent extends Discord.GuildScheduledEvent {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildScheduledEventData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildScheduledEventData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class GuildTemplate extends Discord.GuildTemplate {
- constructor(client: Discord.Client<true>, data: RawData.RawGuildTemplateData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawGuildTemplateData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class Sticker extends Discord.Sticker {
- constructor(client: Discord.Client<true>, data: RawData.RawStickerData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawStickerData) {
   super(client, data);
  }
 }
@@ -276,7 +274,7 @@ export class Sticker extends Discord.Sticker {
 export class StageInstance extends Discord.StageInstance {
  constructor(
   client: Discord.Client<true>,
-  data: RawData.RawStageInstanceData,
+  data: Discord.RawStageInstanceData,
   channel: Discord.StageChannel,
  ) {
   super(client, data, channel);
@@ -285,45 +283,45 @@ export class StageInstance extends Discord.StageInstance {
 
 // @ts-ignore
 export class ThreadMember extends Discord.ThreadMember {
- constructor(thread: Discord.ThreadChannel, data: RawData.RawThreadMemberData) {
+ constructor(thread: Discord.ThreadChannel, data: Discord.RawThreadMemberData) {
   super(thread, data);
  }
 }
 
 export class ClientUser extends Discord.ClientUser {
- constructor(client: Discord.Client<true>, data: RawData.RawUserData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawUserData) {
   super(client, data);
  }
 }
 
 export class ChatInputCommandInteraction extends Discord.ChatInputCommandInteraction {
- constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawInteractionData) {
   super(client, data);
  }
 }
 
 export class UserContextMenuCommandInteraction extends Discord.UserContextMenuCommandInteraction {
- constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawInteractionData) {
   super(client, data);
  }
 }
 
 // eslint-disable-next-line max-len
 export class MessageContextMenuCommandInteraction extends Discord.MessageContextMenuCommandInteraction {
- constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawInteractionData) {
   super(client, data);
  }
 }
 
 export class AutocompleteInteraction extends Discord.AutocompleteInteraction {
- constructor(client: Discord.Client<true>, data: RawData.RawInteractionData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawInteractionData) {
   super(client, data);
  }
 }
 
 // @ts-ignore
 export class ButtonInteraction extends Discord.ButtonInteraction {
- constructor(client: Discord.Client<true>, data: RawData.RawMessageButtonInteractionData) {
+ constructor(client: Discord.Client<true>, data: Discord.RawMessageButtonInteractionData) {
   super(client, data);
  }
 }
@@ -377,7 +375,7 @@ export class ModalSubmit extends Discord.ModalSubmitInteraction {
 export class MessageReaction extends Discord.MessageReaction {
  constructor(
   client: Discord.Client<true>,
-  data: RawData.RawMessageReactionData,
+  data: Discord.RawMessageReactionData,
   message: Discord.Message<true>,
  ) {
   super(client, data, message);

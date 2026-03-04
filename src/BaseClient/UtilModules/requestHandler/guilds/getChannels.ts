@@ -13,7 +13,9 @@ export default async (guild: Discord.Guild) =>
  (await getAPI(guild)).guilds
   .getChannels(guild.id)
   .then((channels) => {
-   const parsed = channels.map((c) => Classes.Channel(guild.client, c, guild));
+   const parsed = channels.map((c) =>
+    Classes.Channel(guild.client, c as Discord.APIChannel, guild),
+   );
    parsed.forEach((p) => {
     if (guild.channels.cache.get(p.id)) return;
     guild.channels.cache.set(p.id, p as Discord.GuildBasedChannel);

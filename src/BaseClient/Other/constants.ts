@@ -7,6 +7,7 @@ import customembeds from './constants/customEmbeds.js';
 import tutorials from './constants/tutorials.js';
 
 export default {
+ debugGuilds: [''],
  path: {
   allowlist: `/app/Ayako/packages/CDN/antivirus/allowlisted.txt`,
   badLinks: `/app/Ayako/packages/CDN/antivirus/badLinks.txt`,

@@ -1,5 +1,5 @@
 import type { ChainableCommander } from 'ioredis';
-import type Redis from 'ioredis';
+import type { Redis } from 'ioredis';
 
 export type ReturnType<T extends undefined | ChainableCommander> = T extends undefined
  ? Promise<[any, any][]>

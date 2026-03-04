@@ -1,4 +1,4 @@
-import Redis from 'ioredis';
+import { Redis } from 'ioredis';
 import { BaseMessage } from 'discord-hybrid-sharding';
 import { type APIInteraction } from 'discord.js';
 import * as Typings from '../../Typings/Typings.js';

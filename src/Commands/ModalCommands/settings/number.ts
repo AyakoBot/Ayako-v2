@@ -17,7 +17,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!settingName) return;
 
  const fieldName = field.customId;
- const newSetting = field.value;
+ const newSetting = (field as Discord.TextInputModalData).value;
 
  if (Number.isNaN(+newSetting)) {
   cmd.client.util.errorCmd(cmd, language.errors.numNaN, language);

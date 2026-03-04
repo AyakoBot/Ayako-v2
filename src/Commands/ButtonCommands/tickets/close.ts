@@ -14,7 +14,7 @@ import {
  type GuildTextBasedChannel,
  ThreadAutoArchiveDuration,
 } from 'discord.js';
-import type { Language, UsualMessagePayload } from 'src/Typings/Typings';
+import type { Language, UsualMessagePayload } from 'src/Typings/Typings.js'
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
  if (!cmd.inCachedGuild()) return;

@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import welcome from '../../../Events/BotEvents/guildEvents/guildMemberAdd/welcome.js';
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {

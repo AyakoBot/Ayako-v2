@@ -50,7 +50,7 @@ export default async (msg: Discord.Message<boolean>) => {
    {
     embeds: [
      {
-      description: msg.poll.question.text,
+      description: msg.poll.question.text ?? undefined,
       fields: [
        {
         name: 'Answers',

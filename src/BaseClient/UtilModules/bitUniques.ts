@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 
 /**
  * Returns an array of two bitfields with unique bits from the input bitfields.

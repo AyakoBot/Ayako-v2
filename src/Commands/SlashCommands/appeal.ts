@@ -12,7 +12,7 @@ import {
  type GuildBasedChannel,
  type ModalMessageModalSubmitInteraction,
 } from 'discord.js';
-import type { Language } from 'src/Typings/Typings';
+import type { Language } from 'src/Typings/Typings.js';
 
 export default async (cmd: ChatInputCommandInteraction) => {
  const punishmentId = parseInt(cmd.options.getString('punishment', true), 36);

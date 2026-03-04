@@ -7,7 +7,10 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const field = cmd.fields.fields.first();
- if (!field || !field.value.match(cmd.client.util.regexes.messageTester)?.length) {
+ if (
+  !field ||
+  !(field as Discord.TextInputModalData).value.match(cmd.client.util.regexes.messageTester)?.length
+ ) {
   cmd.client.util.errorCmd(cmd, language.errors.inputNoMatch, language);
   return;
  }
@@ -16,7 +19,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!settingName) return;
 
  const fieldName = field.customId;
- const newSetting = field.value.length ? field.value.trim() : null;
+ const newSetting = (field as Discord.TextInputModalData).value.length
+  ? (field as Discord.TextInputModalData).value.trim()
+  : null;
 
  const getUniquetimestamp = () => {
   const arg = args.shift();

@@ -1,5 +1,5 @@
 import { createCanvas } from 'canvas';
-import * as echarts from 'echarts';
+import echarts from 'echarts';
 import { levelToXP } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 
 const commonOptions = {

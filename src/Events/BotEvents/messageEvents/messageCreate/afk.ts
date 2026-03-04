@@ -8,6 +8,7 @@ import client from '../../../../BaseClient/Bot/Client.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
 
 export default async (msg: Discord.Message<true>) => {
+ if (client.util.constants.debugGuilds.includes(msg.guildId)) return;
  if (!msg.author) return;
  if (msg.author.bot) return;
 

@@ -17,7 +17,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   return;
  }
 
- const newSetting = field.value;
+ const newSetting = (field as Discord.TextInputModalData).value;
 
  const getId = () => {
   const arg = args.shift();
@@ -78,6 +78,6 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- // @ts-expect-error Error overwrite for automod rules
+  // @ts-expect-error Error overwrite for automod rules
  cmd.client.util.settingsHelpers.showOverview(cmd, settingName, updatedSetting, language);
 };

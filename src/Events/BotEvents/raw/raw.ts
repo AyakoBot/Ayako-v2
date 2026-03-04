@@ -5,7 +5,6 @@ import voiceChannelStatusUpdate from './voiceChannelStatusUpdate.js';
 
 export default (data: GatewayDispatchPayload) => {
  if (data.op !== GatewayOpcodes.Dispatch) return;
- // cache(data);
 
  switch (data.t) {
   // TODO: wait for d to document this

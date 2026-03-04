@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import jobs from 'node-schedule';
 import client from '../../../../BaseClient/Bot/Client.js';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
@@ -9,6 +9,8 @@ export default async (msg: Discord.Message<true>) => {
  gvMessageCheck(msg);
  amMessageCheck(msg);
  amInproperStaffPingIdiot(msg);
+ hope(msg);
+ dumplings(msg);
 
  if (
   (msg.channelId === '554487212276842534' || msg.channelId === '791390835916537906') &&
@@ -172,4 +174,18 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
   if (!m) return;
   if (await msg.client.util.isDeleteable(m)) msg.client.util.request.channels.deleteMessage(m);
  });
+};
+
+const hope = (msg: Discord.Message) => {
+ if (msg.guild?.id !== '1350122697300115597') return;
+ if (!msg.content.toLowerCase().includes('hope')) return;
+
+ msg.react('hope:1462165030974918851');
+};
+
+const dumplings = (msg: Discord.Message) => {
+ if (msg.guild?.id !== '1350122697300115597') return;
+ if (!msg.content.toLowerCase().includes('dumpling')) return;
+
+ msg.react('dumplings:1463155539973505148');
 };

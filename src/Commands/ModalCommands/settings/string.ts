@@ -16,7 +16,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  if (!settingName) return;
 
  const fieldName = field.customId;
- const newSetting = field.value.length ? field.value : null;
+ const newSetting = (field as Discord.TextInputModalData).value.length
+  ? (field as Discord.TextInputModalData).value
+  : null;
 
  const getUniquetimestamp = () => {
   const arg = args.shift();

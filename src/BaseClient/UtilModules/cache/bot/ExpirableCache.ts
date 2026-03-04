@@ -1,6 +1,6 @@
 import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
 import type { Decimal, Optional } from '@prisma/client/runtime/library.js';
-import type Redis from 'ioredis';
+import type { Redis } from 'ioredis';
 import { ScheduleManager } from '../../ScheduleManager.js';
 
 export enum ExpirableCacheType {

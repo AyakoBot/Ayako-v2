@@ -1,6 +1,6 @@
-import Discord, { type APIEmbedImage } from 'discord.js';
+import { Guild, GuildMember, type APIEmbed, type APIEmbedImage } from 'discord.js';
 
-export default async (member: Discord.GuildMember) => {
+export default async (member: GuildMember) => {
  if (member.pending) return;
  const settings = await member.client.util.DataBase.welcome.findUnique({
   where: { guildid: member.guild.id, active: true },
@@ -19,7 +19,7 @@ export default async (member: Discord.GuildMember) => {
     })
   : undefined;
 
- const embed: Discord.APIEmbed = rawEmbed
+ const embed: APIEmbed = rawEmbed
   ? member.client.util.makeStp(member.client.util.getDiscordEmbed(rawEmbed), {
      member,
      serverName: member.guild.name,
@@ -39,7 +39,7 @@ export default async (member: Discord.GuildMember) => {
  });
 };
 
-const getDefaultEmbed = async (member: Discord.GuildMember) => {
+const getDefaultEmbed = async (member: GuildMember) => {
  const language = await member.client.util.getLanguage(member.guild.id);
 
  return {
@@ -49,7 +49,7 @@ const getDefaultEmbed = async (member: Discord.GuildMember) => {
 
 const getEmbedImage = async (
  gifChannelId: string | null,
- guild: Discord.Guild,
+ guild: Guild,
  currentImage: APIEmbedImage | undefined,
 ) => {
  if (!gifChannelId) return currentImage;

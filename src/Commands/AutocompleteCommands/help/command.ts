@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import * as Discord from 'discord.js';
 import StringSimilarity from 'string-similarity';
 import * as CT from '../../../Typings/Typings.js';
 

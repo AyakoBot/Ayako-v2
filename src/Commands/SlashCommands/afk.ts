@@ -6,6 +6,7 @@ export default async (
  cmd: Discord.ChatInputCommandInteraction<'cached'> | Discord.Message<true>,
  text?: string,
 ) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId)) return;
  if (cmd instanceof Discord.ChatInputCommandInteraction && !cmd.inCachedGuild()) return;
  if (!cmd.inGuild()) return;
  if (!cmd.channel) return;

@@ -38,7 +38,9 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
  }
 
  const oldSetting = String(getCurrentSetting(rule, fieldName));
- const newSetting = field.value.split(/,\s+/g).filter((s) => s.length);
+ const newSetting = (field as Discord.TextInputModalData).value
+  .split(/,\s+/g)
+  .filter((s) => s.length);
  const updatedSetting = await updateSetting(rule, fieldName, newSetting);
 
  if (!updatedSetting || 'message' in updatedSetting) {
@@ -57,7 +59,7 @@ export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
   language.slashCommands.settings.categories[settingName],
  );
 
- // @ts-expect-error Error overwrite for automod rules
+  // @ts-expect-error Error overwrite for automod rules
  cmd.client.util.settingsHelpers.showOverview(cmd, settingName, updatedSetting, language);
 };
 
