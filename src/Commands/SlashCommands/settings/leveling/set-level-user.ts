@@ -2,7 +2,7 @@ import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { xpToLevel } from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { FormulaType } = _pkg;
 
 export default async (

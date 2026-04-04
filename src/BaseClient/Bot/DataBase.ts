@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import _pkg from '@prisma/client';
+import _pkg from '../../lib/prisma.js';
 const { Prisma, PrismaClient } = _pkg;
 import type {
  DefaultArgs,

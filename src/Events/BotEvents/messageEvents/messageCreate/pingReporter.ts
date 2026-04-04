@@ -1,4 +1,4 @@
-import type { pingReport } from '@prisma/client';
+import type { pingReport } from '../../../../lib/prisma.js';
 import { ButtonStyle, ComponentType, GuildMember, type APIEmbed, type Message } from 'discord.js';
 import type { Language } from 'src/Typings/Typings.js';
 

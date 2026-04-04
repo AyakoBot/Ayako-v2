@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../../lib/prisma.js';
 const { StoredPunishmentTypes } = Prisma;
 import { Decimal } from '@prisma/client/runtime/library.js';
 import * as Discord from 'discord.js';

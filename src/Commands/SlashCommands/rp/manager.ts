@@ -1,4 +1,4 @@
-import type { guildsettings } from '@prisma/client';
+import type { guildsettings } from '../../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 

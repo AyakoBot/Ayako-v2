@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-shadow
-import Prisma from '@prisma/client';
+import Prisma from '../../../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import Jobs from 'node-schedule';
 import { Worker } from 'worker_threads';

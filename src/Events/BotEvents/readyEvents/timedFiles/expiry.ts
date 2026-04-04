@@ -1,5 +1,5 @@
-import _pkg from '@prisma/client';
-import type { punishments } from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
+import type { punishments } from '../../../../lib/prisma.js';
 const { Prisma, StoredPunishmentTypes } = _pkg;
 import type * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';

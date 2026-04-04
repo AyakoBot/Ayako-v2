@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../Typings/Typings.js';

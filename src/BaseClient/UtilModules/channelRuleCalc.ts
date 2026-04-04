@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../lib/prisma.js';
 import * as CT from '../../Typings/Typings.js';
 import ChannelRules from '../Other/ChannelRules.js';
 

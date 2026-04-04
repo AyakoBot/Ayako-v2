@@ -1,4 +1,4 @@
-import type { Reminder as DBReminder, PrismaClient } from '@prisma/client';
+import type { Reminder as DBReminder, PrismaClient } from '../../../../lib/prisma.js';
 import db from '../../../Bot/DataBase.js';
 import { scheduleDB } from '../../../Bot/Redis.js';
 import getColor from '../../getColor.js';

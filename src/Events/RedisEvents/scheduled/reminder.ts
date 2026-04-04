@@ -1,4 +1,4 @@
-import type { Reminder as DBReminder } from '@prisma/client';
+import type { Reminder as DBReminder } from '../../../lib/prisma.js';
 import { Decimal } from '@prisma/client/runtime/library';
 import type { Serialized } from 'discord-hybrid-sharding';
 import { Reminder } from '../../../BaseClient/UtilModules/cache/bot/Reminder.js';

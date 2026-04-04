@@ -1,4 +1,4 @@
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { Prisma } = _pkg;
 import * as CT from '../../../../Typings/Typings.js';
 

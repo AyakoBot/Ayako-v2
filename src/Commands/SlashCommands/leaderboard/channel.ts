@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../lib/prisma.js';
 const { FormulaType } = Prisma;
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';

@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import { filtered_content as filterContent } from '../../../../rust/rust.js';
 

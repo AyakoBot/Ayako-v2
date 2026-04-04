@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import * as DiscordCore from '@discordjs/core';
 import * as DiscordRest from '@discordjs/rest';
-import _pkg from '@prisma/client';
+import _pkg from './lib/prisma.js';
 const { PrismaClient } = _pkg;
 import * as Discord from 'discord.js';
 import 'dotenv/config';

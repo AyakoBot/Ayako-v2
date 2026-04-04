@@ -1,4 +1,4 @@
-import _pkg from '@prisma/client';
+import _pkg from '../../../lib/prisma.js';
 const { TicketType } = _pkg;
 import {
  ButtonStyle,

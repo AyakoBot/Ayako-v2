@@ -1,5 +1,5 @@
-import Prisma from '@prisma/client';
-import type { punishments } from '@prisma/client';
+import Prisma from '../../lib/prisma.js';
+import type { punishments } from '../../lib/prisma.js';
 const { StoredPunishmentTypes } = Prisma;
 import { StoredBaseAndTempType, StoredTempTypes } from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';

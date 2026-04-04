@@ -1,4 +1,4 @@
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { ShopType } = _pkg;
 import * as Discord from 'discord.js';
 import client, { API } from '../../../../BaseClient/Bot/Client.js';

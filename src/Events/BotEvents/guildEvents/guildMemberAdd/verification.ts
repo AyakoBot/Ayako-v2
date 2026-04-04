@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../../lib/prisma.js';
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
 import * as CT from '../../../../Typings/Typings.js';

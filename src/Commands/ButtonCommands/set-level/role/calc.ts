@@ -8,7 +8,7 @@ import {
  levelToXP,
  xpToLevel,
 } from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { FormulaType } = _pkg;
 
 export default async (cmd: Discord.ButtonInteraction, args: string[]) => {

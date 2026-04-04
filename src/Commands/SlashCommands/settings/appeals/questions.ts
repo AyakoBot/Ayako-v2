@@ -1,4 +1,4 @@
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { AnswerType } = _pkg;
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';

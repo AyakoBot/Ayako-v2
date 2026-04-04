@@ -1,6 +1,6 @@
 import * as Discord from 'discord.js';
 import { getEmbed, getLongest, getOwnLevel } from './server.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../lib/prisma.js';
 const { FormulaType } = _pkg;
 import { xpToLevel } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
 

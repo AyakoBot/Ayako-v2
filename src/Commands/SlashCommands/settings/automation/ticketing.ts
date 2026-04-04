@@ -1,7 +1,7 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { TicketType } = _pkg;
 import { Decimal } from '@prisma/client/runtime/library.js';
 

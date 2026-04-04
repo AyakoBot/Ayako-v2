@@ -4,7 +4,7 @@ import {
  getLevelComponents,
  getXPComponents,
 } from '../../../SlashCommands/settings/leveling/set-level-user.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { FormulaType } = _pkg;
 import {
  levelToXP,

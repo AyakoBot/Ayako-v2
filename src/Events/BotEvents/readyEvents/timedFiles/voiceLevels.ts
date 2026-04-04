@@ -1,5 +1,5 @@
-import _pkg from '@prisma/client';
-import type { level, levelchannels, leveling } from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
+import type { level, levelchannels, leveling } from '../../../../lib/prisma.js';
 const { FormulaType, LevelType } = _pkg;
 import type { Guild, GuildMember, VoiceBasedChannel } from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';

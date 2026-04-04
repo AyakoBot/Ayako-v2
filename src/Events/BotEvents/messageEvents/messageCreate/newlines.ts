@@ -1,5 +1,5 @@
 import * as Discord from 'discord.js';
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { PunishmentType } = _pkg;
 import * as CT from '../../../../Typings/Typings.js';
 

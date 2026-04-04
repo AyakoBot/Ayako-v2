@@ -1,4 +1,4 @@
-import Prisma from '@prisma/client';
+import Prisma from '../../../../lib/prisma.js';
 const { PunishmentType } = Prisma;
 import * as Discord from 'discord.js';
 import client, { API } from '../../../../BaseClient/Bot/Client.js';

@@ -1,5 +1,5 @@
 import type * as Discord from 'discord.js';
-import Prisma from '@prisma/client';
+import Prisma from '../../lib/prisma.js';
 
 /**
  * Converts a custom embed object from the database to a Discord API embed object.

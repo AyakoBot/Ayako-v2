@@ -1,4 +1,4 @@
-import Prisma, { type PrismaPromise } from '@prisma/client';
+import Prisma, { type PrismaPromise } from '../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 

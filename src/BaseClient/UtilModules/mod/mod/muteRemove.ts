@@ -1,4 +1,4 @@
-import _pkg from '@prisma/client';
+import _pkg from '../../../../lib/prisma.js';
 const { StoredPunishmentTypes } = _pkg;
 import * as CT from '../../../../Typings/Typings.js';
 import DataBase from '../../../Bot/DataBase.js';

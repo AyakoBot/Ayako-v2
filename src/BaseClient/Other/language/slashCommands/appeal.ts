@@ -1,6 +1,6 @@
 import type { GuildBasedChannel } from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
-import type { AppealStatus, StoredPunishmentTypes } from '@prisma/client';
+import type { AppealStatus, StoredPunishmentTypes } from '../../../../lib/prisma.js';
 
 export default (t: CT.Language) => ({
  ...t.JSON.slashCommands.appeal,

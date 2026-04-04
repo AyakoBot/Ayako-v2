@@ -1,5 +1,5 @@
-import _pkg from '@prisma/client';
-import type { appeals, punishments as Punishment } from '@prisma/client';
+import _pkg from '../../lib/prisma.js';
+import type { appeals, punishments as Punishment } from '../../lib/prisma.js';
 const { AnswerType } = _pkg;
 import {
  ButtonInteraction,

@@ -1,4 +1,4 @@
-import Prisma, { type votes } from '@prisma/client';
+import Prisma, { type votes } from '../../../lib/prisma.js';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import getPathFromError from '../../../BaseClient/UtilModules/getPathFromError.js';

@@ -1,4 +1,4 @@
-import type { votePunish } from '@prisma/client';
+import type { votePunish } from '../../../../lib/prisma.js';
 import {
  ButtonStyle,
  ComponentType,
