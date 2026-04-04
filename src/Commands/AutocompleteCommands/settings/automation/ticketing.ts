@@ -5,6 +5,8 @@ import { TicketType } from '@prisma/client';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
  if (!cmd.guild) return [];
+ if (cmd.guild.client.util.constants.debugGuilds.includes(cmd.guild.id || '')) return;
+
  const settings = (
   await cmd.guild.client.util.DataBase.ticketing.findMany({ where: { guildid: cmd.guild.id } })
  )?.filter((s) => {

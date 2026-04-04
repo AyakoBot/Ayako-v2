@@ -1,6 +1,7 @@
 import type { ActionRow, ButtonInteraction, MessageActionRowComponent } from 'discord.js';
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
  if (!cmd.inCachedGuild()) return;
  if (!cmd.channel) return;
 

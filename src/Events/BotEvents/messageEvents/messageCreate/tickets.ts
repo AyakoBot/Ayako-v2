@@ -1,6 +1,7 @@
 import { type Message } from 'discord.js';
 
 export default async (msg: Message<true>) => {
+ if (msg.client.util.constants.debugGuilds.includes(msg.guild.id || '')) return;
  if (!msg.author) return;
  if (msg.author.bot) return;
 
@@ -30,15 +31,20 @@ export default async (msg: Message<true>) => {
 
  const language = await msg.client.util.getLanguage(msg.guild.id);
 
- const m = await msg.client.util.request.channels.sendMessage(null, dmThread.dmId, {
-  content,
-  embeds: [
-   {
-    description: `-# ${language.ticketing.sentBySupport} - [${language.ticketing.reportAbuse}](${msg.client.util.constants.standard.support})`,
-   },
-  ],
-  files: await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url)),
- }, msg.client);
+ const m = await msg.client.util.request.channels.sendMessage(
+  null,
+  dmThread.dmId,
+  {
+   content,
+   embeds: [
+    {
+     description: `-# ${language.ticketing.sentBySupport} - [${language.ticketing.reportAbuse}](${msg.client.util.constants.standard.support})`,
+    },
+   ],
+   files: await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url)),
+  },
+  msg.client,
+ );
 
  if (!m || 'message' in m) {
   const language = await msg.client.util.getLanguage(msg.guild.id);

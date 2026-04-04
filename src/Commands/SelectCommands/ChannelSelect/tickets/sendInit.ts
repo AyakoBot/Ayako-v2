@@ -7,6 +7,7 @@ import {
 import { SettingNames } from '../../../../Typings/Settings.js';
 
 export default async (cmd: ChannelSelectMenuInteraction, args: string[]) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
  if (!cmd.inCachedGuild()) return;
 
  const id = args.pop() as string;

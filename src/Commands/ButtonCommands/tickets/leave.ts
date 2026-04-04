@@ -1,6 +1,7 @@
 import type { ButtonInteraction, GuildTextBasedChannel } from 'discord.js';
 
 export default async (cmd: ButtonInteraction) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
  if (!cmd.channel) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);

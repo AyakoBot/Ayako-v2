@@ -2,6 +2,7 @@ import type { AnyThreadChannel } from 'discord.js';
 import { closeChannel } from '../../../../Commands/ButtonCommands/tickets/close.js';
 
 export default async (channel: AnyThreadChannel) => {
+ if (channel.client.util.constants.debugGuilds.includes(channel.guild.id || '')) return;
  if (!channel) return;
  if (!channel.archived) return;
 

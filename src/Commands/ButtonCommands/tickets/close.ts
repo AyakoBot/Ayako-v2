@@ -17,6 +17,7 @@ import {
 import type { Language, UsualMessagePayload } from 'src/Typings/Typings.js'
 
 export default async (cmd: ButtonInteraction, args: string[]) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
  if (!cmd.inCachedGuild()) return;
  if (!cmd.channel) return;
 

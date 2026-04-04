@@ -8,6 +8,7 @@ const name = CT.SettingNames.Ticketing;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
  if (!cmd.inCachedGuild()) return;
+ if (cmd.guild.client.util.constants.debugGuilds.includes(cmd.guild.id || '')) return;
 
  const language = await client.util.getLanguage(cmd.guild.id);
  const lan = language.slashCommands.settings.categories[name];
