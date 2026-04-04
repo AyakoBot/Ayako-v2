@@ -2,7 +2,8 @@ import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
 import { xpToLevel } from '../../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
-import { FormulaType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { FormulaType } = _pkg;
 
 export default async (
  cmd: Discord.ChatInputCommandInteraction | Discord.ButtonInteraction,

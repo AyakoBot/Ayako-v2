@@ -1,4 +1,6 @@
-import { AnswerType, type appeals, type punishments as Punishment } from '@prisma/client';
+import _pkg from '@prisma/client';
+import type { appeals, punishments as Punishment } from '@prisma/client';
+const { AnswerType } = _pkg;
 import {
  ButtonInteraction,
  ButtonStyle,

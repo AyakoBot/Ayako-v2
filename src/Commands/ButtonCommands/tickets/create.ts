@@ -1,4 +1,5 @@
-import { TicketType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { TicketType } = _pkg;
 import {
  ButtonStyle,
  ChannelType,

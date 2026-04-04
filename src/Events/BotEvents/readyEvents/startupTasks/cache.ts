@@ -1,4 +1,5 @@
-import Prisma, { StoredPunishmentTypes } from '@prisma/client';
+import Prisma from '@prisma/client';
+const { StoredPunishmentTypes } = Prisma;
 import { Decimal } from '@prisma/client/runtime/library.js';
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';

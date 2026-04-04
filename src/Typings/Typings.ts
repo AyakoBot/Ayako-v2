@@ -1,4 +1,5 @@
-import { StoredPunishmentTypes } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { StoredPunishmentTypes } = _pkg;
 import * as Discord from 'discord.js';
 
 export type * from '../BaseClient/Cluster/Redis.js';

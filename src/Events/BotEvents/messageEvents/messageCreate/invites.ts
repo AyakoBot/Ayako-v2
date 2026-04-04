@@ -1,5 +1,6 @@
 import * as Discord from 'discord.js';
-import { PunishmentType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { PunishmentType } = _pkg;
 import * as CT from '../../../../Typings/Typings.js';
 
 export default async (msg: Discord.Message<true>) => {

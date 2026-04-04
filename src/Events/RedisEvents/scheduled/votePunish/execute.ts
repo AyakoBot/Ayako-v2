@@ -1,4 +1,6 @@
-import { AutoPunishPunishmentType, type votePunish } from '@prisma/client';
+import _pkg from '@prisma/client';
+import type { votePunish } from '@prisma/client';
+const { AutoPunishPunishmentType } = _pkg;
 import type { GuildTextBasedChannel, Message, User } from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import { scheduleDB } from '../../../../BaseClient/Bot/Redis.js';

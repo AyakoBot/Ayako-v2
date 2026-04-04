@@ -1,7 +1,8 @@
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';
-import { TicketType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { TicketType } = _pkg;
 import { Decimal } from '@prisma/client/runtime/library.js';
 
 const name = CT.SettingNames.Ticketing;

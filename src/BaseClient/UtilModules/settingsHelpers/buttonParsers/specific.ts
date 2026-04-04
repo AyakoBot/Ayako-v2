@@ -1,4 +1,5 @@
-import { Prisma } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { Prisma } = _pkg;
 import * as Discord from 'discord.js';
 import * as CT from '../../../../Typings/Typings.js';
 import constants from '../../../Other/constants.js';

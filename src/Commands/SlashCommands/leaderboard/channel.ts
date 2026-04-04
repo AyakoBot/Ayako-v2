@@ -1,4 +1,5 @@
-import Prisma, { FormulaType } from '@prisma/client';
+import Prisma from '@prisma/client';
+const { FormulaType } = Prisma;
 import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 import { GuildTextChannelTypes } from '../../../Typings/Channel.js';

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Prisma, PrismaClient } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { Prisma, PrismaClient } = _pkg;
 import type {
  DefaultArgs,
  DynamicQueryExtensionCb,

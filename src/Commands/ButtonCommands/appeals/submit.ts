@@ -1,4 +1,5 @@
-import { AnswerType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { AnswerType } = _pkg;
 import {
  ButtonStyle,
  Client,

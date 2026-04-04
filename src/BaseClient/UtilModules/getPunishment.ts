@@ -1,4 +1,6 @@
-import Prisma, { StoredPunishmentTypes, type punishments } from '@prisma/client';
+import Prisma from '@prisma/client';
+import type { punishments } from '@prisma/client';
+const { StoredPunishmentTypes } = Prisma;
 import { StoredBaseAndTempType, StoredTempTypes } from '../../Typings/Typings.js';
 import DataBase from '../Bot/DataBase.js';
 

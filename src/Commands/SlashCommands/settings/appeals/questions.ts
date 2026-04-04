@@ -1,4 +1,5 @@
-import { AnswerType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { AnswerType } = _pkg;
 import * as Discord from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import * as CT from '../../../../Typings/Typings.js';

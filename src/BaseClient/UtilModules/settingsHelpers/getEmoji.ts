@@ -1,4 +1,5 @@
-import { Prisma } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { Prisma } = _pkg;
 import * as CT from '../../../Typings/Typings.js';
 import emotes from '../emotes.js';
 

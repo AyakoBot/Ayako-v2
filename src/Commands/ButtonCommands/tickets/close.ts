@@ -1,4 +1,6 @@
-import { TicketType, type DMTicket, type ticketing } from '@prisma/client';
+import _pkg from '@prisma/client';
+import type { DMTicket, ticketing } from '@prisma/client';
+const { TicketType } = _pkg;
 import {
  ButtonStyle,
  CategoryChannel,

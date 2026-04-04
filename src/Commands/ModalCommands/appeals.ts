@@ -1,4 +1,5 @@
-import { AppealStatus } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { AppealStatus } = _pkg;
 import * as Discord from 'discord.js';
 import client from '../../BaseClient/Bot/Client.js';
 import * as CT from '../../Typings/Typings.js';

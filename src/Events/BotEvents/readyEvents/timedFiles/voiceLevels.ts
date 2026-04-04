@@ -1,10 +1,6 @@
-import {
- FormulaType,
- LevelType,
- type level,
- type levelchannels,
- type leveling,
-} from '@prisma/client';
+import _pkg from '@prisma/client';
+import type { level, levelchannels, leveling } from '@prisma/client';
+const { FormulaType, LevelType } = _pkg;
 import type { Guild, GuildMember, VoiceBasedChannel } from 'discord.js';
 import client from '../../../../BaseClient/Bot/Client.js';
 import { levelUp, xpToLevel } from '../../messageEvents/messageCreate/levelling.js';

@@ -1,4 +1,6 @@
-import Prisma, { FormulaType, LevelType, type leveling } from '@prisma/client';
+import Prisma from '@prisma/client';
+import type { leveling } from '@prisma/client';
+const { FormulaType, LevelType } = Prisma;
 import * as Discord from 'discord.js';
 import * as Jobs from 'node-schedule';
 import * as StringSimilarity from 'string-similarity';

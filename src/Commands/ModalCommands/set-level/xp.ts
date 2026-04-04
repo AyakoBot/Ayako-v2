@@ -5,7 +5,8 @@ import {
  levelToXP,
  xpToLevel,
 } from '../../../Events/BotEvents/messageEvents/messageCreate/levelling.js';
-import { FormulaType } from '@prisma/client';
+import _pkg from '@prisma/client';
+const { FormulaType } = _pkg;
 
 export default async (cmd: ModalSubmitInteraction, args: string[], type: 'xp' | 'lvl' = 'xp') => {
  if (!cmd.inCachedGuild()) return;
