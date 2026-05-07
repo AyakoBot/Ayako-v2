@@ -1,7 +1,7 @@
 import type { ButtonInteraction, GuildTextBasedChannel } from 'discord.js';
 
 export default async (cmd: ButtonInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
+ if (cmd.user.id === '564052925828038658') return;
  if (!cmd.channel) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);
@@ -73,10 +73,7 @@ export default async (cmd: ButtonInteraction) => {
     },
    );
 
-   cl.util.request.channels.unpin(
-    { guild: undefined, id: messageId, channelId: dmId },
-    null,
-   );
+   cl.util.request.channels.unpin({ guild: undefined, id: messageId, channelId: dmId }, null);
   },
   {
    context: {

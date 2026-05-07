@@ -7,8 +7,6 @@ export default async (msg: Discord.Message<true>) => {
  if (!msg.author) return;
  if (msg.author.bot) return;
 
- if (msg.author.id !== '564052925828038658') return;
-
  const settings = await msg.client.util.DataBase.antispam.findUnique({
   where: {
    guildid: msg.guildId,

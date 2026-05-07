@@ -179,6 +179,7 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
 const hope = (msg: Discord.Message) => {
  if (msg.guild?.id !== '1350122697300115597') return;
  if (!msg.content.toLowerCase().includes('hope')) return;
+ if (msg.channelId === '1351904166498406501') return;
 
  msg.react('hope:1462165030974918851');
 };
@@ -186,6 +187,7 @@ const hope = (msg: Discord.Message) => {
 const dumplings = (msg: Discord.Message) => {
  if (msg.guild?.id !== '1350122697300115597') return;
  if (!msg.content.toLowerCase().includes('dumpling')) return;
+ if (msg.channelId === '1351904166498406501') return;
 
  msg.react('dumplings:1463155539973505148');
 };
