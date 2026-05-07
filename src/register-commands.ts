@@ -31,6 +31,15 @@ await fetch(`https://discordbotlist.com/api/v1/bots/${process.env.mainId}/comman
  body: JSON.stringify(createCommands.map((c) => c.toJSON())),
 });
 
+await fetch(`https://discordforge.org/api/external/bots/commands`, {
+ method: 'post',
+ headers: {
+  'x-api-key': process.env.discordforgeToken ?? '',
+  'Content-Type': 'application/json',
+ },
+ body: JSON.stringify({ commands: createCommands.map((c) => c.toJSON()) }),
+});
+
 (await prisma.customclients.findMany({ where: { token: { not: null }, appid: { not: null } } }))
  .filter((s) => !!s.token && !!s.appid)
  .forEach(async (s) => {
