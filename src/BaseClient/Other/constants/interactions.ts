@@ -308,4 +308,20 @@ export default [
   buttons: ['handshake'],
  },
  { name: 'nope', desc: "I'm outta here", users: true, reqUser: false, buttons: [] },
+ {
+  name: 'spin',
+  desc: 'Spin around',
+  users: true,
+  reqUser: false,
+  buttons: ['spin', 'bonk', 'nope'],
+ },
+ { name: 'sip', desc: 'Sip something', users: true, reqUser: false, buttons: ['sip', 'bleh'] },
+ {
+  name: 'kabedon',
+  desc: 'Kabedon someone',
+  users: true,
+  reqUser: true,
+  buttons: ['kabedon', 'shock'],
+ },
+ { name: 'confused', desc: 'Confused', users: true, reqUser: false, buttons: ['pat', 'spin'] },
 ];
