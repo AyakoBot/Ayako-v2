@@ -313,9 +313,9 @@ export default [
   desc: 'Spin around',
   users: true,
   reqUser: false,
-  buttons: ['spin', 'bonk', 'nope'],
+  buttons: ['spin', 'bonk', 'sip'],
  },
- { name: 'sip', desc: 'Sip something', users: true, reqUser: false, buttons: ['sip', 'bleh'] },
+ { name: 'sip', desc: 'Sip something', users: true, reqUser: false, buttons: ['bleh', 'sip'] },
  {
   name: 'kabedon',
   desc: 'Kabedon someone',
@@ -324,4 +324,5 @@ export default [
   buttons: ['kabedon', 'shock'],
  },
  { name: 'confused', desc: 'Confused', users: true, reqUser: false, buttons: ['pat', 'spin'] },
+ { name: 'bleh', desc: 'Bleh', users: true, reqUser: false, buttons: ['pat', 'bleh'] },
 ];

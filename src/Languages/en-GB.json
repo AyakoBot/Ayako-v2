@@ -2118,18 +2118,18 @@
     "noOne": "spins around",
     "others": "spins around with",
     "request": "wants to spin around with you!",
-    "buttons": ["Spin together~", "Bonk them >~<"]
+    "buttons": ["Spin together~", "Bonk them! >:(", "Sip some tea"]
    },
    "sip": {
     "self": "sips from their own cup, how elegant",
     "noOne": "sips from their cup elegantly",
     "others": "sips from their cup with",
     "request": "wants to sip together with you!",
-    "buttons": ["Sippies time", "Bleehh, not thirsty >~>"]
+    "buttons": ["Bleehh, not thirsty >~>", "Sippies time"]
    },
    "kabedon": {
     "self": "kabedons themself, how does that even work??",
-    "others": "kabedons",
+    "others": "gets kabedonned by",
     "request": "wants to kabedon you! >~<",
     "buttons": ["Kabedon~", ":O shocking"]
    },
@@ -2138,6 +2138,12 @@
     "noOne": "is confused",
     "others": "is confused by",
     "buttons": ["Pat them", "Confuse them even more"]
+   },
+   "bleh": {
+    "self": "Bleeh! >:c",
+    "noOne": "blehs at Chat",
+    "others": "blehs at",
+    "buttons": ["Pat them", "Bleh back!"]
    }
   },
   "balance": {
