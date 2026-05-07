@@ -23,7 +23,8 @@ Managing \`${cl.util.splitByThousand(members)} Members\`
 Current Version: \`v${cl.util.files.importCache.package.file.version}\`
 
 https://ayakobot.com
-https://support.ayakobot.com`,
+https://support.ayakobot.com
+Check out our partner: https://discordforge.org`,
    });
   },
   { context: { guilds: guildCount, members: memberCount }, cluster: 0 },
