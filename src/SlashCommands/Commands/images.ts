@@ -10,8 +10,6 @@ const categories = {
  husbando: 'Get a random Husbando Image',
  kitsune: 'Get a random Kitsune Image',
  waifu: 'Get a random Waifu Image',
- shinobu: 'Get a random Shinobu Image',
- megumin: 'Get a random Megumin Image',
  eevee: 'Get a random Eevee Image',
  holo: 'Get a random Holo Image',
  icon: 'Get a random Anime Icon',
