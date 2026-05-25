@@ -55,6 +55,13 @@ export const getPayload = (
   {
    type: Discord.ComponentType.ActionRow,
    components: [
+        {
+     type: Discord.ComponentType.Button,
+     label: language.events.guildMemberAdd.thanks4Adding.buttons.leveling,
+     style: Discord.ButtonStyle.Primary,
+     custom_id: 'thanks4Adding/leveling',
+     emoji: guild.client.util.emotes.levelupemotes[1],
+    },
     {
      type: Discord.ComponentType.Button,
      label: language.events.guildMemberAdd.thanks4Adding.buttons.mod,
