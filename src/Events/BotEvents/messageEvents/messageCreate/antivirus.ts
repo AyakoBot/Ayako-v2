@@ -234,12 +234,13 @@ export const performPunishment = async (
  settings: Prisma.antivirus | Prisma.antispam,
  language: CT.Language,
  additionalData: Discord.Message<true>,
+ isFromSpam: boolean = false,
 ) => {
  const msg = rawMessage ?? additionalData;
 
  const baseOptions = {
   dbOnly: false,
-  reason: language.autotypes.antivirus,
+  reason: isFromSpam ? language.autotypes.antispam : language.autotypes.antivirus,
   executor: (await msg.client.util.getBotMemberFromGuild(msg.guild)).user,
   target: msg.author,
   guild: msg.guild,

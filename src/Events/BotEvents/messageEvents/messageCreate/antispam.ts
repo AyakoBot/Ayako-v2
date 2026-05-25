@@ -71,5 +71,5 @@ export default async (msg: Discord.Message<true>) => {
  }
 
  const language = await msg.client.util.getLanguage(msg.guildId);
- performPunishment(settings.deletespam ? undefined : msg, settings, language, msg);
+ performPunishment(settings.deletespam ? undefined : msg, settings, language, msg, true);
 };
