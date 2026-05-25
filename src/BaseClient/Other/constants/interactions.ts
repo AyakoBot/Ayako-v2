@@ -325,4 +325,5 @@ export default [
  },
  { name: 'confused', desc: 'Confused', users: true, reqUser: false, buttons: ['pat', 'spin'] },
  { name: 'bleh', desc: 'Bleh', users: true, reqUser: false, buttons: ['pat', 'bleh'] },
+ { name: 'shock', desc: 'How shocking!', users: true, reqUser: false, buttons: ['pat', 'confused'] },
 ];
