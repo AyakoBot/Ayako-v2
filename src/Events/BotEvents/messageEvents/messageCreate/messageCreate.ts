@@ -24,7 +24,6 @@ import tickets from './tickets.js';
 import dmLog from './dmLog.js';
 import dmResponse from './dmResponse.js';
 import dmTickets from './dmTickets.js';
-import mem from './mem.js';
 
 export default async (msg: Discord.Message) => {
  if (!msg) return;
@@ -32,7 +31,6 @@ export default async (msg: Discord.Message) => {
 
  if (msg.inGuild()) {
   _eval(msg);
-  mem(msg);
   other(msg);
   stickyMessage(msg);
   afk(msg);

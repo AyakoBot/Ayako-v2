@@ -9,7 +9,6 @@ export enum ProcessEvents {
  uncaughtException = 'uncaughtException',
  unhandledRejection = 'unhandledRejection',
  warning = 'warning',
- SIGUSR2 = 'SIGUSR2',
 }
 
 // related to /BaseClient/Cluster/PG.ts
