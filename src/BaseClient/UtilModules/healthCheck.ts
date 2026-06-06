@@ -1,11 +1,17 @@
 import client from '../Bot/Client.js';
+import fs from 'fs';
 
 let lastHeartbeat = Date.now();
 let missedHeartbeats = 0;
 const HEARTBEAT_INTERVAL = 60000; // 1 minute
 const MAX_MISSED_HEARTBEATS = 3;
 
+let healtcheckRunning = false;
+
 export function startHealthCheck() {
+ if (healtcheckRunning) return;
+ healtcheckRunning = true;
+
  // Update heartbeat on Discord events
  client.on('raw', () => {
   lastHeartbeat = Date.now();
@@ -14,7 +20,7 @@ export function startHealthCheck() {
 
  // Check heartbeat health
  setInterval(() => {
-  client.cluster.send({ type: 'alive' });
+  fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
 
   const timeSinceLastHeartbeat = Date.now() - lastHeartbeat;
 

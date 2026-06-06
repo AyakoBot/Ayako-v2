@@ -1,6 +1,7 @@
 import { getInfo } from 'discord-hybrid-sharding';
 import client from '../../../BaseClient/Bot/Client.js';
 import util from '../../../BaseClient/Bot/Util.js';
+import { startHealthCheck } from '../../../BaseClient/UtilModules/healthCheck.js';
 
 import startupTasks from './startupTasks.js';
 
@@ -8,6 +9,7 @@ let ready = !process.argv.includes('--debug');
 
 export default async () => {
  client.util = util;
+ startHealthCheck();
 
  if (ready) return;
  ready = true;
