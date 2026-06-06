@@ -1,7 +1,10 @@
 import metricsCollector from '../../BaseClient/Bot/Metrics.js';
 import DataBase from '../../BaseClient/Bot/DataBase.js';
+import fs from 'fs';
 
 export default (message: string) => {
+ fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
+
  if (process.argv.includes('--debug')) {
   // eslint-disable-next-line no-console
   console.log(message);

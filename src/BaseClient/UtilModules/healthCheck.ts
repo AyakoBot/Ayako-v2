@@ -1,5 +1,4 @@
 import client from '../Bot/Client.js';
-import fs from 'fs';
 
 let lastHeartbeat = Date.now();
 let missedHeartbeats = 0;
@@ -20,8 +19,6 @@ export function startHealthCheck() {
 
  // Check heartbeat health
  setInterval(() => {
-  fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
-
   const timeSinceLastHeartbeat = Date.now() - lastHeartbeat;
 
   if (timeSinceLastHeartbeat > HEARTBEAT_INTERVAL * 2) {
