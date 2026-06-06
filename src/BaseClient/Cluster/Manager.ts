@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
 import * as Sharding from 'discord-hybrid-sharding';
 import 'dotenv/config';
-import ManagerMemoryMonitor from './ManagerMemoryMonitor.js';
 
 const Manager = new Sharding.ClusterManager(`./dist/bot.js`, {
  totalShards: 'auto',
@@ -25,8 +24,6 @@ await Manager.spawn()
   setInterval(async () => {
    await Manager.broadcastEval(`this.ws.status && this.isReady() ? this.ws.reconnect() : 0`);
   }, 60000);
-
-  ManagerMemoryMonitor.initialize();
  })
  .catch((e: Response) => {
   console.log(

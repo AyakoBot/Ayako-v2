@@ -21,7 +21,7 @@ process.on('SIGINT', async () => {
 Manager.on('clusterCreate', (cluster) => {
  console.log(`[Cluster Manager] Launched Cluster ${cluster.id + 1}`);
 
- cluster.setMaxListeners(4);
+ cluster.setMaxListeners(10);
 
  cluster.on('ready', () =>
   console.log(`[Cluster Manager] Cluster ${cluster.id + 1} has moved into Ready-State`),
