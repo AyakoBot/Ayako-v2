@@ -8,7 +8,9 @@ import startupTasks from './startupTasks.js';
 let ready = !process.argv.includes('--debug');
 
 export default async () => {
+ client.cluster?.triggerReady();
  client.util = util;
+
  startHealthCheck();
 
  if (ready) return;
