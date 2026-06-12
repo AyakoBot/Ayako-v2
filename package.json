@@ -74,10 +74,10 @@
     "source-map-support": "^0.5.21",
     "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@11.6.0",
   "engines": {
     "node": ">=24.13.0",
-    "pnpm": ">=10.19.0"
+    "pnpm": ">=11.6.0"
   },
   "prisma": {
     "schema": "../../prisma/schema.prisma"
