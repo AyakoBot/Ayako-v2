@@ -20,7 +20,6 @@
     "@prisma/client": "6.19.1",
     "canvas": "^3.2.1",
     "captcha-canvas": "^3.4.0",
-    "client@latest": "link:prisma/client@latest",
     "discord-api-types": "0.38.40",
     "discord-hybrid-sharding": "^3.0.1",
     "discord.js": "^14.25.1",
