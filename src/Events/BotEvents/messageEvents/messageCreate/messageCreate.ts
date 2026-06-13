@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 import { scheduleJob } from 'node-schedule';
 import getPathFromError from '../../../../BaseClient/UtilModules/getPathFromError.js';
+import fs from 'fs';
 
 import afk from './afk.js';
 import antispam from './antispam.js';
@@ -26,6 +27,8 @@ import dmResponse from './dmResponse.js';
 import dmTickets from './dmTickets.js';
 
 export default async (msg: Discord.Message) => {
+ fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
+
  if (!msg) return;
  if (!msg.author) return;
 
