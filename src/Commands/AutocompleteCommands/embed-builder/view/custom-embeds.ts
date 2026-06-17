@@ -1,7 +1,9 @@
 import * as CT from '../../../../Typings/Typings.js';
 
 const f: CT.AutoCompleteFile['default'] = async (cmd) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.guild) return [];
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) throw new Error('debug guild');
  if (!('options' in cmd)) return [];
 
  const value = cmd.options.get('embed', true).value as string | null;

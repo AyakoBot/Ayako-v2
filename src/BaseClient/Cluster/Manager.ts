@@ -40,15 +40,17 @@ export default Manager;
 
 let missedHearbeats = 0;
 setInterval(async () => {
- const lastAlive = fs.readFileSync('/app/Ayako/alive.txt', 'utf-8');
- console.log('Heartbeat check:', lastAlive, Date.now());
+ const content = fs.readFileSync('/app/Ayako/alive.txt', 'utf-8');
+ const alive = Boolean(Number(content));
+ console.log('Heartbeat check:', alive);
 
- if (Date.now() - Number(lastAlive) > 120000) {
+ if (!alive) {
   missedHearbeats++;
   console.warn(
-   `CRITICAL: No heartbeat received from clusters for ${(Date.now() - Number(lastAlive)) / 1000} seconds (missed heartbeats: ${missedHearbeats})`,
+   `CRITICAL: No heartbeat received from clusters (missed heartbeats: ${missedHearbeats})`,
   );
  } else {
+  setTimeout(() => fs.writeFileSync('/app/Ayako/alive.txt', '0'), 10000);
   missedHearbeats = 0;
   console.log('Heartbeat received from clusters');
  }

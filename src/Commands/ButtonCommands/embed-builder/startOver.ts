@@ -13,6 +13,7 @@ export default async (
  selectedField?: number | null,
  selectedEmbedProp?: EmbedFields,
 ) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!(cmd instanceof Discord.Message) && !cmd.inCachedGuild()) return;
  if (!cmd.channel) return;
  if (Number.isNaN(selectedField)) selectedField = null;

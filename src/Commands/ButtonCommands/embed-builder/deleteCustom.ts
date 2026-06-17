@@ -2,6 +2,7 @@ import type * as Discord from 'discord.js';
 import { buildEmbed } from '../../SlashCommands/embed-builder/create.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.inCachedGuild()) return;
 
  await cmd.client.util.DataBase.customembeds.delete({

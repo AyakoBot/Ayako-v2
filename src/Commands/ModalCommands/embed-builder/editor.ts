@@ -4,6 +4,7 @@ import { getSelectedField } from '../../ButtonCommands/embed-builder/deleteCusto
 import { EmbedFields } from '../../../BaseClient/Other/constants/customEmbeds.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction, args: string[]) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.isFromMessage()) return;
 
  const fieldType = args.shift() as EmbedFields;

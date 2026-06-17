@@ -20,6 +20,7 @@ const editors = {
 };
 
 export default (cmd: Discord.StringSelectMenuInteraction) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const args = cmd.values[0].split(/_+/g);
 
  if (args[0] === 'remove-field') {

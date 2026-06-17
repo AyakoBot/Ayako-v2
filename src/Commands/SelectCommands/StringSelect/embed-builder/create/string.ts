@@ -7,6 +7,7 @@ export default async (
  cmd: Discord.StringSelectMenuInteraction | Discord.ButtonInteraction,
  args: string[],
 ) => {
+ if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
  const arg = args[0] as EmbedFields;

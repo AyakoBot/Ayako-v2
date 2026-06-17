@@ -27,7 +27,7 @@ import dmResponse from './dmResponse.js';
 import dmTickets from './dmTickets.js';
 
 export default async (msg: Discord.Message) => {
- fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
+ fs.writeFileSync('/app/Ayako/alive.txt', '1');
 
  if (!msg) return;
  if (!msg.author) return;

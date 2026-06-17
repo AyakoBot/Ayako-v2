@@ -3,7 +3,7 @@ import DataBase from '../../BaseClient/Bot/DataBase.js';
 import fs from 'fs';
 
 export default (message: string) => {
- fs.writeFileSync('/app/Ayako/alive.txt', Date.now().toString());
+ fs.writeFileSync('/app/Ayako/alive.txt', '1');
 
  if (process.argv.includes('--debug')) {
   // eslint-disable-next-line no-console
