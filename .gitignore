@@ -13,3 +13,5 @@ Heap.*
 isolate-*
 .clinic
 /patches
+# Prisma client generated at build (platform-specific engine)
+prisma-client-generated/

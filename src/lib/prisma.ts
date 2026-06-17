@@ -1,7 +1,12 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const _prisma = require('@prisma/client');
+// Import the generated client directly from the repo-root output dir, NOT via
+// '@prisma/client'. pnpm peer-keys multiple isolated @prisma/client instances;
+// `prisma generate` populates one, this package resolves another, so the stub's
+// re-export comes back empty (every enum undefined). The relative path is
+// name-agnostic: dist/lib -> 4 up -> repo root -> prisma-client-generated.
+const _prisma = require('../../../../prisma-client-generated');
 
 export const Prisma = _prisma.Prisma;
 export const PrismaClient = _prisma.PrismaClient;
