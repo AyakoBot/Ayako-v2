@@ -9,7 +9,6 @@ export default async (msg: Discord.Message<true>) => {
  gvMessageCheck(msg);
  amMessageCheck(msg);
  amInproperStaffPingIdiot(msg);
- hope(msg);
  dumplings(msg);
 
  if (
@@ -174,14 +173,6 @@ const amInproperStaffPingIdiot = async (msg: Discord.Message) => {
   if (!m) return;
   if (await msg.client.util.isDeleteable(m)) msg.client.util.request.channels.deleteMessage(m);
  });
-};
-
-const hope = (msg: Discord.Message) => {
- if (msg.guild?.id !== '1350122697300115597') return;
- if (!msg.content.toLowerCase().includes('hope')) return;
- if (msg.channelId === '1351904166498406501') return;
-
- msg.react('hope:1462165030974918851');
 };
 
 const dumplings = (msg: Discord.Message) => {
