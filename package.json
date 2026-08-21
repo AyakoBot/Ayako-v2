@@ -23,7 +23,7 @@
     "captcha-canvas": "^3.4.0",
     "discord-api-types": "0.38.40",
     "discord-hybrid-sharding": "^3.0.1",
-    "discord.js": "^14.25.1",
+    "discord.js": "^14.26.4",
     "dotenv": "^17.3.1",
     "echarts": "^6.0.0",
     "glob": "^13.0.6",
