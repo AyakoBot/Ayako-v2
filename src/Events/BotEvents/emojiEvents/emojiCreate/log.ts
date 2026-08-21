@@ -18,7 +18,6 @@ export default async (emote: Discord.GuildEmoji) => {
    .then((u) => ('message' in u || !u.author ? undefined : u.author))) ??
   audit?.executor ??
   undefined;
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -29,21 +28,8 @@ export default async (emote: Discord.GuildEmoji) => {
   fields: [],
   color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
+  url: emote.url,
  };
 
- const attachment = (await emote.client.util.fileURL2Buffer([emote.url]))?.[0];
-
- if (attachment) {
-  files.push(attachment);
-
-  embed.thumbnail = {
-   url: `attachment://${emote.client.util.getNameAndFileType(emote.url)}`,
-  };
- }
-
- emote.client.util.send(
-  { id: channels, guildId: emote.guild.id },
-  { embeds: [embed], files },
-  10000,
- );
+ emote.client.util.send({ id: channels, guildId: emote.guild.id }, { embeds: [embed] }, 10000);
 };

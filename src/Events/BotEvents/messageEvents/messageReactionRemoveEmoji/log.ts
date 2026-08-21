@@ -26,12 +26,7 @@ export default async (reaction: Discord.MessageReaction, msg: Discord.Message<tr
  };
 
  if (reaction.emoji.url) {
-  embed.thumbnail = {
-   url: `attachment://${reaction.client.util.getNameAndFileType(reaction.emoji.url)}`,
-  };
-
-  const attachment = (await reaction.client.util.fileURL2Buffer([reaction.emoji.url]))?.[0];
-  if (attachment) files.push(attachment);
+  embed.thumbnail = { url: reaction.emoji.url };
  }
 
  if (reaction.users.cache.size) {

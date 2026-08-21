@@ -35,13 +35,12 @@ export default async (msg: Message<true>) => {
   null,
   dmThread.dmId,
   {
-   content,
+   content: `${content}\n${msg.attachments.map((a) => a.url).join('\n')}`,
    embeds: [
     {
      description: `-# ${language.ticketing.sentBySupport} - [${language.ticketing.reportAbuse}](${msg.client.util.constants.standard.support})`,
     },
    ],
-   files: await msg.client.util.fileURL2Buffer(msg.attachments.map((a) => a.url)),
   },
   msg.client,
  );

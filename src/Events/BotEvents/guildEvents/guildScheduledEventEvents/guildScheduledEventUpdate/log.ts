@@ -28,7 +28,6 @@ export default async (
  const con = event.client.util.constants.events.logs.guild;
  const audit = await event.client.util.getAudit(guild, 101, event.id);
  const auditUser = audit?.executor ?? undefined;
- const files: Discord.AttachmentPayload[] = [];
  let description = '';
 
  if (auditUser && channel) {
@@ -74,11 +73,7 @@ export default async (
     return;
    }
 
-   const attachment = (await event.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, event.client.util.getNameAndFileType(url), 'icon', lan.image);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -168,5 +163,5 @@ export default async (
   );
  }
 
- event.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
+ event.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

@@ -14,7 +14,6 @@ export default async (role: Discord.Role) => {
  const auditUser =
   (role.tags?.botId ? await role.client.util.getUser(role.tags.botId) : audit?.executor) ??
   undefined;
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -29,19 +28,8 @@ export default async (role: Discord.Role) => {
 
  if (role.icon) {
   const url = role.iconURL({ size: 4096 });
-  if (url) {
-   const attachments = (await role.client.util.fileURL2Buffer([url]))?.[0];
-   if (attachments) files.push(attachments);
-
-   embed.thumbnail = {
-    url: `attachment://${role.client.util.getNameAndFileType(url)}`,
-   };
-  } else {
-   embed.fields?.push({
-    name: lan.icon,
-    value: role.icon,
-   });
-  }
+  if (url) embed.thumbnail = { url };
+  else embed.fields?.push({ name: lan.icon, value: role.icon });
  }
 
  const flagsText = [
@@ -99,7 +87,7 @@ export default async (role: Discord.Role) => {
 
  role.client.util.send(
   { id: channels, guildId: role.guild.id },
-  { embeds: [embed, permEmbed], files },
+  { embeds: [embed, permEmbed] },
   10000,
  );
 };

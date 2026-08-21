@@ -117,11 +117,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
    .join('\n'),
  };
 
- if (role.iconURL()) {
-  embed.thumbnail = {
-   url: role.iconURL() as string,
-  };
- }
+ if (role.iconURL()) embed.thumbnail = { url: role.iconURL() as string };
 
  cmd.client.util.replyCmd(cmd, {
   ephemeral,

@@ -17,7 +17,6 @@ export default async (sticker: Discord.Sticker) => {
   (await sticker.client.util.request.guilds
    .getSticker(sticker.guild, sticker.id)
    .then((s) => ('message' in s || !s.user ? undefined : s.user)));
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -28,16 +27,8 @@ export default async (sticker: Discord.Sticker) => {
   fields: [],
   color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
+  url: sticker.url,
  };
-
- const attachment = (await sticker.client.util.fileURL2Buffer([sticker.url]))?.[0];
- if (attachment) {
-  files.push(attachment);
-
-  embed.thumbnail = {
-   url: `attachment://${sticker.client.util.getNameAndFileType(sticker.url)}`,
-  };
- }
 
  if (sticker.description) {
   embed.fields?.push({
@@ -58,9 +49,5 @@ export default async (sticker: Discord.Sticker) => {
   value: lan.format[sticker.format],
  });
 
- sticker.client.util.send(
-  { id: channels, guildId: sticker.guild.id },
-  { embeds: [embed], files },
-  10000,
- );
+ sticker.client.util.send({ id: channels, guildId: sticker.guild.id }, { embeds: [embed] }, 10000);
 };

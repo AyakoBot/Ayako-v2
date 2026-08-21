@@ -31,7 +31,6 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   timestamp: new Date().toISOString(),
  };
 
- const files: Discord.AttachmentPayload[] = [];
  const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
   member.client.util.mergeLogging(before, after, type, embed, language, name);
 
@@ -47,11 +46,7 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
     return;
    }
 
-   const attachment = (await member.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, member.client.util.getNameAndFileType(url), 'icon', lan.avatar);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -136,9 +131,5 @@ export default async (oldMember: Discord.GuildMember, member: Discord.GuildMembe
   }
  }
 
- member.client.util.send(
-  { id: channels, guildId: member.guild.id },
-  { embeds: [embed], files },
-  10000,
- );
+ member.client.util.send({ id: channels, guildId: member.guild.id }, { embeds: [embed] }, 10000);
 };

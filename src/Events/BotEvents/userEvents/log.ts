@@ -7,7 +7,6 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
 
  const language = await guild.client.util.getLanguage(guild.id);
  const lan = language.events.logs.user;
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -24,18 +23,11 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
   guild.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (user.avatar !== oldUser.avatar) {
-  const attachment = (
-   await guild.client.util.fileURL2Buffer([user.displayAvatarURL({ size: 4096 })])
-  )?.[0];
+  const avatarUrl = user.displayAvatarURL({ size: 4096 });
 
-  merge(
-   user.displayAvatarURL({ size: 4096 }),
-   guild.client.util.getNameAndFileType(user.displayAvatarURL({ size: 4096 })),
-   'icon',
-   lan.avatar,
-  );
-
-  if (attachment) files.push(attachment);
+  if (avatarUrl) {
+   merge(avatarUrl, guild.client.util.getNameAndFileType(avatarUrl), 'icon', lan.avatar);
+  }
  }
  if (user.globalName !== oldUser.globalName) {
   merge(oldUser.globalName ?? language.t.Unknown, user.globalName, 'string', lan.globalName);
@@ -80,5 +72,7 @@ export default async (oldUser: Discord.User, user: Discord.User, guild: Discord.
 
  if (!embed.fields?.length) return;
 
- guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
+ guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
+
+ return embed;
 };

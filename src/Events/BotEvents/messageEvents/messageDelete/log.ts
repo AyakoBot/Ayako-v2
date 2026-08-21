@@ -194,22 +194,6 @@ export default async (
   });
  }
 
- if (msgToLog.attachments?.size) {
-  const isRemix = msgToLog.attachments.map((a) => a.flags.has(Discord.AttachmentFlags.IsRemix));
-
-  const attachments = (
-   await msg.client.util.fileURL2Buffer(msgToLog.attachments.map((a) => a.url))
-  ).filter((e): e is Discord.AttachmentPayload => !!e);
-
-  if (attachments?.length) {
-   files.push(
-    ...attachments.map((a, i) => ({
-     ...a,
-     description: isRemix[i] ? lan.isRemix : undefined,
-    })),
-   );
-  }
- }
 
  msgToLog.messageSnapshots?.forEach((m) => log(m, false, msg));
 

@@ -14,7 +14,6 @@ export default async (
  const language = await msg.client.util.getLanguage(msg.guildId);
  const lan = language.events.logs.reaction;
  const con = msg.client.util.constants.events.logs.reaction;
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: { icon_url: con.create, name: lan.nameAdd },
@@ -23,23 +22,13 @@ export default async (
   color: CT.Colors.Success,
   timestamp: new Date().toISOString(),
   thumbnail: {
-   url: `attachment://${msg.client.util.getNameAndFileType(
-    msg.client.util.constants.standard.emoteURL(reaction.emoji),
-   )}`,
+   url: msg.client.util.constants.standard.emoteURL(reaction.emoji),
   },
  };
 
- const attachment = (
-  await msg.client.util.fileURL2Buffer([
-   msg.client.util.constants.standard.emoteURL(reaction.emoji),
-  ])
- ).filter((e): e is Discord.AttachmentPayload => !!e);
-
- if (attachment) files.push(...attachment);
-
  await msg.client.util.send(
   { id: channels, guildId: msg.guildId },
-  { embeds: [embed], files },
+  { embeds: [embed] },
   10000,
  );
 };

@@ -50,33 +50,11 @@ export default async (msg: Discord.Message<true>) => {
     const user = msg.client.users.cache.get(stickyMessage.userid);
     if (!user) msg.client.util.error(msg.guild, new Error('User to post Message as not found'));
 
-    const files = await msg.client.util.fileURL2Buffer(message.attachments.map((a) => a.url));
-
     const payload: CT.UsualMessagePayload = {
      content: message.content,
      embeds: message.embeds
       .filter((e) => !e.url || !message.content?.includes(e.url))
       .map((e) => e.data) as Discord.APIEmbed[],
-     files: message.attachments
-      .map((a) => a)
-      .map((a, i) =>
-       files[i]
-        ? {
-           name: a.name,
-           attachment: files[i].attachment,
-           description: a.description ?? undefined,
-          }
-        : undefined,
-      )
-      .filter(
-       (
-        f,
-       ): f is {
-        name: string;
-        attachment: Discord.BufferResolvable | Stream;
-        description: string | undefined;
-       } => !!f,
-      ),
      components: [
       {
        type: Discord.ComponentType.ActionRow,

@@ -32,6 +32,7 @@ export default async (msg: Message) => {
    if (!channel) return;
 
    cl.util.send(channel, {
+    content: msgAttachments.join('\n'),
     embeds: [
      {
       description: msgContent,
@@ -41,7 +42,6 @@ export default async (msg: Message) => {
       },
      },
     ],
-    files: await cl.util.fileURL2Buffer(msgAttachments),
    });
   },
   {

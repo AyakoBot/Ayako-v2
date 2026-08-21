@@ -57,14 +57,7 @@ export default async (
    const url = event.coverImageURL({ size: 4096 });
    if (!url) return;
 
-   embed.image = {
-    url: `attachment://${event.client.util.getNameAndFileType(url)}`,
-   };
-
-   const attachment = (await event.client.util.fileURL2Buffer([url])).filter(
-    (e): e is Discord.AttachmentPayload => !!e,
-   );
-   if (attachment) files.push(...attachment);
+   embed.image = { url };
   };
 
   await getImage();

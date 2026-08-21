@@ -28,16 +28,8 @@ export default async (sticker: Discord.Sticker) => {
   fields: [],
   color: CT.Colors.Danger,
   timestamp: new Date().toISOString(),
+  url: sticker.url,
  };
-
- const attachment = (await sticker.client.util.fileURL2Buffer([sticker.url]))?.[0];
- if (attachment) {
-  files.push(attachment);
-
-  embed.thumbnail = {
-   url: `attachment://${sticker.client.util.getNameAndFileType(sticker.url)}`,
-  };
- }
 
  if (sticker.description) {
   embed.fields?.push({

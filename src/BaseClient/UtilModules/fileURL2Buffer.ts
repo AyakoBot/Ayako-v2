@@ -8,11 +8,14 @@ import getNameAndFileType from './getNameAndFileType.js';
  * @param names An optional array of names to use for the attachments.
  * @returns An array of Discord attachment payloads.
  */
-export default async (
+export default async <T extends boolean = false>(
  urls: (string | null)[],
  names?: string[],
-): Promise<Discord.AttachmentPayload[]> =>
- (
+ force: T = false as T,
+): Promise<T extends false ? (string | null)[] : Discord.AttachmentPayload[]> => {
+ if (!force) return urls as T extends false ? (string | null)[] : Discord.AttachmentPayload[];
+
+ return (
   await Promise.all(
    urls.map((url) =>
     url
@@ -38,4 +41,5 @@ export default async (
   })
   .filter(
    (r): r is { attachment: Buffer<ArrayBuffer>; name: string | undefined } => !!r,
-  ) as Discord.AttachmentPayload[];
+  ) as T extends false ? (string | null)[] : Discord.AttachmentPayload[];
+};

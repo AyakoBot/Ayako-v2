@@ -12,6 +12,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
  const lan = language.events.logs.message;
  const con = msg.client.util.constants.events.logs.message;
  const files: Discord.AttachmentPayload[] = [];
+ const links: string[] = [];
  let byAuthor: boolean | null = true;
 
  const embed: Discord.APIEmbed = {
@@ -160,11 +161,7 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
    msg.attachments.map((o) => o) ?? [],
   );
 
-  const attachments = (
-   await msg.client.util.fileURL2Buffer(oldAttachments.map((a) => a.url))
-  ).filter((e): e is Discord.AttachmentPayload => !!e);
-
-  if (attachments?.length) files.push(...attachments);
+  if (oldAttachments?.length) links.push(...oldAttachments.map((a) => a.url));
  }
  if (
   JSON.stringify(oldMsg.mentions.users.map((o) => o)) !==
@@ -233,5 +230,9 @@ export default async (oldMsg: Discord.Message, msg: Discord.Message) => {
 
  if (!embed.fields?.length) return;
 
- msg.client.util.send({ id: channels, guildId: msg.guildId }, { embeds: [embed], files }, 10000);
+ msg.client.util.send(
+  { id: channels, guildId: msg.guildId },
+  { content: links.join('\n'), embeds: [embed], files },
+  10000,
+ );
 };

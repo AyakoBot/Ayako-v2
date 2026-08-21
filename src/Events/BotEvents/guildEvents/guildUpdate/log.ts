@@ -25,8 +25,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
   .then((w) => (!w || 'message' in w ? undefined : w));
  if (newWelcomeScreen) guild.client.util.cache.welcomeScreens.set(newWelcomeScreen);
 
- const files: Discord.AttachmentPayload[] = [];
- const merge = (after: unknown, before: unknown, type: CT.AcceptedMergingTypes, name: string) =>
+ const merge = (before: unknown, after: unknown, type: CT.AcceptedMergingTypes, name: string) =>
   guild.client.util.mergeLogging(before, after, type, embed, language, name);
 
  if (guild.description !== oldGuild.description) {
@@ -41,11 +40,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     return;
    }
 
-   const attachment = (await guild.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, guild.client.util.getNameAndFileType(url), 'icon', lan.banner);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -59,11 +54,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     return;
    }
 
-   const attachment = (await guild.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, guild.client.util.getNameAndFileType(url), 'icon', lan.icon);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -77,11 +68,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     return;
    }
 
-   const attachment = (await guild.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, guild.client.util.getNameAndFileType(url), 'icon', lan.splash);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -101,11 +88,7 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
     return;
    }
 
-   const attachment = (await guild.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, guild.client.util.getNameAndFileType(url), 'icon', lan.discoverySplash);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -387,5 +370,5 @@ export default async (guild: Discord.Guild, oldGuild: Discord.Guild) => {
 
  if (!embed.fields?.length) return;
 
- guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed], files }, 10000);
+ guild.client.util.send({ id: channels, guildId: guild.id }, { embeds: [embed] }, 10000);
 };

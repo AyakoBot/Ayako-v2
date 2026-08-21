@@ -14,7 +14,6 @@ export default async (
  const con = webhook.client.util.constants.events.logs.webhook;
  const audit = await webhook.client.util.getAudit(channel.guild, 51, webhook.id);
  const auditUser = audit?.executor ?? undefined;
- const files: Discord.AttachmentPayload[] = [];
 
  const embed: Discord.APIEmbed = {
   author: {
@@ -57,11 +56,7 @@ export default async (
     return;
    }
 
-   const attachment = (await webhook.client.util.fileURL2Buffer([url]))?.[0];
-
    merge(url, webhook.client.util.getNameAndFileType(url), 'icon', lan.avatar);
-
-   if (attachment) files.push(attachment);
   };
 
   await getImage();
@@ -84,9 +79,5 @@ export default async (
   );
  }
 
- webhook.client.util.send(
-  { id: channels, guildId: channel.guild.id },
-  { embeds: [embed], files },
-  10000,
- );
+ webhook.client.util.send({ id: channels, guildId: channel.guild.id }, { embeds: [embed] }, 10000);
 };

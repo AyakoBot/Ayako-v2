@@ -28,7 +28,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   .map((_, i) => cmd.options.getAttachment(`attachment-${i}`, false))
   .filter((a): a is Discord.Attachment => !!a);
 
- const files = await cmd.client.util.fileURL2Buffer(attachments.map((a) => a.url));
+ const files: (string | null)[] = attachments.map((a) => a.url);
 
  const m = await cmd.client.util.send(
   { id: settings.channelid, guildId: cmd.guildId },
@@ -38,7 +38,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      settings.pingroleid.length ? `${settings.pingroleid.map((i) => `<@&${i}>`).join(' ')}\n` : ''
     }${
      settings.pinguserid.length ? `${settings.pinguserid.map((i) => `<@${i}>`).join(' ')}\n` : ''
-    }` || undefined,
+    }\n${files.join('\n') || undefined}`.trim() || undefined,
    allowed_mentions: { roles: settings.pingroleid },
    embeds: [
     {
@@ -49,12 +49,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
       name: `${lan.author}${settings.anonsuggestion ? '' : ` | ${cmd.user.displayName}`}`,
      },
      description: content,
-     image:
-      attachments.length === 1
-       ? {
-          url: `attachment://${files[0].name}`,
-         }
-       : undefined,
+     image: attachments.length === 1 ? { url: files[0] } : undefined,
      fields: [
       {
        name: lan.votes,
@@ -67,7 +62,6 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
      ],
     },
    ],
-   files,
    components: [
     {
      type: Discord.ComponentType.ActionRow,

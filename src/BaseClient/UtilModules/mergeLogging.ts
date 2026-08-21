@@ -41,15 +41,11 @@ export default (
    break;
   }
   case 'icon': {
-   embed.thumbnail = {
-    url: `attachment://${after}`,
-   };
+   embed.thumbnail = { url: before };
    break;
   }
   case 'image': {
-   embed.image = {
-    url: `attachment://${after}`,
-   };
+   embed.image = { url: before };
    break;
   }
   default: {
