@@ -12,6 +12,7 @@ export default async (
   cmd.client.util.replyCmd(cmd, { content: language.t.guildOnly });
   return;
  }
+ return; // superseded by v3
 
  const messageLinkOrStickerId =
   cmd instanceof Discord.ChatInputCommandInteraction

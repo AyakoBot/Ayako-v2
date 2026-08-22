@@ -17,6 +17,7 @@ export default async (
   client.util.errorCmd(cmd, language.errors.guildCommand, language);
   return;
  }
+ return; // superseded by v3
 
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction

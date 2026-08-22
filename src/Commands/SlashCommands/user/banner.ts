@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ return; // superseded by v3
  const rawUser = cmd.options.getUser('user', false) || cmd.user;
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const user = await cmd.client.util.request.users

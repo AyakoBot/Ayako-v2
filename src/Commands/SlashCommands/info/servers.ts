@@ -7,6 +7,7 @@ export default async (
  _args: string[],
  page = 1,
 ) => {
+ return; // superseded by v3
  const ephemeral =
   cmd instanceof Discord.ChatInputCommandInteraction
    ? (cmd.options.getBoolean('hide', false) ?? true)

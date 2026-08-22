@@ -5,6 +5,7 @@ export default async (cmd: Discord.ChatInputCommandInteraction) => {
   cmd.client.util.guildOnly(cmd);
   return;
  }
+ return; // superseded by v3
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.info.badges;
 

@@ -2,6 +2,7 @@ import * as Discord from 'discord.js';
 import client from '../../../BaseClient/Bot/Client.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ return; // superseded by v3
  const ephemeral = cmd.options.getBoolean('hide', false) ?? true;
  const enteredId = cmd.options.get('server-id', false)?.value as string | null;
  const enteredName = cmd.options.get('server-name', false)?.value as string | null;

@@ -1,6 +1,7 @@
 import type * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ return; // superseded by v3
  const heartbeats = await cmd.client.util.DataBase.heartbeats.findMany({
   where: {},
   orderBy: { timestamp: 'desc' },

@@ -5,7 +5,7 @@ import * as CT from '../../../Typings/Typings.js';
 const month = 2629743000;
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
+ return; // superseded by v3
  const userRes = await client.util.getUserFromUserAndUsernameOptions(cmd);
  if (!userRes) return;
 

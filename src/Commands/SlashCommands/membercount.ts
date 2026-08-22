@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChatInputCommandInteraction) => {
+ return; // superseded by v3
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.membercount;
 
