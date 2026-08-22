@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction, args: string[]) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const language = await cmd.client.util.getLanguage(cmd.guildId);
  const lan = language.slashCommands.embedbuilder.create.start;
 

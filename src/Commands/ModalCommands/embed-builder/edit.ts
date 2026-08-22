@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import * as CT from '../../../Typings/Typings.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.isFromMessage()) return;
 
  const embed = cmd.message.embeds[1].data;

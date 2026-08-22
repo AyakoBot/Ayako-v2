@@ -1,6 +1,7 @@
 import type { ButtonInteraction, GuildTextBasedChannel } from 'discord.js';
 
 export default async (cmd: ButtonInteraction) => {
+ return // superseded by v3
  if (cmd.user.id === '564052925828038658') return;
  if (!cmd.channel) return;
 

@@ -1,7 +1,7 @@
 import { type Message } from 'discord.js';
 
 export default async (msg: Message<true>) => {
- if (msg.client.util.constants.debugGuilds.includes(msg.guild.id || '')) return;
+ return; // superseded by v3
  if (!msg.author) return;
  if (msg.author.bot) return;
 

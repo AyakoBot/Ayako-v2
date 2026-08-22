@@ -3,7 +3,6 @@ import startOver from '../../../../ButtonCommands/embed-builder/startOver.js';
 import { getSelectedField } from '../../../../ButtonCommands/embed-builder/deleteCustom.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const selectedField = getSelectedField(cmd.message);
  const embed = structuredClone(cmd.message.embeds[1].data) as Discord.APIEmbed;
  embed.fields![selectedField].inline = !embed.fields![selectedField].inline;

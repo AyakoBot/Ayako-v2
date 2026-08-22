@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ModalSubmitInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.isFromMessage()) return;
  if (!cmd.inCachedGuild()) return;
 

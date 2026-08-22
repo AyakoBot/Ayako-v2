@@ -1,7 +1,6 @@
 import * as Discord from 'discord.js';
 
 export default async (cmd: Discord.ChannelSelectMenuInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const channels = (
   await Promise.all(cmd.channels.map((o) => cmd.client.util.getChannel.guildTextChannel(o.id)))
  ).filter((o): o is Discord.TextChannel => !!o);

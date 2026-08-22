@@ -8,7 +8,6 @@ export const buildEmbed = async (
   | Discord.StringSelectMenuInteraction,
  selectedOption?: string,
 ) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.guildId);

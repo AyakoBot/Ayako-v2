@@ -13,7 +13,7 @@ import {
 import { getPayload } from '../../SlashCommands/info/user.js';
 
 export default async (cmd: ChatInputCommandInteraction, args: string[]) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guildId || '')) return;
+ return // superseded by v3
  if (!cmd.inCachedGuild()) return;
 
  const language = await cmd.client.util.getLanguage(cmd.locale);

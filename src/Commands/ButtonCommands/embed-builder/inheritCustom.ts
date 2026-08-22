@@ -3,7 +3,6 @@ import { getSelectedField } from './deleteCustom.js';
 import startOver from './startOver.js';
 
 export default async (cmd: Discord.ButtonInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  if (!cmd.inCachedGuild()) return;
 
  const dbEmbed = await cmd.client.util.DataBase.customembeds.findUnique({

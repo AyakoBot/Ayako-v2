@@ -2,7 +2,6 @@ import * as Discord from 'discord.js';
 import startOver from '../../../../ButtonCommands/embed-builder/startOver.js';
 
 export default async (cmd: Discord.StringSelectMenuInteraction) => {
- if (cmd.client.util.constants.debugGuilds.includes(cmd.guild?.id ?? '')) return
  const name = cmd.values[0];
  const embed = new Discord.EmbedBuilder(cmd.message.embeds[1].data);
  let selected = embed.data.fields?.length ?? 0;
